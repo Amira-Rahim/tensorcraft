@@ -107,3 +107,24 @@ describe("Dialogue", () => {
     );
   });
 });
+
+describe("Dialogue avatar", () => {
+  it("renders no avatar by default", () => {
+    render(<Dialogue speaker="Chief Nazari">Line.</Dialogue>);
+    expect(screen.queryByTestId("character-avatar-placeholder")).toBeNull();
+    expect(screen.queryByTestId("character-avatar-img")).toBeNull();
+  });
+  it("renders an avatar when avatarName is provided", () => {
+    render(
+      <Dialogue
+        speaker="Chief Nazari"
+        avatarName="Chief Nazari"
+        avatarSrc="/characters/deep-orbit/chief-nazari.webp"
+      >
+        Line.
+      </Dialogue>,
+    );
+    expect(screen.getByTestId("character-avatar-img")).toBeInTheDocument();
+    expect(screen.getByText("Chief Nazari")).toBeInTheDocument();
+  });
+});

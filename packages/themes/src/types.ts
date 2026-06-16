@@ -41,6 +41,12 @@ export interface ThemeCharacter {
   name: string;
   role: string;
   personality: string;
+  /** kebab-case id for the avatar asset path. */
+  slug?: string;
+  /** Alternate speaker strings used in dialogue (deep-orbit needs none). */
+  aliases?: string[];
+  /** AI characters render an abstract glyph, not a portrait/monogram. */
+  isAI?: boolean;
 }
 
 /**

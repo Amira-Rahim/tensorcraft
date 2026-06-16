@@ -208,3 +208,22 @@ describe("Coming-soon preview data", () => {
     expect(themes["deep-orbit"]!.preview).toBeUndefined();
   });
 });
+
+describe("Deep Orbit character avatars", () => {
+  const chars = themes["deep-orbit"]!.characters;
+  it("every character has a kebab-case slug", () => {
+    for (const c of chars) {
+      expect(c.slug, `${c.name} needs a slug`).toMatch(
+        /^[a-z0-9]+(-[a-z0-9]+)*$/,
+      );
+    }
+  });
+  it("slugs are unique", () => {
+    const slugs = chars.map((c) => c.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+  it("ARIA is flagged isAI", () => {
+    const aria = chars.find((c) => c.name === "ARIA");
+    expect(aria?.isAI).toBe(true);
+  });
+});

@@ -21,3 +21,4 @@ export {
   SceneHeading,
 } from "./mdx";
 export type { ExerciseData, ExerciseSubmitResult } from "./mdx";
+export { CharacterAvatar } from "./character-avatar";

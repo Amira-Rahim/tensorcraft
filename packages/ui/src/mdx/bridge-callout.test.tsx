@@ -107,7 +107,7 @@ describe("BridgeCallout", () => {
       render(<BridgeCallout bridge={bridge} />);
       const footer = screen.getByTestId("bridge-breaks");
       expect(footer).toBeInTheDocument();
-      expect(footer.textContent).toMatch(/Where this breaks/i);
+      expect(footer.textContent).toMatch(/Where the analogy ends/i);
       expect(footer.textContent).toMatch(/gradient descent/);
     });
 

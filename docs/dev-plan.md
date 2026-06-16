@@ -1305,6 +1305,14 @@ literal descent.
 
 ---
 
+## Deferred (character personas)
+
+- **Real cel-shaded art is pending external production; prompts live in `docs/character-bible.md`.** Drop files at `apps/web/public/characters/<theme>/<slug>.webp` to replace the placeholder avatars (no code change needed; the component swaps via onError).
+- **The other 20 character sheets (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) + their theme wiring are gated on those themes launching.**
+- **Character animation (entrance / talking / expression states) is a planned follow-up stream** that will consume the per-character expression sets in the bible.
+
+---
+
 ## Version Roadmap
 
 > **Source of truth:** [`docs/prd.md` §7 Release Plan](prd.md). Summary below; refer to PRD for codenames, gate criteria, and feature scope.

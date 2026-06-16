@@ -65,8 +65,8 @@ export default function AboutPage() {
             literal. We call this the bridge-tier system: identity (literally
             the same), structural (same shape, different domain), intuition
             (same mental model, different math). Structural and intuition
-            bridges include a &ldquo;where this breaks&rdquo; statement so you
-            stop carrying the wrong model into production.
+            bridges include a note on where the analogy ends so you stop
+            carrying the wrong model into production.
           </p>
 
           <p>

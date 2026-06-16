@@ -35,6 +35,7 @@ vi.mock("./lesson-drawer", () => ({
 
 vi.mock("@tensorcraft/ui", () => ({
   SceneHeading: () => null,
+  CharacterAvatar: () => null,
 }));
 
 vi.mock("@/lib/progress-client", () => ({

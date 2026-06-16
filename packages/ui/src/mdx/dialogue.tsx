@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CharacterAvatar } from "../character-avatar";
 
 interface DialogueProps {
   speaker: string;
@@ -6,6 +7,9 @@ interface DialogueProps {
   /** Label for the scene-transition divider; the divider is hidden unless
    *  the host app's CSS reveals it (see comment on the element below). */
   cutTo?: string;
+  avatarSrc?: string;
+  avatarName?: string;
+  isAI?: boolean;
   children: ReactNode;
 }
 
@@ -13,10 +17,23 @@ export function Dialogue({
   speaker,
   direction,
   cutTo = "Briefing",
+  avatarSrc,
+  avatarName,
+  isAI,
   children,
 }: DialogueProps) {
   return (
     <div className="mb-7 mx-auto max-w-[440px]" data-dialogue="true">
+      {avatarName && (
+        <div className="flex justify-center mb-2">
+          <CharacterAvatar
+            name={avatarName}
+            src={avatarSrc}
+            isAI={isAI}
+            size={44}
+          />
+        </div>
+      )}
       <div
         className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1.5 text-center"
         style={{ color: "var(--tc-primary, #E0E0E0)" }}

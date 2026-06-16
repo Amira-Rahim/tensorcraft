@@ -7,7 +7,8 @@ import { markLessonStarted, markLessonCompleted } from "@/lib/progress-client";
 import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
 import type { Framework } from "@tensorcraft/shared";
 import type { ExerciseData } from "@tensorcraft/ui";
-import { SceneHeading } from "@tensorcraft/ui";
+import { SceneHeading, CharacterAvatar } from "@tensorcraft/ui";
+import { themes } from "@tensorcraft/themes";
 import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GlossaryProvider, useGlossary } from "./glossary-context";
@@ -439,7 +440,12 @@ function LessonStepsInner({
       />
     );
     shellRight = (
-      <SceneCard theme={theme} scene={lesson.scene} speakers={castSpeakers} />
+      <SceneCard
+        theme={theme}
+        themeSlug={themeSlug}
+        scene={lesson.scene}
+        speakers={castSpeakers}
+      />
     );
   } else if (currentStep === 1) {
     rightKind = "rail";
@@ -686,16 +692,19 @@ function ChromeBar({
   );
 }
 
-/* Right-rail card for the Briefing: scene slugline + cast chips. */
+/* Right-rail card for the Briefing: scene slugline + cast avatars. */
 function SceneCard({
   theme,
+  themeSlug,
   scene,
   speakers,
 }: {
   theme: LessonStepsProps["theme"];
+  themeSlug: string;
   scene?: { location: string; time?: string };
   speakers: string[];
 }) {
+  const chars = themes[themeSlug]?.characters ?? [];
   return (
     <div className="flex flex-col gap-5">
       <span
@@ -730,20 +739,43 @@ function SceneCard({
           >
             Cast
           </span>
-          <div className="flex flex-wrap gap-2">
-            {speakers.map((s) => (
-              <span
-                key={s}
-                className="font-mono text-xs px-2 py-1"
-                style={{
-                  color: theme.palette.text,
-                  border: `1px solid ${theme.palette.border}`,
-                  background: theme.palette.surface,
-                }}
-              >
-                {s}
-              </span>
-            ))}
+          <div className="flex flex-col gap-3">
+            {speakers.map((s) => {
+              const ch = chars.find(
+                (c) => c.name === s || c.aliases?.includes(s),
+              );
+              return (
+                <div key={s} className="flex items-center gap-2">
+                  <CharacterAvatar
+                    name={s}
+                    src={
+                      ch?.slug
+                        ? `/characters/${themeSlug}/${ch.slug}.webp`
+                        : undefined
+                    }
+                    accentColor={theme.palette.primary}
+                    isAI={ch?.isAI}
+                    size={30}
+                  />
+                  <div className="flex flex-col">
+                    <span
+                      className="font-mono text-xs"
+                      style={{ color: theme.palette.text }}
+                    >
+                      {s}
+                    </span>
+                    {ch?.role && (
+                      <span
+                        className="font-mono text-[10px]"
+                        style={{ color: theme.palette.muted }}
+                      >
+                        {ch.role}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

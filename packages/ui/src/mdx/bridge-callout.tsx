@@ -90,7 +90,7 @@ function BridgeBreaks({ breaks, color }: { breaks: string; color: string }) {
         className="font-mono text-xs uppercase tracking-widest mb-1"
         style={{ color }}
       >
-        ⚠ Where this breaks
+        Where the analogy ends
       </div>
       <div className="font-mono text-xs leading-relaxed text-text-muted">
         {breaks}

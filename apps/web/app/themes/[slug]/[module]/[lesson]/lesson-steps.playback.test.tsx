@@ -40,6 +40,7 @@ vi.mock("@tensorcraft/ui", async () => {
   return {
     Dialogue,
     SceneHeading,
+    CharacterAvatar: () => null,
     ExerciseDataProvider: ({ children }: { children: React.ReactNode }) => (
       <>{children}</>
     ),

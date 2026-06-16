@@ -30,27 +30,33 @@ export const deepOrbit: ThemeManifest = {
       name: "Commander Mirza",
       role: "Mentor",
       personality: "Calm authority, measured decisions",
+      slug: "commander-mirza",
     },
     {
       name: "Dr. Farah",
       role: "Astrophysicist",
       personality: "Curious, data-driven",
+      slug: "dr-farah",
     },
     {
       name: "Chief Nazari",
       role: "Skeptic",
       personality:
         "Distrusts ML: a rule-based system froze on his last mission",
+      slug: "chief-nazari",
     },
     {
       name: "Ensign Demir",
       role: "Communications",
       personality: "Eager, quick learner",
+      slug: "ensign-demir",
     },
     {
       name: "ARIA",
       role: "Ship AI",
       personality: "Dry-witted, precise",
+      slug: "aria",
+      isAI: true,
     },
   ],
   specialization: "Time-Series & Signals",
