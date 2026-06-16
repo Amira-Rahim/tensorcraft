@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { UserAvatar } from "./user-avatar";
@@ -14,6 +14,7 @@ export function UserMenu() {
   const [displayName, setDisplayName] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -67,6 +68,8 @@ export function UserMenu() {
   }
 
   if (!user) {
+    // Already on the auth page — the CTA would just reload it, so hide it.
+    if (pathname === "/auth") return null;
     return (
       <Link
         href="/auth"
