@@ -69,6 +69,21 @@ vi.mock("@/lib/analytics", () => ({
   trackHintRequested: vi.fn(),
 }));
 
+// Final step fires a lazy import chain (api-url → supabase client → getSession
+// → fetch) for the Kit "first lesson" tag. Stub it so the dynamic imports
+// resolve to mocks rather than transforming the real modules after teardown
+// ("Closing rpc while fetch was pending").
+vi.mock("@/lib/api-url", () => ({
+  getApiUrl: () => "http://localhost",
+}));
+vi.mock("@/lib/supabase/client", () => ({
+  getSupabaseBrowserClient: () => ({
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null } }),
+    },
+  }),
+}));
+
 vi.mock("@/app/components/mdx", () => ({
   BossBeat: () => null,
   Concept: () => null,
