@@ -13,15 +13,11 @@ const COPY = {
   new: {
     heading: "Start Learning",
     subtitle: "Create an account to start learning",
-    bottomText: "Already have an account?",
-    bottomAction: "Sign in",
     terms: "creating an account",
   },
   returning: {
     heading: "Welcome Back",
     subtitle: "Sign in to continue learning",
-    bottomText: "New here?",
-    bottomAction: "Learn more",
     terms: "signing in",
   },
 };
@@ -261,27 +257,6 @@ export function AuthForm() {
               {loading ? "Sending..." : "Send magic link"}
             </button>
           </form>
-
-          {/* Context-aware bottom link */}
-          <div className="text-center mt-6 text-sm text-text-muted font-mono">
-            {copy.bottomText}{" "}
-            {isReturning ? (
-              <Link
-                href="/"
-                className="text-primary hover:underline underline-offset-[3px]"
-              >
-                {copy.bottomAction}
-              </Link>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsReturning(true)}
-                className="text-primary rounded-none hover:underline underline-offset-[3px] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-              >
-                {copy.bottomAction}
-              </button>
-            )}
-          </div>
 
           {/* Terms */}
           <div className="text-center mt-4 text-xs text-text-muted font-mono">

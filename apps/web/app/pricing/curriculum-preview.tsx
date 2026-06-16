@@ -45,27 +45,51 @@ export function CurriculumPreview() {
                     <li
                       key={mod.slug}
                       data-testid={`curriculum-module-${mod.slug}`}
-                      className={`flex flex-wrap items-baseline gap-x-4 gap-y-1 px-5 py-4 ${
-                        i % 2 === 0 ? "bg-transparent" : "bg-surface/60"
+                      className={`group grid grid-cols-[2.75rem_1fr] sm:grid-cols-[4rem_1fr_auto] items-start gap-x-5 gap-y-3 px-5 py-6 border-l-2 transition-colors hover:bg-surface ${
+                        isFree
+                          ? "border-l-primary bg-primary/4"
+                          : "border-l-transparent hover:border-l-primary"
                       }`}
                     >
-                      <span className="font-mono text-xs text-text-muted w-9 shrink-0">
-                        M{String(i + 1).padStart(2, "0")}
+                      {/* Big ghost module numeral, lights up on hover */}
+                      <span
+                        aria-hidden="true"
+                        className={`font-mono text-3xl sm:text-4xl font-black leading-none tabular-nums tracking-tighter self-center transition-colors ${
+                          isFree
+                            ? "text-primary"
+                            : "text-text-muted/25 group-hover:text-primary"
+                        }`}
+                      >
+                        {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="font-mono text-sm font-semibold text-text-primary">
-                        {mod.title}
-                      </span>
-                      {isFree && (
-                        <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-page bg-primary px-2 py-0.5">
-                          Free
-                        </span>
-                      )}
-                      <span className="font-sans text-sm text-text-muted min-w-0 flex-1 basis-48">
-                        {mod.description}
-                      </span>
-                      <span className="font-mono text-xs text-text-muted whitespace-nowrap ml-auto">
-                        {lessons.length} lessons &middot; ~{minutes} min
-                      </span>
+
+                      {/* Title + free badge, then description beneath */}
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                          <h3 className="font-mono text-base font-bold text-text-primary leading-snug">
+                            <span className="sr-only">Module {i + 1}: </span>
+                            {mod.title}
+                          </h3>
+                          {isFree && (
+                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-page bg-primary px-2 py-0.5">
+                              Free
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-2 font-sans text-sm text-text-muted leading-relaxed">
+                          {mod.description}
+                        </p>
+                      </div>
+
+                      {/* Meta: stacked, right-aligned on desktop; under title on mobile */}
+                      <div className="col-start-2 sm:col-start-3 font-mono whitespace-nowrap sm:text-right self-center">
+                        <div className="text-sm font-semibold text-text-primary tabular-nums">
+                          {lessons.length} lessons
+                        </div>
+                        <div className="text-xs text-text-muted tabular-nums">
+                          ~{minutes} min
+                        </div>
+                      </div>
                     </li>
                   );
                 })}
