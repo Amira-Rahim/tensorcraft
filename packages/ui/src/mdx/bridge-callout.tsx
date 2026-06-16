@@ -1,11 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-import {
-  BRIDGES,
-  type Framework,
-  type BridgeVariant,
-} from "@tensorcraft/shared";
+import { BRIDGES, type BridgeVariant } from "@tensorcraft/shared";
 
 interface Bridge {
   feTitle: string;
@@ -18,24 +13,7 @@ interface Bridge {
 
 interface BridgeCalloutProps {
   bridge: Bridge | undefined;
-  userFramework?: Framework;
 }
-
-const FRAMEWORKS: Framework[] = [
-  "react",
-  "vue",
-  "angular",
-  "svelte",
-  "vanilla",
-];
-
-const FRAMEWORK_LABELS: Record<Framework, string> = {
-  react: "React",
-  vue: "Vue",
-  angular: "Angular",
-  svelte: "Svelte",
-  vanilla: "Vanilla",
-};
 
 const tierColors: Record<Bridge["tier"], string> = {
   identity: "var(--tc-tier-identity)",
@@ -49,7 +27,7 @@ const tierLabels: Record<Bridge["tier"], string> = {
   intuition: "Intuition Bridge",
 };
 
-export function BridgeCallout({ bridge, userFramework }: BridgeCalloutProps) {
+export function BridgeCallout({ bridge }: BridgeCalloutProps) {
   if (!bridge) return null;
 
   const sharedBridge = BRIDGES.find(
@@ -58,20 +36,21 @@ export function BridgeCallout({ bridge, userFramework }: BridgeCalloutProps) {
       b.mlConcept.toLowerCase() === bridge.mlTitle.toLowerCase(),
   );
 
-  const hasVariants =
-    sharedBridge?.variants && Object.keys(sharedBridge.variants).length > 0;
+  // V1 ships React only. Use the registry's react variant when present;
+  // otherwise fall back to the generic prose layout from the inline bridge.
+  const reactVariant: BridgeVariant | undefined = sharedBridge?.variants?.react;
 
   const breaks = bridge.breaks || sharedBridge?.breaks;
 
-  if (!hasVariants) {
+  if (!reactVariant) {
     return <GenericBridgeLayout bridge={bridge} breaks={breaks} />;
   }
 
   return (
-    <TabbedBridgeLayout
+    <ReactBridgeLayout
       bridge={bridge}
       sharedBridge={sharedBridge!}
-      userFramework={userFramework}
+      reactVariant={reactVariant}
       breaks={breaks}
     />
   );
@@ -153,87 +132,28 @@ function GenericBridgeLayout({
   );
 }
 
-function TabbedBridgeLayout({
+function ReactBridgeLayout({
   bridge,
   sharedBridge,
-  userFramework,
+  reactVariant,
   breaks,
 }: {
   bridge: Bridge;
   sharedBridge: (typeof BRIDGES)[number];
-  userFramework?: Framework;
+  reactVariant: BridgeVariant;
   breaks?: string;
 }) {
-  const defaultTab = userFramework || "vanilla";
-  const [activeTab, setActiveTab] = useState<Framework>(defaultTab);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const color = tierColors[bridge.tier];
-  const variants = sharedBridge.variants!;
-
-  const variant: BridgeVariant | undefined =
-    variants[activeTab] ?? variants.vanilla;
-  const feTitle = variant?.feConcept || bridge.feTitle;
-  const feCode = variant?.feCode || bridge.feCode;
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
-    let nextIndex = index;
-    if (e.key === "ArrowRight") {
-      nextIndex = (index + 1) % FRAMEWORKS.length;
-    } else if (e.key === "ArrowLeft") {
-      nextIndex = (index - 1 + FRAMEWORKS.length) % FRAMEWORKS.length;
-    } else if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setActiveTab(FRAMEWORKS[index]);
-      return;
-    } else {
-      return;
-    }
-    e.preventDefault();
-    tabRefs.current[nextIndex]?.focus();
-  }, []);
+  const feTitle = reactVariant.feConcept || bridge.feTitle;
+  const feCode = reactVariant.feCode || bridge.feCode;
 
   return (
     <div className="my-8 brutalist-shadow bg-surface-raised border border-border overflow-hidden">
-      <div
-        className="flex border-b border-border overflow-x-auto"
-        role="tablist"
-        aria-label="Framework variants"
-      >
-        {FRAMEWORKS.map((fw, i) => {
-          const isActive = fw === activeTab;
-          const hasVariant = !!variants[fw];
-          return (
-            <button
-              key={fw}
-              type="button"
-              ref={(el) => {
-                tabRefs.current[i] = el;
-              }}
-              role="tab"
-              aria-selected={isActive ? "true" : "false"}
-              aria-controls="bridge-content"
-              tabIndex={isActive ? 0 : -1}
-              disabled={!hasVariant}
-              onClick={() => hasVariant && setActiveTab(fw)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-              className="px-4 py-2 font-mono text-xs uppercase tracking-widest transition-colors whitespace-nowrap"
-              style={{
-                color: isActive ? color : undefined,
-                borderBottom: isActive
-                  ? `2px solid ${color}`
-                  : "2px solid transparent",
-                background: isActive
-                  ? `color-mix(in srgb, ${color} 15%, transparent)`
-                  : undefined,
-                opacity: hasVariant ? 1 : 0.35,
-                cursor: hasVariant ? "pointer" : "default",
-              }}
-            >
-              {FRAMEWORK_LABELS[fw]}
-            </button>
-          );
-        })}
-        <div className="ml-auto flex items-center gap-1.5 px-4 shrink-0">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2">
+        <span className="font-mono text-xs uppercase tracking-widest text-text-muted">
+          React
+        </span>
+        <span className="flex items-center gap-1.5">
           <span
             className="w-1.5 h-1.5 inline-block"
             style={{ background: color }}
@@ -244,12 +164,11 @@ function TabbedBridgeLayout({
           >
             {tierLabels[bridge.tier]}
           </span>
-        </div>
+        </span>
       </div>
 
       <div
         id="bridge-content"
-        role="tabpanel"
         className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] divide-y sm:divide-y-0 sm:divide-x divide-border"
       >
         <div className="p-5">

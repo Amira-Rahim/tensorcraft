@@ -47,7 +47,6 @@ import {
 } from "@/app/components/mdx";
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
-import type { Framework } from "@tensorcraft/shared";
 import {
   trackCheckpointSubmitted,
   trackExerciseSubmitted,
@@ -78,7 +77,6 @@ interface LessonContentProps {
   themeId?: string;
   moduleId?: string;
   lessonId?: string;
-  userFramework?: Framework;
   visibleComponents?: Set<string>;
   storyRegister?: boolean;
   onExerciseComplete?: () => void;
@@ -127,7 +125,6 @@ export function LessonContent({
   themeId,
   moduleId,
   lessonId,
-  userFramework,
   visibleComponents,
   storyRegister,
   onExerciseComplete,
@@ -311,10 +308,7 @@ export function LessonContent({
         ) : null,
       BridgeCallout: (props: { bridge: unknown }) =>
         shouldShow("BridgeCallout") ? (
-          <BridgeCallout
-            {...(props as { bridge: undefined })}
-            userFramework={userFramework}
-          />
+          <BridgeCallout {...(props as { bridge: undefined })} />
         ) : null,
     };
 
@@ -394,7 +388,6 @@ export function LessonContent({
     lessonId,
     handleExerciseSubmit,
     handleHintRevealed,
-    userFramework,
     shouldShow,
     onExerciseComplete,
     lesson.concept.bridge,

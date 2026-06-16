@@ -83,7 +83,7 @@ export default function Home() {
                 href="/pricing#curriculum"
                 className="font-mono text-xs uppercase tracking-wider text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
               >
-                Full syllabus →
+                Learn more →
               </Link>
             </div>
             {[
@@ -144,12 +144,8 @@ export default function Home() {
               Before you ask
             </div>
             <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
-              Fair Questions
+              Fair Questions, Honest Answers
             </h2>
-            <p className="text-sm text-text-muted leading-relaxed font-sans">
-              Six straight answers. Anything else, open module 1 and see for
-              yourself, it&apos;s free.
-            </p>
           </div>
           <div className="border-t border-border divide-y divide-border">
             {FAQ_ITEMS.map((item) => (

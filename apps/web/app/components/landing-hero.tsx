@@ -59,20 +59,10 @@ export function LandingHero() {
           </h1>
 
           <p className="text-lg text-text-muted max-w-[520px] mb-6 leading-relaxed font-sans">
-            You already debug state, optimize renders, reason about caches.
-            That&apos;s the mental model that ships browser ML:{" "}
-            <code className="font-mono text-text-primary text-base">
-              Math.max
-            </code>{" "}
-            becomes ReLU,{" "}
-            <code className="font-mono text-text-primary text-base">
-              TypedArray
-            </code>{" "}
-            becomes Tensor,{" "}
-            <code className="font-mono text-text-primary text-base">
-              Service Worker
-            </code>{" "}
-            becomes model cache.
+            Skip the Python tax. Learn ML the way you already build, in
+            JavaScript, right in the browser, and walk out with a model you can
+            actually ship. The instincts behind state and caching are what ML
+            runs on.
           </p>
 
           <p
@@ -115,10 +105,6 @@ export function LandingHero() {
           transition={{ duration: 0.9, delay: 0.25 }}
           className="max-w-[560px] w-full lg:justify-self-end"
         >
-          <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-3 flex items-center gap-3">
-            <span className="inline-block w-[7px] h-[7px] bg-primary" />
-            Proof, not promise
-          </div>
           <div className="[&_[data-testid=deep-scan-demo]]:my-0 brutalist-shadow">
             <DeepScanDemo
               framing

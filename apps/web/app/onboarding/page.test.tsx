@@ -231,7 +231,8 @@ describe("OnboardingPage", () => {
     await renderPage();
     clickNext(); // -> Background
     fireEvent.click(screen.getByTestId("experience-intermediate"));
-    fireEvent.click(screen.getByTestId("framework-react"));
+    // fe_framework is no longer a UI step (V1 is React-only); it is always
+    // submitted as "react" by the page on final PATCH.
     fireEvent.change(screen.getByTestId("fe-experience-years"), {
       target: { value: "4" },
     });
@@ -308,7 +309,6 @@ describe("OnboardingPage", () => {
     await renderPage();
     clickNext(); // -> Background
     fireEvent.click(screen.getByTestId("experience-intermediate"));
-    fireEvent.click(screen.getByTestId("framework-react"));
     fireEvent.change(screen.getByTestId("fe-experience-years"), {
       target: { value: "4" },
     });

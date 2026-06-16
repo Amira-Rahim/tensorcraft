@@ -5,7 +5,6 @@ import Link from "next/link";
 import { LessonContent } from "./lesson-content";
 import { markLessonStarted, markLessonCompleted } from "@/lib/progress-client";
 import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
-import type { Framework } from "@tensorcraft/shared";
 import type { ExerciseData } from "@tensorcraft/ui";
 import { SceneHeading, CharacterAvatar } from "@tensorcraft/ui";
 import { themes } from "@tensorcraft/themes";
@@ -64,7 +63,6 @@ interface LessonStepsProps {
   moduleName?: string;
   prevLesson: { slug: string; title: string } | null;
   nextLesson: { slug: string; title: string } | null;
-  userFramework?: Framework;
   lessons?: Array<{
     slug: string;
     title: string;
@@ -170,7 +168,6 @@ function LessonStepsInner({
   moduleName,
   prevLesson,
   nextLesson,
-  userFramework,
   lessons,
 }: LessonStepsProps) {
   const { activeTerm } = useGlossary();
@@ -371,7 +368,6 @@ function LessonStepsInner({
     themeSlug,
     moduleSlug,
     lessonSlug,
-    userFramework,
     theme,
   };
 
@@ -434,7 +430,6 @@ function LessonStepsInner({
         theme={theme}
         themeSlug={themeSlug}
         lessonSlug={lessonSlug}
-        userFramework={userFramework}
         scriptAutoPlay={!scriptPlayedRef.current}
         onScriptPlayed={handleScriptPlayed}
       />
@@ -462,7 +457,6 @@ function LessonStepsInner({
           themeId={themeSlug}
           moduleId={moduleSlug}
           lessonId={lessonSlug}
-          userFramework={userFramework}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONCEPT_RIGHT}
         />
@@ -478,7 +472,6 @@ function LessonStepsInner({
         themeId={themeSlug}
         moduleId={moduleSlug}
         lessonId={lessonSlug}
-        userFramework={userFramework}
         glossaryTerms={lesson.glossaryTerms}
         visibleComponents={CODE_RIGHT}
       />
@@ -493,7 +486,6 @@ function LessonStepsInner({
         themeId={themeSlug}
         moduleId={moduleSlug}
         lessonId={lessonSlug}
-        userFramework={userFramework}
         glossaryTerms={lesson.glossaryTerms}
         visibleComponents={CHALLENGE_RIGHT}
         onExerciseComplete={handleExerciseComplete}
@@ -877,7 +869,6 @@ function StepBriefing({
   theme,
   themeSlug,
   lessonSlug,
-  userFramework,
   scriptAutoPlay,
   onScriptPlayed,
 }: {
@@ -887,7 +878,6 @@ function StepBriefing({
   theme: LessonStepsProps["theme"];
   themeSlug: string;
   lessonSlug: string;
-  userFramework?: Framework;
   scriptAutoPlay: boolean;
   onScriptPlayed: () => void;
 }) {
@@ -1092,7 +1082,6 @@ function StepBriefing({
         themeId={themeSlug}
         moduleId={moduleSlug}
         lessonId={lessonSlug}
-        userFramework={userFramework}
         glossaryTerms={lesson.glossaryTerms}
         visibleComponents={BRIEFING_COMPONENTS}
         storyRegister
@@ -1110,7 +1099,6 @@ function StepConcept({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  userFramework,
   theme,
 }: {
   lesson: LessonStepsProps["lesson"];
@@ -1118,7 +1106,6 @@ function StepConcept({
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  userFramework?: Framework;
   theme: LessonStepsProps["theme"];
 }) {
   return (
@@ -1137,7 +1124,6 @@ function StepConcept({
           themeId={themeSlug}
           moduleId={moduleSlug}
           lessonId={lessonSlug}
-          userFramework={userFramework}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONCEPT_LEFT}
         />
@@ -1155,7 +1141,6 @@ function StepCode({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  userFramework,
   theme,
 }: {
   lesson: LessonStepsProps["lesson"];
@@ -1163,7 +1148,6 @@ function StepCode({
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  userFramework?: Framework;
   theme: LessonStepsProps["theme"];
 }) {
   return (
@@ -1176,7 +1160,6 @@ function StepCode({
           themeId={themeSlug}
           moduleId={moduleSlug}
           lessonId={lessonSlug}
-          userFramework={userFramework}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CODE_LEFT}
         />
@@ -1194,7 +1177,6 @@ function StepChallenge({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  userFramework,
   theme,
 }: {
   lesson: LessonStepsProps["lesson"];
@@ -1202,7 +1184,6 @@ function StepChallenge({
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  userFramework?: Framework;
   theme: LessonStepsProps["theme"];
 }) {
   return (
@@ -1218,7 +1199,6 @@ function StepChallenge({
           themeId={themeSlug}
           moduleId={moduleSlug}
           lessonId={lessonSlug}
-          userFramework={userFramework}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CHALLENGE_LEFT}
         />
@@ -1236,7 +1216,6 @@ function StepTakeaways({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  userFramework,
   theme,
 }: {
   lesson: LessonStepsProps["lesson"];
@@ -1244,7 +1223,6 @@ function StepTakeaways({
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  userFramework?: Framework;
   theme: LessonStepsProps["theme"];
 }) {
   return (
@@ -1257,7 +1235,6 @@ function StepTakeaways({
           themeId={themeSlug}
           moduleId={moduleSlug}
           lessonId={lessonSlug}
-          userFramework={userFramework}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={TAKEAWAYS_COMPONENTS}
         />
@@ -1276,7 +1253,6 @@ function StepConsequence({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  userFramework,
   nextLesson,
 }: {
   lesson: LessonStepsProps["lesson"];
@@ -1285,7 +1261,6 @@ function StepConsequence({
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  userFramework?: Framework;
   nextLesson: { slug: string; title: string } | null;
 }) {
   return (
@@ -1346,7 +1321,6 @@ function StepConsequence({
           themeId={themeSlug}
           moduleId={moduleSlug}
           lessonId={lessonSlug}
-          userFramework={userFramework}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONSEQUENCE_COMPONENTS}
         />

@@ -125,17 +125,12 @@ export default async function LessonPage({ params }: Props) {
   const progressPromise = user
     ? getUserProgress(user.id, slug)
     : Promise.resolve([]);
-  const profilePromise = user
-    ? supabase
-        .from("profiles")
-        .select("fe_framework")
-        .eq("id", user.id)
-        .single()
-    : Promise.resolve({ data: null });
 
-  const [purchased, prevCompleted, progress, profileResult] = await Promise.all(
-    [purchasedPromise, prevCompletedPromise, progressPromise, profilePromise],
-  );
+  const [purchased, prevCompleted, progress] = await Promise.all([
+    purchasedPromise,
+    prevCompletedPromise,
+    progressPromise,
+  ]);
 
   if (mod && mod.order > 1 && !purchased) {
     redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
@@ -152,10 +147,6 @@ export default async function LessonPage({ params }: Props) {
       completedLessonSlugs.add(p.lesson_id);
     }
   }
-  const userFramework =
-    (profileResult as { data: { fe_framework?: string } | null }).data
-      ?.fe_framework ?? undefined;
-
   // A lesson is locked if a previous lesson (by order) is not completed,
   // unless it's the very first lesson, the current lesson, or the module is free (foundations).
   const isFreeModule = mod ? isFoundationsModule(mod) : false;
@@ -307,9 +298,6 @@ export default async function LessonPage({ params }: Props) {
           moduleName={mod?.title}
           prevLesson={prev}
           nextLesson={next}
-          userFramework={
-            userFramework as import("@tensorcraft/shared").Framework | undefined
-          }
           lessons={moduleLessons.map((l) => ({
             slug: l.slug,
             title: l.title,

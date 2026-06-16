@@ -8,7 +8,7 @@ export type BridgeCategory =
   | "nova-canvas"
   | "terra-grid";
 
-export type Framework = "react" | "vue" | "angular" | "svelte" | "vanilla";
+export type Framework = "react";
 
 export interface BridgeVariant {
   feCode: string;
@@ -75,20 +75,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `function Card({ title, image }) {\n  return <div>{title}</div>;\n}`,
       },
-      vue: {
-        feCode: `defineProps({\n  title: String,\n  image: String,\n})`,
-      },
-      angular: {
-        feCode: `@Input() title: string;\n@Input() image: string;`,
-        feConcept: "Input bindings",
-      },
-      svelte: {
-        feCode: `export let title;\nexport let image;`,
-      },
-      vanilla: {
-        feCode: `function Card(props) {\n  el.textContent = props.title;\n}`,
-        feConcept: "Function parameters",
-      },
     },
     mlCode:
       "const trainData = tf.tensor2d(features); model.fit(trainData, labels)",
@@ -106,22 +92,6 @@ export const BRIDGES: Bridge[] = [
     variants: {
       react: {
         feCode: `const [count, setCount] = useState(0);`,
-      },
-      vue: {
-        feCode: `const count = ref(0);`,
-        feConcept: "Reactive ref",
-      },
-      angular: {
-        feCode: `count = signal(0);`,
-        feConcept: "Signal",
-      },
-      svelte: {
-        feCode: `let count = $state(0);`,
-        feConcept: "Rune state",
-      },
-      vanilla: {
-        feCode: `let count = 0;\nfunction setState(n) {\n  count = n;\n  render();\n}`,
-        feConcept: "Mutable variable",
       },
     },
     mlCode: "model.getWeights().forEach(w => console.log(w.shape))",
@@ -141,21 +111,6 @@ export const BRIDGES: Bridge[] = [
         feCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
         feConcept: "Jest assertion",
       },
-      vue: {
-        feCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
-        feConcept: "Vitest assertion",
-      },
-      angular: {
-        feCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
-        feConcept: "Jasmine assertion",
-      },
-      svelte: {
-        feCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
-        feConcept: "Vitest assertion",
-      },
-      vanilla: {
-        feCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
-      },
     },
     mlCode: "const loss = tf.losses.meanSquaredError(yTrue, yPred)",
   },
@@ -172,21 +127,6 @@ export const BRIDGES: Bridge[] = [
     variants: {
       react: {
         feCode: `// React reconciles: diffing old vDOM vs new vDOM\nconst [value, setValue] = useState(initial);\n// Each setState triggers reconciliation toward target`,
-      },
-      vue: {
-        feCode: `// Vue reactivity patches DOM toward desired state\nconst value = ref(initial);\n// Watchers propagate changes incrementally`,
-      },
-      angular: {
-        feCode: `// Angular change detection walks component tree\nchangeDetectorRef.detectChanges();\n// Each cycle moves DOM closer to model`,
-        feConcept: "Change detection",
-      },
-      svelte: {
-        feCode: `// Svelte compiles reactivity at build time\nlet value = $state(initial);\n// Assignments trigger surgical DOM updates`,
-        feConcept: "Compiled reactivity",
-      },
-      vanilla: {
-        feCode: `// Manual DOM patching\nfunction reconcile(oldNode, newNode) {\n  if (oldNode.text !== newNode.text)\n    oldNode.el.textContent = newNode.text;\n}`,
-        feConcept: "DOM patching",
       },
     },
     mlCode:
@@ -206,18 +146,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `// Binary search converges by halving each step\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
-      vue: {
-        feCode: `// Same algorithm, runtime-agnostic\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
-      },
-      angular: {
-        feCode: `// Same algorithm\nbinarySearch(arr: number[], target: number): number {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n  return -1;\n}`,
-      },
-      svelte: {
-        feCode: `// Same algorithm\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
-      },
-      vanilla: {
-        feCode: `// Halving step interval, bisection's core trick\nlet lo = 0, hi = n - 1;\nwhile (lo < hi) {\n  const mid = (lo + hi) >> 1;\n  if (test(mid)) hi = mid; else lo = mid + 1;\n}`,
-      },
     },
     mlCode:
       "// Step decay: halve the LR every K epochs as training nears convergence\nlet lr = 0.01;\nfor (let epoch = 0; epoch < 50; epoch++) {\n  if (epoch > 0 && epoch % 10 === 0) lr *= 0.5;\n  optimizer.learningRate = lr;\n}",
@@ -235,18 +163,6 @@ export const BRIDGES: Bridge[] = [
     variants: {
       react: {
         feCode: `useEffect(() => {\n  let id = requestAnimationFrame(function loop() {\n    processEpoch(data);\n    if (!converged) id = requestAnimationFrame(loop);\n  });\n  return () => cancelAnimationFrame(id);\n}, []);`,
-      },
-      vue: {
-        feCode: `onMounted(() => {\n  const loop = () => {\n    processEpoch(data);\n    if (!converged) requestAnimationFrame(loop);\n  };\n  requestAnimationFrame(loop);\n});\nonUnmounted(() => cancelAnimationFrame(id));`,
-      },
-      angular: {
-        feCode: `ngOnInit() {\n  const loop = () => {\n    this.processEpoch(this.data);\n    if (!this.converged) requestAnimationFrame(loop);\n  };\n  requestAnimationFrame(loop);\n}`,
-      },
-      svelte: {
-        feCode: `$effect(() => {\n  let id = requestAnimationFrame(function loop() {\n    processEpoch(data);\n    if (!converged) id = requestAnimationFrame(loop);\n  });\n  return () => cancelAnimationFrame(id);\n});`,
-      },
-      vanilla: {
-        feCode: `function trainLoop() {\n  processEpoch(data);\n  if (!converged) requestAnimationFrame(trainLoop);\n}`,
       },
     },
     mlCode:
@@ -266,19 +182,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `const page = data.slice(offset, offset + PAGE_SIZE);`,
       },
-      vue: {
-        feCode: `const page = computed(() =>\n  data.value.slice(offset.value, offset.value + PAGE_SIZE)\n);`,
-      },
-      angular: {
-        feCode: `this.page$ = this.data$.pipe(\n  map(d => d.slice(this.offset, this.offset + PAGE_SIZE))\n);`,
-        feConcept: "RxJS page slice",
-      },
-      svelte: {
-        feCode: `$: page = data.slice(offset, offset + PAGE_SIZE);`,
-      },
-      vanilla: {
-        feCode: `const page = data.slice(offset, offset + PAGE_SIZE);`,
-      },
     },
     mlCode: "model.fit(x, y, { batchSize: 32 })",
   },
@@ -296,19 +199,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `// Too specific: breaks with new data shapes\nfunction UserCard({ user }) {\n  return <div>{user.name.first} {user.name.last}</div>;\n  // Crashes if user.name is a string\n}`,
       },
-      vue: {
-        feCode: `<!-- Overfitted to one data shape -->\n<template>\n  <div>{{ user.name.first }} {{ user.name.last }}</div>\n  <!-- Breaks if user.name is a string -->\n</template>`,
-      },
-      angular: {
-        feCode: `// Tightly coupled to specific data shape\n@Component({ template: \`{{user.name.first}} {{user.name.last}}\` })\nexport class UserCard {\n  @Input() user!: { name: { first: string; last: string } };\n}`,
-      },
-      svelte: {
-        feCode: `<!-- Overfitted: only works with nested name -->\n<div>{user.name.first} {user.name.last}</div>\n<!-- Crashes if user.name is a flat string -->`,
-      },
-      vanilla: {
-        feCode: `// Hardcoded to specific data structure\nfunction UserCard(user) {\n  el.textContent = user.name.first + ' ' + user.name.last;\n  // Fails if user.name is a string\n}`,
-        feConcept: "Overspecialized function",
-      },
     },
     mlCode: "model.evaluate(testX, testY) // val loss diverges from train loss",
   },
@@ -324,18 +214,6 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// eslint: no-unused-vars, max-depth: 3\n// Like L2 regularization: penalize complexity`,
-      },
-      vue: {
-        feCode: `// eslint-plugin-vue: no-unused-vars\n// Constrains component complexity like regularization`,
-      },
-      angular: {
-        feCode: `// @angular-eslint: max-lines-per-function\n// Penalizes overly complex components`,
-      },
-      svelte: {
-        feCode: `// eslint-plugin-svelte: no-unused-svelte-ignore\n// Prevents overfitting to edge cases`,
-      },
-      vanilla: {
         feCode: `// eslint: no-unused-vars, max-depth: 3\n// Like L2 regularization: penalize complexity`,
       },
     },
@@ -355,18 +233,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `const features = rawData.map(d => ({\n  normalized: (d.value - min) / (max - min),\n  category: d.type === 'A' ? 1 : 0,\n}));`,
       },
-      vue: {
-        feCode: `const features = computed(() =>\n  rawData.value.map(d => ({\n    normalized: (d.value - min) / (max - min),\n    category: d.type === 'A' ? 1 : 0,\n  }))\n);`,
-      },
-      angular: {
-        feCode: `features$ = this.rawData$.pipe(\n  map(data => data.map(d => ({\n    normalized: (d.value - min) / (max - min),\n    category: d.type === 'A' ? 1 : 0,\n  })))\n);`,
-      },
-      svelte: {
-        feCode: `$: features = rawData.map(d => ({\n  normalized: (d.value - min) / (max - min),\n  category: d.type === 'A' ? 1 : 0,\n}));`,
-      },
-      vanilla: {
-        feCode: `const features = rawData.map(d => ({\n  normalized: (d.value - min) / (max - min),\n  category: d.type === 'A' ? 1 : 0,\n}));`,
-      },
     },
     mlCode: "const x = rawTensor.div(255).sub(0.5) // normalize",
   },
@@ -383,21 +249,6 @@ export const BRIDGES: Bridge[] = [
     variants: {
       react: {
         feCode: `const apiUrl = process.env.NODE_ENV === 'production'\n  ? 'https://api.prod.com'\n  : 'http://localhost:3001';`,
-      },
-      vue: {
-        feCode: `const apiUrl = import.meta.env.PROD\n  ? 'https://api.prod.com'\n  : 'http://localhost:3001';`,
-        feConcept: "Vite env modes",
-      },
-      angular: {
-        feCode: `// environment.ts vs environment.prod.ts\nexport const environment = {\n  production: false,\n  apiUrl: 'http://localhost:3001',\n};`,
-        feConcept: "Environment files",
-      },
-      svelte: {
-        feCode: `const apiUrl = import.meta.env.PROD\n  ? 'https://api.prod.com'\n  : 'http://localhost:3001';`,
-        feConcept: "Vite env modes",
-      },
-      vanilla: {
-        feCode: `const apiUrl = location.hostname === 'localhost'\n  ? 'http://localhost:3001'\n  : 'https://api.prod.com';`,
       },
     },
     mlCode:
@@ -416,18 +267,6 @@ export const BRIDGES: Bridge[] = [
     variants: {
       react: {
         feCode: `// next.config.js: not learned, just configured\nmodule.exports = {\n  images: { domains: ['cdn.example.com'] },\n};`,
-      },
-      vue: {
-        feCode: `// vite.config.ts: tuned, not learned\nexport default defineConfig({\n  server: { port: 3000 },\n});`,
-      },
-      angular: {
-        feCode: `// angular.json: project-level config\n"budgets": [{\n  "type": "initial",\n  "maximumWarning": "500kb"\n}]`,
-      },
-      svelte: {
-        feCode: `// svelte.config.js: tuned, not learned\nexport default {\n  kit: { adapter: adapter() },\n};`,
-      },
-      vanilla: {
-        feCode: `// webpack.config.js: not learned, just tuned\nmodule.exports = {\n  output: { filename: '[name].[hash].js' },\n};`,
       },
     },
     mlCode:
@@ -448,21 +287,6 @@ export const BRIDGES: Bridge[] = [
         feCode: `// HOC composition: each layer transforms data\nconst Enhanced = withAuth(withTheme(withLogger(BaseComponent)));`,
         feConcept: "HOC / Context provider chain",
       },
-      vue: {
-        feCode: `// Plugin pipeline: each transforms the app\napp.use(router);\napp.use(pinia);\napp.use(i18n);`,
-        feConcept: "Plugin pipeline",
-      },
-      angular: {
-        feCode: `// HTTP interceptor chain: each transforms request\nproviders: [\n  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },\n  { provide: HTTP_INTERCEPTORS, useClass: LogInterceptor, multi: true },\n]`,
-        feConcept: "HTTP interceptors",
-      },
-      svelte: {
-        feCode: `<!-- Layout composition: nested transforms -->\n<Layout>\n  <AuthGuard>\n    <slot />\n  </AuthGuard>\n</Layout>`,
-        feConcept: "Layout composition",
-      },
-      vanilla: {
-        feCode: `// Express-style middleware chain\napp.use(logger);\napp.use(auth);\napp.use(cors);\n// input → transform → next → transform → output`,
-      },
     },
     mlCode:
       "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 64, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1 })); // sequential layers",
@@ -477,18 +301,6 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `const relu = (x) => Math.max(0, x);`,
-      },
-      vue: {
-        feCode: `const relu = (x) => Math.max(0, x);`,
-      },
-      angular: {
-        feCode: `const relu = (x: number): number => Math.max(0, x);`,
-      },
-      svelte: {
-        feCode: `const relu = (x) => Math.max(0, x);`,
-      },
-      vanilla: {
         feCode: `const relu = (x) => Math.max(0, x);`,
       },
     },
@@ -508,19 +320,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `class ErrorBoundary extends React.Component {\n  componentDidCatch(error, info) {\n    // Error flows backward up the tree\n  }\n}`,
       },
-      vue: {
-        feCode: `export default {\n  errorCaptured(err, instance, info) {\n    // Propagates up component tree\n    return false;\n  },\n};`,
-      },
-      angular: {
-        feCode: `@Injectable()\nexport class GlobalErrorHandler implements ErrorHandler {\n  handleError(error: Error) {\n    // Propagates from leaf to root\n  }\n}`,
-      },
-      svelte: {
-        feCode: `<svelte:boundary onerror={handleError}>\n  <ChildComponent />\n</svelte:boundary>`,
-      },
-      vanilla: {
-        feCode: `window.addEventListener('error', (e) => {\n  // Error bubbles up the DOM tree\n});`,
-        feConcept: "Event bubbling (error propagation)",
-      },
     },
     mlCode:
       "// One backward pass: trace the loss back to every trainable weight\nconst { value, grads } = tf.variableGrads(() => lossFn(model.predict(x), y));\n// grads holds one gradient tensor per weight, chain-ruled from the loss",
@@ -538,19 +337,6 @@ export const BRIDGES: Bridge[] = [
     variants: {
       react: {
         feCode: `// Next.js SSR: one forward pass, no iteration\nexport async function getServerSideProps() {\n  const data = await fetchData();\n  return { props: { data } };\n}`,
-      },
-      vue: {
-        feCode: `// Nuxt SSR: single forward pass\nexport default defineNuxtPlugin(async () => {\n  const data = await $fetch('/api/data');\n  return { provide: { data } };\n});`,
-      },
-      angular: {
-        feCode: `// Angular Universal SSR\n@Injectable()\nexport class ServerDataResolver implements Resolve<Data> {\n  resolve() { return this.http.get<Data>('/api/data'); }\n}`,
-      },
-      svelte: {
-        feCode: `// SvelteKit load: one forward pass\nexport async function load({ fetch }) {\n  const data = await fetch('/api/data');\n  return { data: await data.json() };\n}`,
-      },
-      vanilla: {
-        feCode: `// Server renders HTML in one pass\nconst html = renderToString(data);`,
-        feConcept: "Single-pass rendering",
       },
     },
     mlCode:
@@ -571,18 +357,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `// Faker generates a population of users from a distribution\nimport { faker } from '@faker-js/faker';\nconst users = Array.from({ length: 100 }, () => ({\n  name: faker.person.fullName(),\n  email: faker.internet.email(),\n  age: faker.number.int({ min: 18, max: 80 }),\n}));`,
       },
-      vue: {
-        feCode: `// factory pattern: parameterize variation\nconst userFactory = (overrides = {}) => ({\n  id: faker.string.uuid(),\n  email: faker.internet.email(),\n  ...overrides,\n});\nconst users = Array.from({ length: 100 }, () => userFactory());`,
-      },
-      angular: {
-        feCode: `// fixtures across a parameter matrix\nconst products = ['xs', 's', 'm', 'l', 'xl'].flatMap(size =>\n  ['red', 'blue', 'green'].map(color => ({\n    sku: faker.string.alphanumeric(8),\n    size, color,\n    stock: faker.number.int({ min: 0, max: 50 }),\n  }))\n);`,
-      },
-      svelte: {
-        feCode: `// random fixture per render\nimport { faker } from '@faker-js/faker';\nconst fixtures = Array.from({ length: 50 }, () => ({\n  title: faker.commerce.productName(),\n  price: faker.commerce.price(),\n}));`,
-      },
-      vanilla: {
-        feCode: `// generator yields a stream of variations\nfunction* userFactory() {\n  while (true) {\n    yield {\n      name: faker.person.fullName(),\n      city: faker.location.city(),\n    };\n  }\n}`,
-      },
     },
     mlCode:
       "// Each epoch: emit a different transformation of every image, sampled from\n// a distribution of plausible variations the model will see at inference.\nconst augment = (img) => tf.tidy(() => {\n  const flipped = Math.random() > 0.5 ? tf.image.flipLeftRight(img) : img;\n  return flipped.add(tf.randomNormal(flipped.shape, 0, 0.03)).clipByValue(0, 1);\n});",
@@ -599,18 +373,6 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// Randomly disable 20% of features during training\nconst dropout = (arr, rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
-      },
-      vue: {
-        feCode: `// Randomly disable 20% of features during training\nconst dropout = (arr, rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
-      },
-      angular: {
-        feCode: `// Randomly disable 20% of features during training\nconst dropout = (arr: number[], rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
-      },
-      svelte: {
-        feCode: `// Randomly disable 20% of features during training\nconst dropout = (arr, rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
-      },
-      vanilla: {
         feCode: `// Randomly disable 20% of features during training\nconst dropout = (arr, rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
       },
     },
@@ -631,19 +393,6 @@ export const BRIDGES: Bridge[] = [
       react: {
         feCode: `// Categorize render errors by type\nclass ErrorBoundary extends React.Component {\n  state = { errors: { render: 0, network: 0, auth: 0 } };\n}`,
       },
-      vue: {
-        feCode: `// Categorize errors by type\nconst errorMatrix = reactive({\n  render: 0, network: 0, auth: 0,\n});`,
-      },
-      angular: {
-        feCode: `// Categorize errors by type\n@Injectable()\nexport class ErrorTracker {\n  matrix = { render: 0, network: 0, auth: 0 };\n}`,
-      },
-      svelte: {
-        feCode: `// Categorize errors by type\nlet errorMatrix = $state({\n  render: 0, network: 0, auth: 0,\n});`,
-      },
-      vanilla: {
-        feCode: `// Categorize errors by type\nconst errorMatrix = {\n  render: 0, network: 0, auth: 0,\n};`,
-        feConcept: "Error categorization",
-      },
     },
     mlCode:
       "const cm = tf.math.confusionMatrix(yTrue, yPred.argMax(-1), numClasses);\ncm.print(); // rows = actual class, columns = predicted class",
@@ -660,18 +409,6 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// GitHub Actions: test → build → deploy\n// Same as: data → train → evaluate → deploy`,
-      },
-      vue: {
-        feCode: `// GitLab CI: lint → test → build → deploy\n// Same pipeline as ML model deployment`,
-      },
-      angular: {
-        feCode: `// Angular CLI: ng build --prod → deploy\n// Same pipeline as ML model deployment`,
-      },
-      svelte: {
-        feCode: `// Vercel auto-deploy: push → build → deploy\n// Same pipeline as ML model deployment`,
-      },
-      vanilla: {
         feCode: `// GitHub Actions: test → build → deploy\n// Same as: data → train → evaluate → deploy`,
       },
     },

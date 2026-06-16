@@ -27,13 +27,7 @@ export interface Database {
           role: UserRole;
           fe_background: string | null;
           learning_goal: string | null;
-          fe_framework:
-            | "react"
-            | "vue"
-            | "angular"
-            | "svelte"
-            | "vanilla"
-            | null;
+          fe_framework: "react" | null;
           fe_experience_years: number | null;
           experience_level:
             | "beginner"
@@ -59,13 +53,7 @@ export interface Database {
           role?: UserRole;
           fe_background?: string | null;
           learning_goal?: string | null;
-          fe_framework?:
-            | "react"
-            | "vue"
-            | "angular"
-            | "svelte"
-            | "vanilla"
-            | null;
+          fe_framework?: "react" | null;
           fe_experience_years?: number | null;
           experience_level?:
             | "beginner"
@@ -87,13 +75,7 @@ export interface Database {
           role?: UserRole;
           fe_background?: string | null;
           learning_goal?: string | null;
-          fe_framework?:
-            | "react"
-            | "vue"
-            | "angular"
-            | "svelte"
-            | "vanilla"
-            | null;
+          fe_framework?: "react" | null;
           fe_experience_years?: number | null;
           experience_level?:
             | "beginner"

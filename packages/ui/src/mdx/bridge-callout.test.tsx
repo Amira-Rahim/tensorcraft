@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { BridgeCallout } from "./bridge-callout";
 
 const bridgeWithVariants = {
@@ -26,36 +26,24 @@ describe("BridgeCallout", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("renders ML title and code regardless of tab", () => {
+  it("renders ML title and code", () => {
     render(<BridgeCallout bridge={bridgeWithVariants} />);
     expect(screen.getByText("Training Data")).toBeInTheDocument();
     expect(screen.getByText(/model\.fit/)).toBeInTheDocument();
   });
 
-  it("renders tab bar with 5 framework tabs when bridge has variants", () => {
+  it("renders no framework tab bar (React-only V1)", () => {
     render(<BridgeCallout bridge={bridgeWithVariants} />);
-    expect(screen.getByRole("tablist")).toBeInTheDocument();
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(5);
+    expect(screen.queryByRole("tablist")).toBeNull();
+    expect(screen.queryAllByRole("tab")).toHaveLength(0);
   });
 
-  it("defaults active tab to userFramework prop", () => {
-    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="vue" />);
-    const vueTab = screen.getByRole("tab", { name: /vue/i });
-    expect(vueTab.getAttribute("aria-selected")).toBe("true");
-  });
-
-  it("defaults to vanilla when userFramework is undefined", () => {
+  it("renders the React label and the React FE variant code", () => {
     render(<BridgeCallout bridge={bridgeWithVariants} />);
-    const vanillaTab = screen.getByRole("tab", { name: /vanilla/i });
-    expect(vanillaTab.getAttribute("aria-selected")).toBe("true");
-  });
-
-  it("switches FE content when clicking a different tab", () => {
-    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="react" />);
-    const vueTab = screen.getByRole("tab", { name: /vue/i });
-    fireEvent.click(vueTab);
-    expect(vueTab.getAttribute("aria-selected")).toBe("true");
+    // The "React" framework label is shown in place of the old tab bar.
+    expect(screen.getByText("React")).toBeInTheDocument();
+    // bridge #1's react variant feCode (Component props ↔ Training data).
+    expect(screen.getByText(/function Card/)).toBeInTheDocument();
   });
 
   it("shows tier badge with correct label", () => {
@@ -68,28 +56,11 @@ describe("BridgeCallout", () => {
     expect(screen.getByTestId("bridge-footer")).toBeInTheDocument();
   });
 
-  it("falls back to generic layout when bridge has no variants", () => {
+  it("falls back to generic layout when bridge has no react variant", () => {
     render(<BridgeCallout bridge={bridgeWithoutVariants} />);
     expect(screen.queryByRole("tablist")).toBeNull();
     expect(screen.getByText("Fixture FE Concept")).toBeInTheDocument();
     expect(screen.getByText("Fixture ML Concept")).toBeInTheDocument();
-  });
-
-  it("supports keyboard navigation between tabs", () => {
-    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="react" />);
-    const reactTab = screen.getByRole("tab", { name: /react/i });
-    fireEvent.keyDown(reactTab, { key: "ArrowRight" });
-    const vueTab = screen.getByRole("tab", { name: /vue/i });
-    expect(document.activeElement).toBe(vueTab);
-  });
-
-  it("activates tab on Enter key after arrow navigation", () => {
-    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="react" />);
-    const reactTab = screen.getByRole("tab", { name: /react/i });
-    fireEvent.keyDown(reactTab, { key: "ArrowRight" });
-    const vueTab = screen.getByRole("tab", { name: /vue/i });
-    fireEvent.keyDown(vueTab, { key: "Enter" });
-    expect(vueTab.getAttribute("aria-selected")).toBe("true");
   });
 
   describe("breaks footer", () => {
@@ -111,7 +82,7 @@ describe("BridgeCallout", () => {
       expect(footer.textContent).toMatch(/gradient descent/);
     });
 
-    it("renders inline breaks in tabbed layout", () => {
+    it("renders inline breaks in react layout", () => {
       const bridge = {
         ...bridgeWithVariants,
         breaks:

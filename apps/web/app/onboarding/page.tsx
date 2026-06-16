@@ -81,16 +81,6 @@ const LEARNING_GOALS = [
 
 type LearningGoal = (typeof LEARNING_GOALS)[number]["id"];
 
-const FRAMEWORKS = [
-  { id: "react" as const, label: "React" },
-  { id: "vue" as const, label: "Vue" },
-  { id: "angular" as const, label: "Angular" },
-  { id: "svelte" as const, label: "Svelte" },
-  { id: "vanilla" as const, label: "Vanilla JS" },
-];
-
-type Framework = (typeof FRAMEWORKS)[number]["id"];
-
 const STEPS = ["Welcome", "Background", "Goal", "Ready"] as const;
 type StepIndex = 0 | 1 | 2 | 3;
 
@@ -106,7 +96,6 @@ export default function OnboardingPage() {
   const [experienceLevel, setExperienceLevel] =
     useState<ExperienceLevel | null>(null);
   const [feBackground, setFeBackground] = useState<string>("");
-  const [framework, setFramework] = useState<Framework | null>(null);
   const [years, setYears] = useState<string>("");
 
   // Goal step
@@ -183,14 +172,16 @@ export default function OnboardingPage() {
       // 1. PATCH /api/onboarding, writes experience_level, learning_goal,
       //    fe_background, fe_framework, fe_experience_years via the
       //    service-role endpoint.
+      // V1 is React-only. fe_framework is always submitted as "react" so the
+      // profile column is populated (no framework-selection step exists).
       const payload: Record<string, unknown> = {
         experience_level: experienceLevel,
         learning_goal: learningGoal,
+        fe_framework: "react",
       };
       if (feBackground.trim().length > 0) {
         payload.fe_background = feBackground.trim().slice(0, 200);
       }
-      if (framework) payload.fe_framework = framework;
       if (yearsAsNumber !== null) payload.fe_experience_years = yearsAsNumber;
 
       const apiUrl = getApiUrl();
@@ -238,7 +229,7 @@ export default function OnboardingPage() {
       track(EVENTS.ONBOARDING_COMPLETED, {
         experienceLevel,
         learningGoal,
-        ...(framework ? { framework } : {}),
+        framework: "react",
         ...(yearsAsNumber !== null ? { yearsExperience: yearsAsNumber } : {}),
       });
       trackThemeSelected(LAUNCH_THEME_SLUG);
@@ -247,14 +238,7 @@ export default function OnboardingPage() {
       setError(e instanceof Error ? e.message : ERROR_MESSAGES.unknown);
       setSaving(false);
     }
-  }, [
-    experienceLevel,
-    learningGoal,
-    feBackground,
-    framework,
-    yearsAsNumber,
-    router,
-  ]);
+  }, [experienceLevel, learningGoal, feBackground, yearsAsNumber, router]);
 
   // Global Enter-to-advance (outside textarea / button / select).
   const wizardRef = useRef<HTMLDivElement>(null);
@@ -334,8 +318,6 @@ export default function OnboardingPage() {
             setExperienceLevel={setExperienceLevel}
             feBackground={feBackground}
             setFeBackground={setFeBackground}
-            framework={framework}
-            setFramework={setFramework}
             years={years}
             setYears={setYears}
             yearsValid={yearsValid}
@@ -349,7 +331,6 @@ export default function OnboardingPage() {
             experienceLevel={experienceLevel}
             learningGoal={learningGoal}
             feBackground={feBackground}
-            framework={framework}
             years={yearsAsNumber}
           />
         )}
@@ -475,8 +456,6 @@ function BackgroundStep(props: {
   setExperienceLevel: (v: ExperienceLevel) => void;
   feBackground: string;
   setFeBackground: (v: string) => void;
-  framework: Framework | null;
-  setFramework: (v: Framework) => void;
   years: string;
   setYears: (v: string) => void;
   yearsValid: boolean;
@@ -486,8 +465,6 @@ function BackgroundStep(props: {
     setExperienceLevel,
     feBackground,
     setFeBackground,
-    framework,
-    setFramework,
     years,
     setYears,
     yearsValid,
@@ -564,43 +541,6 @@ function BackgroundStep(props: {
                     {lvl.desc}
                   </span>
                 </span>
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
-
-      {/* fe_framework, optional */}
-      <fieldset className="w-full text-left mb-8">
-        <legend className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted mb-3">
-          Primary framework
-        </legend>
-        <div
-          role="radiogroup"
-          aria-label="Primary framework"
-          data-testid="framework-radiogroup"
-          className="grid grid-cols-2 sm:grid-cols-5 gap-0.5"
-          onKeyDown={makeArrowHandler(FRAMEWORKS, framework, (id) =>
-            setFramework(id),
-          )}
-        >
-          {FRAMEWORKS.map((f) => {
-            const selected = framework === f.id;
-            return (
-              <button
-                key={f.id}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                data-testid={`framework-${f.id}`}
-                onClick={() => setFramework(f.id)}
-                className={`px-3 py-3 text-center transition-all border-2 rounded-none font-mono text-xs focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
-                  selected
-                    ? "bg-primary/10 border-primary text-text-primary"
-                    : "bg-surface border-border text-text-muted hover:border-primary/40"
-                }`}
-              >
-                {f.label}
               </button>
             );
           })}
@@ -741,11 +681,9 @@ function ReadyStep(props: {
   experienceLevel: ExperienceLevel | null;
   learningGoal: LearningGoal | null;
   feBackground: string;
-  framework: Framework | null;
   years: number | null;
 }) {
-  const { experienceLevel, learningGoal, feBackground, framework, years } =
-    props;
+  const { experienceLevel, learningGoal, feBackground, years } = props;
 
   const rows: Array<[string, string]> = [
     ["Theme", `${LAUNCH_THEME_NAME} (live now)`],
@@ -763,12 +701,7 @@ function ReadyStep(props: {
           learningGoal)
         : "Not set",
     ],
-    [
-      "Framework",
-      framework
-        ? (FRAMEWORKS.find((f) => f.id === framework)?.label ?? framework)
-        : "Skipped",
-    ],
+    ["Framework", "React"],
     ["Years", years === null ? "Skipped" : `${years}`],
     ["Notes", feBackground.trim().length > 0 ? feBackground.trim() : "Skipped"],
   ];

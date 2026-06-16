@@ -37,7 +37,7 @@ const LEARNING_GOALS = [
 ] as const;
 type LearningGoal = (typeof LEARNING_GOALS)[number];
 
-const FE_FRAMEWORKS = ["react", "vue", "angular", "svelte", "vanilla"] as const;
+const FE_FRAMEWORKS = ["react"] as const;
 type FeFramework = (typeof FE_FRAMEWORKS)[number];
 
 function isExperienceLevel(v: unknown): v is ExperienceLevel {

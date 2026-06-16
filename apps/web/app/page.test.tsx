@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
@@ -152,19 +152,12 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   // Bridge section UX/a11y audit fixes (2026-06-10), spec:
   // docs/superpowers/specs/2026-06-10-bridge-section-audit-fixes.md
   describe("BridgePreviewSection", () => {
-    it("framework tabs expose pressed state and accessible names", () => {
+    it("shows React only, with no framework selector (V1 is React-only)", () => {
       render(<BridgePreviewSection />);
-      const reactTab = screen.getByRole("button", {
-        name: /show bridges in react/i,
-      });
-      const vueTab = screen.getByRole("button", {
-        name: /show bridges in vue/i,
-      });
-      expect(reactTab.getAttribute("aria-pressed")).toBe("true");
-      expect(vueTab.getAttribute("aria-pressed")).toBe("false");
-      fireEvent.click(vueTab);
-      expect(vueTab.getAttribute("aria-pressed")).toBe("true");
-      expect(reactTab.getAttribute("aria-pressed")).toBe("false");
+      expect(
+        screen.queryByRole("button", { name: /show bridges in/i }),
+      ).toBeNull();
+      expect(screen.getByText(/your react code/i)).toBeInTheDocument();
     });
 
     it("exposes exactly one bridge, no cycler (catalog is paid content)", () => {

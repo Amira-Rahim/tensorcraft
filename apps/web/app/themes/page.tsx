@@ -64,9 +64,9 @@ export default async function ThemesPage() {
           waitlists below.
         </p>
         <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
-          React, Vue, Svelte, Angular: pick the theme that maps to the ML
-          problem you actually want to solve. Each one teaches a complete
-          specialization through JavaScript and TensorFlow.js. No Python.
+          Pick the theme that maps to the ML problem you actually want to solve.
+          Each one teaches a complete specialization through React and
+          TensorFlow.js. No Python.
         </p>
 
         <ThemeCardsGrid cards={cards} />
