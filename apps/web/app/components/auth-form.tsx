@@ -13,7 +13,6 @@ const COPY = {
   new: {
     heading: "Start Learning",
     subtitle: "Create an account to start learning",
-    callout: "MODULE 1 · FREE · NO CARD",
     bottomText: "Already have an account?",
     bottomAction: "Sign in",
     terms: "creating an account",
@@ -21,7 +20,6 @@ const COPY = {
   returning: {
     heading: "Welcome Back",
     subtitle: "Sign in to continue learning",
-    callout: "PICK UP WHERE YOU LEFT OFF",
     bottomText: "New here?",
     bottomAction: "Learn more",
     terms: "signing in",
@@ -283,11 +281,6 @@ export function AuthForm() {
                 {copy.bottomAction}
               </button>
             )}
-          </div>
-
-          {/* Context-aware callout */}
-          <div className="mt-6 border border-border bg-code-bg px-4 py-3 font-mono text-[13px] text-text-muted border-l-2 border-l-primary">
-            {copy.callout}
           </div>
 
           {/* Terms */}
