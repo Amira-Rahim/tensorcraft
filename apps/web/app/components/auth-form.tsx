@@ -121,7 +121,7 @@ export function AuthForm() {
       </div>
 
       {/* Context-aware heading */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-6">
         <h1 className="text-2xl font-mono font-semibold text-text-primary mb-2">
           {copy.heading}
         </h1>
@@ -230,7 +230,7 @@ export function AuthForm() {
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-7">
+          <div className="flex items-center gap-4 my-5">
             <div className="flex-1 h-px bg-border" />
             <span className="text-[13px] text-text-muted uppercase tracking-widest font-mono font-medium">
               or
@@ -263,7 +263,7 @@ export function AuthForm() {
           </form>
 
           {/* Context-aware bottom link */}
-          <div className="text-center mt-8 text-sm text-text-muted font-mono">
+          <div className="text-center mt-6 text-sm text-text-muted font-mono">
             {copy.bottomText}{" "}
             {isReturning ? (
               <Link
@@ -284,7 +284,7 @@ export function AuthForm() {
           </div>
 
           {/* Terms */}
-          <div className="text-center mt-5 text-xs text-text-muted font-mono">
+          <div className="text-center mt-4 text-xs text-text-muted font-mono">
             By {copy.terms}, you agree to our{" "}
             <Link
               href="/terms"

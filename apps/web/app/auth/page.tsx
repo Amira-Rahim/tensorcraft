@@ -67,7 +67,7 @@ export default function AuthPage() {
       {/* ============================================================ */}
       <section
         data-testid="auth-right-pane"
-        className="flex w-full md:w-[45%] items-center justify-center px-6 py-16 sm:px-10 bg-surface"
+        className="flex w-full md:w-[45%] items-center justify-center px-6 py-10 sm:px-10 bg-surface"
       >
         <div className="w-full max-w-110">
           <Suspense>
