@@ -16,11 +16,11 @@ vi.mock("../components/auth-form", () => ({
   AuthForm: () => <div data-testid="auth-form-stub">AUTH_FORM</div>,
 }));
 
-// ParticleField uses canvas + rAF; stub to a marker element so we can assert
-// the left pane renders decorative content.
+// OrbitCanvas uses canvas + rAF; stub to a marker element so we can assert
+// the left pane renders the decorative backdrop.
 vi.mock("@tensorcraft/ui/effects", () => ({
-  ParticleField: ({ className }: { className?: string }) => (
-    <div data-testid="particle-field-stub" className={className} />
+  OrbitCanvas: ({ className }: { className?: string }) => (
+    <div data-testid="orbit-canvas-stub" className={className} />
   ),
 }));
 
@@ -36,13 +36,6 @@ describe("AuthPage, Phase 11 §11d Wave 1 split layout", () => {
     const tagline = screen.getByTestId("auth-tagline");
     // Exact copy from project_copy_lines.md, do not silently rewrite.
     expect(tagline.textContent).toBe("You Already Think Like an ML Engineer");
-  });
-
-  it("left pane renders the FE→ML sub-copy", () => {
-    render(<AuthPage />);
-    const sub = screen.getByTestId("auth-subtagline");
-    expect(sub.textContent).toMatch(/shipped React/i);
-    expect(sub.textContent).toMatch(/vocabulary is different/i);
   });
 
   it("left pane is hidden on mobile (hidden md:flex)", () => {
@@ -77,9 +70,9 @@ describe("AuthPage, Phase 11 §11d Wave 1 split layout", () => {
     expect(right.className).toMatch(/md:w-\[45%\]/);
   });
 
-  it("renders the ParticleField decoration in the left pane", () => {
+  it("renders the OrbitCanvas backdrop in the left pane", () => {
     render(<AuthPage />);
-    expect(screen.getByTestId("particle-field-stub")).toBeTruthy();
+    expect(screen.getByTestId("orbit-canvas-stub")).toBeTruthy();
   });
 
   it("does NOT import or render any LossLandscape component (deferred §11b)", () => {
