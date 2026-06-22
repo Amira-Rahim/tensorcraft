@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import { LAUNCHED_THEMES, PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import { CurriculumPreview } from "./curriculum-preview";
 import { PaymentError } from "./payment-error";
 import { PaywallNotice } from "./paywall-notice";
@@ -39,6 +39,16 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 3600;
+
+// A bundle Offer is only InStock once enough themes have launched to fill it
+// (mirrors the cart gating in pricing-tiers.tsx). Until then it is a genuine
+// pre-order, so the structured data must say PreOrder rather than overclaim
+// InStock on a basket the checkout would reject.
+const IN_STOCK = "https://schema.org/InStock";
+const PRE_ORDER = "https://schema.org/PreOrder";
+const availabilityFor = (themes: number) =>
+  LAUNCHED_THEMES.length >= themes ? IN_STOCK : PRE_ORDER;
+
 export default function PricingPage() {
   const pricingJsonLd = {
     "@context": "https://schema.org",
@@ -62,7 +72,7 @@ export default function PricingPage() {
         name: "Single theme",
         price: String(PRICING.single.price),
         priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
+        availability: availabilityFor(PRICING.single.themes),
         description: `One full theme: ${THEME_CONTENT.totalLessonsPerTheme} lessons across ${THEME_CONTENT.modulesPerTheme} modules, capstone, lifetime access.`,
       },
       {
@@ -70,7 +80,7 @@ export default function PricingPage() {
         name: "Two-theme bundle",
         price: String(PRICING.twoBundle.price),
         priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
+        availability: availabilityFor(PRICING.twoBundle.themes),
         description: "Any two themes bundled, lifetime access.",
       },
       {
@@ -78,7 +88,7 @@ export default function PricingPage() {
         name: "Three-theme bundle",
         price: String(PRICING.threeBundle.price),
         priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
+        availability: availabilityFor(PRICING.threeBundle.themes),
         description: "Any three themes bundled, lifetime access.",
       },
       {
@@ -86,7 +96,7 @@ export default function PricingPage() {
         name: "All five themes",
         price: String(PRICING.allFive.price),
         priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
+        availability: availabilityFor(PRICING.allFive.themes),
         description:
           "All five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid). Lifetime access.",
       },
@@ -124,7 +134,7 @@ export default function PricingPage() {
             data-testid="pricing-heading"
             className="text-4xl sm:text-5xl font-bold mb-5 text-text-primary font-mono tracking-tight"
           >
-            Buy a theme. Keep it forever.
+            Buy once. Keep forever.
           </h1>
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
             Each theme is a separate ML specialization. Buy one, bundle a few,

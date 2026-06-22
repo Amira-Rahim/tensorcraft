@@ -105,11 +105,11 @@ vi.mock("@tensorcraft/themes", () => {
 });
 
 describe("PricingPage (brutalist Phase 11 §11d)", () => {
-  it('renders the "Buy a theme" H1', () => {
+  it('renders the "Buy once" H1', () => {
     render(<PricingPage />);
     const h1 = screen.getByTestId("pricing-heading");
     expect(h1.tagName).toBe("H1");
-    expect(h1).toHaveTextContent(/Buy a theme\. Keep it forever\./i);
+    expect(h1).toHaveTextContent(/Buy once\. Keep forever\./i);
   });
 
   it("renders the 5-tier grid (embedded PricingTiers)", () => {

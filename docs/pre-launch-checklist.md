@@ -179,13 +179,13 @@ Five services need projects created + DSN/keys captured:
    - Create 7 Tags (names in §A3 above)
    - Build 3 Sequences (welcome / purchase confirmation / capstone achievement)
    - Configure bounce/complaint Automation → webhook to `https://api.tensorcraft.app/api/webhooks/kit-bounce` with `KIT_WEBHOOK_SECRET` header
-5. **Stripe** — flip to live mode. (No Products/Prices needed in the dashboard — checkout uses inline `price_data` with amounts from `packages/shared/src/constants.ts` `PRICING`: $49/$79/$99/$129. Stripe still records each charge as a line item for receipts + refunds.) Configure webhook endpoint pointing at `https://api.tensorcraft.app/api/payments/webhook` with event filter: `checkout.session.completed`, `charge.refunded`, `checkout.session.async_payment_failed`.
+5. **Stripe** — flip to live mode. (No Products/Prices needed in the dashboard — checkout uses inline `price_data` with amounts from `packages/shared/src/constants.ts` `PRICING`: $59/$99/$129/$159. Stripe still records each charge as a line item for receipts + refunds.) Configure webhook endpoint pointing at `https://api.tensorcraft.app/api/payments/webhook` with event filter: `checkout.session.completed`, `charge.refunded`, `checkout.session.async_payment_failed`.
 
 ### A6. Real-money Stripe smoke test
 
 After §A2–§A5 complete:
 
-1. Use a personal card to buy the $49 Single Theme tier on production.
+1. Use a personal card to buy the $59 Single Theme tier on production.
 2. Verify: redirect to `/dashboard/purchase-success?session_id=...` renders correct receipt.
 3. Query DB: new row in `purchases` with `status='completed'` + `theme_ids: ['<chosen-theme>']`.
 4. Check PostHog dashboard: `payment_completed` event fired with user_id.
@@ -606,7 +606,7 @@ All should exit 0. Any new failures since last clean state → fix before launch
 
 ### C1. Beta program
 
-Plan §F1 prescribes 50–100 FE devs for 4-week beta cycle. Solo dev alternative: skip beta, soft-launch direct to waitlist, adjust pricing if conversion <70% willingness at $49.
+Plan §F1 prescribes 50–100 FE devs for 4-week beta cycle. Solo dev alternative: skip beta, soft-launch direct to waitlist, adjust pricing if conversion <70% willingness at $59.
 
 **Recommend skip formal beta** — solo dev, small batch size beta adds 4 weeks for marginal signal vs launching + monitoring live analytics.
 

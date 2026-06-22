@@ -36,7 +36,7 @@ creditFromPriorPurchases = SUM(amount) FROM purchases
   AND theme_ids && requestedThemeIds  -- array overlap operator
 ```
 
-Credit is **capped at the target plan price** to prevent over-crediting. Example: a user who bought two separate bundles ($79 + $99 = $178) and upgrades to All 5 ($129) gets at most $129 credit, not $178. `adjustedPrice = max(0, plan.price - credit)`.
+Credit is **capped at the target plan price** to prevent over-crediting. Example: a user who bought two separate bundles ($99 + $129 = $228) and upgrades to All 5 ($159) gets at most $159 credit, not $228. `adjustedPrice = max(0, plan.price - credit)`.
 
 **Important:** Both the `ownedThemes` set and the credit query must filter by `status = 'completed'`. Pending, failed, or refunded purchases do not count as credit.
 
@@ -98,8 +98,8 @@ For multi-theme tiers (2, 3), when the user already owns some themes:
 
 1. `pnpm build` passes
 2. User with no purchases → sees full prices, normal checkout
-3. User who owns Deep Orbit ($49) → "Two Themes" shows "$30" (was $79), "All 5" shows "$80" (was $129)
-4. User clicks "Two Themes" upgrade → Stripe checkout for $30 → themes granted
+3. User who owns Deep Orbit ($59) → "Two Themes" shows "$40" (was $99), "All 5" shows "$100" (was $159)
+4. User clicks "Two Themes" upgrade → Stripe checkout for $40 → themes granted
 5. User who owns enough to cover a bundle → instant grant, no Stripe
 6. User who owns ALL themes → "Already Owned ✓"
 7. Tests cover: credit calculation, adjusted price, auto-grant, webhook validation

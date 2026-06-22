@@ -162,7 +162,7 @@ async function seedPurchases() {
     user_id: USER_IDS.alex,
     plan_id: "theme-single",
     theme_ids: ["deep-orbit"],
-    amount: 49.0,
+    amount: 59.0,
     currency: "USD",
     stripe_session_id: "demo_session_deep_orbit_001",
     status: "completed" as const,
@@ -174,7 +174,7 @@ async function seedPurchases() {
     .select();
 
   if (error) throw new Error(`Failed to seed purchases: ${error.message}`);
-  console.log(`[seed] Upserted purchase for Alex Chen: deep-orbit ($49.00)`);
+  console.log(`[seed] Upserted purchase for Alex Chen: deep-orbit ($59.00)`);
   return data;
 }
 

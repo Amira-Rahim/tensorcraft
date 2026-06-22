@@ -21,23 +21,17 @@ describe("PRICING", () => {
     expect(PRICING.free.themes).toBe(0);
   });
 
-  it("has correct single tier at $49", () => {
-    expect(PRICING.single.price).toBe(49);
+  it("has correct single tier at $59", () => {
+    expect(PRICING.single.price).toBe(59);
     expect(PRICING.single.themes).toBe(1);
   });
 
-  it("single tier carries a display-only founder anchor above its price", () => {
-    // regularPrice is a marketing anchor only, must exceed the charged price
-    // and must never be what Stripe/webhook validation reads.
-    expect(PRICING.single.regularPrice).toBeGreaterThan(PRICING.single.price);
-  });
-
   it("has correct bundle tiers", () => {
-    expect(PRICING.twoBundle.price).toBe(79);
+    expect(PRICING.twoBundle.price).toBe(99);
     expect(PRICING.twoBundle.themes).toBe(2);
-    expect(PRICING.threeBundle.price).toBe(99);
+    expect(PRICING.threeBundle.price).toBe(129);
     expect(PRICING.threeBundle.themes).toBe(3);
-    expect(PRICING.allFive.price).toBe(129);
+    expect(PRICING.allFive.price).toBe(159);
     expect(PRICING.allFive.themes).toBe(5);
   });
 

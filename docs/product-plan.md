@@ -16,7 +16,7 @@
 
 ### 1.1 What Tensorcraft Is
 
-Tensorcraft is an **interactive, story-driven machine learning education platform** designed specifically for frontend developers transitioning into ML/AI roles. Rather than offering a single monolithic course, Tensorcraft delivers focused learning through **per-model purchases at $49 each**, organized around five immersive themes.
+Tensorcraft is an **interactive, story-driven machine learning education platform** designed specifically for frontend developers transitioning into ML/AI roles. Rather than offering a single monolithic course, Tensorcraft delivers focused learning through **per-model purchases at $59 each**, organized around five immersive themes.
 
 Each theme places the learner inside a narrative world where they build a real ML model from scratch — not by copying tutorials, but by making decisions that shape both the story and the model. The platform combines cinematic storytelling, hands-on coding, and conceptual bridges from frontend development to make ML deeply intuitive for web developers.
 
@@ -24,7 +24,7 @@ Each theme places the learner inside a narrative world where they build a real M
 
 - **Story-driven**: Every lesson unfolds within a narrative arc. Learners don't just study ML — they experience it.
 - **Interactive**: Concepts are taught through interactive animations, code challenges, and decision points — not passive video.
-- **Per-model purchases**: Each theme is purchased independently at **$49**, allowing learners to start with what excites them most.
+- **Per-model purchases**: Each theme is purchased independently at **$59**, allowing learners to start with what excites them most.
 - **Five themes**: Each theme teaches all ML fundamentals while specializing in a distinct area of machine learning.
 
 ### 1.2 The Five Themes
@@ -255,7 +255,7 @@ Tensorcraft produces **ML-Enhanced Frontend Engineers** — developers who can b
 
 **Honest scope:** This course gives you the foundation to understand, build, and deploy ML models in the browser. For production ML engineering roles requiring Python fluency and deeper mathematics, Tensorcraft provides the conceptual foundation — and we bridge you toward those next steps (see Python Bridge module). We do not claim to replace a full ML engineering education, but we give frontend engineers a genuine, deep understanding of ML that no other resource provides in their own language and tools.
 
-These statistics inform our marketing, pricing, and curriculum design — the $49 per-model price point is calibrated to feel trivially affordable relative to even a modest salary increase.
+These statistics inform our marketing, pricing, and curriculum design — the $59 per-model price point is calibrated to feel trivially affordable relative to even a modest salary increase.
 
 ---
 
@@ -265,16 +265,16 @@ These statistics inform our marketing, pricing, and curriculum design — the $4
 
 | Tier | Description | Price |
 |------|------------|-------|
-| **Single Model** | One theme, full 11 modules | $49 |
-| **Two Models** | Any two themes | $79 (save $19) |
-| **Three Models** | Any three themes | $99 (save $48) |
-| **All 5 Models** | All five themes | $129 (save $116) |
+| **Single Model** | One theme, full 11 modules | $59 |
+| **Two Models** | Any two themes | $99 (save $19) |
+| **Three Models** | Any three themes | $129 (save $48) |
+| **All 5 Models** | All five themes | $159 (save $136) |
 
 #### Upgrade Path
 
 > **Implemented (2026-04-14):** Credit from prior purchases is calculated automatically. Adjusted price charged via Stripe. Auto-grant when credit covers full price.
 
-Learners who purchase a single theme can upgrade to a bundle at any time. The price they already paid is credited toward the bundle price. For example, a learner who bought Deep Orbit for $49 can upgrade to the Two Models tier by paying $30 ($79 – $49). This removes purchase anxiety and encourages starting with one theme.
+Learners who purchase a single theme can upgrade to a bundle at any time. The price they already paid is credited toward the bundle price. For example, a learner who bought Deep Orbit for $59 can upgrade to the Two Models tier by paying $40 ($99 – $59). This removes purchase anxiety and encourages starting with one theme.
 
 #### Purchasing Power Parity (PPP)
 
@@ -666,9 +666,9 @@ State is persisted via `PATCH /api/onboarding` per migration 018. The dual-robot
 Each theme's curriculum is structured as **foundations (modules 1-6) + specialization (modules 7-11)**.
 
 - **Foundations track (modules 1-6)**: The ML fundamentals that every theme teaches. These modules are included free or with any theme purchase. Once a learner completes foundations through one theme, they are permanently unlocked — purchasing a second theme does NOT re-serve this content. In the content schema, these modules have `track: "foundations"`.
-- **Specialization track (modules 7-11)**: Domain-specific concepts, techniques, and model architectures unique to the theme's focus area. This is what each theme purchase ($49) pays for — 25 lessons of unique, specialized content. In the content schema, these modules have `track: "specialization"`.
+- **Specialization track (modules 7-11)**: Domain-specific concepts, techniques, and model architectures unique to the theme's focus area. This is what each theme purchase ($59) pays for — 25 lessons of unique, specialized content. In the content schema, these modules have `track: "specialization"`.
 
-This structure eliminates redundancy across multi-theme purchases and makes pricing honest: each $49 buys 25 new specialized lessons, not 55 lessons where 30 are content you already completed.
+This structure eliminates redundancy across multi-theme purchases and makes pricing honest: each $59 buys 25 new specialized lessons, not 55 lessons where 30 are content you already completed.
 
 ### 4.2 Module Map — Deep Orbit
 
@@ -1319,7 +1319,7 @@ All five themes share these visual design constraints to maintain platform coher
 
 - NPS >= 40
 - >= 70% module completion rate across beta cohort
-- >= 80% of respondents say they would pay $49 (or already consider it a good value)
+- >= 80% of respondents say they would pay $59 (or already consider it a good value)
 - < 5% of lessons flagged as "confusing" or "too hard" by more than 20% of testers
 
 ### 6.3 Risk Log
@@ -1328,7 +1328,7 @@ All five themes share these visual design constraints to maintain platform coher
 |---|------|-----------|--------|------------|
 | 1 | **Story fatigue**: Learners skip narrative to get to code, rendering the 5C Loop's Context and Consequence phases wasted effort. | Medium | High | Make narrative optional but defaulted to "on." Track skip rates in analytics. If >40% skip, redesign narrative to be shorter and more decision-driven. |
 | 2 | **Bridge confusion**: FE-to-ML bridges feel forced or inaccurate, undermining trust in the teaching method. | Low | High | Extensive beta testing of bridges specifically. Each bridge reviewed by at least 2 frontend developers and 1 ML engineer. Remove or rewrite any bridge that beta testers rate below 3/5 clarity. |
-| 3 | **Pricing resistance**: $49 per model feels too high for the perceived value, especially with All 5 themes available at launch. | Medium | High | Validate willingness-to-pay in beta. If resistance is high, consider $39 launch promo with planned return to $49 once social proof accumulates. PPP pricing helps for international markets. |
+| 3 | **Pricing resistance**: $59 per model feels too high for the perceived value, especially with All 5 themes available at launch. | Medium | High | Validate willingness-to-pay in beta. If resistance is high, consider $49 launch promo with planned return to $59 once social proof accumulates. PPP pricing helps for international markets. |
 | 4 | **Scope creep on V0.5**: The MVP takes longer than planned because of feature additions or quality bar escalation. | High | Medium | Strict scope document (Section 6.1). Weekly scope review meetings. Any addition to V0.5 must remove something of equal effort. "Not in scope" list is a commitment. |
 | 5 | **Technical complexity of interactive animations**: Building high-quality interactive ML concept visualizations takes longer and costs more than estimated. | Medium | Medium | Prototype the 3 most complex animations first (neural network forward pass, backpropagation, gradient descent). If any takes more than 2x estimated time, simplify or use pre-rendered alternatives. |
 | 6 | **GitHub integration reliability**: GitHub API rate limits, authentication edge cases, or merge conflicts break the auto-commit flow. | Medium | Low | Implement robust error handling and retry logic. GitHub integration is optional — if it breaks, the learner's progress is unaffected. Queue commits and retry on failure. |

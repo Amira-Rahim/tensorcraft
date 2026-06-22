@@ -304,10 +304,10 @@ Appears after completing the Module 1 free preview when a free-tier user attempt
 
 - **Trigger:** Navigating to any lesson in Module 2 or beyond while on the free tier.
 - **Layout:** Centered modal overlay with backdrop blur. Modal card (max-width: 520px) on `#0F1320` surface.
-- **Content:** Headline "Unlock the full [Theme Name] journey". Feature comparison (free vs. paid). Per-model price displayed prominently: "$49 — lifetime access to this theme". Pill-shaped CTA: "Unlock [Theme Name]". Secondary link: "View all themes" (links to pricing page).
+- **Content:** Headline "Unlock the full [Theme Name] journey". Feature comparison (free vs. paid). Per-model price displayed prominently: "$59 — lifetime access to this theme". Pill-shaped CTA: "Unlock [Theme Name]". Secondary link: "View all themes" (links to pricing page).
 - **Dismiss:** Click outside the modal or X button. User is returned to the Module 1 content they can still access.
 
-> **PRICING DISCREPANCY:** The PRD (Section 8) defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan (Part 2) and the prototypes use per-model pricing ($49 per theme, lifetime access). The paywall prototype implements per-model pricing. This discrepancy must be resolved before V1.0 launch. See also the flag in the PRD.
+> **PRICING DISCREPANCY:** The PRD (Section 8) defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan (Part 2) and the prototypes use per-model pricing ($59 per theme, lifetime access). The paywall prototype implements per-model pricing. This discrepancy must be resolved before V1.0 launch. See also the flag in the PRD.
 
 ### 6.4 Bridge Explorer (`bridge-explorer.html`)
 

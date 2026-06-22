@@ -49,14 +49,14 @@ Deliver a gamified, project-based curriculum that meets FE developers where they
 - **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning their frontend identity. Wants a portfolio project that proves ML skills to employers.
 - **Job to be done:** "Help me learn ML using the tools and mental models I already have, so I can build ML-powered features and expand my career options."
 - **Pain points:** Existing ML courses assume Python + math background. Academic courses are dry and theoretical. No courses teach browser-based ML. No interactive courses for Transformers.js/WebGPU/ONNX Runtime Web.
-- **Willingness to pay:** $49 one-time for a complete theme. $79–$129 for bundles (2, 3, or all 5 themes).
+- **Willingness to pay:** $59 one-time for a complete theme. $99–$159 for bundles (2, 3, or all 5 themes).
 
 ### Secondary: The Career Transitioner
 
 - **Demographics:** 5–15 years software engineering. Wants to add ML skills to expand into ML-enhanced frontend roles or ML-integrated product teams. May have some Python but prefers JavaScript.
 - **Job to be done:** "Give me a structured path with a portfolio project that proves I understand ML, so I can build ML-powered features and collaborate with data science teams."
 - **Realistic outcome:** ML-Enhanced Frontend Engineer / Frontend Engineer with ML Specialization ($120K-$160K). For full ML engineering roles, Tensorcraft provides the conceptual foundation; graduates will also need Python fluency and deeper mathematics.
-- **Willingness to pay:** $49–$99. Expense-able through employer.
+- **Willingness to pay:** $59–$159. Expense-able through employer.
 
 ### Tertiary: The Team Lead
 
@@ -226,7 +226,7 @@ Monetization layer supporting free and paid tiers.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Payment processor | P0 | Integrate Stripe for one-time payments; support credit card and Google Pay / Apple Pay |
-| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 — Module 1 of one theme, 5 lessons), **Single Theme** ($49 — all 11 modules, lifetime access, GitHub integration), **Two Themes** ($79), **Three Themes** ($99), **All 5 Themes** ($129) |
+| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 — Module 1 of one theme, 5 lessons), **Single Theme** ($59 — all 11 modules, lifetime access, GitHub integration), **Two Themes** ($99), **Three Themes** ($129), **All 5 Themes** ($159) |
 | 3 | Purchasing-power parity (PPP) | P1 | Apply automatic regional discounts (up to 60% off) based on IP geolocation using a PPP index table; display original and discounted price |
 | 4 | Upgrade prompts | P1 | When a free-tier user reaches the paywall (end of Module 2), show an in-context upgrade modal with benefit comparison, testimonial, and a 7-day free trial CTA |
 | 5 | Webhook handling | P0 | Listen for Stripe webhooks (`checkout.session.completed`, `charge.refunded`, `charge.failed`) to update user entitlements in real time |
@@ -452,10 +452,10 @@ Tensorcraft uses a **per-theme, one-time purchase model**. Each theme is a stand
 | Tier | Price | What's Included |
 |---|---|---|
 | Free Preview | $0 | Module 1 of any launched theme (5 lessons). Full code editor, bridges, and quizzes. No GitHub integration. |
-| Single Theme | $49 | All 11 modules (55 lessons) of one theme. Lifetime access. GitHub integration. Progress sharing. |
-| Two Themes | $79 | Any two themes. Save $19 vs buying separately. |
-| Three Themes | $99 | Any three themes. Save $48 vs buying separately. |
-| All 5 Themes | $129 | All five themes. Save $116 vs buying separately. |
+| Single Theme | $59 | All 11 modules (55 lessons) of one theme. Lifetime access. GitHub integration. Progress sharing. |
+| Two Themes | $99 | Any two themes. Save $19 vs buying separately. |
+| Three Themes | $129 | Any three themes. Save $48 vs buying separately. |
+| All 5 Themes | $159 | All five themes. Save $136 vs buying separately. |
 
 *All 5 themes are available simultaneously.*
 

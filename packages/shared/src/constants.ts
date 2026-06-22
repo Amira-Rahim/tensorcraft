@@ -41,20 +41,15 @@ export function isComingSoon(slug: string): boolean {
  *
  * `price` is the amount actually charged (drives Stripe `unit_amount` and
  * webhook amount validation in apps/api/src/routes/payments.ts) and the
- * Schema.org Offer price in JSON-LD. NEVER set it to the anchor.
- *
- * `regularPrice` is a DISPLAY-ONLY anchor for founder/launch pricing. When
- * present and greater than `price`, the pricing UI renders it struck-through
- * next to the live price ("~~$99~~ $49"). It must never reach Stripe, the
- * webhook validator, or JSON-LD. To soften/remove the anchor, change or drop
- * `regularPrice` here, the single source of truth.
+ * Schema.org Offer price in JSON-LD. Single source of truth for all pricing
+ * display, checkout, and structured data.
  */
 export const PRICING = {
   free: { price: 0, themes: 0, label: "Free Preview" },
-  single: { price: 49, regularPrice: 99, themes: 1, label: "Single Theme" },
-  twoBundle: { price: 79, themes: 2, label: "Two Themes" },
-  threeBundle: { price: 99, themes: 3, label: "Three Themes" },
-  allFive: { price: 129, themes: 5, label: "All 5 Themes" },
+  single: { price: 59, themes: 1, label: "Single Theme" },
+  twoBundle: { price: 99, themes: 2, label: "Two Themes" },
+  threeBundle: { price: 129, themes: 3, label: "Three Themes" },
+  allFive: { price: 159, themes: 5, label: "All 5 Themes" },
 } as const;
 
 export type PricingTier = keyof typeof PRICING;

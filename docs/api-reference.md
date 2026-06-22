@@ -137,10 +137,10 @@ Create a Stripe Checkout session. **Authenticated.**
 
 | `planId` | `themeIds` | Price |
 |----------|-----------|-------|
-| `single` | Any one theme | $49 |
-| `two` | Any two themes | $79 |
-| `three` | Any three themes | $99 |
-| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $129 |
+| `single` | Any one theme | $59 |
+| `two` | Any two themes | $99 |
+| `three` | Any three themes | $129 |
+| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $159 |
 
 **Example — All 5 Themes:**
 ```json

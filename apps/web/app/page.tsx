@@ -27,7 +27,7 @@ export default function Home() {
         </h2>
 
         {/* ===== STATS (server-rendered, zero JS) =====
-            Directly under the hero: each slot extends a hero claim ($49,
+            Directly under the hero: each slot extends a hero claim ($59,
             0 Python, the 8 KB model the visitor just watched run). Lesson/
             module counts live in the hero stat line, these slots carry
             information the hero doesn't. */}
