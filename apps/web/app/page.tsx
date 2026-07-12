@@ -1,9 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { LAUNCHED_THEMES, PRICING, THEME_SLUGS } from "@tensorcraft/shared";
+import { PRICING } from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
 import { LandingHero } from "./components/landing-hero";
-import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
 
@@ -26,40 +25,6 @@ export default function Home() {
           Transformers.js guides.
         </h2>
 
-        {/* ===== STATS (server-rendered, zero JS) =====
-            Directly under the hero: each slot extends a hero claim ($59,
-            0 Python, the 4 KB model the visitor just watched run). Lesson/
-            module counts live in the hero stat line, these slots carry
-            information the hero doesn't. */}
-        <section className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
-          {[
-            [`$${PRICING.single.price}`, "Per theme. One-time, no sub"],
-            ["0", "Lines of Python"],
-            ["4 KB", "The model running in the hero above"],
-            [
-              `${LAUNCHED_THEMES.length} / ${THEME_SLUGS.length}`,
-              "Themes live",
-            ],
-          ].map(([v, l], i) => (
-            <div
-              key={l}
-              className="px-10 md:px-14 py-12"
-              style={{
-                borderRight: i < 3 ? "1px solid var(--tc-border)" : "none",
-              }}
-            >
-              <div className="font-mono text-[42px] font-black text-text-primary leading-none mb-2.5">
-                {v}
-              </div>
-              <div className="text-sm text-text-muted leading-normal">{l}</div>
-            </div>
-          ))}
-        </section>
-
-        {/* ===== BRIDGE TICKER, scrolling marquee intro for the bridge
-            system directly below (client island) ===== */}
-        <LandingBridgeTicker />
-
         {/* ===== BRIDGE SYSTEM (client island, framework picker) ===== */}
         <BridgePreviewSection />
 
@@ -68,7 +33,7 @@ export default function Home() {
             in Five Worlds below. ===== */}
         <section id="how-it-works" className="border-b border-border">
           {/* One pipeline band: header owns the first cell, steps 01-04 fill
-              the rest. Hard dividers = stats-bar rhythm; oversized ghost
+              the rest. Hard dividers between cells; oversized ghost
               numerals = Five Worlds card grammar. No floating paragraphs. */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
             <div className="px-10 md:px-14 py-12 border-b xl:border-b-0 sm:border-r border-border sm:col-span-2 xl:col-span-1">
@@ -186,7 +151,7 @@ export default function Home() {
           <Link
             href="/themes/deep-orbit/foundations/introduction-to-tensors"
             data-testid="landing-cta-final"
-            className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+            className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow brutalist-stamp focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
           >
             Start Module 1 →
           </Link>

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
-import { LAUNCHED_THEMES } from "@tensorcraft/shared";
+import { notFound, redirect } from "next/navigation";
+import { LAUNCHED_THEMES, isLaunched } from "@tensorcraft/shared";
 import { getModules } from "@tensorcraft/content";
 
 interface Props {
@@ -27,8 +27,13 @@ export const dynamicParams = false;
  * Anything else → real 404.
  */
 export default async function ModuleOverviewPage({ params }: Props) {
-  // dynamicParams=false already rejected anything outside the launched
-  // theme/module set, so any params that reach here are valid.
-  const { slug } = await params;
+  // dynamicParams=false rejects unknown params in dev, but `next start`
+  // does NOT enforce it at the router (2026-07-12 round-4 prod audit), so
+  // the body must validate for itself or invalid modules would 307 to the
+  // theme map instead of 404ing.
+  const { slug, module: moduleSlug } = await params;
+  const valid =
+    isLaunched(slug) && getModules(slug).some((m) => m.slug === moduleSlug);
+  if (!valid) notFound();
   redirect(`/themes/${slug}`);
 }

@@ -4,6 +4,10 @@ title: "CI/CD Pipeline"
 moduleId: capstone
 themeId: deep-orbit
 order: 2
+pattern: peer_review
+scene:
+  location: "Archimedes, Engineering"
+  time: "Merge request 47"
 estimatedMinutes: 25
 difficulty: advanced
 context:
@@ -36,12 +40,16 @@ keywords:
 skillAxes: [deployment]
 ---
 
+> **MERGE REQUEST 47 · deploy.yml · DEMIR → NAZARI · REVIEW REQUIRED** · "Standard web CI plus three model gates: accuracy, latency, memory budget. All green on my branch. Requesting sign-off before this wires to main."
+
+Nazari reviews files, not badges. You are reviewing this one with her, and here is the tell: the flaw is not in what the pipeline checks. It is in what the pipeline checks it *against*. Hold that question while you read the workflow. She is about to catch what the badge missed, and the rest of this lesson is the repair.
+
 <Dialogue speaker="Chief Nazari">
-Manual testing is how systems fail in production. You will automate everything: unit tests, integration tests, model accuracy checks, performance benchmarks. Every push triggers the full pipeline. If anything fails, it does not ship.
+Manual testing is how systems fail in production, which is why the standing order was: automate everything, every push runs the full pipeline, any failure blocks the ship. Your merge request claims all of that. So we review the file, not the badge. A review that only reads the green parts is not a review.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Same as any web app CI: GitHub Actions, test on push, deploy on merge to main. I just need to add model-specific checks: accuracy thresholds, inference speed benchmarks, memory budget validation.
+It's the same shape as any web app CI: GitHub Actions, test on push, deploy on merge to main, plus the three model gates: accuracy threshold, inference speed benchmark, memory budget validation. All green on my branch. I don't see what else there is to read.
 </Dialogue>
 
 Demir is one assumption away from being right. The workflow engine transfers whole; the belief that a green build tested the artifact you actually ship does not, and that assumption is about to cost forty minutes.
@@ -85,6 +93,14 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+
+      # Model artifact: 42 MB of weights, too big for git. Restored from
+      # the CI cache; the training rig seeds it after every retrain.
+      - name: Restore model artifact
+        uses: actions/cache@v4
+        with:
+          path: models/
+          key: deep-scan-model
 
       # ML-specific: validate model accuracy
       - name: Validate model accuracy
@@ -195,6 +211,11 @@ Write a model validation gate for CI/CD.
 <Exercise slug="ci-cd-gate" />
 
 <RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="CI workflows cache artifacts by path or time, not by content hash. If the cache key does not include the model's file hash, a stale weight file from a previous training run can satisfy the cache hit and pass all accuracy gates, measuring a model that no longer exists. You must version weights separately and key the cache on the artifact hash." />
+
+<RecallPrompt
+  question="What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"
+  answer="Model gates check accuracy thresholds, inference latency, and memory budget against the candidate artifact. They share the blocking contract with unit tests: any gate failure stops the merge. The difference is what they test: learned behavior that can regress without any code change."
+/>
 
 <LessonRecap
   whatYouLearned={[

@@ -56,18 +56,25 @@ const nextConfig: NextConfig = {
     return config;
   },
   headers: async () => [
-    {
-      // Long-lived immutable cache for build-hashed chunks. Filenames carry
-      // a content hash so the URL changes whenever bytes change, safe to
-      // pin for a year + tell the CDN to skip revalidation.
-      source: "/_next/static/:path*",
-      headers: [
-        {
-          key: "Cache-Control",
-          value: "public, max-age=31536000, immutable",
-        },
-      ],
-    },
+    // Long-lived immutable cache for build-hashed chunks. Filenames carry
+    // a content hash so the URL changes whenever bytes change, safe to
+    // pin for a year + tell the CDN to skip revalidation.
+    // Production ONLY: dev chunk URLs are unhashed (chunks/app/page.js), so
+    // this header makes browsers pin stale dev bundles for a year across
+    // rebuilds and server restarts.
+    ...(process.env.NODE_ENV === "development"
+      ? []
+      : [
+          {
+            source: "/_next/static/:path*",
+            headers: [
+              {
+                key: "Cache-Control",
+                value: "public, max-age=31536000, immutable",
+              },
+            ],
+          },
+        ]),
     {
       // Optimized images: long client cache + edge cache, with SWR so a
       // background revalidation refreshes the entry without stalling the

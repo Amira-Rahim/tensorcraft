@@ -117,7 +117,10 @@ const lessons = defineCollection({
         .max(3)
         .optional(),
 
-      // Pedagogical pattern: drives alternate 5C presentations.
+      // Pedagogical pattern. The lesson BODY carries the alternate structure
+      // (authored that way); this field tags it so the Briefing SceneCard
+      // renders a FORMAT line (PATTERN_LABELS in lesson-steps.tsx) and the
+      // variety gate can assert skeleton-breakers exist per module.
       // Absent frontmatter defaults to "standard".
       pattern: s
         .enum([

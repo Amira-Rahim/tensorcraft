@@ -108,6 +108,26 @@ the reader earns the scene by doing the work.
   REMOVED from the schema (2026-07-12) — do not add it back; the epilogue
   is the teaser.
 
+## Scene + format frontmatter (authoring, added with P2 2026-07-12)
+
+- Every built lesson carries a `scene:` block: `location` (required;
+  canon geography only: Bridge, Engineering, Lab, Galley, and named
+  stations of those), optional `time`, optional `epilogueLocation` when
+  the epilogue moves. Renders as the INT. slugline and the SceneCard
+  rail. No em dashes in location strings (SceneHeading joins with " - ").
+  Do NOT give every lesson a `time`; uniform time-stamps are their own
+  fingerprint.
+- `pattern:` tags a lesson whose BODY genuinely breaks the 5C skeleton
+  (`broken_code_first`, `discovery`, `flashback`, `peer_review`). The tag
+  must describe structure that is actually there; it renders as the
+  Briefing FORMAT tag. One skeleton-breaker per module minimum, enforced
+  by `packages/content/__tests__/structure-variety.test.ts`. Any error
+  text or measured value used in a cold open must be captured from the
+  real runtime, never composed from memory.
+- RecallPrompt count is 1–3 per lesson (dense lessons may carry a second);
+  takeaway bullet counts should follow the lesson's real density, not a
+  house number.
+
 ## Lesson close (authoring)
 
 Each built lesson ends its body with two blocks, in this order, both rendered

@@ -6,6 +6,9 @@ themeId: deep-orbit
 order: 1
 estimatedMinutes: 12
 difficulty: beginner
+scene:
+  location: "Archimedes, Bridge"
+  time: "Six hours after first contact"
 context:
   narrative: "The Archimedes receives a mysterious data stream from deep space."
   speaker: "Commander Mirza"
@@ -122,7 +125,8 @@ Now it's your turn. Create your first tensor from a JavaScript array.
 <LessonRecap
   whatYouLearned={[
     "A tensor adds shape tracking, GPU-backed math, and an explicit memory lifecycle on top of the flat number storage you already know from Float32Array.",
-    "Tensor rank equals the number of dimensions: scalar=0, vector=1, matrix=2. Use .array() or dataSync() to pull values back into JavaScript.",
+    "Tensor rank equals the number of dimensions: scalar=0, vector=1, matrix=2.",
+    "A tensor's data lives on the backend, not in JavaScript. You cannot iterate it directly; call await t.array() or dataSync() to pull the values back across.",
     "The JavaScript GC cannot see GPU memory: dispose() tensors you keep explicitly, and use tf.tidy() for everything intermediate. tf.memory().numTensors is your leak detector."
   ]}
   bridge="Just as a `Float32Array` holds numbers in flat contiguous memory, a `tf.tensor` wraps that same layout with shape metadata, GPU dispatch, and a manual disposal contract."

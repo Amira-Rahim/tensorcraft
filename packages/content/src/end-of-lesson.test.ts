@@ -31,7 +31,12 @@ describe("end-of-lesson migration completeness (built lessons)", () => {
     const src = fs.readFileSync(file, "utf-8");
     const recall = (src.match(/<RecallPrompt/g) ?? []).length;
     const recap = (src.match(/<LessonRecap/g) ?? []).length;
-    expect(recall, "exactly one RecallPrompt").toBe(1);
+    // P2 variance (2026-07-12): dense lessons may carry a second (rarely a
+    // third) RecallPrompt; exactly-one was itself a lockstep the structure
+    // audit flagged. Zero is still a migration failure, and more than three
+    // is quiz creep.
+    expect(recall, "1-3 RecallPrompts").toBeGreaterThanOrEqual(1);
+    expect(recall, "1-3 RecallPrompts").toBeLessThanOrEqual(3);
     expect(recap, "exactly one LessonRecap").toBe(1);
     expect(src.includes("<Quiz"), "no Quiz").toBe(false);
     expect(src.includes("<KeyTakeaways"), "no KeyTakeaways").toBe(false);

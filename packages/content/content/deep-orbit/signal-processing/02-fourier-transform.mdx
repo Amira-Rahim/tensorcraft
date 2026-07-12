@@ -4,6 +4,9 @@ title: "Fourier Transform"
 moduleId: signal-processing
 themeId: deep-orbit
 order: 2
+scene:
+  location: "Archimedes, Lab"
+  time: "Morning after the overnight transform"
 estimatedMinutes: 15
 difficulty: intermediate
 context:
@@ -218,7 +221,8 @@ A signal is fully reconstructible from its DFT: no information is lost.
 <LessonRecap
   whatYouLearned={[
     "The FFT decomposes a signal into a fixed mathematical basis of sinusoids and returns a complex coefficient for each frequency bin, giving both a magnitude (how much of that frequency is present) and a phase (its offset).",
-    "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz. The highest detectable frequency is the Nyquist frequency, sampleRate / 2.",
+    "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz.",
+    "The highest detectable frequency is the Nyquist frequency, sampleRate / 2. Components faster than that cannot be represented at the given sample rate without aliasing into lower bins.",
     "Peaks are only meaningful relative to a noise floor. Flagging bins above a threshold relative to the average magnitude separates real signal components from noise."
   ]}
   bridge="Where `@keyframes` decomposes an animation into authored timeline steps, `tf.spectral.rfft(signal)` decomposes a signal into a universal fixed basis of sinusoids. The basis is the same for every signal, not authored per-signal."

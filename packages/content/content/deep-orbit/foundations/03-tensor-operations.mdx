@@ -6,8 +6,12 @@ themeId: deep-orbit
 order: 3
 estimatedMinutes: 12
 difficulty: beginner
+pattern: broken_code_first
+scene:
+  location: "Archimedes, Bridge"
+  time: "Second watch"
 context:
-  narrative: "Chief Nazari needs to process the raw signal data."
+  narrative: "Demir's first attempt at combining the feeds just crashed the console. Nazari wants it fixed, at sensor speed."
   speaker: "Chief Nazari"
 concept:
   explanation: "Tensors support element-wise and matrix operations like add, multiply, and matmul."
@@ -33,22 +37,48 @@ keywords:
 skillAxes: [data_prep]
 ---
 
+Demir's first pass at the amplifier is already on the main console when the shift starts, and so is its output: `Error in matMul: inner shapes (64) and (1) of Tensors with shapes 1,64 and 1,64 and transposeA=false and transposeB=false must match.` One line of code, one error, sixty-four channels of raw signal going nowhere.
+
 <Dialogue speaker="Chief Nazari">
-Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. We take two million readings a minute.
+Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. We take two million readings a minute. Whatever that red text is, it is not two million readings a minute.
 </Dialogue>
 
-Three operations cover almost everything Nazari just asked for: add two tensors, multiply them element by element, and matMul rows into columns. Each is a single call that the GPU executes across the entire tensor at once. The logic will feel familiar if you've chained `Array.map()` and `reduce()` over a list; what changes is the execution model, where one op covers millions of elements in parallel.
+This lesson starts where you are standing: at the bug. You'll read the error, meet the two multiplication ops it is confusing, and repair the pipeline.
 
-<LearningObjectives objectives={["Perform element-wise tensor operations (add, multiply, subtract)", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose to make shapes compatible", "Chain operations together to build data transformations"]} />
+<LearningObjectives objectives={["Read a shape-mismatch error and identify which op it comes from", "Perform element-wise tensor operations (add, multiply, subtract)", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose to make shapes compatible"]} />
 
-## Element-wise Operations
+## Read the Error First
+
+Here is the code that produced it. The intent: amplify each of the 64 channels by its own gain factor. Position by position, gain times reading.
+
+<CodeBlock language="typescript" title="amplify-broken.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// channelGains: 64 amplification factors. latestReadings: 64 raw values.
+const gains = tf.tensor2d([channelGains]);      // shape [1, 64]
+const window = tf.tensor2d([latestReadings]);   // shape [1, 64]
+
+// BROKEN: this is not the multiplication you want.
+const amplified = gains.matMul(window);
+// Error in matMul: inner shapes (64) and (1) of Tensors with
+// shapes 1,64 and 1,64 and transposeA=false and transposeB=false
+// must match.`}
+</CodeBlock>
+
+The error is precise once you can read it: `matMul` multiplies **rows into columns**, so it needs the left tensor's column count (64) to equal the right tensor's row count (1). But matching positions was the intent all along, and that is a different op with no inner-dimension rule at all. TensorFlow.js has both multiplications; the bug is reaching for the wrong one.
+
+## Element-wise Operations: The Repair
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-When you write `arr.map((x, i) => x + arr2[i])`, you're doing element-wise addition. TensorFlow.js does the same thing, but across any number of dimensions and on the GPU:
+When you write `arr.map((x, i) => x + arr2[i])`, you're doing element-wise addition. `tf.mul`, `tf.add`, and `tf.sub` are the same idea across any number of dimensions, on the GPU. `gains.mul(window)` is the one-word fix for the broken amplifier:
 
 <CodeBlock language="typescript" title="tensor-ops.ts">
 {`import * as tf from '@tensorflow/tfjs';
+
+// The amplifier from amplify-broken.ts, repaired: matching positions,
+// no shape rule to trip.
+const amplified = gains.mul(window);      // [1, 64], gain[i] * reading[i]
 
 const sensor1 = tf.tensor([1, 2, 3]);
 const sensor2 = tf.tensor([4, 5, 6]);
@@ -63,9 +93,9 @@ const result = sensor1.add(sensor2).mul(tf.scalar(2));
 // [10, 14, 18]`}
 </CodeBlock>
 
-## Matrix Multiplication, and Its One Rule
+## When You DO Want matMul
 
-`matMul` is different from `mul`. It doesn't multiply matching positions; it multiplies **rows into columns**: every row of the left tensor dot-producted with every column of the right. That gives it one inflexible shape rule:
+So why does `matMul` exist at all? Because "every row dot-producted with every column" is the operation neural networks are made of, and no chain of element-wise ops can express it. It comes with the one inflexible shape rule the error message was enforcing:
 
 **`[m, n] × [n, p] → [m, p]`: the inner dimensions must match.**
 
@@ -87,7 +117,7 @@ output.print();
 //  [12]]    ← 2+4+6: second column`}
 </CodeBlock>
 
-Why care? Every layer of every neural network you'll build is essentially `matMul(input, weights) + bias`. The shape rule above is the single most common source of errors in ML code. You'll meet `Error: inner dimensions must match` again, and now you know exactly what it's complaining about.
+Why care? Every layer of every neural network you'll build is essentially `matMul(input, weights) + bias`. The shape rule above is the single most common source of errors in ML code. The error that opened this lesson will find you again the day you build your first network layer; next time you'll read it in one pass.
 
 ## Challenge
 
@@ -102,6 +132,7 @@ Add two tensors together to combine sensor readings.
 
 <LessonRecap
   whatYouLearned={[
+    "mul multiplies matching positions; matMul multiplies rows into columns. Reaching for the wrong one is the classic first tensor bug, and the error message names the op that threw it.",
     "Element-wise operations (add, mul, sub) apply the same computation to each matching position across tensors of any rank, equivalent to a GPU-accelerated map+zip.",
     "Matrix multiplication (matMul) follows the [m,n] x [n,p] = [m,p] shape rule: inner dimensions must match. Use transpose() to fix mismatches.",
     "Every neural network layer computes matMul(input, weights) + bias, making the matMul shape rule the most common source of dimension errors in ML code."

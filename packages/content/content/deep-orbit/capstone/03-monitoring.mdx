@@ -4,6 +4,9 @@ title: "Monitoring"
 moduleId: capstone
 themeId: deep-orbit
 order: 3
+scene:
+  location: "Archimedes, Engineering"
+  time: "After the 0249 crash"
 estimatedMinutes: 25
 difficulty: advanced
 context:
@@ -36,7 +39,7 @@ keywords:
 skillAxes: [deployment, evaluation]
 ---
 
-Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. The argument happened four nights ago and the dashboard lost.
+Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. That argument was over the moment the screen went dark, and the dashboard lost it.
 
 <Dialogue speaker="ARIA">
 Commander, I must flag a concern. The model performs at 91.8% accuracy now. In three weeks, that number will change. The signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.

@@ -4,6 +4,10 @@ title: "LSTM Gates"
 moduleId: recurrent-networks
 themeId: deep-orbit
 order: 3
+pattern: broken_code_first
+scene:
+  location: "Archimedes, Engineering"
+  time: "Morning after the flatline run"
 estimatedMinutes: 14
 difficulty: advanced
 context:
@@ -51,7 +55,7 @@ Don't tell me what it's like, Ensign. Tell me how far back it can hold a pattern
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in it anywhere. A forget gate reads the current input and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. That is why it can hold a pattern from 72 hours ago.
+Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in it anywhere. A forget gate reads the current input together with the previous hidden state and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. That is why it can hold a pattern from 72 hours ago.
 </Dialogue>
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. That [0,1] output is what makes a gate a dimmer rather than a switch.
@@ -153,13 +157,19 @@ Build an LSTM that handles long signal sequences.
   answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, not set by a clock. A value near 0 discards that dimension; near 1 keeps it fully. localStorage TTL removes the entire entry after a fixed timeout. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
 />
 
+<RecallPrompt
+  question="Demir's overnight RNN run flatlined at loss 0.693 for 200 epochs. Why is that specific number diagnostic, and what architectural change fixes the underlying cause?"
+  answer="0.693 is ln(2), the binary crossentropy of a model predicting 0.5 forever: a coin flip. Flat at 0.693 means no learning. On long sequences the usual cause is vanishing gradients through the recurrent steps, and the fix is a gated architecture (LSTM or GRU) whose cell state gives gradients a direct highway through time."
+/>
+
 <LessonRecap
   whatYouLearned={[
     "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that scale, not switch, information flow.",
     "The cell state acts as a direct gradient highway through time, preventing the exponential decay that breaks simple RNNs on long sequences.",
-    "GRUs use two gates instead of three (roughly 25% fewer parameters) and often match LSTM accuracy: training both and comparing is a standard first step."
+    "GRUs use two gates instead of three (roughly 25% fewer parameters) and often match LSTM accuracy: training both and comparing is a standard first step.",
+    "A flatlined loss at 0.693 on a binary task is the coin-flip signature: the model is learning nothing, and on long sequences with a simple RNN, vanishing gradients are the first suspect."
   ]}
-  bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context, not a timer."
+  bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context, not a timer."
   youCanNow="Replace `tf.layers.simpleRNN` with `tf.layers.lstm` to handle long-range temporal dependencies, and explain what each gate contributes."
 />
 
@@ -168,7 +178,7 @@ Build an LSTM that handles long signal sequences.
 Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. Demir replays the full eleven days, and at the 72-hour mark the network flags the recurrence in a single step. The cell state carried the pattern the whole way. On the bridge channel, ARIA is silent for four full seconds before she speaks.
 
 <Dialogue speaker="ARIA">
-Observation. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and remembers three days. I have no rule that explains why that works.
+Filed without directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and remembers three days. Nothing in my tables explains why that works.
 </Dialogue>
 
 </Epilogue>

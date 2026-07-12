@@ -4,10 +4,14 @@ title: "The Forward Pass"
 moduleId: neural-networks
 themeId: deep-orbit
 order: 4
+pattern: broken_code_first
+scene:
+  location: "Archimedes, Bridge"
+  time: "After the 0940 demo"
 estimatedMinutes: 14
 difficulty: intermediate
 context:
-  narrative: "The network architecture is ready. Dr. Farah feeds the first batch of signal data through the system."
+  narrative: "The architecture is ready, and its first demo just died on stage with the Commander watching: one missing batch dimension. Farah orders it run again, properly."
 concept:
   explanation: "The forward pass pushes data through the network layer by layer: each layer transforms its input and hands the result on, no step skippable, no step stoppable."
   bridge:
@@ -52,8 +56,8 @@ The forward pass itself is the simple part: data enters the first layer, gets tr
 {`import * as tf from '@tensorflow/tfjs';
 
 const model = tf.sequential();
-model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [3] }));
-model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
+model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 // Forward pass: push sensor data through the network
@@ -66,8 +70,8 @@ console.log(prediction.dataSync()); // ~0.5 (random, untrained)
 
 // Shape flow through layers:
 // Input:   [1, 3]  → 3 sensor values
-// Layer 1: [1, 16] → 16 features detected
-// Layer 2: [1, 8]  → 8 higher-level patterns
+// Layer 1: [1, 32] → 32 features detected
+// Layer 2: [1, 16] → 16 higher-level patterns
 // Output:  [1, 1]  → probability of anomaly`}
 </CodeBlock>
 

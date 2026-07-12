@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { LandingHero } from "./components/landing-hero";
-import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 
 // jsdom ships without ResizeObserver / IntersectionObserver, shim so the
@@ -188,6 +187,17 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     });
   });
 
+  describe("Final CTA", () => {
+    it("carries the brutalist idle-stamp loop alongside shadow + hover", async () => {
+      const { default: Home } = await import("./page");
+      render(<Home />);
+      const cta = screen.getByTestId("landing-cta-final");
+      expect(cta.className).toMatch(/brutalist-stamp/);
+      expect(cta.className).toMatch(/brutalist-shadow/);
+      expect(cta.className).toMatch(/brutalist-hover/);
+    });
+  });
+
   describe("FAQ data (single source for visible FAQ + JSON-LD)", () => {
     it("covers the core objections incl. math level and refunds", async () => {
       const { FAQ_ITEMS } = await import("./faq-data");
@@ -196,30 +206,6 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(all).toMatch(/math/i);
       expect(all).toMatch(/14-day money-back/i);
       expect(all).toMatch(/no python required/i);
-    });
-  });
-
-  describe("LandingBridgeTicker", () => {
-    it("renders a BridgeTicker track with at least 8 source items", async () => {
-      render(<LandingBridgeTicker />);
-      const track = screen.getByTestId("ticker-track");
-      expect(track).toBeInTheDocument();
-      // BridgeTicker renders cards (doubled when motion enabled, single when
-      // reduced motion). At least the source count should be present.
-      const cards = screen.getAllByTestId("bridge-card");
-      expect(cards.length).toBeGreaterThanOrEqual(8);
-    });
-
-    it("exports LANDING_BRIDGE_ITEMS with tier metadata", async () => {
-      const mod = await import("./components/landing-bridge-ticker");
-      expect(Array.isArray(mod.LANDING_BRIDGE_ITEMS)).toBe(true);
-      expect(mod.LANDING_BRIDGE_ITEMS.length).toBeGreaterThanOrEqual(8);
-      // Every item should have fe + ml + tier.
-      for (const item of mod.LANDING_BRIDGE_ITEMS) {
-        expect(typeof item.fe).toBe("string");
-        expect(typeof item.ml).toBe("string");
-        expect(["identity", "structural", "intuition"]).toContain(item.tier);
-      }
     });
   });
 });

@@ -6,6 +6,9 @@ themeId: deep-orbit
 order: 5
 estimatedMinutes: 12
 difficulty: beginner
+scene:
+  location: "Archimedes, Bridge"
+  epilogueLocation: "Bridge, Main Displays"
 context:
   narrative: "Commander Mirza orders all sensor data normalized before the deep scan begins."
   speaker: "Commander Mirza"
@@ -111,7 +114,8 @@ Normalize the Archimedes sensor data using z-score normalization.
 <LessonRecap
   whatYouLearned={[
     "Unnormalized scales bias gradient updates toward whichever feature has the largest raw values. Normalization gives every feature comparable numerical influence during training.",
-    "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call. Min-max (subtract min, divide by range) works for data with true, known bounds like pixel values.",
+    "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call.",
+    "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds like pixel values. Live sensor streams have no such bounds, which is why z-score wins there.",
     "Save the training-time mean and standard deviation. Inference data must be normalized with those same statistics, not recomputed from the new batch."
   ]}
   bridge="Min-max normalization is the same formula as scroll-progress: `scrollY / (docHeight - viewportHeight)` maps pixels to 0-1, and `data.sub(min).div(max.sub(min))` maps sensor readings to 0-1 the same way."

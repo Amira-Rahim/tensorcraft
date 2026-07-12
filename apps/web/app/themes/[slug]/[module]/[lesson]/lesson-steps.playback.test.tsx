@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import { StrictMode } from "react";
-import { LessonSteps } from "./lesson-steps";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+import { LessonSteps, PATTERN_LABELS } from "./lesson-steps";
 
 // Unlike lesson-steps.test.tsx, this suite uses the REAL LessonContent and
 // REAL Dialogue so the playback timeline runs against the actual MDX DOM.
@@ -225,5 +228,73 @@ describe("LessonSteps, playback against real MDX DOM", () => {
       vi.advanceTimersByTime(30_000);
     });
     expect(shownBeatCount()).toBe(4);
+  });
+});
+
+describe("structure-variety machinery (P2 gate)", () => {
+  it("PATTERN_LABELS covers every non-standard pattern the content schema accepts", () => {
+    // The velite config is the authoring-side source of truth for the enum.
+    // A pattern value added there without a label here would render nothing
+    // in the Briefing FORMAT tag (the DerivationDrawer bug class), so this
+    // test fails on any drift between the two lists.
+    const configPath = join(
+      fileURLToPath(import.meta.url),
+      "../../../../../../../../packages/content/velite.config.ts",
+    );
+    const src = readFileSync(configPath, "utf8");
+    const enumBlock = src.match(/pattern: s\s*\.enum\(\[([\s\S]*?)\]\)/);
+    expect(enumBlock).not.toBeNull();
+    const schemaValues = Array.from(
+      enumBlock![1].matchAll(/"([a-z_]+)"/g),
+      (m) => m[1],
+    );
+    expect(schemaValues).toContain("standard");
+    const nonStandard = schemaValues.filter((v) => v !== "standard").sort();
+    expect(Object.keys(PATTERN_LABELS).sort()).toEqual(nonStandard);
+    for (const label of Object.values(PATTERN_LABELS)) {
+      expect(label.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("renders the FORMAT tag and slugline when pattern and scene are set", () => {
+    render(
+      <StrictMode>
+        <LessonSteps
+          lesson={{
+            ...lesson,
+            pattern: "broken_code_first",
+            scene: { location: "Archimedes, Bridge", time: "Second watch" },
+          }}
+          exercises={[]}
+          theme={theme}
+          themeSlug="deep-orbit"
+          moduleSlug="foundations"
+          moduleName="Foundations"
+          prevLesson={null}
+          nextLesson={null}
+        />
+      </StrictMode>,
+    );
+    const tag = screen.getByTestId("pattern-format-tag");
+    expect(tag).toHaveTextContent(PATTERN_LABELS.broken_code_first);
+    expect(screen.getAllByText("Archimedes, Bridge").length).toBeGreaterThan(0);
+  });
+
+  it("renders no FORMAT tag for standard-pattern lessons", () => {
+    render(
+      <StrictMode>
+        <LessonSteps
+          lesson={{ ...lesson, pattern: "standard" }}
+          exercises={[]}
+          theme={theme}
+          themeSlug="deep-orbit"
+          moduleSlug="foundations"
+          moduleName="Foundations"
+          prevLesson={null}
+          nextLesson={null}
+        />
+      </StrictMode>,
+    );
+    expect(screen.queryByTestId("pattern-format-tag")).toBeNull();
   });
 });

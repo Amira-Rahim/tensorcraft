@@ -14,9 +14,6 @@ test.describe("DeepScanDemo: live inference on the free tier", () => {
     page,
   }) => {
     // Seed the step BEFORE the lesson page's first render reads it.
-    // NB: the storage key is the slugified lesson TITLE ("Data
-    // Normalization" → data-normalization), not the lesson slug
-    // (see getStorageKey in lesson-steps.tsx).
     await page.addInitScript(() => {
       // Key uses the frontmatter slug (normalization), not the slugified
       // title (data-normalization) — see getStorageKey in lesson-steps.tsx.

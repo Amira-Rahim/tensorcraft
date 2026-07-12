@@ -4,10 +4,13 @@ title: "Model Loading"
 moduleId: browser-runtimes
 themeId: deep-orbit
 order: 3
+pattern: broken_code_first
+scene:
+  location: "Bridge, Dashboard Station"
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "The trained DEEP SCAN model needs to be loaded into the browser dashboard. Demir discovers that loading a model is just another fetch, with a twist."
+  narrative: "First integration of the trained model into the dashboard, first line of red. The 404 is the lesson: a model does not ship as one file."
   speaker: "Ensign Demir"
 concept:
   explanation: "Loading a pre-trained model in TF.js follows the fetch → parse → use pattern you already know from API data fetching."
@@ -19,7 +22,7 @@ concept:
     tier: structural
     breaks: "fetch returns a parsed JSON object; loadLayersModel returns a `LayersModel` instance with `predict`, `evaluate`, weights, and a compute graph. The HTTP call shape matches; the resolved value type does not. Subsequent code paths diverge: you call `.json()` once, you call `.predict()` many times, and the model holds onto GPU memory until disposed."
 consequence:
-  narrative: "340 milliseconds from request to ready; Nazari calls it within budget. Demir caches the model in IndexedDB for offline use."
+  narrative: "The manifest loads, the shards follow, and Demir caches the model in IndexedDB. Then two consoles disagree about one reading, and caching stops being a performance feature."
 hints:
   - level: nudge
     content: "tf.loadLayersModel(url) takes the URL of model.json and fetches the weight files listed in its manifest automatically"
@@ -36,11 +39,15 @@ keywords:
 skillAxes: [deployment, fe_integration]
 ---
 
+`Error: Request to /models/deep-scan.json failed with status code 404. Please verify this URL points to the model JSON of the model to load.`
+
+First integration of the trained model into the dashboard, and the console's first word is red. Demir aimed `tf.loadLayersModel()` at a single file, because he assumed a trained model ships as one. It doesn't. What a model actually ships as, and why the loader wants the URL of a *manifest*, is the whole repair.
+
 <Dialogue speaker="Ensign Demir">
-So the model is just files, a JSON manifest and binary weight chunks? That's... exactly like loading a web font or a spritesheet.
+So the model is not one file at all. That's... exactly like a web font or a spritesheet, isn't it. I was fetching the spritesheet by the name of the folder.
 </Dialogue>
 
-The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the whole network leg of the trip. Where it goes after that is a question ARIA answers later in this lesson, at the exact moment it stops being academic.
+The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the whole network leg of the trip. Where it goes after that is a question ARIA answers later in this lesson.
 
 <LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
 

@@ -6,8 +6,11 @@ themeId: deep-orbit
 order: 3
 estimatedMinutes: 16
 difficulty: intermediate
+pattern: discovery
+scene:
+  location: "Archimedes, Engineering"
 context:
-  narrative: "Gradient descent works for a single weight, but the network has hundreds. ARIA needs an efficient way to compute all gradients at once."
+  narrative: "Gradient descent works for a single weight. The network has 673. Demir tries the obvious approach first, and the obvious approach is the lesson."
 concept:
   explanation: "Backpropagation computes gradients for every weight in one backward sweep, applying the chain rule from the loss back to the input."
   bridge:
@@ -33,15 +36,42 @@ keywords:
 skillAxes: [training]
 ---
 
-<Dialogue speaker="ARIA">
-Estimating the gradient for each of 673 parameters one nudge at a time would cost 673 additional forward passes. Backpropagation computes all 673 derivatives exactly in one backward sweep, at a cost of roughly two forward passes. That is a speedup of roughly 225x on this network.
-</Dialogue>
+You already know how to find one gradient without any new math: nudge the weight, rerun the network, see how the loss moved. Demir knows it too. So before this lesson hands you anything, do what he did at the engineering rig: take the method you have and scale it to all 673 parameters. Watch what it costs.
 
-<LearningObjectives objectives={["Understand how backpropagation works at a high level", "See the connection to React's reconciliation algorithm", "Use tf.variableGrads() for automatic gradient computation", "Appreciate why backprop made deep learning practical"]} />
+<LearningObjectives objectives={["Estimate a gradient numerically and count what that costs at network scale", "Understand how backpropagation works at a high level", "See the connection to React's reconciliation algorithm", "Use tf.variableGrads() for automatic gradient computation"]} />
+
+## The Method You Already Have
+
+One weight, one question: if I move this a little, does the loss go down? Nothing stops you from asking it 673 times.
+
+<CodeBlock language="typescript" title="gradient-by-nudging.ts">
+{`// Numeric gradient: nudge one weight, rerun, compare. No calculus.
+const EPS = 1e-3;
+
+function nudgedLoss(w: tf.Variable, index: number): number {
+  const values = w.dataSync().slice();
+  values[index] += EPS;
+  w.assign(tf.tensor(values, w.shape));
+  const loss = computeLoss();          // one full forward pass
+  values[index] -= EPS;
+  w.assign(tf.tensor(values, w.shape)); // restore the weight
+  return loss;
+}
+
+const base = computeLoss();             // forward pass 0
+// gradient ≈ how much the loss moved, per unit of nudge
+const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
+</CodeBlock>
+
+It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; overnight becomes next month. The method is correct and the bill is unpayable, and that bill is the whole reason this lesson exists.
+
+<Dialogue speaker="ARIA">
+Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a cost of roughly two forward passes. It has a name.
+</Dialogue>
 
 ## Working Backwards
 
-React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by walking the loss gradient backwards, from output to input.
+The name is **backpropagation**. React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by walking the loss gradient backwards, from output to input.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -110,8 +140,14 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
   answer="It returns an object with two keys: `value` (the loss scalar) and `grads` (a dict of gradient tensors keyed by variable name). You use the grads to update each weight, either via an optimizer or by manual subtraction."
 />
 
+<RecallPrompt
+  question="Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it's correct?"
+  answer="It costs one full forward pass per parameter per training step: 673 parameters means 673 extra forward passes for a single update. Backpropagation gets all 673 derivatives exactly, in one backward sweep costing roughly two forward passes."
+/>
+
 <LessonRecap
   whatYouLearned={[
+    "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the bill backpropagation was invented to cancel.",
     "Backpropagation computes gradients for every weight in one backward pass by applying the chain rule from output to input, making it orders of magnitude faster than computing each gradient individually.",
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
     "Vanishing gradients occur when the chain rule product collapses across many layers. Residual connections help by adding 1 to each link in the chain."

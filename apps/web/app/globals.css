@@ -92,6 +92,49 @@ body {
   box-shadow: 6px 6px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent);
 }
 
+/* Brutalist stamp: idle loop for primary CTAs. The block periodically
+   presses flat into its own offset shadow, releases with an overshoot to
+   the exact hover pose (-2px / 6px), then snaps to rest. steps(1) holds
+   each frame until the next: hard cuts, no easing, same grammar as the
+   terminal cursor blink. Long rest (0-78%) keeps it ambient, not needy. */
+@keyframes brutalist-stamp {
+  0%,
+  78% {
+    transform: translate(0, 0);
+    box-shadow: 4px 4px 0 var(--tc-primary, #6baa8a);
+  }
+  79% {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--tc-primary, #6baa8a);
+  }
+  87% {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--tc-primary, #6baa8a);
+  }
+  94%,
+  100% {
+    transform: translate(0, 0);
+    box-shadow: 4px 4px 0 var(--tc-primary, #6baa8a);
+  }
+}
+
+.brutalist-stamp {
+  animation: brutalist-stamp 2.8s steps(1, end) infinite;
+}
+
+/* Interaction takes over: kill the loop so brutalist-hover's transition
+   (transform + box-shadow) isn't overridden by the running animation. */
+.brutalist-stamp:hover,
+.brutalist-stamp:focus-visible {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brutalist-stamp {
+    animation: none;
+  }
+}
+
 /* // COMMENT section label */
 .comment-label {
   font-family: var(--font-mono);

@@ -18,9 +18,10 @@ export async function generateMetadata({
 }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = getPost(slug);
-  if (!post) {
-    return { title: "Not found | Tensorcraft Blog" };
-  }
+  // notFound() here as well as in the body: metadata resolves before the
+  // shell streams, so this is what makes the 404 status real instead of a
+  // soft 404 (status locks at 200 once any HTML is flushed).
+  if (!post) notFound();
   const lessonTitle = post.matchedLessons?.[0]?.title;
   const ogParams = new URLSearchParams({
     kind: "digest",

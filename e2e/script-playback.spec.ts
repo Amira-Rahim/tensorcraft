@@ -27,7 +27,9 @@ test.describe("Lesson script playback", () => {
       expect(counts[i]).toBeGreaterThanOrEqual(counts[i - 1]);
     }
     await expect(page.locator("[data-script-state='done']")).toBeAttached();
-    expect(await page.locator("[data-beat-shown]").count()).toBe(5);
+    // 6 beats since P2 added scene sluglines: slugline + narrative stage
+    // direction + 3 dialogues + 1 story paragraph on foundations/01.
+    expect(await page.locator("[data-beat-shown]").count()).toBe(6);
     expect(Math.max(...counts)).toBeGreaterThanOrEqual(3);
 
     // Auto-scroll brought the explanation into view.

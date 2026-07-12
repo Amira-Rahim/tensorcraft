@@ -9,13 +9,17 @@ export function PlausibleScript() {
   useEffect(() => {
     try {
       setConsented(localStorage.getItem("tc-cookie-consent") === "accepted");
-    } catch {}
+    } catch {
+      /* localStorage unavailable (private mode); consent stays false */
+    }
 
     // Listen for consent changes
     function handleStorage() {
       try {
         setConsented(localStorage.getItem("tc-cookie-consent") === "accepted");
-      } catch {}
+      } catch {
+        /* localStorage unavailable (private mode); consent stays false */
+      }
     }
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);

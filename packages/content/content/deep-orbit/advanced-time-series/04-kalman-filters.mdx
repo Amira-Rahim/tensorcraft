@@ -6,8 +6,11 @@ themeId: deep-orbit
 order: 4
 estimatedMinutes: 30
 difficulty: advanced
+pattern: discovery
+scene:
+  location: "Archimedes, Lab"
 context:
-  narrative: "The signal's timing is drifting. Demir needs a filter that tracks a moving target under noise: a Kalman filter that maintains a running estimate of the true state."
+  narrative: "The signal's timing is drifting. Demir reaches for the smoothing trick every frontend developer owns, and rides it straight into the dilemma this lesson exists to solve."
   speaker: "Dr. Farah"
 concept:
   explanation: "A Kalman filter tracks a moving value under noise by predicting where it should be, then correcting with each new measurement, trusting whichever is currently less uncertain."
@@ -35,19 +38,33 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-> **PULSE INTERVAL LOG · last eight cycles (seconds):** 72.9 · 73.1 · 72.8 · 72.6 · 72.7 · 72.4 · 72.5 · 72.3
+> **PULSE INTERVAL LOG · last eight cycles (seconds):** 73.4 · 73.1 · 72.7 · 73.0 · 72.6 · 72.3 · 72.5 · 72.0
 
-Read the column twice. The noise says the numbers wander; the trend says they only wander downhill.
+Read the column twice. The noise says the numbers wander; the trend says they only wander downhill. Before this lesson names its subject, try to track that drift with a tool you already own.
 
-<Dialogue speaker="Dr. Farah">
-The signal's period isn't constant; it's drifting. We need a filter that tracks a moving target under noise. The Kalman filter predicts where the signal should be, then corrects with each new measurement. It's the optimal estimator for linear systems under Gaussian noise.
-</Dialogue>
+Demir's first move is the one every frontend developer makes when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above, twice, and the problem introduces itself:
+
+<CodeBlock language="typescript" title="ema-two-alphas.ts">
+{`const log = [73.4, 73.1, 72.7, 73.0, 72.6, 72.3, 72.5, 72.0];
+
+const smooth = (alpha: number) =>
+  log.reduce((s, x) => alpha * x + (1 - alpha) * s);
+
+smooth(0.2); // 72.66: beautifully smooth, but 0.66 s behind a signal
+             // that has already reached 72.0. It lags the drift.
+smooth(0.8); // 72.09: right on the drift, but the estimate now bounces
+             // with every noisy reading it was supposed to absorb.`}
+</CodeBlock>
+
+A small alpha trusts history and lags the drift. A large alpha trusts the newest reading and inherits its noise. On a drifting signal no single constant gets both right, and hand-picking alpha per signal, forever, is not an engineering answer.
 
 <Dialogue speaker="Ensign Demir">
-That's an exponential moving average! smoothed = alpha * new + (1-alpha) * old. The Kalman filter just computes the optimal alpha at each step?
+What I actually want is an alpha that adjusts itself. Trust the measurement more when my estimate is shaky. Trust my estimate more when the measurements are noisy.
 </Dialogue>
 
-That is exactly what it does. The "optimal alpha" has a name, the Kalman gain, and computing it at every step, by weighing how noisy the measurement is against how uncertain the running estimate is, is the entire filter. Demir's EMA framing needs no correction; the rest of this lesson is just the machinery behind that one moving coefficient.
+<Dialogue speaker="Dr. Farah">
+You have just specified the Kalman filter. Your self-adjusting alpha has a name, the Kalman gain, and computing it at every step, by weighing measurement noise against estimate uncertainty, is the entire algorithm. It is the optimal estimator for linear systems under Gaussian noise, and you arrived at its job description from a scroll handler.
+</Dialogue>
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter for tracking signal timing", "Connect Kalman filtering to the exponential moving average pattern", "Track the anomaly timing drift and predict the next occurrence"]} />
 

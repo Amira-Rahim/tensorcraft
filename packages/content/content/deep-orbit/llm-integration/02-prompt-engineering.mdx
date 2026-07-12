@@ -4,6 +4,10 @@ title: "Prompt Engineering"
 moduleId: llm-integration
 themeId: deep-orbit
 order: 2
+pattern: peer_review
+scene:
+  location: "Archimedes, Lab"
+  time: "Five hours to the window"
 estimatedMinutes: 25
 difficulty: intermediate
 context:
@@ -35,8 +39,14 @@ keywords:
 skillAxes: [deployment, fe_integration]
 ---
 
+> **REVIEW REQUEST · FARAH → DEMIR** · Prompt v1 and its output, attached. Before you write a better one, tell me exactly what is wrong with this one. "It's vague" is not a finding; name what is missing.
+>
+> v1: `"Analyze this signal data."` · OUTPUT: three generic paragraphs about signals in the abstract, one recommendation to consult a domain expert, zero numbers from the actual reading.
+
+Do the review before reading on. What would the model have needed to produce something a scientist could sign? Who is it supposed to be, what situation is it in, which data is it looking at, what shape should the answer take? Every gap you can name is a line the prompt failed to include.
+
 <Dialogue speaker="Dr. Farah">
-My first prompt was 'analyze this signal.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report.
+My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report. Your review found the same four holes; now you know they have names.
 </Dialogue>
 
 Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. It's `git log` versus `git log --oneline --graph --all`: specificity and structure decide what you get back.

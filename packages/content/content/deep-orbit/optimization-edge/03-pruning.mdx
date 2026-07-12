@@ -4,10 +4,13 @@ title: "Pruning"
 moduleId: optimization-edge
 themeId: deep-orbit
 order: 3
+pattern: peer_review
+scene:
+  location: "Archimedes, Engineering"
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Nazari examines the weight distribution. 'Half these weights are near zero. They do nothing. Remove them.' Demir discovers pruning: tree-shaking for neural networks."
+  narrative: "Nazari's directive is three sentences long and lands on Demir's queue flagged FOR REVIEW. Every sentence hides an assumption, and signing off without finding them is how models break quietly."
   speaker: "Chief Nazari"
 concept:
   explanation: "Pruning deletes the weights that contribute almost nothing, and 'almost' is the word this lesson teaches you to measure."
@@ -34,15 +37,15 @@ keywords:
 skillAxes: [deployment]
 ---
 
-<Dialogue speaker="Chief Nazari">
-Look at this weight histogram. Half the values are within 0.001 of zero. They contribute nothing and they cost 170 megabytes. Remove them.
-</Dialogue>
+> **ENGINEERING DIRECTIVE 44-C · NAZARI → DEMIR · FLAGGED: FOR REVIEW** · "Weight histogram attached. Half the values are within 0.001 of zero. They contribute nothing and they cost 170 megabytes. Remove them. Sign off or push back by end of watch."
+
+The directive is your review assignment, and it hides three assumptions in three sentences: that near-zero weights contribute *nothing*, that "remove" is an operation a dense weight matrix even supports, and that whatever is removed costs no accuracy worth measuring. Read the histogram, then decide which of the three you would push back on before scrolling.
 
 <Dialogue speaker="Ensign Demir">
-Tree-shaking. Webpack drops the exports nothing imports; we drop the weights nothing needs. The bundle gets smaller and nobody notices the difference.
+Tree-shaking. Webpack drops the exports nothing imports; we drop the weights nothing needs. The bundle gets smaller and nobody notices the difference. That's my sign-off draft, anyway.
 </Dialogue>
 
-He's close. Tree-shaking removes code that's provably unreachable; the bundle behaves identically afterward. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight changes the output a little. The craft is in measuring how much all those littles add up to.
+He's close, and a reviewer who signs that draft has missed what you hopefully caught. Tree-shaking removes code that's provably unreachable; the bundle behaves identically afterward. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight changes the output a little. The craft is in measuring how much all those littles add up to.
 
 <LearningObjectives objectives={["Understand pruning as tree-shaking for neural networks: remove near-zero weights", "Implement magnitude-based pruning with a configurable sparsity level", "Measure the accuracy-size tradeoff at different pruning levels", "Combine pruning with quantization for maximum compression"]} />
 
@@ -72,17 +75,19 @@ console.log(pruned);
 // Sparsity levels for DEEP SCAN:
 // 30% pruned: 93.8% accuracy (vs 94.2% baseline), barely noticeable
 // 60% pruned: 92.1% accuracy, good tradeoff
-// 80% pruned: 87.5% accuracy, too aggressive
+// 80% pruned: 87.5% accuracy
 // 90% pruned: 71.2% accuracy, model is broken`}
 </CodeBlock>
 
-Demir reads that ladder, does the arithmetic, and gets ambitious: at 80 percent sparsity the combined build would land near 28 MB, headroom to spare. He pushes it to the staging dashboard before dinner, without waiting for the replay suite.
+Demir reads that ladder, does the arithmetic, and gets ambitious: at 80 percent sparsity the combined build would land near 28 MB, headroom to spare, and 87.5 percent accuracy sounds survivable when it is only a number on a screen. He pushes it to the staging dashboard before dinner, without waiting for the replay suite to tell him what the missing 6.7 points actually contain.
 
 <Dialogue speaker="Chief Nazari">
 Staging replay, overnight: 87.5 percent accuracy. Your 80-percent build classified the 0247 salvage fragment as cosmic background. The one fragment we have left from that night, and your model threw it away. Revert to 60. The revalidation costs us three hours, and I'm logging them.
 </Dialogue>
 
 He reverts. The "almost nothing" in those extra weights turned out to be the anomaly itself: rare signals live in small weights, and aggressive pruning deletes the model's memory of exactly the things it has seen least.
+
+And the directive's second assumption resolves the unglamorous way: nothing was ever "removed." A dense weight matrix has no delete operation; pruning zeroes weights in place, and the megabytes only leave when the storage format encodes the sparsity instead of writing the zeros out longhand.
 
 ## Combined Optimization
 

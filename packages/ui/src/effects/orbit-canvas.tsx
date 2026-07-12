@@ -37,7 +37,7 @@ export function drawOrbit(
   w: number,
   h: number,
   rgb: [number, number, number],
-  hot: boolean,
+  hot: number,
   t: number,
 ) {
   const [r, g, b] = rgb;
@@ -52,7 +52,10 @@ export function drawOrbit(
   const cy = h * 0.5;
   const R = Math.max(w, h) * 0.5;
   const f = R * 2.6; // perspective focal length
-  const boost = hot ? 1.7 : 1;
+  // `hot` is a continuous 0..1 hover amount and may only affect styling.
+  // Positions are pure functions of t; feeding hot into any angle would
+  // rescale all elapsed time and teleport the whole system when it changes.
+  const boost = 1 + 0.7 * hot;
 
   // ── Nebula wash ── a huge, barely-there radial gradient anchored on the
   // core gives the whole field depth instead of a flat black backdrop.
@@ -73,7 +76,7 @@ export function drawOrbit(
     const sx = hash(i) * w;
     const sy = hash(i + 99) * h;
     const tw = 0.5 + 0.5 * Math.sin(t * (0.6 + hash(i + 3) * 1.4) + i);
-    const a = (0.12 + 0.5 * hash(i + 7)) * tw * (hot ? 1.3 : 1);
+    const a = (0.12 + 0.5 * hash(i + 7)) * tw * (1 + 0.3 * hot);
     const sr = 0.5 + hash(i + 5) * 1.2;
     ctx.beginPath();
     ctx.arc(sx, sy, sr, 0, Math.PI * 2);
@@ -98,7 +101,7 @@ export function drawOrbit(
 
   for (const ring of ORBIT_RINGS) {
     const rr = R * ring.radius;
-    const psi = t * ring.precession * (hot ? 1.6 : 1); // Y-axis precession
+    const psi = t * ring.precession; // Y-axis precession
     const cosT = Math.cos(ring.tilt);
     const sinT = Math.sin(ring.tilt);
     const cosP = Math.cos(psi);
@@ -134,8 +137,7 @@ export function drawOrbit(
 
     // Particles riding the ring.
     for (let i = 0; i < ring.count; i++) {
-      const theta =
-        (i / ring.count) * Math.PI * 2 + t * ring.speed * (hot ? 1.6 : 1);
+      const theta = (i / ring.count) * Math.PI * 2 + t * ring.speed;
       const [sx, sy, depth] = project(theta);
       const front = (depth + 1) / 2; // 0 far … 1 near
       const radius = 0.7 + 1.8 * front;
@@ -198,15 +200,34 @@ export function OrbitCanvas({
   const hovRef = useRef(hovered);
   hovRef.current = hovered;
   const runningRef = useRef(false);
+  // Own animation clock, advanced per frame. Hover speeds up how fast this
+  // clock runs (future time only) and eases a 0..1 brightness amount.
+  // Deriving positions from the raw rAF timestamp times a discrete hover
+  // multiplier would rescale all elapsed time and teleport every particle
+  // whenever hover flipped.
+  const tRef = useRef(0);
+  const lastRef = useRef<number | null>(null);
+  const hotAmtRef = useRef(0);
 
   const draw = useCallback(
-    (now = 0) => {
+    (now?: number) => {
       const c = ref.current;
       if (!c) return;
       const ctx = c.getContext("2d");
       if (!ctx) return;
+      // Clamp dt so a background-tab pause doesn't fast-forward the system.
+      const dt =
+        now == null || lastRef.current == null
+          ? 0
+          : Math.min(now - lastRef.current, 100);
+      if (now != null) lastRef.current = now;
+      const target = hovRef.current ? 1 : 0;
+      // Frame-rate-independent easing toward the hover state (~160ms tau).
+      hotAmtRef.current +=
+        (target - hotAmtRef.current) * (1 - Math.exp(-dt / 160));
+      tRef.current += (dt / 1000) * (1 + 0.6 * hotAmtRef.current);
       ctx.clearRect(0, 0, c.width, c.height);
-      drawOrbit(ctx, c.width, c.height, rgb, hovRef.current, now * 0.001);
+      drawOrbit(ctx, c.width, c.height, rgb, hotAmtRef.current, tRef.current);
       if (runningRef.current) frame.current = requestAnimationFrame(draw);
     },
     [rgb],
@@ -232,6 +253,8 @@ export function OrbitCanvas({
     const stop = () => {
       runningRef.current = false;
       cancelAnimationFrame(frame.current);
+      // Drop the clock anchor so time doesn't leap on resume after a pause.
+      lastRef.current = null;
     };
     const sync = () => {
       const reduced = !!mql?.matches;

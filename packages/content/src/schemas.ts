@@ -56,7 +56,10 @@ export const lessonSchema = z.object({
     .length(3)
     .optional(),
 
-  // Pedagogical pattern: drives alternate 5C presentations.
+  // Pedagogical pattern. The lesson BODY carries the alternate structure
+  // (authored that way); this field tags it so the Briefing SceneCard renders
+  // a FORMAT line (PATTERN_LABELS in lesson-steps.tsx) and the variety gate
+  // can assert skeleton-breakers exist per module.
   // "standard"          → conventional Context→Concept→Code→Challenge→Consequence
   // "broken_code_first" → lesson opens with a bug to fix before exposition
   // "discovery"         → learner explores examples/prompts before the concept is named

@@ -4,6 +4,8 @@ title: "FFT as Features"
 moduleId: signal-processing
 themeId: deep-orbit
 order: 4
+scene:
+  location: "Archimedes, Engineering"
 estimatedMinutes: 15
 difficulty: advanced
 context:
@@ -33,6 +35,12 @@ keywords:
   - model-improvement
 skillAxes: [data_prep]
 ---
+
+> **DEEP SCAN · EVALUATION LOG** · archive re-annotated against spectrogram ground truth · inputs: raw time-domain [3] · accuracy 78.0% · rerun with +8 FFT magnitude bins [11] · accuracy 87.0% · same archive, same labels, both runs.
+
+Nine points of accuracy, and not one new byte of sensor data. That log line is the whole lesson; the rest is understanding why it isn't a trick.
+
+And if you are wondering where the deployment review's 94 percent went: it was real, and it was measured against the labels the crew had before anyone aboard could see frequency. The spectrograms changed that. Re-annotate the archive window by window against ground truth that can actually see a 73.4 Hz component, and the raw-feature classifier's honest score is 78. Better instruments did not make the model worse; they stopped the scoreboard from flattering it.
 
 <Dialogue speaker="Ensign Demir">
 What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase, we also give it the spectral decomposition. More information, better decisions.
@@ -193,7 +201,8 @@ Extract FFT features from a signal and combine them with raw features.
   whatYouLearned={[
     "Feature engineering derives new model inputs from existing data to make patterns more directly accessible, without adding new information.",
     "FFT magnitudes expose frequency-domain structure that a model trained on raw time-domain samples would have to learn to extract on its own. Providing them as explicit inputs improves accuracy without more data.",
-    "Features from different sources often differ in scale by orders of magnitude. Z-score normalization must be applied using statistics computed from training data, and those same statistics must be reused at inference time."
+    "Features from different sources often differ in scale by orders of magnitude. Z-score normalization must be applied using statistics computed from training data, and those same statistics must be reused at inference time.",
+    "A model's score is only as honest as the labels behind it. Re-annotating the archive against spectrogram ground truth is what turned the deployment review's 94 into a real 78, before features earned it back to 87."
   ]}
   bridge="Just as `useMemo(() => items.sort(compare), [items])` derives a sorted array from props so the render function does not have to sort on every access, `tf.concat([rawSignal, fftMagnitudes], 1)` derives frequency features from the raw signal so the model does not have to learn frequency extraction from scratch."
   youCanNow="Extract top FFT magnitude bins from a signal, normalize them alongside raw features, and concatenate everything into a combined feature vector for a classifier."

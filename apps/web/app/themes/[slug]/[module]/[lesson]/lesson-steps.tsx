@@ -35,6 +35,12 @@ interface LessonStepsProps {
       };
     };
     consequence: { narrative: string };
+    pattern?:
+      | "standard"
+      | "broken_code_first"
+      | "discovery"
+      | "flashback"
+      | "peer_review";
     scene?: {
       location: string;
       time?: string;
@@ -439,6 +445,7 @@ function LessonStepsInner({
         theme={theme}
         themeSlug={themeSlug}
         scene={lesson.scene}
+        pattern={lesson.pattern}
         speakers={castSpeakers}
       />
     );
@@ -684,19 +691,38 @@ function ChromeBar({
   );
 }
 
+/* Learner-facing labels for the non-standard pedagogical patterns. Keyed by
+   the full schema enum minus "standard" (which renders nothing); the variety
+   regression test asserts this map covers every enum value, so adding a
+   pattern to the content schema without a label here fails CI rather than
+   silently rendering nothing. */
+export const PATTERN_LABELS: Record<
+  Exclude<NonNullable<LessonStepsProps["lesson"]["pattern"]>, "standard">,
+  string
+> = {
+  broken_code_first: "Field repair: broken code first",
+  discovery: "Open exploration: concept named last",
+  flashback: "Archive playback: an earlier scene, reopened",
+  peer_review: "Code review: critique before you write",
+};
+
 /* Right-rail card for the Briefing: scene slugline + cast avatars. */
 function SceneCard({
   theme,
   themeSlug,
   scene,
+  pattern,
   speakers,
 }: {
   theme: LessonStepsProps["theme"];
   themeSlug: string;
   scene?: { location: string; time?: string };
+  pattern?: LessonStepsProps["lesson"]["pattern"];
   speakers: string[];
 }) {
   const chars = themes[themeSlug]?.characters ?? [];
+  const patternLabel =
+    pattern && pattern !== "standard" ? PATTERN_LABELS[pattern] : undefined;
   return (
     <div className="flex flex-col gap-5">
       <span
@@ -721,6 +747,26 @@ function SceneCard({
               {scene.time}
             </span>
           )}
+        </div>
+      )}
+      {patternLabel && (
+        <div
+          data-testid="pattern-format-tag"
+          className="flex flex-col gap-1 border-l-2 pl-3"
+          style={{ borderColor: theme.palette.primary }}
+        >
+          <span
+            className="font-mono text-[10px] uppercase tracking-[2px]"
+            style={{ color: theme.palette.muted }}
+          >
+            Format
+          </span>
+          <span
+            className="font-mono text-xs"
+            style={{ color: theme.palette.text }}
+          >
+            {patternLabel}
+          </span>
         </div>
       )}
       {speakers.length > 0 && (

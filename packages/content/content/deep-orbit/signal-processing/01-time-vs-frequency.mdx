@@ -6,8 +6,12 @@ themeId: deep-orbit
 order: 1
 estimatedMinutes: 12
 difficulty: intermediate
+pattern: flashback
+scene:
+  location: "Archimedes, Lab"
+  time: "Archive playback"
 context:
-  narrative: "Dr. Farah stares at the signal plot. 'We are only seeing half the picture. This is the time domain. The real structure hides in the frequency domain.'"
+  narrative: "An archived frame from the first week resurfaces: the slow swell Farah found in the reshaped stream and never explained. Today she names the view that could explain it."
   speaker: "Dr. Farah"
 concept:
   explanation: "Every signal has two representations: the time domain (amplitude over time) and the frequency domain (which frequencies are present). Each view hides what the other shows."
@@ -35,8 +39,12 @@ keywords:
 skillAxes: [data_prep]
 ---
 
+> **ARIA ARCHIVE · PLAYBACK REQUEST: DR. FARAH** · Lab display, first week of contact. The stream reshaped to `[450, 64]`, mush snapping into stripes, and down every column a slow, regular swell, like something breathing. End of frame.
+
+Farah has kept that frame pinned to the corner of her display since the day she found it. The swell has never gotten a name. Today she drags the old capture to the center of the screen and puts the live plot beside it.
+
 <Dialogue speaker="Dr. Farah">
-Look at this signal plot, Demir. Amplitude over time. You see noise with occasional spikes. But I suspect there's hidden structure: periodic components buried in the noise that only reveal themselves in the frequency domain.
+Same swell, Demir. The day I found the shape, and now, live. Amplitude over time: you see noise with occasional spikes, and this slow breathing nobody has explained. I suspect there's hidden structure: periodic components buried in the noise that only reveal themselves in the frequency domain.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -47,7 +55,7 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 As a first sketch. But the DOM and CSSOM are both lossless views of markup someone wrote. The frequency view is only a complete description if you observe the entire signal, and we never do. We sample at a finite rate and cut finite windows, and both of those distort it. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, through that distortion.
 </Dialogue>
 
-The time domain plots amplitude at each moment. The frequency domain plots how strongly each periodic component is present. The rest of this lesson is learning to read the second view.
+The rest of this lesson is learning to read that second view.
 
 <LearningObjectives objectives={["Understand that every signal has two equivalent representations: time domain and frequency domain", "Identify what each domain reveals: time shows when, frequency shows what patterns", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
 

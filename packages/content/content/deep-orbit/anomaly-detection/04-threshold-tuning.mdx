@@ -4,6 +4,9 @@ title: "Threshold Tuning"
 moduleId: anomaly-detection
 themeId: deep-orbit
 order: 4
+scene:
+  location: "Archimedes, Bridge"
+  time: "After the fourteenth alert"
 estimatedMinutes: 14
 difficulty: intermediate
 context:
@@ -134,6 +137,11 @@ Anomaly detector fired 1000 alerts in one hour: clearly noise, not a real outbre
 <RecallPrompt
   question="What does F1 score measure, and why is it useful when comparing anomaly detection thresholds?"
   answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because moving the threshold shifts precision and recall in opposite directions; F1 captures both effects together, so the threshold with the highest F1 represents the best balance for a given dataset, though the right balance ultimately depends on the relative cost of each error type."
+/>
+
+<RecallPrompt
+  question="Two deployments use the same model. One guards a smoke detector, the other gates a crew-waking alarm. Why should their thresholds differ even though F1 is optimal at the same cutoff?"
+  answer="F1 weighs precision and recall equally, but the two systems have opposite cost asymmetries: a missed fire is catastrophic (favor recall, lower threshold) while waking the crew nightly destroys trust in the alert (favor precision, higher threshold). The optimal threshold follows the cost of each error type, not the F1 peak."
 />
 
 <LessonRecap
