@@ -74,7 +74,6 @@ const SAMPLE_FRONTMATTER = {
   },
   consequence: {
     narrative: "The signal begins to take shape.",
-    nextLessonTeaser: "Next: tensor shapes",
   },
   hints: [
     { level: "nudge" as const, content: "Arrays store data in memory" },

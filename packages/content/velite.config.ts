@@ -91,7 +91,6 @@ const lessons = defineCollection({
       // Code and Challenge sections live in the MDX body
       consequence: s.object({
         narrative: s.string().min(1),
-        nextLessonTeaser: s.string().optional(),
       }),
 
       // Screenplay scene metadata (optional; falls back gracefully)

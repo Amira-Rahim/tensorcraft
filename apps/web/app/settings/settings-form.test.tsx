@@ -333,7 +333,7 @@ describe("SettingsForm", () => {
       );
     });
     // Notification prefs now go through PATCH /api/preferences (§4e).
-    const lastCall = fromUpdateMock.mock.calls.at(-1)?.[0] as
+    const lastCall = (fromUpdateMock.mock.calls as unknown[][]).at(-1)?.[0] as
       | Record<string, unknown>
       | undefined;
     expect(lastCall).toBeDefined();
@@ -365,7 +365,7 @@ describe("SettingsForm", () => {
         }),
       );
     });
-    const call = fetchMock.mock.calls.at(-1);
+    const call = (fetchMock.mock.calls as unknown[][]).at(-1);
     const body = JSON.parse((call?.[1] as { body: string }).body);
     expect(body).toEqual({ email_alerts: true, weekly_digest: true });
   });
@@ -382,8 +382,10 @@ describe("SettingsForm", () => {
     await waitFor(() => {
       expect(fromUpdateMock).toHaveBeenCalled();
     });
-    const preferencesCalls = fetchMock.mock.calls.filter(
-      (c) => typeof c[0] === "string" && c[0].includes("/api/preferences"),
+    const preferencesCalls = (fetchMock.mock.calls as unknown[][]).filter(
+      (c) =>
+        typeof c[0] === "string" &&
+        (c[0] as string).includes("/api/preferences"),
     );
     expect(preferencesCalls).toHaveLength(0);
   });

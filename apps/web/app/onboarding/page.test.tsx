@@ -252,7 +252,7 @@ describe("OnboardingPage", () => {
       expect(patchCall).toBeTruthy();
     });
 
-    const patchCall = fetchMock.mock.calls.find(
+    const patchCall = (fetchMock.mock.calls as unknown[][]).find(
       ([u]) => typeof u === "string" && u.includes("/api/onboarding"),
     )!;
     const init = patchCall[1] as RequestInit;

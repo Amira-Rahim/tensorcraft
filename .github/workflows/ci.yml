@@ -46,8 +46,8 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-      - name: Validate exercises (starter compiles + solution passes within 10s)
-        run: node scripts/validate-exercises.mjs
+      - name: Validate exercises (starter compiles + solution passes + starter must NOT pass)
+        run: node scripts/validate-exercises.mjs --starters
 
       - name: Upload test results
         if: failure()

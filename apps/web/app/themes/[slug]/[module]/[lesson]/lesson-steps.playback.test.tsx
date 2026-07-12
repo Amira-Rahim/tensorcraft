@@ -128,6 +128,7 @@ const theme = {
 };
 
 const lesson = {
+  slug: "introduction-to-tensors",
   title: "Introduction to Tensors",
   order: 1,
   estimatedMinutes: 10,

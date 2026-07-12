@@ -101,7 +101,10 @@ export function InboxView({ messages }: { messages: InboxMessage[] }) {
                     <p className="text-sm text-text-muted leading-relaxed whitespace-pre-line">
                       {m.bodyMdx}
                     </p>
-                    {m.ctaHref && m.ctaLabel && (
+                    {/* Defense-in-depth: only render internal CTAs. A
+                        stored external or javascript: href would turn a
+                        trusted inbox message into a phishing/XSS vector. */}
+                    {m.ctaHref && m.ctaHref.startsWith("/") && m.ctaLabel && (
                       <Link
                         href={m.ctaHref}
                         className="mt-4 inline-block px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20"

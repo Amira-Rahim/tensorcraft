@@ -105,7 +105,8 @@ the reader earns the scene by doing the work.
   only twice per module.
 - The frontmatter `consequence.narrative` stays as a one-line logline (it
   renders above the scene). `nextLessonTeaser` ("Next: [gerund]") is
-  RETIRED — delete on touch; the epilogue is the teaser.
+  REMOVED from the schema (2026-07-12) — do not add it back; the epilogue
+  is the teaser.
 
 ## Lesson close (authoring)
 

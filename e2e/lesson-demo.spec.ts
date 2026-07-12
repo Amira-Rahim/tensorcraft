@@ -18,7 +18,10 @@ test.describe("DeepScanDemo: live inference on the free tier", () => {
     // Normalization" → data-normalization), not the lesson slug
     // (see getStorageKey in lesson-steps.tsx).
     await page.addInitScript(() => {
-      localStorage.setItem("tc_step_deep-orbit_data-normalization", "5");
+      // Key uses the frontmatter slug (normalization), not the slugified
+      // title (data-normalization) — see getStorageKey in lesson-steps.tsx.
+      localStorage.setItem("tc_step_deep-orbit_normalization", "5");
+      localStorage.setItem("tc_step_max_deep-orbit_normalization", "5");
     });
     await page.goto("/themes/deep-orbit/foundations/normalization");
 

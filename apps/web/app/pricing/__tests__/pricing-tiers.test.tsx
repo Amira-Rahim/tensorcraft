@@ -95,7 +95,6 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
         },
       },
     });
-    // @ts-expect-error, jsdom lacks fetch; we install a stub per test.
     global.fetch = fetchMock;
     // @ts-expect-error, jsdom location is read-only; we replace it.
     delete window.location;

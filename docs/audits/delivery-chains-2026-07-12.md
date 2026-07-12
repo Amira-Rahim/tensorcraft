@@ -84,9 +84,70 @@ vitest 1026 green (incl. new checkout regression test; API mocks taught
 `.in()`); typecheck 9/9; grader 80/80 (+ starter invariant); prod build
 10/10; e2e 38/38 vs prod server + 31/31 vs dev on all touched surfaces.
 
+## Round 6: all-layers sweep (same day)
+
+Design lesson from the round-5 undercount (found by the test runner, not the
+audit): mechanical whole-repo sweeps of bug CLASSES beat agent judgment
+traces. Executed: three class sweeps + a never-audited-surface hunt + a full
+cumulative-diff review + the complete e2e suite.
+
+**Mechanical class sweeps: clean.** Zero remaining relative `/api` fetches
+(the checkout-killer class), zero remaining title-slugify call sites (the
+progress-mismatch class); all 8 swallowed `.catch(() => {})` sites inventoried
+and confirmed telemetry-tier (streak/genome RPCs, analytics beacons; the
+completion-write error path remains the documented deferred item).
+
+**SECURITY (HIGH, fixed): `dispatch_milestone` stored-phishing hole.** The
+never-audited-surface hunt found migration 029's SECURITY DEFINER
+`dispatch_milestone(p_user_id, ...)` had no auth.uid() guard AND no REVOKE:
+Postgres default EXECUTE-to-PUBLIC meant PostgREST exposed it to anon +
+authenticated, letting any client insert arbitrary "operator messages" with
+attacker-controlled `cta_href` into ANY user's DISPATCH inbox (stored
+phishing; javascript: href = XSS click vector). Proven reachable by the same
+grant path the legitimate sibling RPCs use. FIXED: **migration 036** revokes
+execute from public/anon/authenticated (service_role only) — MUST BE APPLIED
+WITH 035; plus render-boundary defense: the inbox CTA now renders only
+internal (`/`-prefixed) hrefs.
+
+**Also found + fixed:** waitlist POST returned 500 on malformed JSON (now
+400); e2e lesson-demo spec seeded the old title-derived localStorage key for
+foundations/05 (`data-normalization` → `normalization`, a knock-on from the
+progress-slug fix that the full-suite run caught).
+
+**Authz sweep result:** every other apps/api route verified to derive
+identity from the verified token; no cross-user access path found. Noted
+launch decisions (not defects): progress/attempts are self-attested
+(client-trust model → certificates attest completion, not proctored skill);
+GitHub OAuth `GITHUB_CALLBACK_URL` must point at the API host in prod
+(fails closed if not); anonymous issue-screenshot upload is rate-limited
+but public.
+
+**Full e2e suite: 80 passed / 19 skipped (auth-seeding gated) / 6
+first-compile flakes that pass serially.** Vitest 1026 exit 0.
+
+**PIPELINE GAP (found by cumulative-diff review, fixed): apps were never
+typechecked.** `pnpm typecheck` fanned out via turbo to the 9 packages that
+had a `typecheck` script — apps/web and apps/api had none, so no CI or local
+gate ever ran `tsc --noEmit` over ~200 app source files (Next.js `build`
+type-checks, but only when someone builds; vitest transpiles without
+checking). Added `"typecheck": "tsc --noEmit"` to both apps. First-ever run
+surfaced 1 real fixture bug (playback test missing required `lesson.slug`)
+plus 9 latent type errors in 3 test files (untyped `vi.fn().mock.calls`
+tuple indexing) — all fixed. Typecheck now 11/11 tasks.
+
+**Residue closed:** CI now runs the grader with `--starters` (the
+starter-must-fail invariant existed locally but CI omitted the flag);
+`nextLessonTeaser` fully removed from the velite schema + content fixtures
+(was orphaned after the renderer dropped it).
+
+**Round-6 exit battery (all exit 0):** typecheck 11/11 · vitest 1026 ·
+grader 80/80 `--starters` · runtime corpus 80/80 · lesson-demo +
+exercise-run e2e.
+
 ## Operator actions required at launch
 
-1. Apply `supabase/migrations/035_purchases_unique_session_full.sql`.
+1. Apply `supabase/migrations/035_purchases_unique_session_full.sql` AND
+   `036_lock_dispatch_milestone.sql`.
 2. Configure the Stripe webhook with ALL FIVE event types (see checklist).
 3. Set `NEXT_PUBLIC_API_URL` on Vercel (checkout now depends on it;
    `getApiUrl()` throws in production if unset, which is the safe failure).

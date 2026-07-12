@@ -13,11 +13,12 @@ const waitlist = new Hono();
  * POST /api/waitlist, Add email to waitlist (no auth required).
  */
 waitlist.post("/", async (c) => {
-  const body = await c.req.json<{
-    email: string;
-    themeId?: string;
-    source?: string;
-  }>();
+  let body: { email: string; themeId?: string; source?: string };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON body" }, 400);
+  }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!body.email || !emailRegex.test(body.email)) {
