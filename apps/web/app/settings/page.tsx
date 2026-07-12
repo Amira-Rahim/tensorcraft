@@ -35,7 +35,7 @@ export default async function SettingsPage() {
     .from("purchases")
     .select("plan_id, theme_ids, amount, created_at")
     .eq("user_id", user.id)
-    .eq("status", "completed")
+    .in("status", ["completed", "partially_refunded"])
     .order("created_at", { ascending: false });
 
   const purchases = (purchaseRows ?? []).map((p) => ({

@@ -92,7 +92,7 @@ async function loadOwnedThemes(): Promise<Set<string>> {
       .from("purchases")
       .select("theme_ids")
       .eq("user_id", user.id)
-      .eq("status", "completed");
+      .in("status", ["completed", "partially_refunded"]);
 
     const owned = new Set<string>();
     for (const row of data ?? []) {

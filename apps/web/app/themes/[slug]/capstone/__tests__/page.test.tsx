@@ -200,6 +200,7 @@ function buildQuery(data: unknown, single = false) {
   const chain = () => api;
   api.select = chain;
   api.eq = chain;
+  api.in = chain;
   api.limit = chain;
   api.order = chain;
   api.contains = chain;

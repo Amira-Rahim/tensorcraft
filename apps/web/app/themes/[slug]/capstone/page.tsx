@@ -124,7 +124,7 @@ export default async function CapstonePage({ params }: Props) {
       .from("purchases")
       .select("theme_ids")
       .eq("user_id", user.id)
-      .eq("status", "completed"),
+      .in("status", ["completed", "partially_refunded"]),
   ]);
 
   const attempts = exerciseAttemptRows ?? [];

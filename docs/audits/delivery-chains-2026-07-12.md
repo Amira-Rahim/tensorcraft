@@ -29,8 +29,14 @@ to the API host.
 Also fixed on the money path:
 - **Partial-refund revocation bug**: code comments promised partial refunds
   preserve access, but every entitlement read filtered `status="completed"`
-  only. All five reads now accept `partially_refunded`
-  (progress.ts, purchases.ts, payments.ts x2, checkout-button).
+  only. All TEN purchase reads now accept `partially_refunded`: the gating
+  reads (progress.ts hasThemePurchase, purchases.ts /access, payments.ts
+  upgrade-credit + /purchases, checkout-button already-owned) and the display
+  reads found via the test suite's unhandled-rejection sweep (pricing-tiers
+  upgrade preview, settings purchase history, dashboard owned-themes, themes
+  index lock badges, capstone owned check). Deliberately still
+  completed-only: purchase-success (post-checkout display) and admin revenue
+  metrics.
 - **Amount validation implemented** (was a dead comment): webhook now logs
   loudly when `amount_total` mismatches plan price minus credit (fulfills
   anyway; the charge already happened).

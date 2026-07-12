@@ -87,7 +87,7 @@ export function PricingTiers() {
         .from("purchases")
         .select("theme_ids, amount")
         .eq("user_id", session.user.id)
-        .eq("status", "completed")
+        .in("status", ["completed", "partially_refunded"])
         .then(({ data }) => {
           if (!data || data.length === 0) return;
           const owned = new Set<string>();

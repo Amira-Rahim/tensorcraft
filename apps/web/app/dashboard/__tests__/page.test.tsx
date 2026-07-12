@@ -40,6 +40,7 @@ function buildQuery(data: unknown) {
   const chain = () => api;
   api.select = chain;
   api.eq = chain;
+  api.in = chain;
   api.gte = chain;
   api.lte = chain;
   api.order = chain;
