@@ -80,6 +80,7 @@ function buildQuery(table: Tables) {
       filters.every((f) => {
         const v = row[f.field];
         if (f.op === "eq") return v === f.value;
+        if (f.op === "in") return (f.value as unknown[]).includes(v);
         if (f.op === "gte")
           return typeof v === "string" && v >= (f.value as string);
         if (f.op === "contains") {
@@ -122,6 +123,10 @@ function buildQuery(table: Tables) {
   };
   api.eq = (field: string, value: unknown) => {
     filters.push({ field, value, op: "eq" });
+    return api;
+  };
+  api.in = (field: string, value: unknown[]) => {
+    filters.push({ field, value, op: "in" });
     return api;
   };
   api.gte = (field: string, value: unknown) => {

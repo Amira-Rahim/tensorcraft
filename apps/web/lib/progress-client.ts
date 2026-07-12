@@ -71,6 +71,7 @@ export async function markLessonCompleted(
   themeId: string,
   moduleId: string,
   lessonId: string,
+  score?: number | null,
 ) {
   const supabase = getSupabaseBrowserClient();
   const {
@@ -81,7 +82,7 @@ export async function markLessonCompleted(
   // Preserve original started_at if the record already exists
   const { data: existingProgress } = await supabase
     .from("theme_progress")
-    .select("started_at, hints_used, attempts")
+    .select("started_at, hints_used, attempts, score")
     .eq("user_id", user.id)
     .eq("theme_id", themeId)
     .eq("lesson_id", lessonId)
@@ -96,6 +97,7 @@ export async function markLessonCompleted(
         module_id: moduleId,
         lesson_id: lessonId,
         status: "completed" as const,
+        score: score ?? existingProgress?.score ?? null,
         hints_used: existingProgress?.hints_used ?? 0,
         attempts: existingProgress?.attempts ?? 0,
         started_at: existingProgress?.started_at ?? new Date().toISOString(),

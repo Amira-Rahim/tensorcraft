@@ -28,9 +28,10 @@ testCode: |
       const model = buildLSTM();
       expect(model).toBeDefined();
     });
-    it('has 2 layers', () => {
+    it('has 2 layers, and the first is a real LSTM (not Flatten+Dense)', () => {
       const model = buildLSTM();
       expect(model.layers.length).toBe(2);
+      expect(model.layers[0].getClassName()).toBe('LSTM');
     });
     it('accepts long sequences', () => {
       const model = buildLSTM();

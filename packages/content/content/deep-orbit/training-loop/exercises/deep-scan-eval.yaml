@@ -4,7 +4,29 @@ title: "Evaluate and Predict with DEEP SCAN"
 instructions: "Evaluate a trained model on test data using model.evaluate(), then make a prediction on a new signal sample using model.predict(). Store the evaluation result in 'evalResult' and the prediction in 'prediction'."
 starterCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 8, activation: 'relu', inputShape: [4] }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));\nmodel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });\n\nconst testX = tf.tensor2d([[0.5, 0.3, 0.8, 0.1], [0.2, 0.9, 0.4, 0.7]]);\nconst testY = tf.tensor2d([[1], [0]]);\nconst newSignal = tf.tensor2d([[0.6, 0.4, 0.7, 0.3]]);\n\n// Evaluate the model on test data\nconst evalResult = null; // your code here\n\n// Predict on the new signal\nconst prediction = null; // your code here"
 solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 8, activation: 'relu', inputShape: [4] }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));\nmodel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });\n\nconst testX = tf.tensor2d([[0.5, 0.3, 0.8, 0.1], [0.2, 0.9, 0.4, 0.7]]);\nconst testY = tf.tensor2d([[1], [0]]);\nconst newSignal = tf.tensor2d([[0.6, 0.4, 0.7, 0.3]]);\n\nconst evalResult = model.evaluate(testX, testY);\n\nconst prediction = model.predict(newSignal);"
-testCode: "describe('Evaluation', () => { it('evalResult exists', () => { expect(evalResult).toBeDefined(); }); it('returns loss and metric', () => { expect(Array.isArray(evalResult)).toBe(true); expect(evalResult.length).toBe(2); }); it('prediction exists', () => { expect(prediction).toBeDefined(); }); it('prediction has correct shape', () => { expect(prediction.shape).toEqual([1, 1]); }); });"
+testCode: |
+  describe('Evaluation', () => {
+    it('evalResult is [loss, accuracy]: two scalar tensors with real values', () => {
+      expect(Array.isArray(evalResult)).toBe(true);
+      expect(evalResult.length).toBe(2);
+      const lossVal = evalResult[0].dataSync()[0];
+      const accVal = evalResult[1].dataSync()[0];
+      expect(Number.isFinite(lossVal)).toBe(true);
+      expect(accVal).toBeGreaterThanOrEqual(0);
+      expect(accVal).toBeLessThanOrEqual(1);
+    });
+    it('evalResult matches a fresh model.evaluate on the same data', () => {
+      const again = model.evaluate(testX, testY);
+      expect(evalResult[0].dataSync()[0]).toBeCloseTo(again[0].dataSync()[0], 4);
+    });
+    it('prediction is the sigmoid output for newSignal', () => {
+      expect(prediction.shape).toEqual([1, 1]);
+      const p = prediction.dataSync()[0];
+      expect(p).toBeGreaterThan(0);
+      expect(p).toBeLessThan(1);
+      expect(p).toBeCloseTo(model.predict(newSignal).dataSync()[0], 4);
+    });
+  });
 estimatedMinutes: 15
 difficulty: advanced
 mlContent: evaluation

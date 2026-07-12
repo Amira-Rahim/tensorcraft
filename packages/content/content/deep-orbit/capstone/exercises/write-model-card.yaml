@@ -98,6 +98,24 @@ testCode: |
       expect(card).toContain('Float32Array(80)');
       expect(card).toContain('{ label, confidence }');
     });
+
+    it('renders the metadata it is given, not a memorized card', () => {
+      const other = {
+        name: 'SENTINEL',
+        version: '2.3.1',
+        accuracy: 0.874,
+        sizeMB: 7,
+        inferenceMs: 12,
+        limitations: ['Drifts on unseen bands'],
+        inputFormat: 'Float32Array(64)',
+        outputFormat: '{ score }',
+      };
+      const card = generateModelCard(other);
+      expect(card).toContain('# SENTINEL v2.3.1');
+      expect(card).toContain('87.4%');
+      expect(card).toContain('7 MB');
+      expect(card).toContain('- Drifts on unseen bands');
+    });
   });
 estimatedMinutes: 8
 difficulty: beginner

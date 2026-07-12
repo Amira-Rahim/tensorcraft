@@ -79,10 +79,11 @@ vi.mock("@tensorcraft/supabase", () => ({
     from: (table: string) => {
       if (table === "purchases") {
         return {
-          // upgrade-credit query: .select().eq("user_id", …).eq("status", "completed")
+          // upgrade-credit query:
+          // .select().eq("user_id", …).in("status", ["completed", "partially_refunded"])
           select: () => ({
             eq: () => ({
-              eq: () =>
+              in: () =>
                 Promise.resolve({ data: mockExistingPurchases, error: null }),
             }),
           }),

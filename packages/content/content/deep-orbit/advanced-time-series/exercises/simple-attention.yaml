@@ -31,6 +31,20 @@ testCode: |
       // softmax of all-zero scores is uniform → average row = [2, 2, 2, 2]
       expect(arr[0]).toBeCloseTo(2, 4);
     });
+    it('weights follow the query: softmax([1, 0]) gives a 0.731/0.269 blend', () => {
+      const q = tf.tensor1d([1, 0]);
+      const H = tf.tensor2d([[1, 0], [0, 1]]);
+      const out = simpleAttention(q, H).dataSync();
+      expect(out[0]).toBeCloseTo(0.7311, 3);
+      expect(out[1]).toBeCloseTo(0.2689, 3);
+    });
+    it('a strong query focuses attention on the matching state (soft, not argmax)', () => {
+      const q = tf.tensor1d([10, 0]);
+      const H = tf.tensor2d([[1, 0], [0, 1]]);
+      const out = simpleAttention(q, H).dataSync();
+      expect(out[0]).toBeCloseTo(1.0, 3);
+      expect(out[1]).toBeCloseTo(0.0, 3);
+    });
   });
 estimatedMinutes: 15
 difficulty: intermediate

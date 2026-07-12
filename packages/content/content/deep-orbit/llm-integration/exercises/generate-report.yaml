@@ -44,6 +44,20 @@ testCode: |
       expect(report).toContain('Brief overview.');
       expect(report).toContain('Detailed analysis.');
     });
+    it('assembles whatever sections it is given, not a memorized document', () => {
+      const other = [
+        { heading: 'Telemetry', content: 'Pulse interval now 31 seconds.' },
+        { heading: 'Recommendation', content: 'Hold the relay window.' },
+        { heading: 'Risks', content: 'Bandwidth budget is tight.' },
+      ];
+      const report = assembleReport('Relay Briefing', other);
+      expect(report).toContain('# Relay Briefing');
+      expect(report).toContain('## Telemetry');
+      expect(report).toContain('Pulse interval now 31 seconds.');
+      expect(report).toContain('## Risks');
+      const separators = report.split('---').length - 1;
+      expect(separators).toBe(2);
+    });
   });
 estimatedMinutes: 8
 difficulty: beginner

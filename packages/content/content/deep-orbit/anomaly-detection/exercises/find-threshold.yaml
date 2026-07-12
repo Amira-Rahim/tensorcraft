@@ -47,14 +47,18 @@ testCode: |
       expect(result.threshold).toBeDefined();
       expect(result.f1).toBeDefined();
     });
-    it('finds a good threshold', () => {
+    it('achieves the perfect F1 this data allows, with a separating threshold', () => {
       const result = findBestThreshold(errors, labels, [0.01, 0.03, 0.05, 0.10]);
-      expect(result.f1).toBeGreaterThan(0.5);
-    });
-    it('threshold separates anomalies from normal', () => {
-      const result = findBestThreshold(errors, labels, [0.03, 0.05, 0.06]);
+      expect(result.f1).toBeCloseTo(1.0, 5);
       expect(result.threshold).toBeGreaterThan(0.02);
-      expect(result.threshold).toBeLessThan(0.08);
+      expect(result.threshold).toBeLessThan(0.07);
+    });
+    it('on overlapping data picks the candidate with the max F1 (0.03 -> 0.857, not 0.06 -> 0.8)', () => {
+      const errs2 = [0.02, 0.04, 0.05, 0.07, 0.09, 0.03];
+      const labs2 = [false, true, false, true, true, false];
+      const r2 = findBestThreshold(errs2, labs2, [0.03, 0.06]);
+      expect(r2.f1).toBeCloseTo(0.857, 2);
+      expect(r2.threshold).toBeCloseTo(0.03, 5);
     });
   });
 estimatedMinutes: 12

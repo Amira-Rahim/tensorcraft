@@ -59,7 +59,9 @@ export async function hasThemePurchase(userId: string, themeSlug: string) {
     .select("id")
     .eq("user_id", userId)
     .contains("theme_ids", [themeSlug])
-    .eq("status", "completed")
+    // partially_refunded preserves access by policy (full refunds revoke);
+    // keep this in sync with apps/api purchases/payments reads.
+    .in("status", ["completed", "partially_refunded"])
     .limit(1)
     .single();
 

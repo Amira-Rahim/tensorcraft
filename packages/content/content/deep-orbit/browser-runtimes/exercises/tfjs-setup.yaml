@@ -27,15 +27,11 @@ testCode: |
       const result = await initTF();
       expect(result).toBeDefined();
     });
-    it('has a backend string', async () => {
+    it('reports the real runtime, not hardcoded strings', async () => {
       const result = await initTF();
-      expect(typeof result.backend).toBe('string');
+      expect(result.backend).toBe(tf.getBackend());
+      expect(result.version).toBe(tf.version.tfjs);
       expect(result.backend.length).toBeGreaterThan(0);
-    });
-    it('has a version string', async () => {
-      const result = await initTF();
-      expect(typeof result.version).toBe('string');
-      expect(result.version.length).toBeGreaterThan(0);
     });
   });
 estimatedMinutes: 8

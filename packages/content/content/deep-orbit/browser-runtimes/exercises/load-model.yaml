@@ -35,22 +35,19 @@ solutionCode: |
   }
 testCode: |
   describe('loadAndInspect', () => {
-    it('returns model info', async () => {
+    it('reports the loaded model\'s real architecture, not invented values', async () => {
       const info = await loadAndInspect('/models/deep-scan/model.json');
-      expect(info).toBeDefined();
+      const ref = await tf.loadLayersModel('/models/deep-scan/model.json');
+      expect(info.layerCount).toBe(ref.layers.length);
+      expect(info.inputShape).toEqual(ref.inputs[0].shape);
+      expect(info.outputShape).toEqual(ref.outputs[0].shape);
     });
-    it('has inputShape array', async () => {
+    it('inputShape and outputShape are genuine shape arrays from the model', async () => {
       const info = await loadAndInspect('/models/deep-scan/model.json');
       expect(Array.isArray(info.inputShape)).toBe(true);
-      expect(info.inputShape.length).toBeGreaterThan(0);
-    });
-    it('has outputShape array', async () => {
-      const info = await loadAndInspect('/models/deep-scan/model.json');
       expect(Array.isArray(info.outputShape)).toBe(true);
-    });
-    it('has positive layer count', async () => {
-      const info = await loadAndInspect('/models/deep-scan/model.json');
-      expect(info.layerCount).toBeGreaterThan(0);
+      expect(info.inputShape[info.inputShape.length - 1]).toBeGreaterThan(0);
+      expect(info.outputShape[info.outputShape.length - 1]).toBeGreaterThan(0);
     });
   });
 estimatedMinutes: 12

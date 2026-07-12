@@ -4,7 +4,25 @@ title: "Run a Forward Pass"
 instructions: "Create a simple sequential model with one dense layer (3 units, inputShape [2]), then run model.predict() on the provided input tensor. The input is a batch of 2 samples, each with 2 features."
 starterCode: "const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);\n\n// Create a model and run a forward pass\nconst model = tf.sequential();\n// Add a dense layer here\n\nconst prediction = null; // run predict on input"
 solutionCode: "const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);\n\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 3, inputShape: [2] }));\n\nconst prediction = model.predict(input);"
-testCode: "describe('Forward Pass', () => { it('produces prediction', () => { expect(prediction).toBeDefined(); }); it('has correct batch size', () => { expect(prediction.shape[0]).toBe(2); }); it('has correct output units', () => { expect(prediction.shape[1]).toBe(3); }); });"
+testCode: |
+  describe('Forward Pass', () => {
+    it('model maps 2 features to 3 units', () => {
+      expect(model.layers.length).toBeGreaterThanOrEqual(1);
+      const kernel = model.layers[0].getWeights()[0];
+      expect(kernel.shape).toEqual([2, 3]);
+    });
+    it('prediction has shape [2, 3]', () => {
+      expect(prediction.shape).toEqual([2, 3]);
+    });
+    it('prediction is the model output for the input, not an invented tensor', () => {
+      const expected = model.predict(input);
+      const a = prediction.dataSync();
+      const b = expected.dataSync();
+      for (let i = 0; i < b.length; i++) {
+        expect(a[i]).toBeCloseTo(b[i], 4);
+      }
+    });
+  });
 estimatedMinutes: 12
 difficulty: intermediate
 mlContent: model

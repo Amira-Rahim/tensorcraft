@@ -18,6 +18,18 @@ testCode: |
     it('read all 16 samples through the lazy reader', () => {
       expect(readCount).toBe(16);
     });
+    it('dataset is a real re-drainable tf.data pipeline, not a hardcoded shape list', async () => {
+      const shapes = [];
+      await dataset.forEachAsync((b) => {
+        shapes.push({ xs: b.xs.shape, ys: b.ys.shape });
+      });
+      expect(shapes.length).toBe(4);
+      shapes.forEach((s) => {
+        expect(s.xs).toEqual([4, 2]);
+        expect(s.ys).toEqual([4, 1]);
+      });
+      expect(readCount).toBe(32);
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

@@ -288,6 +288,22 @@ export default async function LessonPage({ params }: Props) {
           ]),
         }}
       />
+      {!user && (
+        <div
+          role="status"
+          data-testid="guest-progress-notice"
+          className="border-b border-border bg-page px-4 py-2 text-center font-mono text-[11px] uppercase tracking-wider text-text-muted"
+        >
+          Reading as a guest: your progress is not saved.{" "}
+          <a
+            href={`/auth?redirectTo=${encodeURIComponent(`/themes/${slug}/${moduleSlug}/${lessonSlug}`)}`}
+            className="text-primary underline underline-offset-4"
+          >
+            Create a free account
+          </a>{" "}
+          to keep it.
+        </div>
+      )}
       <Suspense>
         <LessonSteps
           lesson={lesson}

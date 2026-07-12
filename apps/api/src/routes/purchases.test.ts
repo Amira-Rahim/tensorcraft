@@ -23,7 +23,7 @@ vi.mock("@tensorcraft/supabase", () => ({
         return {
           select: () => ({
             eq: () => ({
-              eq: () =>
+              in: () =>
                 Promise.resolve({ data: mockPurchaseRows, error: null }),
             }),
           }),

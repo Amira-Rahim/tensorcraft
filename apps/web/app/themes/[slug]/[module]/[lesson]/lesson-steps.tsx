@@ -15,6 +15,10 @@ import { GlossaryRail } from "./glossary-rail";
 
 interface LessonStepsProps {
   lesson: {
+    /** Velite frontmatter slug — the canonical lesson id used by every
+     *  progress read (theme map, dashboard, certificates). All writes MUST
+     *  use this, never a slugified title (11 of 56 titles differ). */
+    slug: string;
     title: string;
     order: number;
     estimatedMinutes: number;
@@ -132,20 +136,11 @@ const STEP_NAMES = [
   "Consequence",
 ] as const;
 
-function getLessonSlugFromTitle(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-function getStorageKey(themeSlug: string, lessonTitle: string): string {
-  const lessonSlug = getLessonSlugFromTitle(lessonTitle);
+function getStorageKey(themeSlug: string, lessonSlug: string): string {
   return `tc_step_${themeSlug}_${lessonSlug}`;
 }
 
-function getMaxStorageKey(themeSlug: string, lessonTitle: string): string {
-  const lessonSlug = getLessonSlugFromTitle(lessonTitle);
+function getMaxStorageKey(themeSlug: string, lessonSlug: string): string {
   return `tc_step_max_${themeSlug}_${lessonSlug}`;
 }
 
@@ -174,7 +169,12 @@ function LessonStepsInner({
   const { activeTerm } = useGlossary();
   const [currentStep, setCurrentStep] = useState(0);
   const [maxStepReached, setMaxStepReached] = useState(0);
-  const [exercisePassed, setExercisePassed] = useState(false);
+  // A lesson with N exercises requires N passes: one green run per embedded
+  // exercise, keyed by exercise slug (the incident-pairing lessons have 2).
+  const [passedExercises, setPassedExercises] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const exerciseScoresRef = useRef<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
   // Mobile-only: reveal the right work pane (code/exercise) over the prose.
   const [paneOpen, setPaneOpen] = useState(false);
@@ -186,8 +186,8 @@ function LessonStepsInner({
     scriptPlayedRef.current = true;
   }, []);
 
-  const storageKey = getStorageKey(themeSlug, lesson.title);
-  const maxStorageKey = getMaxStorageKey(themeSlug, lesson.title);
+  const storageKey = getStorageKey(themeSlug, lesson.slug);
+  const maxStorageKey = getMaxStorageKey(themeSlug, lesson.slug);
 
   // Read persisted step + furthest step reached on mount
   useEffect(() => {
@@ -239,31 +239,22 @@ function LessonStepsInner({
 
   // Mark lesson as started on mount
   useEffect(() => {
-    markLessonStarted(
-      themeSlug,
-      moduleSlug,
-      getLessonSlugFromTitle(lesson.title),
-    ).catch(() => {});
-    trackLessonStarted(
-      themeSlug,
-      moduleSlug,
-      getLessonSlugFromTitle(lesson.title),
-    );
-  }, [themeSlug, moduleSlug, lesson.title]);
+    markLessonStarted(themeSlug, moduleSlug, lesson.slug).catch(() => {});
+    trackLessonStarted(themeSlug, moduleSlug, lesson.slug);
+  }, [themeSlug, moduleSlug, lesson.slug]);
 
   // Mark lesson complete when reaching final step (Consequence)
   useEffect(() => {
     if (currentStep === 5) {
-      markLessonCompleted(
-        themeSlug,
-        moduleSlug,
-        getLessonSlugFromTitle(lesson.title),
-      ).catch(() => {});
-      trackLessonCompleted(
-        themeSlug,
-        moduleSlug,
-        getLessonSlugFromTitle(lesson.title),
+      const scores = Object.values(exerciseScoresRef.current);
+      const avgScore =
+        scores.length > 0
+          ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length)
+          : null;
+      markLessonCompleted(themeSlug, moduleSlug, lesson.slug, avgScore).catch(
+        () => {},
       );
+      trackLessonCompleted(themeSlug, moduleSlug, lesson.slug);
 
       // Tag first lesson complete in Kit (fire once)
       try {
@@ -293,15 +284,23 @@ function LessonStepsInner({
         // localStorage unavailable
       }
     }
-  }, [currentStep, themeSlug, moduleSlug, lesson.title]);
+  }, [currentStep, themeSlug, moduleSlug, lesson.slug]);
 
-  const handleExerciseComplete = useCallback(() => {
-    setExercisePassed(true);
-  }, []);
+  const handleExerciseComplete = useCallback(
+    (exerciseSlug: string, score: number) => {
+      exerciseScoresRef.current[exerciseSlug] = score;
+      setPassedExercises((prev) => {
+        const next = new Set(prev);
+        next.add(exerciseSlug);
+        return next;
+      });
+    },
+    [],
+  );
 
   const canContinue =
     currentStep === 3 // Challenge step
-      ? exercises.length === 0 || exercisePassed
+      ? exercises.length === 0 || passedExercises.size >= exercises.length
       : currentStep < TOTAL_STEPS - 1;
 
   const goNext = useCallback(() => {
@@ -359,7 +358,7 @@ function LessonStepsInner({
     );
   };
 
-  const lessonSlug = getLessonSlugFromTitle(lesson.title);
+  const lessonSlug = lesson.slug;
 
   const isStoryStep = currentStep === 0 || currentStep === 5;
 

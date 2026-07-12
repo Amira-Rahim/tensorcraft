@@ -12,7 +12,7 @@ instructions: |
       action: string,
     }
 
-  Cause logic: if sensorAuditLog.recentChanges.length > 0 → sensor-change; if baseline.modelAge > 90 (days) → model-stale; if ratio between 5 and 20 → threshold-drift; if ratio > 50 with no other cause → real-event.
+  Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baseline.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive) → threshold-drift; else → real-event. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch.
 starterCode: |
   function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
     return { rate: 0, ratio: 0, cause: 'real-event', action: '' };
@@ -73,6 +73,16 @@ testCode: |
         { alertsPerHour: 10, modelAge: 30 },
         { recentChanges: [] },
       );
+      expect(r.cause).toBe('real-event');
+    });
+
+    it('escalates ratios above the drift band (20 < ratio < 50) rather than guessing', () => {
+      const r = diagnoseStorm(
+        { alertsPerHour: 300 },
+        { alertsPerHour: 10, modelAge: 30 },
+        { recentChanges: [] },
+      );
+      expect(r.ratio).toBeCloseTo(30, 1);
       expect(r.cause).toBe('real-event');
     });
   });

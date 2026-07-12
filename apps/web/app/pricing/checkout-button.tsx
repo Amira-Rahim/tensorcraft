@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { getApiUrl } from "@/lib/api-url";
 import { trackCheckoutStarted } from "@/lib/analytics";
 import { errorMessageForCode, ERROR_MESSAGES } from "@/lib/error-messages";
 
@@ -39,7 +40,7 @@ export function CheckoutButton({
         .from("purchases")
         .select("theme_ids")
         .eq("user_id", session.user.id)
-        .eq("status", "completed")
+        .in("status", ["completed", "partially_refunded"])
         .then(({ data }) => {
           if (!data) return;
           const owned = new Set(data.flatMap((p) => p.theme_ids));
@@ -71,7 +72,10 @@ export function CheckoutButton({
 
       let response: Response;
       try {
-        response = await fetch("/api/payments/checkout", {
+        // The payments API lives on the separate API host (api.tensorcraft.app),
+        // NOT this Next.js origin. A relative URL here 404s on Vercel and no
+        // checkout session is ever created.
+        response = await fetch(`${getApiUrl()}/api/payments/checkout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

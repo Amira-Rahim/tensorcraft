@@ -25,14 +25,26 @@ solutionCode: |
   }
 testCode: |
   describe('runONNX', () => {
-    it('returns a number', async () => {
+    it('returns the session output for input [0.5, 0.3, 0.7], not an invented number', async () => {
       const result = await runONNX('/models/deep-scan.onnx');
-      expect(typeof result).toBe('number');
-    });
-    it('returns a value between 0 and 1', async () => {
-      const result = await runONNX('/models/deep-scan.onnx');
+      const session = await ort.InferenceSession.create('/models/deep-scan.onnx');
+      const out = await session.run({
+        input: new ort.Tensor('float32', new Float32Array([0.5, 0.3, 0.7]), [1, 3]),
+      });
+      expect(result).toBeCloseTo(out.output.data[0], 5);
       expect(result).toBeGreaterThanOrEqual(0);
       expect(result).toBeLessThanOrEqual(1);
+    });
+    it('actually creates an inference session (create is invoked)', async () => {
+      const orig = ort.InferenceSession.create;
+      let calls = 0;
+      ort.InferenceSession.create = function (...args) { calls++; return orig.apply(this, args); };
+      try {
+        await runONNX('/models/deep-scan.onnx');
+      } finally {
+        ort.InferenceSession.create = orig;
+      }
+      expect(calls).toBeGreaterThanOrEqual(1);
     });
   });
 estimatedMinutes: 12

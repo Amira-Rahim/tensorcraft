@@ -94,6 +94,12 @@ const trainData = allData.take(TRAIN_SIZE).batch(32);
 const valData = allData.skip(TRAIN_SIZE).batch(32);`}
 </CodeBlock>
 
+## Challenge
+
+Build the lazy pipeline yourself: generator, shuffle, batch, without ever holding the archive in memory. The grader counts your reads.
+
+<Exercise slug="batch-data" />
+
 <RecallPrompt
   question="What is the correct order for shuffle and batch in a tf.data pipeline, and why does the order matter?"
   answer="Shuffle first, then batch: shuffle(bufferSize).batch(32). If you batch first, the shuffle can only reorder whole batches, not individual records, which freezes the internal ordering of each batch and lets the model learn sequence rather than patterns."

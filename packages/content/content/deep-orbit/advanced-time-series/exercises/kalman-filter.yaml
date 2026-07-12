@@ -72,6 +72,16 @@ testCode: |
       const inputVariance = noisy.reduce((s, n) => s + (n - 10.5) ** 2, 0) / noisy.length;
       expect(variance).toBeLessThan(inputVariance);
     });
+    it('follows the exact predict-correct arithmetic (a fixed-alpha EMA fails this)', () => {
+      const kf = new SimpleKalman(0, 0.1, 1);
+      expect(kf.update(10)).toBeCloseTo(5.238, 3);
+      expect(kf.update(10)).toBeCloseTo(7.067, 3);
+      expect(kf.variance).toBeCloseTo(0.384, 3);
+    });
+    it('the gain responds to the noise parameters', () => {
+      const kf = new SimpleKalman(0, 0.5, 0.5);
+      expect(kf.update(4)).toBeCloseTo(3, 4);
+    });
   });
 estimatedMinutes: 15
 difficulty: advanced

@@ -43,7 +43,7 @@ purchases.get("/access", async (c) => {
     .from("purchases")
     .select("theme_ids")
     .eq("user_id", userId)
-    .eq("status", "completed");
+    .in("status", ["completed", "partially_refunded"]);
 
   if (error) {
     return c.json(

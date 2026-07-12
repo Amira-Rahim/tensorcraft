@@ -45,12 +45,22 @@ function makeFrom(table: string) {
   const api: Record<string, unknown> = {};
 
   function applyFilters(rows: Row[]): Row[] {
-    return rows.filter((row) => filters.every((f) => row[f.field] === f.value));
+    return rows.filter((row) =>
+      filters.every((f) =>
+        (f as { op?: string }).op === "in"
+          ? (f.value as unknown[]).includes(row[f.field])
+          : row[f.field] === f.value,
+      ),
+    );
   }
 
   api.select = () => api;
   api.eq = (field: string, value: unknown) => {
     filters.push({ field, value });
+    return api;
+  };
+  api.in = (field: string, values: unknown[]) => {
+    filters.push({ field, value: values, op: "in" } as never);
     return api;
   };
   api.maybeSingle = () =>

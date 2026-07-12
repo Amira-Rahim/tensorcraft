@@ -25,19 +25,25 @@ solutionCode: |
   }
 testCode: |
   describe('reconstructionError', () => {
-    let model;
+    let zeroModel, identityModel;
     beforeAll(() => {
-      model = tf.sequential();
-      model.add(tf.layers.dense({ inputShape: [8], units: 4, activation: 'relu' }));
-      model.add(tf.layers.dense({ units: 8, activation: 'sigmoid' }));
+      zeroModel = tf.sequential();
+      zeroModel.add(tf.layers.dense({ inputShape: [8], units: 8, kernelInitializer: 'zeros', biasInitializer: 'zeros' }));
+      identityModel = tf.sequential();
+      identityModel.add(tf.layers.dense({ inputShape: [8], units: 8, useBias: false }));
+      identityModel.layers[0].setWeights([tf.eye(8)]);
     });
-    it('returns a number', () => {
-      const result = reconstructionError(model, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
-      expect(typeof result).toBe('number');
+    it('zero-output model: error equals the mean of squared inputs (0.255)', () => {
+      const r = reconstructionError(zeroModel, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
+      expect(r).toBeCloseTo(0.255, 4);
     });
-    it('returns non-negative value', () => {
-      const result = reconstructionError(model, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
-      expect(result).toBeGreaterThanOrEqual(0);
+    it('error tracks the input: all-ones against zero output gives exactly 1.0', () => {
+      const r = reconstructionError(zeroModel, [1, 1, 1, 1, 1, 1, 1, 1]);
+      expect(r).toBeCloseTo(1.0, 4);
+    });
+    it('a perfect reconstruction gives ~zero error (identity model)', () => {
+      const r = reconstructionError(identityModel, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
+      expect(r).toBeCloseTo(0, 4);
     });
   });
 estimatedMinutes: 10

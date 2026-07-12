@@ -4,7 +4,28 @@ title: "Automatic Backpropagation"
 instructions: "Use tf.variableGrads() to automatically compute gradients for a simple loss function. Define a variable 'w' with value 3.0, compute loss as w squared, and use tf.variableGrads() to get the gradients automatically."
 starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// Use tf.variableGrads to compute gradients of w^2\nconst { value: loss, grads } = { value: null, grads: null }; // your code here"
 solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nconst { value: loss, grads } = tf.variableGrads(() => w.square());"
-testCode: "describe('Backprop', () => { it('computes loss', () => { expect(loss).toBeDefined(); expect(loss.dataSync()[0]).toBeCloseTo(9.0, 4); }); it('returns a grads object', () => { expect(grads).toBeDefined(); expect(typeof grads).toBe('object'); }); });"
+testCode: |
+  describe('Backprop', () => {
+    it('computes loss w^2 = 9 in the forward pass', () => {
+      expect(loss).toBeDefined();
+      expect(loss.dataSync()[0]).toBeCloseTo(9.0, 4);
+    });
+    it('autograd produced dLoss/dw = 2w = 6 for the variable', () => {
+      expect(grads).toBeDefined();
+      const keys = Object.keys(grads);
+      expect(keys.length).toBeGreaterThanOrEqual(1);
+      expect(grads[keys[0]].dataSync()[0]).toBeCloseTo(6.0, 4);
+    });
+    it('the gradient is registered under the trained variable itself', () => {
+      expect(Object.keys(grads)).toContain(w.name);
+    });
+    it('the gradient tracks the variable, not a constant (recompute after w changes)', () => {
+      w.assign(tf.scalar(5.0));
+      const second = tf.variableGrads(() => w.square());
+      const g = second.grads[Object.keys(second.grads)[0]];
+      expect(g.dataSync()[0]).toBeCloseTo(10.0, 4);
+    });
+  });
 estimatedMinutes: 15
 difficulty: intermediate
 mlContent: training

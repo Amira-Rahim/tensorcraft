@@ -48,9 +48,18 @@ testCode: |
       const result = stft(signal, 64, 32);
       expect(result[0].length).toBe(33);
     });
-    it('has non-negative magnitudes', () => {
+    it('the 10 Hz tone lands in bin 5 of every window with magnitude ~32', () => {
       const result = stft(signal, 64, 32);
-      result.forEach(row => row.forEach(val => expect(val).toBeGreaterThanOrEqual(0)));
+      result.forEach(row => {
+        const peak = row.indexOf(Math.max(...row));
+        expect(peak).toBe(5);
+        expect(row[5]).toBeCloseTo(32, 0);
+      });
+    });
+    it('dimensions follow the parameters, not constants (windowSize 128, hop 64)', () => {
+      const result = stft(signal, 128, 64);
+      expect(result.length).toBe(3);
+      expect(result[0].length).toBe(65);
     });
   });
 estimatedMinutes: 15

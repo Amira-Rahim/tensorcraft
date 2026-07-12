@@ -345,7 +345,14 @@ function ExerciseControls({
     const code = sandpack.files["/index.js"]?.code ?? "";
 
     try {
-      const { results, logs } = await parseAndRunTests(code, exercise.testCode);
+      // 30s: each run spawns a fresh worker that importScripts CDN TFJS
+      // (~1.4 MB); a cold cache plus model-training exercises can blow a
+      // 10s budget, which surfaced as "Timed out" on learners' first run.
+      const { results, logs } = await parseAndRunTests(
+        code,
+        exercise.testCode,
+        30_000,
+      );
       onResults(results);
       onLogs(logs);
       hasAttempted.current = true;

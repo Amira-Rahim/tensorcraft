@@ -1,7 +1,7 @@
 slug: pipeline-architecture
 lessonSlug: system-architecture
 title: "Build a Typed Pipeline"
-instructions: "Build a Pipeline class that chains typed stages together. Each stage has a name, a process function, and a validate function. The pipeline runs stages in order, passing output of one as input to the next. If validation fails, throw an error with the stage name."
+instructions: "Build a Pipeline class that chains typed stages together. Each stage has a name, a process function, and a validate function. The pipeline runs stages in order, passing output of one as input to the next. If validation fails, throw an error with the stage name. The grader wires DEEP SCAN's real feature path through your class: raw window -> z-normalize -> FFT magnitudes -> model-input tensor, with shape contracts between every stage."
 starterCode: |
   interface PipelineStage<TIn, TOut> {
     name: string;
@@ -51,61 +51,64 @@ solutionCode: |
     }
   }
 testCode: |
+  const normalizeStage = {
+    name: 'normalize',
+    validate: (w) => Array.isArray(w) && w.length === 8,
+    process: (w) => tf.tidy(() => {
+      const t = tf.tensor1d(w);
+      const { mean, variance } = tf.moments(t);
+      return t.sub(mean).div(variance.sqrt().add(1e-8)).arraySync();
+    }),
+  };
+  const fftStage = {
+    name: 'fft-features',
+    validate: (w) => Array.isArray(w) && w.length === 8,
+    process: (w) => tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(w))).arraySync()),
+  };
+  const tensorStage = {
+    name: 'to-model-input',
+    validate: (f) => Array.isArray(f) && f.length === 5,
+    process: (f) => tf.tensor2d([f]),
+  };
+
   describe('Pipeline', () => {
-    it('chains stages together', () => {
+    it('runs the real DEEP SCAN feature path: window -> normalize -> FFT -> [1,5] tensor', () => {
       const pipeline = new Pipeline()
-        .addStage({
-          name: 'double',
-          process: (n: number) => n * 2,
-          validate: (n: number) => typeof n === 'number',
-        })
-        .addStage({
-          name: 'toString',
-          process: (n: number) => String(n),
-          validate: (n: number) => n > 0,
-        });
-
-      expect(pipeline.run(5)).toBe('10');
+        .addStage(normalizeStage)
+        .addStage(fftStage)
+        .addStage(tensorStage);
+      const out = pipeline.run([1.0, 1.4, 0.6, 1.0, 1.0, 1.4, 0.6, 1.0]);
+      expect(out.shape).toEqual([1, 5]);
     });
 
-    it('throws on validation failure', () => {
-      const pipeline = new Pipeline()
-        .addStage({
-          name: 'positive-only',
-          process: (n: number) => n,
-          validate: (n: number) => n > 0,
-        });
-
-      expect(() => pipeline.run(-1)).toThrow('Validation failed at: positive-only');
+    it('stage output actually feeds the next stage (normalize: mean 0, unit spread)', () => {
+      const normalized = new Pipeline().addStage(normalizeStage).run([2, 4, 2, 4, 2, 4, 2, 4]);
+      const mean = normalized.reduce((s, v) => s + v, 0) / normalized.length;
+      expect(mean).toBeCloseTo(0, 4);
+      expect(normalized[0]).toBeCloseTo(-1, 3);
     });
 
-    it('passes output of one stage as input to next', () => {
-      const pipeline = new Pipeline()
-        .addStage({
-          name: 'add1',
-          process: (n: number) => n + 1,
-          validate: () => true,
-        })
-        .addStage({
-          name: 'add1again',
-          process: (n: number) => n + 1,
-          validate: () => true,
-        });
+    it('enforces the input shape contract at the named stage', () => {
+      const pipeline = new Pipeline().addStage(normalizeStage).addStage(fftStage);
+      expect(() => pipeline.run([1, 2, 3, 4, 5, 6])).toThrow('Validation failed at: normalize');
+    });
 
-      expect(pipeline.run(0)).toBe(2);
+    it('catches a mid-pipeline contract break (FFT emits 5 bins, next stage demands 8)', () => {
+      const badStage = {
+        name: 'expects-raw-window',
+        validate: (w) => Array.isArray(w) && w.length === 8,
+        process: (w) => w,
+      };
+      const pipeline = new Pipeline().addStage(fftStage).addStage(badStage);
+      expect(() => pipeline.run([1, 0, 1, 0, 1, 0, 1, 0])).toThrow('Validation failed at: expects-raw-window');
     });
 
     it('supports method chaining', () => {
       const pipeline = new Pipeline();
-      const result = pipeline.addStage({
-        name: 'test',
-        process: (x: any) => x,
-        validate: () => true,
-      });
-      expect(result).toBe(pipeline);
+      expect(pipeline.addStage(normalizeStage)).toBe(pipeline);
     });
   });
 estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic
+mlContent: systems
 skillAxis: deployment

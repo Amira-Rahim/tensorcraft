@@ -28,9 +28,10 @@ testCode: |
       const model = buildRNN();
       expect(model).toBeDefined();
     });
-    it('has 2 layers', () => {
+    it('has 2 layers, and the first is a real SimpleRNN (not Flatten+Dense)', () => {
       const model = buildRNN();
       expect(model.layers.length).toBe(2);
+      expect(model.layers[0].getClassName()).toBe('SimpleRNN');
     });
     it('accepts correct input shape', () => {
       const model = buildRNN();

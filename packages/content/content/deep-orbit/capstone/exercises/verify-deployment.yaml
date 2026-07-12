@@ -1,7 +1,7 @@
 slug: verify-deployment
 lessonSlug: launch
 title: "Verify a Deployment"
-instructions: "Write a deployment verification function that runs a series of checks (each returning { name, passed, message }) and returns an overall result. The deployment passes only if ALL checks pass."
+instructions: "Write a deployment verification function that runs a series of checks in order (each returning { name, passed, message }) and returns an overall result. The deployment passes only if ALL checks pass. The grader runs real TFJS inference probes through your runner: an output-range contract, an anomaly-probe gate, and a calm-probe gate against a live scoring function."
 starterCode: |
   interface CheckResult {
     name: string;
@@ -57,50 +57,59 @@ solutionCode: |
     };
   }
 testCode: |
+  // A tiny real scorer standing in for DEEP SCAN: sigmoid(w·x + 0.1)
+  const w = tf.tensor1d([0.4, -0.2, 0.6]);
+  const score = (x) => tf.tidy(() => tf.sigmoid(tf.dot(tf.tensor1d(x), w).add(0.1)).dataSync()[0]);
+
   describe('verifyDeployment', () => {
-    it('passes when all checks pass', async () => {
+    it('passes a healthy deployment: output contract + anomaly gate + calm gate', async () => {
       const checks = [
-        async () => ({ name: 'model', passed: true, message: 'OK' }),
-        async () => ({ name: 'inference', passed: true, message: 'OK' }),
+        async () => {
+          const p = score([0.5, 0.8, 0.2]);
+          return { name: 'output-contract', passed: p >= 0 && p <= 1, message: 'score ' + p.toFixed(3) };
+        },
+        async () => {
+          const p = score([3, 0, 3]); // strong anomaly probe, sigmoid(3.1) ≈ 0.957
+          return { name: 'anomaly-gate', passed: p > 0.9, message: 'anomaly probe ' + p.toFixed(3) };
+        },
+        async () => {
+          const p = score([0, 3, 0]); // calm probe, sigmoid(-0.5) ≈ 0.378
+          return { name: 'calm-gate', passed: p < 0.5, message: 'calm probe ' + p.toFixed(3) };
+        },
       ];
       const result = await verifyDeployment(checks);
       expect(result.passed).toBe(true);
-      expect(result.summary).toBe('2/2 checks passed');
+      expect(result.summary).toBe('3/3 checks passed');
     });
 
-    it('fails when any check fails', async () => {
+    it('fails the whole deployment when one real gate fails (stricter threshold)', async () => {
       const checks = [
-        async () => ({ name: 'model', passed: true, message: 'OK' }),
-        async () => ({ name: 'inference', passed: false, message: 'Too slow' }),
+        async () => ({ name: 'output-contract', passed: true, message: 'OK' }),
+        async () => {
+          const p = score([3, 0, 3]);
+          return { name: 'strict-gate', passed: p > 0.999, message: 'scored ' + p.toFixed(3) };
+        },
       ];
       const result = await verifyDeployment(checks);
       expect(result.passed).toBe(false);
       expect(result.summary).toBe('1/2 checks passed');
-    });
-
-    it('collects all check results', async () => {
-      const checks = [
-        async () => ({ name: 'a', passed: true, message: 'good' }),
-        async () => ({ name: 'b', passed: false, message: 'bad' }),
-        async () => ({ name: 'c', passed: true, message: 'good' }),
-      ];
-      const result = await verifyDeployment(checks);
-      expect(result.checks).toHaveLength(3);
-      expect(result.checks[1].name).toBe('b');
       expect(result.checks[1].passed).toBe(false);
     });
 
-    it('runs checks in order', async () => {
-      const order: string[] = [];
+    it('runs checks in order and collects every result', async () => {
+      const order = [];
       const checks = [
-        async () => { order.push('first'); return { name: 'first', passed: true, message: '' }; },
-        async () => { order.push('second'); return { name: 'second', passed: true, message: '' }; },
+        async () => { order.push('shape'); return { name: 'shape', passed: true, message: '' }; },
+        async () => { order.push('latency'); return { name: 'latency', passed: true, message: '' }; },
+        async () => { order.push('accuracy'); return { name: 'accuracy', passed: false, message: 'below gate' }; },
       ];
-      await verifyDeployment(checks);
-      expect(order).toEqual(['first', 'second']);
+      const result = await verifyDeployment(checks);
+      expect(order).toEqual(['shape', 'latency', 'accuracy']);
+      expect(result.checks).toHaveLength(3);
+      expect(result.checks[2].name).toBe('accuracy');
     });
   });
 estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic
+mlContent: systems
 skillAxis: deployment

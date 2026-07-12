@@ -21,7 +21,9 @@ starterCode: |
   ): GateResult {
     // 1. Count correct predictions (predicted === actual)
     // 2. Calculate accuracy = correct / total
-    // 3. Return result with passed = accuracy >= minAccuracy
+    // 3. Guard the empty set: an empty eval batch must FAIL the gate
+    //    with accuracy 0, never pass with NaN
+    // 4. Return result with passed = accuracy >= minAccuracy
     return null; // your code here
   }
 solutionCode: |
@@ -43,11 +45,11 @@ solutionCode: |
   ): GateResult {
     const correct = predictions.filter(p => p.predicted === p.actual).length;
     const total = predictions.length;
-    const accuracy = correct / total;
+    const accuracy = total === 0 ? 0 : correct / total;
 
     return {
       accuracy,
-      passed: accuracy >= minAccuracy,
+      passed: total > 0 && accuracy >= minAccuracy,
       total,
       correct,
     };
@@ -88,8 +90,15 @@ testCode: |
       expect(result.accuracy).toBe(1.0);
       expect(result.passed).toBe(true);
     });
+
+    it('an empty eval batch fails the gate cleanly, never passes with NaN', () => {
+      const result = validateModelAccuracy([], 0.5);
+      expect(result.passed).toBe(false);
+      expect(result.accuracy).toBe(0);
+      expect(Number.isNaN(result.accuracy)).toBe(false);
+    });
   });
-estimatedMinutes: 8
-difficulty: beginner
+estimatedMinutes: 10
+difficulty: intermediate
 mlContent: arithmetic
 skillAxis: deployment

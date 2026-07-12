@@ -179,7 +179,7 @@ Five services need projects created + DSN/keys captured:
    - Create 7 Tags (names in §A3 above)
    - Build 3 Sequences (welcome / purchase confirmation / capstone achievement)
    - Configure bounce/complaint Automation → webhook to `https://api.tensorcraft.app/api/webhooks/kit-bounce` with `KIT_WEBHOOK_SECRET` header
-5. **Stripe** — flip to live mode. (No Products/Prices needed in the dashboard — checkout uses inline `price_data` with amounts from `packages/shared/src/constants.ts` `PRICING`: $59/$99/$129/$159. Stripe still records each charge as a line item for receipts + refunds.) Configure webhook endpoint pointing at `https://api.tensorcraft.app/api/payments/webhook` with event filter: `checkout.session.completed`, `charge.refunded`, `checkout.session.async_payment_failed`.
+5. **Stripe** — flip to live mode. (No Products/Prices needed in the dashboard — checkout uses inline `price_data` with amounts from `packages/shared/src/constants.ts` `PRICING`: $59/$99/$129/$159. Stripe still records each charge as a line item for receipts + refunds.) Configure webhook endpoint pointing at `https://api.tensorcraft.app/api/payments/webhook` with event filter: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `charge.refunded`, `charge.dispute.created` (the handler processes all five; omitting async_payment_succeeded would leave bank-debit buyers charged but never fulfilled, and omitting dispute.created would skip auto-revocation).
 
 ### A6. Real-money Stripe smoke test
 

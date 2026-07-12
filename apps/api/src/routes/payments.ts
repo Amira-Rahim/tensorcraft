@@ -19,6 +19,10 @@ function getStripe(): Stripe {
   if (stripeInstance) return stripeInstance;
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
+  // apiVersion intentionally omitted: stripe-node pins the API version
+  // bundled with the installed SDK release (it does NOT float to the
+  // account default). Bumping the stripe dependency is the deliberate way
+  // to move versions; review webhook payload shapes when doing so.
   stripeInstance = new Stripe(key);
   return stripeInstance;
 }
@@ -92,7 +96,7 @@ payments.post("/checkout", async (c) => {
     .from("purchases")
     .select("theme_ids, amount")
     .eq("user_id", userId)
-    .eq("status", "completed");
+    .in("status", ["completed", "partially_refunded"]);
 
   const ownedThemes = new Set<string>();
   let credit = 0;
@@ -199,7 +203,7 @@ payments.get("/purchases", async (c) => {
     .from("purchases")
     .select("id, plan_id, theme_ids, amount, status, created_at")
     .eq("user_id", userId)
-    .eq("status", "completed");
+    .in("status", ["completed", "partially_refunded"]);
 
   if (themeId) {
     if (!isValidThemeSlug(themeId)) {
@@ -348,6 +352,25 @@ payments.post("/webhook", async (c) => {
 
       const creditApplied = Number(metadata.creditApplied || "0");
       const expectedAmount = plan.price - creditApplied;
+
+      // Enforce the amount check the comment above promises: the session's
+      // amount_total must match the plan price minus applied credit. A
+      // mismatch means our price table and the charged amount diverged.
+      // The charge already happened, so fulfill (the customer paid), but
+      // log loudly for manual review rather than failing the webhook.
+      if (amount != null && amount !== expectedAmount * 100) {
+        logger.error(
+          {
+            route: "payments.webhook",
+            userId,
+            stripeSessionId: sessionId,
+            planId: metadata.planId,
+            amountTotal: amount,
+            expectedCents: expectedAmount * 100,
+          },
+          "Webhook: amount_total does not match expected plan price",
+        );
+      }
 
       // Validate Stripe session ID format
       if (!sessionId.startsWith("cs_test_") && !sessionId.startsWith("cs_")) {

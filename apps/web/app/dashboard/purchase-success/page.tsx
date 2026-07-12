@@ -148,12 +148,14 @@ export default async function PurchaseSuccessPage({
             &#10003;
           </div>
           <h1 className="text-4xl sm:text-6xl font-bold font-mono uppercase tracking-tight mb-4 text-text-primary">
-            You&apos;re In
+            {purchase ? <>You&apos;re In</> : <>Almost There</>}
           </h1>
           <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto">
-            {firstTheme
-              ? `${firstTheme.displayName} is yours: all ${firstThemeModules.length} modules are open.`
-              : "Your purchase is confirmed. Everything you bought is open."}
+            {purchase
+              ? firstTheme
+                ? `${firstTheme.displayName} is yours: all ${firstThemeModules.length} modules are open.`
+                : "Your purchase is confirmed. Everything you bought is open."
+              : "We're confirming your payment with Stripe. This usually takes a few seconds; refresh this page shortly."}
           </p>
         </div>
 

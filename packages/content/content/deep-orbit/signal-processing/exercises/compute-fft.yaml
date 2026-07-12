@@ -32,15 +32,22 @@ solutionCode: |
   }
 testCode: |
   describe('findDominantFrequency', () => {
-    it('returns a finite non-negative frequency', () => {
+    it('finds a 5 Hz tone in a 1-second, 128 Hz signal', () => {
       const signal = Array.from({ length: 128 }, (_, i) => Math.sin(2 * Math.PI * 5 * i / 128));
-      const freq = findDominantFrequency(signal, 128);
-      expect(Number.isFinite(freq)).toBe(true);
-      expect(freq).toBeGreaterThanOrEqual(0);
+      expect(findDominantFrequency(signal, 128)).toBeCloseTo(5, 1);
     });
-    it('returns a number', () => {
-      const signal = Array.from({ length: 64 }, (_, i) => Math.sin(2 * Math.PI * 3 * i / 64));
-      expect(typeof findDominantFrequency(signal, 64)).toBe('number');
+    it('picks the stronger of two components (1.0x 20 Hz over 0.3x 3 Hz)', () => {
+      const signal = Array.from({ length: 256 }, (_, i) =>
+        0.3 * Math.sin(2 * Math.PI * 3 * i / 256) + 1.0 * Math.sin(2 * Math.PI * 20 * i / 256));
+      expect(findDominantFrequency(signal, 256)).toBeCloseTo(20, 1);
+    });
+    it('skips the DC component: a +5.0 offset must not win over the 7 Hz tone', () => {
+      const signal = Array.from({ length: 128 }, (_, i) => 5.0 + Math.sin(2 * Math.PI * 7 * i / 128));
+      expect(findDominantFrequency(signal, 128)).toBeCloseTo(7, 1);
+    });
+    it('tracks the input, not a memorized answer (different length and rate)', () => {
+      const signal = Array.from({ length: 64 }, (_, i) => Math.sin(2 * Math.PI * 12 * i / 64));
+      expect(findDominantFrequency(signal, 64)).toBeCloseTo(12, 1);
     });
   });
 estimatedMinutes: 12

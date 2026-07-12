@@ -26,19 +26,28 @@ solutionCode: |
   }
 testCode: |
   describe('buildAutoencoder', () => {
-    it('returns a model', () => {
-      expect(buildAutoencoder()).toBeDefined();
-    });
-    it('has 4 layers', () => {
-      expect(buildAutoencoder().layers.length).toBe(4);
-    });
-    it('input and output shapes match', () => {
+    it('returns a 4-layer model', () => {
       const model = buildAutoencoder();
-      const input = tf.randomNormal([1, 8]);
+      expect(model).toBeDefined();
+      expect(model.layers.length).toBe(4);
+    });
+    it('compresses through a 2-unit bottleneck: 8 -> 4 -> 2 -> 4 -> 8 (no bottleneck, no autoencoder)', () => {
+      const model = buildAutoencoder();
+      const units = model.layers.map((l) => l.getConfig().units);
+      expect(units).toEqual([4, 2, 4, 8]);
+    });
+    it('reconstructs the input shape', () => {
+      const model = buildAutoencoder();
+      const input = tf.randomNormal([3, 8]);
       const output = model.predict(input) as tf.Tensor;
-      expect(output.shape).toEqual([1, 8]);
+      expect(output.shape).toEqual([3, 8]);
       input.dispose();
       output.dispose();
+    });
+    it('is compiled for reconstruction training (mse loss, optimizer set)', () => {
+      const model = buildAutoencoder();
+      expect(model.loss).toBe('meanSquaredError');
+      expect(model.optimizer).toBeDefined();
     });
   });
 estimatedMinutes: 10

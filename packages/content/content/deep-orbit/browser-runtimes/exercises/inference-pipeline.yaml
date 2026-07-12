@@ -51,26 +51,35 @@ solutionCode: |
   }
 testCode: |
   describe('classify', () => {
-    let model;
+    let probe;
     beforeAll(() => {
-      model = tf.sequential();
-      model.add(tf.layers.dense({ inputShape: [3], units: 8, activation: 'relu' }));
-      model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+      // Identity probe: output = normalized amplitude, so the tests can
+      // verify normalization and predict actually happened.
+      probe = tf.sequential();
+      probe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
+      probe.layers[0].setWeights([tf.tensor2d([[1], [0], [0]])]);
     });
-    it('returns a result object', () => {
-      const result = classify(model, { amplitude: 1024, frequency: 10000, phase: 0 });
-      expect(result).toBeDefined();
-      expect(result.class).toBeDefined();
-      expect(result.confidence).toBeDefined();
+    it('confidence equals the normalized amplitude (1536 / 2048 = 0.75, anomaly)', () => {
+      const r = classify(probe, { amplitude: 1536, frequency: 20, phase: -Math.PI });
+      expect(r.confidence).toBeCloseTo(0.75, 4);
+      expect(r.class).toBe('anomaly');
     });
-    it('class is anomaly or noise', () => {
-      const result = classify(model, { amplitude: 512, frequency: 5000, phase: 1.0 });
-      expect(['anomaly', 'noise']).toContain(result.class);
+    it('low amplitude normalizes low (512 / 2048 = 0.25, noise)', () => {
+      const r = classify(probe, { amplitude: 512, frequency: 20, phase: -Math.PI });
+      expect(r.confidence).toBeCloseTo(0.25, 4);
+      expect(r.class).toBe('noise');
     });
-    it('confidence is between 0 and 1', () => {
-      const result = classify(model, { amplitude: 100, frequency: 1000, phase: -1.0 });
-      expect(result.confidence).toBeGreaterThanOrEqual(0);
-      expect(result.confidence).toBeLessThanOrEqual(1);
+    it('phase is normalized from [-pi, pi] to [0, 1] (phase 0 -> 0.5)', () => {
+      const phaseProbe = tf.sequential();
+      phaseProbe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
+      phaseProbe.layers[0].setWeights([tf.tensor2d([[0], [0], [1]])]);
+      const r = classify(phaseProbe, { amplitude: 0, frequency: 20, phase: 0 });
+      expect(r.confidence).toBeCloseTo(0.5, 4);
+    });
+    it('does not leak tensors (tf.tidy is doing its job)', () => {
+      const before = tf.memory().numTensors;
+      classify(probe, { amplitude: 100, frequency: 1000, phase: 0 });
+      expect(tf.memory().numTensors).toBe(before);
     });
   });
 estimatedMinutes: 15

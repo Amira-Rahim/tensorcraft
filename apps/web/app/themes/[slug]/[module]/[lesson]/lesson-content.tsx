@@ -79,7 +79,7 @@ interface LessonContentProps {
   lessonId?: string;
   visibleComponents?: Set<string>;
   storyRegister?: boolean;
-  onExerciseComplete?: () => void;
+  onExerciseComplete?: (exerciseSlug: string, score: number) => void;
   glossaryTerms?: Array<{ term: string; definition: string }>;
 }
 
@@ -333,7 +333,7 @@ export function LessonContent({
             onSubmit={(result: ExerciseSubmitResult) => {
               handleExerciseSubmit(result);
               if (result.passed) {
-                onExerciseComplete?.();
+                onExerciseComplete?.(result.exerciseSlug, result.score);
               }
             }}
           />

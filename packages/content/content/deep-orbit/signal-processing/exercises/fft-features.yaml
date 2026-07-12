@@ -41,14 +41,20 @@ testCode: |
         expect(result[i]).toBeLessThanOrEqual(result[i - 1]);
       }
     });
-    it('strongest frequency has a finite magnitude', () => {
-      const result = topKFrequencies(signal, 1);
-      expect(Number.isFinite(result[0])).toBe(true);
-      expect(result[0]).toBeGreaterThanOrEqual(0);
-    });
-    it('returns numbers', () => {
+    it('top-2 magnitudes are the real peaks: 64 (5 Hz at 1.0x) and 32 (20 Hz at 0.5x)', () => {
       const result = topKFrequencies(signal, 2);
-      result.forEach(v => expect(typeof v).toBe('number'));
+      expect(result[0]).toBeCloseTo(64, 0);
+      expect(result[1]).toBeCloseTo(32, 0);
+    });
+    it('third-strongest is noise-floor small (clean two-tone signal)', () => {
+      const result = topKFrequencies(signal, 3);
+      expect(result[2]).toBeLessThan(1);
+    });
+    it('features track the signal: a lone 10 Hz tone gives top 64, second near zero', () => {
+      const s2 = Array.from({ length: 128 }, (_, i) => Math.sin(2 * Math.PI * 10 * i / 128));
+      const r = topKFrequencies(s2, 2);
+      expect(r[0]).toBeCloseTo(64, 0);
+      expect(r[1]).toBeLessThan(1);
     });
   });
 estimatedMinutes: 12

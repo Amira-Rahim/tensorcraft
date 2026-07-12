@@ -1,63 +1,103 @@
 slug: ensemble-detector
 lessonSlug: the-anomaly
-title: "Build an Ensemble Detector"
-instructions: "Write a function that takes three detector results (each a boolean), and returns whether the signal is anomalous (majority vote: at least 2 of 3 must agree) along with a confidence score (0, 0.33, 0.67, or 1.0)."
+title: "Build the DEEP SCAN Ensemble"
+instructions: "Assemble the real ensemble the module built, three detectors, one verdict. Given a window of recent amplitudes plus the other two detectors' raw outputs, compute each verdict yourself: (1) statistical: z-score of `actual` against the window using tf.moments (flag when |z| > 3); (2) autoencoder: flag when reconstructionError > reconThreshold; (3) LSTM: flag when |predicted - actual| > predTolerance. Majority vote (at least 2 of 3) decides. Return { zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }."
 starterCode: |
-  interface EnsembleResult {
+  interface EnsembleVerdict {
+    zScore: number;
+    verdicts: { statistical: boolean; autoencoder: boolean; lstm: boolean };
+    votes: number;
     isAnomaly: boolean;
-    confidence: number;
   }
 
-  function ensembleDetect(
-    statistical: boolean,
-    autoencoder: boolean,
-    lstm: boolean,
-  ): EnsembleResult {
-    // Majority vote: anomaly if >= 2 detectors agree
-    // Confidence: number of agreeing detectors / 3
+  function detectAnomalyEnsemble(
+    window: number[],            // recent amplitudes from the stream
+    actual: number,              // the latest reading
+    reconstructionError: number, // autoencoder MSE for the latest reading
+    reconThreshold: number,
+    predicted: number,           // LSTM forecast for the latest reading
+    predTolerance: number,
+  ): EnsembleVerdict {
+    // 1. z-score of `actual` against the window: tf.moments gives mean + variance
+    // 2. three boolean verdicts (|z| > 3, error > threshold, |predicted - actual| > tolerance)
+    // 3. votes = how many flagged; isAnomaly = votes >= 2
     return null; // your code here
   }
 solutionCode: |
-  interface EnsembleResult {
+  interface EnsembleVerdict {
+    zScore: number;
+    verdicts: { statistical: boolean; autoencoder: boolean; lstm: boolean };
+    votes: number;
     isAnomaly: boolean;
-    confidence: number;
   }
 
-  function ensembleDetect(
-    statistical: boolean,
-    autoencoder: boolean,
-    lstm: boolean,
-  ): EnsembleResult {
-    const votes = [statistical, autoencoder, lstm].filter(Boolean).length;
-    return {
-      isAnomaly: votes >= 2,
-      confidence: Math.round((votes / 3) * 100) / 100,
+  function detectAnomalyEnsemble(
+    window: number[],
+    actual: number,
+    reconstructionError: number,
+    reconThreshold: number,
+    predicted: number,
+    predTolerance: number,
+  ): EnsembleVerdict {
+    const { mean, variance } = tf.tidy(() => {
+      const m = tf.moments(tf.tensor1d(window));
+      return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] };
+    });
+    const std = Math.sqrt(variance);
+    const zScore = std === 0 ? 0 : (actual - mean) / std;
+
+    const verdicts = {
+      statistical: Math.abs(zScore) > 3,
+      autoencoder: reconstructionError > reconThreshold,
+      lstm: Math.abs(predicted - actual) > predTolerance,
     };
+    const votes = [verdicts.statistical, verdicts.autoencoder, verdicts.lstm].filter(Boolean).length;
+
+    return { zScore, verdicts, votes, isAnomaly: votes >= 2 };
   }
 testCode: |
-  describe('ensembleDetect', () => {
-    it('flags when all agree', () => {
-      const r = ensembleDetect(true, true, true);
-      expect(r.isAnomaly).toBe(true);
-      expect(r.confidence).toBeCloseTo(1.0);
-    });
-    it('flags when majority agrees', () => {
-      const r = ensembleDetect(true, true, false);
-      expect(r.isAnomaly).toBe(true);
-      expect(r.confidence).toBeCloseTo(0.67, 1);
-    });
-    it('does not flag when minority', () => {
-      const r = ensembleDetect(true, false, false);
+  const calmWindow = [1.0, 1.1, 0.9, 1.0, 1.05, 0.95, 1.0, 1.0];
+  // mean = 1.0, population std = sqrt(0.025 / 8) ≈ 0.0559
+
+  describe('detectAnomalyEnsemble', () => {
+    it('stays quiet on a calm reading (0 votes)', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 1.0, 0.001, 0.02, 1.02, 0.5);
+      expect(r.votes).toBe(0);
       expect(r.isAnomaly).toBe(false);
-      expect(r.confidence).toBeCloseTo(0.33, 1);
+      expect(Math.abs(r.zScore)).toBeLessThan(1);
     });
-    it('does not flag when none', () => {
-      const r = ensembleDetect(false, false, false);
+
+    it('computes the real z-score from the window (amplitude spike -> z ≈ 26.8)', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 2.5, 0.001, 0.02, 2.4, 0.5);
+      expect(r.zScore).toBeCloseTo(26.8, 0);
+      expect(r.verdicts.statistical).toBe(true);
+    });
+
+    it('one detector alone does not fire the alarm (autoencoder-only)', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 1.0, 0.05, 0.02, 1.02, 0.5);
+      expect(r.verdicts.autoencoder).toBe(true);
+      expect(r.verdicts.statistical).toBe(false);
+      expect(r.verdicts.lstm).toBe(false);
+      expect(r.votes).toBe(1);
       expect(r.isAnomaly).toBe(false);
-      expect(r.confidence).toBe(0);
+    });
+
+    it('two of three agreeing fires the alarm (reconstruction + prediction error)', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 1.0, 0.062, 0.02, 0.2, 0.5);
+      expect(r.verdicts.autoencoder).toBe(true);
+      expect(r.verdicts.lstm).toBe(true);
+      expect(r.verdicts.statistical).toBe(false);
+      expect(r.votes).toBe(2);
+      expect(r.isAnomaly).toBe(true);
+    });
+
+    it('the 73.4 Hz signature trips all three detectors', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 2.5, 0.062, 0.02, 1.0, 0.5);
+      expect(r.votes).toBe(3);
+      expect(r.isAnomaly).toBe(true);
     });
   });
-estimatedMinutes: 8
-difficulty: beginner
-mlContent: arithmetic
-skillAxis: model_arch
+estimatedMinutes: 15
+difficulty: intermediate
+mlContent: evaluation
+skillAxis: evaluation

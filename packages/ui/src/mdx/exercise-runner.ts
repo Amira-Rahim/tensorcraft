@@ -33,25 +33,65 @@ const HARNESS = `
 
   function describe(name, fn) {
     var prev = __currentDescribe;
+    // Hooks are describe-scoped (mirrors the CI grader + vitest): siblings
+    // must not inherit each other's beforeEach/afterEach registrations.
+    var savedBE = __beforeEach.slice();
+    var savedAE = __afterEach.slice();
     __currentDescribe = name;
     var ret;
     try { ret = fn(); } catch(e) { /* individual its handle errors */ }
     if (ret && typeof ret.then === 'function') {
-      __pending.push(ret.catch(function(){}).then(function(){ __currentDescribe = prev; }));
+      __pending.push(ret.catch(function(){}).then(function(){
+        __currentDescribe = prev;
+        __beforeEach = savedBE;
+        __afterEach = savedAE;
+      }));
     } else {
       __currentDescribe = prev;
+      __beforeEach = savedBE;
+      __afterEach = savedAE;
     }
   }
 
+  var __beforeEach = [];
+  var __afterEach = [];
+
+  // beforeAll runs immediately (describe bodies register it before any it()
+  // callback executes, since its run on microtasks). Async setups are queued
+  // so __awaitPending drains them before results are read.
+  function beforeAll(fn) {
+    try {
+      var r = fn && fn();
+      if (r && typeof r.then === 'function') __pending.push(Promise.resolve(r).catch(function(){}));
+    } catch (e) { /* setup errors surface as failing assertions */ }
+  }
+  function afterAll(fn) {
+    __pending.push(Promise.resolve().then(function() { return fn && fn(); }).catch(function(){}));
+  }
+  function beforeEach(fn) { __beforeEach.push(fn); }
+  function afterEach(fn) { __afterEach.push(fn); }
+
   function it(name, fn) {
     var fullName = __currentDescribe ? __currentDescribe + ' > ' + name : name;
-    var p = Promise.resolve().then(function() { return fn(); }).then(
+    var beSnapshot = __beforeEach.slice();
+    var aeSnapshot = __afterEach.slice();
+    var p = Promise.resolve().then(async function() {
+      for (var i = 0; i < beSnapshot.length; i++) await beSnapshot[i]();
+      await fn();
+      for (var j = 0; j < aeSnapshot.length; j++) await aeSnapshot[j]();
+    }).then(
       function() { __results.push({ name: fullName, passed: true }); },
       function(e) { __results.push({ name: fullName, passed: false, error: e.message || String(e) }); }
     );
     __pending.push(p);
   }
   var test = it;
+  it.skip = function(){};
+  it.only = it;
+  test.skip = function(){};
+  test.only = it;
+  describe.skip = function(){};
+  describe.only = describe;
 
   async function __awaitPending() {
     // Drain the queue, pending it()s may schedule more work.
@@ -99,16 +139,24 @@ const HARNESS = `
           if (!actual.includes(expected)) throw new Error('Array does not contain ' + JSON.stringify(expected));
         } else if (typeof actual === 'string') {
           if (!actual.includes(expected)) throw new Error('String does not contain ' + JSON.stringify(expected));
+        } else {
+          throw new Error('toContain expects a string or array, got ' + (actual === null ? 'null' : typeof actual));
         }
       },
       toHaveLength: function(expected) {
         if (actual.length !== expected) throw new Error('Expected length ' + expected + ' but got ' + actual.length);
       },
-      toThrow: function() {
+      toThrow: function(expected) {
         if (typeof actual !== 'function') throw new Error('Expected a function');
         var threw = false;
-        try { actual(); } catch(e) { threw = true; }
+        var caught = null;
+        try { actual(); } catch(e) { threw = true; caught = e; }
         if (!threw) throw new Error('Expected function to throw');
+        if (expected !== undefined) {
+          var msg = caught && caught.message ? String(caught.message) : String(caught);
+          var ok = expected instanceof RegExp ? expected.test(msg) : msg.indexOf(String(expected)) !== -1;
+          if (!ok) throw new Error('Expected error matching ' + JSON.stringify(String(expected)) + ' but got ' + JSON.stringify(msg));
+        }
       },
       toBeCloseTo: function(expected, precision) {
         precision = precision === undefined ? 5 : precision;
@@ -699,71 +747,17 @@ const TF_MOCK = `
   })();
 `;
 
-/**
- * Strip TypeScript-only syntax so the worker (which runs plain JS) can execute
- * exercises authored in TS. Best-effort regex transforms:
- *   - drop import statements
- *   - drop `interface Name { ... }` / `type Name = ...` declarations
- *   - drop `as Type` assertions
- *   - drop `<Type>` generic instantiations following an identifier (`new Foo<Bar>()`)
- *   - drop type annotations on params (`x: number`), variables (`let x: T`), return types (`): T {`)
- *   - drop type-only enum/abstract markers
- * Not a full TS parser, handles the syntax patterns observed in lesson exercises.
- */
-function stripTypeScript(src: string): string {
-  let s = src;
-  // Drop imports
-  s = s.replace(/^\s*import\s+.*from\s+['"].*['"];?\s*$/gm, "");
-  s = s.replace(/^\s*import\s+['"].*['"];?\s*$/gm, "");
-  // Drop interface declarations (matched balance via simple brace counter is overkill; the
-  // simple pattern handles the common one-block case)
-  s = s.replace(
-    /^\s*(?:export\s+)?interface\s+\w+(?:\s+extends\s+[\w,\s<>]+)?\s*\{[^}]*\}\s*$/gm,
-    "",
-  );
-  // Drop type aliases (single line and simple multi-line)
-  s = s.replace(
-    /^\s*(?:export\s+)?type\s+\w+(?:<[^>]+>)?\s*=\s*[^;{]+;\s*$/gm,
-    "",
-  );
-  s = s.replace(
-    /^\s*(?:export\s+)?type\s+\w+(?:<[^>]+>)?\s*=\s*\{[^}]*\};\s*$/gm,
-    "",
-  );
-  // Drop enum declarations
-  s = s.replace(/^\s*(?:export\s+)?enum\s+\w+\s*\{[^}]*\}\s*$/gm, "");
-  // Drop `as Type` assertions (greedy stop at obvious terminators)
-  s = s.replace(/\s+as\s+[A-Z][\w<>\[\]\|&,\s]*?(?=[);,}\]\n=]|$)/g, "");
-  // Drop generic instantiation arguments `<T>` only when following an identifier or `>` (call/new)
-  // Conservative: only strip simple `<Word>` patterns to avoid breaking comparisons (a < b)
-  s = s.replace(
-    /(\w)<([A-Z]\w*(?:\s*,\s*[A-Z]\w*)*(?:\[\])?)>(?=\s*[(])/g,
-    "$1",
-  );
-  // Drop return-type annotations on functions: `function foo(args): Type {` → `function foo(args) {`
-  // Also covers arrow functions: `): Type =>` → `) =>`
-  s = s.replace(/\)\s*:\s*[\w<>\[\]\|&\s,]+?(\s*(?:\{|=>))/g, ")$1");
-  // Drop param/variable type annotations: `name: Type` after `(`, `,`, `let`, `const`, `var`
-  // Careful: do NOT touch object literals `{ key: value }`. Restrict to identifier followed by `:` followed by Type-looking token.
-  s = s.replace(
-    /(\(|,|\s(?:let|const|var)\s+)(\s*[a-zA-Z_$][\w$]*)\s*:\s*[\w<>\[\]\|&]+(?:\s*\|\s*[\w<>\[\]\|&]+)*(?:\s*\[\])?(?=[\s,)=])/g,
-    "$1$2",
-  );
-  // Drop public/private/protected/readonly/abstract modifiers
-  s = s.replace(
-    /\b(?:public|private|protected|readonly|abstract|override)\s+/g,
-    "",
-  );
-  // Drop non-null assertion `!` after identifiers in expression position (best-effort)
-  s = s.replace(/(\w)!(\.\w)/g, "$1$2");
-  return s;
-}
+import { stripTypeScript } from "./strip-typescript";
+export { stripTypeScript };
 
 function buildFullCode(userCode: string, testCode: string): string {
   const cleanCode = stripTypeScript(userCode);
+  // testCode is authored in TS too (annotations, `as` casts) — strip it with
+  // the same tokenizer or the whole bundle SyntaxErrors at runtime.
+  const cleanTestCode = stripTypeScript(testCode);
   // The worker injects real `tf` as a function param; no inline mock.
   // Wrap user code so top-level `await` works.
-  return `${HARNESS}\nreturn (async function() {\n${cleanCode}\n${testCode}\nawait __awaitPending();\nreturn __results;\n})();`;
+  return `${HARNESS}\nreturn (async function() {\n${cleanCode}\n${cleanTestCode}\nawait __awaitPending();\nreturn __results;\n})();`;
 }
 
 // Worker body. Loads real @tensorflow/tfjs (Node: require, Browser: CDN
@@ -795,10 +789,19 @@ const WORKER_BODY = `
     }
   } else {
     try {
-      importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
+      // Same-origin vendored copy first (no CDN dependency, no third-party
+      // CSP entry needed; version-locked to the grader's node_modules copy).
+      // Blob workers inherit the page origin, so self.location.origin
+      // resolves to the app host.
+      importScripts(self.location.origin + '/vendor/tfjs-4.22.0.min.js');
       tfReady = Promise.resolve();
-    } catch (e) {
-      tfReady = Promise.reject(new Error('Failed to importScripts TFJS in worker: ' + e.message));
+    } catch (eLocal) {
+      try {
+        importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
+        tfReady = Promise.resolve();
+      } catch (e) {
+        tfReady = Promise.reject(new Error('Failed to importScripts TFJS in worker (local: ' + eLocal.message + '; cdn: ' + e.message + ')'));
+      }
     }
   }
 

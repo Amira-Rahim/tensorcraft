@@ -76,6 +76,12 @@ console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
 
 No magic involved: `tf.variableGrads()` records every operation during the forward pass, then computes gradients for all variables by applying the chain rule backwards. The drawer below walks the exact multiplication chain by hand. You never have to implement it manually, but you can.
 
+## Challenge
+
+Run the marquee algorithm yourself: one call to `tf.variableGrads()`, and prove the gradient tracks the variable instead of memorizing an answer.
+
+<Exercise slug="backprop-chain" />
+
 <DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand" companionSlug="calculus-of-neurons">
 **The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a 2-layer network:
 
