@@ -30,7 +30,7 @@ interface LessonStepsProps {
         tier: "identity" | "structural" | "intuition";
       };
     };
-    consequence: { narrative: string; nextLessonTeaser?: string };
+    consequence: { narrative: string };
     scene?: {
       location: string;
       time?: string;
@@ -79,7 +79,7 @@ const TOTAL_STEPS = 6;
    memoized MDX component, which remounts the whole MDX DOM subtree on every
    parent re-render (breaking the script-playback timeline's element refs
    and recompiling the MDX body needlessly). */
-const BRIEFING_COMPONENTS = new Set(["Dialogue", "prose"]);
+const BRIEFING_COMPONENTS = new Set(["Dialogue", "BossBeat", "prose"]);
 
 /* Each non-story step splits into a LEFT (reading column) and RIGHT (rail or
    work pane) partition. The two LessonContent instances per step receive
@@ -102,6 +102,7 @@ const CONCEPT_RIGHT = new Set(["LearningObjectives"]);
 // and demos in the right work pane.
 const CODE_LEFT = new Set([
   "MathBlock",
+  "DerivationDrawer",
   "prose",
   "code-tensors",
   "code-shapes",
@@ -120,7 +121,7 @@ const TAKEAWAYS_COMPONENTS = new Set([
   "RecallPrompt",
   "NextLesson",
 ]);
-const CONSEQUENCE_COMPONENTS = new Set(["Epilogue"]);
+const CONSEQUENCE_COMPONENTS = new Set(["Epilogue", "DispatchTease"]);
 
 const STEP_NAMES = [
   "Briefing",
@@ -1325,13 +1326,6 @@ function StepConsequence({
           visibleComponents={CONSEQUENCE_COMPONENTS}
         />
       </div>
-
-      {/* Next lesson teaser */}
-      {lesson.consequence.nextLessonTeaser && (
-        <p className="text-[13px] mb-7" style={{ color: theme.palette.border }}>
-          {lesson.consequence.nextLessonTeaser}
-        </p>
-      )}
 
       {/* Next lesson card */}
       {nextLesson && (

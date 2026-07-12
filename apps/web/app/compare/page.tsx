@@ -43,7 +43,8 @@ const ROWS: Row[] = [
   },
   {
     feature: "Math depth",
-    tensorcraft: "Chain rule, softmax, KL, ELBO, DDPM derived",
+    tensorcraft:
+      "Chain rule, DFT, cross-entropy derived in optional drawers; KL divergence in the math companion (ELBO, DDPM with future themes)",
     fastai: "Pragmatic depth, not paper-grade",
     karpathy: "Paper-grade: autograd from scratch, attention from scratch",
     coursera: "Theory + math, exam-grade",

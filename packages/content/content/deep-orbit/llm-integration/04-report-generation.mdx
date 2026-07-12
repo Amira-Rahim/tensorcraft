@@ -91,7 +91,7 @@ const reportSections: ReportSection[] = [
   {
     heading: 'Executive Summary',
     prompt: 'Summarize key findings in 3-4 sentences. Lead with the anomaly discovery.',
-    data: 'Total: 12,000 signals. Normal: 11,847. Anomalous: 153. Unclassified: 1.',
+    data: 'Total: 12,001 signals. Normal: 11,847. Anomalous: 153. Unclassified: 1.',
   },
   {
     heading: 'Anomaly Analysis',
@@ -110,12 +110,12 @@ Build a section-by-section report generator from signal data.
 
 <Exercise slug="generate-report" />
 
-<RecallPrompt question="Why generate a report section by section rather than all at once?" answer="Generating a full report in one prompt gives you output you cannot verify in isolation -- errors in one area infect the whole. Treating each section as an independent unit means each gets its own data, its own prompt, and its own validation step before assembly. You can catch and fix problems per section rather than discarding the whole." />
+<RecallPrompt question="Why generate a report section by section rather than all at once?" answer="Generating a full report in one prompt gives you output you cannot verify in isolation; errors in one area infect the whole. Treating each section as an independent unit means each gets its own data, its own prompt, and its own validation step before assembly. You can catch and fix problems per section rather than discarding the whole." />
 
 <LessonRecap
   whatYouLearned={[
     "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
-    "Low temperature (0.1-0.3) reduces hallucination risk for factual writing -- always validate generated claims against actual data before including them.",
+    "Low temperature (0.1-0.3) reduces hallucination risk for factual writing; always validate generated claims against actual data before including them.",
     "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
   ]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."

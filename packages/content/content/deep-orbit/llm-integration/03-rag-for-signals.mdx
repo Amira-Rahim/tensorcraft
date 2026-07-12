@@ -137,9 +137,9 @@ Build a RAG pipeline that retrieves and contextualizes signal data.
   whatYouLearned={[
     "RAG follows a retrieve-then-generate contract: query your data store for relevant records, inject them into the prompt, then generate a response grounded in those records rather than the model's memory.",
     "Limiting retrieved context to the top-K most relevant records keeps you within token limits and focuses the model on what matters.",
-    "Generated answers can contradict the retrieved passages they cite -- always verify quantitative claims against the actual retrieved rows before trusting the output."
+    "Generated answers can contradict the retrieved passages they cite; always verify quantitative claims against the actual retrieved rows before trusting the output."
   ]}
-  bridge="RAG mirrors the Server Component pattern (`async function Page() { const data = await db.query(...); return <View data={data} />; }`) -- data access happens before rendering. The key difference: a component cannot contradict its props, but a generator can contradict its context."
+  bridge="RAG mirrors the Server Component pattern (`async function Page() { const data = await db.query(...); return <View data={data} />; }`); data access happens before rendering. The key difference: a component cannot contradict its props, but a generator can contradict its context."
   youCanNow="Build a RAG pipeline that retrieves relevant records from a data store, injects them into a grounded prompt, and validates the generated response against the source data."
 />
 

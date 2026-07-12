@@ -28,7 +28,7 @@ export default function AboutPage() {
               "@type": "EducationalOrganization",
               name: "Tensorcraft",
               url: "https://tensorcraft.app",
-              description: `Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. ${THEME_CONTENT.totalLessonsPerTheme * THEME_SLUGS.length} lessons across ${THEME_SLUGS.length} themes.`,
+              description: `Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. ${THEME_CONTENT.totalLessonsPerTheme} lessons live in the first of ${THEME_SLUGS.length} planned themes.`,
             },
           }),
         }}
@@ -70,10 +70,11 @@ export default function AboutPage() {
           </p>
 
           <p>
-            Every exercise grades against real TensorFlow.js, not a mock. 315
-            exercises, 100% solution-passes-all-tests, all running in a worker
-            in your browser. If a test fails, the model behavior is actually
-            wrong; not a string-match heuristic.
+            Every exercise grades against real TensorFlow.js, not a mock. 80
+            exercises live today at 100% solution-passes-all-tests, all running
+            in a worker in your browser, with 315 authored across the five-theme
+            roadmap and held to the same bar. If a test fails, the model
+            behavior is actually wrong; not a string-match heuristic.
           </p>
 
           <p>

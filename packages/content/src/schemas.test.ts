@@ -26,7 +26,6 @@ describe("lessonSchema", () => {
     },
     consequence: {
       narrative: "The signal begins to take shape",
-      nextLessonTeaser: "Next: understanding tensor shapes",
     },
     hints: [
       { level: "nudge" as const, content: "Think about array dimensions" },

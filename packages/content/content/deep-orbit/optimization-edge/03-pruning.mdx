@@ -18,7 +18,7 @@ concept:
     mlCode: "// Remove near-zero weights → smaller model"
     tier: structural
 consequence:
-  narrative: "Pruning removes 60% of weights while maintaining 94% of accuracy. Combined with quantization: 340 MB → 42 MB. Demir's 80% experiment costs three hours."
+  narrative: "Pruning removes 60% of weights while holding accuracy at 92.1%. Combined with quantization: 340 MB → 42 MB. Demir's 80% experiment costs three hours."
 hints:
   - level: nudge
     content: "Weights near zero contribute almost nothing; removing them barely affects output"
@@ -90,7 +90,7 @@ He reverts. The "almost nothing" in those extra weights turned out to be the ano
 {`// Pruning + Quantization = maximum compression
 
 // Step 1: Prune 60% of weights → 60% smaller (effective)
-// Step 2: Quantize remaining to int8 → 4x smaller
+// Step 2: Quantize remaining to uint8 storage → 4x smaller
 
 // Original: 85M params × 4 bytes = 340 MB
 // After pruning: 34M non-zero params (60% zeros can be stored efficiently)
@@ -101,7 +101,7 @@ He reverts. The "almost nothing" in those extra weights turned out to be the ano
 
 console.log('=== DEEP SCAN Optimization Results ===');
 console.log('Original:               340 MB, 94.2% accuracy');
-console.log('Quantized (int8):        85 MB, 93.0% accuracy');
+console.log('Quantized (uint8):       85 MB, 93.0% accuracy');
 console.log('Pruned (60%):           136 MB, 92.1% accuracy');
 console.log('Pruned + Quantized:      42 MB, 91.8% accuracy');
 console.log('Fits in 512 MB dashboard: YES ✓');`}
@@ -119,7 +119,7 @@ Prune weights and measure the accuracy impact.
   whatYouLearned={[
     "Magnitude-based pruning zeros out the smallest-absolute-value weights first; sparsity has a non-linear cliff where a small increase in pruning rate causes a large accuracy drop.",
     "Rare and anomalous classes are disproportionately harmed by aggressive pruning because their learned signal concentrates in low-magnitude weights.",
-    "Combining pruning (60% sparsity) with int8 quantization achieves roughly 8x total compression with moderate accuracy loss, and retraining after pruning can recover some of that loss."
+    "Combining pruning (60% sparsity) with uint8 quantization achieves roughly 8x total compression with moderate accuracy loss, and retraining after pruning can recover some of that loss."
   ]}
   bridge="Just as webpack tree-shaking removes unused exports to shrink a bundle, magnitude-based pruning removes near-zero weights to shrink a model; but unlike dead code, pruned weights still contributed a little, so the model changes."
   youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and combine pruning with quantization for maximum model compression."

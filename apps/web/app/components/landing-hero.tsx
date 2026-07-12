@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ParticleField } from "@tensorcraft/ui/effects";
 import { THEME_CONTENT } from "@tensorcraft/shared";
 
-// The hero's proof panel is the free-tier Deep Scan demo: a real 8 KB TFJS
+// The hero's proof panel is the free-tier Deep Scan demo: a real 4 KB TFJS
 // model classifying readings live in the visitor's tab. ssr:false, tfjs is
 // browser-only and the panel is post-LCP enhancement, not critical path.
 const DeepScanDemo = dynamic(

@@ -105,7 +105,8 @@ console.log('After rapid clicks:', beliefs.map(b => b.toFixed(4)));
 // Likelihood: P(solve | human) = 0.95, P(solve | bot) = 0.1
 beliefs = bayesUpdate(beliefs, [0.95, 0.1]);
 console.log('After CAPTCHA pass:', beliefs.map(b => b.toFixed(4)));
-// Beliefs updated again. Maybe it IS a human after all
+// [0.1834, 0.8166]: bot still leads, but one human-like action
+// dragged its lead from 98% down to 82%
 
 // Each observation updates our beliefs incrementally
 // This is EXACTLY how sequential learning works in ML`}
@@ -133,7 +134,7 @@ The connection runs deep: when you add L2 regularization to your loss function, 
 // (Maximum A Posteriori: the most probable weights given data AND prior)
 
 // The lambda * sum(w^2) term is equivalent to a Gaussian prior
-// centered at zero: P(w) = Normal(0, 1/lambda)
+// centered at zero: P(w) = Normal(0, 1/(2*lambda))
 // Larger lambda = tighter prior = more regularization
 
 // Demonstration

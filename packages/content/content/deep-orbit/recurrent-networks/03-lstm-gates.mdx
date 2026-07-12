@@ -136,8 +136,9 @@ gruModel.add(tf.layers.gru({
 gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 // Comparison:
-// LSTM: 4 weight matrices per gate (more parameters, better long-range memory)
-// GRU:  3 weight matrices (~25% fewer params, faster training)
+// LSTM: 4 sets of weight matrices: forget, input, and output gates plus the
+//       candidate state (more parameters, better long-range memory)
+// GRU:  3 sets: reset gate, update gate, candidate state (~25% fewer params, faster training)
 // Rule of thumb: try both and compare, like choosing between React and Preact`}
 </CodeBlock>
 

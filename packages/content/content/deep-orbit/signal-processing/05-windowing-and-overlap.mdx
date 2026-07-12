@@ -59,29 +59,29 @@ The smear has already cost the mission something countable. Demir's instinct was
 <CodeBlock language="typescript" title="spectral-leakage.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Generate a pure 10 Hz sine wave
+// Generate a 10.5 Hz sine wave: ten and a half cycles per 1-second window.
+// A 10 Hz tone would fit exactly and leak nothing; the half cycle is the problem.
 const sampleRate = 128;
 const signal: number[] = [];
 for (let i = 0; i < 128; i++) {
-  signal.push(Math.sin(2 * Math.PI * 10 * i / sampleRate));
+  signal.push(Math.sin(2 * Math.PI * 10.5 * i / sampleRate));
 }
 
-// Problem: if the window doesn't capture exact whole periods,
-// the signal appears to "jump" at the edges
-// signal[0] = 0.0, signal[127] = -0.49 → discontinuity!
-
-// This discontinuity creates false high-frequency energy
-// The FFT sees a sharp edge and thinks "high frequencies must be present"
+// Problem: the window doesn't capture exact whole periods.
+// The last sample sits at 0.49; the wrapped-around start is 0.0.
+// The FFT treats the window as one period of a repeating signal,
+// sees that jump at the seam, and invents frequencies to explain it.
 const rawFFT = tf.tidy(() => {
   const fft = tf.spectral.rfft(tf.tensor1d(signal));
   return tf.abs(fft).arraySync() as number[];
 });
 
-// Expected: a single sharp peak at bin 10 (10 Hz)
-// Actual: peak at bin 10, BUT also energy spread across neighboring bins
-console.log('Bin 10 (target):', rawFFT[10].toFixed(1));  // ~64.0
-console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));   // ~8.2, should be 0!
-console.log('Bin 11 (leakage):', rawFFT[11].toFixed(1));  // ~8.2, should be 0!`}
+// Expected: energy at 10.5 Hz only (between bins 10 and 11)
+// Actual: the peak smears across the whole spectrum
+console.log('Bin 10:', rawFFT[10].toFixed(1));            // ~41.7
+console.log('Bin 11:', rawFFT[11].toFixed(1));            // ~39.9
+console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));    // ~14.5, should be ~0
+console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from the tone`}
 </CodeBlock>
 
 ## The Fix: Window Functions
@@ -119,15 +119,17 @@ const windowedFFT = tf.tidy(() => {
 });
 
 console.log('--- Without windowing ---');
-console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));   // ~8.2
-console.log('Bin 10 (target):', rawFFT[10].toFixed(1));   // ~64.0
-console.log('Bin 11 (leakage):', rawFFT[11].toFixed(1));  // ~8.2
+console.log('Bin 9:', rawFFT[9].toFixed(1));    // ~14.5
+console.log('Bin 20:', rawFFT[20].toFixed(1));  // ~1.6
+console.log('Bin 30:', rawFFT[30].toFixed(1));  // ~0.6, leakage all the way out
 
 console.log('--- With Hann window ---');
-console.log('Bin 9 (leakage):', windowedFFT[9].toFixed(1));   // ~0.3
-console.log('Bin 10 (target):', windowedFFT[10].toFixed(1));   // ~32.0
-console.log('Bin 11 (leakage):', windowedFFT[11].toFixed(1));  // ~0.3
-// Leakage nearly eliminated! Peak is smaller (window reduces energy) but cleaner.`}
+console.log('Bin 9:', windowedFFT[9].toFixed(1));    // ~5.6, main lobe slightly wider
+console.log('Bin 20:', windowedFFT[20].toFixed(1));  // ~0.0
+console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
+// The trade: Hann spreads the peak over a slightly wider main lobe
+// (bins 10-11 read ~27.0 instead of ~41.7) but crushes the sidelobe
+// leakage that was smearing across the entire spectrum.`}
 </CodeBlock>
 
 ## Overlapping Windows
@@ -165,10 +167,11 @@ function stftWithWindowing(
   return spectrogram;
 }
 
-// 50% overlap is the standard: good balance of coverage and computation
-const spec = stftWithWindowing(signal, 256, 128, hannWindow);
-console.log('Windows:', spec.length);
-console.log('Frequency bins:', spec[0].length);`}
+// 50% overlap is the standard: good balance of coverage and computation.
+// Our demo signal is 128 samples, so use a 64-sample window with hop 32
+const spec = stftWithWindowing(signal, 64, 32, hannWindow);
+console.log('Windows:', spec.length);          // 3
+console.log('Frequency bins:', spec[0].length); // 33`}
 </CodeBlock>
 
 ## Challenge
@@ -186,7 +189,7 @@ Apply a Hann window to a signal before computing the FFT.
 
 **Overlap:** consecutive FFT windows share data. With 50% overlap (hop = W/2), each sample appears in 2 windows. With 75% overlap (hop = W/4), each sample appears in 4. More overlap = smoother spectrogram, more compute.
 
-**Constant-overlap-add (COLA) condition:** for perfect signal reconstruction from STFT, the windows must satisfy `Σ_t w[t - hop·k] = constant`. Hann window with 75% overlap satisfies COLA; rectangular window with 50% overlap does not.
+**Constant-overlap-add (COLA) condition:** for perfect signal reconstruction from STFT, the shifted windows must sum to a constant: `Σ_k w[t - hop·k] = constant`. The window and hop must be chosen as a pair: Hann satisfies COLA at 50% or 75% overlap, while a Blackman window at 50% overlap does not.
 
 For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
 </DerivationDrawer>

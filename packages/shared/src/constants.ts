@@ -85,7 +85,9 @@ export const ROUTES = {
 export const THEME_CONTENT = {
   modulesPerTheme: 11,
   lessonsPerModule: 5,
-  totalLessonsPerTheme: 55,
+  // 10 modules x 5 + browser-runtimes' 6 = 56 (Deep Orbit actual; also the
+  // certificate completion gate). Revisit if a future theme ships a different count.
+  totalLessonsPerTheme: 56,
 } as const;
 
 /** Default theme used for fallbacks */

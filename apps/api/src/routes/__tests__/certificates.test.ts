@@ -132,9 +132,9 @@ function authedUser() {
 }
 
 // Simulate a fully completed theme by seeding the progress-row count to
-// THEME_CONTENT.totalLessonsPerTheme = 55.
+// THEME_CONTENT.totalLessonsPerTheme = 56.
 function seedFullyCompletedTheme() {
-  mockProgressRows = Array.from({ length: 55 }, () => ({
+  mockProgressRows = Array.from({ length: 56 }, () => ({
     status: "completed",
   }));
 }

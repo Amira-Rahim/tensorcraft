@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 /**
  * Free-tier magic moment, verified end-to-end: the Consequence step of
- * foundations/normalization must load the real 8 KB preview model and run
+ * foundations/normalization must load the real 4 KB preview model and run
  * REAL TensorFlow.js inference in the browser, sample 7741 lands at ~51%.
  *
  * The lesson step index persists in localStorage (`tc_step_{theme}_{lesson}`),

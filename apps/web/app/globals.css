@@ -18,7 +18,7 @@
 
 @theme {
   /* Background surfaces */
-  /* `page` is the root page background — also used as the text color on
+  /* `page` is the root page background: also used as the text color on
      primary-filled elements (e.g. `bg-primary text-page`). Without this
      token, Tailwind emits nothing for `bg-page`/`text-page` and the text
      silently inherits light-on-primary (axe contrast 2.05 vs 4.5). */
@@ -45,11 +45,11 @@
   --color-border: var(--tc-border);
   --color-border-focus: var(--tc-primary);
 
-  /* Fonts — loaded via next/font, variables injected on <html> */
+  /* Fonts: loaded via next/font, variables injected on <html> */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  /* Border radius — brutalist: no rounding */
+  /* Border radius: brutalist: no rounding */
   --radius-sm: 0;
   --radius-md: 0;
   --radius-lg: 0;

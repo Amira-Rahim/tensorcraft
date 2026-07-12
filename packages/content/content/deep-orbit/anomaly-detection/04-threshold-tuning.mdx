@@ -133,16 +133,16 @@ Anomaly detector fired 1000 alerts in one hour: clearly noise, not a real outbre
 
 <RecallPrompt
   question="What does F1 score measure, and why is it useful when comparing anomaly detection thresholds?"
-  answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because moving the threshold shifts precision and recall in opposite directions; F1 captures both effects together, so the threshold with the highest F1 represents the best balance for a given dataset -- though the right balance ultimately depends on the relative cost of each error type."
+  answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because moving the threshold shifts precision and recall in opposite directions; F1 captures both effects together, so the threshold with the highest F1 represents the best balance for a given dataset, though the right balance ultimately depends on the relative cost of each error type."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Threshold tuning sets the boundary between normal and anomalous by choosing a cutoff on the reconstruction error distribution; setting it too low causes alert fatigue, too high causes missed detections.",
-    "Using the normal error distribution -- for example the 99th percentile -- gives a principled starting point that ties the threshold to observed behavior on known-good data.",
+    "Using the normal error distribution (for example the 99th percentile) gives a principled starting point that ties the threshold to observed behavior on known-good data.",
     "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system."
   ]}
-  bridge="Just as a frontend alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution -- because the right cutoff depends on a continuous false-positive/false-negative tradeoff, not a fixed number in config."
+  bridge="Just as a frontend alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff, not a fixed number in config."
   youCanNow="Set anomaly detection thresholds from the normal error distribution and evaluate them using precision, recall, and F1 score."
 />
 

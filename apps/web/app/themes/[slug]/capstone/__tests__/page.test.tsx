@@ -481,7 +481,7 @@ describe("CapstonePage, Phase 11 §11d", () => {
     expect(await screen.findByTestId("cert-error")).toBeInTheDocument();
   });
 
-  it("exposes Download PDF and Share Link action buttons on the certificate", async () => {
+  it("exposes certificate action buttons, labeled Print Certificate while pdf_url is absent", async () => {
     certRef.data = {
       id: "abcdef12-3456-7890-1234-567890abcdef",
       issued_at: "2026-04-20T10:00:00.000Z",
@@ -490,7 +490,9 @@ describe("CapstonePage, Phase 11 §11d", () => {
     };
     await renderPage();
 
-    expect(screen.getByTestId("download-pdf-button")).toBeInTheDocument();
+    const download = screen.getByTestId("download-pdf-button");
+    expect(download).toBeInTheDocument();
+    expect(download).toHaveTextContent("Print Certificate");
     expect(screen.getByTestId("share-link-button")).toBeInTheDocument();
   });
 

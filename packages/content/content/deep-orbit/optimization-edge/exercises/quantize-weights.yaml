@@ -1,7 +1,7 @@
 slug: quantize-weights
 lessonSlug: quantization
-title: "Quantize Weights to Int8"
-instructions: "Implement int8 quantization: map float32 weights to the 0-255 range using min-max scaling. Return the quantized array, scale factor, and zero point so the values can be dequantized back."
+title: "Quantize Weights to Uint8"
+instructions: "Implement uint8 quantization: map float32 weights to the 0-255 range using min-max scaling. Return the quantized array, scale factor, and zero point so the values can be dequantized back."
 starterCode: |
   interface QuantizedResult {
     quantized: number[];

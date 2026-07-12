@@ -51,7 +51,7 @@ vi.mock("@/lib/analytics", () => ({
 // Reaching the final step fires a lazy import chain (api-url → supabase
 // client → getSession → fetch) for the "first lesson" Kit tag. Stub it so the
 // dynamic imports resolve to mocks instead of transforming the real modules
-// after the test ends — otherwise the worker closes mid-import ("Closing rpc
+// after the test ends: otherwise the worker closes mid-import ("Closing rpc
 // while fetch was pending").
 vi.mock("@/lib/api-url", () => ({
   getApiUrl: () => "http://localhost",

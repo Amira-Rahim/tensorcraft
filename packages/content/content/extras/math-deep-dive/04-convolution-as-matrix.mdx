@@ -157,9 +157,10 @@ For large kernels, this is dramatically faster than sliding the window.
 // But for signal processing with large kernels, FFT is essential.
 
 // The connection to matrix multiplication:
-// The Toeplitz matrix is diagonalized by the DFT matrix.
-// T = F^(-1) * D * F, where D has the FFT of the kernel on diagonal.
-// This is WHY the convolution theorem works!
+// For CIRCULAR convolution, the Toeplitz matrix becomes circulant,
+// and circulant matrices are diagonalized by the DFT matrix:
+// C = F^(-1) * D * F, where D has the FFT of the kernel on diagonal.
+// This is WHY the convolution theorem works (pad to make 'valid' circular).
 
 const inputSize = 8;
 const input = tf.randomNormal([inputSize]);

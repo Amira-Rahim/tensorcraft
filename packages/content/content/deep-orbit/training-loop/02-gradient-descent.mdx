@@ -17,7 +17,7 @@ concept:
     mlTitle: "Gradient descent step"
     mlCode: "weights = weights.sub(grad.mul(0.1))  // ease toward minimum"
     tier: structural
-    breaks: "These are literally the same update: lerp IS gradient descent on loss = (target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown; the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only information you have."
+    breaks: "These are literally the same update: lerp IS gradient descent on loss = ½(target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown; the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only information you have."
 consequence:
   narrative: "Down is now computable. Every weight knows which direction reduces the loss, and by how much."
 hints:
@@ -69,9 +69,10 @@ for (let step = 0; step < 20; step++) {
   }
 }
 // Step 0:  x=0.600, loss=9.000
-// Step 5:  x=2.806, loss=0.038
-// Step 10: x=2.993, loss=0.000
-// Step 15: x=3.000, loss=0.000`}
+// Step 5:  x=2.214, loss=0.966
+// Step 10: x=2.742, loss=0.104
+// Step 15: x=2.916, loss=0.011
+// (x prints after the update, loss is measured before it)`}
 </CodeBlock>
 
 **Learning rate** is the hyperparameter that matters most, and you already own the intuition from lerp factors. Crank `0.1` up to `1.5` in your easing code and the element oscillates wildly past its target; drop it to `0.001` and the animation takes all afternoon. Same failure modes, same knob.

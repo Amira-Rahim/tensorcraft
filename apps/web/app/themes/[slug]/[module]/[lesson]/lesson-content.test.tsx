@@ -18,7 +18,9 @@ vi.mock("@tensorcraft/ui", () => ({
   CodeBlock: ({ children }: { children: React.ReactNode }) => (
     <pre>{children}</pre>
   ),
-  DerivationDrawer: () => null,
+  DerivationDrawer: ({ summary }: { summary?: string }) => (
+    <div data-testid="derivation-drawer">{summary}</div>
+  ),
   ExerciseDataProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
@@ -202,5 +204,79 @@ describe("LessonContent, LessonRecap visibility", () => {
       />,
     );
     expect(screen.queryByText(/Lesson recap/i)).toBeNull();
+  });
+});
+
+// Regression: a Velite-compiled body destructures every referenced component
+// from props.components and throws via _missingMdxReference if one is absent.
+// DerivationDrawer was once dropped from the live map, which crashed all 8
+// lessons that use it. Guard the full production component roster.
+const ALL_COMPONENTS = [
+  "Dialogue",
+  "Epilogue",
+  "CodeBlock",
+  "BridgeCallout",
+  "LearningObjectives",
+  "LessonRecap",
+  "RecallPrompt",
+  "Exercise",
+  "HintPanel",
+  "DerivationDrawer",
+  "MathBlock",
+  "InteractiveDemo",
+  "DeepScanDemo",
+  "BossBeat",
+  "DispatchTease",
+  "StrategyThread",
+  "Concept",
+  "NextLesson",
+  "KeyTakeaways",
+  "Quiz",
+];
+
+const ROSTER_BODY = `const {Fragment, jsx, jsxs} = arguments[0];
+function _missing(name) { throw new Error("Expected component " + name + " to be defined"); }
+function _createMdxContent(props) {
+  const _components = props.components || {};
+${ALL_COMPONENTS.map(
+  (n) => `  const ${n} = _components.${n} || _missing("${n}");`,
+).join("\n")}
+  return jsxs(Fragment, {children: [
+    jsx(DerivationDrawer, {summary: "Chain rule by hand"}),
+    jsx("p", {children: "prose"})
+  ]});
+}
+return {default: function(props) { return _createMdxContent(props); }};`;
+
+describe("LessonContent, MDX component roster coverage", () => {
+  it("provides every production component the compiled MDX may reference (no _missingMdxReference throw)", () => {
+    expect(() =>
+      render(
+        <LessonContent
+          lesson={{ body: ROSTER_BODY, concept: { explanation: "x" } }}
+          visibleComponents={new Set(["prose"])}
+        />,
+      ),
+    ).not.toThrow();
+  });
+
+  it("renders DerivationDrawer when its step set includes it, hides it otherwise", () => {
+    const { unmount } = render(
+      <LessonContent
+        lesson={{ body: ROSTER_BODY, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["DerivationDrawer", "prose"])}
+      />,
+    );
+    expect(screen.getByTestId("derivation-drawer")).toHaveTextContent(
+      "Chain rule by hand",
+    );
+    unmount();
+    render(
+      <LessonContent
+        lesson={{ body: ROSTER_BODY, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["prose"])}
+      />,
+    );
+    expect(screen.queryByTestId("derivation-drawer")).toBeNull();
   });
 });

@@ -202,7 +202,7 @@ Write a model validation gate for CI/CD.
     "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately and key CI caches on the content hash of the artifact.",
     "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on."
   ]}
-  bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed -- the workflow shape is identical, but `model.json` must be hash-pinned the way a `package-lock.json` pins dependencies."
+  bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed; the workflow shape is identical, but `model.json` must be hash-pinned the way a `package-lock.json` pins dependencies."
   youCanNow="Extend a GitHub Actions workflow with ML accuracy gates and performance benchmarks that block deployment on model regression."
 />
 

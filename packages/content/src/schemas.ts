@@ -34,7 +34,6 @@ export const lessonSchema = z.object({
   // Code and Challenge are in the MDX body
   consequence: z.object({
     narrative: z.string().min(1),
-    nextLessonTeaser: z.string().optional(),
   }),
 
   // Screenplay scene metadata (optional; falls back gracefully)

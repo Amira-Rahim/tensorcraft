@@ -28,14 +28,14 @@ export default function Home() {
 
         {/* ===== STATS (server-rendered, zero JS) =====
             Directly under the hero: each slot extends a hero claim ($59,
-            0 Python, the 8 KB model the visitor just watched run). Lesson/
+            0 Python, the 4 KB model the visitor just watched run). Lesson/
             module counts live in the hero stat line, these slots carry
             information the hero doesn't. */}
         <section className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
           {[
             [`$${PRICING.single.price}`, "Per theme. One-time, no sub"],
             ["0", "Lines of Python"],
-            ["8 KB", "The model running in the hero above"],
+            ["4 KB", "The model running in the hero above"],
             [
               `${LAUNCHED_THEMES.length} / ${THEME_SLUGS.length}`,
               "Themes live",
@@ -136,7 +136,7 @@ export default function Home() {
             Objection handling before the close. Items single-sourced with
             the sitewide FAQPage JSON-LD via app/faq-data.ts. */}
         <section data-testid="landing-faq" className="border-b border-border">
-          {/* Full-width rows under a simple header — every question spans
+          {/* Full-width rows under a simple header: every question spans
               the page, so there's no dead half and no column cramping. */}
           <div className="px-10 md:px-20 pt-16 pb-10">
             <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
@@ -168,7 +168,7 @@ export default function Home() {
         </section>
 
         {/* ===== FINAL CTA (server-rendered, zero JS) =====
-            Centered bookend — the one symmetric moment on an asymmetric
+            Centered bookend: the one symmetric moment on an asymmetric
             page; closes without a dead half. */}
         <section className="px-10 md:px-20 py-20 flex flex-col items-center text-center gap-8">
           <div className="font-mono text-xs text-text-muted tracking-wider">

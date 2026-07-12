@@ -146,12 +146,12 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <RecallPrompt
   question="How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?"
-  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Thresholding the reconstruction error -- high error signals anomaly -- makes the detection unsupervised: you only need clean normal data to train, no anomaly labels required."
+  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Thresholding the reconstruction error (high error signals anomaly) makes the detection unsupervised: you only need clean normal data to train, no anomaly labels required."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Ensemble detection combines multiple independent methods -- statistical, learned, and temporal -- so that majority agreement raises confidence and reduces false alerts from any single detector.",
+    "Ensemble detection combines multiple independent methods (statistical, learned, and temporal) so that majority agreement raises confidence and reduces false alerts from any single detector.",
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
     "A model's job is detection and quantification; ensemble agreement tells you how confident the system is, but interpretation of what was detected remains a human decision."
   ]}

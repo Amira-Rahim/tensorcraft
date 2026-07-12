@@ -313,7 +313,7 @@ export function FiveWorldsSection() {
 
   return (
     <section className="border-b border-border">
-      {/* Title lives ON the flagship surface — header and Deep Orbit share
+      {/* Title lives ON the flagship surface: header and Deep Orbit share
           one full-width canvas, so they can't read as separate sections.
           The four unlaunched worlds run as a compact strip underneath. */}
       <motion.div
@@ -381,7 +381,7 @@ export function FiveWorldsSection() {
         </div>
       </motion.div>
 
-      {/* Coming-next strip — compact 4-up row under the flagship */}
+      {/* Coming-next strip: compact 4-up row under the flagship */}
       <div className="border-t border-border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {COMING_SOON_CARDS.map((t, i) => (
           <motion.div

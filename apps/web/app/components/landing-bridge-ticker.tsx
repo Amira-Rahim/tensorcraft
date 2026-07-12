@@ -6,7 +6,7 @@ import { BRIDGES } from "@tensorcraft/shared";
 /**
  * Scrolling band of canonical FE → ML bridges.
  *
- * Sources items from the shared `BRIDGES` catalog (50 bridges) and surfaces
+ * Sources items from the shared `BRIDGES` catalog (51 bridges) and surfaces
  * the first 12, they're curated, tier-labelled, and cover the breadth of
  * concepts a learner hits in the first few modules.
  *

@@ -89,10 +89,11 @@ const complex = generateSignal([
   { hz: 5, amplitude: 1.0 },    // 5 Hz component
   { hz: 12, amplitude: 0.5 },   // 12 Hz component
   { hz: 30, amplitude: 0.3 },   // 30 Hz component: the anomaly?
-], 256, 100);
+], 256, 256);
 
 console.log(complex.slice(0, 10));
-// [0, 1.23, 0.78, -0.45, ...]: looks like noise!
+// [0, 0.47, 0.82, 0.99, ...]: a shapeless wiggle.
+// Nothing in these numbers says "exactly three frequencies."
 // But the frequency domain would show exactly three clean peaks.`}
 </CodeBlock>
 
@@ -107,7 +108,7 @@ const cosmicNoise = generateSignal([
   { hz: 12, amplitude: 0.6 },
   { hz: 23, amplitude: 0.4 },
   { hz: 47, amplitude: 0.2 },
-], 512, 100);
+], 512, 256);
 
 const anomalousSignal = generateSignal([
   { hz: 5, amplitude: 0.8 },
@@ -115,10 +116,10 @@ const anomalousSignal = generateSignal([
   { hz: 23, amplitude: 0.4 },
   { hz: 47, amplitude: 0.2 },
   { hz: 73.4, amplitude: 0.05 },  // tiny anomalous frequency
-], 512, 100);
+], 512, 256);  // hull-array rate: 256 Hz, so 73.4 Hz is representable
 
 // In the time domain: nearly impossible to distinguish
-// cosmicNoise[100] = 0.342, anomalousSignal[100] = 0.347
+// cosmicNoise[100] = -0.671, anomalousSignal[100] = -0.715
 
 // In the frequency domain: 73.4 Hz peak stands out immediately
 // This is why Farah wants to switch representations`}

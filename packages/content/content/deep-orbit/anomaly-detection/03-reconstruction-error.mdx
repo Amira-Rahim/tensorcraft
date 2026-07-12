@@ -17,7 +17,7 @@ concept:
     mlTitle: "Reconstruction Error"
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition
-    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single L2-distance scalar (the straight-line distance between input and reconstruction, measured across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
+    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
   narrative: "Twelve times the normal threshold. Nazari checks the sensors twice; this is not instrument noise. The model is right."
 hints:
@@ -47,7 +47,7 @@ So the reconstruction error IS the anomaly score? It's like running git diff. If
 Then run your diff, Ensign. And when it fires, tell me which channel it says changed.
 </Dialogue>
 
-The autoencoder's baseline is its learned representation of normal signals. The error score measures total deviation from that baseline, one scalar per sample: the L2 distance, the straight-line gap between a signal and its reconstruction measured across all the feature dimensions at once. Hold Farah's question while you build it; the score will turn out to answer everything except what she asked.
+The autoencoder's baseline is its learned representation of normal signals. The error score measures total deviation from that baseline, one scalar per sample: the mean of the squared gaps between a signal and its reconstruction, taken across all the feature dimensions at once. Hold Farah's question while you build it; the score will turn out to answer everything except what she asked.
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Establish a normal error distribution to set meaningful thresholds", "Interpret reconstruction error: which features contribute most to the anomaly"]} />
 
@@ -117,10 +117,11 @@ const analysis = featureErrors(autoencoder, anomalyTensor, [
 ]);
 
 console.log('Top contributors:');
-// fft_5: 0.0412  ← the 73.4 Hz bin: the anomalous frequency!
-// fft_6: 0.0089
-// amplitude: 0.0051
-// Everything else: < 0.001`}
+// fft_5: 0.6412  ← the 73.4 Hz bin: the anomalous frequency!
+// fft_6: 0.0289
+// amplitude: 0.0071
+// Everything else: < 0.001
+// (mean over all 11 = the 0.062 anomaly score from the last block)`}
 </CodeBlock>
 
 ## Challenge
@@ -137,16 +138,16 @@ A true anomaly slipped through the autoencoder. Audit the per-feature reconstruc
 
 <RecallPrompt
   question="MSE reconstruction error gives you a single scalar per sample. What does that scalar tell you, and what does it not tell you?"
-  answer="The scalar tells you how far the reconstruction is from the original across all features combined -- a high value means the sample does not fit the learned normal patterns. It does not tell you which feature, dimension, or channel caused the deviation. Identifying the source requires computing per-feature squared error separately and inspecting which dimensions contribute most."
+  answer="The scalar tells you how far the reconstruction is from the original across all features combined; a high value means the sample does not fit the learned normal patterns. It does not tell you which feature, dimension, or channel caused the deviation. Identifying the source requires computing per-feature squared error separately and inspecting which dimensions contribute most."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Reconstruction error is computed as the MSE between an input and the autoencoder's reconstruction of it; one scalar per sample serves as the anomaly score.",
     "Normal samples cluster at low error; anomalous samples stand out at 10-100x the normal baseline because the model cannot faithfully reproduce patterns it was never trained on.",
-    "Diagnosing which part of a signal is anomalous requires per-feature error analysis -- the aggregate MSE collapses all dimensions into a single number that shows magnitude but not location."
+    "Diagnosing which part of a signal is anomalous requires per-feature error analysis; the aggregate MSE collapses all dimensions into a single number that shows magnitude but not location."
   ]}
-  bridge="Like `git diff` showing that something changed from baseline, reconstruction error (`error = MSE(original, autoencoder.predict(original))`) flags deviation from learned normal patterns -- but unlike a diff, it gives one distance scalar rather than naming the exact lines that changed."
+  bridge="Like `git diff` showing that something changed from baseline, reconstruction error (`error = MSE(original, autoencoder.predict(original))`) flags deviation from learned normal patterns; but unlike a diff, it gives one distance scalar rather than naming the exact lines that changed."
   youCanNow="Compute per-sample reconstruction error as an anomaly score and run feature-level error analysis to identify which signal dimensions drive the deviation."
 />
 

@@ -68,7 +68,7 @@ export function UserMenu() {
   }
 
   if (!user) {
-    // Already on the auth page — the CTA would just reload it, so hide it.
+    // Already on the auth page: the CTA would just reload it, so hide it.
     if (pathname === "/auth") return null;
     return (
       <Link

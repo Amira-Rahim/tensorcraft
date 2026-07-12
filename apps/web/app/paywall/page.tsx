@@ -38,7 +38,7 @@ type ComparisonRow = {
 const COMPARISON_ROWS: ComparisonRow[] = [
   { feature: "Module 1 preview", free: "Included", paid: true },
   { feature: "All 11 modules", free: false, paid: true },
-  { feature: "55 lessons", free: false, paid: true },
+  { feature: "56 lessons", free: false, paid: true },
   { feature: "Code exercises (all)", free: false, paid: true },
   { feature: "GitHub push flow", free: false, paid: true },
   { feature: "Capstone project", free: false, paid: true },

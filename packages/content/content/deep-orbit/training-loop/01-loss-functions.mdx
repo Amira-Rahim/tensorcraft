@@ -57,11 +57,13 @@ const predictions = tf.tensor([0.6, 0.4, 0.3, 0.7, 0.8]);
 
 // Mean Squared Error: average of (prediction - label)^2
 const mse = tf.losses.meanSquaredError(labels, predictions);
-console.log('MSE:', mse.dataSync()); // 0.188
+console.log('MSE:', mse.dataSync()); // 0.268
 
-// Binary Crossentropy: better for classification (0 or 1)
-const bce = tf.losses.sigmoidCrossEntropy(labels, predictions);
-console.log('BCE:', bce.mean().dataSync());
+// Binary Crossentropy: better for classification (0 or 1).
+// sigmoidCrossEntropy expects raw logits (pre-sigmoid outputs), not probabilities
+const logits = tf.tensor([0.4, -0.4, -0.8, 0.8, 1.4]);
+const bce = tf.losses.sigmoidCrossEntropy(labels, logits);
+console.log('BCE:', bce.dataSync()); // ~0.718
 
 // Perfect predictions → loss approaches 0
 const perfect = tf.tensor([1, 0, 1, 0, 1]);

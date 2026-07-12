@@ -451,8 +451,8 @@ Tensorcraft uses a **per-theme, one-time purchase model**. Each theme is a stand
 
 | Tier | Price | What's Included |
 |---|---|---|
-| Free Preview | $0 | Module 1 of any launched theme (5 lessons). Full code editor, bridges, and quizzes. No GitHub integration. |
-| Single Theme | $59 | All 11 modules (55 lessons) of one theme. Lifetime access. GitHub integration. Progress sharing. |
+| Free Preview | $0 | Module 1 of any launched theme (5 lessons). Full code editor, bridges, and graded exercises. No GitHub integration. |
+| Single Theme | $59 | All 11 modules (56 lessons in Deep Orbit) of one theme. Lifetime access. GitHub integration. Progress sharing. |
 | Two Themes | $99 | Any two themes. Save $19 vs buying separately. |
 | Three Themes | $129 | Any three themes. Save $48 vs buying separately. |
 | All 5 Themes | $159 | All five themes. Save $136 vs buying separately. |

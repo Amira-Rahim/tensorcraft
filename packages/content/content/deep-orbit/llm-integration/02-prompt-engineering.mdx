@@ -133,7 +133,7 @@ Write a prompt template that produces structured signal analysis.
 <LessonRecap
   whatYouLearned={[
     "Effective prompts have four parts: role, context, data, and format. Each missing part is a source of vague or unparseable output.",
-    "Requesting structured output (JSON) makes LLM responses programmatically reliable -- always parse and validate the schema before use.",
+    "Requesting structured output (JSON) makes LLM responses programmatically reliable; always parse and validate the schema before use.",
     "Prompts should be iterated like debugging: test, inspect output, identify the missing constraint, refine, and repeat until results are consistent."
   ]}
   bridge="Crafting a prompt is like writing a precise search query: specificity and structure determine what you get back. A vague query (`git log`) returns noise; a precise one (`git log --oneline --graph --all`) returns signal. The same principle applies to prompts (`analyze signal` vs. a structured role-context-data-format prompt)."

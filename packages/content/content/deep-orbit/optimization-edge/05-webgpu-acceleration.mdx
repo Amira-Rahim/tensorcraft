@@ -53,6 +53,10 @@ Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it t
 
 <CodeBlock language="typescript" title="webgpu-setup.ts">
 {`import * as tf from '@tensorflow/tfjs';
+// The bundled package registers only the cpu and webgl backends.
+// 'webgpu' and 'wasm' each need their backend package imported first:
+// import '@tensorflow/tfjs-backend-webgpu';
+// import '@tensorflow/tfjs-backend-wasm';
 
 async function initBestBackend(): Promise<string> {
   // Try WebGPU first (fastest)
@@ -103,7 +107,7 @@ Before you fall for your own Web Worker analogy, Demir: a Worker keeps the langu
 console.log('=== DEEP SCAN Optimization Stack ===');
 console.log('');
 console.log('1. PROFILING:      Identified bottleneck layers');
-console.log('2. QUANTIZATION:   340 MB → 85 MB (int8)');
+console.log('2. QUANTIZATION:   340 MB → 85 MB (uint8)');
 console.log('3. PRUNING:        85 MB → 42 MB (60% sparsity)');
 console.log('4. CACHING:        40% fewer inference calls');
 console.log('5. WebGPU:         15ms → 5ms inference');

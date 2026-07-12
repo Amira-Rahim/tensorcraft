@@ -351,7 +351,7 @@ function CertificateCard({
             cursor: status === "ready" ? "pointer" : "not-allowed",
           }}
         >
-          Download PDF &darr;
+          {cert?.pdf_url ? <>Download PDF &darr;</> : "Print Certificate"}
         </button>
         <button
           type="button"
@@ -406,7 +406,7 @@ function CertificateDownloadButton() {
       onClick={() => window.print()}
       className="inline-flex items-center gap-2 px-6 py-3 text-sm font-mono font-semibold border-2 border-primary text-primary transition-all hover:bg-primary hover:text-page rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
     >
-      Download Certificate (PDF) ↓
+      Print Certificate ↓
     </button>
   );
 }

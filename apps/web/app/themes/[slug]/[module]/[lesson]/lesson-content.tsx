@@ -257,6 +257,7 @@ export function LessonContent({
         ) : null,
       InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
       DeepScanDemo: wrapVisibility("DeepScanDemo", DeepScanDemo),
+      DerivationDrawer: wrapVisibility("DerivationDrawer", DerivationDrawer),
       KeyTakeaways: wrapVisibility("KeyTakeaways", KeyTakeaways),
       LessonRecap: wrapVisibility("LessonRecap", LessonRecap),
       LearningObjectives: wrapVisibility(

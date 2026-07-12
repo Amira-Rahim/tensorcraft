@@ -5,7 +5,7 @@ import { themes, themeSlugs } from "@tensorcraft/themes";
 import { isLaunched } from "@tensorcraft/shared";
 
 /**
- * Auth page — split-screen brutalist redesign (2026-06-16).
+ * Auth page: split-screen brutalist redesign (2026-06-16).
  *
  * One coherent two-column layout (the previous version nested a full auth
  * *card* inside this page's right pane, which crushed the card's own columns
@@ -37,13 +37,13 @@ export default function AuthPage() {
   return (
     <main className="flex min-h-screen w-full bg-surface">
       {/* ============================================================ */}
-      {/* LEFT PANE — orbit backdrop + brand + headline (desktop only) */}
+      {/* LEFT PANE: orbit backdrop + brand + headline (desktop only) */}
       {/* ============================================================ */}
       <aside
         data-testid="auth-left-pane"
         className="hidden md:flex md:w-[55%] relative overflow-hidden border-r border-border rounded-none bg-page"
       >
-        {/* Live Deep Orbit canvas — same component as the landing page. Sizes
+        {/* Live Deep Orbit canvas: same component as the landing page. Sizes
             to this positioned parent; decorative (aria-hidden internally). */}
         <OrbitCanvas
           rgb={HERO_RGB}
@@ -63,7 +63,7 @@ export default function AuthPage() {
       </aside>
 
       {/* ============================================================ */}
-      {/* RIGHT PANE — auth form                                       */}
+      {/* RIGHT PANE: auth form                                       */}
       {/* ============================================================ */}
       <section
         data-testid="auth-right-pane"

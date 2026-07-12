@@ -112,7 +112,7 @@ async function forecastMultiStep(
   return predictions;
 }
 
-// Forecast 47 minutes ahead
+// Forecast 47 steps ahead
 const forecast = await forecastMultiStep(model, recentWindow, 47);
 // The LSTM predicts a spike at step 47: the anomaly repeats!`}
 </CodeBlock>

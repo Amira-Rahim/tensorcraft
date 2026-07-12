@@ -84,7 +84,7 @@ async function forecast(
 
 // Forecast 100 steps ahead
 const result = await forecast(model, recentWindow, 100);
-console.log('Step 1 trust:', result.trustHeuristic[0]);    // 0.985 (hand-tuned decay)
+console.log('Step 1 trust:', result.trustHeuristic[0]);    // 1.0 (decay starts from full trust)
 console.log('Step 50 trust:', result.trustHeuristic[49]);  // 0.265
 console.log('Step 100 trust:', result.trustHeuristic[99]); // 0.0: too far ahead`}
 </CodeBlock>
@@ -92,8 +92,8 @@ console.log('Step 100 trust:', result.trustHeuristic[99]); // 0.0: too far ahead
 ## Non-Stationarity: When Predictions Fail
 
 <CodeBlock language="typescript" title="non-stationary.ts">
-{`// The forecast says the anomaly repeats at step 47
-// But it doesn't arrive until step 50
+{`// The forecast says the anomaly repeats at step 50
+// It arrives at step 47: three steps EARLY
 // The model was wrong. Why?
 
 // NON-STATIONARY DATA: the statistical properties change over time

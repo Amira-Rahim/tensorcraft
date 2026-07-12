@@ -157,7 +157,7 @@ Build a weighted ensemble from multiple model predictions.
 
 <Exercise slug="weighted-ensemble" />
 
-<RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated. Averaging those errors causes them to cancel, cutting prediction variance roughly by sqrt(N) compared to a single model, while leaving bias unchanged." />
+<RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated. Averaging those errors causes them to cancel, cutting prediction variance roughly by a factor of N (so typical error shrinks by sqrt(N)) compared to a single model, while leaving bias unchanged." />
 
 <LessonRecap
   whatYouLearned={[

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 /**
  * Free-tier magic moment: a REAL TensorFlow.js model (trained offline,
- * ~8 KB) classifying the module's sensor readings live in the reader's
+ * ~4 KB download) classifying the module's sensor readings live in the reader's
  * browser tab, on the lesson's final step. The last reading is archive
  * sample 7741, the story's anomaly, which lands at ~51%: too odd to
  * ignore, too ambiguous to alarm. The whole paid course is the answer to
@@ -171,13 +171,13 @@ export function DeepScanDemo({
             line answers "what is this" before the table starts filling in. */}
         {framing && (
           <p className="text-text-muted pb-2.5 mb-1 border-b border-border">
-            A real 8 KB neural network, downloaded into this page (no server),
+            A real 4 KB neural network, downloaded into this page (no server),
             scoring archived sensor readings from the story&rsquo;s ship.
           </p>
         )}
         {status === "loading" && (
           <p className="text-text-muted">
-            loading model (8 KB) into your browser…
+            loading model (4 KB) into your browser…
           </p>
         )}
         {status === "error" && (

@@ -118,7 +118,7 @@ for epoch in 1..N:
       break
 ```
 
-**Why mini-batch (not full-batch or single-sample)?** Full-batch is exact but uses too much memory and takes one step per epoch. Single-sample (true SGD) is noisy and underuses GPU parallelism. Mini-batches of 16-512 are the empirical sweet spot: enough samples for a smooth gradient estimate, small enough to fit in memory, large enough to saturate the GPU.
+**Why mini-batch (not full-batch or single-sample)?** Full-batch is exact but uses too much memory and takes one step per epoch. Single-sample (true SGD) is noisy and underuses GPU parallelism. Mini-batches of 32-512 are the empirical sweet spot: enough samples for a smooth gradient estimate, small enough to fit in memory, large enough to saturate the GPU.
 
 **Why shuffle each epoch?** Without shuffling, the model sees batches in the same order every epoch, which biases learning toward whatever pattern is in the file order. Shuffle breaks the correlation between adjacent batches.
 </DerivationDrawer>

@@ -56,13 +56,13 @@ const bias = tf.scalar(0.1);                   // threshold offset
 
 // The neuron computation: weighted sum + bias
 const output = tf.dot(inputs, weights).add(bias);
-console.log(output.dataSync()); // [0.18]: raw output
+console.log(output.dataSync()); // [0.26]: raw output
 
 // Compare with the reduce() equivalent:
 const jsInputs = [0.5, 0.8, 0.2];
 const jsWeights = [0.4, -0.2, 0.6];
 const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
-console.log(jsOutput); // 0.18: identical!`}
+console.log(jsOutput); // 0.26: identical!`}
 </CodeBlock>
 
 Weights encode how much each input matters: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold, the baseline the weighted sum has to clear.

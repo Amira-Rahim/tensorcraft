@@ -5,7 +5,7 @@ import { getThemeLessons } from "@tensorcraft/content";
 export const metadata: Metadata = {
   title: "Extras: Math, Classical ML, Ethics, Python Bridge | Tensorcraft",
   description:
-    "Companion modules that go deeper than the main path: math derivations (chain rule, KL, ELBO), classical ML algorithms, ethics framework, Python ↔ JS bridge.",
+    "Companion modules that go deeper than the main path: math derivations (chain rule, KL divergence, Bayesian updates), classical ML algorithms, ethics framework, Python ↔ JS bridge.",
   alternates: { canonical: "https://tensorcraft.app/extras" },
 };
 

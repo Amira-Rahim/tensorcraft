@@ -92,7 +92,7 @@ async function createLLMClient(apiKey: string, baseUrl: string): Promise<LLMClie
 const llm = await createLLMClient(API_KEY, BASE_URL);
 const report = await llm.complete(\`
 Summarize the following signal classification results:
-- Total signals analyzed: 12,000
+- Total signals analyzed: 12,001
 - Normal signals: 11,847 (98.7%)
 - Anomalous signals: 153 (1.3%)
 - Unclassified: 1 (0.008%)
@@ -149,7 +149,7 @@ Set up an LLM client and generate a structured analysis.
   whatYouLearned={[
     "LLMs are augmentation tools: they produce drafts faster than writing from scratch, but every factual claim must be verified against real data before use.",
     "Temperature controls output variability: low values (0.1-0.3) reduce hallucination risk for factual analysis; higher values suit creative tasks.",
-    "The safe workflow is generate, review, correct, approve -- never publish LLM output without a human sign-off."
+    "The safe workflow is generate, review, correct, approve; never publish LLM output without a human sign-off."
   ]}
   bridge="Just as AI code completion (Copilot) suggests code you still review before merging, LLM analysis (`llm.complete(prompt)`) generates prose you must verify against your data before trusting."
   youCanNow="Set up an LLM API client and integrate it into a human-in-the-loop review workflow for structured analysis tasks."

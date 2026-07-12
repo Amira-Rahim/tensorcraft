@@ -131,7 +131,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       render(<LandingHero />);
       const stats = screen.getByTestId("hero-stat-line");
       expect(stats.textContent).toMatch(/11 modules/i);
-      expect(stats.textContent).toMatch(/55 lessons/i);
+      expect(stats.textContent).toMatch(/56 lessons/i);
       expect(stats.textContent).toMatch(/1 deployable model/i);
     });
 

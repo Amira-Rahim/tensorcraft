@@ -67,13 +67,13 @@ decoder.add(tf.layers.dense({ units: 32, activation: 'relu' }));
 decoder.add(tf.layers.dense({ units: inputDim }));  // reconstruct original
 
 // Full autoencoder: input → encoder → decoder → reconstruction
+// (a model is a layer in TFJS, so the two halves stack directly)
 const autoencoder = tf.sequential();
-autoencoder.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [inputDim] }));
-autoencoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));
-autoencoder.add(tf.layers.dense({ units: 4, activation: 'relu' }));   // bottleneck
-autoencoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));
-autoencoder.add(tf.layers.dense({ units: 32, activation: 'relu' }));
-autoencoder.add(tf.layers.dense({ units: inputDim }));
+autoencoder.add(encoder);  // 11 → 4
+autoencoder.add(decoder);  // 4 → 11
+
+// Keeping the halves as their own models pays off later:
+// encoder.predict(signal) lets you inspect the 4-number bottleneck directly
 
 // Train to reconstruct its own input: input = label
 autoencoder.compile({ optimizer: 'adam', loss: 'meanSquaredError' });`}
@@ -122,9 +122,9 @@ Build and train an autoencoder on normal signal data.
   whatYouLearned={[
     "An autoencoder has two parts: an encoder that compresses input through a bottleneck, and a decoder that rebuilds the original from that compressed form.",
     "Training exclusively on normal data teaches the model the structure of normality; it learns nothing about anomalies.",
-    "Anomalous inputs cannot be accurately encoded or decoded, so they produce high reconstruction error -- which becomes the anomaly signal."
+    "Anomalous inputs cannot be accurately encoded or decoded, so they produce high reconstruction error, which becomes the anomaly signal."
   ]}
-  bridge="Like `gzip` exploiting repeated patterns to compress and restore data losslessly, an autoencoder compresses by learning patterns in normal data -- but unlike gzip, it is lossy: inputs unlike anything it was trained on come back distorted, and that distortion is the detection mechanism."
+  bridge="Like `gzip` exploiting repeated patterns to compress and restore data losslessly, an autoencoder compresses by learning patterns in normal data; but unlike gzip, it is lossy: inputs unlike anything it was trained on come back distorted, and that distortion is the detection mechanism."
   youCanNow="Build and train an autoencoder on normal-only data and use reconstruction error as an unsupervised anomaly score."
 />
 

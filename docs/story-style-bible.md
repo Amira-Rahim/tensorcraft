@@ -19,6 +19,9 @@ decode answers back.
   flagged in foundations/05. It is THE anomaly's first onscreen appearance.
   Later canonized as training-loop's "51.8% anomalous — ambiguous" sample.
 - The anomalous component is at **73.4 Hz** (signal-processing/02).
+- The hull sensor array samples at **256 Hz** (Nyquist ceiling 128 Hz, so
+  73.4 Hz is comfortably detectable). Teaching demos may use 128 Hz, but any
+  DEEP SCAN spectrum reads out to 128 Hz. Established signal-processing/02.
 - **The pulse interval is accelerating.** Canonical sequence: every 73.4
   seconds when first measured (signal-processing), macro-cycle 47 minutes
   (recurrent-networks), down to every 30 seconds by the capstone. The

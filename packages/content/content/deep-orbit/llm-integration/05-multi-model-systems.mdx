@@ -164,7 +164,7 @@ Wire together a multi-model pipeline with error handling.
 <LessonRecap
   whatYouLearned={[
     "Chained probabilistic models compound error: validate output between every stage rather than letting silent failures degrade the whole pipeline.",
-    "Define clear interfaces between stages -- classifier output format becomes the anomaly detector's input contract -- so each model has predictable inputs and outputs.",
+    "Define clear interfaces between stages (classifier output format becomes the anomaly detector's input contract) so each model has predictable inputs and outputs.",
     "Graceful degradation keeps the pipeline running: if one model fails, fall back to a simpler method rather than failing the entire chain."
   ]}
   bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and passes a typed result to the next. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."

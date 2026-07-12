@@ -78,10 +78,10 @@ const weights = [0.3, 0.5, 1.2];
 const bias = -2.0;
 
 const probConvert = predict([5, 8, 1], weights, bias);
-console.log(probConvert);  // 0.88, likely to convert
+console.log(probConvert);  // 0.99, likely to convert (z = 4.7)
 
 const probBounce = predict([0.5, 1, 0], weights, bias);
-console.log(probBounce);   // 0.14, likely to bounce`}
+console.log(probBounce);   // 0.21, likely to bounce (z = -1.35)`}
 </CodeBlock>
 
 ## The Decision Boundary

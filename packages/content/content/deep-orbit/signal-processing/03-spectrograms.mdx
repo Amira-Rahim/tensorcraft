@@ -93,10 +93,10 @@ function stft(
   // Values = magnitude (how strong that frequency is at that time)
 }
 
-// Example: 4 seconds of signal at 128 Hz = 512 samples
-// windowSize=256, hopSize=128 → 3 time windows
+// Example: 4 seconds of hull-array signal at 256 Hz = 1024 samples
+// windowSize=256, hopSize=128 → 7 time windows
 const spec = stft(signal, 256, 128);
-console.log('Time steps:', spec.length);          // 3
+console.log('Time steps:', spec.length);          // 7
 console.log('Frequency bins:', spec[0].length);   // 129`}
 </CodeBlock>
 
@@ -124,9 +124,9 @@ function findAnomalyWindows(
   return windows;
 }
 
-// The 73.4 Hz anomaly with sampleRate=128, windowSize=256:
-// bin = Math.round(73.4 * 256 / 128) = 147
-const anomalyBin = Math.round(73.4 * 256 / 128);
+// The 73.4 Hz anomaly in hull-array data (sampleRate=256, windowSize=256):
+// bin = Math.round(73.4 * windowSize / sampleRate) = 73
+const anomalyBin = Math.round(73.4 * 256 / 256);
 const activeWindows = findAnomalyWindows(spec, anomalyBin, 2.0);
 console.log('Anomaly appears at windows:', activeWindows);
 // Shows the anomaly pulses: it's not constant, it's periodic`}
@@ -146,15 +146,15 @@ console.log('Anomaly appears at windows:', activeWindows);
 
 // Small window: precise in time, blurry in frequency
 const fineTime = stft(signal, 64, 32);
-// Resolution: time = 0.5s, freq = 2 Hz per bin
+// Window span 0.25s (time blur), 4 Hz per bin
 
 // Large window: precise in frequency, blurry in time
 const fineFreq = stft(signal, 512, 256);
-// Resolution: time = 4s, freq = 0.25 Hz per bin
+// Window span 2s (time blur), 0.5 Hz per bin
 
 // Good default: balance both
 const balanced = stft(signal, 256, 128);
-// Resolution: time = 1s, freq = 0.5 Hz per bin`}
+// Window span 1s (time blur), 1 Hz per bin`}
 </CodeBlock>
 
 ## Challenge
@@ -178,7 +178,7 @@ spectrogram[t, k] = |X[t, k]|²            // magnitude squared
 - **Hop (stride between windows):** smaller hop = more overlap, smoother spectrogram, more compute. Common: hop = W/4 (75% overlap).
 - **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W.
 
-**Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Time resolution is `hop / fs`.
+**Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Each column blurs events across the window's span, `W / fs`; consecutive columns advance by `hop / fs`.
 </DerivationDrawer>
 
 <RecallPrompt

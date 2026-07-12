@@ -7,15 +7,15 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Float16 uses 2. Int8 uses 1. Do the math: that's a 4x size reduction.'"
+  narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Uint16 uses 2. Uint8 uses 1. Do the math: that's a 4x size reduction.'"
   speaker: "Chief Nazari"
 concept:
-  explanation: "Quantization stores each weight in fewer bytes: a smaller, faster model, paid for with a measurable slice of accuracy."
+  explanation: "Quantization stores each weight in fewer bytes: a smaller download and a survivable load, paid for with a measurable slice of accuracy."
   bridge:
     feTitle: "Image Compression"
     feCode: "// PNG (lossless, 2MB) → WebP (lossy, 200KB): 10x smaller, ~same visual quality"
     mlTitle: "Quantization"
-    mlCode: "// Float32 (340MB) → Int8 (85MB): 4x smaller, ~2% accuracy loss"
+    mlCode: "// Float32 (340MB) → Uint8 (85MB): 4x smaller, ~2% accuracy loss"
     tier: structural
 consequence:
   narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops 1.2%. Nazari writes both numbers on the board and leaves them there."
@@ -28,24 +28,24 @@ hints:
     content: "const min = Math.min(...weights), max = Math.max(...weights); const scale = (max - min) / 255; const zeroPoint = Math.round(-min / scale); const quantized = weights.map(w => Math.round((w - min) / scale));"
 keywords:
   - quantization
-  - float16
-  - int8
+  - uint16
+  - uint8
   - compression
   - precision
 skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Cut the precision to 8-bit integers and you're at 85 MB. The model is 4x smaller and inference runs on integer hardware, faster on every device.
+Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference; the runtime decodes them back to floats at load. Promise me a file that fits.
 </Dialogue>
 
-Nazari's arithmetic is the whole technique. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0247 has 512 MB of RAM, and the first 255 MB of the repayment come from this lesson.
+Nazari's arithmetic is the whole technique. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0247 has 512 MB of RAM and went down parsing a 340 MB weight file; cutting that file to 85 MB is the first and largest payment on the debt.
 
 <Dialogue speaker="Chief Nazari">
 Don't sell me the WebP comparison, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand quantization as precision reduction: float32 → float16 → int8", "Quantize a model using TensorFlow.js conversion tools", "Measure the accuracy-size tradeoff of different quantization levels", "Choose the right precision for your deployment constraints"]} />
+<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure the accuracy-size tradeoff of different quantization levels", "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)"]} />
 
 ## Precision Reduction
 
@@ -58,13 +58,12 @@ Don't sell me the WebP comparison, Ensign. Tell me where the accuracy goes. A po
 // 1.2345678 → stored as 4 bytes
 // Model size: 85M params × 4 bytes = 340 MB
 
-// Float16: half precision
-// 1.234 → stored as 2 bytes (some precision lost)
-// Model size: 85M params × 2 bytes = 170 MB
+// Uint16 storage: 2 bytes per weight, 65,535 levels across the range
+// (an affine integer mapping, not IEEE float16)
+// File size: 85M params × 2 bytes = 170 MB
 
-// Int8: integer precision
-// 1 → stored as 1 byte (significant precision lost, but usually OK)
-// Model size: 85M params × 1 byte = 85 MB
+// Uint8 storage: 1 byte per weight, 255 levels (coarse, usually OK)
+// File size: 85M params × 1 byte = 85 MB
 
 // Simulate quantization effect
 function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: number[]; scale: number; zeroPoint: number } {
@@ -88,7 +87,7 @@ function dequantize(quantized: number[], scale: number, zeroPoint: number): numb
 }
 
 // The error between original and quantized weights is small
-// Accuracy typically drops < 2% for int8 quantization`}
+// Accuracy typically drops < 2% for 8-bit quantization`}
 </CodeBlock>
 
 ## Saving Quantized Models
@@ -106,9 +105,11 @@ async function saveQuantized(model: tf.LayersModel, path: string) {
 
 // Size comparison for DEEP SCAN:
 // float32 (no quantization): 340 MB, accuracy: 94.2%
-// float16 (quantizationBytes: 2): 170 MB, accuracy: 94.0% (-0.2%)
+// uint16  (quantizationBytes: 2): 170 MB, accuracy: 94.0% (-0.2%)
 // uint8   (quantizationBytes: 1): 85 MB,  accuracy: 93.0% (-1.2%)`}
 </CodeBlock>
+
+One thing to be clear about before Nazari makes you be clear about it: TensorFlow.js decodes quantized weights back to float32 when the model loads. The math of inference runs at the same speed as before; nothing in the browser executes on integer hardware. What you bought is a 4x smaller download, a smaller disk cache, and a load spike the dashboard can survive. Runtimes like TFLite do run int8 kernels on integer silicon; in the browser, quantization is a storage format, not an execution mode.
 
 ## Challenge
 
@@ -116,15 +117,15 @@ Quantize model weights and measure the precision loss.
 
 <Exercise slug="quantize-weights" />
 
-<RecallPrompt question="What trade-off does quantization make, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 to float16 or int8), shrinking model size and speeding up integer hardware, at the cost of a measurable accuracy drop. The trade is acceptable when the accuracy loss is evenly distributed across classes and within tolerance for the use case; it is unacceptable when the loss concentrates in rare or high-stakes classes." />
+<RecallPrompt question="What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 stored as uint16 or uint8), shrinking the saved model 2x or 4x at the cost of a measurable accuracy drop. In TFJS the weights decode back to float32 at load, so the win is download, disk, and load spike, not inference speed. The trade is acceptable when the accuracy loss is evenly distributed across classes and within tolerance for the use case; it is unacceptable when the loss concentrates in rare or high-stakes classes." />
 
 <LessonRecap
   whatYouLearned={[
-    "Quantization maps each weight from float32 (4 bytes) to float16 (2 bytes) or int8 (1 byte), reducing model size by 2x or 4x respectively.",
+    "Quantization stores each float32 weight (4 bytes) as uint16 (2 bytes) or uint8 (1 byte), shrinking the saved model by 2x or 4x respectively.",
     "Accuracy loss from quantization is usually small on average but can concentrate in rare classes, so per-class breakdown matters more than aggregate accuracy.",
-    "The `quantizationBytes` option in `model.save()` applies quantization at serialization time without requiring manual weight manipulation."
+    "The `quantizationBytes` option in `model.save()` applies quantization at serialization time; TFJS decodes weights back to float32 at load, so the savings are download and storage, not inference speed."
   ]}
-  bridge="Just as converting a PNG to WebP trades lossless fidelity for a smaller file, quantizing from `float32` to `int8` trades weight precision for a 4x smaller model."
+  bridge="Just as converting a PNG to WebP trades lossless fidelity for a smaller file, quantizing from `float32` to `uint8` trades weight precision for a 4x smaller file."
   youCanNow="Quantize a TensorFlow.js model's weights to reduce its size, measure the resulting accuracy loss per class, and choose the precision level appropriate for your deployment constraints."
 />
 
@@ -132,7 +133,7 @@ Quantize model weights and measure the precision loss.
 
 <Epilogue>
 
-The int8 build loads on the engineering rig at 85 MB, and for the first time since the crash the memory graph has white space in it. Nazari updates the board: model 85, budget 512, relay slot 18 days. Under it, in smaller writing: 93.0, was 94.2.
+The uint8 build loads on the engineering rig from an 85 MB file, and for the first time since the crash the load spike clears with white space left on the memory graph. Nazari updates the board: file 85, budget 512, relay slot 18 days. Under it, in smaller writing: 93.0, was 94.2.
 
 <Dialogue speaker="Chief Nazari">
 The megabytes we got back, we count once. The 1.2 percent, we pay on every classification until someone retrains. Both numbers stay on the board.

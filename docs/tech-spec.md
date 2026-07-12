@@ -98,7 +98,7 @@ Tensorcraft uses a **Core + Theme Layer** architecture. All pedagogical content 
 
 #### Core Layer
 
-The core layer contains the canonical lesson content: explanations, code exercises, quizzes, and learning objectives. It is theme-agnostic and uses neutral language.
+The core layer contains the canonical lesson content: explanations, code exercises, recall prompts, and learning objectives. It is theme-agnostic and uses neutral language.
 
 #### Theme Layer
 

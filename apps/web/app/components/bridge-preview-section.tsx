@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { BRIDGES } from "@tensorcraft/shared";
 
-// ONE bridge on the landing page — the catalog is paid content, not for
+// ONE bridge on the landing page: the catalog is paid content, not for
 // public browsing (the prev/next cycler was removed 2026-06-10 for this
 // reason; do not reintroduce). V1 ships React only, so the preview just
 // needs a real ML snippet and a React code variant.

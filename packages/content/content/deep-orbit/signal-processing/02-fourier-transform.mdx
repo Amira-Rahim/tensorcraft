@@ -48,7 +48,7 @@ So the signal is the chord, and the FFT breaks it into individual frequencies? T
 Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N of them for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That universality is what lets me trust whatever peak we find.
 </Dialogue>
 
-The FFT takes N samples and returns N frequency coefficients. Each coefficient answers one question: how strongly is this exact frequency present, and at what phase offset?
+The full transform of N samples produces N complex coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information. Each coefficient answers one question: how strongly is this exact frequency present, and at what phase offset?
 
 <LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
 
@@ -98,7 +98,7 @@ magnitudes.dispose();`}
 
 ## Understanding the Output
 
-The FFT transforms an array of N time-domain samples into N/2+1 frequency bins. Each bin tells you how much of that frequency is present in the signal.
+For a real-valued signal, `rfft` transforms an array of N time-domain samples into N/2+1 frequency bins. Each bin tells you how much of that frequency is present in the signal.
 
 <CodeBlock language="typescript" title="fft-interpretation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -141,6 +141,8 @@ console.log('Dominant frequency:', dominant, 'Hz');  // 5`}
 </CodeBlock>
 
 ## The FFT for DEEP SCAN
+
+One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more, which caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. Anything between 64 and 128 Hz is invisible to the demo and plainly visible to the ship.
 
 <CodeBlock language="typescript" title="deep-scan-fft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -202,6 +204,8 @@ For each frequency index k, this is a sum of input samples weighted by complex s
 `x[n] = (1/N) · Σ_{k=0..N-1} X[k] · e^(2π·i·k·n/N)`
 
 A signal is fully reconstructible from its DFT: no information is lost.
+
+**Why rfft returns N/2+1 bins:** for real-valued input, `X[N-k]` is the complex conjugate of `X[k]`; the upper half of the spectrum duplicates the lower half. `rfft` keeps only bins 0 through N/2, the unique ones.
 
 **Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT (next) drops this to O(N log N), which is what makes real-time spectrograms possible.
 </DerivationDrawer>
