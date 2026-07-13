@@ -78,6 +78,9 @@ export function Nav() {
 
       <div className="hidden md:flex items-center gap-6 font-mono">
         {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
+        {/* Restored 2026-07-13: the milestone producer
+            (apps/api/src/lib/dispatch.ts) now writes module/theme-clear
+            messages, so the inbox is no longer guaranteed-empty. */}
         {isAuthenticated && <NavLink href="/inbox">Inbox</NavLink>}
         <NavLink href="/themes">Themes</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>

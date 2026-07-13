@@ -512,6 +512,14 @@ export async function commitLessonArtifact(params: {
   moduleId: string;
   lessonId: string;
   code: string;
+  /**
+   * Exercise slug for the artifact filename. Six lessons embed two
+   * exercises; a lesson-keyed path made the second pass overwrite the
+   * first (2026-07-13 audit, accepted-v1 then fixed). Exercise slugs are
+   * unique across the corpus. Falls back to lessonId for callers that
+   * predate the field.
+   */
+  exerciseSlug?: string;
   /** Optional one-line progress delta to append to `PROGRESS.md`. */
   readmeDelta?: string;
   /** File extension for the solution, default .ts */
@@ -524,13 +532,15 @@ export async function commitLessonArtifact(params: {
     moduleId,
     lessonId,
     code,
+    exerciseSlug,
     readmeDelta,
     fileExt = "ts",
   } = params;
 
   const repoName = buildRepoName(themeSlug);
-  const filePath = `${moduleId}/${lessonId}.${fileExt}`;
-  const commitMessage = `feat(${moduleId}): Complete exercise -- ${lessonId}`;
+  const artifactId = exerciseSlug ?? lessonId;
+  const filePath = `${moduleId}/${artifactId}.${fileExt}`;
+  const commitMessage = `feat(${moduleId}): Complete exercise -- ${artifactId}`;
 
   const result = await withRetry(() =>
     pushFile(accessToken, username, repoName, filePath, code, commitMessage),

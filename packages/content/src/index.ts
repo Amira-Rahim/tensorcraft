@@ -43,6 +43,7 @@ export {
   getLesson,
   getExercise,
   getLessonExercises,
+  getLessonTotalMinutes,
   getAdjacentLessons,
   getLessonsWithBridges,
   getLessonsByConcepts,

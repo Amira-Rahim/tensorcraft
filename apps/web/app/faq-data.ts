@@ -8,7 +8,7 @@ import { PRICING } from "@tensorcraft/shared";
 export const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Can I learn machine learning with JavaScript?",
-    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser, no Python required. The curriculum covers neural networks, LSTMs, CNNs, and transformers through hands-on tutorials built for frontend developers.",
+    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser, no Python required. The launched theme covers neural networks, LSTMs, signal processing, and attention today; CNNs and full transformer architectures arrive with the Computer Vision and NLP themes now in development.",
   },
   {
     q: "How does Tensorcraft teach ML to frontend developers?",
@@ -24,7 +24,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "What ML topics does Tensorcraft cover?",
-    a: "Five specializations: Time-Series & Signals (RNNs, LSTMs), Computer Vision (CNNs, YOLO), NLP & Text Intelligence (Transformers, BERT), Multimodal & Generative AI (GANs, Diffusion), and Edge AI & Production ML (quantization, MLOps).",
+    a: "Five specializations, one live today and four in development: Time-Series & Signals (RNNs, LSTMs — live now), Computer Vision (CNNs, YOLO), NLP & Text Intelligence (Transformers, BERT), Multimodal & Generative AI (GANs, Diffusion), and Edge AI & Production ML (quantization, MLOps).",
   },
   {
     q: "What if it turns out not to be for me?",

@@ -40,10 +40,9 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   { feature: "All 11 modules", free: false, paid: true },
   { feature: "56 lessons", free: false, paid: true },
   { feature: "Code exercises (all)", free: false, paid: true },
-  { feature: "GitHub push flow", free: false, paid: true },
+  { feature: "GitHub push flow", free: "Module 1", paid: true },
   { feature: "Capstone project", free: false, paid: true },
   { feature: "Certificate of completion", free: false, paid: true },
-  { feature: "Priority email support", free: false, paid: true },
   { feature: "Lifetime updates", free: false, paid: true },
 ];
 
@@ -95,8 +94,8 @@ export default function PaywallPage() {
           </h1>
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
             You&rsquo;ve seen the bridge. Modules 2-11 are where you stop
-            translating and start shipping: tensors, backprop, transfer
-            learning, and a capstone: a working browser-side ML system you
+            translating and start shipping: tensors, backprop, signal
+            processing, and a capstone: a working browser-side ML system you
             assemble piece by piece.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">

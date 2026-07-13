@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ThemeManifest } from "@tensorcraft/themes";
-import { PRICING } from "@tensorcraft/shared";
+import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { ThemeWaitlistForm } from "./theme-waitlist-form";
 import { ComingSoonMotif } from "./coming-soon-motif";
@@ -54,9 +54,13 @@ export function ComingSoonStub({ theme }: Props) {
   };
 
   const stats: Array<{ value: string; label: string }> = [
-    { value: "11", label: modulePlural },
-    // 55 = fixed launch-scope constant: 11 modules x 5 lessons.
-    { value: "55", label: lessonPlural },
+    { value: String(THEME_CONTENT.modulesPerTheme), label: modulePlural },
+    // Launch-scope constant (11 modules x 5 lessons), shared with the
+    // pricing bundle math so the two surfaces can't drift.
+    {
+      value: String(THEME_CONTENT.comingSoonLessonsPerTheme),
+      label: lessonPlural,
+    },
     { value: "1", label: "Capstone Model" },
     { value: "Free", label: `${theme.terminology.module} 1 at Launch` },
   ];
@@ -223,8 +227,10 @@ export function ComingSoonStub({ theme }: Props) {
             className="font-mono text-xs mt-3"
             style={{ color: palette.muted }}
           >
-            5 {lessonPlural} per {theme.terminology.module} &middot; 55{" "}
-            {lessonPlural} in the full rebuild.
+            {THEME_CONTENT.lessonsPerModule} {lessonPlural} per{" "}
+            {theme.terminology.module} &middot;{" "}
+            {THEME_CONTENT.comingSoonLessonsPerTheme} {lessonPlural} in the full
+            rebuild.
           </p>
         </section>
       ) : null}

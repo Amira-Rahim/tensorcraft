@@ -5,6 +5,7 @@ import { PRICING, isLaunched, isComingSoon } from "@tensorcraft/shared";
 import {
   getModules,
   getModuleLessons,
+  getLessonTotalMinutes,
   isFoundationsModule,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
@@ -156,7 +157,8 @@ export default async function ThemeDetailPage({ params }: Props) {
         title: lesson.title,
         moduleSlug: mod.slug,
         order: lesson.order,
-        estimatedMinutes: lesson.estimatedMinutes,
+        // Reading + embedded exercises: same basis as courseWorkload below.
+        estimatedMinutes: getLessonTotalMinutes(lesson),
         difficulty: lesson.difficulty,
         status: lessonStatus,
         sceneLocation: lesson.scene?.location,
@@ -245,7 +247,10 @@ export default async function ThemeDetailPage({ params }: Props) {
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
-      courseWorkload: "PT22H",
+      // Sum of lesson + exercise estimatedMinutes frontmatter (1,775 min
+      // after the P4 incident exercises). Recompute when exercises change:
+      // python: sum lesson+exercise estimatedMinutes / 60, round.
+      courseWorkload: "PT30H",
     },
   };
 

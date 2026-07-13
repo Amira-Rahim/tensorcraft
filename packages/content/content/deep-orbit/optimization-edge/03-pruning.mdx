@@ -89,6 +89,22 @@ He reverts. The "almost nothing" in those extra weights turned out to be the ano
 
 And the directive's second assumption resolves the unglamorous way: nothing was ever "removed." A dense weight matrix has no delete operation; pruning zeroes weights in place, and the megabytes only leave when the storage format encodes the sparsity instead of writing the zeros out longhand.
 
+<DerivationDrawer summary="Why magnitude is the saliency proxy, and when the proxy lies">
+What pruning actually wants to know is each weight's saliency: how much the loss moves if this weight becomes zero. Taylor-expand the loss around the trained weights:
+
+```
+ΔL ≈ Σᵢ  gᵢ·Δwᵢ  +  ½·Σᵢ hᵢ·Δwᵢ²        (gᵢ = ∂L/∂wᵢ, hᵢ = curvature)
+```
+
+Zeroing weight i means Δwᵢ = -wᵢ. At a trained minimum the gradients gᵢ are approximately zero (that is what "trained" means), so the first-order term vanishes and the damage is second-order:
+
+```
+ΔLᵢ ≈ ½·hᵢ·wᵢ²
+```
+
+Magnitude pruning keeps the |wᵢ| factor and quietly assumes the curvature hᵢ is roughly equal across weights. That assumption is the entire method, and it is usually good enough, which is why `sort by |w|, zero the smallest` works at all. It is also exactly where the 80% build failed: the weights encoding rare signals were small AND sat in high-curvature directions, so their true ΔL was large while their magnitude said "safe to cut." When the proxy lies, it lies about precisely the things the model has seen least.
+</DerivationDrawer>
+
 ## Combined Optimization
 
 <CodeBlock language="typescript" title="combined.ts">

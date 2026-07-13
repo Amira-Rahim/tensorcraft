@@ -131,6 +131,9 @@ export function PricingTiers() {
 
   const lessonsPerModule = THEME_CONTENT.lessonsPerModule;
   const totalLessons = THEME_CONTENT.totalLessonsPerTheme;
+  // Only Deep Orbit carries 56; bundle totals must match the numbers the
+  // coming-soon stubs promise (shared constant, not 56 x N).
+  const comingThemeLessons = THEME_CONTENT.comingSoonLessonsPerTheme;
   const modulesPerTheme = THEME_CONTENT.modulesPerTheme;
 
   return (
@@ -167,6 +170,7 @@ export function PricingTiers() {
                 "Code editor",
                 "FE-to-ML bridges",
                 "Graded exercises",
+                "21 bonus deep-dive lessons",
               ].map((f) => (
                 <li
                   key={f}
@@ -270,13 +274,14 @@ export function PricingTiers() {
               Two Themes
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Any two specializations. {totalLessons * 2} lessons total.
+              Any two specializations. {totalLessons + comingThemeLessons}{" "}
+              lessons total.
             </p>
             <ul className="flex-1 mb-4 space-y-2">
               {[
                 "Everything in Single",
                 "2 full themes",
-                `${totalLessons * 2} lessons`,
+                `${totalLessons + comingThemeLessons} lessons`,
                 "2 capstone projects",
               ].map((f) => (
                 <li
@@ -335,13 +340,14 @@ export function PricingTiers() {
               Three Themes
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Any three specializations. {totalLessons * 3} lessons total.
+              Any three specializations. {totalLessons + comingThemeLessons * 2}{" "}
+              lessons total.
             </p>
             <ul className="flex-1 mb-4 space-y-2">
               {[
                 "Everything in Two",
                 "3 full themes",
-                `${totalLessons * 3} lessons`,
+                `${totalLessons + comingThemeLessons * 2} lessons`,
                 "3 capstone projects",
               ].map((f) => (
                 <li
@@ -410,13 +416,14 @@ export function PricingTiers() {
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
               All five specializations: time-series, vision, NLP, generative,
-              edge. {totalLessons * 5} lessons, 5 capstones, one payment.
+              edge. {totalLessons + comingThemeLessons * 4} lessons, 5
+              capstones, one payment.
             </p>
             <ul className="flex-1 mb-6 space-y-2">
               {[
                 "Everything in Three",
                 "All 5 themes",
-                `${totalLessons * 5} lessons`,
+                `${totalLessons + comingThemeLessons * 4} lessons`,
                 "5 capstone projects",
                 "Priority support",
               ].map((f) => (

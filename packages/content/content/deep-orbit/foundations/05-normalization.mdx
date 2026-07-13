@@ -52,6 +52,33 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
 
 <LearningObjectives objectives={["Understand why normalization is critical for ML", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy"]} />
 
+<BossBeat
+  beatId="deep-orbit-foundations-7741-first-flag"
+  prompt="While the normalization job runs, the archive scroll stops on sample 7741: logged in the calm period, inside every baseline, and it still looks wrong on one scale out of four. Nobody has built a model yet. What happens to the reading, operator?"
+  options={[
+    {
+      label: "cooperate",
+      display: "File a formal anomaly flag, start an investigation",
+      consequence: "An investigation with no instruments: the crew has normalization and eyeballs, nothing else yet. The flag ages into noise, and by the time real detectors exist, formal-flag fatigue has already taught the bridge to skim past entries like it. Alarms spent early are alarms spent."
+    },
+    {
+      label: "defect",
+      display: "Delete it: one weird reading in 28,800 is sensor lint",
+      consequence: "The archive gets cleaner and the mission gets poorer. Every instrument the crew builds later would have had one less chance to prove itself against the only reading that mattered. Data you delete cannot vindicate you; it can only be gone."
+    },
+    {
+      label: "random",
+      display: "Leave it to whoever notices it next",
+      consequence: "Somebody will, eventually, with better tools or worse timing. Unowned anomalies do get rediscovered; they just arrive without their history, and the second discoverer starts from zero. The archive remembers data, not attention."
+    },
+    {
+      label: "dominant",
+      display: "Keep it, tag it, move on: a question mark is an instrument",
+      consequence: "Farah's actual call, and it has a price she pays every day: the tag just sits there for ten modules, looking like nothing, while the not-knowing wears on whoever filed it. No alarm, no deletion: a named oddity every future instrument gets pointed at, starting with a preview model tonight. Patience is a detector too; nobody says it is a comfortable one."
+    }
+  ]}
+/>
+
 ## Why Scales Must Match
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />

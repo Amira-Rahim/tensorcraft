@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
 import { isValidThemeSlug, isValidSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
+import { fireMilestonesForCompletion } from "../lib/dispatch";
 import type { AppEnv } from "../types";
 
 const progress = new Hono<AppEnv>();
@@ -134,7 +135,7 @@ progress.post("/", async (c) => {
   // CRITICAL #4: Fix started_at overwrite, check if record exists first
   const { data: existing } = await supabase
     .from("theme_progress")
-    .select("started_at")
+    .select("started_at, status")
     .eq("user_id", userId)
     .eq("theme_id", body.themeId)
     .eq("lesson_id", body.lessonId)
@@ -169,6 +170,24 @@ progress.post("/", async (c) => {
       },
       500,
     );
+  }
+
+  // DISPATCH milestone check on a genuine completion transition. The web
+  // frontend writes progress directly to Supabase and calls
+  // /api/dispatch/check itself; this covers future API consumers.
+  if (
+    status === "completed" &&
+    existing?.status !== "completed" &&
+    body.moduleId
+  ) {
+    fireMilestonesForCompletion({
+      userId,
+      themeId: body.themeId,
+      moduleId: body.moduleId,
+    }).catch(() => {
+      // Best-effort: the dedup-by-subject producer can be retried by any
+      // later completion in the same module.
+    });
   }
 
   return c.json({ progress: data });

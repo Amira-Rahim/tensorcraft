@@ -166,10 +166,10 @@ function analyzeSignal(signal: number[], sampleRate: number) {
     const peaks: { frequency: number; magnitude: number; natural: boolean }[] = [];
     for (let i = 1; i < magnitudes.length; i++) {
       if (magnitudes[i] > threshold) {
-        const freq = Math.round(i * sampleRate / signal.length);
+        const freq = i * sampleRate / signal.length;  // this bin's frequency
         peaks.push({
-          frequency: freq,
-          magnitude: magnitudes[i],
+          frequency: +freq.toFixed(1),
+          magnitude: +magnitudes[i].toFixed(1),
           natural: naturalFrequencies.has(freq),
         });
       }
@@ -179,14 +179,21 @@ function analyzeSignal(signal: number[], sampleRate: number) {
   });
 }
 
-// Expected result:
+// Run it on lesson 01's anomalousSignal: 512 samples at the hull rate,
+// 256 Hz, which makes every bin 0.5 Hz wide (256 / 512).
+analyzeSignal(anomalousSignal, 256);
 // [
-//   { frequency: 5, magnitude: 51.2, natural: true },
-//   { frequency: 12, magnitude: 38.4, natural: true },
-//   { frequency: 23, magnitude: 25.6, natural: true },
-//   { frequency: 47, magnitude: 12.8, natural: true },
-//   { frequency: 73, magnitude: 3.2, natural: false },  // ← ANOMALY
-// ]`}
+//   { frequency: 5,    magnitude: 204.8, natural: true },
+//   { frequency: 12,   magnitude: 153.6, natural: true },
+//   { frequency: 23,   magnitude: 102.4, natural: true },
+//   { frequency: 47,   magnitude: 51.2,  natural: true },
+//   { frequency: 73.5, magnitude: 12.0,  natural: false },  // ← ANOMALY
+// ]
+// Each natural magnitude is amplitude x N/2 (0.8 x 256 = 204.8). The
+// intruder reads 73.5, not 73.4: its true frequency sits between bins,
+// so the grid reports the nearest line, with a small sub-threshold
+// shoulder in bin 146 (73.0 Hz). Lesson 05 gives that smearing its
+// name: spectral leakage.`}
 </CodeBlock>
 
 ## Challenge
@@ -231,7 +238,7 @@ A signal is fully reconstructible from its DFT: no information is lost.
 
 <Epilogue>
 
-Four clean peaks on the lab display: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what the overnight transform of eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist. There is a fifth peak. It stands at 73.4 Hz, magnitude 3.2, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move.
+Four clean peaks on the lab display: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what the overnight transform of eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist. There is a fifth peak. It stands at 73.5 on the half-hertz grid, magnitude 12.0, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move. Overnight she reruns the capture through a four-times-longer window, and the finer grid pins the true line at 73.4 Hz.
 
 <Dialogue speaker="Dr. Farah">
 That is not stellar background.

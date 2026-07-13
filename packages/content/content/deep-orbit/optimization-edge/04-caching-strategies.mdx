@@ -128,6 +128,10 @@ Build an LRU inference cache with TTL expiry.
 
 <Exercise slug="inference-cache" />
 
+PAGER, morning after the deploy: a bridge console served a classification the new model disagrees with. It came out of your cache. A deploy has to invalidate every cached verdict, and the TTL still has to hold for everything else. Audit the entries.
+
+<Exercise slug="incident-stale-verdict" />
+
 <RecallPrompt question="What two design decisions most determine an inference cache's effectiveness?" answer="Cache key design (how you hash inputs, including whether to quantize them first) and TTL length. A key that is too strict causes near-identical inputs to miss; a TTL that is too long serves stale results when the underlying data distribution has shifted." />
 
 <LessonRecap
@@ -142,7 +146,9 @@ Build an LRU inference cache with TTL expiry.
 
 <Epilogue>
 
-Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin. Demir greps the cache log for the anomaly and finds it exactly zero times.
+Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. She reads her own reconstruction error at 0341 and files no report. One line appears in her private log: I wanted to know. Now I know.
+
+Demir greps the cache log for the anomaly and finds it exactly zero times.
 
 <Dialogue speaker="Ensign Demir">
 Everything else out there repeats. The anomaly never has: not one cache hit, every pulse a new input, every interval a little shorter than the last. It's the only thing on the sensors the cache will never see twice.

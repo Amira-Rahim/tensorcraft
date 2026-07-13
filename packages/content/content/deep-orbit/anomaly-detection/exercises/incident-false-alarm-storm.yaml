@@ -3,19 +3,19 @@ lessonSlug: threshold-tuning
 title: "Incident: False Alarm Storm"
 mlContent: systems
 instructions: |
-  PAGER: 1000 anomaly alerts in 1 hour, normal baseline is ~10/hour. Diagnose root cause via `diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog)`:
+  PAGER: 1000 anomaly alerts in one hour. The busiest hour in the log never broke double digits. Diagnose root cause via `diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog)`:
 
     {
       rate: number,                 // alerts per hour, 1 decimal
       ratio: number,                // current / baseline, 1 decimal
       cause: 'sensor-change' | 'threshold-drift' | 'model-stale' | 'real-event',
-      action: string,
+      action: 'recompute-baseline' | 'retrain' | 'recalibrate-threshold' | 'escalate',
     }
 
-  Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baseline.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive) → threshold-drift; else → real-event. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch.
+  Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baseline.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive) → threshold-drift; else → real-event. Each cause carries its remedy: sensor-change → recompute-baseline, model-stale → retrain, threshold-drift → recalibrate-threshold, real-event → escalate. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch.
 starterCode: |
   function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
-    return { rate: 0, ratio: 0, cause: 'real-event', action: '' };
+    return null; // your code here
   }
 solutionCode: |
   function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
@@ -25,16 +25,16 @@ solutionCode: |
     let action;
     if (sensorAuditLog.recentChanges.length > 0) {
       cause = 'sensor-change';
-      action = 'Investigate sensor calibration changes in audit log; recompute baseline from post-change data';
+      action = 'recompute-baseline';
     } else if (baselineAlerts.modelAge > 90) {
       cause = 'model-stale';
-      action = 'Retrain anomaly model on data from the last 30 days';
+      action = 'retrain';
     } else if (ratio >= 5 && ratio <= 20) {
       cause = 'threshold-drift';
-      action = 'Recalibrate threshold using rolling 7-day baseline';
+      action = 'recalibrate-threshold';
     } else {
       cause = 'real-event';
-      action = 'Escalate to incident response: investigate the underlying signal';
+      action = 'escalate';
     }
     return { rate, ratio, cause, action };
   }
@@ -47,6 +47,7 @@ testCode: |
         { recentChanges: [{ sensorId: 'A1', changedAt: 0 }] },
       );
       expect(r.cause).toBe('sensor-change');
+      expect(r.action).toBe('recompute-baseline');
     });
 
     it('attributes to stale model after 90 days', () => {
@@ -56,15 +57,19 @@ testCode: |
         { recentChanges: [] },
       );
       expect(r.cause).toBe('model-stale');
+      expect(r.action).toBe('retrain');
     });
 
-    it('attributes to threshold drift for moderate ratios', () => {
+    it('attributes to threshold drift for moderate ratios, rate to 1 decimal', () => {
       const r = diagnoseStorm(
-        { alertsPerHour: 80 },
+        { alertsPerHour: 83.33 },
         { alertsPerHour: 10, modelAge: 30 },
         { recentChanges: [] },
       );
+      expect(r.rate).toBe(83.3);
+      expect(r.ratio).toBe(8.3);
       expect(r.cause).toBe('threshold-drift');
+      expect(r.action).toBe('recalibrate-threshold');
     });
 
     it('escalates to real-event for extreme ratio', () => {
@@ -73,7 +78,9 @@ testCode: |
         { alertsPerHour: 10, modelAge: 30 },
         { recentChanges: [] },
       );
+      expect(r.rate).toBe(1000);
       expect(r.cause).toBe('real-event');
+      expect(r.action).toBe('escalate');
     });
 
     it('escalates ratios above the drift band (20 < ratio < 50) rather than guessing', () => {

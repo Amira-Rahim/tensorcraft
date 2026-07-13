@@ -98,7 +98,10 @@ class ModelMonitor {
     const baselineMean = this.computeMean(this.baselineFeatures);
     const recentMean = this.computeMean(recentInputs);
 
-    // Simple drift: Euclidean distance between feature means
+    // Simple drift: Euclidean distance between feature means.
+    // Assumes features are z-scored first (the foundations rule):
+    // on raw scales the 73-Hz frequency term would drown the phase
+    // term and this one number would mean nothing.
     let sumSqDiff = 0;
     for (let i = 0; i < baselineMean.length; i++) {
       sumSqDiff += (baselineMean[i] - recentMean[i]) ** 2;

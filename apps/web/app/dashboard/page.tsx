@@ -5,6 +5,7 @@ import {
   getModule,
   getModuleLessons,
   getLesson,
+  getLessonTotalMinutes,
   getThemeLessons,
   getLessonsWithBridges,
 } from "@tensorcraft/content";
@@ -264,7 +265,7 @@ export default async function DashboardPage() {
         name: activeModule.name,
         lessonNumber: lessonIndex + 1,
         totalLessons: modLessons.length,
-        estimatedMinutes: currentLesson.estimatedMinutes ?? 18,
+        estimatedMinutes: getLessonTotalMinutes(currentLesson),
         topic: currentLesson.title ?? "",
       };
 

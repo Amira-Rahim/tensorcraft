@@ -51,7 +51,11 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
   const frame = useRef(0);
   const timeRef = useRef(0);
 
-  const draw = useCallback(() => {
+  // One simulation step + paint, NO scheduling. The looping wrapper below
+  // owns requestAnimationFrame so the reduced-motion path can render a
+  // genuinely static frame (the old code called the self-scheduling draw
+  // once, which silently started the full loop and leaked it on unmount).
+  const renderFrame = useCallback(() => {
     const c = ref.current;
     if (!c) return;
     const ctx = c.getContext("2d");
@@ -114,13 +118,21 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
         ctx.fill();
       }
     }
-
-    frame.current = requestAnimationFrame(draw);
   }, []);
+
+  const draw = useCallback(() => {
+    renderFrame();
+    frame.current = requestAnimationFrame(draw);
+  }, [renderFrame]);
 
   useEffect(() => {
     const c = ref.current;
     if (!c) return;
+
+    // Honour `prefers-reduced-motion: reduce`: one static textured frame,
+    // no rAF loop (WCAG 2.3.3). Resizing clears the canvas, so the static
+    // path must repaint after each resize or the backdrop goes blank.
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const resize = () => {
       const parent = c.parentElement;
@@ -134,29 +146,29 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
       particles.current = Array.from({ length: count }, () =>
         spawn(c.width, c.height),
       );
+      if (motionQuery.matches) renderFrame();
     };
 
     resize();
 
-    // Honour `prefers-reduced-motion: reduce`, render a single static frame
-    // so the page still gets the textured backdrop, but the rAF loop and
-    // its ~3 % CPU cost stay off the main thread. WCAG 2.3.3.
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (motionQuery.matches) {
-      draw();
-      window.addEventListener("resize", resize);
-      return () => {
-        window.removeEventListener("resize", resize);
-      };
-    }
+    const applyMotionPreference = () => {
+      cancelAnimationFrame(frame.current);
+      if (motionQuery.matches) {
+        renderFrame();
+      } else {
+        frame.current = requestAnimationFrame(draw);
+      }
+    };
 
-    frame.current = requestAnimationFrame(draw);
+    applyMotionPreference();
+    motionQuery.addEventListener("change", applyMotionPreference);
     window.addEventListener("resize", resize);
     return () => {
       cancelAnimationFrame(frame.current);
+      motionQuery.removeEventListener("change", applyMotionPreference);
       window.removeEventListener("resize", resize);
     };
-  }, [count, draw]);
+  }, [count, draw, renderFrame]);
 
   return (
     <canvas

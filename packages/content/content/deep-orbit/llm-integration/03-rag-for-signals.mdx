@@ -93,6 +93,14 @@ async function retrieveSignals(
   return results.slice(0, 20);  // limit context size
 }
 
+// The honest label for the above: keyword-and-metadata retrieval. It
+// works here because the archive is 28,800 STRUCTURED rows with named
+// fields you can match on. Production RAG over prose replaces this
+// function with embeddings: every document and every query mapped to a
+// vector, retrieval = cosine similarity, top-k. Different machinery,
+// identical contract: retrieve -> ground -> verify. When your corpus
+// stops having fields, that swap is the whole migration.
+
 // Step 2: AUGMENT: inject retrieved data into prompt
 function buildRAGPrompt(query: string, signals: Signal[]): string {
   const signalContext = signals.map(s =>

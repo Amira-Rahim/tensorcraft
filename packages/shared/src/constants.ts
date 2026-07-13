@@ -88,7 +88,29 @@ export const THEME_CONTENT = {
   // 10 modules x 5 + browser-runtimes' 6 = 56 (Deep Orbit actual; also the
   // certificate completion gate). Revisit if a future theme ships a different count.
   totalLessonsPerTheme: 56,
+  // Coming-soon themes are scoped at 11 x 5 = 55. Single source for the
+  // coming-soon stubs AND the pricing bundle math (56 + 55·(N−1)); the two
+  // surfaces carried separate literals until 2026-07-13. Bundle totals
+  // assume Deep Orbit is in every bundle — true while it is the only
+  // launched theme; revisit when a second theme ships.
+  comingSoonLessonsPerTheme: 55,
+  // Modules that deviate from lessonsPerModule. The API can't import the
+  // content package (velite build artifact), so the DISPATCH milestone
+  // producer resolves module sizes from here; a gate in packages/content
+  // asserts these numbers against the real MDX corpus.
+  moduleLessonOverrides: { "browser-runtimes": 6 } as Record<string, number>,
 } as const;
+
+/**
+ * Lessons in a module, for code that cannot see the content package
+ * (module completion = this many `completed` rows in theme_progress).
+ */
+export function getModuleLessonCount(moduleSlug: string): number {
+  return (
+    THEME_CONTENT.moduleLessonOverrides[moduleSlug] ??
+    THEME_CONTENT.lessonsPerModule
+  );
+}
 
 /** Default theme used for fallbacks */
 export const DEFAULT_THEME: ThemeSlug = "deep-orbit";

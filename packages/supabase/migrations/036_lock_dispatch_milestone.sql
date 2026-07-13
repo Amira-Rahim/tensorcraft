@@ -8,9 +8,10 @@
 -- client could insert arbitrary "operator messages" (including an
 -- attacker-controlled cta_href link) into ANY user's DISPATCH inbox.
 --
--- The function has no legitimate client caller (repo-wide grep: zero
--- invocations); it exists for future server-side triggers/jobs. Keep it,
--- but restrict execution to service_role only.
+-- The function has no legitimate CLIENT caller. Its server-side caller
+-- landed 2026-07-13: the milestone producer in apps/api/src/lib/dispatch.ts,
+-- which runs on the service-role admin client — so restricting execution
+-- to service_role only is exactly the right boundary.
 
 revoke execute on function public.dispatch_milestone(uuid, text, text, text, text)
   from public, anon, authenticated;

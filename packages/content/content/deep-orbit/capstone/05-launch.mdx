@@ -59,7 +59,7 @@ Every web app you've built ends the same way: `npm run build`, push to productio
     {
       label: "cooperate",
       display: "Hold and let Demir's verification suite run one more pass",
-      consequence: "Demir reruns. The verification suite passes. The pulse window closes: you miss the cleanest classification, but DEEP SCAN deploys to a steady-state target two minutes later. Mirza nods: 'Good operators wait.' Cooperative play with the team yields a slightly noisier signal but zero deployment surprises."
+      consequence: "Demir reruns. The suite passes; the pulse window closes. DEEP SCAN deploys to a steady-state target two minutes late, and the cleanest classification of the night goes uncaptured. Mirza nods anyway: 'Good operators wait.' A held door costs exactly what it saves; tonight it saved nothing, and nobody knew that in advance."
     },
     {
       label: "defect",
@@ -69,12 +69,12 @@ Every web app you've built ends the same way: `npm run build`, push to productio
     {
       label: "random",
       display: "Flip a coin; half the bridge crew is split on the call",
-      consequence: "Tails. You hold. Demir reruns; pulse window closes. Same outcome as cooperate, but the bridge logged that you couldn't decide. Game-theoretically: mixed strategies are valid against an adversary, but your team is not your adversary."
+      consequence: "Tails. You hold. Demir reruns; the window closes. Same outcome as waiting, minus the part where anyone believes you chose it. The bridge log now shows a coin where a call should be, and the crew reads logs. A flipped coin spends trust and buys nothing a decision would not have."
     },
     {
       label: "dominant",
-      display: "Run a 30-second hot canary on the pulse, then full deploy if it holds",
-      consequence: "Canary on the live pulse passes 0.9987 correlation. Full deploy clears two minutes later. You captured the pulse window AND the verification rerun. Mirza: 'You found the third option. That's the work.' Dominant strategy here was the one that satisfied both objectives: Demir's safety net and the science window."
+      display: "Hot canary: deploy to one console for 30 seconds on the live pulse, then fleet-wide if it holds",
+      consequence: "Canary on the live pulse passes 0.9987 correlation; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight lost both the pulse and the rerun. Mirza: 'You found the third option. That's the work.' A third door is still a bet; this one was priced right."
     }
   ]}
 />
@@ -133,6 +133,8 @@ const config: BuildConfig = {
 
 ## Deploy and Verify
 
+Two deployment shapes appear in this lesson. The verification suite below is the full gate. The other is the hot canary from the decision above: ship to ONE console, watch it against live data for a fixed interval, then roll fleet-wide only if it holds. Canaries trade a slice of your window for a bounded blast radius; the suite trades time for certainty. Production teams run both, in that order.
+
 <CodeBlock language="typescript" title="deploy.ts">
 {`// Deployment verification: smoke test the live system
 
@@ -178,6 +180,8 @@ async function verifyDeployment(baseUrl: string): Promise<boolean> {
 }`}
 </CodeBlock>
 
+Before the final run, Nazari clears her ledger the only way she clears anything: out loud. Nine hours of telemetry reconstruction. Three hours of prune revalidation. Forty minutes of hash-pinned rerun. Then the single credit line, DEEP SCAN, operational, and she wipes the board clean for the first time since the crash. Nobody comments. Everybody notices.
+
 ## The Signal
 
 <CodeBlock language="typescript" title="classify-anomaly.ts">
@@ -213,6 +217,18 @@ async function classifyAnomalousSignal(): Promise<void> {
   console.log('Match: Archimedes sensor calibration harmonics');
   console.log('Correlation: 0.9987');
   console.log('');
+  console.log('--- Interval Extrapolation ---');
+  console.log('Three architectures, three curves. Since deployment');
+  console.log('data landed, they agree on the date for the first time.');
+  console.log('Zero-crossing: eleven days, four hours.');
+  console.log('Rate model: nonlinear. The shrink itself accelerates,');
+  console.log('which is why earlier extrapolations disagreed.');
+  console.log('');
+  console.log('--- Archive Re-score, full pipeline ---');
+  console.log('Sample 7741, the first reading DEEP SCAN ever flagged:');
+  console.log('  module-3 classifier: 51.8%. Tonight: 99.9%.');
+  console.log('The system finally knows what Farah suspected first.');
+  console.log('');
   console.log('--- DEEP SCAN Assessment ---');
   console.log('This signal contains mathematical structure consistent');
   console.log('with the Fibonacci sequence. The pulse intervals mirror');
@@ -228,6 +244,8 @@ async function classifyAnomalousSignal(): Promise<void> {
   console.log('DEEP SCAN v1.0: Signal Classified. Mission Continues.');
 }`}
 </CodeBlock>
+
+Two lines in that output settle old debts. Nazari asked for the zero-hour back when the interval was seventy-two seconds and Farah could not answer; the three extrapolation curves that disagreed on the date all season have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built.
 
 ## Challenge
 
@@ -250,7 +268,7 @@ Write a deployment verification script for the complete system.
 <DispatchTease
   toThemeId="neon-protocol"
   toThemeName="Neon Protocol"
-  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the harmonic structure DEEP SCAN classified an hour ago: 73.4 Hz, Fibonacci pulse ratios. She doesn't know yet. She reads bounding boxes, not spectrograms. Someone who has watched this signal for eleven modules should look at her data."
+  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the harmonic structure DEEP SCAN classified tonight: 73.4 Hz, Fibonacci pulse ratios. She doesn't know yet. She reads bounding boxes, not spectrograms. Someone who has watched this signal for eleven modules should look at her data."
 />
 
 <Epilogue>
@@ -263,6 +281,10 @@ Calibration's clean. I checked it four times. Those are our harmonics, in a sign
 
 <Dialogue speaker="Dr. Farah">
 Then either the universe loves the same math we do, phyllotaxis and shell spirals and Fibonacci everywhere; or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
+</Dialogue>
+
+<Dialogue speaker="ARIA">
+Arithmetic, for the record. The source is 4.2 light-years out; anything arriving tonight left it years before this vessel first tuned the harmonics it is mirroring. It cannot have heard us first. The second hypothesis fails the arithmetic. The first fails a correlation of 0.9987. I have no third.
 </Dialogue>
 
 <Dialogue speaker="ARIA">

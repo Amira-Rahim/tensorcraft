@@ -18,6 +18,7 @@ concept:
     mlTitle: "ReLU Activation"
     mlCode: "const activated = tf.relu(rawOutput)"
     tier: identity
+    breaks: "At inference these are literally the same arithmetic. Training is where they part: tf.relu applies elementwise across whole tensors and carries a gradient definition, and a neuron whose input stays negative stops learning entirely (the dying ReLU). Math.max has no story about any of that."
 consequence:
   narrative: "With activation functions, neurons can now make binary decisions. The signal classifier takes shape."
 hints:
@@ -70,6 +71,14 @@ const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
 - **ReLU**: Default choice for hidden layers. Fast, simple, works well.
 - **Sigmoid**: Output layer for binary classification (is this signal anomalous? yes/no).
 - **Tanh**: When you need centered outputs (values can be negative).
+
+## When Activations Die
+
+Each choice has a failure mode, and both will matter later in this theme.
+
+ReLU's is the dead neuron. `max(0, x)` outputs zero for every negative input, and zero output means zero gradient: no signal flows back, so the weights feeding it never update. A neuron whose weighted sum goes negative on every training example is not resting, it is dead, and it stays dead. One insurance policy is already visible in the numbers above: a small positive bias keeps the sum above zero early in training.
+
+Sigmoid's is saturation. At z = 5 it outputs 0.9933, which sounds decisive, but its slope there is 0.0066: the curve has gone flat, so a large change in input produces almost no change in output, and almost no gradient. Push a sigmoid hard in either direction and it stops learning in that region. This is why it lives at the OUTPUT layer, where you want a probability, and not in deep stacks of hidden layers. File the phrase "the gradient goes quiet": when a training run flatlines in module 6, this is one of the suspects the crew will round up.
 
 ## Challenge
 

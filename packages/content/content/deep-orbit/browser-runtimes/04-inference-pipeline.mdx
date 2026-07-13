@@ -128,6 +128,8 @@ console.log(tf.memory());
 
 If that `numTensors` figure climbs while the dashboard idles, something escaped a `tidy()`.
 
+One more dial before the wiring: `dataSync()` blocks the JavaScript thread while the GPU read completes. At this model's scale that stall is invisible, which is why the code above uses it freely. On bigger outputs, or inside a loop that also has UI to paint, prefer `await tensor.data()`: it returns a Promise and yields to the event loop while the transfer happens. The catch is that `tf.tidy()` cannot wrap async code, so the async pattern splits in two: do the tensor math inside `tidy()` and return the tensor, then `await tensor.data()` outside and `dispose()` it yourself.
+
 ## Wiring It into the Dashboard
 
 <CodeBlock language="typescript" title="dashboard-integration.ts">
@@ -182,6 +184,10 @@ signalFeed.addEventListener('reading', (event: CustomEvent<SignalReading>) => {
 Build a complete inference pipeline with preprocessing and memory management.
 
 <Exercise slug="inference-pipeline" />
+
+PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deploy. Somebody's allocation escaped a `tidy()`. Read the snapshots, name the rate, and tell the bridge how long they have.
+
+<Exercise slug="incident-tensor-leak" />
 
 <RecallPrompt question="Why prefer await tensor.data() over tensor.dataSync() in a real-time inference loop?" answer="dataSync() is synchronous: it blocks the JavaScript thread until tensor data is read back from the GPU, freezing UI updates. data() returns a Promise and yields control so the event loop can handle other callbacks, keeping the interface responsive." />
 

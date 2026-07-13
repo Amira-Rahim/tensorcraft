@@ -1,11 +1,25 @@
 slug: simple-network
 lessonSlug: building-a-network
 title: "Build and Compile a Complete Network"
-instructions: "Build a complete neural network for binary classification of DEEP SCAN signals. Create a sequential model with: a dense layer (32 units, ReLU, inputShape [8]), a dense layer (16 units, ReLU), and a dense output layer (1 unit, sigmoid). Compile it with the Adam optimizer, binaryCrossentropy loss, and accuracy metric."
+instructions: "Build a complete neural network for binary classification of DEEP SCAN signals. Create a sequential model with: a dense layer (32 units, ReLU, inputShape [8]), a dense layer (16 units, ReLU), and a dense output layer (1 unit, sigmoid). Compile it with the Adam optimizer, binaryCrossentropy loss, and accuracy metric. The grader reads the compiled configuration, not just the shape."
 starterCode: "// Build and compile a complete signal classifier\nconst model = tf.sequential();\n\n// Add layers here\n\n// Compile the model here"
 solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));\nmodel.add(tf.layers.dense({ units: 16, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));\n\nmodel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });"
-testCode: "describe('Network', () => { it('exists', () => { expect(model).toBeDefined(); }); it('has 3 layers', () => { expect(model.layers.length).toBe(3); }); it('is compiled', () => { expect(model.optimizer).toBeDefined(); }); it('has correct output shape', () => { expect(model.outputShape).toEqual([null, 1]); }); });"
+testCode: |
+  describe('Network', () => {
+    it('has 3 layers with the specified units and activations', () => {
+      expect(model.layers.map((l) => l.getConfig().units)).toEqual([32, 16, 1]);
+      expect(model.layers.map((l) => l.getConfig().activation)).toEqual(['relu', 'relu', 'sigmoid']);
+    });
+    it('has output shape [null, 1] and 833 parameters', () => {
+      expect(model.outputShape).toEqual([null, 1]);
+      expect(model.countParams()).toBe(833);
+    });
+    it('is compiled with binaryCrossentropy loss', () => {
+      expect(model.optimizer).toBeDefined();
+      expect(model.loss).toBe('binaryCrossentropy');
+    });
+  });
 estimatedMinutes: 15
-difficulty: advanced
+difficulty: intermediate
 mlContent: model
 skillAxis: model_arch

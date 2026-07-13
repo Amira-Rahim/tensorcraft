@@ -123,6 +123,29 @@ for (const m of measurements) {
 // The interval is SHRINKING by ~0.2s per cycle. The pulse is speeding up.`}
 </CodeBlock>
 
+<DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance">
+The update blends prediction and measurement: `estimate = prediction + K(z - prediction)`. Why THAT K and not a hand-picked alpha? Because K is the value that minimizes the variance of the blended estimate.
+
+```
+Prediction uncertainty:   P   (variance of the prediction)
+Measurement uncertainty:  R   (variance of the sensor)
+
+Blend:  x̂ = (1-K)·prediction + K·z
+Since the two sources are independent, the blend's variance is
+        V(K) = (1-K)²·P + K²·R
+```
+
+Minimize over K: differentiate and set to zero.
+
+```
+dV/dK = -2(1-K)·P + 2K·R = 0
+      → K·(P + R) = P
+      → K = P / (P + R)
+```
+
+That is line-for-line the `gain` in the code above: `predictedVariance / (predictedVariance + measurementNoise)`. Sanity-check the endpoints: a perfect sensor (R → 0) gives K → 1, trust the measurement; a useless sensor (R → ∞) gives K → 0, keep the prediction. Demir's "alpha that adjusts itself" is this quotient, recomputed every step as P shrinks with each correction. The EMA's fixed alpha is what you get if you freeze this formula and hope the uncertainties never change.
+</DerivationDrawer>
+
 ## Challenge
 
 Implement a Kalman filter and track the anomaly timing.

@@ -19,6 +19,7 @@ concept:
     mlTitle: "Quantization"
     mlCode: "// Float32 (340MB) → Uint8 (85MB): 4x smaller, ~2% accuracy loss"
     tier: structural
+    breaks: "Lossy image formats decide what to discard using a model of human eyes, and you judge the damage by looking. Quantization rounds weights onto a coarser grid with no perceptual model protecting anything: one outlier weight can stretch the grid and quietly wreck accuracy. You measure after; you never assume."
 consequence:
   narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops 1.2%. Nazari writes both numbers on the board and leaves them there."
 hints:
@@ -40,6 +41,8 @@ skillAxes: [deployment]
 <Dialogue speaker="Chief Nazari">
 Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference; the runtime decodes them back to floats at load. Promise me a file that fits.
 </Dialogue>
+
+Two ledgers, one knife. The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The uint8 pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier, whose 94.2 is five modules of sequence features and retraining past the 87 the re-annotation left it at. Quantize the whole bundle, and the scoreboard reports what the knife cost where cost can be measured.
 
 Nazari's arithmetic is the whole technique. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0247 has 512 MB of RAM and went down parsing a 340 MB weight file; cutting that file to 85 MB is the first and largest payment on the debt.
 
@@ -64,15 +67,17 @@ Don't sell me the WebP comparison, Ensign. Tell me where the accuracy goes. A po
 // (an affine integer mapping, not IEEE float16)
 // File size: 85M params × 2 bytes = 170 MB
 
-// Uint8 storage: 1 byte per weight, 255 levels (coarse, usually OK)
+// Uint8 storage: 1 byte per weight, 256 levels (coarse, usually OK)
 // File size: 85M params × 1 byte = 85 MB
 
 // Simulate quantization effect
 function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: number[]; scale: number; zeroPoint: number } {
+  // (teaching scale: on a real model's millions of weights, spread
+  // arguments overflow the stack; use a loop or tf.min()/tf.max())
   const min = Math.min(...weights);
   const max = Math.max(...weights);
   const range = max - min;
-  const levels = (1 << bits) - 1;  // 255 for 8-bit, 65535 for 16-bit
+  const levels = (1 << bits) - 1;  // 255 steps between 256 levels for 8-bit
   const scale = range / levels;
   const zeroPoint = Math.round(-min / scale);
 

@@ -20,6 +20,7 @@ concept:
     mlTitle: "Training Loop"
     mlCode: "await model.fit(trainX, trainY, { epochs: 50 })"
     tier: structural
+    breaks: "requestAnimationFrame is allowed to drop frames: when the tab is busy, skipping to the newest frame is correct behavior. A training loop that skips batches silently undertrains. And unlike an animation, training has to decide when to stop; no display refresh will tell it it is done."
 consequence:
   narrative: "Loss drops from 0.69 to 0.08 over 50 epochs. The network is learning. The signal becomes clearer with each iteration."
 hints:
@@ -150,6 +151,8 @@ Train the DEEP SCAN network and watch the loss decrease.
   bridge="`requestAnimationFrame` creates a loop that updates state and re-renders each frame until an animation target is reached. `model.fit()` does the same: update weights, evaluate loss, repeat until convergence."
   youCanNow="Configure and run `model.fit()` with appropriate epoch count, batch size, validation split, and epoch callbacks to monitor training progress."
 />
+
+> **DISPATCH archive · field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation curve had told them everything for six days; nobody was assigned to read it. Escalation cost: one recall, four weeks. Read your second curve.
 
 <Epilogue>
 

@@ -53,6 +53,33 @@ You've dealt with this in frontend monitoring. You set baseline metrics (LCP und
 
 <LearningObjectives objectives={["Understand anomaly detection as modeling normality, not cataloging every possible anomaly", "Compute baseline statistics (mean, std, percentiles) from normal signal data", "Set detection thresholds using statistical methods (z-score, IQR)", "Evaluate detection quality with precision and recall tradeoffs"]} />
 
+<BossBeat
+  beatId="deep-orbit-anomaly-7741-training-set"
+  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every flagged window. The filter halts on Sample 7741. It sits inside every baseline he has computed, and it is the first thing DEEP SCAN ever flagged. Train on it, or pull it? Your call, operator."
+  options={[
+    {
+      label: "cooperate",
+      display: "Leave it in: let the data decide, not you",
+      consequence: "Statistically defensible: it passes every baseline. But if 7741 is the anomaly's first visit, you just taught the detector that the thing it exists to find is normal. Contamination does not announce itself; it subtracts sensitivity exactly where you need it most."
+    },
+    {
+      label: "defect",
+      display: "Pull it out and log the exclusion with your reasons",
+      consequence: "The model trains on cleaner normality, at a price you should say out loud: you decided part of the answer before building the thing that is supposed to decide. Honest only because the exclusion list SAYS so. This is what Demir does tonight."
+    },
+    {
+      label: "random",
+      display: "Flip a coin; the baselines genuinely cannot tell",
+      consequence: "Twenty-eight thousand readings and you flipped for the one that matters. Whatever the coin said, the comment field is empty, and future-you inherits a training set with an unexplained hole or an unexamined guest."
+    },
+    {
+      label: "dominant",
+      display: "Pull it from training AND promote it to a named eval case",
+      consequence: "The third door, bought with two admissions: the training set shrinks, and the exclusion list now says out loud that your baselines cannot fully be trusted. Excluded from what the model learns, preserved as a labeled test it must eventually face. When a later module replays 7741 through the finished ensemble, this decision is why the comparison means something. Quarantine is honest; it is not free."
+    }
+  ]}
+/>
+
 ## Modeling Normality
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -134,9 +161,7 @@ Compute baseline statistics and detect anomalies using z-scores.
 
 <Exercise slug="detect-anomaly" />
 
-## On-Call Scenario
-
-Yesterday's 95th percentile is today's median. The world drifted underneath the model. Recompute the baseline from the last 7 days of normal data and decide whether to roll forward.
+PAGER, two weeks after go-live: yesterday's 95th percentile is today's median. The world drifted underneath the model. Recompute the baseline from the last seven days of normal data and decide whether to roll it forward.
 
 <Exercise slug="incident-baseline-drift" />
 

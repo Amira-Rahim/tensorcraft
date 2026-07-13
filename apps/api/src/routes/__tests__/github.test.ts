@@ -626,12 +626,14 @@ describe("GitHub routes, retroactive push", () => {
     ];
     mockAttemptsRows = [
       {
+        exercise_slug: "lesson-01",
         lesson_id: "lesson-01",
         passed: true,
         submitted_code: "code-1",
         attempted_at: "2026-03-01T00:00:00Z",
       },
       {
+        exercise_slug: "lesson-02",
         lesson_id: "lesson-02",
         passed: true,
         submitted_code: "code-2",
@@ -693,6 +695,92 @@ describe("GitHub routes, retroactive push", () => {
     expect(body.pushed).toBe(2);
     expect(pushedLessons).toEqual(["lesson-01", "lesson-02"]);
     expect(body.results.map((r) => r.status)).toEqual(["pushed", "pushed"]);
+  });
+
+  it("pushes one artifact per exercise for two-exercise lessons", async () => {
+    // Six lessons embed two exercises; a lesson-keyed artifact path let the
+    // second pass overwrite the first (2026-07-13 audit). The repo must end
+    // up with one file per exercise slug.
+    authedUser();
+    mockProfileRow = { github_token: "ghu_x", github_username: "amira" };
+    mockThemeProgressRows = [
+      {
+        module_id: "anomaly-detection",
+        lesson_id: "threshold-tuning",
+        completed_at: "2026-03-01T00:00:00Z",
+      },
+    ];
+    mockAttemptsRows = [
+      {
+        exercise_slug: "incident-false-alarm-storm",
+        lesson_id: "threshold-tuning",
+        passed: true,
+        submitted_code: "code-incident",
+        attempted_at: "2026-03-01T02:00:00Z",
+      },
+      {
+        exercise_slug: "find-threshold",
+        lesson_id: "threshold-tuning",
+        passed: true,
+        submitted_code: "code-main",
+        attempted_at: "2026-03-01T01:00:00Z",
+      },
+    ];
+
+    const pushedPaths: string[] = [];
+    fetchHandler = async (url, init) => {
+      if (
+        url === "https://api.github.com/user/repos" &&
+        init?.method === "POST"
+      ) {
+        return jsonResponse({
+          id: 1,
+          name: "tensorcraft-deep-orbit",
+          full_name: "amira/tensorcraft-deep-orbit",
+          html_url: "u",
+          private: false,
+          owner: { login: "amira" },
+        });
+      }
+      if (init?.method === undefined || init.method === "GET") {
+        return new Response("not found", { status: 404 });
+      }
+      if (init?.method === "PUT") {
+        const m = url.match(/contents\/(anomaly-detection\/[a-z-]+\.ts)/);
+        if (m) pushedPaths.push(m[1]);
+        return jsonResponse({
+          content: { name: "x", path: "x", sha: "s", html_url: "u" },
+          commit: {
+            sha: `sha-${pushedPaths.length}`,
+            html_url: "u",
+            message: "m",
+          },
+        });
+      }
+      throw new Error(`unexpected ${init?.method ?? "GET"} ${url}`);
+    };
+
+    const res = await createApp().request("/api/github/retroactive-push", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ themeId: "deep-orbit" }),
+    });
+
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      pushed: number;
+      results: Array<{ exerciseSlug?: string; status: string }>;
+    };
+    expect(body.pushed).toBe(2);
+    expect(new Set(pushedPaths)).toEqual(
+      new Set([
+        "anomaly-detection/incident-false-alarm-storm.ts",
+        "anomaly-detection/find-threshold.ts",
+      ]),
+    );
   });
 
   it("skips lessons without submitted_code", async () => {

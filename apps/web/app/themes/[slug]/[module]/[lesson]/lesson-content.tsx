@@ -173,6 +173,28 @@ export function LessonContent({
         });
       });
 
+      // Passed exercises also commit to the learner's tensorcraft-<theme>
+      // repo. Best-effort like the attempt record: the server answers with
+      // a structured error when GitHub is not connected, and Settings'
+      // retroactive push backfills anything missed here.
+      if (result.passed) {
+        import("@/lib/github-commit")
+          .then(({ commitExerciseArtifact }) => {
+            commitExerciseArtifact({
+              themeId,
+              lessonId,
+              moduleId,
+              // Filename key: two-exercise lessons must not overwrite each
+              // other's artifact.
+              exerciseSlug: result.exerciseSlug,
+              code: result.code,
+            });
+          })
+          .catch(() => {
+            // Chunk-load failure: same best-effort contract as the call.
+          });
+      }
+
       trackExerciseSubmitted(
         themeId,
         lessonId,
@@ -181,7 +203,7 @@ export function LessonContent({
         result.exerciseSlug,
       );
     },
-    [themeId, lessonId],
+    [themeId, lessonId, moduleId],
   );
 
   const handleHintRevealed = useCallback(

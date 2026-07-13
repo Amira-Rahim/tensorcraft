@@ -79,10 +79,11 @@ export async function markLessonCompleted(
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  // Preserve original started_at if the record already exists
+  // Preserve original started_at if the record already exists; status
+  // tells us below whether this call is a genuine completion transition.
   const { data: existingProgress } = await supabase
     .from("theme_progress")
-    .select("started_at, hints_used, attempts, score")
+    .select("started_at, hints_used, attempts, score, status")
     .eq("user_id", user.id)
     .eq("theme_id", themeId)
     .eq("lesson_id", lessonId)
@@ -125,6 +126,20 @@ export async function markLessonCompleted(
       p_theme_id: themeId,
     }),
   ).catch(() => {});
+
+  // DISPATCH milestone check (module cleared / theme cleared), only on a
+  // genuine not-completed → completed transition. The server re-reads
+  // progress and dedups, so this is best-effort like the calls above.
+  if (existingProgress?.status !== "completed") {
+    import("./api-fetch")
+      .then(({ apiFetch }) =>
+        apiFetch("/api/dispatch/check", {
+          method: "POST",
+          body: JSON.stringify({ themeId, moduleId }),
+        }),
+      )
+      .catch(() => {});
+  }
 
   return data;
 }

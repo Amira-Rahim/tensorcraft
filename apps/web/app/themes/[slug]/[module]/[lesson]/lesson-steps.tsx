@@ -1067,7 +1067,10 @@ function StepBriefing({
           borderTop: `1px solid ${theme.palette.border}`,
         }}
       >
-        {`${lesson.estimatedMinutes} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
+        {/* Reading + embedded exercises: "14 min · 2 exercises" where the
+            exercises alone are 30 min reads as a lie. One basis everywhere
+            (module map, JSON-LD, courseWorkload). */}
+        {`${lesson.estimatedMinutes + exercises.reduce((s, e) => s + (e.estimatedMinutes ?? 0), 0)} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
       </div>
 
       {/* Playback controls for the scene */}

@@ -45,7 +45,6 @@ interface DigestItem {
   title: string;
   url: string;
   source: string;
-  summary: string;
   matched_lessons: MatchedLessonRef[];
   published_blog_slug: string | null;
 }
@@ -66,7 +65,7 @@ async function loadDigestItems(weekIso: string): Promise<DigestItem[]> {
   const supabase = getSupabaseAdminClient();
   const { data, error } = await supabase
     .from("news_items")
-    .select("title,url,source,summary,matched_lessons,published_blog_slug")
+    .select("title,url,source,matched_lessons,published_blog_slug")
     .in("status", ["shortlisted", "published"])
     .eq("week_iso", weekIso)
     .order("scraped_at", { ascending: false });
@@ -109,7 +108,7 @@ function renderText(
     const m = it.matched_lessons?.[0];
     if (m) {
       lines.push(
-        `  Teaches: ${m.title} → ${SITE}/learn/${m.themeId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`,
+        `  Teaches: ${m.title} → ${SITE}/themes/${m.themeId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`,
       );
       if (m.rationale) lines.push(`  ${m.rationale}`);
     }
@@ -124,11 +123,20 @@ function renderHtml(
   items: DigestItem[],
   unsubUrl: string,
 ): string {
+  // "Read on the web" targets this week's actual blog post when one was
+  // drafted (run-flow step 2), not just the /blog index.
+  const blogSlug = items.find(
+    (i) => i.published_blog_slug,
+  )?.published_blog_slug;
+  const webUrl = blogSlug ? `${SITE}/blog/${blogSlug}` : `${SITE}/blog`;
   const itemsHtml = items
     .map((it) => {
       const m = it.matched_lessons?.[0];
       const lessonHref = m
-        ? `${SITE}/learn/${m.themeId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`
+        ? // Lessons are served under /themes/[slug]/[module]/[lesson];
+          // /learn is a single marketing page with no nested routes
+          // (2026-07-13 P4 round-3 audit: every digest lesson link 404'd).
+          `${SITE}/themes/${m.themeId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`
         : null;
       return `<li style="margin: 0 0 24px 0;">
   <p style="margin: 0 0 4px 0; font-weight: 600;">
@@ -156,7 +164,7 @@ function renderHtml(
     <ul style="list-style: none; padding: 0; margin: 0;">${itemsHtml}</ul>
     <hr style="border: none; border-top: 1px solid #eaeaea; margin: 32px 0;"/>
     <p style="font-size: 12px; color: #888;">
-      <a href="${escapeHtml(SITE)}/blog" style="color: #888;">Read on the web</a> ·
+      <a href="${escapeHtml(webUrl)}" style="color: #888;">Read on the web</a> ·
       <a href="${escapeHtml(unsubUrl)}" style="color: #888;">Unsubscribe</a>
     </p>
   </div>
@@ -181,7 +189,26 @@ export async function sendDigestNewsletter(
     .select("email,unsubscribe_token")
     .eq("subscribed", true);
   if (error) throw new Error(`load recipients: ${error.message}`);
-  const list = recipients ?? [];
+
+  // Cross-stream opt-out (2026-07-13 P4 email audit): the Settings
+  // weekly-digest toggle writes profiles.weekly_digest, but this sender
+  // reads the WAITLIST table — a different population. A learner who
+  // joined the waitlist, then signed up and toggled the digest off,
+  // must not keep receiving it. Exclude any waitlist email whose
+  // account profile has opted out.
+  const { data: optedOut, error: optErr } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("weekly_digest", false);
+  if (optErr) throw new Error(`load opt-outs: ${optErr.message}`);
+  const optedOutEmails = new Set(
+    (optedOut ?? [])
+      .map((p) => p.email?.toLowerCase())
+      .filter((e): e is string => Boolean(e)),
+  );
+  const list = (recipients ?? []).filter(
+    (r) => !optedOutEmails.has(r.email.toLowerCase()),
+  );
 
   const result: NewsletterSendResult = {
     weekIso,
@@ -208,6 +235,10 @@ export async function sendDigestNewsletter(
 
   for (const r of list) {
     const unsubUrl = `${SITE}/unsubscribe?token=${r.unsubscribe_token}`;
+    // RFC 8058: providers POST to the List-Unsubscribe URL. The human
+    // page is GET-only, so the header carries the POST route instead
+    // (2026-07-13 P4 audit: provider one-click POSTs were bouncing 405).
+    const oneClickUrl = `${SITE}/unsubscribe/one-click?token=${r.unsubscribe_token}`;
     try {
       await client.emails.send({
         from: FROM,
@@ -216,7 +247,7 @@ export async function sendDigestNewsletter(
         text: renderText(weekIso, items, unsubUrl),
         html: renderHtml(weekIso, items, unsubUrl),
         headers: {
-          "List-Unsubscribe": `<${unsubUrl}>`,
+          "List-Unsubscribe": `<${oneClickUrl}>`,
           "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
       });
@@ -237,17 +268,7 @@ export async function sendDigestNewsletter(
   return result;
 }
 
-/**
- * Mark a waitlist row unsubscribed by token. Used by the /unsubscribe page.
- * Returns true if a row was updated, false if the token didn't match anything.
- */
-export async function unsubscribeByToken(token: string): Promise<boolean> {
-  const supabase = getSupabaseAdminClient();
-  const { data, error } = await supabase
-    .from("waitlist")
-    .update({ subscribed: false })
-    .eq("unsubscribe_token", token)
-    .select("id");
-  if (error) throw new Error(`unsubscribe: ${error.message}`);
-  return (data?.length ?? 0) > 0;
-}
+// Unsubscribe handling lives web-side: the /unsubscribe page (human,
+// confirm-then-POST) and /unsubscribe/one-click (RFC 8058 provider POST).
+// A third copy used to live here as a dead export; deleted 2026-07-13 so
+// the two remaining implementations can't drift against a third.

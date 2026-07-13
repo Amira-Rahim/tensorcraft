@@ -1,0 +1,76 @@
+slug: incident-checker-down
+lessonSlug: multi-model-systems
+title: "Incident: Claim Checker Down, Reports Queueing"
+mlContent: systems
+instructions: |
+  PAGER: the claim checker crashed at 02:40 and reports are queueing. Standing order: no unverified NUMBER leaves the ship. Build `triageQueue(reports, checkerUp)`. Each report has { id, numericClaims, unverifiedClaims }. Checker UP: ship reports whose unverifiedClaims is 0, hold the rest. Checker DOWN: nothing can be verified, so ship only reports with NO numeric claims at all (prose can sail; numbers wait), hold everything else. Return { ship, hold } as id arrays in input order.
+starterCode: |
+  function triageQueue(
+    reports: { id: string; numericClaims: number; unverifiedClaims: number }[],
+    checkerUp: boolean,
+  ): { ship: string[]; hold: string[] } {
+    return null; // your code here
+  }
+solutionCode: |
+  function triageQueue(
+    reports: { id: string; numericClaims: number; unverifiedClaims: number }[],
+    checkerUp: boolean,
+  ): { ship: string[]; hold: string[] } {
+    const ship: string[] = [];
+    const hold: string[] = [];
+    for (const r of reports) {
+      const shippable = checkerUp
+        ? r.unverifiedClaims === 0
+        : r.numericClaims === 0;
+      (shippable ? ship : hold).push(r.id);
+    }
+    return { ship, hold };
+  }
+testCode: |
+  describe('triageQueue', () => {
+    it('checker up: clean reports ship, flagged reports hold', () => {
+      const r = triageQueue(
+        [
+          { id: 'r1', numericClaims: 4, unverifiedClaims: 0 },
+          { id: 'r2', numericClaims: 3, unverifiedClaims: 1 },
+        ],
+        true,
+      );
+      expect(r.ship).toEqual(['r1']);
+      expect(r.hold).toEqual(['r2']);
+    });
+    it('checker down: numbers wait, prose sails', () => {
+      const r = triageQueue(
+        [
+          { id: 'r3', numericClaims: 0, unverifiedClaims: 0 },
+          { id: 'r4', numericClaims: 2, unverifiedClaims: 0 },
+        ],
+        false,
+      );
+      expect(r.ship).toEqual(['r3']);
+      expect(r.hold).toEqual(['r4']);
+    });
+    it('checker down holds even previously-verified reports (nobody can re-check)', () => {
+      const r = triageQueue(
+        [{ id: 'r5', numericClaims: 5, unverifiedClaims: 0 }],
+        false,
+      );
+      expect(r.hold).toEqual(['r5']);
+    });
+    it('preserves queue order in both buckets', () => {
+      const r = triageQueue(
+        [
+          { id: 'a', numericClaims: 1, unverifiedClaims: 1 },
+          { id: 'b', numericClaims: 0, unverifiedClaims: 0 },
+          { id: 'c', numericClaims: 2, unverifiedClaims: 2 },
+          { id: 'd', numericClaims: 0, unverifiedClaims: 0 },
+        ],
+        true,
+      );
+      expect(r.ship).toEqual(['b', 'd']);
+      expect(r.hold).toEqual(['a', 'c']);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate
+skillAxis: deployment

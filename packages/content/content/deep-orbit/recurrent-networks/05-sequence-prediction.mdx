@@ -117,8 +117,10 @@ async function forecastMultiStep(
 
 // Forecast 47 steps ahead
 const forecast = await forecastMultiStep(model, recentWindow, 47);
-// The LSTM predicts a spike at step 47: the anomaly repeats!`}
+// The LSTM predicts a spike at step 47 of this one-second-step demo horizon.`}
 </CodeBlock>
+
+One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes, and it can only afford to because it operates on a different series: one value per pulse, the interval sequence, where 47 minutes is only about 38 steps at the current 73-second spacing. Same architecture, radically fewer recursive steps, which is the only reason its error is measured in seconds instead of minutes. If that forecast lands close, credit the signal's regularity and the short step count before you credit the model.
 
 ## Challenge
 

@@ -60,7 +60,11 @@ export async function apiFetch(
       },
     });
 
-    if (response.status === 401 && typeof window !== "undefined") {
+    // "Session expired" is only true if a session was attached. Guests get
+    // 401s from fire-and-forget calls (attempt recording, GitHub commit) as
+    // the NORMAL case; toasting them about a session they never had was the
+    // 2026-07-13 audit's accepted-v1 quirk, now fixed.
+    if (response.status === 401 && session && typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("tc:session-expired"));
     }
 

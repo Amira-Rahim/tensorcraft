@@ -66,10 +66,14 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
       "GitHub push flow",
       "Certificate of completion",
       "Capstone project",
-      "Priority email support",
+      "Lifetime updates",
     ]) {
       expect(table).toHaveTextContent(feature);
     }
+    // Removed 2026-07-13: "Priority email support" was never granted to the
+    // $59 tier (pricing-tiers gives priority support to All-5 only), so the
+    // purchase-moment table must not promise it.
+    expect(table).not.toHaveTextContent("Priority email support");
   });
 
   it("does not ship the V1 social-proof placeholder block", () => {

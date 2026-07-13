@@ -41,8 +41,10 @@ export default function Home() {
                 What You&apos;ll Build
               </h2>
               <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] font-sans mb-5">
-                By Module 11: a real-time anomaly detection system, trained,
-                tested, and deployed entirely in the browser.
+                By Module 11 you have assembled and deploy-drilled every
+                component of a real-time anomaly detection system, all of it
+                running in the browser, with your solutions committed to your
+                GitHub.
               </p>
               <Link
                 href="/pricing#curriculum"
@@ -62,7 +64,7 @@ export default function Home() {
               },
               {
                 label: "Deploy",
-                desc: "A working model that runs entirely client-side, 60fps inference on an ordinary laptop via WebGL.",
+                desc: "A working model that runs entirely client-side: real-time inference on an ordinary laptop via WebGL.",
               },
               {
                 label: "Own",

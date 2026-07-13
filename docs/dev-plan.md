@@ -1340,3 +1340,5 @@ This dev plan covers engineering implementation. For detailed specs in other dom
 | Theme scripts, character arcs, narrative details | `docs/scripts/` | 5 theme scripts (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) |
 | Technical architecture, MDX schemas, analytics config | `docs/tech-spec.md` | Sections 1–7 (stack, content, exercises, analytics, GitHub, calendar, i18n) |
 | Product requirements, feature tables, design system | `docs/prd.md` | Sections 3–6 (requirements, features, architecture, design system) |
+| BossBeat expansion (V2, post-launch gated) | `docs/v2-beat-expansion-plan.md` | Ranked 6-beat wave + the P3-earned quality gates |
+| Retention email sequences (Kit, operator setup pending) | `docs/email-retention-sequences.md` | 3 automations, drafted copy, purchased-tag gap |

@@ -3,7 +3,7 @@ lessonSlug: reconstruction-error
 title: "Incident: True Anomaly Slipped Through"
 mlContent: systems
 instructions: |
-  PAGER: signal at 14:33 was confirmed anomalous post-hoc, but the autoencoder did not flag it (reconstruction error below threshold). Build `auditReconstruction(input, reconstruction, perFeatureBaseline)` returning:
+  PAGER: signal at 14:33 was confirmed anomalous post-hoc, but the autoencoder did not flag it (reconstruction error below threshold). Implement `auditReconstruction(input, reconstruction, perFeatureBaseline)` returning:
 
     {
       perFeatureError: number[],          // |input - reconstruction| per feature
@@ -11,10 +11,10 @@ instructions: |
       requiresRetrain: boolean,            // true if any feature in suspiciouslyLowFeatures
     }
 
-  The model may have memorized patterns specific to the anomaly type during training. Suspiciously low reconstruction error on a feature that should be hard suggests overfitting.
+  The training set was normal-only, so genuinely anomalous structure should be hard to reconstruct. When error on a feature that should be hard comes in far below that feature's baseline, the model is leaning on memorized sensor quirks instead of learned structure. That is a retraining problem, not a threshold problem.
 starterCode: |
   function auditReconstruction(input, reconstruction, perFeatureBaseline) {
-    return { perFeatureError: [], suspiciouslyLowFeatures: [], requiresRetrain: false };
+    return null; // your code here
   }
 solutionCode: |
   function auditReconstruction(input, reconstruction, perFeatureBaseline) {
@@ -49,6 +49,7 @@ testCode: |
       const baseline = [0.1, 0.1, 0.1];
       const r = auditReconstruction(input, recon, baseline);
       expect(r.suspiciouslyLowFeatures).toEqual([]);
+      expect(r.requiresRetrain).toBe(false);
     });
 
     it('reports per-feature errors', () => {
@@ -60,5 +61,5 @@ testCode: |
     });
   });
 estimatedMinutes: 15
-difficulty: advanced
+difficulty: intermediate
 skillAxis: evaluation

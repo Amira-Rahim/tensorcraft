@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
 import { LAUNCHED_THEMES } from "@tensorcraft/shared";
-import { getModules, getModuleLessons } from "@tensorcraft/content";
+import {
+  getModules,
+  getModuleLessons,
+  getLessonTotalMinutes,
+} from "@tensorcraft/content";
 
 /**
  * Server-rendered module map for every launched theme, shown on /pricing.
@@ -36,8 +40,11 @@ export function CurriculumPreview() {
               <ol className="border border-border divide-y divide-border list-none m-0 p-0">
                 {modules.map((mod, i) => {
                   const lessons = getModuleLessons(slug, mod.slug);
+                  // Lesson + exercise minutes: the same basis as the theme
+                  // page's courseWorkload JSON-LD, so the visible module
+                  // sums and the SEO total tell one story.
                   const minutes = lessons.reduce(
-                    (sum, l) => sum + (l.estimatedMinutes ?? 18),
+                    (sum, l) => sum + getLessonTotalMinutes(l),
                     0,
                   );
                   const isFree = i === 0;

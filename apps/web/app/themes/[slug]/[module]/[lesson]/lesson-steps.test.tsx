@@ -190,11 +190,18 @@ describe("LessonSteps, briefing meta line", () => {
     expect(screen.queryByText(/bridge/i)).not.toBeInTheDocument();
   });
 
-  it("appends pluralized exercise count when exercises exist", () => {
+  it("sums lesson + exercise minutes and pluralizes the count", () => {
+    // 10 lesson + 12 + 18 exercise minutes: the meta line must charge the
+    // page at its full cost, not the reading time alone (P4 round 3).
     render(
       <LessonSteps
         lesson={lesson}
-        exercises={[{ slug: "a" }, { slug: "b" }] as never}
+        exercises={
+          [
+            { slug: "a", estimatedMinutes: 12 },
+            { slug: "b", estimatedMinutes: 18 },
+          ] as never
+        }
         theme={theme}
         themeSlug="deep-orbit"
         moduleSlug="foundations"
@@ -203,14 +210,14 @@ describe("LessonSteps, briefing meta line", () => {
         nextLesson={null}
       />,
     );
-    expect(screen.getByText(/10 min · 2 exercises/i)).toBeInTheDocument();
+    expect(screen.getByText(/40 min · 2 exercises/i)).toBeInTheDocument();
   });
 
   it("uses the singular form for one exercise", () => {
     render(
       <LessonSteps
         lesson={lesson}
-        exercises={[{ slug: "a" }] as never}
+        exercises={[{ slug: "a", estimatedMinutes: 12 }] as never}
         theme={theme}
         themeSlug="deep-orbit"
         moduleSlug="foundations"
@@ -219,7 +226,7 @@ describe("LessonSteps, briefing meta line", () => {
         nextLesson={null}
       />,
     );
-    expect(screen.getByText(/10 min · 1 exercise$/i)).toBeInTheDocument();
+    expect(screen.getByText(/22 min · 1 exercise$/i)).toBeInTheDocument();
   });
 });
 

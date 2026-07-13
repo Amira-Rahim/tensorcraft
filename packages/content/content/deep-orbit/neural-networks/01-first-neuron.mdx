@@ -37,8 +37,10 @@ keywords:
 skillAxes: [model_arch]
 ---
 
+The calibration bench holds the ship's two reference tones, the cleanest labeled data aboard: this one is tone A, that one is tone B, a fresh labeled example every time either plays. ARIA's rules name them perfectly, every time, and have since launch. The stream out of Sector 7-G is the problem: it is neither tone, and a rule can only recognize the notes somebody wrote down in advance.
+
 <Dialogue speaker="Dr. Farah">
-ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron. Think of it as a function that can adjust its own parameters.
+ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron. Think of it as a function that can adjust its own parameters, and we will teach it on the only labeled data we have: the calibration tones.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Initialize weights and bias for a simple classifier"]} />
@@ -69,6 +71,10 @@ console.log(jsOutput); // 0.26: identical!`}
 </CodeBlock>
 
 Weights encode how much each input matters: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold, the baseline the weighted sum has to clear.
+
+## Reading the Weights
+
+Those three numbers are hand-picked so the arithmetic stays followable; training will overwrite every one of them in module 3. But the reading skill transfers to any trained network, so practice it here. The inputs are amplitude, frequency, phase. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency: this neuron treats higher frequency as mild evidence AGAINST, and the sign matters more than the size. Weight 0.6 on phase: the strongest opinion in the row, for now, and "for now" is the point. When a debugger shows you a trained layer's weights, this is the whole trick: sign is direction, magnitude is how loudly that input gets to vote, and a weight near zero means the network learned to ignore something you thought mattered. Nazari will eventually tape a parameter count to the engineering board; each of those parameters is one of these votes.
 
 ## Challenge
 

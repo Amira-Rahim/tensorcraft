@@ -361,6 +361,7 @@ github.post("/commit", async (c) => {
     lessonId: string;
     code: string;
     moduleId?: string;
+    exerciseSlug?: string;
     readmeDelta?: string;
   };
   try {
@@ -372,7 +373,7 @@ github.post("/commit", async (c) => {
     );
   }
 
-  const { themeId, lessonId, code, moduleId, readmeDelta } = body;
+  const { themeId, lessonId, code, moduleId, exerciseSlug, readmeDelta } = body;
 
   if (!themeId || !lessonId || typeof code !== "string") {
     return c.json(
@@ -398,6 +399,12 @@ github.post("/commit", async (c) => {
   }
   if (moduleId && !isValidSlug(moduleId)) {
     return c.json(structuredError("validation_error", "Invalid moduleId"), 400);
+  }
+  if (exerciseSlug && !isValidSlug(exerciseSlug)) {
+    return c.json(
+      structuredError("validation_error", "Invalid exerciseSlug"),
+      400,
+    );
   }
   if (code.length > 102_400) {
     return c.json(
@@ -443,6 +450,7 @@ github.post("/commit", async (c) => {
       themeSlug: themeId,
       moduleId: moduleId ?? "module-unknown",
       lessonId,
+      exerciseSlug,
       code,
       readmeDelta,
     });
@@ -454,9 +462,9 @@ github.post("/commit", async (c) => {
       {
         themeId,
         lessonId,
-        // No explicit exerciseSlug on this endpoint; the artifact is stored at
-        // `${moduleId}/${lessonId}` so lessonId doubles as the exercise id.
-        exerciseSlug: lessonId,
+        // lessonId fallback covers pre-exerciseSlug callers, whose artifact
+        // is stored at `${moduleId}/${lessonId}`.
+        exerciseSlug: exerciseSlug ?? lessonId,
         commitSha: result.commitSha,
       },
       userId,
@@ -562,35 +570,42 @@ github.post("/retroactive-push", async (c) => {
     completed_at: string | null;
   }>;
 
-  // Look up the latest passing submitted_code for each lesson.
+  // Look up the latest passing submitted_code for each EXERCISE. Six
+  // lessons embed two exercises; the old lesson-keyed map let the last
+  // passed exercise clobber the other, both here and as a single file in
+  // the repo (2026-07-13 audit, accepted-v1 then fixed).
   const lessonIds = completedRows.map((r) => r.lesson_id);
-  const attemptsByLesson = new Map<string, string>();
+  const exercisesByLesson = new Map<
+    string,
+    Array<{ exerciseSlug: string; code: string }>
+  >();
   if (lessonIds.length > 0) {
     const { data: attempts } = await supabase
       .from("exercise_attempts")
-      .select("lesson_id, submitted_code, passed, attempted_at")
+      .select("exercise_slug, lesson_id, submitted_code, passed, attempted_at")
       .eq("user_id", userId)
       .eq("theme_id", body.themeId)
       .in("lesson_id", lessonIds)
       .order("attempted_at", { ascending: false });
 
+    const seenExercises = new Set<string>();
     for (const a of (attempts ?? []) as Array<{
+      exercise_slug: string;
       lesson_id: string;
       submitted_code: string | null;
       passed: boolean;
     }>) {
-      // First occurrence wins, attempts are sorted newest-first.
-      if (a.passed && a.submitted_code && !attemptsByLesson.has(a.lesson_id)) {
-        attemptsByLesson.set(a.lesson_id, a.submitted_code);
+      // First occurrence per exercise wins, attempts are sorted newest-first.
+      if (a.passed && a.submitted_code && !seenExercises.has(a.exercise_slug)) {
+        seenExercises.add(a.exercise_slug);
+        const list = exercisesByLesson.get(a.lesson_id) ?? [];
+        list.push({ exerciseSlug: a.exercise_slug, code: a.submitted_code });
+        exercisesByLesson.set(a.lesson_id, list);
       }
     }
   }
 
-  const completed = completedRows.map((row) => ({
-    ...row,
-    submitted_code: attemptsByLesson.get(row.lesson_id) ?? null,
-  }));
-  if (completed.length === 0) {
+  if (completedRows.length === 0) {
     return c.json({
       pushed: 0,
       skipped: 0,
@@ -610,6 +625,7 @@ github.post("/retroactive-push", async (c) => {
 
   const results: Array<{
     lessonId: string;
+    exerciseSlug?: string;
     status: "pushed" | "skipped" | "failed";
     commitSha?: string;
     url?: string;
@@ -620,56 +636,66 @@ github.post("/retroactive-push", async (c) => {
   let skipped = 0;
   let failed = 0;
 
-  for (const lesson of completed) {
-    const lessonId = lesson.lesson_id as string;
-    const moduleId = (lesson.module_id as string) ?? "module-unknown";
-    const code = lesson.submitted_code as string | null;
+  // Chronological by lesson completion; one artifact per passed exercise.
+  outer: for (const lesson of completedRows) {
+    const lessonId = lesson.lesson_id;
+    const moduleId = lesson.module_id ?? "module-unknown";
+    const artifacts = exercisesByLesson.get(lessonId) ?? [];
 
-    if (!code) {
+    if (artifacts.length === 0) {
       skipped++;
       results.push({ lessonId, status: "skipped", error: "No submitted code" });
       continue;
     }
 
-    try {
-      const res = await commitLessonArtifact({
-        accessToken: token,
-        username,
-        themeSlug: body.themeId,
-        moduleId,
-        lessonId,
-        code,
-        readmeDelta: lesson.completed_at
-          ? `- ${moduleId}/${lessonId}, completed ${String(lesson.completed_at).slice(0, 10)}`
-          : undefined,
-      });
-      pushed++;
-      results.push({ lessonId, status: "pushed", ...res });
-      captureServer(
-        SERVER_EVENTS.CODE_PUSHED,
-        {
-          themeId: body.themeId,
+    for (const artifact of artifacts) {
+      try {
+        const res = await commitLessonArtifact({
+          accessToken: token,
+          username,
+          themeSlug: body.themeId,
+          moduleId,
           lessonId,
-          exerciseSlug: lessonId,
-          commitSha: res.commitSha,
-        },
-        userId,
-      );
-    } catch (err) {
-      failed++;
-      const mapped = mapGitHubError(err);
-      results.push({
-        lessonId,
-        status: "failed",
-        error: mapped.body.error,
-      });
-      // Abort early if the token is bad or repo access was revoked -
-      // no point retrying lesson-by-lesson.
-      if (
-        mapped.body.code === "github_token_expired" ||
-        mapped.body.code === "github_repo_access_revoked"
-      ) {
-        break;
+          exerciseSlug: artifact.exerciseSlug,
+          code: artifact.code,
+          readmeDelta: lesson.completed_at
+            ? `- ${moduleId}/${artifact.exerciseSlug}, completed ${String(lesson.completed_at).slice(0, 10)}`
+            : undefined,
+        });
+        pushed++;
+        results.push({
+          lessonId,
+          exerciseSlug: artifact.exerciseSlug,
+          status: "pushed",
+          ...res,
+        });
+        captureServer(
+          SERVER_EVENTS.CODE_PUSHED,
+          {
+            themeId: body.themeId,
+            lessonId,
+            exerciseSlug: artifact.exerciseSlug,
+            commitSha: res.commitSha,
+          },
+          userId,
+        );
+      } catch (err) {
+        failed++;
+        const mapped = mapGitHubError(err);
+        results.push({
+          lessonId,
+          exerciseSlug: artifact.exerciseSlug,
+          status: "failed",
+          error: mapped.body.error,
+        });
+        // Abort early if the token is bad or repo access was revoked -
+        // no point retrying exercise-by-exercise.
+        if (
+          mapped.body.code === "github_token_expired" ||
+          mapped.body.code === "github_repo_access_revoked"
+        ) {
+          break outer;
+        }
       }
     }
   }
@@ -678,7 +704,7 @@ github.post("/retroactive-push", async (c) => {
     pushed,
     skipped,
     failed,
-    total: completed.length,
+    total: results.length,
     results,
   });
 });

@@ -59,7 +59,7 @@ const ROWS: Row[] = [
   {
     feature: "Capstone artifact you ship",
     tensorcraft:
-      "A deployable browser-side ML app per theme (one live today, four in the pipeline)",
+      "Every component of a browser-side ML system, built and graded piece by piece, pushed to your GitHub (one theme live today, four in the pipeline)",
     fastai: "fast.ai notebooks shareable as Hugging Face Spaces",
     karpathy: "Final notebook trained from scratch",
     coursera: "Certificates",

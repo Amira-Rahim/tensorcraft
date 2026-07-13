@@ -91,6 +91,27 @@ export function getLessonExercises(lessonSlug: string) {
   return exercises.filter((e) => e.lessonSlug === lessonSlug);
 }
 
+/**
+ * Lesson + embedded-exercise minutes: the single user-facing time basis.
+ * lesson.estimatedMinutes counts the reading/steps only, so every surface
+ * that shows a learner "how long is this page" must add the exercises the
+ * page embeds. The theme courseWorkload JSON-LD and /pricing's curriculum
+ * preview already sum on this basis; per-lesson surfaces drifted from it
+ * when second (incident) exercises landed (2026-07-13 P4 round 3).
+ */
+export function getLessonTotalMinutes(lesson: {
+  slug: string;
+  estimatedMinutes: number;
+}): number {
+  return (
+    lesson.estimatedMinutes +
+    getLessonExercises(lesson.slug).reduce(
+      (sum, ex) => sum + (ex.estimatedMinutes ?? 0),
+      0,
+    )
+  );
+}
+
 /** Bridge collectible shape returned by getLessonsWithBridges */
 export interface CollectibleBridge {
   lessonSlug: string;

@@ -350,7 +350,7 @@ export function FiveWorldsSection() {
             Five Worlds
           </h2>
           <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
-            Same ML syllabus. Five story universes.{" "}
+            Same ML foundations track. Five story universes.{" "}
             <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is
             live; the other four ship in waves.
           </p>

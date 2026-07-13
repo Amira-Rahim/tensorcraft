@@ -4,6 +4,7 @@ title: "Model Profiling"
 moduleId: optimization-edge
 themeId: deep-orbit
 order: 1
+pattern: flashback
 scene:
   location: "Archimedes, Engineering"
   time: "Hours after the 0249 crash"
@@ -39,7 +40,9 @@ keywords:
 skillAxes: [deployment]
 ---
 
-At 0247 this morning, the ensemble predicted a pulse window, the cleanest capture opportunity in nine days. At 0249, DEEP SCAN loaded its full 340 MB into the bridge dashboard's 512 MB of RAM alongside the telemetry suite, and the dashboard died. By the time it rebooted, the window had closed. Earth's relay slot closed forty minutes later, without the capture in it.
+ARIA's reboot watchdog kept the last four seconds. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
+
+00:02:47.0: the ensemble flags the incoming pulse window, the cleanest capture opportunity in nine days. 00:02:47.4: the dashboard starts loading DEEP SCAN's full 340 MB beside the telemetry suite, and the free-memory line starts falling like an altimeter. 00:02:49.1: the line touches zero. No exception. No log entry. The render loop dies mid-frame and the last buffered frame just stays there, wrong, on every screen on the bridge. By the time the dashboard reboots, the window has closed. Earth's relay slot closes forty minutes later, without the capture in it.
 
 The data is gone. Not delayed. Gone. The next relay slot is in nineteen days, and nothing in the optimization work ahead brings that capture back.
 
@@ -51,7 +54,7 @@ I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabyte
 Profiling first. Same discipline as a slow React app: measure, find the bottleneck, then cut. No guessing. Not after last night.
 </Dialogue>
 
-Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight; the numbers decide where the knife goes.
+The bundle audit Demir filed under "later" is now exhibit one: the crew's trained models total under a megabyte; the pretrained language component and its tables carry almost all of the 340. Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight; the numbers decide where the knife goes.
 
 <LearningObjectives objectives={["Profile model memory usage with tf.memory()", "Benchmark inference latency with high-resolution timing", "Identify bottleneck layers using per-layer profiling", "Establish baseline metrics before optimization"]} />
 

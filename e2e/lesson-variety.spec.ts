@@ -24,6 +24,20 @@ test.describe("Structure variety: pattern + scene render end-to-end", () => {
     await expect(tag).toContainText(/Field repair/i);
   });
 
+  test("the free-tier BossBeat renders without leaking its stance labels", async ({
+    page,
+  }) => {
+    await page.goto("/themes/deep-orbit/foundations/normalization");
+    const beat = page.getByTestId("boss-beat-option-dominant");
+    await expect(beat).toBeVisible({ timeout: 15000 });
+    // The stance enum must never appear as text anywhere in the beat UI.
+    for (const stance of ["cooperate", "defect", "random", "dominant"]) {
+      await expect(
+        page.getByTestId(`boss-beat-option-${stance}`),
+      ).not.toContainText(stance, { ignoreCase: true });
+    }
+  });
+
   test("a standard-pattern lesson renders no FORMAT tag", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
     // Scene renders (slugline machinery on), FORMAT tag does not.

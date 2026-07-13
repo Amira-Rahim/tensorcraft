@@ -65,7 +65,7 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">2.</span>
             <span>
-              Learn through bridges: 51 analogies map ML concepts to frontend
+              Learn through bridges: 55 analogies map ML concepts to frontend
               concepts you know, each labeled where it breaks
             </span>
           </li>

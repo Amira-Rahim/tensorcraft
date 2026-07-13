@@ -1,73 +1,69 @@
 slug: rag-pipeline
 lessonSlug: rag-for-signals
-title: "Build a RAG Retriever"
-instructions: "Write a retrieval function that filters a signal database by band and classification. Given a query with optional band and class filters, return matching signals sorted by timestamp descending, limited to maxResults."
+title: "Build the Claim Checker"
+instructions: "Demir's checker from the epilogue, for real: verifyClaims(answerText, retrievedRows) extracts every number from the generated answer and checks it against the retrieved data. A claimed number is verified if it appears in some retrieved row within a tolerance of 0.05; otherwise it is fabricated. Return { verified, fabricated } with the numbers in the order they appear in the text. This is the deterministic gate that lets a generated report ship: every number either traces to a row, or the report does not go."
 starterCode: |
-  interface Signal {
-    id: string;
-    timestamp: string;
-    band: string;
-    classification: string;
-  }
-
-  function retrieveSignals(
-    db: Signal[],
-    filters: { band?: string; classification?: string },
-    maxResults: number,
-  ): Signal[] {
-    // Filter by band and classification if provided
-    // Sort by timestamp descending (newest first)
-    // Limit to maxResults
+  function verifyClaims(
+    answerText: string,
+    retrievedRows: number[][],
+  ): { verified: number[]; fabricated: number[] } {
+    // 1. extract numbers: answerText.match(/-?\d+(\.\d+)?/g)
+    // 2. a claim is verified when SOME row contains a value within 0.05 of it
+    // 3. keep text order; parse with parseFloat
     return null; // your code here
   }
 solutionCode: |
-  interface Signal {
-    id: string;
-    timestamp: string;
-    band: string;
-    classification: string;
-  }
-
-  function retrieveSignals(
-    db: Signal[],
-    filters: { band?: string; classification?: string },
-    maxResults: number,
-  ): Signal[] {
-    let results = [...db];
-    if (filters.band) {
-      results = results.filter(s => s.band === filters.band);
+  function verifyClaims(
+    answerText: string,
+    retrievedRows: number[][],
+  ): { verified: number[]; fabricated: number[] } {
+    const claims = (answerText.match(/-?\d+(\.\d+)?/g) ?? []).map(parseFloat);
+    const values = retrievedRows.flat();
+    const verified: number[] = [];
+    const fabricated: number[] = [];
+    for (const claim of claims) {
+      if (values.some((v) => Math.abs(v - claim) <= 0.05)) {
+        verified.push(claim);
+      } else {
+        fabricated.push(claim);
+      }
     }
-    if (filters.classification) {
-      results = results.filter(s => s.classification === filters.classification);
-    }
-    results.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-    return results.slice(0, maxResults);
+    return { verified, fabricated };
   }
 testCode: |
-  describe('retrieveSignals', () => {
-    const db = [
-      { id: '1', timestamp: '2026-01-01', band: 'A', classification: 'normal' },
-      { id: '2', timestamp: '2026-01-02', band: 'B', classification: 'anomaly' },
-      { id: '3', timestamp: '2026-01-03', band: 'A', classification: 'anomaly' },
+  describe('verifyClaims', () => {
+    const rows = [
+      [14, 73.4, 0.9987],
+      [29.7, 73.4, 8.7],
     ];
-    it('filters by band', () => {
-      const r = retrieveSignals(db, { band: 'A' }, 10);
-      expect(r.length).toBe(2);
-      r.forEach(s => expect(s.band).toBe('A'));
+
+    it('verifies numbers that trace to retrieved rows', () => {
+      const r = verifyClaims('We recorded 14 events at 73.4 Hz.', rows);
+      expect(r.verified).toEqual([14, 73.4]);
+      expect(r.fabricated).toEqual([]);
     });
-    it('filters by classification', () => {
-      const r = retrieveSignals(db, { classification: 'anomaly' }, 10);
-      expect(r.length).toBe(2);
+    it('catches the fabricated 17 the night the checker was born', () => {
+      const r = verifyClaims('Analysis of 17 events at 73.4 Hz.', rows);
+      expect(r.fabricated).toEqual([17]);
+      expect(r.verified).toEqual([73.4]);
     });
-    it('limits results', () => {
-      expect(retrieveSignals(db, {}, 1).length).toBe(1);
+    it('applies the 0.05 tolerance: 0.99 traces to 0.9987, 12.5 traces to nothing', () => {
+      const r = verifyClaims('Correlation 0.99; drift 12.5.', rows);
+      expect(r.verified).toEqual([0.99]);
+      expect(r.fabricated).toEqual([12.5]);
     });
-    it('sorts newest first', () => {
-      const r = retrieveSignals(db, {}, 10);
-      expect(r[0].id).toBe('3');
+    it('handles an answer with no numbers at all', () => {
+      const r = verifyClaims('The signal repeats and accelerates.', rows);
+      expect(r.verified).toEqual([]);
+      expect(r.fabricated).toEqual([]);
+    });
+    it('works against a different retrieval set', () => {
+      const r = verifyClaims('Detected 3 pulses of 61.2 seconds.', [[61.2], [3, 5]]);
+      expect(r.verified).toEqual([3, 61.2]);
+      expect(r.fabricated).toEqual([]);
     });
   });
-estimatedMinutes: 10
-difficulty: intermediate
-mlContent: arithmetic
-skillAxis: fe_integration
+estimatedMinutes: 15
+difficulty: advanced
+mlContent: systems
+skillAxis: evaluation

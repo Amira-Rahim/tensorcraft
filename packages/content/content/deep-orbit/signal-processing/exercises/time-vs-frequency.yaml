@@ -1,54 +1,77 @@
 slug: time-vs-frequency
 lessonSlug: time-vs-frequency
-title: "Generate a Multi-Frequency Signal"
-instructions: "Generate a discrete time-domain signal as the superposition of N sine wave components. Given an array of {hz, amplitude} pairs, a sample count, and a sample rate, return the resulting time-domain samples."
+title: "Two Views, One Verdict"
+instructions: "Make the lesson's claim executable. compareViews(timeA, timeB, magsA, magsB, tolerance) receives two signals in BOTH representations: their time-domain samples and their frequency-domain magnitude arrays (precomputed for you; the transform itself is next lesson). Return { timeTwin, divergentBin }: timeTwin is true when every time-domain difference is within tolerance (the two signals are indistinguishable to the eye), and divergentBin is the index of the FIRST magnitude bin where they differ by more than tolerance, or -1 if none does. When timeTwin is true and divergentBin is not -1, you have proven the lesson: the views hide different things."
 starterCode: |
-  interface Component { hz: number; amplitude: number; }
-
-  function generateSignal(components: Component[], samples: number, sampleRate: number): number[] {
-    // For each sample index i:
-    //   t = i / sampleRate
-    //   value = sum of (amplitude * Math.sin(2 * PI * hz * t)) for each component
+  function compareViews(
+    timeA: number[],
+    timeB: number[],
+    magsA: number[],
+    magsB: number[],
+    tolerance: number,
+  ): { timeTwin: boolean; divergentBin: number } {
+    // timeTwin: every |timeA[i] - timeB[i]| <= tolerance
+    // divergentBin: first i where |magsA[i] - magsB[i]| > tolerance, else -1
     return null; // your code here
   }
 solutionCode: |
-  interface Component { hz: number; amplitude: number; }
-
-  function generateSignal(components: Component[], samples: number, sampleRate: number): number[] {
-    const signal: number[] = [];
-    for (let i = 0; i < samples; i++) {
-      const t = i / sampleRate;
-      let value = 0;
-      for (const c of components) {
-        value += c.amplitude * Math.sin(2 * Math.PI * c.hz * t);
+  function compareViews(
+    timeA: number[],
+    timeB: number[],
+    magsA: number[],
+    magsB: number[],
+    tolerance: number,
+  ): { timeTwin: boolean; divergentBin: number } {
+    const timeTwin = timeA.every((v, i) => Math.abs(v - timeB[i]) <= tolerance);
+    let divergentBin = -1;
+    for (let i = 0; i < magsA.length; i++) {
+      if (Math.abs(magsA[i] - magsB[i]) > tolerance) {
+        divergentBin = i;
+        break;
       }
-      signal.push(value);
     }
-    return signal;
+    return { timeTwin, divergentBin };
   }
 testCode: |
-  describe('generateSignal', () => {
-    it('returns correct number of samples', () => {
-      const result = generateSignal([{ hz: 5, amplitude: 1 }], 100, 100);
-      expect(result.length).toBe(100);
+  describe('compareViews', () => {
+    it('proves the lesson: twins in time, distinct at bin 5', () => {
+      const timeA = [0.50, 0.87, 1.00, 0.87, 0.50, 0.00];
+      const timeB = [0.53, 0.84, 1.02, 0.89, 0.47, 0.02];
+      const magsA = [0, 0, 3.0, 0, 0, 0.0, 0];
+      const magsB = [0, 0, 3.0, 0, 0, 6.4, 0];
+      const r = compareViews(timeA, timeB, magsA, magsB, 0.05);
+      expect(r.timeTwin).toBe(true);
+      expect(r.divergentBin).toBe(5);
     });
-    it('starts near zero for a sine wave', () => {
-      const result = generateSignal([{ hz: 1, amplitude: 1 }], 100, 100);
-      expect(Math.abs(result[0])).toBeLessThan(0.01);
+
+    it('returns -1 when the spectra agree everywhere', () => {
+      const r = compareViews([1, 2], [1, 2], [4, 4, 4], [4, 4, 4], 0.1);
+      expect(r.timeTwin).toBe(true);
+      expect(r.divergentBin).toBe(-1);
     });
-    it('combines multiple frequencies', () => {
-      const result = generateSignal([{ hz: 5, amplitude: 1 }, { hz: 10, amplitude: 0.5 }], 100, 100);
-      expect(result.length).toBe(100);
-      expect(Math.abs(result[0])).toBeLessThan(0.01);
+
+    it('reports non-twins in time honestly', () => {
+      const r = compareViews([0, 1], [0.5, 1], [1], [1], 0.1);
+      expect(r.timeTwin).toBe(false);
     });
-    it('amplitude scales correctly', () => {
-      const result = generateSignal([{ hz: 1, amplitude: 2 }], 400, 100);
-      const max = Math.max(...result.map(Math.abs));
-      expect(max).toBeGreaterThan(1.9);
-      expect(max).toBeLessThan(2.1);
+
+    it('finds the FIRST divergent bin, not the largest', () => {
+      const magsA = [0, 1.0, 5.0, 9.0];
+      const magsB = [0, 1.3, 5.0, 2.0];
+      const r = compareViews([0], [0], magsA, magsB, 0.2);
+      expect(r.divergentBin).toBe(1);
+    });
+
+    it('respects the tolerance in both directions', () => {
+      const within = compareViews([0], [0.04], [1.0], [1.04], 0.05);
+      expect(within.timeTwin).toBe(true);
+      expect(within.divergentBin).toBe(-1);
+
+      const beyond = compareViews([0], [0.04], [1.0], [1.2], 0.05);
+      expect(beyond.divergentBin).toBe(0);
     });
   });
 estimatedMinutes: 10
-difficulty: intermediate
-mlContent: arithmetic
+difficulty: beginner
+mlContent: data
 skillAxis: data_prep

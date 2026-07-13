@@ -20,6 +20,7 @@ concept:
     mlTitle: "TF.js Install"
     mlCode: "npm install @tensorflow/tfjs"
     tier: identity
+    breaks: "The install really is the same npm command. The break comes right after: importing React means React runs, while importing TF.js says nothing about which backend you got. WebGL, WASM, or plain CPU is decided at runtime, and the same code runs an order of magnitude slower when the fallback silently wins."
 consequence:
   narrative: "TensorFlow.js initializes on the dashboard. The WebGL backend activates, confirming GPU acceleration is available."
 hints:

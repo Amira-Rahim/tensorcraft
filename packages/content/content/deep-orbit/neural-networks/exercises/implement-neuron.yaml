@@ -1,10 +1,42 @@
 slug: implement-neuron
 lessonSlug: first-neuron
 title: "Implement a Neuron"
-instructions: "Implement a single neuron that computes a weighted sum of inputs plus a bias. Use tf.dot() to multiply inputs by weights, then add the bias."
-starterCode: "const inputs = tf.tensor([1.0, 2.0, 3.0]);\nconst weights = tf.tensor([0.2, 0.8, -0.5]);\nconst bias = tf.scalar(0.1);\n\n// Compute weighted sum + bias\nconst output = null; // your code here"
-solutionCode: "const inputs = tf.tensor([1.0, 2.0, 3.0]);\nconst weights = tf.tensor([0.2, 0.8, -0.5]);\nconst bias = tf.scalar(0.1);\n\nconst output = tf.dot(inputs, weights).add(bias);"
-testCode: "describe('Neuron', () => { it('produces output', () => { expect(output).toBeDefined(); }); it('computes correct value', () => { const val = output.dataSync()[0]; expect(val).toBeCloseTo(0.4, 4); }); });"
+instructions: "Implement neuron(inputs, weights, bias): the weighted sum of inputs plus bias, as a scalar tensor. Use tf.dot() for the weighted sum. The grader calls your function with several different input sets, so compute, don't memorize."
+starterCode: |
+  function neuron(inputs: tf.Tensor, weights: tf.Tensor, bias: tf.Scalar): tf.Tensor {
+    // weighted sum of inputs, plus bias
+    return null; // your code here
+  }
+
+  const output = neuron(
+    tf.tensor([1.0, 2.0, 3.0]),
+    tf.tensor([0.2, 0.8, -0.5]),
+    tf.scalar(0.1),
+  );
+solutionCode: |
+  function neuron(inputs: tf.Tensor, weights: tf.Tensor, bias: tf.Scalar): tf.Tensor {
+    return tf.dot(inputs, weights).add(bias);
+  }
+
+  const output = neuron(
+    tf.tensor([1.0, 2.0, 3.0]),
+    tf.tensor([0.2, 0.8, -0.5]),
+    tf.scalar(0.1),
+  );
+testCode: |
+  describe('Neuron', () => {
+    it('computes the lesson example: 0.2 + 1.6 - 1.5 + 0.1', () => {
+      expect(output.dataSync()[0]).toBeCloseTo(0.4, 4);
+    });
+    it('tracks different weights, not a memorized answer', () => {
+      const out = neuron(tf.tensor([2, 1, 0]), tf.tensor([0.5, -0.5, 1.0]), tf.scalar(0.25));
+      expect(out.dataSync()[0]).toBeCloseTo(0.75, 4);
+    });
+    it('handles a different input width entirely', () => {
+      const out = neuron(tf.tensor([1, 1, 1, 1]), tf.tensor([0.1, 0.2, 0.3, 0.4]), tf.scalar(-1.0));
+      expect(out.dataSync()[0]).toBeCloseTo(0.0, 4);
+    });
+  });
 estimatedMinutes: 10
 difficulty: beginner
 mlContent: data

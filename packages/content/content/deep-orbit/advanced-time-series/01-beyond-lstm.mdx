@@ -19,8 +19,9 @@ concept:
     mlTitle: "Attention"
     mlCode: "weights = softmax(Q * K^T); output = weights * V // focus on relevant steps"
     tier: intuition
+    breaks: ":focus is binary and exclusive: one element has it, everything else has nothing. Attention is a softmax distribution where every timestep gets a nonzero weight and separate heads hold several such distributions at once. Expect a single winner and you will misread every attention map you plot."
 consequence:
-  narrative: "Ten times faster than the LSTM, the attention model reads the full signal in parallel and shows its work: which time steps mattered, per prediction."
+  narrative: "The attention head reads all eighty encoded steps at once and shows its work: two weight hotspots, exactly where the evidence lived. The distance problem is gone."
 hints:
   - level: nudge
     content: "Attention computes relevance scores for each time step, then focuses on the important ones"
@@ -36,8 +37,12 @@ keywords:
 skillAxes: [model_arch]
 ---
 
+> **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · post-mortem: precursor ripple at window position 5 of 80, weight in final hidden state: negligible.
+
+The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the post-mortem finds the reason inside the window: a warning ripple at step 5 that the LSTM had all but forgotten by step 80. The information was there. The architecture diluted it.
+
 <Dialogue speaker="Dr. Farah">
-The LSTM must process time steps sequentially: step 1, then 2, then 3. It can't skip ahead. But what if the relevant pattern is at step 5 and step 72? Attention lets the model look at all steps simultaneously and focus on what matters.
+That ripple entered the hidden state at step 5 and got averaged into seventy-five steps of noise before the pulse formed. Sequential is the problem: the LSTM cannot skip ahead, and it cannot hold step 5 at full strength while it walks to step 80. What we need is a direct connection between any two steps: attention. It looks at all steps simultaneously and spends its focus where the evidence is.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -109,20 +114,35 @@ function simpleAttention(
 // LSTM:      80 sequential operations (can't parallelize)
 // Attention: 1 matrix multiply (fully parallelizable on GPU)
 
-// Build an attention-enhanced model
-const model = tf.sequential();
-// Use a 1D convolution + attention hybrid
-model.add(tf.layers.conv1d({
-  filters: 64,
-  kernelSize: 3,
-  activation: 'relu',
+// Build an attention-enhanced model. tf.layers has no attention layer,
+// so we compose the real mechanism from ops: an LSTM encodes the window
+// (returnSequences keeps ALL 80 step outputs, because attention needs
+// every candidate), and simpleAttention from above decides which steps
+// the prediction actually listens to.
+const encoder = tf.sequential();
+encoder.add(tf.layers.lstm({
+  units: 32,
+  returnSequences: true,   // [1, 80, 32]: one output per time step
   inputShape: [80, 3],
 }));
-model.add(tf.layers.globalAveragePooling1d());  // simple attention: average all positions
-model.add(tf.layers.dense({ units: 32, activation: 'relu' }));
-model.add(tf.layers.dense({ units: 3 }));
+const head = tf.layers.dense({ units: 3 });
 
-model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });`}
+function predictWithAttention(window: tf.Tensor3D): tf.Tensor {
+  return tf.tidy(() => {
+    const encoded = encoder.apply(window) as tf.Tensor;   // [1, 80, 32]
+    const steps = encoded.squeeze([0]) as tf.Tensor2D;    // [80, 32]
+    const query = steps.slice([79, 0], [1, 32]);          // latest step asks
+    const { output, weights } = simpleAttention(query, steps, steps);
+    // weights: [1, 80]: read them to see WHERE the model looked.
+    // High weight at step 5 and step 72 = the direct connection the
+    // plain LSTM could not hold across the distance.
+    return head.apply(output) as tf.Tensor;               // [1, 3]
+  });
+}
+
+// Production transformers drop the recurrent encoder entirely and use
+// attention end to end; this hybrid is the honest TFJS version of the
+// same idea, and it is all this module's problem needs.`}
 </CodeBlock>
 
 ## Challenge

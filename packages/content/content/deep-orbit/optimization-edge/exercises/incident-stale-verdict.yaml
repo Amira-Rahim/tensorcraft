@@ -1,0 +1,79 @@
+slug: incident-stale-verdict
+lessonSlug: caching-strategies
+title: "Incident: Cache Served a Verdict From the Old Model"
+mlContent: systems
+instructions: |
+  PAGER: after this morning's model deploy, the dashboard showed a classification the new model disagrees with. It came from the cache. Build `auditCache(entries, currentVersion, now, ttlSeconds)`: an entry must be REFRESHED if its modelVersion differs from currentVersion (a deploy invalidates every cached verdict, no matter how fresh) OR its age (now - cachedAt, seconds) exceeds ttlSeconds. Everything else is safe to serve. Return { serve, refresh } as arrays of keys, preserving input order.
+starterCode: |
+  function auditCache(
+    entries: { key: string; modelVersion: string; cachedAt: number }[],
+    currentVersion: string,
+    now: number,
+    ttlSeconds: number,
+  ): { serve: string[]; refresh: string[] } {
+    return null; // your code here
+  }
+solutionCode: |
+  function auditCache(
+    entries: { key: string; modelVersion: string; cachedAt: number }[],
+    currentVersion: string,
+    now: number,
+    ttlSeconds: number,
+  ): { serve: string[]; refresh: string[] } {
+    const serve: string[] = [];
+    const refresh: string[] = [];
+    for (const e of entries) {
+      const expired = now - e.cachedAt > ttlSeconds;
+      const staleModel = e.modelVersion !== currentVersion;
+      (staleModel || expired ? refresh : serve).push(e.key);
+    }
+    return { serve, refresh };
+  }
+testCode: |
+  describe('auditCache', () => {
+    it('a deploy invalidates even fresh entries', () => {
+      const r = auditCache(
+        [{ key: 'a', modelVersion: 'v1', cachedAt: 995 }],
+        'v2', 1000, 30,
+      );
+      expect(r.refresh).toEqual(['a']);
+      expect(r.serve).toEqual([]);
+    });
+    it('current-version entries within TTL are served', () => {
+      const r = auditCache(
+        [{ key: 'b', modelVersion: 'v2', cachedAt: 980 }],
+        'v2', 1000, 30,
+      );
+      expect(r.serve).toEqual(['b']);
+    });
+    it('TTL expiry refreshes even the current version', () => {
+      const r = auditCache(
+        [{ key: 'c', modelVersion: 'v2', cachedAt: 900 }],
+        'v2', 1000, 30,
+      );
+      expect(r.refresh).toEqual(['c']);
+    });
+    it('age exactly at TTL still serves (only strictly older expires)', () => {
+      const r = auditCache(
+        [{ key: 'd', modelVersion: 'v2', cachedAt: 970 }],
+        'v2', 1000, 30,
+      );
+      expect(r.serve).toEqual(['d']);
+    });
+    it('mixed batch keeps input order within each bucket', () => {
+      const r = auditCache(
+        [
+          { key: 'p', modelVersion: 'v2', cachedAt: 999 },
+          { key: 'q', modelVersion: 'v1', cachedAt: 999 },
+          { key: 'r', modelVersion: 'v2', cachedAt: 100 },
+          { key: 's', modelVersion: 'v2', cachedAt: 998 },
+        ],
+        'v2', 1000, 60,
+      );
+      expect(r.serve).toEqual(['p', 's']);
+      expect(r.refresh).toEqual(['q', 'r']);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate
+skillAxis: deployment

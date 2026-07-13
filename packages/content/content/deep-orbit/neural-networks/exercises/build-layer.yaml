@@ -1,10 +1,27 @@
 slug: build-layer
 lessonSlug: layers-and-architecture
 title: "Build a 3-Layer Sequential Model"
-instructions: "Build a sequential model with three dense layers: an input layer with 16 units and ReLU activation (inputShape [4]), a hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation."
+instructions: "Build a sequential model with three dense layers: an input layer with 16 units and ReLU activation (inputShape [4]), a hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. The grader checks the units, the activations, and the parameter count, the same numbers Nazari would ask for."
 starterCode: "// Build a 3-layer sequential model\nconst model = tf.sequential();\n\n// Add layers here"
 solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] }));\nmodel.add(tf.layers.dense({ units: 8, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));"
-testCode: "describe('Model', () => { it('exists', () => { expect(model).toBeDefined(); }); it('has 3 layers', () => { expect(model.layers.length).toBe(3); }); it('has correct output shape', () => { expect(model.outputShape).toEqual([null, 1]); }); });"
+testCode: |
+  describe('Model', () => {
+    it('has 3 layers and output shape [null, 1]', () => {
+      expect(model.layers.length).toBe(3);
+      expect(model.outputShape).toEqual([null, 1]);
+    });
+    it('has the specified units per layer', () => {
+      const units = model.layers.map((l) => l.getConfig().units);
+      expect(units).toEqual([16, 8, 1]);
+    });
+    it('uses relu, relu, sigmoid activations', () => {
+      const acts = model.layers.map((l) => l.getConfig().activation);
+      expect(acts).toEqual(['relu', 'relu', 'sigmoid']);
+    });
+    it('quotes the right parameter count: 80 + 136 + 9', () => {
+      expect(model.countParams()).toBe(225);
+    });
+  });
 estimatedMinutes: 12
 difficulty: intermediate
 mlContent: model

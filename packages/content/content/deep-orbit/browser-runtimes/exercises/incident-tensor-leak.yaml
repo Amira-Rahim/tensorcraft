@@ -1,0 +1,70 @@
+slug: incident-tensor-leak
+lessonSlug: inference-pipeline
+title: "Incident: numTensors Climbing at 03:10"
+mlContent: systems
+instructions: |
+  PAGER: the dashboard's tensor count has been rising since the 01:00 deploy. Build `diagnoseLeak(snapshots, budgetTensors)`. Snapshots are `{ t, numTensors }` readings (t in hours, ascending). Using the FIRST and LAST snapshots: ratePerHour = tensor growth per hour; leaking = ratePerHour > 0; hoursToBudget = hours until the budget is hit at that rate (Infinity when not leaking). The middle readings are noisy; the endpoints are the trend.
+starterCode: |
+  function diagnoseLeak(
+    snapshots: { t: number; numTensors: number }[],
+    budgetTensors: number,
+  ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
+    return null; // your code here
+  }
+solutionCode: |
+  function diagnoseLeak(
+    snapshots: { t: number; numTensors: number }[],
+    budgetTensors: number,
+  ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
+    const first = snapshots[0];
+    const last = snapshots[snapshots.length - 1];
+    const ratePerHour = (last.numTensors - first.numTensors) / (last.t - first.t);
+    const leaking = ratePerHour > 0;
+    const hoursToBudget = leaking
+      ? (budgetTensors - last.numTensors) / ratePerHour
+      : Infinity;
+    return { leaking, ratePerHour, hoursToBudget };
+  }
+testCode: |
+  describe('diagnoseLeak', () => {
+    it('reads the trend from the endpoints: 480 tensors over 4 hours', () => {
+      const r = diagnoseLeak(
+        [{ t: 0, numTensors: 47 }, { t: 2, numTensors: 287 }, { t: 4, numTensors: 527 }],
+        10000,
+      );
+      expect(r.leaking).toBe(true);
+      expect(r.ratePerHour).toBeCloseTo(120, 5);
+    });
+    it('computes hours until the budget is hit', () => {
+      const r = diagnoseLeak(
+        [{ t: 0, numTensors: 400 }, { t: 1, numTensors: 520 }],
+        10000,
+      );
+      expect(r.hoursToBudget).toBeCloseTo(79, 1);
+    });
+    it('a flat count is not a leak', () => {
+      const r = diagnoseLeak(
+        [{ t: 0, numTensors: 47 }, { t: 6, numTensors: 47 }],
+        10000,
+      );
+      expect(r.leaking).toBe(false);
+      expect(r.hoursToBudget).toBe(Infinity);
+    });
+    it('ignores noisy middle readings (endpoints define the trend)', () => {
+      const r = diagnoseLeak(
+        [{ t: 0, numTensors: 100 }, { t: 1, numTensors: 900 }, { t: 5, numTensors: 200 }],
+        1000,
+      );
+      expect(r.ratePerHour).toBeCloseTo(20, 5);
+    });
+    it('a falling count is recovery, not a leak', () => {
+      const r = diagnoseLeak(
+        [{ t: 0, numTensors: 500 }, { t: 2, numTensors: 300 }],
+        1000,
+      );
+      expect(r.leaking).toBe(false);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate
+skillAxis: deployment

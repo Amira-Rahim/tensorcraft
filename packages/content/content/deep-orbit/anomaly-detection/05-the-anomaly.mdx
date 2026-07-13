@@ -21,6 +21,7 @@ concept:
     mlTitle: "Anomaly Alert"
     mlCode: "if (error > 12 * baseline) { alert('UNKNOWN SIGNAL DETECTED') }"
     tier: intuition
+    breaks: "componentDidCatch fires on a thrown exception: deterministic, after the fact, always right that something threw. An anomaly alert fires on a statistical threshold over valid inputs, so it can fire on healthy data and stay silent through a real failure. Nothing throws; you chose where weird begins."
 consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
@@ -101,8 +102,12 @@ function detectAnomaly(
   // Detector 3: LSTM prediction deviation
   const predError = tf.tidy(() => {
     const input = tf.tensor3d([recentWindow]);
+    // The LSTM (module 6) forecasts the next RAW reading: 3 values.
+    // Compare against the raw slice of the live feature vector, not all
+    // 11 features; the 8 FFT bins have no forecast to be wrong about.
     const predicted = (lstm.predict(input) as tf.Tensor).dataSync();
-    return signal.reduce((sum, v, i) => sum + (v - predicted[i]) ** 2, 0) / signal.length;
+    const rawNext = signal.slice(0, 3);
+    return rawNext.reduce((sum, v, i) => sum + (v - predicted[i]) ** 2, 0) / rawNext.length;
   });
   const lstmTriggered = predError > thresholds.prediction;
 
@@ -171,7 +176,7 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <Epilogue>
 
-Farah reruns the interval decomposition on a cold copy of the data, on a different machine, and the ratios come back unchanged: 1, 1, 2, 3, 5, 8, 13. Across the bridge, Nazari pulls the ship's own sensor calibration harmonics and lays them over the pulse train, unasked this time. Correlation: 0.9987. The signal out of Sector 7-G is pulsing in the Archimedes' own ratios, the math the ship hums to itself every time it tunes its sensors.
+Farah reruns the interval decomposition on a cold copy of the data, on a different machine, and the sequence comes back unchanged: 1, 1, 2, 3, 5, 8, 13. Across the bridge, Nazari pulls the ship's own sensor calibration harmonics and lays them over the pulse train, unasked this time. Correlation: 0.9987. The signal out of Sector 7-G is pulsing in the Archimedes' own ratios, the math the ship hums to itself every time it tunes its sensors.
 
 <Dialogue speaker="Dr. Farah">
 Two hypotheses. Either the universe simply likes this arithmetic; it builds sunflowers and shell spirals with it, why not pulse trains. Or something out there has been listening to us calibrate.

@@ -265,6 +265,39 @@ describe("SettingsForm", () => {
     });
   });
 
+  it("retroactive push: POSTs per launched theme and shows the summary", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      json: async () => ({ pushed: 12, skipped: 3, failed: 0 }),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await renderForm({
+      githubConnected: true,
+      githubUsername: "octocat",
+    });
+    fireEvent.click(screen.getByTestId("settings-tab-github"));
+    fireEvent.click(screen.getByTestId("github-retroactive-push"));
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://api.test/api/github/retroactive-push",
+        expect.objectContaining({
+          method: "POST",
+          headers: expect.objectContaining({
+            Authorization: "Bearer TOKEN",
+          }),
+          body: JSON.stringify({ themeId: "deep-orbit" }),
+        }),
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId("github-push-summary").textContent).toBe(
+        "Pushed 12 \u00b7 skipped 3 \u00b7 failed 0",
+      );
+    });
+  });
+
   it("GitHub connect surfaces API error in a11y alert region", async () => {
     const fetchMock = vi.fn(async () => ({
       ok: false,

@@ -12,6 +12,8 @@ Full design reference: `~/.claude/plans/do-you-think-game-reactive-hennessy.md`.
 
 > **REMOVED 2026-06-01:** #11 Operator log (`/log`), the review queue / bandit spaced-recall (`/review`, `packages/shared/src/bandit.ts`, `<BanditState />`), and #19 Lore artifacts (`/library/lore`) were cut entirely. Migration `033_drop_review_and_lore.sql` drops their tables/RPCs (027/028/032). #3 Counterfactual playthrough lost its `/log/rewind` UI but **keeps its data layer** (migration 031 + `counterfactual-client.ts`). DISPATCH (#1/#13/#15), boss beats (#6), and NPC cameos (#20) are unaffected.
 
+> **UPDATE 2026-07-13:** the DISPATCH inbox got its missing producer (module/theme-clear milestones, `apps/api/src/lib/dispatch.ts` + `/api/dispatch/check`) and the nav link is restored. Boss-beat expansion has its own ranked plan now: `docs/v2-beat-expansion-plan.md` (6 candidate beats, post-launch gated). Retention email sequences: `docs/email-retention-sequences.md`.
+
 ### NOW (single-player, ship-now candidates)
 
 Suggested ship order: #11 → (#1 + #13 + #15 bundle) → #6 → #3. NOW spine (those four) totals ~36–50 days. Optional gap-fillers: #20, #19, #17. Defer in NOW: #5 (high authoring tax), #12 (weak SP without social), #16 ($$$$), #18 (3–4× MDX cost).

@@ -1,45 +1,57 @@
 slug: create-sequences
 lessonSlug: sequences-matter
-title: "Create Time-Step Sequences"
-instructions: "Write a function that takes an array of signal readings (each reading is an array of features) and a window size, and returns an array of overlapping subsequences. Each subsequence should contain exactly windowSize consecutive readings."
+title: "Window a Stream for Prediction"
+instructions: "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Return { xs, ys }. Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain."
 starterCode: |
-  function createSequences(data: number[][], windowSize: number): number[][][] {
-    // Slide a window across the data, creating overlapping subsequences
-    // Example: data = [[1],[2],[3],[4]], windowSize = 3
-    // Result: [[[1],[2],[3]], [[2],[3],[4]]]
+  function makeWindows(
+    data: number[][],
+    windowSize: number,
+    stride: number,
+  ): { xs: number[][][]; ys: number[][] } {
+    // window i starts at index i * stride
+    // xs[i] = windowSize consecutive readings
+    // ys[i] = the single reading immediately after the window
+    // drop any window that has no following reading
     return null; // your code here
   }
 solutionCode: |
-  function createSequences(data: number[][], windowSize: number): number[][][] {
-    const sequences: number[][][] = [];
-    for (let i = 0; i <= data.length - windowSize; i++) {
-      sequences.push(data.slice(i, i + windowSize));
+  function makeWindows(
+    data: number[][],
+    windowSize: number,
+    stride: number,
+  ): { xs: number[][][]; ys: number[][] } {
+    const xs: number[][][] = [];
+    const ys: number[][] = [];
+    for (let start = 0; start + windowSize < data.length; start += stride) {
+      xs.push(data.slice(start, start + windowSize));
+      ys.push(data[start + windowSize]);
     }
-    return sequences;
+    return { xs, ys };
   }
 testCode: |
-  describe('createSequences', () => {
-    it('returns correct number of sequences', () => {
-      const data = [[1],[2],[3],[4],[5]];
-      expect(createSequences(data, 3).length).toBe(3);
+  describe('makeWindows', () => {
+    it('pairs each window with the reading after it (stride 1)', () => {
+      const { xs, ys } = makeWindows([[1], [2], [3], [4], [5]], 3, 1);
+      expect(xs).toEqual([[[1], [2], [3]], [[2], [3], [4]]]);
+      expect(ys).toEqual([[4], [5]]);
     });
-    it('each sequence has correct window size', () => {
-      const data = [[1],[2],[3],[4],[5]];
-      const seqs = createSequences(data, 3);
-      seqs.forEach(s => expect(s.length).toBe(3));
+    it('advances by stride (stride 2)', () => {
+      const { xs, ys } = makeWindows([[1], [2], [3], [4], [5], [6], [7]], 2, 2);
+      expect(xs).toEqual([[[1], [2]], [[3], [4]], [[5], [6]]]);
+      expect(ys).toEqual([[3], [5], [7]]);
     });
-    it('sequences overlap correctly', () => {
-      const data = [[1],[2],[3],[4]];
-      const seqs = createSequences(data, 3);
-      expect(seqs[0]).toEqual([[1],[2],[3]]);
-      expect(seqs[1]).toEqual([[2],[3],[4]]);
+    it('drops the final window when nothing follows it', () => {
+      const { xs, ys } = makeWindows([[1], [2], [3]], 3, 1);
+      expect(xs).toEqual([]);
+      expect(ys).toEqual([]);
     });
-    it('handles window equal to data length', () => {
-      const data = [[1],[2],[3]];
-      expect(createSequences(data, 3).length).toBe(1);
+    it('keeps multi-feature readings intact', () => {
+      const { xs, ys } = makeWindows([[1, 10], [2, 20], [3, 30]], 2, 1);
+      expect(xs).toEqual([[[1, 10], [2, 20]]]);
+      expect(ys).toEqual([[3, 30]]);
     });
   });
-estimatedMinutes: 8
-difficulty: beginner
-mlContent: arithmetic
-skillAxis: model_arch
+estimatedMinutes: 12
+difficulty: intermediate
+mlContent: data
+skillAxis: data_prep

@@ -30,6 +30,7 @@ import { certificates } from "./routes/certificates";
 import { onboarding } from "./routes/onboarding";
 import { preferences } from "./routes/preferences";
 import { webhooks } from "./routes/webhooks";
+import { dispatch } from "./routes/dispatch";
 
 const app = new Hono();
 
@@ -110,6 +111,7 @@ app.route("/api/certificates", certificates);
 app.route("/api/onboarding", onboarding);
 app.route("/api/preferences", preferences);
 app.route("/api/webhooks", webhooks);
+app.route("/api/dispatch", dispatch);
 
 // Root
 app.get("/", (c) => {

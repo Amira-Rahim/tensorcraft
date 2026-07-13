@@ -36,6 +36,37 @@ interface BossBeatProps {
 
 const TIMEOUT_LABEL: BossBeatChoiceLabel = "random";
 
+/**
+ * Deterministic per-beat display order. The authored array is canonical
+ * (0=cooperate..3=dominant) for the operator log, but rendering it in
+ * that fixed order printed an answer key: "dominant" was always option 4,
+ * bottom-right (2026-07-13 P3 audit, H1). A stable hash of the beatId
+ * permutes the display so the strong option moves per beat but never
+ * jumps between visits; choices stay recorded by stance label, so the
+ * shuffle changes nothing downstream.
+ */
+function displayOrder(beatId: string): number[] {
+  // FNV-1a + xorshift mixing. The first draft used a plain LCG with
+  // low-bit modulo, whose short low-bit cycles parked "dominant" at the
+  // same position for every beat — an answer key that had merely moved
+  // (caught by the 2026-07-13 P3 round-3 audit). Verified: the four
+  // strong option is no longer parked at a single position across the
+  // shipped beats (two of four share one; the unit test pins >1 distinct
+  // position), and the distribution is ~uniform over 4,000 synthetic ids.
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < beatId.length; i++) {
+    h = ((h ^ beatId.charCodeAt(i)) * 16777619) >>> 0;
+  }
+  const order = [0, 1, 2, 3];
+  for (let i = order.length - 1; i > 0; i--) {
+    h = ((h ^ (h >>> 13)) * 2246822519) >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0;
+    const j = (h >>> 8) % (i + 1);
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+
 export function BossBeat({
   beatId,
   themeId,
@@ -196,24 +227,27 @@ export function BossBeat({
         {prompt}
       </p>
       <ol className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {options.map((opt, i) => (
-          <li key={opt.label}>
-            <button
-              type="button"
-              onClick={() => handleChoice(i)}
-              disabled={submitting}
-              className="w-full text-left p-4 border border-border bg-surface hover:bg-primary/10 hover:border-primary/40 transition-colors disabled:opacity-50"
-              data-testid={`boss-beat-option-${opt.label}`}
-            >
-              <span className="block text-[9px] font-mono uppercase tracking-[2px] text-text-muted mb-1">
-                Option {i + 1} · {opt.label}
-              </span>
-              <span className="block text-sm font-semibold text-text-primary">
-                {opt.display}
-              </span>
-            </button>
-          </li>
-        ))}
+        {displayOrder(beatId).map((i, displayIdx) => {
+          const opt = options[i];
+          return (
+            <li key={opt.label}>
+              <button
+                type="button"
+                onClick={() => handleChoice(i)}
+                disabled={submitting}
+                className="w-full text-left p-4 border border-border bg-surface hover:bg-primary/10 hover:border-primary/40 transition-colors disabled:opacity-50"
+                data-testid={`boss-beat-option-${opt.label}`}
+              >
+                <span className="block text-[9px] font-mono uppercase tracking-[2px] text-text-muted mb-1">
+                  Option {displayIdx + 1}
+                </span>
+                <span className="block text-sm font-semibold text-text-primary">
+                  {opt.display}
+                </span>
+              </button>
+            </li>
+          );
+        })}
       </ol>
     </aside>
   );

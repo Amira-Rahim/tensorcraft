@@ -7,8 +7,8 @@ document is the source of truth.
 
 ## What ships at V1
 
-- **Deep Orbit only.** Time-Series & Signals theme: 11 modules, 55 lessons,
-  1 capstone, ~65 exercises.
+- **Deep Orbit only.** Time-Series & Signals theme: 11 modules, 56 lessons
+  (incl. the 5-lesson capstone), 59 exercises.
 - All marketing surfaces (landing, `/themes`, `/learn`) render Deep Orbit as
   the live hero. The other 4 themes (Neon Protocol, Signal Ward, Nova
   Canvas, Terra Grid) appear as **muted "Coming soon" cards** that link to

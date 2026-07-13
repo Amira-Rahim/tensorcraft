@@ -251,7 +251,9 @@ export default async function LessonPage({ params }: Props) {
               description: lesson.concept.explanation,
               educationalLevel: lesson.difficulty || "beginner",
               learningResourceType: "lesson",
-              timeRequired: `PT${lesson.estimatedMinutes}M`,
+              // Reading + embedded exercises, so per-lesson timeRequired sums
+              // to the theme page's courseWorkload (one accounting basis).
+              timeRequired: `PT${lesson.estimatedMinutes + exercises.reduce((s, e) => s + e.estimatedMinutes, 0)}M`,
               isPartOf: {
                 "@type": "Course",
                 name: `${theme.displayName}: ${theme.specialization || "ML Course"}`,

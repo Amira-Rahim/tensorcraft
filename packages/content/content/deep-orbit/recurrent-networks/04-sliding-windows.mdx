@@ -140,6 +140,8 @@ Build a sliding window function for sequential data.
   youCanNow="Implement a sliding window function and a ring buffer that converts a live signal stream into model-ready [timeSteps, features] tensors in real time."
 />
 
+> **DISPATCH archive · field intercept #12-A:** Jin's speech cell windowed the stream first and split train/eval second; with 80-step windows and stride one, eval saw most of train verbatim, one step shifted. Their 97% was a mirror. Jin's postmortem runs one line: "we evaluated on our own reflection."
+
 <Epilogue>
 
 Eighty readings deep: first complete window, first live inference. The dashboard draws the model's output a beat ahead of the incoming trace, and for ten straight minutes the two lines track each other, forecast leading, signal confirming. Demir does not touch anything. He is afraid to.

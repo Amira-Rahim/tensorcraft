@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getApiUrl } from "@/lib/api-url";
 import { themes } from "@tensorcraft/themes";
+import { LAUNCHED_THEMES } from "@tensorcraft/shared";
 import { UserAvatar } from "@/app/components/user-avatar";
 import { resizeImage } from "@/lib/resize-image";
 import { ERROR_MESSAGES } from "@/lib/error-messages";
@@ -143,6 +144,7 @@ export function SettingsForm({
   );
   const [githubBusy, setGithubBusy] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
+  const [pushSummary, setPushSummary] = useState<string | null>(null);
 
   // Save state (Profile + Notifications share one save button per tab)
   const [saving, setSaving] = useState(false);
@@ -345,6 +347,62 @@ export function SettingsForm({
       setGithubConnected(false);
       setGithubBusy(false);
       router.refresh();
+    } catch (err) {
+      setGithubError(err instanceof Error ? err.message : "Network error");
+      setGithubBusy(false);
+    }
+  }
+
+  async function handleRetroactivePush() {
+    setGithubBusy(true);
+    setGithubError(null);
+    setPushSummary(null);
+
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        setGithubError(ERROR_MESSAGES.session_expired);
+        setGithubBusy(false);
+        return;
+      }
+
+      // One request per launched theme; V1 this is just Deep Orbit.
+      let pushed = 0;
+      let skipped = 0;
+      let failed = 0;
+      for (const themeId of LAUNCHED_THEMES) {
+        const res = await fetch(`${getApiUrl()}/api/github/retroactive-push`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ themeId }),
+        });
+        if (!res.ok) {
+          const body = (await res.json().catch(() => ({}))) as {
+            error?: string;
+          };
+          setGithubError(body.error ?? "Retroactive push failed");
+          setGithubBusy(false);
+          return;
+        }
+        const summary = (await res.json()) as {
+          pushed: number;
+          skipped: number;
+          failed: number;
+        };
+        pushed += summary.pushed;
+        skipped += summary.skipped;
+        failed += summary.failed;
+      }
+      setPushSummary(
+        `Pushed ${pushed} · skipped ${skipped} · failed ${failed}`,
+      );
+      setGithubBusy(false);
     } catch (err) {
       setGithubError(err instanceof Error ? err.message : "Network error");
       setGithubBusy(false);
@@ -614,24 +672,45 @@ export function SettingsForm({
 
             <div className="flex flex-wrap items-center gap-3">
               {githubConnected ? (
-                <button
-                  type="button"
-                  onClick={handleGithubDisconnect}
-                  disabled={githubBusy}
-                  data-testid="github-disconnect"
-                  className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{
-                    background: "transparent",
-                    color: "var(--tc-text)",
-                    border: "2px solid var(--tc-border)",
-                    fontSize: 11,
-                    padding: "12px 22px",
-                    minHeight: 44,
-                    cursor: githubBusy ? "not-allowed" : "pointer",
-                  }}
-                >
-                  {githubBusy ? "Disconnecting..." : "Disconnect"}
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleGithubDisconnect}
+                    disabled={githubBusy}
+                    data-testid="github-disconnect"
+                    className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: "transparent",
+                      color: "var(--tc-text)",
+                      border: "2px solid var(--tc-border)",
+                      fontSize: 11,
+                      padding: "12px 22px",
+                      minHeight: 44,
+                      cursor: githubBusy ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {githubBusy ? "Working..." : "Disconnect"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRetroactivePush}
+                    disabled={githubBusy}
+                    data-testid="github-retroactive-push"
+                    className="font-mono font-bold rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: "var(--tc-primary)",
+                      color: "var(--tc-bg)",
+                      border: "2px solid var(--tc-primary)",
+                      fontSize: 11,
+                      padding: "12px 22px",
+                      minHeight: 44,
+                      cursor: githubBusy ? "not-allowed" : "pointer",
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    {githubBusy ? "Working..." : "Push solved exercises"}
+                  </button>
+                </>
               ) : (
                 <button
                   type="button"
@@ -652,6 +731,16 @@ export function SettingsForm({
                 >
                   {githubBusy ? "Connecting..." : "Connect GitHub →"}
                 </button>
+              )}
+              {pushSummary && (
+                <p
+                  role="status"
+                  data-testid="github-push-summary"
+                  className="mt-4 font-mono"
+                  style={{ fontSize: 11, color: "var(--tc-primary)" }}
+                >
+                  {pushSummary}
+                </p>
               )}
               {githubError && (
                 <span

@@ -3,7 +3,7 @@ lessonSlug: normal-vs-anomalous
 title: "Incident: Baseline Distribution Drifted"
 mlContent: systems
 instructions: |
-  PAGER: anomaly detector now flags 30% of inputs as anomalous (was 1%). Investigate whether this is real anomalies or distribution drift. Build `recomputeBaseline(recentNormalData, currentBaseline)` returning:
+  PAGER, two weeks after DEEP SCAN went live: the detector now flags 30% of inputs as anomalous (was 1%). Investigate whether this is real anomalies or distribution drift. Write `recomputeBaseline(recentNormalData, currentBaseline)` returning:
 
     {
       newP95: number,             // new 95th percentile from recent normal data
@@ -15,7 +15,7 @@ instructions: |
   Action: 'update-baseline' if driftMagnitude < 0.5 (gradual drift); 'investigate-real-anomaly' if driftMagnitude > 1.0 (suspect a real event); 'no-action' otherwise.
 starterCode: |
   function recomputeBaseline(recentNormalData, currentBaseline) {
-    return { newP95: 0, oldP95: 0, driftMagnitude: 0, action: 'no-action' };
+    return null; // your code here
   }
 solutionCode: |
   function recomputeBaseline(recentNormalData, currentBaseline) {
@@ -46,6 +46,22 @@ testCode: |
       expect(r.action).toBe('investigate-real-anomaly');
     });
 
+    it('holds steady in the dead band between drift and anomaly', () => {
+      const data = Array.from({ length: 100 }, (_, i) => i * 0.018);  // p95 lands at 1.71
+      const r = recomputeBaseline(data, { p95: 1.0 });
+      expect(r.driftMagnitude).toBe(0.7);
+      expect(r.action).toBe('no-action');
+    });
+
+    it('is a percentile, not a max: one spike must not move the baseline', () => {
+      const data = Array.from({ length: 99 }, (_, i) => i / 100);  // 0.00..0.98
+      data.push(10);  // single cosmic-ray outlier
+      const r = recomputeBaseline(data, { p95: 0.9 });
+      expect(r.newP95).toBeLessThan(2);
+      expect(r.driftMagnitude).toBe(0.1);
+      expect(r.action).toBe('update-baseline');
+    });
+
     it('reports both p95 values for comparison', () => {
       const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       const r = recomputeBaseline(data, { p95: 8 });
@@ -54,5 +70,5 @@ testCode: |
     });
   });
 estimatedMinutes: 15
-difficulty: advanced
+difficulty: intermediate
 skillAxis: evaluation

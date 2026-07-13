@@ -13,6 +13,22 @@ function getResend(): Resend | null {
   return resend;
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Escaping neutralizes markup injection but not scheme abuse: a reporter
+// can submit pageUrl "javascript:alert(1)" and escapeHtml passes it through
+// untouched. Only http(s) URLs earn an <a> in the support email.
+function isHttpUrl(s: string): boolean {
+  return /^https?:\/\//i.test(s);
+}
+
 interface IssueEmailParams {
   id: string;
   category: string;
@@ -36,8 +52,20 @@ export async function sendIssueNotification(
     return;
   }
 
-  const { id, category, severity, description, email, pageUrl, screenshotUrl } =
-    params;
+  // Reporter-controlled fields go into an HTML email read by support:
+  // escape them so a crafted description/pageUrl cannot inject markup
+  // into the support inbox (2026-07-13 P4 email audit). screenshotUrl is
+  // server-built but embeds the reporter's filename extension in the
+  // storage key, so it gets the same treatment.
+  const { id } = params;
+  const screenshotUrl = params.screenshotUrl
+    ? escapeHtml(params.screenshotUrl)
+    : params.screenshotUrl;
+  const category = escapeHtml(params.category);
+  const severity = escapeHtml(params.severity);
+  const description = escapeHtml(params.description);
+  const email = escapeHtml(params.email);
+  const pageUrl = escapeHtml(params.pageUrl);
 
   const subject = `[${severity.toUpperCase()}] ${category.replace(/_/g, " ")} - Issue #${id.slice(0, 8)}`;
 
@@ -61,7 +89,7 @@ export async function sendIssueNotification(
         <tr><td style="padding: 4px 12px 4px 0; color: #8B92A5;">Category</td><td>${category.replace(/_/g, " ")}</td></tr>
         <tr><td style="padding: 4px 12px 4px 0; color: #8B92A5;">Severity</td><td>${severity}</td></tr>
         <tr><td style="padding: 4px 12px 4px 0; color: #8B92A5;">Reporter</td><td>${email}</td></tr>
-        <tr><td style="padding: 4px 12px 4px 0; color: #8B92A5;">Page</td><td><a href="${pageUrl}" style="color: #00D4FF;">${pageUrl}</a></td></tr>
+        <tr><td style="padding: 4px 12px 4px 0; color: #8B92A5;">Page</td><td>${isHttpUrl(params.pageUrl) ? `<a href="${pageUrl}" style="color: #00D4FF;">${pageUrl}</a>` : pageUrl}</td></tr>
         ${screenshotUrl ? `<tr><td style="padding: 4px 12px 4px 0; color: #8B92A5;">Screenshot</td><td><a href="${screenshotUrl}" style="color: #00D4FF;">View</a></td></tr>` : ""}
       </table>
       <hr style="border: 1px solid rgba(255,255,255,0.06); margin: 16px 0;" />

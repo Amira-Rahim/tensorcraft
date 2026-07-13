@@ -73,6 +73,11 @@ vi.mock("@tensorcraft/content", () => ({
     { slug: "l1", title: "Lesson 1", order: 1, estimatedMinutes: 18 },
     { slug: "l2", title: "Lesson 2", order: 2, estimatedMinutes: 20 },
   ],
+  // Preview minutes include exercise time (JSON-LD basis): each mock
+  // lesson carries one 10-minute exercise, matching the old
+  // getLessonExercises mock this replaced.
+  getLessonTotalMinutes: (l: { estimatedMinutes?: number }) =>
+    (l.estimatedMinutes ?? 18) + 10,
 }));
 
 vi.mock("@tensorcraft/themes", () => {

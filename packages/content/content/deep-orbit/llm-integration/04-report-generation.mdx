@@ -46,6 +46,33 @@ Generating a full report in one shot is the monolithic-component mistake: medioc
 
 <LearningObjectives objectives={["Structure report generation as section-by-section assembly, not monolithic generation", "Build a report pipeline: template → data retrieval → generation → validation → assembly", "Implement quality checks between sections for consistency", "Produce a formatted, citable scientific report from signal data"]} />
 
+<BossBeat
+  beatId="deep-orbit-llm-cut-call"
+  prompt="Standing order needed before the window opens. If the validator flags a section late, with the clock at twenty-two minutes: regeneration takes fifteen, reviewing the regeneration takes longer than you have. Ship it flagged, regenerate unreviewed, or cut the section? Decide now, operator, while nothing is on fire."
+  options={[
+    {
+      label: "cooperate",
+      display: "Regenerate and review as much as the clock allows",
+      consequence: "Generation costs fifteen minutes; review is the budget you actually ran out of. You end at the window's edge with a section nobody fully read, and 'partially reviewed' is a phrase that means unreviewed. The bottleneck was never the model."
+    },
+    {
+      label: "defect",
+      display: "Ship it flagged, with a footnote marking the doubt",
+      consequence: "Earth gets a guess wearing the report's letterhead. Footnotes do not survive forwarding; the claim does. Credibility spends like reaction mass: you can burn it exactly once."
+    },
+    {
+      label: "random",
+      display: "Stall: reread the flag while the clock runs",
+      consequence: "Stall long enough and the pipeline's default takes over: the model grades its own flagged section, reports 0.97 confidence, and ships it. From the author of the guess, 0.97 is a statement about fluency, not truth. Indecision did not avoid the call; it delegated it to the least qualified reviewer in the room."
+    },
+    {
+      label: "dominant",
+      display: "Cut the section; ship the data and the uncertainty",
+      consequence: "Five sections instead of six, one minute into the window. Earth gets everything the crew can stand behind, and an honest gap where the guess was. The cut is the one option on this board whose full cost is visible before you pay it; that is what makes it choosable."
+    }
+  ]}
+/>
+
 ## Section-by-Section Generation
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />

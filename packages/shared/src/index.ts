@@ -12,6 +12,7 @@ export {
   ROUTES,
   THEME_CONTENT,
   DEFAULT_THEME,
+  getModuleLessonCount,
   isValidThemeSlug,
   isValidSlug,
   isLaunched,
