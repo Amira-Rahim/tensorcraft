@@ -40,7 +40,7 @@ skillAxes: [data_prep]
 Demir's first pass at the amplifier is already on the main console when the shift starts, and so is its output: `Error in matMul: inner shapes (64) and (1) of Tensors with shapes 1,64 and 1,64 and transposeA=false and transposeB=false must match.` One line of code, one error, sixty-four channels of raw signal going nowhere.
 
 <Dialogue speaker="Chief Nazari">
-Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. We take two million readings a minute. Whatever that red text is, it is not two million readings a minute.
+Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The suite takes two million raw samples a minute before integration boils them down to readings. Whatever that red text is, it is not two million samples a minute.
 </Dialogue>
 
 This lesson starts where you are standing: at the bug. You'll read the error, meet the two multiplication ops it is confusing, and repair the pipeline.

@@ -19,6 +19,7 @@ export {
   LessonRecap,
   Quiz,
   SceneHeading,
+  LessonPrefsProvider,
 } from "./mdx";
-export type { ExerciseData, ExerciseSubmitResult } from "./mdx";
+export type { ExerciseData, ExerciseSubmitResult, LessonPrefs } from "./mdx";
 export { CharacterAvatar } from "./character-avatar";

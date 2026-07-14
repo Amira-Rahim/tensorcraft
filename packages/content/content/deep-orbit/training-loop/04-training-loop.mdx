@@ -64,9 +64,20 @@ model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Training data: 100 signal readings with labels
-const trainX = tf.randomNormal([100, 3]);  // 100 samples, 3 features
-const trainY = tf.randomUniform([100, 1]).round();  // binary labels
+// Training data: 100 labeled readings, three features each.
+// Calm-period readings cluster low; flagged windows run hot. The seeds
+// make the DATA reproducible; a net trained on pure noise would sit at
+// loss 0.693 forever, and deserve to.
+const calm = tf.randomNormal([50, 3], 0.35, 0.12, 'float32', 7);
+const flagged = tf.randomNormal([50, 3], 0.72, 0.12, 'float32', 41);
+const xs = tf.concat([calm, flagged]);
+const ys = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]);
+
+// Shuffle once: validationSplit takes the LAST rows, and a validation
+// set that is all flagged windows validates nothing.
+const order = Array.from(tf.util.createShuffledIndices(100));
+const trainX = xs.gather(order);
+const trainY = ys.gather(order);
 
 // THE TRAINING LOOP: model.fit() handles everything
 const history = await model.fit(trainX, trainY, {
@@ -82,10 +93,13 @@ const history = await model.fit(trainX, trainY, {
   },
 });
 
-// Epoch 0:  loss=0.6931, acc=0.5125
-// Epoch 10: loss=0.4203, acc=0.7750
-// Epoch 20: loss=0.2115, acc=0.8875
-// Epoch 40: loss=0.0823, acc=0.9625`}
+// One real run (weight init is random, so yours will differ a little):
+// Epoch 0:  loss=0.6863, acc=0.4875
+// Epoch 10: loss=0.6497, acc=0.5000
+// Epoch 20: loss=0.6090, acc=0.6625
+// Epoch 40: loss=0.4672, acc=0.9375
+// Accuracy jumps before loss finishes falling: the net finds the boundary
+// first, then spends the remaining epochs getting confident about it.`}
 </CodeBlock>
 
 **Key parameters:**

@@ -26,9 +26,9 @@ hints:
   - level: nudge
     content: "A sliding window moves through the signal one step at a time, creating overlapping subsequences"
   - level: guidance
-    content: "For input/label pairs: input = window[0:n-1], label = window[n-1] (next value prediction)"
+    content: "For input/label pairs: input = a full window of windowSize readings, label = the reading immediately AFTER the window (signal[i + windowSize]). The label is never inside the window; that would let the model read the answer."
   - level: solution
-    content: "for (let i = 0; i <= data.length - windowSize; i++) { X.push(data.slice(i, i+windowSize-1)); y.push(data[i+windowSize-1]); }"
+    content: "for (let i = 0; i <= data.length - windowSize - 1; i++) { X.push(data.slice(i, i + windowSize)); y.push(data[i + windowSize]); }"
 keywords:
   - sliding-window
   - batching

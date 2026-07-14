@@ -481,7 +481,8 @@ function BackgroundStep(props: {
         Tell us about your FE background
       </h2>
       <p className="text-sm text-text-muted mb-8 font-sans max-w-[480px]">
-        We&apos;ll calibrate the bridge analogies to your level. Only experience
+        Advanced and expert crew get the math derivations opened by default
+        inside lessons; everyone else keeps them one click away. Only experience
         level is required.
       </p>
 
@@ -622,7 +623,7 @@ function GoalStep(props: {
         What&apos;s your goal?
       </h2>
       <p className="text-sm text-text-muted mb-10 font-sans">
-        This shapes which bridges we highlight first.
+        This tells us which bridges and future themes to build next.
       </p>
       <fieldset className="w-full text-left">
         <legend className="sr-only">Learning goal</legend>

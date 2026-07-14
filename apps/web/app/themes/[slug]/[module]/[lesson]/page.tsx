@@ -21,6 +21,7 @@ import {
 } from "@/lib/progress";
 import { LessonPaywall } from "./lesson-paywall";
 import { LessonSteps } from "./lesson-steps";
+import { LessonPrefsProvider } from "@tensorcraft/ui";
 import type { Metadata } from "next";
 
 interface Props {
@@ -125,12 +126,24 @@ export default async function LessonPage({ params }: Props) {
   const progressPromise = user
     ? getUserProgress(user.id, slug)
     : Promise.resolve([]);
+  // Onboarding's calibration promise: advanced/expert learners get the
+  // math drawers opened by default (LessonPrefsProvider below).
+  const experiencePromise = user
+    ? supabase
+        .from("profiles")
+        .select("experience_level")
+        .eq("id", user.id)
+        .single()
+        .then(({ data }) => data?.experience_level ?? null)
+    : Promise.resolve(null);
 
-  const [purchased, prevCompleted, progress] = await Promise.all([
-    purchasedPromise,
-    prevCompletedPromise,
-    progressPromise,
-  ]);
+  const [purchased, prevCompleted, progress, experienceLevel] =
+    await Promise.all([
+      purchasedPromise,
+      prevCompletedPromise,
+      progressPromise,
+      experiencePromise,
+    ]);
 
   if (mod && mod.order > 1 && !purchased) {
     redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
@@ -307,23 +320,30 @@ export default async function LessonPage({ params }: Props) {
         </div>
       )}
       <Suspense>
-        <LessonSteps
-          lesson={lesson}
-          exercises={exercises}
-          theme={theme}
-          themeSlug={slug}
-          moduleSlug={moduleSlug}
-          moduleName={mod?.title}
-          prevLesson={prev}
-          nextLesson={next}
-          lessons={moduleLessons.map((l) => ({
-            slug: l.slug,
-            title: l.title,
-            order: l.order,
-            locked: isLessonLocked(l.order, l.slug),
-            completed: completedLessonSlugs.has(l.slug),
-          }))}
-        />
+        <LessonPrefsProvider
+          value={{
+            expandDerivations:
+              experienceLevel === "advanced" || experienceLevel === "expert",
+          }}
+        >
+          <LessonSteps
+            lesson={lesson}
+            exercises={exercises}
+            theme={theme}
+            themeSlug={slug}
+            moduleSlug={moduleSlug}
+            moduleName={mod?.title}
+            prevLesson={prev}
+            nextLesson={next}
+            lessons={moduleLessons.map((l) => ({
+              slug: l.slug,
+              title: l.title,
+              order: l.order,
+              locked: isLessonLocked(l.order, l.slug),
+              completed: completedLessonSlugs.has(l.slug),
+            }))}
+          />
+        </LessonPrefsProvider>
       </Suspense>
     </main>
   );

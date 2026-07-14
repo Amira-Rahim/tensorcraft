@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { DerivationDrawer } from "./derivation-drawer";
+import { LessonPrefsProvider } from "./lesson-prefs";
 
 describe("DerivationDrawer", () => {
   it("renders summary in trigger", () => {
@@ -21,6 +22,22 @@ describe("DerivationDrawer", () => {
       </DerivationDrawer>,
     );
     expect(screen.queryByTestId("derivation-drawer-content")).toBeNull();
+    expect(screen.queryByText("derivation body")).toBeNull();
+  });
+
+  // Onboarding's calibration promise: advanced/expert learners get the
+  // math opened by default (2026-07-14, the experience_level wiring).
+  it("starts open when LessonPrefs sets expandDerivations", () => {
+    render(
+      <LessonPrefsProvider value={{ expandDerivations: true }}>
+        <DerivationDrawer summary="x">
+          <p>derivation body</p>
+        </DerivationDrawer>
+      </LessonPrefsProvider>,
+    );
+    expect(screen.getByText("derivation body")).toBeInTheDocument();
+    // Toggle still wins after the default.
+    fireEvent.click(screen.getByRole("button"));
     expect(screen.queryByText("derivation body")).toBeNull();
   });
 

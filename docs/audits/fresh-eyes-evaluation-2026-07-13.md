@@ -1,5 +1,83 @@
 # Fresh-Eyes Full Evaluation — 2026-07-13
 
+## Run #3 Tier 1 EXECUTED (2026-07-14)
+
+Five blind evaluators (three learner bands, story editor, value auditor)
+re-ran the original evaluation; grades: modules A−/A band, story B+, value
+honesty A−, unanimous would-pay-$59. Five verified Tier-1 findings, all
+fixed same day:
+
+1. **Mirza pronouns**: 4 he/him → she/her (ats/04:175, llm/05:189,
+   oe/05:154, cap/05:298 — the course's closing image among them); sweep
+   confirmed no fifth site.
+2. **tl/04 trained on noise while printing a learnable curve**: demo now
+   builds two seeded feature clusters (calm 0.35/flagged 0.72, σ 0.12),
+   shuffles before validationSplit (the split takes the LAST rows), and
+   prints a curve captured from a REAL run on the vendored TFJS 4.22
+   (0.6863/0.4875 → 0.4672/0.9375 at epoch 40) with an
+   init-varies caveat and an accuracy-jumps-before-loss note. The epilogue
+   stands: it narrates the 28,800-reading archive run, not this demo.
+3. **rn/04 hints taught label-inside-window**, failing the exercise for
+   anyone who used them: guidance + solution hints rewritten to the
+   label-after-window convention the lesson body and both exercises use.
+4. **Onboarding's false calibration promise → made TRUE**: new
+   `LessonPrefs` context in packages/ui; lesson page reads
+   `profiles.experience_level` and advanced/expert learners get
+   DerivationDrawers opened by default (toggle still wins). The
+   goal-question copy rewritten to what it actually does (roadmap input).
+   Gate: drawer test asserts provider-opened default + toggle override.
+5. **Three irreconcilable data rates unified by units**: f/03 = "two
+   million raw samples a minute before integration boils them down to
+   readings" (suite-wide), br/01 = "86,400 dashboard readings per day,
+   one integrated snapshot a second", f/04 archive = "one reading per
+   33-second integration window" (33 × 28,800 = 950,400 s = 11 days
+   exactly). Rejected during verification: value auditor's "5/55 bridges
+   unlabeled" (those five resolve via the registry fallback the
+   bridge-breaks gate replays).
+
+Battery: velite clean · typecheck 11/11 · vitest 1063/132 files (0 failed;
++1 drawer gate) · lint 15/15 · e2e themes+onboarding 26/26.
+
+### Run #3 open items (Tier 2, verified findings)
+
+Graders: llm-client passes `JSON.parse(await apiCall(prompt))` (validation
+untested); prompt-template passes a hardcoded string (no second-input
+probe); rn build-rnn/build-lstm/predict-next never assert model.compile
+(copy build-autoencoder's `model.loss`/`model.optimizer` asserts); capstone
+needs one multi-stage synthesis exercise.
+Canon: cap/04 model card (Kepler-442 (2024)/50,000/USS vs Sector 7-G/
+28,800); oe/03 "5 of 8 remain" comment (real output: 4/4); tl/05 comment
+names 7741 pre-reveal; ARIA rule count 4,096 vs 14,202; binary→5-class
+off-page; mission clock 47d vs "four months"; rn timescales (73s/72h/47min)
+unreconciled; sp/04 top-K-sorted features vs ad/03 "fft_5 = 73.4 Hz bin";
+ad/05 detector-1 z-scores max over 11-dim vector; br/04 one-amber-flag
+soak; br/01 "trained in a notebook" retcon; rn LSTM 50-step vs RNN 80-step
+comparison; oe/02 "87 the re-annotation left it at" (canon: 78→87).
+Currency: WebGPU missing from br/02 backends + br/05 table (oe/05 has it —
+backport); `@xenova/transformers` → `@huggingface/transformers`; llm/01
+legacy completions API; br/02+br/05 benchmarks time enqueue not execution
+(`await result.data()` in the timed region).
+Story: nn/02 ARIA-as-syllabus opener; ad/01 trailer beat; tl/04 Demir
+recitation; untrained-0.998 needs one ARIA finale acknowledgment; finale
+DispatchTease before the Epilogue with wrong unit.
+Funnel: /compare "deploy via paid fast.ai" (wrong — free HF Spaces);
+bridge-count drift (50+/51/55); stale dateModified + frozen competitor
+prices; "Priority support" has no mechanism; GitHub connect nudge missing
+in-lesson; paywall Free column says ✗ where free tier includes 5 lessons.
+
+### Run #3 open items (Tier 3)
+
+Attention hotspots 12/85 out of 80-step range (ats/01+02); capstone/03
+stale scene time; foundations/04 crash math (~7 MB can't RangeError);
+br/01 light-minutes vs 180 ms; hardcodable fixed-input exercises
+(relu-activation, add-tensors, mse-loss); deep-scan-eval `advanced` label;
+`avgFreq` = zero-crossings; spectrogram |X|² vs |X|; module-8 uniform
+30-min labels; oe/04 LRU set() no recency refresh; llm/05 noise-class
+confidence; entropy bits-vs-nats friction; Demir-corrected skeleton ×5
+(make one correction wrong). Strategic: GitHub commit trail on landing +
+in-lesson connect nudge; verifiable social proof (beta quotes + public
+certificate links; paywall social-proof block is still a TODO).
+
 Rerun of the original launch-quality analysis after P0 (trust), P1 (exercise
 rigor), P2 (structure variety) and seven adversarial audit rounds. Method:
 three independent read-only evaluators (learner simulation over 34 full

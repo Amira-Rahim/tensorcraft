@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useId } from "react";
+import { useLessonPrefs } from "./lesson-prefs";
 
 interface DerivationDrawerProps {
   /**
@@ -28,11 +29,11 @@ interface DerivationDrawerProps {
 }
 
 /**
- * <DerivationDrawer /> - closed-by-default disclosure that surfaces the
- * underlying math for an FE-bridge concept. Sits below the bridge callout
- * on training-loop main lessons. Default-closed honors the FE-bridge
- * pedagogy (you don't need calculus to ship); opening signals depth
- * exists for those who want it.
+ * <DerivationDrawer /> - disclosure that surfaces the underlying math for
+ * an FE-bridge concept. Sits below the bridge callout on training-loop
+ * main lessons. Closed by default (you don't need calculus to ship);
+ * advanced/expert learners get it opened by default via LessonPrefs, the
+ * calibration onboarding promises. The toggle always wins after that.
  *
  * Pattern: {@link docs/patterns/analogy-breaks-pattern.md} (companion).
  */
@@ -42,7 +43,8 @@ export function DerivationDrawer({
   companionHref,
   children,
 }: DerivationDrawerProps) {
-  const [open, setOpen] = useState(false);
+  const { expandDerivations } = useLessonPrefs();
+  const [open, setOpen] = useState(expandDerivations);
   const panelId = useId();
   const buttonId = useId();
   const href =

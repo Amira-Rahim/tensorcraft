@@ -59,7 +59,7 @@ In frontend development, you fetch data from APIs and render it. In ML, you fetc
 // a giant array inside a generator, you've built eager loading with
 // extra steps.)
 function* sensorDataGenerator() {
-  const TOTAL_READINGS = 28_800;  // 11 days of archived telemetry
+  const TOTAL_READINGS = 28_800;  // 11 days of archive: one reading per 33-second integration window
 
   for (let i = 0; i < TOTAL_READINGS; i++) {
     const row = readArchivedSample(i);  // one record from IndexedDB/fetch
