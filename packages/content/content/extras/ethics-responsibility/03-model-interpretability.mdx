@@ -56,7 +56,16 @@ The most intuitive approach: remove each feature one at a time and see how much 
 <CodeBlock language="typescript" title="feature-importance.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Simple permutation-based feature importance
+// OCCLUSION (ablation) importance: knock one feature out of ONE input
+// and watch the prediction move. Two honest caveats before you use it:
+// (1) This is NOT "permutation importance": that's a different,
+//     dataset-level technique (shuffle a whole column, measure the
+//     metric drop across the set). Practitioners will assume you mean
+//     that one if you say "permutation," so don't.
+// (2) Occluding with zeros pushes the input OUTSIDE the distribution
+//     the model trained on (zipCode 0 is not a neutral zip code), so
+//     treat these numbers as hints, not measurements. Occlude with the
+//     feature's training MEAN on normalized inputs for saner probes.
 async function featureImportance(
   model: tf.LayersModel,
   input: number[],
@@ -68,7 +77,7 @@ async function featureImportance(
   const importances: Array<{ feature: string; importance: number }> = [];
 
   for (let i = 0; i < input.length; i++) {
-    // Zero out this feature
+    // Occlude this feature
     const perturbed = [...input];
     perturbed[i] = 0;
 

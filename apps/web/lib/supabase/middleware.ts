@@ -96,10 +96,15 @@ export async function updateSession(request: NextRequest) {
 
     const isOnboarding = request.nextUrl.pathname.startsWith("/onboarding");
 
-    // Incomplete onboarding → force to /onboarding (unless already there)
+    // Incomplete onboarding → force to /onboarding (unless already there).
+    // Carry the requested destination along: the wizard used to exit every
+    // learner to /themes/deep-orbit regardless of what they asked for
+    // (2026-07-14 UX audit).
     if (profile && !profile.onboarding_completed && !isOnboarding) {
       const url = request.nextUrl.clone();
+      const requested = url.pathname + url.search;
       url.pathname = "/onboarding";
+      url.search = `?redirectTo=${encodeURIComponent(requested)}`;
       return NextResponse.redirect(url);
     }
 

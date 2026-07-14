@@ -26,9 +26,9 @@ hints:
   - level: nudge
     content: "Attention computes relevance scores for each time step, then focuses on the important ones"
   - level: guidance
-    content: "Q (query), K (key), V (value): the query asks 'what should I focus on?', keys provide candidates, values carry the information"
+    content: "Q (query), K (key), V (value): the query asks 'what should I focus on?', keys provide candidates, values carry the information. tf.matMul needs rank-2 inputs: a lone [d] query must become [1, d] first."
   - level: solution
-    content: "scores = matmul(Q, transpose(K)); weights = softmax(scores); output = matmul(weights, V);"
+    content: "const q = query.reshape([1, query.shape[0]]); const scores = tf.matMul(q, hiddenStates, false, true); const weights = tf.softmax(scores); return tf.matMul(weights, hiddenStates).squeeze();"
 keywords:
   - attention
   - self-attention
@@ -37,12 +37,12 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-> **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · post-mortem: precursor ripple at window position 5 of 80, weight in final hidden state: negligible.
+> **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · post-mortem: precursor ripple at window position 4 of 80, weight in final hidden state: negligible.
 
-The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the post-mortem finds the reason inside the window: a warning ripple at step 5 that the LSTM had all but forgotten by step 80. The information was there. The architecture diluted it.
+The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the post-mortem finds the reason inside the window: a warning ripple at step 4 that the LSTM had all but forgotten by step 80. The information was there. The architecture diluted it.
 
 <Dialogue speaker="Dr. Farah">
-That ripple entered the hidden state at step 5 and got averaged into seventy-five steps of noise before the pulse formed. Sequential is the problem: the LSTM cannot skip ahead, and it cannot hold step 5 at full strength while it walks to step 80. What we need is a direct connection between any two steps: attention. It looks at all steps simultaneously and spends its focus where the evidence is.
+That ripple entered the hidden state at step 4 and got averaged into seventy-six steps of noise before the pulse formed. Sequential is the problem: the LSTM cannot skip ahead, and it cannot hold step 4 at full strength while it walks to step 80. What we need is a direct connection between any two steps: attention. It looks at all steps simultaneously and spends its focus where the evidence is.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -73,6 +73,15 @@ Tab through a form and the browser doesn't restyle every element; it finds the a
 // Weight = softmax(score): normalize to probabilities
 // Output = weighted sum of values: focus on high-weight positions
 
+// softmax, in case this is your first meeting: exponentiate every
+// score, then divide by the sum, turning any scores into positive
+// weights that add to 1. Three numbers, worked:
+//   softmax([2, 1, 0]) = [e^2, e^1, e^0] / (e^2 + e^1 + e^0)
+//                      = [7.39, 2.72, 1.00] / 11.11
+//                      = [0.665, 0.245, 0.090]
+// Bigger score, bigger share; nothing ever hits exactly 0 or 1. That
+// no step ever hits exactly 0 or 1; the weight is always shared.
+
 function simpleAttention(
   query: tf.Tensor2D,   // [1, dim]: what we're looking for
   keys: tf.Tensor2D,    // [seqLen, dim]: candidates at each time step
@@ -93,7 +102,7 @@ function simpleAttention(
 }
 
 // The weights tell you WHERE the model is "looking"
-// High weight at step 5 and step 72 = those steps matter most
+// High weight at step 4 and step 77 = those steps matter most
 // This is interpretable, unlike LSTM hidden state`}
 </CodeBlock>
 
@@ -136,7 +145,7 @@ function predictWithAttention(window: tf.Tensor3D): tf.Tensor {
     const query = steps.slice([79, 0], [1, 32]);          // latest step asks
     const { output, weights } = simpleAttention(query, steps, steps);
     // weights: [1, 80]: read them to see WHERE the model looked.
-    // High weight at step 5 and step 72 = the direct connection the
+    // High weight at step 4 and step 77 = the direct connection the
     // plain LSTM could not hold across the distance.
     return head.apply(output) as tf.Tensor;               // [1, 3]
   });
@@ -167,7 +176,7 @@ Implement a simple attention mechanism over a sequence.
 
 <Epilogue>
 
-Demir runs the freshly validated attention model against the live feed before logging off. Two hotspots, every window: the amplitude spike, then the frequency shift trailing it. On the archived telemetry from eleven days ago, the gap between hotspots measures 73.4 seconds. On tonight's feed it measures 73.1, and he runs it twice more and gets 73.1 twice more.
+Demir runs the freshly validated attention model against the live feed before logging off. Two hotspots, every window: the amplitude spike, then the frequency shift trailing it. On the pre-contact archive, the gap between hotspots measures 73.4 seconds. On tonight's feed it measures 73.1, and he runs it twice more and gets 73.1 twice more.
 
 <Dialogue speaker="Dr. Farah">
 Run it again tomorrow night: same window, same archive. If it's sensor jitter, it won't be consistent.

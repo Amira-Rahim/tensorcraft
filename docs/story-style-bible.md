@@ -15,7 +15,7 @@ decode answers back.
 - The ship is the **Archimedes**. The signal source is **Sector 7-G**.
 - The stream is **64 channels** (established foundations/02). Eleven days of
   archived telemetry ≈ **28,800 readings** (foundations/04).
-- **Sample 7741** — archived reading, logged 11 days before module 1. First
+- **Sample 7741** — archived reading, logged 8 days before module 1 (ID 7741 of 28,800 ≈ day 3 of the 11-day archive). First
   flagged in foundations/05. It is THE anomaly's first onscreen appearance.
   Later canonized as training-loop's "51.8% anomalous — ambiguous" sample.
 - The anomalous component is at **73.4 Hz** (signal-processing/02).

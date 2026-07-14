@@ -117,7 +117,7 @@ export default function PaywallPage() {
             </Link>
           </div>
           <p className="mt-6 text-[11px] uppercase tracking-[0.15em] text-text-muted font-mono">
-            {`// one payment · lifetime access · from $${PRICING.single.price}`}
+            {`one payment · lifetime access · from $${PRICING.single.price}`}
           </p>
         </section>
 

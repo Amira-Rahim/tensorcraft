@@ -65,7 +65,8 @@ import * as ort from 'onnxruntime-web';
 
 // Load an ONNX model (exported from PyTorch, TF, sklearn, etc.)
 const session = await ort.InferenceSession.create('/models/deep-scan.onnx', {
-  executionProviders: ['wasm'],  // 'wasm' or 'webgl'
+  executionProviders: ['wasm'],  // 'wasm', or 'webgpu' for GPU (ORT
+                                 // Web's WebGL EP is legacy)
 });
 
 // Check model inputs/outputs, like inspecting an API schema
@@ -170,7 +171,7 @@ async function benchmarkONNX(): Promise<BenchmarkResult> {
 | **Cold start** | Slower (WebGL shader compilation) | Faster (WASM) |
 | **Sustained speed** | Faster (GPU shaders cached) | Good (SIMD-optimized WASM) |
 | **Memory management** | Manual (tf.tidy/dispose) | Automatic (GC) |
-| **Bundle size** | ~800KB | ~600KB |
+| **Bundle size** | ~800KB JS | ~600KB JS + multi-MB `ort-wasm*.wasm` fetched at runtime |
 
 For DEEP SCAN: TF.js wins on sustained inference (the dashboard runs continuously). ONNX wins on cold start (backup system that loads on demand). Nazari ships both, each where its cost shape wins.
 
@@ -191,7 +192,7 @@ Run an ONNX model and compare its output with TF.js.
 Nazari accepts the split: TF.js on the always-on dashboard, ONNX for the backup system that loads on demand. The next morning, Demir finds a third entry in the benchmark log, one he did not run. Timestamp 0317. Owner: ARIA.
 
 <Dialogue speaker="ARIA">
-I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 2.1 milliseconds and is uncertain about it. Uncertainty appears to be the more expensive and the more honest product. For the record: the WebGL backend serves my successor best.
+I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 2.1 milliseconds on the bench, a few more in the live pipeline, and is uncertain about it. Uncertainty appears to be the more expensive and the more honest product. For the record: the WebGL backend serves my successor best.
 </Dialogue>
 
 "My successor." Demir reads the line twice. Nobody taught her to call it that.

@@ -5,6 +5,7 @@ import {
   Suspense,
   useState,
   useCallback,
+  useEffect,
   useRef,
   createContext,
   useContext,
@@ -289,6 +290,11 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
 /*  BridgeHint - FE↔ML bridge reminder below the editor                */
 /* ------------------------------------------------------------------ */
 
+// Module-level: the worker's TFJS CDN pull happens once per page load;
+// after any run completes, later runs skip the download. Drives the
+// first-run button label ("Downloading TFJS runtime...").
+let tfjsRuntimeWarm = false;
+
 const bridgeTierColors: Record<ExerciseBridge["tier"], string> = {
   identity: "var(--tc-tier-identity)",
   structural: "var(--tc-tier-structural)",
@@ -339,10 +345,36 @@ function ExerciseControls({
   const { sandpack } = useSandpack();
   const [running, setRunning] = useState(false);
   const hasAttempted = useRef(false);
+  const stashedCodeRef = useRef<string | null>(null);
+  const [hasStash, setHasStash] = useState(false);
+
+  // Restore the learner's last-run code once on mount. Without this,
+  // leaving mid-lesson reset the editor to starterCode and erased the
+  // code a pass was earned with (2026-07-14 UX audit).
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    try {
+      const saved = localStorage.getItem(`tc-code-${exercise.slug}`);
+      if (saved && saved !== exercise.starterCode) {
+        sandpack.updateFile("/index.js", saved);
+      }
+    } catch {
+      // localStorage unavailable
+    }
+    // one-time restore; sandpack identity churns per keystroke, so an
+    // exhaustive deps array here would re-fire the restore on every edit.
+  }, []);
 
   const handleRun = useCallback(async () => {
     setRunning(true);
     const code = sandpack.files["/index.js"]?.code ?? "";
+    try {
+      localStorage.setItem(`tc-code-${exercise.slug}`, code);
+    } catch {
+      // localStorage unavailable
+    }
 
     try {
       // 30s: each run spawns a fresh worker that importScripts CDN TFJS
@@ -385,6 +417,7 @@ function ExerciseControls({
       onLogs([]);
       hasAttempted.current = true;
     } finally {
+      tfjsRuntimeWarm = true;
       setRunning(false);
     }
   }, [
@@ -399,14 +432,31 @@ function ExerciseControls({
 
   const handleReset = useCallback(() => {
     sandpack.updateFile("/index.js", exercise.starterCode);
+    try {
+      // Reset means reset: drop the saved copy too.
+      localStorage.removeItem(`tc-code-${exercise.slug}`);
+    } catch {
+      // localStorage unavailable
+    }
     onResults([]);
     onLogs([]);
-  }, [sandpack, exercise.starterCode, onResults, onLogs]);
+  }, [sandpack, exercise.starterCode, exercise.slug, onResults, onLogs]);
 
   const handleShowSolution = useCallback(() => {
+    // Stash the learner's attempt before overwriting: peeking at the
+    // solution must not cost them their own code (2026-07-14 UX audit).
+    stashedCodeRef.current = sandpack.files["/index.js"]?.code ?? "";
+    setHasStash(true);
     sandpack.updateFile("/index.js", exercise.solutionCode);
     onShowSolution();
   }, [sandpack, exercise.solutionCode, onShowSolution]);
+
+  const handleRestoreMyCode = useCallback(() => {
+    if (stashedCodeRef.current !== null) {
+      sandpack.updateFile("/index.js", stashedCodeRef.current);
+      setHasStash(false);
+    }
+  }, [sandpack]);
 
   return (
     <div className="flex items-center gap-2 mt-3">
@@ -416,7 +466,13 @@ function ExerciseControls({
         disabled={running}
         className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-surface border-2 border-primary rounded-none hover:bg-transparent hover:text-primary disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
       >
-        {running ? "Running..." : "Run Tests"}
+        {/* First run pulls ~1.4 MB of TFJS from the CDN into the worker;
+            up to 30s of silence read as a hang (2026-07-14 UX audit). */}
+        {running
+          ? tfjsRuntimeWarm
+            ? "Running..."
+            : "Downloading TFJS runtime (first run)..."
+          : "Run Tests"}
       </button>
 
       <button
@@ -434,6 +490,15 @@ function ExerciseControls({
           className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
         >
           Show Solution
+        </button>
+      )}
+      {hasStash && (
+        <button
+          type="button"
+          onClick={handleRestoreMyCode}
+          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-surface-overlay text-text-primary border border-border rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+        >
+          Restore My Code
         </button>
       )}
     </div>

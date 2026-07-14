@@ -22,6 +22,14 @@ export function SiteFooter() {
             TENSORCRAFT
           </div>
           <div className="flex flex-wrap justify-center gap-6">
+            {/* /compare and /extras were orphan pages: real content with
+                zero inbound links anywhere (2026-07-14 UX audit). */}
+            <Link href="/compare" className={FOOTER_LINK_CLASS}>
+              Compare
+            </Link>
+            <Link href="/extras" className={FOOTER_LINK_CLASS}>
+              Extras
+            </Link>
             <Link href="/terms" className={FOOTER_LINK_CLASS}>
               Terms
             </Link>

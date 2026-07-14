@@ -37,6 +37,12 @@ interface ModuleMapClientProps {
   };
   continueHref: string;
   continueLabel: string;
+  /**
+   * Set for non-purchasers: locked rows render a clickable "Unlock →"
+   * instead of a bare lock emoji (2026-07-14 UX audit: the lock emoji +
+   * pointer-events-none made the post-free-module map a dead end).
+   */
+  unlockHref?: string;
 }
 
 const DIFFICULTY_COLOR: Record<LessonItem["difficulty"], string> = {
@@ -61,6 +67,7 @@ export function ModuleMapClient({
   terminology,
   continueHref,
   continueLabel,
+  unlockHref,
 }: ModuleMapClientProps) {
   return (
     <div
@@ -88,6 +95,7 @@ export function ModuleMapClient({
             accentOn={accentOn}
             themeSlug={themeSlug}
             terminology={terminology}
+            unlockHref={unlockHref}
           />
         );
       })}
@@ -121,6 +129,7 @@ interface ModuleRowProps {
   accentOn: boolean;
   themeSlug: string;
   terminology: { lesson: string; module: string };
+  unlockHref?: string;
 }
 
 function ModuleRow({
@@ -134,6 +143,7 @@ function ModuleRow({
   accentOn,
   themeSlug,
   terminology,
+  unlockHref,
 }: ModuleRowProps) {
   const moduleLabel = `M${String(mod.order).padStart(2, "0")}`;
   const pct =
@@ -229,7 +239,20 @@ function ModuleRow({
                   ACTIVE
                 </span>
               )}
-              {isLocked && (
+              {isLocked && unlockHref && (
+                <Link
+                  href={unlockHref}
+                  className={`pointer-events-auto ml-auto rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${FOCUS_RING}`}
+                  style={{
+                    color: "var(--tc-primary)",
+                    borderColor: "var(--tc-primary)",
+                  }}
+                  aria-label={`Unlock ${terminology.module} ${mod.order}: ${mod.title}`}
+                >
+                  Unlock →
+                </Link>
+              )}
+              {isLocked && !unlockHref && (
                 <span
                   className="ml-auto font-mono text-xs"
                   style={{ color: "var(--tc-muted)" }}

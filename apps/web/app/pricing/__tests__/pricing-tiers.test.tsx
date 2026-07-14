@@ -144,11 +144,14 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
     );
   });
 
-  it("highlights All 5 Themes as the recommended / best-value tier", () => {
+  it("recommends the buyable Single tier while only one theme is launched (2026-07-14 UX audit: never ribbon an unbuyable tier)", () => {
     render(<PricingTiers />);
-    const card = screen.getByTestId("tier-card-all-five");
-    expect(card).toHaveAttribute("data-recommended", "true");
-    expect(card).toHaveTextContent(/Best Value/i);
+    const single = screen.getByTestId("tier-card-single");
+    expect(single).toHaveAttribute("data-recommended", "true");
+    expect(single).toHaveTextContent(/Available Now/i);
+    const allFive = screen.getByTestId("tier-card-all-five");
+    expect(allFive).not.toHaveAttribute("data-recommended");
+    expect(allFive).not.toHaveTextContent(/Best Value/i);
   });
 
   it("uses rounded-none (brutalist) on every tier card", () => {
@@ -174,25 +177,21 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
     expect(card.textContent).toMatch(/Available when all 5 themes launch/i);
   });
 
-  it("Single tier CTA sends planId=single with the picked theme", async () => {
+  it("Single tier CTA sends planId=single with the preselected theme (no extra click while one theme is launched)", async () => {
     render(<PricingTiers />);
     const card = screen.getByTestId("tier-card-single");
-    // Pick a theme to enable the CTA, one of the theme-picker buttons.
-    const themeBtn = Array.from(card.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "Deep Orbit",
-    ) as HTMLButtonElement | undefined;
-    expect(themeBtn).toBeTruthy();
-    fireEvent.click(themeBtn!);
-
+    // 2026-07-14 UX audit: with exactly one launched theme, the picker
+    // preselects it — the CTA must be enabled immediately.
     const cta = Array.from(card.querySelectorAll("button")).find((b) =>
       /Get Single/i.test(b.textContent ?? ""),
     ) as HTMLButtonElement | undefined;
     expect(cta).toBeTruthy();
+    expect(cta!.disabled).toBe(false);
     fireEvent.click(cta!);
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     const [, init] = fetchMock.mock.calls[0];
     const body = JSON.parse(init.body);
     expect(body.planId).toBe("single");
-    expect(body.themeIds).toHaveLength(1);
+    expect(body.themeIds).toEqual(["deep-orbit"]);
   });
 });

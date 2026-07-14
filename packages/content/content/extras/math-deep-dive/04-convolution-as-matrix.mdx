@@ -81,7 +81,14 @@ const resultConv = tf.conv1d(
   'valid'
 );
 console.log('Conv1d result:', await resultConv.array());
-// [[[1], [-1], [-2]]]: same answer`}
+// [[[1], [-1], [-2]]]: same answer
+//
+// Naming caveat: what deep learning calls "convolution" (tf.conv1d and
+// every conv layer) is really CROSS-CORRELATION, it slides the kernel
+// without flipping it, which is what the Toeplitz above matches. True
+// mathematical convolution flips the kernel first. The convolution
+// theorem below is stated for the true (flipped) operation; to reproduce
+// tf.conv1d through an FFT you flip the kernel before transforming.`}
 </CodeBlock>
 
 ## Building a Toeplitz Matrix

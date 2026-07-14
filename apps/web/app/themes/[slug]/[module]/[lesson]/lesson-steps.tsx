@@ -215,12 +215,39 @@ function LessonStepsInner({
           maxStep = parsed;
         }
       }
+      // Passed exercises persist too: without this, leaving mid-lesson
+      // re-locked the Challenge gate the learner had already opened
+      // (2026-07-14 UX audit). Only slugs that are really on this lesson
+      // count, so stale storage can't unlock a different lesson's gate.
+      const savedPassed = localStorage.getItem(`${storageKey}-passed`);
+      if (savedPassed !== null) {
+        const slugs = JSON.parse(savedPassed) as string[];
+        const valid = slugs.filter((s) =>
+          exercises.some((ex) => ex.slug === s),
+        );
+        if (valid.length > 0) setPassedExercises(new Set(valid));
+      }
     } catch {
       // localStorage unavailable
     }
     setMaxStepReached(Math.max(step, maxStep));
     setMounted(true);
+    // exercises identity is stable per lesson page load.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey, maxStorageKey]);
+
+  // Persist passed exercises as they happen
+  useEffect(() => {
+    if (!mounted || passedExercises.size === 0) return;
+    try {
+      localStorage.setItem(
+        `${storageKey}-passed`,
+        JSON.stringify(Array.from(passedExercises)),
+      );
+    } catch {
+      // localStorage unavailable
+    }
+  }, [passedExercises, storageKey, mounted]);
 
   // Track the furthest step reached so going back never locks steps again
   useEffect(() => {
@@ -324,14 +351,23 @@ function LessonStepsInner({
   // Swipe gesture handling for mobile navigation
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
+  const touchFromScrollable = useRef(false);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    // Horizontal pans inside code blocks and the editor are CONTENT
+    // scrolling, not navigation: panning a wide code sample used to page
+    // the whole lesson (2026-07-14 UX audit).
+    const target = e.target as HTMLElement | null;
+    touchFromScrollable.current = !!target?.closest(
+      "pre, code, .sp-wrapper, .cm-editor, [data-no-swipe]",
+    );
   }, []);
 
   const handleTouchEnd = useCallback(
     (e: React.TouchEvent) => {
+      if (touchFromScrollable.current) return;
       const deltaX = e.changedTouches[0].clientX - touchStartX.current;
       const deltaY = e.changedTouches[0].clientY - touchStartY.current;
       // Only horizontal swipes (ignore vertical scrolling)
@@ -382,9 +418,23 @@ function LessonStepsInner({
 
   const bottomNav = (
     <div
-      className="flex items-center justify-end mt-10 pt-6"
+      className="flex items-center justify-between mt-10 pt-6"
       style={{ borderTop: `1px solid ${theme.palette.border}` }}
     >
+      {/* Back button: the nav was forward-only, leaving the thin 6px step
+          segments as the only way back (2026-07-14 UX audit). */}
+      {currentStep > 0 ? (
+        <button
+          type="button"
+          onClick={goBack}
+          className="text-sm font-mono px-6 py-3 transition-colors"
+          style={{ color: theme.palette.muted }}
+        >
+          &larr; Back
+        </button>
+      ) : (
+        <span aria-hidden="true" />
+      )}
       {currentStep < TOTAL_STEPS - 1 ? (
         <button
           type="button"
@@ -400,7 +450,12 @@ function LessonStepsInner({
             opacity: canContinue ? 1 : 0.3,
           }}
         >
-          Continue &rarr;
+          {/* The gate must explain itself: a silent disabled button at
+              the Challenge step read as a broken page (2026-07-14 UX
+              audit). */}
+          {!canContinue && currentStep === 3
+            ? `Pass ${exercises.length - passedExercises.size} more ${exercises.length - passedExercises.size === 1 ? "exercise" : "exercises"} to continue`
+            : "Continue →"}
         </button>
       ) : nextLesson ? (
         <Link
@@ -487,16 +542,53 @@ function LessonStepsInner({
     rightKind = "pane";
     shellLeft = <StepChallenge {...sharedContentProps} />;
     shellRight = (
-      <LessonContent
-        lesson={lesson}
-        exercises={exercises}
-        themeId={themeSlug}
-        moduleId={moduleSlug}
-        lessonId={lessonSlug}
-        glossaryTerms={lesson.glossaryTerms}
-        visibleComponents={CHALLENGE_RIGHT}
-        onExerciseComplete={handleExerciseComplete}
-      />
+      <div>
+        <LessonContent
+          lesson={lesson}
+          exercises={exercises}
+          themeId={themeSlug}
+          moduleId={moduleSlug}
+          lessonId={lessonSlug}
+          glossaryTerms={lesson.glossaryTerms}
+          visibleComponents={CHALLENGE_RIGHT}
+          onExerciseComplete={handleExerciseComplete}
+        />
+        {/* The green "tests passed" moment and the unlocked Continue used
+            to live in opposite columns (2026-07-14 UX audit): surface the
+            way forward right where the pass landed. */}
+        {canContinue && (
+          <div
+            data-testid="challenge-passed-banner"
+            className="mt-4 flex items-center justify-between gap-4 border px-5 py-4"
+            style={{
+              borderColor: theme.palette.primary,
+              background:
+                "color-mix(in srgb, var(--tc-primary) 8%, transparent)",
+            }}
+            role="status"
+          >
+            <p
+              className="font-mono text-xs uppercase tracking-widest"
+              style={{ color: theme.palette.primary }}
+            >
+              {exercises.length > 1
+                ? "All exercises passed"
+                : "Exercise passed"}
+            </p>
+            <button
+              type="button"
+              onClick={goNext}
+              className="text-sm font-mono font-bold px-6 py-2.5"
+              style={{
+                background: theme.palette.primary,
+                color: theme.palette.bg,
+              }}
+            >
+              Continue &rarr;
+            </button>
+          </div>
+        )}
+      </div>
     );
   } else if (currentStep === 4) {
     rightKind = "rail";

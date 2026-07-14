@@ -73,7 +73,12 @@ function ThemePicker({
  * brutalist offset shadow on hover.
  */
 export function PricingTiers() {
-  const [singleTheme, setSingleTheme] = useState<string | null>(null);
+  // Preselect when exactly one theme is launched: a one-option picker
+  // that starts empty just disables the page's most important button
+  // behind a pointless click (2026-07-14 UX audit).
+  const [singleTheme, setSingleTheme] = useState<string | null>(
+    LAUNCHED_THEMES.length === 1 ? LAUNCHED_THEMES[0] : null,
+  );
   const [twoThemes, setTwoThemes] = useState<string[]>([]);
   const [threeThemes, setThreeThemes] = useState<string[]>([]);
   const [ownedThemes, setOwnedThemes] = useState<Set<string>>(new Set());
@@ -112,7 +117,7 @@ export function PricingTiers() {
       <p className="mt-1 text-[11px] font-mono text-primary uppercase tracking-wider">
         {adjustedPrice(planPrice) === 0
           ? "covered by credit"
-          : `// pay $${adjustedPrice(planPrice)} (credit $${totalCredit})`}
+          : `pay $${adjustedPrice(planPrice)} (credit $${totalCredit})`}
       </p>
     );
   }
@@ -170,7 +175,6 @@ export function PricingTiers() {
                 "Code editor",
                 "FE-to-ML bridges",
                 "Graded exercises",
-                "21 bonus deep-dive lessons",
               ].map((f) => (
                 <li
                   key={f}
@@ -182,6 +186,19 @@ export function PricingTiers() {
                   {f}
                 </li>
               ))}
+              {/* Advertised free content must be findable from the ad
+                  (2026-07-14 UX audit: /extras had zero inbound links). */}
+              <li className="flex items-center gap-2 text-xs text-text-muted font-mono">
+                <span className="text-primary font-bold" aria-hidden="true">
+                  &#10003;
+                </span>
+                <Link
+                  href="/extras"
+                  className="underline underline-offset-4 hover:text-text-primary transition-colors"
+                >
+                  21 bonus deep-dive lessons
+                </Link>
+              </li>
             </ul>
             <Link
               href="/themes/deep-orbit"
@@ -191,12 +208,23 @@ export function PricingTiers() {
             </Link>
           </article>
 
-          {/* ───── TIER 2 · Single Theme ───── */}
+          {/* ───── TIER 2 · Single Theme ─────
+              Carries the recommendation while it is the only buyable paid
+              tier; hands it back to All-Five when all themes launch. */}
           <article
             data-testid="tier-card-single"
             data-plan-id="single"
-            className="relative flex flex-col border border-border bg-surface rounded-none p-6 transition-all hover:border-primary hover:brutalist-shadow"
+            data-recommended={launchedThemeCount < 5 ? "true" : undefined}
+            className={`relative flex flex-col border-2 ${launchedThemeCount < 5 ? "border-primary" : "border-border"} bg-surface rounded-none p-6 transition-all hover:border-primary hover:brutalist-shadow`}
           >
+            {launchedThemeCount < 5 && (
+              <span
+                aria-hidden="true"
+                className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-page rounded-none"
+              >
+                Available Now
+              </span>
+            )}
             <div className="mb-4">
               <span className="block text-4xl font-bold leading-none text-text-primary font-mono">
                 ${PRICING.single.price}
@@ -388,19 +416,26 @@ export function PricingTiers() {
             </CheckoutButton>
           </article>
 
-          {/* ───── TIER 5 · All 5 Themes (BEST VALUE) ───── */}
+          {/* ───── TIER 5 · All 5 Themes ─────
+              The BEST VALUE ribbon + recommended border only render once
+              the bundle is actually buyable (all five launched). Until
+              then the page must not visually recommend a product it
+              refuses to sell (2026-07-14 UX audit); the Single tier
+              carries the recommendation instead. */}
           <article
             data-testid="tier-card-all-five"
             data-plan-id="allFive"
-            data-recommended="true"
-            className="relative flex flex-col border-2 border-primary bg-surface rounded-none p-6 transition-all hover:brutalist-shadow"
+            data-recommended={launchedThemeCount >= 5 ? "true" : undefined}
+            className={`relative flex flex-col border-2 ${launchedThemeCount >= 5 ? "border-primary" : "border-border"} bg-surface rounded-none p-6 transition-all hover:brutalist-shadow`}
           >
-            <span
-              aria-hidden="true"
-              className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-page rounded-none"
-            >
-              Best Value
-            </span>
+            {launchedThemeCount >= 5 && (
+              <span
+                aria-hidden="true"
+                className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-page rounded-none"
+              >
+                Best Value
+              </span>
+            )}
             <div className="mb-4 mt-1">
               <span className="block text-4xl font-bold leading-none text-primary font-mono">
                 ${PRICING.allFive.price}

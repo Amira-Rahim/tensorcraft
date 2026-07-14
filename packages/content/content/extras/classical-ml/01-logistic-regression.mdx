@@ -16,7 +16,7 @@ concept:
     mlTitle: "Binary classification"
     mlCode: "const prob = sigmoid(weights.dot(features) + bias)"
     tier: structural
-    breaks: "if/else with confidence is a hand-written threshold on a feature you chose. Logistic regression learns coefficients per feature from data and outputs a calibrated probability; the decision boundary moves with retraining, not with code edits."
+    breaks: "if/else with confidence is a hand-written threshold on a feature you chose. Logistic regression learns coefficients per feature from data and outputs a probability-shaped score between 0 and 1; the decision boundary moves with retraining, not with code edits. That score is only truly CALIBRATED if you check it against a reliability curve, the sigmoid alone does not guarantee it."
 consequence:
   narrative: "A working baseline classifier in under sixty lines of TypeScript. In production this is always the first model on the board. If logistic regression solves the problem, ship it."
 hints:
@@ -158,6 +158,6 @@ Now implement logistic regression yourself.
 
 <Exercise slug="implement-logistic" />
 
-<RecallPrompt question="What does the sigmoid function do, and why does logistic regression use it instead of a hard if/else?" answer="Sigmoid maps any real number to a value between 0 and 1, giving a calibrated probability rather than a hard true/false. Logistic regression uses it so the model can output confidence (e.g. 0.83) and let the caller choose a threshold based on the cost of false positives vs false negatives." />
+<RecallPrompt question="What does the sigmoid function do, and why does logistic regression use it instead of a hard if/else?" answer="Sigmoid maps any real number to a value between 0 and 1, giving a probability-shaped score rather than a hard true/false. Logistic regression uses it so the model can output confidence (e.g. 0.83) and let the caller choose a threshold based on the cost of false positives vs false negatives. Whether that score is well calibrated (0.83 really means right 83% of the time) is a separate property you verify with a reliability curve." />
 
 <LessonRecap whatYouLearned={["The sigmoid function transforms any number into a probability between 0 and 1, replacing a hard threshold with a confidence score", "A decision boundary is a tunable threshold on that probability, adjustable for different cost trade-offs the same way you adjust a breakpoint", "Logistic regression learns per-feature weights from data via gradient descent; start here before reaching for a neural network"]} bridge="A frontend `if/else` with a hard threshold (`score > 0.5`) is a hand-coded rule; `Binary classification` with logistic regression learns that threshold and per-feature weights from data, so the decision boundary updates with retraining rather than code edits." youCanNow="Implement logistic regression from scratch, interpret its probability output, and decide when it is the right model for a binary classification problem." />

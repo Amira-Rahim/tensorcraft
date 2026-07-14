@@ -110,10 +110,11 @@ function topAttentionSteps(
 }
 
 // For the anomalous signal:
-// Step 77: weight=0.15, reading=[0.31, 73.4, 1.57]  ← frequency shift
-// Step 4:  weight=0.12, reading=[1.82, 73.4, 0.23]  ← amplitude spike
-// Step 40: weight=0.09, reading=[0.95, 73.4, 0.89]  ← mid-pattern
-// The model found the 73.4 Hz component across multiple time steps`}
+// Step 77: weight=0.15, reading=[0.31, 37, 1.57]  ← frequency shift
+// Step 4:  weight=0.12, reading=[1.82, 37, 0.23]  ← amplitude spike
+// Step 40: weight=0.09, reading=[0.95, 37, 0.89]  ← mid-pattern
+// (middle feature is the zero-crossing count: ~37 for the 73.4 Hz line
+//  in this window, steady across the steps the model locked onto)`}
 </CodeBlock>
 
 ## Challenge
@@ -136,10 +137,10 @@ Build a temporal attention mechanism and identify the focused time steps.
 
 <Epilogue>
 
-Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record two seconds either side of each predicted pulse and discards the rest. By the third cycle the pulse onset is shaved off every capture; the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
+Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record around each predicted re-entry, the 47-minute clock, and discards the rest. By the third re-entry the onset is shaved off every capture; the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
 
 <Dialogue speaker="Chief Nazari">
-Three captures, six hours, all missing their first four hundred milliseconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.
+Seven captures, six hours, all missing their first four hundred milliseconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.
 </Dialogue>
 
 He re-records with wide windows and the captures come back clean. The pulses keep landing early anyway. Early every cycle, by a little more each time.

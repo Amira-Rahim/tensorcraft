@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "requestAnimationFrame is allowed to drop frames: when the tab is busy, skipping to the newest frame is correct behavior. A training loop that skips batches silently undertrains. And unlike an animation, training has to decide when to stop; no display refresh will tell it it is done."
 consequence:
-  narrative: "Loss drops from 0.69 to 0.08 over 50 epochs. The network is learning. The signal becomes clearer with each iteration."
+  narrative: "The archive rerun stops itself at epoch 64 on a validation loss of 0.081. Demir tapes both curves above his console: MEMORIZING and LEARNING."
 hints:
   - level: nudge
     content: "model.fit() runs the training loop: forward pass, loss, backprop, update"
@@ -109,7 +109,22 @@ const history = await model.fit(trainX, trainY, {
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.
 - **validationSplit**: Fraction of data held out to check for overfitting.
 
-"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had been climbing since epoch 60, and a model worse on real signals than the twenty-minute version. It had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
+"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had been climbing since epoch 60, and a model worse on real signals than the four-minute version. It had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
+
+The fix is a callback that watches the validation loss and halts when it stops improving, so the loop stops itself instead of trusting your epoch guess:
+
+<CodeBlock language="typescript" title="early-stopping.ts">
+{`await model.fit(trainX, trainY, {
+  epochs: 500,            // an upper bound now, not a target
+  validationSplit: 0.2,
+  callbacks: tf.callbacks.earlyStopping({
+    monitor: 'val_loss',  // stop when the HELD-OUT loss stops falling
+    patience: 5,          // give it 5 epochs of no improvement first
+  }),
+});
+// On the archive rerun this halted around epoch 64, right where the
+// validation curve turned back up.`}
+</CodeBlock>
 
 <Dialogue speaker="Chief Nazari">
 Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.

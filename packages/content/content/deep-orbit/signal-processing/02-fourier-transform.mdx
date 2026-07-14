@@ -51,7 +51,7 @@ So the signal is the chord, and the FFT breaks it into individual frequencies? T
 Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N of them for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That universality is what lets me trust whatever peak we find.
 </Dialogue>
 
-The full transform of N samples produces N complex coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information. Each coefficient answers one question: how strongly is this exact frequency present, and at what phase offset?
+One vocabulary check before the word scares anyone off: a "complex coefficient" here is just a PAIR of numbers per frequency, how much of it is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, which is all this course ever uses. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information. Each coefficient answers one question: how strongly is this exact frequency present, and at what phase offset?
 
 <LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
 
@@ -244,6 +244,6 @@ Four clean peaks on the lab display: 5, 12, 23, 47 Hz. Stellar background, textb
 That is not stellar background.
 </Dialogue>
 
-Demir runs the same transform on archive sample 7741, her "calibration ghost" from the normalization sweep: the 73.4 Hz peak is sitting in it, eleven days old, filed under equipment error the whole time.
+Demir runs the same transform on archive sample 7741, her "calibration ghost" from the normalization sweep: the 73.4 Hz peak is sitting in it, recorded before first contact, filed under equipment error until Farah's flag.
 
 </Epilogue>

@@ -54,6 +54,10 @@ In frontend development, you fetch data from APIs and render it. In ML, you fetc
 // const page = await fetch('/api/data?page=1&limit=32');
 
 // ML: a generator that READS LAZILY, one record per yield.
+// Never met "function*"? It declares a GENERATOR: a function that can
+// pause at each "yield" and hand out one value, then resume exactly
+// where it stopped the next time a value is requested. That pause IS
+// the laziness: nothing below the current yield has run yet.
 // Each iteration fetches/derives exactly one row; at no point does
 // the full archive exist in memory. (If you find yourself declaring
 // a giant array inside a generator, you've built eager loading with
@@ -92,9 +96,24 @@ Batching is virtual-list rendering for model input. You don't render 10,000 DOM 
 const TOTAL = 1000;
 const TRAIN_SIZE = Math.floor(TOTAL * 0.8);
 
-const allData = tf.data.generator(sensorDataGenerator).shuffle(TOTAL);
-const trainData = allData.take(TRAIN_SIZE).batch(32);
-const valData = allData.skip(TRAIN_SIZE).batch(32);`}
+// The trap everyone falls into: .shuffle().take()/.skip(). Dataset
+// pipelines reshuffle every time they are iterated, and take()/skip()
+// each iterate separately, so that pattern deals a DIFFERENT deck to
+// each side: readings leak between train and validation. The fix is to
+// deal the deck once, in your own hands, and split the indices:
+const indices = tf.util.createShuffledIndices(TOTAL);
+const trainIdx = new Set(Array.from(indices.slice(0, TRAIN_SIZE)));
+
+function* splitGenerator(pickTrain: boolean) {
+  let i = 0;
+  for (const reading of sensorDataGenerator()) {
+    if (trainIdx.has(i++) === pickTrain) yield reading;
+  }
+}
+
+const trainData = tf.data.generator(() => splitGenerator(true)).batch(32);
+const valData = tf.data.generator(() => splitGenerator(false)).batch(32);
+// Disjoint by construction, and the same split on every epoch.`}
 </CodeBlock>
 
 ## Challenge
@@ -112,7 +131,7 @@ Build the lazy pipeline yourself: generator, shuffle, batch, without ever holdin
   whatYouLearned={[
     "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
     "The canonical pipeline order is shuffle first, then batch: shuffle(bufferSize).batch(32). Batching before shuffling freezes per-batch ordering.",
-    "Train/validation splits (e.g. 80/20 via take/skip) let you confirm the model is learning general patterns rather than memorizing training examples."
+    "Split train/validation by dealing the deck once: shuffle the indices yourself and filter the stream, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets."
   ]}
   bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it."
   youCanNow="Build a tf.data pipeline that reads lazily with a generator, shuffles and batches records correctly, and splits data into training and validation sets."

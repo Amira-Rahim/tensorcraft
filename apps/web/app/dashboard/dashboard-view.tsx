@@ -65,6 +65,10 @@ export interface DashboardProps {
   activityDays: number[];
   recentActivity: ActivityRecord[];
   resumeUrl: string | null;
+  /** Override for the resume CTA text; "Unlock Module N →" when the next
+   *  lesson sits behind the paywall (2026-07-14 UX audit: the button said
+   *  "Resume Lesson" and redirected to pricing mid-click). */
+  resumeLabel?: string;
   totalModules: number;
   completedModules: number;
   genomeData: Array<{
@@ -98,6 +102,7 @@ export function DashboardView(props: DashboardProps) {
     activityDays,
     recentActivity,
     resumeUrl,
+    resumeLabel,
     totalModules,
     completedModules,
     genomeData,
@@ -474,7 +479,7 @@ export function DashboardView(props: DashboardProps) {
                   textDecoration: "none",
                 }}
               >
-                {"Resume Lesson →"}
+                {resumeLabel ?? "Resume Lesson →"}
               </Link>
             ) : (
               <Link

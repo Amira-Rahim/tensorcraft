@@ -2,7 +2,7 @@ slug: weighted-ensemble
 lessonSlug: time-series-ensemble-methods
 title: "Confidence-Weighted Ensemble with tf"
 mlContent: data
-instructions: "Build `weightedEnsemble(predictions)` taking an array of {prediction: number[], confidence: number} and returning a JS number array. Stack predictions with tf.tensor2d, multiply by confidence weights, sum across the model axis, divide by total confidence, and read back as arraySync()."
+instructions: "Build `weightedEnsemble(predictions)` taking an array of {prediction: number[], confidence: number} and returning a JS number array: each output element is the confidence-weighted average of the models' predictions for that position. Plain JS loops (like the lesson's own version) or tensors, your choice; the grader only checks the numbers. Tensor route, if you want it: stack with tf.tensor2d, multiply by confidence weights, sum across the model axis, divide by total confidence, arraySync() back."
 starterCode: |
   function weightedEnsemble(predictions) {
     return [];

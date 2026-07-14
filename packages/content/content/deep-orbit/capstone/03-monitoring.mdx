@@ -163,7 +163,12 @@ function detectDrift(
   current: number[][],
   threshold: number = 0.5
 ): DriftReport {
-  const featureNames = ['frequency', 'amplitude', 'phase', 'snr', 'bandwidth'];
+  // The model's REAL input vector (module 5's fixed-bin design): 3 raw
+  // features + 8 fixed FFT bins. Drift checks watch what the model eats.
+  const featureNames = [
+    'amplitude', 'frequency', 'phase',
+    'fft_0', 'fft_1', 'fft_2', 'fft_3', 'fft_4', 'fft_5', 'fft_6', 'fft_7',
+  ];
   const features = featureNames.map((name, i) => {
     const baselineMean = baseline.reduce((s, r) => s + r[i], 0) / baseline.length;
     const currentMean = current.reduce((s, r) => s + r[i], 0) / current.length;
@@ -217,7 +222,7 @@ Build a model monitor with drift detection.
 
 <Epilogue>
 
-The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift concentrated in a single feature, inter-pulse timing. The reading attached to the second alert: 32.8 seconds.
+The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift in two places: fft_5, the 73.4 Hz line, hotter every hour, and the timing between its spikes. The interval attached to the second alert: 37.0 seconds.
 
 <Dialogue speaker="Dr. Farah">
 We built this to catch the model degrading. It's catching the signal changing instead. Keep both alerts armed. I no longer trust either one of them to stay still.

@@ -746,7 +746,9 @@ export function SettingsForm({
                 <span
                   role="alert"
                   className="font-mono"
-                  style={{ fontSize: 11, color: "var(--tc-primary)" }}
+                  // Error state must not render in the brand success color
+                  // (2026-07-14 audit): use the error red.
+                  style={{ fontSize: 11, color: "var(--tc-error, #ef4444)" }}
                   data-testid="github-error"
                 >
                   {githubError}

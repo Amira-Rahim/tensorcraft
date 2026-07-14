@@ -111,8 +111,11 @@ const pointB = [4, 6];
 console.log(euclidean(pointA, pointB)); // 5.0 (straight line)
 console.log(manhattan(pointA, pointB)); // 7.0 (grid walk: 3 + 4)
 
-// Manhattan is better when features have different scales
-// or when outliers could skew Euclidean distance`}
+// Manhattan's real advantages: outliers hurt less (no squaring), and
+// in high dimensions it keeps more contrast between near and far.
+// What NO distance metric fixes is unscaled features: a feature in
+// thousands dominates BOTH metrics. Standardize first (module 1's
+// z-score), every time, for any distance-based method.`}
 </CodeBlock>
 
 ## How Many Neighbors Get a Vote

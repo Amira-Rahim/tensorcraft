@@ -97,7 +97,8 @@ setWasmPaths('/wasm/');  // point to your WASM binary files
 // Like doing layout calculations in JS instead of CSS
 
 // WebGPU backend: the compute-first successor to WebGL, fastest where
-// the browser ships it (Chromium today; check others before relying on it)
+// the browser ships it (Chromium, Firefox, and Safari all ship it now;
+// still verify your target browsers before relying on it)
 // Like moving from canvas hacks to a purpose-built compute API
 import '@tensorflow/tfjs-backend-webgpu';
 

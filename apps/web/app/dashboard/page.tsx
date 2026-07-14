@@ -16,6 +16,7 @@ import {
   isComingSoon,
 } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { hasThemePurchase } from "@/lib/progress";
 import type { Metadata } from "next";
 import {
   DashboardView,
@@ -243,6 +244,7 @@ export default async function DashboardPage() {
   } | null = null;
 
   let resumeUrl: string | null = null;
+  let resumeLabel: string | undefined;
 
   if (activeModule) {
     const modIndex = dashModules.indexOf(activeModule);
@@ -270,6 +272,18 @@ export default async function DashboardPage() {
       };
 
       resumeUrl = `/themes/${activeTheme.slug}/${activeModule.slug}/${currentLesson.slug}`;
+
+      // Don't promise a lesson the paywall will intercept: modules past
+      // the free first one need a purchase, and the old "Resume Lesson"
+      // label teleported unpurchased users to /pricing mid-click
+      // (2026-07-14 UX audit).
+      if (modIndex > 0) {
+        const purchased = await hasThemePurchase(user.id, activeTheme.slug);
+        if (!purchased) {
+          resumeUrl = "/paywall";
+          resumeLabel = `Unlock Module ${modIndex + 1} →`;
+        }
+      }
     }
   }
 
@@ -417,6 +431,7 @@ export default async function DashboardPage() {
       activityDays={activityDays}
       recentActivity={recentActivity}
       resumeUrl={resumeUrl}
+      resumeLabel={resumeLabel}
       totalModules={contentModules.length}
       completedModules={completedModules}
       genomeData={genomeData ?? []}

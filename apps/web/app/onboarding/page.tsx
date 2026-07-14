@@ -233,7 +233,29 @@ export default function OnboardingPage() {
         ...(yearsAsNumber !== null ? { yearsExperience: yearsAsNumber } : {}),
       });
       trackThemeSelected(LAUNCH_THEME_SLUG);
-      router.push(`/themes/${LAUNCH_THEME_SLUG}`);
+      // Return the learner to wherever they were headed when the wizard
+      // intercepted them (middleware passes it through); same-origin
+      // relative paths only, everything else falls back to the theme.
+      const requested = new URLSearchParams(window.location.search).get(
+        "redirectTo",
+      );
+      // Open-redirect guard: accept only a real same-origin path. Must
+      // start with a single "/" AND the next char must not be another
+      // "/" or a backslash — browsers normalize "/\evil.com" to
+      // "//evil.com" (protocol-relative → offsite). Reject control chars
+      // too, in case a crafted param slipped past URL decoding.
+      const isSafePath =
+        !!requested &&
+        requested.length > 1 &&
+        requested[0] === "/" &&
+        requested[1] !== "/" &&
+        requested[1] !== "\\" &&
+        // eslint-disable-next-line no-control-regex
+        !/[\u0000-\u001f]/.test(requested);
+      const safeTarget = isSafePath
+        ? (requested as string)
+        : `/themes/${LAUNCH_THEME_SLUG}`;
+      router.push(safeTarget);
     } catch (e) {
       setError(e instanceof Error ? e.message : ERROR_MESSAGES.unknown);
       setSaving(false);

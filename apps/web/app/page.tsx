@@ -74,7 +74,7 @@ export default function Home() {
               },
               {
                 label: "Own",
-                desc: "Solved exercises push to your GitHub as commits (any paid theme). Walk into interviews able to explain every layer.",
+                desc: "Solved exercises push to your GitHub as commits, starting free in Module 1. Walk into interviews able to explain every layer.",
               },
             ].map((item, i) => (
               <div

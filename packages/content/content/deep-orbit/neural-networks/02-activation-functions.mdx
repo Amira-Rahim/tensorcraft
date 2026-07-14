@@ -76,6 +76,8 @@ const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
 
 Each choice has a failure mode, and both will matter later in this theme.
 
+A preview note before the next two paragraphs: they use the word "gradient", which you will BUILD in module 3. Until then, read it as "the learning signal that tells a weight which way to move." The failure modes are worth meeting now because they are properties of the activation shapes in front of you.
+
 ReLU's is the dead neuron. `max(0, x)` outputs zero for every negative input, and zero output means zero gradient: no signal flows back, so the weights feeding it never update. A neuron whose weighted sum goes negative on every training example is not resting, it is dead, and it stays dead. One insurance policy is already visible in the numbers above: a small positive bias keeps the sum above zero early in training.
 
 Sigmoid's is saturation. At z = 5 it outputs 0.9933, which sounds decisive, but its slope there is 0.0066: the curve has gone flat, so a large change in input produces almost no change in output, and almost no gradient. Push a sigmoid hard in either direction and it stops learning in that region. This is why it lives at the OUTPUT layer, where you want a probability, and not in deep stacks of hidden layers. File the phrase "the gradient goes quiet": when a training run flatlines in module 6, this is one of the suspects the crew will round up.

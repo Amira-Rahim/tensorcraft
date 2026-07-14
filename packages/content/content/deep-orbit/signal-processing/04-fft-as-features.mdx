@@ -23,11 +23,11 @@ consequence:
   narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The frequency features reveal patterns the raw signal alone could never show."
 hints:
   - level: nudge
-    content: "tf.abs(tf.spectral.rfft(signal)) carries the same information as the raw samples, reorganized into a form the classifier separates more easily"
+    content: "The exercise wants the top-K PEAKS: compute magnitudes with tf.abs(tf.spectral.rfft(...)), then find the K strongest bins (skip bin 0, the DC offset)"
   - level: guidance
-    content: "Compute FFT magnitudes, normalize them, and concatenate with the original features"
+    content: "Get magnitudes as a JS array (arraySync), pair each with its bin index, drop bin 0, sort the pairs by magnitude descending, take the first k"
   - level: solution
-    content: "const fftFeatures = tf.abs(tf.spectral.rfft(signal)); const combined = tf.concat([raw, normalized(fftFeatures)], 1);"
+    content: "const mags = Array.from(tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync()); return mags.map((mag, bin) => ({ mag, bin })).slice(1).sort((a, b) => b.mag - a.mag).slice(0, k).map(p => p.mag);"
 keywords:
   - feature-engineering
   - derived-features

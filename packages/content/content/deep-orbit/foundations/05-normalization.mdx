@@ -25,11 +25,11 @@ consequence:
   narrative: "The normalized feed goes live. Four sensors, one scale, and one archived sample that refuses to look like the others."
 hints:
   - level: nudge
-    content: "Subtract the mean, divide by standard deviation"
+    content: "Subtract the mean, divide by standard deviation. Per COLUMN: each feature gets its own statistics."
   - level: guidance
-    content: "tf.moments(tensor) returns { mean, variance }. Standard deviation is variance.sqrt()."
+    content: "tf.moments(batch, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature. Without the 0 you get one global mean over all numbers, which mixes temperature with signal strength. Standard deviation is variance.sqrt()."
   - level: solution
-    content: "const { mean, variance } = tf.moments(tensor); const norm = tensor.sub(mean).div(variance.sqrt())"
+    content: "const { mean, variance } = tf.moments(batch, 0); const std = variance.sqrt(); const normalized = batch.sub(mean).div(std); then normalizeReading(reading) returns reading.sub(mean).div(std) using those SAME saved tensors."
 keywords:
   - normalization
   - z-score
@@ -101,6 +101,16 @@ function zNormalize(tensor: tf.Tensor) {
   return tensor.sub(mean).div(variance.sqrt());
 }
 
+// One argument you'll need the moment features live side by side in a
+// 2D batch: the AXIS. tf.moments(batch, 0) reduces DOWN axis 0 (down
+// the rows), producing one mean and one variance PER COLUMN, so each
+// feature is scaled by its own statistics. Without the axis you get a
+// single global mean over every number in the batch, which stirs
+// temperature and signal strength into one meaningless average.
+const batch = tf.stack([temperature, signal], 1);  // [5, 2]: 5 readings x 2 features
+const { mean: colMeans } = tf.moments(batch, 0);
+// colMeans: [24.8, 0.52], one per column, not one for the whole batch
+
 const tempNorm = zNormalize(temperature);
 // [-0.80, -0.47, -0.97, 1.71, 0.54]: centered around 0
 
@@ -151,7 +161,7 @@ Normalize the Archimedes sensor data using z-score normalization.
 
 <Epilogue>
 
-Demir flips the four normalized feeds live and the bridge displays settle onto one scale, every channel finally speaking the same language. Scrolling the archive to confirm the backlog converted cleanly, he stops on sample 7741, logged eleven days ago in the middle of the calm period. Normalized, it shouldn't stand out. It does.
+Demir flips the four normalized feeds live and the bridge displays settle onto one scale, every channel finally speaking the same language. Scrolling the archive to confirm the backlog converted cleanly, he stops on sample 7741, logged eight days ago in the middle of the calm period. Normalized, it shouldn't stand out. It does.
 
 Farah pulls up a preview build of the classifier the crew will spend the next ten modules earning, and runs it on the archive, live, in front of you:
 

@@ -24,11 +24,11 @@ consequence:
   narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
-    content: "Shuffle a keyed React list and the UI breaks because order carried information. Shuffling time-series samples destroys the same thing: the temporal pattern"
+    content: "Window i starts at index i * stride (stride = how far the window jumps each step; stride 1 = maximum overlap). Its label is the reading immediately after it."
   - level: guidance
-    content: "Sequence models process inputs in order, maintaining hidden state between steps"
+    content: "Loop start from 0 while start + windowSize < data.length, stepping by stride. Each xs entry is data.slice(start, start + windowSize); each ys entry is data[start + windowSize]. The strict < is the drop rule: a window whose answer would be past the end never enters the set."
   - level: solution
-    content: "A sequence [1, 2, 3] carries different meaning than [3, 1, 2], just like rendering order affects UI state"
+    content: "for (let start = 0; start + windowSize < data.length; start += stride) { xs.push(data.slice(start, start + windowSize)); ys.push(data[start + windowSize]); } return { xs, ys };"
 keywords:
   - sequence
   - temporal

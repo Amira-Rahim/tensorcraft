@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "localStorage TTL is a hard expiry: value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state: partial forgetting, learned per-input, with no fixed timeout."
 consequence:
-  narrative: "Seventy-two hours of memory: when the anomalous pattern reappears, the LSTM catches it in a single step."
+  narrative: "Seventy-two hours later the pattern returns, and the LSTM flags it inside a single window. Not memory: recognition. The gates learned the shape once."
 hints:
   - level: nudge
     content: "LSTMs have three gates: forget (what to discard), input (what to add), output (what to expose)"

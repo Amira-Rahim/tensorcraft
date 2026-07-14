@@ -24,7 +24,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "What ML topics does Tensorcraft cover?",
-    a: "Five specializations, one live today and four in development: Time-Series & Signals (RNNs, LSTMs — live now), Computer Vision (CNNs, YOLO), NLP & Text Intelligence (Transformers, BERT), Multimodal & Generative AI (GANs, Diffusion), and Edge AI & Production ML (quantization, MLOps).",
+    a: "Five specializations, one live today and four in development: Time-Series & Signals (RNNs, LSTMs, live now), Computer Vision (CNNs, YOLO), NLP & Text Intelligence (Transformers, BERT), Multimodal & Generative AI (GANs, Diffusion), and Edge AI & Production ML (quantization, MLOps).",
   },
   {
     q: "What if it turns out not to be for me?",

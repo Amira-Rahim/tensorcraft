@@ -69,35 +69,42 @@ export function InboxView({ messages }: { messages: InboxMessage[] }) {
               data-testid={`inbox-message-${m.id}`}
               data-read={isRead ? "true" : "false"}
             >
-              <button
-                type="button"
-                onClick={() => handleOpen(m.id)}
-                className="w-full text-left p-4 brutalist-shadow bg-surface-raised border border-border hover:translate-x-[-2px] hover:translate-y-[-2px] transition-transform"
+              {/* The expanded body renders as a SIBLING of the toggle, not
+                  inside it: a <Link> nested in a <button> is invalid HTML
+                  and a keyboard/AT hazard (2026-07-14 UX audit). */}
+              <div
+                className="brutalist-shadow bg-surface-raised border border-border hover:translate-x-[-2px] hover:translate-y-[-2px] transition-transform"
                 style={{
                   borderLeft: isRead
                     ? "3px solid var(--tc-border)"
                     : "3px solid var(--tc-primary)",
                 }}
-                aria-expanded={isOpen}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[9px] font-mono uppercase tracking-[2px] text-text-muted">
-                    {KIND_LABEL[m.kind]} · {formatTimeAgo(m.sentAt)}
-                  </span>
-                  {!isRead && (
-                    <span
-                      className="text-[9px] font-mono uppercase tracking-[2px] text-primary"
-                      aria-label="Unread"
-                    >
-                      ● new
+                <button
+                  type="button"
+                  onClick={() => handleOpen(m.id)}
+                  className="w-full text-left p-4"
+                  aria-expanded={isOpen}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[9px] font-mono uppercase tracking-[2px] text-text-muted">
+                      {KIND_LABEL[m.kind]} · {formatTimeAgo(m.sentAt)}
                     </span>
-                  )}
-                </div>
-                <h3 className="text-base font-semibold text-text-primary leading-snug">
-                  {m.subject}
-                </h3>
+                    {!isRead && (
+                      <span
+                        className="text-[9px] font-mono uppercase tracking-[2px] text-primary"
+                        aria-label="Unread"
+                      >
+                        ● new
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-base font-semibold text-text-primary leading-snug">
+                    {m.subject}
+                  </h3>
+                </button>
                 {isOpen && (
-                  <div className="mt-4 pt-4 border-t border-border">
+                  <div className="px-4 pb-4 pt-4 border-t border-border">
                     <p className="text-sm text-text-muted leading-relaxed whitespace-pre-line">
                       {m.bodyMdx}
                     </p>
@@ -114,7 +121,7 @@ export function InboxView({ messages }: { messages: InboxMessage[] }) {
                     )}
                   </div>
                 )}
-              </button>
+              </div>
             </li>
           );
         })}

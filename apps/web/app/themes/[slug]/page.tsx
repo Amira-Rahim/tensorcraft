@@ -209,18 +209,34 @@ export default async function ThemeDetailPage({ params }: Props) {
     (l) => l.status === "in_progress" || l.status === "available",
   );
 
+  // The free-module dead end (2026-07-14 UX audit): with module 1 done
+  // and module 2 paywall-locked, activeModule is undefined and the CTA
+  // used to render "Start Learning" pointing at a route that redirects
+  // straight back to this map — a self-loop at the exact moment the
+  // learner is most ready to buy. Route that state to the paywall.
+  const nextLockedModule = moduleMapItems.find((m) => m.status === "locked");
+  const paywallBlocked =
+    !activeModule &&
+    !isThemeComplete &&
+    !hasPurchased &&
+    completedModuleCount > 0 &&
+    !!nextLockedModule;
+
   // Continue CTA info
-  const continueHref =
-    activeModule && activeLesson
+  const continueHref = paywallBlocked
+    ? "/paywall"
+    : activeModule && activeLesson
       ? `/themes/${slug}/${activeModule.slug}/${activeLesson.slug}`
       : isThemeComplete
         ? `/themes/${slug}/capstone`
         : `/themes/${slug}/${themeModules[0]?.slug}`;
-  const continueLabel = activeModule
-    ? `Continue M${activeModule.order}`
-    : isThemeComplete
-      ? "View Capstone"
-      : "Start Learning";
+  const continueLabel = paywallBlocked
+    ? `Unlock Module ${nextLockedModule.order}`
+    : activeModule
+      ? `Continue M${activeModule.order}`
+      : isThemeComplete
+        ? "View Capstone"
+        : "Start Learning";
 
   const courseJsonLd = {
     "@context": "https://schema.org",
@@ -367,6 +383,7 @@ export default async function ThemeDetailPage({ params }: Props) {
           }}
           continueHref={continueHref}
           continueLabel={continueLabel}
+          unlockHref={!hasPurchased && user ? "/paywall" : undefined}
         />
       </div>
 

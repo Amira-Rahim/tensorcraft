@@ -349,10 +349,17 @@ export default async function CapstonePage({ params }: Props) {
           the {theme.modelBuilt.split(/\u2014|\u2013|:|;|\s-\s/)[0].trim()}. You
           explored {bridgesExplored} frontend bridges to ML.
         </p>
+        {/* Share the PUBLIC certificate page (or the public theme page
+            pre-claim), never this auth-gated capstone URL. */}
         <CapstoneClient.ShareButton
           border={P.border}
           text={P.text}
           themeSlug={slug}
+          shareUrl={
+            initialCertificate
+              ? `https://tensorcraft.app/certificates/${initialCertificate.id}`
+              : `https://tensorcraft.app/themes/${slug}`
+          }
         />
       </div>
 

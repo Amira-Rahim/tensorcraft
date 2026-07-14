@@ -7,6 +7,7 @@ import { DEFAULT_THEME, isLaunched } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 import { PurchaseAnalytics } from "./purchase-analytics";
+import { PendingPoller } from "./pending-poller";
 
 export const metadata: Metadata = {
   title: "Purchase Confirmed | Tensorcraft",
@@ -155,9 +156,10 @@ export default async function PurchaseSuccessPage({
               ? firstTheme
                 ? `${firstTheme.displayName} is yours: all ${firstThemeModules.length} modules are open.`
                 : "Your purchase is confirmed. Everything you bought is open."
-              : "We're confirming your payment with Stripe. This usually takes a few seconds; refresh this page shortly."}
+              : "We're confirming your payment with Stripe. This usually takes a few seconds; this page updates itself the moment it clears."}
           </p>
         </div>
+        {!purchase && <PendingPoller />}
 
         {purchase && (
           <PurchaseAnalytics

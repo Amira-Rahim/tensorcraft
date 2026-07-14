@@ -37,19 +37,23 @@ function ShareButton({
   border,
   text,
   themeSlug,
+  shareUrl,
 }: {
   border: string;
   text: string;
   themeSlug?: string;
+  /** Public URL to copy. Without it this button copied the capstone
+   *  page's own URL, which is auth-gated: recipients got a login wall
+   *  (2026-07-14 UX audit). */
+  shareUrl?: string;
 }) {
   const [hov, setHov] = useState(false);
   const [copied, setCopied] = useState(false);
 
   async function handleShare() {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(shareUrl ?? window.location.href);
       setCopied(true);
-      // Fire progress_shared, user copied the capstone URL (not a cert-specific link).
       track(EVENTS.PROGRESS_SHARED, {
         platform: "copy",
         ...(themeSlug ? { themeId: themeSlug } : {}),

@@ -2,9 +2,14 @@ slug: simple-attention
 lessonSlug: beyond-lstm
 title: "Simple Attention Over RNN Hidden States"
 mlContent: model
-instructions: "Build `simpleAttention(query, hiddenStates)` taking a [d] query vector and a [T, d] sequence of hidden states. Compute attention weights via dot product + softmax, then return the weighted sum of hidden states (a [d] vector)."
+instructions: "Build `simpleAttention(query, hiddenStates)` taking a [d] query vector and a [T, d] sequence of hidden states. Compute attention weights via dot product + softmax, then return the weighted sum of hidden states (a [d] vector). Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze() the [1, d] result back to [d] on the way out."
 starterCode: |
   function simpleAttention(query, hiddenStates) {
+    // 1. query is rank-1 [d]; matMul wants rank 2 -> reshape to [1, d]
+    // 2. scores = query row x hiddenStates transposed  -> [1, T]
+    // 3. weights = tf.softmax(scores)                  -> [1, T]
+    // 4. weighted sum = weights x hiddenStates          -> [1, d]
+    // 5. squeeze() back to [d]
     return null;
   }
 solutionCode: |

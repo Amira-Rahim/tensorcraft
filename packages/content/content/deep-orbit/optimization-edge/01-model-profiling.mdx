@@ -98,6 +98,11 @@ async function profileModel(model: tf.LayersModel, inputShape: number[]): Promis
     const input = tf.randomNormal([1, ...inputShape]);
     const start = performance.now();
     const output = model.predict(input) as tf.Tensor;
+    // Module 4's benchmarking rule applies to profiles too: read the
+    // result back INSIDE the timed region, or on GPU backends you are
+    // profiling how fast you can enqueue kernels, not run them, and
+    // every mean and P95 below is fiction.
+    await output.data();
     times.push(performance.now() - start);
     output.dispose();
     input.dispose();

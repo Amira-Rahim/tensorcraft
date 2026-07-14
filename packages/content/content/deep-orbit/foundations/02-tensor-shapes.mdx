@@ -23,11 +23,11 @@ consequence:
   narrative: "Four hundred fifty rows by sixty-four channels: the stream finally has a layout, and the layout looks deliberate."
 hints:
   - level: nudge
-    content: "Count the nesting levels of your array"
+    content: "reshape([3, 4]) refills the same 12 values row by row: the first 4 become row 0, the next 4 row 1"
   - level: guidance
-    content: "Use .shape to inspect tensor dimensions"
+    content: "Two steps: flat.reshape([3, 4]) gives the grid; grid.arraySync() gives nested JS arrays you can index into with [1] for the second row"
   - level: solution
-    content: "const shape = tensor.shape; // [rows, cols]"
+    content: "const grid = flat.reshape([3, 4]); const step1 = grid.arraySync()[1];"
 keywords:
   - shape
   - dimensions

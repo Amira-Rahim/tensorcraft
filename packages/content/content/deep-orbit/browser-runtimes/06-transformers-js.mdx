@@ -24,11 +24,11 @@ consequence:
   narrative: "Demir prototypes a feedback classifier in 12 lines. Nazari: 'Now you know which tool fits which job. Train when the task is custom; install when the task is well-known.'"
 hints:
   - level: nudge
-    content: "pipeline() is the entry point: pass a task name like 'sentiment-analysis' or 'translation_en_to_fr'."
+    content: "In the exercise the harness hands you pipelineFactory (a stand-in for the real pipeline() loader): await it to get the classifier, then call the classifier with the whole reports array."
   - level: guidance
-    content: "Pipelines lazily download and cache the model on first call. Subsequent calls hit the IndexedDB cache."
+    content: "Three steps: const classifier = await pipelineFactory(); const predictions = await classifier(reports); then pair each report with its prediction ({ text, label, score }) and sort by score descending."
   - level: solution
-    content: "const classifier = await pipeline('sentiment-analysis'); const result = await classifier('I love this signal');"
+    content: "const classifier = await pipelineFactory(); const preds = await classifier(reports); return reports.map((text, i) => ({ text, label: preds[i].label, score: preds[i].score })).sort((a, b) => b.score - a.score);"
 keywords:
   - transformers-js
   - pretrained

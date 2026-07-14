@@ -25,7 +25,7 @@ hints:
   - level: guidance
     content: "Walk the nn.Sequential top to bottom and emit one tf.layers call per line. nn.Linear(256, 128) becomes dense with units: 128 (give the first layer inputShape: [256]). A ReLU after a Linear folds into that dense layer's activation option."
   - level: solution
-    content: "model.add(tf.layers.dense({ inputShape: [256], units: 128, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 64, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 10 })); then compile with tf.train.adam(0.001) and 'categoricalCrossentropy'."
+    content: "model.add(tf.layers.dense({ inputShape: [256], units: 128, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 64, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 10, activation: 'softmax' })); then compile with tf.train.adam(0.001) and 'categoricalCrossentropy'. The softmax is NOT optional: PyTorch's CrossEntropyLoss applied it inside the loss; TFJS's string loss does not."
 keywords:
   - pytorch
   - tensorflow
@@ -117,9 +117,16 @@ Same architecture. Same layer sizes. Same activations. Same dropout rates. Diffe
 # PyTorch                                   →  TF.js
 optim.Adam(model.parameters(), lr=0.001)     #  tf.train.adam(0.001)
 optim.SGD(model.parameters(), lr=0.01)       #  tf.train.sgd(0.01)
-nn.CrossEntropyLoss()                        #  'categoricalCrossentropy'
+nn.CrossEntropyLoss()                        #  'categoricalCrossentropy' + softmax ON THE LAYER (see below)
 nn.MSELoss()                                 #  'meanSquaredError'
-nn.BCELoss()                                 #  'binaryCrossentropy'`}
+nn.BCELoss()                                 #  'binaryCrossentropy' (expects sigmoid output, same rule)
+
+# THE porting bug: nn.CrossEntropyLoss applies log-softmax INSIDE the
+# loss, so PyTorch models correctly end in raw logits. TFJS's string
+# loss 'categoricalCrossentropy' expects PROBABILITIES. Port the layers
+# "exactly" and you train against a garbage objective (loss ~7-8 instead
+# of starting near ln(numClasses)). The softmax that lived inside
+# PyTorch's loss must move onto your final Dense layer.`}
 </CodeBlock>
 
 ## Training Loop Comparison
@@ -186,4 +193,4 @@ Read a PyTorch model definition and build the equivalent in TensorFlow.js.
 
 <RecallPrompt question="What are the five steps in a PyTorch training loop, and where do they appear in TF.js?" answer="Clear gradients, forward pass, compute loss, backward pass, update weights. In TF.js, model.fit() performs all five steps internally on each batch, so you never write the loop explicitly." />
 
-<LessonRecap whatYouLearned={["PyTorch nn.Module and tf.sequential express the same architecture with different syntax: nn.Linear maps to tf.layers.dense, nn.Conv2d to tf.layers.conv2d, nn.LSTM to tf.layers.lstm", "PyTorch's explicit training loop runs the same five steps (zero grads, forward, loss, backward, update) that tf.model.fit() wraps automatically", "Optimizers and loss functions have direct equivalents: optim.Adam -> tf.train.adam, nn.CrossEntropyLoss -> 'categoricalCrossentropy'"]} bridge="A PyTorch `nn.Sequential` block and a `tf.sequential` model define the same data flow, same layer order, same shapes; only the method names and loop structure differ." youCanNow="Read a PyTorch model definition, identify each layer's TF.js equivalent, and understand how its training loop maps to model.fit()." />
+<LessonRecap whatYouLearned={["PyTorch nn.Module and tf.sequential express the same architecture with different syntax: nn.Linear maps to tf.layers.dense, nn.Conv2d to tf.layers.conv2d, nn.LSTM to tf.layers.lstm", "PyTorch's explicit training loop runs the same five steps (zero grads, forward, loss, backward, update) that tf.model.fit() wraps automatically", "Optimizers map directly (optim.Adam -> tf.train.adam), but nn.CrossEntropyLoss -> 'categoricalCrossentropy' ONLY together with a softmax on the final layer: PyTorch's loss applies log-softmax internally and TFJS's does not, the single most common porting bug"]} bridge="A PyTorch `nn.Sequential` block and a `tf.sequential` model define the same data flow, same layer order, same shapes; only the method names and loop structure differ." youCanNow="Read a PyTorch model definition, identify each layer's TF.js equivalent, and understand how its training loop maps to model.fit()." />

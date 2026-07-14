@@ -27,9 +27,9 @@ hints:
   - level: nudge
     content: "Windowing tapers signal edges to zero, preventing false frequencies from abrupt cutoffs"
   - level: guidance
-    content: "Multiply each sample by the window function value: windowed[i] = signal[i] * window[i]"
+    content: "Two separate functions: hannWindow(n) builds the taper (w[i] = 0.5 * (1 - cos(2*pi*i / (n-1)))), applyWindow multiplies signal[i] * window[i] element-wise."
   - level: solution
-    content: "const hann = signal.map((s, i) => s * 0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1))));"
+    content: "hannWindow: return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))). applyWindow: return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync()."
 keywords:
   - windowing
   - hann
