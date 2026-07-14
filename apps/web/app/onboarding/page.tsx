@@ -32,7 +32,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { BRIDGES } from "@tensorcraft/shared";
+import { THEME_CONTENT } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { trackThemeSelected } from "@/lib/analytics";
 import { EVENTS, track } from "@/lib/analytics-events";
@@ -402,7 +402,8 @@ function WelcomeStep() {
   const features = [
     {
       icon: "◎",
-      name: `${BRIDGES.length} FE Bridges`,
+      // Lesson-embedded bridge count, single-sourced with /learn and the FAQ.
+      name: `${THEME_CONTENT.lessonBridges} FE Bridges`,
       desc: "Every concept mapped to React/JS",
     },
     {

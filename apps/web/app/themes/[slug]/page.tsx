@@ -247,10 +247,11 @@ export default async function ThemeDetailPage({ params }: Props) {
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
-      // Sum of lesson + exercise estimatedMinutes frontmatter (1,775 min
-      // after the P4 incident exercises). Recompute when exercises change:
-      // python: sum lesson+exercise estimatedMinutes / 60, round.
-      courseWorkload: "PT30H",
+      // Sum of lesson + exercise estimatedMinutes frontmatter (1,721 min
+      // after module 8's copy-pasted 30-min labels were re-measured to
+      // honest per-lesson values, 2026-07-14). Recompute when minutes
+      // change: sum lesson+exercise estimatedMinutes / 60, round.
+      courseWorkload: "PT29H",
     },
   };
 

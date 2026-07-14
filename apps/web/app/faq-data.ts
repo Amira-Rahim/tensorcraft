@@ -1,4 +1,4 @@
-import { PRICING } from "@tensorcraft/shared";
+import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 
 /**
  * Single source for the landing FAQ: the visible <details> section on the
@@ -12,7 +12,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "How does Tensorcraft teach ML to frontend developers?",
-    a: "Through 50+ 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story-driven narrative where you build real ML models.",
+    a: `Through ${THEME_CONTENT.lessonBridges} 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story-driven narrative where you build real ML models.`,
   },
   {
     q: "How much math do I need?",

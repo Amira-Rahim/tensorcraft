@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
 import { LandingHero } from "./components/landing-hero";
+import { CommitTrail } from "./components/commit-trail";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
 
@@ -52,6 +53,11 @@ export default function Home() {
               >
                 Learn more →
               </Link>
+              {/* The most interview-legible artifact the product makes,
+                  previously invisible until Settings: show it at the fold. */}
+              <div className="mt-6 max-w-[440px]">
+                <CommitTrail compact />
+              </div>
             </div>
             {[
               {

@@ -38,6 +38,38 @@ describe("commitExerciseArtifact", () => {
     });
   });
 
+  it("dispatches the one-time GitHub nudge on github_not_connected, guarded by localStorage", async () => {
+    window.localStorage.removeItem("tc_github_nudge_shown");
+    const dispatched: string[] = [];
+    const spy = vi
+      .spyOn(window, "dispatchEvent")
+      .mockImplementation((e: Event) => {
+        dispatched.push(e.type);
+        return true;
+      });
+    vi.mocked(apiFetch).mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          error: "not connected",
+          code: "github_not_connected",
+        }),
+        { status: 400 },
+      ),
+    );
+    commitExerciseArtifact({ themeId: "deep-orbit", lessonId: "x", code: "y" });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(dispatched).toContain("tc:github-nudge");
+    expect(window.localStorage.getItem("tc_github_nudge_shown")).toBe("1");
+
+    // Second failure: guard holds, no second toast ever.
+    dispatched.length = 0;
+    commitExerciseArtifact({ themeId: "deep-orbit", lessonId: "x", code: "y" });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(dispatched).not.toContain("tc:github-nudge");
+    spy.mockRestore();
+    window.localStorage.removeItem("tc_github_nudge_shown");
+  });
+
   it("swallows rejections (guest / not-connected is the common case)", async () => {
     // The real guard is vitest's global unhandled-rejection detector: if
     // commitExerciseArtifact ever loses its .catch, the rejected promise

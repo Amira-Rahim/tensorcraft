@@ -12,10 +12,11 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [["html", { open: "never" }]],
-  // The local webServer is `next dev`, which compiles routes on demand;
-  // under full-suite parallel load a first hit on a heavy lesson route can
-  // exceed the 5s default expect timeout and flake unrelated tests.
-  expect: { timeout: 15000 },
+  // The local webServer is `next dev`, which compiles routes on demand; a
+  // cold first hit on the lesson route measured 14.96s on 2026-07-14, so
+  // the old 15s ceiling made fresh-server runs a coin flip. 30s only slows
+  // genuinely failing assertions, and only locally.
+  expect: { timeout: 30000 },
   use: {
     baseURL: BASE_URL,
     trace: "on-first-retry",

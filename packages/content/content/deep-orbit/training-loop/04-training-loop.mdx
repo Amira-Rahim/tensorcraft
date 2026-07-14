@@ -43,7 +43,7 @@ skillAxes: [training]
 The number Farah wrote on the glass wall is finally moving. Every line of that log is one full pass over the dataset, and the machinery behind each line is everything the last three lessons built.
 
 <Dialogue speaker="Ensign Demir">
-Training sequence initiated. Each epoch processes the entire dataset once: forward pass, compute loss, backpropagate, update weights. Repeat until the loss converges.
+Training sequence initiated. I have run this loop by hand twice this week: forward, loss, backward, step. Tonight model.fit runs it so I don't have to, and I find out whether I actually trust it.
 </Dialogue>
 
 <LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Recognize overfitting vs underfitting from the loss curve"]} />
@@ -93,7 +93,9 @@ const history = await model.fit(trainX, trainY, {
   },
 });
 
-// One real run (weight init is random, so yours will differ a little):
+// One real run. Weight init is random: rerun this and the loss column
+// lands near these values every time, while the accuracy column bounces
+// (a rerun here scored anywhere from 0.71 to 0.94 at epoch 40).
 // Epoch 0:  loss=0.6863, acc=0.4875
 // Epoch 10: loss=0.6497, acc=0.5000
 // Epoch 20: loss=0.6090, acc=0.6625

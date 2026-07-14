@@ -41,7 +41,7 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Ten modules, four months of work. Optimized, tested, monitored, documented: nothing left on my list.
+Ten modules, ten weeks of work. Optimized, tested, monitored, documented: nothing left on my list.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
@@ -245,13 +245,17 @@ async function classifyAnomalousSignal(): Promise<void> {
 }`}
 </CodeBlock>
 
-Two lines in that output settle old debts. Nazari asked for the zero-hour back when the interval was seventy-two seconds and Farah could not answer; the three extrapolation curves that disagreed on the date all season have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built.
+Two lines in that output settle old debts. Nazari asked for the zero-hour back when the interval was seventy-two seconds and Farah could not answer; the three extrapolation curves that disagreed on the date all season have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. One line stays open: an untrained build once scored that same reading 0.998, twice, on fresh random weights each time. ARIA files it in the open-items ledger beside the interval itself. Some instruments point before anyone builds them, and nobody aboard can say why.
 
 ## Challenge
 
 Write a deployment verification script for the complete system.
 
 <Exercise slug="verify-deployment" />
+
+Then run the rehearsal Nazari would demand before the relay slot: the whole chain in one function, and a launch gate with the authority to say no. Preprocess, batch predict, drift check, verdict. If any stage fails, including a single leaked tensor, the answer is hold.
+
+<Exercise slug="launch-rehearsal" />
 
 <RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Rolling back a web app restores the prior build artifact and the user gets the previous page: the system state is fully described by those bytes. Rolling back a model restores the prior weights, but drift accumulates from the training cutoff, not the deploy time. The prior weights were calibrated to a data distribution that may have moved further away since they were trained, so a rollback does not guarantee the model is safe to run again." />
 
@@ -263,12 +267,6 @@ Write a deployment verification script for the complete system.
   ]}
   bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time, not at deploy time."
   youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, and run a verification script that confirms load, inference, and performance in the live environment."
-/>
-
-<DispatchTease
-  toThemeId="neon-protocol"
-  toThemeName="Neon Protocol"
-  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the harmonic structure DEEP SCAN classified tonight: 73.4 Hz, Fibonacci pulse ratios. She doesn't know yet. She reads bounding boxes, not spectrograms. Someone who has watched this signal for eleven modules should look at her data."
 />
 
 <Epilogue>
@@ -298,3 +296,9 @@ Transmit everything to Earth. All of it.
 She stays at the viewport after the bridge empties, watching a point of black sky 4.2 light-years out. The transmission will take years to arrive. The signal, accelerating, does not seem inclined to wait.
 
 </Epilogue>
+
+<DispatchTease
+  toThemeId="neon-protocol"
+  toThemeName="Neon Protocol"
+  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the structure DEEP SCAN classified tonight: the 73.4-second pulse and its Fibonacci interval ratios. She doesn't know yet. She reads bounding boxes, not spectrograms. Someone who has watched this signal for eleven modules should look at her data."
+/>

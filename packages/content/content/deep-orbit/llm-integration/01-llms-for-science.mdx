@@ -65,28 +65,33 @@ Nazari's skepticism is the right default. A language model will happily invent a
 <CodeBlock language="typescript" title="llm-client.ts">
 {`// Setting up an LLM client, like configuring any API service
 interface LLMClient {
-  complete(prompt: string, options?: { temperature?: number; maxTokens?: number }): Promise<string>;
+  complete(prompt: string, options?: { system?: string; temperature?: number; maxTokens?: number }): Promise<string>;
 }
 
-// In production, this calls an API (OpenAI, Anthropic, etc.)
-// For DEEP SCAN, we use the ship's onboard model
+// In production, this calls an API (OpenAI, Anthropic, etc.). Every
+// current provider speaks the MESSAGES shape: a system role that sets
+// the job, a user role that carries the data. For DEEP SCAN, we point
+// it at the ship's onboard model.
 async function createLLMClient(apiKey: string, baseUrl: string): Promise<LLMClient> {
   return {
     async complete(prompt, options = {}) {
-      const response = await fetch(\`\${baseUrl}/v1/completions\`, {
+      const response = await fetch(\`\${baseUrl}/v1/chat/completions\`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': \`Bearer \${apiKey}\`,
         },
         body: JSON.stringify({
-          prompt,
+          messages: [
+            { role: 'system', content: options.system ?? 'You are the Archimedes signal-analysis assistant. Report only what the provided data supports.' },
+            { role: 'user', content: prompt },
+          ],
           temperature: options.temperature ?? 0.3,  // low temp for factual analysis
           max_tokens: options.maxTokens ?? 1024,
         }),
       });
       const data = await response.json();
-      return data.choices[0].text;
+      return data.choices[0].message.content;
     },
   };
 }

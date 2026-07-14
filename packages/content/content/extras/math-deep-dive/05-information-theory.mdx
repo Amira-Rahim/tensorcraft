@@ -195,7 +195,7 @@ console.log('CE gradient:', ceGrad.toFixed(2));        // -100.00
 
 ## Challenge
 
-Implement entropy, cross-entropy, and KL divergence from scratch.
+Implement entropy, cross-entropy, and KL divergence from scratch. One base switch before you start: the lesson's demos used `Math.log2` because bits make compression intuitive, but the exercise (like every loss function in the course) works in natural log, `Math.log`. Same math, different unit: nats instead of bits, and ln 2 = 0.6931 is where the coin flip lands.
 
 <Exercise slug="compute-entropy" />
 

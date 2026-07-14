@@ -99,12 +99,12 @@ const deepScanCard: ModelCard = {
   name: 'DEEP SCAN Signal Classifier',
   version: '1.0.0',
   description: 'Classifies deep space radio signals into 5 categories: pulsar, quasar, noise, interference, anomaly.',
-  author: 'Ensign Demir, USS Archimedes',
+  author: 'Ensign Demir, Archimedes',
 
   training: {
-    dataset: 'Kepler-442 Signal Archive (2024)',
-    datasetSize: 50_000,
-    features: ['FFT magnitudes (80 bins)', 'spectral peaks', 'SNR', 'bandwidth', 'temporal variance'],
+    dataset: 'Sector 7-G Signal Archive (11 days, one reading per 33-second window)',
+    datasetSize: 28_800,
+    features: ['amplitude', 'frequency', 'phase', 'FFT bin magnitudes (8 fixed bins)'],
     trainTestSplit: '80/10/10 (train/val/test)',
     epochs: 50,
     optimizer: 'Adam (lr=0.001)',
@@ -120,7 +120,7 @@ const deepScanCard: ModelCard = {
   },
 
   limitations: [
-    'Trained on Kepler-442 region only; accuracy may drop in other star systems',
+    'Trained on Sector 7-G captures only; accuracy may drop in other sectors',
     'Anomaly class has lowest recall (84%); rare signals may be misclassified as noise',
     'Requires minimum 80-sample window; cannot classify very short bursts',
     'WebGPU backend required for <10ms inference; falls back to 15ms on WebGL',

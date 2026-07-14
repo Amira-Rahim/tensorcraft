@@ -70,7 +70,8 @@ const original = [0.5, -0.01, 0.002, -0.8, 0.003, 0.7, -0.001, 0.6];
 const pruned = pruneWeights(original, 0.6);
 console.log(pruned);
 // [0.5, 0, 0, -0.8, 0, 0.7, 0, 0.6]
-// 5 of 8 weights remain (3 pruned: those closest to zero)
+// 4 of 8 weights remain (4 pruned, those closest to zero:
+// 60% of 8 rounds down to a cut of 4)
 
 // Sparsity levels for DEEP SCAN:
 // 30% pruned: 93.8% accuracy (vs 94.2% baseline), barely noticeable

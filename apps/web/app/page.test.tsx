@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { LandingHero } from "./components/landing-hero";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
+import { CommitTrail } from "./components/commit-trail";
 
 // jsdom ships without ResizeObserver / IntersectionObserver, shim so the
 // ParticleField canvas effect doesn't throw when it mounts.
@@ -145,6 +146,22 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       render(<LandingHero />);
       expect(screen.getByTestId("hero-demo-panel")).toBeInTheDocument();
       expect(screen.getByTestId("deep-scan-demo-stub")).toBeInTheDocument();
+    });
+  });
+
+  // Artifact-proof panel (2026-07-14): the commit trail must render REAL
+  // module-1 corpus data in the exact format the push pipeline writes
+  // (apps/api/src/lib/github.ts). If either side changes format, this
+  // assertion is where the drift surfaces.
+  describe("CommitTrail", () => {
+    it("renders real module-1 commits in the pipeline's commit format", () => {
+      render(<CommitTrail compact />);
+      const trail = screen.getByTestId("commit-trail");
+      expect(trail.textContent).toMatch(
+        /feat\(foundations\): Complete exercise -- /,
+      );
+      expect(trail.textContent).toMatch(/foundations\/[a-z-]+\.ts/);
+      expect(trail.textContent).toMatch(/\+\d+ more commits/);
     });
   });
 

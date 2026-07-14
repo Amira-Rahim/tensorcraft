@@ -48,6 +48,12 @@ testCode: |
       const badApi = async () => 'not json';
       await expect(analyzeSignal('test', badApi)).rejects.toThrow();
     });
+    it('throws on valid JSON missing a required field (validation, not just parsing)', async () => {
+      const missingReasoning = async () => '{"classification":"anomaly","confidence":0.95}';
+      await expect(analyzeSignal('test', missingReasoning)).rejects.toThrow();
+      const missingClassification = async () => '{"confidence":0.95,"reasoning":"High amplitude"}';
+      await expect(analyzeSignal('test', missingClassification)).rejects.toThrow();
+    });
   });
 estimatedMinutes: 10
 difficulty: intermediate

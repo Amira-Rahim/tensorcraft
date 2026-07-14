@@ -6,7 +6,7 @@ themeId: deep-orbit
 order: 1
 scene:
   location: "Archimedes, Lab"
-estimatedMinutes: 30
+estimatedMinutes: 16
 difficulty: advanced
 context:
   narrative: "The LSTM works, but its sequential nature is slow. Farah introduces attention: a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
@@ -113,6 +113,8 @@ function simpleAttention(
 // Speed comparison for 80-step sequences:
 // LSTM:      80 sequential operations (can't parallelize)
 // Attention: 1 matrix multiply (fully parallelizable on GPU)
+// The hybrid below keeps the sequential LSTM encoder, so it buys the
+// DISTANCE fix, not the wall-clock one; pure-attention stacks buy both.
 
 // Build an attention-enhanced model. tf.layers has no attention layer,
 // so we compose the real mechanism from ops: an LSTM encodes the window

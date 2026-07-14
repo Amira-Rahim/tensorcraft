@@ -40,6 +40,11 @@ testCode: |
       input.dispose();
       output.dispose();
     });
+    it('is compiled with meanSquaredError and an optimizer (predict works uncompiled; training would not)', () => {
+      const model = buildPredictor();
+      expect(model.loss).toBe('meanSquaredError');
+      expect(model.optimizer).toBeDefined();
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

@@ -42,7 +42,7 @@ The bridge crew needs real-time classification in their dashboard. I'm not routi
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-But the model was trained in a notebook environment. Can we really run it in a browser tab?
+But we trained it on the engineering rig, with the rig's GPU behind it. Can a bridge dashboard tab really carry the same model?
 </Dialogue>
 
 You've faced this exact decision before as a frontend engineer. Server-side rendering vs client-side rendering. The tradeoffs are the same: where does the computation happen, and what do you gain or lose by moving it to the client?
@@ -131,7 +131,7 @@ Analyze the tradeoffs for a browser ML deployment scenario.
 
 <Epilogue>
 
-Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one integrated snapshot a second, already boiled down from the raw sample torrent. At 180 milliseconds of round-trip each, the server plan spends 4.3 hours of every day waiting on a network that is eleven light-minutes from anything resembling a CDN.
+Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one integrated snapshot a second, already boiled down from the raw sample torrent. At 180 milliseconds of round-trip to the ship's own compute bay, the server plan spends 4.3 hours of every day waiting on interdeck fiber, aboard a vessel eleven light-minutes from anything resembling a CDN.
 
 <Dialogue speaker="Chief Nazari">
 Four hours a day of waiting, or a one-time download per crew station. Buy the download.

@@ -52,7 +52,7 @@ const ROWS: Row[] = [
   {
     feature: "Browser-runtime + deployment",
     tensorcraft: "Every exercise grades in real TFJS in a worker",
-    fastai: "Cloud notebooks; deploy via paid fast.ai or third-party",
+    fastai: "Notebook-first; deploys free via Hugging Face Spaces / Gradio",
     karpathy: "Notebook only, no deployment story",
     coursera: "Theory; deployment in separate specialization",
   },
@@ -93,7 +93,9 @@ export default function ComparePage() {
       url: "https://tensorcraft.app",
     },
     datePublished: "2026-04-25",
-    dateModified: "2026-04-28",
+    // Bump whenever competitor claims/prices are re-verified; the visible
+    // "Prices checked" line below renders this same date.
+    dateModified: "2026-07-14",
     description:
       "Honest comparison of Tensorcraft against fast.ai, Karpathy zero-to-hero, and Coursera for frontend developers learning ML.",
     url: "https://tensorcraft.app/compare",
@@ -223,6 +225,11 @@ export default function ComparePage() {
             </li>
           </ul>
         </section>
+
+        <p className="mt-10 font-mono text-xs text-text-muted">
+          Competitor prices and claims last checked 2026-07-14. If something
+          here is stale, tell us and we&apos;ll fix it.
+        </p>
 
         <div className="mt-16 flex flex-wrap items-center gap-4">
           <Link

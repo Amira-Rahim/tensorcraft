@@ -172,7 +172,9 @@ A spectrogram is a sequence of FFTs computed on overlapping windows of the signa
 for each window position t:
   windowed = x[t:t+W] · w(W)              // multiply by window function
   X[t, k]  = FFT(windowed)
-spectrogram[t, k] = |X[t, k]|²            // magnitude squared
+spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
+                                          // this module plots |X| (magnitude):
+                                          // same picture, squared contrast
 ```
 
 **Parameters:**

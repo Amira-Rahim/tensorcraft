@@ -1,7 +1,7 @@
 slug: fft-features
 lessonSlug: fft-as-features
 title: "Extract FFT Features"
-instructions: "Write a function that takes a signal array, computes the FFT, and returns the magnitudes of the top-K strongest frequency bins (excluding DC at bin 0) sorted by magnitude descending. These will be used as additional model features."
+instructions: "Write a function that takes a signal array, computes the FFT, and returns the magnitudes of the top-K strongest frequency bins (excluding DC at bin 0) sorted by magnitude descending. This surfaces the spectral peaks for the catalog report; the classifier's model features use FIXED bins instead, so each feature keeps a stable frequency identity (see the lesson)."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

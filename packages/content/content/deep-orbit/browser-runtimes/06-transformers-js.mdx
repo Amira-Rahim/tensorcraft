@@ -17,7 +17,7 @@ concept:
     feTitle: "npm install component-library"
     feCode: "import { DatePicker } from 'react-datepicker'"
     mlTitle: "Transformers.js pipeline"
-    mlCode: "import { pipeline } from '@xenova/transformers'\nconst classifier = await pipeline('sentiment-analysis')"
+    mlCode: "import { pipeline } from '@huggingface/transformers'\nconst classifier = await pipeline('sentiment-analysis')"
     tier: structural
     breaks: "An npm component renders deterministic markup once you pass props. A pretrained model returns probabilistic output that varies with input distribution: the 'API' looks identical, but you cannot unit-test the output value, only its shape and confidence range. The model file (50MB+) is also user-side bandwidth, not server-side. Caching strategy matters far more than for a typical npm import."
 consequence:
@@ -65,7 +65,9 @@ The right answer depends on whether the task is **custom** (TFJS) or **commodity
 ## Pipeline in Five Lines
 
 <CodeBlock language="typescript" title="sentiment-pipeline.ts">
-{`import { pipeline } from '@xenova/transformers';
+{`// The package moved from '@xenova/transformers' to the official
+// '@huggingface/transformers' at v3; old tutorials cite the former.
+import { pipeline } from '@huggingface/transformers';
 
 // First call: downloads ~80MB model + tokenizer to IndexedDB.
 // Subsequent calls: instant from cache.

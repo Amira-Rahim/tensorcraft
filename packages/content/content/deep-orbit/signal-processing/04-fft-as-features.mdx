@@ -75,9 +75,11 @@ He writes 85 on the board and signs it. He's wrong, but in the direction nobody 
 
 function extractFeatures(signal: number[], windowSize: number = 64): number[] {
   return tf.tidy(() => {
-    // Raw features (the original 3)
+    // Raw features (the original 3). The "frequency" feature is a raw
+    // zero-crossing count over the fixed window: proportional to the
+    // dominant frequency, but a count, not hertz. Name it what it is.
     const amplitude = Math.max(...signal.map(Math.abs));
-    const avgFreq = signal.reduce((sum, v, i) =>
+    const zeroCrossings = signal.reduce((sum, v, i) =>
       i > 0 && Math.sign(v) !== Math.sign(signal[i - 1]) ? sum + 1 : sum, 0
     );
     const phase = Math.atan2(signal[1], signal[0]);
@@ -87,15 +89,17 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     const fft = tf.spectral.rfft(tf.tensor1d(windowSlice));
     const magnitudes = tf.abs(fft).arraySync() as number[];
 
-    // Take the top-K frequency bins (most informative)
-    const topK = 8;
-    const sorted = magnitudes
-      .map((mag, bin) => ({ mag, bin }))
-      .sort((a, b) => b.mag - a.mag)
-      .slice(0, topK);
+    // Eight FIXED bins, the same bins for every signal. Sorting by
+    // magnitude would throw away frequency identity: "fft_3" would mean
+    // a different frequency in every row, and no downstream model could
+    // ever ask "what lives at 72 Hz?". At this window's 4 Hz resolution
+    // (256 Hz / 64 samples), bins 13-20 cover 52-84 Hz, the band the
+    // catalog activity lives in; the sixth of the eight (bin 18) is the
+    // span that holds the 73.4 Hz line.
+    const fixedBins = magnitudes.slice(13, 21);
 
-    // Combine: [raw features..., top FFT magnitudes...]
-    return [amplitude, avgFreq, phase, ...sorted.map(s => s.mag)];
+    // Combine: [raw features..., fixed-bin FFT magnitudes...]
+    return [amplitude, zeroCrossings, phase, ...fixedBins];
   });
 }
 
@@ -205,7 +209,7 @@ Extract FFT features from a signal and combine them with raw features.
     "A model's score is only as honest as the labels behind it. Re-annotating the archive against spectrogram ground truth is what turned the deployment review's 94 into a real 78, before features earned it back to 87."
   ]}
   bridge="Just as `useMemo(() => items.sort(compare), [items])` derives a sorted array from props so the render function does not have to sort on every access, `tf.concat([rawSignal, fftMagnitudes], 1)` derives frequency features from the raw signal so the model does not have to learn frequency extraction from scratch."
-  youCanNow="Extract top FFT magnitude bins from a signal, normalize them alongside raw features, and concatenate everything into a combined feature vector for a classifier."
+  youCanNow="Extract fixed FFT magnitude bins from a signal, normalize them alongside raw features, and concatenate everything into a combined feature vector for a classifier."
 />
 
 <Epilogue>

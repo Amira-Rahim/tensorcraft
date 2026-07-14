@@ -110,10 +110,15 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
   const times: number[] = [];
   for (let i = 0; i < 100; i++) {
     const start = performance.now();
-    tf.tidy(() => {
+    const out = tf.tidy(() => {
       const input = tf.tensor2d([[Math.random(), Math.random(), Math.random()]]);
-      model.predict(input);
+      return model.predict(input) as tf.Tensor;
     });
+    // Read the result back INSIDE the timed region. WebGL queues kernels
+    // asynchronously; without this await the clock measures enqueue time,
+    // not execution time, and the "benchmark" flatters the GPU.
+    await out.data();
+    out.dispose();
     times.push(performance.now() - start);
   }
 
@@ -149,7 +154,8 @@ async function benchmarkONNX(): Promise<BenchmarkResult> {
   };
 }
 
-// Typical results for a small signal classifier:
+// Typical results for a small signal classifier (readback included,
+// exact numbers vary by machine):
 // TF.js (WebGL):  cold=340ms, inference=2.1ms, mem=0.8MB
 // ONNX (WASM):    cold=180ms, inference=3.8ms, mem=1.2MB`}
 </CodeBlock>
@@ -159,7 +165,7 @@ async function benchmarkONNX(): Promise<BenchmarkResult> {
 | Factor | TF.js | ONNX Runtime Web |
 |--------|-------|-------------------|
 | **Ecosystem** | Largest, most tutorials | Growing fast |
-| **GPU acceleration** | WebGL (excellent) | WebGL (experimental) |
+| **GPU acceleration** | WebGL (mature) + WebGPU (fastest, Chromium) | WebGPU (its primary GPU path) |
 | **Python interop** | Export from TF/Keras | Any framework via ONNX export |
 | **Cold start** | Slower (WebGL shader compilation) | Faster (WASM) |
 | **Sustained speed** | Faster (GPU shaders cached) | Good (SIMD-optimized WASM) |

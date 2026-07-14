@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "Sequence prediction is next-value forecasting: the LSTM outputs what it thinks comes next"
   - level: guidance
-    content: "Train with input = window[0:n], label = signal[n+1]. Loss = MSE between predicted and actual."
+    content: "Train with input = a window of n readings (signal[0:n]), label = the very next reading (signal[n]). Loss = MSE between predicted and actual."
   - level: solution
     content: "model.add(lstm({ units: 64, inputShape: [80, 3] })); model.add(dense({ units: 3 })); // predict next 3 features"
 keywords:
@@ -120,7 +120,7 @@ const forecast = await forecastMultiStep(model, recentWindow, 47);
 // The LSTM predicts a spike at step 47 of this one-second-step demo horizon.`}
 </CodeBlock>
 
-One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes, and it can only afford to because it operates on a different series: one value per pulse, the interval sequence, where 47 minutes is only about 38 steps at the current 73-second spacing. Same architecture, radically fewer recursive steps, which is the only reason its error is measured in seconds instead of minutes. If that forecast lands close, credit the signal's regularity and the short step count before you credit the model.
+One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes, and it can only afford to because it operates on a different series: one value per pulse, the interval sequence, where 47 minutes is only about 38 steps at the current 73-second spacing. Same architecture, radically fewer recursive steps, which is the only reason its error is measured in seconds instead of minutes. If that forecast lands close, credit the signal's regularity and the short step count before you credit the model. And keep the three clocks separate, because the ship now runs on all of them: the 73-second spacing between pulses, the 47-minute gap before the pattern re-enters the live feed, and the 72-hour macro-cycle the archive shows. Tonight's forecast predicts the middle one.
 
 ## Challenge
 

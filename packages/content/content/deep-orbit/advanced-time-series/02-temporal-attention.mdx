@@ -6,7 +6,7 @@ themeId: deep-orbit
 order: 2
 scene:
   location: "Archimedes, Bridge"
-estimatedMinutes: 30
+estimatedMinutes: 12
 difficulty: advanced
 context:
   narrative: "Demir applies attention specifically to the temporal dimension: the model learns to 'scroll to' the most relevant time steps in each signal window."
@@ -38,7 +38,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Ensign Demir">
-The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter: the spike at step 12 and the frequency shift at step 85.
+The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter: the spike at step 4 and the frequency shift at step 77. Seventy-three steps apart. The interval, drawn as geometry.
 </Dialogue>
 
 `scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention gives the model the same control over a sequence: score every time step, then concentrate processing on the few that carry the information.
@@ -52,14 +52,18 @@ The attention weights are like a heatmap over time. I can see exactly WHERE the 
 <CodeBlock language="typescript" title="temporal-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
+// The scoring function is MODULE STATE, created once: it trains as part
+// of the model. A fresh layer inside the function would score every call
+// with brand-new random weights, and the heatmap below would be noise.
+const scorer = tf.layers.dense({ units: 1 });
+
 // Temporal attention: score each time step's importance
 function temporalAttention(
   sequence: tf.Tensor3D,  // [batch, timeSteps, features]
 ): { attended: tf.Tensor2D; weights: tf.Tensor2D } {
   return tf.tidy(() => {
-    // Learn a scoring function for each time step
     // Project each step to a scalar importance score
-    const scores = tf.layers.dense({ units: 1 }).apply(sequence) as tf.Tensor;
+    const scores = scorer.apply(sequence) as tf.Tensor;
     const squeezed = scores.squeeze([2]) as tf.Tensor2D;  // [batch, timeSteps]
 
     // Softmax over time axis: which steps matter most?
@@ -77,8 +81,9 @@ function temporalAttention(
 // The weights tell the story:
 // weights = [0.01, 0.01, ..., 0.12, 0.01, ..., 0.15, ...]
 //                                ^                 ^
-//                            step 12           step 85
-// The model focuses on the initial spike and the frequency shift`}
+//                             step 4            step 77
+// The model focuses on the initial spike and the frequency shift,
+// 73 steps apart inside the 80-step window`}
 </CodeBlock>
 
 ## Interpreting Attention Weights
@@ -105,9 +110,9 @@ function topAttentionSteps(
 }
 
 // For the anomalous signal:
-// Step 85: weight=0.15, reading=[0.31, 73.4, 1.57]  ← frequency persists
-// Step 12: weight=0.12, reading=[1.82, 73.4, 0.23]  ← amplitude spike
-// Step 73: weight=0.09, reading=[0.95, 73.4, 0.89]  ← mid-pattern
+// Step 77: weight=0.15, reading=[0.31, 73.4, 1.57]  ← frequency shift
+// Step 4:  weight=0.12, reading=[1.82, 73.4, 0.23]  ← amplitude spike
+// Step 40: weight=0.09, reading=[0.95, 73.4, 0.89]  ← mid-pattern
 // The model found the 73.4 Hz component across multiple time steps`}
 </CodeBlock>
 

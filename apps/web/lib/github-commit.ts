@@ -23,7 +23,25 @@ export function commitExerciseArtifact(input: {
   apiFetch("/api/github/commit", {
     method: "POST",
     body: JSON.stringify(input),
-  }).catch(() => {
-    /* best-effort; Settings' retroactive push covers gaps */
-  });
+  })
+    .then(async (res) => {
+      // One-time nudge: the endpoint answers github_not_connected for the
+      // common not-linked case, and nothing else in the lesson flow ever
+      // surfaces it, so a learner who skips Settings gets an empty repo
+      // with no explanation. Show one toast, ever, per browser.
+      if (res.ok || typeof window === "undefined") return;
+      const body = (await res.json().catch(() => null)) as {
+        code?: string;
+      } | null;
+      if (
+        body?.code === "github_not_connected" &&
+        !window.localStorage.getItem("tc_github_nudge_shown")
+      ) {
+        window.localStorage.setItem("tc_github_nudge_shown", "1");
+        window.dispatchEvent(new CustomEvent("tc:github-nudge"));
+      }
+    })
+    .catch(() => {
+      /* best-effort; Settings' retroactive push covers gaps */
+    });
 }

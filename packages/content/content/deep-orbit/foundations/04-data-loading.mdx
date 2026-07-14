@@ -30,10 +30,10 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-The raw sensor data comes in faster than we can process it in one pass. But this is just infinite scroll, right? Fetch everything once, hold the list, render a window. I pulled the full archive into one array overnight.
+The raw sensor data comes in faster than we can process it in one pass. But this is just infinite scroll, right? Fetch everything once, hold the list, render a window. I pulled the full archive, raw capture blocks and all, into one array overnight.
 </Dialogue>
 
-> `RangeError: Array buffer allocation failed`. Engineering rig, 19,204 readings into a 28,800-reading archive. The crash takes ARIA's overnight diagnostic queue down with it. Queue rebuild: four hours. Logged against: Ensign Demir.
+> `RangeError: Array buffer allocation failed`. Engineering rig, 19,204 readings into a 28,800-reading archive. Each reading drags its 33-second raw capture along: 256 Hz across 64 channels, about two megabytes apiece, forty gigabytes before the loop was two-thirds done. The crash takes ARIA's overnight diagnostic queue down with it. Queue rebuild: four hours. Logged against: Ensign Demir.
 
 <Dialogue speaker="ARIA">
 Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.

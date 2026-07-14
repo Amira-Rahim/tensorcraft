@@ -41,6 +41,11 @@ testCode: |
       input.dispose();
       output.dispose();
     });
+    it('is compiled with binaryCrossentropy and an optimizer (predict works uncompiled; training would not)', () => {
+      const model = buildRNN();
+      expect(model.loss).toBe('binaryCrossentropy');
+      expect(model.optimizer).toBeDefined();
+    });
   });
 estimatedMinutes: 10
 difficulty: intermediate

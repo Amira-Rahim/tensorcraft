@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { themes } from "@tensorcraft/themes";
-import { THEME_SLUGS, isLaunched } from "@tensorcraft/shared";
+import { THEME_SLUGS, THEME_CONTENT, isLaunched } from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
   title: "Learn Machine Learning with JavaScript | Tensorcraft",
@@ -65,8 +65,9 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">2.</span>
             <span>
-              Learn through bridges: 55 analogies map ML concepts to frontend
-              concepts you know, each labeled where it breaks
+              Learn through bridges: {THEME_CONTENT.lessonBridges} analogies map
+              ML concepts to frontend concepts you know, each labeled where it
+              breaks
             </span>
           </li>
           <li className="flex gap-3">

@@ -36,8 +36,8 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-<Dialogue speaker="ARIA">
-The neuron outputs unbounded values: negative infinity to positive infinity. I need a way to interpret these as decisions. Should this signal be classified as anomalous or normal?
+<Dialogue speaker="Chief Nazari">
+Your neuron scored one reading at negative eleven and another at six hundred. Is negative eleven a yes or a no, Ensign? The alert board takes yes or no. It does not take "depends on the scale."
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "Choose the right activation for different situations"]} />
@@ -106,7 +106,7 @@ Apply ReLU activation to neuron outputs.
 Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing screaming off toward infinity anymore. At 0316 the neuron scores archived reading 22146 at 0.91. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
 
 <Dialogue speaker="ARIA">
-I have checked reading 22146 against all 14,202 of my rules. None of them fire. The neuron is responding to something I do not have a rule for. I am still running, and I am noting that.
+I have checked reading 22146 against all 14,202 of my classification rules; the 4,096 that parse the stream hand it over and hold no opinion. None fire. The neuron is responding to something I do not have a rule for. I am still running, and I am noting that.
 </Dialogue>
 
 </Epilogue>

@@ -61,6 +61,14 @@ testCode: |
       const prompt = buildPrompt(signal);
       expect(prompt).toContain('DEEP SCAN');
     });
+    it('templates the input, not a memorized string (different signal, different prompt)', () => {
+      const other = buildPrompt({ amplitude: 0.34, frequency: 12.0, phase: 1.57 });
+      expect(other).toContain('0.34');
+      expect(other).toContain('12');
+      expect(other).toContain('1.57');
+      expect(other).not.toContain('1.82');
+      expect(other).not.toContain('73.4');
+    });
   });
 estimatedMinutes: 10
 difficulty: beginner

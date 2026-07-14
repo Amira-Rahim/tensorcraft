@@ -96,7 +96,12 @@ DEEP SCAN spent last night reclassifying cosmic background it had already classi
 
   set(input: number[], result: T): void {
     const key = this.hashInput(input);
-    if (this.cache.size >= this.maxSize) {
+    // Re-setting an existing key must refresh its recency (the same
+    // delete-then-set trick get() uses) and must NOT evict a stranger:
+    // the size isn't growing.
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.maxSize) {
       // Map's first key = least recently used (get() refreshes position)
       const lru = this.cache.keys().next().value;
       if (lru) this.cache.delete(lru);

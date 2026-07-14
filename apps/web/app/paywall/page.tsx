@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
+import { CommitTrail } from "@/app/components/commit-trail";
 
 /**
  * Dedicated paywall / upsell page, Phase 11 §11d Wave 3.
@@ -37,9 +38,9 @@ type ComparisonRow = {
 
 const COMPARISON_ROWS: ComparisonRow[] = [
   { feature: "Module 1 preview", free: "Included", paid: true },
-  { feature: "All 11 modules", free: false, paid: true },
-  { feature: "56 lessons", free: false, paid: true },
-  { feature: "Code exercises (all)", free: false, paid: true },
+  { feature: "All 11 modules", free: "Module 1", paid: true },
+  { feature: "56 lessons", free: "5 of 56", paid: true },
+  { feature: "Code exercises (all)", free: "Module 1's 5", paid: true },
   { feature: "GitHub push flow", free: "Module 1", paid: true },
   { feature: "Capstone project", free: false, paid: true },
   { feature: "Certificate of completion", free: false, paid: true },
@@ -202,10 +203,30 @@ export default function PaywallPage() {
           </div>
         </section>
 
-        {/* Social-proof section removed for V1.
-            An empty "PENDING" placeholder hurts conversion more than the
-            absence of testimonials. Restore this block once 3+ real beta
-            quotes are in hand. */}
+        {/* Artifact proof (V1). No testimonials exist yet and fabricated
+            ones are worse than none; restore a quotes block here once 3+
+            real beta quotes are in hand. Until then, show the verifiable
+            evidence the product already produces. */}
+        <section
+          className="py-16 px-6 border-t border-border"
+          data-testid="artifact-proof"
+        >
+          <div className="max-w-3xl mx-auto grid gap-8 md:grid-cols-[1.1fr_1fr] items-start">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 text-text-primary font-mono tracking-tight">
+                The proof is the artifact
+              </h2>
+              <p className="text-sm text-text-muted leading-relaxed font-sans">
+                This course is new, so there are no testimonials here yet, and
+                we won&apos;t invent any. What it produces instead is
+                verifiable: every solved exercise lands in your GitHub as a
+                commit you can point an interviewer at, and completing all 56
+                lessons issues a certificate with a public, shareable page.
+              </p>
+            </div>
+            <CommitTrail compact />
+          </div>
+        </section>
 
         {/* Final CTA */}
         <section className="py-24 px-6 text-center border-t border-border">

@@ -30,7 +30,7 @@ hints:
   - level: guidance
     content: "Use tf.layers.lstm() as a drop-in replacement for simpleRNN: same API, better memory"
   - level: solution
-    content: "model.add(tf.layers.lstm({ units: 64, inputShape: [50, 3] }))"
+    content: "model.add(tf.layers.lstm({ units: 64, inputShape: [80, 3] }))"
 keywords:
   - lstm
   - gates
@@ -43,7 +43,7 @@ skillAxes: [model_arch]
 Loss: 0.693. Epoch 200 of 200. Demir's overnight run is still on the engineering display, six hours of compute flatlined at a coin flip, when Farah walks in with her tablet already open to the fix.
 
 <Dialogue speaker="Dr. Farah">
-The simple RNN forgets. By the time it reaches time step 50, information from step 1 has vanished, its gradients multiplied through too many small numbers. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
+The simple RNN forgets. Its gradients thin out by step twenty and are gone long before step seventy-three, where the pattern lives, information from the early steps multiplied through too many small numbers. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -95,15 +95,19 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 const model = tf.sequential();
 model.add(tf.layers.lstm({
   units: 64,              // hidden state size
-  inputShape: [50, 3],    // 50 time steps, 3 features; handles long sequences!
+  inputShape: [80, 3],    // the SAME 80-step window the SimpleRNN failed on
   returnSequences: false,  // only need final output for classification
 }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Training on long sequences, where SimpleRNN failed
-const x = tf.randomNormal([100, 50, 3]);  // 100 samples, 50 time steps
+// Shape drill with placeholder tensors: prove the [80, 3] pipeline runs
+// end to end. Placeholder labels are random, so do NOT expect this loss
+// to converge; nothing can learn noise. The real evidence that gates beat
+// plain recurrence on this window is the previous lesson's failed run and
+// tonight's archive replay below.
+const x = tf.randomNormal([100, 80, 3]);  // 100 samples, 80 time steps
 const y = tf.randomUniform([100, 1]).round();
 
 const history = await model.fit(x, y, {
@@ -117,7 +121,6 @@ const history = await model.fit(x, y, {
     },
   },
 });
-// Unlike SimpleRNN, loss actually converges on long sequences!
 
 x.dispose();
 y.dispose();`}
@@ -135,7 +138,7 @@ y.dispose();`}
 const gruModel = tf.sequential();
 gruModel.add(tf.layers.gru({
   units: 64,
-  inputShape: [50, 3],
+  inputShape: [80, 3],
 }));
 gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
@@ -175,7 +178,7 @@ Build an LSTM that handles long signal sequences.
 
 <Epilogue>
 
-Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. Demir replays the full eleven days, and at the 72-hour mark, when the pattern returns, the network flags it inside a single 50-step window. No cell state survived three days; none had to. The gates learned the shape once, and recognition is cheaper than memory. On the bridge channel, ARIA is silent for four full seconds before she speaks.
+Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. Demir replays the full eleven days, and at the 72-hour mark, when the pattern returns, the network flags it inside a single 80-step window. No cell state survived three days; none had to. The gates learned the shape once, and recognition is cheaper than memory. On the bridge channel, ARIA is silent for four full seconds before she speaks.
 
 <Dialogue speaker="ARIA">
 Filed without directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes a pattern across three days. Nothing in my tables explains why that works.

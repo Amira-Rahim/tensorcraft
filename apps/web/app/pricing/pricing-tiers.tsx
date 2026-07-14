@@ -425,7 +425,8 @@ export function PricingTiers() {
                 "All 5 themes",
                 `${totalLessons + comingThemeLessons * 4} lessons`,
                 "5 capstone projects",
-                "Priority support",
+                // "Priority support" removed 2026-07-14: no support-tier
+                // mechanism exists; don't promise one before building it.
               ].map((f) => (
                 <li
                   key={f}

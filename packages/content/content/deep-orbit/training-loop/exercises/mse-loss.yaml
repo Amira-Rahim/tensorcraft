@@ -1,10 +1,31 @@
 slug: mse-loss
 lessonSlug: loss-functions
 title: "Calculate MSE Loss"
-instructions: "Calculate the Mean Squared Error loss between a tensor of predictions and a tensor of true labels. Use tf.losses.meanSquaredError()."
-starterCode: "const predictions = tf.tensor([2.5, 0.0, 2.1, 1.3]);\nconst labels = tf.tensor([3.0, -0.5, 2.0, 1.0]);\n\n// Calculate MSE loss\nconst loss = null; // your code here"
-solutionCode: "const predictions = tf.tensor([2.5, 0.0, 2.1, 1.3]);\nconst labels = tf.tensor([3.0, -0.5, 2.0, 1.0]);\n\nconst loss = tf.losses.meanSquaredError(labels, predictions);"
-testCode: "describe('MSE Loss', () => { it('produces a loss value', () => { expect(loss).toBeDefined(); }); it('is a scalar', () => { expect(loss.shape).toEqual([]); }); it('computes correct MSE', () => { const val = loss.dataSync()[0]; expect(val).toBeCloseTo(0.15, 2); }); });"
+instructions: "Write a function `mseLoss(labels, predictions)` that returns the Mean Squared Error between any pair of label/prediction tensors as a scalar tensor. Use tf.losses.meanSquaredError()."
+starterCode: |
+  function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
+    // Mean of the squared differences, as a scalar tensor
+    return null; // your code here
+  }
+solutionCode: |
+  function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
+    return tf.losses.meanSquaredError(labels, predictions);
+  }
+testCode: |
+  describe('mseLoss', () => {
+    it('is a scalar', () => {
+      const loss = mseLoss(tf.tensor([3.0, -0.5, 2.0, 1.0]), tf.tensor([2.5, 0.0, 2.1, 1.3]));
+      expect(loss.shape).toEqual([]);
+    });
+    it('computes correct MSE', () => {
+      const loss = mseLoss(tf.tensor([3.0, -0.5, 2.0, 1.0]), tf.tensor([2.5, 0.0, 2.1, 1.3]));
+      expect(loss.dataSync()[0]).toBeCloseTo(0.15, 2);
+    });
+    it('works on a second pair (no memorized value): errors [2, 0] -> MSE 2', () => {
+      const loss = mseLoss(tf.tensor([1, 2]), tf.tensor([3, 2]));
+      expect(loss.dataSync()[0]).toBeCloseTo(2.0, 5);
+    });
+  });
 estimatedMinutes: 10
 difficulty: beginner
 mlContent: data

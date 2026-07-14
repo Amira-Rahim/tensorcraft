@@ -86,8 +86,11 @@ function detectAnomaly(
   recentWindow: number[][],
   thresholds: { zScore: number; reconstruction: number; prediction: number },
 ): DetectionResult {
-  // Detector 1: Statistical z-score
-  const amplitude = Math.max(...signal.map(Math.abs));
+  // Detector 1: Statistical z-score on the amplitude feature (signal[0]).
+  // baseline is amplitude's mean/std over normal-period data, the module's
+  // opening lesson. A max over the whole 11-dim vector would mix the FFT
+  // magnitudes' scale into an "amplitude" it isn't.
+  const amplitude = signal[0];
   const zScore = Math.abs(amplitude - baseline.mean) / baseline.std;
   const statTriggered = zScore > thresholds.zScore;
 

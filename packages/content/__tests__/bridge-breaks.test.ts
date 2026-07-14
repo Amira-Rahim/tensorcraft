@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { relative } from "node:path";
 import { describe, it, expect } from "vitest";
-import { BRIDGES } from "@tensorcraft/shared";
+import { BRIDGES, THEME_CONTENT } from "@tensorcraft/shared";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
 import {
@@ -48,7 +48,8 @@ const bridges = lessonFiles(CONTENT_DIR)
   .filter((b: LessonBridge | null): b is LessonBridge => b !== null);
 
 describe("bridge breaks coverage (Deep Orbit)", () => {
-  it("the /learn claim's bridge count holds (55 lesson bridges)", () => {
+  it("the marketing bridge count matches the corpus (single-sourced constant)", () => {
+    expect(bridges.length).toBe(THEME_CONTENT.lessonBridges);
     expect(bridges.length).toBe(55);
   });
 

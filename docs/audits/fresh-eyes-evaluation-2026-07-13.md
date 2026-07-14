@@ -38,7 +38,116 @@ fixed same day:
 Battery: velite clean · typecheck 11/11 · vitest 1063/132 files (0 failed;
 +1 drawer gate) · lint 15/15 · e2e themes+onboarding 26/26.
 
-### Run #3 open items (Tier 2, verified findings)
+**Tier-1 verification round (2026-07-14, deep re-audit of the fixes):**
+(1) corpus-wide pronoun sweep: zero remaining Mirza misgenders, every
+surviving he/him is Demir; oe/05 "behind her" sharpened to "behind the
+Commander" (Nazari shared the paragraph). (2) shipped tl/04 block executed
+3× on vendored TFJS: loss column stable, accuracy bounces 0.71–0.94 at
+epoch 40 → caveat comment now states the measured range instead of
+"differ a little"; the in-story 0.6931 training log is the archive run,
+consistent. (3) hint-derived rn/04 code executed against the exercise
+convention: exact match; same-class sweep of sibling rn hints caught
+rn/05's off-by-one ("label = signal[n+1]" → signal[n]), fixed. (4) wiring
+chain proven end-to-end: ui exports resolve to src (single module
+instance, no context split), migration 018 column confirmed, null-profile
+safe, and the previously-unverified PRODUCTION build passes. (5) rate
+mentions swept corpus-wide: every survivor coheres under the three named
+units. Environmental note: the prod build clobbered `.next` under the
+long-running :3131 dev server → 3 e2e failures that vanished on a fresh
+server (the known dev-chunk-poisoning class, not a code bug). Battery
+after: velite · tc 11/11 · vitest 1063/0 · lint · grader 83/83 · prod
+build · e2e 26/26, all green.
+
+### Run #3 Tier 2 EXECUTED (2026-07-14) — all items below closed
+
+**Graders:** llm-client gained the missing-field validation test (bare
+`JSON.parse` no longer passes); prompt-template gained the second-input
+anti-memorization test; build-rnn/build-lstm/predict-next assert
+`model.loss` + `model.optimizer` (uncompiled models no longer pass); NEW
+**launch-rehearsal** capstone synthesis exercise (25 min, advanced):
+normalize → batch-predict in tidy → drift check → launch gate, tested
+against a weight-injected probe with hand-checkable confidences and a
+leak assertion. Grader corpus now **84/84** with --starters. Workload:
+1,800 min = exactly 30.00 h; courseWorkload comment updated.
+
+**Canon:** cap/04 model card rebuilt on canon (Sector 7-G / 28,800 /
+33-second windows / real 11-dim features; write-model-card fixture
+matched); oe/03 pruning comment corrected to the executed 4/4 output;
+tl/05 spoilers stripped from code comments + epilogue retuned to
+dread-confirmation; ARIA rule counts reconciled (14,202 classification vs
+4,096 parsing, one clause); the 5-class retrain dramatized in oe/02;
+"four months" → "ten weeks"; the three clocks (73 s / 47 min / 72 h)
+named in rn/05; sp/04 features moved to 8 FIXED bins (bins 13-20 at 4 Hz
+resolution, sixth bin holds 73.4 Hz — ad/03's fft_5 labeling now
+possible; fft-features exercise reframed as peak-finding); ad/05
+detector-1 z-scores `signal[0]` with baseline semantics stated; br/04
+soak replay lights the labeled windows on schedule before the one
+unlabeled flag; br/01 notebook retcon → engineering-rig framing; rn/03
+moved to the RNN's own 80-step window everywhere (lesson, hints, GRU,
+build-lstm exercise) AND its noise-demo convergence lie replaced with an
+honest shape-drill framing (same class as tl/04's HIGH, caught during the
+fix); oe/02 accuracy ledger corrected (78 → 87 attribution).
+
+**Currency:** WebGPU added to br/02 backends (registration + feature-gated
+setBackend) and br/05's comparison table; both br benchmarks now read
+results back inside the timed region with the enqueue-vs-execution
+explanation; `@xenova/transformers` → `@huggingface/transformers` with a
+rename note; llm/01 client rewritten to the messages API (system + user
+roles), consistent with its own solution hint.
+
+**Story:** nn/02 opens on Nazari demanding a yes/no (was ARIA reciting
+syllabus); ad/01 opens on the three-alerts-this-shift beat (was the
+finish-each-other's-sentences trailer); tl/04 Demir now has a want
+(learning to trust automation); the untrained-0.998 miracle is finally
+acknowledged on-page in cap/05's body ("Some instruments point before
+anyone builds them") without touching the protected epilogue; the finale
+DispatchTease moved AFTER the epilogue and cites the 73.4-second pulse
+(right unit).
+
+**Funnel:** fast.ai row corrected (free HF Spaces/Gradio, no "paid
+fast.ai"); bridge count single-sourced as `THEME_CONTENT.lessonBridges`
+(=55, corpus-pinned by the bridge-breaks gate) across FAQ, /learn, and
+onboarding; /compare dateModified bumped + visible "prices checked
+2026-07-14" line; "Priority support" removed from the All-5 tier (no
+mechanism exists); paywall Free column tells the truth ("5 of 56",
+"Module 1's 5"); GitHub connect nudge shipped: `github_not_connected`
+on commit-on-pass now dispatches a once-per-browser toast
+(GithubNudgeToast in layout, localStorage-guarded at the dispatch site,
+gated by a new github-commit test).
+
+Battery: velite clean · typecheck 11/11 · vitest 1065/0 failed (133
+files) · lint 0 errors · grader 84/84 --starters · e2e
+themes+pricing+landing 40/40.
+
+**Tier-2 verification round (2026-07-14, deep re-audit of the fixes):**
+Seven lazy-solution attacks EXECUTED against the hardened graders, all
+killed: llm-client bare `JSON.parse` (dies on the missing-field test),
+prompt-template hardcoded string (dies on the second-input test),
+build-lstm without `compile()` (dies on the loss/optimizer assert), and
+launch-rehearsal's hardcoded-verdict / drift-ignored / tidy-less variants
+(die on confidences / drift-gate / leak tests respectively; positive
+control = the real grader's 84/84). Canon sweeps: rn/02's failed RNN run
+confirmed to be 80-step windows, so rn/03's LSTM comparison is now
+genuinely apples-to-apples; zero leftover 50-step canon (rn/04's "50" is
+a hypothetical quiz); sp/04's bin arithmetic verified exactly (bins as
+[4k, 4k+4): bin 18 = [72,76) holds 73.4 Hz and is the sixth of the eight
+= ad/03's fft_5 — the two lessons now agree to the bin); the 11-feature
+vector (3 raw + 8 fixed bins) coheres across ad/02/03/05; months sweep
+clean; tl/05's spoilers gone and the epilogue's dread-confirmation in.
+One sharpening applied: nn/02's ARIA clause (parsing rules "hand it over
+and hold no opinion" — they do see the reading during parse). One real
+find: the e2e expect ceiling — a cold dev-server compile of the lesson
+route MEASURED at 14.96s vs the 15s ceiling, making fresh-server runs a
+coin flip; raised to 30s with the measurement in the comment, landing
+spec then 10/10 on a cold server. Battery after: velite · tc 11/11 ·
+vitest 1065/0 · grader 84/84 · e2e 41/41 (exit 0) · PROD BUILD (119
+static pages). One residual: a single cold-start e2e flake appeared once
+on a fresh server even post-fix and vanished warm — environmental
+dev-mode class, tracked, not a content/code regression.
+
+Original Tier-2 finding list preserved below for the record:
+
+### Run #3 open items (Tier 2, verified findings) — ALL CLOSED 2026-07-14
 
 Graders: llm-client passes `JSON.parse(await apiCall(prompt))` (validation
 untested); prompt-template passes a hardcoded string (no second-input
@@ -65,7 +174,68 @@ bridge-count drift (50+/51/55); stale dateModified + frozen competitor
 prices; "Priority support" has no mechanism; GitHub connect nudge missing
 in-lesson; paywall Free column says ✗ where free tier includes 5 lessons.
 
-### Run #3 open items (Tier 3)
+### Run #3 Tier 3 + strategic moves EXECUTED (2026-07-14) — all closed
+
+Polish: ats/02 hotspots moved in-range at the 73-step spacing (4/77,
+including the interpret block the first pass would have missed) and its
+attention scorer hoisted to module state (a fresh dense per call scored
+with random weights — same can't-produce-its-output class as tl/04,
+found while editing); ats/01 gained the hybrid-keeps-sequential-cost
+sentence; cap/03 scene time → "Relay minus five days"; foundations/04
+crash now credible (raw capture blocks: 256 Hz × 64 ch × 33 s ≈ 2 MB per
+reading, ~40 GB before the crash); br/01's 180 ms round-trips explicitly
+interdeck fiber; `avgFreq` renamed `zeroCrossings` with a
+what-it-actually-is comment; spectrogram |X|² vs |X| convention noted in
+the drawer; module 8's copy-pasted 30-minute labels re-measured to
+honest per-lesson values (16/12/13/16/14) — workload drops to 1,721 min
+and courseWorkload is now **PT29H** (honesty over the round number);
+oe/04's LRU set() refreshes recency and no longer evicts a stranger on
+re-set; llm/05 confidence reports confidence in the verdict (1 − p for
+noise); bits→nats base-switch sentence added before the entropy
+exercise; deep-scan-eval relabeled beginner; the Demir-corrected
+skeleton broken in llm/03 (the checker catches a number Nazari signed
+off by hand; she initials the correction without comment). Graders:
+relu-activation, add-tensors, mse-loss rewritten as functions with
+second-input probes (hardcoded outputs die); grader 84/84 --starters.
+
+Strategic: **CommitTrail** component ships on the landing "What You'll
+Build" cell and the paywall — a git-log panel generated from the REAL
+module-1 exercise corpus in the EXACT commit format the push pipeline
+writes, with an on-panel honesty line (no fabricated activity). The
+paywall's social-proof TODO replaced by an **artifact-proof section**
+that says outright there are no testimonials yet and shows the
+verifiable evidence instead (commit trail + public certificate route);
+the restore-when-3-real-quotes note kept.
+
+Battery: velite · typecheck 11/11 · vitest 1065/0 (133 files) · lint 0
+errors · grader 84/84 · e2e landing+themes+pricing 40/40 exit 0 · prod
+build 119 pages. **Every item from run #3 (Tiers 1-3 + strategic) is now
+closed.**
+
+**Tier-3 verification round (2026-07-14, deep re-audit of the fixes):**
+Everything executable was executed. The hoisted attention scorer proven
+consistent across calls on the vendored TFJS, and the old
+fresh-dense-per-call pattern proven inconsistent (the bug was real). The
+LRU set() semantics executed: re-setting an existing key keeps the other
+entries and refreshes recency; overflow evicts the true LRU. The f/04
+crash arithmetic executed: 2.16 MB/reading, 41.5 GB at reading 19,204 =
+exactly two-thirds through, matching the prose. Three hardcoded-output
+attacks run against the rewritten graders (relu fixed tensor, add-tensors
+fixed pair, mse scalar 0.15): all killed by the second-input probes;
+grader control 84/84. Coupling check: oe/04's inference-cache exercise is
+a quantized-hash cache with no eviction contract — no drift with the
+lesson's LRU fix. Sweeps clean: zero leftover step-85/12 references,
+avgFreq gone corpus-wide, capstone scene times ordered coherently
+("Merge request 47" → "Relay minus five days" → "Deployment"),
+CommitTrail counts verified against the corpus (63 exercises, 5
+foundations, compact caption +60), no stale ~30h/62-exercise lines on any
+live surface, PT29H in place. New permanent gate: page.test.tsx asserts
+CommitTrail renders real module-1 commits in the pipeline's exact format
+(format drift on either side surfaces there). Battery: typecheck 11/11 ·
+vitest 1066/0 (133 files) · grader 84/84 · prod build 119 pages (prior
+step) · e2e 40/40 exit 0 (prior step, unchanged surfaces).
+
+### Run #3 open items (Tier 3) — ALL CLOSED 2026-07-14
 
 Attention hotspots 12/85 out of 80-step range (ats/01+02); capstone/03
 stale scene time; foundations/04 crash math (~7 MB can't RangeError);

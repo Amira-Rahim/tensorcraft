@@ -99,6 +99,11 @@ export const THEME_CONTENT = {
   // producer resolves module sizes from here; a gate in packages/content
   // asserts these numbers against the real MDX corpus.
   moduleLessonOverrides: { "browser-runtimes": 6 } as Record<string, number>,
+  // Lesson-embedded FE→ML bridges in the launched theme. Single source for
+  // every marketing surface (/learn, FAQ, onboarding) — three surfaces
+  // carried three different counts (50+/51/55) until 2026-07-14. Pinned to
+  // the real corpus by packages/content/__tests__/bridge-breaks.test.ts.
+  lessonBridges: 55,
 } as const;
 
 /**

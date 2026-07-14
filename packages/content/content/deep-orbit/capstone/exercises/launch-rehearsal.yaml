@@ -1,0 +1,151 @@
+slug: launch-rehearsal
+lessonSlug: launch
+title: "Launch Rehearsal: The Full Chain, Gated"
+mlContent: model
+instructions: |
+  Assemble the whole system once, end to end. Build `runLaunchRehearsal(model, readings, config)`: normalize each reading's features to [0, 1] using `config.ranges` (module 4's pipeline), batch-predict all readings inside `tf.tidy()`, then judge the run the way module 11 gates a deploy. Return:
+
+    {
+      confidences: number[],   // model output per reading, input order
+      canaryAccuracy: number,  // fraction where (confidence > 0.5) matches reading.label
+      drift: boolean,          // |mean(confidences) - config.baselineMeanConfidence| > config.driftTolerance
+      launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
+    }
+
+  A rehearsal that leaks tensors fails the rehearsal: the whole prediction pass lives inside tidy.
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface Reading { amplitude: number; frequency: number; phase: number; label: 0 | 1; }
+  interface Range { min: number; max: number; }
+  interface RehearsalConfig {
+    ranges: { amplitude: Range; frequency: Range; phase: Range };
+    baselineMeanConfidence: number;
+    driftTolerance: number;
+    minAccuracy: number;
+  }
+  interface RehearsalVerdict {
+    confidences: number[];
+    canaryAccuracy: number;
+    drift: boolean;
+    launch: boolean;
+  }
+
+  function runLaunchRehearsal(
+    model: tf.LayersModel,
+    readings: Reading[],
+    config: RehearsalConfig,
+  ): RehearsalVerdict {
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface Reading { amplitude: number; frequency: number; phase: number; label: 0 | 1; }
+  interface Range { min: number; max: number; }
+  interface RehearsalConfig {
+    ranges: { amplitude: Range; frequency: Range; phase: Range };
+    baselineMeanConfidence: number;
+    driftTolerance: number;
+    minAccuracy: number;
+  }
+  interface RehearsalVerdict {
+    confidences: number[];
+    canaryAccuracy: number;
+    drift: boolean;
+    launch: boolean;
+  }
+
+  function runLaunchRehearsal(
+    model: tf.LayersModel,
+    readings: Reading[],
+    config: RehearsalConfig,
+  ): RehearsalVerdict {
+    const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
+    const confidences = tf.tidy(() => {
+      const rows = readings.map((r) => [
+        norm(r.amplitude, config.ranges.amplitude),
+        norm(r.frequency, config.ranges.frequency),
+        norm(r.phase, config.ranges.phase),
+      ]);
+      const out = model.predict(tf.tensor2d(rows)) as tf.Tensor;
+      return Array.from(out.dataSync());
+    });
+    const correct = confidences.filter(
+      (c, i) => (c > 0.5 ? 1 : 0) === readings[i].label,
+    ).length;
+    const canaryAccuracy = correct / readings.length;
+    const mean = confidences.reduce((a, b) => a + b, 0) / confidences.length;
+    const drift = Math.abs(mean - config.baselineMeanConfidence) > config.driftTolerance;
+    const launch = canaryAccuracy >= config.minAccuracy && !drift;
+    return { confidences, canaryAccuracy, drift, launch };
+  }
+testCode: |
+  describe('runLaunchRehearsal', () => {
+    // Identity probe (module 4's trick): output = normalized amplitude,
+    // so every confidence below is hand-checkable.
+    let probe;
+    beforeAll(() => {
+      probe = tf.sequential();
+      probe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
+      probe.layers[0].setWeights([tf.tensor2d([[1], [0], [0]])]);
+    });
+    const ranges = {
+      amplitude: { min: 0, max: 2048 },
+      frequency: { min: 20, max: 20000 },
+      phase: { min: -Math.PI, max: Math.PI },
+    };
+    const readings = [
+      { amplitude: 1536, frequency: 20, phase: -Math.PI, label: 1 },  // conf 0.75
+      { amplitude: 512, frequency: 20, phase: -Math.PI, label: 0 },   // conf 0.25
+      { amplitude: 1024, frequency: 20, phase: -Math.PI, label: 0 },  // conf 0.50 -> pred 0
+    ];
+    const greenConfig = {
+      ranges,
+      baselineMeanConfidence: 0.5,
+      driftTolerance: 0.1,
+      minAccuracy: 0.9,
+    };
+
+    it('confidences are the normalized amplitudes, in input order', () => {
+      const v = runLaunchRehearsal(probe, readings, greenConfig);
+      expect(v.confidences[0]).toBeCloseTo(0.75, 4);
+      expect(v.confidences[1]).toBeCloseTo(0.25, 4);
+      expect(v.confidences[2]).toBeCloseTo(0.5, 4);
+    });
+
+    it('all-green rehearsal launches: accuracy 1.0, no drift', () => {
+      const v = runLaunchRehearsal(probe, readings, greenConfig);
+      expect(v.canaryAccuracy).toBeCloseTo(1.0, 5);
+      expect(v.drift).toBe(false);
+      expect(v.launch).toBe(true);
+    });
+
+    it('a mislabeled canary drops accuracy and blocks launch', () => {
+      const flipped = [
+        readings[0],
+        { ...readings[1], label: 1 },  // conf 0.25 -> pred 0, label 1: miss
+        readings[2],
+      ];
+      const v = runLaunchRehearsal(probe, flipped, greenConfig);
+      expect(v.canaryAccuracy).toBeCloseTo(2 / 3, 4);
+      expect(v.launch).toBe(false);
+    });
+
+    it('drift blocks launch even at perfect accuracy', () => {
+      const drifted = { ...greenConfig, baselineMeanConfidence: 0.75 };
+      const v = runLaunchRehearsal(probe, readings, drifted);
+      expect(v.canaryAccuracy).toBeCloseTo(1.0, 5);
+      expect(v.drift).toBe(true);
+      expect(v.launch).toBe(false);
+    });
+
+    it('does not leak tensors (the whole pass lives in tidy)', () => {
+      const before = tf.memory().numTensors;
+      runLaunchRehearsal(probe, readings, greenConfig);
+      expect(tf.memory().numTensors).toBe(before);
+    });
+  });
+estimatedMinutes: 25
+difficulty: advanced
+skillAxis: deployment

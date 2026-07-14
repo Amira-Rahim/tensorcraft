@@ -66,7 +66,7 @@ testCode: |
       accuracy: 0.918,
       sizeMB: 42,
       inferenceMs: 5,
-      limitations: ['Only tested on Kepler-442 data', 'Requires 80-sample window'],
+      limitations: ['Only tested on Sector 7-G data', 'Requires 80-sample window'],
       inputFormat: 'Float32Array(80)',
       outputFormat: '{ label, confidence }',
     };
@@ -89,7 +89,7 @@ testCode: |
 
     it('lists all limitations', () => {
       const card = generateModelCard(meta);
-      expect(card).toContain('- Only tested on Kepler-442 data');
+      expect(card).toContain('- Only tested on Sector 7-G data');
       expect(card).toContain('- Requires 80-sample window');
     });
 

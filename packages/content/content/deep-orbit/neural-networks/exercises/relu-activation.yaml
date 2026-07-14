@@ -1,10 +1,32 @@
 slug: relu-activation
 lessonSlug: activation-functions
 title: "Apply ReLU Activation"
-instructions: "Apply the ReLU activation function to a tensor of pre-activation values. ReLU replaces negative values with zero and keeps positive values unchanged."
-starterCode: "const preActivation = tf.tensor([-2.0, -0.5, 0.0, 1.5, 3.0]);\n\n// Apply ReLU activation\nconst activated = null; // your code here"
-solutionCode: "const preActivation = tf.tensor([-2.0, -0.5, 0.0, 1.5, 3.0]);\n\nconst activated = preActivation.relu();"
-testCode: "describe('ReLU', () => { it('produces output', () => { expect(activated).toBeDefined(); }); it('zeros out negatives', () => { const vals = activated.dataSync(); expect(vals[0]).toBe(0); expect(vals[1]).toBe(0); }); it('keeps positives', () => { const vals = activated.dataSync(); expect(vals[3]).toBeCloseTo(1.5); expect(vals[4]).toBeCloseTo(3.0); }); });"
+instructions: "Write a function `applyRelu(preActivation)` that applies the ReLU activation to any tensor of pre-activation values: negatives become zero, positives pass through unchanged."
+starterCode: |
+  function applyRelu(preActivation: tf.Tensor): tf.Tensor {
+    // Replace negative values with zero, keep positives unchanged
+    return null; // your code here
+  }
+solutionCode: |
+  function applyRelu(preActivation: tf.Tensor): tf.Tensor {
+    return preActivation.relu();
+  }
+testCode: |
+  describe('applyRelu', () => {
+    it('zeros out negatives, keeps positives', () => {
+      const vals = applyRelu(tf.tensor([-2.0, -0.5, 0.0, 1.5, 3.0])).dataSync();
+      expect(vals[0]).toBe(0);
+      expect(vals[1]).toBe(0);
+      expect(vals[3]).toBeCloseTo(1.5);
+      expect(vals[4]).toBeCloseTo(3.0);
+    });
+    it('is a function, not a lookup: works on a second tensor too', () => {
+      const vals = applyRelu(tf.tensor([4.2, -7.0, 0.1])).dataSync();
+      expect(vals[0]).toBeCloseTo(4.2);
+      expect(vals[1]).toBe(0);
+      expect(vals[2]).toBeCloseTo(0.1);
+    });
+  });
 estimatedMinutes: 8
 difficulty: beginner
 mlContent: data

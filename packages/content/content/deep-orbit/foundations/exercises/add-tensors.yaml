@@ -1,22 +1,59 @@
 slug: add-tensors
 lessonSlug: tensor-operations
 title: "Merge the Sensor Passes"
-instructions: "Nazari ran the same scan twice to cancel noise. Combine the two passes: (1) average them element-wise into `merged` (add, then divide by 2), (2) the signal is faint, so amplify the average by a gain of 2.5 into `boosted`. Chain the ops or use separate calls; the grader only cares that the numbers are right."
-starterCode: "const pass1 = tf.tensor([0.2, 0.6, 0.4, 0.8]);\nconst pass2 = tf.tensor([0.4, 0.2, 0.6, 0.6]);\nconst GAIN = 2.5;\n\n// 1. Element-wise average of the two passes\nconst merged = null; // your code here\n\n// 2. Amplify by GAIN\nconst boosted = null;"
-solutionCode: "const pass1 = tf.tensor([0.2, 0.6, 0.4, 0.8]);\nconst pass2 = tf.tensor([0.4, 0.2, 0.6, 0.6]);\nconst GAIN = 2.5;\n\nconst merged = pass1.add(pass2).div(2);\nconst boosted = merged.mul(GAIN);"
+instructions: "Nazari ran the same scan twice to cancel noise. Write `mergePasses(pass1, pass2, gain)` that combines any two passes: (1) average them element-wise into `merged` (add, then divide by 2), (2) the signal is faint, so amplify the average by `gain` into `boosted`. Return `{ merged, boosted }`. Chain the ops or use separate calls; the grader only cares that the numbers are right, on any input."
+starterCode: |
+  function mergePasses(
+    pass1: tf.Tensor,
+    pass2: tf.Tensor,
+    gain: number,
+  ): { merged: tf.Tensor; boosted: tf.Tensor } {
+    // 1. Element-wise average of the two passes
+    // 2. Amplify the average by gain
+    return null; // your code here
+  }
+solutionCode: |
+  function mergePasses(
+    pass1: tf.Tensor,
+    pass2: tf.Tensor,
+    gain: number,
+  ): { merged: tf.Tensor; boosted: tf.Tensor } {
+    const merged = pass1.add(pass2).div(2);
+    const boosted = merged.mul(gain);
+    return { merged, boosted };
+  }
 testCode: |
-  describe('Sensor Merge', () => {
+  describe('mergePasses', () => {
     it('merged is the element-wise average', () => {
+      const { merged } = mergePasses(
+        tf.tensor([0.2, 0.6, 0.4, 0.8]),
+        tf.tensor([0.4, 0.2, 0.6, 0.6]),
+        2.5,
+      );
       const v = Array.from(merged.dataSync());
       expect(v[0]).toBeCloseTo(0.3, 5);
       expect(v[1]).toBeCloseTo(0.4, 5);
       expect(v[2]).toBeCloseTo(0.5, 5);
       expect(v[3]).toBeCloseTo(0.7, 5);
     });
-    it('boosted applies the 2.5x gain', () => {
+    it('boosted applies the gain', () => {
+      const { boosted } = mergePasses(
+        tf.tensor([0.2, 0.6, 0.4, 0.8]),
+        tf.tensor([0.4, 0.2, 0.6, 0.6]),
+        2.5,
+      );
       const v = Array.from(boosted.dataSync());
       expect(v[0]).toBeCloseTo(0.75, 5);
       expect(v[3]).toBeCloseTo(1.75, 5);
+    });
+    it('works on a different pair of passes and gain (no memorized outputs)', () => {
+      const { merged, boosted } = mergePasses(
+        tf.tensor([1, 2]),
+        tf.tensor([3, 6]),
+        10,
+      );
+      expect(Array.from(merged.dataSync())).toEqual([2, 4]);
+      expect(Array.from(boosted.dataSync())).toEqual([20, 40]);
     });
   });
 estimatedMinutes: 8

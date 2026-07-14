@@ -75,7 +75,12 @@ async function processSignal(
   const classification = tf.tidy(() => {
     const input = tf.tensor2d([signal]);
     const output = (models.classifier.predict(input) as tf.Tensor).dataSync()[0];
-    return { class: output > 0.5 ? 'anomaly' : 'noise', confidence: output };
+    // Confidence is confidence IN THE VERDICT: a 0.2 sigmoid output means
+    // "noise, 0.8 sure", not "noise, 0.2 sure".
+    return {
+      class: output > 0.5 ? 'anomaly' : 'noise',
+      confidence: output > 0.5 ? output : 1 - output,
+    };
   });
 
   // Stage 2: Check for anomalies (autoencoder)
