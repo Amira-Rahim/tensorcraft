@@ -309,6 +309,20 @@ export function ReportIssueButton() {
         }}
         role="dialog"
         aria-label="Report an issue"
+        // The panel stays mounted so the open/close transition has something to
+        // animate, and only a decorative overlay is gated on `open`: the form
+        // itself (select, textarea, two inputs, four buttons) is in the DOM at
+        // all times. opacity:0 and pointerEvents:none hide it from the eye and
+        // the mouse, but neither takes an element out of the tab order or the
+        // accessibility tree, so every page shipped ~8 invisible tab stops and
+        // a permanently-present dialog.
+        //
+        // `inert` is the one attribute that removes a subtree from BOTH, which
+        // is why aria-hidden alone is not the fix here: aria-hidden over
+        // focusable content is its own violation (axe: aria-hidden-focus), and
+        // a keyboard user would still land inside a dialog a screen reader
+        // insists is not there.
+        inert={!open}
       >
         {/* Grid overlay */}
         <div

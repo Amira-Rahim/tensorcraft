@@ -99,7 +99,12 @@ const model = tf.sequential({
     tf.layers.dropout({ rate: 0.3 }),
     tf.layers.dense({ units: 64, activation: 'relu' }),
     tf.layers.dropout({ rate: 0.3 }),
-    tf.layers.dense({ units: 10 })
+    // NOT a 1:1 port, and this is the one line where that matters.
+    // PyTorch ends in raw logits because nn.CrossEntropyLoss applies
+    // log-softmax itself. TFJS's 'categoricalCrossentropy' expects
+    // probabilities, so the softmax has to move out of the loss and onto
+    // the layer. See "Optimizers and Loss Functions" below.
+    tf.layers.dense({ units: 10, activation: 'softmax' })
   ]
 });
 
@@ -107,7 +112,7 @@ const model = tf.sequential({
 const output = model.predict(inputTensor);`}
 </CodeBlock>
 
-Same architecture. Same layer sizes. Same activations. Same dropout rates. Different syntax.
+Same layer sizes. Same activations. Same dropout rates. Different syntax. One deliberate difference, on the last line, and it is the difference this lesson exists to teach: translating that layer *exactly* is what breaks the model, because the softmax you cannot see in the PyTorch source is hiding inside its loss function. A faithful port is not a literal one.
 
 ## Optimizers and Loss Functions
 

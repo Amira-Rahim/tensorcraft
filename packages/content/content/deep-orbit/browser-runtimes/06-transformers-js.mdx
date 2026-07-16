@@ -9,7 +9,7 @@ scene:
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "Demir asks Nazari: 'What if I don't want to train a model? What if I just want a sentiment classifier in five lines?' Nazari smiles. 'Then you don't need TF.js at all.'"
+  narrative: "Three modules spent learning to train models from scratch, and all the bridge wants is a sentiment flag on the crew's daily status reports. Demir asks whether he really has to train one for that."
   speaker: "Ensign Demir"
 concept:
   explanation: "Transformers.js ships pretrained Hugging Face models that run in the browser. Install, import, call: for commodity tasks, nobody trains from scratch."
@@ -21,7 +21,7 @@ concept:
     tier: structural
     breaks: "An npm component renders deterministic markup once you pass props. A pretrained model returns probabilistic output that varies with input distribution: the 'API' looks identical, but you cannot unit-test the output value, only its shape and confidence range. The model file (50MB+) is also user-side bandwidth, not server-side. Caching strategy matters far more than for a typical npm import."
 consequence:
-  narrative: "Demir prototypes a feedback classifier in 12 lines. Nazari: 'Now you know which tool fits which job. Train when the task is custom; install when the task is well-known.'"
+  narrative: "The feedback classifier runs in twelve lines, and Demir spends a full minute being quietly insulted by that. Across the lab, the signal they actually came out here for refuses to be a commodity problem."
 hints:
   - level: nudge
     content: "In the exercise the harness hands you pipelineFactory (a stand-in for the real pipeline() loader): await it to get the classifier, then call the classifier with the whole reports array."

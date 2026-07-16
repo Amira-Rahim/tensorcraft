@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "useReducer is a deterministic pure function you wrote. RNN cells learn the reducer logic from data, carry hidden state across timesteps, and the same input produces different outputs depending on what came before. The 'reducer' is opaque and trained, not authored."
 consequence:
-  narrative: "Short-range patterns resolve first: the RNN notices the signal rises before each anomalous burst. Longer patterns slip away."
+  narrative: "Six hours, two hundred epochs, loss pinned at 0.693 since the first hour. The gradients die out around step twenty. The pattern lives at step seventy-three."
 hints:
   - level: nudge
     content: "An RNN cell is just a function: (prevState, newInput) → newState"

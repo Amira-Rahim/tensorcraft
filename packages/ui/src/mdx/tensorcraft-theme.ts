@@ -26,10 +26,14 @@ export const tensorcraftTheme: ThemeRegistration = {
     "editorBracketMatch.border": "#6BAA8A60",
   },
   tokenColors: [
-    // Comments - muted
+    // Comments - muted. #6A7A6A read 3.96:1 on the #161616 code background,
+    // under the 4.5:1 AA floor; every comment in every lesson failed, and the
+    // axe gate never caught it because it only audited lesson step 0, which
+    // has no code block. #788878 is the smallest change that clears AA (4.82:1)
+    // while keeping the muted green-grey. Locked by tensorcraft-theme.test.ts.
     {
       scope: ["comment", "punctuation.definition.comment"],
-      settings: { foreground: "#6A7A6A", fontStyle: "italic" },
+      settings: { foreground: "#788878", fontStyle: "italic" },
     },
 
     // Keywords - primary green (import, export, const, let, var, function, return, if, else, etc.)

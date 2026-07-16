@@ -182,6 +182,23 @@ function LessonStepsInner({
   );
   const exerciseScoresRef = useRef<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
+  // The left column carries key={currentStep} so the step animation retriggers,
+  // which means React unmounts the whole subtree on every step change, bottomNav
+  // included. A keyboard user who activates Continue therefore has the element
+  // they just activated destroyed under them, and focus falls to <body>: they
+  // restart from the top of the document six times per lesson (WCAG 2.4.3,
+  // level A). Move focus onto the new step instead. Not on first mount, where
+  // the user has not navigated anywhere and stealing focus would be the bug.
+  const stepRef = useRef<HTMLDivElement>(null);
+  const hasNavigated = useRef(false);
+
+  useEffect(() => {
+    if (!hasNavigated.current) {
+      hasNavigated.current = true;
+      return;
+    }
+    stepRef.current?.focus();
+  }, [currentStep]);
   // Mobile-only: reveal the right work pane (code/exercise) over the prose.
   const [paneOpen, setPaneOpen] = useState(false);
 
@@ -679,7 +696,16 @@ function LessonStepsInner({
           left={
             <div
               key={currentStep}
-              className={`animate-step-in ${isStoryStep ? "min-h-[50vh] flex flex-col justify-center" : ""}`}
+              ref={stepRef}
+              // -1 keeps it out of the tab sequence while still being
+              // programmatically focusable, so the step is where a keyboard
+              // user lands rather than <body>. The label is what a screen
+              // reader announces on arrival, which doubles as the step change
+              // announcement.
+              tabIndex={-1}
+              role="group"
+              aria-label={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
+              className={`animate-step-in outline-none ${isStoryStep ? "min-h-[50vh] flex flex-col justify-center" : ""}`}
             >
               {shellLeftWithToggle}
               {bottomNav}
@@ -1406,8 +1432,16 @@ function StepConsequence({
 }) {
   return (
     <div className="text-center py-12">
-      {/* FADE OUT marker */}
+      {/*
+        FADE OUT marker. Screenplay atmosphere, not information: it reads at
+        1.23:1 by design (border colour on surface), which WCAG 1.4.3 exempts
+        as pure decoration. Marked decorative rather than brightened so the
+        beat survives, and so the axe gate can skip it by attribute instead of
+        having the whole rule muted. See e2e/accessibility.spec.ts.
+      */}
       <div
+        aria-hidden="true"
+        data-decorative="true"
         className="font-mono text-[9px] uppercase tracking-[3px] mb-8"
         style={{ color: theme.palette.border }}
       >

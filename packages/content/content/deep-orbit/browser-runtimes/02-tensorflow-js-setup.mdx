@@ -22,7 +22,7 @@ concept:
     tier: identity
     breaks: "The install really is the same npm command. The break comes right after: importing React means React runs, while importing TF.js says nothing about which backend you got. WebGL, WASM, or plain CPU is decided at runtime, and the same code runs an order of magnitude slower when the fallback silently wins."
 consequence:
-  narrative: "TensorFlow.js initializes on the dashboard. The WebGL backend activates, confirming GPU acceleration is available."
+  narrative: "Five consoles report webgl. The sixth, the oldest display on the ship, comes back wasm: 3.1 ms per matmul instead of 0.5."
 hints:
   - level: nudge
     content: "Start with npm install, then import and check the backend"

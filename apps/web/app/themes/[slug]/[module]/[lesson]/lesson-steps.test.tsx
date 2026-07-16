@@ -272,11 +272,70 @@ describe("LessonSteps, LessonShell layout", () => {
 });
 
 describe("LessonSteps, step navigation chrome", () => {
-  it("has no bottom Back button; backward nav is the segmented bar", () => {
+  /**
+   * This suite used to assert "has no bottom Back button; backward nav is the
+   * segmented bar". A Back button was added in the 2026-07-14 UX audit and the
+   * assertion was never updated, but it kept passing: renderSteps() defaults to
+   * step 0, and step 0 is the one step that renders no Back button by design.
+   * A guard that only holds where the feature cannot appear guards nothing.
+   */
+  it("renders no bottom Back button on the first step", () => {
     renderSteps();
     expect(
       screen.queryByRole("button", { name: /back/i }),
     ).not.toBeInTheDocument();
+  });
+
+  it("renders a bottom Back button once past the first step", () => {
+    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(MAX_KEY, "2");
+    renderSteps();
+    expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
+  });
+
+  it("steps backward when the Back button is activated", () => {
+    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(MAX_KEY, "2");
+    renderSteps();
+    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /back/i }));
+    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, focus management", () => {
+  /**
+   * The left column carries key={currentStep} to retrigger the step animation,
+   * so React unmounts the subtree (bottomNav included) on every step change.
+   * Without explicit focus management the button the user just activated is
+   * destroyed and focus lands on <body>, forcing a keyboard user to tab from
+   * the top of the document again on every one of the six steps (WCAG 2.4.3).
+   */
+  // Anchored: the segmented progress bar is also a role="group", labelled
+  // "Lesson step N of 6", so an unanchored /step 2 of 6/ matches both it and
+  // the step container.
+  it("moves focus to the new step after navigating, not to the body", () => {
+    renderSteps();
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+
+    const step = screen.getByRole("group", { name: /^Step 2 of 6: Concept$/ });
+    expect(document.activeElement).toBe(step);
+    expect(document.activeElement).not.toBe(document.body);
+  });
+
+  it("does not steal focus on first mount", () => {
+    renderSteps();
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("labels each step group for screen readers", () => {
+    localStorage.setItem(STEP_KEY, "3");
+    localStorage.setItem(MAX_KEY, "3");
+    renderSteps();
+    expect(
+      screen.getByRole("group", { name: /^Step 4 of 6: Challenge$/ }),
+    ).toBeInTheDocument();
   });
 });
 

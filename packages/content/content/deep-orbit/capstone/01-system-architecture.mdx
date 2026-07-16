@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Package dependencies are resolved deterministically by a manifest and lockfile. ML pipeline dependencies include data shapes, schema contracts, model versions, and feature freshness; schema breaks are silent (predictions become wrong, not errors) and surface days later as accuracy regressions, not stack traces."
 consequence:
-  narrative: "Five components on the main display: preprocessing, feature extraction, classification, anomaly detection, reporting. Mirza nods. 'Build it.'"
+  narrative: "Five components on the main display: preprocessing, feature extraction, classification, anomaly detection, reporting. Behind them the ticker reads 47.0 seconds. Mirza looks at the number, then at the five boxes that have fourteen days to be ready for it, and says nothing at all."
 hints:
   - level: nudge
     content: "Each PipelineStage declares an inputType and outputType. Wire stages so every output type matches the next stage's input"
@@ -184,7 +184,7 @@ Design a typed pipeline and validate the dependency graph.
 
 <LessonRecap
   whatYouLearned={[
-    "Modeling an ML pipeline as a dependency graph of typed stages lets you validate data contracts at compile time rather than discovering mismatches at runtime.",
+    "Modeling an ML pipeline as a dependency graph of typed stages documents the contract between stages, but do not mistake that for compile-time safety: the stage list is PipelineStage<any, any>[], so the types erase at exactly the boundary you care about. The check that actually fires is the runtime validate() throw. TypeScript records what you meant; only validate() knows what arrived.",
     "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
     "A component manifest with dependency declarations lets you run cycle and completeness checks before any inference runs."
   ]}

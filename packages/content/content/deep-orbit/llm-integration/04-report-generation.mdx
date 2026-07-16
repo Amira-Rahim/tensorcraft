@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Template rendering substitutes known values into known slots; the schema is enforced. Generated reports invent facts, omit caveats, and round-trip uncertainty into confident prose. Human review is required for any report shown to a user, regardless of model quality."
 consequence:
-  narrative: "The generated report covers all 47 days of observations with proper citations. Farah approves it after reviewing and correcting three factual claims."
+  narrative: "The validator flags two claims in the Hypotheses section that trace to no timestamp in any log. There is no time to regenerate and review before the window. Farah cuts the section instead, and the report leaves with five instead of six."
 hints:
   - level: nudge
     content: "Break the report into sections and generate each independently for better quality"
@@ -145,7 +145,7 @@ Build a section-by-section report generator from signal data.
 <LessonRecap
   whatYouLearned={[
     "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
-    "Low temperature (0.1-0.3) reduces hallucination risk for factual writing; always validate generated claims against actual data before including them.",
+    "Low temperature (0.1-0.3) reduces VARIABILITY, not hallucination: it narrows which token gets sampled, and a greedy decode invents just as confidently, only reproducibly. Farah's draft in this lesson fabricated a Band-3 cluster at temperature 0.3. The only thing that catches a fabricated claim is validating it against the data.",
     "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
   ]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."

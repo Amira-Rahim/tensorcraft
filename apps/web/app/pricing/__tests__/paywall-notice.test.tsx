@@ -66,18 +66,44 @@ describe("PaywallNotice", () => {
   });
 
   it("points the user to the plan picker below", () => {
-    mockLocked = "signal-ward";
+    mockLocked = "deep-orbit";
     render(<PaywallNotice />);
     expect(screen.getByText(/Pick a plan below/i)).toBeInTheDocument();
   });
 
-  it("fires upgrade_cta_shown on mount when the banner renders for a known slug", () => {
-    mockLocked = "nova-canvas";
+  it("fires upgrade_cta_shown on mount when the banner renders for a launched slug", () => {
+    mockLocked = "deep-orbit";
     render(<PaywallNotice />);
     expect(trackMock).toHaveBeenCalledWith("upgrade_cta_shown", {
       source: "paywall",
-      themeId: "nova-canvas",
+      themeId: "deep-orbit",
     });
+  });
+
+  /**
+   * These two used to pass with signal-ward / nova-canvas, which is the bug:
+   * the banner accepted ANY canonical slug, so /pricing?locked=nova-canvas
+   * rendered "Module 2 and beyond in Nova Canvas require a purchase" and
+   * quoted Deep Orbit's lesson count, for a theme that ships no lessons and
+   * cannot be bought. Only launched themes have something to unlock.
+   */
+  it("renders nothing for a coming-soon theme", () => {
+    mockLocked = "nova-canvas";
+    const { container } = render(<PaywallNotice />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it("does not fire upgrade_cta_shown for a coming-soon theme", () => {
+    mockLocked = "signal-ward";
+    render(<PaywallNotice />);
+    expect(trackMock).not.toHaveBeenCalled();
+  });
+
+  it("quotes the paid lesson count from canon, not a literal", () => {
+    mockLocked = "deep-orbit";
+    render(<PaywallNotice />);
+    // 56 total - 5 free in module 1. Pinned in packages/shared.
+    expect(screen.getByText(/remaining 51 lessons/i)).toBeInTheDocument();
   });
 
   it("does not fire upgrade_cta_shown when the banner is suppressed", () => {

@@ -132,7 +132,7 @@ Evaluate DEEP SCAN on unseen signal data and make predictions.
 <LessonRecap
   whatYouLearned={[
     "`model.evaluate()` measures performance on held-out data the model has never seen. This is the only honest accuracy number. Training accuracy reflects memorization potential, not real-world skill.",
-    "A large gap between training accuracy and test accuracy signals overfitting. When both are low, the model is underfitting. When both are high, the model is ready to deploy.",
+    "A large gap between training accuracy and test accuracy signals overfitting. When both are low, the model is underfitting. When both are high, you have ruled out those two failures and nothing else: an aggregate number cannot see the slice it is failing on, which is why sliced evaluation comes before deployment rather than after it.",
     "Aggregate accuracy can hide failure modes. Precision, recall, and sliced evaluation (per class or per cohort) are required before trusting a model in production."
   ]}
   bridge="E2E tests assert exact behaviors against real browser or API conditions, catching what unit tests miss. `model.evaluate()` tests against real held-out data, catching what training metrics miss. Both exist because fixtures lie."

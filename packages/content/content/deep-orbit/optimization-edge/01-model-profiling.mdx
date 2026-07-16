@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "performance.mark API is identical for both. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
 consequence:
-  narrative: "340 MB, 45 ms, and 80% of the time spent in the first Dense layer. Nazari knows exactly where to optimize."
+  narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
   - level: nudge
     content: "Profile before optimizing: measure, don't guess"
@@ -56,7 +56,7 @@ Profiling first. Same discipline as a slow React app: measure, find the bottlene
 
 The bundle audit Demir filed under "later" is now exhibit one: the crew's trained models total under a megabyte; the pretrained language component and its tables carry almost all of the 340. Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight; the numbers decide where the knife goes.
 
-<LearningObjectives objectives={["Profile model memory usage with tf.memory()", "Benchmark inference latency with high-resolution timing", "Identify bottleneck layers using per-layer profiling", "Establish baseline metrics before optimization"]} />
+<LearningObjectives objectives={["Profile model memory usage with tf.memory()", "Benchmark inference latency with high-resolution timing, mean and tail", "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time", "Establish baseline metrics before optimization"]} />
 
 ## Measure Everything
 
@@ -79,7 +79,11 @@ async function profileModel(model: tf.LayersModel, inputShape: number[]): Promis
 
   // Parameter count
   const parameterCount = model.countParams();
-  const memorySizeMB = (parameterCount * 4) / (1024 * 1024);  // float32 = 4 bytes
+  // float32 = 4 bytes. Divide by 1e6, not 1024^2: everyone who will read your
+  // report quotes model size in MB, and 1024^2 gives you MiB wearing an MB
+  // label. It is the difference between reporting 324.2 and 340.0 for the
+  // same weights, and the second one is the number Nazari is holding.
+  const memorySizeMB = (parameterCount * 4) / 1e6;
 
   // Layer breakdown
   const layerBreakdown = model.layers.map(layer => ({
@@ -123,7 +127,29 @@ const profile = await profileModel(model, [80, 11]);
 console.log('Model size:', profile.memorySizeMB.toFixed(1), 'MB');
 console.log('Parameters:', profile.parameterCount.toLocaleString());
 console.log('Inference mean:', profile.inferenceMeanMs.toFixed(1), 'ms');
-console.log('Inference P95:', profile.inferenceP95Ms.toFixed(1), 'ms');`}
+console.log('Inference P95:', profile.inferenceP95Ms.toFixed(1), 'ms');
+
+// A total tells you the model is too big. A share tells you where to cut.
+console.log('Layer breakdown:');
+for (const layer of profile.layerBreakdown) {
+  const share = (layer.params / profile.parameterCount) * 100;
+  console.log(\`  \${layer.name.padEnd(14)}\${layer.params.toLocaleString().padStart(12)}  \${share.toFixed(1)}%\`);
+}
+
+// DEEP SCAN, as it stood at 0249:
+//
+//   Model size: 340.0 MB
+//   Parameters: 85,000,000
+//   Inference mean: 45.0 ms
+//   Inference P95: 112.0 ms
+//   Layer breakdown:
+//     embedding       12,800,000  15.1%
+//     dense_Dense1    68,000,000  80.0%
+//     dense_Dense2     4,200,000   4.9%
+//
+// Read the shares, not the total. 80% of this model is one Dense layer, and
+// the tail is 2.5x the mean: the dashboard did not die at 45 ms, it died at
+// 112. Both numbers survive into module 11; neither was a guess.`}
 </CodeBlock>
 
 ## Challenge
@@ -132,12 +158,12 @@ Profile a model and identify its heaviest layer.
 
 <Exercise slug="profile-model" />
 
-<RecallPrompt question="Why should you profile a model before optimizing it?" answer="Profiling identifies which layers hold the most parameters and compute time, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped." />
+<RecallPrompt question="Why should you profile a model before optimizing it?" answer="Profiling identifies which layers hold the most parameters, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped. Note what this profile does not give you: parameter share is not time share. A layer holding 80% of the weights is where the memory went, and it is a good first guess for where the milliseconds went, but confirming that takes an op-level profiler." />
 
 <LessonRecap
   whatYouLearned={[
     "Three metrics define a model's performance baseline: memory footprint (MB), inference latency (mean and P95), and per-layer parameter concentration.",
-    "Layer breakdown pinpoints where compute time concentrates, so optimization effort goes to the right place.",
+    "Layer breakdown pinpoints where the parameters concentrate, so optimization effort goes to the right place. It does not measure per-layer time; that needs a profiler that instruments each op.",
     "A warmup pass before timing removes JIT and compilation noise from measurements."
   ]}
   bridge="Just as `performance.mark`/`performance.measure` locates slow code in a frontend app, `tf.memory()` and `performance.now()` around `model.predict()` locates the memory and latency cost in an ML model."

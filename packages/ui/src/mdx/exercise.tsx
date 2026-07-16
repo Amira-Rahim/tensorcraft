@@ -130,6 +130,45 @@ const mlContentConfig: Record<MLContent, { label: string; tone: string }> = {
 /*  TestResults display                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * One-line spoken summary of a run.
+ *
+ * Lives in an always-mounted live region (see TestResultsLiveRegion): a
+ * region created in the same commit as its content is not reliably announced,
+ * which is exactly what the old markup did by putting aria-live on the
+ * conditionally-rendered panel. Named failures are included because the panel
+ * itself distinguishes pass from fail with colour and an aria-hidden glyph, so
+ * a screen reader user gets nothing from the list.
+ */
+function resultsSummary(results: TestResult[]): string {
+  if (results.length === 0) return "";
+  const passed = results.filter((r) => r.passed).length;
+  const total = results.length;
+  if (passed === total) {
+    return `All ${total} ${total === 1 ? "test" : "tests"} passed.`;
+  }
+  const failed = results.filter((r) => !r.passed).map((r) => r.name);
+  return `${passed} of ${total} tests passed. Failed: ${failed.join(", ")}.`;
+}
+
+/**
+ * Always mounted, even with no results, so the browser has a live region to
+ * announce INTO when a run finishes. Visually hidden: the panel below is the
+ * sighted affordance.
+ */
+function TestResultsLiveRegion({ results }: { results: TestResult[] }) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      className="sr-only"
+    >
+      {resultsSummary(results)}
+    </div>
+  );
+}
+
 function TestResultsPanel({ results }: { results: TestResult[] }) {
   const passed = results.filter((r) => r.passed).length;
   const total = results.length;
@@ -139,9 +178,9 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
 
   return (
     <div
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
+      // No live semantics here: TestResultsLiveRegion owns the announcement.
+      // This panel mounts and unmounts with the results, so it cannot be a
+      // reliable live region.
       data-testid="test-results-panel"
       className={`p-4 mt-3 brutalist-shadow border rounded-none ${
         allPassed
@@ -204,13 +243,19 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
       <div className="flex flex-col gap-1.5">
         {results.map((result, i) => (
           <div key={i} className="flex items-start gap-2 text-sm">
+            {/* The tick/cross is aria-hidden because "✓" and "✗" read as
+                noise, but that left pass/fail carried by colour alone (WCAG
+                1.4.1). The sr-only word restores it without touching the
+                visual design. */}
             <span
-              aria-hidden="true"
               className={`flex-shrink-0 mt-0.5 font-mono font-bold ${
                 result.passed ? "text-primary" : "text-text-muted"
               }`}
             >
-              {result.passed ? "✓" : "✗"}
+              <span aria-hidden="true">{result.passed ? "✓" : "✗"}</span>
+              <span className="sr-only">
+                {result.passed ? "Passed: " : "Failed: "}
+              </span>
             </span>
             <div className="flex-1 min-w-0">
               <span
@@ -672,7 +717,9 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
         </div>
       </Suspense>
 
-      {/* Test Results */}
+      {/* Test Results. The live region is mounted unconditionally so it can
+          announce; the panel renders only once there is something to show. */}
+      <TestResultsLiveRegion results={results} />
       {results.length > 0 && <TestResultsPanel results={results} />}
 
       {/* Console output */}

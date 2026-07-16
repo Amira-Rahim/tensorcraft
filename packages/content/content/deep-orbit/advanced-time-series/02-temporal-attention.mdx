@@ -19,16 +19,16 @@ concept:
     mlTitle: "Temporal Attention"
     mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
     tier: intuition
-    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep at every layer: the model decides relevance per query, weights are continuous, and the cost is quadratic in sequence length."
+    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep: the model decides relevance rather than you, and the weights are continuous rather than one target. Cost depends on the scorer, and the usual 'attention is quadratic' line does not apply to what you build here: the additive scorer in this lesson emits one score per step, so it is linear in sequence length. The quadratic cost belongs to the T-by-T self-attention used in transformers, where every step scores against every other."
 consequence:
   narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 73 seconds later. The pattern is confirmed."
 hints:
   - level: nudge
-    content: "Temporal attention assigns importance weights to each time step in the sequence"
+    content: "The weights are handed to you already normalised. The job is the second half: collapse [T, d] down to [d] with every timestep contributing in proportion to its weight."
   - level: guidance
-    content: "Compute attention scores over the time axis, apply softmax, then weighted sum"
+    content: "A weighted sum over the time axis is a matrix multiply in disguise. Reshape the [T] weights into a [1, T] row so it lines up against the [T, d] sequence, then squeeze the [1, d] product back down to [d]."
   - level: solution
-    content: "const scores = tf.matMul(hidden, tf.transpose(hidden)); const weights = tf.softmax(scores);"
+    content: "const weightsCol = attentionWeights.reshape([1, attentionWeights.shape[0]]); return tf.matMul(weightsCol, sequence).squeeze();"
 keywords:
   - temporal-attention
   - time-step-focus

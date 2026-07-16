@@ -17,7 +17,7 @@ concept:
     feTitle: "Image Compression"
     feCode: "// PNG (lossless, 2MB) → WebP (lossy, 200KB): 10x smaller, ~same visual quality"
     mlTitle: "Quantization"
-    mlCode: "// Float32 (340MB) → Uint8 (85MB): 4x smaller, ~2% accuracy loss"
+    mlCode: "// Float32 (340MB) → Uint8 (85MB): 4x smaller, 1.2% accuracy loss"
     tier: structural
     breaks: "Lossy image formats decide what to discard using a model of human eyes, and you judge the damage by looking. Quantization rounds weights onto a coarser grid with no perceptual model protecting anything: one outlier weight can stretch the grid and quietly wreck accuracy. You measure after; you never assume."
 consequence:

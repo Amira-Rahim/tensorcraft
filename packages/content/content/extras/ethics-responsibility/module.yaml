@@ -45,10 +45,10 @@ lessons:
     difficulty: intermediate
     bridge: "Feature importance → Chrome DevTools Performance tab"
     summary: |
-      LIME, SHAP values, saliency maps. The difference between correlation
-      and causation in model decisions. When a model learns the wrong thing
-      (hospital logo → pneumonia). Practical: generate explanations for a
-      trained model's predictions.
+      LIME, SHAP values, and perturbation-based feature importance. The
+      difference between correlation and causation in model decisions. When a
+      model learns the wrong thing (hospital logo → pneumonia). Practical:
+      generate explanations for a trained model's predictions.
 
   - slug: responsible-deployment
     title: "Responsible Deployment: Who Gets Hurt If You're Wrong?"

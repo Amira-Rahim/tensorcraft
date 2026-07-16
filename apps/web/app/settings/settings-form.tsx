@@ -748,7 +748,7 @@ export function SettingsForm({
                   className="font-mono"
                   // Error state must not render in the brand success color
                   // (2026-07-14 audit): use the error red.
-                  style={{ fontSize: 11, color: "var(--tc-error, #ef4444)" }}
+                  style={{ fontSize: 11, color: "var(--color-error)" }}
                   data-testid="github-error"
                 >
                   {githubError}

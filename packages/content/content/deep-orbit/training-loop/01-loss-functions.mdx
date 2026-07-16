@@ -81,11 +81,20 @@ The rest of this module is machinery for making that one number smaller: gradien
 
 `MSE = (1/n) Σ (yᵢ - ŷᵢ)²`
 
-**Why cross-entropy for classification?** Squaring works for continuous outputs, but for probabilities it produces a flat gradient near 0 and 1 that stalls learning. Cross-entropy uses log to keep gradients steep where the model is most wrong:
+**Why cross-entropy for classification?** The usual answer is "MSE's gradient goes flat near 0 and 1." That answer is wrong, and it is worth being precise about why, because the real reason is more useful.
 
 `BCE = -(1/n) Σ [ yᵢ log(ŷᵢ) + (1-yᵢ) log(1-ŷᵢ) ]`
 
-When the true label is 1 and the model predicts 0.01, `-log(0.01) ≈ 4.6`: a strong gradient signal. When MSE would say "off by 0.99² ≈ 0.98", BCE says "off by 4.6". The loss curve shape is what trains.
+Take the label `y = 1` and a model that confidently predicts `ŷ = 0.01`. MSE's gradient **with respect to the prediction** is `2(ŷ - y) = -1.98`: not flat, and in fact the biggest it ever gets. Nothing is wrong with MSE's own slope.
+
+What flattens is the sigmoid you put in front of it. Backprop multiplies by `σ'(z) = ŷ(1-ŷ)`, and at `ŷ = 0.01` that factor is `0.0099`. So the gradient that actually reaches the weights is:
+
+- MSE + sigmoid: `2(ŷ - y) · ŷ(1-ŷ) = -1.98 × 0.0099 = -0.0196`
+- BCE + sigmoid: the `log` and the `σ'` cancel exactly, leaving `ŷ - y = -0.99`
+
+Fifty times more signal, for the same wrongness. Cross-entropy's advantage is not that its curve is steeper; it is that its derivative is **built to cancel the sigmoid's**, so a confidently wrong prediction reaches the weights at full strength instead of being multiplied by a number near zero. You met this factor already in `neural-networks/02`, where the sigmoid's slope at the tails was 0.0066.
+
+Note where the advantage lives, because the intuition runs backwards from most explanations. At the decision boundary (`ŷ = 0.5`) the two are nearly the same: `-0.25` vs `-0.5`, a factor of 2. The gap only opens as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`. Cross-entropy is not for the boundary. It is for the disaster.
 </DerivationDrawer>
 
 ## Challenge
@@ -96,13 +105,13 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
 
 <RecallPrompt
   question="For binary classification, why is binary cross-entropy preferred over mean squared error?"
-  answer="MSE gradients shrink to near zero when predictions are close to 0 or 1, stalling learning even when the model is wrong. Binary cross-entropy uses log, which keeps gradients steep where the model is most wrong. This difference determines whether a model converges or stalls."
+  answer="Careful with the usual answer. It is not that MSE's own gradient goes flat: at a label of 1 and a prediction of 0.01, MSE's slope with respect to the prediction is -1.98, the largest it gets. The killer is the sigmoid in front of it, whose slope there is 0.0099. Backprop multiplies the two and the weights receive -0.0196. Binary cross-entropy's log derivative cancels that sigmoid factor exactly, leaving prediction minus label, -0.99: fifty times more signal for the same mistake. That is what decides whether the model converges or stalls."
 />
 
 <LessonRecap
   whatYouLearned={[
     "A loss function converts prediction error into a single number you can minimize. Lower means better; zero is perfect.",
-    "Mean squared error works for regression by penalizing large errors quadratically. Binary cross-entropy is better for classification because it maintains steep gradients near the decision boundary.",
+    "Mean squared error works for regression by penalizing large errors quadratically. Binary cross-entropy is better for classification because its derivative cancels the sigmoid's, so a confidently wrong prediction still reaches the weights at full strength. The advantage is smallest at the decision boundary (a factor of 2) and largest where the model is most confidently wrong (a factor of 50).",
     "The choice of loss function shapes how the optimizer learns: the wrong loss can stall training even with a correct architecture."
   ]}
   bridge="Just as `expect().toBe()` asserts a difference between actual and expected, a loss function measures the distance between a prediction and its label, returning a number instead of a pass/fail."

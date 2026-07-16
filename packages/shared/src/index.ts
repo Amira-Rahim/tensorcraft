@@ -13,6 +13,7 @@ export {
   THEME_CONTENT,
   DEFAULT_THEME,
   getModuleLessonCount,
+  getPaidLessonCount,
   isValidThemeSlug,
   isValidSlug,
   isLaunched,

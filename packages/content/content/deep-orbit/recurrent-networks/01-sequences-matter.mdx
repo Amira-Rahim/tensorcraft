@@ -134,8 +134,8 @@ Create time-step sequences from raw signal data.
 <Exercise slug="create-sequences" />
 
 <RecallPrompt
-  question="You have a feedforward network and feed it readings [0.5, 0.3, 0.7] then [0.7, 0.3, 0.5] (shuffled order). How does it score them compared to the original sequence?"
-  answer="Identically. A feedforward network processes each input in isolation with no memory of what came before, so it cannot detect that the order changed. Order-dependent meaning is invisible to it."
+  question="You feed a feedforward network three readings one at a time: [0.5, 0.3, 0.7], then [0.8, 0.2, 0.9], then [0.4, 0.6, 0.1]. You run them again in reverse order. What changes about the three scores, and what does not?"
+  answer="Each reading keeps the exact score it had; the list of scores just comes back in a different order. The network scores every reading in isolation, so nothing about a reading's score depends on what preceded it. Note the trap in the other direction: shuffling the three numbers INSIDE one reading does change its score, because a dense layer holds a separate weight per input position. Position within a vector matters to it. Position within a sequence does not, because it never sees the sequence at all."
 />
 
 <LessonRecap

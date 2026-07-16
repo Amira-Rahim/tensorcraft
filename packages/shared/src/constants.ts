@@ -104,6 +104,10 @@ export const THEME_CONTENT = {
   // carried three different counts (50+/51/55) until 2026-07-14. Pinned to
   // the real corpus by packages/content/__tests__/bridge-breaks.test.ts.
   lessonBridges: 55,
+  // Module 1 is free; it is the funnel's whole hook. Named here because both
+  // paywall surfaces quote what sits BEHIND the wall, and both pasted the
+  // literal 51 until 2026-07-15.
+  freeModuleSlug: "foundations",
 } as const;
 
 /**
@@ -114,6 +118,21 @@ export function getModuleLessonCount(moduleSlug: string): number {
   return (
     THEME_CONTENT.moduleLessonOverrides[moduleSlug] ??
     THEME_CONTENT.lessonsPerModule
+  );
+}
+
+/**
+ * Lessons behind the paywall in the launched theme: everything except the
+ * free first module. 56 - 5 = 51.
+ *
+ * Only meaningful for a LAUNCHED theme. Coming-soon themes are scoped at
+ * `comingSoonLessonsPerTheme` and are not purchasable, so a paywall surface
+ * must not quote this number for them.
+ */
+export function getPaidLessonCount(): number {
+  return (
+    THEME_CONTENT.totalLessonsPerTheme -
+    getModuleLessonCount(THEME_CONTENT.freeModuleSlug)
   );
 }
 

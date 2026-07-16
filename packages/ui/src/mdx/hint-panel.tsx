@@ -80,7 +80,11 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                   </span>
                 </button>
               ) : (
-                <div className="p-3 opacity-40 border border-dashed border-border text-text-muted">
+                // opacity-40 rendered the locked label at 2.31:1. WCAG 1.4.3
+                // arguably exempts it as an inactive component, but the label
+                // is what tells you which hint is locked, so it has to be
+                // readable. The dashed border carries the locked affordance.
+                <div className="p-3 opacity-75 border border-dashed border-border text-text-muted">
                   <span className="text-xs">{config.label}</span>
                 </div>
               )}

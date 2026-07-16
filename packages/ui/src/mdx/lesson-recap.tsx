@@ -17,7 +17,7 @@ export function LessonRecap({
 
       <div className="flex flex-col gap-4">
         <section>
-          <p className="text-xs font-mono uppercase tracking-wider text-primary/70 mb-1">
+          <p className="text-xs font-mono uppercase tracking-wider text-primary/90 mb-1">
             What you learned
           </p>
           <ul className="flex flex-col gap-2">
@@ -34,7 +34,7 @@ export function LessonRecap({
         </section>
 
         <section>
-          <p className="text-xs font-mono uppercase tracking-wider text-primary/70 mb-1">
+          <p className="text-xs font-mono uppercase tracking-wider text-primary/90 mb-1">
             The bridge
           </p>
           <p className="text-sm leading-relaxed text-text-primary/80">
@@ -43,7 +43,7 @@ export function LessonRecap({
         </section>
 
         <section>
-          <p className="text-xs font-mono uppercase tracking-wider text-primary/70 mb-1">
+          <p className="text-xs font-mono uppercase tracking-wider text-primary/90 mb-1">
             You can now
           </p>
           <p className="text-sm leading-relaxed text-text-primary/80">

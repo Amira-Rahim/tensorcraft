@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { getPaidLessonCount } from "@tensorcraft/shared";
 import { trackPaywallShown } from "@/lib/analytics";
 
 interface LessonPaywallProps {
@@ -39,8 +40,9 @@ export function LessonPaywall({
         This lesson requires a purchase
       </h2>
       <p className="text-sm mb-6 max-w-md mx-auto leading-relaxed text-text-muted">
-        Module 1 is free. Modules 2-11 of {themeName} (51 more lessons, the
-        capstone, and your certificate) are one payment, yours forever.
+        Module 1 is free. Modules 2-11 of {themeName} ({getPaidLessonCount()}{" "}
+        more lessons, the capstone, and your certificate) are one payment, yours
+        forever.
       </p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link

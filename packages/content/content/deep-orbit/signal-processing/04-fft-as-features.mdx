@@ -9,7 +9,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. Farah smiles. 'The frequency domain is where the real information lives.'"
+  narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. He calls it more information. Farah corrects him before he finishes the sentence."
   speaker: "Ensign Demir"
 concept:
   explanation: "Feature engineering hands the model a better view of the same data: FFT magnitudes join the raw values as inputs, and accuracy follows."
@@ -20,7 +20,7 @@ concept:
     mlCode: "const features = tf.concat([rawSignal, fftMagnitudes], 1)"
     tier: structural
 consequence:
-  narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The frequency features reveal patterns the raw signal alone could never show."
+  narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added no information the samples did not already contain; it added access, and a small network cannot reach what it cannot reach."
 hints:
   - level: nudge
     content: "The exercise wants the top-K PEAKS: compute magnitudes with tf.abs(tf.spectral.rfft(...)), then find the K strongest bins (skip bin 0, the DC offset)"

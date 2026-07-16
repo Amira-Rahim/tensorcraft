@@ -8,6 +8,24 @@ const TIER_COLORS: Record<string, string> = {
   intuition: "var(--tc-tier-intuition)",
 };
 
+/**
+ * The tile badge used to be `tier[0].toUpperCase()`, which renders "I" for BOTH
+ * identity and intuition: two of the three tiers were indistinguishable except
+ * by colour, on a grid whose whole job is to show the mix you have collected.
+ * Two letters, and no deriving them from the slug.
+ */
+const TIER_ABBR: Record<string, string> = {
+  identity: "ID",
+  structural: "ST",
+  intuition: "IN",
+};
+
+const TIER_LABEL: Record<string, string> = {
+  identity: "Identity",
+  structural: "Structural",
+  intuition: "Intuition",
+};
+
 interface BridgeItem {
   lessonSlug: string;
   moduleSlug: string;
@@ -17,11 +35,14 @@ interface BridgeItem {
   collected: boolean;
 }
 
+const DETAIL_ID = "bridge-collection-detail";
+
 export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const collected = bridges.filter((b) => b.collected);
   const total = bridges.length;
+  const expandedBridge = bridges.find((b) => b.lessonSlug === expanded) ?? null;
 
   // Collected first, then locked, each group sorted by module then lesson
   const sorted = [...bridges].sort((a, b) => {
@@ -41,8 +62,9 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-1 bg-border overflow-hidden mb-4">
+      {/* Progress bar. Decorative: the count above states the same thing in
+          text, so announcing it twice is noise. */}
+      <div className="h-1 bg-border overflow-hidden mb-4" aria-hidden="true">
         <div
           className="h-full bg-primary transition-all"
           style={{
@@ -57,10 +79,17 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
           const color = TIER_COLORS[bridge.tier];
           const isExpanded = expanded === bridge.lessonSlug;
 
+          // An uncollected bridge is deliberately a mystery: no title, no tier,
+          // just a dimmed "?" until you finish the lesson. It therefore says
+          // nothing a screen reader can use, and 50+ tiles each announcing
+          // "question mark" is pure noise. Hide them and let the collected
+          // count above carry the progress, which is the only information the
+          // placeholders actually encode.
           if (!bridge.collected) {
             return (
               <div
                 key={bridge.lessonSlug}
+                aria-hidden="true"
                 className="aspect-square bg-surface-raised border border-border flex items-center justify-center opacity-25"
               >
                 <span className="font-mono text-xs text-text-muted">?</span>
@@ -73,44 +102,76 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
               key={bridge.lessonSlug}
               type="button"
               onClick={() => setExpanded(isExpanded ? null : bridge.lessonSlug)}
-              className="relative aspect-square bg-surface-raised border border-border flex items-center justify-center transition-all hover:border-primary"
+              aria-expanded={isExpanded}
+              aria-controls={isExpanded ? DETAIL_ID : undefined}
+              className="relative aspect-square bg-surface-raised border border-border flex items-center justify-center transition-all hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               style={{
                 borderLeftColor: color,
                 borderLeftWidth: 3,
               }}
-              title={`${bridge.feTitle} → ${bridge.mlTitle}`}
+              title={`${TIER_LABEL[bridge.tier]} bridge: ${bridge.feTitle} → ${bridge.mlTitle}`}
             >
-              <span className="font-mono text-xs font-bold" style={{ color }}>
-                {bridge.tier[0].toUpperCase()}
+              {/* text-xs is 12px, the design system's floor. This badge was
+                  text-[10px] and the detail caption below was text-[8px]; the
+                  2026-04-20 a11y audit flagged both, and the component never
+                  shipped, so the fix never landed either. */}
+              <span
+                className="font-mono text-xs font-bold tracking-tight"
+                style={{ color }}
+                aria-hidden="true"
+              >
+                {TIER_ABBR[bridge.tier]}
               </span>
-
-              {/* Expanded overlay */}
-              {isExpanded && (
-                <div
-                  className="absolute z-20 left-0 top-full mt-1 w-48 p-3 bg-surface border border-border shadow-lg text-left"
-                  style={{ borderTopColor: color, borderTopWidth: 2 }}
-                >
-                  <div className="font-mono text-xs text-text-primary font-bold mb-1">
-                    {bridge.feTitle}
-                  </div>
-                  <div className="font-mono text-xs mb-1" style={{ color }}>
-                    →
-                  </div>
-                  <div className="font-mono text-xs text-text-primary font-bold mb-2">
-                    {bridge.mlTitle}
-                  </div>
-                  <span
-                    className="font-mono text-[8px] uppercase tracking-wider font-bold"
-                    style={{ color }}
-                  >
-                    {bridge.tier}
-                  </span>
-                </div>
-              )}
+              {/* The tile carries its tier as a two-letter badge and a colour,
+                  neither of which a screen reader reads. Only collected bridges
+                  reach this branch, so there is no locked state to announce. */}
+              <span className="sr-only">
+                {TIER_LABEL[bridge.tier]} bridge: {bridge.feTitle} to{" "}
+                {bridge.mlTitle}
+              </span>
             </button>
           );
         })}
       </div>
+
+      {/* Detail panel.
+          This was a w-48 popover anchored inside each tile. At 320px the grid
+          is 4 columns of ~72px, so a 192px popover opened on the right-hand
+          column extended past the viewport and pushed the document sideways
+          (WCAG 1.4.10). A full-width panel below the grid cannot overflow at
+          any width, and a 192px card hanging off a 72px tile was poor on
+          mobile regardless. */}
+      {expandedBridge && (
+        <div
+          id={DETAIL_ID}
+          className="mt-2 p-4 bg-surface border border-border text-left"
+          style={{
+            borderTopColor: TIER_COLORS[expandedBridge.tier],
+            borderTopWidth: 2,
+          }}
+        >
+          <div className="font-mono text-xs text-text-primary font-bold">
+            {expandedBridge.feTitle}
+          </div>
+          <div
+            className="font-mono text-xs my-1"
+            style={{ color: TIER_COLORS[expandedBridge.tier] }}
+            aria-hidden="true"
+          >
+            &darr;
+          </div>
+          <div className="font-mono text-xs text-text-primary font-bold mb-2">
+            {expandedBridge.mlTitle}
+          </div>
+          <span
+            className="font-mono text-xs uppercase tracking-wider font-bold"
+            style={{ color: TIER_COLORS[expandedBridge.tier] }}
+          >
+            {TIER_LABEL[expandedBridge.tier]}
+            {expandedBridge.collected ? "" : " (locked)"}
+          </span>
+        </div>
+      )}
     </section>
   );
 }

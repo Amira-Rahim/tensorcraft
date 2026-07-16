@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { THEME_SLUGS, PRICING, ROUTES } from "./constants";
+import {
+  THEME_SLUGS,
+  PRICING,
+  ROUTES,
+  THEME_CONTENT,
+  getModuleLessonCount,
+  getPaidLessonCount,
+} from "./constants";
 
 describe("THEME_SLUGS", () => {
   it("contains exactly 5 themes", () => {
@@ -69,5 +76,44 @@ describe("ROUTES", () => {
     expect(ROUTES.dashboard).toBe("/dashboard");
     expect(ROUTES.settings).toBe("/settings");
     expect(ROUTES.pricing).toBe("/pricing");
+  });
+});
+
+/**
+ * Paywall arithmetic gate (audit run #6, 2026-07-15).
+ *
+ * Both paywall surfaces (pricing/paywall-notice.tsx and the lesson
+ * lesson-paywall.tsx) pasted the literal "51" for the lessons behind the
+ * wall. A literal cannot follow the corpus: if browser-runtimes ever loses
+ * its sixth lesson, or module 1 changes size, the customer is quoted a
+ * number the product no longer delivers, on the exact screen where they are
+ * deciding to pay.
+ */
+describe("getPaidLessonCount", () => {
+  it("is the full theme minus the free first module", () => {
+    expect(getPaidLessonCount()).toBe(
+      THEME_CONTENT.totalLessonsPerTheme -
+        getModuleLessonCount(THEME_CONTENT.freeModuleSlug),
+    );
+  });
+
+  it("equals 51 for the launched theme", () => {
+    // 56 total - 5 in foundations. Pinned so a change to either input has to
+    // be a deliberate edit here, not a silent drift in marketing copy.
+    expect(getPaidLessonCount()).toBe(51);
+  });
+
+  it("names a free module that actually exists in the override table logic", () => {
+    // getModuleLessonCount falls back to lessonsPerModule for unknown slugs,
+    // so a typo'd freeModuleSlug would silently still return 5. Assert the
+    // slug is the one the content corpus ships as module 1.
+    expect(THEME_CONTENT.freeModuleSlug).toBe("foundations");
+  });
+
+  it("leaves the paid count smaller than the total", () => {
+    expect(getPaidLessonCount()).toBeLessThan(
+      THEME_CONTENT.totalLessonsPerTheme,
+    );
+    expect(getPaidLessonCount()).toBeGreaterThan(0);
   });
 });

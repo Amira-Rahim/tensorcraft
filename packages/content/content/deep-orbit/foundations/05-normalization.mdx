@@ -20,7 +20,7 @@ concept:
     mlTitle: "Min-Max Normalization"
     mlCode: "const normalized = data.sub(min).div(max.sub(min))"
     tier: structural
-    breaks: "Scroll progress has bounds you control: the document can't get longer mid-scroll. Sensor data can. The min and max you normalize with come from training data, and tomorrow's reading can land outside them. That's why z-score, which has no scroll equivalent, often wins for live streams: it assumes nothing about where the data ends."
+    breaks: "Scroll progress has bounds you can at least measure: `scrollHeight` moves when content lazy-loads, but you can read it again. Sensor data gives you no such read. The min and max you normalize with come from training data, and tomorrow's reading can land outside them. That's why z-score, which has no scroll equivalent, often wins for live streams: it assumes nothing about where the data ends."
 consequence:
   narrative: "The normalized feed goes live. Four sensors, one scale, and one archived sample that refuses to look like the others."
 hints:

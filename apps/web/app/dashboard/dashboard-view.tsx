@@ -3,6 +3,7 @@
 import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { SkillGenome } from "./skill-genome";
+import { BridgeCollection } from "./bridge-collection";
 import { LossCurve, type WeeklyHints } from "@tensorcraft/ui/visualizations";
 import { UserAvatar } from "@/app/components/user-avatar";
 
@@ -691,6 +692,16 @@ export function DashboardView(props: DashboardProps) {
 
           {/* Skill Genome */}
           <SkillGenome data={genomeData} />
+
+          {/* Bridge collectibles.
+              The data for this was being fetched (page.tsx: getLessonsWithBridges
+              + a `collected` flag per lesson), threaded through as a prop, and
+              dropped on the floor: the component existed, the pipeline existed,
+              and nothing rendered it. Meanwhile prd.md, marketing-plan.md, and
+              dev-plan.md all describe dashboard bridge collectibles as the
+              shipped replacement for the removed /bridges route. Wired up
+              2026-07-15 so the docs are true. */}
+          <BridgeCollection bridges={bridges} />
 
           {/* Learning trend, rolling 7-day avg hints per exercise */}
           <section

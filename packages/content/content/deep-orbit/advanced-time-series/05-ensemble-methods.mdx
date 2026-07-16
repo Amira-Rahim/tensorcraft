@@ -24,11 +24,11 @@ consequence:
   narrative: "Three architectures, one verdict: the ensemble catches the timing drift the LSTM alone missed."
 hints:
   - level: nudge
-    content: "Ensemble = multiple models vote on the answer, reducing individual model errors"
+    content: "An ensemble votes, but the votes are not worth the same. Each model hands you a confidence next to its prediction, and the grader is watching what you do with it."
   - level: guidance
-    content: "Simple averaging works well: prediction = mean of all model predictions"
+    content: "Weight every prediction by its own confidence, then divide by the TOTAL confidence, not by the number of models. Equal confidences collapse back to a plain average, which is why the equal-confidence test passes either way and the 0.9/0.1 test does not."
   - level: solution
-    content: "const ensemble = models.map(m => m.predict(x)); return mean(ensemble);"
+    content: "const stacked = tf.tensor2d(predictions.map(p => p.prediction)); const conf = tf.tensor1d(predictions.map(p => p.confidence)); const weights = conf.div(conf.sum()).expandDims(1); return stacked.mul(weights).sum(0).arraySync();"
 keywords:
   - ensemble
   - model-averaging
@@ -175,7 +175,7 @@ Build a weighted ensemble from multiple model predictions.
 
 <Epilogue>
 
-Farah leaves the ensemble extrapolating overnight: LSTM, attention, Kalman, all three projecting the interval forward from 72.5 seconds. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
+Farah leaves the ensemble extrapolating overnight: LSTM, attention, Kalman, all three projecting the interval forward from 72.4 seconds. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
 
 <Dialogue speaker="ARIA">
 I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to four significant figures; I can supply eleven. You did not request this precision. I had it available.

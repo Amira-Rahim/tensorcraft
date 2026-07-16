@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { themes, themeSlugs } from "@tensorcraft/themes";
+import { themes } from "@tensorcraft/themes";
+import { isLaunched, getPaidLessonCount } from "@tensorcraft/shared";
 import { EVENTS, track } from "@/lib/analytics-events";
 
 /**
@@ -11,8 +12,12 @@ import { EVENTS, track } from "@/lib/analytics-events";
  * The `?locked=<themeSlug>` query param carries the context so we can
  * tell the user *why* they landed here and which theme is gated.
  *
- * Renders nothing when `locked` is absent or not a canonical slug -
- * we never want to render a banner for an arbitrary user-supplied value.
+ * Renders nothing when `locked` is absent or not a LAUNCHED slug - we never
+ * want to render a banner for an arbitrary user-supplied value, and a
+ * coming-soon theme has nothing to unlock. It previously accepted any
+ * canonical slug, so /pricing?locked=neon-protocol rendered a purchase
+ * banner quoting Deep Orbit's lesson count for a theme that ships no
+ * lessons at all.
  *
  * Fires `upgrade_cta_shown` (source=`paywall`) on mount when the banner is
  * rendered. The click-through CTA itself is the plan picker below; that
@@ -21,8 +26,7 @@ import { EVENTS, track } from "@/lib/analytics-events";
 export function PaywallNotice() {
   const searchParams = useSearchParams();
   const locked = searchParams.get("locked");
-  const isValidLocked =
-    !!locked && (themeSlugs as readonly string[]).includes(locked);
+  const isValidLocked = !!locked && isLaunched(locked);
 
   useEffect(() => {
     if (!isValidLocked) return;
@@ -45,8 +49,8 @@ export function PaywallNotice() {
       <span className="w-2 h-2 bg-primary shrink-0" aria-hidden="true" />
       <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
         Module 2 and beyond in <strong>{displayName}</strong> require a
-        purchase. Pick a plan below to unlock modules 2-11: the remaining 51
-        lessons, the capstone, and your certificate.
+        purchase. Pick a plan below to unlock modules 2-11: the remaining{" "}
+        {getPaidLessonCount()} lessons, the capstone, and your certificate.
       </p>
     </div>
   );
