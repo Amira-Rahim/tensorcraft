@@ -24,11 +24,11 @@ consequence:
   narrative: "Pruning removes 60% of weights while holding accuracy at 92.1%. Combined with quantization: 340 MB → 42 MB. Demir's 80% experiment costs three hours."
 hints:
   - level: nudge
-    content: "Weights near zero contribute almost nothing; removing them barely affects output"
+    content: "Weights near zero contribute almost nothing: find a cutoff from the sorted absolute values and silence everything below it."
   - level: guidance
-    content: "Sort weights by magnitude, zero out the smallest ones, retrain to recover accuracy"
+    content: "In pruneWeights, sort the absolute values ascending with weights.map(Math.abs).sort, take threshold = sorted[Math.floor(length * sparsity)] (use the sparsity parameter, not a hardcoded percentage), and zero out weights whose Math.abs(w) < threshold; strict less-than keeps everything at sparsity 0. calculateSparsity is separate and also graded: the fraction of entries that are exactly 0."
   - level: solution
-    content: "const threshold = percentile(abs(weights), 60); prunedWeights = weights.map(w => abs(w) < threshold ? 0 : w);"
+    content: "const sorted = weights.map(Math.abs).sort((a, b) => a - b); const threshold = sorted[Math.floor(sorted.length * sparsity)]; return weights.map(w => Math.abs(w) < threshold ? 0 : w); const zeros = weights.filter(w => w === 0).length; return zeros / weights.length;"
 keywords:
   - pruning
   - tree-shaking
@@ -45,7 +45,7 @@ The directive is your review assignment, and it hides three assumptions in three
 Tree-shaking. Webpack drops the exports nothing imports; we drop the weights nothing needs. The bundle gets smaller and nobody notices the difference. That's my sign-off draft, anyway.
 </Dialogue>
 
-He's close, and a reviewer who signs that draft has missed what you hopefully caught. Tree-shaking removes code that's provably unreachable; the bundle behaves identically afterward. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight changes the output a little. The craft is in measuring how much all those littles add up to.
+Before anyone signs that draft, run the operation it proposes and let the console vote first. The block below prunes eight weights, then holds the result to the analogy's central promise: that nobody notices the difference.
 
 <LearningObjectives objectives={["Understand pruning as tree-shaking for neural networks: remove near-zero weights", "Implement magnitude-based pruning with a configurable sparsity level", "Measure the accuracy-size tradeoff at different pruning levels", "Combine pruning with quantization for maximum compression"]} />
 
@@ -73,12 +73,21 @@ console.log(pruned);
 // 4 of 8 weights remain (4 pruned, those closest to zero:
 // 60% of 8 rounds down to a cut of 4)
 
+// Hold the result to tree-shaking's promise: same probe input,
+// both weight sets, "nobody notices the difference."
+const probe = new Array(original.length).fill(1);
+const dot = (ws: number[]) => ws.reduce((sum, w, i) => sum + w * probe[i], 0);
+console.log(dot(original).toFixed(3));  // 0.994
+console.log(dot(pruned).toFixed(3));    // 1.000
+
 // Sparsity levels for DEEP SCAN:
 // 30% pruned: 93.8% accuracy (vs 94.2% baseline), barely noticeable
 // 60% pruned: 92.1% accuracy, good tradeoff
 // 80% pruned: 87.5% accuracy
 // 90% pruned: 71.2% accuracy, model is broken`}
 </CodeBlock>
+
+0.994 against 1.000. A tree-shaken bundle would print the same number both times; that is what "provably unreachable" buys, and it is the exact clause the console just struck from Demir's sign-off. The four weights that went to zero were contributing a combined -0.006 to this output, and now they contribute nothing. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight moves the output a little. The craft is in measuring how much all those littles add up to, which is what the sparsity ladder at the bottom of the block does at model scale.
 
 Demir reads that ladder, does the arithmetic, and gets ambitious: at 80 percent sparsity the combined build would land near 28 MB, headroom to spare, and 87.5 percent accuracy sounds survivable when it is only a number on a screen. He pushes it to the staging dashboard before dinner, without waiting for the replay suite to tell him what the missing 6.7 points actually contain.
 
@@ -141,7 +150,7 @@ Prune weights and measure the accuracy impact.
   whatYouLearned={[
     "Magnitude-based pruning zeros out the smallest-absolute-value weights first; sparsity has a non-linear cliff where a small increase in pruning rate causes a large accuracy drop.",
     "Rare and anomalous classes are disproportionately harmed by aggressive pruning because their learned signal concentrates in low-magnitude weights.",
-    "Combining pruning (60% sparsity) with uint8 quantization achieves roughly 8x total compression with moderate accuracy loss, and retraining after pruning can recover some of that loss."
+    "Combining pruning (60% sparsity) with uint8 quantization took DEEP SCAN from 340 MB to 42 MB, roughly 8x total compression, at a cost of 2.4 accuracy points (94.2% to 91.8%)."
   ]}
   bridge="Just as webpack tree-shaking removes unused exports to shrink a bundle, magnitude-based pruning removes near-zero weights to shrink a model; but unlike dead code, pruned weights still contributed a little, so the model changes."
   youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and combine pruning with quantization for maximum model compression."

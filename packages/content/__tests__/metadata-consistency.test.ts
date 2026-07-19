@@ -172,112 +172,42 @@ describe("consequence.narrative numbers appear in the lesson body", () => {
 });
 
 /* ------------------------------------------------------------------ *
- * Gate B - a solution hint must be about its own exercise
+ * Gate B - a solution hint must be a verbatim excerpt of the solution
  * ------------------------------------------------------------------ */
 
 /**
- * The `solution`-level hint is the last thing a stuck learner reveals, so a
- * hint that describes a different task than the grader accepts is a
- * guaranteed fail at the worst possible moment. Two shipped instances:
- * advanced-time-series/05 offered a plain mean where the grader requires
- * confidence weighting, and llm-integration/03 described a RAG query where
- * the exercise verifies numeric claims.
+ * The `solution`-level hint is the last thing a stuck learner reveals. Run #6
+ * gated it on vocabulary overlap; run #7 executed all 77 ladders against
+ * their graders and proved that gate far too weak: 38 revealed solution
+ * hints failed their own exercise (9 actively wrong, 27 prose-only against
+ * code graders, incl. the entire capstone), and vocabulary overlap caught
+ * almost none of them because a stale hint still shares words with the
+ * exercise it used to describe.
  *
- * Running the hint through the grader is not possible - hints are fragments,
- * not programs. The tractable signal is vocabulary: a hint genuinely about
- * its exercise shares at least one distinctive identifier with the accepted
- * solution. Prose hints ("Profile before optimizing") share none by design
- * and are skipped; only code-shaped hints are checked.
+ * The durable convention, enforced here: A SOLUTION HINT IS AN EXCERPT.
+ * Every substantive fragment of it must appear verbatim (whitespace-
+ * normalized) inside the exercise's own `solutionCode`. Combined with the
+ * existing grader gate (`pnpm test:exercises` proves every solutionCode
+ * passes its tests), this makes a wrong solution hint unrepresentable:
+ * hint ⊂ solution ∧ solution passes ⇒ the hint's code is correct code.
+ * Rewrite the exercise and forget the hint, and this gate goes red.
+ *
+ * Prose is banned at the solution level - that is what nudge/guidance are
+ * for. Fragments under 12 normalized characters are ignored (connectors,
+ * step numerals); everything longer must be found in solutionCode.
  */
 
-const JS_BUILTINS = new Set([
-  "const",
-  "let",
-  "var",
-  "return",
-  "function",
-  "await",
-  "async",
-  "this",
-  "for",
-  "new",
-  "tf",
-  "the",
-  "and",
-  "all",
-  "use",
-  "with",
-  "from",
-  "not",
-  "out",
-  "you",
-  "your",
-  "each",
-  "then",
-  "one",
-  "two",
-  "per",
-  "its",
-  "are",
-  "way",
-  "via",
-  "can",
-  "has",
-  "have",
-  "that",
-  "true",
-  "false",
-  "null",
-  "undefined",
-  "console",
-  "log",
-  "Math",
-  "Object",
-  "keys",
-  "push",
-  "map",
-  "filter",
-  "reduce",
-  "forEach",
-  "slice",
-  "length",
-  "sum",
-  "div",
-  "mul",
-  "add",
-  "sqrt",
-  "pow",
-  "abs",
-  "min",
-  "max",
-  "floor",
-  "round",
-  "Array",
-  "number",
-  "string",
-]);
-
-/**
- * Hints that are legitimately generic API guidance rather than a solution to
- * the specific exercise. Keep this list at zero-to-tiny: every entry is a
- * place the gate is blind.
- */
-const HINT_ALLOWLIST = new Set([
-  // `const result = tf.add(a, b)` teaches the tf.add API; the exercise
-  // (mergePasses) applies it to named signal buffers. Generic by intent.
-  "deep-orbit/foundations/03-tensor-operations::add-tensors",
-]);
-
-function isCodeShaped(hint: string): boolean {
-  return /=>|\breturn\b|const\s+\w+\s*=/.test(hint);
+/** Collapse whitespace so YAML block-scalar vs single-line quoting differences never matter. */
+function normalizeCode(code: string): string {
+  return code.replace(/\s+/g, " ").trim();
 }
 
-function wordBoundary(token: string, haystack: string): boolean {
-  const escaped = token.replace(/[.*+?^${}()|[\]\\-]/g, "\\$&");
-  return new RegExp(`(?:^|[^\\w$-])${escaped}(?:[^\\w$-]|$)`).test(haystack);
+/** Undo YAML double-quote escaping in frontmatter hint strings. */
+function unescapeHint(hint: string): string {
+  return hint.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
 }
 
-describe("code-shaped solution hints share vocabulary with their exercise", () => {
+describe("solution hints are verbatim excerpts of their exercise's solutionCode", () => {
   const cases: {
     id: string;
     hint: string;
@@ -289,27 +219,30 @@ describe("code-shaped solution hints share vocabulary with their exercise", () =
     const hint = frontmatter(source).match(
       /^ {2}- level: solution\n {4}content:\s*"([\s\S]*?)"\n(?= {2}[-\w]|\w)/m,
     )?.[1];
-    if (!hint || !isCodeShaped(hint)) continue;
+    if (!hint) continue;
 
-    // Incident scenarios are supplementary drills bolted onto a lesson; the
-    // lesson's hint ladder targets the primary exercise, so they are excluded.
-    const slugs = [...source.matchAll(/<Exercise\s+slug="([^"]+)"/g)]
+    // The ladder targets the lesson's PRIMARY exercise; incident-* drills are
+    // supplementary and carry their own recipe in instructions/starter.
+    const slug = [...source.matchAll(/<Exercise\s+slug="([^"]+)"/g)]
       .map((m) => m[1])
-      .filter((s) => !s.startsWith("incident-"));
+      .find((s) => !s.startsWith("incident-"));
+    if (!slug) continue;
 
-    for (const slug of slugs) {
-      const path = join(dirname(file), "exercises", `${slug}.yaml`);
-      if (!existsSync(path)) continue;
-      const solution =
-        readFileSync(path, "utf8").match(
-          /^solutionCode:[\s\S]*?(?=^testCode:)/m,
-        )?.[0] ?? "";
-      if (!solution.trim()) continue;
-      cases.push({ id: `${lessonId(file)}::${slug}`, hint, solution });
-    }
+    const path = join(dirname(file), "exercises", `${slug}.yaml`);
+    if (!existsSync(path)) continue;
+    const solution =
+      readFileSync(path, "utf8").match(
+        /^solutionCode:[\s\S]*?(?=^testCode:)/m,
+      )?.[0] ?? "";
+    if (!solution.trim()) continue;
+    cases.push({ id: `${lessonId(file)}::${slug}`, hint, solution });
   }
 
-  it.each(cases.filter((c) => !HINT_ALLOWLIST.has(c.id)))(
+  it("found a solution hint for most lessons (sanity)", () => {
+    expect(cases.length).toBeGreaterThan(60);
+  });
+
+  it.each(cases)(
     "$id",
     ({
       id,
@@ -320,22 +253,30 @@ describe("code-shaped solution hints share vocabulary with their exercise", () =
       hint: string;
       solution: string;
     }) => {
-      const tokens = [
-        ...new Set(
-          [...hint.matchAll(/[A-Za-z_$][\w$-]{2,}/g)].map((m) => m[0]),
-        ),
-      ].filter((t) => !JS_BUILTINS.has(t));
-      if (!tokens.length) return;
-
-      const shared = tokens.filter((t) => wordBoundary(t, solution));
+      const normalizedSolution = normalizeCode(solution);
+      const fragments = unescapeHint(hint)
+        .split(";")
+        .map((f) => normalizeCode(f))
+        .filter((f) => f.length >= 12);
 
       expect(
-        shared.length,
-        `${id}: the solution hint shares no vocabulary with the exercise's ` +
-          `accepted solution. Hint offers [${tokens.slice(0, 6).join(", ")}]. ` +
-          `A stuck learner who reveals this hint will fail the grader. ` +
-          `Usually means the exercise was rewritten and the hint was not.`,
+        fragments.length,
+        `${id}: the solution hint contains no substantive fragment at all. ` +
+          `Solution hints must be code excerpts from the exercise's ` +
+          `solutionCode, not prose - prose belongs in nudge/guidance.`,
       ).toBeGreaterThan(0);
+
+      const foreign = fragments.filter((f) => !normalizedSolution.includes(f));
+
+      expect(
+        foreign,
+        `${id}: these hint fragments do not appear in the exercise's ` +
+          `solutionCode: ${foreign
+            .map((f) => JSON.stringify(f.slice(0, 60)))
+            .join(" | ")}. A solution hint must be a verbatim excerpt of the ` +
+          `code the grader accepts (run #7: 38 of 77 revealed hints failed ` +
+          `their own grader). Copy the decisive lines out of solutionCode.`,
+      ).toEqual([]);
     },
   );
 });

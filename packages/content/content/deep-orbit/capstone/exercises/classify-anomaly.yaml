@@ -1,0 +1,212 @@
+slug: classify-anomaly
+lessonSlug: launch
+title: "Zero Hour: Classify the Anomaly"
+mlContent: systems
+instructions: "The season's final inference, run by you. Sample 7741's zero-hour readout is on the console: the deployed ensemble scores it 0.999 where the module-3 classifier managed 0.518. Your job is the decision layer the bridge crew signs their names to. Implement decomposeIntervals(intervals): successive ratios of the pulse sub-intervals (ratios[i] = intervals[i+1] / intervals[i]), and isFibonacciTrain(ratios): true when every ratio matches the Fibonacci-succession ratios (2, 1.5, 1.667, 1.6, 1.625, converging on the golden ratio) within 2%. Then classifyAnomaly(reading): run the three-detector vote exactly as module 7 built it (statistical fires on |z| > 3 computed from reading.window vs reading.actual, autoencoder fires on reconstructionError > reconThreshold, lstm fires on |predicted - actual| > predTolerance), take the 2-of-3 majority, and return { votes, isAnomaly, ratios, fibonacciTrain, classification, scoreDelta } where classification is 'confirmed-anomaly' only when the vote passes AND the interval train is Fibonacci, and scoreDelta = ensembleScore - module3Score. The decomposition must be scale-invariant: the ratios care about proportion, not units. That property is the whole reason the calibration overlay worked."
+starterCode: |
+  // Zero hour. The readout for sample 7741, tonight:
+  //
+  //   deployed ensemble score : 0.999
+  //   module-3 classifier     : 0.518  (the score that started everything)
+  //   pulse sub-intervals (s) : proportional to 1, 1, 2, 3, 5, 8, 13
+  //
+  // Recipe, exactly as the modules taught it:
+  //  1. decomposeIntervals: ratios[i] = intervals[i+1] / intervals[i]
+  //  2. isFibonacciTrain: the full succession ratio list is
+  //     [1, 2, 1.5, 1.6667, 1.6, 1.625] (a 1:1 opener, then converging on
+  //     the golden ratio). A train may or may not include the opener, so
+  //     align on length FROM THE TAIL: expected = the last ratios.length
+  //     entries of the full list (return false if lengths still differ),
+  //     then require every ratio within 2% relative error of its expected
+  //     value: Math.abs(r - expected[i]) / expected[i] <= 0.02.
+  //  3. classifyAnomaly: module 7's three-detector vote.
+  //     statistical: mean/std of reading.window via tf.moments (inside
+  //     tf.tidy; std = sqrt(variance)); z = (reading.actual - mean) / std,
+  //     with z = 0 when std is 0; fires on Math.abs(z) > 3.
+  //     autoencoder: fires on reading.reconstructionError >
+  //     reading.reconThreshold.
+  //     lstm: fires on Math.abs(reading.predicted - reading.actualForecast)
+  //     > reading.predTolerance.
+  //     votes = how many fired; isAnomaly = votes >= 2 (majority, not
+  //     unanimity). ratios = decomposeIntervals(reading.intervals);
+  //     fibonacciTrain = isFibonacciTrain(ratios). classification =
+  //     'confirmed-anomaly' only when isAnomaly AND fibonacciTrain, else
+  //     'anomaly' when isAnomaly, else 'noise'. scoreDelta =
+  //     reading.ensembleScore - reading.module3Score.
+  //     Return { votes, isAnomaly, ratios, fibonacciTrain, classification,
+  //     scoreDelta }.
+
+  function decomposeIntervals(intervals) {
+    // Your code here
+    return [];
+  }
+
+  function isFibonacciTrain(ratios) {
+    // Your code here
+    return false;
+  }
+
+  function classifyAnomaly(reading) {
+    // Your code here
+    return null;
+  }
+
+  // Tonight's reading, as the bridge sees it.
+  const zeroHourReading = {
+    window: [
+      0.508, 0.512, 0.503, 0.51, 0.507, 0.514, 0.505, 0.509, 0.511, 0.506,
+      0.513, 0.504, 0.509, 0.51, 0.507, 0.512, 0.508, 0.505, 0.511, 0.509,
+    ],
+    actual: 0.62,
+    reconstructionError: 0.062,
+    reconThreshold: 0.005,
+    predicted: 0.55,
+    actualForecast: 0.62,
+    predTolerance: 0.02,
+    intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
+    ensembleScore: 0.999,
+    module3Score: 0.518,
+  };
+solutionCode: |
+  function decomposeIntervals(intervals) {
+    const ratios = [];
+    for (let i = 0; i < intervals.length - 1; i++) {
+      ratios.push(intervals[i + 1] / intervals[i]);
+    }
+    return ratios;
+  }
+
+  function isFibonacciTrain(ratios) {
+    const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
+    // The reading's first ratio may be the 1:1 opener or start at the 2;
+    // align on length from the tail, where the train converges on phi.
+    const expected = fibonacciRatios.slice(
+      fibonacciRatios.length - ratios.length,
+    );
+    if (expected.length !== ratios.length) return false;
+    return ratios.every(
+      (r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02,
+    );
+  }
+
+  function classifyAnomaly(reading) {
+    const { mean, variance } = tf.tidy(() => {
+      const m = tf.moments(tf.tensor1d(reading.window));
+      return {
+        mean: m.mean.dataSync()[0],
+        variance: m.variance.dataSync()[0],
+      };
+    });
+    const std = Math.sqrt(variance);
+    const z = std === 0 ? 0 : (reading.actual - mean) / std;
+
+    const verdicts = {
+      statistical: Math.abs(z) > 3,
+      autoencoder: reading.reconstructionError > reading.reconThreshold,
+      lstm:
+        Math.abs(reading.predicted - reading.actualForecast) >
+        reading.predTolerance,
+    };
+    const votes = Object.values(verdicts).filter(Boolean).length;
+    const isAnomaly = votes >= 2;
+
+    const ratios = decomposeIntervals(reading.intervals);
+    const fibonacciTrain = isFibonacciTrain(ratios);
+
+    return {
+      votes,
+      isAnomaly,
+      ratios,
+      fibonacciTrain,
+      classification:
+        isAnomaly && fibonacciTrain
+          ? "confirmed-anomaly"
+          : isAnomaly
+            ? "anomaly"
+            : "noise",
+      scoreDelta:
+        Math.round((reading.ensembleScore - reading.module3Score) * 1000) /
+        1000,
+    };
+  }
+
+  const zeroHourReading = {
+    window: [
+      0.508, 0.512, 0.503, 0.51, 0.507, 0.514, 0.505, 0.509, 0.511, 0.506,
+      0.513, 0.504, 0.509, 0.51, 0.507, 0.512, 0.508, 0.505, 0.511, 0.509,
+    ],
+    actual: 0.62,
+    reconstructionError: 0.062,
+    reconThreshold: 0.005,
+    predicted: 0.55,
+    actualForecast: 0.62,
+    predTolerance: 0.02,
+    intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
+    ensembleScore: 0.999,
+    module3Score: 0.518,
+  };
+testCode: |
+  describe('Zero Hour', () => {
+    const result = classifyAnomaly(zeroHourReading);
+
+    it('decomposes the interval train into successive ratios', () => {
+      const ratios = decomposeIntervals([1, 1, 2, 3, 5, 8, 13]);
+      expect(ratios.length).toBe(6);
+      expect(ratios[0]).toBeCloseTo(1, 4);
+      expect(ratios[1]).toBeCloseTo(2, 4);
+      expect(ratios[2]).toBeCloseTo(1.5, 4);
+      expect(ratios[5]).toBeCloseTo(1.625, 4);
+    });
+
+    it('the decomposition is scale-invariant (ratios care about proportion, not units)', () => {
+      const seconds = decomposeIntervals([0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7]);
+      const abstract = decomposeIntervals([1, 1, 2, 3, 5, 8, 13]);
+      for (let i = 0; i < abstract.length; i++) {
+        expect(seconds[i]).toBeCloseTo(abstract[i], 4);
+      }
+    });
+
+    it('recognizes the Fibonacci train and rejects a metronome', () => {
+      expect(isFibonacciTrain(decomposeIntervals([1, 1, 2, 3, 5, 8, 13]))).toBe(true);
+      expect(isFibonacciTrain(decomposeIntervals([1, 1, 1, 1, 1, 1, 1]))).toBe(false);
+    });
+
+    it('all three detectors fire on the zero-hour reading', () => {
+      expect(result.votes).toBe(3);
+      expect(result.isAnomaly).toBe(true);
+    });
+
+    it('majority vote is 2-of-3, not unanimity', () => {
+      const oneDetectorDown = classifyAnomaly({
+        ...zeroHourReading,
+        reconstructionError: 0.001,
+      });
+      expect(oneDetectorDown.votes).toBe(2);
+      expect(oneDetectorDown.isAnomaly).toBe(true);
+
+      const twoDetectorsDown = classifyAnomaly({
+        ...zeroHourReading,
+        reconstructionError: 0.001,
+        predicted: 0.62,
+      });
+      expect(twoDetectorsDown.votes).toBe(1);
+      expect(twoDetectorsDown.isAnomaly).toBe(false);
+    });
+
+    it('settles the season: confirmed anomaly, and the 51.8 -> 99.9 delta', () => {
+      expect(result.classification).toBe('confirmed-anomaly');
+      expect(result.fibonacciTrain).toBe(true);
+      expect(result.scoreDelta).toBeCloseTo(0.481, 3);
+    });
+
+    it('an anomalous vote without the Fibonacci train stays "anomaly", not confirmed', () => {
+      const uniform = classifyAnomaly({
+        ...zeroHourReading,
+        intervals: [1, 1, 1, 1, 1, 1, 1],
+      });
+      expect(uniform.isAnomaly).toBe(true);
+      expect(uniform.classification).toBe('anomaly');
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

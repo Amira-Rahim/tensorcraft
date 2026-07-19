@@ -23,11 +23,11 @@ consequence:
   narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
 hints:
   - level: nudge
-    content: "Backprop uses the chain rule to propagate gradients backwards"
+    content: "You never write the backward pass yourself: tf.variableGrads records the forward computation and applies the chain rule backwards for you."
   - level: guidance
-    content: "TensorFlow.js handles backprop automatically with tf.variableGrads()"
+    content: "Call tf.variableGrads with a zero-argument function that computes the loss, () => w.square(). Destructure the result as { value: loss, grads }: value is the forward-pass loss (9 when w is 3.0), and grads maps each variable's name to its gradient (dLoss/dw = 2w = 6). That destructured object replaces the whole placeholder on the starter's last line."
   - level: solution
-    content: "const { grads } = tf.variableGrads(() => lossFunction())"
+    content: "const { value: loss, grads } = tf.variableGrads(() => w.square());"
 keywords:
   - backpropagation
   - chain-rule
@@ -63,7 +63,7 @@ const base = computeLoss();             // forward pass 0
 const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 </CodeBlock>
 
-It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; overnight becomes next month. The method is correct and the bill is unpayable, and that bill is the whole reason this lesson exists.
+It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; overnight becomes next month. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
 
 <Dialogue speaker="ARIA">
 Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a cost of roughly two forward passes. It has a name.
@@ -147,7 +147,7 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 
 <LessonRecap
   whatYouLearned={[
-    "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the bill backpropagation was invented to cancel.",
+    "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the cost backpropagation was invented to remove.",
     "Backpropagation computes gradients for every weight in one backward pass by applying the chain rule from output to input, making it orders of magnitude faster than computing each gradient individually.",
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
     "Vanishing gradients occur when the chain rule product collapses across many layers. Residual connections help by adding 1 to each link in the chain."

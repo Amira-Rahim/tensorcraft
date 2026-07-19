@@ -22,14 +22,14 @@ concept:
     tier: intuition
     breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
-  narrative: "Twelve times the normal threshold. Nazari checks the sensors twice; this is not instrument noise. The model is right."
+  narrative: "Twelve times the normal threshold. Nazari clears the sensor suite herself; this is not instrument noise. The model is right."
 hints:
   - level: nudge
-    content: "Reconstruction error = difference between input and output. High error = anomaly."
+    content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"
   - level: guidance
-    content: "Compute MSE between original signal and autoencoder output for each sample"
+    content: "Build a one-row 2D tensor with tf.tensor2d([input]), get the reconstruction from model.predict, then tf.losses.meanSquaredError(inputTensor, reconstructed) gives a scalar tensor; return its .dataSync()[0]. Wrapping the work in tf.tidy keeps the intermediate tensors from leaking"
   - level: solution
-    content: "const error = tf.losses.meanSquaredError(original, reconstructed).dataSync()[0];"
+    content: "const inputTensor = tf.tensor2d([input]); const reconstructed = model.predict(inputTensor) as tf.Tensor; const mse = tf.losses.meanSquaredError(inputTensor, reconstructed); return mse.dataSync()[0];"
 keywords:
   - reconstruction-error
   - mse
@@ -77,6 +77,9 @@ function computeAnomalyScores(
     return Array.from(errors.dataSync());
   });
 }
+
+// Tiny helper for the printouts below (Math has no built-in mean)
+const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
 // Normal signals: low reconstruction error
 const normalScores = computeAnomalyScores(autoencoder, normalTestData);

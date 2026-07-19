@@ -26,9 +26,11 @@ consequence:
   narrative: "Nazari watches the combined feed scroll and sees it first: every minute or two, the same ripple across all sixty-four channels at once."
 hints:
   - level: nudge
-    content: "tf.mul(a, b) multiplies matching positions; tf.matMul(a, b) multiplies rows into columns. Decide which one the task needs"
+    content: "Averaging two passes is element-wise: add matching positions and divide by 2. No matrix multiply anywhere in this one"
+  - level: guidance
+    content: "Chain the ops: pass1.add(pass2).div(2) is the element-wise average merged, and merged.mul(gain) amplifies it into boosted. Return both in one object { merged, boosted }"
   - level: solution
-    content: "const result = tf.add(a, b)"
+    content: "const merged = pass1.add(pass2).div(2); const boosted = merged.mul(gain); return { merged, boosted };"
 keywords:
   - operations
   - add

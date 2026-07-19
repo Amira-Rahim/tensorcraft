@@ -25,9 +25,9 @@ hints:
   - level: nudge
     content: "A prior is your belief before the data; the posterior is that belief updated by evidence"
   - level: guidance
-    content: "Multiply prior and likelihood element-wise, then divide every entry by the total so the result sums to 1. The sequential version is a loop where each posterior becomes the next step's prior. Collect a posterior per observation."
+    content: "bayesUpdate multiplies prior[i] by likelihood[i], sums those products into a total, and divides each product by the total so the posterior sums to 1. sequentialBayesUpdate keeps a current distribution starting at initialPrior, calls bayesUpdate once per likelihood array, and pushes each posterior, so the result holds one distribution per observation."
   - level: solution
-    content: "bayesUpdate: const raw = prior.map((p, i) => p * likelihood[i]); const total = raw.reduce((a, b) => a + b, 0); return raw.map(v => v / total). sequentialBayesUpdate: let current = prior; return likelihoods.map(l => (current = bayesUpdate(current, l)));"
+    content: "const unnormalized = prior.map((p, i) => p * likelihood[i]); const total = unnormalized.reduce((s, v) => s + v, 0); return unnormalized.map(v => v / total); const posteriors: number[][] = []; let current = initialPrior; for (const likelihood of likelihoods) {; current = bayesUpdate(current, likelihood); posteriors.push(current); }; return posteriors;"
 keywords:
   - bayes-theorem
   - prior

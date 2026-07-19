@@ -7,7 +7,7 @@ starterCode: |
 
   const RANGES = {
     amplitude: { min: 0, max: 2048 },
-    frequency: { min: 20, max: 20000 },
+    frequency: { min: 0, max: 63 },
     phase: { min: -Math.PI, max: Math.PI },
   };
 
@@ -26,7 +26,7 @@ solutionCode: |
 
   const RANGES = {
     amplitude: { min: 0, max: 2048 },
-    frequency: { min: 20, max: 20000 },
+    frequency: { min: 0, max: 63 },
     phase: { min: -Math.PI, max: Math.PI },
   };
 
@@ -60,12 +60,12 @@ testCode: |
       probe.layers[0].setWeights([tf.tensor2d([[1], [0], [0]])]);
     });
     it('confidence equals the normalized amplitude (1536 / 2048 = 0.75, anomaly)', () => {
-      const r = classify(probe, { amplitude: 1536, frequency: 20, phase: -Math.PI });
+      const r = classify(probe, { amplitude: 1536, frequency: 0, phase: -Math.PI });
       expect(r.confidence).toBeCloseTo(0.75, 4);
       expect(r.class).toBe('anomaly');
     });
     it('low amplitude normalizes low (512 / 2048 = 0.25, noise)', () => {
-      const r = classify(probe, { amplitude: 512, frequency: 20, phase: -Math.PI });
+      const r = classify(probe, { amplitude: 512, frequency: 0, phase: -Math.PI });
       expect(r.confidence).toBeCloseTo(0.25, 4);
       expect(r.class).toBe('noise');
     });
@@ -73,12 +73,12 @@ testCode: |
       const phaseProbe = tf.sequential();
       phaseProbe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
       phaseProbe.layers[0].setWeights([tf.tensor2d([[0], [0], [1]])]);
-      const r = classify(phaseProbe, { amplitude: 0, frequency: 20, phase: 0 });
+      const r = classify(phaseProbe, { amplitude: 0, frequency: 0, phase: 0 });
       expect(r.confidence).toBeCloseTo(0.5, 4);
     });
     it('does not leak tensors (tf.tidy is doing its job)', () => {
       const before = tf.memory().numTensors;
-      classify(probe, { amplitude: 100, frequency: 1000, phase: 0 });
+      classify(probe, { amplitude: 100, frequency: 32, phase: 0 });
       expect(tf.memory().numTensors).toBe(before);
     });
   });

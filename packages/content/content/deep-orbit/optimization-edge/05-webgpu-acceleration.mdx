@@ -24,11 +24,11 @@ consequence:
   narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete, and the crew signs off on the 2.4% it cost."
 hints:
   - level: nudge
-    content: "WebGPU is the successor to WebGL, designed for compute workloads, not just graphics"
+    content: "The exercise hands selectBestBackend an ordered array of backend config objects (mocks, not real tf backends): the first one that is available and initializes cleanly wins."
   - level: guidance
-    content: "TF.js supports WebGPU as a backend; switch with tf.setBackend('webgpu')"
+    content: "Loop over backends in the given order (webgpu, then webgl, then wasm). Skip any whose isAvailable() returns false, await init() inside a try/catch and continue to the next on throw, return backend.name on the first success, and throw new Error('No backend available') if the loop ends with nothing working."
   - level: solution
-    content: "await tf.setBackend('webgpu'); await tf.ready(); // 2-3x faster inference"
+    content: "for (const backend of backends) { if (!backend.isAvailable()) continue; try { await backend.init(); return backend.name; } catch { continue; } } throw new Error('No backend available');"
 keywords:
   - webgpu
   - gpu-compute
@@ -90,7 +90,9 @@ async function initBestBackend(): Promise<string> {
 const backend = await initBestBackend();
 console.log('Using backend:', backend);
 
-// Benchmark results for DEEP SCAN (42MB optimized model):
+// Benchmark results for DEEP SCAN (42MB optimized model), as measured
+// at the bridge console with the readback pattern below; your hardware
+// will print different absolutes:
 // WebGPU:  ~5ms per inference   (3x faster than WebGL)
 // WebGL:   ~15ms per inference  (GPU via graphics API)
 // WASM:    ~35ms per inference  (CPU, SIMD optimized)
@@ -100,6 +102,36 @@ console.log('Using backend:', backend);
 <Dialogue speaker="Dr. Farah">
 Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both: new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
 </Dialogue>
+
+## Measure the Claim
+
+That table did not come off a spec sheet, and its first draft was wrong. Demir's opening timing run at the bridge console put WebGPU at 0.4 milliseconds, a figure that would make it nearly forty times faster than WebGL's 15 instead of three. The figure survived until he applied module 4's own rule to it:
+
+<CodeBlock language="typescript" title="measure-inference.ts">
+{`// First attempt: start the clock, call predict, stop the clock.
+const t0 = performance.now();
+const flattering = model.predict(warmInput) as tf.Tensor;
+const naive = performance.now() - t0;
+// Bridge console, webgpu backend: 0.4 ms. Too good, and it is: on a
+// GPU backend, predict() SCHEDULES kernels and returns. The clock
+// stopped while the GPU was still working.
+
+// Module 4's rule: the readback goes INSIDE the timed region, because
+// inference is not over until the result is back where JS can read it.
+const t1 = performance.now();
+const output = model.predict(warmInput) as tf.Tensor;
+await output.data();  // forces completion before the clock stops
+const honest = performance.now() - t1;
+// Bridge console, webgpu backend: 5 ms. That is the number in the
+// table above and the one every claim in this lesson stands on.
+
+// On the cpu backend the two clocks agree to within a millisecond,
+// because cpu kernels run synchronously. The gap between naive and
+// honest is itself a measurement: it tells you how asynchronous your
+// backend really is.`}
+</CodeBlock>
+
+The millisecond figures in this lesson are what the crew measured at that console, on that GPU, that night. Run the pattern yourself and the absolutes will move; the discipline is the part that transfers. A GPU benchmark without the readback inside the clock is timing how fast you can ask, and the crew has been burned by that number once already.
 
 ## The Complete Optimization Stack
 
@@ -122,7 +154,7 @@ console.log('  Fits in dashboard: YES ✓');`}
 </CodeBlock>
 
 <Dialogue speaker="Chief Nazari">
-Read that last block like an invoice, not a scoreboard. 42 megabytes and 5 milliseconds, paid for with 2.4 points of accuracy that stay paid on every classification until someone retrains. It's good work, Ensign. That's the whole sentence.
+42 megabytes, 5 milliseconds, and 2.4 points of accuracy gone until someone retrains. Every classification from here on carries that trade, so keep all three numbers in view whenever you read the first two. It's good work, Ensign. Full stop.
 </Dialogue>
 
 ## Challenge
@@ -131,11 +163,11 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Exercise slug="gpu-backend" />
 
-<RecallPrompt question="Why does WebGPU outperform WebGL for ML inference on compute-heavy operations?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates, but for large matmul-heavy workloads WebGPU is 2-5x faster." />
+<RecallPrompt question="Why does WebGPU outperform WebGL for ML inference on compute-heavy operations?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; on DEEP SCAN's matmul-heavy workload WebGPU measured 2-3x faster." />
 
 <LessonRecap
   whatYouLearned={[
-    "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders; this makes WebGPU 2-3x faster for matmul-heavy inference workloads.",
+    "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders; on DEEP SCAN's matmul-heavy inference workload that measured 2-3x faster.",
     "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in frontend feature detection.",
     "The full optimization stack (quantization, pruning, caching, and WebGPU) compounds: each step multiplies the gains of the previous ones."
   ]}

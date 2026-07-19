@@ -23,11 +23,11 @@ consequence:
   narrative: "Understanding the loss landscape explains why learning rate schedules and momentum matter."
 hints:
   - level: nudge
-    content: "The velocity term is what carries the ball through flat spots"
+    content: "Momentum keeps a running velocity, so the ball coasts through flat regions where the raw gradient would stall"
   - level: guidance
-    content: "Each sgdStep returns both updated values, not just the weight. Compute newVelocity first from the old velocity and the gradient, then add it to the weight. In optimizeWithMomentum, feed each step's outputs into the next iteration."
+    content: "sgdStep computes newVelocity as momentum * velocity - lr * gradient, adds it to the weight, and returns both in a { weight, velocity } object. optimizeWithMomentum needs the loss L(w) = sin(3w) + 0.5*w^2 - w and its gradient 3*cos(3w) + w - 1, records { weight, loss } once for the initial state, then runs steps iterations feeding each step's weight and velocity into the next, so the history ends up steps + 1 entries long."
   - level: solution
-    content: "sgdStep: const newVelocity = momentum * velocity - lr * gradient; return { weight: weight + newVelocity, velocity: newVelocity }. In the loop, record { weight, loss: L(weight) } for the initial state and after every step."
+    content: "const newVelocity = momentum * velocity - lr * gradient; const newWeight = weight + newVelocity; return { weight: newWeight, velocity: newVelocity }; const loss = (w: number) => Math.sin(3 * w) + 0.5 * w * w - w; const grad = (w: number) => 3 * Math.cos(3 * w) + w - 1; const history: Array<{ weight: number; loss: number }> = []; let w = initialWeight; let v = 0; history.push({ weight: w, loss: loss(w) }); for (let i = 0; i < steps; i++) {; const g = grad(w); const result = sgdStep(w, g, lr, v, momentum); w = result.weight; v = result.velocity; history.push({ weight: w, loss: loss(w) }); }; return history;"
 keywords:
   - convexity
   - saddle-point
@@ -122,7 +122,9 @@ function saddleGradient(x: number, y: number): [number, number] {
   return [2 * x, -2 * y];
 }
 
-// Plain gradient descent gets stuck at the saddle
+// Plain gradient descent stalls near the saddle: x decays toward it
+// while y is pushed away (it would stick forever only when starting
+// exactly on the y = 0 axis)
 let x = 0.001, y = 0.001;
 const lr = 0.1;
 for (let i = 0; i < 10; i++) {
@@ -131,7 +133,8 @@ for (let i = 0; i < 10; i++) {
   y -= lr * gy;
   console.log(\`Step \${i}: (\${x.toFixed(6)}, \${y.toFixed(6)}) loss=\${saddleLoss(x, y).toFixed(6)}\`);
 }
-// y escapes (gradient pushes it away), but shows the saddle dynamics`}
+// y escapes (gradient pushes it away): 6.19x growth in these 10 steps
+// while x shrinks by 0.8 per step. Slow drift out, not a trap`}
 </CodeBlock>
 
 ## SGD with Momentum
@@ -177,6 +180,36 @@ console.log('Plain SGD:', plainResult.map(v => v.toFixed(4)));
 console.log('Momentum:', momentumResult.map(v => v.toFixed(4)));
 // Momentum converges much faster in the narrow valley`}
 </CodeBlock>
+
+## Learning Rate Schedules
+
+A fixed learning rate is one compromise applied to the whole journey: large steps cross plateaus quickly but orbit the valley floor without ever settling, while small steps settle precisely but crawl across every flat region. A schedule changes the rate as training progresses, so you spend large steps where the landscape is flat and small ones where it narrows. Warmup covers the other end of the run: the first updates are computed from raw random weights (and, for adaptive optimizers like Adam, from moment estimates that are still noise), so ramping the rate up over a few epochs keeps those first steps from launching the weights somewhere unrecoverable.
+
+<CodeBlock language="typescript" title="lr-schedules.ts">
+{`// Step decay: cut the rate at fixed milestones
+function stepDecay(baseLr: number, epoch: number): number {
+  return baseLr * Math.pow(0.5, Math.floor(epoch / 30));  // halve every 30 epochs
+}
+
+// Warmup then cosine decay: ramp up for 5 epochs, glide down to zero
+function warmupCosine(baseLr: number, epoch: number, warmup: number, total: number): number {
+  if (epoch < warmup) return baseLr * (epoch + 1) / warmup;  // linear warmup
+  const t = (epoch - warmup) / (total - warmup);
+  return baseLr * 0.5 * (1 + Math.cos(Math.PI * t));         // cosine decay
+}
+
+for (const epoch of [0, 4, 29, 30, 60, 89]) {
+  console.log(\`epoch \${epoch}: step=\${stepDecay(0.01, epoch).toFixed(4)}, warm+cos=\${warmupCosine(0.01, epoch, 5, 90).toFixed(4)}\`);
+}
+// epoch 0:  step=0.0100, warm+cos=0.0020
+// epoch 4:  step=0.0100, warm+cos=0.0100
+// epoch 29: step=0.0100, warm+cos=0.0082
+// epoch 30: step=0.0050, warm+cos=0.0080
+// epoch 60: step=0.0025, warm+cos=0.0028
+// epoch 89: step=0.0025, warm+cos=0.0000`}
+</CodeBlock>
+
+The geometry of this lesson says why a schedule beats any single fixed rate: early training happens in wide, nearly flat basins where only a large step makes progress, and late training happens inside a narrow valley where that same step bounces between the walls instead of descending. Momentum carries you through the flats, but only a shrinking learning rate lets the optimizer stop orbiting the minimum and actually land on it.
 
 ## Challenge
 

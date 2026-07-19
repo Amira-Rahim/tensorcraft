@@ -22,6 +22,9 @@ vi.mock("next/link", () => ({
 // Minimal router stub, CheckoutButton pulls in next/navigation.
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
+  // PricingTiers reads ?plan=&themes= to restore a selection carried
+  // through the auth roundtrip; default empty params.
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 // Supabase client, no session so we don't hit owned-theme lookups.

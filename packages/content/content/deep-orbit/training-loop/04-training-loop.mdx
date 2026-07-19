@@ -22,14 +22,14 @@ concept:
     tier: structural
     breaks: "requestAnimationFrame is allowed to drop frames: when the tab is busy, skipping to the newest frame is correct behavior. A training loop that skips batches silently undertrains. And unlike an animation, training has to decide when to stop; no display refresh will tell it it is done."
 consequence:
-  narrative: "The archive rerun stops itself at epoch 64 on a validation loss of 0.081. Demir tapes both curves above his console: MEMORIZING and LEARNING."
+  narrative: "The archive rerun stops itself at epoch 102 on a validation loss of 0.081. Demir tapes both curves above his console: MEMORIZING and LEARNING."
 hints:
   - level: nudge
-    content: "model.fit() runs the training loop: forward pass, loss, backprop, update"
+    content: "model.fit() runs the whole training loop for you: forward pass, loss, backprop, and weight update, repeated once per epoch."
   - level: guidance
-    content: "Set epochs (iterations) and validationSplit to track progress"
+    content: "Await model.fit(xs, ys, options) and store its result in history. The grader checks the exact settings: epochs: 10 and batchSize: 2, so history.history.loss must end up with exactly 10 entries, and the loss should fall from the first epoch to the last."
   - level: solution
-    content: "await model.fit(x, y, { epochs: 50, batchSize: 32, validationSplit: 0.2 })"
+    content: "const history = await model.fit(xs, ys, { epochs: 10, batchSize: 2 });"
 keywords:
   - training
   - epochs
@@ -64,12 +64,21 @@ model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Training data: 100 labeled readings, three features each.
-// Calm-period readings cluster low; flagged windows run hot. The seeds
-// make the DATA reproducible; a net trained on pure noise would sit at
-// loss 0.693 forever, and deserve to.
-const calm = tf.randomNormal([50, 3], 0.35, 0.12, 'float32', 7);
-const flagged = tf.randomNormal([50, 3], 0.72, 0.12, 'float32', 41);
+// Training data: 100 labeled readings, three features each:
+// [band energy, spectral stability, phase coherence]. Flagged windows
+// run hot on energy and coherence and LOW on stability; calm periods
+// are the mirror image. The seeds make the DATA reproducible; a net
+// trained on pure noise would sit at loss 0.693 forever, and deserve to.
+const calm = tf.concat([
+  tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
+  tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
+  tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
+], 1);
+const flagged = tf.concat([
+  tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
+  tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
+  tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
+], 1);
 const xs = tf.concat([calm, flagged]);
 const ys = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]);
 
@@ -93,15 +102,18 @@ const history = await model.fit(trainX, trainY, {
   },
 });
 
-// One real run. Weight init is random: rerun this and the loss column
-// lands near these values every time, while the accuracy column bounces
-// (a rerun here scored anywhere from 0.71 to 0.94 at epoch 40).
-// Epoch 0:  loss=0.6863, acc=0.4875
-// Epoch 10: loss=0.6497, acc=0.5000
-// Epoch 20: loss=0.6090, acc=0.6625
-// Epoch 40: loss=0.4672, acc=0.9375
-// Accuracy jumps before loss finishes falling: the net finds the boundary
-// first, then spends the remaining epochs getting confident about it.`}
+// One real run. Weight init is random, so reruns differ: across 400
+// reruns of this block, epoch-10 accuracy bounced anywhere from 0.46 to
+// 1.00 before settling by epoch 30, and epoch-40 loss landed anywhere
+// from 0.10 to 0.50.
+// Epoch 0:  loss=0.7382, acc=0.4875
+// Epoch 10: loss=0.6330, acc=0.9875
+// Epoch 20: loss=0.5376, acc=1.0000
+// Epoch 30: loss=0.4084, acc=1.0000
+// Epoch 40: loss=0.2672, acc=1.0000
+// Accuracy tops out before loss finishes falling: the net finds the
+// boundary first, then spends the remaining epochs getting confident
+// about it.`}
 </CodeBlock>
 
 **Key parameters:**
@@ -114,7 +126,25 @@ const history = await model.fit(trainX, trainY, {
 The fix is a callback that watches the validation loss and halts when it stops improving, so the loop stops itself instead of trusting your epoch guess:
 
 <CodeBlock language="typescript" title="early-stopping.ts">
-{`await model.fit(trainX, trainY, {
+{`// Two setup notes, both load-bearing. First, a FRESH network: \`model\`
+// is already trained, so re-fitting it would start at the bottom of the
+// loss curve and trip the callback almost immediately.
+const rerun = tf.sequential();
+rerun.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
+rerun.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+rerun.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+rerun.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+// Second, something to overfit TO. On the clean synthetic clusters above,
+// validation loss just keeps creeping down and a 500-epoch run never
+// halts. The archive is not that clean: its labels come from the flag
+// log, and a few are wrong. Flip six of the first eighty labels to
+// simulate that (validationSplit takes the LAST 20 rows, which stay
+// clean, so what you watch is pure memorization of the bad rows).
+const labels = trainY.arraySync();
+for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
+
+await rerun.fit(trainX, tf.tensor2d(labels), {
   epochs: 500,            // an upper bound now, not a target
   validationSplit: 0.2,
   callbacks: tf.callbacks.earlyStopping({
@@ -122,8 +152,15 @@ The fix is a callback that watches the validation loss and halts when it stops i
     patience: 5,          // give it 5 epochs of no improvement first
   }),
 });
-// On the archive rerun this halted around epoch 64, right where the
-// validation curve turned back up.`}
+// The halt epoch is data- and init-dependent. Thirteen runs of this
+// block halted anywhere from epoch 71 to 164, most between 70 and 125,
+// each with validation loss in the 0.07-0.11 band and turning upward.
+// The archive rerun stopped at epoch 102 on val_loss 0.081. One warning:
+// with only 20 validation rows, patience: 5 can also trip in the first
+// few epochs, while the model is still at chance, if the early curve
+// happens to stall. A halt in single-digit epochs is a small-split
+// artifact, not convergence: seed the shuffle or enlarge the split
+// before trusting it.`}
 </CodeBlock>
 
 <Dialogue speaker="Chief Nazari">
@@ -187,6 +224,6 @@ Train the DEEP SCAN network and watch the loss decrease.
 
 <Epilogue>
 
-The rerun stops itself at epoch 64, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 64-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network now knows something about that nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue. A training number proves nothing; prove it on signals the network has never seen.
+The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 102-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network now knows something about that nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
 
 </Epilogue>

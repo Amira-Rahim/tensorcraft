@@ -26,11 +26,11 @@ consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
 hints:
   - level: nudge
-    content: "The model file is a static asset; deploy it like any other file in your build output"
+    content: "Deployment verification runs every check in order, one await at a time, and the deployment passes only when every single check passed."
   - level: guidance
-    content: "Build the app, include the model in the dist folder, deploy to GitHub Pages"
+    content: "Loop over checks with for...of, awaiting each check() before starting the next so they run sequentially, and push every CheckResult into a results array. Count passes with results.filter(r => r.passed).length, set passed to passedCount === total, and format summary as exactly '{passedCount}/{total} checks passed': the grader compares the literal string '3/3 checks passed'."
   - level: solution
-    content: "Configure the build to copy model files to dist, set up gh-pages deployment, verify the model loads from the deployed URL"
+    content: "const results: CheckResult[] = []; for (const check of checks) { const result = await check(); results.push(result); } const passedCount = results.filter(r => r.passed).length; const total = results.length; return { passed: passedCount === total, checks: results, summary: `${passedCount}/${total} checks passed`, };"
 keywords:
   - deployment
   - github-pages
@@ -64,12 +64,12 @@ Every web app you've built ends the same way: `npm run build`, push to productio
     {
       label: "defect",
       display: "Override Demir, push deploy now while the pulse window is open",
-      consequence: "DEEP SCAN ships. Classification lands inside the pulse window: sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated the team as a constraint, not a teammate. The science wins; the next deploy will be slower."
+      consequence: "DEEP SCAN ships. Classification lands inside the pulse window: sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated the team as a constraint rather than a teammate. The science wins; the next deploy will be slower."
     },
     {
       label: "random",
-      display: "Flip a coin; half the bridge crew is split on the call",
-      consequence: "Tails. You hold. Demir reruns; the window closes. Same outcome as waiting, minus the part where anyone believes you chose it. The bridge log now shows a coin where a call should be, and the crew reads logs. A flipped coin spends trust and buys nothing a decision would not have."
+      display: "Deploy fleet-wide now; keep the old model warm as instant rollback",
+      consequence: "Fleet-wide in one motion, window captured, and the safety net is the part that fails inspection: the rollback build shares the new deploy's preprocessing path, so the bug class a canary would have caught rides both models equally. A rollback is an undo, not a test. It restores yesterday's weights in seconds; it cannot tell you whether tonight's inputs are being mangled on the way in."
     },
     {
       label: "dominant",
@@ -196,7 +196,7 @@ async function classifyAnomalousSignal(): Promise<void> {
   console.log('');
 
   // Load the anomalous signal, the one that started everything
-  const anomalousSignal = await loadSignal('anomaly-kepler-442-001');
+  const anomalousSignal = await loadSignal('anomaly-prx-cen-001');
 
   // Run through the complete pipeline
   const preprocessed = await preprocess(anomalousSignal);
@@ -221,8 +221,10 @@ async function classifyAnomalousSignal(): Promise<void> {
   console.log('Three architectures, three curves. Since deployment');
   console.log('data landed, they agree on the date for the first time.');
   console.log('Zero-crossing: eleven days, four hours.');
-  console.log('Rate model: nonlinear. The shrink itself accelerates,');
-  console.log('which is why earlier extrapolations disagreed.');
+  console.log('Rate model: nonlinear. The shrink rate refuses to hold');
+  console.log('still: near 3 s/day some weeks, near 1 s/day others.');
+  console.log('Each earlier curve trusted a different week. That is');
+  console.log('why they disagreed.');
   console.log('');
   console.log('--- Archive Re-score, full pipeline ---');
   console.log('Sample 7741, the first reading DEEP SCAN ever flagged:');
@@ -257,7 +259,11 @@ Then run the rehearsal Nazari would demand before the relay slot: the whole chai
 
 <Exercise slug="launch-rehearsal" />
 
-<RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Rolling back a web app restores the prior build artifact and the user gets the previous page: the system state is fully described by those bytes. Rolling back a model restores the prior weights, but drift accumulates from the training cutoff, not the deploy time. The prior weights were calibrated to a data distribution that may have moved further away since they were trained, so a rollback does not guarantee the model is safe to run again." />
+And then the one the whole season was for. The console transcript above is what the bridge SAW at zero hour; this is the decision layer under it, and you write it yourself: the three-detector vote from module 7, the interval decomposition from module 8, and the final classification record the crew signs their names to. Eleven modules of building. Run the inference.
+
+<Exercise slug="classify-anomaly" />
+
+<RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Rolling back a web app restores the prior build artifact and the user gets the previous page: the system state is fully described by those bytes. Rolling back a model restores the prior weights, but drift accumulates from the training cutoff rather than the deploy time. The prior weights were calibrated to a data distribution that may have moved further away since they were trained, so a rollback does not guarantee the model is safe to run again." />
 
 <LessonRecap
   whatYouLearned={[
@@ -265,7 +271,7 @@ Then run the rehearsal Nazari would demand before the relay slot: the whole chai
     "Deployment verification must confirm three things independently: the model file loads from the deployed URL, inference returns valid results, and latency meets the performance budget.",
     "Model rollback restores weights but not the training distribution; drift accumulates from the training cutoff, so a rolled-back model may perform worse on current data than it did when first deployed."
   ]}
-  bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time, not at deploy time."
+  bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time and no deploy ever resets it."
   youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, and run a verification script that confirms load, inference, and performance in the live environment."
 />
 
@@ -295,10 +301,20 @@ Transmit everything to Earth. All of it.
 
 She stays at the viewport after the bridge empties, watching a point of black sky 4.2 light-years out. The transmission will take years to arrive. The signal, accelerating, does not seem inclined to wait.
 
+The last item in the mission record is filed at 0214.
+
+<Dialogue speaker="Commander Mirza">
+Commander's log, final entry. DEEP SCAN has classified the signal it was built for, and its extrapolation is steady enough to date: the interval reaches zero in eleven days, four hours. I am closing this log tonight, by choice; the record should end where our certainty does, not trail off waiting for an answer. Earth's reply is years out, and the signal has never once waited for us. Whatever zero brings will find this crew at their stations.
+</Dialogue>
+
 </Epilogue>
+
+---
+
+*The Archimedes record ends there. What follows was intercepted later, and belongs to the next story.*
 
 <DispatchTease
   toThemeId="neon-protocol"
   toThemeName="Neon Protocol"
-  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the structure DEEP SCAN classified tonight: the same pulse train, the same Fibonacci interval ratios. She doesn't know yet. She reads bounding boxes, not spectrograms. Someone who has watched this signal for eleven modules should look at her data."
+  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a CV anomaly: the IoU heatmap she is reading carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. This channel does not carry what zero brought; no channel does yet. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
 />

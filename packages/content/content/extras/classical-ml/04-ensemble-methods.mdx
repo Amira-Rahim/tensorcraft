@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "Bagging trains models in parallel on random subsets of data"
   - level: guidance
-    content: "bootstrapSample picks n items at random WITH replacement, so duplicates are expected. majorityVote counts occurrences and returns the most common. The forest just maps trees to predictions and votes."
+    content: "bootstrapSample builds a new array of the same length by looping data.length times and pushing data[idx] for a random idx from Math.floor(Math.random() * data.length); duplicates are expected because sampling is WITH replacement. majorityVote tallies each prediction's count in a Map and returns the value with the highest count. randomForestPredict maps every tree to tree.predict(features) and returns the majorityVote of those predictions."
   - level: solution
-    content: "1) bootstrapSample: Array.from({ length: arr.length }, () => arr[Math.floor(Math.random() * arr.length)]). 2) majorityVote: count each prediction in a map, return the key with the highest count. 3) randomForestPredict: majorityVote(trees.map(t => t.predict(features)))."
+    content: "const sample: T[] = []; for (let i = 0; i < data.length; i++) {; const idx = Math.floor(Math.random() * data.length); sample.push(data[idx]); }; return sample; const votes = new Map<number, number>(); for (const pred of predictions) {; votes.set(pred, (votes.get(pred) ?? 0) + 1); }; return [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0]; const predictions = trees.map(tree => tree.predict(features)); return majorityVote(predictions);"
 keywords:
   - random-forest
   - bagging
@@ -98,7 +98,15 @@ function bootstrapSample<T>(data: T[]): T[] {
 
 // Random feature subset (what makes it a *random* forest)
 function randomFeatures(allFeatures: string[], maxFeatures: number): string[] {
-  const shuffled = [...allFeatures].sort(() => Math.random() - 0.5);
+  // Fisher-Yates shuffle. The tempting one-liner
+  // arr.sort(() => Math.random() - 0.5) is a classic JS anti-pattern:
+  // sort() expects a consistent comparator, and feeding it a random one
+  // produces a BIASED shuffle (some orderings show up far more often).
+  const shuffled = [...allFeatures];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
   return shuffled.slice(0, maxFeatures);
 }
 
@@ -113,7 +121,10 @@ function buildRandomForest(
   for (let i = 0; i < numTrees; i++) {
     // Each tree gets a random sample of data
     const sample = bootstrapSample(data);
-    // Each tree only sees a random subset of features
+    // Each tree only sees a random subset of features. (Simplification:
+    // real random forests re-sample the feature subset at every SPLIT
+    // inside the tree; sampling once per tree, as here, is the older
+    // random-subspace method.)
     const features = randomFeatures(allFeatureNames, maxFeatures);
     // Train tree on this unique view of the data
     trees.push(trainDecisionTree(sample, features, { maxDepth: 10 }));

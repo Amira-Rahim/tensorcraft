@@ -11,6 +11,17 @@ starterCode: |
     now: number,
     ttlSeconds: number,
   ): { serve: string[]; refresh: string[] } {
+    // CONCEPT: a cached verdict is only as trustworthy as the model that
+    // produced it. A deploy changes the model, so a version mismatch
+    // invalidates an entry no matter how recently it was cached; TTL expiry
+    // catches the rest.
+    // RECIPE: walk entries in order, pushing each key into one of two arrays.
+    //   1. staleModel = e.modelVersion !== currentVersion (refresh even if
+    //      the entry is seconds old)
+    //   2. expired = now - e.cachedAt > ttlSeconds (STRICTLY greater: an
+    //      entry aged exactly ttlSeconds is still served)
+    //   3. push e.key into refresh when staleModel || expired, else serve
+    //   4. return { serve, refresh }, input order preserved in each array
     return null; // your code here
   }
 solutionCode: |

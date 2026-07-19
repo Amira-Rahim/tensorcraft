@@ -24,11 +24,11 @@ consequence:
   narrative: "Bursts, not a constant tone. The anomalous frequency pulses, and the gap between pulses measures roughly 73.4 seconds."
 hints:
   - level: nudge
-    content: "A spectrogram is just many FFTs stacked side by side, one per time window"
+    content: "A spectrogram is many FFTs stacked in time: slice a window, take its magnitude spectrum, hop forward, repeat."
   - level: guidance
-    content: "Slide a window across the signal, compute FFT for each position, collect the magnitudes"
+    content: "numWindows is Math.floor((signal.length - windowSize) / hopSize) + 1. Window i starts at i * hopSize: slice windowSize samples, run tf.spectral.rfft then tf.abs, arraySync the magnitudes into a row, and push it. Each row has windowSize/2 + 1 bins (33 for windowSize 64), and both dimensions must follow the parameters, not constants."
   - level: solution
-    content: "for each window position: fft = rfft(signal.slice(start, end)); spectrogram.push(abs(fft));"
+    content: "const spectrogram: number[][] = []; const numWindows = Math.floor((signal.length - windowSize) / hopSize) + 1; for (let i = 0; i < numWindows; i++) { const start = i * hopSize; const chunk = signal.slice(start, start + windowSize); const magnitudes = tf.tidy(() => { const fft = tf.spectral.rfft(tf.tensor1d(chunk)); return tf.abs(fft).arraySync() as number[]; }); spectrogram.push(magnitudes); } return spectrogram;"
 keywords:
   - spectrogram
   - stft
@@ -194,9 +194,9 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
   whatYouLearned={[
     "A spectrogram is built by sliding a window across the signal and computing one FFT per position. The result is a 2D array where each row is a time step and each column is a frequency bin.",
     "Window size creates a fundamental tradeoff: larger windows give finer frequency resolution but coarser time resolution; smaller windows give finer time resolution but coarser frequency resolution.",
-    "To track how a signal's frequency content changes over time, a spectrogram is necessary because a single FFT shows only which frequencies exist across the whole signal, not when they appear."
+    "To track how a signal's frequency content changes over time, a spectrogram is necessary because a single FFT shows only which frequencies exist somewhere in the signal; it cannot say when they appear."
   ]}
-  bridge="A spectrogram shares the layout of a DevTools performance waterfall: time on the x-axis, frequency (or event type) on the y-axis, and intensity (or duration) as color. The difference is that every pixel in the spectrogram carries computed energy, not a discrete event marker."
+  bridge="A spectrogram shares the layout of a DevTools performance waterfall: time on the x-axis, frequency (or event type) on the y-axis, and intensity (or duration) as color. The difference is that every pixel in the spectrogram carries computed energy, while the waterfall marks discrete events."
   youCanNow="Implement an STFT by sliding a window across a signal and stacking FFTs, then read the resulting spectrogram to identify when a specific frequency is active."
 />
 
@@ -208,6 +208,6 @@ On the spectrogram the anomaly resolves into a row of bright dashes marching alo
 My rules monitored this band for eleven days and reported silence, because no rule of mine could see time and frequency at once. Request: store a copy of this spectrogram in my reference partition.
 </Dialogue>
 
-Farah grants the request before she has worked out why ARIA wants it.
+Farah grants the request, then goes back to measuring the gaps between pulses.
 
 </Epilogue>

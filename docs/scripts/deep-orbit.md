@@ -70,7 +70,7 @@ Demir's voice changes across the course as his ML fluency grows. His dialogue sh
 
 ## MODULE 1: ML THROUGH SIGNALS (FREE)
 
-*The crew arrives at Kepler-442. Demir is introduced to the mission and begins learning ML basics through ship telemetry data.*
+*The crew arrives at Proxima Centauri. Demir is introduced to the mission and begins learning ML basics through ship telemetry data.*
 
 ---
 
@@ -80,7 +80,7 @@ Demir's voice changes across the course as his ML fluency grows. His dialogue sh
 
 #### CONTEXT
 
-The Archimedes drops out of FTL transit in the Kepler-442 system. Commander Mirza convenes the crew on the bridge. Long-range sensor arrays have detected structured electromagnetic signals that do not match any known natural phenomenon — not pulsars, not magnetars, not stellar noise. The signals are organized into frequency bands and repeat at irregular intervals.
+The Archimedes drops out of FTL transit in the Proxima Centauri system. Commander Mirza convenes the crew on the bridge. Long-range sensor arrays have detected structured electromagnetic signals that do not match any known natural phenomenon — not pulsars, not magnetars, not stellar noise. The signals are organized into frequency bands and repeat at irregular intervals.
 
 Demir is the newest crew member. He was assigned as comms officer based on his frontend engineering background — the ship's communication systems run on a browser-based dashboard built in TypeScript. He has no ML background. Mirza explains the mission: build a signal classification system (DEEP SCAN) that can categorize incoming signals in real time, so Dr. Farah can focus on analysis instead of manual sorting.
 
@@ -1025,7 +1025,7 @@ The Archimedes turns for home. But the signal keeps transmitting. And now, DEEP 
 
 ### ANIMATION
 
-Final animation: the bridge of the Archimedes. Every holographic display shows a different facet of DEEP SCAN — the spectrogram, the classification feed, the anomaly detector, the sequence predictor. At the center, the Fibonacci spiral pulses in gold against the deep space backdrop, its ratios mirroring the ship's own calibration harmonics. The camera pulls back through the bridge viewport to show the Archimedes against the star field of Kepler-442. The DEEP SCAN logo resolves one final time. Text: **"DEEP SCAN v1.0 — Signal Classified. Mission Continues."**
+Final animation: the bridge of the Archimedes. Every holographic display shows a different facet of DEEP SCAN — the spectrogram, the classification feed, the anomaly detector, the sequence predictor. At the center, the Fibonacci spiral pulses in gold against the deep space backdrop, its ratios mirroring the ship's own calibration harmonics. The camera pulls back through the bridge viewport to show the Archimedes against the star field of Proxima Centauri. The DEEP SCAN logo resolves one final time. Text: **"DEEP SCAN v1.0 — Signal Classified. Mission Continues."**
 
 ---
 

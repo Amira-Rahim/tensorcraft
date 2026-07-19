@@ -24,11 +24,11 @@ consequence:
   narrative: "The attention head reads all eighty encoded steps at once and shows its work: two weight hotspots, exactly where the evidence lived. The distance problem is gone."
 hints:
   - level: nudge
-    content: "Attention computes relevance scores for each time step, then focuses on the important ones"
+    content: "Attention scores every time step against the query, softmaxes the scores into weights, then blends the hidden states in proportion to those weights."
   - level: guidance
-    content: "Q (query), K (key), V (value): the query asks 'what should I focus on?', keys provide candidates, values carry the information. tf.matMul needs rank-2 inputs: a lone [d] query must become [1, d] first."
+    content: "Reshape the rank-1 [d] query to [1, d] first (tf.matMul refuses rank-1 inputs), matMul it against hiddenStates with transposeB set to true to get [1, T] scores, run tf.softmax over the scores, matMul the weights back onto hiddenStates for a [1, d] blend, and squeeze() it down to the [d] shape the tests check."
   - level: solution
-    content: "const q = query.reshape([1, query.shape[0]]); const scores = tf.matMul(q, hiddenStates, false, true); const weights = tf.softmax(scores); return tf.matMul(weights, hiddenStates).squeeze();"
+    content: "const queryRow = query.reshape([1, query.shape[0]]); const scores = tf.matMul(queryRow, hiddenStates, false, true); const weights = tf.softmax(scores); const weighted = tf.matMul(weights, hiddenStates); return weighted.squeeze();"
 keywords:
   - attention
   - self-attention
@@ -49,11 +49,7 @@ That ripple entered the hidden state at step 4 and got averaged into seventy-six
 Like CSS :focus. Instead of styling every element equally, you highlight just the one that's active. Attention highlights the time steps that are most relevant to the current prediction.
 </Dialogue>
 
-<Dialogue speaker="Dr. Farah">
-:focus lands on one element. Softmax never does: every step gets a weight, and most of them sit near zero. Keep your picture, but read the weights as a budget, not a spotlight.
-</Dialogue>
-
-Tab through a form and the browser doesn't restyle every element; it finds the active one and highlights it. Attention is the soft version of that move: it scores every time step for relevance, then spends most of its weight where the score is high and a little everywhere else.
+Tab through a form and the browser doesn't restyle every element; it finds the active one and highlights it. Attention is the soft version of that move: it scores every time step for relevance, then spends most of its weight where the score is high and a little everywhere else. Hold Demir's picture up against the mechanism's own arithmetic below and see how far it survives.
 
 <LearningObjectives objectives={["Understand attention as dynamic relevance scoring: focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
@@ -79,8 +75,8 @@ Tab through a form and the browser doesn't restyle every element; it finds the a
 //   softmax([2, 1, 0]) = [e^2, e^1, e^0] / (e^2 + e^1 + e^0)
 //                      = [7.39, 2.72, 1.00] / 11.11
 //                      = [0.665, 0.245, 0.090]
-// Bigger score, bigger share; nothing ever hits exactly 0 or 1. That
-// no step ever hits exactly 0 or 1; the weight is always shared.
+// Bigger score, bigger share, and no step ever gets exactly 0 or 1:
+// the weight is always shared.
 
 function simpleAttention(
   query: tf.Tensor2D,   // [1, dim]: what we're looking for
@@ -105,6 +101,12 @@ function simpleAttention(
 // High weight at step 4 and step 77 = those steps matter most
 // This is interpretable, unlike LSTM hidden state`}
 </CodeBlock>
+
+The worked softmax is the part that vetoes the :focus picture, and it does so with three numbers. Scores of [2, 1, 0] went in; weights of [0.665, 0.245, 0.090] came out. The winner holds two thirds, and the two losers still hold a third between them. No step "has focus" while the rest have nothing; every step owns a share, and the shares always total 1.
+
+<Dialogue speaker="Dr. Farah">
+:focus lands on one element. Softmax never does, and the arithmetic you just ran is the proof: every step gets a weight, most of them near zero, none of them zero. Keep your picture, but read the weights as a budget, not a spotlight.
+</Dialogue>
 
 ## LSTM vs Attention
 
@@ -176,11 +178,7 @@ Implement a simple attention mechanism over a sequence.
 
 <Epilogue>
 
-Demir runs the freshly validated attention model against the live feed before logging off. Two hotspots, every window: the amplitude spike, then the frequency shift trailing it. On the pre-contact archive, the gap between hotspots measures 73.4 seconds. On tonight's feed it measures 73.1, and he runs it twice more and gets 73.1 twice more.
-
-<Dialogue speaker="Dr. Farah">
-Run it again tomorrow night: same window, same archive. If it's sensor jitter, it won't be consistent.
-</Dialogue>
+The freshly validated attention model meets the live feed before anyone logs off, and shows two hotspots in every window: the amplitude spike, then the frequency shift trailing it. On the pre-contact archive, the gap between hotspots measures 73.4 seconds. On tonight's feed it measures 73.1. Demir reruns it and gets 73.1 again. Farah, already at the door, prescribes the only test that matters: same window, same archive, tomorrow night. Sensor jitter is many things, and consistent is none of them.
 
 He files it under jitter anyway, because the alternative is stranger than he wants to be at two in the morning. The file does not stay closed.
 

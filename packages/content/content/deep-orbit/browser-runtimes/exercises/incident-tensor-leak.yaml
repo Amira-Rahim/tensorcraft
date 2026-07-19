@@ -9,6 +9,18 @@ starterCode: |
     snapshots: { t: number; numTensors: number }[],
     budgetTensors: number,
   ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
+    // CONCEPT: a steadily climbing tf.memory().numTensors means tensors are
+    // being created without dispose(); the trend line tells you how long you
+    // have before the budget blows. Middle readings are noisy deploy churn,
+    // so the diagnosis uses ONLY the first and last snapshots.
+    // RECIPE:
+    //   1. first = snapshots[0], last = snapshots[snapshots.length - 1]
+    //   2. ratePerHour = (last.numTensors - first.numTensors) / (last.t - first.t)
+    //   3. leaking = ratePerHour > 0 (a flat or falling count is NOT a leak)
+    //   4. hoursToBudget = leaking
+    //        ? (budgetTensors - last.numTensors) / ratePerHour
+    //        : Infinity
+    //   5. return { leaking, ratePerHour, hoursToBudget }
     return null; // your code here
   }
 solutionCode: |

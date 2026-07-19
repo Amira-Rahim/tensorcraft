@@ -23,11 +23,11 @@ consequence:
   narrative: "Seeing convolution as matrix multiplication reveals why GPUs are perfect for neural networks."
 hints:
   - level: nudge
-    content: "A Toeplitz matrix has the same values along each diagonal, like a sliding window frozen in matrix form"
+    content: "A Toeplitz matrix freezes the kernel's slide: each row is the kernel shifted one column further right"
   - level: guidance
-    content: "The matrix needs one row per output position: inputLength - kernelLength + 1 rows, inputLength columns. Row i is all zeros except the kernel, which starts at column i. Build each row, then stack them."
+    content: "buildToeplitz returns inputLength - kernel.length + 1 rows, each a length-inputLength array of zeros with kernel[j] written at column i + j. convolveViaMatrix reads inputLength from input.shape[0], turns the matrix into a tensor with tf.tensor2d, and multiplies it against the input reshaped to [inputLength, 1] via input.reshape (tf.tensor2d cannot wrap a Tensor1D), then flattens the column result back to 1D."
   - level: solution
-    content: "buildToeplitz: Array.from({ length: inputLength - kernel.length + 1 }, (_, i) => { const row = new Array(inputLength).fill(0); kernel.forEach((k, j) => { row[i + j] = k; }); return row; }). convolveViaMatrix: tf.matMul(tf.tensor2d(toeplitz), tf.tensor2d(input, [input.length, 1])).squeeze()"
+    content: "const outputLength = inputLength - kernel.length + 1; const matrix: number[][] = []; for (let i = 0; i < outputLength; i++) {; const row = new Array(inputLength).fill(0); for (let j = 0; j < kernel.length; j++) {; row[i + j] = kernel[j]; }; matrix.push(row); }; return matrix; const inputLength = input.shape[0]; const T = buildToeplitz(kernel, inputLength); const toeplitzTensor = tf.tensor2d(T); const result = tf.matMul(toeplitzTensor, input.reshape([inputLength, 1])); return result.flatten() as tf.Tensor1D;"
 keywords:
   - toeplitz-matrix
   - convolution-theorem
@@ -167,7 +167,10 @@ For large kernels, this is dramatically faster than sliding the window.
 // For CIRCULAR convolution, the Toeplitz matrix becomes circulant,
 // and circulant matrices are diagonalized by the DFT matrix:
 // C = F^(-1) * D * F, where D has the FFT of the kernel on diagonal.
-// This is WHY the convolution theorem works (pad to make 'valid' circular).
+// This is WHY the convolution theorem works. It gives you CIRCULAR
+// convolution, though: to recover ordinary linear convolution, zero-pad
+// both signals to length >= n + k - 1 so the wraparound only touches
+// zeros, then crop the result to the 'valid' region.
 
 const inputSize = 8;
 const input = tf.randomNormal([inputSize]);

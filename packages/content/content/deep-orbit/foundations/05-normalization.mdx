@@ -27,9 +27,9 @@ hints:
   - level: nudge
     content: "Subtract the mean, divide by standard deviation. Per COLUMN: each feature gets its own statistics."
   - level: guidance
-    content: "tf.moments(batch, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature. Without the 0 you get one global mean over all numbers, which mixes temperature with signal strength. Standard deviation is variance.sqrt()."
+    content: "tf.moments(batch, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature. Without the 0 you get one global mean over all numbers, which mixes temperature with signal strength. Standard deviation is variance.sqrt(). Inside normalizeReading, apply those SAME saved mean and std tensors to the new reading; never recompute them at inference time"
   - level: solution
-    content: "const { mean, variance } = tf.moments(batch, 0); const std = variance.sqrt(); const normalized = batch.sub(mean).div(std); then normalizeReading(reading) returns reading.sub(mean).div(std) using those SAME saved tensors."
+    content: "const moments = tf.moments(batch, 0); const mean = moments.mean; const std = moments.variance.sqrt(); const normalized = batch.sub(mean).div(std); return reading.sub(mean).div(std);"
 keywords:
   - normalization
   - z-score
@@ -78,6 +78,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
     }
   ]}
 />
+
 
 ## Why Scales Must Match
 
@@ -137,6 +138,7 @@ One practical wrinkle that bites in production: whatever mean and std you comput
 
 **Min-max** (range 0-1): for data with true, known bounds: pixel values, percentages, probabilities. One extreme outlier crushes everything else into a corner, so don't use it on open-ended streams.
 
+
 ## Challenge
 
 Normalize the Archimedes sensor data using z-score normalization.
@@ -153,7 +155,7 @@ Normalize the Archimedes sensor data using z-score normalization.
     "Unnormalized scales bias gradient updates toward whichever feature has the largest raw values. Normalization gives every feature comparable numerical influence during training.",
     "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call.",
     "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds like pixel values. Live sensor streams have no such bounds, which is why z-score wins there.",
-    "Save the training-time mean and standard deviation. Inference data must be normalized with those same statistics, not recomputed from the new batch."
+    "Save the training-time mean and standard deviation. Inference data must be normalized with those same statistics; never recompute them from the new batch."
   ]}
   bridge="Min-max normalization is the same formula as scroll-progress: `scrollY / (docHeight - viewportHeight)` maps pixels to 0-1, and `data.sub(min).div(max.sub(min))` maps sensor readings to 0-1 the same way."
   youCanNow="Apply z-score and min-max normalization to tensor data using TensorFlow.js, choose the right strategy for a given data type, and preserve training statistics for consistent inference."

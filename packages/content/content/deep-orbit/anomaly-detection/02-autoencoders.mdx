@@ -12,7 +12,7 @@ context:
   narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder: a network that learns to compress and reconstruct normal signals. High reconstruction error means the signal is unlike anything the model has learned."
   speaker: "Dr. Farah"
 concept:
-  explanation: "An autoencoder learns to compress and rebuild normal data, so anything it can't rebuild cleanly is, by definition, not normal."
+  explanation: "An autoencoder learns to compress and rebuild normal data, so anything it can't rebuild cleanly falls outside normal by definition."
   bridge:
     feTitle: "Compression"
     feCode: "compressed = gzip(data); restored = gunzip(compressed)"
@@ -24,11 +24,11 @@ consequence:
   narrative: "Normal signals come back clean. The anomalous signal comes back at 1.4x baseline, close enough to walk straight past any threshold. The leak is in the training set, not the model."
 hints:
   - level: nudge
-    content: "An autoencoder has two parts: encoder (compress) and decoder (reconstruct)"
+    content: "An autoencoder squeezes the input through a narrow bottleneck and rebuilds it: 8 features compressed down to 2 units, then reconstructed back to 8"
   - level: guidance
-    content: "The bottleneck layer forces the network to learn a compact representation of normal data"
+    content: "Add four tf.layers.dense layers to the sequential model: units 4 relu with inputShape [8], the units 2 relu bottleneck, units 4 relu, then units 8 with no activation. Compile with the adam optimizer and meanSquaredError loss, then return the model"
   - level: solution
-    content: "encoder: dense(32) → dense(8); decoder: dense(32) → dense(inputSize). Train on normal data only."
+    content: "model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 2, activation: 'relu' })); model.add(tf.layers.dense({ units: 4, activation: 'relu' })); model.add(tf.layers.dense({ units: 8 })); model.compile({ optimizer: 'adam', loss: 'meanSquaredError' }); return model;"
 keywords:
   - autoencoder
   - encoder
@@ -103,10 +103,13 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
     },
   },
 });
-// Epoch 0:   loss=0.482100
-// Epoch 20:  loss=0.031200
-// Epoch 60:  loss=0.003400
-// Epoch 100: loss=0.001200  ← very low; it reconstructs normal data well`}
+// Epoch 0:  loss=1.147057
+// Epoch 20: loss=0.016598
+// Epoch 40: loss=0.004075
+// Epoch 60: loss=0.002568
+// Epoch 80: loss=0.002007  ← very low; it reconstructs normal data well
+// (the % 20 callback prints epochs 0 through 80; with epochs: 100 the
+// loop ends after epoch 99, so no line for 100 ever appears)`}
 </CodeBlock>
 
 ## Challenge
@@ -134,9 +137,7 @@ Build and train an autoencoder on normal signal data.
 
 First run: the loss curve is beautiful and the result is useless. Demir stripped every flagged reading, but the FFT features are computed over a surrounding window, so readings up to a minute on either side of the anomaly still carried its spectrum into the training set. The model learned the 73.4 Hz component obediently, like everything else it was shown, and now reconstructs the anomalous signal at 1.4x baseline. Close enough to normal to walk straight past any threshold. Farah finds the leak by cross-checking row timestamps against the flag log.
 
-<Dialogue speaker="Chief Nazari">
-Ninety minutes of training, 412 contaminated rows. Pad the exclusion margin by a full FFT window on each side, and make the margin a number in the config, not a hope.
-</Dialogue>
+Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows. The fix she dictates is one sentence long: pad the exclusion margin by a full FFT window on each side, and make the margin a number in the config instead of a hope.
 
 The second run starts at 0115.
 

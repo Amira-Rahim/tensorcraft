@@ -117,13 +117,41 @@ function topAttentionSteps(
 //  in this window, steady across the steps the model locked onto)`}
 </CodeBlock>
 
+## Applied: Attention Over a Live Ring Buffer
+
+The heatmaps above assume the model gets the whole window. On the bridge array it gets whatever the capture buffer kept, and storage is tight enough that the tempting move is the frontend one: virtualize. Keep the steps around the predicted event, drop the rest, let a viewport stand in for the sequence.
+
+Attention has a failure mode built exactly for that trick, and four tensor shapes are enough to see it:
+
+<CodeBlock language="typescript" title="ring-buffer-attention.ts">
+{`// One full capture cycle from the ring buffer: 80 steps, 3 features.
+const full = bufferWindow();                       // [1, 80, 3]
+const { attended, weights } = temporalAttention(full);
+console.log(full.shape, weights.shape, attended.shape);
+// [1, 80, 3] [1, 80] [1, 3]
+console.log(weights.sum().dataSync()[0].toFixed(3));
+// 1.000
+
+// The virtualized buffer: the same cycle, but only the 48 steps around
+// the PREDICTED onset were kept. The real onset arrived early, at what
+// used to be step 4, and fell off the leading edge.
+const kept = full.slice([0, 32, 0], [1, 48, 3]);   // [1, 48, 3]
+const clipped = temporalAttention(kept);
+console.log(kept.shape, clipped.weights.shape, clipped.attended.shape);
+// [1, 48, 3] [1, 48] [1, 3]
+console.log(clipped.weights.sum().dataSync()[0].toFixed(3));
+// 1.000`}
+</CodeBlock>
+
+Read the two sums together: 1.000 and 1.000. Softmax spends its entire budget on whatever the buffer kept, every time, so the truncated window produces a heatmap exactly as normalized and exactly as confident as the full one. The pooled outputs match too, [1, 3] from both windows, so nothing downstream can tell an 80-step capture from a 48-step one by shape. The weights map where the model looked; a step the buffer virtualized away is simply off the map, with no residual mass, no warning, no NaN. When a capture comes back missing its onset, the model will attend beautifully to what remains and never once complain.
+
 ## Challenge
 
 Build a temporal attention mechanism and identify the focused time steps.
 
 <Exercise slug="temporal-attention" />
 
-<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, making them directly interpretable: you can inspect which positions the model weighted most heavily and understand why a prediction was made, unlike the opaque hidden state of an LSTM." />
+<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions influenced the pooled representation most. That is a map of where the model looked, not a verified explanation of WHY it decided; attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Even so, a where-it-looked map is far more diagnostic than an LSTM's opaque hidden state." />
 
 <LessonRecap
   whatYouLearned={[

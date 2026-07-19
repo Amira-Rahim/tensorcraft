@@ -2,8 +2,14 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { themes } from "@tensorcraft/themes";
-import { LAUNCHED_THEMES, PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import {
+  LAUNCHED_THEMES,
+  PRICING,
+  THEME_CONTENT,
+  isValidThemeSlug,
+} from "@tensorcraft/shared";
 import { CheckoutButton } from "./checkout-button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -82,7 +88,27 @@ export function PricingTiers() {
   const [twoThemes, setTwoThemes] = useState<string[]>([]);
   const [threeThemes, setThreeThemes] = useState<string[]>([]);
   const [ownedThemes, setOwnedThemes] = useState<Set<string>>(new Set());
-  const [totalCredit, setTotalCredit] = useState(0);
+  const [purchases, setPurchases] = useState<
+    { themeIds: string[]; amount: number }[]
+  >([]);
+
+  // Restore a selection carried through the auth roundtrip. CheckoutButton
+  // sends signed-out buyers to /auth with redirectTo=/pricing?plan=...&themes=...;
+  // nothing ever read those params back, so the buyer returned to an
+  // unselected picker (audit run #7). Only canonical slugs are accepted.
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const plan = searchParams.get("plan");
+    const restored = (searchParams.get("themes") ?? "")
+      .split(",")
+      .filter((s) => isValidThemeSlug(s));
+    if (!plan || restored.length === 0) return;
+    if (plan === "single") setSingleTheme(restored[0]);
+    else if (plan === "twoBundle") setTwoThemes(restored.slice(0, 2));
+    else if (plan === "threeBundle") setThreeThemes(restored.slice(0, 3));
+    // allFive needs no selection state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -96,28 +122,46 @@ export function PricingTiers() {
         .then(({ data }) => {
           if (!data || data.length === 0) return;
           const owned = new Set<string>();
-          let credit = 0;
           for (const p of data) {
             for (const t of p.theme_ids) owned.add(t);
-            credit += Number(p.amount);
           }
           setOwnedThemes(owned);
-          setTotalCredit(credit);
+          setPurchases(
+            data.map((p) => ({
+              themeIds: p.theme_ids as string[],
+              amount: Number(p.amount),
+            })),
+          );
         });
     });
   }, []);
 
-  function adjustedPrice(planPrice: number): number {
-    return Math.max(0, planPrice - totalCredit);
+  /**
+   * Credit for a specific basket, computed with the SERVER's rule
+   * (payments.ts checkout): only purchases whose themes OVERLAP the basket
+   * count. This used to sum every completed purchase regardless of overlap,
+   * so a customer buying a non-overlapping theme was shown "covered by
+   * credit" and then charged full price by Stripe (audit run #7; latent
+   * until a second theme launches). The number rendered here must be the
+   * number the server will charge against.
+   */
+  function creditFor(planThemeIds: string[]): number {
+    let credit = 0;
+    for (const p of purchases) {
+      if (p.themeIds.some((id) => planThemeIds.includes(id))) {
+        credit += p.amount;
+      }
+    }
+    return credit;
   }
 
-  function creditLine(planPrice: number) {
-    if (totalCredit <= 0) return null;
+  function creditLine(planPrice: number, planThemeIds: string[]) {
+    const credit = Math.min(creditFor(planThemeIds), planPrice);
+    if (credit <= 0) return null;
+    const pay = Math.max(0, planPrice - credit);
     return (
       <p className="mt-1 text-[11px] font-mono text-primary uppercase tracking-wider">
-        {adjustedPrice(planPrice) === 0
-          ? "covered by credit"
-          : `pay $${adjustedPrice(planPrice)} (credit $${totalCredit})`}
+        {pay === 0 ? "covered by credit" : `pay $${pay} (credit $${credit})`}
       </p>
     );
   }
@@ -232,7 +276,10 @@ export function PricingTiers() {
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
                 one theme · lifetime access
               </p>
-              {creditLine(PRICING.single.price)}
+              {creditLine(
+                PRICING.single.price,
+                singleTheme ? [singleTheme] : [],
+              )}
             </div>
             <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
               Single Theme
@@ -296,7 +343,7 @@ export function PricingTiers() {
                 ${Math.round(PRICING.twoBundle.price / 2)}/theme · save $
                 {PRICING.single.price * 2 - PRICING.twoBundle.price}
               </p>
-              {creditLine(PRICING.twoBundle.price)}
+              {creditLine(PRICING.twoBundle.price, twoThemes)}
             </div>
             <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
               Two Themes
@@ -362,7 +409,7 @@ export function PricingTiers() {
                 ${Math.round(PRICING.threeBundle.price / 3)}/theme · save $
                 {PRICING.single.price * 3 - PRICING.threeBundle.price}
               </p>
-              {creditLine(PRICING.threeBundle.price)}
+              {creditLine(PRICING.threeBundle.price, threeThemes)}
             </div>
             <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
               Three Themes
@@ -444,7 +491,7 @@ export function PricingTiers() {
                 ${Math.round(PRICING.allFive.price / 5)}/theme · save $
                 {PRICING.single.price * 5 - PRICING.allFive.price}
               </p>
-              {creditLine(PRICING.allFive.price)}
+              {creditLine(PRICING.allFive.price, [...LAUNCHED_THEMES])}
             </div>
             <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
               All 5 Themes

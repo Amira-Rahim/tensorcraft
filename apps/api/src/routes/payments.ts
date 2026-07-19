@@ -49,6 +49,27 @@ const TERMINAL_STATUSES = new Set([
   "failed",
 ]);
 
+/**
+ * Map a checkout session's payment_status onto the purchase row status.
+ *
+ * Stripe fires `checkout.session.completed` for delayed-notification payment
+ * methods (bank debits, some wallets) with `payment_status: "unpaid"`: the
+ * CHECKOUT finished but the MONEY has not moved. This handler used to write
+ * `status: "completed"` unconditionally, which granted lifetime access on an
+ * unpaid session — and the later `async_payment_failed` event only logged,
+ * so the access was never revoked (audit run #7, 2026-07-16). Unpaid sessions
+ * are recorded as `pending` (grants nothing: every access-granting read
+ * filters to completed/partially_refunded); `async_payment_succeeded`
+ * promotes them and `async_payment_failed` settles them as `failed`.
+ */
+export function purchaseStatusForSession(
+  paymentStatus: string | null | undefined,
+): "completed" | "pending" {
+  return paymentStatus === "paid" || paymentStatus === "no_payment_required"
+    ? "completed"
+    : "pending";
+}
+
 // ──────────────────────────────────────────────
 // POST /api/payments/checkout, Create a Stripe Checkout session
 // ──────────────────────────────────────────────
@@ -125,19 +146,43 @@ payments.post("/checkout", async (c) => {
   const adjustedPrice = Math.max(0, plan.price - credit);
   const isUpgrade = credit > 0;
 
-  // Auto-grant if credit fully covers the price
+  // Auto-grant if credit fully covers the price.
+  //
+  // This MUST use the admin client: purchases has no INSERT policy for
+  // authenticated users (001: service-role only), so the user-scoped client
+  // is rejected by RLS — and `amount: 0` additionally violated the original
+  // `chk_amount_positive CHECK (amount > 0)` until migration 037 relaxed it
+  // to `>= 0`. Both failures were silent 500s that made a fully-credited
+  // upgrade impossible to redeem (audit run #7; latent until theme 2).
   if (adjustedPrice === 0) {
-    const { error: grantError } = await supabase.from("purchases").insert({
+    const admin = getSupabaseAdminClient();
+    const grantSessionId = `auto_grant_${crypto.randomUUID()}`;
+    const { error: grantError } = await admin.from("purchases").insert({
       user_id: userId,
       plan_id: body.planId,
       theme_ids: body.themeIds,
       amount: 0,
       status: "completed",
-      stripe_session_id: `auto_grant_${crypto.randomUUID()}`,
+      stripe_session_id: grantSessionId,
     });
     if (grantError) {
+      logger.error(
+        { err: grantError, route: "payments.checkout", userId },
+        "Auto-grant insert failed",
+      );
       return c.json({ error: "Failed to grant themes" }, 500);
     }
+    captureServer(
+      SERVER_EVENTS.PAYMENT_COMPLETED,
+      {
+        planId: body.planId,
+        themeIds: body.themeIds,
+        amount: 0,
+        sessionId: grantSessionId,
+        isUpgrade: true,
+      },
+      userId,
+    );
     return c.json({ granted: true, themes: body.themeIds });
   }
 
@@ -406,6 +451,11 @@ payments.post("/webhook", async (c) => {
           ? session.payment_intent
           : (session.payment_intent?.id ?? null);
 
+      // See purchaseStatusForSession: "completed" only when the money has
+      // actually moved. Delayed-notification methods land here "unpaid" and
+      // are recorded as pending until async_payment_succeeded.
+      const rowStatus = purchaseStatusForSession(session.payment_status);
+
       const { data: existingRow } = await supabase
         .from("purchases")
         .select("status")
@@ -426,6 +476,16 @@ payments.post("/webhook", async (c) => {
         break;
       }
 
+      if (existingRow?.status === "completed" && rowStatus === "pending") {
+        // async_payment_succeeded already promoted this session; a delayed
+        // retry of the original unpaid `completed` event must not demote it.
+        logger.info(
+          { route: "payments.webhook", userId, stripeSessionId: sessionId },
+          "Webhook: skipping upsert, session already promoted to completed",
+        );
+        break;
+      }
+
       const { error: upsertError } = await supabase.from("purchases").upsert(
         {
           user_id: userId,
@@ -434,7 +494,7 @@ payments.post("/webhook", async (c) => {
           amount: amount ? amount / 100 : expectedAmount,
           stripe_session_id: sessionId,
           stripe_payment_intent: paymentIntent,
-          status: "completed",
+          status: rowStatus,
         },
         { onConflict: "stripe_session_id", ignoreDuplicates: false },
       );
@@ -453,44 +513,54 @@ payments.post("/webhook", async (c) => {
         return c.json({ error: "Database error" }, 500);
       }
 
-      // Fire authoritative server-side conversion event (§6i).
-      // Client may also fire one, but this is the revenue source of truth.
-      captureServer(
-        SERVER_EVENTS.PAYMENT_COMPLETED,
-        {
-          planId: metadata.planId,
-          themeIds,
-          amount: amount ? amount / 100 : expectedAmount,
-          sessionId,
-          isUpgrade: creditApplied > 0,
-        },
-        userId,
-      );
-
-      // Send purchase confirmation email via Kit (fire-and-forget)
-      try {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("email")
-          .eq("id", userId)
-          .single();
-
-        if (profile?.email) {
-          await addSubscriber(profile.email);
-          const purchaseTagId = process.env.KIT_TAG_PURCHASED;
-          if (purchaseTagId) {
-            await tagSubscriber(profile.email, purchaseTagId);
-          }
-        }
-      } catch (emailErr) {
-        logger.warn(
+      // Revenue event + confirmation email fire only once the payment has
+      // actually settled. For delayed methods that happens in the
+      // async_payment_succeeded handler below, not here.
+      if (rowStatus === "completed") {
+        // Fire authoritative server-side conversion event (§6i).
+        // Client may also fire one, but this is the revenue source of truth.
+        captureServer(
+          SERVER_EVENTS.PAYMENT_COMPLETED,
           {
-            err: emailErr,
-            route: "payments.webhook",
-            userId,
-            stripeSessionId: sessionId,
+            planId: metadata.planId,
+            themeIds,
+            amount: amount ? amount / 100 : expectedAmount,
+            sessionId,
+            isUpgrade: creditApplied > 0,
           },
-          "Kit email failed (non-blocking)",
+          userId,
+        );
+
+        // Send purchase confirmation email via Kit (fire-and-forget)
+        try {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("email")
+            .eq("id", userId)
+            .single();
+
+          if (profile?.email) {
+            await addSubscriber(profile.email);
+            const purchaseTagId = process.env.KIT_TAG_PURCHASED;
+            if (purchaseTagId) {
+              await tagSubscriber(profile.email, purchaseTagId);
+            }
+          }
+        } catch (emailErr) {
+          logger.warn(
+            {
+              err: emailErr,
+              route: "payments.webhook",
+              userId,
+              stripeSessionId: sessionId,
+            },
+            "Kit email failed (non-blocking)",
+          );
+        }
+      } else {
+        logger.info(
+          { route: "payments.webhook", userId, stripeSessionId: sessionId },
+          "Webhook: checkout completed but unpaid; recorded as pending",
         );
       }
 
@@ -509,10 +579,11 @@ payments.post("/webhook", async (c) => {
         const isFullRefund = charge.amount_refunded >= charge.amount;
         const newStatus = isFullRefund ? "refunded" : "partially_refunded";
 
-        const { error: refundError } = await supabase
+        const { data: refundedRows, error: refundError } = await supabase
           .from("purchases")
           .update({ status: newStatus })
-          .eq("stripe_payment_intent", refundPaymentIntent);
+          .eq("stripe_payment_intent", refundPaymentIntent)
+          .select("id");
 
         if (refundError) {
           logger.error(
@@ -525,6 +596,23 @@ payments.post("/webhook", async (c) => {
             "Webhook: Failed to update refund status",
           );
           return c.json({ error: "Database error" }, 500);
+        }
+
+        if (!refundedRows || refundedRows.length === 0) {
+          // No purchase row carries this payment_intent yet - the refund
+          // event outran the purchase row (webhook ordering) or the row is
+          // missing its intent. Returning 200 here made the refund
+          // PERMANENTLY unrecorded (audit run #7): acknowledge nothing and
+          // let Stripe retry, by which time the purchase row should exist.
+          logger.error(
+            {
+              route: "payments.webhook",
+              eventType: event.type,
+              paymentIntent: refundPaymentIntent,
+            },
+            "Webhook: refund matched no purchase row; requesting retry",
+          );
+          return c.json({ error: "No purchase row for refund yet" }, 500);
         }
 
         // Look up owning user to correctly attribute the event.
@@ -608,20 +696,69 @@ payments.post("/webhook", async (c) => {
             !existingAsyncRow ||
             !TERMINAL_STATUSES.has(existingAsyncRow.status)
           ) {
-            await supabase.from("purchases").upsert(
-              {
-                user_id: asyncUserId,
-                plan_id: asyncMetadata.planId,
-                theme_ids: asyncThemeIds,
-                amount: asyncSession.amount_total
-                  ? asyncSession.amount_total / 100
-                  : asyncPlan.price,
-                stripe_session_id: asyncSession.id,
-                stripe_payment_intent: asyncPaymentIntent,
-                status: "completed",
-              },
-              { onConflict: "stripe_session_id", ignoreDuplicates: false },
-            );
+            const { error: asyncUpsertError } = await supabase
+              .from("purchases")
+              .upsert(
+                {
+                  user_id: asyncUserId,
+                  plan_id: asyncMetadata.planId,
+                  theme_ids: asyncThemeIds,
+                  amount: asyncSession.amount_total
+                    ? asyncSession.amount_total / 100
+                    : asyncPlan.price,
+                  stripe_session_id: asyncSession.id,
+                  stripe_payment_intent: asyncPaymentIntent,
+                  status: "completed",
+                },
+                { onConflict: "stripe_session_id", ignoreDuplicates: false },
+              );
+
+            // This is the moment a delayed payment actually settles: the
+            // sync handler recorded the session as pending and deliberately
+            // deferred the revenue event and the confirmation email to here.
+            // Guard on prior status so a retried async_payment_succeeded
+            // does not double-fire.
+            if (!asyncUpsertError && existingAsyncRow?.status !== "completed") {
+              captureServer(
+                SERVER_EVENTS.PAYMENT_COMPLETED,
+                {
+                  planId: asyncMetadata.planId,
+                  themeIds: asyncThemeIds,
+                  amount: asyncSession.amount_total
+                    ? asyncSession.amount_total / 100
+                    : asyncPlan.price,
+                  sessionId: asyncSession.id,
+                  isUpgrade: Number(asyncMetadata.creditApplied || "0") > 0,
+                },
+                asyncUserId,
+              );
+
+              try {
+                const { data: asyncProfile } = await supabase
+                  .from("profiles")
+                  .select("email")
+                  .eq("id", asyncUserId)
+                  .single();
+
+                if (asyncProfile?.email) {
+                  await addSubscriber(asyncProfile.email);
+                  const purchaseTagId = process.env.KIT_TAG_PURCHASED;
+                  if (purchaseTagId) {
+                    await tagSubscriber(asyncProfile.email, purchaseTagId);
+                  }
+                }
+              } catch (emailErr) {
+                logger.warn(
+                  {
+                    err: emailErr,
+                    route: "payments.webhook",
+                    userId: asyncUserId,
+                    stripeSessionId: asyncSession.id,
+                  },
+                  "Kit email failed (non-blocking)",
+                );
+              }
+            }
           }
         } else if (asyncPlan) {
           logger.error(
@@ -651,6 +788,40 @@ payments.post("/webhook", async (c) => {
         },
         "Async payment failed",
       );
+
+      // Settle the pending row as failed. This handler used to only log,
+      // which left the purchase in whatever state the sync handler wrote —
+      // and before the payment_status fix that state was "completed", i.e.
+      // lifetime access on a payment that bounced (audit run #7). "failed"
+      // is terminal, so the guard below also protects a session that was
+      // refunded/disputed between deliveries.
+      const { data: failedRow } = await supabase
+        .from("purchases")
+        .select("status")
+        .eq("stripe_session_id", failedSession.id)
+        .maybeSingle();
+
+      if (failedRow && !TERMINAL_STATUSES.has(failedRow.status)) {
+        const { error: failError } = await supabase
+          .from("purchases")
+          .update({ status: "failed" })
+          .eq("stripe_session_id", failedSession.id);
+
+        if (failError) {
+          logger.error(
+            {
+              err: failError,
+              route: "payments.webhook",
+              stripeSessionId: failedSession.id,
+            },
+            "Webhook: failed to mark purchase as failed",
+          );
+          // Non-2xx so Stripe retries: an unpaid session must not be left
+          // holding a non-terminal status.
+          return c.json({ error: "Database error" }, 500);
+        }
+      }
+
       if (failedSession.client_reference_id) {
         captureServer(
           SERVER_EVENTS.PAYMENT_FAILED,

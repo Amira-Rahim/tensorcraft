@@ -25,11 +25,11 @@ consequence:
   narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment, but one archived sample refuses to pick a side."
 hints:
   - level: nudge
-    content: "Use model.evaluate() on data the model has never seen"
+    content: "Two separate calls: score the trained model on held-out test data, then run it forward on one brand-new signal it has never seen."
   - level: guidance
-    content: "model.evaluate() returns [loss, ...metrics] as tensors"
+    content: "First set evalResult = model.evaluate(testX, testY); because the model was compiled with an accuracy metric, that returns an array of two scalar tensors, [loss, accuracy]. Then set prediction = model.predict(newSignal); that returns the sigmoid output tensor of shape [1, 1], a probability between 0 and 1. Neither call needs await."
   - level: solution
-    content: "const [loss, accuracy] = model.evaluate(testX, testY) as tf.Tensor[]"
+    content: "const evalResult = model.evaluate(testX, testY); const prediction = model.predict(newSignal);"
 keywords:
   - evaluation
   - accuracy
@@ -55,29 +55,60 @@ Ninety-five percent training accuracy, sixty percent on signals the network has 
 
 // Assume model is trained from previous lesson
 
-// Test data: a held-out slice of the archive, labeled, and NEVER seen
-// during training. It must be real readings with real labels: random
+// Test data: a 50-row held-out slice of the archive, labeled, and NEVER
+// seen during training. It must be real readings with real labels: random
 // tensors cannot measure anything, because random labels contain no
 // pattern to be right about.
-const testX = tf.tensor2d([
-  [0.82, 0.14, 0.77],  // flagged window, confirmed anomalous
-  [0.11, 0.86, 0.19],  // calm-period reading
-  [0.74, 0.22, 0.68],  // flagged window
-  [0.15, 0.79, 0.24],  // calm-period reading
-  [0.68, 0.31, 0.66],  // flagged window
-  [0.09, 0.91, 0.13],  // calm-period reading
-  [0.71, 0.18, 0.72],  // flagged window
-  [0.21, 0.74, 0.28],  // calm-period reading
+const testX = tf.concat([
+  // Eight rows of the slice, annotated, for a feel of the data:
+  tf.tensor2d([
+    [0.82, 0.14, 0.77],  // flagged window, confirmed anomalous
+    [0.11, 0.86, 0.19],  // calm-period reading
+    [0.74, 0.22, 0.68],  // flagged window
+    [0.15, 0.79, 0.24],  // calm-period reading
+    [0.68, 0.31, 0.66],  // flagged window
+    [0.09, 0.91, 0.13],  // calm-period reading
+    [0.71, 0.18, 0.72],  // flagged window
+    [0.21, 0.74, 0.28],  // calm-period reading
+  ]),
+  // The next 39 rows, drawn from the same archive distributions under
+  // FRESH seeds (the model has never seen any of them):
+  tf.concat([
+    tf.randomNormal([19, 1], 0.84, 0.10, 'float32', 201),  // flagged
+    tf.randomNormal([19, 1], 0.18, 0.10, 'float32', 202),
+    tf.randomNormal([19, 1], 0.78, 0.10, 'float32', 203),
+  ], 1),
+  tf.concat([
+    tf.randomNormal([20, 1], 0.17, 0.10, 'float32', 204),  // calm
+    tf.randomNormal([20, 1], 0.81, 0.10, 'float32', 205),
+    tf.randomNormal([20, 1], 0.23, 0.10, 'float32', 206),
+  ], 1),
+  // ...plus three flagged rows the crew only confirmed on spectrogram
+  // review. In these three features they read almost calm. Watch what
+  // they do to the score.
+  tf.tensor2d([
+    [0.30, 0.68, 0.34],
+    [0.26, 0.75, 0.29],
+    [0.33, 0.71, 0.36],
+  ]),
 ]);
-const testY = tf.tensor2d([[1], [0], [1], [0], [1], [0], [1], [0]]);
+const testY = tf.concat([
+  tf.tensor2d([[1], [0], [1], [0], [1], [0], [1], [0]]),
+  tf.ones([19, 1]),
+  tf.zeros([20, 1]),
+  tf.ones([3, 1]),
+]);
 
 // Evaluate: returns [loss, accuracy] (matches compile metrics)
 const [testLoss, testAccuracy] = model.evaluate(testX, testY) as tf.Tensor[];
 console.log('Test Loss:', testLoss.dataSync()[0].toFixed(4));
 console.log('Test Accuracy:', (testAccuracy.dataSync()[0] * 100).toFixed(1) + '%');
-// The crew's run printed 94.0% on the full held-out slice. Yours will
-// differ: training starts from random weights, so two honest runs never
-// match to the decimal. What must match is the story the gap tells.
+// The crew's run printed 94.0% (test loss 0.2439) on this slice: 47 of
+// 50, and the three misses are exactly the spectrogram-confirmed rows
+// above. Training starts from random weights, so reruns differ: across
+// 400 reruns of this pipeline, 393 printed 94.0% and the rest landed
+// between 88.0 and 98.0. The loss moves run to run; the story the gap
+// tells must not.
 
 // Make predictions on new signals
 const newSignals = tf.tensor2d([
@@ -92,12 +123,16 @@ results.forEach((prob, i) => {
   console.log(\`Signal \${i + 1}: \${(prob * 100).toFixed(1)}% anomalous\`);
 });
 // The bridge run printed:
-//   Signal 1: 87.3% anomalous
-//   Signal 2: 12.1% anomalous
-//   Signal 3: 51.8% anomalous  ← neither normal nor alarm.`}
+//   Signal 1: 88.0% anomalous
+//   Signal 2: 11.7% anomalous
+//   Signal 3: 51.8% anomalous  ← neither normal nor alarm.
+// Same tolerance rule as the evaluate above: across 400 reruns, signals
+// 1 and 2 stay decisive in nearly every run (medians 92 and 12), while
+// signal 3 never settles, landing anywhere from the high 20s to the mid
+// 70s and centering on the fence. That refusal to commit is the finding.`}
 </CodeBlock>
 
-One entry for the strangest page of the ship's ledger: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Nobody explained it then and nobody explains it now. But notice what training did: the certain machine became an uncertain one. Untrained, it had an opinion; trained, it refuses to commit at 51.8. Whatever else the loss curve bought, it bought honesty about the one reading the crew cannot label.
+One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Nobody explained it then and nobody explains it now. But notice what training did: the certain machine became an uncertain one. Untrained, it had an opinion; trained, it refuses to commit at 51.8 on the one reading the crew cannot label.
 
 **Interpreting results:**
 - **Training accuracy > Test accuracy** → The model is memorizing (overfitting). You need more data, less complexity, or regularization.
@@ -110,6 +145,15 @@ One entry for the strangest page of the ship's ledger: back before this network 
 **Precision** = `TP / (TP + FP)`: of all signals you flagged as anomalous, what fraction actually were?
 
 **Recall** (sensitivity) = `TP / (TP + FN)`: of all true anomalies, what fraction did you catch?
+
+**The crew's run, as a confusion matrix.** The 94.0% above came from the 50-row held-out slice: 26 anomalous rows, 24 calm ones.
+
+|  | Predicted anomalous | Predicted calm |
+|---|---|---|
+| **Actually anomalous (26)** | TP = 23 | FN = 3 |
+| **Actually calm (24)** | FP = 0 | TN = 24 |
+
+Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26 = 0.885. One aggregate number became three, and the three disagree: perfect precision, and a recall hole exactly where the spectrogram-confirmed disguised anomalies live. That is what "aggregate accuracy hides failure modes" looks like in practice.
 
 **Tradeoff:** lowering the decision threshold (default 0.5) increases recall (catch more anomalies) but lowers precision (more false alarms). Raising it does the opposite. There is no free lunch. Pick based on the cost asymmetry of false positives vs false negatives in your domain.
 
@@ -131,7 +175,7 @@ Evaluate DEEP SCAN on unseen signal data and make predictions.
 
 <LessonRecap
   whatYouLearned={[
-    "`model.evaluate()` measures performance on held-out data the model has never seen. This is the only honest accuracy number. Training accuracy reflects memorization potential, not real-world skill.",
+    "`model.evaluate()` measures performance on held-out data the model has never seen. Training accuracy reflects memorization potential; held-out accuracy is the number that predicts behavior on new signals.",
     "A large gap between training accuracy and test accuracy signals overfitting. When both are low, the model is underfitting. When both are high, you have ruled out those two failures and nothing else: an aggregate number cannot see the slice it is failing on, which is why sliced evaluation comes before deployment rather than after it.",
     "Aggregate accuracy can hide failure modes. Precision, recall, and sliced evaluation (per class or per cohort) are required before trusting a model in production."
   ]}

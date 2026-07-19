@@ -25,11 +25,11 @@ consequence:
   narrative: "Six hours, two hundred epochs, loss pinned at 0.693 since the first hour. The gradients die out around step twenty. The pattern lives at step seventy-three."
 hints:
   - level: nudge
-    content: "An RNN cell is just a function: (prevState, newInput) → newState"
+    content: "A SimpleRNN layer reads the sequence step by step, carrying a hidden state forward, so the model sees order, not just values."
   - level: guidance
-    content: "Use tf.layers.simpleRNN() with a units parameter for hidden state size"
+    content: "In buildRNN(), add tf.layers.simpleRNN with units: 16 and inputShape: [5, 3] (5 time steps of 3 features), then tf.layers.dense with 1 unit and sigmoid activation, compile with adam and binaryCrossentropy, and return the model. The grader checks the first layer's class is 'SimpleRNN', so Flatten plus Dense will not pass."
   - level: solution
-    content: "model.add(tf.layers.simpleRNN({ units: 32, inputShape: [5, 3] }))"
+    content: "model.add(tf.layers.simpleRNN({ units: 16, inputShape: [5, 3] })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] }); return model;"
 keywords:
   - rnn
   - recurrent
@@ -43,11 +43,26 @@ skillAxes: [model_arch]
 So an RNN is just... a reducer? It takes the previous hidden state and the new input, runs them through a function, and outputs new hidden state? I use this pattern every day with useReducer.
 </Dialogue>
 
-<Dialogue speaker="Dr. Farah">
-The shape is right; the guarantees are gone. Your reducer is a pure function you wrote. Same state, same action, same result, and you can read the logic. This one is learned from data. Nobody authored the transition function; the weights are the function. And the same input produces different outputs depending on everything that came before. The hidden state is the network's memory.
-</Dialogue>
+The cell itself is small: a weight for the previous hidden state, a weight for the input, a bias, a `tanh`. What makes it recurrent is the wiring: the output loops back in as the next step's hidden state. Small enough, in fact, to run by hand before anyone argues about analogies:
 
-The cell itself is small: a weight matrix for the previous hidden state, a weight matrix for the input, a bias, a `tanh`. What makes it recurrent is the wiring: the output loops back in as the hidden state at the next time step.
+<CodeBlock language="typescript" title="reducer-with-memory.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// One RNN step: newHidden = tanh(0.8 * prevHidden + 1.0 * input)
+// (weights hand-picked for the drill, bias 0)
+let h = tf.scalar(0);
+for (const x of [0.5, 0.9, 0.5]) {
+  h = tf.tanh(h.mul(0.8).add(x));
+  console.log(h.dataSync()[0].toFixed(4));
+}
+// 0.4621
+// 0.8537
+// 0.8284  ← the same 0.5 that scored 0.4621 two steps ago`}
+</CodeBlock>
+
+<Dialogue speaker="Dr. Farah">
+There is your answer, in the last line. The shape is right; the guarantees are gone. Your reducer is a pure function you wrote: same state, same action, same result, and you can read the logic. This one just handed the same input two different outputs, because the hidden state carries everything that came before. And the 0.8 and 1.0 were hand-picked for the demo; in a real cell they are learned from data. Nobody authors the transition function. The weights are the function, and the hidden state is the network's memory.
+</Dialogue>
 
 <LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Process sequential signal data through a recurrent architecture"]} />
 
@@ -130,7 +145,8 @@ modelAllSteps.add(tf.layers.simpleRNN({
 // Like a game of telephone: the message degrades with each relay
 
 // For DEEP SCAN: the anomaly pattern repeats every ~73 seconds
-// At 1 sample/second, that's a 73-step dependency
+// On the live dashboard feed's 1 sample/second (not the archive's
+// 33-second integrations), that's a 73-step dependency
 // A simple RNN "forgets" information after ~10-20 steps
 
 // Demo: training on short vs long sequences

@@ -8,9 +8,13 @@ starterCode: |
   // df = df.dropna(subset=['value'])
   // df = df[df['value'] > 0]
   // mean_val = df['value'].mean()
-  // std_val = df['value'].std()
+  // std_val = df['value'].std(ddof=0)
   // df['normalized'] = (df['value'] - mean_val) / std_val
   // result = df.groupby('sensorId')['normalized'].mean()
+  //
+  // (ddof=0 makes pandas use the population std, dividing by n, which is
+  // what the plain JS formula below computes. pandas' default .std() is
+  // the sample estimator, ddof=1, dividing by n-1: a different number.)
 
   const sensorData = [
     { sensorId: 'A', value: 10 },

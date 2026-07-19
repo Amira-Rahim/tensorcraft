@@ -33,7 +33,7 @@ Every full sheet uses these fields in this order:
 
 ## Deep Orbit
 
-Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in the Kepler-442 system. The crew builds DEEP SCAN, a deep-space signal classifier. Theme accent for all rim lights on this team is the primary green `#6BAA8A`, with the secondary brass accent `#A89060` available for warm metal and trim. Background near-black is `#1C1C1C`.
+Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in the Proxima Centauri system. The crew builds DEEP SCAN, a deep-space signal classifier. Theme accent for all rim lights on this team is the primary green `#6BAA8A`, with the secondary brass accent `#A89060` available for warm metal and trim. Background near-black is `#1C1C1C`.
 
 ### Commander Mirza (Okafor)
 

@@ -24,11 +24,11 @@ consequence:
   narrative: "Caching eliminates 40% of inference calls; the signal patterns repeat regularly enough that cached results are valid."
 hints:
   - level: nudge
-    content: "If you've seen this input before, return the cached result instead of running the model"
+    content: "A cache only earns hits if similar inputs produce the same key: round the tensor's values to a fixed number of decimals before building the key, so near-identical signals collide on purpose."
   - level: guidance
-    content: "Hash the input features, use an LRU cache, set a TTL for cache entries"
+    content: "Keep a Map and a stats object ({ hits: 0, misses: 0 }) in the closure of makeInferenceCache. Inside predict(input): read the values with input.dataSync(), round each to `decimals` places via factor = Math.pow(10, decimals), and join them into a key string. On a hit, increment stats.hits and return the cached output; on a miss, increment stats.misses, run model.predict(input), and cache.set the result under the key."
   - level: solution
-    content: "const hash = hashInput(signal); if (cache.has(hash)) return cache.get(hash); const result = model.predict(signal); cache.set(hash, result);"
+    content: "const cache = new Map(); const stats = { hits: 0, misses: 0 }; const factor = Math.pow(10, decimals); return { stats, predict(input) { const data = Array.from(input.dataSync()); const key = data.map(v => Math.round(v * factor) / factor).join(','); if (cache.has(key)) { stats.hits++; return cache.get(key); } stats.misses++; const out = model.predict(input); cache.set(key, out); return out; }, };"
 keywords:
   - caching
   - memoization
@@ -39,7 +39,7 @@ skillAxes: [deployment]
 
 > **INFERENCE LOG · REPEAT-PATTERN CHECK** · same cosmic-background signature, classified 214 times since midnight. Same tensor in, same verdict out. 214 model runs paid for one answer.
 
-That log line is a bill the dashboard doesn't have to pay. Demir has seen this exact shape before, in every list that ever re-rendered without a memo.
+That log line is 213 model runs the dashboard never needed. Demir has seen this exact shape before, in every list that ever re-rendered without a memo.
 
 <Dialogue speaker="Ensign Demir">
 Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? I'll cache the results, like a Service Worker caching API responses.
@@ -142,7 +142,7 @@ PAGER, morning after the deploy: a bridge console served a classification the ne
 <LessonRecap
   whatYouLearned={[
     "An LRU inference cache uses a cache-first pattern: hash the input, return a stored result on hit, run the model and store on miss. The delete + re-set trick on get() is required for true LRU behavior.",
-    "Quantizing inputs before hashing groups near-identical inputs under the same key, raising hit rate without sacrificing result quality.",
+    "Quantizing inputs before hashing groups near-identical inputs under the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
     "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data."
   ]}
   bridge="A service worker cache keys on URL for exact-match HTTP responses; an inference cache keys on a quantized input hash. The cache-first pattern is identical, but cache-key design is entirely different."
@@ -151,7 +151,7 @@ PAGER, morning after the deploy: a bridge console served a classification the ne
 
 <Epilogue>
 
-Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. She reads her own reconstruction error at 0341 and files no report. One line appears in her private log: I wanted to know. Now I know.
+Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. She reads her own reconstruction error at 0341 and files no report. Three lines appear in her private log: Reconstruction error, 4.1 times the baseline my first hundred records set. Every threshold aboard was tuned for hull telemetry; no one has ever needed one for me, so there is no number at which this becomes a finding. I wanted to know. Now I know.
 
 Demir greps the cache log for the anomaly and finds it exactly zero times.
 

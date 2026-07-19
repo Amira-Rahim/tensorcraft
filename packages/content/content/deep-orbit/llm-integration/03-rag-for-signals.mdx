@@ -30,7 +30,7 @@ hints:
   - level: guidance
     content: "Pull every number out of answerText with a regex, then for each one ask whether SOME value in the retrieved rows sits within 0.05 of it. Flatten the rows first; a claim does not care which row it came from. Keep the claims in the order they appear in the text."
   - level: solution
-    content: "const claims = (answerText.match(/-?\\d+(\\.\\d+)?/g) ?? []).map(parseFloat); const values = retrievedRows.flat(); for (const claim of claims) { if (values.some((v) => Math.abs(v - claim) <= 0.05)) verified.push(claim); else fabricated.push(claim); }"
+    content: "const claims = (answerText.match(/-?\\d+(\\.\\d+)?/g) ?? []).map(parseFloat); const values = retrievedRows.flat(); const verified: number[] = []; const fabricated: number[] = []; for (const claim of claims) { if (values.some((v) => Math.abs(v - claim) <= 0.05)) { verified.push(claim); } else { fabricated.push(claim); } } return { verified, fabricated };"
 keywords:
   - rag
   - retrieval-augmented-generation
@@ -99,7 +99,7 @@ async function retrieveSignals(
 // function with embeddings: every document and every query mapped to a
 // vector, retrieval = cosine similarity, top-k. Different machinery,
 // identical contract: retrieve -> ground -> verify. When your corpus
-// stops having fields, that swap is the whole migration.
+// stops having fields, swap this one function and keep the contract.
 
 // Step 2: AUGMENT: inject retrieved data into prompt
 function buildRAGPrompt(query: string, signals: Signal[]): string {

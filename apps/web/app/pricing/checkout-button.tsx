@@ -64,8 +64,16 @@ export function CheckoutButton({
       } = await supabase.auth.getSession();
 
       if (!session) {
+        // Carry the WHOLE selection through the auth roundtrip. This used to
+        // preserve only the planId, which PricingTiers never read anyway, so
+        // a signed-out buyer came back to an unselected picker and had to
+        // rebuild their choice (audit run #7).
+        const restore = new URLSearchParams({
+          plan: planId,
+          themes: themeIds.join(","),
+        });
         router.push(
-          `/auth?redirectTo=${encodeURIComponent(`/pricing?plan=${planId}`)}`,
+          `/auth?redirectTo=${encodeURIComponent(`/pricing?${restore.toString()}`)}`,
         );
         return;
       }

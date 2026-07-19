@@ -24,9 +24,9 @@ hints:
   - level: nudge
     content: "Group the check items by phase before computing anything"
   - level: guidance
-    content: "Build phaseResults by bucketing items per phase and counting statuses. overallStatus needs only two scans: any 'fail' blocks, otherwise any 'pending' means needs-review. For passRate, exclude not-applicable items from the denominator."
+    content: "Bucket checks by check.phase, counting statuses into { passed, failed, pending } objects; use those exact key names, the grader compares the whole object. overallStatus needs two scans of checks: any 'fail' means 'blocked', otherwise any 'pending' means 'needs-review', else 'approved'. passRate divides the 'pass' checks by the checks whose status is not 'not-applicable', defaulting to 1 when nothing is applicable."
   - level: solution
-    content: "1) phaseResults: reduce items into { [phase]: { pass, fail, pending } } counts. 2) overallStatus: items.some(i => i.status === 'fail') ? 'blocked' : items.some(i => i.status === 'pending') ? 'needs-review' : 'approved'. 3) passRate: passed / items.filter(i => i.status !== 'not-applicable').length."
+    content: "const phaseResults: Record<string, PhaseResult> = {}; for (const check of checks) {; if (!phaseResults[check.phase]) {; phaseResults[check.phase] = { passed: 0, failed: 0, pending: 0 }; }; if (check.status === 'pass') phaseResults[check.phase].passed++; else if (check.status === 'fail') phaseResults[check.phase].failed++; else if (check.status === 'pending') phaseResults[check.phase].pending++; }; const hasFailures = checks.some(c => c.status === 'fail'); const hasPending = checks.some(c => c.status === 'pending'); const applicableChecks = checks.filter(c => c.status !== 'not-applicable'); const passedChecks = checks.filter(c => c.status === 'pass'); const passRate = applicableChecks.length > 0 ? passedChecks.length / applicableChecks.length : 1; let overallStatus: 'approved' | 'blocked' | 'needs-review'; if (hasFailures) overallStatus = 'blocked'; else if (hasPending) overallStatus = 'needs-review'; else overallStatus = 'approved'; return { phaseResults, overallStatus, passRate };"
 keywords:
   - ethics-checklist
   - responsible-ai

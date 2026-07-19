@@ -26,11 +26,11 @@ consequence:
   narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
   - level: nudge
-    content: "fft(signal) re-describes the same samples by what repeats in them; no information is added, only re-arranged"
+    content: "Two signals can be near-identical sample by sample in time yet clearly different in one frequency bin; compareViews makes that claim executable."
   - level: guidance
-    content: "Time domain shows amplitude at each moment. Frequency domain shows which frequencies are present."
+    content: "timeTwin is an every() check: |timeA[i] - timeB[i]| <= tolerance for all i. divergentBin scans magsA against magsB in order and records the FIRST index whose gap exceeds tolerance (break as soon as you find it; the grader rejects the largest-gap answer), staying -1 if none does. Return { timeTwin, divergentBin }."
   - level: solution
-    content: "Time domain: [0.5, 0.8, 0.3, -0.2, ...] (values over time). Frequency domain: [10Hz: 0.7, 50Hz: 0.3, ...] (strengths per frequency)."
+    content: "const timeTwin = timeA.every((v, i) => Math.abs(v - timeB[i]) <= tolerance); let divergentBin = -1; for (let i = 0; i < magsA.length; i++) { if (Math.abs(magsA[i] - magsB[i]) > tolerance) { divergentBin = i; break; } } return { timeTwin, divergentBin };"
 keywords:
   - time-domain
   - frequency-domain
@@ -100,9 +100,7 @@ const complex = generateSignal([
 ], 256, 256);
 
 console.log(complex.slice(0, 10));
-// [0, 0.47, 0.82, 0.99, ...]: a shapeless wiggle.
-// Nothing in these numbers says "exactly three frequencies."
-// But the frequency domain would show exactly three clean peaks.`}
+// [0, 0.47, 0.82, 0.99, ...]: a shapeless wiggle.`}
 </CodeBlock>
 
 ## Why Frequency Matters for DEEP SCAN
@@ -110,7 +108,9 @@ console.log(complex.slice(0, 10));
 In the time domain, the Sector 7-G capture reads as noise. The frequency domain turns Farah's suspicion into a test you can run: list every frequency present, and any one with no natural source is an anomaly you can point to.
 
 <CodeBlock language="typescript" title="why-frequency.ts">
-{`// In the time domain, these two signals look almost identical:
+{`import * as tf from '@tensorflow/tfjs';
+
+// In the time domain, these two signals look almost identical:
 const cosmicNoise = generateSignal([
   { hz: 5, amplitude: 0.8 },
   { hz: 12, amplitude: 0.6 },
@@ -129,8 +129,11 @@ const anomalousSignal = generateSignal([
 // In the time domain: nearly impossible to distinguish
 // cosmicNoise[100] = -0.671, anomalousSignal[100] = -0.715
 
-// In the frequency domain: 73.4 Hz peak stands out immediately
-// This is why Farah wants to switch representations`}
+// Preview of lesson 2: the transform that makes the difference visible.
+const mags = tf.abs(tf.spectral.rfft(tf.tensor1d(anomalousSignal))).arraySync() as number[];
+console.log(mags[94].toFixed(1), mags[146].toFixed(1), mags[147].toFixed(1));
+// "51.2 3.0 12.0": the 47 Hz we authored, then energy at 73-73.5 Hz
+// (bins 146-147 at this run's 0.5 Hz resolution) that no catalog explains.`}
 </CodeBlock>
 
 ## Challenge

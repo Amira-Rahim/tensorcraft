@@ -9,6 +9,15 @@ starterCode: |
     reports: { id: string; numericClaims: number; unverifiedClaims: number }[],
     checkerUp: boolean,
   ): { ship: string[]; hold: string[] } {
+    // Concept: an outage changes the shipping RULE, never the standing order:
+    // no unverified number leaves the ship.
+    // Recipe:
+    // 1. Walk reports in input order, filling two id arrays: ship and hold.
+    // 2. checkerUp true: a report ships when r.unverifiedClaims === 0.
+    // 3. checkerUp false: nothing can be verified, so a report ships only
+    //    when r.numericClaims === 0. Prose sails; numbers wait, including
+    //    previously verified ones (nobody can re-check them).
+    // 4. Push r.id into ship or hold, then return { ship, hold }.
     return null; // your code here
   }
 solutionCode: |

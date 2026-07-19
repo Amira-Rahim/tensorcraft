@@ -22,11 +22,11 @@ consequence:
   narrative: "Understanding bias is the first step toward building ML systems that serve everyone."
 hints:
   - level: nudge
-    content: "Count the representation of each group in your dataset"
+    content: "Bias audits start with counting: how much of the dataset does each group actually occupy?"
   - level: guidance
-    content: "Group the data points by their group field and count each bucket. Divide by the total for the proportion, and average the labels for the positive rate. Any proportion under 0.1 gets flagged."
+    content: "Tally count and positives per group in one pass over data, then build each GroupAudit: proportion is the group's count divided by data.length, positiveRate is its positives divided by its count. Every entry must carry the underrepresented boolean computed as proportion < 0.1, so healthy groups get an explicit false; the tests check result['A'].underrepresented === false, not just the flagged group."
   - level: solution
-    content: "1) Build counts: for each point, increment counts[point.group]. 2) Per group: proportion = count / data.length; positiveRate = sum of labels in group / count. 3) If proportion < 0.1, add underrepresented: true to that group's entry."
+    content: "const total = data.length; const groups: Record<string, { count: number; positives: number }> = {}; for (const point of data) {; if (!groups[point.group]) groups[point.group] = { count: 0, positives: 0 }; groups[point.group].count++; if (point.label === 1) groups[point.group].positives++; }; const result: Record<string, GroupAudit> = {}; for (const [group, stats] of Object.entries(groups)) {; const proportion = stats.count / total; result[group] = {; count: stats.count,; proportion,; positiveRate: stats.positives / stats.count,; underrepresented: proportion < 0.1,; }; }; return result;"
 keywords:
   - bias
   - selection-bias

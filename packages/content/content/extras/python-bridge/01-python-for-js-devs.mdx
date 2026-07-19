@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "x => x * 2 in JavaScript is lambda x: x * 2 in Python; anything with a body becomes def"
   - level: guidance
-    content: "Translate line by line: self.mean = None becomes this.mean = null in the constructor. Python's sum(data) / len(data) is a reduce divided by length. The list comprehension in transform is exactly a .map()."
+    content: "Translate line by line: self.mean = None becomes this.mean = null in the constructor. In fit, Python's sum(data) / len(data) is a reduce divided by data.length, the std is Math.sqrt of the mean squared deviation, and fit must return this so calls chain. transform is exactly a .map(), and fitTransform calls this.fit(data) then returns this.transform(data)."
   - level: solution
-    content: "fit(data) { this.mean = data.reduce((a, b) => a + b, 0) / data.length; this.std = Math.sqrt(data.reduce((s, x) => s + (x - this.mean) ** 2, 0) / data.length); return this; } transform(data) { return data.map(x => (x - this.mean) / this.std); }"
+    content: "this.mean = null; this.std = null; this.mean = data.reduce((sum, x) => sum + x, 0) / data.length; this.std = Math.sqrt( data.reduce((sum, x) => sum + (x - this.mean) ** 2, 0) / data.length ); return this; return data.map(x => (x - this.mean) / this.std); this.fit(data); return this.transform(data);"
 keywords:
   - python
   - syntax

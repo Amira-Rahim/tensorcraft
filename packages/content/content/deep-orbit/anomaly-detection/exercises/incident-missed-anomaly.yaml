@@ -14,6 +14,16 @@ instructions: |
   The training set was normal-only, so genuinely anomalous structure should be hard to reconstruct. When error on a feature that should be hard comes in far below that feature's baseline, the model is leaning on memorized sensor quirks instead of learned structure. That is a retraining problem, not a threshold problem.
 starterCode: |
   function auditReconstruction(input, reconstruction, perFeatureBaseline) {
+    // Concept: an autoencoder trained on normal-only data SHOULD struggle to
+    // reconstruct anomalous structure. Error far below a feature's baseline is
+    // its own red flag: the model is reproducing memorized sensor quirks.
+    // Recipe:
+    // 1. perFeatureError = input.map((v, i) => Math.abs(v - reconstruction[i]))
+    // 2. Walk the features: index i is suspicious when perFeatureBaseline[i] > 0
+    //    and perFeatureError[i] < perFeatureBaseline[i] * 0.5 (error undercuts
+    //    the baseline by 50%). Collect indices in order into suspiciouslyLowFeatures.
+    // 3. requiresRetrain = suspiciouslyLowFeatures.length > 0
+    // 4. return { perFeatureError, suspiciouslyLowFeatures, requiresRetrain }
     return null; // your code here
   }
 solutionCode: |

@@ -24,11 +24,11 @@ consequence:
   narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
-    content: "Window i starts at index i * stride (stride = how far the window jumps each step; stride 1 = maximum overlap). Its label is the reading immediately after it."
+    content: "Training on a stream means pairing each window of past readings with the single reading that comes immediately after it."
   - level: guidance
-    content: "Loop start from 0 while start + windowSize < data.length, stepping by stride. Each xs entry is data.slice(start, start + windowSize); each ys entry is data[start + windowSize]. The strict < is the drop rule: a window whose answer would be past the end never enters the set."
+    content: "Loop start from 0 while start + windowSize < data.length, stepping by stride (window i starts at i * stride). Each xs entry is data.slice(start, start + windowSize); each ys entry is data[start + windowSize]. The strict < is the drop rule: a window whose answer would be past the end never enters the set. Return { xs, ys }."
   - level: solution
-    content: "for (let start = 0; start + windowSize < data.length; start += stride) { xs.push(data.slice(start, start + windowSize)); ys.push(data[start + windowSize]); } return { xs, ys };"
+    content: "const xs: number[][][] = []; const ys: number[][] = []; for (let start = 0; start + windowSize < data.length; start += stride) { xs.push(data.slice(start, start + windowSize)); ys.push(data[start + windowSize]); } return { xs, ys };"
 keywords:
   - sequence
   - temporal
@@ -45,7 +45,7 @@ This isn't random noise. Something is repeating. The pattern spans dozens of tim
 Memory? You mean like... state that persists between inputs? That's just a reducer: previous state plus new input produces updated state.
 </Dialogue>
 
-You've seen this problem in React. Render a list without stable keys and React can't track which items moved, were added, or were removed. Order carries information. The same goes for signals: [rising, falling, rising] tells a different story than [falling, rising, rising], even though the individual values are identical.
+Hold the reducer thought; it is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
 
 <LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals"]} />
 
@@ -97,6 +97,12 @@ console.log(sequences[0]);
 // [[0.5, 0.3, 0.7], [0.8, 0.2, 0.9], [0.3, 0.1, 0.4]]
 // ^ This IS the pattern: rise-rise-fall`}
 </CodeBlock>
+
+<Dialogue speaker="Dr. Farah">
+Look at what the slicing bought you. Row for row, nothing changed. The pattern only exists across rows, in the order they arrive: [rising, falling, rising] and [falling, rising, rising] are the same three values telling two different stories. Order carries information, and the model we have throws it away at the door.
+</Dialogue>
+
+It is the React list-key problem wearing a lab coat. Render a list without stable keys and React can't track which items moved, were added, or were removed; identity gets lost in the reorder. Here, position itself is the information, and a model that sees one row at a time never had it to lose.
 
 ## Sequence Shape: [batch, timeSteps, features]
 
@@ -156,6 +162,6 @@ After the shift, Demir runs one more test. He feeds the classifier an hour of ar
 It grades the scrambled signal the same as the real one. Everything we actually care about is in the part it can't see.
 </Dialogue>
 
-On the plot above his console, the rhythm keeps repeating, patient, unread.
+He prints both runs and leaves them on Farah's desk, the scrambled one on top.
 
 </Epilogue>

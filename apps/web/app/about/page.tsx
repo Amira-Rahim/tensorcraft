@@ -1,6 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { THEME_CONTENT, THEME_SLUGS } from "@tensorcraft/shared";
+import {
+  THEME_CONTENT,
+  THEME_SLUGS,
+  EXERCISE_CONTENT,
+} from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
   title: "About Tensorcraft | Why this course exists",
@@ -70,11 +74,12 @@ export default function AboutPage() {
           </p>
 
           <p>
-            Every exercise grades against real TensorFlow.js, not a mock. 80
-            exercises live today at 100% solution-passes-all-tests, all running
-            in a worker in your browser, with 315 authored across the five-theme
-            roadmap and held to the same bar. If a test fails, the model
-            behavior is actually wrong; not a string-match heuristic.
+            Every exercise grades against real TensorFlow.js, not a mock.{" "}
+            {EXERCISE_CONTENT.liveExercises} exercises live today at 100%
+            solution-passes-all-tests, all running in a worker in your browser,
+            with {EXERCISE_CONTENT.authoredFiveThemes} authored across the
+            five-theme roadmap and held to the same bar. If a test fails, the
+            model behavior is actually wrong; not a string-match heuristic.
           </p>
 
           <p>

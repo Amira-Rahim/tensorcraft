@@ -23,11 +23,11 @@ consequence:
   narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added no information the samples did not already contain; it added access, and a small network cannot reach what it cannot reach."
 hints:
   - level: nudge
-    content: "The exercise wants the top-K PEAKS: compute magnitudes with tf.abs(tf.spectral.rfft(...)), then find the K strongest bins (skip bin 0, the DC offset)"
+    content: "The K strongest magnitude bins summarize what a signal is made of; bin 0 is excluded because a DC offset is not a tone."
   - level: guidance
-    content: "Get magnitudes as a JS array (arraySync), pair each with its bin index, drop bin 0, sort the pairs by magnitude descending, take the first k"
+    content: "Compute tf.abs(tf.spectral.rfft(tf.tensor1d(signal))), arraySync() to a plain array, drop bin 0 with slice(1), sort descending with sort((a, b) => b - a), then keep the first k with slice(0, k). The grader expects magnitudes 64 and 32 for the two-tone test signal, in that order."
   - level: solution
-    content: "const mags = Array.from(tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync()); return mags.map((mag, bin) => ({ mag, bin })).slice(1).sort((a, b) => b.mag - a.mag).slice(0, k).map(p => p.mag);"
+    content: "const fft = tf.spectral.rfft(tf.tensor1d(signal)); const magnitudes = tf.abs(fft).arraySync() as number[]; const sorted = magnitudes .slice(1) .sort((a, b) => b - a) .slice(0, k); return sorted;"
 keywords:
   - feature-engineering
   - derived-features
@@ -187,7 +187,9 @@ const history = await enhancedModel.fit(trainX, trainY, {
 // Epoch 0:  acc=0.523, val_acc=0.510
 // Epoch 10: acc=0.712, val_acc=0.698
 // Epoch 30: acc=0.853, val_acc=0.841
-// Epoch 50: acc=0.871, val_acc=0.862  ← 87% with FFT features!`}
+// Epoch 40: acc=0.871, val_acc=0.862  ← 87% with FFT features!
+// (epoch 40 is the last line the % 10 callback prints: epochs count
+// from 0, so an epochs: 50 run ends after epoch 49)`}
 </CodeBlock>
 
 ## Challenge
@@ -214,12 +216,12 @@ Extract FFT features from a signal and combine them with raw features.
 
 <Epilogue>
 
-Nazari reads the before-and-after the only way she reads anything. Seventy-eight to eighty-seven percent means roughly 2,600 fewer misclassified readings across the eleven-day archive, and by her ledger, about forty fewer hours of somebody chasing them down. Next to Demir's signed 85 she writes the actual 87 and leaves both on the board.
+Nazari reads the before-and-after the only way she reads anything. Seventy-eight to eighty-seven percent means roughly 2,600 fewer misclassified readings across the eleven-day archive, and about forty fewer hours of somebody chasing them down. Next to Demir's signed 85 she writes the actual 87 and leaves both on the board.
 
 <Dialogue speaker="Chief Nazari">
 Nine points. That is the first idea of yours that has paid for its own investigation time, Ensign. Do not let it become a habit to expect applause.
 </Dialogue>
 
-It goes to his head anyway, briefly. Farah is already sorting the residue: the readings even the frequency features cannot place. Most of them fall within a minute of a 73.4-second pulse, and nobody has an explanation for that yet.
+It goes to his head anyway, briefly. Farah is already sorting the residue: the readings even the frequency features cannot place. Most of them fall within a minute of a 73.4-second pulse, and the pulses they crowd around are not scattered either: laid on a timeline, the re-entries bunch on a rough 47-minute macro-cycle. Farah files both numbers in the anomaly log, next to the entry for sample 7741.
 
 </Epilogue>

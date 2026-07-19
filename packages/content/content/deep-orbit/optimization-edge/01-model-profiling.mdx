@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The 0247 pulse window came, and at 0249 the 340 MB model killed the bridge dashboard under it. The capture was lost. Now the optimization sprint begins, as penance."
+  narrative: "Two nights after the report went out, the 0247 pulse window came, and at 0249 the 340 MB model killed the bridge dashboard under it. The capture was lost. Now the optimization sprint begins, as penance."
   speaker: "Chief Nazari"
 concept:
   explanation: "Profiling measures before optimizing: memory footprint, latency, and which layers hold the parameters. The numbers decide where the knife goes."
@@ -26,11 +26,11 @@ consequence:
   narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
   - level: nudge
-    content: "Profile before optimizing: measure, don't guess"
+    content: "profileModel is three separate measurements: how many parameters the model has, how many megabytes they occupy at 4 bytes per float32, and how long one predict() call takes on average."
   - level: guidance
-    content: "Use tf.memory() for memory, performance.now() for timing, model.summary() for architecture"
+    content: "parameterCount comes from model.countParams(); memorySizeMB is parameterCount * 4 bytes divided by 1024 * 1024; then loop exactly `runs` times, timing each model.predict(createInput()) with performance.now() and averaging the durations. Return { parameterCount, memorySizeMB, avgInferenceMs }; the tests count the predict calls, so the loop bound must be runs."
   - level: solution
-    content: "const mem = tf.memory(); const t0 = performance.now(); model.predict(x); console.log(performance.now() - t0);"
+    content: "const parameterCount = model.countParams(); const memorySizeMB = (parameterCount * 4) / (1024 * 1024); const times: number[] = []; for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); model.predict(input); times.push(Math.max(0, performance.now() - start)); } const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length; return { parameterCount, memorySizeMB, avgInferenceMs };"
 keywords:
   - profiling
   - performance
@@ -40,7 +40,7 @@ keywords:
 skillAxes: [deployment]
 ---
 
-ARIA's reboot watchdog kept the last four seconds. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
+Two nights after the report went out, the bridge dashboard died. ARIA's reboot watchdog kept the last four seconds. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
 
 00:02:47.0: the ensemble flags the incoming pulse window, the cleanest capture opportunity in nine days. 00:02:47.4: the dashboard starts loading DEEP SCAN's full 340 MB beside the telemetry suite, and the free-memory line starts falling like an altimeter. 00:02:49.1: the line touches zero. No exception. No log entry. The render loop dies mid-frame and the last buffered frame just stays there, wrong, on every screen on the bridge. By the time the dashboard reboots, the window has closed. Earth's relay slot closes forty minutes later, without the capture in it.
 
@@ -172,12 +172,10 @@ Profile a model and identify its heaviest layer.
 
 <Epilogue>
 
-By evening the profile hangs on the engineering board next to Nazari's handwritten ledger: dashboard RAM 512, model 340, reconstruction 9 hours, capture 0, days to the next relay slot 19. Below it sits a line item nobody expected: 211 KB of partial telemetry from the crash window, recovered.
+By evening the profile hangs on the engineering board next to Nazari's handwritten totals: dashboard RAM 512, model 340, reconstruction 9 hours, capture 0, days to the next relay slot 19. Below it sits a line nobody expected: 211 KB of partial telemetry from the crash window, recovered. Demir replays the fragment three times. The last clean reading before the crash puts the pulse interval at 61.2 seconds; it was 73.4 when they first measured it, and nobody has decided what to do about that.
 
 <Dialogue speaker="ARIA">
 When the dashboard failed at 0247, my reboot watchdog buffered the final telemetry frames to my own store. Standing procedure since before DEEP SCAN existed. It is not the capture. It is what a rule-based system keeps when nobody asks it to.
 </Dialogue>
-
-Demir replays the fragment three times. The last clean reading before the crash puts the pulse interval at 61.2 seconds. It was 73.4 when they first measured it, and nobody has decided what to do about that.
 
 </Epilogue>

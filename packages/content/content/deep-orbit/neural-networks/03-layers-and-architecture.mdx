@@ -24,11 +24,11 @@ consequence:
   narrative: "Nazari reads the parameter quote twice: 673. In exchange, the network now detects patterns a single neuron couldn't touch."
 hints:
   - level: nudge
-    content: "Each layer you model.add() is a function: tensor in, transformed tensor out, applied in the order you added them"
+    content: "A sequential model is a stack: each dense layer you model.add() feeds the next, and only the first layer needs an inputShape."
   - level: guidance
-    content: "Use tf.layers.dense() to create fully connected layers"
+    content: "Three model.add(tf.layers.dense(...)) calls: units 16 with relu activation and inputShape [4] (declared on the first layer only), then units 8 with relu, then units 1 with sigmoid. The grader checks units [16, 8, 1], activations ['relu', 'relu', 'sigmoid'], and 225 total parameters, so match those numbers exactly."
   - level: solution
-    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu' }))"
+    content: "model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] })); model.add(tf.layers.dense({ units: 8, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));"
 keywords:
   - layers
   - dense
@@ -94,7 +94,7 @@ Build a 3-layer network for signal classification.
 
 <RecallPrompt
   question="What does `units` control in a dense layer, and why do only the first layer's `inputShape` and each layer's `units` determine the total parameter count?"
-  answer="units sets the number of neurons (output features) in a layer. Parameters for a dense layer equal (input_size * units) + units for the bias. Only the first layer needs inputShape; TFJS infers subsequent input sizes from the previous layer's units, so the whole count follows from those two values."
+  answer="units sets the number of neurons (output features) in a layer. Parameters for a dense layer equal (input_size * units) + units for the bias. Only the first layer needs inputShape; TFJS infers subsequent input sizes from the previous layer's units, so the full count follows from those two values."
 />
 
 <LessonRecap

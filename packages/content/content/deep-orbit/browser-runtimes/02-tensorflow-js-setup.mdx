@@ -25,11 +25,11 @@ consequence:
   narrative: "Five consoles report webgl. The sixth, the oldest display on the ship, comes back wasm: 3.1 ms per matmul instead of 0.5."
 hints:
   - level: nudge
-    content: "Start with npm install, then import and check the backend"
+    content: "Backend startup is asynchronous: TF.js cannot tell you which backend it is running on until you await its initialization."
   - level: guidance
-    content: "Use tf.ready() to wait for backend initialization, then tf.getBackend() to verify"
+    content: "Inside initTF, await tf.ready() first, then return an object with both graded fields: backend from tf.getBackend() and version from tf.version.tfjs (the version string lives on the tf.version object under the key tfjs). Do not hardcode either value; the tests compare against the real runtime."
   - level: solution
-    content: "import * as tf from '@tensorflow/tfjs'; await tf.ready(); console.log(tf.getBackend());"
+    content: "await tf.ready(); return { backend: tf.getBackend(), version: tf.version.tfjs, };"
 keywords:
   - tensorflow-js
   - setup
@@ -50,7 +50,7 @@ Then explain the benchmark on your screen. The hard part isn't installation; it'
 
 A 30× spread on identical code, and the only variable is which engine TF.js lands on. Installation is the part you already know; the new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
 
-<LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
+<LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
 
 ## Install and Import
 
@@ -169,7 +169,7 @@ Set up TensorFlow.js and verify the active backend.
 
 <RecallPrompt question="Why does it matter which backend TensorFlow.js selects, and how do you check it?" answer="The same matrix multiply costs ~0.5ms on WebGL, ~3ms on WASM, and ~15ms on CPU, a 30x spread on identical code. Call tf.getBackend() after tf.ready() to confirm which engine is active before trusting any latency budget." />
 
-<LessonRecap whatYouLearned={["TF.js installs and imports like any npm dependency; the one non-routine step is calling tf.ready() and checking tf.getBackend() to verify which backend was selected", "Backends (WebGL, WASM, CPU) function like rendering engines: same operations, very different performance; WebGL is fastest for most models, WASM is the reliable fallback", "Tensors allocated in TF.js are not garbage-collected automatically; call tf.dispose() when done or use tf.tidy() to prevent browser memory from filling up", "Backend selection happens per device: the same model can run 6x slower on an older machine that falls back to WASM. Benchmark on the weakest hardware you actually ship to"]} bridge="Just as `npm install react` brings a rendering runtime into a project, `npm install @tensorflow/tfjs` brings an ML inference runtime with the same install-import-configure flow." youCanNow="Install TensorFlow.js, initialize it, verify the active backend, and benchmark backend performance in a web project." />
+<LessonRecap whatYouLearned={["TF.js installs and imports like any npm dependency; the one non-routine step is calling tf.ready() and checking tf.getBackend() to verify which backend was selected", "Backends function like rendering engines: same operations, very different performance. TF.js picks the best available registered backend in priority order webgpu -> webgl -> wasm -> cpu; WASM is the reliable CPU fallback when no GPU path exists", "Tensors allocated in TF.js are not garbage-collected automatically; call tf.dispose() when done or use tf.tidy() to prevent browser memory from filling up", "Backend selection happens per device: the same model can run 6x slower on an older machine that falls back to WASM. Benchmark on the weakest hardware you actually ship to"]} bridge="Just as `npm install react` brings a rendering runtime into a project, `npm install @tensorflow/tfjs` brings an ML inference runtime with the same install-import-configure flow." youCanNow="Install TensorFlow.js, initialize it, verify the active backend, and benchmark backend performance in a web project." />
 
 <Epilogue>
 
@@ -179,6 +179,6 @@ Demir runs the backend check on every bridge station before he calls it done. Fi
 So the engineering chair sees the feed six times slower than the helm. Log it. If anyone ever has to watch from that station, I want to know what they are missing and by how much.
 </Dialogue>
 
-He logs it. Nobody plans to watch from that chair.
+He logs it under station performance, Nazari's six-times figure attached, and adds the engineering chair to the weekly latency check.
 
 </Epilogue>

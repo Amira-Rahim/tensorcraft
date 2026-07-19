@@ -4,6 +4,7 @@ title: "Sliding Windows"
 moduleId: recurrent-networks
 themeId: deep-orbit
 order: 4
+pattern: broken_code_first
 scene:
   location: "Archimedes, Bridge"
 estimatedMinutes: 12
@@ -24,11 +25,11 @@ consequence:
   narrative: "Perfectly shaped windows stream into the LSTM, and Demir can finally process the continuous signal feed in real time."
 hints:
   - level: nudge
-    content: "A sliding window moves through the signal one step at a time, creating overlapping subsequences"
+    content: "A sliding window turns one continuous signal into supervised pairs: the window is the input, the very next reading is the label."
   - level: guidance
-    content: "For input/label pairs: input = a full window of windowSize readings, label = the reading immediately AFTER the window (signal[i + windowSize]). The label is never inside the window; that would let the model read the answer."
+    content: "createTrainingPairs must return { inputs, labels } with those exact keys. Loop i from 0 while i <= signal.length - windowSize - 1: inputs gets signal.slice(i, i + windowSize), and labels gets signal[i + windowSize], the reading immediately AFTER the window, never inside it; that would let the model read the answer."
   - level: solution
-    content: "for (let i = 0; i <= data.length - windowSize - 1; i++) { X.push(data.slice(i, i + windowSize)); y.push(data[i + windowSize]); }"
+    content: "const inputs: number[][][] = []; const labels: number[][] = []; for (let i = 0; i <= signal.length - windowSize - 1; i++) { inputs.push(signal.slice(i, i + windowSize)); labels.push(signal[i + windowSize]); } return { inputs, labels };"
 keywords:
   - sliding-window
   - batching
@@ -45,42 +46,82 @@ Slice 80 readings. Step forward one. Slice again. That's the entire pipeline: a 
 
 <LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Create input/label pairs for sequence prediction (next-value forecasting)", "Configure window size and stride for different temporal resolutions", "Build a streaming buffer that feeds the LSTM in real time"]} />
 
+## Ninety-Seven Percent, Briefly
+
+Demir's first pipeline windows the eleven-day archive end to end, shuffles the pairs, holds out every fifth one for evaluation, and comes back with a score in the high nineties. Farah's response is to make him rebuild the experiment at a scale he can audit by hand before she reads a single decimal of it. Two hundred readings, 8-step windows, and a "model" too stupid to do anything except expose the split:
+
+<CodeBlock language="typescript" title="the-mirror.ts">
+{`// A 200-reading toy stream: a slow swell on a drift. Nothing random,
+// so your numbers will match these exactly.
+const series = Array.from({ length: 200 }, (_, t) =>
+  0.007 * t + Math.sin((2 * Math.PI * t) / 80));
+
+// Ground truth comes from OUTSIDE the waveform (the contact log says
+// which stretches were confirmed activity). Window the stream with
+// stride 1 and label each window by its final reading:
+const inContact = (t: number) =>
+  (t >= 30 && t < 62) || (t >= 100 && t < 132) || (t >= 168 && t < 190);
+const pairs = Array.from({ length: 193 }, (_, i) => ({
+  x: series.slice(i, i + 8),
+  y: inContact(i + 7) ? 1 : 0,
+}));
+
+// The pettiest possible model: answer with the label of the closest
+// training window. Pure lookup. Zero learning.
+const predict = (x: number[], train: typeof pairs) =>
+  train.reduce(
+    (best, p) => {
+      const d = x.reduce((sum, v, j) => sum + (v - p.x[j]) ** 2, 0);
+      return d < best.d ? { d, y: p.y } : best;
+    },
+    { d: Infinity, y: 0 },
+  ).y;
+const accuracy = (evalSet: typeof pairs, train: typeof pairs) =>
+  evalSet.filter((p) => predict(p.x, train) === p.y).length / evalSet.length;
+
+// WRONG: window the whole stream, THEN split (every 5th pair held out)
+const evalA = pairs.filter((_, i) => i % 5 === 0);
+const trainA = pairs.filter((_, i) => i % 5 !== 0);
+console.log((100 * accuracy(evalA, trainA)).toFixed(1));  // 97.4
+
+// RIGHT: split the stream at reading 160, THEN window each side
+const trainB = pairs.slice(0, 153);      // windows fully inside [0, 160)
+const evalB = Array.from({ length: 33 }, (_, i) => ({
+  x: series.slice(160 + i, 168 + i),
+  y: inContact(160 + i + 7) ? 1 : 0,
+}));
+console.log((100 * accuracy(evalB, trainB)).toFixed(1));  // 60.6`}
+</CodeBlock>
+
+A lookup table with no learning in it scores 97.4 on the first split: 38 of 39 held-out windows. The leak is in the windowing arithmetic. With stride 1, window i and window i+1 share seven of their eight readings, so holding out every fifth pair leaves each evaluation window sitting between two training windows that are near-copies of it, labels included. The lookup finds the copy. 97.4 measures the overlap. Split the stream first and the copies vanish: 60.6 is what the lookup actually knows about readings it has never seen, and the 36.8-point gap is the size of the error Demir almost shipped to the bridge.
+
 ## The Sliding Window Pattern
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="sliding-window.ts">
-{`// Sliding window for sequence prediction
-// Given: continuous signal [s0, s1, s2, s3, s4, s5, s6, s7, ...]
-// Window size: 4, Stride: 1
-
-// Window 0: [s0, s1, s2, s3] → predict s4
-// Window 1: [s1, s2, s3, s4] → predict s5
-// Window 2: [s2, s3, s4, s5] → predict s6
-
+{`// rn/01's createSequences gave you the windows. Training pairs are a
+// two-line delta on it:
 function createWindows(
   signal: number[][],
   windowSize: number,
-  stride: number = 1,
+  stride: number = 1,        // NEW: how far the window jumps per step
 ): { inputs: number[][][]; labels: number[][] } {
   const inputs: number[][][] = [];
   const labels: number[][] = [];
 
+  // stop one position earlier than createSequences did: the last
+  // window still needs a future reading to point at
   for (let i = 0; i <= signal.length - windowSize - 1; i += stride) {
     inputs.push(signal.slice(i, i + windowSize));
-    labels.push(signal[i + windowSize]);
+    labels.push(signal[i + windowSize]);  // NEW: the reading AFTER the window
   }
 
   return { inputs, labels };
 }
 
-const readings = [
-  [0.5, 0.3], [0.8, 0.2], [0.3, 0.1], [0.5, 0.3],
-  [0.9, 0.4], [0.2, 0.1], [0.7, 0.5], [0.4, 0.2],
-];
-
-const { inputs, labels } = createWindows(readings, 4);
-console.log('Sequences:', inputs.length);  // 4`}
+// Window 0: [s0, s1, s2, s3] → predict s4
+// Window 1: [s1, s2, s3, s4] → predict s5   (stride 1: windows overlap)`}
 </CodeBlock>
 
 ## Real-Time Streaming Buffer
@@ -136,11 +177,11 @@ Build a sliding window function for sequential data.
     "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
     "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."
   ]}
-  bridge="`IntersectionObserver` fires when an element crosses a viewport threshold; a sliding window generates a new sample at every stride step regardless of content change, and the amount of data it produces scales with sequence length divided by stride, not viewport size."
+  bridge="`IntersectionObserver` fires when an element crosses a viewport threshold; a sliding window generates a new sample at every stride step regardless of content change, and the amount of data it produces scales with sequence length divided by stride; viewport size never enters it."
   youCanNow="Implement a sliding window function and a ring buffer that converts a live signal stream into model-ready [timeSteps, features] tensors in real time."
 />
 
-> **DISPATCH archive · field intercept #12-A:** Jin's speech cell windowed the stream first and split train/eval second; with 80-step windows and stride one, eval saw most of train verbatim, one step shifted. Their 97% was a mirror. Jin's postmortem runs one line: "we evaluated on our own reflection."
+> **DISPATCH archive · field intercept #12-A:** Jin's speech cell shipped exactly this mirror at fleet scale, 97% and all. The postmortem runs one line: "we evaluated on our own reflection."
 
 <Epilogue>
 

@@ -6,7 +6,7 @@ themeId: deep-orbit
 order: 2
 scene:
   location: "Archimedes, Bridge"
-estimatedMinutes: 20
+estimatedMinutes: 13
 difficulty: beginner
 context:
   narrative: "The raw neuron output is unbounded; ARIA needs a way to constrain it into meaningful decisions."
@@ -23,11 +23,11 @@ consequence:
   narrative: "With activation functions, neurons can now make binary decisions. The signal classifier takes shape."
 hints:
   - level: nudge
-    content: "ReLU simply zeroes out negative values"
+    content: "ReLU zeroes out every negative value and passes positives through unchanged."
   - level: guidance
-    content: "tf.relu() applies Math.max(0, x) to every element"
+    content: "applyRelu(preActivation) is a single call: every tensor has a .relu() method (tf.relu(preActivation) also works), which applies Math.max(0, x) elementwise. Return the activated tensor; the grader runs it on two different tensors, so no hardcoded values."
   - level: solution
-    content: "const activated = tf.relu(neuronOutput)"
+    content: "return preActivation.relu();"
 keywords:
   - activation
   - relu
@@ -67,20 +67,27 @@ const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
 // [0, 0, 0, 1, 2]: identical!`}
 </CodeBlock>
 
-**When to use which:**
-- **ReLU**: Default choice for hidden layers. Fast, simple, works well.
-- **Sigmoid**: Output layer for binary classification (is this signal anomalous? yes/no).
-- **Tanh**: When you need centered outputs (values can be negative).
+## Answering the Board
+
+Run Nazari's two readings through the sigmoid and her question answers itself:
+
+<CodeBlock language="typescript" title="negative-eleven.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const board = tf.tensor([-11, 600]);  // the two scores Nazari read out
+tf.sigmoid(board).print();            // [0.0000167, 1]
+
+// -11 squashes to 0.0000167: a no, four zeros deep.
+// 600 comes back as exactly 1: the curve is so flat out there that
+// float32 has no digits left to hedge with. A yes.
+// Two unbounded scores in, two board-ready verdicts out.`}
+</CodeBlock>
+
+Placement falls out of the ranges. ReLU stays in the hidden layers, where speed matters and the outputs feed more math. Sigmoid takes the output slot when the question is yes/no, because (0, 1) reads as a probability. Tanh takes it when values need to swing negative.
 
 ## When Activations Die
 
-Each choice has a failure mode, and both will matter later in this theme.
-
-A preview note before the next two paragraphs: they use the word "gradient", which you will BUILD in module 3. Until then, read it as "the learning signal that tells a weight which way to move." The failure modes are worth meeting now because they are properties of the activation shapes in front of you.
-
-ReLU's is the dead neuron. `max(0, x)` outputs zero for every negative input, and zero output means zero gradient: no signal flows back, so the weights feeding it never update. A neuron whose weighted sum goes negative on every training example is not resting, it is dead, and it stays dead. One insurance policy is already visible in the numbers above: a small positive bias keeps the sum above zero early in training.
-
-Sigmoid's is saturation. At z = 5 it outputs 0.9933, which sounds decisive, but its slope there is 0.0066: the curve has gone flat, so a large change in input produces almost no change in output, and almost no gradient. Push a sigmoid hard in either direction and it stops learning in that region. This is why it lives at the OUTPUT layer, where you want a probability, and not in deep stacks of hidden layers. File the phrase "the gradient goes quiet": when a training run flatlines in module 6, this is one of the suspects the crew will round up.
+Each choice has a failure mode with a name. A ReLU neuron whose weighted sum stays negative outputs zero forever and stops learning: the dying ReLU. A sigmoid pushed hard into either tail goes flat and stops responding: saturation. Both failures live inside a quantity called the gradient, which you will build in module 3; that is where the crew rounds up these suspects.
 
 ## Challenge
 
@@ -110,5 +117,7 @@ Demir wires the sigmoid output to the bridge feed before turning in: one bounded
 <Dialogue speaker="ARIA">
 I have checked reading 22146 against all 14,202 of my classification rules; the 4,096 that parse the stream hand it over and hold no opinion. None fire. The neuron is responding to something I do not have a rule for. I am still running, and I am noting that.
 </Dialogue>
+
+The note files itself between two routine humidity alerts.
 
 </Epilogue>

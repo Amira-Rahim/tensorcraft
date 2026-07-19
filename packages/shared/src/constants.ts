@@ -111,6 +111,19 @@ export const THEME_CONTENT = {
 } as const;
 
 /**
+ * Exercise counts quoted in marketing copy (/about). Pinned against the real
+ * YAML corpus by packages/content/__tests__/exercise-counts.test.ts so the
+ * copy cannot drift from the filesystem again: audit run #7 found /about
+ * claiming "80 live / 315 authored" when the corpus held 84 / 298.
+ */
+export const EXERCISE_CONTENT = {
+  /** Shipped exercises: deep-orbit + extras (the dirs velite compiles). */
+  liveExercises: 85,
+  /** Authored across the five theme directories (extras excluded). */
+  authoredFiveThemes: 299,
+} as const;
+
+/**
  * Lessons in a module, for code that cannot see the content package
  * (module completion = this many `completed` rows in theme_progress).
  */

@@ -25,11 +25,11 @@ consequence:
   narrative: "Rough, untrained numbers, but they emerge: the pipeline works end to end. Now the network needs training."
 hints:
   - level: nudge
-    content: "model.predict() runs the forward pass"
+    content: "A forward pass is model.predict(input): data flows through the layers and comes out as a prediction tensor."
   - level: guidance
-    content: "Input shape must match the model's inputShape"
+    content: "Add one dense layer with units: 3 and inputShape: [2], matching the provided input batch of 2 samples with 2 features each, then assign prediction = model.predict(input). The grader checks the kernel shape [2, 3], that prediction has shape [2, 3], and that it really came from the model."
   - level: solution
-    content: "const prediction = model.predict(tf.tensor2d([[0.5, 0.8, 0.2]]))"
+    content: "model.add(tf.layers.dense({ units: 3, inputShape: [2] })); const prediction = model.predict(input);"
 keywords:
   - forward-pass
   - predict
@@ -38,7 +38,7 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-`Error: Error when checking : expected dense_Dense1_input to have shape [null,3] but got array with shape [3,1]`. The doubled "Error" and the orphaned colon are TFJS's, not a typo: this is the string the runtime actually prints. The bridge display, 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
+`Error: Error when checking : expected dense_Dense1_input to have shape [null,3] but got array with shape [3,1]`. The doubled "Error" and the orphaned colon are TFJS's own: this is the string the runtime actually prints. The bridge display, 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
 
 <Dialogue speaker="Dr. Farah">
 The architecture is fine. The demo wasn't. Run it again, properly this time. Even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
@@ -95,7 +95,7 @@ Run a forward pass through the signal classifier.
 <LessonRecap
   whatYouLearned={[
     "The forward pass flows data through each layer in order; model.predict() runs this in one call and returns the output tensor.",
-    "Every input requires a batch dimension even for a single sample: shape [1, features], not [features].",
+    "Every input requires a batch dimension even for a single sample: shape [1, features] instead of [features].",
     "Shape mismatches are the most common neural network error and fail loudly with a clear message."
   ]}
   bridge="DOM event propagation and the forward pass both carry the word 'propagation,' but event handlers run independently and can stop bubbling, while layer outputs feed directly into the next layer's weights and cannot be interrupted."

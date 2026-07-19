@@ -17,11 +17,11 @@ consequence:
   narrative: "Second attempt: the pipeline holds, memory flat. ARIA confirms: ready for analysis."
 hints:
   - level: nudge
-    content: "Data needs to be split into batches"
+    content: "Keep it lazy: the generator yields one sample per loop turn, and the tf.data pipeline does the shuffling and batching for you"
   - level: guidance
-    content: "Use tf.data.generator() for streaming data"
+    content: "Make sensorGen loop i from 0 to 15, call readSample(i) inside the loop, and yield { xs, ys } tensors built with tf.tensor. Then dataset = tf.data.generator(sensorGen).shuffle(10).batch(4), and drain it with await dataset.forEachAsync, pushing each batch's xs.shape into batchShapes"
   - level: solution
-    content: "const ds = tf.data.generator(function* () { yield {xs, ys}; })"
+    content: "for (let i = 0; i < 16; i++) {; const row = readSample(i); yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) }; }; const dataset = tf.data.generator(sensorGen).shuffle(10).batch(4); await dataset.forEachAsync((b) => {; batchShapes.push(b.xs.shape); });"
 keywords:
   - data-loading
   - batching
@@ -33,7 +33,9 @@ skillAxes: [data_prep]
 The raw sensor data comes in faster than we can process it in one pass. But this is just infinite scroll, right? Fetch everything once, hold the list, render a window. I pulled the full archive, raw capture blocks and all, into one array overnight.
 </Dialogue>
 
-> `RangeError: Array buffer allocation failed`. Engineering rig, 19,204 readings into a 28,800-reading archive. Each reading drags its 33-second raw capture along: 256 Hz across 64 channels, about two megabytes apiece, forty gigabytes before the loop was two-thirds done. The crash takes ARIA's overnight diagnostic queue down with it. Queue rebuild: four hours. Logged against: Ensign Demir.
+> `RangeError: Array buffer allocation failed`. Engineering rig, overnight: the loop dies 19,204 readings into a 28,800-reading archive and takes ARIA's diagnostic queue down with it.
+
+The post-mortem arithmetic is short. Each reading drags its 33-second raw capture along: 256 Hz across 64 channels, about two megabytes apiece, forty gigabytes accumulated before the loop was two-thirds done. Cost of the lesson: a four-hour queue rebuild, logged against Ensign Demir.
 
 <Dialogue speaker="ARIA">
 Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.
@@ -124,7 +126,7 @@ Build the lazy pipeline yourself: generator, shuffle, batch, without ever holdin
 
 <RecallPrompt
   question="What is the correct order for shuffle and batch in a tf.data pipeline, and why does the order matter?"
-  answer="Shuffle first, then batch: shuffle(bufferSize).batch(32). If you batch first, the shuffle can only reorder whole batches, not individual records, which freezes the internal ordering of each batch and lets the model learn sequence rather than patterns."
+  answer="Shuffle first, then batch: shuffle(bufferSize).batch(32). If you batch first, the shuffle can only reorder whole batches, so the internal ordering of each batch is frozen and the model can learn sequence rather than patterns."
 />
 
 <LessonRecap
@@ -142,7 +144,7 @@ Build the lazy pipeline yourself: generator, shuffle, batch, without ever holdin
 The rebuilt pipeline chews through eleven days of archived telemetry in four minutes: twenty-eight thousand readings, batch by batch, memory flat the whole way. Demir watches `numTensors` hold steady at 70 and allows himself exactly one fist pump, four hours later than he'd planned to.
 
 <Dialogue speaker="ARIA">
-Pipeline nominal. For reference, Ensign: I processed this archive in nine seconds. I simply could not tell you what any of it meant.
+Pipeline nominal. For reference: I processed this archive in nine seconds. I simply could not tell you what any of it meant.
 </Dialogue>
 
 Fast and blind, or slower and learning. One more piece of preparation, putting every channel on the same scale, and the foundation is done.

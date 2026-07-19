@@ -36,6 +36,23 @@ starterCode: |
     readings: Reading[],
     config: RehearsalConfig,
   ): RehearsalVerdict {
+    // The whole system, once, end to end. Recipe:
+    //  1. Normalize each reading's features to [0, 1] with module 4's
+    //     min-max rule, (value - range.min) / (range.max - range.min),
+    //     using config.ranges.amplitude / .frequency / .phase. Each row
+    //     is [amplitude, frequency, phase], normalized, in reading order.
+    //  2. Batch-predict INSIDE tf.tidy(): build one tf.tensor2d(rows),
+    //     call model.predict(...), read it with dataSync(), and return
+    //     Array.from(...) from the tidy so plain numbers escape, never a
+    //     tensor. A leaked tensor fails the rehearsal (the grader
+    //     compares tf.memory().numTensors before and after).
+    //  3. canaryAccuracy: a confidence predicts (confidence > 0.5 ? 1 : 0);
+    //     count where that equals readings[i].label, divide by
+    //     readings.length.
+    //  4. drift: Math.abs(mean of confidences - config.baselineMeanConfidence)
+    //     > config.driftTolerance.
+    //  5. launch: canaryAccuracy >= config.minAccuracy AND no drift.
+    // Return { confidences, canaryAccuracy, drift, launch }.
     return null; // your code here
   }
 solutionCode: |
@@ -92,13 +109,13 @@ testCode: |
     });
     const ranges = {
       amplitude: { min: 0, max: 2048 },
-      frequency: { min: 20, max: 20000 },
+      frequency: { min: 0, max: 63 },
       phase: { min: -Math.PI, max: Math.PI },
     };
     const readings = [
-      { amplitude: 1536, frequency: 20, phase: -Math.PI, label: 1 },  // conf 0.75
-      { amplitude: 512, frequency: 20, phase: -Math.PI, label: 0 },   // conf 0.25
-      { amplitude: 1024, frequency: 20, phase: -Math.PI, label: 0 },  // conf 0.50 -> pred 0
+      { amplitude: 1536, frequency: 0, phase: -Math.PI, label: 1 },  // conf 0.75
+      { amplitude: 512, frequency: 0, phase: -Math.PI, label: 0 },   // conf 0.25
+      { amplitude: 1024, frequency: 0, phase: -Math.PI, label: 0 },  // conf 0.50 -> pred 0
     ];
     const greenConfig = {
       ranges,

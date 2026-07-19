@@ -24,11 +24,11 @@ consequence:
   narrative: "Nazari approves the browser deployment plan. Demir begins setting up the runtime."
 hints:
   - level: nudge
-    content: "fetch('/api/classify') pays a network round-trip per reading; model.predict() runs on the device; start by listing what each one costs"
+    content: "recommendDeployment must return 'client' or 'server': the browser wins on tight latency, sensitive data, and offline needs, but a model too big to ship overrides all of that."
   - level: guidance
-    content: "Client-side inference means the model runs in the browser, just like client-side rendering"
+    content: "Check useCase.modelSizeMB > 50 first and return 'server' (a too-large model vetoes the browser no matter what). Otherwise return 'client' when latencyBudgetMs < 50, or dataSensitive is true, or needsOffline is true. With no client advantage, fall through to 'server'."
   - level: solution
-    content: "Benefits: privacy (data stays local), latency (no network), offline support. Costs: model size, device power, cold start."
+    content: "if (useCase.modelSizeMB > 50) { return 'server'; } if (useCase.latencyBudgetMs < 50 || useCase.dataSensitive || useCase.needsOffline) { return 'client'; } return 'server';"
 keywords:
   - browser-ml
   - client-side
@@ -97,8 +97,10 @@ Moving the computation client-side doesn't erase its costs; it changes their cur
 
 <CodeBlock language="typescript" title="browser-constraints.ts">
 {`// Memory: browser tabs typically have 1-4GB limit
-// A model with 10M parameters at float32 = ~40MB just for weights
-const modelSizeMB = (parameterCount * 4) / (1024 * 1024);
+// A model with 10M parameters at float32 = 40MB just for weights:
+// 10,000,000 x 4 bytes / 1e6 = 40 exactly. (Divide by 1e6, not
+// 1024*1024: that gives 38.1 MiB, a different unit wearing MB's name.)
+const modelSizeMB = (parameterCount * 4) / 1e6;
 console.log(\`Model size: \${modelSizeMB}MB\`);
 
 // Cold start: model must be downloaded and initialized
@@ -131,12 +133,12 @@ Analyze the tradeoffs for a browser ML deployment scenario.
 
 <Epilogue>
 
-Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one integrated snapshot a second, already boiled down from the raw sample torrent. At 180 milliseconds of round-trip to the ship's own compute bay, the server plan spends 4.3 hours of every day waiting on interdeck fiber, aboard a vessel eleven light-minutes from anything resembling a CDN.
+Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one integrated snapshot a second, already boiled down from the raw sample torrent. The archive keeps a slower record of the same stream, one 33-second integration per row, 28,800 rows across eleven days; the dashboard gets the live 1 Hz feed itself, every one of the 86,400. At 180 milliseconds of round-trip to the ship's own compute bay, the server plan spends 4.3 hours of every day waiting on interdeck fiber, aboard a vessel eleven light-minutes from anything resembling a CDN.
 
 <Dialogue speaker="Chief Nazari">
 Four hours a day of waiting, or a one-time download per crew station. Buy the download.
 </Dialogue>
 
-Demir opens a terminal and types `npm install`. The model is going to live where the crew lives. Whether every console on this ship can carry it is tomorrow's problem.
+Demir opens a terminal and types `npm install`. The model is going to live where the crew lives. While the package downloads, he starts a survey of the ship's consoles, oldest chair first.
 
 </Epilogue>

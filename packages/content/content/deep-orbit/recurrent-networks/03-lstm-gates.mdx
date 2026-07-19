@@ -26,11 +26,11 @@ consequence:
   narrative: "Seventy-two hours later the pattern returns, and the LSTM flags it inside a single window. Not memory: recognition. The gates learned the shape once."
 hints:
   - level: nudge
-    content: "LSTMs have three gates: forget (what to discard), input (what to add), output (what to expose)"
+    content: "An LSTM is an RNN with gates (forget, input, output) that decide what to keep, letting it hold a pattern across all 80 steps."
   - level: guidance
-    content: "Use tf.layers.lstm() as a drop-in replacement for simpleRNN: same API, better memory"
+    content: "Same shape as the RNN exercise but with tf.layers.lstm: units: 32 and inputShape: [80, 3], then a dense layer with 1 unit and sigmoid, compile with adam and binaryCrossentropy, and return the model. The grader verifies the first layer's class is 'LSTM' and that a [1, 80, 3] batch predicts to shape [1, 1]."
   - level: solution
-    content: "model.add(tf.layers.lstm({ units: 64, inputShape: [80, 3] }))"
+    content: "model.add(tf.layers.lstm({ units: 32, inputShape: [80, 3] })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] }); return model;"
 keywords:
   - lstm
   - gates
@@ -40,7 +40,7 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-Loss: 0.693. Epoch 200 of 200. Demir's overnight run is still on the engineering display, six hours of compute flatlined at a coin flip, when Farah walks in with her tablet already open to the fix.
+Epoch 200 of 200, and the loss has not moved since the first hour. Demir's overnight run is still on the engineering display when Farah walks in with her tablet already open to the fix.
 
 <Dialogue speaker="Dr. Farah">
 The simple RNN forgets. Its gradients thin out by step twenty and are gone long before step seventy-three, where the pattern lives, information from the early steps multiplied through too many small numbers. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
@@ -157,31 +157,33 @@ Build an LSTM that handles long signal sequences.
 
 <RecallPrompt
   question="What does the LSTM forget gate actually output, and how does that differ from a hard expiry like localStorage TTL?"
-  answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, not set by a clock. A value near 0 discards that dimension; near 1 keeps it fully. localStorage TTL removes the entire entry after a fixed timeout. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
+  answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, with no clock anywhere in it. A value near 0 discards that dimension; near 1 keeps it fully. localStorage TTL removes the entire entry after a fixed timeout. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
 />
 
 <RecallPrompt
-  question="Demir's overnight RNN run flatlined at loss 0.693 for 200 epochs. Why is that specific number diagnostic, and what architectural change fixes the underlying cause?"
-  answer="0.693 is ln(2), the binary crossentropy of a model predicting 0.5 forever: a coin flip. Flat at 0.693 means no learning. On long sequences the usual cause is vanishing gradients through the recurrent steps, and the fix is a gated architecture (LSTM or GRU) whose cell state gives gradients a direct highway through time."
+  question="The LSTM flags the pattern's return after 72 hours, yet no cell state survives between windows. What did the network actually retain, and why is that cheaper than memory?"
+  answer="Nothing persists between windows; the model is stateless across calls. What survived training is the weights: the gates learned which input shapes to route into cell state within any single 80-step window. That is recognition, not storage. Recognition costs a fixed set of parameters learned once; memory would mean carrying three days of state on the chance the pattern returns."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that scale, not switch, information flow.",
+    "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that smoothly scale information flow.",
     "The cell state acts as a direct gradient highway through time, preventing the exponential decay that breaks simple RNNs on long sequences.",
     "GRUs use two gates instead of three (roughly 25% fewer parameters) and often match LSTM accuracy: training both and comparing is a standard first step.",
     "A flatlined loss at 0.693 on a binary task is the coin-flip signature: the model is learning nothing, and on long sequences with a simple RNN, vanishing gradients are the first suspect."
   ]}
-  bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context, not a timer."
+  bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context instead of a timer."
   youCanNow="Replace `tf.layers.simpleRNN` with `tf.layers.lstm` to handle long-range temporal dependencies, and explain what each gate contributes."
 />
 
 <Epilogue>
 
-Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. Demir replays the full eleven days, and at the 72-hour mark, when the pattern returns, the network flags it inside a single 80-step window. No cell state survived three days; none had to. The gates learned the shape once, and recognition is cheaper than memory. On the bridge channel, ARIA is silent for four full seconds before she speaks.
+Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. Demir replays the full eleven days. The 28,800 integration rows are far too coarse for an 80-step window that has to span a 73-second pulse, so he uses the raw capture blocks behind them, re-integrated to the dashboard's 1 Hz stream: 950,400 samples end to end. At the 72-hour mark, when the pattern returns, the network flags it inside a single 80-step window. No cell state survived three days; none had to. The gates learned the shape once, and recognition is cheaper than memory. On the bridge channel, ARIA is silent for four full seconds before she speaks.
 
 <Dialogue speaker="ARIA">
 Filed without directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes a pattern across three days. Nothing in my tables explains why that works.
 </Dialogue>
+
+Farah closes the channel and adds the replay to the morning briefing.
 
 </Epilogue>

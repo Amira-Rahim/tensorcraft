@@ -24,11 +24,11 @@ consequence:
   narrative: "The single neuron can now distinguish between two types of signals. But Commander Mirza needs more. Much more."
 hints:
   - level: nudge
-    content: "A neuron multiplies each input by a weight, sums them, and adds bias"
+    content: "A neuron is one computation: multiply each input by its weight, sum the products, and add the bias."
   - level: guidance
-    content: "Use tf.dot() for the weighted sum, then .add(bias)"
+    content: "Inside neuron(inputs, weights, bias), compute the weighted sum with tf.dot(inputs, weights), then chain .add(bias) and return the result. The grader calls neuron() with different weights and even a 4-wide input, so compute from the arguments instead of hardcoding the example answer."
   - level: solution
-    content: "const output = tf.dot(inputs, weights).add(bias)"
+    content: "return tf.dot(inputs, weights).add(bias);"
 keywords:
   - neuron
   - weights
@@ -74,7 +74,11 @@ Weights encode how much each input matters: a positive weight pushes the output 
 
 ## Reading the Weights
 
-Those three numbers are hand-picked so the arithmetic stays followable; training will overwrite every one of them in module 3. But the reading skill transfers to any trained network, so practice it here. The inputs are amplitude, frequency, phase. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency: this neuron treats higher frequency as mild evidence AGAINST, and the sign matters more than the size. Weight 0.6 on phase: the strongest opinion in the row, for now, and "for now" is the point. When a debugger shows you a trained layer's weights, this is the whole trick: sign is direction, magnitude is how loudly that input gets to vote, and a weight near zero means the network learned to ignore something you thought mattered. Nazari will eventually tape a parameter count to the engineering board; each of those parameters is one of these votes.
+Those three numbers are hand-picked so the arithmetic stays followable; training will overwrite every one of them in module 3. The reading skill transfers to any trained network, though, so practice it here, on inputs that mean amplitude, frequency, and phase.
+
+Sign is direction. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency says this neuron treats higher frequency as mild evidence AGAINST. Run the flip to feel it: change `-0.2` to `+0.2` in the code above and the same reading scores 0.58 instead of 0.26, identical evidence now arguing for the other side.
+
+Magnitude is volume. Weight 0.6 on phase is the loudest vote in the row, for now, and "for now" is the point. A weight near zero means the network learned to ignore something you thought mattered. When Nazari eventually tapes a parameter count to the engineering board, each of those parameters will be one of these votes; sign and size are the entire vocabulary.
 
 ## Challenge
 
@@ -104,5 +108,7 @@ Farah routes the neuron's output to a spare monitor above the galley coffee mach
 <Dialogue speaker="Chief Nazari">
 Three weights and a bias can tell two tones apart. The stream from 7-G is sixty-four channels. How many weights before I trust this thing with my board?
 </Dialogue>
+
+She watches one more crossover-free minute, pours a coffee, and takes it with her.
 
 </Epilogue>

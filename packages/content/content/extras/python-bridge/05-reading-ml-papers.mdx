@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "Start with the abstract and figures, then jump to the model definition in code"
   - level: guidance
-    content: "Read the two nn.Sequential blocks separately. The encoder steps 64 down to 8; the decoder steps 8 back up to 64. In TF.js you can express the whole thing as one sequential model, layer by layer in order."
+    content: "Read the two nn.Sequential blocks separately and add six dense layers to one sequential model. Encoder: units 32 with activation 'relu' and inputShape: [64], units 16 relu, then the units: 8 bottleneck with no activation. Decoder mirrors it back up: 16 relu, 32 relu, and units 64 with 'sigmoid'. Compile with tf.train.adam(0.001) and 'meanSquaredError'."
   - level: solution
-    content: "1) Encoder: dense 32 (relu, inputShape [64]), dense 16 (relu), dense 8. 2) Decoder: dense 16 (relu), dense 32 (relu), dense 64 (sigmoid). 3) model.compile({ optimizer: tf.train.adam(0.001), loss: 'meanSquaredError' })."
+    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [64] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 8 })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 32, activation: 'relu' })); model.add(tf.layers.dense({ units: 64, activation: 'sigmoid' })); model.compile({ optimizer: tf.train.adam(0.001), loss: 'meanSquaredError', });"
 keywords:
   - papers
   - research
@@ -138,6 +138,9 @@ const encoder = tf.sequential({
     tf.layers.lstm({ units: 128, returnSequences: true, inputShape: [null, inputDim] }),
     // attention would be a custom layer
     tf.layers.dense({ units: 64 }),
+    // shape note: with returnSequences the tensor is (batch, seq, 128),
+    // and dense maps the last axis, so output stays (batch, seq, 64)
+    // until the attention layer collapses the time axis to (batch, 64)
     tf.layers.layerNormalization(),
     tf.layers.activation({ activation: 'relu' }),
   ]

@@ -25,11 +25,11 @@ consequence:
   narrative: "Green for normal, amber for anomalous: live classifications stream across the dashboard while the crew watches."
 hints:
   - level: nudge
-    content: "Treat each signal reading as an event: preprocess, predict, display"
+    content: "The whole preprocess-predict-read sequence belongs inside one tf.tidy() callback so intermediate tensors get cleaned up, and the raw signal must be normalized before the model ever sees it."
   - level: guidance
-    content: "Use tf.tidy() to prevent memory leaks, and always normalize input before prediction"
+    content: "Inside tf.tidy(), normalize amplitude, frequency, and phase each as (value - min) / (max - min) using RANGES, build the [1, 3] input with tf.tensor2d([normalized]), run model.predict(), pull the number out with dataSync()[0], and return class 'anomaly' when confidence > 0.5, else 'noise', together with the confidence."
   - level: solution
-    content: "tf.tidy(() => { const input = tf.tensor2d([normalized]); return model.predict(input); })"
+    content: "return tf.tidy(() => { const normalized = [ (signal.amplitude - RANGES.amplitude.min) / (RANGES.amplitude.max - RANGES.amplitude.min), (signal.frequency - RANGES.frequency.min) / (RANGES.frequency.max - RANGES.frequency.min), (signal.phase - RANGES.phase.min) / (RANGES.phase.max - RANGES.phase.min), ]; const input = tf.tensor2d([normalized]); const output = model.predict(input) as tf.Tensor; const confidence = output.dataSync()[0]; return { class: confidence > 0.5 ? 'anomaly' as const : 'noise' as const, confidence, }; });"
 keywords:
   - inference
   - predict
@@ -59,10 +59,15 @@ One reading per second sounds gentle until you do the multiplication Nazari alre
 {`import * as tf from '@tensorflow/tfjs';
 
 // The model expects normalized 3-feature input: [amplitude, frequency, phase]
-// Training used min-max normalization to [0, 1]
+// Training used min-max normalization to [0, 1]. Module 1's rule sends
+// open-ended streams to z-score; these three qualify for min-max because
+// their bounds are hardware, not history: the hull sensors saturate at
+// 2048 counts, "frequency" is a zero-crossing count over the 64-sample
+// capture window (63 sign flips is its physical ceiling), and phase
+// wraps at pi by construction. No reading can ever land outside.
 const FEATURE_RANGES = {
   amplitude: { min: 0, max: 2048 },
-  frequency: { min: 20, max: 20000 },
+  frequency: { min: 0, max: 63 },
   phase: { min: -Math.PI, max: Math.PI },
 };
 
@@ -87,11 +92,13 @@ function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequen
     const normalized = preprocess(rawSignal);
     const input = tf.tensor2d([normalized]);        // shape: [1, 3]
     const output = model.predict(input) as tf.Tensor;
-    const confidence = output.dataSync()[0];         // synchronous read
+    const p = output.dataSync()[0];                  // sigmoid: P(anomaly)
 
+    // Confidence is confidence IN THE VERDICT, not the raw sigmoid:
+    // p = 0.12 is not "12% confident", it is "noise, 88% confident".
     return {
-      class: confidence > 0.5 ? 'anomaly' : 'noise',
-      confidence: Math.round(confidence * 1000) / 1000,
+      class: p > 0.5 ? 'anomaly' : 'noise',
+      confidence: Math.round((p > 0.5 ? p : 1 - p) * 1000) / 1000,
     };
   });
 }`}
@@ -157,12 +164,14 @@ function createInferencePipeline(model: tf.LayersModel) {
       const normalized = preprocess(reading);
       const input = tf.tensor2d([normalized]);
       const output = model.predict(input) as tf.Tensor;
-      return output.dataSync()[0];
+      return output.dataSync()[0];   // raw sigmoid: P(anomaly)
     });
 
     return {
       class: result > 0.5 ? 'anomaly' : 'noise',
-      confidence: result,
+      // Same rule as classify() above: confidence belongs to the verdict.
+      // A raw sigmoid of 0.12 means "noise" at 0.88 confidence.
+      confidence: result > 0.5 ? result : 1 - result,
       latencyMs: performance.now() - start,
     };
   };
@@ -175,7 +184,8 @@ const pipeline = createInferencePipeline(model);
 signalFeed.addEventListener('reading', (event: CustomEvent<SignalReading>) => {
   const classification = pipeline(event.detail);
   updateDashboard(classification);
-  // Typical: { class: 'noise', confidence: 0.12, latencyMs: 3.4 }
+  // Typical: { class: 'noise', confidence: 0.88, latencyMs: 3.4 }
+  // (raw sigmoid 0.12: an anomaly probability, inverted into noise confidence)
 });`}
 </CodeBlock>
 

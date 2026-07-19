@@ -25,11 +25,11 @@ consequence:
   narrative: "The manifest loads, the shards follow, and Demir caches the model in IndexedDB. Then two consoles disagree about one reading, and caching stops being a performance feature."
 hints:
   - level: nudge
-    content: "tf.loadLayersModel(url) takes the URL of model.json and fetches the weight files listed in its manifest automatically"
+    content: "Loading is one awaited call, and everything loadAndInspect must report is already hanging off the returned model object; no second fetch needed."
   - level: guidance
-    content: "tf.loadLayersModel() fetches model.json (architecture) and .bin files (weights)"
+    content: "await tf.loadLayersModel(url) (use the url parameter, not a hardcoded path), then build the ModelInfo from the model itself: inputShape is model.inputs[0].shape, outputShape is model.outputs[0].shape, layerCount is model.layers.length. The tests reload the same URL and compare against the real architecture."
   - level: solution
-    content: "const model = await tf.loadLayersModel('/models/deep-scan/model.json');"
+    content: "const model = await tf.loadLayersModel(url); return { inputShape: model.inputs[0].shape as number[], outputShape: model.outputs[0].shape as number[], layerCount: model.layers.length, };"
 keywords:
   - model-loading
   - fetch
@@ -47,7 +47,7 @@ First integration of the trained model into the dashboard, and the console's fir
 So the model is not one file at all. That's... exactly like a web font or a spritesheet, isn't it. I was fetching the spritesheet by the name of the folder.
 </Dialogue>
 
-The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the whole network leg of the trip. Where it goes after that is a question ARIA answers later in this lesson.
+The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the full network leg of the trip. Where it goes after that is a question ARIA answers later in this lesson.
 
 <LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
 
@@ -93,7 +93,7 @@ const weightData = await fetch('/models/deep-scan/group1-shard1of1.bin')
 </CodeBlock>
 
 <Dialogue speaker="ARIA">
-The fetch is like a font, Ensign. What resolves is not. A font resolves to bytes the renderer consumes once. tf.loadLayersModel resolves to a live LayersModel: a compute graph with predict and evaluate methods that holds GPU memory until you dispose it. You download it like an asset. You manage it like a process.
+The fetch is like a font. What resolves is not. A font resolves to bytes the renderer consumes once. tf.loadLayersModel resolves to a live LayersModel: a compute graph with predict and evaluate methods that holds GPU memory until you dispose it. You download it like an asset. You manage it like a process.
 </Dialogue>
 
 ## Caching with IndexedDB

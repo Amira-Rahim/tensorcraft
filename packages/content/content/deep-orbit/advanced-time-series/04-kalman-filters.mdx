@@ -22,14 +22,14 @@ concept:
     tier: structural
     breaks: "EMA blends a single fixed-weight average over past values. Kalman updates jointly track state and uncertainty using a state-transition model and a measurement model, with weights computed dynamically from the current covariance. Same weighted-update shape, very different machinery."
 consequence:
-  narrative: "The Kalman filter tracks the timing drift: the interval between anomaly pulses is shrinking by about a sixth of a second per cycle. The pulse is speeding up."
+  narrative: "The Kalman filter tracks the timing drift: the interval between anomaly pulses is shrinking by about a sixth of a second per day. The pulse is speeding up."
 hints:
   - level: nudge
-    content: "A Kalman filter is a predict-then-correct loop: predict the next state, then correct with the actual measurement"
+    content: "A Kalman filter alternates predict and correct: widen the variance by the process noise, then pull the estimate toward the measurement by exactly the Kalman gain."
   - level: guidance
-    content: "The Kalman gain controls how much to trust the new measurement vs the prediction"
+    content: "Inside update(measurement), four assignments in order: predictedVariance is this.variance plus this.processNoise; the gain divides predictedVariance by (predictedVariance + this.measureNoise); this.estimate moves toward the measurement by gain times (measurement - this.estimate); the stored this.variance shrinks to (1 - gain) times predictedVariance. The grader checks the exact arithmetic: with processNoise 0.1 and measureNoise 1, the first update(10) must return 5.238, so a fixed-alpha EMA fails."
   - level: solution
-    content: "prediction = A * estimate; gain = predVariance / (predVariance + measureVariance); estimate = prediction + gain * (measurement - prediction);"
+    content: "const predictedVariance = this.variance + this.processNoise; const gain = predictedVariance / (predictedVariance + this.measureNoise); this.estimate = this.estimate + gain * (measurement - this.estimate); this.variance = (1 - gain) * predictedVariance; return this.estimate;"
 keywords:
   - kalman-filter
   - state-estimation
@@ -38,11 +38,11 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-> **PULSE INTERVAL LOG · last eight cycles (seconds):** 73.1 · 72.9 · 73.0 · 72.6 · 72.7 · 72.3 · 72.4 · 72.0
+> **PULSE INTERVAL LOG · first cycle of each of the last eight days (seconds):** 73.1 · 72.9 · 73.0 · 72.6 · 72.7 · 72.3 · 72.4 · 72.0
 
-Read the column twice. The noise says the numbers wander; the trend says they only wander downhill. Before this lesson names its subject, try to track that drift with a tool you already own.
+Read the column both ways. The noise says the numbers wander; the trend says they only wander downhill. Before this lesson names its subject, try to track that drift with a tool you already own.
 
-Demir's first move is the one every frontend developer makes when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above, twice, and the problem introduces itself:
+Demir's first move is the one every frontend developer makes when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
 
 <CodeBlock language="typescript" title="ema-two-alphas.ts">
 {`const log = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];
@@ -111,8 +111,9 @@ class KalmanFilter {
   }
 }
 
-// Track the anomaly timing interval. Initial estimate = this week's
-// first cycle; the 73.4 s module-5 measurement is already history.
+// Track the anomaly timing interval, sampled once per day: each day's
+// first cycle, eight days of log. Initial estimate = day one's first
+// cycle; the 73.4 s module-5 measurement is already history.
 const kf = new KalmanFilter(73.1, 0.1, 1.0);
 
 const measurements = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];
@@ -121,7 +122,7 @@ for (const m of measurements) {
   console.log(\`Measurement: \${m.toFixed(1)}, Estimate: \${state.estimate.toFixed(2)}\`);
 }
 // The filter smoothly tracks the downward drift: 73.1 → 72.44
-// SHRINKING by roughly a sixth of a second per cycle. Speeding up.`}
+// SHRINKING by roughly a sixth of a second per day. Speeding up.`}
 </CodeBlock>
 
 <DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance">
@@ -146,7 +147,7 @@ dV/dK = -2(1-K)·P + 2K·R = 0
 
 That is line-for-line the `gain` in the code above: `predictedVariance / (predictedVariance + measurementNoise)`. Sanity-check the endpoints: a perfect sensor (R → 0) gives K → 1, trust the measurement; a useless sensor (R → ∞) gives K → 0, keep the prediction. Demir's "alpha that adjusts itself" is this quotient, recomputed every step as P shrinks with each correction. The EMA's fixed alpha is what you get if you freeze this formula and hope the uncertainties never change.
 
-One honesty note the bridge has earned: with a constant-state model like this one, P settles and the gain converges (to about 0.27 with these Q and R), so after a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. What the adaptive gain buys is the burn-in and principled noise handling, not immunity to trends. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-cycle]` instead of a single number. The crew's filter is the honest first rung, not the whole ladder.
+One honesty note the bridge has earned: with a constant-state model like this one, P settles and the gain converges (to about 0.27 with these Q and R), so after a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. What the adaptive gain buys is the burn-in and principled noise handling; it buys no immunity to trends. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-cycle]` instead of a single number. The crew's filter is the honest first rung, not the whole ladder.
 </DerivationDrawer>
 
 ## Challenge
@@ -169,12 +170,10 @@ Implement a Kalman filter and track the anomaly timing.
 
 <Epilogue>
 
-Eight measurements; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4, shrinking roughly a sixth of a second per cycle. Farah brings the filter's output to the bridge before dawn, and the variance is small enough that nobody argues with it. The confidence band no longer includes "steady." Mirza reads the number twice.
+Eight days, one first-cycle measurement each; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4, shrinking roughly a sixth of a second per day. Farah brings the filter's output to the bridge before dawn, and the variance is small enough that nobody argues with it. The confidence band no longer includes "steady." Mirza holds the printout a long moment and does not ask what happens when the interval reaches zero; everyone on the bridge does that arithmetic on their own.
 
 <Dialogue speaker="Commander Mirza">
 Wake Nazari. Transmission contingencies and a hard-burn plot on my console by 0800.
 </Dialogue>
-
-She does not ask what happens when the interval reaches zero. Everyone on the bridge does the arithmetic anyway.
 
 </Epilogue>

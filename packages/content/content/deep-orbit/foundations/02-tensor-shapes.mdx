@@ -54,7 +54,7 @@ In frontend development, you work with shapes constantly. A responsive grid with
 
 ## Where Does Each Value Land?
 
-Here's the question that actually trips people up: not what the new shape *is*, but which value ends up *where*. The answer: tensors fill **row by row** (row-major order). Watch the values, not just the shapes:
+Here's the question that actually trips people up: not what the new shape *is*, but which value ends up *where*. The answer: tensors fill **row by row** (row-major order). Watch where each value lands:
 
 <CodeBlock language="typescript" title="tensor-shapes.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -87,7 +87,34 @@ tall.print();
 
 The golden rule: **reshaping never changes the data or its order, only where the line breaks fall.** The memory stays one flat sequence, exactly like the `Float32Array` from lesson 1; shape is just the reading instructions.
 
-One honesty note on the grid analogy: CSS Grid *reflows*. Change `grid-template-columns` and items visually rearrange to fill the new tracks. Reshape never rearranges. If you remember one thing, remember that reshape is line-wrapping, not layout.
+## The Wrong Kind of Sixty-Four
+
+Here is that rule with the stakes attached. Farah's layout hunt has produced a candidate grid for the first stretch of the stream: `[450, 64]`, 450 readings by 64 channels, 28,800 values. The channel plotter wants channels as rows, shape `[64, 450]`, and Demir reaches for the tool he learned four paragraphs ago.
+
+<CodeBlock language="typescript" title="garbled-channels.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Stand-in for the archive block: each value is its own position in the
+// flat stream, so you can see exactly where every number ends up.
+const block = tf.range(0, 28800).reshape([450, 64]);  // [readings, channels]
+
+// WRONG: reshape to [64, 450]. Right shape, garbled data.
+const wrong = block.reshape([64, 450]);
+console.log(wrong.arraySync()[0].slice(0, 5));  // [0, 1, 2, 3, 4]
+// "Channel 0" is now the first 450 values of the flat stream: all 64
+// channels of reading 0, then all of reading 1, seven full readings
+// and change (448 = 7 * 64) fused into one fake trace.
+
+// RIGHT: transpose. Same target shape, values actually reordered.
+const right = block.transpose();
+console.log(right.arraySync()[0].slice(0, 5));  // [0, 64, 128, 192, 256]
+// Channel 0 is every 64th value: one per reading, 450 in all.
+// right.arraySync()[1] starts [1, 65, 129, ...]: channel 1, same story.
+
+// wrong.shape and right.shape are both [64, 450]. Only one is data.`}
+</CodeBlock>
+
+On a real sensor block the failure is quieter and worse: any per-channel structure dissolves, the plotter draws sixty-four confident-looking traces of interleaved junk, and nothing throws, because the element count checks out. This is also exactly where the CSS Grid instinct betrays you. Change `grid-template-columns` and the browser *reflows*, moving items into the new tracks; that reflow is what `reshape` never does. Reshape rewraps the flat line. When you catch yourself wanting the values rearranged, the tool is `transpose`.
 
 ## Challenge
 
@@ -118,6 +145,6 @@ Farah reshapes the first stretch of the stream every way the element count allow
 Sixty-four channels. Whatever sent this packed its data the way we pack ours.
 </Dialogue>
 
-A structure that deliberate doesn't happen by accident. Next: doing math on it.
+Farah pins the [450, 64] layout to the main display and starts numbering channels.
 
 </Epilogue>

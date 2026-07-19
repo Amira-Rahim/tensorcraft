@@ -13,7 +13,7 @@ context:
   narrative: "Dr. Farah introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord: the FFT tells you which individual notes make it up.'"
   speaker: "Dr. Farah"
 concept:
-  explanation: "The Fourier Transform decomposes a complex signal into simple sine waves, each with a magnitude and a phase. The same fixed basis decomposes every signal; that universality is the whole trick."
+  explanation: "The Fourier Transform decomposes a complex signal into simple sine waves, each with a magnitude and a phase. The same fixed basis decomposes every signal; that universality is the trick."
   bridge:
     feTitle: "@keyframes Decomposition"
     feCode: "@keyframes pulse { 0% { scale: 1 } 50% { scale: 1.2 } 100% { scale: 1 } }"
@@ -25,11 +25,11 @@ consequence:
   narrative: "A sharp peak at 73.4 Hz, and nothing in the catalog to explain it. 'That is not stellar background,' Farah says quietly."
 hints:
   - level: nudge
-    content: "FFT converts a time-domain array into frequency magnitudes, like decomposing an animation into its keyframe steps"
+    content: "rfft turns N time samples into N/2+1 frequency bins; the dominant tone is the bin with the largest magnitude, and bin 0 is the DC offset, not a tone."
   - level: guidance
-    content: "Use tf.spectral.rfft() for real-valued signals, then tf.abs() to get magnitudes"
+    content: "Get magnitudes with tf.abs(tf.spectral.rfft(tf.tensor1d(signal))) and read them back with arraySync(). Start the max scan at bin 1, never bin 0: the grader feeds a +5.0 DC offset that must not beat the real 7 Hz tone. Convert the winning bin to hertz with maxBin * sampleRate / signal.length."
   - level: solution
-    content: "const fft = tf.spectral.rfft(signalTensor); const magnitudes = tf.abs(fft);"
+    content: "const fft = tf.spectral.rfft(tf.tensor1d(signal)); const magnitudes = tf.abs(fft).arraySync() as number[]; let maxBin = 1; let maxMag = magnitudes[1]; for (let i = 2; i < magnitudes.length; i++) { if (magnitudes[i] > maxMag) { maxMag = magnitudes[i]; maxBin = i; } } return maxBin * sampleRate / signal.length;"
 keywords:
   - fourier-transform
   - fft
@@ -217,7 +217,7 @@ A signal is fully reconstructible from its DFT: no information is lost.
 
 **Why rfft returns N/2+1 bins:** for real-valued input, `X[N-k]` is the complex conjugate of `X[k]`; the upper half of the spectrum duplicates the lower half. `rfft` keeps only bins 0 through N/2, the unique ones.
 
-**Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT (next) drops this to O(N log N), which is what makes real-time spectrograms possible.
+**Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT algorithm computes the same result in O(N log N), which is what makes real-time spectrograms (next lesson) possible. This course uses the FFT through `tf.spectral.rfft` and never derives the algorithm itself; if you want the recursion, look up Cooley-Tukey.
 </DerivationDrawer>
 
 <RecallPrompt

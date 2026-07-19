@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "Euclidean distance is just the Pythagorean theorem extended to N dimensions"
   - level: guidance
-    content: "Compute the distance from the query point to every training point. Sort the training points by that distance and keep the first k. The prediction is whichever label appears most among those k."
+    content: "In euclideanDistance, reduce over a, summing (val - b[i]) ** 2 for each coordinate, then take Math.sqrt of the total. In knnClassify, map every data point to its label plus its euclideanDistance from query, sort ascending by that distance, slice off the first k as neighbors, tally their labels in a votes object, and return the label with the highest count."
   - level: solution
-    content: "const dist = (a, b) => Math.sqrt(a.reduce((s, v, i) => s + (v - b[i]) ** 2, 0)); const nearest = data.map(d => ({ label: d.label, d: dist(point, d.features) })).sort((x, y) => x.d - y.d).slice(0, k); then count labels and return the most frequent."
+    content: "return Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0)); const sorted = data; .map(point => ({ label: point.label, distance: euclideanDistance(query, point.features) })); .sort((a, b) => a.distance - b.distance); const neighbors = sorted.slice(0, k); const votes: Record<string, number> = {}; for (const n of neighbors) {; votes[n.label] = (votes[n.label] ?? 0) + 1; }; return Object.entries(votes).sort((a, b) => b[1] - a[1])[0][0];"
 keywords:
   - knn
   - distance-metrics
@@ -124,7 +124,7 @@ The value of k determines how many neighbors get to vote. It's a trade-off:
 
 - **k = 1**: Every prediction follows its single nearest neighbor. Noisy, overfits.
 - **k = n** (all data): Every prediction is the majority class. Underfits.
-- **Sweet spot**: Usually an odd number (to avoid ties) between 3 and 15.
+- **Sweet spot**: Usually between 3 and 15. In binary classification an odd k avoids tied votes; with three or more classes, ties are possible for any k and you need a tie-break rule (nearest neighbor wins, or random).
 
 <CodeBlock language="typescript" title="choosing-k.ts">
 {`// Test different values of k on validation data
@@ -169,6 +169,6 @@ Implement KNN classification with configurable k and distance metric.
 
 <Exercise slug="implement-knn" />
 
-<RecallPrompt question="Why does KNN have no training step, and what is the practical consequence of that design?" answer="KNN stores the entire training dataset and defers all computation to prediction time. There are no learned weights or model artifacts. The consequence is zero training overhead but O(n) cost per prediction, and all training data must stay in memory. This also means the model updates instantly when new data is added, but it scales poorly as dataset size grows." />
+<RecallPrompt question="Why does KNN have no training step, and what is the practical consequence of that design?" answer="KNN stores the entire training dataset and defers all computation to prediction time. There are no learned weights or model artifacts. The consequence is zero training overhead but real per-prediction cost: O(n·d) distance computations for n stored points with d features, and O(n log n) with the sort-based implementation shown, and all training data must stay in memory. This also means the model updates instantly when new data is added, but it scales poorly as dataset size grows." />
 
 <LessonRecap whatYouLearned={["KNN skips training entirely and classifies by finding the k closest points in stored data, then taking a majority vote", "The full algorithm is three array operations: sort by distance, slice to k, reduce to most frequent label", "In high-dimensional feature spaces all points become roughly equidistant, breaking the concept of nearest neighbors and making KNN unreliable above roughly 10-20 features"]} bridge="`Sort and slice` in JavaScript finds the closest items in an array you already have in memory; `KNN` applies the same idea to ML classification but requires a distance metric, stores the full dataset at prediction time, and degrades with dimensionality in ways array operations do not." youCanNow="Implement KNN classification, choose a distance metric, validate the right value of k, and recognize when high dimensionality makes KNN the wrong choice." />

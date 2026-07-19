@@ -24,11 +24,11 @@ consequence:
   narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the weights are still random numbers. Mostly."
 hints:
   - level: nudge
-    content: "Compile sets the optimizer and loss function before training"
+    content: "A complete network is layers plus compile: compiling attaches the optimizer and loss so the model can train."
   - level: guidance
-    content: "Use model.compile() with optimizer and loss parameters"
+    content: "Stack three dense layers (units 32 with relu and inputShape [8], units 16 with relu, units 1 with sigmoid), then call model.compile with optimizer 'adam', loss 'binaryCrossentropy', and metrics ['accuracy']. The grader reads model.loss and counts 833 parameters, so both the layer stack and the compile config must match."
   - level: solution
-    content: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] })"
+    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });"
 keywords:
   - compile
   - optimizer
@@ -71,13 +71,20 @@ model.compile({
   metrics: ['accuracy'],          // what to track
 });
 
-// 4. Verify with summary
+// 4. Verify with summary. TFJS names layers className + counter
+// (dense_Dense1, not dense_1) and prints four columns:
 model.summary();
-// Layer (type)          Output shape    Param #
-// dense_1 (Dense)       [null, 32]      128
-// dense_2 (Dense)       [null, 16]      528
-// dense_3 (Dense)       [null, 1]       17
+// Layer (type)                Input Shape               Output shape              Param #
+// ==========================================================================================
+// dense_Dense1 (Dense)        [[null,3]]                [null,32]                 128
+// __________________________________________________________________________________________
+// dense_Dense2 (Dense)        [[null,32]]               [null,16]                 528
+// __________________________________________________________________________________________
+// dense_Dense3 (Dense)        [[null,16]]               [null,1]                  17
+// ==========================================================================================
 // Total params: 673
+// Trainable params: 673
+// Non-trainable params: 0
 
 // 5. Test with a prediction
 const testInput = tf.tensor2d([[0.5, 0.8, 0.2]]);
@@ -117,6 +124,10 @@ End of watch, as ordered. The compiled network sits untrained on the bridge feed
 
 <Dialogue speaker="Dr. Farah">
 An untrained network has no opinions. So why does it keep having this one?
+</Dialogue>
+
+<Dialogue speaker="ARIA">
+For the record, Doctor: that question is correct as stated. Two independent initializations are two fresh draws of all 673 weights; the probability that both draws push one specific reading past 0.99 is as near zero as anything I am permitted to log. Untrained networks do not hold stable opinions. In any terrestrial system I would report this as a defect in the test harness. I have checked the harness twice. It is not the harness.
 </Dialogue>
 
 </Epilogue>

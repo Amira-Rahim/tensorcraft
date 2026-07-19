@@ -25,11 +25,11 @@ consequence:
   narrative: "The LSTM predicts the anomalous signal will repeat in exactly 47 minutes. The crew waits. At 47 minutes and 3 seconds, it arrives."
 hints:
   - level: nudge
-    content: "Sequence prediction is next-value forecasting: the LSTM outputs what it thinks comes next"
+    content: "Forecasting the next reading is regression: the output layer stays linear and the loss is squared error, not crossentropy."
   - level: guidance
-    content: "Train with input = a window of n readings (signal[0:n]), label = the very next reading (signal[n]). Loss = MSE between predicted and actual."
+    content: "buildPredictor() stacks tf.layers.lstm with units: 32 and inputShape: [10, 2], a dense hidden layer with 16 units and relu, and a dense output with 2 units and no activation (linear), then compiles with adam and meanSquaredError and returns the model. A [1, 10, 2] batch must predict to shape [1, 2]."
   - level: solution
-    content: "model.add(lstm({ units: 64, inputShape: [80, 3] })); model.add(dense({ units: 3 })); // predict next 3 features"
+    content: "model.add(tf.layers.lstm({ units: 32, inputShape: [10, 2] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 2 })); model.compile({ optimizer: 'adam', loss: 'meanSquaredError' }); return model;"
 keywords:
   - prediction
   - forecasting
@@ -48,7 +48,7 @@ If it can predict the timing, the signal has structure. And if it has structure.
 
 Autocomplete is everywhere in frontend work: search suggestions, code completion, the email composer finishing your sentence. Each predicts the next token from the sequence so far. Our LSTM does the same: given the last 80 signal readings, predict the next one.
 
-<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and visual comparison", "Generate multi-step forecasts by feeding predictions back as input", "Build a real-time prediction pipeline for the DEEP SCAN dashboard"]} />
+<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and visual comparison", "Generate multi-step forecasts by feeding predictions back as input", "Sanity-check a forecast's horizon, units, and step size before it reaches the DEEP SCAN dashboard"]} />
 
 ## Next-Value Prediction
 
@@ -120,7 +120,7 @@ const forecast = await forecastMultiStep(model, recentWindow, 47);
 // The LSTM predicts a spike at step 47 of this one-second-step demo horizon.`}
 </CodeBlock>
 
-One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes, and it can only afford to because it operates on a different series: one value per pulse, the interval sequence, where 47 minutes is only about 38 steps at the current 73-second spacing. Same architecture, radically fewer recursive steps, which is the only reason its error is measured in seconds instead of minutes. If that forecast lands close, credit the signal's regularity and the short step count before you credit the model. And keep the three clocks separate, because the ship now runs on all of them: the 73-second spacing between pulses, the 47-minute macro-cycle of re-entries into the live feed, and the 72-hour super-cycle the archive shows. Tonight's forecast predicts the middle one.
+One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes because it runs on a different series: one value per pulse, the interval sequence, where 47 minutes is only about 38 steps at the current 73-second spacing. Its target is the 47-minute macro-cycle that has sat in Farah's residue plots since module 5. If the forecast lands close, credit the signal's regularity and the short step count before you credit the model.
 
 ## Challenge
 
@@ -130,12 +130,12 @@ Train a prediction model and forecast the next signal value.
 
 <RecallPrompt
   question="The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?"
-  answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase), not a yes/no class. MSE measures the distance between the predicted and actual values, which is what matters here. Loss choice follows the output type, not the layer type."
+  answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE measures the distance between the predicted and actual values, which is what matters here. Loss choice follows the output type, not the layer type."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Next-value prediction is regression: the output is a continuous vector of signal values, so the loss is `meanSquaredError` and the diagnostic metric is MAE, not accuracy.",
+    "Next-value prediction is regression: the output is a continuous vector of signal values, so the loss is `meanSquaredError` and the diagnostic metric is MAE; accuracy has no meaning for continuous outputs.",
     "Multi-step forecasting feeds each prediction back as the next input, extending the horizon one step at a time; error compounds with each step, so confidence degrades with distance.",
     "Unusually high prediction error on a specific region of a signal can itself be an anomaly signal: the model's surprise is informative."
   ]}

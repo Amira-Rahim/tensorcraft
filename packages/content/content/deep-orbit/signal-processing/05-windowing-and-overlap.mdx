@@ -25,11 +25,11 @@ consequence:
   narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
 hints:
   - level: nudge
-    content: "Windowing tapers signal edges to zero, preventing false frequencies from abrupt cutoffs"
+    content: "A Hann window tapers both ends of a chunk to zero so the FFT never mistakes your cut for a cliff in the signal."
   - level: guidance
-    content: "Two separate functions: hannWindow(n) builds the taper (w[i] = 0.5 * (1 - cos(2*pi*i / (n-1)))), applyWindow multiplies signal[i] * window[i] element-wise."
+    content: "Two separate functions are graded. hannWindow(n) returns w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))) for i = 0..n-1; Array.from with Math.cos works, or tf.range(0, n) on the tensor route. applyWindow(signal, window) returns the element-wise product signal[i] * window[i] as a plain number array, e.g. tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync()."
   - level: solution
-    content: "hannWindow: return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))). applyWindow: return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync()."
+    content: "return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1)))); return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync();"
 keywords:
   - windowing
   - hann
@@ -40,7 +40,7 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum, not just at the expected peaks.
+Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum instead of sitting at the expected peaks.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -100,7 +100,10 @@ function hannWindow(n: number): number[] {
   );
 }
 
-// Hamming window: slightly less leakage, slightly wider main lobe
+// Hamming window: main lobe as narrow as Hann's or slightly narrower,
+// and a lower FIRST sidelobe (about -45 dB vs Hann's -31), but its far
+// sidelobes decay at only ~-6 dB/octave vs Hann's ~-18: much worse
+// far-field leakage. Pick it for close-in resolution, not cleanliness.
 function hammingWindow(n: number): number[] {
   return Array.from({ length: n }, (_, i) =>
     0.54 - 0.46 * Math.cos(2 * Math.PI * i / (n - 1))
@@ -192,7 +195,9 @@ Apply a Hann window to a signal before computing the FFT.
 
 **Overlap:** consecutive FFT windows share data. With 50% overlap (hop = W/2), each sample appears in 2 windows. With 75% overlap (hop = W/4), each sample appears in 4. More overlap = smoother spectrogram, more compute.
 
-**Constant-overlap-add (COLA) condition:** for perfect signal reconstruction from STFT, the shifted windows must sum to a constant: `Σ_k w[t - hop·k] = constant`. The window and hop must be chosen as a pair: Hann satisfies COLA at 50% or 75% overlap, while a Blackman window at 50% overlap does not.
+**Constant-overlap-add (COLA) condition:** for perfect signal reconstruction from STFT, the shifted windows must sum to a constant: `Σ_k w[t - hop·k] = constant`. The window and hop must be chosen as a pair: the periodic Hann satisfies COLA at 50% or 75% overlap, while a Blackman window at 50% overlap does not.
+
+One form-of-the-formula subtlety: the Hann formula above is the **symmetric** form (denominator `W - 1`), which is what this lesson's code plots. Exact COLA at `hop = W/2` holds for the **periodic** form, `w[n] = 0.5 · (1 - cos(2π · n / W))`. Measured at `W = 64, hop = 32`: the periodic window's shifted copies sum to exactly 1.0, while the symmetric form's sum ripples between 0.975 and 0.999. For feature extraction the ripple is harmless; for resynthesis, use the periodic form.
 
 For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
 </DerivationDrawer>

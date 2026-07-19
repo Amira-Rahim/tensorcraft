@@ -210,6 +210,9 @@ function buildCheckoutCompletedEvent(): string {
         object: "checkout.session",
         client_reference_id: USER_ID,
         amount_total: 4900, // $49 in cents
+        // The money moved; unpaid sessions are recorded as pending, never
+        // completed (audit run #7 payment_status gate).
+        payment_status: "paid",
         payment_intent: PAYMENT_INTENT_ID,
         metadata: {
           planId: "single",

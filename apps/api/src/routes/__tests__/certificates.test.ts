@@ -10,6 +10,8 @@ const mockGetUser = vi.fn();
 
 // theme_progress rows returned by the user-scoped client
 let mockProgressRows: Array<{ status: string }> = [];
+// Entitlement rows for the purchase gate. Default: owns deep-orbit.
+let mockUserPurchases: Array<{ theme_ids: string[]; status: string }> = [];
 let mockProgressError: unknown = null;
 
 // certificates rows used by the admin client
@@ -82,6 +84,19 @@ vi.mock("@tensorcraft/supabase", () => ({
     from: (table: string) => {
       if (table === "theme_progress") return makeProgressQuery();
       if (table === "certificates") return makeCertificatesUserQuery();
+      // Certificate issuance is purchase-gated (audit run #7): the route
+      // checks purchases before progress, because theme_progress is
+      // client-writable and progress alone could be forged.
+      if (table === "purchases") {
+        return {
+          select: () => ({
+            eq: () => ({
+              in: () =>
+                Promise.resolve({ data: mockUserPurchases, error: null }),
+            }),
+          }),
+        };
+      }
       return {};
     },
   }),
@@ -104,6 +119,7 @@ vi.mock("../../lib/redis", () => ({
 beforeEach(() => {
   mockGetUser.mockReset();
   mockProgressRows = [];
+  mockUserPurchases = [{ theme_ids: ["deep-orbit"], status: "completed" }];
   mockProgressError = null;
   mockExistingCert = null;
   mockExistingCertError = null;
@@ -164,6 +180,27 @@ describe("POST /api/certificates", () => {
       body: JSON.stringify({ themeId: "not-a-theme" }),
     });
     expect(res.status).toBe(400);
+  });
+
+  it("returns 403 theme_not_purchased without an entitling purchase", async () => {
+    // theme_progress is client-writable, so 56 completed rows alone must
+    // never issue the paid certificate (audit run #7): a free-tier user
+    // could self-issue with forged progress.
+    authedUser();
+    mockUserPurchases = [];
+    seedFullyCompletedTheme();
+
+    const res = await createApp().request("/api/certificates", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ themeId: "deep-orbit" }),
+    });
+    expect(res.status).toBe(403);
+    const body = await res.json();
+    expect(body.error).toBe("theme_not_purchased");
   });
 
   it("returns 403 theme_not_complete when not all lessons done", async () => {

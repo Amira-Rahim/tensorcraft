@@ -15,6 +15,18 @@ instructions: |
   Action: 'update-baseline' if driftMagnitude < 0.5 (gradual drift); 'investigate-real-anomaly' if driftMagnitude > 1.0 (suspect a real event); 'no-action' otherwise.
 starterCode: |
   function recomputeBaseline(recentNormalData, currentBaseline) {
+    // Concept: when the world drifts, recompute the baseline from recent
+    // NORMAL data; a percentile resists a single outlier where a max would not.
+    // Recipe:
+    // 1. Sort a copy ascending: [...recentNormalData].sort((a, b) => a - b)
+    // 2. newP95 = the sorted value at index Math.floor(sorted.length * 0.95),
+    //    clamped with Math.min(idx95, sorted.length - 1)
+    // 3. oldP95 = currentBaseline.p95
+    // 4. driftMagnitude = Math.abs(newP95 - oldP95) / oldP95, rounded to
+    //    1 decimal via Math.round(x * 10) / 10; treat oldP95 <= 0 as drift 0
+    // 5. action: driftMagnitude > 1.0 -> 'investigate-real-anomaly';
+    //    driftMagnitude < 0.5 -> 'update-baseline'; otherwise 'no-action'
+    // 6. return { newP95, oldP95, driftMagnitude, action }
     return null; // your code here
   }
 solutionCode: |

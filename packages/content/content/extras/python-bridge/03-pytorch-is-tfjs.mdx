@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "nn.Linear is tf.layers.dense, nn.Conv2d is tf.layers.conv2d"
   - level: guidance
-    content: "Walk the nn.Sequential top to bottom and emit one tf.layers call per line. nn.Linear(256, 128) becomes dense with units: 128 (give the first layer inputShape: [256]). A ReLU after a Linear folds into that dense layer's activation option."
+    content: "Walk the nn.Sequential top to bottom and emit one tf.layers call per line: dense with units: 128 and inputShape: [256] (the ReLU folds into activation: 'relu'), dropout with rate: 0.2, dense 64 relu, dropout 0.2, then the output dense with units: 10. Because 'categoricalCrossentropy' expects probabilities while nn.CrossEntropyLoss ate raw logits, that final layer also needs activation: 'softmax'. Compile with tf.train.adam(0.001)."
   - level: solution
-    content: "model.add(tf.layers.dense({ inputShape: [256], units: 128, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 64, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 10, activation: 'softmax' })); then compile with tf.train.adam(0.001) and 'categoricalCrossentropy'. The softmax is NOT optional: PyTorch's CrossEntropyLoss applied it inside the loss; TFJS's string loss does not."
+    content: "model.add(tf.layers.dense({ units: 128, activation: 'relu', inputShape: [256] })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 64, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 10, activation: 'softmax' })); model.compile({ optimizer: tf.train.adam(0.001), loss: 'categoricalCrossentropy', metrics: ['accuracy'] });"
 keywords:
   - pytorch
   - tensorflow

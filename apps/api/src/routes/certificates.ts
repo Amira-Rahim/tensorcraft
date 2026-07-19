@@ -79,6 +79,38 @@ certificates.post("/", async (c) => {
   // Check user's progress for this theme via the user-scoped client so
   // RLS is exercised (service-role client is reserved for the INSERT).
   const userClient = getSupabaseServerClient(accessToken);
+
+  // The certificate is a PAID deliverable: every marketing surface sells it
+  // behind the wall. Progress alone cannot gate it, because theme_progress
+  // is client-writable by design (the lesson page records completions
+  // directly), so any authenticated user could write 56 "completed" rows
+  // and self-issue. Require a purchase whose theme_ids contain this theme
+  // and whose status still grants access (audit run #7, 2026-07-16).
+  const { data: entitlements, error: entitlementErr } = await userClient
+    .from("purchases")
+    .select("theme_ids, status")
+    .eq("user_id", userId)
+    .in("status", ["completed", "partially_refunded"]);
+
+  if (entitlementErr) {
+    return c.json(
+      {
+        error: "Failed to read purchases",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
+  }
+
+  const ownsTheme = (entitlements ?? []).some(
+    (p: { theme_ids: string[] | null }) =>
+      Array.isArray(p.theme_ids) && p.theme_ids.includes(themeId),
+  );
+
+  if (!ownsTheme) {
+    return c.json({ error: "theme_not_purchased" }, 403);
+  }
+
   const { data: progressRows, error: progressErr } = await userClient
     .from("theme_progress")
     .select("status")

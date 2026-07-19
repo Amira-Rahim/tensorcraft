@@ -99,7 +99,15 @@ export default async function PurchaseSuccessPage({
     purchase = data ?? null;
   }
 
-  if (!purchase) {
+  // Fallback to the most recent completed purchase ONLY when the page was
+  // reached without a session_id (direct nav / refresh after the param was
+  // dropped). When a session_id IS present but its row hasn't landed yet,
+  // falling back here rendered the PREVIOUS purchase's full receipt - wrong
+  // amount, wrong themes - and skipped the poller, so the page never
+  // corrected itself (audit run #7; latent until a second purchase is
+  // possible). With a pending session_id we stay in the "Almost There"
+  // state and let the poller pick up the real row.
+  if (!purchase && !sessionId) {
     const { data } = await supabase
       .from("purchases")
       .select(selectCols)
@@ -159,7 +167,7 @@ export default async function PurchaseSuccessPage({
               : "We're confirming your payment with Stripe. This usually takes a few seconds; this page updates itself the moment it clears."}
           </p>
         </div>
-        {!purchase && <PendingPoller />}
+        {!purchase && <PendingPoller sessionId={sessionId} />}
 
         {purchase && (
           <PurchaseAnalytics

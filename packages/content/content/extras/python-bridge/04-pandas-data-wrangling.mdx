@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "Each pandas line in the comments is one array-method call"
   - level: guidance
-    content: "dropna is a .filter for non-null values, and the threshold check is another .filter. Compute mean and std from the filtered rows before mapping the normalized column on. groupby is a reduce into an object keyed by sensorId."
+    content: "Chain two filters over data: drop rows whose value is null or undefined, then keep r.value > 0. Compute mean and std from the surviving rows, then map each row to a copy carrying a normalized field of (r.value - mean) / std. groupby is a reduce keyed by r.sensorId collecting the normalized values; finish by averaging each group's array into one object like { A: ..., B: ..., C: ... }."
   - level: solution
-    content: "1) const clean = data.filter(r => r.value !== null).filter(r => r.value > 0). 2) mean and std from clean.map(r => r.value). 3) const norm = clean.map(r => ({ ...r, normalized: (r.value - mean) / std })). 4) reduce into { [sensorId]: values[] }, then average each group's array."
+    content: "let clean = data.filter(r => r.value !== null && r.value !== undefined); clean = clean.filter(r => r.value > 0); const mean = clean.reduce((s, r) => s + r.value, 0) / clean.length; const std = Math.sqrt( clean.reduce((s, r) => s + (r.value - mean) ** 2, 0) / clean.length ); const normalized = clean.map(r => ({ ...r, normalized: (r.value - mean) / std, })); const groups = normalized.reduce((acc, r) => { if (!acc[r.sensorId]) acc[r.sensorId] = []; acc[r.sensorId].push(r.normalized); return acc; }, {}); const result = {}; for (const [key, values] of Object.entries(groups)) { result[key] = values.reduce((s, v) => s + v, 0) / values.length; } return result;"
 keywords:
   - pandas
   - dataframe
@@ -176,7 +176,13 @@ The real payoff: reading a data preparation pipeline in a Jupyter notebook.
 df = pd.read_csv('data.csv')                     # Load
 df = df.dropna()                                  # Remove missing values
 df = df[df['value'] > 0]                          # Filter outliers
-df['value_norm'] = (df['value'] - df['value'].mean()) / df['value'].std()  # Normalize
+df['value_norm'] = (df['value'] - df['value'].mean()) / df['value'].std(ddof=0)  # Normalize
+# ddof=0 matters: pandas .std() defaults to the SAMPLE estimator (ddof=1,
+# divide by n-1), while numpy and this course's JavaScript use the
+# POPULATION formula (ddof=0, divide by n). On this lesson's six-reading
+# exercise sample that is 15.411 vs 14.068. Silently mixing the two is a
+# classic notebook bug: the pipelines "work" and every downstream
+# normalized number is quietly different.
 X = df[['feature1', 'feature2', 'feature3']].values  # → numpy array
 y = df['label'].values                            # → numpy array
 

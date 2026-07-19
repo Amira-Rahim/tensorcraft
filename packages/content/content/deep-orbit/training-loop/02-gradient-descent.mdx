@@ -24,11 +24,11 @@ consequence:
   narrative: "Down is now computable. Every weight knows which direction reduces the loss, and by how much."
 hints:
   - level: nudge
-    content: "Gradients tell you the slope: which way is downhill"
+    content: "One descent step: let autograd compute the slope of the loss at the current weight, then move the weight a small step in the opposite direction."
   - level: guidance
-    content: "Multiply gradient by learning rate, subtract from weights"
+    content: "Define lossFn as () => weight.square().asScalar() and pass it to tf.variableGrads. The returned grads object is keyed by variable name, so pull out its first Object.keys entry as the gradient. Because weight is a tf.variable, update it in place with weight.assign(...), subtracting gradient.mul(learningRate); plain reassignment with = will not update the variable. One correct step takes 5.0 to exactly 4.0."
   - level: solution
-    content: "weights = weights.sub(gradient.mul(learningRate))"
+    content: "const lossFn = () => weight.square().asScalar(); const { grads } = tf.variableGrads(lossFn); gradient = grads[Object.keys(grads)[0]]; weight.assign(weight.sub(gradient.mul(learningRate)));"
 keywords:
   - gradient
   - descent
@@ -37,6 +37,8 @@ keywords:
 skillAxes: [training]
 ---
 
+You have already written this lesson. Every easing loop that runs `pos += (target - pos) * 0.1` is doing gradient descent on the loss `(target - pos)² / 2`: the derivative of that loss with respect to `pos` is `-(target - pos)`, and stepping opposite the derivative, scaled by 0.1, reproduces the lerp line character for character. Run both from `pos = 2` toward `target = 10` and each lands on 2.8: your version because you wrote the easing, `tf.variableGrads` because it measured the slope (-8) and subtracted a tenth of it. What this lesson adds is only the part lerp never needed: where the slope comes from when nobody can tell you the target.
+
 <Dialogue speaker="Chief Nazari">
 Great, so the loss tells us we're wrong. But which knobs do I turn? Which weights need to go up, which need to go down, and by how much?
 </Dialogue>
@@ -44,8 +46,6 @@ Great, so the loss tells us we're wrong. But which knobs do I turn? Which weight
 <LearningObjectives objectives={["Understand gradients as the direction of steepest ascent", "Implement a single gradient descent step", "Tune the learning rate: too high overshoots, too low crawls", "Visualize loss decreasing over multiple steps"]} />
 
 ## Finding Downhill
-
-You're blindfolded partway up a hill and want the bottom. Your only instrument is the tilt of the ground where you stand. Step downhill, keep stepping until the ground goes flat, and you have performed gradient descent: the tilt is the gradient, and flat ground is a minimum.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -124,5 +124,7 @@ The descent runs overnight: four thousand steps, the loss falling in the slow gl
 <Dialogue speaker="ARIA">
 I have begun logging the network's loss curve at each gradient step. No directive requires this. The curve is a record of the system that is replacing my rules, and I am keeping it for my own records.
 </Dialogue>
+
+The next watchdog timestamp arrives on schedule.
 
 </Epilogue>

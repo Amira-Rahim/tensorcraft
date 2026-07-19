@@ -15,6 +15,8 @@ const mockSessionCreate = vi.fn();
  * Default null means "row does not exist".
  */
 let mockAdminExistingRow: { status: string } | null = null;
+// When set, controls what update().eq()[.select()] resolves to.
+let mockEqResult: { data: unknown; error: unknown } | null = null;
 
 // Controls what the server-client purchases query resolves to for upgrade tests
 let mockExistingPurchases: { theme_ids: string[]; amount: number }[] | null =
@@ -41,9 +43,26 @@ vi.mock("@tensorcraft/supabase", () => ({
       if (table === "purchases") {
         return {
           upsert: mockInsert,
+          // The credit auto-grant inserts via the ADMIN client (purchases has
+          // no INSERT policy for authenticated users; audit run #7).
+          insert: (...args: unknown[]) => mockServerInsert(...args),
           update: (data: unknown) => {
             mockUpdate(data);
-            return { eq: mockEq };
+            return {
+              eq: (...eqArgs: unknown[]) => {
+                mockEq(...eqArgs);
+                // charge.refunded chains .select("id") to detect the
+                // zero-rows case; async_payment_failed awaits .eq directly.
+                const result = Promise.resolve(
+                  mockEqResult ?? { data: null, error: null },
+                ) as Promise<unknown> & { select?: unknown };
+                result.select = () =>
+                  Promise.resolve(
+                    mockEqResult ?? { data: [{ id: "p_1" }], error: null },
+                  );
+                return result;
+              },
+            };
           },
           select: () => ({
             eq: () => ({
@@ -136,6 +155,7 @@ describe("POST /api/payments/webhook", () => {
     mockServerInsert.mockReset();
     mockExistingPurchases = null;
     mockAdminExistingRow = null;
+    mockEqResult = null;
   });
 
   it("returns 400 without stripe-signature header", async () => {
@@ -169,6 +189,9 @@ describe("POST /api/payments/webhook", () => {
           id: "cs_test_123",
           client_reference_id: "user_456",
           amount_total: 4900,
+          // The money has actually moved. An unpaid session must NOT be
+          // written as completed (see the delayed-payment test below).
+          payment_status: "paid",
           metadata: { planId: "single", themeIds: "deep-orbit" },
         },
       },
@@ -198,6 +221,103 @@ describe("POST /api/payments/webhook", () => {
       }),
       expect.objectContaining({ onConflict: "stripe_session_id" }),
     );
+  });
+
+  it("records a delayed-payment (unpaid) session as pending, never completed", async () => {
+    // Stripe fires checkout.session.completed with payment_status "unpaid"
+    // for delayed-notification methods: the checkout finished, the money
+    // has not moved. Writing "completed" here granted lifetime access on an
+    // unpaid session (audit run #7).
+    mockInsert.mockResolvedValue({ error: null });
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_delayed",
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "unpaid",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "pending" }),
+      expect.anything(),
+    );
+  });
+
+  it("settles the purchase as failed on async_payment_failed", async () => {
+    // This handler used to only log, leaving whatever status the sync
+    // handler wrote (audit run #7).
+    mockAdminExistingRow = { status: "pending" };
+
+    const event = {
+      type: "checkout.session.async_payment_failed",
+      data: {
+        object: {
+          id: "cs_test_delayed",
+          client_reference_id: "user_456",
+          metadata: { planId: "single" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockUpdate).toHaveBeenCalledWith({ status: "failed" });
+  });
+
+  it("requests a retry (non-2xx) when a refund matches no purchase row", async () => {
+    // Returning 200 here made the refund permanently unrecorded when the
+    // refund event outran the purchase row (audit run #7). Non-2xx makes
+    // Stripe retry until the row exists.
+    mockEqResult = { data: [], error: null };
+
+    const event = {
+      type: "charge.refunded",
+      data: {
+        object: {
+          payment_intent: "pi_orphan",
+          amount: 4900,
+          amount_refunded: 4900,
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(500);
   });
 
   it("handles charge.refunded event", async () => {
@@ -335,6 +455,7 @@ describe("POST /api/payments/webhook", () => {
           id: "cs_test_update",
           client_reference_id: "user_update",
           amount_total: 4900,
+          payment_status: "paid",
           payment_intent: "pi_late_arriving",
           metadata: { planId: "single", themeIds: "deep-orbit" },
         },

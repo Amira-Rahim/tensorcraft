@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "The sigmoid function squashes any number into the 0-1 range"
   - level: guidance
-    content: "Two steps. First compute the weighted sum: multiply each feature by its weight, add them up, add the bias. Then push that single number through sigmoid to get a probability."
+    content: "In sigmoid, return 1 divided by (1 + Math.exp(-x)). In predict, first compute the weighted sum z: multiply each feature by its matching weight (features.reduce works well), add them up, then add bias. Return sigmoid(z). The test point [3, 1, 2] should land above 0.5, so label comes out true."
   - level: solution
-    content: "const sigmoid = (x) => 1 / (1 + Math.exp(-x)); const predict = (features, weights, bias) => sigmoid(features.reduce((sum, f, i) => sum + f * weights[i], 0) + bias);"
+    content: "return 1 / (1 + Math.exp(-x)); const z = features.reduce((sum, f, i) => sum + f * weights[i], 0) + bias; return sigmoid(z);"
 keywords:
   - logistic-regression
   - sigmoid

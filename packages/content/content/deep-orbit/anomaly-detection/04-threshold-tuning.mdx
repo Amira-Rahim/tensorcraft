@@ -25,11 +25,11 @@ consequence:
   narrative: "Demir sets the threshold at the 99th percentile of normal errors. DEEP SCAN is precise: it flags only the signals that truly don't belong."
 hints:
   - level: nudge
-    content: "Use the distribution of normal reconstruction errors to set the threshold"
+    content: "There is no formula for the cutoff here: score every candidate threshold against the labeled data and keep the one with the highest F1"
   - level: guidance
-    content: "The threshold should be above most normal errors but below expected anomaly errors"
+    content: "For each candidate t, predict anomaly where errors[i] > t, then count tp, fp, and fn against labels. precision = tp / (tp + fp), recall = tp / (tp + fn), f1 = 2 * precision * recall / (precision + recall), each guarded with || 0 so empty counts do not produce NaN. Track the best { threshold, f1 } and return it"
   - level: solution
-    content: "const threshold = percentile(normalErrors, 99); // 99th percentile of normal errors"
+    content: "let best = { threshold: 0, f1: 0 }; for (const t of candidates) { let tp = 0, fp = 0, fn = 0; for (let i = 0; i < errors.length; i++) { const predicted = errors[i] > t; if (predicted && labels[i]) tp++; else if (predicted && !labels[i]) fp++; else if (!predicted && labels[i]) fn++; } const precision = tp / (tp + fp) || 0; const recall = tp / (tp + fn) || 0; const f1 = 2 * precision * recall / (precision + recall) || 0; if (f1 > best.f1) best = { threshold: t, f1 }; } return best;"
 keywords:
   - threshold
   - false-positive
@@ -122,6 +122,16 @@ for (const t of thresholds) {
 // t=0.010: P=1.00 R=0.72 F1=0.84  ← no false alarms, misses some`}
 </CodeBlock>
 
+## Same Curve, Opposite Costs
+
+The table above has one F1 peak, at t=0.004, and it is tempting to read that row as the answer. It is the answer only when a false alarm and a missed anomaly cost the same. They almost never do. Run the same curve through two deployments and watch the threshold move in opposite directions.
+
+**When the miss costs the mission.** Suppose the detector gates the capture pipeline: every real event it sleeps through is data the ship never records again. Take t=0.002, recall 1.00 at precision 0.34. At last week's rate of two real events, that is roughly six flags (2 / 0.34 = 5.9), four of them noise. Four wasted checks a week is the entire price of missing nothing, and the threshold belongs low.
+
+**When the false alarm costs the detector.** Nazari's week is the second deployment. Fourteen alerts, twelve of them cosmic background: precision 0.14 (2 of 14), and the real cost was never the twelve wasted checks. It was the reflex they were training. A bridge crew that learns the alert is usually noise stops standing up for it, and the miss that finally matters arrives pre-ignored. On the same curve, t=0.010 buys precision 1.00 at recall 0.72: zero wasted checks, and 28 percent of real anomalies missed (1 - 0.72). For the capture pipeline that trade is malpractice; for an alert channel whose one failure mode is being tuned out, it can be exactly right.
+
+Same model, same errors, same F1 peak. The threshold moved down in the first deployment and up in the second, and nothing on the F1 table can tell you which way to push it. The costs live outside the dataset.
+
 ## Challenge
 
 Find the optimal anomaly detection threshold using F1 score.
@@ -148,13 +158,13 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
     "Using the normal error distribution (for example the 99th percentile) gives a principled starting point that ties the threshold to observed behavior on known-good data.",
     "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system."
   ]}
-  bridge="Just as a frontend alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff, not a fixed number in config."
+  bridge="Just as a frontend alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff rather than a fixed number in config."
   youCanNow="Set anomaly detection thresholds from the normal error distribution and evaluate them using precision, recall, and F1 score."
 />
 
 <Epilogue>
 
-Demir locks the threshold at the 99th percentile and replays last week's fourteen alerts through it. Twelve cosmic-background flags die without a sound. The two survivors are both the signal. Nazari runs the replay herself, twice, looking for the trick, and does not find one.
+The threshold locks at the 99th percentile before the watch change, and Nazari replays last week's fourteen alerts through it herself, hunting for the trick. Twelve cosmic-background flags die without a sound. The two survivors are both the signal. There is no trick to find.
 
 <Dialogue speaker="Chief Nazari">
 Two alerts, both worth my time. Fine. The next false positive still comes out of your sleep schedule, Ensign.

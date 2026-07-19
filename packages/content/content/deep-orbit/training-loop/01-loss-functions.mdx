@@ -24,11 +24,11 @@ consequence:
   narrative: "Now we can quantify exactly how wrong the network is. The loss score becomes our north star for improvement."
 hints:
   - level: nudge
-    content: "MSE = average of squared differences between predicted and actual"
+    content: "MSE is the mean of the squared differences between the true labels and the model's predictions, and TFJS ships it as a built-in loss."
   - level: guidance
-    content: "Use tf.losses.meanSquaredError(labels, predictions)"
+    content: "Inside mseLoss, replace the null return with a call to tf.losses.meanSquaredError, passing labels first and predictions second. It already reduces to the scalar tensor (shape []) that the tests expect, so no extra mean() step is needed."
   - level: solution
-    content: "const loss = tf.losses.meanSquaredError(tf.tensor([1, 0, 1]), tf.tensor([0.9, 0.2, 0.8]))"
+    content: "return tf.losses.meanSquaredError(labels, predictions);"
 keywords:
   - loss
   - mse

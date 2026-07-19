@@ -24,9 +24,9 @@ hints:
   - level: nudge
     content: "One critical failure mode without a human fallback blocks the whole deployment"
   - level: guidance
-    content: "Check the blocking condition first: any mode with severity 'critical' and no human fallback means 'do-not-deploy'. If you get past that, the presence of any critical or high mode means oversight. Otherwise deploy."
+    content: "Order the checks from most to least severe. First scan failureModes with .some for a mode whose severity === 'critical' and hasHumanFallback is false: that returns 'do-not-deploy'. Past that, any 'critical' or 'high' mode (all with fallbacks by then) returns 'deploy-with-oversight'. Only when neither scan hits do you return 'deploy'."
   - level: solution
-    content: "1) if (modes.some(m => m.severity === 'critical' && !m.hasHumanFallback)) return 'do-not-deploy'. 2) if (modes.some(m => m.severity === 'critical' || m.severity === 'high')) return 'deploy-with-oversight'. 3) return 'deploy'."
+    content: "const hasCriticalWithoutFallback = failureModes.some(; f => f.severity === 'critical' && !f.hasHumanFallback; ); if (hasCriticalWithoutFallback) {; return 'do-not-deploy'; }; const hasHighOrCritical = failureModes.some(; f => f.severity === 'critical' || f.severity === 'high'; ); if (hasHighOrCritical) {; return 'deploy-with-oversight'; }; return 'deploy';"
 keywords:
   - deployment
   - failure-modes
@@ -110,17 +110,31 @@ const loanModelAssessment: ModelImpactAssessment = {
 };
 
 function assessRisk(assessment: ModelImpactAssessment): string {
-  const hasCritical = assessment.failureModes.some(f => f.severity === 'critical');
-  const allHaveFallbacks = assessment.failureModes.every(f => f.humanFallback);
-
-  if (hasCritical && !allHaveFallbacks) {
-    return 'DO NOT DEPLOY: critical failure modes without human fallbacks';
+  // The blocking test is per-mode: a CRITICAL mode without its own human
+  // fallback blocks deployment. (Testing "all modes have fallbacks" is a
+  // different, wrong rule: it would let a harmless low-severity mode with
+  // no fallback veto an otherwise well-mitigated system.)
+  const criticalWithoutFallback = assessment.failureModes.some(
+    f => f.severity === 'critical' && !f.humanFallback
+  );
+  if (criticalWithoutFallback) {
+    return 'DO NOT DEPLOY: a critical failure mode has no human fallback';
   }
-  if (hasCritical && allHaveFallbacks) {
-    return 'DEPLOY WITH OVERSIGHT: critical risks mitigated by human review';
+
+  const hasHighOrCritical = assessment.failureModes.some(
+    f => f.severity === 'critical' || f.severity === 'high'
+  );
+  if (hasHighOrCritical) {
+    return 'DEPLOY WITH OVERSIGHT: severe risks mitigated by human review';
   }
   return 'DEPLOY: risks are manageable with standard monitoring';
-}`}
+}
+
+// The edge case that separates the two rules: one critical mode WITH a
+// fallback plus one low-severity mode WITHOUT one.
+// This function returns:
+//   'DEPLOY WITH OVERSIGHT: severe risks mitigated by human review'
+// The all-modes-have-fallbacks version would wrongly return DO NOT DEPLOY.`}
 </CodeBlock>
 
 ## High-Stakes vs. Low-Stakes

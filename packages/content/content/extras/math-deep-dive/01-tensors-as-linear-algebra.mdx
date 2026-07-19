@@ -23,11 +23,11 @@ consequence:
   narrative: "With vector spaces in your toolkit, tensor operations stop being black boxes."
 hints:
   - level: nudge
-    content: "tf.matMul composes two linear maps into one, exactly what chained CSS transforms do"
+    content: "Scaling, adding, and composing are all linear maps; two vectors are dependent exactly when they collapse onto the same line"
   - level: guidance
-    content: "Write linearCombination first: scale each vector, then add the results. For independence, ask whether one vector is a scaled copy of the other. The 2x2 determinant answers that: zero means dependent."
+    content: "linearCombination scales each vector with mul and adds the two results. matMulCompose is a single tf.matMul(A, B). For isLinearlyIndependent, pull both vectors out with arraySync(), form the 2x2 determinant by cross-multiplying the components, and compare its absolute value against the 1e-6 epsilon."
   - level: solution
-    content: "linearCombination: v1.mul(a).add(v2.mul(b)). matMulCompose: tf.matMul(A, B). isLinearlyIndependent: const [a, b] = v1.arraySync(); const [c, d] = v2.arraySync(); return Math.abs(a * d - b * c) > 1e-6;"
+    content: "return v1.mul(a).add(v2.mul(b)) as tf.Tensor1D; return tf.matMul(A, B) as tf.Tensor2D; const v1Data = v1.arraySync() as number[]; const v2Data = v2.arraySync() as number[]; const det = v1Data[0] * v2Data[1] - v1Data[1] * v2Data[0]; return Math.abs(det) > 1e-6;"
 keywords:
   - vector-space
   - basis-vectors
@@ -120,11 +120,24 @@ console.log(await collapsed.array());
 // a rank-deficient weight matrix can't learn distinct features
 
 // Reveal the rank with a QR decomposition: tf.linalg.qr rewrites the
-// matrix as Q (a rotation) times R (upper triangular). A zero on R's
-// diagonal marks a column that added no new direction.
-const [q, r] = tf.linalg.qr(rank1);
+// matrix as Q (a rotation) times R (upper triangular). A near-zero
+// entry on R's diagonal marks a column that added (almost) no new
+// direction. One catch: on an EXACTLY singular matrix like rank1,
+// TFJS's qr returns NaN instead of a clean zero. So probe a nearly
+// singular neighbor and read the diagonal against a threshold:
+const nearSingular = tf.tensor2d([
+  [1, 2],
+  [2, 4.001]  // second row is ALMOST 2x the first
+]);
+const [q, r] = tf.linalg.qr(nearSingular);
 console.log(await r.array());
-// Second diagonal entry of R is 0: rank 1`}
+// [[-2.2361, -4.4730],
+//  [ 0,      -0.0004]]
+// |R[1][1]| = 0.0004 vs |R[0][0]| = 2.2361: nearly four orders of
+// magnitude smaller. Treat any diagonal entry below a tolerance (say
+// 1e-3 times the largest one) as zero: this matrix is effectively
+// rank 1. Numerical rank is always a threshold decision, never an
+// equality test.`}
 </CodeBlock>
 
 ## Matrix Multiplication as Composition

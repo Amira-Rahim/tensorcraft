@@ -24,11 +24,11 @@ consequence:
   narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Demir begins building a model of normality."
 hints:
   - level: nudge
-    content: "Anomaly detection is about modeling normality, not memorizing every possible anomaly"
+    content: "A reading is anomalous when it sits too many standard deviations from the mean in either direction: the absolute z-score is what matters, so a deep dip counts as much as a spike"
   - level: guidance
-    content: "Compute statistics on normal data (mean, std, distribution) and flag outliers"
+    content: "Wrap value, mean, and std with tf.scalar, chain .sub and .div to get the z-score, then call .abs() so negative deviations count too. Read the number back with .dataSync()[0] and return whether it is strictly greater than 3 (a z-score of exactly 3 is still normal)"
   - level: solution
-    content: "const threshold = mean + 3 * std; const isAnomaly = value > threshold;"
+    content: "const z = tf.scalar(value).sub(tf.scalar(mean)).div(tf.scalar(std)).abs(); return z.dataSync()[0] > 3;"
 keywords:
   - anomaly
   - baseline
@@ -51,7 +51,7 @@ How do we know which? How do we tell a genuine anomaly from a false alarm?
 
 You've dealt with this in frontend monitoring. You set baseline metrics (LCP under 2.5s, CLS under 0.1) and alert when values drift past them. Anomaly detection is the same move: define what "normal" looks like, then flag whatever lands outside it.
 
-<LearningObjectives objectives={["Understand anomaly detection as modeling normality, not cataloging every possible anomaly", "Compute baseline statistics (mean, std, percentiles) from normal signal data", "Set detection thresholds using statistical methods (z-score, IQR)", "Evaluate detection quality with precision and recall tradeoffs"]} />
+<LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute baseline statistics (mean, std, percentiles) from normal signal data", "Set detection thresholds using statistical methods (z-score, IQR)", "Evaluate detection quality with precision and recall tradeoffs"]} />
 
 <BossBeat
   beatId="deep-orbit-anomaly-7741-training-set"
@@ -59,7 +59,7 @@ You've dealt with this in frontend monitoring. You set baseline metrics (LCP und
   options={[
     {
       label: "cooperate",
-      display: "Leave it in: let the data decide, not you",
+      display: "Leave it in: the data decides, you don't",
       consequence: "Statistically defensible: it passes every baseline. But if 7741 is the anomaly's first visit, you just taught the detector that the thing it exists to find is normal. Contamination does not announce itself; it subtracts sensitivity exactly where you need it most."
     },
     {
@@ -69,8 +69,8 @@ You've dealt with this in frontend monitoring. You set baseline metrics (LCP und
     },
     {
       label: "random",
-      display: "Flip a coin; the baselines genuinely cannot tell",
-      consequence: "Twenty-eight thousand readings and you flipped for the one that matters. Whatever the coin said, the comment field is empty, and future-you inherits a training set with an unexplained hole or an unexamined guest."
+      display: "Train on everything, 7741 included: more data is more data",
+      consequence: "The run converges and nothing looks wrong, which is the problem. 7741 is inside the weights now, so every score the model ever gives that reading measures memory, not judgment. More data was more data for 28,799 rows; the one exception had a second job as your eval case, and you can never again measure what the model thinks of it."
     },
     {
       label: "dominant",
@@ -167,7 +167,7 @@ PAGER, two weeks after go-live: yesterday's 95th percentile is today's median. T
 
 <RecallPrompt
   question="A z-score threshold of |z| > 3 flags 0.27% of samples in normal Gaussian data. If a monitor processes 100,000 readings per hour and the data is normal, roughly how many false-alarm flags does it generate per hour?"
-  answer="About 270 false alarms per hour. P(|Z| > 3) is approximately 0.0027 for a standard normal distribution; multiplied by 100,000 readings that is ~270 false-positive flags even when nothing is wrong. Statistical thresholds are probabilities, not guarantees, and the alert-fatigue cost grows directly with volume."
+  answer="About 270 false alarms per hour. P(|Z| > 3) is approximately 0.0027 for a standard normal distribution; multiplied by 100,000 readings that is ~270 false-positive flags even when nothing is wrong. Statistical thresholds are probabilities; they guarantee nothing, and the alert-fatigue cost grows directly with volume."
 />
 
 <LessonRecap

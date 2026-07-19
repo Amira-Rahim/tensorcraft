@@ -26,11 +26,11 @@ consequence:
   narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
 hints:
   - level: nudge
-    content: "Good prompts have three parts: role (who), context (what data), format (how to respond)"
+    content: "A prompt template is a function, not a memorized paragraph: role, reference context, the live signal values, and the output contract, rebuilt on every call."
   - level: guidance
-    content: "Use system/user message separation, provide examples, request structured output (JSON)"
+    content: "Assemble an array of lines and join them with newlines. The graded pieces: the exact role string containing DEEP SCAN, the known natural frequencies 5, 12, 23, 47 Hz, the actual signal.amplitude, signal.frequency, and signal.phase concatenated into the text (the last test builds two different signals and requires the prompts to differ), and a closing request for JSON with classification, confidence, and reasoning fields."
   - level: solution
-    content: "System: 'You are a signal analyst.' User: 'Given these readings: [...], classify and explain in JSON format: {class, confidence, reasoning}.'"
+    content: "const lines = [ 'You are DEEP SCAN, a signal classifier for deep space signals.', '', 'Known natural frequencies: 5, 12, 23, 47 Hz.', 'Normal amplitude range: 0.1 to 1.0.', '', 'Signal data:', '- Amplitude: ' + signal.amplitude, '- Frequency: ' + signal.frequency + ' Hz', '- Phase: ' + signal.phase + ' rad', '', 'Classify this signal. Respond in JSON with fields: classification (normal or anomalous), confidence (0.0-1.0), reasoning (explanation).', ]; return lines.join('\\n');"
 keywords:
   - prompt-engineering
   - system-prompt
@@ -152,12 +152,6 @@ Write a prompt template that produces structured signal analysis.
 
 <Epilogue>
 
-Four hours, fifty minutes to the window. Farah's prompt log shows nine versions; version nine is the first one whose output survives her red pen with fewer than three corrections. Demir diffs v8 against v9 looking for the trick. The diff is one added line: the normal amplitude range.
-
-<Dialogue speaker="Dr. Farah">
-That line is the whole lesson, Demir. The model has read more physics than both of us and it still didn't know what normal looks like in Sector 7-G. Nothing out here does.
-</Dialogue>
-
-She commits the prompt file to the mission repository like any other instrument calibration. Then she queues the next problem: the model still can't see the signal database it keeps being asked about.
+Four hours, fifty minutes to the window. Farah's prompt log shows nine versions; version nine is the first one whose output survives her red pen with fewer than three corrections. Demir diffs v8 against v9 looking for the trick. The diff is one added line: the normal amplitude range. Farah's commit message does the explaining for her: the model has read more physics than anyone aboard and still had no idea what normal looks like in Sector 7-G, because nothing out here does. One line of context outperformed eight rounds of sharper instructions. She commits the prompt file to the mission repository like any other instrument calibration, then queues the next problem: the model still can't see the signal database it keeps being asked about.
 
 </Epilogue>

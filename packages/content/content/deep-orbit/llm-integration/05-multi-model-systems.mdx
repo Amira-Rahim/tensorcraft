@@ -25,11 +25,11 @@ consequence:
   narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
 hints:
   - level: nudge
-    content: "Each model in the pipeline handles one task, passing its output to the next"
+    content: "Each stage consumes the previous stage's output, and the expensive final stage is conditional: no anomaly, no alert."
   - level: guidance
-    content: "Define clear interfaces between models: classifier output → anomaly input → LLM context"
+    content: "Await classify(signal) to get the class string, pass the signal plus that classification into detectAnomaly, and call generateAlert only when the detector returned true; a normal signal gets alert null, never an empty string. Return an object carrying classification, isAnomaly, and alert."
   - level: solution
-    content: "const classification = await classifier.predict(signal); if (anomalyDetector.isAnomaly(classification)) { const report = await llm.analyze(classification); }"
+    content: "const classification = await classify(signal); const isAnomaly = await detectAnomaly(signal, classification); const alert = isAnomaly ? await generateAlert(signal, classification) : null; return { classification, isAnomaly, alert };"
 keywords:
   - orchestration
   - pipeline
@@ -185,7 +185,7 @@ PAGER, 02:40: the claim checker is down and reports are queueing for the transmi
 
 <Epilogue>
 
-The bridge is dark and everyone who built the pipeline is asleep when the first fully automated alert fires. Classifier, autoencoder, LSTM, language model: signal to finished summary with no human awake, Demir's checker signing off on every number in between. The alert's footer notes the pulse interval, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
+The bridge is dark and everyone who built the pipeline is asleep when the first fully automated alert fires. Classifier, autoencoder, LSTM, language model: signal to finished summary with no human awake, Demir's checker signing off on every number in between. The alert's footer notes the pulse interval: 62.0 seconds, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
 
 <Dialogue speaker="Commander Mirza">
 How long from signal to report? Make it faster.

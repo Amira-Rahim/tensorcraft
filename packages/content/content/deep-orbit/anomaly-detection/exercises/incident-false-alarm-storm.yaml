@@ -12,9 +12,21 @@ instructions: |
       action: 'recompute-baseline' | 'retrain' | 'recalibrate-threshold' | 'escalate',
     }
 
-  Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baseline.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive) → threshold-drift; else → real-event. Each cause carries its remedy: sensor-change → recompute-baseline, model-stale → retrain, threshold-drift → recalibrate-threshold, real-event → escalate. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch.
+  Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baselineAlerts.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive) → threshold-drift; else → real-event. Each cause carries its remedy: sensor-change → recompute-baseline, model-stale → retrain, threshold-drift → recalibrate-threshold, real-event → escalate. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch.
 starterCode: |
   function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
+    // Concept: diagnose an alert storm by matching known failure signatures
+    // IN ORDER, with escalation to a human as the default for anything else.
+    // Recipe:
+    // 1. rate = currentAlerts.alertsPerHour to 1 decimal: Math.round(x * 10) / 10
+    // 2. ratio = currentAlerts.alertsPerHour / Math.max(baselineAlerts.alertsPerHour, 0.1),
+    //    also rounded to 1 decimal
+    // 3. Check causes in this exact order:
+    //    sensorAuditLog.recentChanges.length > 0 -> 'sensor-change' / 'recompute-baseline'
+    //    baselineAlerts.modelAge > 90            -> 'model-stale' / 'retrain'
+    //    ratio >= 5 && ratio <= 20               -> 'threshold-drift' / 'recalibrate-threshold'
+    //    anything else                           -> 'real-event' / 'escalate'
+    // 4. return { rate, ratio, cause, action }
     return null; // your code here
   }
 solutionCode: |

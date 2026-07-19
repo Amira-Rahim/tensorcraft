@@ -20,7 +20,7 @@ starterCode: |
     // TODO: reshape a from (3,4) to (2,6)
   }
 
-  // np.mean(a, axis=1): mean along columns
+  // np.mean(a, axis=1): one mean per row (reduces across the columns)
   function meanAlongAxis(a) {
     // TODO: compute mean along axis 1
   }

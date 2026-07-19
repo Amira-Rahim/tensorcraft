@@ -143,7 +143,11 @@ export default function PricingPage() {
         </section>
 
         {/* 5-tier Pricing Grid */}
-        <PricingTiers />
+        {/* Suspense: PricingTiers reads useSearchParams to restore a
+            selection carried through the auth roundtrip. */}
+        <Suspense fallback={null}>
+          <PricingTiers />
+        </Suspense>
 
         {/* Refund guarantee badge */}
         <section

@@ -25,11 +25,11 @@ consequence:
   narrative: "Five components on the main display: preprocessing, feature extraction, classification, anomaly detection, reporting. Behind them the ticker reads 47.0 seconds. Mirza looks at the number, then at the five boxes that have fourteen days to be ready for it, and says nothing at all."
 hints:
   - level: nudge
-    content: "Each PipelineStage declares an inputType and outputType. Wire stages so every output type matches the next stage's input"
+    content: "A pipeline is a chain: each stage validates its input before processing, and its output becomes the next stage's input."
   - level: guidance
-    content: "Map the data flow: raw signal → preprocessed → features → classification → report"
+    content: "In addStage, push the stage onto this.stages and return this so calls chain. In run, walk this.stages in order carrying a data variable: when stage.validate(data) is false, throw an Error whose message is exactly 'Validation failed at: ' plus stage.name; otherwise replace data with stage.process(data), and return data at the end. The grader chains an 8-sample window through normalize, FFT (5 bins), and a [1, 5] tensor stage."
   - level: solution
-    content: "Create a pipeline config that declares each stage, its inputs, outputs, and dependencies"
+    content: "this.stages.push(stage); return this; let data = input; for (const stage of this.stages) { if (!stage.validate(data)) { throw new Error(`Validation failed at: ${stage.name}`); } data = stage.process(data); } return data;"
 keywords:
   - architecture
   - system-design
@@ -188,18 +188,16 @@ Design a typed pipeline and validate the dependency graph.
     "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
     "A component manifest with dependency declarations lets you run cycle and completeness checks before any inference runs."
   ]}
-  bridge="Just as `package.json` declares dependencies between npm packages, a pipeline config declares data-shape contracts between ML stages; but unlike npm, a contract violation in ML is silent and shows up as accuracy drift, not a resolution error."
+  bridge="Just as `package.json` declares dependencies between npm packages, a pipeline config declares data-shape contracts between ML stages; but unlike npm, a contract violation in ML is silent and shows up as accuracy drift instead of a resolution error."
   youCanNow="Design a multi-stage ML inference pipeline as a typed dependency graph and validate its component contracts before runtime."
 />
 
 <Epilogue>
 
-The diagram stays on the main display after the briefing ends. Five boxes, typed edges, one arrow in and one arrow out. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA), wired to fire if the classifier's confidence drops below threshold. ARIA studies it for 1.4 seconds, which for her is a long time.
+The diagram stays on the main display after the briefing ends. Five boxes, typed edges, one arrow in and one arrow out. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA), wired to fire if the classifier's confidence drops below threshold. Behind the diagram, the live telemetry ticker updates: pulse interval 47.0 seconds. Mirza looks at the number, then at the five boxes that have fourteen days to be ready for it, and says nothing at all. ARIA studies the lower corner for 1.4 seconds, which for her is a long time.
 
 <Dialogue speaker="ARIA">
 I have reviewed the architecture. I appear to be the fallback path. It is a smaller box than I had. It is still a box.
 </Dialogue>
-
-Behind the diagram, the live telemetry ticker updates: pulse interval 47.0 seconds. Mirza looks at the number, then at the five boxes that have fourteen days to be ready for it, and says nothing at all.
 
 </Epilogue>

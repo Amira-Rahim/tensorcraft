@@ -25,11 +25,11 @@ consequence:
   narrative: "Confidence scores, inference latency, drift detection, all streaming in real time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
 hints:
   - level: nudge
-    content: "Monitor three things: prediction quality (confidence), performance (latency), and data health (drift)"
+    content: "A monitor is two running measurements: the average confidence of logged predictions, and drift as the distance between recent feature means and the baseline."
   - level: guidance
-    content: "Track running statistics and alert when metrics cross thresholds, like error rate alerts in web monitoring"
+    content: "logPrediction just pushes onto this.confidences. avgConfidence averages that array with reduce and returns 0 when nothing is logged. For computeDrift, average each feature column of recentInputs into a recentMean array the same length as this.baselineMean, then return the Euclidean distance: square each baselineMean-minus-recentMean difference, sum them, Math.sqrt the sum."
   - level: solution
-    content: "Collect confidence, latency, and feature distribution stats; alert when drift score exceeds threshold"
+    content: "this.confidences.push(confidence); if (this.confidences.length === 0) return 0; return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length; const featureCount = this.baselineMean.length; const recentMean = new Array(featureCount).fill(0); for (const row of recentInputs) { for (let i = 0; i < featureCount; i++) { recentMean[i] += row[i] / recentInputs.length; } } let sumSqDiff = 0; for (let i = 0; i < featureCount; i++) { sumSqDiff += (this.baselineMean[i] - recentMean[i]) ** 2; } return Math.sqrt(sumSqDiff);"
 keywords:
   - monitoring
   - observability
@@ -218,11 +218,11 @@ Build a model monitor with drift detection.
   youCanNow="Implement a model health monitor that tracks confidence trends, inference latency percentiles, and data drift against a training-time baseline."
 />
 
-> **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. His SRE team rotates monitoring duty weekly; the operator on rotation has 30 minutes to file a drift report whenever PSI > 0.2 fires. Same alert, different shift.
+> **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. Last quarter it paged his cell for three straight days, every feature mean shifted at once, score pinned above threshold. Nothing in the world had changed: their own maintenance rotation had recalibrated the camera rig, and the detector was faithfully reporting the distance between the old sensors and the new ones. The check compares two means; it cannot tell you which side moved. They rebuilt the baseline from post-calibration data and the paging stopped. The line Hassan then added to the runbook travels well: when drift fires, read the maintenance log before you read the sky.
 
 <Epilogue>
 
-The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift in two places: fft_5, the 73.4 Hz line, hotter every hour, and the timing between its spikes. The interval attached to the second alert: 37.0 seconds.
+The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift in two places: fft_5, the 73.4 Hz line, hotter every hour, and the timing between its spikes. The interval attached to the second alert: 37.0 seconds. Under both alerts, the triangulation job posts its overnight fix, the third in a row to agree with itself: bearing 127.3, stable for a week now, distance estimate settling toward 4.2 light-years.
 
 <Dialogue speaker="Dr. Farah">
 We built this to catch the model degrading. It's catching the signal changing instead. Keep both alerts armed. I no longer trust either one of them to stay still.

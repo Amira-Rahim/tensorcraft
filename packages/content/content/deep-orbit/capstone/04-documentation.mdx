@@ -24,11 +24,11 @@ consequence:
   narrative: "Demir writes the handover: a Model Card, an API reference, and a runbook precise enough that a rule-based system could execute it without him. One will review it."
 hints:
   - level: nudge
-    content: "Model Cards document ML models the way README files document software projects"
+    content: "A Model Card is a README for a model: render the metadata you are given into fixed sections, never hardcode the values."
   - level: guidance
-    content: "Cover: what the model does, how it was trained, its limitations, and how to use it"
+    content: "Build an array of lines and join it with a newline. The graded strings are exact: a '# {name} v{version}' heading, accuracy rendered as (meta.accuracy * 100).toFixed(1) followed by a percent sign, '- Size: {sizeMB} MB' and '- Inference: {inferenceMs}ms' under '## Performance', one '- ' bullet per entry of meta.limitations, and '- Input:' / '- Output:' lines under '## Usage'."
   - level: solution
-    content: "Write a Model Card with sections for overview, training data, performance metrics, limitations, and API usage"
+    content: "const lines = [ `# ${meta.name} v${meta.version}`, '', '## Performance', `- Accuracy: ${(meta.accuracy * 100).toFixed(1)}%`, `- Size: ${meta.sizeMB} MB`, `- Inference: ${meta.inferenceMs}ms`, '', '## Limitations', ...meta.limitations.map(l => `- ${l}`), '', '## Usage', `- Input: ${meta.inputFormat}`, `- Output: ${meta.outputFormat}`, ]; return lines.join('\\n');"
 keywords:
   - documentation
   - model-card
@@ -205,12 +205,12 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Epilogue>
 
-Demir finishes the first draft of the runbook in the dead hours of the night watch and assigns it a single reviewer.
+The runbook's first draft comes together in the dead hours of the night watch, and its single assigned reviewer returns comments within ninety seconds.
 
 <Dialogue speaker="ARIA">
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-He rewrites it with a number: drift above 0.5, retrain, no judgment required. The finished document reads less like documentation and more like a will, which he supposes is the point: this is the version of him that stays behind if the crew can't. On the ticker the pulse interval touches 31.6 seconds. Tomorrow they deploy.
+Demir rewrites it with a number: drift above 0.5, retrain, no judgment required. The finished document reads less like documentation and more like a will, which he supposes is the point: this is the version of him that stays behind if the crew can't. On the ticker the pulse interval touches 31.6 seconds. Tomorrow they deploy.
 
 </Epilogue>

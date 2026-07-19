@@ -25,9 +25,11 @@ consequence:
   narrative: "The signal begins to take shape as structured data."
 hints:
   - level: nudge
-    content: "A Float32Array stores numbers flat and contiguous in memory; tf.tensor() starts from that same layout"
+    content: "Three moves: create the tensor from the plain array, copy its shape and values out, then release the GPU memory yourself with dispose"
+  - level: guidance
+    content: "tf.tensor(streamValues) builds the 1D tensor. Its .shape property is already a plain array; for the values wrap dataSync() in Array.from to get a real JS array, and only after both are captured call .dispose() on the tensor"
   - level: solution
-    content: "const t = tf.tensor([1, 2, 3])"
+    content: "const reading = tf.tensor(streamValues); const shape = reading.shape; const values = Array.from(reading.dataSync()); reading.dispose();"
 keywords:
   - tensor
   - array
@@ -48,7 +50,7 @@ Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. A
 Then we need someone who doesn't start from rules. Demir, you think in data structures. Start there.
 </Dialogue>
 
-You've worked with arrays your entire career: DOM elements, API responses, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage. That's the whole gap this lesson closes.
+You've worked with arrays your entire career: DOM elements, API responses, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage. That list is the gap this lesson closes.
 
 <LearningObjectives objectives={["Understand what a tensor is and how it relates to JavaScript arrays", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
 
@@ -126,12 +128,14 @@ Now it's your turn. Create your first tensor from a JavaScript array.
   whatYouLearned={[
     "A tensor adds shape tracking, GPU-backed math, and an explicit memory lifecycle on top of the flat number storage you already know from Float32Array.",
     "Tensor rank equals the number of dimensions: scalar=0, vector=1, matrix=2.",
-    "A tensor's data lives on the backend, not in JavaScript. You cannot iterate it directly; call await t.array() or dataSync() to pull the values back across.",
+    "A tensor's data lives on the backend, outside JavaScript. You cannot iterate it directly; call await t.array() or dataSync() to pull the values back across.",
     "The JavaScript GC cannot see GPU memory: dispose() tensors you keep explicitly, and use tf.tidy() for everything intermediate. tf.memory().numTensors is your leak detector."
   ]}
   bridge="Just as a `Float32Array` holds numbers in flat contiguous memory, a `tf.tensor` wraps that same layout with shape metadata, GPU dispatch, and a manual disposal contract."
   youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and manage their GPU memory with dispose() and tf.tidy() without leaking."
 />
+
+One more thing the archive files between lessons, starting now: DISPATCH intercepts, relay chatter from other crews working the same band on other missions. This is the first.
 
 > **DISPATCH archive · field intercept #02-T:** Yara's collective uses the same shape contract for image latents in Nova Canvas: `[batch, channels, h, w]`. Different domain, same primitive. The tensor is the lingua franca; the meaning is the lesson.
 
@@ -140,9 +144,9 @@ Now it's your turn. Create your first tensor from a JavaScript array.
 Demir loads the first kilobyte of the stream into a tensor and prints its rank, just to feel the shape of the thing. Rank 2: rows and columns. Whatever is out in Sector 7-G, it isn't shouting noise; it's sending tables.
 
 <Dialogue speaker="ARIA">
-Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you, Ensign.
+Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you.
 </Dialogue>
 
-Six hours of rules got nothing. One data structure got a shape. Tomorrow: what the shape means.
+Demir saves the tensor to the shared workspace and logs one line in the day file: rank 2, rows by columns, meaning unknown.
 
 </Epilogue>

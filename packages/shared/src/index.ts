@@ -11,6 +11,7 @@ export {
   PRICING,
   ROUTES,
   THEME_CONTENT,
+  EXERCISE_CONTENT,
   DEFAULT_THEME,
   getModuleLessonCount,
   getPaidLessonCount,

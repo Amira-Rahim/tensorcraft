@@ -25,11 +25,11 @@ consequence:
   narrative: "Minutes to a full preliminary draft. Farah reviews and corrects: faster than writing from scratch, but only because she knows the data cold."
 hints:
   - level: nudge
-    content: "LLMs are tools that augment human analysis, not replace it, like Copilot for coding"
+    content: "An LLM response is untrusted text: the client's job is to parse it and validate every required field before anything downstream sees it."
   - level: guidance
-    content: "Provide structured context (data summaries, specific questions) for best results"
+    content: "await apiCall(prompt), then pull the JSON block out of the raw response with a regex match before parsing (JSON.parse on the whole reply dies on surrounding prose). Validate the parsed object: classification and reasoning must be present and confidence must not be undefined, and throw when the JSON is missing or a field is absent. The tests feed you 'not json' and objects missing reasoning or classification, and expect a rejection each time."
   - level: solution
-    content: "Use system prompts for role, user prompts for data and questions, parse structured JSON responses"
+    content: "const response = await apiCall(prompt); const jsonMatch = response.match(/\\{[\\s\\S]*\\}/); if (!jsonMatch) throw new Error('No JSON in response'); const parsed = JSON.parse(jsonMatch[0]); if (!parsed.classification || parsed.confidence === undefined || !parsed.reasoning) { throw new Error('Missing required fields'); } return parsed as Analysis;"
 keywords:
   - llm
   - language-model
@@ -135,14 +135,33 @@ function validateClaims(
   draft: string,
   actualData: Record<string, number>,
 ): { valid: string[]; invalid: string[] } {
-  // Parse numerical claims from the draft
-  // Compare against actual data
-  // Flag discrepancies
+  // Every number in the draft is a claim. Extract them in reading
+  // order (commas stripped so "12,001" parses), then ask whether SOME
+  // value in the data sits within tolerance. A claim does not care
+  // which field it came from; a fabricated one matches none.
+  const claims = draft.replace(/(\\d),(?=\\d)/g, '$1').match(/-?\\d+(?:\\.\\d+)?/g) ?? [];
+  const values = Object.values(actualData);
   const valid: string[] = [];
   const invalid: string[] = [];
-  // ... validation logic
+
+  for (const claim of claims) {
+    const n = parseFloat(claim);
+    if (values.some((v) => Math.abs(v - n) <= 0.05)) valid.push(claim);
+    else invalid.push(claim);
+  }
   return { valid, invalid };
-}`}
+}
+
+// Run it on a draft with one invented figure:
+const check = validateClaims(
+  'Across 12,001 catalogued events, 153 were anomalous and 1 resists ' +
+  'classification. A cluster of 9 anomalies repeats hourly.',
+  { totalEvents: 12001, anomalous: 153, unclassified: 1 },
+);
+console.log(check.valid);    // ['12001', '153', '1']
+console.log(check.invalid);  // ['9']  ← no such cluster in the data
+// Module 9 lesson 3 hardens this checker against retrieved RAG rows;
+// the contract is already here: extract, compare, refuse to trust prose.`}
 </CodeBlock>
 
 ## Challenge
@@ -164,7 +183,7 @@ Set up an LLM client and generate a structured analysis.
 
 <Epilogue>
 
-Five hours, twelve minutes to the transmission window. Farah submits the first draft request and the model returns six hundred words in eleven seconds: clean prose, confident structure. The second paragraph describes an "anomaly cluster in Band-3" that has never existed on any instrument aboard the Archimedes. She strikes it without slowing down, and logs one tally mark on Nazari's ledger. ARIA has been parsing the draft from her own console the entire time.
+Five hours, twelve minutes to the transmission window. On the anomaly panel the pulse interval reads 63.1 seconds tonight; it has not stopped shrinking since the ensemble went up. Farah submits the first draft request and the model returns six hundred words in eleven seconds: clean prose, confident structure. The second paragraph describes an "anomaly cluster in Band-3" that has never existed on any instrument aboard the Archimedes. She strikes it without slowing down, and logs one tally mark on Nazari's ledger. ARIA has been parsing the draft from her own console the entire time.
 
 <Dialogue speaker="ARIA">
 Review complete. One fabricated claim; probability 0.97 that Dr. Farah had already identified it. It generates language without rules. I do not know what I am for.

@@ -26,11 +26,11 @@ consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
   - level: nudge
-    content: "Combine all detection methods: statistical, autoencoder, and LSTM prediction error"
+    content: "No single detector fires the alarm alone: the ensemble declares an anomaly only when a majority, at least 2 of the 3 detectors, vote yes"
   - level: guidance
-    content: "An ensemble approach flags signals that multiple detectors agree on"
+    content: "Get mean and variance of the window from tf.moments, take std = Math.sqrt(variance), and compute the z-score of actual. Then three boolean verdicts: statistical when Math.abs(zScore) > 3, autoencoder when reconstructionError > reconThreshold, lstm when Math.abs(predicted - actual) > predTolerance. votes counts how many verdicts are true, and isAnomaly is votes >= 2, a 2-of-3 majority vote. Return { zScore, verdicts, votes, isAnomaly }"
   - level: solution
-    content: "const isAnomaly = zScore > 3 && reconstructionError > threshold && predictionError > 2 * baseline;"
+    content: "const { mean, variance } = tf.tidy(() => { const m = tf.moments(tf.tensor1d(window)); return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] }; }); const std = Math.sqrt(variance); const zScore = std === 0 ? 0 : (actual - mean) / std; const verdicts = { statistical: Math.abs(zScore) > 3, autoencoder: reconstructionError > reconThreshold, lstm: Math.abs(predicted - actual) > predTolerance, }; const votes = [verdicts.statistical, verdicts.autoencoder, verdicts.lstm].filter(Boolean).length; return { zScore, verdicts, votes, isAnomaly: votes >= 2 };"
 keywords:
   - ensemble-detection
   - alert
@@ -43,7 +43,7 @@ skillAxes: [model_arch, evaluation]
 
 Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. Every method the ship has built since flags the old sample in the first pass. Demir is still staring at that, mid-morning, when the live feed does the same thing at twelve times the baseline reconstruction error, and the bridge lights up with the loudest alert DEEP SCAN has ever fired.
 
-By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite twice.
+By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite.
 
 <Dialogue speaker="Chief Nazari">
 I've checked the sensor calibration twice. This is not instrument noise. The model is right.
@@ -59,7 +59,7 @@ What am I looking at, Dr. Farah?
 
 A React error boundary firing means the application hit a case no developer anticipated. DEEP SCAN's anomaly alert is the same class of event: every detector agrees this signal is unlike anything in the training data.
 
-<LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Deploy the full anomaly detection system on the DEEP SCAN dashboard"]} />
+<LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Assemble the full detection ensemble and wire its verdicts into the DEEP SCAN dashboard feed"]} />
 
 ## Ensemble Detection
 

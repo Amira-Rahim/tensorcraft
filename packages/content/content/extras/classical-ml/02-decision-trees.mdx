@@ -21,11 +21,11 @@ consequence:
   narrative: "Every prediction from your tree now traces back to a readable chain of if/else rules, an explanation a compliance officer can audit. Regulated industries require nothing less."
 hints:
   - level: nudge
-    content: "A split is just choosing which feature and value to branch on"
+    content: "Gini impurity measures how mixed a group's labels are: 0 for a pure group, 0.5 for an even binary split, and a split is good when it drives both sides toward 0."
   - level: guidance
-    content: "Gini impurity measures how mixed a group's labels are. Compute each class's proportion, square them, subtract the squares from 1. A pure group gives 0; a 50/50 binary group gives 0.5."
+    content: "In giniImpurity, guard the edge case first: an empty labels array must return 0, not 1. Otherwise count each label's occurrences, then start impurity at 1 and subtract each class's squared proportion p * p. For findBestSplit, loop over every feature index and every midpoint threshold between sorted neighboring values, partition the data into left (<= threshold) and right (> threshold), and keep the featureIndex/threshold pair with the lowest length-weighted average of the two sides' giniImpurity."
   - level: solution
-    content: "const gini = (labels) => { const counts = {}; labels.forEach(l => counts[l] = (counts[l] || 0) + 1); return 1 - Object.values(counts).reduce((s, c) => s + (c / labels.length) ** 2, 0); }; For findBestSplit, try every feature/threshold pair and keep the one with the lowest weighted Gini of the two sides."
+    content: "const total = labels.length; if (total === 0) return 0; const counts = new Map<number, number>(); for (const label of labels) {; counts.set(label, (counts.get(label) ?? 0) + 1); }; let impurity = 1; for (const count of counts.values()) {; const p = count / total; impurity -= p * p; }; return impurity;"
 keywords:
   - decision-tree
   - gini-impurity

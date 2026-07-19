@@ -26,11 +26,11 @@ consequence:
   narrative: "The pipeline goes green twice: once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
 hints:
   - level: nudge
-    content: "CI/CD for ML adds model validation and benchmark steps to the standard test→build→deploy flow"
+    content: "A CI gate is arithmetic plus a comparison: accuracy is correct over total, and the gate passes only when that accuracy clears the minimum threshold."
   - level: guidance
-    content: "Add steps that check model accuracy against a holdout set and benchmark inference speed"
+    content: "Count predictions where predicted === actual, set total = predictions.length, and compute accuracy = correct / total, forcing accuracy to 0 when total is 0 so an empty eval batch fails cleanly instead of yielding NaN. Return a GateResult { accuracy, passed, total, correct } where passed requires both total > 0 and accuracy >= minAccuracy."
   - level: solution
-    content: "Add validate-model (accuracy > 90%) and benchmark (inference < 20ms) steps to GitHub Actions"
+    content: "const correct = predictions.filter(p => p.predicted === p.actual).length; const total = predictions.length; const accuracy = total === 0 ? 0 : correct / total; return { accuracy, passed: total > 0 && accuracy >= minAccuracy, total, correct, };"
 keywords:
   - ci-cd
   - github-actions
@@ -42,10 +42,10 @@ skillAxes: [deployment]
 
 > **MERGE REQUEST 47 · deploy.yml · DEMIR → NAZARI · REVIEW REQUIRED** · "Standard web CI plus three model gates: accuracy, latency, memory budget. All green on my branch. Requesting sign-off before this wires to main."
 
-Nazari reviews files, not badges. You are reviewing this one with her, and here is the tell: the flaw is not in what the pipeline checks. It is in what the pipeline checks it *against*. Hold that question while you read the workflow. She is about to catch what the badge missed, and the rest of this lesson is the repair.
+Nazari reviews files, not badges. You are reviewing this one with her, and here is the tell: the flaw is not in what the pipeline checks. It is in what the pipeline checks it *against*. Hold that question while you read the workflow; before this lesson ends, the pipeline's own log will hand you the catch, and the rest of the lesson is the repair.
 
 <Dialogue speaker="Chief Nazari">
-Manual testing is how systems fail in production, which is why the standing order was: automate everything, every push runs the full pipeline, any failure blocks the ship. Your merge request claims all of that. So we review the file, not the badge. A review that only reads the green parts is not a review.
+Manual testing is how systems fail in production, which is why the standing order was: automate everything, every push runs the full pipeline, any failure blocks the ship. Your merge request claims all of that. So we open the file. A review that only reads the green parts is not a review.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -132,8 +132,29 @@ jobs:
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: \${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist`}
+          publish_dir: ./dist
+
+      # Rollback on failure: re-run the accuracy gate against the LIVE
+      # deployment. If it fails, restore the previous model artifact,
+      # republish, and keep the run red so the failure pages someone.
+      - name: Smoke-test live deployment
+        id: smoke
+        continue-on-error: true
+        run: |
+          node scripts/validate-model.js \\
+            --model https://deep-scan.pages.dev/models/deep-scan-v1.json \\
+            --test-data data/holdout.json \\
+            --min-accuracy 0.90
+      - name: Roll back model artifact
+        if: steps.smoke.outcome == 'failure'
+        run: |
+          cp models/previous/deep-scan-v1.json models/deep-scan-v1.json
+          npm run build
+          npx gh-pages -d dist
+          exit 1`}
 </CodeBlock>
+
+The last two steps are the rollback objective made concrete: the smoke test re-runs the accuracy gate against what actually deployed, and on failure the previous model artifact is restored and republished while the workflow stays red, because a rollback that quietly succeeds is how a bad model stays shipped.
 
 ## Validation Scripts
 
@@ -198,7 +219,18 @@ The first full run goes green in eleven minutes, end to end.
 All gates passed, first try. Same as a web app: once CI is green, what's on main is what ships.
 </Dialogue>
 
-Nazari reads the logs instead of the badge. The validate-model step pulled `deep-scan-v1.json` from the CI cache: the build from eight days ago, before quantization, before pruning. The gate measured a model that no longer exists and called it healthy.
+Before anyone answers him, scroll the log of the step that mattered:
+
+<CodeBlock language="text" title="ci-run-47.log · validate-model">
+{`▸ Restore model artifact
+    Cache restored from key: deep-scan-model
+▸ Validate model accuracy
+    Loaded models/deep-scan-v1.json (340 MB)
+    Holdout accuracy: 94.2% (min 0.90)
+    Gate: PASSED ✓`}
+</CodeBlock>
+
+Read the two numbers the gate is proudest of. The artifact this merge request ships is 42 MB and scores 91.8 percent on that same holdout; those figures have been on the engineering board since the pruning review. The model the pipeline just blessed is 340 MB at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
 
 <Dialogue speaker="Chief Nazari">
 Your lockfile pins code. Nothing in this file pins weights. Hash the artifact, key the cache on the hash, and rerun. That's 40 minutes, and I'm adding them to the ledger next to the three hours your 80-percent prune cost us.
@@ -210,7 +242,7 @@ Write a model validation gate for CI/CD.
 
 <Exercise slug="ci-cd-gate" />
 
-<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="CI workflows cache artifacts by path or time, not by content hash. If the cache key does not include the model's file hash, a stale weight file from a previous training run can satisfy the cache hit and pass all accuracy gates, measuring a model that no longer exists. You must version weights separately and key the cache on the artifact hash." />
+<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. CI caches CAN pin content (GitHub Actions keys support hashFiles() over the artifact), but if the key omits the model's content hash, a weight file from a previous training run satisfies the cache hit and passes every accuracy gate, measuring a model that no longer exists. Version weights separately and key the cache on the artifact's hash." />
 
 <RecallPrompt
   question="What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"

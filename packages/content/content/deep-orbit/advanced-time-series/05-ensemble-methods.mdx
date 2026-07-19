@@ -28,7 +28,7 @@ hints:
   - level: guidance
     content: "Weight every prediction by its own confidence, then divide by the TOTAL confidence, not by the number of models. Equal confidences collapse back to a plain average, which is why the equal-confidence test passes either way and the 0.9/0.1 test does not."
   - level: solution
-    content: "const stacked = tf.tensor2d(predictions.map(p => p.prediction)); const conf = tf.tensor1d(predictions.map(p => p.confidence)); const weights = conf.div(conf.sum()).expandDims(1); return stacked.mul(weights).sum(0).arraySync();"
+    content: "const stacked = tf.tensor2d(predictions.map(p => p.prediction)); const conf = tf.tensor1d(predictions.map(p => p.confidence)); const total = conf.sum(); const weights = conf.div(total).expandDims(1); return stacked.mul(weights).sum(0).arraySync();"
 keywords:
   - ensemble
   - model-averaging
@@ -102,7 +102,19 @@ const predictions: ModelPrediction[] = [
 const avg = averageEnsemble(predictions);
 const weighted = weightedEnsemble(predictions);
 console.log('Average:', avg);    // [0.803, 74.067, 0.480]
-console.log('Weighted:', weighted); // attention contributes most`}
+console.log('Weighted:', weighted); // attention contributes most
+
+// Stacking: the third rung. Instead of hand-picking weights, TRAIN a
+// meta-model on the members' outputs: each meta-feature row is the three
+// members' predictions for one window, the label is the true value.
+const metaX = tf.tensor2d(heldOutWindows.map(w => members.map(m => m.predictScalar(w))));
+const metaY = tf.tensor2d(heldOutTargets, [heldOutTargets.length, 1]);
+const metaModel = tf.sequential();
+metaModel.add(tf.layers.dense({ units: 1, inputShape: [3] }));  // learned blend
+metaModel.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+await metaModel.fit(metaX, metaY, { epochs: 20 });
+// Fit the meta-model on HELD-OUT predictions, never on the members' own
+// training windows, or it learns to trust whichever member memorized them.`}
 </CodeBlock>
 
 ## Why Ensembles Work
@@ -159,7 +171,7 @@ Build a weighted ensemble from multiple model predictions.
 
 <Exercise slug="weighted-ensemble" />
 
-<RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated. Averaging those errors causes them to cancel, cutting prediction variance roughly by a factor of N (so typical error shrinks by sqrt(N)) compared to a single model, while leaving bias unchanged." />
+<RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated, and averaging cancels part of them. The factor-N variance cut (typical error shrinking by sqrt(N)) holds only for fully uncorrelated errors. With average pairwise correlation rho between member errors of variance sigma^2, ensemble variance is rho*sigma^2 + (1 - rho)*sigma^2/N: it floors at rho*sigma^2 no matter how many members you add. Correlated mistakes, like members trained on the same mislabeled batch, survive any amount of averaging, and bias is unchanged either way." />
 
 <LessonRecap
   whatYouLearned={[
