@@ -29,7 +29,7 @@ hints:
   - level: guidance
     content: "Two separate functions are graded. hannWindow(n) returns w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))) for i = 0..n-1; Array.from with Math.cos works, or tf.range(0, n) on the tensor route. applyWindow(signal, window) returns the element-wise product signal[i] * window[i] as a plain number array, e.g. tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync()."
   - level: solution
-    content: "return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1)))); return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync();"
+    content: "function hannWindow(n) { return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1)))); } function applyWindow(signal, window) { return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync(); }"
 keywords:
   - windowing
   - hann

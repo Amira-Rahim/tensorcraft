@@ -211,7 +211,7 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
   const cases: {
     id: string;
     hint: string;
-    solution: string;
+    solutions: string[];
   }[] = [];
 
   for (const file of launchedLessonFiles()) {
@@ -221,21 +221,32 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
     )?.[1];
     if (!hint) continue;
 
-    // The ladder targets the lesson's PRIMARY exercise; incident-* drills are
-    // supplementary and carry their own recipe in instructions/starter.
-    const slug = [...source.matchAll(/<Exercise\s+slug="([^"]+)"/g)]
+    // The ladder targets ONE of the lesson's exercises. Usually the first,
+    // but a multi-exercise finale may ladder the hardest instead (run #8:
+    // capstone/05 ladders classify-anomaly, its third exercise), so the
+    // hint must match SOME single exercise's solutionCode. incident-*
+    // drills are supplementary and carry their own recipe in
+    // instructions/starter.
+    const slugs = [...source.matchAll(/<Exercise\s+slug="([^"]+)"/g)]
       .map((m) => m[1])
-      .find((s) => !s.startsWith("incident-"));
-    if (!slug) continue;
+      .filter((s) => !s.startsWith("incident-"));
+    if (slugs.length === 0) continue;
 
-    const path = join(dirname(file), "exercises", `${slug}.yaml`);
-    if (!existsSync(path)) continue;
-    const solution =
-      readFileSync(path, "utf8").match(
-        /^solutionCode:[\s\S]*?(?=^testCode:)/m,
-      )?.[0] ?? "";
-    if (!solution.trim()) continue;
-    cases.push({ id: `${lessonId(file)}::${slug}`, hint, solution });
+    const solutions = slugs.flatMap((slug) => {
+      const path = join(dirname(file), "exercises", `${slug}.yaml`);
+      if (!existsSync(path)) return [];
+      const solution =
+        readFileSync(path, "utf8").match(
+          /^solutionCode:[\s\S]*?(?=^testCode:)/m,
+        )?.[0] ?? "";
+      return solution.trim() ? [solution] : [];
+    });
+    if (solutions.length === 0) continue;
+    cases.push({
+      id: `${lessonId(file)}::${slugs.join("+")}`,
+      hint,
+      solutions,
+    });
   }
 
   it("found a solution hint for most lessons (sanity)", () => {
@@ -247,13 +258,12 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
     ({
       id,
       hint,
-      solution,
+      solutions,
     }: {
       id: string;
       hint: string;
-      solution: string;
+      solutions: string[];
     }) => {
-      const normalizedSolution = normalizeCode(solution);
       const fragments = unescapeHint(hint)
         .split(";")
         .map((f) => normalizeCode(f))
@@ -266,11 +276,19 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
           `solutionCode, not prose - prose belongs in nudge/guidance.`,
       ).toBeGreaterThan(0);
 
-      const foreign = fragments.filter((f) => !normalizedSolution.includes(f));
+      // Every fragment must come from ONE exercise's solutionCode; report
+      // the closest match's leftovers when none fits fully.
+      const foreignPerSolution = solutions.map((solution) => {
+        const normalizedSolution = normalizeCode(solution);
+        return fragments.filter((f) => !normalizedSolution.includes(f));
+      });
+      const foreign = foreignPerSolution.reduce((best, current) =>
+        current.length < best.length ? current : best,
+      );
 
       expect(
         foreign,
-        `${id}: these hint fragments do not appear in the exercise's ` +
+        `${id}: these hint fragments do not appear in any single exercise's ` +
           `solutionCode: ${foreign
             .map((f) => JSON.stringify(f.slice(0, 60)))
             .join(" | ")}. A solution hint must be a verbatim excerpt of the ` +

@@ -92,7 +92,7 @@ What flattens is the sigmoid you put in front of it. Backprop multiplies by `σ'
 - MSE + sigmoid: `2(ŷ - y) · ŷ(1-ŷ) = -1.98 × 0.0099 = -0.0196`
 - BCE + sigmoid: the `log` and the `σ'` cancel exactly, leaving `ŷ - y = -0.99`
 
-Fifty times more signal, for the same wrongness. Cross-entropy's advantage is not that its curve is steeper; it is that its derivative is **built to cancel the sigmoid's**, so a confidently wrong prediction reaches the weights at full strength instead of being multiplied by a number near zero. You met this factor already in `neural-networks/02`, where the sigmoid's slope at the tails was 0.0066.
+Fifty times more signal, for the same wrongness. Cross-entropy's advantage is not that its curve is steeper; it is that its derivative is **built to cancel the sigmoid's**, so a confidently wrong prediction reaches the weights at full strength instead of being multiplied by a number near zero. This factor is the saturation you met by name in `neural-networks/02`: a sigmoid pushed into its tail goes flat, and 0.0099 is what flat costs.
 
 Note where the advantage lives, because the intuition runs backwards from most explanations. At the decision boundary (`ŷ = 0.5`) the two are nearly the same: `-0.25` vs `-0.5`, a factor of 2. The gap only opens as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`. Cross-entropy is not for the boundary. It is for the disaster.
 </DerivationDrawer>

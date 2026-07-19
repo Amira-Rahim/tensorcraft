@@ -26,11 +26,11 @@ consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
 hints:
   - level: nudge
-    content: "Deployment verification runs every check in order, one await at a time, and the deployment passes only when every single check passed."
+    content: "This ladder covers classify-anomaly, the finale. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote. For verify-deployment and launch-rehearsal, the recipe comments in each starter walk the whole path."
   - level: guidance
-    content: "Loop over checks with for...of, awaiting each check() before starting the next so they run sequentially, and push every CheckResult into a results array. Count passes with results.filter(r => r.passed).length, set passed to passedCount === total, and format summary as exactly '{passedCount}/{total} checks passed': the grader compares the literal string '3/3 checks passed'."
+    content: "decomposeIntervals loops to length - 1 pushing intervals[i + 1] / intervals[i]. isFibonacciTrain compares against [1, 2, 1.5, 5/3, 1.6, 1.625] aligned FROM THE TAIL (slice the expected list to the ratios' length from the end), each within 2% relative error. classifyAnomaly gets mean/variance from tf.moments inside tf.tidy, z = (actual - mean) / std with z = 0 when std is 0; statistical fires on |z| > 3, autoencoder on reconstructionError > reconThreshold, lstm on |predicted - actualForecast| > predTolerance; votes counts the fired detectors, isAnomaly needs 2 of 3, classification is 'confirmed-anomaly' only when the vote AND the Fibonacci train agree, and scoreDelta is the rounded ensembleScore - module3Score."
   - level: solution
-    content: "const results: CheckResult[] = []; for (const check of checks) { const result = await check(); results.push(result); } const passedCount = results.filter(r => r.passed).length; const total = results.length; return { passed: passedCount === total, checks: results, summary: `${passedCount}/${total} checks passed`, };"
+    content: "const ratios = []; for (let i = 0; i < intervals.length - 1; i++) { ratios.push(intervals[i + 1] / intervals[i]); } return ratios; const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625]; const expected = fibonacciRatios.slice( fibonacciRatios.length - ratios.length, ); if (expected.length !== ratios.length) return false; return ratios.every( (r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02, ); const std = Math.sqrt(variance); const z = std === 0 ? 0 : (reading.actual - mean) / std; const verdicts = { statistical: Math.abs(z) > 3, autoencoder: reading.reconstructionError > reading.reconThreshold, lstm: Math.abs(reading.predicted - reading.actualForecast) > reading.predTolerance, }; const votes = Object.values(verdicts).filter(Boolean).length; const isAnomaly = votes >= 2; return { votes, isAnomaly, ratios, fibonacciTrain, classification: isAnomaly && fibonacciTrain ? \"confirmed-anomaly\" : isAnomaly ? \"anomaly\" : \"noise\", scoreDelta: Math.round((reading.ensembleScore - reading.module3Score) * 1000) / 1000, };"
 keywords:
   - deployment
   - github-pages
@@ -247,7 +247,7 @@ async function classifyAnomalousSignal(): Promise<void> {
 }`}
 </CodeBlock>
 
-Two lines in that output settle old debts. Nazari asked for the zero-hour back when the interval was seventy-two seconds and Farah could not answer; the three extrapolation curves that disagreed on the date all season have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. One line stays open: an untrained build once scored that same reading 0.998, twice, on fresh random weights each time. ARIA files it in the open-items ledger beside the interval itself. Some instruments point before anyone builds them, and nobody aboard can say why.
+Two lines in that output settle old debts. Nazari asked for the zero-hour back when the interval was seventy-two seconds and Farah could not answer; the three extrapolation curves that disagreed on the date all season have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. A third debt, the oldest, comes due tonight too. An untrained build once scored that same reading 0.998, twice, on fresh random weights each time, and since module 2 nobody aboard has been able to say why. The harmonics overlay finally says why. Every reading of Sector 7-G passes through sensors calibrated in the exact ratios the signal pulses in, so the reading arrives pre-shaped by the ship itself, an outlier so extreme in the sensors' own coordinates that an arbitrary projection, hand-wired or random, throws it to the far end of the scale. Only a trained model ever learned to hesitate about it; that is what calibration buys. Untrained networks know nothing; that lesson stands. The instrument that pointed before anyone built it was never the network. It was the ship.
 
 ## Challenge
 
@@ -292,6 +292,10 @@ Arithmetic, for the record. The source is 4.2 light-years out; anything arriving
 </Dialogue>
 
 <Dialogue speaker="ARIA">
+One number of my own, while the ledger is open. My reconstruction error was 4.1 times baseline when I measured it, and it has not come down. I am built from the same instrument chain this signal is mirroring. I note the correlation. I do not resolve it.
+</Dialogue>
+
+<Dialogue speaker="ARIA">
 Final telemetry note. The pulse interval is now 29.7 seconds and falling. Eleven modules ago I could not parse this signal. I have spent every module since helping you build the thing that can. Whatever answers next, it will not be answering me.
 </Dialogue>
 
@@ -307,6 +311,12 @@ The last item in the mission record is filed at 0214.
 Commander's log, final entry. DEEP SCAN has classified the signal it was built for, and its extrapolation is steady enough to date: the interval reaches zero in eleven days, four hours. I am closing this log tonight, by choice; the record should end where our certainty does, not trail off waiting for an answer. Earth's reply is years out, and the signal has never once waited for us. Whatever zero brings will find this crew at their stations.
 </Dialogue>
 
+One line sits beneath her entry, appended eleven days later by the automated pipeline, in the routine format the crew taught it. It is the last row the mission record ever accepted.
+
+`interval_s: 0.0 · classification: SIGNAL · confidence: 1.00 · operator_note: none`
+
+No operator note was ever filed.
+
 </Epilogue>
 
 ---
@@ -316,5 +326,5 @@ Commander's log, final entry. DEEP SCAN has classified the signal it was built f
 <DispatchTease
   toThemeId="neon-protocol"
   toThemeName="Neon Protocol"
-  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a CV anomaly: the IoU heatmap she is reading carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. This channel does not carry what zero brought; no channel does yet. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
+  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a CV anomaly: the IoU heatmap she is reading carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. Her capture began transmitting eleven days after the Archimedes record closed, the day the interval hit zero. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
 />

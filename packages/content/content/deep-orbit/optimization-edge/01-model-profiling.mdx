@@ -28,9 +28,9 @@ hints:
   - level: nudge
     content: "profileModel is three separate measurements: how many parameters the model has, how many megabytes they occupy at 4 bytes per float32, and how long one predict() call takes on average."
   - level: guidance
-    content: "parameterCount comes from model.countParams(); memorySizeMB is parameterCount * 4 bytes divided by 1024 * 1024; then loop exactly `runs` times, timing each model.predict(createInput()) with performance.now() and averaging the durations. Return { parameterCount, memorySizeMB, avgInferenceMs }; the tests count the predict calls, so the loop bound must be runs."
+    content: "parameterCount comes from model.countParams(); memorySizeMB is parameterCount * 4 bytes divided by 1e6 (the lesson's units rule: 1024 * 1024 would give you MiB wearing an MB label, and the tests check the true-MB number); then loop exactly `runs` times, timing each model.predict(createInput()) with performance.now() and averaging the durations. Return { parameterCount, memorySizeMB, avgInferenceMs }; the tests count the predict calls, so the loop bound must be runs."
   - level: solution
-    content: "const parameterCount = model.countParams(); const memorySizeMB = (parameterCount * 4) / (1024 * 1024); const times: number[] = []; for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); model.predict(input); times.push(Math.max(0, performance.now() - start)); } const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length; return { parameterCount, memorySizeMB, avgInferenceMs };"
+    content: "const parameterCount = model.countParams(); const memorySizeMB = (parameterCount * 4) / 1e6; const times: number[] = []; for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); model.predict(input); times.push(Math.max(0, performance.now() - start)); } const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length; return { parameterCount, memorySizeMB, avgInferenceMs };"
 keywords:
   - profiling
   - performance

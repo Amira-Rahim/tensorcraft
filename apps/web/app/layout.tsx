@@ -13,6 +13,7 @@ import { PlausibleScript } from "./components/plausible-script";
 import { SessionListener } from "../lib/supabase/session-listener";
 import { SessionToast } from "./components/session-toast";
 import { GithubNudgeToast } from "./components/github-nudge-toast";
+import { GuestProgressBridge } from "./components/guest-progress-bridge";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -309,6 +310,7 @@ export default function RootLayout({
               <SessionListener />
               <SessionToast />
               <GithubNudgeToast />
+              <GuestProgressBridge />
               <SiteFooter />
               <CookieConsent />
               <ReportIssueButton />

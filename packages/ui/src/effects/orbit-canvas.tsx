@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { SceneCanvas } from "./scene-canvas";
 
 /* ── Deep Orbit: 3D orbital system ─────────────────────────
    Six tilted orbital rings rendered with real 3D math (perspective
@@ -186,120 +186,21 @@ export interface OrbitCanvasProps {
 }
 
 /**
- * Self-contained Deep Orbit canvas. Sizes to its positioned parent, gates the
- * rAF loop on visibility + reduced-motion (static t=0 frame when reduced), and
- * cleans up on unmount. Decorative only — always `aria-hidden`.
+ * Self-contained Deep Orbit canvas: drawOrbit mounted on the shared
+ * SceneCanvas chrome (clock, hover easing, visibility + reduced-motion
+ * gating). Decorative only — always `aria-hidden`.
  */
 export function OrbitCanvas({
   rgb,
   hovered = false,
   className,
 }: OrbitCanvasProps) {
-  const ref = useRef<HTMLCanvasElement>(null);
-  const frame = useRef(0);
-  const hovRef = useRef(hovered);
-  hovRef.current = hovered;
-  const runningRef = useRef(false);
-  // Own animation clock, advanced per frame. Hover speeds up how fast this
-  // clock runs (future time only) and eases a 0..1 brightness amount.
-  // Deriving positions from the raw rAF timestamp times a discrete hover
-  // multiplier would rescale all elapsed time and teleport every particle
-  // whenever hover flipped.
-  const tRef = useRef(0);
-  const lastRef = useRef<number | null>(null);
-  const hotAmtRef = useRef(0);
-
-  const draw = useCallback(
-    (now?: number) => {
-      const c = ref.current;
-      if (!c) return;
-      const ctx = c.getContext("2d");
-      if (!ctx) return;
-      // Clamp dt so a background-tab pause doesn't fast-forward the system.
-      const dt =
-        now == null || lastRef.current == null
-          ? 0
-          : Math.min(now - lastRef.current, 100);
-      if (now != null) lastRef.current = now;
-      const target = hovRef.current ? 1 : 0;
-      // Frame-rate-independent easing toward the hover state (~160ms tau).
-      hotAmtRef.current +=
-        (target - hotAmtRef.current) * (1 - Math.exp(-dt / 160));
-      tRef.current += (dt / 1000) * (1 + 0.6 * hotAmtRef.current);
-      ctx.clearRect(0, 0, c.width, c.height);
-      drawOrbit(ctx, c.width, c.height, rgb, hotAmtRef.current, tRef.current);
-      if (runningRef.current) frame.current = requestAnimationFrame(draw);
-    },
-    [rgb],
+  return (
+    <SceneCanvas
+      draw={drawOrbit}
+      rgb={rgb}
+      hovered={hovered}
+      className={className}
+    />
   );
-
-  useEffect(() => {
-    const c = ref.current;
-    if (!c) return;
-
-    const resize = () => {
-      const rect = c.parentElement?.getBoundingClientRect();
-      if (!rect) return;
-      const dpr = Math.min(window.devicePixelRatio, 2);
-      c.width = rect.width * dpr;
-      c.height = rect.height * dpr;
-      c.style.width = rect.width + "px";
-      c.style.height = rect.height + "px";
-    };
-
-    const mql = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    let inView = true;
-
-    const stop = () => {
-      runningRef.current = false;
-      cancelAnimationFrame(frame.current);
-      // Drop the clock anchor so time doesn't leap on resume after a pause.
-      lastRef.current = null;
-    };
-    const sync = () => {
-      const reduced = !!mql?.matches;
-      if (reduced || !inView) {
-        stop();
-        // Reduced motion still deserves the atmosphere, one static frame.
-        if (reduced && inView) draw();
-        return;
-      }
-      if (!runningRef.current) {
-        runningRef.current = true;
-        frame.current = requestAnimationFrame(draw);
-      }
-    };
-
-    const onResize = () => {
-      resize();
-      // Keep the static frame correct after a resize when not animating.
-      if (mql?.matches && inView) draw();
-    };
-
-    resize();
-    sync();
-    window.addEventListener("resize", onResize);
-    mql?.addEventListener?.("change", sync);
-
-    const io =
-      typeof IntersectionObserver !== "undefined"
-        ? new IntersectionObserver(
-            ([entry]) => {
-              inView = entry.isIntersecting;
-              sync();
-            },
-            { rootMargin: "120px" },
-          )
-        : null;
-    io?.observe(c);
-
-    return () => {
-      stop();
-      window.removeEventListener("resize", onResize);
-      mql?.removeEventListener?.("change", sync);
-      io?.disconnect();
-    };
-  }, [draw]);
-
-  return <canvas ref={ref} aria-hidden="true" className={className} />;
 }

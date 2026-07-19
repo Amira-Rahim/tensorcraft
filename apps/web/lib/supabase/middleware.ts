@@ -46,12 +46,18 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith(route),
   );
 
+  // Destination to round-trip through /auth. Must include the query string:
+  // checkout builds /pricing?plan=...&themes=... and losing the query used
+  // to strand buyers (2026-07-19 UX audit).
+  const requestedPath = request.nextUrl.pathname + request.nextUrl.search;
+
   // If session refresh fails, clear stale cookies and treat as unauthenticated
   if (authError && !user) {
     if (isProtected) {
       const url = request.nextUrl.clone();
       url.pathname = "/auth";
-      url.searchParams.set("redirectTo", request.nextUrl.pathname);
+      url.search = "";
+      url.searchParams.set("redirectTo", requestedPath);
       url.searchParams.set("error", "session_expired");
       return NextResponse.redirect(url);
     }
@@ -62,27 +68,34 @@ export async function updateSession(request: NextRequest) {
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
-    url.searchParams.set("redirectTo", request.nextUrl.pathname);
+    url.search = "";
+    url.searchParams.set("redirectTo", requestedPath);
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from auth pages
-  const authRoutes = ["/auth/sign-in", "/auth/sign-up", "/auth"];
-  const isAuthRoute = authRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route),
-  );
+  // Redirect authenticated users away from auth PAGES. Exact match only:
+  // a startsWith("/auth") check used to swallow /auth/callback (magic-link
+  // clicks by signed-in users lost their `next` destination) and
+  // /auth/sign-out.
+  const authPages = ["/auth", "/auth/sign-in", "/auth/sign-up"];
+  const isAuthPage = authPages.includes(request.nextUrl.pathname);
 
-  if (isAuthRoute && user) {
+  if (isAuthPage && user) {
     const rawRedirectTo =
       request.nextUrl.searchParams.get("redirectTo") || "/dashboard";
-    const redirectTo =
-      rawRedirectTo.startsWith("/") && !rawRedirectTo.startsWith("//")
-        ? rawRedirectTo
-        : "/dashboard";
-    const url = request.nextUrl.clone();
-    url.pathname = redirectTo;
-    url.search = "";
-    return NextResponse.redirect(url);
+    // Same-origin only: single leading "/", not "//" or "/\" (browsers
+    // normalize "\" to "/", making "/\evil.com" protocol-relative), and no
+    // control characters. Mirrors the onboarding wizard's guard.
+    const isSafe =
+      rawRedirectTo.startsWith("/") &&
+      !rawRedirectTo.startsWith("//") &&
+      !rawRedirectTo.startsWith("/\\") &&
+      // eslint-disable-next-line no-control-regex
+      !/[\u0000-\u001f]/.test(rawRedirectTo);
+    const destination = isSafe ? rawRedirectTo : "/dashboard";
+    // Parse via URL so a query string in the destination stays a query
+    // string; assigning it to url.pathname percent-encoded the "?" and 404'd.
+    return NextResponse.redirect(new URL(destination, request.url));
   }
 
   // Redirect to onboarding if user hasn't completed it (only on protected routes

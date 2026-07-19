@@ -1,0 +1,31 @@
+---
+slug: audit-bridge-tiers
+title: "Audit: every FE-to-ML analogy in the course, classified by how far it holds"
+publishedAt: 2026-07-19
+summary: We classified every lesson's FE bridge into identity, structural, or intuition tiers, then checked each against a canonical registry. Zero tier mismatches. Here are the numbers.
+themeSlug: deep-orbit
+tags:
+  - audit
+  - bridges
+  - transparency
+---
+
+## Why we audit our own analogies
+
+Every Tensorcraft lesson anchors a new ML concept to a frontend primitive you already know. Analogies are load-bearing here, which means a bad one teaches a wrong mental model. So we classify each bridge by how far it holds:
+
+- **identity**: the same thing under a different name (npm install vs loading TFJS).
+- **structural**: the shape matches, the internals differ. The lesson must say where it bends.
+- **intuition**: a feel-level pointer only. The lesson must repair it on the page.
+
+## The numbers (audit of 2026-04-25)
+
+Across 296 authored lessons at audit time: 5.1% identity, 84.1% structural, 10.5% intuition, and exactly one lesson missing a bridge (since fixed). Tier mismatches between what a lesson claims and what the canonical registry says: **zero**.
+
+The structural tier dominating is by design. Identity bridges are rare because ML mostly is not frontend engineering in disguise. Intuition bridges are rationed because they decay fastest. When a lesson uses one, the correction is part of the lesson, not a footnote.
+
+## What changed since
+
+The audit surfaced 293 lesson-invented analogies that were not in the canonical registry. The reusable ones were promoted; the rest were kept lesson-local on purpose, and every Deep Orbit lesson now carries a labeled bridge with its tier shown in the lesson header. Where an analogy breaks, the break is named in the text. That habit came directly out of this audit.
+
+If you find a bridge that oversells, email [support@tensorcraft.app](mailto:support@tensorcraft.app). We would rather publish the correction than defend the analogy.

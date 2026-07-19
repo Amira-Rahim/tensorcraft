@@ -138,8 +138,16 @@ export default function AboutPage() {
             includes the bridge-tier audit (every lesson, classified), the
             fast.ai comparison (where they win, where we win), and the exercise
             mlContent audit (what each exercise actually exercises vs. what its
-            badge claims). If you find something we got wrong, the source is on
-            GitHub.
+            badge claims). Every count on this page is pinned to the content
+            corpus by tests that run in CI. If you find something we got wrong,
+            email{" "}
+            <a
+              href="mailto:support@tensorcraft.app"
+              className="text-primary underline underline-offset-4"
+            >
+              support@tensorcraft.app
+            </a>{" "}
+            and we&apos;ll publish the correction.
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">

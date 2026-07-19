@@ -69,7 +69,9 @@ The right answer depends on whether the task is **custom** (TFJS) or **commodity
 // '@huggingface/transformers' at v3; old tutorials cite the former.
 import { pipeline } from '@huggingface/transformers';
 
-// First call: downloads ~80MB model + tokenizer into the browser's
+// First call: downloads the model + tokenizer (tens of MB; v3 defaults
+// to a quantized dtype in the browser, ~80MB only if you force fp32)
+// into the browser's
 // Cache Storage (the Cache API). Note the contrast with two lessons
 // ago: TFJS saves models to IndexedDB via the indexeddb:// scheme;
 // Transformers.js uses a different browser store entirely.

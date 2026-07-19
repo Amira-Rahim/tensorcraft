@@ -38,6 +38,10 @@ const MODULE_ORDER: Record<string, number> = {
 /** file (relative to deep-orbit) -> the interval mentions it must contain. */
 const CANON: Record<string, number[]> = {
   "signal-processing/03-spectrograms.mdx": [73.4, 73.4],
+  // Run #8: ad/05 stages the interval decomposition on-page and names the
+  // steady 73.4 s carrier gap to reconcile it with the Fibonacci
+  // SUB-intervals inside each pulse. Module 7, pre-shrink: 73.4 is canon.
+  "anomaly-detection/05-the-anomaly.mdx": [73.4],
   "advanced-time-series/01-beyond-lstm.mdx": [73.4],
   "advanced-time-series/03-forecasting.mdx": [73.4],
   "advanced-time-series/04-kalman-filters.mdx": [72.4],

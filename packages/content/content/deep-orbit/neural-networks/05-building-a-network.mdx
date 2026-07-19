@@ -99,7 +99,7 @@ console.log('Initial prediction:', prediction.dataSync());`}
 
 ## Challenge
 
-Assemble and compile the complete DEEP SCAN signal classifier.
+Assemble and compile the complete DEEP SCAN signal classifier. One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 raw channels (673 parameters), but the version Farah wants specced takes the full 8-value sensor frame the archive stores per reading, which puts it at 833 parameters. Same architecture, wider front door. Build hers.
 
 <Exercise slug="simple-network" />
 

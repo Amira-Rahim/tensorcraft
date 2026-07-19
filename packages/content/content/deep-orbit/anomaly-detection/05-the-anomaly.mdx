@@ -135,6 +135,8 @@ function detectAnomaly(
 
 ## The Discovery
 
+While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome, the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the spacing between them steps through ratios: 1, 1, 2, 3, 5, 8, 13. The carrier keeps its clock. The freight it carries keeps a different one.
+
 <CodeBlock language="typescript" title="the-discovery.ts">
 {`// Run the full ensemble on the flagged signal
 const anomalyResult = detectAnomaly(
@@ -149,7 +151,8 @@ console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)
 console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(4)); // 0.0410
 
 // Feature analysis reveals: the anomaly is in the frequency domain
-// A 73.4 Hz component with Fibonacci-ratio pulse intervals
+// A 73.4 Hz component; each pulse carries Fibonacci-ratio SUB-intervals
+// (the 73.4-second gap BETWEEN pulses holds steady, as always)
 // The same ratios appear in the ship's sensor calibration harmonics
 
 // Is it alien? Is it coincidence? That's not for the model to decide.

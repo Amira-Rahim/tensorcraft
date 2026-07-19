@@ -205,4 +205,41 @@ describe("ModuleMapClient", () => {
     expect(bar).toHaveAttribute("aria-valuemin", "0");
     expect(bar).toHaveAttribute("aria-valuemax", "100");
   });
+
+  it("guest locked rows render the pricing teaser link, not a bare lock", () => {
+    const locked = makeModule({
+      slug: "neural-networks",
+      title: "Neural Networks",
+      order: 2,
+      status: "locked",
+    });
+    render(
+      <ModuleMapClient
+        {...defaultProps}
+        modules={[locked]}
+        unlockHref={undefined}
+        lockedTeaser={{
+          href: "/pricing?locked=deep-orbit",
+          label: "From $59 · Module 1 free",
+        }}
+      />,
+    );
+
+    const teaser = screen.getByTestId("locked-teaser");
+    expect(teaser).toHaveAttribute("href", "/pricing?locked=deep-orbit");
+    expect(teaser).toHaveTextContent("From $59 · Module 1 free");
+  });
+
+  it("locked rows without teaser or unlockHref keep the lock glyph", () => {
+    const locked = makeModule({ status: "locked" });
+    const { container } = render(
+      <ModuleMapClient
+        {...defaultProps}
+        modules={[locked]}
+        unlockHref={undefined}
+      />,
+    );
+    expect(screen.queryByTestId("locked-teaser")).toBeNull();
+    expect(container.textContent).toContain("🔒");
+  });
 });

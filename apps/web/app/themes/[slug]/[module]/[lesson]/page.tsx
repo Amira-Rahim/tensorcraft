@@ -110,9 +110,12 @@ export default async function LessonPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Signed-out visitor on a paid lesson: show the price, not a signup form.
+  // The old order (forced /auth first, /pricing only after account creation)
+  // demanded commitment before disclosure; CheckoutButton handles the auth
+  // roundtrip when they decide to buy (2026-07-19 UX audit).
   if (mod && mod.order > 1 && !user) {
-    const currentPath = `/themes/${slug}/${moduleSlug}/${lessonSlug}`;
-    redirect(`/auth?redirectTo=${encodeURIComponent(currentPath)}`);
+    redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
   }
 
   const purchasedPromise =

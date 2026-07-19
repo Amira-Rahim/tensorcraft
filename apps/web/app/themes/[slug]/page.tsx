@@ -12,6 +12,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase, getUserProgress } from "@/lib/progress";
 import { ParticleField } from "@tensorcraft/ui/effects";
 import { ModuleMapClient } from "./module-map-client";
+import { GuestModuleBanner } from "./guest-module-banner";
 import { ComingSoonStub } from "./coming-soon-stub";
 import type { Metadata } from "next";
 
@@ -263,10 +264,9 @@ export default async function ThemeDetailPage({ params }: Props) {
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
-      // Sum of lesson + exercise estimatedMinutes frontmatter (1,721 min
-      // after module 8's copy-pasted 30-min labels were re-measured to
-      // honest per-lesson values, 2026-07-14). Recompute when minutes
-      // change: sum lesson+exercise estimatedMinutes / 60, round.
+      // Sum of lesson + exercise estimatedMinutes frontmatter (1,729 min
+      // as of 2026-07-19: 975 lesson + 754 exercise). Recompute when
+      // minutes change: sum lesson+exercise estimatedMinutes / 60, round.
       courseWorkload: "PT29H",
     },
   };
@@ -374,6 +374,15 @@ export default async function ThemeDetailPage({ params }: Props) {
 
       {/* Module List */}
       <div className="relative z-10 max-w-[900px] mx-auto px-8 pt-10 pb-20">
+        {!user && moduleMapItems[0] && (
+          <GuestModuleBanner
+            themeSlug={slug}
+            freeModuleSlug={moduleMapItems[0].slug}
+            freeModuleLessonCount={moduleMapItems[0].totalLessons}
+            singlePrice={PRICING.single.price}
+            moduleTerm={theme.terminology.module}
+          />
+        )}
         <ModuleMapClient
           modules={moduleMapItems}
           themeSlug={slug}
@@ -384,6 +393,14 @@ export default async function ThemeDetailPage({ params }: Props) {
           continueHref={continueHref}
           continueLabel={continueLabel}
           unlockHref={!hasPurchased && user ? "/paywall" : undefined}
+          lockedTeaser={
+            !user
+              ? {
+                  href: `/pricing?locked=${encodeURIComponent(slug)}`,
+                  label: `From $${PRICING.single.price} · Module 1 free`,
+                }
+              : undefined
+          }
         />
       </div>
 

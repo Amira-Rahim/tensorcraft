@@ -43,6 +43,11 @@ interface ModuleMapClientProps {
    * pointer-events-none made the post-free-module map a dead end).
    */
   unlockHref?: string;
+  /**
+   * Set for guests (no unlockHref): locked rows show price + free-module
+   * fact instead of an unexplained lock emoji (2026-07-19 UX audit).
+   */
+  lockedTeaser?: { href: string; label: string };
 }
 
 const DIFFICULTY_COLOR: Record<LessonItem["difficulty"], string> = {
@@ -68,6 +73,7 @@ export function ModuleMapClient({
   continueHref,
   continueLabel,
   unlockHref,
+  lockedTeaser,
 }: ModuleMapClientProps) {
   return (
     <div
@@ -96,6 +102,7 @@ export function ModuleMapClient({
             themeSlug={themeSlug}
             terminology={terminology}
             unlockHref={unlockHref}
+            lockedTeaser={lockedTeaser}
           />
         );
       })}
@@ -130,6 +137,7 @@ interface ModuleRowProps {
   themeSlug: string;
   terminology: { lesson: string; module: string };
   unlockHref?: string;
+  lockedTeaser?: { href: string; label: string };
 }
 
 function ModuleRow({
@@ -144,6 +152,7 @@ function ModuleRow({
   themeSlug,
   terminology,
   unlockHref,
+  lockedTeaser,
 }: ModuleRowProps) {
   const moduleLabel = `M${String(mod.order).padStart(2, "0")}`;
   const pct =
@@ -239,20 +248,7 @@ function ModuleRow({
                   ACTIVE
                 </span>
               )}
-              {isLocked && unlockHref && (
-                <Link
-                  href={unlockHref}
-                  className={`pointer-events-auto ml-auto rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${FOCUS_RING}`}
-                  style={{
-                    color: "var(--tc-primary)",
-                    borderColor: "var(--tc-primary)",
-                  }}
-                  aria-label={`Unlock ${terminology.module} ${mod.order}: ${mod.title}`}
-                >
-                  Unlock →
-                </Link>
-              )}
-              {isLocked && !unlockHref && (
+              {isLocked && !unlockHref && !lockedTeaser && (
                 <span
                   className="ml-auto font-mono text-xs"
                   style={{ color: "var(--tc-muted)" }}
@@ -328,6 +324,39 @@ function ModuleRow({
           </div>
         )}
       </details>
+
+      {/* Locked-row actions live OUTSIDE the <summary>: a link nested in an
+          interactive <summary> is an axe nested-interactive violation
+          (2026-07-19 audit). Absolutely positioned into the header row. */}
+      {isLocked && unlockHref && (
+        <Link
+          href={unlockHref}
+          className={`absolute right-6 top-5 rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${FOCUS_RING}`}
+          style={{
+            color: "var(--tc-primary)",
+            borderColor: "var(--tc-primary)",
+            background: "var(--tc-bg)",
+          }}
+          aria-label={`Unlock ${terminology.module} ${mod.order}: ${mod.title}`}
+        >
+          Unlock →
+        </Link>
+      )}
+      {isLocked && !unlockHref && lockedTeaser && (
+        <Link
+          href={lockedTeaser.href}
+          className={`absolute right-6 top-5 whitespace-nowrap rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${FOCUS_RING}`}
+          style={{
+            color: "var(--tc-primary)",
+            borderColor: "var(--tc-primary)",
+            background: "var(--tc-bg)",
+          }}
+          aria-label={`${terminology.module} ${mod.order} is paid content: ${lockedTeaser.label}`}
+          data-testid="locked-teaser"
+        >
+          {lockedTeaser.label}
+        </Link>
+      )}
     </div>
   );
 }

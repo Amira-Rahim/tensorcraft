@@ -93,9 +93,9 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     // magnitude would throw away frequency identity: "fft_3" would mean
     // a different frequency in every row, and no downstream model could
     // ever ask "what lives at 72 Hz?". At this window's 4 Hz resolution
-    // (256 Hz / 64 samples), bins 13-20 cover 52-84 Hz, the band the
-    // catalog activity lives in; the sixth of the eight (bin 18) is the
-    // span that holds the 73.4 Hz line.
+    // (256 Hz / 64 samples), bins 13-20 have centers 52-80 Hz and cover
+    // 50-82 Hz, the band the catalog activity lives in; the sixth of the
+    // eight (bin 18) is the span that holds the 73.4 Hz line.
     const fixedBins = magnitudes.slice(13, 21);
 
     // Combine: [raw features..., fixed-bin FFT magnitudes...]

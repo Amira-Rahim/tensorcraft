@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { LessonContent } from "./lesson-content";
 import { markLessonStarted, markLessonCompleted } from "@/lib/progress-client";
+import { recordGuestCompletion } from "@/lib/guest-progress";
 import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
 import type { ExerciseData } from "@tensorcraft/ui";
 import { SceneHeading, CharacterAvatar } from "@tensorcraft/ui";
@@ -301,9 +302,18 @@ function LessonStepsInner({
         scores.length > 0
           ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length)
           : null;
-      markLessonCompleted(themeSlug, moduleSlug, lesson.slug, avgScore).catch(
-        () => {},
-      );
+      markLessonCompleted(themeSlug, moduleSlug, lesson.slug, avgScore)
+        .then((result) => {
+          // Null = no signed-in user (or a failed write): keep local
+          // evidence so the map can stage the guest end-of-module moment
+          // and GuestProgressBridge can replay it after signup.
+          if (result === null) {
+            recordGuestCompletion(themeSlug, moduleSlug, lesson.slug);
+          }
+        })
+        .catch(() => {
+          recordGuestCompletion(themeSlug, moduleSlug, lesson.slug);
+        });
       trackLessonCompleted(themeSlug, moduleSlug, lesson.slug);
 
       // Tag first lesson complete in Kit (fire once)

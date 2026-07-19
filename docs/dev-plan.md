@@ -1342,3 +1342,35 @@ This dev plan covers engineering implementation. For detailed specs in other dom
 | Product requirements, feature tables, design system | `docs/prd.md` | Sections 3–6 (requirements, features, architecture, design system) |
 | BossBeat expansion (V2, post-launch gated) | `docs/v2-beat-expansion-plan.md` | Ranked 6-beat wave + the P3-earned quality gates |
 | Retention email sequences (Kit, operator setup pending) | `docs/email-retention-sequences.md` | 3 automations, drafted copy, purchased-tag gap |
+
+---
+
+## Run #8 deferrals (2026-07-19)
+
+Deferred from the Run #8 fresh-eyes remediation (executed items are in
+`docs/audits/fresh-eyes-evaluation-2026-07-13.md`, RUN #8 section):
+
+- [ ] **llm-integration real-model exercise.** Learner sim rated module 9
+  "least ML per minute": 3 of 6 exercises are string/JSON plumbing and
+  every LLM is mocked. Fix candidate: replace one plumbing exercise
+  (prompt-template or generate-report) with a real in-browser
+  Transformers.js inference exercise (the runtime is already taught in
+  browser-runtimes/06). Deferred because the grader harness would need to
+  fetch a model in CI (network + cache policy decision) — decide harness
+  strategy first (vendored tiny model vs mock-at-CI/real-in-browser
+  split).
+- [ ] **Demir analogy-skeleton variation.** The guess-then-corrected
+  dialogue shape covers most of Demir's scenes (~12 lessons); editor
+  recommends 2-3 scenes where his analogy is RIGHT, or he corrects
+  someone else, to convert device back into character. Editorial pass,
+  needs the style bible's voice rules open; batch with the next content
+  wave rather than piecemeal.
+- [ ] **Nazari invoice-formula ration.** "X, and it's coming out of your
+  Y" fires 5x; thin to ~3, keep the capstone ledger-wipe payoff intact.
+  Same editorial batch as above.
+- [ ] **Per-exercise hint panels (engine).** Multi-exercise gated lessons
+  carry ONE frontmatter ladder; run #8 pointed capstone/05's at
+  classify-anomaly (the hardest) and Gate B now validates the ladder
+  against any single exercise of its lesson, but a real fix is
+  per-exercise ladders in the YAML + a "Need a hint?" panel per Exercise
+  block. Schema + UI change; V2.

@@ -20,7 +20,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit, the live theme, is free, no account or credit card required. The other four themes ship in waves, each with a waitlist. Full themes cost $${PRICING.single.price} each, with bundle discounts available up to $${PRICING.allFive.price} for all 5 themes.`,
+    a: `Module 1 of Deep Orbit, the live theme, is free, no account or credit card required. The other four themes ship in waves, each with a waitlist. Full themes cost $${PRICING.single.price} each; bundle discounts, up to $${PRICING.allFive.price} for all 5 themes, open once all five have launched.`,
   },
   {
     q: "What ML topics does Tensorcraft cover?",

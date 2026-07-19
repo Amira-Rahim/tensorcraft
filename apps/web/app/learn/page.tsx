@@ -33,8 +33,8 @@ export default function LearnPage() {
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-8">
           You already think in arrays, state, and components. Machine learning
           uses the same patterns, just with different names. Tensorcraft bridges
-          the gap with 50+ analogies that map your frontend knowledge to ML
-          concepts.
+          the gap with {THEME_CONTENT.lessonBridges} analogies that map your
+          frontend knowledge to ML concepts.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">

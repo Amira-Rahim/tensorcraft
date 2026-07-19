@@ -22,7 +22,7 @@ export function LessonLink({
   title,
   rationale,
 }: LessonLinkProps) {
-  const href = `/learn/${themeId}/${moduleId}/${slug}?utm_source=blog&utm_medium=post&utm_campaign=${weekIso ?? "evergreen"}&utm_content=${postSlug}`;
+  const href = `/themes/${themeId}/${moduleId}/${slug}?utm_source=blog&utm_medium=post&utm_campaign=${weekIso ?? "evergreen"}&utm_content=${postSlug}`;
 
   function onClick() {
     track(EVENTS.DIGEST_LINK_CLICKED, {

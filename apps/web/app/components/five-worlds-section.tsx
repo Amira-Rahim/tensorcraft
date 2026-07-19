@@ -2,12 +2,29 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useState } from "react";
 import { themes, themeSlugs } from "@tensorcraft/themes";
 import { isLaunched } from "@tensorcraft/shared";
-import { OrbitCanvas } from "@tensorcraft/ui/effects";
+import {
+  OrbitCanvas,
+  SceneCanvas,
+  drawNeonProtocol,
+  drawSignalWard,
+  drawNovaCanvas,
+  drawTerraGrid,
+  type SceneDraw,
+} from "@tensorcraft/ui/effects";
 
 /* ── Theme card data derived from manifests ──────────────── */
+
+// Signature scene per world (Deep Orbit's lives in OrbitCanvas). Each is a
+// sibling of drawOrbit: ambient-faint at rest, ignited by hover/focus.
+const SCENE_BY_SLUG: Record<string, SceneDraw> = {
+  "neon-protocol": drawNeonProtocol,
+  "signal-ward": drawSignalWard,
+  "nova-canvas": drawNovaCanvas,
+  "terra-grid": drawTerraGrid,
+};
 
 const THEME_CARDS = themeSlugs.map((slug, i) => {
   const t = themes[slug];
@@ -20,8 +37,7 @@ const THEME_CARDS = themeSlugs.map((slug, i) => {
     col: t.palette.primary,
     rgb: hexToRgb(t.palette.primary),
     launched: isLaunched(t.slug),
-    // Atmosphere kind keyed off original index so each theme keeps its identity.
-    kind: i,
+    scene: SCENE_BY_SLUG[t.slug],
   };
 });
 
@@ -35,275 +51,6 @@ function hexToRgb(hex: string): [number, number, number] {
     parseInt(h.slice(2, 4), 16),
     parseInt(h.slice(4, 6), 16),
   ];
-}
-
-/* ── Transparent canvas overlay ─────────────────────────── */
-
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  r: number;
-  alpha: number;
-  life: number;
-  maxLife: number;
-}
-
-function spawn(w: number, h: number, kind: number): Particle {
-  const life = 250 + Math.random() * 350;
-  const base = { life, maxLife: life };
-  switch (kind) {
-    case 0: // Deep Orbit: drifting stars
-      return {
-        ...base,
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: -0.15 - Math.random() * 0.3,
-        r: Math.random() < 0.2 ? 2.2 : 1.0,
-        alpha: 0.35 + Math.random() * 0.5,
-      };
-    case 1: // Neon Protocol: horizontal scan streaks
-      return {
-        ...base,
-        x: -5,
-        y: Math.random() * h,
-        vx: 0.5 + Math.random() * 1.5,
-        vy: 0,
-        r: 0.8,
-        alpha: 0.25 + Math.random() * 0.4,
-      };
-    case 2: // Signal Ward: rising pulses
-      return {
-        ...base,
-        x: Math.random() * w,
-        y: h + 5,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: -0.25 - Math.random() * 0.45,
-        r: 1.1,
-        alpha: 0.3 + Math.random() * 0.4,
-      };
-    case 3: // Nova Canvas: slow spiral
-      return {
-        ...base,
-        x: w / 2 + (Math.random() - 0.5) * w,
-        y: h / 2 + (Math.random() - 0.5) * h,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: 0.6 + Math.random() * 1.8,
-        alpha: 0.25 + Math.random() * 0.45,
-      };
-    default: // Terra Grid: falling data
-      return {
-        ...base,
-        x: Math.random() * w,
-        y: -5,
-        vx: 0,
-        vy: 0.2 + Math.random() * 0.4,
-        r: 0.8,
-        alpha: 0.2 + Math.random() * 0.35,
-      };
-  }
-}
-
-function AtmosphereCanvas({
-  kind,
-  rgb,
-  hovered,
-}: {
-  kind: number;
-  rgb: [number, number, number];
-  hovered: boolean;
-}) {
-  const ref = useRef<HTMLCanvasElement>(null);
-  const particles = useRef<Particle[]>([]);
-  const frame = useRef(0);
-  const hovRef = useRef(hovered);
-  hovRef.current = hovered;
-  // Animation gates: rAF loop runs only while on-screen AND motion is OK.
-  // Reduced-motion users get a single static frame; off-screen cards stop
-  // burning CPU entirely (five cards × 55 particles otherwise run forever).
-  const runningRef = useRef(false);
-
-  const draw = useCallback(() => {
-    const c = ref.current;
-    if (!c) return;
-    const ctx = c.getContext("2d");
-    if (!ctx) return;
-    const w = c.width;
-    const h = c.height;
-    const hot = hovRef.current;
-
-    ctx.clearRect(0, 0, w, h);
-
-    const [r, g, b] = rgb;
-    const ps = particles.current;
-
-    for (let i = ps.length - 1; i >= 0; i--) {
-      const p = ps[i];
-      p.x += p.vx * (hot ? 1.6 : 1);
-      p.y += p.vy * (hot ? 1.6 : 1);
-      p.life--;
-
-      // Nova spiral
-      if (kind === 3) {
-        const cx = w / 2,
-          cy = h / 2;
-        const dx = p.x - cx,
-          dy = p.y - cy;
-        const a = 0.003;
-        p.x = cx + dx * Math.cos(a) - dy * Math.sin(a);
-        p.y = cy + dx * Math.sin(a) + dy * Math.cos(a);
-      }
-
-      const lr = p.life / p.maxLife;
-      const fade = lr > 0.8 ? (1 - lr) * 5 : lr > 0.2 ? 1 : lr * 5;
-      const alpha = p.alpha * fade * (hot ? 2.5 : 1.4);
-
-      if (
-        p.life <= 0 ||
-        p.x < -10 ||
-        p.x > w + 10 ||
-        p.y < -10 ||
-        p.y > h + 10
-      ) {
-        ps[i] = spawn(w, h, kind);
-        continue;
-      }
-
-      // Neon Protocol, streaks
-      if (kind === 1) {
-        ctx.beginPath();
-        ctx.moveTo(p.x - 6, p.y);
-        ctx.lineTo(p.x + 6, p.y);
-        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-      ctx.fill();
-
-      // Glow halo
-      if (p.r > 1) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r},${g},${b},${alpha * (hot ? 0.2 : 0.1)})`;
-        ctx.fill();
-      }
-    }
-
-    // Signal Ward, EKG line
-    if (kind === 2) {
-      const t = Date.now() * 0.002;
-      ctx.beginPath();
-      ctx.strokeStyle = `rgba(${r},${g},${b},${hot ? 0.3 : 0.15})`;
-      ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 2) {
-        const blip =
-          Math.sin((x * 0.05 + t) * 4) *
-          Math.exp(-((((x + t * 40) % 120) - 60) ** 2) / 200);
-        const y = h * 0.45 + blip * (hot ? 28 : 14);
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-
-    // Terra Grid, faint grid lines
-    if (kind === 4) {
-      ctx.strokeStyle = `rgba(${r},${g},${b},${hot ? 0.08 : 0.04})`;
-      ctx.lineWidth = 0.5;
-      for (let x = 0; x < w; x += 18) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-      }
-      for (let y = 0; y < h; y += 18) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
-    }
-
-    if (runningRef.current) frame.current = requestAnimationFrame(draw);
-  }, [rgb, kind]);
-
-  useEffect(() => {
-    const c = ref.current;
-    if (!c) return;
-
-    const resize = () => {
-      const rect = c.parentElement?.getBoundingClientRect();
-      if (!rect) return;
-      const dpr = Math.min(window.devicePixelRatio, 2);
-      c.width = rect.width * dpr;
-      c.height = rect.height * dpr;
-      c.style.width = rect.width + "px";
-      c.style.height = rect.height + "px";
-      particles.current = Array.from({ length: 55 }, () =>
-        spawn(c.width, c.height, kind),
-      );
-    };
-
-    const mql = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    let inView = true;
-
-    const stop = () => {
-      runningRef.current = false;
-      cancelAnimationFrame(frame.current);
-    };
-    const sync = () => {
-      const reduced = !!mql?.matches;
-      if (reduced || !inView) {
-        stop();
-        // Reduced motion still deserves the atmosphere, one static frame.
-        if (reduced && inView) draw();
-        return;
-      }
-      if (!runningRef.current) {
-        runningRef.current = true;
-        frame.current = requestAnimationFrame(draw);
-      }
-    };
-
-    resize();
-    sync();
-    window.addEventListener("resize", resize);
-    mql?.addEventListener?.("change", sync);
-
-    const io =
-      typeof IntersectionObserver !== "undefined"
-        ? new IntersectionObserver(
-            ([entry]) => {
-              inView = entry.isIntersecting;
-              sync();
-            },
-            { rootMargin: "120px" },
-          )
-        : null;
-    io?.observe(c);
-
-    return () => {
-      stop();
-      window.removeEventListener("resize", resize);
-      mql?.removeEventListener?.("change", sync);
-      io?.disconnect();
-    };
-  }, [draw, kind]);
-
-  return (
-    <canvas
-      ref={ref}
-      className="absolute inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
-    />
-  );
 }
 
 /* ── Main section ──────────────────────────────────────── */
@@ -320,6 +67,8 @@ export function FiveWorldsSection() {
         className="relative overflow-hidden"
         onMouseEnter={() => setHovered(HERO_CARD.slug)}
         onMouseLeave={() => setHovered(null)}
+        onFocus={() => setHovered(HERO_CARD.slug)}
+        onBlur={() => setHovered(null)}
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -396,15 +145,18 @@ export function FiveWorldsSection() {
             }}
             onMouseEnter={() => setHovered(t.slug)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => setHovered(t.slug)}
+            onBlur={() => setHovered(null)}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 0.85, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.06, duration: 0.4 }}
           >
-            <AtmosphereCanvas
-              kind={t.kind}
+            <SceneCanvas
+              draw={t.scene ?? drawTerraGrid}
               rgb={t.rgb}
               hovered={hovered === t.slug}
+              className="absolute inset-0 z-0 pointer-events-none"
             />
             <Link
               href={`/themes/${t.slug}`}
