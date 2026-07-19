@@ -18,11 +18,15 @@ document is the source of truth.
 
 - **Lesson + capstone routes** for the 4 unlaunched themes return 404
   (`/themes/{slug}/{module}/{lesson}`, `/themes/{slug}/capstone`).
-- **`/themes/{slug}` for unlaunched themes** renders a stub: in-world status
-  board hero, theme motif, hand-curated module roster + skills (manifest
-  `preview` block), cast with personality lines, career paths, JSON-LD
-  `availability: PreOrder`, and waitlist capture in hero + footer
-  (sources `coming-soon-hero` / `coming-soon-footer`).
+- **`/themes/{slug}` for unlaunched themes** renders a stub: split hero with
+  in-world status board copy on the left and the theme's signature SceneCanvas
+  scene in a bordered "feed" frame on the right (caption carries the
+  status-board line; hover ignites the scene, matching the /themes cards),
+  theme motif, bordered stats row, hand-curated module roster + skills
+  (manifest `preview` block), cast with personality lines, career paths,
+  JSON-LD `availability: PreOrder`, waitlist capture in hero + footer
+  (sources `coming-soon-hero` / `coming-soon-footer`), and a
+  `{Theme}: Coming Soon` page title (live themes keep `Module Map`).
 - **Sitemap** lists Deep Orbit at priority 0.9 + lesson/capstone routes;
   unlaunched themes only appear at the `/themes/{slug}` stub level
   (priority 0.4). No module/lesson/capstone routes for them.

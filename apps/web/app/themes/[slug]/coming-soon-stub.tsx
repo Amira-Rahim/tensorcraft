@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { ThemeManifest } from "@tensorcraft/themes";
 import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
-import { AmbientBackground } from "@/app/components/ambient-background";
 import { ThemeWaitlistForm } from "./theme-waitlist-form";
 import { ComingSoonMotif } from "./coming-soon-motif";
+import { ComingSoonScene } from "./coming-soon-scene";
 
 interface Props {
   theme: ThemeManifest;
@@ -75,111 +75,108 @@ export function ComingSoonStub({ theme }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
-      <AmbientBackground count={120} />
-
-      {/* Hero: in-world status board */}
+      {/* Hero: in-world status board + live scene feed */}
       <header
         className="relative z-10"
-        style={{
-          borderBottom: `1px solid ${palette.border}`,
-          background: `color-mix(in srgb, ${palette.bg} 70%, transparent)`,
-        }}
+        style={{ borderBottom: `1px solid ${palette.border}` }}
       >
-        <div className="max-w-[900px] mx-auto px-6 md:px-12 pt-12 pb-10">
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-            <span
-              className="font-mono text-xs uppercase tracking-[0.2em]"
+        <div className="max-w-[1120px] mx-auto px-6 md:px-12 pt-12 pb-12 grid gap-10 lg:grid-cols-[3fr_2fr] lg:items-stretch">
+          <div>
+            <p
+              className="font-mono text-xs uppercase tracking-[0.2em] mb-5"
               style={{ color: palette.accent }}
             >
               {preview?.statusBoard.org ?? theme.specialization}
               <span className="sr-only"> (coming soon)</span>
-            </span>
-            {preview ? (
-              <span
-                className="font-mono text-xs uppercase tracking-[0.15em] px-3 py-1 border-2 rounded-none"
-                style={{ color: palette.accent, borderColor: palette.accent }}
-              >
-                {preview.statusBoard.status}
-              </span>
-            ) : null}
-          </div>
+            </p>
 
-          <h1
-            className="font-mono text-5xl font-bold mb-4 leading-tight"
-            style={{ color: palette.text, letterSpacing: "-0.02em" }}
-          >
-            {theme.displayName}
-          </h1>
-          <p
-            className="text-xl leading-relaxed mb-2"
-            style={{ color: palette.text }}
-          >
-            {theme.tagline}
-          </p>
-
-          <div className="my-5">
-            <ComingSoonMotif slug={slug} color={palette.primary} />
-          </div>
-
-          <p
-            className="text-base leading-relaxed max-w-[560px] mb-6"
-            style={{ color: palette.muted }}
-          >
-            {theme.description}
-          </p>
-
-          <div className="max-w-[480px]">
-            <ThemeWaitlistForm
-              themeSlug={slug}
-              themeName={theme.displayName}
-              palette={palette}
-              idSuffix="hero"
-              source="coming-soon-hero"
-              ctaLabel={preview?.ctaLabel ?? "Notify"}
-            />
+            <h1
+              className="font-mono text-5xl md:text-7xl font-bold mb-4 leading-[1.05]"
+              style={{ color: palette.text, letterSpacing: "-0.02em" }}
+            >
+              {theme.displayName}
+            </h1>
             <p
-              className="font-mono text-xs mt-2"
+              className="text-xl md:text-2xl leading-relaxed mb-2"
+              style={{ color: palette.text }}
+            >
+              {theme.tagline}
+            </p>
+
+            <div className="my-5">
+              <ComingSoonMotif slug={slug} color={palette.primary} />
+            </div>
+
+            <p
+              className="text-base leading-relaxed max-w-[560px] mb-6"
               style={{ color: palette.muted }}
             >
-              One email when {theme.displayName} ships. Nothing else.
+              {theme.description}
             </p>
+
+            <div className="max-w-[480px]">
+              <ThemeWaitlistForm
+                themeSlug={slug}
+                themeName={theme.displayName}
+                palette={palette}
+                idSuffix="hero"
+                source="coming-soon-hero"
+                ctaLabel={preview?.ctaLabel ?? "Notify"}
+              />
+              <p
+                className="font-mono text-xs mt-2"
+                style={{ color: palette.muted }}
+              >
+                One email when {theme.displayName} ships. Nothing else.
+              </p>
+            </div>
           </div>
+
+          <ComingSoonScene
+            slug={slug}
+            palette={palette}
+            status={preview?.statusBoard.status ?? "Coming soon"}
+          />
         </div>
       </header>
 
-      {/* Stats strip */}
+      {/* Stats strip: bordered row inside the content column */}
       {preview ? (
         <section
           aria-label="Curriculum at a glance"
-          className="relative z-10 grid grid-cols-2 md:grid-cols-4 text-center"
-          style={{ borderBottom: `1px solid ${palette.border}` }}
+          className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pt-10"
         >
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="py-4 border-l first:border-l-0"
-              style={{ borderColor: palette.border }}
-            >
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 text-center border-2 rounded-none"
+            style={{ borderColor: palette.border, background: palette.surface }}
+          >
+            {stats.map((stat) => (
               <div
-                className="font-mono text-xl font-bold"
-                style={{ color: palette.primary }}
+                key={stat.label}
+                className="py-4 border-l first:border-l-0 max-md:odd:border-l-0 max-md:nth-[n+3]:border-t"
+                style={{ borderColor: palette.border }}
               >
-                {stat.value}
+                <div
+                  className="font-mono text-xl font-bold"
+                  style={{ color: palette.primary }}
+                >
+                  {stat.value}
+                </div>
+                <div
+                  className="font-mono text-xs uppercase tracking-[0.15em]"
+                  style={{ color: palette.muted }}
+                >
+                  {stat.label}
+                </div>
               </div>
-              <div
-                className="font-mono text-xs uppercase tracking-[0.15em]"
-                style={{ color: palette.muted }}
-              >
-                {stat.label}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
       ) : null}
 
       {/* Module roster */}
       {preview ? (
-        <section className="relative z-10 max-w-[900px] mx-auto px-6 md:px-12 py-10">
+        <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 py-10">
           <h2
             className="font-mono text-xs uppercase tracking-[0.2em] mb-5"
             style={{ color: palette.primary }}
@@ -236,7 +233,7 @@ export function ComingSoonStub({ theme }: Props) {
       ) : null}
 
       {/* Skills, careers, and cast */}
-      <section className="relative z-10 max-w-[900px] mx-auto px-6 md:px-12 pb-10 grid gap-10 md:grid-cols-2">
+      <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pb-10 grid gap-10 md:grid-cols-2">
         <div>
           {preview ? (
             <>
@@ -340,7 +337,7 @@ export function ComingSoonStub({ theme }: Props) {
       </section>
 
       {/* Footer: waitlist repeat + Deep Orbit cross-sell */}
-      <section className="relative z-10 max-w-[900px] mx-auto px-6 md:px-12 pb-16 grid gap-4 md:grid-cols-2">
+      <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pb-16 grid gap-4 md:grid-cols-2">
         <div
           className="border-2 p-6 rounded-none"
           style={{

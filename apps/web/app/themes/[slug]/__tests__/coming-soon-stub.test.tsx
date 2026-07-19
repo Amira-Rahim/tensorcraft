@@ -20,11 +20,6 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-// Canvas/rAF-driven client component; irrelevant to stub layout assertions.
-vi.mock("@/app/components/ambient-background", () => ({
-  AmbientBackground: () => null,
-}));
-
 describe("ComingSoonStub", () => {
   it("renders status board, roster, skills, careers, cast, and both forms", () => {
     render(<ComingSoonStub theme={signalWard} />);
@@ -32,8 +27,12 @@ describe("ComingSoonStub", () => {
     expect(
       screen.getByText("MERIDIAN GENERAL HOSPITAL · EHR STATUS BOARD"),
     ).toBeInTheDocument();
+    // Status line lives in the hero scene frame's caption bar.
     expect(
       screen.getByText("SYSTEM OFFLINE · REBUILD PENDING"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("coming-soon-scene-signal-ward"),
     ).toBeInTheDocument();
 
     expect(screen.getByText(/ML Through Text/)).toBeInTheDocument();

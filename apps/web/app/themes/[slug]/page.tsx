@@ -25,7 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const theme = themes[slug];
   if (!theme) return {};
   return {
-    title: `${theme.displayName}: Module Map | Tensorcraft`,
+    title: isComingSoon(slug)
+      ? `${theme.displayName}: Coming Soon | Tensorcraft`
+      : `${theme.displayName}: Module Map | Tensorcraft`,
     description: theme.description,
     alternates: { canonical: `https://tensorcraft.app/themes/${slug}` },
     openGraph: {
