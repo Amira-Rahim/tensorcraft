@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   SceneCanvas,
   drawNeonProtocol,
@@ -33,49 +32,42 @@ function hexToRgb(hex: string): [number, number, number] {
 interface Props {
   slug: string;
   palette: ThemePalette;
-  /** In-world status line for the feed's caption bar. */
-  status: string;
 }
 
 /**
- * In-world "monitor" frame for the coming-soon hero: the theme's signature
- * scene behind a caption bar carrying the status-board line. Hover ignites
- * the scene via SceneCanvas's eased hot amount, matching the theme cards.
+ * Ambient hero backdrop for the coming-soon page: the theme's signature
+ * scene runs full-bleed behind the status-board copy, exactly how the
+ * renderers sit behind the /themes card content. A left scrim keeps the
+ * copy column legible and a bottom fade seats the scene into the page.
+ * Decorative only; SceneCanvas renders a static frame under reduced motion.
  */
-export function ComingSoonScene({ slug, palette, status }: Props) {
-  const [hovered, setHovered] = useState(false);
+export function ComingSoonScene({ slug, palette }: Props) {
   const draw = SCENE_BY_SLUG[slug];
   if (!draw) return null;
 
   return (
-    <figure
+    <div
       data-testid={`coming-soon-scene-${slug}`}
-      className="flex flex-col border-2 rounded-none h-64 lg:h-auto lg:self-stretch"
-      style={{ borderColor: palette.border, background: palette.surface }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none"
     >
-      <figcaption
-        className="flex items-center justify-between gap-3 px-4 py-2 border-b font-mono text-[11px] uppercase tracking-[0.15em]"
-        style={{ borderColor: palette.border, color: palette.accent }}
-      >
-        <span>{status}</span>
-        <span
-          aria-hidden="true"
-          className="animate-pulse"
-          style={{ color: palette.primary }}
-        >
-          ●
-        </span>
-      </figcaption>
-      <div className="relative flex-1">
-        <SceneCanvas
-          draw={draw}
-          rgb={hexToRgb(palette.primary)}
-          hovered={hovered}
-          className="absolute inset-0"
-        />
-      </div>
-    </figure>
+      <SceneCanvas
+        draw={draw}
+        rgb={hexToRgb(palette.primary)}
+        className="absolute inset-0"
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(90deg, ${palette.bg} 30%, color-mix(in srgb, ${palette.bg} 55%, transparent) 60%, color-mix(in srgb, ${palette.bg} 15%, transparent) 100%)`,
+        }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(180deg, color-mix(in srgb, ${palette.bg} 40%, transparent) 0%, transparent 35%, transparent 70%, ${palette.bg} 100%)`,
+        }}
+      />
+    </div>
   );
 }

@@ -18,12 +18,13 @@ document is the source of truth.
 
 - **Lesson + capstone routes** for the 4 unlaunched themes return 404
   (`/themes/{slug}/{module}/{lesson}`, `/themes/{slug}/capstone`).
-- **`/themes/{slug}` for unlaunched themes** renders a stub: split hero with
-  in-world status board copy on the left and the theme's signature SceneCanvas
-  scene in a bordered "feed" frame on the right (caption carries the
-  status-board line; hover ignites the scene, matching the /themes cards),
-  theme motif, bordered stats row, hand-curated module roster + skills
-  (manifest `preview` block), cast with personality lines, career paths,
+- **`/themes/{slug}` for unlaunched themes** renders a stub: hero with the
+  theme's signature SceneCanvas scene running full-bleed behind the in-world
+  status-board copy (org + status line in the eyebrow row; left scrim keeps
+  the copy legible), and a status-board module roster whose row states carry the
+  launch scope (module 1 "Online · Free", the rest "Pending", capstone
+  "Finale") with curriculum counts in the header line; skills as a
+  slash-separated line, cast with personality lines, career paths,
   JSON-LD `availability: PreOrder`, waitlist capture in hero + footer
   (sources `coming-soon-hero` / `coming-soon-footer`), and a
   `{Theme}: Coming Soon` page title (live themes keep `Module Map`).

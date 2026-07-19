@@ -9,8 +9,8 @@ export const neonProtocol: ThemeManifest = {
     "NeuralCore HQ. 200 surveillance cameras went dark overnight. Rebuild Protocol Sentinel, an urban anomaly detection system.",
   palette: {
     bg: "#1C1C1C",
-    primary: "#4A90D9",
-    accent: "#A07090",
+    primary: "#3FC4DC",
+    accent: "#D468B4",
     surface: "#252525",
     text: "#E0E0E0",
     muted: "#A0A0A0",

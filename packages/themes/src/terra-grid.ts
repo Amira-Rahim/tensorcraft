@@ -10,7 +10,7 @@ export const terraGrid: ThemeManifest = {
   palette: {
     bg: "#1C1C1C",
     primary: "#C49535",
-    accent: "#6BAA8A",
+    accent: "#8FB05A",
     surface: "#252525",
     text: "#E0E0E0",
     muted: "#A0A0A0",

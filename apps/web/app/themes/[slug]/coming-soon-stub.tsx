@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { ThemeManifest } from "@tensorcraft/themes";
 import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import { ThemeWaitlistForm } from "./theme-waitlist-form";
-import { ComingSoonMotif } from "./coming-soon-motif";
 import { ComingSoonScene } from "./coming-soon-scene";
 
 interface Props {
@@ -15,20 +14,39 @@ const plural = (word: string) => PLURALS[word] ?? `${word}s`;
 
 /**
  * Coming-soon stub for unlaunched themes. Server-rendered with theme palette,
- * an in-world status-board hero, curriculum teaser data from
- * `theme.preview`, and waitlist capture in the hero and the footer.
- * JSON-LD ships `availability: PreOrder` so search engines surface the
- * right rich snippet.
+ * a split hero (in-world status board copy + live SceneCanvas feed frame),
+ * a status-board module roster from `theme.preview`, and waitlist capture in
+ * the hero and the footer. JSON-LD ships `availability: PreOrder` so search
+ * engines surface the right rich snippet.
+ *
+ * Color is structural here: section borders and row hairlines mix the theme
+ * primary into the neutral border (the raw `palette.border` is near-invisible
+ * on `palette.bg`), and the free/capstone roster rows carry tinted washes.
  */
 export function ComingSoonStub({ theme }: Props) {
   const slug = theme.slug;
   const preview = theme.preview;
-  const palette = theme.palette;
+  // Brand-green-only surface (2026-07-19 design decision): coming-soon pages
+  // speak in the site chrome's green + shared neutrals, so they never clash
+  // with the nav (theme-provider only applies launched themes' palettes).
+  // Theme identity comes from the scene renderer, typography, and copy.
+  // Per-theme hues remain on /themes cards and the homepage strip.
+  const palette = {
+    ...theme.palette,
+    primary: "#6BAA8A",
+    accent: "#6BAA8A",
+  };
   const modulePlural = plural(theme.terminology.module);
   const lessonPlural = plural(theme.terminology.lesson);
   const rosterPrefix = theme.terminology.module.charAt(0).toUpperCase();
   const castLead = theme.characters.slice(0, 3);
   const castRest = theme.characters.slice(3);
+
+  // Theme-mixed structural colors (see doc comment above).
+  const edge = `color-mix(in srgb, ${palette.primary} 25%, ${palette.border})`;
+  const hairline = `color-mix(in srgb, ${palette.primary} 15%, ${palette.border})`;
+  const wash = `color-mix(in srgb, ${palette.primary} 7%, ${palette.bg})`;
+  const accentWash = `color-mix(in srgb, ${palette.accent} 9%, ${palette.bg})`;
 
   const courseJsonLd = {
     "@context": "https://schema.org",
@@ -53,18 +71,6 @@ export function ComingSoonStub({ theme }: Props) {
     },
   };
 
-  const stats: Array<{ value: string; label: string }> = [
-    { value: String(THEME_CONTENT.modulesPerTheme), label: modulePlural },
-    // Launch-scope constant (11 modules x 5 lessons), shared with the
-    // pricing bundle math so the two surfaces can't drift.
-    {
-      value: String(THEME_CONTENT.comingSoonLessonsPerTheme),
-      label: lessonPlural,
-    },
-    { value: "1", label: "Capstone Model" },
-    { value: "Free", label: `${theme.terminology.module} 1 at Launch` },
-  ];
-
   return (
     <main
       className="min-h-screen relative overflow-hidden"
@@ -75,21 +81,27 @@ export function ComingSoonStub({ theme }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
-      {/* Hero: in-world status board + live scene feed */}
+
+      {/* Hero: in-world status board over the theme's ambient scene */}
       <header
-        className="relative z-10"
-        style={{ borderBottom: `1px solid ${palette.border}` }}
+        className="relative"
+        style={{ borderBottom: `1px solid ${edge}` }}
       >
-        <div className="max-w-[1120px] mx-auto px-6 md:px-12 pt-12 pb-12 grid gap-10 lg:grid-cols-[3fr_2fr] lg:items-stretch">
-          <div>
-            <p
-              className="font-mono text-xs uppercase tracking-[0.2em] mb-5"
-              style={{ color: palette.accent }}
-            >
+        <ComingSoonScene slug={slug} palette={palette} />
+        <div className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pt-12 pb-14">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-6 font-mono text-xs uppercase tracking-[0.2em]">
+            <p style={{ color: palette.muted }}>
               {preview?.statusBoard.org ?? theme.specialization}
               <span className="sr-only"> (coming soon)</span>
             </p>
+            {preview ? (
+              <p style={{ color: palette.primary }}>
+                {preview.statusBoard.status}
+              </p>
+            ) : null}
+          </div>
 
+          <div className="max-w-[640px]">
             <h1
               className="font-mono text-5xl md:text-7xl font-bold mb-4 leading-[1.05]"
               style={{ color: palette.text, letterSpacing: "-0.02em" }}
@@ -97,15 +109,11 @@ export function ComingSoonStub({ theme }: Props) {
               {theme.displayName}
             </h1>
             <p
-              className="text-xl md:text-2xl leading-relaxed mb-2"
+              className="text-xl md:text-2xl leading-relaxed mb-5"
               style={{ color: palette.text }}
             >
               {theme.tagline}
             </p>
-
-            <div className="my-5">
-              <ComingSoonMotif slug={slug} color={palette.primary} />
-            </div>
 
             <p
               className="text-base leading-relaxed max-w-[560px] mb-6"
@@ -131,104 +139,81 @@ export function ComingSoonStub({ theme }: Props) {
               </p>
             </div>
           </div>
-
-          <ComingSoonScene
-            slug={slug}
-            palette={palette}
-            status={preview?.statusBoard.status ?? "Coming soon"}
-          />
         </div>
       </header>
 
-      {/* Stats strip: bordered row inside the content column */}
-      {preview ? (
-        <section
-          aria-label="Curriculum at a glance"
-          className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pt-10"
-        >
-          <div
-            className="grid grid-cols-2 md:grid-cols-4 text-center border-2 rounded-none"
-            style={{ borderColor: palette.border, background: palette.surface }}
-          >
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="py-4 border-l first:border-l-0 max-md:odd:border-l-0 max-md:nth-[n+3]:border-t"
-                style={{ borderColor: palette.border }}
-              >
-                <div
-                  className="font-mono text-xl font-bold"
-                  style={{ color: palette.primary }}
-                >
-                  {stat.value}
-                </div>
-                <div
-                  className="font-mono text-xs uppercase tracking-[0.15em]"
-                  style={{ color: palette.muted }}
-                >
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {/* Module roster */}
+      {/* Module roster: in-world status board. Row state carries the launch
+          scope (module 1 online + free, the rest pending rebuild). */}
       {preview ? (
         <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 py-10">
-          <h2
-            className="font-mono text-xs uppercase tracking-[0.2em] mb-5"
-            style={{ color: palette.primary }}
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-4">
+            <h2
+              className="font-mono text-sm font-bold"
+              style={{ color: palette.text }}
+            >
+              The {THEME_CONTENT.modulesPerTheme} {modulePlural}
+            </h2>
+            <p className="font-mono text-xs" style={{ color: palette.muted }}>
+              {THEME_CONTENT.lessonsPerModule} {lessonPlural} per{" "}
+              {theme.terminology.module} ·{" "}
+              {THEME_CONTENT.comingSoonLessonsPerTheme} in the full rebuild
+            </p>
+          </div>
+          <ul
+            className="border-t"
+            style={{ borderColor: hairline }}
+            data-testid={`coming-soon-roster-${slug}`}
           >
-            The 11 {modulePlural}
-          </h2>
-          <ul className="grid md:grid-cols-2 gap-2">
             {preview.modules.map((m) => (
               <li
                 key={m.order}
-                className={`border-2 px-4 py-3 font-mono text-sm rounded-none${
-                  m.capstone ? " md:col-span-2 text-center" : ""
+                className={`flex items-baseline gap-4 border-b px-3 py-2.5 font-mono text-sm${
+                  m.free ? " border-l-2" : ""
                 }`}
                 style={{
-                  background: palette.surface,
-                  borderColor: m.free
-                    ? palette.primary
+                  borderBottomColor: hairline,
+                  ...(m.free
+                    ? { background: wash, borderLeftColor: palette.primary }
                     : m.capstone
-                      ? palette.accent
-                      : palette.border,
-                  color: m.free
-                    ? palette.text
-                    : m.capstone
-                      ? palette.accent
-                      : palette.muted,
+                      ? { background: accentWash }
+                      : {}),
                 }}
               >
-                {rosterPrefix}
-                {String(m.order).padStart(2, "0")} &middot; {m.title}
-                {m.free ? (
-                  <span
-                    className="ml-2 text-xs border px-1.5 py-0.5 rounded-none"
-                    style={{
-                      borderColor: palette.primary,
-                      color: palette.primary,
-                    }}
-                  >
-                    FREE
-                  </span>
-                ) : null}
+                <span
+                  style={{
+                    color: m.free
+                      ? palette.primary
+                      : m.capstone
+                        ? palette.accent
+                        : palette.muted,
+                  }}
+                >
+                  {rosterPrefix}
+                  {String(m.order).padStart(2, "0")}
+                </span>
+                <span
+                  className="flex-1"
+                  style={{
+                    color: m.free || m.capstone ? palette.text : palette.muted,
+                  }}
+                >
+                  {m.title}
+                </span>
+                <span
+                  className="text-[11px] uppercase tracking-[0.15em] whitespace-nowrap"
+                  style={{
+                    color: m.free
+                      ? palette.primary
+                      : m.capstone
+                        ? palette.accent
+                        : palette.muted,
+                  }}
+                >
+                  {m.free ? "Online · Free" : m.capstone ? "Finale" : "Pending"}
+                </span>
               </li>
             ))}
           </ul>
-          <p
-            className="font-mono text-xs mt-3"
-            style={{ color: palette.muted }}
-          >
-            {THEME_CONTENT.lessonsPerModule} {lessonPlural} per{" "}
-            {theme.terminology.module} &middot;{" "}
-            {THEME_CONTENT.comingSoonLessonsPerTheme} {lessonPlural} in the full
-            rebuild.
-          </p>
         </section>
       ) : null}
 
@@ -238,28 +223,32 @@ export function ComingSoonStub({ theme }: Props) {
           {preview ? (
             <>
               <h2
-                className="font-mono text-xs uppercase tracking-[0.2em] mb-3"
-                style={{ color: palette.primary }}
+                className="font-mono text-sm font-bold mb-3"
+                style={{ color: palette.text }}
               >
-                What you&rsquo;ll master
+                You&rsquo;ll master
               </h2>
-              <div className="flex flex-wrap gap-2 mb-8">
-                {preview.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="border px-2.5 py-1 font-mono text-xs rounded-none"
-                    style={{ borderColor: palette.border, color: palette.text }}
-                  >
-                    {skill}
+              <p className="font-mono text-sm leading-relaxed mb-8">
+                {preview.skills.map((skill, i) => (
+                  <span key={skill}>
+                    {i > 0 ? (
+                      <span
+                        aria-hidden="true"
+                        style={{ color: palette.primary }}
+                      >
+                        {" / "}
+                      </span>
+                    ) : null}
+                    <span style={{ color: palette.text }}>{skill}</span>
                   </span>
                 ))}
-              </div>
+              </p>
             </>
           ) : null}
 
           <h2
-            className="font-mono text-xs uppercase tracking-[0.2em] mb-3"
-            style={{ color: palette.primary }}
+            className="font-mono text-sm font-bold mb-3"
+            style={{ color: palette.text }}
           >
             Where it leads
           </h2>
@@ -292,33 +281,30 @@ export function ComingSoonStub({ theme }: Props) {
 
         <div>
           <h2
-            className="font-mono text-xs uppercase tracking-[0.2em] mb-3"
-            style={{ color: palette.primary }}
+            className="font-mono text-sm font-bold mb-1"
+            style={{ color: palette.text }}
           >
             The cast
           </h2>
-          <ul className="space-y-3 mb-3">
+          <ul>
             {castLead.map((c) => (
               <li
                 key={c.name}
-                className="border-2 p-4 rounded-none"
-                style={{
-                  borderColor: palette.border,
-                  background: palette.surface,
-                }}
+                className="border-b py-3"
+                style={{ borderColor: hairline }}
               >
-                <div
+                <span
                   className="font-mono text-sm font-bold"
                   style={{ color: palette.text }}
                 >
                   {c.name}
-                </div>
-                <div
-                  className="font-mono text-xs uppercase mt-0.5"
-                  style={{ color: palette.accent }}
+                </span>
+                <span
+                  className="font-mono text-xs uppercase tracking-[0.1em] ml-2"
+                  style={{ color: palette.muted }}
                 >
                   {c.role}
-                </div>
+                </span>
                 <p
                   className="text-xs italic mt-1"
                   style={{ color: palette.muted }}
@@ -329,60 +315,56 @@ export function ComingSoonStub({ theme }: Props) {
             ))}
           </ul>
           {castRest.length > 0 ? (
-            <p className="font-mono text-xs" style={{ color: palette.muted }}>
+            <p
+              className="font-mono text-xs mt-3"
+              style={{ color: palette.muted }}
+            >
               + {castRest.map((c) => c.name).join(", ")}
             </p>
           ) : null}
         </div>
       </section>
 
-      {/* Footer: waitlist repeat + Deep Orbit cross-sell */}
-      <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pb-16 grid gap-4 md:grid-cols-2">
+      {/* Footer: waitlist band + Deep Orbit cross-link */}
+      <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pb-16">
         <div
-          className="border-2 p-6 rounded-none"
-          style={{
-            borderColor: palette.primary,
-            background: palette.surface,
-          }}
+          className="border-2 p-6 md:p-8 rounded-none"
+          style={{ borderColor: palette.primary, background: wash }}
         >
           <h2
-            className="font-mono text-xs uppercase tracking-[0.2em] mb-3"
-            style={{ color: palette.primary }}
-          >
-            Waitlist
-          </h2>
-          <ThemeWaitlistForm
-            themeSlug={slug}
-            themeName={theme.displayName}
-            palette={palette}
-            idSuffix="footer"
-            source="coming-soon-footer"
-            ctaLabel={preview?.ctaLabel ?? "Notify"}
-          />
-        </div>
-
-        <Link
-          href="/themes/deep-orbit"
-          className="border-2 p-6 block rounded-none brutalist-hover"
-          style={{ borderColor: palette.border, background: palette.surface }}
-        >
-          <p
-            className="font-mono text-xs uppercase tracking-[0.2em] mb-3"
-            style={{ color: palette.accent }}
-          >
-            Can&rsquo;t wait?
-          </p>
-          <h2
-            className="font-mono text-sm font-bold mb-2"
+            className="font-mono text-sm font-bold mb-1"
             style={{ color: palette.text }}
           >
-            Deep Orbit is live now
+            Join the waitlist
           </h2>
-          <p className="text-sm" style={{ color: palette.muted }}>
-            Time-Series &amp; Signals. Same ML foundations track, different
-            world. Start free &rarr;
+          <p
+            className="font-mono text-xs mb-4"
+            style={{ color: palette.muted }}
+          >
+            One email when {theme.displayName} ships. Nothing else.
           </p>
-        </Link>
+          <div className="max-w-[480px]">
+            <ThemeWaitlistForm
+              themeSlug={slug}
+              themeName={theme.displayName}
+              palette={palette}
+              idSuffix="footer"
+              source="coming-soon-footer"
+              ctaLabel={preview?.ctaLabel ?? "Notify"}
+            />
+          </div>
+        </div>
+        <p className="mt-4 text-sm" style={{ color: palette.muted }}>
+          Can&rsquo;t wait?{" "}
+          <Link
+            href="/themes/deep-orbit"
+            className="underline underline-offset-4"
+            style={{ color: palette.text }}
+          >
+            Start free in Deep Orbit
+          </Link>
+          , the live world. Same ML foundations track.
+        </p>
       </section>
     </main>
   );

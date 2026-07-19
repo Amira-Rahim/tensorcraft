@@ -36,16 +36,21 @@ describe("ComingSoonStub", () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText(/ML Through Text/)).toBeInTheDocument();
-    expect(screen.getByText("FREE")).toBeInTheDocument();
     expect(screen.getByText(/Capstone: Diagnostic One/)).toBeInTheDocument();
 
-    // These match the roster heading and roster footnote, not the stats strip.
-    expect(screen.getByText(/11 Wards/i)).toBeInTheDocument();
-    expect(screen.getByText(/55 Procedures/i)).toBeInTheDocument();
+    // Roster header carries the curriculum counts.
+    expect(screen.getByText(/The 11 Wards/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/5 Procedures per Ward · 55 in the full rebuild/i),
+    ).toBeInTheDocument();
 
-    // These are unique to the stats strip (value/label rendered as sibling divs).
-    expect(screen.getByText("Capstone Model")).toBeInTheDocument();
-    expect(screen.getByText(/Ward 1 at Launch/i)).toBeInTheDocument();
+    // Status-board rows: module 1 online + free, 9 pending, capstone finale.
+    expect(
+      screen.getByTestId("coming-soon-roster-signal-ward"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Online · Free")).toBeInTheDocument();
+    expect(screen.getAllByText("Pending")).toHaveLength(9);
+    expect(screen.getByText("Finale")).toBeInTheDocument();
 
     expect(screen.getByText("clinical NLP")).toBeInTheDocument();
     expect(screen.getByText(/NLP Engineer/)).toBeInTheDocument();
@@ -70,8 +75,8 @@ describe("ComingSoonStub", () => {
     const stripped: ThemeManifest = { ...signalWard, preview: undefined };
     render(<ComingSoonStub theme={stripped} />);
     expect(screen.queryByText(/ML Through Text/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/11 Wards/i)).not.toBeInTheDocument();
-    expect(screen.queryByText("Capstone Model")).not.toBeInTheDocument();
+    expect(screen.queryByText(/The 11 Wards/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Pending")).not.toBeInTheDocument();
     expect(
       screen.getByTestId("theme-waitlist-input-signal-ward-hero"),
     ).toBeInTheDocument();
