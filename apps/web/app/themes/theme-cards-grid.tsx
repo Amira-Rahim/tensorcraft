@@ -2,8 +2,36 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ParticleField } from "@tensorcraft/ui/effects";
+import {
+  SceneCanvas,
+  drawOrbit,
+  drawNeonProtocol,
+  drawSignalWard,
+  drawNovaCanvas,
+  drawTerraGrid,
+  type SceneDraw,
+} from "@tensorcraft/ui/effects";
 import { NewsletterModal } from "./newsletter-modal";
+
+// Signature scene per world — the same renderers as the homepage
+// five-worlds strip, so a theme's motion identity follows it across
+// surfaces. Hover/focus ignites the scene via SceneCanvas's eased hot.
+const SCENE_BY_SLUG: Record<string, SceneDraw> = {
+  "deep-orbit": drawOrbit,
+  "neon-protocol": drawNeonProtocol,
+  "signal-ward": drawSignalWard,
+  "nova-canvas": drawNovaCanvas,
+  "terra-grid": drawTerraGrid,
+};
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
+}
 
 export interface ThemeCardData {
   slug: string;
@@ -28,8 +56,9 @@ export interface ThemeCardsGridProps {
 
 /**
  * ThemeCardsGrid, hero card for the launched theme + muted grid for
- * coming-soon themes. Each card wraps a per-theme <ParticleField> atmosphere
- * (CSS-var driven so each canvas inherits the theme's primary color).
+ * coming-soon themes. Each card wraps its world's signature <SceneCanvas>
+ * scene (shared with the homepage five-worlds strip), tinted by the
+ * theme's primary and ignited on hover/focus.
  * Renders a newsletter modal trigger + dialog for "Get updates" CTA.
  *
  * Layout:
@@ -98,6 +127,9 @@ interface ThemeCardProps {
 function ThemeCard({ card, variant }: ThemeCardProps) {
   const isHero = variant === "hero";
   const isComingSoon = card.status === "coming-soon";
+  // Ignites the card's scene (SceneCanvas eases its own 0..1 hot amount);
+  // focus mirrors hover so keyboard users get the same moment.
+  const [hovered, setHovered] = useState(false);
 
   return (
     <div
@@ -115,15 +147,22 @@ function ThemeCard({ card, variant }: ThemeCardProps) {
             ["--tc-primary" as string]: card.primary,
           } as React.CSSProperties
         }
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}
       >
+        {/* Scene brightness rides SceneCanvas's eased hot amount, so no CSS
+            opacity ramp here — a second ramp would mute the ignition. */}
         <div
-          className={`absolute inset-0 pointer-events-none ${isComingSoon ? "opacity-25 group-hover:opacity-45" : "opacity-50 group-hover:opacity-80"} transition-opacity`}
+          className={`absolute inset-0 pointer-events-none ${isHero ? "" : "opacity-80"}`}
           aria-hidden="true"
         >
-          <ParticleField
-            density={isHero ? 0.25 : 0.12}
-            colorToken="var(--tc-primary)"
-            className="h-full w-full"
+          <SceneCanvas
+            draw={SCENE_BY_SLUG[card.slug] ?? drawOrbit}
+            rgb={hexToRgb(card.primary)}
+            hovered={hovered}
+            className="absolute inset-0"
           />
         </div>
 

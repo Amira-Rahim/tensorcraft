@@ -25,8 +25,8 @@ export const metadata: Metadata = {
  * - Hero card for the launched theme (Deep Orbit) + a muted 2-column grid
  *   for coming-soon themes whose cards link to per-theme stub pages with
  *   waitlist capture (see app/themes/[slug]/coming-soon-stub.tsx).
- * - Per-theme <ParticleField> atmosphere driven by each theme's own
- *   `--tc-primary` CSS variable.
+ * - Per-theme signature <SceneCanvas> scene (same renderers as the
+ *   homepage five-worlds strip), ignited on hover/focus.
  * - Newsletter signup modal with trapped focus + Escape/click-outside close.
  * - Per-user "Start" vs "Continue" CTA on the live card; coming-soon cards
  *   always show "Notify me →".

@@ -23,12 +23,20 @@ vi.mock("@/app/components/ambient-background", () => ({
   AmbientBackground: () => <div data-testid="ambient-bg" />,
 }));
 
-// Particle canvas is a visual decoration only, stub it to avoid jsdom
+// Scene canvases are visual decoration only, stub them to avoid jsdom
 // canvas / IntersectionObserver work in the test environment.
 vi.mock("@tensorcraft/ui/effects", () => ({
   ParticleField: ({ density }: { density?: number }) => (
     <div data-testid="particle-field" data-density={density ?? "default"} />
   ),
+  SceneCanvas: ({ hovered }: { hovered?: boolean }) => (
+    <div data-testid="scene-canvas" data-hovered={hovered ?? false} />
+  ),
+  drawOrbit: () => {},
+  drawNeonProtocol: () => {},
+  drawSignalWard: () => {},
+  drawNovaCanvas: () => {},
+  drawTerraGrid: () => {},
 }));
 
 // FocusTrap: keep the Escape + onEscape contract but render children
@@ -151,10 +159,10 @@ describe("ThemesPage (Deep Orbit launch + 4 coming-soon)", () => {
     }
   });
 
-  it("renders a ParticleField atmosphere per card (5 total)", async () => {
+  it("renders a signature SceneCanvas per card (5 total)", async () => {
     render(await ThemesPage());
-    const fields = screen.getAllByTestId("particle-field");
-    expect(fields).toHaveLength(5);
+    const scenes = screen.getAllByTestId("scene-canvas");
+    expect(scenes).toHaveLength(5);
   });
 
   it("applies rounded-none (brutalist) to each card link", async () => {
