@@ -52,8 +52,18 @@ describe("ComingSoonStub", () => {
     expect(screen.getAllByText("Pending")).toHaveLength(9);
     expect(screen.getByText("Finale")).toBeInTheDocument();
 
+    // Skills: counted prose. Careers: salary range bars on a shared axis.
     expect(screen.getByText("clinical NLP")).toBeInTheDocument();
+    expect(screen.getByText(/\d+ capabilities/)).toBeInTheDocument();
     expect(screen.getByText(/NLP Engineer/)).toBeInTheDocument();
+    expect(screen.getByTestId("career-bars-signal-ward")).toBeInTheDocument();
+    expect(screen.getByText("$114K–$237K")).toBeInTheDocument();
+    expect(screen.getByText(/to \$350K \/ yr/)).toBeInTheDocument();
+
+    // Cast: personnel dossier rows with initial-block avatars.
+    expect(screen.getAllByTestId("character-avatar-placeholder")).toHaveLength(
+      3,
+    );
 
     expect(
       screen.getByText("Shows concern through action, not speeches"),

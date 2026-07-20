@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { ThemeManifest } from "@tensorcraft/themes";
 import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+// Subpath import: the root barrel pulls in sandpack-react, which the
+// coming-soon page (and its jsdom tests) has no reason to load.
+import { CharacterAvatar } from "@tensorcraft/ui/character-avatar";
 import { ThemeWaitlistForm } from "./theme-waitlist-form";
 import { ComingSoonScene } from "./coming-soon-scene";
 
@@ -41,6 +44,17 @@ export function ComingSoonStub({ theme }: Props) {
   const rosterPrefix = theme.terminology.module.charAt(0).toUpperCase();
   const castLead = theme.characters.slice(0, 3);
   const castRest = theme.characters.slice(3);
+
+  // careerPaths entries follow "Name ($lowK-$highK)"; parsed for the salary
+  // range bars. An entry that doesn't parse falls back to a plain text row.
+  const careers = theme.careerPaths.map((path) => {
+    const m = /^(.*?)\s*\(\$(\d+)K\s*[-–]\s*\$(\d+)K\)\s*$/.exec(path);
+    return m
+      ? { name: m[1]!, low: Number(m[2]), high: Number(m[3]) }
+      : { name: path, low: null, high: null };
+  });
+  const axisTop =
+    Math.ceil(Math.max(0, ...careers.map((c) => c.high ?? 0)) / 50) * 50;
 
   // Theme-mixed structural colors (see doc comment above).
   const edge = `color-mix(in srgb, ${palette.primary} 25%, ${palette.border})`;
@@ -145,10 +159,10 @@ export function ComingSoonStub({ theme }: Props) {
       {/* Module roster: in-world status board. Row state carries the launch
           scope (module 1 online + free, the rest pending rebuild). */}
       {preview ? (
-        <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 py-10">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-4">
+        <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pt-12 pb-14">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-5">
             <h2
-              className="font-mono text-sm font-bold"
+              className="font-mono text-xl md:text-2xl font-bold tracking-tight"
               style={{ color: palette.text }}
             >
               The {THEME_CONTENT.modulesPerTheme} {modulePlural}
@@ -217,17 +231,31 @@ export function ComingSoonStub({ theme }: Props) {
         </section>
       ) : null}
 
-      {/* Skills, careers, and cast */}
-      <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pb-10 grid gap-10 md:grid-cols-2">
+      {/* Skills, careers, and cast. Section-header grammar matches the
+          roster: title bold left, mono-xs muted meta right. Each section
+          takes the form native to its data: counted prose, salary range
+          bars on a shared axis, personnel dossier rows. */}
+      <section
+        className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pt-10 pb-14 border-t grid gap-x-16 gap-y-10 md:grid-cols-2"
+        style={{ borderColor: hairline }}
+      >
         <div>
           {preview ? (
             <>
-              <h2
-                className="font-mono text-sm font-bold mb-3"
-                style={{ color: palette.text }}
-              >
-                You&rsquo;ll master
-              </h2>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-4">
+                <h2
+                  className="font-mono text-xl md:text-2xl font-bold tracking-tight"
+                  style={{ color: palette.text }}
+                >
+                  You&rsquo;ll master
+                </h2>
+                <p
+                  className="font-mono text-xs"
+                  style={{ color: palette.muted }}
+                >
+                  {preview.skills.length} capabilities
+                </p>
+              </div>
               <p className="font-mono text-sm leading-relaxed mb-8">
                 {preview.skills.map((skill, i) => (
                   <span key={skill}>
@@ -246,71 +274,99 @@ export function ComingSoonStub({ theme }: Props) {
             </>
           ) : null}
 
-          <h2
-            className="font-mono text-sm font-bold mb-3"
-            style={{ color: palette.text }}
-          >
-            Where it leads
-          </h2>
-          <ul className="space-y-2">
-            {/* careerPaths entries follow "Name ($low-$high)"; range is highlighted. */}
-            {theme.careerPaths.map((path) => {
-              const parenIndex = path.indexOf("(");
-              const name =
-                parenIndex === -1 ? path : path.slice(0, parenIndex).trim();
-              const range =
-                parenIndex === -1
-                  ? null
-                  : path.slice(parenIndex + 1).replace(/\)\s*$/, "");
-              return (
-                <li key={path} className="text-sm">
-                  <span style={{ color: palette.text }}>{name}</span>
-                  {range ? (
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-5">
+            <h2
+              className="font-mono text-xl md:text-2xl font-bold tracking-tight"
+              style={{ color: palette.text }}
+            >
+              Where it leads
+            </h2>
+            {axisTop > 0 ? (
+              <p className="font-mono text-xs" style={{ color: palette.muted }}>
+                to ${axisTop}K / yr
+              </p>
+            ) : null}
+          </div>
+          <ul className="space-y-4" data-testid={`career-bars-${slug}`}>
+            {careers.map((c) => (
+              <li key={c.name} className="text-sm">
+                <div className="flex items-baseline justify-between gap-4 mb-1.5">
+                  <span style={{ color: palette.text }}>{c.name}</span>
+                  {c.low != null && c.high != null ? (
                     <span
-                      className="font-mono ml-2"
+                      className="font-mono text-xs whitespace-nowrap"
                       style={{ color: palette.primary }}
                     >
-                      {range}
+                      ${c.low}K&ndash;${c.high}K
                     </span>
                   ) : null}
-                </li>
-              );
-            })}
+                </div>
+                {c.low != null && c.high != null && axisTop > 0 ? (
+                  <div
+                    className="relative h-2"
+                    style={{ borderBottom: `1px solid ${hairline}` }}
+                    aria-hidden="true"
+                  >
+                    <div
+                      className="absolute inset-y-0"
+                      style={{
+                        left: `${(c.low / axisTop) * 100}%`,
+                        width: `${((c.high - c.low) / axisTop) * 100}%`,
+                        background: palette.primary,
+                      }}
+                    />
+                  </div>
+                ) : null}
+              </li>
+            ))}
           </ul>
         </div>
 
         <div>
-          <h2
-            className="font-mono text-sm font-bold mb-1"
-            style={{ color: palette.text }}
-          >
-            The cast
-          </h2>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-4">
+            <h2
+              className="font-mono text-xl md:text-2xl font-bold tracking-tight"
+              style={{ color: palette.text }}
+            >
+              The cast
+            </h2>
+            <p className="font-mono text-xs" style={{ color: palette.muted }}>
+              {theme.characters.length} characters
+            </p>
+          </div>
           <ul>
             {castLead.map((c) => (
               <li
                 key={c.name}
-                className="border-b py-3"
+                className="flex items-start gap-3 border-b py-3"
                 style={{ borderColor: hairline }}
               >
-                <span
-                  className="font-mono text-sm font-bold"
-                  style={{ color: palette.text }}
-                >
-                  {c.name}
-                </span>
-                <span
-                  className="font-mono text-xs uppercase tracking-[0.1em] ml-2"
-                  style={{ color: palette.muted }}
-                >
-                  {c.role}
-                </span>
-                <p
-                  className="text-xs italic mt-1"
-                  style={{ color: palette.muted }}
-                >
-                  {c.personality}
-                </p>
+                <CharacterAvatar
+                  name={c.name}
+                  isAI={c.isAI}
+                  accentColor={palette.primary}
+                  size={40}
+                />
+                <div className="min-w-0">
+                  <span
+                    className="font-mono text-sm font-bold"
+                    style={{ color: palette.text }}
+                  >
+                    {c.name}
+                  </span>
+                  <span
+                    className="font-mono text-xs uppercase tracking-[0.1em] ml-2"
+                    style={{ color: palette.muted }}
+                  >
+                    {c.role}
+                  </span>
+                  <p
+                    className="text-xs italic mt-1"
+                    style={{ color: palette.muted }}
+                  >
+                    {c.personality}
+                  </p>
+                </div>
               </li>
             ))}
           </ul>
@@ -332,7 +388,7 @@ export function ComingSoonStub({ theme }: Props) {
           style={{ borderColor: palette.primary, background: wash }}
         >
           <h2
-            className="font-mono text-sm font-bold mb-1"
+            className="font-mono text-lg md:text-xl font-bold tracking-tight mb-1"
             style={{ color: palette.text }}
           >
             Join the waitlist

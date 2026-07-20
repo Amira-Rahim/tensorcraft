@@ -24,7 +24,10 @@ document is the source of truth.
   the copy legible), and a status-board module roster whose row states carry the
   launch scope (module 1 "Online · Free", the rest "Pending", capstone
   "Finale") with curriculum counts in the header line; skills as a
-  slash-separated line, cast with personality lines, career paths,
+  counted slash-separated line, careers as salary range bars on a shared
+  per-theme axis, cast as personnel dossier rows with CharacterAvatar
+  initial blocks (spec:
+  `docs/superpowers/specs/2026-07-19-coming-soon-info-sections-design.md`),
   JSON-LD `availability: PreOrder`, waitlist capture in hero + footer
   (sources `coming-soon-hero` / `coming-soon-footer`), and a
   `{Theme}: Coming Soon` page title (live themes keep `Module Map`).
