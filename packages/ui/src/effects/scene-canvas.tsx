@@ -36,6 +36,13 @@ export interface SceneCanvasProps {
   rgb: [number, number, number];
   /** Speeds/brightens the scene (hover state on the homepage cards). */
   hovered?: boolean;
+  /**
+   * Resting floor (0..1) for the eased hover amount. Scenes are designed
+   * rest-faint + hover-ignited for cards; a page backdrop has no hover, so
+   * without a floor it idles at its faintest forever. The effective target
+   * is max(intensity, hovered ? 1 : 0) — hover can still push past the floor.
+   */
+  intensity?: number;
   className?: string;
 }
 
@@ -48,12 +55,15 @@ export function SceneCanvas({
   draw,
   rgb,
   hovered = false,
+  intensity = 0,
   className,
 }: SceneCanvasProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   const frame = useRef(0);
   const hovRef = useRef(hovered);
   hovRef.current = hovered;
+  const floorRef = useRef(intensity);
+  floorRef.current = intensity;
   const runningRef = useRef(false);
   const tRef = useRef(0);
   const lastRef = useRef<number | null>(null);
@@ -71,7 +81,7 @@ export function SceneCanvas({
           ? 0
           : Math.min(now - lastRef.current, 100);
       if (now != null) lastRef.current = now;
-      const target = hovRef.current ? 1 : 0;
+      const target = Math.max(floorRef.current, hovRef.current ? 1 : 0);
       // Frame-rate-independent easing toward the hover state (~160ms tau).
       hotAmtRef.current +=
         (target - hotAmtRef.current) * (1 - Math.exp(-dt / 160));

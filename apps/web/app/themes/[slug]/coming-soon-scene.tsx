@@ -51,21 +51,25 @@ export function ComingSoonScene({ slug, palette }: Props) {
       aria-hidden="true"
       className="absolute inset-0 pointer-events-none"
     >
+      {/* Full intensity: a page backdrop has no hover to ignite the scene,
+          so it runs at its hover-bright ceiling; the scrims below carry
+          legibility instead of the scene's own rest-fade. */}
       <SceneCanvas
         draw={draw}
         rgb={hexToRgb(palette.primary)}
+        intensity={0.85}
         className="absolute inset-0"
       />
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(90deg, ${palette.bg} 30%, color-mix(in srgb, ${palette.bg} 55%, transparent) 60%, color-mix(in srgb, ${palette.bg} 15%, transparent) 100%)`,
+          background: `linear-gradient(90deg, ${palette.bg} 18%, color-mix(in srgb, ${palette.bg} 45%, transparent) 52%, transparent 100%)`,
         }}
       />
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(180deg, color-mix(in srgb, ${palette.bg} 40%, transparent) 0%, transparent 35%, transparent 70%, ${palette.bg} 100%)`,
+          background: `linear-gradient(180deg, color-mix(in srgb, ${palette.bg} 30%, transparent) 0%, transparent 30%, transparent 72%, ${palette.bg} 100%)`,
         }}
       />
     </div>

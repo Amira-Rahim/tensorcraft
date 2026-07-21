@@ -10,7 +10,7 @@ import {
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase, getUserProgress } from "@/lib/progress";
-import { ParticleField } from "@tensorcraft/ui/effects";
+import { ThemeSceneBackdrop } from "./theme-scene-backdrop";
 import { ModuleMapClient } from "./module-map-client";
 import { GuestModuleBanner } from "./guest-module-banner";
 import { ComingSoonStub } from "./coming-soon-stub";
@@ -282,13 +282,10 @@ export default async function ThemeDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
-      {/* Same orbit particle drift as the landing hero, tinted with the
-          theme's primary so future themes stay on-palette. */}
-      <ParticleField
-        density={0.3}
-        colorToken={theme.palette.primary}
-        className="absolute inset-0 z-0 pointer-events-none"
-      />
+      {/* The theme's signature scene (Deep Orbit's orbital system for the
+          live theme) behind the module map — same renderer as the homepage
+          and /themes cards, viewport-capped with a bottom fade. */}
+      <ThemeSceneBackdrop slug={theme.slug} primary={theme.palette.primary} />
 
       {/* Page header */}
       <header
