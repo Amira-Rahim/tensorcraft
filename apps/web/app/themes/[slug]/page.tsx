@@ -6,7 +6,6 @@ import {
   getModules,
   getModuleLessons,
   getLessonTotalMinutes,
-  isFoundationsModule,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase, getUserProgress } from "@/lib/progress";
@@ -103,7 +102,18 @@ export default async function ThemeDetailPage({ params }: Props) {
     const totalLessons = modLessons.length;
     const completedCount = completedByModule.get(mod.slug) ?? 0;
     const hasStarted = (startedByModule.get(mod.slug) ?? 0) > 0;
-    const isFree = isFoundationsModule(mod);
+    // Free == module 1, matching the paywall gate in
+    // themes/[slug]/[module]/[lesson]/page.tsx, which redirects on
+    // `mod.order > 1`.
+    //
+    // This used to call isFoundationsModule(mod), i.e. `track === "foundations"`
+    // — and in deep-orbit that track spans modules 1 THROUGH 4. So the map
+    // advertised modules 2, 3 and 4 as available, and clicking any of them
+    // bounced the learner to /pricing?locked=. It landed hardest right after
+    // the free-account CTA converted someone: sign up, see three more modules
+    // apparently unlocked, click, get a paywall. Anonymous visitors were
+    // unaffected, which is why it survived the anonymous free-path checks.
+    const isFree = mod.order === 1;
 
     let status: ModuleStatus;
     if (completedCount >= totalLessons && totalLessons > 0) {

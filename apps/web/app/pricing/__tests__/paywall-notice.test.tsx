@@ -3,10 +3,15 @@ import { render, screen } from "@testing-library/react";
 
 // Controls what useSearchParams returns for each test
 let mockLocked: string | null = null;
+let mockModule: string | null = null;
 
 vi.mock("next/navigation", () => ({
   useSearchParams: () => ({
-    get: (key: string) => (key === "locked" ? mockLocked : null),
+    get: (key: string) => {
+      if (key === "locked") return mockLocked;
+      if (key === "module") return mockModule;
+      return null;
+    },
   }),
 }));
 
@@ -34,6 +39,7 @@ vi.mock("@/lib/analytics-events", () => ({
   EVENTS: {
     UPGRADE_CTA_SHOWN: "upgrade_cta_shown",
     UPGRADE_CTA_CLICKED: "upgrade_cta_clicked",
+    PAYWALL_HIT: "paywall_hit",
   },
 }));
 
@@ -42,6 +48,7 @@ import { PaywallNotice } from "../paywall-notice";
 describe("PaywallNotice", () => {
   beforeEach(() => {
     trackMock.mockClear();
+    mockModule = null;
   });
 
   it("renders nothing when no ?locked param is present", () => {
@@ -65,10 +72,27 @@ describe("PaywallNotice", () => {
     expect(screen.getByText(/Deep Orbit/)).toBeInTheDocument();
   });
 
-  it("points the user to the plan picker below", () => {
+  /**
+   * The banner used to only state the rule ("Module 2 and beyond require a
+   * purchase. Pick a plan below."). It replaces the /paywall page for anyone
+   * arriving from a gated lesson, so it has to carry the offer and the risk
+   * reversal, not just the fact of the gate.
+   */
+  it("names what is behind the wall rather than only stating the rule", () => {
     mockLocked = "deep-orbit";
     render(<PaywallNotice />);
-    expect(screen.getByText(/Pick a plan below/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/where the model actually learns/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/capstone/i)).toBeInTheDocument();
+  });
+
+  it("restates the money-back guarantee at the objection moment", () => {
+    mockLocked = "deep-orbit";
+    render(<PaywallNotice />);
+    expect(
+      screen.getByText(/14-day money-back guarantee/i),
+    ).toBeInTheDocument();
   });
 
   it("fires upgrade_cta_shown on mount when the banner renders for a launched slug", () => {
@@ -78,6 +102,42 @@ describe("PaywallNotice", () => {
       source: "paywall",
       themeId: "deep-orbit",
     });
+  });
+
+  /**
+   * paywall_hit was specced in dev-plan §4c but never fired: its only call
+   * site lived in <LessonPaywall>, which became unreachable when the lesson
+   * route switched to redirect-based enforcement. The banner renders at
+   * exactly the paywall-hit moment, so it is the correct home for the event.
+   */
+  it("fires paywall_hit on mount with the gated theme and module", () => {
+    mockLocked = "deep-orbit";
+    mockModule = "neural-networks";
+    render(<PaywallNotice />);
+    expect(trackMock).toHaveBeenCalledWith("paywall_hit", {
+      themeId: "deep-orbit",
+      moduleId: "neural-networks",
+    });
+  });
+
+  it("fires paywall_hit with an unknown module when the param is absent", () => {
+    mockLocked = "deep-orbit";
+    mockModule = null;
+    render(<PaywallNotice />);
+    expect(trackMock).toHaveBeenCalledWith("paywall_hit", {
+      themeId: "deep-orbit",
+      moduleId: "unknown",
+    });
+  });
+
+  it("does not fire paywall_hit for a coming-soon theme", () => {
+    mockLocked = "nova-canvas";
+    mockModule = "neural-networks";
+    render(<PaywallNotice />);
+    expect(trackMock).not.toHaveBeenCalledWith(
+      "paywall_hit",
+      expect.anything(),
+    );
   });
 
   /**
@@ -102,8 +162,9 @@ describe("PaywallNotice", () => {
   it("quotes the paid lesson count from canon, not a literal", () => {
     mockLocked = "deep-orbit";
     render(<PaywallNotice />);
-    // 56 total - 5 free in module 1. Pinned in packages/shared.
-    expect(screen.getByText(/remaining 51 lessons/i)).toBeInTheDocument();
+    // 56 total - 5 free in module 1. Pinned in packages/shared, so a literal
+    // in the banner would silently drift when the content count changes.
+    expect(screen.getByText(/51 lessons/i)).toBeInTheDocument();
   });
 
   it("does not fire upgrade_cta_shown when the banner is suppressed", () => {

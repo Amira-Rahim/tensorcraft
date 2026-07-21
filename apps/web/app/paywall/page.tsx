@@ -4,6 +4,7 @@ import { PRICING } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
 import { CommitTrail } from "@/app/components/commit-trail";
+import { WhoThisIsFor } from "@/app/components/who-this-is-for";
 
 /**
  * Dedicated paywall / upsell page, Phase 11 §11d Wave 3.
@@ -202,6 +203,14 @@ export default function PaywallPage() {
             </p>
           </div>
         </section>
+
+        {/* Audience qualifier. Placed after the comparison table: the reader
+            now knows what the purchase contains, so this answers the next
+            question ("is that for me?") rather than pre-empting it. */}
+        <WhoThisIsFor
+          testId="paywall-who-for"
+          className="border-t border-border"
+        />
 
         {/* Artifact proof (V1). No testimonials exist yet and fabricated
             ones are worse than none; restore a quotes block here once 3+

@@ -72,6 +72,9 @@ interface LessonStepsProps {
   themeSlug: string;
   moduleSlug: string;
   moduleName?: string;
+  /** 1-based module position. Used to detect completion of the free module
+   *  (order 1) so Kit can tag the out-of-free-content moment. */
+  moduleOrder?: number;
   prevLesson: { slug: string; title: string } | null;
   nextLesson: { slug: string; title: string } | null;
   lessons?: Array<{
@@ -169,6 +172,7 @@ function LessonStepsInner({
   themeSlug,
   moduleSlug,
   moduleName,
+  moduleOrder,
   prevLesson,
   nextLesson,
   lessons,
@@ -316,35 +320,39 @@ function LessonStepsInner({
         });
       trackLessonCompleted(themeSlug, moduleSlug, lesson.slug);
 
-      // Tag first lesson complete in Kit (fire once)
-      try {
-        if (!localStorage.getItem("tc_first_lesson_tagged")) {
-          localStorage.setItem("tc_first_lesson_tagged", "1");
-          import("@/lib/api-url").then(({ getApiUrl }) => {
-            import("@/lib/supabase/client").then(
-              ({ getSupabaseBrowserClient }) => {
-                const supabase = getSupabaseBrowserClient();
-                supabase.auth.getSession().then(({ data: { session } }) => {
-                  if (session?.access_token) {
-                    fetch(`${getApiUrl()}/api/email`, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${session.access_token}`,
-                      },
-                      body: JSON.stringify({ event: "first_lesson" }),
-                    }).catch(() => {});
-                  }
-                });
-              },
-            );
-          });
+      // Kit lifecycle tags. Dedupe correctness lives in tagKitEventOnce: the
+      // "already tagged" flag is recorded only when Kit actually tagged
+      // someone. Both of these previously burned the flag on a pass that
+      // tagged nobody (no session, or an unconfigured tag id answering
+      // 200 {skipped:true}), which discarded the user permanently.
+      void import("@/lib/kit-tag").then(({ tagKitEventOnce }) => {
+        tagKitEventOnce("first_lesson", "tc_first_lesson_tagged").catch(
+          () => {},
+        );
+
+        // End of the free module: the last beat before the paywall, and the
+        // signal retention sequence B keys off to reach someone who finished
+        // everything free and then stopped.
+        const lastOrder = lessons?.length
+          ? Math.max(...lessons.map((l) => l.order))
+          : lesson.order;
+        if (moduleOrder === 1 && lesson.order === lastOrder) {
+          tagKitEventOnce(
+            "module_1_complete",
+            "tc_module_1_complete_tagged",
+          ).catch(() => {});
         }
-      } catch {
-        // localStorage unavailable
-      }
+      });
     }
-  }, [currentStep, themeSlug, moduleSlug, lesson.slug]);
+  }, [
+    currentStep,
+    themeSlug,
+    moduleSlug,
+    lesson.slug,
+    lesson.order,
+    moduleOrder,
+    lessons,
+  ]);
 
   const handleExerciseComplete = useCallback(
     (exerciseSlug: string, score: number) => {

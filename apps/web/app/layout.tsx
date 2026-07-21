@@ -8,7 +8,6 @@ import { CookieConsent } from "./components/cookie-consent";
 import { ReportIssueButton } from "./components/report-issue-button";
 import { SiteFooter } from "./components/site-footer";
 import { AnalyticsProvider } from "./components/analytics-provider";
-import { PostHogProvider } from "./posthog-provider";
 import { PlausibleScript } from "./components/plausible-script";
 import { SessionListener } from "../lib/supabase/session-listener";
 import { SessionToast } from "./components/session-toast";
@@ -121,7 +120,12 @@ export default function RootLayout({
                 "@type": "Organization",
                 name: "Tensorcraft",
                 url: "https://tensorcraft.app",
-                logo: "https://tensorcraft.app/logo.png",
+                // `logo` omitted deliberately. It previously asserted
+                // https://tensorcraft.app/logo.png, which 404s — there is no
+                // logo.png in public/, nor any PNG at all. A logo URL that
+                // does not resolve fails the Organization rich result and is
+                // a false claim in structured data. Restore this only when a
+                // real asset exists at the path.
                 description:
                   "Interactive, story-driven ML education for frontend engineers.",
                 sameAs: [],
@@ -291,7 +295,12 @@ export default function RootLayout({
         <PlausibleScript />
         <Analytics />
         <ThemeProvider>
-          <PostHogProvider>
+          {/* <PostHogProvider> was mounted here too. It duplicated
+              AnalyticsProvider's init and $pageview capture exactly, so every
+              pageview was counted twice and every conversion-rate denominator
+              was 2x too large. AnalyticsProvider is the superset (it also
+              owns session_started/session_ended). */}
+          <>
             <AnalyticsProvider>
               <a
                 href="#main-content"
@@ -315,7 +324,7 @@ export default function RootLayout({
               <CookieConsent />
               <ReportIssueButton />
             </AnalyticsProvider>
-          </PostHogProvider>
+          </>
         </ThemeProvider>
       </body>
     </html>

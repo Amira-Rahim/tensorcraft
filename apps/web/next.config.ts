@@ -76,6 +76,38 @@ const nextConfig: NextConfig = {
           },
         ]),
     {
+      // Version-pinned TFJS runtime. The filename carries the version, so the
+      // URL changes whenever the bytes do — the same immutability argument as
+      // /_next/static above.
+      //
+      // Without this Next serves public/ with `max-age=0, must-revalidate`,
+      // so this 1.4 MB file revalidated on every session while the exercise
+      // runner fetches it on every lesson exercise. At 10k users that is the
+      // difference between ~140 GB and multiple TB of egress, which matters
+      // twice: once as bandwidth cost, and once because each revalidation
+      // also used to wake the auth middleware (now excluded in middleware.ts).
+      source: "/vendor/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "public, max-age=31536000, immutable",
+        },
+      ],
+    },
+    {
+      // Trained model weights. Content-addressed by directory name and only
+      // ever replaced by publishing a new model, so they are immutable in
+      // practice. `weights.bin` files are ~172 KB each and several lessons
+      // pull them.
+      source: "/models/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "public, max-age=31536000, immutable",
+        },
+      ],
+    },
+    {
       // Optimized images: long client cache + edge cache, with SWR so a
       // background revalidation refreshes the entry without stalling the
       // user. 30 days of stale-while-revalidate is well within next/image

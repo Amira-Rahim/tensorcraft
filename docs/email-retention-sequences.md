@@ -45,15 +45,36 @@ funnel work.
   If the course earned it, a sentence about what clicked for you is the
   most useful thing you could send back, just reply. Link: /dashboard.
 
-## Known gap (optional post-launch code item)
+## Tag vocabulary (code side complete)
 
-There is no `purchased` tag: sequence B cannot distinguish free-tier stall
-from paid stall. If retention data justifies it, add a server-side tag in
-the Stripe webhook (same pattern as the four existing tags, but fired from
-`payments/webhooks`, never the client).
+| Tag | Env var | Fired from |
+|---|---|---|
+| `signed_up` | `KIT_TAG_SIGNED_UP` | session listener |
+| `onboarded` | `KIT_TAG_ONBOARDED` | onboarding completion |
+| `first_lesson` | `KIT_TAG_FIRST_LESSON` | first lesson completed |
+| `module_1_complete` | `KIT_TAG_MODULE_1_COMPLETE` | final lesson of module 1 (**new 2026-07-21**) |
+| `paywall_hit` | `KIT_TAG_PAYWALL_HIT` | `<PaywallNotice>` on /pricing (**new 2026-07-21**) |
+| `capstone` | `KIT_TAG_CAPSTONE` | capstone reached |
+| `purchased` | `KIT_TAG_PURCHASED` | Stripe webhook (server-side) |
+
+~~Known gap: there is no `purchased` tag.~~ **Resolved** — `KIT_TAG_PURCHASED`
+is fired server-side from the Stripe webhook (`payments.ts:686`, `:887`), so
+sequence B *can* distinguish a free-tier stall from a paid stall. Suppress
+sequence B on `purchased`.
+
+The two 2026-07-21 additions close the real gap, which was that nothing
+tagged the highest-intent moment in the product: a learner who ran out of
+free content. Sequence B should key off `module_1_complete` / `paywall_hit`
+without `purchased`.
+
+Both new tags degrade gracefully: an unset env var makes `/api/email` return
+`{ ok: true, skipped: true }` rather than erroring, so the automations can be
+built before or after the ids are configured.
 
 ## Operator checklist (Kit dashboard)
 
+0. Set `KIT_TAG_PAYWALL_HIT` and `KIT_TAG_MODULE_1_COMPLETE` on the API host
+   once the tags exist in Kit. Until then those two tags no-op silently.
 1. Sender name "Tensorcraft", reply-to a monitored inbox.
 2. Create the three automations above; exits exactly as specified so
    nobody gets a nudge for a stage they passed.

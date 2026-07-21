@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
-import { FAQ_ITEMS } from "./faq-data";
+import { FaqSection } from "./components/faq-section";
+import { WhoThisIsFor } from "./components/who-this-is-for";
 import { LandingHero } from "./components/landing-hero";
 import { CommitTrail } from "./components/commit-trail";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
@@ -105,40 +106,20 @@ export default function Home() {
         {/* ===== FIVE WORLDS (client island, canvas animations) ===== */}
         <FiveWorldsSection />
 
+        {/* ===== WHO THIS IS FOR (server-rendered, zero JS) =====
+            Qualification immediately before objection handling and the
+            close: "is this me?" then "but what about…" then "start". */}
+        <WhoThisIsFor testId="landing-who-for" />
+
         {/* ===== FAQ (server-rendered, native <details>, zero JS) =====
-            Objection handling before the close. Items single-sourced with
-            the sitewide FAQPage JSON-LD via app/faq-data.ts. */}
-        <section data-testid="landing-faq" className="border-b border-border">
-          {/* Full-width rows under a simple header: every question spans
-              the page, so there's no dead half and no column cramping. */}
-          <div className="px-10 md:px-20 pt-16 pb-10">
-            <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
-              <span className="w-[7px] h-[7px] bg-primary inline-block" />
-              Before you ask
-            </div>
-            <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
-              Fair Questions, Honest Answers
-            </h2>
-          </div>
-          <div className="border-t border-border divide-y divide-border">
-            {FAQ_ITEMS.map((item) => (
-              <details key={item.q} className="group">
-                <summary className="cursor-pointer list-none px-10 md:px-20 py-5 font-mono text-sm font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                  {item.q}
-                  <span
-                    aria-hidden="true"
-                    className="text-primary shrink-0 group-open:rotate-45 transition-transform font-black"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="px-10 md:px-20 pb-6 text-sm text-text-muted leading-relaxed font-sans max-w-[760px]">
-                  {item.a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </section>
+            Objection handling before the close. Full-width rows: every
+            question spans the page, so there's no dead half. Shared with
+            /pricing via <FaqSection>. */}
+        <FaqSection
+          testId="landing-faq"
+          eyebrow="Before you ask"
+          heading="Fair Questions, Honest Answers"
+        />
 
         {/* ===== FINAL CTA (server-rendered, zero JS) =====
             Centered bookend: the one symmetric moment on an asymmetric
@@ -156,13 +137,26 @@ export default function Home() {
             Open the lesson and start reading. If it clicks, the full theme is $
             {PRICING.single.price} once, no subscription.
           </p>
-          <Link
-            href="/themes/deep-orbit/foundations/introduction-to-tensors"
-            data-testid="landing-cta-final"
-            className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow brutalist-stamp focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-          >
-            Start Module 1 →
-          </Link>
+          {/* Free-first stays the primary action. The secondary link exists
+              because this block names the price and then previously offered
+              only a free-lesson link, so a reader who was already sold had
+              nowhere to act on it without going back to the nav. */}
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Link
+              href="/themes/deep-orbit/foundations/introduction-to-tensors"
+              data-testid="landing-cta-final"
+              className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow brutalist-stamp focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+            >
+              Start Module 1 →
+            </Link>
+            <Link
+              href="/pricing"
+              data-testid="landing-cta-final-pricing"
+              className="rounded-none inline-flex items-center px-8 py-[18px] font-mono font-bold text-sm tracking-wider uppercase border-2 border-border text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+            >
+              See pricing
+            </Link>
+          </div>
         </section>
       </main>
     </>

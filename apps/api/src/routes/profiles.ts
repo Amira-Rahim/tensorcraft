@@ -130,11 +130,20 @@ profiles.patch("/:userId", async (c) => {
   const token = c.get("accessToken");
   const supabase = getSupabaseServerClient(token);
 
+  // Explicit column list, never a bare .select(). A bare select is
+  // `select("*")`, which includes profiles.github_token — the plaintext
+  // GitHub OAuth token. This endpoint returns its result straight to the
+  // caller, so `PATCH /api/profiles/{self}` with a harmless
+  // {"display_name":"x"} was answering with the caller's GitHub token in the
+  // response body: into devtools, HAR exports, and any frontend error
+  // reporter that captures response payloads.
   const { data, error } = await supabase
     .from("profiles")
     .update(updates)
     .eq("id", targetUserId)
-    .select()
+    .select(
+      "id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, experience_level, learning_goal, created_at, updated_at",
+    )
     .single();
 
   if (error) {

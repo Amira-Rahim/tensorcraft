@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import { errorMessageForCode } from "@/lib/error-messages";
 
 export default function DashboardError({
@@ -12,6 +13,12 @@ export default function DashboardError({
 }) {
   useEffect(() => {
     console.error("[Tensorcraft Dashboard Error]", error);
+    // A nested boundary stops propagation, so without this the root
+    // boundary never sees the crash and nothing is reported.
+    Sentry.captureException(error, {
+      tags: { boundary: "dashboard-error" },
+      extra: { digest: error.digest, code: error.code },
+    });
   }, [error]);
 
   const message = errorMessageForCode(error.code);

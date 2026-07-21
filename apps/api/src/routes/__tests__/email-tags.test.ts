@@ -100,4 +100,47 @@ describe("POST /api/email", () => {
     expect(body.event).toBe("signed_up");
     vi.unstubAllEnvs();
   });
+
+  /**
+   * Intent tags. The original vocabulary (signed_up / onboarded /
+   * first_lesson / capstone) tracked progress but never captured the moment a
+   * learner ran out of free content — the highest-intent signal in the
+   * product. Without these, a user could finish module 1, hit the wall and
+   * leave, and no retention sequence could ever address them.
+   * See docs/email-retention-sequences.md.
+   */
+  it.each(["paywall_hit", "module_1_complete"])(
+    "accepts the %s intent event",
+    async (event) => {
+      const res = await app.request("/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer test-token",
+        },
+        body: JSON.stringify({ event }),
+      });
+      // 200 (not 400) proves the event is in the vocabulary; it reports
+      // skipped when the Kit tag id env var isn't configured.
+      expect(res.status).toBe(200);
+    },
+  );
+
+  it("tags paywall_hit when its Kit tag id is configured", async () => {
+    vi.stubEnv("KIT_TAG_PAYWALL_HIT", "67890");
+    const res = await app.request("/api/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer test-token",
+      },
+      body: JSON.stringify({ event: "paywall_hit" }),
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.skipped).toBeUndefined();
+    expect(body.event).toBe("paywall_hit");
+    vi.unstubAllEnvs();
+  });
 });

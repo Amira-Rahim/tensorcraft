@@ -376,7 +376,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Paywall modal when free-tier user attempts Module 2+ (from `prototypes/paywall.html`)
 - [x] Upgrade path from paywall → pricing page
 - [x] Redirect-based paywall on `themes/[slug]/[module]/[lesson]`: unauthenticated → `/auth?redirectTo=<path>`, authenticated-but-locked → `/pricing?locked=<themeSlug>` with a canonical-slug-validated `PaywallNotice` banner surfacing which theme is gated. COMPLETED 2026-04-20.
-- [ ] Track `paywall_hit` and `upgrade_modal_shown` events
+- [x] Track `paywall_hit` and `upgrade_modal_shown` events — COMPLETED 2026-07-21. Both now fire from `<PaywallNotice>` on `/pricing` (`upgrade_cta_shown` was already wired; `paywall_hit` was not). The event had been unreachable since the route moved to redirect-based enforcement: its only call site was `<LessonPaywall>`, which `page.tsx` stopped rendering, so `paywall_hit` recorded **nothing** from launch until now. Treat any pre-2026-07-21 paywall funnel data as absent, not as zero conversions. The lesson redirects now carry `&module=<moduleSlug>` so the event keeps its module dimension; `<LessonPaywall>` and the orphaned `trackPaywallShown` helper were deleted.
 
 ### 4d. Post-Purchase Confirmation
 
@@ -1315,7 +1315,13 @@ literal descent.
 
 ## Version Roadmap
 
-> **Source of truth:** [`docs/prd.md` §7 Release Plan](prd.md). Summary below; refer to PRD for codenames, gate criteria, and feature scope.
+> **SUPERSEDED — see [`docs/roadmap.md`](roadmap.md).** The table below (and `docs/prd.md` §7) predate the 100k-paying-users goal and no longer reflect reality or ambition:
+>
+> - **V0.5/V1.0 assume all 5 themes ship simultaneously.** Only `deep-orbit` is launched; V1.0's 2026-Q3 target has slipped.
+> - **V5.0's terminal gate is 100,000 _free_ users / $250K MRR.** The current goal is 100,000 _paying_ customers — roughly 30× that, implying $10–50M ARR. This is a re-base, not an extension.
+> - **V2.0 "Team tier"** was the right instinct but badly under-weighted: enterprise seats are now projected to carry ~60% of the paying-user count.
+>
+> Retained below as a historical record of the original release plan.
 
 | Version | Scope | Target |
 | --- | --- | --- |
@@ -1334,6 +1340,7 @@ This dev plan covers engineering implementation. For detailed specs in other dom
 
 | Domain | Document | Key Sections |
 | --- | --- | --- |
+| **Growth roadmap, conversion fixes, 100k-paying plan** | **`docs/roadmap.md`** | **Horizon 0 (sell what exists — P0 defects), Gates, Horizons 1–3** |
 | UI interaction specs, animations, responsive layouts | `docs/ui-ux-notes.md` | Parts 1–6 (screen specs, progress diagram, lesson layout, mobile, design tokens, new screens) |
 | Marketing strategy, SEO, launch sequence, paid ads | `docs/marketing-plan.md` | Parts 1–6 (SEO, launch, paid, organic, waitlist, content calendar) |
 | Revenue projections, growth targets, pricing strategy | `docs/product-plan.md` | Part 2 (pricing), Part 5 (revenue), Appendix (founder decisions) |

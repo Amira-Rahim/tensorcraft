@@ -5,16 +5,49 @@ import { logger } from "../lib/logger";
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUESTS = 60; // 60 req/min per IP
 
+interface RateLimiterOptions {
+  /** Requests allowed per IP per window. */
+  max?: number;
+  /**
+   * Redis key namespace. Distinct prefixes give a route its own budget, so a
+   * tight limit on one endpoint can't be exhausted by ordinary traffic
+   * elsewhere (and vice versa).
+   */
+  keyPrefix?: string;
+}
+
 /**
- * Sliding-window rate limiter backed by Upstash Redis.
+ * Build a sliding-window rate limiter backed by Upstash Redis.
  * Consistent across all API instances.
  *
  * On Redis failure: allows the request through (graceful degradation).
  * A brief window without rate limiting is better than a total API outage.
  */
+export function createRateLimiter({
+  max = MAX_REQUESTS,
+  keyPrefix = "rl",
+}: RateLimiterOptions = {}) {
+  return async function rateLimiter(
+    c: Context,
+    next: Next,
+  ): Promise<Response | void> {
+    return applyRateLimit(c, next, max, keyPrefix);
+  };
+}
+
+/** Default limiter: 60 req/min per IP, applied globally except to webhooks. */
 export async function rateLimitMiddleware(
   c: Context,
   next: Next,
+): Promise<Response | void> {
+  return applyRateLimit(c, next, MAX_REQUESTS, "rl");
+}
+
+async function applyRateLimit(
+  c: Context,
+  next: Next,
+  maxRequests: number,
+  keyPrefix: string,
 ): Promise<Response | void> {
   const ip =
     c.req.header("cf-connecting-ip") ||
@@ -23,7 +56,7 @@ export async function rateLimitMiddleware(
 
   try {
     const redis = getRedis();
-    const key = `rl:${ip}`;
+    const key = `${keyPrefix}:${ip}`;
     const now = Date.now();
     const windowStart = now - WINDOW_MS;
 
@@ -37,13 +70,13 @@ export async function rateLimitMiddleware(
     const results = await pipeline.exec();
     const requestCount = results[2] as number;
 
-    c.header("X-RateLimit-Limit", String(MAX_REQUESTS));
+    c.header("X-RateLimit-Limit", String(maxRequests));
     c.header(
       "X-RateLimit-Remaining",
-      String(Math.max(0, MAX_REQUESTS - requestCount)),
+      String(Math.max(0, maxRequests - requestCount)),
     );
 
-    if (requestCount > MAX_REQUESTS) {
+    if (requestCount > maxRequests) {
       c.header("Retry-After", "60");
       return c.json(
         { error: "Too many requests. Please try again later." },

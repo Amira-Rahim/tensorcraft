@@ -91,13 +91,12 @@ export function trackExerciseSubmitted(
   }
 }
 
-export function trackPaywallShown(
-  themeId: string,
-  moduleId: string,
-  lessonId?: string,
-) {
-  track(EVENTS.PAYWALL_HIT, { themeId, moduleId, lessonId });
-}
+// `trackPaywallShown` used to live here. It was removed once its only caller
+// (<LessonPaywall>) was deleted: the lesson route enforces the paywall by
+// redirecting, so a component-mount helper could never fire and `paywall_hit`
+// silently recorded nothing. <PaywallNotice> on /pricing now fires the event
+// directly at the redirect target. Do not reintroduce a mount-based helper
+// without a component that actually renders at the gate.
 
 export function trackCheckoutStarted(planId: string) {
   track(EVENTS.CHECKOUT_STARTED, { planId });

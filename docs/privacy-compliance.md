@@ -106,3 +106,38 @@ Covered by the existing Supabase `profiles` + `purchases` schema:
 Analytics data in PostHog is keyed by the user's Supabase UUID. When a
 user requests deletion, we also purge their PostHog events via the
 PostHog delete-person API (operational runbook TBD).
+
+## Guest checkout: NOT ACTIVE (disabled 2026-07-21)
+
+`POST /api/payments/guest-checkout` exists on the API but **nothing routes to
+it**; `checkout-button.tsx` sends signed-out buyers through `/auth` as before.
+It was disabled the same day it was written, after an adversarial review found
+three defects that only surface post-charge. **No user data has been processed
+through this path.**
+
+This section is retained because the design must clear the corrections below
+before it is re-enabled.
+
+**Corrections to the original justification (it was wrong):**
+
+- ~~"The address is verified by the payment itself."~~ **False.** Stripe
+  Checkout verifies the *card*, not the email — the address is a free-text
+  field the payer types. Any re-enabled design must therefore NOT set
+  `email_confirm: true` on the strength of payment alone, and must not treat
+  a payer-supplied address as proven. As written it would also have let a
+  payer cause Tensorcraft to send a sign-in link to an address they do not
+  control.
+- ~~"Existing accounts are attached to, never duplicated."~~ **Not
+  guaranteed.** The lookup is `profiles.email`, which has no unique
+  constraint, no index, and no `lower()` normalization anywhere in the schema
+  (`001_initial_schema.sql:13`, `022_backfill_profiles.sql:17`). Duplicate or
+  mixed-case rows produce a failed lookup, not an attach.
+
+**Requirements before re-enabling:**
+
+1. Email must be verified independently of payment, or the account must be
+   created unconfirmed.
+2. `profiles.email` needs a unique index on `lower(email)` before it can be
+   used as an identity key.
+3. Lawful basis (performance of a contract) is sound in principle; the factual
+   claims supporting it were not. Re-state them accurately.

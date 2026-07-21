@@ -19,7 +19,6 @@ import {
   hasThemePurchase,
   isModuleCompleted,
 } from "@/lib/progress";
-import { LessonPaywall } from "./lesson-paywall";
 import { LessonSteps } from "./lesson-steps";
 import { LessonPrefsProvider } from "@tensorcraft/ui";
 import type { Metadata } from "next";
@@ -86,10 +85,11 @@ export default async function LessonPage({ params }: Props) {
   // Paywall: Module 1 is free, Module 2+ requires purchase
   // Prerequisite: Module N+1 requires Module N completed
   //
-  // Per dev-plan §4c, the paywall uses redirect-based enforcement:
-  //   - Unauthenticated → /auth?redirectTo=<current-path>
-  //   - Authenticated but locked → /pricing?locked=<themeSlug>
-  // Module 1 stays fully accessible to all authenticated users.
+  // Per dev-plan §4c, the paywall uses redirect-based enforcement. Both the
+  // signed-out and the authenticated-but-locked case land on
+  // /pricing?locked=<themeSlug>&module=<moduleSlug>; <PaywallNotice> reads
+  // those params to explain the gate and to fire `paywall_hit`.
+  // Module 1 stays fully accessible to everyone, signed in or not.
   //
   // Round-12 perf fix: previously this page made three sequential blocks of
   // Supabase round-trips (getUser → purchase → prereq → getUser → progress
@@ -115,7 +115,9 @@ export default async function LessonPage({ params }: Props) {
   // demanded commitment before disclosure; CheckoutButton handles the auth
   // roundtrip when they decide to buy (2026-07-19 UX audit).
   if (mod && mod.order > 1 && !user) {
-    redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
+    redirect(
+      `/pricing?locked=${encodeURIComponent(slug)}&module=${encodeURIComponent(moduleSlug)}`,
+    );
   }
 
   const purchasedPromise =
@@ -149,10 +151,11 @@ export default async function LessonPage({ params }: Props) {
     ]);
 
   if (mod && mod.order > 1 && !purchased) {
-    redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
+    redirect(
+      `/pricing?locked=${encodeURIComponent(slug)}&module=${encodeURIComponent(moduleSlug)}`,
+    );
   }
 
-  const requiresPaywall = mod && mod.order > 1 ? !purchased : false;
   const requiresPrerequisite =
     mod && mod.order > 1 && !!prevMod && !purchased ? false : !prevCompleted;
   const prevModuleSlug = prevMod?.slug ?? moduleSlug;
@@ -179,31 +182,6 @@ export default async function LessonPage({ params }: Props) {
       if (!completedLessonSlugs.has(l.slug)) return true;
     }
     return false;
-  }
-
-  if (requiresPaywall) {
-    return (
-      <main
-        className="min-h-screen"
-        style={{ background: "var(--tc-bg, #181818)" }}
-      >
-        <div className="flex-1 max-w-3xl mx-auto px-8 md:px-14 py-16 font-sans">
-          <div className="mb-12">
-            <h1
-              className="text-3xl font-bold mb-4"
-              style={{ color: theme.palette.text }}
-            >
-              {lesson.title}
-            </h1>
-          </div>
-          <LessonPaywall
-            themeSlug={slug}
-            themeName={theme.displayName}
-            accentColor={theme.palette.accent}
-          />
-        </div>
-      </main>
-    );
   }
 
   if (requiresPrerequisite) {
@@ -312,14 +290,20 @@ export default async function LessonPage({ params }: Props) {
           data-testid="guest-progress-notice"
           className="border-b border-border bg-page px-4 py-2 text-center font-mono text-[11px] uppercase tracking-wider text-text-muted"
         >
-          Reading as a guest: your progress is not saved.{" "}
+          {/* This used to read "your progress is not saved", which was
+              false and actively discouraged starting: lib/guest-progress.ts
+              persists completions locally and guest-progress-bridge.tsx
+              replays them into theme_progress after signup. GuestModuleBanner
+              already said the opposite; this notice was both wrong and the
+              more prominent of the two. */}
+          Reading as a guest: progress is saved in this browser.{" "}
           <a
             href={`/auth?redirectTo=${encodeURIComponent(`/themes/${slug}/${moduleSlug}/${lessonSlug}`)}`}
             className="text-primary underline underline-offset-4"
           >
             Create a free account
           </a>{" "}
-          to keep it.
+          and we&rsquo;ll carry it over.
         </div>
       )}
       <Suspense>
@@ -336,6 +320,7 @@ export default async function LessonPage({ params }: Props) {
             themeSlug={slug}
             moduleSlug={moduleSlug}
             moduleName={mod?.title}
+            moduleOrder={mod?.order}
             prevLesson={prev}
             nextLesson={next}
             lessons={moduleLessons.map((l) => ({

@@ -152,6 +152,22 @@ Create a Stripe Checkout session. **Authenticated.**
 
 **Upgrade credit behavior:** If the user already owns themes that overlap with the requested bundle, the amount paid for those themes is credited toward the new plan price. The adjusted price is charged via Stripe. If the total credit covers the full plan price, no Stripe session is created — themes are granted immediately.
 
+**Abandoned-cart recovery:** the session carries `customer_email` (read from `profiles`) and `after_expiration.recovery`, so Stripe can mail a buyer who drops out. `customer_email` is omitted rather than sent empty when the profile has no address, since Stripe rejects a blank string.
+
+### `POST /api/payments/guest-checkout`
+
+Create a Stripe Checkout session **without an account**. **Unauthenticated.**
+
+Same request body and plan IDs as `/checkout`. Exists because the authenticated flow forced a cold buyer to sign up before paying, and with magic-link auth that meant leaving the browser for an inbox mid-purchase.
+
+Differences from `/checkout`:
+
+- **No `client_reference_id`** — there is no user yet. The session is marked `metadata.guest = "true"` and Stripe collects the email.
+- **No upgrade credit and no auto-grant** — a guest has no prior purchases by definition, so the credit machinery is absent rather than returning zero.
+- **Tighter rate limit** — 10 req/min per IP on its own Redis key prefix, on top of the global 60/min limiter, because the route is unauthenticated.
+
+**Identity resolution (webhook):** on `checkout.session.completed` with no `client_reference_id` and `metadata.guest === "true"`, the webhook reads `customer_details.email` and resolves it via `profiles.email` — attaching the purchase to an existing account, or provisioning a new Supabase user with `email_confirm: true` (payment already proves control of the address). It then emails a magic link. If resolution fails the webhook returns **500 so Stripe retries**: the money has already moved, and a silent 200 would mean a paid purchase that grants nothing.
+
 **Response (normal checkout):**
 ```json
 {

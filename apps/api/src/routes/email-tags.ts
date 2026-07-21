@@ -9,6 +9,14 @@ const EMAIL_TAG_ENV_KEYS: Record<string, string> = {
   onboarded: "KIT_TAG_ONBOARDED",
   first_lesson: "KIT_TAG_FIRST_LESSON",
   capstone: "KIT_TAG_CAPSTONE",
+  // Intent tags. The four above track progress; these two capture the moment
+  // a learner runs out of free content, which is the highest-intent signal in
+  // the product and previously went untagged entirely — a user could finish
+  // module 1, hit the paywall, and leave without any sequence able to reach
+  // them. Consumed by retention sequence B (started-stalled); see
+  // docs/email-retention-sequences.md.
+  module_1_complete: "KIT_TAG_MODULE_1_COMPLETE",
+  paywall_hit: "KIT_TAG_PAYWALL_HIT",
 };
 
 const VALID_EVENTS = Object.keys(EMAIL_TAG_ENV_KEYS);

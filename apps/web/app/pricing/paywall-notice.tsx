@@ -22,19 +22,39 @@ import { EVENTS, track } from "@/lib/analytics-events";
  * Fires `upgrade_cta_shown` (source=`paywall`) on mount when the banner is
  * rendered. The click-through CTA itself is the plan picker below; that
  * button fires `upgrade_cta_clicked` when the user engages.
+ *
+ * Also fires `paywall_hit` (dev-plan §4c). That event was specced but never
+ * actually fired: its only call site was <LessonPaywall>, which the lesson
+ * route stopped rendering when it moved to redirect-based enforcement, so
+ * the funnel's most important stage recorded nothing. The banner renders at
+ * exactly the paywall-hit moment, which makes it the correct home for it.
+ * `?module=` carries the gated module so the event keeps that dimension.
  */
 export function PaywallNotice() {
   const searchParams = useSearchParams();
   const locked = searchParams.get("locked");
+  const gatedModule = searchParams.get("module");
   const isValidLocked = !!locked && isLaunched(locked);
 
   useEffect(() => {
     if (!isValidLocked) return;
+    track(EVENTS.PAYWALL_HIT, {
+      themeId: locked ?? undefined,
+      moduleId: gatedModule ?? "unknown",
+    });
     track(EVENTS.UPGRADE_CTA_SHOWN, {
       source: "paywall",
       themeId: locked ?? undefined,
     });
-  }, [isValidLocked, locked]);
+
+    // Tag the buyer in Kit so retention sequence B can reach someone who ran
+    // out of free content and didn't buy. Dedupe correctness (only record
+    // "tagged" when Kit actually tagged) lives in tagKitEventOnce — getting
+    // it wrong here silently and permanently discards this exact audience.
+    void import("@/lib/kit-tag").then(({ tagKitEventOnce }) =>
+      tagKitEventOnce("paywall_hit", "tc_paywall_hit_tagged").catch(() => {}),
+    );
+  }, [isValidLocked, locked, gatedModule]);
 
   if (!locked) return null;
   if (!isValidLocked) return null;
@@ -48,9 +68,10 @@ export function PaywallNotice() {
     >
       <span className="w-2 h-2 bg-primary shrink-0" aria-hidden="true" />
       <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
-        Module 2 and beyond in <strong>{displayName}</strong> require a
-        purchase. Pick a plan below to unlock modules 2-11: the remaining{" "}
-        {getPaidLessonCount()} lessons, the capstone, and your certificate.
+        Modules 2-11 of <strong>{displayName}</strong> are where the model
+        actually learns: {getPaidLessonCount()} lessons, the capstone you ship,
+        and your certificate. One payment, lifetime access, and a 14-day
+        money-back guarantee.
       </p>
     </div>
   );

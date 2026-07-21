@@ -6,6 +6,11 @@ import {
 } from "@tensorcraft/supabase";
 import { PRICING, isValidThemeSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
+import { createRateLimiter } from "../middleware/rate-limit";
+import {
+  resolveOrCreateUserByEmail,
+  sendPurchaseAccessLink,
+} from "../lib/guest-account";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 import { logger } from "../lib/logger";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
@@ -111,13 +116,20 @@ payments.post("/checkout", async (c) => {
     return c.json({ error: "Invalid theme ID(s)" }, 400);
   }
 
-  // Calculate upgrade credit from prior purchases
+  // Calculate upgrade credit from prior purchases, and read the buyer's email
+  // for Stripe's abandoned-cart recovery. Fanned out together so the email
+  // lookup costs no extra round-trip on the checkout path.
   const supabase = getSupabaseServerClient(c.get("accessToken"));
-  const { data: existingPurchases } = await supabase
-    .from("purchases")
-    .select("theme_ids, amount")
-    .eq("user_id", userId)
-    .in("status", ["completed", "partially_refunded"]);
+  const [{ data: existingPurchases }, { data: buyerProfile }] =
+    await Promise.all([
+      supabase
+        .from("purchases")
+        .select("theme_ids, amount")
+        .eq("user_id", userId)
+        .in("status", ["completed", "partially_refunded"]),
+      supabase.from("profiles").select("email").eq("id", userId).single(),
+    ]);
+  const buyerEmail = (buyerProfile as { email?: string } | null)?.email;
 
   const ownedThemes = new Set<string>();
   let credit = 0;
@@ -198,6 +210,18 @@ payments.post("/checkout", async (c) => {
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     client_reference_id: userId,
+    // Abandoned-cart recovery. Stripe can only mail a buyer who drops out of
+    // checkout when the session carries their email AND recovery is enabled;
+    // with neither set the session just expired in silence. `customer_email`
+    // is omitted rather than sent empty when the profile row has none, since
+    // Stripe rejects a blank string.
+    ...(buyerEmail ? { customer_email: buyerEmail } : {}),
+    after_expiration: {
+      recovery: {
+        enabled: true,
+        allow_promotion_codes: false,
+      },
+    },
     line_items: [
       {
         price_data: {
@@ -218,6 +242,100 @@ payments.post("/checkout", async (c) => {
       themeIds: body.themeIds.join(","),
       creditApplied: String(credit),
       originalPrice: String(plan.price),
+    },
+    success_url: `${appUrl}/dashboard/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${appUrl}/pricing?purchase=cancelled`,
+  });
+
+  return c.json({ url: session.url });
+});
+
+// ──────────────────────────────────────────────
+// POST /api/payments/guest-checkout, buy without an account
+//
+// The authenticated flow forces a cold buyer through signup before they can
+// pay, and with magic-link auth that means leaving the browser for an inbox
+// mid-purchase. This route lets Stripe collect the email instead; the webhook
+// provisions (or attaches to) the account afterwards.
+//
+// Deliberately narrower than the authed route: no upgrade credit, because a
+// guest by definition has no prior purchases to credit, and no auto-grant
+// path for the same reason.
+//
+// Unauthenticated, so it carries its own tighter IP budget on top of the
+// global 60/min limiter. A separate key prefix gives it an independent
+// budget rather than sharing the general one.
+// ──────────────────────────────────────────────
+
+payments.use(
+  "/guest-checkout",
+  createRateLimiter({ max: 10, keyPrefix: "rl:guest-checkout" }),
+);
+
+payments.post("/guest-checkout", async (c) => {
+  let body: { planId: string; themeIds: string[] };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON body" }, 400);
+  }
+
+  if (!body.planId || !body.themeIds || !Array.isArray(body.themeIds)) {
+    return c.json({ error: "planId and themeIds[] are required" }, 400);
+  }
+
+  const plan = PRICING[body.planId as keyof typeof PRICING];
+  if (!plan || body.planId === "free") {
+    return c.json({ error: "Invalid planId" }, 400);
+  }
+
+  if (body.themeIds.length !== plan.themes) {
+    return c.json(
+      {
+        error: `Plan "${body.planId}" requires exactly ${plan.themes} theme(s)`,
+      },
+      400,
+    );
+  }
+
+  if (!validateThemeIds(body.themeIds)) {
+    return c.json({ error: "Invalid theme ID(s)" }, 400);
+  }
+
+  const stripe = getStripe();
+  let appUrl = process.env.APP_URL;
+  if (!appUrl) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("APP_URL is required in production");
+    }
+    appUrl = "http://localhost:3000";
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    // No client_reference_id: there is no user yet. The webhook resolves
+    // identity from customer_details.email instead, and `guest: "true"`
+    // marks which branch a row came from for support and analytics.
+    line_items: [
+      {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: `Tensorcraft: ${plan.label}`,
+            description: `Access to ${body.themeIds.join(", ")}`,
+          },
+          unit_amount: plan.price * 100, // cents
+        },
+        quantity: 1,
+      },
+    ],
+    metadata: {
+      planId: body.planId,
+      themeIds: body.themeIds.join(","),
+      guest: "true",
+    },
+    after_expiration: {
+      recovery: { enabled: true, allow_promotion_codes: false },
     },
     success_url: `${appUrl}/dashboard/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/pricing?purchase=cancelled`,
@@ -331,15 +449,42 @@ payments.post("/webhook", async (c) => {
       const session = event.data.object as Stripe.Checkout.Session;
 
       // CRITICAL #5: Safe field extraction with null checks
-      const userId = session.client_reference_id;
       const sessionId = session.id;
       const amount = session.amount_total;
       const metadata = session.metadata;
 
+      // Identity resolution forks here. The authed flow stamps
+      // client_reference_id at session creation; a guest session has none, so
+      // we fall back to the email Stripe collected (already proven by the
+      // payment) and provision or attach an account.
+      //
+      // Returning 500 on failure is deliberate: Stripe retries, and a dropped
+      // guest purchase means money taken with nothing granted.
+      let userId = session.client_reference_id;
+      if (!userId && metadata?.guest === "true") {
+        const guestEmail = session.customer_details?.email;
+        if (guestEmail) {
+          userId = await resolveOrCreateUserByEmail(supabase, guestEmail);
+          if (userId) {
+            // Best-effort: the purchase is recorded regardless, and the buyer
+            // can always sign in from the site with the same address.
+            void sendPurchaseAccessLink(
+              getSupabaseServerClient(),
+              guestEmail,
+              `${process.env.APP_URL ?? ""}/dashboard/purchase-success`,
+            );
+          }
+        }
+      }
+
       if (!userId || !sessionId) {
         logger.error(
-          { route: "payments.webhook", eventType: event.type },
-          "Webhook: Missing client_reference_id or session id",
+          {
+            route: "payments.webhook",
+            eventType: event.type,
+            guest: metadata?.guest === "true",
+          },
+          "Webhook: could not resolve a user for this session",
         );
         return c.json(
           { error: "Missing client_reference_id or session id" },

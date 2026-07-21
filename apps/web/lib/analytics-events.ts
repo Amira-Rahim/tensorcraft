@@ -45,6 +45,16 @@ export const EVENTS = {
   UPGRADE_CTA_SHOWN: "upgrade_cta_shown",
   UPGRADE_CTA_CLICKED: "upgrade_cta_clicked",
 
+  // Signup funnel.
+  // Added 2026-07-21: the auth screen previously emitted NOTHING, so the
+  // single most important step between a visitor and a customer was
+  // unmeasurable. That is untenable going into a paid-distribution phase,
+  // where the top of the funnel is exactly what spend is judged on.
+  SIGNUP_STARTED: "signup_started",
+  MAGIC_LINK_SENT: "magic_link_sent",
+  SIGNUP_COMPLETED: "signup_completed",
+  SIGNUP_FAILED: "signup_failed",
+
   // Onboarding funnel
   ONBOARDING_STEP_VIEWED: "onboarding_step_viewed",
   ONBOARDING_COMPLETED: "onboarding_completed",
@@ -165,6 +175,29 @@ export interface EventProperties {
   [EVENTS.UPGRADE_CTA_CLICKED]: {
     source: "paywall" | "pricing" | "dashboard" | "lesson_footer";
     themeId?: string;
+  };
+
+  /**
+   * Signup funnel. `method` distinguishes the OAuth paths from the magic
+   * link, which matters because the magic link is the one that forces the
+   * buyer out to an inbox — its drop-off should be read separately.
+   */
+  [EVENTS.SIGNUP_STARTED]: {
+    method: "github" | "google" | "magic_link";
+  };
+  [EVENTS.MAGIC_LINK_SENT]: {
+    method: "magic_link";
+  };
+  /**
+   * Closes the funnel opened by SIGNUP_STARTED. `method` comes from Supabase
+   * `app_metadata.provider`, so it is whatever actually established the
+   * session rather than what the user first clicked.
+   */
+  [EVENTS.SIGNUP_COMPLETED]: {
+    method: string;
+  };
+  [EVENTS.SIGNUP_FAILED]: {
+    method: "github" | "google" | "magic_link";
   };
 
   [EVENTS.ONBOARDING_STEP_VIEWED]: {

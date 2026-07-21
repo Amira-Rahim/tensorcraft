@@ -51,10 +51,28 @@ export async function isModuleCompleted(
   return (count ?? 0) >= totalLessons;
 }
 
-/** Check if user has purchased a theme */
+/**
+ * Check if user has purchased a theme.
+ *
+ * Throws on a genuine lookup failure rather than reporting "not purchased".
+ *
+ * This previously used `.single()` and discarded the error, returning
+ * `!!data`. `.single()` errors both when there are zero rows (the ordinary
+ * not-purchased case) AND on any transient fault — a network blip, an RLS
+ * hiccup, a PostgREST 5xx — and the two were indistinguishable. The result
+ * was that a momentary database problem showed a **paying customer** the
+ * paywall for content they own, with no error state, no retry, and no way to
+ * tell the difference. That is a refund and support driver, and the worst
+ * possible experience for someone who just paid.
+ *
+ * `.maybeSingle()` returns `data: null` with no error for zero rows, so a
+ * remaining error is always a real failure. Callers are server components, so
+ * a throw surfaces the nearest error boundary — a retryable error page, which
+ * is the honest outcome. Silently denying paid access is not.
+ */
 export async function hasThemePurchase(userId: string, themeSlug: string) {
   const supabase = await getSupabaseServerClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("purchases")
     .select("id")
     .eq("user_id", userId)
@@ -63,7 +81,13 @@ export async function hasThemePurchase(userId: string, themeSlug: string) {
     // keep this in sync with apps/api purchases/payments reads.
     .in("status", ["completed", "partially_refunded"])
     .limit(1)
-    .single();
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(
+      `Purchase lookup failed for theme "${themeSlug}": ${error.message}`,
+    );
+  }
 
   return !!data;
 }

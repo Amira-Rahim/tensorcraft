@@ -88,13 +88,10 @@ export default async function ExtrasLessonPage({ params }: Props) {
                   name: "Extras",
                   item: "https://tensorcraft.app/extras",
                 },
-                {
-                  "@type": "ListItem",
-                  position: 3,
-                  name: moduleSlug,
-                  item: `https://tensorcraft.app/extras/${moduleSlug}`,
-                },
-                { "@type": "ListItem", position: 4, name: lesson.title },
+                // No module level: there is no extras/[module]/page.tsx, so
+                // /extras/<moduleSlug> 404s. Emitting it as a breadcrumb item
+                // pointed Google at a dead URL from all 21 extras lessons.
+                { "@type": "ListItem", position: 3, name: lesson.title },
               ],
             },
           ]),

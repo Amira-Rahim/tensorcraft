@@ -8,6 +8,7 @@ import { PaywallNotice } from "./paywall-notice";
 import { PricingAnalytics } from "./pricing-analytics";
 import { PricingTiers } from "./pricing-tiers";
 import { AmbientBackground } from "@/app/components/ambient-background";
+import { FaqSection } from "@/app/components/faq-section";
 
 export const metadata: Metadata = {
   title: `ML Course Pricing: From $0 to $${PRICING.allFive.price} | Tensorcraft`,
@@ -142,16 +143,12 @@ export default function PricingPage() {
           </p>
         </section>
 
-        {/* 5-tier Pricing Grid */}
-        {/* Suspense: PricingTiers reads useSearchParams to restore a
-            selection carried through the auth roundtrip. */}
-        <Suspense fallback={null}>
-          <PricingTiers />
-        </Suspense>
-
-        {/* Refund guarantee badge */}
+        {/* Refund guarantee badge.
+            Sits ABOVE the grid on purpose: risk reversal only works if the
+            buyer reads it while deciding. Below the tiers it was under the
+            fold at exactly the moment the objection fires. */}
         <section
-          className="px-6 pt-2 pb-10"
+          className="px-6 pt-2 pb-8"
           data-testid="refund-guarantee-section"
         >
           <div className="max-w-4xl mx-auto min-w-0">
@@ -185,8 +182,26 @@ export default function PricingPage() {
           </div>
         </section>
 
+        {/* 5-tier Pricing Grid */}
+        {/* Suspense: PricingTiers reads useSearchParams to restore a
+            selection carried through the auth roundtrip. */}
+        <Suspense fallback={null}>
+          <PricingTiers />
+        </Suspense>
+
         {/* Curriculum preview, what a purchase unlocks */}
         <CurriculumPreview />
+
+        {/* FAQ. Objections peak here, not on the landing page, so the same
+            answers render on both. Shared component, single-sourced with the
+            FAQPage JSON-LD via app/faq-data.ts. */}
+        <FaqSection
+          testId="pricing-faq"
+          eyebrow="Before you buy"
+          heading="Fair Questions, Honest Answers"
+          containerClassName="px-6 max-w-4xl mx-auto w-full"
+          className="border-t border-border"
+        />
 
         {/* CTA Footer */}
         <section className="py-24 px-6 text-center border-t border-border">

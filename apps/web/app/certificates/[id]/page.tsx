@@ -33,9 +33,25 @@ const UUID_RE = /^[0-9a-fA-F-]{36}$/;
 
 async function loadCertificate(id: string): Promise<ShareRecord | null> {
   if (!UUID_RE.test(id)) return null;
-  const res = await fetch(`${getApiUrl()}/api/certificates/${id}`, {
-    next: { revalidate: 300 },
-  });
+
+  // A transport failure (API down, DNS, ECONNREFUSED) used to escape this
+  // function and surface as a raw 500. That is the worst outcome on the most
+  // shared surface in the product: a learner posts their certificate and,
+  // during any API blip, everyone who clicks sees a server error.
+  //
+  // Rethrowing a tagged error routes it to certificates/error.tsx, which
+  // offers a retry and says the certificate is temporarily unreachable —
+  // rather than `notFound()`, which would tell the sharer's audience the
+  // credential does not exist.
+  let res: Response;
+  try {
+    res = await fetch(`${getApiUrl()}/api/certificates/${id}`, {
+      next: { revalidate: 300 },
+    });
+  } catch (cause) {
+    throw new Error("certificate_lookup_unavailable", { cause });
+  }
+
   if (res.status === 404) return null;
   if (!res.ok) return null;
   return (await res.json()) as ShareRecord;

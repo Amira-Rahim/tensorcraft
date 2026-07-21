@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { getApiUrl } from "@/lib/api-url";
+import { apiFetch } from "@/lib/api-fetch";
 import { trackCheckoutStarted } from "@/lib/analytics";
 import { errorMessageForCode, ERROR_MESSAGES } from "@/lib/error-messages";
 
@@ -28,8 +28,8 @@ export function CheckoutButton({
 }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [alreadyOwned, setAlreadyOwned] = useState(false);
   const router = useRouter();
+  const [alreadyOwned, setAlreadyOwned] = useState(false);
 
   // Check if user already owns all themes in this plan
   useEffect(() => {
@@ -64,10 +64,26 @@ export function CheckoutButton({
       } = await supabase.auth.getSession();
 
       if (!session) {
-        // Carry the WHOLE selection through the auth roundtrip. This used to
-        // preserve only the planId, which PricingTiers never read anyway, so
-        // a signed-out buyer came back to an unselected picker and had to
-        // rebuild their choice (audit run #7).
+        // GUEST CHECKOUT IS DISABLED (2026-07-21). `POST /guest-checkout`
+        // exists on the API but nothing routes to it, because the flow it
+        // completed was broken in three ways that only surface after the card
+        // is charged:
+        //   1. Stripe returns to /dashboard/purchase-success, which redirects
+        //      a session-less visitor to /auth — pay, then hit a login wall,
+        //      no receipt.
+        //   2. A returning customer whose session merely expired reads as a
+        //      guest here, and /guest-checkout carries neither the
+        //      already-own guard nor the upgrade credit, so they are charged
+        //      full price a second time.
+        //   3. checkout.session.async_payment_succeeded resolves identity from
+        //      client_reference_id only, so a guest paying by bank debit stays
+        //      "pending" forever — money taken, access never granted.
+        // Do not re-point this at /guest-checkout until all three are fixed
+        // and lib/guest-account.ts has real (unmocked) tests. See
+        // docs/roadmap.md Horizon 0.
+        //
+        // Carry the WHOLE selection through the auth roundtrip so the buyer
+        // returns to the picker they left (audit run #7).
         const restore = new URLSearchParams({
           plan: planId,
           themes: themeIds.join(","),
@@ -80,19 +96,18 @@ export function CheckoutButton({
 
       let response: Response;
       try {
-        // The payments API lives on the separate API host (api.tensorcraft.app),
-        // NOT this Next.js origin. A relative URL here 404s on Vercel and no
-        // checkout session is ever created.
-        response = await fetch(`${getApiUrl()}/api/payments/checkout`, {
+        // apiFetch, not raw fetch: it carries a 10s AbortController and emits
+        // `tc:api-timeout` for the global toast. With raw fetch a stalled API
+        // left the button on "Redirecting…" forever with no error ever shown.
+        // It also attaches the bearer token itself and routes to the separate
+        // API host (api.tensorcraft.app) — a relative URL 404s on Vercel.
+        response = await apiFetch("/api/payments/checkout", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
           body: JSON.stringify({ planId, themeIds }),
         });
       } catch {
         setError(ERROR_MESSAGES.network);
+        setLoading(false);
         return;
       }
 
@@ -111,10 +126,17 @@ export function CheckoutButton({
           else if (response.status === 429) code = "rate_limited";
         }
         setError(errorMessageForCode(code));
+        setLoading(false);
         return;
       }
 
       const data = await response.json();
+      // NOTE: the two redirect paths below deliberately do NOT clear the
+      // loading state. `window.location.href` starts a navigation that takes
+      // time; the old `finally { setLoading(false) }` re-enabled the button
+      // while the browser was still on its way to Stripe, so a second click
+      // created a second Checkout Session. Leaving it disabled until the page
+      // unloads is the point.
       if (data.granted) {
         // Auto-grant, themes were granted instantly, redirect to success
         window.location.href = "/dashboard/purchase-success";
@@ -122,12 +144,12 @@ export function CheckoutButton({
       }
       if (data.url) {
         window.location.href = data.url;
-      } else {
-        setError(ERROR_MESSAGES.unknown);
+        return;
       }
+      setError(ERROR_MESSAGES.unknown);
+      setLoading(false);
     } catch {
       setError(ERROR_MESSAGES.unknown);
-    } finally {
       setLoading(false);
     }
   }

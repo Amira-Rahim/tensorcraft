@@ -23,6 +23,7 @@ let mockExistingPurchases: { theme_ids: string[]; amount: number }[] | null =
   null;
 // Controls insert result for the auto-grant path
 const mockServerInsert = vi.fn();
+let mockProfileEmail: string | null = "buyer@example.com";
 
 vi.mock("stripe", () => ({
   default: class MockStripe {
@@ -110,9 +111,34 @@ vi.mock("@tensorcraft/supabase", () => ({
           insert: (...args: unknown[]) => mockServerInsert(...args),
         };
       }
+      if (table === "profiles") {
+        // Checkout reads the buyer's email so Stripe can address its
+        // abandoned-cart recovery mail. .select("email").eq("id", …).single()
+        return {
+          select: () => ({
+            eq: () => ({
+              single: () =>
+                Promise.resolve({
+                  data: mockProfileEmail ? { email: mockProfileEmail } : null,
+                  error: null,
+                }),
+            }),
+          }),
+        };
+      }
       return {};
     },
   }),
+}));
+
+// Guest identity resolution is exercised on its own; here we only care that
+// the webhook calls it when client_reference_id is absent and honours the
+// result. Default: the email resolves to a freshly provisioned user.
+const mockResolveUser = vi.fn(async () => "user_guest_provisioned");
+const mockSendAccessLink = vi.fn(async () => {});
+vi.mock("../lib/guest-account", () => ({
+  resolveOrCreateUserByEmail: (...args: unknown[]) => mockResolveUser(...args),
+  sendPurchaseAccessLink: (...args: unknown[]) => mockSendAccessLink(...args),
 }));
 
 vi.mock("@tensorcraft/shared", () => ({
@@ -518,6 +544,7 @@ describe("Upgrade path", () => {
     });
     mockServerInsert.mockReset();
     mockExistingPurchases = null;
+    mockProfileEmail = "buyer@example.com";
   });
 
   async function checkout(body: { planId: string; themeIds: string[] }) {
@@ -558,6 +585,49 @@ describe("Upgrade path", () => {
         ]),
       }),
     );
+  });
+
+  /**
+   * Abandoned-cart recovery. Stripe can only mail a buyer who abandons
+   * checkout if the session carries their email AND recovery is enabled;
+   * without both, the session simply expires silently. This was the second
+   * of two dark recovery channels (the other being the missing paywall_hit
+   * Kit tag).
+   */
+  it("sets customer_email and enables abandoned-cart recovery", async () => {
+    mockProfileEmail = "buyer@example.com";
+
+    const res = await checkout({
+      planId: "single",
+      themeIds: ["deep-orbit"],
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        customer_email: "buyer@example.com",
+        after_expiration: expect.objectContaining({
+          recovery: expect.objectContaining({ enabled: true }),
+        }),
+      }),
+    );
+  });
+
+  it("still creates a session when the profile has no email", async () => {
+    // Defensive: a missing profile row must not block checkout. We lose the
+    // recovery mail for that buyer, not the sale.
+    mockProfileEmail = null;
+
+    const res = await checkout({
+      planId: "single",
+      themeIds: ["deep-orbit"],
+    });
+
+    expect(res.status).toBe(200);
+    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
+      customer_email?: string;
+    };
+    expect(arg.customer_email).toBeUndefined();
   });
 
   it("auto-grants when credit covers full price", async () => {
@@ -621,6 +691,195 @@ describe("Upgrade path", () => {
     // Verify the insert recorded amount 0 (not negative)
     expect(mockServerInsert).toHaveBeenCalledWith(
       expect.objectContaining({ amount: 0 }),
+    );
+  });
+});
+
+/**
+ * Guest checkout. The authed flow made a cold buyer create an account before
+ * paying, which with magic-link auth meant leaving the browser for an inbox
+ * mid-purchase. These cover the two halves: a session created without a user,
+ * and the webhook resolving identity from the email Stripe collected.
+ */
+describe("POST /api/payments/guest-checkout", () => {
+  beforeEach(() => {
+    mockSessionCreate.mockClear();
+    mockSessionCreate.mockResolvedValue({ url: "https://stripe.test/guest" });
+  });
+
+  async function guestCheckout(body: unknown) {
+    return app.request("/api/payments/guest-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  }
+
+  it("creates a session with no auth header at all", async () => {
+    const res = await guestCheckout({
+      planId: "single",
+      themeIds: ["deep-orbit"],
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.url).toBeDefined();
+  });
+
+  it("omits client_reference_id and marks the session as guest", async () => {
+    await guestCheckout({ planId: "single", themeIds: ["deep-orbit"] });
+
+    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
+      client_reference_id?: string;
+      metadata: Record<string, string>;
+    };
+    // There is no user yet, so there is nothing to reference. The webhook
+    // keys off metadata.guest to know it must resolve identity by email.
+    expect(arg.client_reference_id).toBeUndefined();
+    expect(arg.metadata.guest).toBe("true");
+    expect(arg.metadata.themeIds).toBe("deep-orbit");
+  });
+
+  it("charges full price with no upgrade credit applied", async () => {
+    // A guest has no prior purchases by definition, so the credit machinery
+    // is deliberately absent from this route rather than returning 0.
+    // 4900 = the `single` price in this file's PRICING mock, which pins the
+    // pre-2026-06-20 ladder rather than the live one.
+    await guestCheckout({ planId: "single", themeIds: ["deep-orbit"] });
+    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
+      line_items: { price_data: { unit_amount: number } }[];
+    };
+    expect(arg.line_items[0].price_data.unit_amount).toBe(4900);
+  });
+
+  it("enables abandoned-cart recovery like the authed route", async () => {
+    await guestCheckout({ planId: "single", themeIds: ["deep-orbit"] });
+    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
+      after_expiration?: { recovery?: { enabled?: boolean } };
+    };
+    expect(arg.after_expiration?.recovery?.enabled).toBe(true);
+  });
+
+  it("rejects a theme count that does not match the plan", async () => {
+    const res = await guestCheckout({
+      planId: "single",
+      themeIds: ["deep-orbit", "neon-protocol"],
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("rejects an unknown theme slug", async () => {
+    const res = await guestCheckout({
+      planId: "single",
+      themeIds: ["not-a-real-theme"],
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("rejects the free plan", async () => {
+    const res = await guestCheckout({ planId: "free", themeIds: [] });
+    expect(res.status).toBe(400);
+  });
+});
+
+describe("webhook: guest session identity resolution", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    mockInsert.mockReset();
+    mockInsert.mockResolvedValue({ error: null });
+    mockConstructEvent.mockReset();
+    mockAdminExistingRow = null;
+    mockResolveUser.mockClear();
+    mockResolveUser.mockResolvedValue("user_guest_provisioned");
+    mockSendAccessLink.mockClear();
+  });
+
+  function guestEvent(overrides: Record<string, unknown> = {}) {
+    return {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_guest_1",
+          // The defining trait of a guest session: nobody to reference yet.
+          client_reference_id: null,
+          amount_total: 4900,
+          payment_status: "paid",
+          customer_details: { email: "guest@example.com" },
+          metadata: {
+            planId: "single",
+            themeIds: "deep-orbit",
+            guest: "true",
+          },
+          ...overrides,
+        },
+      },
+    };
+  }
+
+  async function post(event: unknown) {
+    mockConstructEvent.mockReturnValue(event);
+    return app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+  }
+
+  it("provisions the buyer from the Stripe email and records the purchase", async () => {
+    const res = await post(guestEvent());
+
+    expect(res.status).toBe(200);
+    expect(mockResolveUser).toHaveBeenCalledWith(
+      expect.anything(),
+      "guest@example.com",
+    );
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: "user_guest_provisioned",
+        theme_ids: ["deep-orbit"],
+        stripe_session_id: "cs_guest_1",
+      }),
+      expect.anything(),
+    );
+  });
+
+  it("emails an access link so the buyer can reach what they paid for", async () => {
+    await post(guestEvent());
+    expect(mockSendAccessLink).toHaveBeenCalled();
+  });
+
+  /**
+   * The money has already moved by this point. Returning 500 makes Stripe
+   * retry; silently 200-ing would mean a paid purchase that grants nothing
+   * and never gets another chance.
+   */
+  it("fails loudly when the account cannot be resolved", async () => {
+    mockResolveUser.mockResolvedValue(null);
+    const res = await post(guestEvent());
+    expect(res.status).toBe(500);
+    expect(mockInsert).not.toHaveBeenCalled();
+  });
+
+  it("fails loudly when Stripe sent no email to resolve", async () => {
+    const res = await post(guestEvent({ customer_details: {} }));
+    expect(res.status).toBe(500);
+    expect(mockResolveUser).not.toHaveBeenCalled();
+  });
+
+  it("does not touch guest resolution for an ordinary authed session", async () => {
+    await post(
+      guestEvent({
+        client_reference_id: "user_456",
+        metadata: { planId: "single", themeIds: "deep-orbit" },
+      }),
+    );
+    expect(mockResolveUser).not.toHaveBeenCalled();
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: "user_456" }),
+      expect.anything(),
     );
   });
 });

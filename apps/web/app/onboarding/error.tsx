@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 import { errorMessageForCode } from "@/lib/error-messages";
 
@@ -13,6 +14,12 @@ export default function OnboardingError({
 }) {
   useEffect(() => {
     console.error("[Tensorcraft Onboarding Error]", error);
+    // A nested boundary stops propagation, so without this the root
+    // boundary never sees the crash and nothing is reported.
+    Sentry.captureException(error, {
+      tags: { boundary: "onboarding-error" },
+      extra: { digest: error.digest, code: error.code },
+    });
   }, [error]);
 
   const message = errorMessageForCode(error.code);

@@ -59,26 +59,25 @@ export function SessionListener() {
         persistProviderToken(session.provider_token, session.access_token);
       }
 
-      // Tag new signups in Kit (fire once per browser)
+      // Tag new signups in Kit (fire once per browser). Dedupe correctness
+      // lives in tagKitEventOnce: the flag is recorded only when Kit actually
+      // tagged someone, never on a pass that tagged nobody.
       if (event === "SIGNED_IN" && session?.access_token) {
-        try {
-          if (!localStorage.getItem("tc_signup_tagged")) {
-            localStorage.setItem("tc_signup_tagged", "1");
-            import("../api-url").then(({ getApiUrl }) => {
-              const apiUrl = getApiUrl();
-              fetch(`${apiUrl}/api/email`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${session.access_token}`,
-                },
-                body: JSON.stringify({ event: "signed_up" }),
-              }).catch(() => {});
-            });
-          }
-        } catch {
-          // localStorage unavailable
-        }
+        void import("../kit-tag").then(({ tagKitEventOnce }) =>
+          tagKitEventOnce("signed_up", "tc_signup_tagged").catch(() => {}),
+        );
+
+        // signup_completed closes the funnel opened by signup_started in
+        // auth-form. Without it the conversion rate is uncomputable — the
+        // KPI formulas in docs/tech-spec.md divide by exactly this event,
+        // and it is the step paid distribution spend is judged on. Fired
+        // here rather than in /auth/callback because that is a server route
+        // with no analytics client.
+        void import("../analytics-events").then(({ EVENTS, track }) =>
+          track(EVENTS.SIGNUP_COMPLETED, {
+            method: session.user?.app_metadata?.provider ?? "unknown",
+          }),
+        );
 
         // Identify user in PostHog for analytics
         import("../analytics").then(({ identify }) => {

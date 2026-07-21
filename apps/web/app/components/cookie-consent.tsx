@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const CONSENT_KEY = "tc-cookie-consent";
+import { CONSENT_KEY, notifyConsentChanged } from "../../lib/consent";
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -21,6 +21,10 @@ export function CookieConsent() {
     }
   }, []);
 
+  // Both paths notify in-tab listeners. Writing localStorage alone is not
+  // enough: the `storage` event does not fire in the tab that wrote the
+  // value, so analytics stayed uninitialized for the whole session in which
+  // the visitor actually accepted.
   function accept() {
     try {
       if (typeof window !== "undefined") {
@@ -29,6 +33,7 @@ export function CookieConsent() {
     } catch {
       // localStorage may be unavailable
     }
+    notifyConsentChanged();
     setVisible(false);
   }
 
@@ -40,6 +45,7 @@ export function CookieConsent() {
     } catch {
       // localStorage may be unavailable
     }
+    notifyConsentChanged();
     setVisible(false);
   }
 

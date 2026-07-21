@@ -5,32 +5,44 @@ import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { initPostHog, isInitialized } from "../../lib/posthog";
 import { EVENTS, track } from "../../lib/analytics-events";
-
-const CONSENT_KEY = "tc-cookie-consent";
-
-function hasAnalyticsConsent(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return localStorage.getItem(CONSENT_KEY) === "accepted";
-  } catch {
-    return false;
-  }
-}
+import { hasAnalyticsConsent, onConsentChange } from "../../lib/consent";
 
 function AnalyticsInner() {
   const initialized = useRef(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Initialize PostHog (EU instance via lib/posthog, no-op without key).
-  useEffect(() => {
-    if (initialized.current) return;
-    if (!hasAnalyticsConsent()) return;
+  // Mirrors of the current route, so the consent subscription (which must not
+  // re-subscribe on every navigation) can still report the right URL for the
+  // pageview it emits at init time.
+  const pathnameRef = useRef(pathname);
+  const searchParamsRef = useRef(searchParams?.toString() ?? "");
+  pathnameRef.current = pathname;
+  searchParamsRef.current = searchParams?.toString() ?? "";
 
-    const instance = initPostHog();
-    if (instance) {
+  // Initialize PostHog (EU instance via lib/posthog, no-op without key).
+  //
+  // Subscribed to consent rather than read once on mount. A first-time
+  // visitor has no consent key when this mounts, and the old mount-once
+  // effect never re-ran — so accepting the banner did nothing until the next
+  // hard page load, and the entire first session (land, read, hit paywall,
+  // decide) emitted no events at all.
+  useEffect(() => {
+    return onConsentChange(() => {
+      if (initialized.current) return;
+      if (!hasAnalyticsConsent()) return;
+
+      const instance = initPostHog();
+      if (!instance) return;
       initialized.current = true;
-    }
+
+      // The route effect below only fires on navigation, so without this the
+      // page consent was granted on would never be counted.
+      const url = searchParamsRef.current
+        ? `${pathnameRef.current}?${searchParamsRef.current}`
+        : pathnameRef.current;
+      posthog.capture("$pageview", { $current_url: url });
+    });
   }, []);
 
   // Capture page views on route changes

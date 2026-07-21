@@ -35,11 +35,28 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Refresh the session, this keeps the auth token alive
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
+  // Refresh the session, this keeps the auth token alive.
+  //
+  // Wrapped because `getUser()` is a NETWORK call to GoTrue and this runs on
+  // essentially every request. Unwrapped, any Supabase Auth slowness or
+  // outage threw here and took down the whole site — including the fully
+  // static landing page, which needs no auth at all. A throw in middleware is
+  // a 500 for the request, so an auth incident became a total outage.
+  //
+  // Failing open is correct: an auth failure means "we could not establish
+  // who this is", which is exactly the unauthenticated state. Protected
+  // routes below still redirect to /auth, so nothing privileged leaks; public
+  // pages keep serving.
+  let user: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] =
+    null;
+  let authError: unknown = null;
+  try {
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+    authError = result.error;
+  } catch (err) {
+    authError = err;
+  }
 
   const protectedRoutes = ["/dashboard", "/settings", "/onboarding"];
   const isProtected = protectedRoutes.some((route) =>

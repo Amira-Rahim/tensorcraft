@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { ERROR_MESSAGES } from "@/lib/error-messages";
+import { EVENTS, track } from "@/lib/analytics-events";
 
 /* ------------------------------------------------------------------ */
 /*  Context-aware copy                                                */
@@ -31,6 +32,11 @@ export function AuthForm() {
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isReturning, setIsReturning] = useState(false);
+  // Confirms a successful resend. Without visible feedback the button just
+  // returned to its resting label, so the user could not tell whether it
+  // worked and had no reason to keep waiting for the mail — which is exactly
+  // the impatience that triggers Supabase's rate limiter.
+  const [resent, setResent] = useState(false);
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/dashboard";
 
@@ -57,6 +63,7 @@ export function AuthForm() {
 
   async function handleOAuth(provider: "github" | "google") {
     markVisited();
+    track(EVENTS.SIGNUP_STARTED, { method: provider });
     const supabase = getSupabaseBrowserClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -64,46 +71,74 @@ export function AuthForm() {
         redirectTo: callbackUrl,
       },
     });
-    if (error) setError(error.message);
+    if (error) {
+      track(EVENTS.SIGNUP_FAILED, { method: provider });
+      setError(error.message);
+    }
   }
 
+  // Both handlers clear `loading` in a `finally`. Without it, any throw from
+  // signInWithOtp (network drop, Supabase 5xx) skipped the reset and left the
+  // button spinning permanently with no error text and no way back — on the
+  // sign-in screen, which is the front door. Resend, the natural recovery
+  // action, died the same way, so the only escape was a hard refresh.
   async function handleMagicLink(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     markVisited();
-    const supabase = getSupabaseBrowserClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: callbackUrl,
-      },
-    });
+    track(EVENTS.SIGNUP_STARTED, { method: "magic_link" });
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: callbackUrl,
+        },
+      });
 
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-    } else {
-      setMagicLinkSent(true);
+      if (error) {
+        track(EVENTS.SIGNUP_FAILED, { method: "magic_link" });
+        setError(error.message);
+      } else {
+        track(EVENTS.MAGIC_LINK_SENT, { method: "magic_link" });
+        setMagicLinkSent(true);
+      }
+    } catch {
+      track(EVENTS.SIGNUP_FAILED, { method: "magic_link" });
+      setError(ERROR_MESSAGES.network);
+    } finally {
+      setLoading(false);
     }
   }
 
   async function handleResend() {
     setLoading(true);
     setError(null);
+    setResent(false);
 
-    const supabase = getSupabaseBrowserClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: callbackUrl,
-      },
-    });
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: callbackUrl,
+        },
+      });
 
-    setLoading(false);
-    if (error) {
-      setError(error.message);
+      if (error) {
+        setError(error.message);
+      } else {
+        // Without this the button simply returned to its resting label, so a
+        // user could not tell whether the resend worked and had no reason to
+        // keep waiting for the mail.
+        setResent(true);
+      }
+    } catch {
+      setError(ERROR_MESSAGES.network);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -165,6 +200,14 @@ export function AuthForm() {
             </button>
             .
           </p>
+          {resent ? (
+            <p
+              role="status"
+              className="text-[13px] text-primary font-mono mt-2"
+            >
+              Sent again. Check your inbox.
+            </p>
+          ) : null}
           <button
             type="button"
             onClick={() => {
