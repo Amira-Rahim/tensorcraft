@@ -209,10 +209,22 @@ export default function OnboardingPage() {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        await supabase
+        // The result of this write MUST be checked. Middleware forces any
+        // profile with `onboarding_completed = false` back to /onboarding
+        // (lib/supabase/middleware.ts), so a silently failed update meant the
+        // learner finished the wizard, got routed onward, and was immediately
+        // bounced back into it — an infinite loop on first run, with no error
+        // and no way out.
+        const { error: completeError } = await supabase
           .from("profiles")
           .update({ onboarding_completed: true })
           .eq("id", user.id);
+
+        if (completeError) {
+          setError(ERROR_MESSAGES.unknown);
+          setSaving(false);
+          return;
+        }
       }
 
       // 3. Tag onboarded in Kit (best-effort).

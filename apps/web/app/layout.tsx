@@ -183,7 +183,7 @@ export default function RootLayout({
                   "@type": "Offer",
                   price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/PreOrder",
+                  availability: "https://schema.org/OutOfStock",
                 },
               },
               {
@@ -211,7 +211,7 @@ export default function RootLayout({
                   "@type": "Offer",
                   price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/PreOrder",
+                  availability: "https://schema.org/OutOfStock",
                 },
               },
               {
@@ -239,7 +239,7 @@ export default function RootLayout({
                   "@type": "Offer",
                   price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/PreOrder",
+                  availability: "https://schema.org/OutOfStock",
                 },
               },
               {
@@ -267,7 +267,7 @@ export default function RootLayout({
                   "@type": "Offer",
                   price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/PreOrder",
+                  availability: "https://schema.org/OutOfStock",
                 },
               },
               {

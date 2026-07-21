@@ -94,15 +94,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: isLaunched(slug) ? 0.9 : 0.4,
   }));
 
-  // Capstone pages exist only for launched themes, coming-soon routes 404.
-  const capstoneRoutes: MetadataRoute.Sitemap = themeSlugs
-    .filter((slug) => isLaunched(slug))
-    .map((slug) => ({
-      url: `${BASE_URL}/themes/${slug}/capstone`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
-    }));
+  // Capstone pages are deliberately NOT listed.
+  //
+  // They exist only for launched themes, but capstone/page.tsx redirects any
+  // request without a session to /auth — which is itself `noindex` AND
+  // Disallow'd in robots.ts. So every crawler hitting a sitemap-listed
+  // capstone URL got a 307 into a blocked page, which Google records as "Page
+  // with redirect" and drops. Listing a URL that cannot be indexed spends
+  // crawl budget to earn a penalty.
+  //
+  // Re-add these only if the capstone gains a public, signed-out preview.
+  const capstoneRoutes: MetadataRoute.Sitemap = [];
 
   if (SITEMAP_PHASE === "core") {
     return [...staticRoutes, ...themeRoutes, ...capstoneRoutes];

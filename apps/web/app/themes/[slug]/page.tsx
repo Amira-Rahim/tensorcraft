@@ -264,7 +264,11 @@ export default async function ThemeDetailPage({ params }: Props) {
     url: `https://tensorcraft.app/themes/${slug}`,
     educationalLevel: "Intermediate",
     programmingLanguage: ["JavaScript", "TypeScript"],
-    numberOfCredits: themeModules.length,
+    // `numberOfCredits: themeModules.length` was removed here. In schema.org
+    // that property denotes ACADEMIC credits, so publishing 11 asserted an
+    // accreditation this product explicitly disclaims elsewhere ("a completion
+    // record, not an accreditation", compare/page.tsx:219-221). Module count
+    // is already conveyed by the on-page content and courseWorkload.
     teaches: theme.specialization,
     offers: {
       "@type": "Offer",

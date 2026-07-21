@@ -82,11 +82,23 @@ export function ThemeWaitlistForm({
           placeholder="you@domain.com"
           disabled={status === "submitting"}
           data-testid={`theme-waitlist-input-${themeSlug}${suffix}`}
-          className="flex-1 border-2 px-4 py-3 font-mono text-sm rounded-none focus:outline-none"
+          // `focus:outline-none` was removed here. It suppressed the global
+          // *:focus-visible outline, and because `borderColor` is set as an
+          // INLINE style, no focus:border-* class could have substituted for
+          // it either — inline styles beat stylesheet rules regardless of
+          // specificity. The result was a form field with NO focus indicator
+          // at all, on the waitlist capture that appears on all four
+          // coming-soon theme pages. WCAG 2.4.7.
+          //
+          // `outlineColor` is set inline so the restored ring matches the
+          // per-theme palette: the global rule uses the `outline` shorthand,
+          // and an inline longhand still wins over it.
+          className="flex-1 border-2 px-4 py-3 font-mono text-sm rounded-none"
           style={{
             borderColor: palette.border,
             background: palette.bg,
             color: palette.text,
+            outlineColor: palette.primary,
           }}
         />
         <button

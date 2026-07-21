@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -37,6 +37,14 @@ export function AuthForm() {
   // worked and had no reason to keep waiting for the mail — which is exactly
   // the impatience that triggers Supabase's rate limiter.
   const [resent, setResent] = useState(false);
+  // Focus target for the "check your inbox" panel that replaces the form.
+  const sentPanelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (magicLinkSent) {
+      sentPanelRef.current?.focus();
+    }
+  }, [magicLinkSent]);
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/dashboard";
 
@@ -177,12 +185,29 @@ export function AuthForm() {
       {magicLinkSent ? (
         /* Magic link sent state */
         <div className="text-center py-6">
-          <div className="mb-4 text-4xl" aria-hidden="true">
-            &#9993;
+          {/*
+            Submitting the form replaced it with this panel in the same
+            commit, so focus fell to <body> and nothing announced — on the
+            sign-in screen, where the whole instruction ("go check your
+            email") lives in the text that was never read out. tabIndex -1
+            makes it programmatically focusable without entering the tab
+            sequence; the effect below moves focus here on mount.
+            WCAG 4.1.3, 2.4.3.
+          */}
+          <div
+            ref={sentPanelRef}
+            tabIndex={-1}
+            role="status"
+            aria-live="polite"
+            className="outline-none"
+          >
+            <div className="mb-4 text-4xl" aria-hidden="true">
+              &#9993;
+            </div>
+            <h2 className="text-xl font-mono font-semibold text-text-primary mb-2">
+              Check your inbox
+            </h2>
           </div>
-          <h2 className="text-xl font-mono font-semibold text-text-primary mb-2">
-            Check your inbox
-          </h2>
           <p className="text-text-muted text-sm font-mono mb-4">
             We sent a magic link to{" "}
             <strong className="text-text-primary">{email}</strong>. Click the

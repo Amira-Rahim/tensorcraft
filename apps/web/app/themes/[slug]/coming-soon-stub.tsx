@@ -19,7 +19,10 @@ const plural = (word: string) => PLURALS[word] ?? `${word}s`;
  * Coming-soon stub for unlaunched themes. Server-rendered with theme palette,
  * a split hero (in-world status board copy + live SceneCanvas feed frame),
  * a status-board module roster from `theme.preview`, and waitlist capture in
- * the hero and the footer. JSON-LD ships `availability: PreOrder` so search
+ * the hero and the footer. JSON-LD ships `availability: OutOfStock` (changed
+ * from PreOrder 2026-07-21: PreOrder implies the item can be ordered now for
+ * later delivery, but checkout hard-rejects unlaunched themes and only a
+ * waitlist exists — OutOfStock is the truthful term) so search
  * engines surface the right rich snippet.
  *
  * Color is structural here: section borders and row hairlines mix the theme
@@ -80,7 +83,7 @@ export function ComingSoonStub({ theme }: Props) {
       "@type": "Offer",
       price: String(PRICING.single.price),
       priceCurrency: "USD",
-      availability: "https://schema.org/PreOrder",
+      availability: "https://schema.org/OutOfStock",
       url: `https://tensorcraft.app/themes/${slug}`,
     },
   };

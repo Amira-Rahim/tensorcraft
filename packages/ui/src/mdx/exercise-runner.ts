@@ -805,6 +805,18 @@ const WORKER_BODY = `
     }
   }
 
+  // Tell the host the runtime is up. The host uses this to stop measuring
+  // download time against the learner's execution budget: importScripts above
+  // pulls a ~1.4 MB bundle, which on a slow connection alone exceeds the 10s
+  // timeout and produced "Timed out after 10 seconds" for code that never ran.
+  // Resolution (not rejection) is what matters here — a failed load is
+  // reported through the normal error path when the run is attempted.
+  try {
+    Promise.resolve(tfReady).then(function () {
+      post({ ready: true });
+    }, function () {});
+  } catch (e) {}
+
   // Lesson-test compatibility shims. Real TFJS is the source of truth, but a
   // handful of lesson tests assume API niceties that TFJS doesn't expose
   // directly (model.inputShape on sequential models, network-loadable
@@ -975,7 +987,19 @@ const WORKER_BODY = `
 
 type WorkerReply =
   | { ok: true; results: TestResult[]; logs: ConsoleEntry[] }
-  | { ok: false; error: string; logs: ConsoleEntry[] };
+  | { ok: false; error: string; logs: ConsoleEntry[] }
+  // Boot signal, sent once after the TFJS runtime finishes loading. Carries
+  // no results: it exists so the host can start the execution timeout at the
+  // point execution actually becomes possible, rather than charging a ~1.4 MB
+  // download to the learner's 10-second budget.
+  | { ready: true };
+
+/**
+ * Budget for loading the runtime, separate from the per-run execution budget.
+ * Generous because it covers a 1.4 MB download on a poor connection, but
+ * finite so a blocked script surfaces a real message instead of hanging.
+ */
+const RUNTIME_LOAD_TIMEOUT_MS = 60_000;
 
 export interface WorkerHandle {
   send: (msg: unknown) => void;
@@ -1044,25 +1068,69 @@ export async function parseAndRunTestsWith(
     const finish = (outcome: TestRunOutcome) => {
       if (settled) return;
       settled = true;
-      clearTimeout(timer);
+      if (timer !== undefined) clearTimeout(timer);
+      clearTimeout(loadTimer);
       Promise.resolve(handle.terminate()).catch(() => {});
       resolve(outcome);
     };
 
-    const timer = setTimeout(() => {
+    // The timeout budget is for the learner's CODE, not for fetching the
+    // runtime. The worker `importScripts` a 1,469,843-byte TFJS bundle before
+    // it can execute anything; on a slow connection that download alone
+    // exceeds 10s, so the first "Run Tests" of every such learner failed with
+    // "Timed out after 10 seconds" — attributing a network problem to their
+    // code, at the exact moment they are deciding whether this product works.
+    //
+    // The worker now posts `{ ready: true }` once the runtime is loaded, and
+    // the clock starts there. `startTimer` is idempotent; the fallback below
+    // covers a worker that never signals ready at all (blocked script,
+    // unreachable CDN) so a hang is still bounded.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const startTimer = () => {
+      if (timer !== undefined || settled) return;
+      timer = setTimeout(() => {
+        finish({
+          results: [
+            {
+              name: "Code execution",
+              passed: false,
+              error: `Timed out after ${Math.round(timeoutMs / 1000)} seconds`,
+            },
+          ],
+          logs: [],
+        });
+      }, timeoutMs);
+    };
+
+    // Bound the load phase separately, with a message that names the real
+    // cause instead of blaming the learner's code.
+    const loadTimer = setTimeout(() => {
+      if (timer !== undefined || settled) return;
       finish({
         results: [
           {
-            name: "Code execution",
+            name: "Runtime load",
             passed: false,
-            error: `Timed out after ${Math.round(timeoutMs / 1000)} seconds`,
+            error:
+              "The TensorFlow.js runtime did not finish loading. This is usually a slow or blocked network, not a problem with your code. Check your connection and run the tests again.",
           },
         ],
         logs: [],
       });
-    }, timeoutMs);
+    }, RUNTIME_LOAD_TIMEOUT_MS);
 
     handle.onReply((reply) => {
+      // Runtime is up: stop the load budget and start the execution budget.
+      // `in` rather than a cast so TypeScript narrows the union properly.
+      if ("ready" in reply) {
+        clearTimeout(loadTimer);
+        startTimer();
+        return;
+      }
+      // A result arriving without a prior ready signal (older worker, or a
+      // synchronous failure) still needs the load budget cleared.
+      clearTimeout(loadTimer);
+      startTimer();
       if (reply.ok) {
         finish({ results: reply.results, logs: reply.logs });
       } else {

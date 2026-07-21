@@ -75,7 +75,17 @@ export async function updateSession(request: NextRequest) {
       url.pathname = "/auth";
       url.search = "";
       url.searchParams.set("redirectTo", requestedPath);
-      url.searchParams.set("error", "session_expired");
+      // Only claim the session EXPIRED when there was a session to expire.
+      // `authError && !user` also covers a cookieless first visit, so a
+      // brand-new visitor clicking a /dashboard link was told their session
+      // had expired — confusing, and it frames a normal signup as a fault.
+      // Presence of a Supabase auth cookie is the distinguishing signal.
+      const hadSession = request.cookies
+        .getAll()
+        .some((c) => c.name.startsWith("sb-"));
+      if (hadSession) {
+        url.searchParams.set("error", "session_expired");
+      }
       return NextResponse.redirect(url);
     }
     return supabaseResponse;

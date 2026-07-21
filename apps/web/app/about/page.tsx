@@ -11,6 +11,25 @@ export const metadata: Metadata = {
   description:
     "Why Tensorcraft was built, the bridge-tier method, and what we deliberately left out. Honest authorship, not a marketing manifesto.",
   alternates: { canonical: "https://tensorcraft.app/about" },
+  // Per-route openGraph/twitter. Without these the route inherited the root
+  // layout's block, so og:url pointed at the homepage and every share of
+  // this page presented as the site root — wrong title, wrong image, wrong
+  // destination preview. Matters most during a distribution push.
+  openGraph: {
+    type: "website",
+    url: "https://tensorcraft.app/about",
+    title: "About Tensorcraft | Tensorcraft",
+    images: [
+      "/api/og?title=About%20Tensorcraft&theme=deep-orbit&subtitle=Why%20this%20course%20exists",
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Tensorcraft | Tensorcraft",
+    images: [
+      "/api/og?title=About%20Tensorcraft&theme=deep-orbit&subtitle=Why%20this%20course%20exists",
+    ],
+  },
 };
 
 export const revalidate = 86400;

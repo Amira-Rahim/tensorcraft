@@ -86,15 +86,27 @@ export function BossBeat({
   // and skip the timer.
   useEffect(() => {
     let active = true;
-    getBossBeatChoice(beatId).then((c) => {
-      if (active) {
-        setPriorChoice(c);
-        setLoading(false);
-        if (!c) {
+    getBossBeatChoice(beatId)
+      .then((c) => {
+        if (active) {
+          setPriorChoice(c);
+          if (!c) {
+            startedAtRef.current = Date.now();
+          }
+        }
+      })
+      // `setLoading(false)` used to live only inside `.then()`, so any
+      // rejection left the component stuck on "Loading beat…" permanently.
+      // Treat a failed lookup as "no prior choice" and let the learner play
+      // the beat — over-offering is recoverable, a dead component is not.
+      .catch(() => {
+        if (active && !startedAtRef.current) {
           startedAtRef.current = Date.now();
         }
-      }
-    });
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
     return () => {
       active = false;
     };
@@ -122,17 +134,31 @@ export function BossBeat({
   async function handleChoice(idx: number) {
     if (submitting || submittedIndex !== null || priorChoice) return;
     setSubmitting(true);
-    setSubmittedIndex(idx);
+    // `setSubmittedIndex(idx)` used to run HERE, before the await. Combined
+    // with the `submittedIndex !== null` guard above, that meant a failed
+    // save was indistinguishable from a successful one: the beat rendered
+    // its consequence, the guard permanently blocked retry, and the choice
+    // was never recorded. It looked saved and never was — the worst failure
+    // shape available, because the learner has no reason to suspect it.
+    //
+    // The state now advances only after the write resolves. A rejection
+    // leaves the beat playable so the learner can choose again.
     const opt = options[idx];
-    await recordBossBeatChoice({
-      themeId,
-      lessonId,
-      beatId,
-      choiceIndex: idx,
-      choiceLabel: opt.label,
-      reactionMs: reactionMs(),
-    });
-    setSubmitting(false);
+    try {
+      await recordBossBeatChoice({
+        themeId,
+        lessonId,
+        beatId,
+        choiceIndex: idx,
+        choiceLabel: opt.label,
+        reactionMs: reactionMs(),
+      });
+      setSubmittedIndex(idx);
+    } catch {
+      // Leave submittedIndex null: the beat stays interactive and retryable.
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function handleTimeout() {

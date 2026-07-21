@@ -7,6 +7,25 @@ export const metadata: Metadata = {
   description:
     "Honest comparison: where Tensorcraft wins (FE-developer onboarding, browser-runtime focus, analogies labeled where they break), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
   alternates: { canonical: "https://tensorcraft.app/compare" },
+  // Per-route openGraph/twitter. Without these the route inherited the root
+  // layout's block, so og:url pointed at the homepage and every share of
+  // this page presented as the site root — wrong title, wrong image, wrong
+  // destination preview. Matters most during a distribution push.
+  openGraph: {
+    type: "website",
+    url: "https://tensorcraft.app/compare",
+    title: "Tensorcraft vs fast.ai vs Karpathy | Tensorcraft",
+    images: [
+      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&theme=deep-orbit&subtitle=An%20honest%20course%20comparison",
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tensorcraft vs fast.ai vs Karpathy | Tensorcraft",
+    images: [
+      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&theme=deep-orbit&subtitle=An%20honest%20course%20comparison",
+    ],
+  },
 };
 
 export const revalidate = 86400;

@@ -7,6 +7,25 @@ export const metadata: Metadata = {
   description:
     "Companion modules that go deeper than the main path: math derivations (chain rule, KL divergence, Bayesian updates), classical ML algorithms, ethics framework, Python ↔ JS bridge.",
   alternates: { canonical: "https://tensorcraft.app/extras" },
+  // Per-route openGraph/twitter. Without these the route inherited the root
+  // layout's block, so og:url pointed at the homepage and every share of
+  // this page presented as the site root — wrong title, wrong image, wrong
+  // destination preview. Matters most during a distribution push.
+  openGraph: {
+    type: "website",
+    url: "https://tensorcraft.app/extras",
+    title: "Extras: Math, Classical ML, Ethics | Tensorcraft",
+    images: [
+      "/api/og?title=Extras%3A%20Math%2C%20Classical%20ML%2C%20Ethics&theme=deep-orbit&subtitle=Companion%20modules%2C%20free%20to%20read",
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Extras: Math, Classical ML, Ethics | Tensorcraft",
+    images: [
+      "/api/og?title=Extras%3A%20Math%2C%20Classical%20ML%2C%20Ethics&theme=deep-orbit&subtitle=Companion%20modules%2C%20free%20to%20read",
+    ],
+  },
 };
 
 export const revalidate = 3600;

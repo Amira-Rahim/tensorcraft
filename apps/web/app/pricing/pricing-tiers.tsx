@@ -46,6 +46,21 @@ function ThemePicker({
             type="button"
             onClick={() => !isOwned && !isFull && onToggle(t.slug)}
             disabled={isOwned || isFull}
+            // Selection was conveyed ONLY by colour (border/background/weight),
+            // so a screen-reader user building a $99-$159 bundle had no way to
+            // know which themes were in their basket, and the state was
+            // invisible to anyone who cannot distinguish the accent. This is
+            // purchasing information, not decoration. WCAG 4.1.2 and 1.4.1.
+            aria-pressed={isSelected}
+            // Owned and basket-full are different reasons for the same
+            // disabled state; without this they are indistinguishable.
+            aria-label={
+              isOwned
+                ? `${t.name} (already owned)`
+                : isFull
+                  ? `${t.name} (unavailable, plan is full)`
+                  : t.name
+            }
             className={`min-h-11 px-3 py-2 text-xs font-mono border rounded-none transition-all focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
               isOwned
                 ? "border-primary/50 bg-primary/5 text-primary/70 cursor-default"

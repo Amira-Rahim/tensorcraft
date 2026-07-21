@@ -204,11 +204,26 @@ export function SettingsForm({
   // Profile + notifications save
   // ------------------------------------------------------------------
 
+  // Wrapped in try/finally. `getUser()` and the profile update sat outside any
+  // handler, so a throw from either skipped `setSaving(false)` and left the
+  // button spinning with no error and no retry — the user could not tell
+  // whether their name had saved. The correct pattern already existed at
+  // handleAvatarUpload in this same file.
   async function handleSave() {
     setSaving(true);
     setError(null);
     setSaved(false);
 
+    try {
+      await performSave();
+    } catch {
+      setError(ERROR_MESSAGES.network);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function performSave() {
     const supabase = getSupabaseBrowserClient();
     const {
       data: { user },
@@ -216,7 +231,6 @@ export function SettingsForm({
 
     if (!user) {
       setError(ERROR_MESSAGES.session_expired);
-      setSaving(false);
       return;
     }
 
@@ -263,7 +277,8 @@ export function SettingsForm({
       }
     }
 
-    setSaving(false);
+    // setSaving(false) now lives in handleSave's finally, so it runs on the
+    // throwing paths too.
     if (updateError || prefsError) {
       setError(prefsError ?? updateError?.message ?? "Failed to save settings");
     } else {

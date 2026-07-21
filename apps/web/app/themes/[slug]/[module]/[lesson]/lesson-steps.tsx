@@ -3,7 +3,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { LessonContent } from "./lesson-content";
-import { markLessonStarted, markLessonCompleted } from "@/lib/progress-client";
+import {
+  markLessonStarted,
+  markLessonCompleted,
+  emitSkillEvent,
+} from "@/lib/progress-client";
 import { recordGuestCompletion } from "@/lib/guest-progress";
 import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
 import type { ExerciseData } from "@tensorcraft/ui";
@@ -320,6 +324,26 @@ function LessonStepsInner({
         });
       trackLessonCompleted(themeSlug, moduleSlug, lesson.slug);
 
+      // Skill genome. `emitSkillEvent` had ZERO call sites until now: the
+      // buffer, the 5s flush, the keepalive batch endpoint and
+      // POST /api/skill-events were all built and all dead, so `skill_events`
+      // was empty for every user and the dashboard radar chart was
+      // structurally always zero — a feature that appeared to exist and did
+      // not. (It would also have failed silently even once wired, because
+      // migration 013 carried over only a SELECT policy; migration 041 adds
+      // the INSERT policy.)
+      //
+      // One event per axis: compute_user_skill_genome loops
+      // `SELECT DISTINCT skill_axis`, so multi-axis lessons are expected.
+      // Fire-and-forget by design — a lost skill event must never affect
+      // lesson completion.
+      for (const axis of lesson.skillAxes ?? []) {
+        emitSkillEvent(themeSlug, "lesson_complete", axis, {
+          lessonId: lesson.slug,
+          moduleId: moduleSlug,
+        });
+      }
+
       // Kit lifecycle tags. Dedupe correctness lives in tagKitEventOnce: the
       // "already tagged" flag is recorded only when Kit actually tagged
       // someone. Both of these previously burned the flag on a pass that
@@ -362,8 +386,19 @@ function LessonStepsInner({
         next.add(exerciseSlug);
         return next;
       });
+      // `exercise_pass` is the heaviest-weighted signal in the genome
+      // computation (+3 vs +2 for a lesson, migration 014:26-37), so without
+      // it the radar would be dominated by mere completion rather than
+      // demonstrated skill.
+      for (const axis of lesson.skillAxes ?? []) {
+        emitSkillEvent(themeSlug, "exercise_pass", axis, {
+          exerciseSlug,
+          score,
+          lessonId: lesson.slug,
+        });
+      }
     },
-    [],
+    [themeSlug, lesson.skillAxes, lesson.slug],
   );
 
   const canContinue =
@@ -725,6 +760,21 @@ function LessonStepsInner({
               aria-label={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
               className={`animate-step-in outline-none ${isStoryStep ? "min-h-[50vh] flex flex-col justify-center" : ""}`}
             >
+              {/*
+                Only step 0 (Briefing) renders a visible <h1>; steps 1-5
+                started at h2/h4 from the MDX, so five of six steps had NO
+                level-one heading and an outline that began mid-hierarchy.
+                Screen-reader users navigating by heading had nothing to
+                orient on. WCAG 1.3.1 and 2.4.6.
+
+                Rendered sr-only and only off step 0, so there is always
+                exactly one h1 per step and the visible design is unchanged.
+              */}
+              {currentStep !== 0 && (
+                <h1 className="sr-only">
+                  {lesson.title} — {STEP_NAMES[currentStep]}
+                </h1>
+              )}
               {shellLeftWithToggle}
               {bottomNav}
             </div>
@@ -759,7 +809,17 @@ function ChromeBar({
   setCurrentStep: (n: number) => void;
 }) {
   return (
-    <div className="flex items-center gap-4 mb-6">
+    // `flex-wrap` plus a full-width basis for the step bar below `sm`.
+    //
+    // This row previously did not wrap, and every child except the step bar
+    // was `shrink-0`. At 320px the fixed children (drawer 44px + "Mission
+    // Map" ~146px + counter ~60px + three 16px gaps) total ~298px against a
+    // ~272px content box, so the only flexible child — the entire progress
+    // indicator — absorbed the whole deficit and rendered at 0.0px wide.
+    // Measured 0.0px at 320px and 0.7px at 375px: invisible on every phone,
+    // while remaining perfect on desktop, which is why desktop-only checks
+    // never caught it. WCAG 1.4.10 (reflow).
+    <div className="flex flex-wrap items-center gap-4 mb-6">
       {lessons && (
         <LessonDrawer
           lessons={lessons}
@@ -775,11 +835,16 @@ function ChromeBar({
         className="text-sm font-mono flex items-center gap-2 shrink-0 px-3 py-2 border border-transparent opacity-70 transition-all hover:opacity-100 hover:border-current"
         style={{ color: theme.palette.text }}
       >
-        &larr; Mission Map
+        {/* The label is the widest fixed child; drop the words on the
+            narrowest screens so the first row still fits. The arrow plus the
+            accessible name below keep it unambiguous. */}
+        <span aria-hidden="true">&larr;</span>
+        <span className="hidden sm:inline">Mission Map</span>
+        <span className="sr-only sm:hidden">Mission Map</span>
       </Link>
 
       <div
-        className="flex-1 flex items-center gap-1"
+        className="order-last basis-full min-w-0 flex items-center gap-1 sm:order-none sm:basis-auto sm:flex-1"
         role="group"
         aria-label={`Lesson step ${currentStep + 1} of ${TOTAL_STEPS}`}
       >
@@ -795,7 +860,11 @@ function ChromeBar({
               aria-label={`Step ${i + 1}: ${name}`}
               aria-current={i === currentStep ? "step" : undefined}
               title={visited ? name : `${name} (locked)`}
-              className="flex-1 h-4 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
+              // h-6 (24px), not h-4: these are documented navigation
+              // affordances, so they must meet the WCAG 2.5.8 AA minimum
+              // target of 24x24. The visible bar stays 6px — only the hit
+              // area grows, centred by `flex items-center`.
+              className="flex-1 h-6 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
               style={{ cursor: visited ? "pointer" : "not-allowed" }}
             >
               <span

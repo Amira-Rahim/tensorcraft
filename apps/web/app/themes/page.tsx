@@ -17,6 +17,25 @@ export const metadata: Metadata = {
   description:
     "Deep Orbit (time-series & signals) is live. Neon Protocol, Signal Ward, Nova Canvas, and Terra Grid follow in waves; join each waitlist.",
   alternates: { canonical: "https://tensorcraft.app/themes" },
+  // Per-route openGraph/twitter. Without these the route inherited the root
+  // layout's block, so og:url pointed at the homepage and every share of
+  // this page presented as the site root — wrong title, wrong image, wrong
+  // destination preview. Matters most during a distribution push.
+  openGraph: {
+    type: "website",
+    url: "https://tensorcraft.app/themes",
+    title: "Five themes, one live | Tensorcraft",
+    images: [
+      "/api/og?title=Five%20themes%2C%20one%20live&theme=deep-orbit&subtitle=Deep%20Orbit%20is%20shipping%20now",
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Five themes, one live | Tensorcraft",
+    images: [
+      "/api/og?title=Five%20themes%2C%20one%20live&theme=deep-orbit&subtitle=Deep%20Orbit%20is%20shipping%20now",
+    ],
+  },
 };
 
 /**

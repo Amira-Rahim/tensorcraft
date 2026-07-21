@@ -51,6 +51,18 @@ export default defineConfig({
     command: `pnpm --filter @tensorcraft/web dev -p ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
-    timeout: 30000,
+    // 30s was not enough and the failure mode was dangerous. `next dev`
+    // compiles on demand; measured cold compiles here run 19-154s (the
+    // comment above already records a 14.96s cold lesson hit). When this
+    // timeout fires, the whole run aborts before a single spec executes —
+    // and that reads as infra flake, not as "accessibility was never
+    // checked". The a11y suite in particular was passing only 4 of 14 specs
+    // for that reason, with the ten covering Themes, Theme Detail, Pricing
+    // and every lesson step — the entire paid surface — simply never run.
+    //
+    // A gate whose absence is indistinguishable from its success is worse
+    // than no gate: it manufactures confidence. Raise the ceiling so the
+    // suite actually runs; it only costs time on a genuinely stuck server.
+    timeout: 180_000,
   },
 });

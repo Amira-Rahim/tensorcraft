@@ -92,9 +92,19 @@ describe("ComingSoonStub", () => {
     ).toBeInTheDocument();
   });
 
-  it("keeps the JSON-LD PreOrder offer", () => {
+  /**
+   * Changed from PreOrder to OutOfStock on 2026-07-21.
+   *
+   * schema.org PreOrder means "orderable now, delivered later". These themes
+   * cannot be ordered at all: `validateThemeIds` in payments.ts hard-rejects
+   * any unlaunched slug, so checkout refuses them even for a crafted request,
+   * and the only affordance on the page is a waitlist. OutOfStock is the
+   * truthful term for an item that exists but cannot currently be bought.
+   */
+  it("marks the JSON-LD offer OutOfStock, not PreOrder", () => {
     const { container } = render(<ComingSoonStub theme={signalWard} />);
     const ld = container.querySelector('script[type="application/ld+json"]');
-    expect(ld!.textContent).toContain("PreOrder");
+    expect(ld!.textContent).toContain("OutOfStock");
+    expect(ld!.textContent).not.toContain("PreOrder");
   });
 });

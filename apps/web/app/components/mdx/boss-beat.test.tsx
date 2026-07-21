@@ -107,3 +107,50 @@ describe("BossBeat answer-key resistance", () => {
     });
   });
 });
+
+/**
+ * Failure-path coverage added 2026-07-21.
+ *
+ * `handleChoice` used to call `setSubmittedIndex(idx)` BEFORE awaiting the
+ * write. Combined with the `submittedIndex !== null` guard at the top of the
+ * handler, that made a failed save indistinguishable from a successful one:
+ * the beat rendered its consequence, retry was permanently blocked, and the
+ * choice was never recorded. It looked saved and never was — the worst shape
+ * of failure available, because the learner has no reason to suspect it.
+ */
+describe("BossBeat failure paths", () => {
+  beforeEach(() => {
+    vi.mocked(getBossBeatChoice).mockReset().mockResolvedValue(null);
+    vi.mocked(recordBossBeatChoice).mockReset().mockResolvedValue(true);
+  });
+
+  it("stays interactive when recording the choice fails", async () => {
+    vi.mocked(recordBossBeatChoice).mockRejectedValue(new Error("network"));
+    const { container } = renderBeat("fail-beat-1");
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("boss-beat-loading")).toBeNull(),
+    );
+
+    const buttons = container.querySelectorAll("button");
+    expect(buttons.length).toBeGreaterThan(0);
+    (buttons[0] as HTMLButtonElement).click();
+
+    // The write rejected, so the beat must NOT advance to its consequence.
+    // Choice buttons remain, meaning the learner can try again.
+    await waitFor(() => {
+      expect(container.querySelectorAll("button").length).toBe(buttons.length);
+    });
+  });
+
+  it("does not hang on 'Loading beat…' when the prior-choice lookup fails", async () => {
+    // setLoading(false) previously lived only inside .then(), so a rejection
+    // left the component permanently in its loading state.
+    vi.mocked(getBossBeatChoice).mockRejectedValue(new Error("network"));
+    renderBeat("fail-beat-2");
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("boss-beat-loading")).toBeNull(),
+    );
+  });
+});

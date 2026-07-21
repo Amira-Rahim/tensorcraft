@@ -12,17 +12,28 @@ config, and manual QA runs are built against.
 ## Supported browsers
 
 We target **the latest two stable releases** of every engine. Anything
-older than that is best-effort and not blocking for release. The versions
-below are the floors at the time of this writing — CI uses whatever
-Playwright ships, and manual QA uses whatever Chrome / Firefox /
-Safari / Edge autoupdate to on the test machines.
+older than that is best-effort and not blocking for release.
 
-| Browser | Minimum version | Engine |
-| --- | --- | --- |
-| Google Chrome | 128+ | Blink |
-| Mozilla Firefox | 127+ | Gecko |
-| Safari (macOS + iOS) | 17+ | WebKit |
-| Microsoft Edge | 128+ | Blink (Chromium) |
+> **Corrected 2026-07-21 — these are TARGETS, not verified coverage.** This
+> section previously implied a four-engine CI matrix. It does not exist. What
+> `playwright.config.ts` actually defines is one `chromium` project plus three
+> device projects (`iPhone SE`, `Pixel 7`, `iPad`) — and **all three device
+> projects are `testMatch: /mobile\.spec\.ts/`**, so WebKit only ever runs the
+> mobile smoke file and never touches the exercise, auth, pricing or playback
+> specs. **Firefox has zero automated coverage of any kind.** There is also no
+> `browserslist` anywhere in the repo, so the version floors below are
+> unenforced by tooling — nothing fails a build for using a feature outside
+> them. Treat the "Verified by" column as the honest state.
+
+| Browser | Minimum version | Engine | Verified by |
+| --- | --- | --- | --- |
+| Google Chrome | 128+ | Blink | Full Playwright suite (`chromium` project) |
+| Mozilla Firefox | 127+ | Gecko | **Nothing automated.** Manual QA only |
+| Safari (macOS + iOS) | 17+ | WebKit | `e2e/mobile.spec.ts` smoke only |
+| Microsoft Edge | 128+ | Blink (Chromium) | Inferred from Chromium; not run |
+
+To make the matrix real, add a `firefox` project and drop the `testMatch`
+restriction from at least one WebKit project so it runs the full suite.
 
 Out-of-scope:
 

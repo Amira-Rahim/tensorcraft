@@ -81,7 +81,7 @@ Status key: **[FIXED]** this session · **[OPEN]** · **[WONTFIX]** owner decisi
   `lesson-content.tsx:428`, `post-body.tsx:18`). `'unsafe-inline'` is not, and
   its presence would nullify any nonce added later. The inline comment
   misattributes the requirement to "Next.js hydration and PostHog."
-- **[OPEN] Anyone can inject emails into the newsletter list.**
+- **[PARTLY FIXED 2026-07-21 — migration 041 bounds shape; volume control still open] Anyone can inject emails into the newsletter list.**
   `001_initial_schema.sql:157-159` — `with check (true)` on waitlist INSERT,
   unauthenticated via PostgREST; `newsletter.ts` sends to `subscribed = true`
   (the default). Spam, deliverability, and CAN-SPAM exposure.
@@ -298,7 +298,7 @@ JSON-LD is self-`recognizedBy` with `credentialCategory: "Course Completion"`.
   … await … setLoading(false)` with no `finally`. Any throw left the button
   spinning with no error and no retry, on the front door; Resend died the same
   way. Fixed, plus a success confirmation on resend.
-- **[OPEN] `emitSkillEvent` has zero call sites.** `progress-client.ts:262`.
+- **[FIXED 2026-07-21] `emitSkillEvent` had zero call sites.** `progress-client.ts:262`.
   The buffer, the 5s flush, the `keepalive` batch endpoint, and
   `POST /api/skill-events` are all dead. Nothing has ever written a skill
   event. Downstream, `compute_user_skill_genome` aggregates exclusively from
@@ -310,7 +310,7 @@ JSON-LD is self-`recognizedBy` with `credentialCategory: "Course Completion"`.
   the route writes with the user's JWT (so RLS applies as `authenticated`), so
   inserts would be denied. Contrast `exercise_attempts`, which needed an
   explicit insert policy (`004:25`) for the identical client factory.
-- **[OPEN] Permanent spinners** (same missing-`finally` class):
+- **[FIXED 2026-07-21] Permanent spinners** (same missing-`finally` class):
   `settings-form.tsx:208` (cannot tell if your name saved — the correct pattern
   exists at `:199` in the same file) · `theme-waitlist-form.tsx:41` and
   `newsletter-modal.tsx:42` (both call an unguarded `submitWaitlist`; both
@@ -319,11 +319,11 @@ JSON-LD is self-`recognizedBy` with `credentialCategory: "Course Completion"`.
   the await and the `:121` guard then permanently blocks retry, so the choice
   **looks saved and never was** · `boss-beat.tsx:89` stuck on "Loading beat…"
   forever.
-- **[OPEN] Onboarding can infinite-loop.** `onboarding/page.tsx:212-215` awaits
+- **[FIXED 2026-07-21] Onboarding could infinite-loop.** `onboarding/page.tsx:212-215` awaits
   `update({onboarding_completed: true})`, never checks the result, then pushes.
   If that write fails, middleware bounces the user straight back into the
   wizard.
-- **[OPEN] `guest-progress-bridge.tsx:33-64` has no try/catch.** A rejection is
+- **[FIXED 2026-07-21] `guest-progress-bridge.tsx` had no try/catch.** A rejection is
   an unhandled rejection: no migration, no `router.refresh()`, and `ran.current`
   blocks retry for that mount — the guest then hits the module-2 prerequisite
   gate, the exact bug the bridge exists to prevent.
@@ -340,8 +340,8 @@ JSON-LD is self-`recognizedBy` with `credentialCategory: "Course Completion"`.
   at 57 completed rows and never receive the board-clear message — the
   narrative payoff for finishing. `certificates.ts:137` gets this right with
   `completed < expected`.
-- **[OPEN] `theme_progress` has no CHECK on `theme_id`/`module_id`/`lesson_id`
-  and no length limit.** The insert policy only checks `auth.uid() = user_id`
+- **[FIXED 2026-07-21 — migration 041] `theme_progress` had no CHECK on
+  `theme_id`/`module_id`/`lesson_id` and no length limit.** The insert policy only checks `auth.uid() = user_id`
   (`001:88-93`) and the web client writes direct to Supabase, never through the
   validating API route. Any authenticated user can insert arbitrary or
   megabyte-sized slugs — unlocking prerequisite gates, breaking DISPATCH,
@@ -736,10 +736,10 @@ survives ITP eviction · zero Safari-breaking JS APIs.
 
 ### Open
 
-- **[OPEN] `/themes/deep-orbit/capstone` is in the sitemap but 307s anonymous
+- **[FIXED 2026-07-21] `/themes/deep-orbit/capstone` was in the sitemap but 307s anonymous
   crawlers** to `/auth`, which is both `noindex` and `Disallow`. Google records
   "Page with redirect" and drops it. Emitted by `sitemap.ts:98-105`.
-- **[OPEN] Most routes emit the homepage's Twitter card and `og:url`.** Only
+- **[FIXED 2026-07-21 — about/compare/extras/themes] Most routes emitted the homepage's Twitter card and `og:url`.** Only
   pricing, privacy, terms and `blog/[slug]` define their own `twitter`;
   `/about`, `/compare`, `/extras`, `/themes` define no `openGraph` at all, so
   they inherit `og:url = https://tensorcraft.app`. **Sharing `/compare`
@@ -749,16 +749,16 @@ survives ITP eviction · zero Safari-breaking JS APIs.
   server progress is `[]` and `activeModule` stays module 1. The largest button
   on the page points backwards at the conversion moment. `GuestModuleBanner`
   mitigates, does not fix.
-- **[OPEN] First-time visitors are told their session expired.**
+- **[FIXED 2026-07-21] First-time visitors were told their session expired.**
   `lib/supabase/middleware.ts:78` sets `error=session_expired` whenever
   `authError && !user`, which includes cookieless first visits. Verified:
   `/onboarding`, `/dashboard`, `/settings` all 307 with that param from a clean
   request.
-- **[OPEN] `PreOrder` + `$59` on four unpurchasable themes**
+- **[FIXED 2026-07-21 — now OutOfStock] `PreOrder` + `$59` on four unpurchasable themes**
   (`layout.tsx:181/209/237/265`, `coming-soon-stub.tsx:83`). Checkout hard-rejects
   them; only a waitlist exists. `OutOfStock`/`LimitedAvailability` would be
   truthful.
-- **[OPEN] `numberOfCredits: 11`** (`themes/[slug]/page.tsx:257`) means
+- **[FIXED 2026-07-21 — property removed] `numberOfCredits: 11`** (`themes/[slug]/page.tsx:257`) means
   **academic credits** in schema.org — reads as an accreditation claim.
 - **[OPEN] Broken admin link** — `admin/digest/page.tsx:171` →
   `/learn/${themeId}/${moduleId}/${slug}`, no such route (404). Admin-only.

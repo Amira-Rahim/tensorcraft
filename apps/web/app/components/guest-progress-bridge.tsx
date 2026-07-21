@@ -61,7 +61,15 @@ export function GuestProgressBridge() {
         // prerequisite check sees the migrated rows.
         router.refresh();
       }
-    })();
+      // The catch is what makes the retry-on-next-mount story above true.
+      // Without it a rejection from getUser() or the replay loop was an
+      // unhandled rejection: nothing migrated, no router.refresh(), and
+      // `ran.current` already latched so this mount would not try again. The
+      // guest then hit the module-2 prerequisite gate holding a browser full
+      // of completed lessons — precisely the failure this component exists to
+      // prevent. Swallowing is correct: the localStorage record is untouched,
+      // so the next page load replays it.
+    })().catch(() => {});
 
     return () => {
       cancelled = true;
