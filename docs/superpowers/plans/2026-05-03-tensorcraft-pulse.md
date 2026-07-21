@@ -1493,5 +1493,5 @@ When V1 launch is settled and you want to start this:
 
 ## References
 - Spec: `~/.claude/plans/brainstorm-how-to-keep-giggly-lightning.md`
-- Related: `docs/v2-polish-backlog.md`, `docs/dev-plan.md`
+- Related: `docs/post-launch-backlog.md` (canonical post-launch index), `docs/dev-plan.md`
 - Existing patterns to follow: `apps/api/` for service structure, `packages/supabase/migrations/` for schema, `apps/web/app/admin/` (if exists) for admin route conventions.

@@ -1,5 +1,9 @@
 # V2 Polish Backlog
 
+> **SUPERSEDED 2026-07-21** by `docs/post-launch-backlog.md`, the single
+> canonical index of all post-launch work. This file is kept as history
+> (done-item records, rationale, design notes). Do not add new items here.
+
 P2 / V2 items deferred from the A+ launch sprint (2026-04-25 → 2026-04-28). None block launch. All require either editorial taste, dataset curation, or are stylistic-not-substantive.
 
 Items grouped by leverage. Highest leverage first.

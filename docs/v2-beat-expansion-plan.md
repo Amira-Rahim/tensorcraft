@@ -2,6 +2,7 @@
 
 **Status:** planned, not started. Written 2026-07-13 when "beat dormancy" (32
 lessons with no decision beat) was accepted for V1 launch.
+Indexed in `docs/post-launch-backlog.md` §3 (canonical post-launch index).
 **Owner gate:** start after launch, once ~100 real lesson completions exist so
 placement can follow observed drop-off instead of guesses.
 

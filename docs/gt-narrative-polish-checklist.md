@@ -59,4 +59,4 @@ Have a seeded test user with at least:
 
 - Cron for `weekly_intel` dispatch messages: pick Supabase pg_cron OR Vercel Scheduled Function; out of scope for the in-session implementation
 - Email mirror for `dispatch_messages` via existing Resend config: deferred to email-marketing slice
-- Per-theme launch content (4 themes × finale tease + boss beat + counterfactuals + cameos) — separate writing-only sprint, see `docs/v2-polish-backlog.md`
+- Per-theme launch content (4 themes × finale tease + boss beat + counterfactuals + cameos) — separate writing-only sprint, see `docs/post-launch-backlog.md` §5

@@ -33,7 +33,7 @@
 > `packages/ui/src/mdx/`) solely so that unbuilt MDX keeps compiling until
 > migrated; remove them once all themes are off them.
 
-This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
+This document is the single source of truth for all development work needed to ship Tensorcraft, from repo initialization through launch, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews. **Post-launch and deferred work is tracked canonically in `docs/post-launch-backlog.md`** (consolidated 2026-07-21); deferred mentions elsewhere in this file are historical and non-authoritative.
 
 **Status key:** `[ ]` not started · `[~]` in progress · `[x]` done
 
@@ -980,13 +980,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 9d. Analytics-Driven Content QA (Post-Launch)
 
-- [ ] Lesson completion rate targets: beginner ≥75%, intermediate ≥60%, advanced ≥45%
-- [ ] Exercise pass rate: ≥70% within 3 attempts (trigger content review if <50%)
-- [ ] Hint dependency: ≤40% of completions use hints (>60% triggers exercise redesign)
-- [ ] Scroll depth: ≥75% completion depth (validates engagement)
-- [ ] Monthly review: identify 2-3 lessons for optimization
-- [ ] Quarterly: character consistency audit, narrative arc review
-- [ ] Biannually: full curriculum audit for technical accuracy, bridge consistency
+> **MOVED 2026-07-21** to `docs/post-launch-backlog.md` §2 (ongoing operations cadence + QA thresholds).
 
 ---
 
@@ -1028,41 +1022,15 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 10d. Success Metrics Dashboard
 
-- [ ] Build internal PostHog dashboard tracking key metrics:
-  - Lesson completion rate (target: ≥60%)
-  - Paid conversion rate (target: 3%)
-  - NPS score (target: ≥40)
-  - 7-day retention (target: ≥30%)
-  - 30-day retention (target: ≥15%)
-  - Average time per lesson
-  - Hint dependency ratio
-  - Paywall conversion rate
-- [ ] Set up PostHog alerts for metrics falling below thresholds
+> **MOVED 2026-07-21** to `docs/post-launch-backlog.md` §1 (success-metrics dashboard + alerts).
 
 ### 10e. Post-Launch External Service Setup
 
-- [ ] Kit (ConvertKit): Manually create the Form + the seven lifecycle Tags in the Kit dashboard (`signed_up`, `onboarded`, `first_lesson`, `capstone`, `purchased`, `email_alerts`, `weekly_digest`), then set `KIT_FORM_ID` + `KIT_TAG_SIGNED_UP` / `KIT_TAG_ONBOARDED` / `KIT_TAG_FIRST_LESSON` / `KIT_TAG_CAPSTONE` / `KIT_TAG_PURCHASED` / `KIT_TAG_EMAIL_ALERTS` / `KIT_TAG_WEEKLY_DIGEST` env vars (numeric tag IDs). API keys already configured. Also set `KIT_WEBHOOK_SECRET` and register the bounce webhook per `docs/email-setup.md` §3. Purchase is a **single** theme-agnostic tag — we no longer scope per-theme in V1 (per-theme sequences would require 5× `KIT_TAG_PURCHASED_{THEME}` + 5 Kit sequences and were deferred). Without this, purchases succeed but subscribers are never tagged and no lifecycle email fires. Templates in Kit must follow `docs/email-templates.md`.
-- [ ] PostHog: Create project, add `NEXT_PUBLIC_POSTHOG_KEY` to web `.env.local` and Vercel environment variables. Free tier = 1M events/month.
-- [ ] Plausible: Add site `tensorcraft.app`, set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
-- [ ] Blog posts — write and publish first batch of articles
-- ~~Twitter/X account — create @tensorcraft~~ — **DEFERRED to V1.0**.
-- [ ] 14-day refund guarantee badge on pricing cards
-- [ ] PPP (Purchasing Power Parity) indicator on pricing page
-- [ ] Payment plans (installments) — evaluate Klarna/Afterpay integration
-- [ ] Social proof on landing page — add user counts once real data exists
-- [ ] Product Hunt upcoming page
-- [ ] JSON-LD FAQPage schema on pricing page
+> **MOVED 2026-07-21** to `docs/post-launch-backlog.md` §1 (operator + external service setup), including the full Kit lifecycle-tag runbook.
 
 ### 10f. Post-Launch Operations
 
-- [ ] Weekly metrics review: completion rates, hint dependency, time-on-page, conversion
-- [ ] Cohort analysis: performance by difficulty, theme, learner background
-- [ ] Content maintenance cycle:
-  - Monthly: review analytics, optimize 2-3 lessons
-  - Quarterly: character/narrative consistency audit
-  - Biannually: full curriculum technical accuracy audit
-- [ ] Respond to beta feedback, community Discord questions
-- [ ] Plan V1.0 scope (Deep Orbit Modules 6–11)
+> **MOVED 2026-07-21** to `docs/post-launch-backlog.md` §2 (ongoing operations cadence).
 
 ---
 

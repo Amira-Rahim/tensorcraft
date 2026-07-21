@@ -5,7 +5,8 @@ dashboard is operator-only). Code side is already live: the four lifecycle
 tags (`signed_up`, `onboarded`, `first_lesson`, `capstone`) all have web
 callers posting through `/api/email` (mounted at `apps/api/src/index.ts`).
 This closes the "retention emails still pending" item from the 2026-06-09
-funnel work.
+funnel work. Indexed in `docs/post-launch-backlog.md` §1 (canonical
+post-launch index).
 
 ## Sequences
 
