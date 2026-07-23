@@ -41,6 +41,26 @@ This document is the single source of truth for all development work needed to s
 
 ## Session log
 
+### 2026-07-23 — Light mode: full implementation (Tasks 2-15 of the light-mode plan)
+
+**Landed (code + tests, uncommitted — awaiting user review):**
+
+- **Scheme axis shipped end to end.** `data-scheme="light"` on `<html>` (absent = dark); light `--tc-*` token blocks in `packages/themes/src/css/themes.css`; `paletteLight` on every ThemeManifest; provider extension (`tc-scheme` localStorage, OS-follow default, matchMedia reactivity, storage-blocked fallback); pre-paint FOUC script + `suppressHydrationWarning`; `themeColor` viewport meta; nav SchemeToggle (3-state cycle, sr-only live region); `useScheme()` hook in packages/ui (refcounted MutationObserver) + shared `useAttributeObserver` in apps/web.
+- **Light palette was re-minted twice under the axe gate** (final values in themes.css, NOT this plan's original tables): v3 clears ≥4.55:1 on the light page bg AND on 10-20% self-tints, with a new `--tc-on-primary` ink token (light = pure white) for primary/accent fills. All lessons are locked into `theme-properties.test.ts` (118 tests: 9-key CSS↔TS cross-checks both schemes, rgb-triplet sync, WCAG gates incl. self-tint sweeps).
+- **Canvas light art ("ink on paper"), user-approved at two gates:** drawOrbit + all 4 theme scenes render multiply-composited ink with deepened highlights in light scheme; geometry locked scheme-identical by recorder tests; dark output byte-locked by golden style captures. AmbientBackground/Ticker tokenized + scheme-aware. Shiki `tensorcraft-light` + Sandpack light theme; exercise badges scheme-paired; `yellow-400`→`warning` and `green-400`→`success` semantic swaps (deliberate slight dark shift); hint-panel locked-label opacity trick removed (computed #808080 in light).
+- **Lesson UI migrated off `ThemeManifest.palette`** (~90 inline sites → `var(--tc-*)`); dead `theme` prop threading removed; manifest dark neutrals synced to CSS truth; dead `sandpackTheme` field deleted; two stale dark `--tc-primary-rgb` triplets fixed (neon, nova).
+- **Test matrix:** axe suite runs 28 audits (8 pages + 6 lesson steps × both schemes) — all green; visual baselines minted for both schemes (dark deliberately re-minted — token swaps changed dark rendering); toggle e2e smoke; `colorScheme: "dark"` pinned in playwright config with the matrix as the deliberate exception. Full battery: vitest 1517 passed, build 122/122, typecheck clean. Two e2e test-drift fixes (ambiguous `status` selector; pre-existing stub-roster string drift).
+- **Open items:** ◐ toggle glyph needs a one-time Windows/Linux font check; mobile-drawer toggle reachability is backlog; `Ticker` component looks like dead code (no live importer — flagged, not removed). Execution ledger with all review rounds: `docs/superpowers/plans/2026-07-22-light-mode.md`.
+
+### 2026-07-22 — Light mode: decision + doc amendments (Task 1 of the light-mode plan)
+
+**Landed (docs only, uncommitted — awaiting user review):**
+
+- **Decision:** Light and dark color schemes are both supported going forward. Dark remains the brand-default aesthetic; light mode follows the OS `prefers-color-scheme` by default with a manual override toggle. Every theme palette gets a light variant with WCAG AA-verified contrast — darkened versions of the existing hues, not a neutrals flip. OG images and favicons intentionally stay dark. This reverses the dark-exclusive stance that had stood since the founding aesthetic.
+- **Docs amended** to drop the dark-exclusive claims (the app had previously been documented as having only a dark scheme, no alternative) and record the new stance: `docs/product-plan.md` (§5.6 shared constraints + §6.1 non-goals list), `docs/ui-ux-notes.md` (dark-mode note rewritten into a color-scheme note covering the `data-scheme` attribute, `tc-scheme` localStorage key, and the "ink on paper" light art language for canvas scenes), `docs/architecture.md` (Theme System design philosophy), `docs/prd.md` (§6.1 design aesthetic).
+- **Rationale + full contrast audit:** `docs/audits/light-mode-readiness-2026-07-22.md` (point-in-time investigation; not rewritten).
+- **Implementation plan** (CSS scheme axis, canvas light-art redesign, Shiki/Sandpack light themes, toggle UI, per-theme WCAG verification): `docs/superpowers/plans/2026-07-22-light-mode.md`. This session only completed the plan's doc-amendment task (Task 1); the CSS/component/canvas work is `[ ]` not started.
+
 ### 2026-04-21 — DB + integration fixes (deep-audit follow-up)
 
 **Landed (code, uncommitted — awaiting user review):**
@@ -1275,9 +1295,7 @@ literal descent.
 
 ## Deferred (character personas)
 
-- **Real cel-shaded art is pending external production; prompts live in `docs/character-bible.md`.** Drop files at `apps/web/public/characters/<theme>/<slug>.webp` to replace the placeholder avatars (no code change needed; the component swaps via onError).
-- **The other 20 character sheets (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) + their theme wiring are gated on those themes launching.**
-- **Character animation (entrance / talking / expression states) is a planned follow-up stream** that will consume the per-character expression sets in the bible.
+> **MOVED 2026-07-22** to `docs/post-launch-backlog.md` §4 (character personas: cel-shaded art, gated character sheets, animation stream).
 
 ---
 

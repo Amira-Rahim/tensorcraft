@@ -22,6 +22,14 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
+    // Playwright defaults to light OS emulation. The light-mode rollout's
+    // FOUC script (apps/web/app/layout.tsx) now reads that and renders the
+    // whole app in the light scheme, which would silently flip this entire
+    // existing suite — including the canonical axe contrast gate — to an
+    // untested scheme. Pinning dark here preserves the historical meaning
+    // of this suite; Task 14 (docs/superpowers/plans/2026-07-22-light-mode.md)
+    // introduces the deliberate two-scheme matrix and removes/loops this pin.
+    colorScheme: "dark",
   },
   projects: [
     {

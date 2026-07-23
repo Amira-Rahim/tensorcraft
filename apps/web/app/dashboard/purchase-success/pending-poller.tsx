@@ -74,7 +74,7 @@ export function PendingPoller({ sessionId }: { sessionId?: string }) {
             setTimedOut(false);
             setPollRun((n) => n + 1);
           }}
-          className="inline-flex items-center justify-center h-10 px-5 text-sm font-mono border-2 border-primary text-primary hover:bg-primary hover:text-page transition-colors"
+          className="inline-flex items-center justify-center h-10 px-5 text-sm font-mono border-2 border-primary text-primary hover:bg-primary hover:text-on-primary transition-colors"
         >
           Check again
         </button>

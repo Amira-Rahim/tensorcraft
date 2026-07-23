@@ -68,7 +68,7 @@ export function RecallPrompt({ question, answer }: RecallPromptProps) {
               <button
                 type="button"
                 onClick={handleReview}
-                className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20"
+                className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-warning/10 text-warning border border-warning/20"
               >
                 Review again
               </button>

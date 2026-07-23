@@ -115,21 +115,6 @@ function _createMdxContent(props) {
 }
 return {default: function(props) { return _createMdxContent(props); }};`;
 
-const theme = {
-  displayName: "Deep Orbit",
-  palette: {
-    primary: "#6ee7b7",
-    accent: "#34d399",
-    text: "#e7fff5",
-    muted: "#9fb8ac",
-    surface: "#0d1f18",
-    bg: "#081410",
-    border: "#1d3a2e",
-    codeBg: "#0a1a13",
-  },
-  terminology: { lesson: "mission", module: "sector", exercise: "drill" },
-};
-
 const lesson = {
   slug: "introduction-to-tensors",
   title: "Introduction to Tensors",
@@ -147,7 +132,6 @@ function renderReal() {
       <LessonSteps
         lesson={lesson}
         exercises={[]}
-        theme={theme}
         themeSlug="deep-orbit"
         moduleSlug="foundations"
         moduleName="Foundations"
@@ -266,7 +250,6 @@ describe("structure-variety machinery (P2 gate)", () => {
             scene: { location: "Archimedes, Bridge", time: "Second watch" },
           }}
           exercises={[]}
-          theme={theme}
           themeSlug="deep-orbit"
           moduleSlug="foundations"
           moduleName="Foundations"
@@ -286,7 +269,6 @@ describe("structure-variety machinery (P2 gate)", () => {
         <LessonSteps
           lesson={{ ...lesson, pattern: "standard" }}
           exercises={[]}
-          theme={theme}
           themeSlug="deep-orbit"
           moduleSlug="foundations"
           moduleName="Foundations"

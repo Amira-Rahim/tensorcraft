@@ -36,6 +36,11 @@ const THEME_CARDS = themeSlugs.map((slug, i) => {
     tagline: t.tagline,
     col: t.palette.primary,
     rgb: hexToRgb(t.palette.primary),
+    // Light-scheme hue for the same canvas (see SceneCanvas.rgbLight in
+    // @tensorcraft/ui/effects); the surrounding badge/text colors above
+    // (`col`) stay on the dark hex for now — cross-theme text recoloring is
+    // out of this task's scope, see the Task 8 report's "concerns".
+    rgbLight: hexToRgb(t.paletteLight.primary),
     launched: isLaunched(t.slug),
     scene: SCENE_BY_SLUG[t.slug],
   };
@@ -76,6 +81,7 @@ export function FiveWorldsSection() {
       >
         <OrbitCanvas
           rgb={HERO_CARD.rgb}
+          rgbLight={HERO_CARD.rgbLight}
           hovered={hovered === HERO_CARD.slug}
           className="absolute inset-0 z-0 pointer-events-none"
         />
@@ -155,6 +161,7 @@ export function FiveWorldsSection() {
             <SceneCanvas
               draw={t.scene ?? drawTerraGrid}
               rgb={t.rgb}
+              rgbLight={t.rgbLight}
               hovered={hovered === t.slug}
               className="absolute inset-0 z-0 pointer-events-none"
             />

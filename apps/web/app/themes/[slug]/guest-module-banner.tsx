@@ -69,7 +69,7 @@ export function GuestModuleBanner({
           className="rounded-none border-2 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-widest transition-all brutalist-hover"
           style={{
             background: "var(--tc-primary)",
-            color: "var(--tc-bg)",
+            color: "var(--tc-on-primary)",
             borderColor: "var(--tc-primary)",
           }}
           data-testid="guest-banner-signup"

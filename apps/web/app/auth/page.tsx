@@ -32,6 +32,7 @@ function hexToRgb(hex: string): [number, number, number] {
 
 const HERO_SLUG = themeSlugs.find((s) => isLaunched(s)) ?? themeSlugs[0];
 const HERO_RGB = hexToRgb(themes[HERO_SLUG].palette.primary);
+const HERO_RGB_LIGHT = hexToRgb(themes[HERO_SLUG].paletteLight.primary);
 
 export default function AuthPage() {
   return (
@@ -47,6 +48,7 @@ export default function AuthPage() {
             to this positioned parent; decorative (aria-hidden internally). */}
         <OrbitCanvas
           rgb={HERO_RGB}
+          rgbLight={HERO_RGB_LIGHT}
           className="absolute inset-0 z-0 pointer-events-none"
         />
 

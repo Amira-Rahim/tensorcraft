@@ -79,4 +79,27 @@ test.describe("Landing Page", () => {
     await page.goto("/");
     await expect(page).toHaveTitle(/Tensorcraft/);
   });
+
+  test("scheme toggle flips data-scheme, restyles the page, and persists", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const html = page.locator("html");
+    const toggle = page.getByRole("button", { name: /color scheme/i });
+    // Config pins colorScheme: "dark", so the page starts dark (no attr).
+    await expect(html).not.toHaveAttribute("data-scheme", "light");
+    const darkBg = await page.evaluate(
+      () => getComputedStyle(document.body).backgroundColor,
+    );
+    // system → light
+    await toggle.click();
+    await expect(html).toHaveAttribute("data-scheme", "light");
+    const lightBg = await page.evaluate(
+      () => getComputedStyle(document.body).backgroundColor,
+    );
+    expect(lightBg).not.toBe(darkBg);
+    // Explicit choice persists across reload.
+    await page.reload();
+    await expect(html).toHaveAttribute("data-scheme", "light");
+  });
 });

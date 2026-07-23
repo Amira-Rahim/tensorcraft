@@ -176,7 +176,6 @@ All themes are available. No status field — theme manifests contain only conte
 | `palette` | `ThemePalette` | Yes | 9-key color palette: `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`. Nova Canvas `primary` is `#D07070` (bumped from `#C06060` on 2026-04-20 to satisfy WCAG AA against `#232323` surface). Neon tokens (`--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) were removed from `themes.css` during the brutalist redesign; theme styling is driven entirely by the 9 palette keys plus shared brutalist utilities. |
 | `terminology` | `ThemeTerminology` | Yes | UI label overrides (`lesson`, `module`, `exercise`) |
 | `protagonist` | `string` | Yes | Learner's role in the narrative |
-| `sandpackTheme` | `string` | Yes | Sandpack editor color theme |
 | `characters` | `ThemeCharacter[]` | Yes | Characters in the story (5 per theme) |
 | `specialization` | `string` | Yes | ML specialization area |
 | `modelBuilt` | `string` | Yes | Model the learner builds |

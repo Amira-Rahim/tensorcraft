@@ -9,8 +9,10 @@ interface CodeBlockProps {
 }
 
 import { tensorcraftTheme } from "./tensorcraft-theme";
+import { tensorcraftThemeLight } from "./tensorcraft-theme-light";
+import { useScheme } from "../use-scheme";
 
-// Lazy-loaded Shiki highlighter with custom Tensorcraft theme
+// Lazy-loaded Shiki highlighter with both Tensorcraft themes registered
 let highlighterPromise: Promise<{
   codeToHtml: (code: string, opts: { lang: string; theme: string }) => string;
 }> | null = null;
@@ -19,7 +21,7 @@ function getHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = import("shiki").then((shiki) =>
       shiki.createHighlighter({
-        themes: [tensorcraftTheme],
+        themes: [tensorcraftTheme, tensorcraftThemeLight],
         langs: [
           "typescript",
           "javascript",
@@ -46,6 +48,7 @@ export function CodeBlock({
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
+  const scheme = useScheme();
 
   const code =
     typeof children === "string" ? children.trim() : String(children).trim();
@@ -57,7 +60,7 @@ export function CodeBlock({
         if (cancelled) return;
         const html = highlighter.codeToHtml(code, {
           lang: language,
-          theme: "tensorcraft-dark",
+          theme: scheme === "light" ? "tensorcraft-light" : "tensorcraft-dark",
         });
         setHighlightedHtml(html);
       })
@@ -67,7 +70,7 @@ export function CodeBlock({
     return () => {
       cancelled = true;
     };
-  }, [code, language]);
+  }, [code, language, scheme]);
 
   function handleCopy() {
     navigator.clipboard.writeText(code).then(() => {

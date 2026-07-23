@@ -13,6 +13,14 @@
 > §A6 real-money smoke) are owned by a parallel pricing session — confirm
 > with that session before flipping live mode.
 
+> **Doc map (2026-07-22):** the current definitive pre-launch list is
+> [`docs/launch-blockers.md`](./launch-blockers.md) (2026-07-21 six-dimension
+> audit; includes Tier 1-OPS, the operator/distribution setup moved out of
+> the post-launch backlog). Post-launch work: single source of truth at
+> [`docs/post-launch-backlog.md`](./post-launch-backlog.md). This checklist
+> remains the V0.5 audit-round gate record; anything here still unticked and
+> still relevant should be tracked through launch-blockers.
+
 This is the definitive gate-list. Work it top to bottom. When every **BLOCKING** item is ✓, you are cleared to execute [`marketing-plan.md`](./marketing-plan.md).
 
 **Deep-audit rounds completed:**

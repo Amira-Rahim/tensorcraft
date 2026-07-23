@@ -66,7 +66,7 @@ export function ThemeWaitlistForm({
       <label
         htmlFor={`waitlist-${themeSlug}${suffix}`}
         className="font-mono text-xs uppercase"
-        style={{ color: palette.muted, letterSpacing: "0.15em" }}
+        style={{ color: "var(--tc-muted)", letterSpacing: "0.15em" }}
       >
         Notify me when {themeName} ships
       </label>
@@ -95,9 +95,9 @@ export function ThemeWaitlistForm({
           // and an inline longhand still wins over it.
           className="flex-1 border-2 px-4 py-3 font-mono text-sm rounded-none"
           style={{
-            borderColor: palette.border,
-            background: palette.bg,
-            color: palette.text,
+            borderColor: "var(--tc-border)",
+            background: "var(--tc-bg)",
+            color: "var(--tc-text)",
             outlineColor: palette.primary,
           }}
         />
@@ -109,7 +109,14 @@ export function ThemeWaitlistForm({
           style={{
             background: palette.primary,
             borderColor: palette.primary,
-            color: palette.bg,
+            // Ink paired to the fixed brand-green fill; must not follow
+            // scheme. This label sits on `palette.primary` (the literal
+            // brand-green hex, unaffected by light/dark), not on the page
+            // background — `var(--tc-bg)` flips to near-white in light
+            // scheme, which against the same green fill drops to ~2.5:1
+            // (AA fail). The dark neutral is the correct fixed pairing in
+            // both schemes.
+            color: "#181818",
           }}
         >
           {status === "submitting" ? "..." : ctaLabel}

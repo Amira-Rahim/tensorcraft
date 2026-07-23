@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { UserMenu } from "./user-menu";
 import { MobileNav } from "./mobile-nav";
+import { SchemeToggle } from "./scheme-toggle";
 
 function NavLink({
   href,
@@ -84,7 +85,7 @@ export function Nav() {
       >
         <span
           data-testid="nav-logo-badge"
-          className="flex items-center justify-center w-7 h-7 border border-primary bg-primary text-page font-mono text-[13px] font-bold rounded-none"
+          className="flex items-center justify-center w-7 h-7 border border-primary bg-primary text-on-primary font-mono text-[13px] font-bold rounded-none"
         >
           T_
         </span>
@@ -102,7 +103,7 @@ export function Nav() {
             {unreadCount > 0 && (
               <span
                 data-testid="inbox-unread-badge"
-                className="ml-1.5 inline-flex items-center justify-center min-w-4 h-4 px-1 bg-primary text-page text-[10px] font-bold rounded-none"
+                className="ml-1.5 inline-flex items-center justify-center min-w-4 h-4 px-1 bg-primary text-on-primary text-[10px] font-bold rounded-none"
                 aria-label={`${unreadCount} unread`}
               >
                 {unreadCount}
@@ -117,6 +118,7 @@ export function Nav() {
       </div>
 
       <div className="flex items-center gap-4">
+        <SchemeToggle />
         <div className="hidden md:block">
           <UserMenu />
         </div>

@@ -8,6 +8,8 @@ export interface ThemeCardData {
   tagline: string;
   specialization: string;
   primary: string;
+  /** Light-scheme primary (theme.paletteLight.primary). Falls back to `primary` when absent. */
+  primaryLight?: string;
   owned: boolean;
   isActive: boolean;
   completedLessons: number;
@@ -121,19 +123,30 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
       href={href}
       aria-label={label}
       className="tc-theme-card"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
-        padding: "24px 28px",
-        minHeight: 176,
-        textDecoration: "none",
-        color: "inherit",
-        background: card.isActive
-          ? "color-mix(in srgb, var(--tc-primary) 3%, transparent)"
-          : "transparent",
-        position: "relative",
-      }}
+      style={
+        {
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+          padding: "24px 28px",
+          minHeight: 176,
+          textDecoration: "none",
+          color: "inherit",
+          background: card.isActive
+            ? "color-mix(in srgb, var(--tc-primary) 3%, transparent)"
+            : "transparent",
+          position: "relative",
+          // Server component: no useScheme() hook available here, so both
+          // schemes' hues ride along as local custom props and a CSS rule
+          // (`.tc-theme-card` / `[data-scheme="light"] .tc-theme-card` in
+          // globals.css) picks between them into --card-active-primary,
+          // which every `card.primary`-driven style below reads instead.
+          // theme-cards-grid.tsx (a client component) uses useScheme()
+          // directly instead — see that file's ThemeCard for the contrast.
+          "--card-primary": card.primary,
+          "--card-primary-light": card.primaryLight ?? card.primary,
+        } as React.CSSProperties
+      }
     >
       <div
         style={{
@@ -149,7 +162,9 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
               fontFamily: MONO,
               fontSize: 12,
               fontWeight: 700,
-              color: card.owned ? card.primary : "var(--tc-muted)",
+              color: card.owned
+                ? "var(--card-active-primary)"
+                : "var(--tc-muted)",
               letterSpacing: "0.08em",
               marginBottom: 6,
               textTransform: "uppercase",
@@ -172,7 +187,7 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
           owned={card.owned}
           active={card.isActive}
           comingSoon={card.comingSoon}
-          primary={card.primary}
+          primary="var(--card-active-primary)"
         />
       </div>
 
@@ -204,7 +219,7 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
             <span>Waitlist open</span>
             <span
               style={{
-                color: card.primary,
+                color: "var(--card-active-primary)",
                 fontWeight: 700,
                 letterSpacing: "0.05em",
               }}
@@ -231,7 +246,7 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
                 style={{
                   height: "100%",
                   width: `${card.progressPercent}%`,
-                  background: card.primary,
+                  background: "var(--card-active-primary)",
                   transition: "width 0.3s ease",
                 }}
               />
@@ -249,7 +264,7 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
                 {card.completedLessons} / {card.totalLessons} lessons
               </span>
               <span
-                style={{ color: card.primary, fontWeight: 700 }}
+                style={{ color: "var(--card-active-primary)", fontWeight: 700 }}
               >{`${card.progressPercent}%`}</span>
             </div>
           </>

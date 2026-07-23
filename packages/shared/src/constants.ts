@@ -161,3 +161,19 @@ export function isValidThemeSlug(slug: string): slug is ThemeSlug {
 export function isValidSlug(id: string): boolean {
   return /^[a-z0-9]([a-z0-9-]{0,98}[a-z0-9])?$/.test(id);
 }
+
+/**
+ * Color scheme axis (light/dark), orthogonal to the narrative theme slug
+ * (`ThemeSlug`/`data-theme`). `SchemePreference` is the stored value: an
+ * explicit user choice, or `null` meaning "follow OS
+ * `prefers-color-scheme`" (the default). Only explicit choices persist to
+ * localStorage, under `SCHEME_STORAGE_KEY`.
+ */
+export type ColorScheme = "light" | "dark";
+export type SchemePreference = ColorScheme | null; // null = follow OS
+export const SCHEME_STORAGE_KEY = "tc-scheme";
+
+/** Validate that a string is a known color scheme value. */
+export function isColorScheme(v: string): v is ColorScheme {
+  return v === "light" || v === "dark";
+}

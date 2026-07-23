@@ -19,8 +19,16 @@ export {
   isValidSlug,
   isLaunched,
   isComingSoon,
+  SCHEME_STORAGE_KEY,
+  isColorScheme,
 } from "./constants";
-export type { ThemeSlug, LaunchedTheme, PricingTier } from "./constants";
+export type {
+  ThemeSlug,
+  LaunchedTheme,
+  PricingTier,
+  ColorScheme,
+  SchemePreference,
+} from "./constants";
 
 export {
   BRIDGES,

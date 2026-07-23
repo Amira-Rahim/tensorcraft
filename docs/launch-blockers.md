@@ -1,6 +1,6 @@
 # Launch Blockers — Definitive List (2026-07-21)
 
-> **What this document is:** the complete, finite set of code defects that must be fixed before releasing and starting paid distribution. It is scoped to *launch safety and measurability*, and it is closed — when Tier 1 is done, there is no further internal blocker to releasing and distributing.
+> **What this document is:** the complete set of pre-launch work — code defects (Tier 1; Tier 2 in week 1), operator setup (Tier 1-OPS), and legal/compliance actions (Tier 1-LEGAL). Originally scoped to code defects only ("when Tier 1 is done there is no further blocker"); that claim is superseded — since the 2026-07-22 consolidation the release gate is **Tier 1 + Tier 1-OPS + Tier 1-LEGAL complete**, with Tier 2 due in week 1 before ad spend.
 >
 > **What it is not:** a path to 100,000 paying users. See "The honest ceiling" at the bottom. Do not conflate the two.
 >
@@ -78,7 +78,12 @@ sell to anyone in the EU/UK. I am flagging exposure, not giving legal advice.
   €10k threshold applies only to EU-established sellers. Unremitted VAT comes
   out of your margin retroactively and OSS registration cannot be backdated.
   Your own `docs/prd.md:528` risk register already prescribed "Use Stripe Tax";
-  it was never implemented.
+  it was never implemented. (2026-07-22: the merchant-of-record route was
+  assessed as the alternative — Lemon Squeezy rejected as a sunset product
+  post-acquisition; Stripe Managed Payments costs 6.4% + 30¢ vs ~3.7%
+  all-in for Stripe + Stripe Tax. Resolution remains Stripe Tax + OSS
+  registration, or geo-gating EU checkout at launch. Analysis:
+  `docs/roadmap.md` §4.)
 - **The refund terms are unenforceable against EU/UK consumers as written.**
   "14 days *if less than 20% accessed*" (`terms/page.tsx:90`) only holds if the
   buyer expressly waived the withdrawal right and acknowledged losing it.
@@ -158,12 +163,8 @@ sell to anyone in the EU/UK. I am flagging exposure, not giving legal advice.
 - **Extras breadcrumb JSON-LD pointed at a 404** — `/extras/<module>` has no
   route — from all 21 extras lessons. Level removed.
 
-Still open from this sweep (Tier 2): `/themes/deep-orbit/capstone` is in the
-sitemap but 307s anonymous crawlers to the noindexed `/auth`; most routes
-inherit the homepage's `og:url` and Twitter card; a guest who finishes module 1
-sees "Continue M1" pointing backwards; first-time visitors are told
-`error=session_expired`; four unpurchasable themes advertise `PreOrder` + `$59`;
-`numberOfCredits: 11` reads as an accreditation claim.
+Still-open items from this sweep were folded into the Tier 2 list below
+(2026-07-22) so this document has exactly one week-1 list.
 
 Also worth knowing: `apps/web/app/metadata.test.ts` passes 21/21 while every
 metadata defect above survived it — it reads exported objects in isolation,
@@ -191,17 +192,8 @@ tests zero `generateMetadata` functions, and never imports 10 of the routes.
   desktop-only e2e never saw it. **FIXED** (pane slot is now `hidden lg:block`),
   2 regression tests.
 
-Still open (Tier 2, mobile/a11y): the lesson step bar measures **0px wide at
-320px** and 0.7px at 375px — `flex-1` crushed by `shrink-0` siblings; the
-waitlist email input sets `focus:outline-none` with no replacement, so it has
-**no focus indicator at all** (it is the pre-launch capture on all four
-coming-soon pages); `--tc-border #3d3d3d` is **1.63:1** against the page
-background, roughly half the 3.0 that WCAG 1.4.11 requires, and it draws every
-form field boundary in the app; hint reveal, recall reveal and the magic-link
-confirmation each replace a control with its own result, losing focus and
-announcing nothing (`exercise.tsx:133-170` already contains the correct fix to
-copy); theme purchase toggles carry no `aria-pressed`, so selection on the
-$99-$159 basket is colour-only; 5 of 6 lesson steps have no `<h1>`.
+Still-open mobile/a11y items from this sweep were folded into the Tier 2
+list below (2026-07-22).
 
 Two structural notes worth more than any single item:
 
@@ -316,6 +308,152 @@ Recorded so they are not re-litigated.
 
 ---
 
+## Tier 1-OPS — Operator + distribution setup, do before flipping live
+
+Moved from `docs/post-launch-backlog.md` 2026-07-22. Not code defects:
+measurement, email, and reach infrastructure whose value is multiplied by
+launch traffic. Launch-day data is unrepeatable, and historical funnel data
+has already been written off once (see above) — do not launch dark again.
+
+- [ ] **PostHog:** create project, set `NEXT_PUBLIC_POSTHOG_KEY` (web
+  `.env.local` + Vercel). Then verify each of the 10 events appears in the
+  dashboard (checklist: `docs/analytics-verification.md`). Free tier = 1M
+  events/month.
+- [ ] **Success-metrics dashboard + alerts** in PostHog: lesson completion
+  (target ≥60%), paid conversion (3%), NPS (≥40), 7-day retention (≥30%),
+  30-day retention (≥15%), avg time per lesson, hint dependency, paywall
+  conversion. At minimum, payment-failure alerting live before real money
+  flows.
+- [ ] **Kit (ConvertKit) lifecycle setup.** Manually create the Form + the
+  seven lifecycle Tags in the Kit dashboard (`signed_up`, `onboarded`,
+  `first_lesson`, `capstone`, `purchased`, `email_alerts`, `weekly_digest`),
+  then set `KIT_FORM_ID` + `KIT_TAG_SIGNED_UP` / `KIT_TAG_ONBOARDED` /
+  `KIT_TAG_FIRST_LESSON` / `KIT_TAG_CAPSTONE` / `KIT_TAG_PURCHASED` /
+  `KIT_TAG_EMAIL_ALERTS` / `KIT_TAG_WEEKLY_DIGEST` env vars (numeric tag
+  IDs). API keys already configured. Also set `KIT_WEBHOOK_SECRET` and
+  register the bounce webhook per `docs/email-setup.md` §3, plus
+  `KIT_TAG_PAYWALL_HIT` / `KIT_TAG_MODULE_1_COMPLETE` (R2-7 made
+  missing-tag skips recoverable, but sequences cannot fire on tags that do
+  not exist). Purchase is a single theme-agnostic tag in V1 (per-theme
+  sequences: `post-launch-backlog.md` §5). Without this, purchases succeed
+  but subscribers are never tagged and no lifecycle email fires — including
+  the purchase receipt flagged in R2-4. Templates must follow
+  `docs/email-templates.md`.
+- [ ] **Kit retention automations** A/B/C per
+  `docs/email-retention-sequences.md`. Copy drafted, code side live;
+  dashboard work only. The sequences target exactly the launch cohort
+  (signed up / stalled / finished free tier).
+- [ ] **Sentry alerting.** Capture works; nothing notifies (R2-5). Create
+  the three alert rules specified at `pre-launch-checklist.md` §B10.
+- [ ] **Plausible:** add site `tensorcraft.app`, set
+  `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
+- [ ] **Google Search Console:** verify the production domain now — indexing
+  lead time is weeks, the clock should start before launch.
+- [ ] **Product Hunt "upcoming" page** — follower capture only works
+  pre-launch.
+- [ ] **Twitter/X account @tensorcraft** — create now (posting cadence can
+  wait). Launch execution (`dev-plan.md` §10b) announces on Twitter/X, so
+  the account must predate launch; also removes handle-squatting risk. The
+  old "DEFERRED to V1.0" note contradicted §10b and is resolved in favor of
+  pre-launch (2026-07-22).
+- [ ] **FAQPage JSON-LD on `/pricing`** — ~30 min of markup over the FAQ
+  content that already renders there (Horizon 0 P3). Rich-result
+  eligibility has weeks of lead time; start the clock before launch.
+- [ ] **Distribution head start:** write + publish the first blog batch and
+  begin the audience track. `roadmap.md` §7: longest lead time in the plan,
+  runs in parallel, starts before the code is ready.
+- [ ] **Reconcile the migration ledger before applying anything.** No
+  `schema_migrations`, no CI step, four docs disagree on applied state;
+  037-040 pending and nobody can state the production schema (R2-5).
+  Establish a ledger first, then apply.
+- [ ] **Move Vercel off the Hobby plan.** Hobby prohibits commercial use;
+  selling a $59-159 product on it is a ToS/takedown risk before it is a
+  cost one (R2-5).
+- [ ] **Env-var hygiene** (audit §4; no validation exists anywhere, so
+  misconfiguration = silently disabled features): add a startup env
+  assertion (`env.ts`/zod); fix the name traps — code reads
+  `GITHUB_PRIVATE_KEY` and `CORS_ORIGINS` while docs/example name
+  `GITHUB_APP_PRIVATE_KEY` / `CORS_ALLOWED_ORIGINS`; resolve the Upstash
+  required/optional contradiction (code **throws**); document
+  `CERT_SIGNING_SECRET` (unset → certificate issuance 500s); add
+  `SENTRY_AUTH_TOKEN` (absent → every production stack trace minified);
+  set `SUPABASE_URL` + service key on **Vercel** for the RFC 8058
+  one-click unsubscribe route (throws unset — Gmail/Yahoo bulk rules).
+- [ ] **Upstash paid plan.** Free tier is 10k commands/day ≈ **1,700 API
+  requests** at ~5-6 commands each. Dies on launch day.
+- [ ] **Email domain warmup + Postmaster.** §10b plans a launch-week blast
+  to 500 waitlist users from a domain that has never bulk-sent — cold
+  domain + burst = spam folder at the worst moment. Ramp sends gradually
+  over the preceding weeks; register Google Postmaster Tools (added
+  2026-07-22).
+- [ ] **Create the community space.** The ops cadence
+  (`post-launch-backlog.md` §2) says "respond to community Discord
+  questions" but no task ever created a Discord — server, channels,
+  rules, invite link in the app footer (added 2026-07-22).
+- [ ] **Cloud-cost alerts.** Configure billing/usage alerts on Vercel
+  (bandwidth), Supabase (egress/compute), Fly, PostHog (1M-event
+  overage), Upstash. One viral spike currently produces a surprise bill
+  with zero warning (added 2026-07-22).
+- [ ] **Migration + runbook safety** (do with the ledger reconcile):
+  verify `skill_events_old` was actually dropped (013's DROP is commented
+  out — production may carry a full duplicate); fix the 019 rollback
+  signature mismatch (`(text)` vs `(p_id uuid)` — it silently succeeds
+  leaving the anon-callable function live); reconcile the incident
+  runbook's refund-window SQL with migration 038's terminal-status
+  trigger, which silently ignores the corrective update.
+- [ ] **Verify backups + run one restore drill.** No doc anywhere records
+  the Supabase backup tier, PITR status, or a tested restore (gap found
+  2026-07-22 — the ops audit covered alerting but not recoverability).
+  Confirm the plan includes daily backups, then restore into a scratch
+  project once and write the result into `docs/infrastructure.md`.
+
+## Tier 1-LEGAL — advisor + compliance actions before selling in the EU/UK
+
+Action list for the R2-4 findings (R2-4 stays as the findings record;
+flagging exposure, not legal advice).
+
+- [ ] Engage an advisor in the establishment country; decide Stripe Tax +
+  OSS registration vs geo-gating EU checkout at launch (fee analysis:
+  `roadmap.md` §4).
+- [ ] Implement the chosen tax handling (`automatic_tax`,
+  `billing_address_collection`, `tax_id_collection` as applicable).
+- [ ] Refund terms: collect the express withdrawal-right waiver +
+  acknowledgment, or drop the 20%-accessed condition for EU/UK buyers.
+- [ ] Add legal entity, postal address, and jurisdiction clause to terms +
+  privacy pages.
+- [ ] Send a real receipt/invoice on purchase (the Kit receipt automation
+  in Tier 1-OPS covers the email; confirm it satisfies invoice
+  requirements or enable Stripe invoices).
+- [ ] Postal address in the weekly digest footer (CAN-SPAM).
+- [ ] Waitlist consent fix (code): `subscribed` must not default to
+  newsletter enrollment, and the sender must respect `theme_id`.
+- [ ] Self-serve account deletion (code): right to erasure is listed as
+  "`/api/profiles/delete` (planned §6h)" in `privacy-compliance.md:103`
+  but was never built — the Settings "Delete Account" control is a
+  contact-support stub. Build the endpoint + wire the button before
+  selling in the EU (added 2026-07-22).
+- [ ] GDPR data export (code): `/api/profiles/export` also "planned §6h",
+  never built, while `privacy/page.tsx:170` **promises** export. Build it,
+  write a DSAR runbook (30-day clock), unify `privacy@` vs `support@`.
+- [ ] Vercel Analytics consent gating (code): renders unconditionally
+  outside every consent gate and keeps beaconing after an explicit
+  reject; the `beforeSend` prop that fixes this is unused.
+- [ ] Consent withdrawal path (code): banner only shows when the key is
+  missing; no cookie-settings link in footer or `/settings`, while the
+  privacy page claims "withdraw at any time" (Art. 7(3): withdrawal as
+  easy as giving).
+- [ ] Privacy-page Art. 13 gaps (advisor + copy): controller identity,
+  lawful basis, international-transfer disclosure (EU personal data on
+  US-hosted Supabase, disclosed nowhere), complaint right, Art. 27 EU/UK
+  representative, waitlist retention.
+- [ ] Sub-processor list + DPAs: page omits Resend (live digest sender)
+  and Vercel Web Analytics; no DPA in the checklist has been signed.
+- [ ] Confirm (don't assume) the EAA microenterprise exemption with the
+  advisor — accessibility-statement obligation applies to e-commerce
+  since 2025-06-28.
+
+---
+
 ## Tier 2 — Fix in week 1, before spending real money on ads
 
 Not launch blockers. Each one wastes acquisition spend if left.
@@ -324,18 +462,48 @@ Not launch blockers. Each one wastes acquisition spend if left.
 - **No email capture for guests anywhere in the free module.** A guest who reads two lessons and leaves is permanently unreachable — no retention sequence can target them.
 - **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold, with no mobile affordance past the mandatory exercise gate. No axe run exists at any mobile viewport.
 - **Lessons ship ~100 indexable words** (only the current step is in the DOM) and require JS to render at all, with no `<noscript>`. Large organic-acquisition loss for a content-led product.
-- **No `immutable` cache headers on `/vendor` or `/models`** — 1.4 MB of TFJS revalidates every session. Roughly $800/yr from a one-line change.
-- **Kit automations still unbuilt** (operator task) and `KIT_TAG_PAYWALL_HIT` / `KIT_TAG_MODULE_1_COMPLETE` unset.
+- **SEO/metadata + funnel polish** (folded from R2-6b, 2026-07-22): `/themes/deep-orbit/capstone` sits in the sitemap but 307s anonymous crawlers to the noindexed `/auth`; most routes inherit the homepage's `og:url` + Twitter card; a guest who finishes module 1 sees "Continue M1" pointing backwards; first-time visitors are told `error=session_expired`; four unpurchasable themes advertise `PreOrder` + `$59`; `numberOfCredits: 11` reads as an accreditation claim.
+- **Load test before ad spend** (gap found 2026-07-22 — no audit dimension
+  covered it): nobody has ever pushed the payment path, the SSR lesson
+  route, or the Stripe webhook handler under concurrency. Gates 2/3
+  explicitly precede buying traffic; measure before spending.
+- **Support workflow** (2026-07-22): support@ is a mailbox, not a process.
+  Write the refund-processing runbook (exact Stripe steps), the
+  chargeback-evidence workflow, and a response-time target before launch
+  week fills the inbox.
+- **Story-skip instrumentation missing — verified 2026-07-22.**
+  `analytics-events.ts` contains zero skip events and the lesson Skip
+  control tracks nothing, so the content-QA rule ">40% skip triggers
+  narrative redesign" (`post-launch-backlog.md` §2, dev-plan §10c risk #1)
+  is **uncomputable**. Add `script_skipped` (lesson, step, elapsed) at the
+  Skip call site.
+- **Uptime monitoring + status page** (gap found 2026-07-22): no external
+  uptime check exists on web, API, or the Stripe webhook endpoint, and no
+  status page. Sentry alert rules (Tier 1-OPS) cover errors, not
+  down-and-silent.
+- **Mobile/a11y** (folded from R2-6c, 2026-07-22): lesson step bar measures 0px wide at 320px and 0.7px at 375px (`flex-1` crushed by `shrink-0` siblings); waitlist email input has no focus indicator at all (`focus:outline-none`, and it is the capture field on all four coming-soon pages); `--tc-border #3d3d3d` is 1.63:1 against the page background vs the 3.0 WCAG 1.4.11 requires, on every form field boundary in the app; hint reveal, recall reveal and the magic-link confirmation each replace a control with its result, losing focus and announcing nothing (`exercise.tsx:133-170` contains the correct fix to copy); theme purchase toggles carry no `aria-pressed` (selection on the $99-159 basket is colour-only); 5 of 6 lesson steps have no `<h1>`.
+- **Security mediums from the audit register** (triaged in 2026-07-22): rate-limit bypass — `cf-connecting-ip` trusted first with no Fly origin lock, so hitting the Fly hostname directly gives unlimited buckets; CSP carries removable `'unsafe-inline'` (keep the genuinely required `'unsafe-eval'`, fix the misattributing comment); `POST /api/github/token` stores any caller-supplied token (stolen-token binding); waitlist INSERT volume control (shape bounded by migration 041; rate-limit/captcha still open); run the empirical check that skill_events child partitions inherit the parent RLS policy via direct PostgREST select.
+- **Unsubscribe does not propagate to Kit.** Handlers flip `waitlist.subscribed` in Supabase only; `unsubscribeFromAll()` is dead code, no Kit webhook exists. Once the Tier 1-OPS retention automations go live, an unsubscribed address would keep receiving sequence emails. Wire both directions.
+- **No server-side timeouts anywhere** (Redis, Kit, Resend, Octokit, Supabase queries); client-side, settings/GitHub/onboarding/report-issue/capstone bypass `apiFetch`. Sharpest case: a hung Kit call stalls a webhook that already granted access → Stripe re-delivers → fulfilment re-runs.
+- **Error-boundary copy misattributes DB faults** — a paying customer during a 2s Supabase blip reads "Lesson failed to load / something went wrong on our end" as a content bug; only hard-failing Postgres call on a render path.
+- **Fly config drift:** no `[[vm]]` block (machine size unversioned; docs claim 256MB/$15 with no source), and the Dockerfile builds `dist/` then runs `tsx src/index.ts` anyway — TypeScript transpiled at runtime inside the container on the payment path.
+- **Rate limit is 60/min in code, 120/min in both docs** — users hit 429s at half the documented rate. Reconcile.
+- **Opacity-dimmed text fails contrast at 41 sites, invisible to axe** (muted @50-60%, primary composites, landing "Notify me →" CTA at 3.0:1 or worse).
+- **Lesson body ships in HTML at `opacity:0`** until JS stamps the beat state — cloaking-adjacent on the primary organic surface (compounds the ~100-indexable-words item above).
+- **Small UX/cleanup:** both 404 pages point anonymous users at `/dashboard` → `/auth` bounce; `supabase/.temp/` is git-tracked and `.gitignore` misses `.env.production`/`.env.development`; `docs/ci-cd.md` still claims "~210 allowlisted" exercises (allowlist is empty, gate fully strict).
+- **`github_token` stored plaintext and browser-readable.** R2-3 assigned this to Tier 2 but it was never listed here until 2026-07-22. `select("github_token")` works for your own row (row-level RLS, no column restriction). Encrypt at rest + block direct column reads.
+- ~~No `immutable` cache headers on `/vendor` or `/models`~~ — **stale entry; shipped 2026-07-21** (see R2-7 above; verified against `next.config.ts` headers 2026-07-22).
+- ~~Kit automations still unbuilt~~ — promoted to Tier 1-OPS above (2026-07-22).
 
 ---
 
 ## Tier 3 — Fix before ~10k users, not before launch
 
-- `skill_events` partitions end **2027-04-01**; `ensure_skill_events_partitions()` has zero callers and writes are fire-and-forget, so it fails **silently**.
-- Six `auth.getUser()` round-trips per authenticated page view; no `React.cache()` anywhere.
-- All 22 RLS policies use unwrapped `auth.uid()` (Supabase's documented #1 RLS performance anti-pattern).
-- Missing `(user_id, attempted_at DESC)` on `exercise_attempts`; the `skill_axis` index was silently dropped in the `013` partition swap.
-- Landing ships ~249 kB gzipped of TFJS eagerly.
+> **MOVED 2026-07-22** to `docs/post-launch-backlog.md` §9 ("Scale debt,
+> before ~10k users") — post-launch by this tier's own definition, so it
+> belongs in the post-launch source of truth. §9 also picked up the two
+> R2-5 infra findings (Fly/Supabase region split, DB-gated health check)
+> that previously had no checkbox anywhere.
 
 ---
 

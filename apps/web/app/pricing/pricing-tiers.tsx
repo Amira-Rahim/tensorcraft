@@ -261,7 +261,7 @@ export function PricingTiers() {
             </ul>
             <Link
               href="/themes/deep-orbit"
-              className="flex items-center justify-center w-full h-11 text-[13px] font-medium font-mono uppercase tracking-wider transition-all border border-primary rounded-none text-primary hover:bg-primary hover:text-page focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              className="flex items-center justify-center w-full h-11 text-[13px] font-medium font-mono uppercase tracking-wider transition-all border border-primary rounded-none text-primary hover:bg-primary hover:text-on-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
             >
               Start Free &rarr;
             </Link>
@@ -279,7 +279,7 @@ export function PricingTiers() {
             {launchedThemeCount < 5 && (
               <span
                 aria-hidden="true"
-                className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-page rounded-none"
+                className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-on-primary rounded-none"
               >
                 Available Now
               </span>
@@ -493,7 +493,7 @@ export function PricingTiers() {
             {launchedThemeCount >= 5 && (
               <span
                 aria-hidden="true"
-                className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-page rounded-none"
+                className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-on-primary rounded-none"
               >
                 Best Value
               </span>

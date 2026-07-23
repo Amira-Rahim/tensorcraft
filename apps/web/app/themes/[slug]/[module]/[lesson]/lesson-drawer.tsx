@@ -16,16 +16,6 @@ interface LessonDrawerProps {
   themeSlug: string;
   moduleSlug: string;
   moduleName: string;
-  theme: {
-    palette: {
-      primary: string;
-      text: string;
-      muted: string;
-      surface: string;
-      border: string;
-      bg: string;
-    };
-  };
 }
 
 export function LessonDrawer({
@@ -34,7 +24,6 @@ export function LessonDrawer({
   themeSlug,
   moduleSlug,
   moduleName,
-  theme,
 }: LessonDrawerProps) {
   const [open, setOpen] = useState(false);
 
@@ -46,9 +35,9 @@ export function LessonDrawer({
         onClick={() => setOpen(true)}
         className="md:hidden flex items-center justify-center w-11 h-11 shrink-0"
         style={{
-          background: theme.palette.surface,
-          border: `1px solid ${theme.palette.border}`,
-          color: theme.palette.muted,
+          background: "var(--tc-surface)",
+          border: "1px solid var(--tc-border)",
+          color: "var(--tc-muted)",
         }}
         aria-label="Open lesson list"
       >
@@ -79,22 +68,22 @@ export function LessonDrawer({
             aria-label={`${moduleName} lessons`}
             className="fixed bottom-0 left-0 right-0 z-50 max-h-[70vh] overflow-y-auto animate-slide-up"
             style={{
-              background: theme.palette.surface,
-              borderTop: `1px solid ${theme.palette.border}`,
+              background: "var(--tc-surface)",
+              borderTop: "1px solid var(--tc-border)",
             }}
           >
             {/* Header */}
             <div
               className="sticky top-0 flex items-center justify-between px-5 py-4"
               style={{
-                background: theme.palette.surface,
-                borderBottom: `1px solid ${theme.palette.border}`,
+                background: "var(--tc-surface)",
+                borderBottom: "1px solid var(--tc-border)",
               }}
             >
               <div>
                 <div
                   className="text-xs font-mono uppercase tracking-wider"
-                  style={{ color: theme.palette.muted }}
+                  style={{ color: "var(--tc-muted)" }}
                 >
                   {moduleName}
                 </div>
@@ -103,7 +92,7 @@ export function LessonDrawer({
                 type="button"
                 onClick={() => setOpen(false)}
                 className="min-h-11 min-w-11 text-sm font-mono px-3 py-1"
-                style={{ color: theme.palette.muted }}
+                style={{ color: "var(--tc-muted)" }}
               >
                 Close
               </button>
@@ -122,8 +111,8 @@ export function LessonDrawer({
                       : "\u25CB";
                 const statusColor =
                   l.completed || isCurrent
-                    ? theme.palette.primary
-                    : theme.palette.muted;
+                    ? "var(--tc-primary)"
+                    : "var(--tc-muted)";
 
                 if (l.locked) {
                   return (
@@ -139,7 +128,7 @@ export function LessonDrawer({
                       </span>
                       <span
                         className="text-sm truncate"
-                        style={{ color: theme.palette.muted }}
+                        style={{ color: "var(--tc-muted)" }}
                       >
                         {l.order}. {l.title}
                       </span>
@@ -155,10 +144,10 @@ export function LessonDrawer({
                     className="flex items-center gap-3 px-4 py-3 transition-colors"
                     style={{
                       background: isCurrent
-                        ? `${theme.palette.primary}10`
+                        ? "color-mix(in srgb, var(--tc-primary) 6%, transparent)"
                         : "transparent",
                       borderLeft: isCurrent
-                        ? `2px solid ${theme.palette.primary}`
+                        ? "2px solid var(--tc-primary)"
                         : "2px solid transparent",
                     }}
                   >
@@ -172,8 +161,8 @@ export function LessonDrawer({
                       className="text-sm truncate"
                       style={{
                         color: isCurrent
-                          ? theme.palette.primary
-                          : theme.palette.text,
+                          ? "var(--tc-primary)"
+                          : "var(--tc-text)",
                         fontWeight: isCurrent ? 600 : 400,
                       }}
                     >

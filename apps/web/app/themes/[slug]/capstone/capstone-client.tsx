@@ -260,7 +260,7 @@ function CertificateCard({
           right: -20,
           width: 120,
           height: 120,
-          background: `${primary}0A`,
+          background: `color-mix(in srgb, ${primary} 4%, transparent)`,
           borderRadius: "50%",
         }}
         aria-hidden="true"
@@ -347,7 +347,10 @@ function CertificateCard({
           data-testid="download-pdf-button"
           className="font-mono font-bold rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           style={{
-            background: status === "ready" ? primary : `${primary}55`,
+            background:
+              status === "ready"
+                ? primary
+                : `color-mix(in srgb, ${primary} 33%, transparent)`,
             color: bg,
             border: `2px solid ${primary}`,
             fontSize: 11,
@@ -408,7 +411,7 @@ function CertificateDownloadButton() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-mono font-semibold border-2 border-primary text-primary transition-all hover:bg-primary hover:text-page rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-mono font-semibold border-2 border-primary text-primary transition-all hover:bg-primary hover:text-on-primary rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
     >
       Print Certificate ↓
     </button>

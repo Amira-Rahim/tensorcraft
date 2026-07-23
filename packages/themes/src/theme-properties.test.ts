@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "fs";
 import path from "path";
-import { themes, themeSlugs } from "./index";
+import { themes, themeSlugs, hexToRgbTriplet, contrastRatio } from "./index";
 
 const cssPath = path.resolve(__dirname, "css/themes.css");
 const cssContent = fs.readFileSync(cssPath, "utf-8");
@@ -40,6 +40,18 @@ describe("Theme CSS custom properties", () => {
     expect(cssContent).toContain('[data-theme="deep-orbit"]');
   });
 
+  it('dark default block (:root, [data-theme="deep-orbit"]) defines --tc-grid-line', () => {
+    // --tc-grid-line (the .grid-bg token, Task 3) is declared once, global-
+    // only, on the :root default block — not per non-default theme, and not
+    // part of REQUIRED_CSS_PROPS's fixed 9-key list (that list is the
+    // ThemePalette shape; grid-line has no ThemePalette/manifest
+    // counterpart to cross-check against). A prior gap-analysis noted this
+    // structural test couldn't have caught the property's absence; this
+    // closes that gap directly. `toContain` (not a hex-format check) since
+    // the value is an rgba(), not a 6-digit hex like the palette keys.
+    expect(extractDarkThemeBlock("deep-orbit")).toContain("--tc-grid-line");
+  });
+
   it.each([...themeSlugs])(
     "theme '%s' has a [data-theme] selector in CSS",
     (slug) => {
@@ -50,17 +62,10 @@ describe("Theme CSS custom properties", () => {
   it.each([...themeSlugs])(
     "theme '%s' defines all 9 required --tc-* properties",
     (slug) => {
-      // Extract the CSS block for this theme
-      const selectorPattern =
-        slug === "deep-orbit"
-          ? /(:root,\s*\[data-theme="deep-orbit"\])\s*\{([^}]+)\}/s
-          : new RegExp(`\\[data-theme="${slug}"\\]\\s*\\{([^}]+)\\}`, "s");
-
-      const match = cssContent.match(selectorPattern);
-      expect(match).not.toBeNull();
-
-      // The CSS block content is in the last capture group
-      const block = match![match!.length - 1];
+      // DRY: reuses extractDarkThemeBlock (defined below — hoisted function
+      // declaration, safe to call from here) instead of re-deriving the same
+      // block-extraction regex a second time in this file.
+      const block = extractDarkThemeBlock(slug);
       REQUIRED_CSS_PROPS.forEach((prop) => {
         expect(block).toContain(prop);
       });
@@ -93,28 +98,29 @@ describe("Theme TypeScript manifests", () => {
   );
 });
 
-describe("Theme manifest/CSS consistency", () => {
-  // Hex values are compared case-insensitively, manifests use uppercase
-  // (#6BAA8A) while CSS uses lowercase (#6baa8a). Both are valid CSS.
-  const cssContentLower = cssContent.toLowerCase();
-
+describe("Theme manifest/CSS consistency (dark, all 9 keys)", () => {
+  // Extended from a 2-key (primary/accent) substring-anywhere-in-file check
+  // to a block-scoped check of all 9 ThemePalette keys, per-theme. Scoping
+  // to the theme's own dark CSS block (via extractDarkThemeBlock, defined
+  // below) is strictly stronger than the old `cssContentLower.toContain`
+  // check, which could not tell whether a value appeared in the RIGHT
+  // theme's block. This is what caught the bg/surface/muted/border/codeBg
+  // drift between the TS manifests and themes.css (see Task 7's self-review
+  // finding, 2026-07-22): the manifests still had the pre-Task-2/3 neutral
+  // values (#1C1C1C/#252525/#A0A0A0/#2A2A2A/#161616) after themes.css moved
+  // to #181818/#232323/#B0B0B0/#3D3D3D/#141414.
   it.each([...themeSlugs])(
-    "theme '%s' palette.primary matches CSS --tc-primary",
+    "theme '%s' palette matches CSS for all 9 keys",
     (slug) => {
       const theme = themes[slug];
-      expect(cssContentLower).toContain(
-        `--tc-primary: ${theme.palette.primary.toLowerCase()}`,
-      );
-    },
-  );
-
-  it.each([...themeSlugs])(
-    "theme '%s' palette.accent matches CSS --tc-accent",
-    (slug) => {
-      const theme = themes[slug];
-      expect(cssContentLower).toContain(
-        `--tc-accent: ${theme.palette.accent.toLowerCase()}`,
-      );
+      const block = extractDarkThemeBlock(slug);
+      PALETTE_KEYS.forEach((key, i) => {
+        const cssProp = REQUIRED_CSS_PROPS[i]!;
+        const cssHex = extractCssHexValue(block, cssProp);
+        expect(cssHex.toLowerCase(), `palette.${key} vs CSS ${cssProp}`).toBe(
+          theme.palette[key].toLowerCase(),
+        );
+      });
     },
   );
 });
@@ -226,4 +232,368 @@ describe("Deep Orbit character avatars", () => {
     const aria = chars.find((c) => c.name === "ARIA");
     expect(aria?.isAI).toBe(true);
   });
+});
+
+// ============================================================
+// Light scheme (data-scheme="light") — orthogonal to narrative theme
+// ============================================================
+
+// 8 shared neutrals (bg/surface/surface-overlay/surface-raised/text/muted/
+// border/code-bg) + 4 semantic colors (success/warning/error/streak) live in
+// the single bare [data-scheme="light"] block.
+const REQUIRED_LIGHT_SHARED_PROPS = [
+  "--tc-bg",
+  "--tc-surface",
+  "--tc-surface-overlay",
+  "--tc-surface-raised",
+  "--tc-text",
+  "--tc-muted",
+  "--tc-border",
+  "--tc-code-bg",
+  "--tc-success",
+  "--tc-warning",
+  "--tc-error",
+  "--tc-streak",
+];
+
+// Per-theme light overrides: primary/accent + the derived rgb triplet +
+// tier colors + the 3 literal (non-var()) axis colors. axis-data-prep/
+// model-arch/training are var() indirections in the dark blocks and
+// inherit the light primary/tier values automatically, so they are not
+// re-declared per theme.
+const REQUIRED_LIGHT_PER_THEME_PROPS = [
+  "--tc-primary",
+  "--tc-accent",
+  "--tc-primary-rgb",
+  "--tc-tier-identity",
+  "--tc-tier-structural",
+  "--tc-tier-intuition",
+  "--tc-axis-evaluation",
+  "--tc-axis-deployment",
+  "--tc-axis-fe-integration",
+];
+
+describe("Light scheme CSS custom properties", () => {
+  it('CSS contains a bare [data-scheme="light"] block defining all 8 shared neutrals + 4 semantic colors', () => {
+    // Matches only the standalone neutrals block (selector immediately
+    // followed by "{"), not the deep-orbit selector list where
+    // [data-scheme="light"] is immediately followed by a comma.
+    const match = cssContent.match(/\[data-scheme="light"\]\s*\{([^}]+)\}/s);
+    expect(match).not.toBeNull();
+    const block = match![1];
+    REQUIRED_LIGHT_SHARED_PROPS.forEach((prop) => {
+      expect(block).toContain(prop);
+    });
+  });
+
+  it.each([...themeSlugs])(
+    'theme \'%s\' has a [data-theme="<slug>"][data-scheme="light"] block defining primary/accent/rgb/tier/axis',
+    (slug) => {
+      const selectorPattern = new RegExp(
+        `\\[data-theme="${slug}"\\]\\[data-scheme="light"\\]\\s*\\{([^}]+)\\}`,
+        "s",
+      );
+      const match = cssContent.match(selectorPattern);
+      expect(match).not.toBeNull();
+      const block = match![1];
+      REQUIRED_LIGHT_PER_THEME_PROPS.forEach((prop) => {
+        expect(block).toContain(prop);
+      });
+    },
+  );
+
+  it('light shared block ([data-scheme="light"]) defines --tc-grid-line', () => {
+    // Light counterpart of the dark --tc-grid-line check above (Task 3's
+    // light .grid-bg re-tint). Same reasoning: `toContain`, not hex-format,
+    // since the value is rgba(0, 0, 0, 0.03), not a 6-digit hex.
+    expect(extractLightSharedBlock()).toContain("--tc-grid-line");
+  });
+
+  it('deep-orbit\'s light block is also reachable via the bare [data-scheme="light"] selector (root default)', () => {
+    // Per the dark section's `:root, [data-theme="deep-orbit"]` pattern,
+    // the light override for the default theme must be selectable via a
+    // selector list: [data-scheme="light"], [data-theme="deep-orbit"][data-scheme="light"]
+    expect(cssContent).toMatch(
+      /\[data-scheme="light"\],\s*\n?\s*\[data-theme="deep-orbit"\]\[data-scheme="light"\]\s*\{/,
+    );
+  });
+});
+
+describe("Theme TypeScript manifests — paletteLight", () => {
+  it.each([...themeSlugs])(
+    "theme '%s' has paletteLight with all 9 required keys, hex-formatted",
+    (slug) => {
+      const theme = themes[slug];
+      expect(theme.paletteLight).toBeDefined();
+      PALETTE_KEYS.forEach((key) => {
+        expect(theme.paletteLight[key]).toBeDefined();
+        expect(theme.paletteLight[key]).toMatch(/^#[0-9A-Fa-f]{6}$/);
+      });
+    },
+  );
+
+  it.each([...themeSlugs])(
+    "theme '%s' paletteLight has exactly 9 keys (same shape as palette)",
+    (slug) => {
+      expect(Object.keys(themes[slug].paletteLight)).toHaveLength(9);
+    },
+  );
+});
+
+describe("Theme manifest paletteLight/CSS light consistency (all 9 keys)", () => {
+  // Extended from a 2-key (primary/accent) check to all 9 ThemePalette keys.
+  // Unlike the dark side, the 7 shared neutrals (bg/surface/surfaceOverlay/
+  // text/muted/border/codeBg) are NOT redeclared per-theme in the light CSS
+  // — they live once in the bare [data-scheme="light"] block (see themes.css
+  // Task 2 comment) — so those keys are read from extractLightSharedBlock()
+  // while primary/accent are read from this theme's own
+  // [data-theme="<slug>"][data-scheme="light"] block.
+  it.each([...themeSlugs])(
+    "theme '%s' paletteLight matches CSS for all 9 keys",
+    (slug) => {
+      const theme = themes[slug];
+      const perThemeBlock = extractLightThemeBlock(slug);
+      const sharedBlock = extractLightSharedBlock();
+      PALETTE_KEYS.forEach((key, i) => {
+        const cssProp = REQUIRED_CSS_PROPS[i]!;
+        const block =
+          key === "primary" || key === "accent" ? perThemeBlock : sharedBlock;
+        const cssHex = extractCssHexValue(block, cssProp);
+        expect(
+          cssHex.toLowerCase(),
+          `paletteLight.${key} vs CSS ${cssProp}`,
+        ).toBe(theme.paletteLight[key].toLowerCase());
+      });
+    },
+  );
+});
+
+// ============================================================
+// CSS block/value extraction helpers
+//
+// hexToRgb/hexToRgbTriplet/relativeLuminance/contrastRatio live in
+// ./wcag.ts (shared with packages/ui); these helpers stay local since
+// they're only about parsing this package's themes.css text.
+// ============================================================
+
+/** Extracts the raw declaration block for a dark theme's [data-theme] rule. */
+function extractDarkThemeBlock(slug: string): string {
+  const pattern =
+    slug === "deep-orbit"
+      ? /(:root,\s*\[data-theme="deep-orbit"\])\s*\{([^}]+)\}/s
+      : new RegExp(`\\[data-theme="${slug}"\\]\\s*\\{([^}]+)\\}`, "s");
+  const match = cssContent.match(pattern);
+  if (!match) throw new Error(`Could not find dark CSS block for '${slug}'`);
+  return match[match.length - 1]!;
+}
+
+/** Extracts the raw declaration block for a theme's [data-scheme="light"] rule. */
+function extractLightThemeBlock(slug: string): string {
+  const pattern = new RegExp(
+    `\\[data-theme="${slug}"\\]\\[data-scheme="light"\\]\\s*\\{([^}]+)\\}`,
+    "s",
+  );
+  const match = cssContent.match(pattern);
+  if (!match) throw new Error(`Could not find light CSS block for '${slug}'`);
+  return match[1]!;
+}
+
+/**
+ * Extracts the shared (theme-agnostic) declaration block for the bare
+ * [data-scheme="light"] rule — the 7 neutral keys other than primary/accent
+ * live here once, not per-theme (see the "Light scheme CSS custom
+ * properties" describe block above, which pins this same shape).
+ */
+function extractLightSharedBlock(): string {
+  const match = cssContent.match(/\[data-scheme="light"\]\s*\{([^}]+)\}/s);
+  if (!match)
+    throw new Error('Could not find bare [data-scheme="light"] block');
+  return match[1]!;
+}
+
+/** Extracts a single `--tc-prop: #hex;` value out of a CSS block's text. */
+function extractCssHexValue(block: string, prop: string): string {
+  const match = block.match(new RegExp(`${prop}:\\s*(#[0-9a-fA-F]{6})`));
+  if (!match) throw new Error(`Could not find ${prop} in CSS block`);
+  return match[1]!;
+}
+
+/**
+ * Extracts a `--tc-prop-rgb: r, g, b;` triplet out of a CSS block's text,
+ * normalized to the same "r, g, b" spacing hexToRgbTriplet() produces.
+ */
+function extractCssRgbTripletText(block: string, prop: string): string {
+  const match = block.match(
+    new RegExp(`${prop}:\\s*([0-9]+\\s*,\\s*[0-9]+\\s*,\\s*[0-9]+)`),
+  );
+  if (!match) throw new Error(`Could not find ${prop} triplet in CSS block`);
+  return match[1]!
+    .split(",")
+    .map((n) => n.trim())
+    .join(", ");
+}
+
+describe("--tc-primary-rgb stays numerically in sync with --tc-primary", () => {
+  // This is the exact stale-triplet bug class the light-scheme task fixed
+  // (neon-protocol/nova-canvas dark triplets had drifted from their hex).
+  // Assert it numerically, per theme, per scheme, from the real CSS text.
+  it.each([...themeSlugs])(
+    "theme '%s' dark --tc-primary-rgb matches hexToRgbTriplet(--tc-primary)",
+    (slug) => {
+      const block = extractDarkThemeBlock(slug);
+      const primaryHex = extractCssHexValue(block, "--tc-primary");
+      const rgbText = extractCssRgbTripletText(block, "--tc-primary-rgb");
+      expect(rgbText).toBe(hexToRgbTriplet(primaryHex));
+    },
+  );
+
+  it.each([...themeSlugs])(
+    "theme '%s' light --tc-primary-rgb matches hexToRgbTriplet(--tc-primary)",
+    (slug) => {
+      const block = extractLightThemeBlock(slug);
+      const primaryHex = extractCssHexValue(block, "--tc-primary");
+      const rgbText = extractCssRgbTripletText(block, "--tc-primary-rgb");
+      expect(rgbText).toBe(hexToRgbTriplet(primaryHex));
+    },
+  );
+});
+
+describe("WCAG contrast gate", () => {
+  // Shared light neutrals, extracted from the real [data-scheme="light"]
+  // CSS block (same regex the "shared neutrals presence" test above uses)
+  // rather than hand-typed literals, so an edit to themes.css can't drift
+  // silently out of sync with what this gate actually checks.
+  const lightNeutralBlockMatch = cssContent.match(
+    /\[data-scheme="light"\]\s*\{([^}]+)\}/s,
+  );
+  if (!lightNeutralBlockMatch) {
+    throw new Error('Could not find bare [data-scheme="light"] block');
+  }
+  const lightNeutralBlock = lightNeutralBlockMatch[1]!;
+
+  const LIGHT_BG = extractCssHexValue(lightNeutralBlock, "--tc-bg");
+  const LIGHT_SURFACE = extractCssHexValue(lightNeutralBlock, "--tc-surface");
+  const LIGHT_TEXT = extractCssHexValue(lightNeutralBlock, "--tc-text");
+  const LIGHT_MUTED = extractCssHexValue(lightNeutralBlock, "--tc-muted");
+
+  it("light text vs light bg contrast is >= 7 (AAA body text)", () => {
+    expect(contrastRatio(LIGHT_TEXT, LIGHT_BG)).toBeGreaterThanOrEqual(7);
+  });
+
+  it("light muted vs light surface contrast is >= 4.5 (AA body text)", () => {
+    expect(contrastRatio(LIGHT_MUTED, LIGHT_SURFACE)).toBeGreaterThanOrEqual(
+      4.5,
+    );
+  });
+
+  // Tested against the LIGHT PAGE BG (#f5f5f2), not white: the first light
+  // palette was minted at >=4.6:1 vs #ffffff and every light axe audit
+  // failed at 4.21:1 on the real page bg (2026-07-23). #f5f5f2 is the
+  // darker of the two body surfaces, so clearing it implies clearing white.
+  it.each([...themeSlugs])(
+    "theme '%s' light primary and accent contrast >= 4.5 against the light page bg",
+    (slug) => {
+      const theme = themes[slug];
+      expect(
+        contrastRatio(theme.paletteLight.primary, LIGHT_BG),
+      ).toBeGreaterThanOrEqual(4.5);
+      expect(
+        contrastRatio(theme.paletteLight.accent, LIGHT_BG),
+      ).toBeGreaterThanOrEqual(4.5);
+    },
+  );
+
+  // Self-tint gate: `text-primary` sits on `bg-primary/N` tints (chips,
+  // toggles, error-page CTAs) up to N=20 at rest. A tint of the primary
+  // OVER WHITE darkens the substrate while the text stays fixed - the
+  // second light palette cleared the page bg but failed axe at 4.1:1 on a
+  // 10% self-tint (2026-07-23). Rest-state tints are capped at 20%;
+  // stronger hover tints were converted to solid inverted hovers
+  // (bg-primary + text-on-primary) instead of darkening further.
+  const srgbBlend = (fg: string, bg: string, alpha: number): string => {
+    const c = (h: string) =>
+      [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const [fr, fg_, fb] = c(fg);
+    const [br, bg_, bb] = c(bg);
+    const mix = (a: number, b: number) =>
+      Math.round(alpha * a + (1 - alpha) * b);
+    return `#${[mix(fr!, br!), mix(fg_!, bg_!), mix(fb!, bb!)]
+      .map((v) => v.toString(16).padStart(2, "0"))
+      .join("")}`;
+  };
+  it.each([...themeSlugs])(
+    "theme '%s' light primary stays >= 4.5 on its own 10-20% tints over white and page bg",
+    (slug) => {
+      const theme = themes[slug];
+      for (const alpha of [0.1, 0.12, 0.15, 0.2]) {
+        for (const substrate of ["#FFFFFF", LIGHT_BG]) {
+          expect(
+            contrastRatio(
+              theme.paletteLight.primary,
+              srgbBlend(theme.paletteLight.primary, substrate, alpha),
+            ),
+          ).toBeGreaterThanOrEqual(4.5);
+        }
+      }
+    },
+  );
+
+  // Existing dark values: verified (via scratch computation) that every
+  // dark primary/accent already clears 4.5:1 against its dark bg — the
+  // lowest margin is neon-protocol's accent at ~5.2:1. Locking that bar
+  // here rather than raising it further, since the task requires the dark
+  // palette values to stay untouched.
+  it.each([...themeSlugs])(
+    "theme '%s' dark primary and accent contrast >= 4.5 against dark bg (existing values, locked)",
+    (slug) => {
+      const theme = themes[slug];
+      expect(
+        contrastRatio(theme.palette.primary, theme.palette.bg),
+      ).toBeGreaterThanOrEqual(4.5);
+      expect(
+        contrastRatio(theme.palette.accent, theme.palette.bg),
+      ).toBeGreaterThanOrEqual(4.5);
+    },
+  );
+
+  // --tc-on-primary: the ink for primary/accent-FILLED elements (buttons,
+  // chips, ::selection). Found by the light axe matrix (2026-07-23): the
+  // light page bg #f5f5f2 was reused as this ink and sat at 4.21:1 on the
+  // light primaries — every light page failed. Light ink is pure white
+  // (the light primaries/accents were minted >= 4.6:1 against #ffffff);
+  // dark keeps the page bg (near-black on the bright dark hues).
+  const darkRootBlockMatch = cssContent.match(
+    /:root,\s*\[data-theme="deep-orbit"\]\s*\{([^}]+)\}/s,
+  );
+  if (!darkRootBlockMatch) {
+    throw new Error("Could not find :root dark block");
+  }
+  const ON_PRIMARY_DARK = extractCssHexValue(
+    darkRootBlockMatch[1]!,
+    "--tc-on-primary",
+  );
+  const ON_PRIMARY_LIGHT = extractCssHexValue(
+    lightNeutralBlock,
+    "--tc-on-primary",
+  );
+
+  it.each([...themeSlugs])(
+    "theme '%s': on-primary ink >= 4.5 on primary and accent fills, both schemes",
+    (slug) => {
+      const theme = themes[slug];
+      for (const fill of [theme.palette.primary, theme.palette.accent]) {
+        expect(contrastRatio(ON_PRIMARY_DARK, fill)).toBeGreaterThanOrEqual(
+          4.5,
+        );
+      }
+      for (const fill of [
+        theme.paletteLight.primary,
+        theme.paletteLight.accent,
+      ]) {
+        expect(contrastRatio(ON_PRIMARY_LIGHT, fill)).toBeGreaterThanOrEqual(
+          4.5,
+        );
+      }
+    },
+  );
 });

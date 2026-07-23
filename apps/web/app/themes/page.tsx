@@ -62,6 +62,7 @@ export default async function ThemesPage() {
     tagline: theme.tagline,
     specialization: theme.specialization,
     primary: theme.palette.primary,
+    primaryLight: theme.paletteLight.primary,
     owned: ownedThemes.has(theme.slug),
     modulesCount: THEME_CONTENT.modulesPerTheme,
     lessonsCount: THEME_CONTENT.totalLessonsPerTheme,

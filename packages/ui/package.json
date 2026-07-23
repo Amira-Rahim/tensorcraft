@@ -8,7 +8,8 @@
     "./visualizations": "./src/visualizations/index.ts",
     "./effects": "./src/effects/index.ts",
     "./a11y": "./src/a11y/index.ts",
-    "./character-avatar": "./src/character-avatar.tsx"
+    "./character-avatar": "./src/character-avatar.tsx",
+    "./use-scheme": "./src/use-scheme.ts"
   },
   "scripts": {
     "build": "tsc",
@@ -18,6 +19,7 @@
     "@codesandbox/sandpack-react": "^2.20.0",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@tensorcraft/shared": "workspace:*",
+    "@tensorcraft/themes": "workspace:*",
     "@tensorflow/tfjs": "^4.22.0",
     "framer-motion": "^11.0.0",
     "katex": "^0.16.38",

@@ -19,7 +19,7 @@ import { useRef, useEffect, useCallback } from "react";
      motion renders one static frame at the current t.
    - DPR capped at 2; canvas sizes to its positioned parent. */
 
-/** Pure scene renderer: positions derive from t only; hot styles only. */
+/** Pure scene renderer: positions derive from t only; hot/scheme style only. */
 export type SceneDraw = (
   ctx: CanvasRenderingContext2D,
   w: number,
@@ -27,13 +27,30 @@ export type SceneDraw = (
   rgb: [number, number, number],
   hot: number,
   t: number,
+  /**
+   * Resolved color scheme for this frame, read cheaply off
+   * `document.documentElement.dataset.scheme` (never getComputedStyle).
+   * Like `hot`, this may only affect styling (composite mode, alpha,
+   * highlight color) — never geometry. Scenes currently draw the same dark
+   * art regardless of scheme (light art redesign lands in Tasks 9/10 of
+   * docs/superpowers/plans/2026-07-22-light-mode.md); the param exists now
+   * so every SceneDraw call site is already updated ahead of that work.
+   */
+  scheme: "dark" | "light",
 ) => void;
 
 export interface SceneCanvasProps {
   /** Time-parameterized renderer for one frame of the scene. */
   draw: SceneDraw;
-  /** Theme colour as an [r,g,b] triple (0–255). */
+  /** Theme colour as an [r,g,b] triple (0–255), used in dark scheme. */
   rgb: [number, number, number];
+  /**
+   * Theme colour for light scheme. Falls back to `rgb` when absent — the
+   * canvas will keep drawing the dark hue under data-scheme="light" until a
+   * caller supplies this (safe default: no visual change for consumers not
+   * yet updated).
+   */
+  rgbLight?: [number, number, number];
   /** Speeds/brightens the scene (hover state on the homepage cards). */
   hovered?: boolean;
   /**
@@ -54,6 +71,7 @@ export interface SceneCanvasProps {
 export function SceneCanvas({
   draw,
   rgb,
+  rgbLight,
   hovered = false,
   intensity = 0,
   className,
@@ -87,10 +105,23 @@ export function SceneCanvas({
         (target - hotAmtRef.current) * (1 - Math.exp(-dt / 160));
       tRef.current += (dt / 1000) * (1 + 0.6 * hotAmtRef.current);
       ctx.clearRect(0, 0, c.width, c.height);
-      draw(ctx, c.width, c.height, rgb, hotAmtRef.current, tRef.current);
+      // Cheap attr read every frame — never getComputedStyle (that forces a
+      // style recalc per frame, per the effects performance contract).
+      const scheme: "dark" | "light" =
+        document.documentElement.dataset.scheme === "light" ? "light" : "dark";
+      const activeRgb = scheme === "light" && rgbLight ? rgbLight : rgb;
+      draw(
+        ctx,
+        c.width,
+        c.height,
+        activeRgb,
+        hotAmtRef.current,
+        tRef.current,
+        scheme,
+      );
       if (runningRef.current) frame.current = requestAnimationFrame(render);
     },
-    [draw, rgb],
+    [draw, rgb, rgbLight],
   );
 
   useEffect(() => {
@@ -153,11 +184,30 @@ export function SceneCanvas({
         : null;
     io?.observe(c);
 
+    // The reduced-motion static frame is drawn once at mount/resize and
+    // never refreshed by the rAF loop (there isn't one). A color-scheme or
+    // narrative-theme flip changes what that frame should look like (rgb vs
+    // rgbLight now; the art itself once Tasks 9/10 land), so it would
+    // otherwise go stale until the next resize. Re-render under the same
+    // condition the resize handler already uses.
+    const onSchemeOrThemeChange = () => {
+      if (mql?.matches && inView) render();
+    };
+    const attrObserver =
+      typeof MutationObserver !== "undefined"
+        ? new MutationObserver(onSchemeOrThemeChange)
+        : null;
+    attrObserver?.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-scheme", "data-theme"],
+    });
+
     return () => {
       stop();
       window.removeEventListener("resize", onResize);
       mql?.removeEventListener?.("change", sync);
       io?.disconnect();
+      attrObserver?.disconnect();
     };
   }, [render]);
 

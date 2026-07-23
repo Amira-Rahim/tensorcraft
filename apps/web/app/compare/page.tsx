@@ -253,7 +253,7 @@ export default function ComparePage() {
         <div className="mt-16 flex flex-wrap items-center gap-4">
           <Link
             href="/themes"
-            className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-page font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+            className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
             Start the course →
           </Link>

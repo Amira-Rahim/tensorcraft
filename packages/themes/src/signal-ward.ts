@@ -8,15 +8,26 @@ export const signalWard: ThemeManifest = {
   description:
     "Meridian General Hospital's diagnostic AI crashed during a patient surge. Build Diagnostic One, a clinical text intelligence assistant.",
   palette: {
-    bg: "#1C1C1C",
+    bg: "#181818",
     primary: "#65C07D",
     accent: "#7096B0",
-    surface: "#252525",
+    surface: "#232323",
     text: "#E0E0E0",
-    muted: "#A0A0A0",
+    muted: "#B0B0B0",
     surfaceOverlay: "#313131",
-    border: "#2A2A2A",
-    codeBg: "#161616",
+    border: "#3D3D3D",
+    codeBg: "#141414",
+  },
+  paletteLight: {
+    bg: "#F5F5F2",
+    primary: "#2B683B",
+    accent: "#416076",
+    surface: "#FFFFFF",
+    text: "#1F1F1F",
+    muted: "#555555",
+    surfaceOverlay: "#FFFFFF",
+    border: "#D8D8D4",
+    codeBg: "#F6F6F2",
   },
   terminology: {
     lesson: "Procedure",
@@ -24,7 +35,6 @@ export const signalWard: ThemeManifest = {
     exercise: "Diagnosis",
   },
   protagonist: "Clinical Engineer",
-  sandpackTheme: "nightOwl",
   characters: [
     {
       name: "Dr. Vasquez",

@@ -15,7 +15,7 @@ export function SiteFooter() {
           <div className="flex items-center gap-2 font-bold text-text-primary tracking-wider text-xs">
             <span
               data-testid="footer-logo-badge"
-              className="flex items-center justify-center w-7 h-7 border border-primary bg-primary text-page font-mono text-[13px] font-bold rounded-none"
+              className="flex items-center justify-center w-7 h-7 border border-primary bg-primary text-on-primary font-mono text-[13px] font-bold rounded-none"
             >
               T_
             </span>

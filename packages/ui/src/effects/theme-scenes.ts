@@ -1,3 +1,5 @@
+import { highlight } from "./orbit-canvas";
+
 /* ── Theme scenes: signature animations for the four unlaunched worlds ──
    Siblings of drawOrbit (Deep Orbit), one per theme, drawn on the shared
    SceneCanvas chrome. Each follows the same contract:
@@ -11,8 +13,18 @@
    - Each scene's clock is phase-shifted so the t=0 static frame lands on
      its signature moment (detections locked, shape formed, pings alive)
      rather than an empty warm-up frame.
-   - Additive blending over the dark card, theme hue lifted toward white
-     for highlights — the same light-on-darkness language as Deep Orbit.
+   - Two rendering languages, one geometry (scheme independence locked by
+     theme-scenes.test.ts, same shared recorder as drawOrbit's):
+     dark — additive blending over the dark card, theme hue lifted toward
+     white for highlights; the light-on-darkness language of Deep Orbit.
+     light ("ink") — marks laid on paper: multiply compositing pools
+     overlaps darker like wet ink, highlight() deepens the hue toward
+     near-black instead of lifting it, and literal alphas scale up ~1.8×
+     (clamped ≤0.9) because tinted marks on paper need more body than
+     glows on black. Large soft fields (the nebula washes, Neon's scan
+     beam, Nova's bloom) do NOT multiply the raw hue — they use
+     paper-lifted wash tints drawn source-over, per the empirical
+     grey-storm-cloud lesson recorded in orbit-canvas.tsx.
 
    At rest each scene idles faint; hover multiplies alpha on the signature
    layer (detection boxes, attention arcs, formed figure, node pings) so
@@ -27,22 +39,30 @@ const hash = (n: number): number => {
 
 const fract = (x: number): number => x - Math.floor(x);
 
-/** Theme hue pushed 60% toward white — hot-edge highlight, as in drawOrbit. */
-const lift = ([r, g, b]: [number, number, number]): [
-  number,
-  number,
-  number,
-] => [
-  Math.round(r + (255 - r) * 0.6),
-  Math.round(g + (255 - g) * 0.6),
-  Math.round(b + (255 - b) * 0.6),
+/** Base hue lerped `k` toward white — the "thinned ink" wash tint ink mode
+    uses for large soft fields. Multiplying a raw mid-value hue over a big
+    area squares it toward a desaturated grey cloud (found empirically via
+    pixel probes in Task 9 — see orbit-canvas.tsx's wash-tint notes), so
+    soft fields start near paper value and glaze source-over instead. */
+const wash = (
+  [r, g, b]: [number, number, number],
+  k: number,
+): [number, number, number] => [
+  Math.round(r + (255 - r) * k),
+  Math.round(g + (255 - g) * k),
+  Math.round(b + (255 - b) * k),
 ];
 
 /* ── Neon Protocol — Real-Time Computer Vision ──────────────────────
    "See the city through the eyes of AI." A night skyline watched by a
    vision HUD: a scan beam sweeps the card and corner-bracket detection
    boxes lock onto drifting objects in its wake, fading until the next
-   pass. Hover turns the ghost-faint HUD fully on. */
+   pass. Hover turns the ghost-faint HUD fully on.
+
+   Ink mode: a blueprint city survey — skyline strips print as silhouette
+   blocks, window twinkles become dark specks, the beam becomes a
+   deepening band glazed across the paper, and the brackets/confidence
+   bars read as surveyor's annotations (crisper on paper than on night). */
 
 export function drawNeonProtocol(
   ctx: CanvasRenderingContext2D,
@@ -51,12 +71,26 @@ export function drawNeonProtocol(
   rgb: [number, number, number],
   hot: number,
   t: number,
+  scheme: "dark" | "light",
 ) {
   const [r, g, b] = rgb;
-  const [hr, hg, hb] = lift(rgb);
+  const [hr, hg, hb] = highlight(rgb, scheme);
+  const ink = scheme === "light";
+  // Ink marks on paper need more body than glows on black; dark alphas
+  // pass through untouched (see orbit-canvas.tsx's scaleA note — a
+  // universal clamp regressed dark hover once already).
+  const A = ink ? 1.8 : 1;
+  const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
+  // Printed silhouette wants more body than the generic ink scale gives the
+  // skyline's faint dark-mode alphas (screenshot-tuned: at ×A the blocks
+  // read as washed-out ghosts, not print). Same clamp.
+  const scaleSky = (x: number): number =>
+    ink ? Math.min(0.9, x * A * 1.5) : x;
+  const [wr, wg, wb] = wash(rgb, 0.55);
+  const [dr, dg, db] = wash(rgb, 0.3);
   const boost = 1 + 0.7 * hot;
 
-  // Nebula wash anchored low, where the city sits.
+  // Nebula wash anchored low, where the city sits. Ink: pale paper tint.
   const neb = ctx.createRadialGradient(
     w * 0.5,
     h * 0.95,
@@ -65,22 +99,26 @@ export function drawNeonProtocol(
     h * 0.95,
     Math.max(w, h) * 0.8,
   );
-  neb.addColorStop(0, `rgba(${r},${g},${b},${0.07 * boost})`);
+  const nebInk = ink ? `${wr},${wg},${wb}` : `${r},${g},${b}`;
+  neb.addColorStop(0, `rgba(${nebInk},${scaleA(0.07 * boost)})`);
   neb.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = neb;
   ctx.fillRect(0, 0, w, h);
 
   ctx.save();
-  ctx.globalCompositeOperation = "lighter";
+  ctx.globalCompositeOperation = ink ? "multiply" : "lighter";
 
   // ── Skyline ── deterministic building strips rising from the bottom
   // edge, each with a few window lights twinkling on hashed phases.
+  // Ink: the strips multiply into printed silhouette blocks; the window
+  // "lights" are already highlight()-coloured, so they flip to dark
+  // specks punched into the blocks with no extra branch.
   const N = 16;
   const bw = w / N;
   for (let i = 0; i < N; i++) {
     const bh = h * (0.16 + 0.34 * hash(i * 7 + 1));
     const bx = i * bw;
-    ctx.fillStyle = `rgba(${r},${g},${b},${(0.05 + 0.04 * hash(i * 3 + 2)) * boost})`;
+    ctx.fillStyle = `rgba(${r},${g},${b},${scaleSky((0.05 + 0.04 * hash(i * 3 + 2)) * boost)})`;
     ctx.fillRect(bx + bw * 0.12, h - bh, bw * 0.76, bh);
     const windows = 2 + Math.floor(hash(i * 11 + 4) * 3);
     for (let k = 0; k < windows; k++) {
@@ -90,7 +128,7 @@ export function drawNeonProtocol(
         0.5 + 0.5 * Math.sin(t * (0.8 + hash(i * 5 + k) * 1.6) + k * 4 + i);
       ctx.beginPath();
       ctx.arc(wx, wy, 0.9, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${hr},${hg},${hb},${(0.15 + 0.4 * tw) * boost})`;
+      ctx.fillStyle = `rgba(${hr},${hg},${hb},${scaleA((0.15 + 0.4 * tw) * boost)})`;
       ctx.fill();
     }
   }
@@ -98,16 +136,34 @@ export function drawNeonProtocol(
   // ── Scan beam ── one sweep every 6s across an extended cycle so it
   // fully exits before re-entering. Phase-shifted (+0.7) so the t=0
   // static frame catches the beam mid-card with locks in its wake.
+  // Ink: the beam is a LARGE SOFT FIELD — multiplying it (raw or washed)
+  // over the nebula + skyline pools to grey mush, so it flips to a
+  // source-over glaze: a translucent deepening band (mid wash body, deep
+  // ink leading edge) sweeping the paper like a scanner shadow.
   const CYCLE = 1.3; // in card widths
   const beamU = fract(t / 6 + 0.7) * CYCLE - 0.15;
   const bx = beamU * w;
   const beamW = w * 0.07;
   const beam = ctx.createLinearGradient(bx - beamW, 0, bx + beamW * 0.4, 0);
   beam.addColorStop(0, "rgba(0,0,0,0)");
-  beam.addColorStop(0.85, `rgba(${r},${g},${b},${0.05 + 0.13 * hot})`);
-  beam.addColorStop(1, `rgba(${hr},${hg},${hb},${0.1 + 0.25 * hot})`);
+  if (ink) {
+    ctx.globalCompositeOperation = "source-over";
+    beam.addColorStop(
+      0.85,
+      `rgba(${dr},${dg},${db},${scaleA(0.07 + 0.13 * hot)})`,
+    );
+    beam.addColorStop(
+      1,
+      `rgba(${hr},${hg},${hb},${scaleA(0.14 + 0.25 * hot)})`,
+    );
+  } else {
+    beam.addColorStop(0.85, `rgba(${r},${g},${b},${0.05 + 0.13 * hot})`);
+    beam.addColorStop(1, `rgba(${hr},${hg},${hb},${0.1 + 0.25 * hot})`);
+  }
   ctx.fillStyle = beam;
   ctx.fillRect(bx - beamW, 0, beamW * 1.4, h);
+  // Back to wet-ink pooling for the HUD marks (no-op in dark scheme).
+  if (ink) ctx.globalCompositeOperation = "multiply";
 
   // ── Detections ── four objects drifting on slow Lissajous paths. Lock
   // strength decays with distance behind the beam (wrapped), so brackets
@@ -128,11 +184,14 @@ export function drawNeonProtocol(
     const lock = Math.pow(Math.max(0, 1 - u / 0.95), 0.7);
     if (lock <= 0.01) continue;
     const flicker = 0.82 + 0.18 * Math.sin(t * 16 + i * 5);
-    const a = lock * flicker * (0.2 + 0.8 * hot);
+    // Ink lifts the rest floor: a blueprint annotation should be legible on
+    // the page before hover, where the dark HUD deliberately idles
+    // ghost-faint. Both reach 1.0 at full hover.
+    const a = lock * flicker * (ink ? 0.3 + 0.7 * hot : 0.2 + 0.8 * hot);
 
-    // Corner brackets.
+    // Corner brackets. Ink: deep-ink strokes — HUD → blueprint annotation.
     const arm = s * 0.32;
-    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${a})`;
+    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${scaleA(a)})`;
     ctx.lineWidth = 1 + hot;
     for (const [sx, sy] of [
       [-1, -1],
@@ -147,13 +206,21 @@ export function drawNeonProtocol(
       ctx.stroke();
     }
 
-    // Centroid dot + soft glow.
+    // Centroid dot + soft glow (glow damped in ink — a soft gradient at
+    // dark strength multiplies into a smudge, same as orbit's particle
+    // glows; a whisper of ink bleed is all the mark needs).
     ctx.beginPath();
     ctx.arc(tx, ty, 1.6, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${hr},${hg},${hb},${a})`;
+    ctx.fillStyle = `rgba(${hr},${hg},${hb},${scaleA(a)})`;
     ctx.fill();
     const glow = ctx.createRadialGradient(tx, ty, 0, tx, ty, s * 1.1);
-    glow.addColorStop(0, `rgba(${r},${g},${b},${a * 0.22})`);
+    // Bypasses scaleA deliberately: `a` is already bounded to ~[0,1] by
+    // construction (lock ≤1 × flicker ≤1 × a hover term ≤1), and the
+    // 0.08/0.22 factor here is a per-scene damping ratio on that bounded
+    // value (glow vs. dark), not a base alpha that needs the ink ×A scale
+    // to gain body — so scaleA(a) * (ink ? 0.08 : 0.22) would double-count
+    // the ink boost this mark was screenshot-tuned without.
+    glow.addColorStop(0, `rgba(${r},${g},${b},${a * (ink ? 0.08 : 0.22)})`);
     glow.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = glow;
     ctx.beginPath();
@@ -163,13 +230,13 @@ export function drawNeonProtocol(
     // Confidence bar above the box; fill level is hashed per object.
     const bwd = s * 1.3;
     const by = ty - s - 5;
-    ctx.strokeStyle = `rgba(${r},${g},${b},${a * 0.7})`;
+    ctx.strokeStyle = `rgba(${r},${g},${b},${scaleA(a * 0.7)})`;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(tx - bwd / 2, by);
     ctx.lineTo(tx + bwd / 2, by);
     ctx.stroke();
-    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${a})`;
+    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${scaleA(a)})`;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(tx - bwd / 2, by);
@@ -184,7 +251,12 @@ export function drawNeonProtocol(
    "Decode language. Save lives." Redacted-looking token rows stream
    past while attention arcs link a query token to its keys across rows,
    transformer-style; a faint EKG baseline keeps the ward on life
-   support underneath. Hover lights the attention pattern up. */
+   support underneath. Hover lights the attention pattern up.
+
+   Ink mode: the redaction metaphor turns literal — a censored dossier.
+   Token rows become visible redaction bars on paper (extra alpha body
+   beyond the generic ink scale), attention arcs and the EKG trace are
+   ink annotations threaded between the bars. */
 
 export function drawSignalWard(
   ctx: CanvasRenderingContext2D,
@@ -193,9 +265,18 @@ export function drawSignalWard(
   rgb: [number, number, number],
   hot: number,
   t: number,
+  scheme: "dark" | "light",
 ) {
   const [r, g, b] = rgb;
-  const [hr, hg, hb] = lift(rgb);
+  const [hr, hg, hb] = highlight(rgb, scheme);
+  const ink = scheme === "light";
+  const A = ink ? 1.8 : 1;
+  const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
+  // Redaction bars want more body than ×A gives their faint dark-mode
+  // alphas — a censor's marker, not a watermark. Same clamp.
+  const scaleBar = (x: number): number =>
+    ink ? Math.min(0.9, x * A * 1.4) : x;
+  const [wr, wg, wb] = wash(rgb, 0.55);
   const boost = 1 + 0.7 * hot;
 
   const neb = ctx.createRadialGradient(
@@ -206,18 +287,19 @@ export function drawSignalWard(
     h * 0.5,
     Math.max(w, h) * 0.7,
   );
-  neb.addColorStop(0, `rgba(${r},${g},${b},${0.06 * boost})`);
+  const nebInk = ink ? `${wr},${wg},${wb}` : `${r},${g},${b}`;
+  neb.addColorStop(0, `rgba(${nebInk},${scaleA(0.06 * boost)})`);
   neb.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = neb;
   ctx.fillRect(0, 0, w, h);
 
   ctx.save();
-  ctx.globalCompositeOperation = "lighter";
+  ctx.globalCompositeOperation = ink ? "multiply" : "lighter";
 
   // ── Token rows ── three streams of hash-width blocks, middle row
   // counter-scrolling. Token x is periodic in t, so a token's position
   // at any instant is pure; arcs below reuse this exact function to
-  // stay anchored to their tokens.
+  // stay anchored to their tokens. Ink: the redaction bars themselves.
   const ROWS = 3;
   const pitch = w * 0.13;
   const count = Math.ceil(w / pitch) + 2;
@@ -236,7 +318,7 @@ export function drawSignalWard(
     for (let k = 0; k < count; k++) {
       const x = tokenX(j, k);
       const a = (0.06 + 0.09 * hash(j * 51 + k * 7 + 2)) * boost;
-      ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
+      ctx.fillStyle = `rgba(${r},${g},${b},${scaleBar(a)})`;
       ctx.fillRect(x, rowY(j) - th / 2, tokenW(j, k), th);
     }
   }
@@ -258,7 +340,7 @@ export function drawSignalWard(
     const ky = rowY(keyRow);
 
     const alpha = win * (0.1 + 0.45 * hot);
-    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${alpha})`;
+    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${scaleA(alpha)})`;
     ctx.lineWidth = 0.8 + hot * 0.4;
     ctx.beginPath();
     ctx.moveTo(qx, qy);
@@ -274,7 +356,7 @@ export function drawSignalWard(
     ] as const) {
       ctx.beginPath();
       ctx.arc(ex, ey, 2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${hr},${hg},${hb},${ea})`;
+      ctx.fillStyle = `rgba(${hr},${hg},${hb},${scaleA(ea)})`;
       ctx.fill();
     }
   }
@@ -283,7 +365,7 @@ export function drawSignalWard(
   // must ignore hot); hover only brightens the trace.
   const yb = h * 0.85;
   const amp = h * 0.05;
-  ctx.strokeStyle = `rgba(${r},${g},${b},${0.12 + 0.2 * hot})`;
+  ctx.strokeStyle = `rgba(${r},${g},${b},${scaleA(0.12 + 0.2 * hot)})`;
   ctx.lineWidth = 1;
   ctx.beginPath();
   for (let x = 0; x <= w; x += 3) {
@@ -303,7 +385,12 @@ export function drawSignalWard(
    particles converge into a five-petal nova bloom, hold it, then
    dissolve back to noise, forever. Per-particle stagger makes the
    convergence read as denoising rather than a rigid tween. The cycle
-   is phase-shifted so t=0 (the reduced-motion frame) is fully formed. */
+   is phase-shifted so t=0 (the reduced-motion frame) is fully formed.
+
+   Ink mode: an engraving — the noise is a stipple field that condenses
+   into an inked rose (the e-lerp toward highlight() runs hue → deep ink
+   with no extra branch), under a soft terracotta glaze where the bloom
+   swells. */
 
 export function drawNovaCanvas(
   ctx: CanvasRenderingContext2D,
@@ -312,9 +399,15 @@ export function drawNovaCanvas(
   rgb: [number, number, number],
   hot: number,
   t: number,
+  scheme: "dark" | "light",
 ) {
   const [r, g, b] = rgb;
-  const [hr, hg, hb] = lift(rgb);
+  const [hr, hg, hb] = highlight(rgb, scheme);
+  const ink = scheme === "light";
+  const A = ink ? 1.8 : 1;
+  const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
+  const [wr, wg, wb] = wash(rgb, 0.55);
+  const [dr, dg, db] = wash(rgb, 0.3);
   const boost = 1 + 0.7 * hot;
   const cx = w * 0.5;
   const cy = h * 0.52;
@@ -324,16 +417,28 @@ export function drawNovaCanvas(
   const p = fract((t + P / 2) / P); // +P/2 → formed at t=0
   const m = 0.5 - 0.5 * Math.cos(2 * Math.PI * p); // 0 noise … 1 formed
 
-  // Bloom swells with formation.
+  // Bloom swells with formation. Ink: a LARGE SOFT FIELD — glazed with
+  // wash tints (deeper centre, pale mid) source-over, never raw multiply.
   const neb = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * (1.1 + 0.5 * m));
-  neb.addColorStop(0, `rgba(${hr},${hg},${hb},${(0.1 + 0.14 * m) * boost})`);
-  neb.addColorStop(0.45, `rgba(${r},${g},${b},${(0.05 + 0.06 * m) * boost})`);
+  if (ink) {
+    neb.addColorStop(
+      0,
+      `rgba(${dr},${dg},${db},${scaleA((0.1 + 0.14 * m) * boost)})`,
+    );
+    neb.addColorStop(
+      0.45,
+      `rgba(${wr},${wg},${wb},${scaleA((0.05 + 0.06 * m) * boost)})`,
+    );
+  } else {
+    neb.addColorStop(0, `rgba(${hr},${hg},${hb},${(0.1 + 0.14 * m) * boost})`);
+    neb.addColorStop(0.45, `rgba(${r},${g},${b},${(0.05 + 0.06 * m) * boost})`);
+  }
   neb.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = neb;
   ctx.fillRect(0, 0, w, h);
 
   ctx.save();
-  ctx.globalCompositeOperation = "lighter";
+  ctx.globalCompositeOperation = ink ? "multiply" : "lighter";
 
   // Five-petal rose the particles condense onto; slow rotation keeps the
   // held figure alive between cycles.
@@ -361,18 +466,24 @@ export function drawNovaCanvas(
     const size = 0.7 + 1.5 * hash(i * 13 + 7);
     const a =
       (0.12 + 0.3 * hash(i * 17 + 8)) * (0.55 + 0.45 * e) * (1 + 1.1 * hot);
-    // Colour rides formation: noise in theme hue, figure in hot-white.
+    // Colour rides formation: noise in theme hue, figure toward the scheme
+    // highlight — hot-white in dark, deep ink in light (highlight()
+    // already flipped the lerp target, no branch needed).
     const pr = Math.round(r + (hr - r) * e);
     const pg = Math.round(g + (hg - g) * e);
     const pb = Math.round(b + (hb - b) * e);
     ctx.beginPath();
     ctx.arc(x, y, size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${pr},${pg},${pb},${a})`;
+    ctx.fillStyle = `rgba(${pr},${pg},${pb},${scaleA(a)})`;
     ctx.fill();
     if (size > 1.6) {
+      // Halo disc: damped ×0.08 in ink (harder than orbit's ×0.16 gradient
+      // lesson — this halo is a FLAT disc, so on paper anything stronger
+      // prints a visible hard-edged ring instead of a soft ink bleed;
+      // screenshot-tuned).
       ctx.beginPath();
       ctx.arc(x, y, size * 3.4, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${pr},${pg},${pb},${a * 0.12})`;
+      ctx.fillStyle = `rgba(${pr},${pg},${pb},${ink ? scaleA(a) * 0.08 : a * 0.12})`;
       ctx.fill();
     }
   }
@@ -381,7 +492,7 @@ export function drawNovaCanvas(
   // between particles — the "finished render" emerging from the noise.
   if (m > 0.65) {
     const oa = ((m - 0.65) / 0.35) * (0.1 + 0.4 * hot);
-    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${oa})`;
+    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${scaleA(oa)})`;
     ctx.lineWidth = 1;
     ctx.beginPath();
     const SEG = 120;
@@ -400,7 +511,7 @@ export function drawNovaCanvas(
   const pulse = 1 + 0.15 * Math.sin(t * 1.7);
   ctx.beginPath();
   ctx.arc(cx, cy, 2.4 * pulse, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(${hr},${hg},${hb},${(0.5 + 0.4 * m) * boost})`;
+  ctx.fillStyle = `rgba(${hr},${hg},${hb},${scaleA((0.5 + 0.4 * m) * boost)})`;
   ctx.fill();
 
   ctx.restore();
@@ -410,7 +521,12 @@ export function drawNovaCanvas(
    "Where models meet the real world." A perspective ground grid rolls
    toward the viewer under a ridgeline horizon while edge nodes ping
    expanding rings and packets shuttle between them — a deployment mesh
-   breathing in the field. Hover powers the whole grid up. */
+   breathing in the field. Hover powers the whole grid up.
+
+   Ink mode: the natural blueprint — a drafting table. Grid and ridgeline
+   become drafting lines, node pings surveyor's marks with ranging rings,
+   packets ink dots walking the survey lines; a pale ochre wash grounds
+   the sheet. */
 
 export function drawTerraGrid(
   ctx: CanvasRenderingContext2D,
@@ -419,26 +535,37 @@ export function drawTerraGrid(
   rgb: [number, number, number],
   hot: number,
   t: number,
+  scheme: "dark" | "light",
 ) {
   const [r, g, b] = rgb;
-  const [hr, hg, hb] = lift(rgb);
+  const [hr, hg, hb] = highlight(rgb, scheme);
+  const ink = scheme === "light";
+  const A = ink ? 1.8 : 1;
+  const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
+  // Drafting lines want more body than the generic ink scale gives the
+  // grid's faint dark-mode alphas — a blueprint's linework is its whole
+  // voice (screenshot-tuned: at ×A the sheet read washed-out). Same clamp.
+  const scaleLine = (x: number): number =>
+    ink ? Math.min(0.9, x * A * 1.4) : x;
+  const [wr, wg, wb] = wash(rgb, 0.55);
   const boost = 1 + 0.7 * hot;
   const yH = h * 0.36; // horizon
   const cx = w * 0.5;
 
-  // Ground-hugging wash below the horizon.
+  // Ground-hugging wash below the horizon. Ink: pale paper tint.
   const neb = ctx.createRadialGradient(cx, h, 0, cx, h, Math.max(w, h));
-  neb.addColorStop(0, `rgba(${r},${g},${b},${0.07 * boost})`);
+  const nebInk = ink ? `${wr},${wg},${wb}` : `${r},${g},${b}`;
+  neb.addColorStop(0, `rgba(${nebInk},${scaleA(0.07 * boost)})`);
   neb.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = neb;
   ctx.fillRect(0, yH, w, h - yH);
 
   ctx.save();
-  ctx.globalCompositeOperation = "lighter";
+  ctx.globalCompositeOperation = ink ? "multiply" : "lighter";
 
   // ── Ridgeline ── layered sines, slow parallax drift; the "real world"
-  // the grid is deployed into.
-  ctx.strokeStyle = `rgba(${r},${g},${b},${0.14 + 0.1 * hot})`;
+  // the grid is deployed into. Ink: the sheet's horizon drafting line.
+  ctx.strokeStyle = `rgba(${r},${g},${b},${scaleLine(0.14 + 0.1 * hot)})`;
   ctx.lineWidth = 1;
   ctx.beginPath();
   for (let x = 0; x <= w; x += 4) {
@@ -459,7 +586,7 @@ export function drawTerraGrid(
   const VERT = 11;
   for (let m = 0; m <= VERT; m++) {
     const xb = (m / VERT) * w * 1.7 - w * 0.35;
-    ctx.strokeStyle = `rgba(${r},${g},${b},${0.06 + 0.08 * hot})`;
+    ctx.strokeStyle = `rgba(${r},${g},${b},${scaleLine(0.06 + 0.08 * hot)})`;
     ctx.lineWidth = 0.5;
     ctx.beginPath();
     ctx.moveTo(cx + (xb - cx) * 0.06, yH);
@@ -470,7 +597,7 @@ export function drawTerraGrid(
   for (let k = 0; k < RUNGS; k++) {
     const z = fract(t * 0.1 + k / RUNGS);
     const y = yH + (h - yH) * z * z; // ease: rungs accelerate as they near
-    ctx.strokeStyle = `rgba(${r},${g},${b},${z * (0.1 + 0.2 * hot)})`;
+    ctx.strokeStyle = `rgba(${r},${g},${b},${scaleLine(z * (0.1 + 0.2 * hot))})`;
     ctx.lineWidth = 0.5 + z;
     ctx.beginPath();
     ctx.moveTo(0, y);
@@ -479,7 +606,8 @@ export function drawTerraGrid(
   }
 
   // ── Edge nodes ── fixed field positions; each pings an expanding ring
-  // on its own hashed schedule. The mesh's heartbeat.
+  // on its own hashed schedule. The mesh's heartbeat. Ink: surveyor's
+  // marks — deep-ink dots with ranging rings scribed around them.
   const NODES = 5;
   const nodeX = (i: number) => w * (0.12 + 0.76 * hash(i * 19 + 2));
   const nodeY = (i: number) => yH + (h - yH) * (0.2 + 0.62 * hash(i * 23 + 4));
@@ -489,20 +617,20 @@ export function drawTerraGrid(
     const ny = nodeY(i);
     ctx.beginPath();
     ctx.arc(nx, ny, 1.8, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${hr},${hg},${hb},${0.35 + 0.55 * hot})`;
+    ctx.fillStyle = `rgba(${hr},${hg},${hb},${scaleA(0.35 + 0.55 * hot)})`;
     ctx.fill();
 
     const ph = fract(t * 0.28 + hash(i * 5 + 1));
     ctx.beginPath();
     // Grounded ellipse ping: flattened to sit on the terrain plane.
     ctx.ellipse(nx, ny, ph * maxRing, ph * maxRing * 0.38, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${(1 - ph) * (0.12 + 0.5 * hot)})`;
+    ctx.strokeStyle = `rgba(${hr},${hg},${hb},${scaleA((1 - ph) * (0.12 + 0.5 * hot))})`;
     ctx.lineWidth = 1;
     ctx.stroke();
   }
 
   // ── Packets ── inference traffic shuttling node-to-node, each on its
-  // own loop with a short fading trail.
+  // own loop with a short fading trail. Ink: ink dots on the survey lines.
   for (let i = 0; i < 6; i++) {
     const a = i % NODES;
     const bIdx = (i + 1 + (i % 2)) % NODES;
@@ -513,7 +641,7 @@ export function drawTerraGrid(
       const py = nodeY(a) + (nodeY(bIdx) - nodeY(a)) * uu;
       ctx.beginPath();
       ctx.arc(px, py, 1.3 - k * 0.35, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${hr},${hg},${hb},${(0.2 + 0.55 * hot) * (1 - k * 0.3)})`;
+      ctx.fillStyle = `rgba(${hr},${hg},${hb},${scaleA((0.2 + 0.55 * hot) * (1 - k * 0.3))})`;
       ctx.fill();
     }
   }

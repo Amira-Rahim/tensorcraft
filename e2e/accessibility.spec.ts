@@ -55,15 +55,30 @@ async function settle(page: import("@playwright/test").Page, path: string) {
   }
 }
 
-test.describe("Accessibility audits", () => {
-  for (const { name, path } of pages) {
-    test(`${name} page (${path}) passes axe audit`, async ({ page }) => {
-      await settle(page, path);
-      const results = await audit(page);
-      expect(results.violations).toEqual([]);
-    });
-  }
-});
+/**
+ * Scheme matrix (light-mode rollout, 2026-07-23). Every audit runs once per
+ * color scheme. `test.use({ colorScheme })` drives `prefers-color-scheme`,
+ * which the FOUC bootstrap in layout.tsx resolves into `data-scheme` — so the
+ * light pass exercises the real system-follow path end to end, not a
+ * localStorage shortcut. This suite is the contrast gate that certifies the
+ * light palette; a light-only violation is a palette bug (darken the token in
+ * themes.css), never a reason to mute the rule. The global `colorScheme:
+ * "dark"` pin in playwright.config.ts is overridden per-describe here.
+ */
+const SCHEMES = ["dark", "light"] as const;
+
+for (const scheme of SCHEMES) {
+  test.describe(`Accessibility audits [${scheme}]`, () => {
+    test.use({ colorScheme: scheme });
+    for (const { name, path } of pages) {
+      test(`${name} page (${path}) passes axe audit`, async ({ page }) => {
+        await settle(page, path);
+        const results = await audit(page);
+        expect(results.violations).toEqual([]);
+      });
+    }
+  });
+}
 
 /**
  * Per-step lesson audit (audit run #6, 2026-07-15).
@@ -91,35 +106,38 @@ const STEP_NAMES = [
   "Complete",
 ];
 
-test.describe("Accessibility audits - every lesson step", () => {
-  STEP_NAMES.forEach((stepName, index) => {
-    test(`Lesson step ${index} (${stepName}) passes axe audit`, async ({
-      page,
-    }) => {
-      await page.addInitScript(
-        ({ stepKey, maxKey, step }) => {
-          localStorage.setItem(stepKey, String(step));
-          localStorage.setItem(maxKey, String(step));
-        },
-        { stepKey: STEP_KEY, maxKey: MAX_KEY, step: index },
-      );
-      await settle(page, LESSON_PATH);
-      const results = await audit(page);
-      expect(
-        results.violations,
-        `Lesson step ${index} (${stepName}) has axe violations:\n${results.violations
-          .map(
-            (v) =>
-              `  ${v.id} (${v.impact}) x${v.nodes.length}\n` +
-              v.nodes
-                .map(
-                  (n) =>
-                    `    ${n.target.join(" ")}\n      ${n.failureSummary?.replace(/\n/g, "\n      ")}`,
-                )
-                .join("\n"),
-          )
-          .join("\n")}`,
-      ).toEqual([]);
+for (const scheme of SCHEMES) {
+  test.describe(`Accessibility audits - every lesson step [${scheme}]`, () => {
+    test.use({ colorScheme: scheme });
+    STEP_NAMES.forEach((stepName, index) => {
+      test(`Lesson step ${index} (${stepName}) passes axe audit`, async ({
+        page,
+      }) => {
+        await page.addInitScript(
+          ({ stepKey, maxKey, step }) => {
+            localStorage.setItem(stepKey, String(step));
+            localStorage.setItem(maxKey, String(step));
+          },
+          { stepKey: STEP_KEY, maxKey: MAX_KEY, step: index },
+        );
+        await settle(page, LESSON_PATH);
+        const results = await audit(page);
+        expect(
+          results.violations,
+          `Lesson step ${index} (${stepName}) has axe violations:\n${results.violations
+            .map(
+              (v) =>
+                `  ${v.id} (${v.impact}) x${v.nodes.length}\n` +
+                v.nodes
+                  .map(
+                    (n) =>
+                      `    ${n.target.join(" ")}\n      ${n.failureSummary?.replace(/\n/g, "\n      ")}`,
+                  )
+                  .join("\n"),
+            )
+            .join("\n")}`,
+        ).toEqual([]);
+      });
     });
   });
-});
+}

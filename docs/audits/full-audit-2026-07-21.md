@@ -26,6 +26,13 @@ product.
 Status key: **[FIXED]** this session · **[OPEN]** · **[WONTFIX]** owner decision
 · **[VERIFIED-SAFE]** checked and correct.
 
+> **Triaged 2026-07-22.** Every [OPEN] item now has a tracked home:
+> pre-launch work in `docs/launch-blockers.md` (Tier 1-OPS / Tier 1-LEGAL /
+> Tier 2), post-launch work in `docs/post-launch-backlog.md` (§1 compliance
+> polish, §4 a11y sweep + DISPATCH, §5 theme-2 prereqs, §7 security-low +
+> data-integrity + CI/CD groups, §9 scale debt). This file stays the
+> findings record; statuses here are not updated as items get fixed.
+
 ---
 
 ## 1. Security

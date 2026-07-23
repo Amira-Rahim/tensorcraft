@@ -186,16 +186,13 @@ export default async function LessonPage({ params }: Props) {
 
   if (requiresPrerequisite) {
     return (
-      <main
-        className="min-h-screen"
-        style={{ background: "var(--tc-bg, #181818)" }}
-      >
+      <main className="min-h-screen" style={{ background: "var(--tc-bg)" }}>
         <div className="flex-1 max-w-3xl mx-auto px-8 md:px-14 py-16 font-sans">
           <div
             className="p-8 text-center"
             style={{
-              background: theme.palette.surface,
-              border: "1px solid var(--tc-border, rgba(255,255,255,0.06))",
+              background: "var(--tc-surface)",
+              border: "1px solid var(--tc-border)",
             }}
           >
             <div className="text-3xl mb-4" aria-hidden="true">
@@ -203,22 +200,19 @@ export default async function LessonPage({ params }: Props) {
             </div>
             <h2
               className="text-lg font-semibold mb-2"
-              style={{ color: theme.palette.text }}
+              style={{ color: "var(--tc-text)" }}
             >
               Complete the previous module first
             </h2>
-            <p
-              className="text-sm mb-6"
-              style={{ color: "var(--tc-muted, #A0A0A0)" }}
-            >
+            <p className="text-sm mb-6" style={{ color: "var(--tc-muted)" }}>
               Finish all lessons in the previous module to unlock this one.
             </p>
             <Link
               href={`/themes/${slug}/${prevModuleSlug}`}
               className="inline-flex items-center px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
               style={{
-                background: theme.palette.accent,
-                color: "var(--tc-bg, #181818)",
+                background: "var(--tc-accent)",
+                color: "var(--tc-on-primary)",
               }}
             >
               Go to previous module
@@ -230,10 +224,7 @@ export default async function LessonPage({ params }: Props) {
   }
 
   return (
-    <main
-      className="min-h-screen"
-      style={{ background: "var(--tc-bg, #181818)" }}
-    >
+    <main className="min-h-screen" style={{ background: "var(--tc-bg)" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -316,7 +307,6 @@ export default async function LessonPage({ params }: Props) {
           <LessonSteps
             lesson={lesson}
             exercises={exercises}
-            theme={theme}
             themeSlug={slug}
             moduleSlug={moduleSlug}
             moduleName={mod?.title}

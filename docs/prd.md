@@ -361,7 +361,7 @@ Lesson content is authored in **MDX** files stored in the `@tensorcraft/content`
 
 ### 6.1 Design Aesthetic — Brutalist Terminal
 
-The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, monospace-first typography. Dark mode only. No glow effects, no glassmorphism.
+The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, monospace-first typography. No glow effects, no glassmorphism. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. This is mid-rollout: track status in `docs/dev-plan.md`'s 2026-07-22 entry, and treat the deployed app as dark-only until it lands.
 
 **Shell tokens** (shared across all pages):
 

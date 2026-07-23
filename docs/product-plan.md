@@ -1240,7 +1240,7 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 All five themes share these visual design constraints to maintain platform coherence:
 
-- **Dark mode only** at launch. Light mode is not planned for V1.0–V5.0.
+- **Both dark and light color schemes are supported** (added 2026-07-22). Dark remains the brand-default aesthetic; light mode follows the OS `prefers-color-scheme` by default with a manual override toggle. Every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Rollout in progress per the 2026-07-22 entry in `docs/dev-plan.md`; the shipped app remains dark-only until it lands.
 - **Minimum contrast ratio:** 4.5:1 for body text, 3:1 for large text (WCAG AA).
 - **Animation budget:** No more than 3 simultaneous animations per viewport. All animations respect `prefers-reduced-motion`.
 - **Font loading:** Maximum 2 font families per theme. All fonts self-hosted (no Google Fonts CDN).
@@ -1286,7 +1286,7 @@ All five themes share these visual design constraints to maintain platform coher
 - `ActivityHeatmap` (deferred per a11y audit §5b — replaced by a simpler daily-activity strip for V0.5/V1.0)
 - `LossLandscape` visualization (deferred after Phase 11 — replaced by `ParticleField` on auth pages)
 - ARIA dual-robot narrator (cut 2026-04-20 — narration handled inline by per-theme characters)
-- Light mode
+- ~~Light mode~~ (reversed 2026-07-22): both schemes are now supported; see §5.6 above and `docs/audits/light-mode-readiness-2026-07-22.md`
 - Localization / i18n
 - Native mobile app
 

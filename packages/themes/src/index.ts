@@ -7,6 +7,14 @@ export type {
   ThemePreviewModule,
 } from "./types";
 
+export {
+  hexToRgb,
+  hexToRgbTriplet,
+  srgbChannelToLinear,
+  relativeLuminance,
+  contrastRatio,
+} from "./wcag";
+
 export { deepOrbit } from "./deep-orbit";
 export { neonProtocol } from "./neon-protocol";
 export { signalWard } from "./signal-ward";

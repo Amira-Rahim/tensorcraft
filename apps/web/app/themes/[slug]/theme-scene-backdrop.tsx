@@ -34,6 +34,11 @@ interface Props {
   slug: string;
   /** Theme primary as hex, e.g. "#6BAA8A". */
   primary: string;
+  /**
+   * Theme primary for light scheme, e.g. "#4A8064" (theme.paletteLight.primary).
+   * Falls back to `primary` when absent (SceneCanvas.rgbLight default).
+   */
+  primaryLight?: string;
   /** Resting brightness of the scene (see SceneCanvas.intensity). */
   intensity?: number;
 }
@@ -46,7 +51,12 @@ interface Props {
  * thousands of pixels. Decorative only — aria-hidden, static frame under
  * reduced motion.
  */
-export function ThemeSceneBackdrop({ slug, primary, intensity = 0.7 }: Props) {
+export function ThemeSceneBackdrop({
+  slug,
+  primary,
+  primaryLight,
+  intensity = 0.7,
+}: Props) {
   const draw = SCENE_BY_SLUG[slug];
   if (!draw) return null;
 
@@ -63,6 +73,7 @@ export function ThemeSceneBackdrop({ slug, primary, intensity = 0.7 }: Props) {
       <SceneCanvas
         draw={draw}
         rgb={hexToRgb(primary)}
+        rgbLight={primaryLight ? hexToRgb(primaryLight) : undefined}
         intensity={intensity}
         className="absolute inset-0"
       />

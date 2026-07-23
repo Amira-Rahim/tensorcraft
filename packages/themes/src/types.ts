@@ -1,6 +1,7 @@
 /**
  * Theme color palette, maps to CSS custom properties (--tc-*).
- * All colors are designed for dark backgrounds. No light mode.
+ * These colors are designed for dark backgrounds (the default scheme).
+ * See `paletteLight` on ThemeManifest for the data-scheme="light" variant.
  *
  * Brutalist Terminal aesthetic: sharp edges, offset shadows, monospace-first.
  */
@@ -99,12 +100,17 @@ export interface ThemeManifest {
   description: string;
   /** Color palette */
   palette: ThemePalette;
+  /**
+   * Light-scheme variant of `palette`, applied when data-scheme="light" is
+   * set on <html>. Must mirror the CSS `[data-scheme="light"]` /
+   * `[data-theme="<slug>"][data-scheme="light"]` values in
+   * packages/themes/src/css/themes.css — locked by theme-properties.test.ts.
+   */
+  paletteLight: ThemePalette;
   /** UI label overrides */
   terminology: ThemeTerminology;
   /** Learner's role in the narrative */
   protagonist: string;
-  /** Sandpack editor color theme */
-  sandpackTheme: string;
   /** Characters in the story */
   characters: ThemeCharacter[];
   /** ML specialization area */

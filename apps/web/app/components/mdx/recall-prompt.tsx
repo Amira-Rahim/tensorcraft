@@ -64,7 +64,7 @@ export function RecallPrompt({
             // without this focus resets to <body>.
             requestAnimationFrame(() => answerRef.current?.focus());
           }}
-          className="px-4 py-2 text-sm font-mono font-medium bg-primary text-page border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-100 brutalist-hover"
+          className="px-4 py-2 text-sm font-mono font-medium bg-primary text-on-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-100 brutalist-hover"
         >
           Reveal Answer
         </button>
@@ -97,7 +97,7 @@ export function RecallPrompt({
                 onAnswer?.("review");
                 setRevealed(false);
               }}
-              className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20"
+              className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-warning/10 text-warning border border-warning/20"
             >
               Review again
             </button>

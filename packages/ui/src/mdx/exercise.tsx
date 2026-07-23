@@ -11,7 +11,8 @@ import {
   useContext,
 } from "react";
 
-import { useSandpack } from "@codesandbox/sandpack-react";
+import { useSandpack, type SandpackTheme } from "@codesandbox/sandpack-react";
+import { useScheme } from "../use-scheme";
 
 const SandpackProvider = lazy(() =>
   import("@codesandbox/sandpack-react").then((m) => ({
@@ -110,20 +111,99 @@ export function ExerciseDataProvider({
 /*  Difficulty badge                                                   */
 /* ------------------------------------------------------------------ */
 
+/* Badge colors are scheme-paired: the dark values are bright pastels that
+   sat at 1.5-2.4:1 on the light scheme's white cards (axe, 2026-07-23).
+   Light values are the same hues darkened until >=4.55:1 against both
+   white and their own 10% tint (the `${color}15` chip background). */
 const difficultyConfig = {
-  beginner: { label: "Beginner", color: "#4ADE80" },
-  intermediate: { label: "Intermediate", color: "#FBBF24" },
-  advanced: { label: "Advanced", color: "#F87171" },
+  beginner: { label: "Beginner", color: "#4ADE80", light: "#177C3C" },
+  intermediate: { label: "Intermediate", color: "#FBBF24", light: "#8D6603" },
+  advanced: { label: "Advanced", color: "#F87171", light: "#D50B0B" },
 };
 
-const mlContentConfig: Record<MLContent, { label: string; tone: string }> = {
-  arithmetic: { label: "Arithmetic", tone: "#9CA3AF" },
-  data: { label: "Tensor Data", tone: "#60A5FA" },
-  model: { label: "Model Build", tone: "#A78BFA" },
-  training: { label: "Training", tone: "#F472B6" },
-  evaluation: { label: "Evaluation", tone: "#FB923C" },
-  deployment: { label: "Deployment", tone: "#34D399" },
-  systems: { label: "Systems", tone: "#F59E0B" },
+const mlContentConfig: Record<
+  MLContent,
+  { label: string; tone: string; light: string }
+> = {
+  arithmetic: { label: "Arithmetic", tone: "#9CA3AF", light: "#656D7D" },
+  data: { label: "Tensor Data", tone: "#60A5FA", light: "#0767DE" },
+  model: { label: "Model Build", tone: "#A78BFA", light: "#7448F7" },
+  training: { label: "Training", tone: "#F472B6", light: "#CC1073" },
+  evaluation: { label: "Evaluation", tone: "#FB923C", light: "#B05104" },
+  deployment: { label: "Deployment", tone: "#34D399", light: "#1B7B58" },
+  systems: { label: "Systems", tone: "#F59E0B", light: "#976106" },
+};
+
+/* ------------------------------------------------------------------ */
+/*  Sandpack editor theme (dark/light, Task 12 - light-mode rollout,   */
+/*  2026-07-22). Sandpack is theme-agnostic chrome, not narrative-     */
+/*  themed, so both variants use the page-primary green as hover/      */
+/*  accent rather than a per-theme color.                              */
+/* ------------------------------------------------------------------ */
+
+const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
+  dark: {
+    colors: {
+      surface1: "#252525",
+      surface2: "#1C1C1C",
+      surface3: "#313131",
+      clickable: "#A0A0A0",
+      base: "#E0E0E0",
+      disabled: "#3a3a3a",
+      hover: "#6BAA8A",
+      accent: "#6BAA8A",
+      error: "#F87171",
+      errorSurface: "#2d1515",
+    },
+    syntax: {
+      plain: "#E0E0E0",
+      comment: { color: "#A0A0A0", fontStyle: "italic" },
+      keyword: "#c792ea",
+      tag: "#f07178",
+      punctuation: "#89ddff",
+      definition: "#82aaff",
+      property: "#82aaff",
+      static: "#f78c6c",
+      string: "#c3e88d",
+    },
+    font: {
+      body: '"JetBrains Mono", ui-monospace, monospace',
+      mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
+      size: "13px",
+      lineHeight: "1.6",
+    },
+  },
+  light: {
+    colors: {
+      surface1: "#FFFFFF",
+      surface2: "#F6F6F2",
+      surface3: "#EDEDE8",
+      clickable: "#555555",
+      base: "#2E2E2E",
+      disabled: "#C0C0BC",
+      hover: "#3B6550",
+      accent: "#3B6550",
+      error: "#C22F2F",
+      errorSurface: "#FDECEC",
+    },
+    syntax: {
+      plain: "#2E2E2E",
+      comment: { color: "#6F6F6F", fontStyle: "italic" },
+      keyword: "#9D41DA",
+      tag: "#DC1722",
+      punctuation: "#0077A8",
+      definition: "#1761FF",
+      property: "#1761FF",
+      static: "#CE380B",
+      string: "#537A19",
+    },
+    font: {
+      body: '"JetBrains Mono", ui-monospace, monospace',
+      mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
+      size: "13px",
+      lineHeight: "1.6",
+    },
+  },
 };
 
 /* ------------------------------------------------------------------ */
@@ -184,9 +264,9 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
       data-testid="test-results-panel"
       className={`p-4 mt-3 brutalist-shadow border rounded-none ${
         allPassed
-          ? "bg-green-400/8 border-green-400/20"
+          ? "bg-success/8 border-success/20"
           : partial
-            ? "bg-yellow-400/6 border-yellow-400/15"
+            ? "bg-warning/6 border-warning/15"
             : "bg-red-400/8 border-red-400/20"
       }`}
     >
@@ -200,11 +280,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
         <div className="h-1 overflow-hidden mb-3 bg-border rounded-none">
           <div
             className={`h-full transition-all ${
-              allPassed
-                ? "bg-green-400"
-                : partial
-                  ? "bg-yellow-400"
-                  : "bg-red-400"
+              allPassed ? "bg-success" : partial ? "bg-warning" : "bg-red-400"
             }`}
             style={{ width: `${score}%` }}
           />
@@ -215,9 +291,9 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
         <span
           className={`text-xs font-mono font-semibold uppercase tracking-widest ${
             allPassed
-              ? "text-green-400"
+              ? "text-success"
               : partial
-                ? "text-yellow-400"
+                ? "text-warning"
                 : "text-red-400"
           }`}
         >
@@ -230,9 +306,9 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
         <span
           className={`text-xs font-mono px-2 py-0.5 rounded-none ${
             allPassed
-              ? "bg-green-400/15 text-green-400"
+              ? "bg-success/15 text-success"
               : partial
-                ? "bg-yellow-400/12 text-yellow-400"
+                ? "bg-warning/12 text-warning"
                 : "bg-red-400/15 text-red-400"
           }`}
         >
@@ -303,7 +379,7 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
                 entry.level === "error"
                   ? "text-red-400 flex-shrink-0"
                   : entry.level === "warn"
-                    ? "text-yellow-400 flex-shrink-0"
+                    ? "text-warning flex-shrink-0"
                     : "text-primary flex-shrink-0"
               }
             >
@@ -318,7 +394,7 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
                 entry.level === "error"
                   ? "text-red-400 whitespace-pre-wrap break-all"
                   : entry.level === "warn"
-                    ? "text-yellow-400 whitespace-pre-wrap break-all"
+                    ? "text-warning whitespace-pre-wrap break-all"
                     : "text-text-primary/85 whitespace-pre-wrap break-all"
               }
             >
@@ -532,7 +608,7 @@ function ExerciseControls({
         <button
           type="button"
           onClick={handleShowSolution}
-          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-warning/10 text-warning border border-warning/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
         >
           Show Solution
         </button>
@@ -572,6 +648,7 @@ function ExerciseLoadingSkeleton() {
 export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
   const exerciseMap = useContext(ExerciseDataContext);
   const exercise = exerciseMap.get(slug);
+  const scheme = useScheme();
 
   const [results, setResults] = useState<TestResult[]>([]);
   const [logs, setLogs] = useState<ConsoleEntry[]>([]);
@@ -599,12 +676,21 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
   }
 
   const diffConfig = difficultyConfig[exercise.difficulty];
+  const diffColor = scheme === "light" ? diffConfig.light : diffConfig.color;
+  const mlConfig = exercise.mlContent
+    ? mlContentConfig[exercise.mlContent]
+    : null;
+  const mlTone = mlConfig
+    ? scheme === "light"
+      ? mlConfig.light
+      : mlConfig.tone
+    : null;
   const allPassed = results.length > 0 && results.every((r) => r.passed);
 
   return (
     <div
       className={`p-6 my-6 brutalist-shadow bg-surface-raised border rounded-none ${
-        allPassed ? "border-green-400/30" : "border-border"
+        allPassed ? "border-success/30" : "border-border"
       }`}
     >
       {/* Header */}
@@ -619,24 +705,24 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
           <span
             className="text-xs font-mono font-medium px-2 py-0.5"
             style={{
-              background: `${diffConfig.color}15`,
-              color: diffConfig.color,
+              background: `${diffColor}15`,
+              color: diffColor,
             }}
             title="Cognitive difficulty"
           >
             {diffConfig.label}
           </span>
-          {exercise.mlContent && (
+          {mlConfig && mlTone && (
             <span
               className="text-xs font-mono font-medium px-2 py-0.5"
               style={{
-                background: `${mlContentConfig[exercise.mlContent].tone}15`,
-                color: mlContentConfig[exercise.mlContent].tone,
+                background: `${mlTone}15`,
+                color: mlTone,
               }}
               title="ML content axis: what skill the exercise actually builds"
               data-testid="mlcontent-badge"
             >
-              {mlContentConfig[exercise.mlContent].label}
+              {mlConfig.label}
             </span>
           )}
           <span className="text-xs text-text-muted">
@@ -658,37 +744,7 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
         <div className="overflow-hidden border border-border rounded-none">
           <SandpackProvider
             template="vanilla"
-            theme={{
-              colors: {
-                surface1: "#252525",
-                surface2: "#1C1C1C",
-                surface3: "#313131",
-                clickable: "#A0A0A0",
-                base: "#E0E0E0",
-                disabled: "#3a3a3a",
-                hover: "#6BAA8A",
-                accent: "#6BAA8A",
-                error: "#F87171",
-                errorSurface: "#2d1515",
-              },
-              syntax: {
-                plain: "#E0E0E0",
-                comment: { color: "#A0A0A0", fontStyle: "italic" },
-                keyword: "#c792ea",
-                tag: "#f07178",
-                punctuation: "#89ddff",
-                definition: "#82aaff",
-                property: "#82aaff",
-                static: "#f78c6c",
-                string: "#c3e88d",
-              },
-              font: {
-                body: '"JetBrains Mono", ui-monospace, monospace',
-                mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-                size: "13px",
-                lineHeight: "1.6",
-              },
-            }}
+            theme={SANDPACK_THEMES[scheme]}
             files={{
               "/index.js": { code: exercise.starterCode, active: true },
             }}
@@ -730,7 +786,7 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
 
       {/* Solution revealed indicator */}
       {showSolution && (
-        <p className="text-xs mt-3 italic text-yellow-400 font-mono">
+        <p className="text-xs mt-3 italic text-warning font-mono">
           Solution revealed. Try modifying it to deepen your understanding.
         </p>
       )}

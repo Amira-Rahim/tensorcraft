@@ -78,7 +78,7 @@ export function CurriculumPreview() {
                             {mod.title}
                           </h3>
                           {isFree && (
-                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-page bg-primary px-2 py-0.5">
+                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-on-primary bg-primary px-2 py-0.5">
                               Free
                             </span>
                           )}

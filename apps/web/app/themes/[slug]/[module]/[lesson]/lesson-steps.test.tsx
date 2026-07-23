@@ -64,21 +64,6 @@ vi.mock("@/lib/supabase/client", () => ({
   }),
 }));
 
-const theme = {
-  displayName: "Deep Orbit",
-  palette: {
-    primary: "#6ee7b7",
-    accent: "#34d399",
-    text: "#e7fff5",
-    muted: "#9fb8ac",
-    surface: "#0d1f18",
-    bg: "#081410",
-    border: "#1d3a2e",
-    codeBg: "#0a1a13",
-  },
-  terminology: { lesson: "mission", module: "sector", exercise: "drill" },
-};
-
 const lesson = {
   slug: "introduction-to-tensors",
   title: "Introduction to Tensors",
@@ -98,7 +83,6 @@ function renderSteps() {
     <LessonSteps
       lesson={lesson}
       exercises={[]}
-      theme={theme}
       themeSlug="deep-orbit"
       moduleSlug="foundations"
       moduleName="Foundations: Tensors & Data"
@@ -202,7 +186,6 @@ describe("LessonSteps, briefing meta line", () => {
             { slug: "b", estimatedMinutes: 18 },
           ] as never
         }
-        theme={theme}
         themeSlug="deep-orbit"
         moduleSlug="foundations"
         moduleName="Foundations: Tensors & Data"
@@ -218,7 +201,6 @@ describe("LessonSteps, briefing meta line", () => {
       <LessonSteps
         lesson={lesson}
         exercises={[{ slug: "a", estimatedMinutes: 12 }] as never}
-        theme={theme}
         themeSlug="deep-orbit"
         moduleSlug="foundations"
         moduleName="Foundations: Tensors & Data"

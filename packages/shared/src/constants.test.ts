@@ -6,6 +6,8 @@ import {
   THEME_CONTENT,
   getModuleLessonCount,
   getPaidLessonCount,
+  SCHEME_STORAGE_KEY,
+  isColorScheme,
 } from "./constants";
 
 describe("THEME_SLUGS", () => {
@@ -115,5 +117,29 @@ describe("getPaidLessonCount", () => {
       THEME_CONTENT.totalLessonsPerTheme,
     );
     expect(getPaidLessonCount()).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * Light-mode rollout (2026-07-22): the scheme axis is orthogonal to the
+ * narrative theme. `isColorScheme` is the boundary guard for a stored
+ * localStorage value or hand-edited DOM attribute, same role `isLaunched`
+ * plays for theme slugs.
+ */
+describe("isColorScheme", () => {
+  it("accepts 'light' and 'dark'", () => {
+    expect(isColorScheme("light")).toBe(true);
+    expect(isColorScheme("dark")).toBe(true);
+  });
+
+  it("rejects anything else, including near-misses", () => {
+    expect(isColorScheme("system")).toBe(false);
+    expect(isColorScheme("")).toBe(false);
+    expect(isColorScheme("Light")).toBe(false);
+    expect(isColorScheme("auto")).toBe(false);
+  });
+
+  it("uses the expected storage key", () => {
+    expect(SCHEME_STORAGE_KEY).toBe("tc-scheme");
   });
 });

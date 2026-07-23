@@ -45,7 +45,7 @@ export default function CertificateError({
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={reset}
-            className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono bg-primary text-page border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+            className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono bg-primary text-on-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
             Try again
           </button>

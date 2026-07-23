@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { useAttributeObserver } from "./use-attribute-observer";
 
 /* ── Ticker canvas, subtle horizontal streaks ──────────── */
 
 function TickerCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
   const frame = useRef(0);
+  // Dark-biased fallback — fires only when the `--tc-primary-rgb` custom
+  // property is missing (themes.css failed to load, or ran before styles
+  // applied). Deliberately NOT scheme-aware: it's a last-resort constant,
+  // not a live palette value, so it stays dark on purpose.
   const primaryRgb = useRef("107,170,138");
 
   interface Streak {
@@ -40,6 +45,14 @@ function TickerCanvas() {
 
     ctx.clearRect(0, 0, w, h);
 
+    // Cheap attribute read once per frame — never getComputedStyle here
+    // (that would force a style recalc every frame; see
+    // ambient-background.tsx's identical rationale). Streak alphas
+    // (0.06-0.18) read as basically invisible on a white/paper surface, so
+    // light mode boosts them; dark path is untouched (×1 no-op).
+    const alphaScale =
+      document.documentElement.dataset.scheme === "light" ? 2.5 : 1;
+
     const ss = streaks.current;
     for (let i = ss.length - 1; i >= 0; i--) {
       const s = ss[i];
@@ -53,13 +66,29 @@ function TickerCanvas() {
       ctx.beginPath();
       ctx.moveTo(s.x, s.y);
       ctx.lineTo(s.x + s.len, s.y);
-      ctx.strokeStyle = `rgba(${primaryRgb.current},${s.alpha})`;
+      ctx.strokeStyle = `rgba(${primaryRgb.current},${s.alpha * alphaScale})`;
       ctx.lineWidth = 0.5;
       ctx.stroke();
     }
 
     frame.current = requestAnimationFrame(draw);
   }, [spawn]);
+
+  // Reads theme primary RGB from the `--tc-primary-rgb` CSS custom property
+  // (inherited down to the canvas element, so getComputedStyle(c) sees
+  // whatever `[data-theme][data-scheme]` block is active). Shared between
+  // the mount-time read below and the shared attribute-observer hook, so
+  // both a narrative-theme change AND a light/dark scheme flip re-read it —
+  // previously this only fired on data-theme, leaving the cache stale if a
+  // visitor toggled scheme without also changing theme.
+  const readPrimaryRgb = useCallback(() => {
+    const c = ref.current;
+    if (!c) return;
+    const rgb = getComputedStyle(c).getPropertyValue("--tc-primary-rgb").trim();
+    if (rgb) primaryRgb.current = rgb;
+  }, []);
+
+  useAttributeObserver(["data-theme", "data-scheme"], readPrimaryRgb);
 
   useEffect(() => {
     const c = ref.current;
@@ -80,31 +109,15 @@ function TickerCanvas() {
     };
 
     resize();
-
-    // Read theme primary RGB from CSS variable
-    const readPrimaryRgb = () => {
-      const rgb = getComputedStyle(c)
-        .getPropertyValue("--tc-primary-rgb")
-        .trim();
-      if (rgb) primaryRgb.current = rgb;
-    };
     readPrimaryRgb();
-
-    // Re-read when theme changes (data-theme attribute on <html>)
-    const observer = new MutationObserver(readPrimaryRgb);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
 
     frame.current = requestAnimationFrame(draw);
     window.addEventListener("resize", resize);
     return () => {
       cancelAnimationFrame(frame.current);
       window.removeEventListener("resize", resize);
-      observer.disconnect();
     };
-  }, [draw, spawn]);
+  }, [draw, spawn, readPrimaryRgb]);
 
   return (
     <canvas

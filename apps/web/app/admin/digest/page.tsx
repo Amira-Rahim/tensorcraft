@@ -91,10 +91,10 @@ export default async function DigestAdminPage({
             href={`/admin/digest?status=${s}`}
             className={`rounded border px-3 py-1 capitalize ${
               filter === s
-                ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                ? "border-text-primary bg-text-primary text-page"
                 : s === "gap"
-                  ? "border-yellow-600 text-yellow-700 dark:border-yellow-500 dark:text-yellow-400"
-                  : "border-neutral-300 dark:border-neutral-700"
+                  ? "border-warning text-warning"
+                  : "border-border"
             }`}
           >
             {s === "gap" ? `gaps` : s} ({counts[s] ?? 0})
@@ -117,7 +117,7 @@ export default async function DigestAdminPage({
 
 function NewsItemCard({ item }: { item: NewsItemRow }) {
   return (
-    <li className="rounded border border-neutral-300 p-4 dark:border-neutral-700">
+    <li className="rounded border border-border p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <p className="text-xs uppercase tracking-wide opacity-60">
@@ -228,7 +228,7 @@ function StatusActions({
         <form action={resetAction.bind(null, id)}>
           <button
             type="submit"
-            className="w-full rounded border border-neutral-400 px-3 py-1 text-xs"
+            className="w-full rounded border border-border px-3 py-1 text-xs"
           >
             Reset
           </button>

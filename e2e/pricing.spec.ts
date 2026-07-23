@@ -34,6 +34,10 @@ test.describe("Pricing Page", () => {
 
   test("paywall redirect context renders a notice banner", async ({ page }) => {
     await page.goto("/pricing?locked=deep-orbit");
-    await expect(page.getByRole("status")).toContainText(/deep orbit/i);
+    // Scoped to main: the nav's SchemeToggle carries its own (empty)
+    // role="status" live region, so a bare getByRole("status") is ambiguous.
+    await expect(page.locator("main").getByRole("status")).toContainText(
+      /deep orbit/i,
+    );
   });
 });

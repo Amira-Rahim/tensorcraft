@@ -18,66 +18,64 @@ import { test, expect } from "@playwright/test";
 // `fixme`'d so CI stays green. Set `RUN_VISUAL=1` to execute them.
 const shouldRun = process.env.RUN_VISUAL === "1";
 
-test.describe("Visual: Key Pages (desktop 1280×800)", () => {
-  test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
+const KEY_PAGES = [
+  { name: "landing page", path: "/", base: "landing", maskCanvas: true },
+  {
+    name: "pricing page",
+    path: "/pricing",
+    base: "pricing",
+    maskCanvas: false,
+  },
+  {
+    name: "themes index",
+    path: "/themes",
+    base: "themes-index",
+    maskCanvas: false,
+  },
+  {
+    name: "auth sign-in page",
+    path: "/auth/sign-in",
+    base: "auth-sign-in",
+    maskCanvas: false,
+  },
+  {
+    name: "paywall page",
+    path: "/paywall",
+    base: "paywall",
+    maskCanvas: false,
+  },
+] as const;
 
-  test.beforeEach(async ({ page }) => {
-    // Desktop viewport matches dev-plan §8k spec.
-    await page.setViewportSize({ width: 1280, height: 800 });
-    // Disable animations (ParticleField + BridgeTicker honor this).
-    await page.emulateMedia({ reducedMotion: "reduce" });
-  });
+/* Scheme matrix (light-mode rollout, 2026-07-23): dark keeps the original
+   baseline names so pre-light-mode baselines stay valid; light snapshots get
+   a `-light` suffix and are minted fresh. */
+for (const scheme of ["dark", "light"] as const) {
+  const suffix = scheme === "light" ? "-light" : "";
 
-  test("landing page matches baseline", async ({ page }) => {
-    await page.goto("/");
-    await page.waitForLoadState("networkidle");
-    await page.waitForFunction(() => document.fonts.ready);
-    await expect(page).toHaveScreenshot("landing.png", {
-      fullPage: true,
-      maxDiffPixelRatio: 0.001,
-      // Canvas animations (five-worlds cards) don't all honor
-      // reduced-motion; mask them so frame timing can't flake the diff.
-      mask: [page.locator("canvas")],
+  test.describe(`Visual: Key Pages (desktop 1280×800) [${scheme}]`, () => {
+    test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
+    test.use({ colorScheme: scheme });
+
+    test.beforeEach(async ({ page }) => {
+      // Desktop viewport matches dev-plan §8k spec.
+      await page.setViewportSize({ width: 1280, height: 800 });
+      // Disable animations (ParticleField + BridgeTicker honor this).
+      await page.emulateMedia({ reducedMotion: "reduce" });
     });
-  });
 
-  test("pricing page matches baseline", async ({ page }) => {
-    await page.goto("/pricing");
-    await page.waitForLoadState("networkidle");
-    await page.waitForFunction(() => document.fonts.ready);
-    await expect(page).toHaveScreenshot("pricing.png", {
-      fullPage: true,
-      maxDiffPixelRatio: 0.001,
-    });
+    for (const { name, path, base, maskCanvas } of KEY_PAGES) {
+      test(`${name} matches baseline`, async ({ page }) => {
+        await page.goto(path);
+        await page.waitForLoadState("networkidle");
+        await page.waitForFunction(() => document.fonts.ready);
+        await expect(page).toHaveScreenshot(`${base}${suffix}.png`, {
+          fullPage: true,
+          maxDiffPixelRatio: 0.001,
+          // Canvas animations (five-worlds cards) don't all honor
+          // reduced-motion; mask them so frame timing can't flake the diff.
+          mask: maskCanvas ? [page.locator("canvas")] : undefined,
+        });
+      });
+    }
   });
-
-  test("themes index matches baseline", async ({ page }) => {
-    await page.goto("/themes");
-    await page.waitForLoadState("networkidle");
-    await page.waitForFunction(() => document.fonts.ready);
-    await expect(page).toHaveScreenshot("themes-index.png", {
-      fullPage: true,
-      maxDiffPixelRatio: 0.001,
-    });
-  });
-
-  test("auth sign-in page matches baseline", async ({ page }) => {
-    await page.goto("/auth/sign-in");
-    await page.waitForLoadState("networkidle");
-    await page.waitForFunction(() => document.fonts.ready);
-    await expect(page).toHaveScreenshot("auth-sign-in.png", {
-      fullPage: true,
-      maxDiffPixelRatio: 0.001,
-    });
-  });
-
-  test("paywall page matches baseline", async ({ page }) => {
-    await page.goto("/paywall");
-    await page.waitForLoadState("networkidle");
-    await page.waitForFunction(() => document.fonts.ready);
-    await expect(page).toHaveScreenshot("paywall.png", {
-      fullPage: true,
-      maxDiffPixelRatio: 0.001,
-    });
-  });
-});
+}

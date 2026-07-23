@@ -84,7 +84,7 @@ export function MobileNav() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
               >
-                <span className="bg-primary text-page px-1.5 py-0.5 text-xs font-bold">
+                <span className="bg-primary text-on-primary px-1.5 py-0.5 text-xs font-bold">
                   T_
                 </span>
                 TENSORCRAFT

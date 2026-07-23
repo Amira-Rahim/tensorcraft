@@ -166,8 +166,8 @@ export function CheckoutButton({
           alreadyOwned
             ? "bg-transparent text-text-muted border border-border cursor-default"
             : recommended
-              ? "bg-primary text-page border border-primary hover:brutalist-shadow hover:-translate-x-0.5 hover:-translate-y-0.5"
-              : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-page"
+              ? "bg-primary text-on-primary border border-primary hover:brutalist-shadow hover:-translate-x-0.5 hover:-translate-y-0.5"
+              : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-on-primary"
         } ${className}`}
       >
         {alreadyOwned

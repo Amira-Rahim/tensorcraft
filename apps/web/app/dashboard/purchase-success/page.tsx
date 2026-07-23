@@ -151,7 +151,18 @@ export default async function PurchaseSuccessPage({
           <div
             className="text-5xl mb-6"
             style={{
-              color: firstTheme?.palette.primary ?? "var(--tc-primary)",
+              // Light-mode migration (Task 7): was
+              // `firstTheme?.palette.primary ?? "var(--tc-primary)"`. Under
+              // the current V1 scope only Deep Orbit is launched, so
+              // firstTheme is always the app's DEFAULT_THEME (== the root
+              // data-theme) and this var already matched the old hex
+              // exactly. NOTE for a future multi-theme launch: if a second
+              // theme ships and someone's first purchase is that theme, this
+              // will render the *root* theme's primary rather than the
+              // purchased theme's brand color — same cross-theme-identity
+              // caveat as the /themes and dashboard grid cards (Task 8
+              // territory), revisit then.
+              color: "var(--tc-primary)",
             }}
           >
             &#10003;
@@ -206,7 +217,11 @@ export default async function PurchaseSuccessPage({
                       <span
                         aria-hidden="true"
                         className="inline-block w-3 h-3 shrink-0"
-                        style={{ background: manifest.palette.primary }}
+                        // Same latent multi-theme caveat as the hero
+                        // checkmark above: fine while only one theme is
+                        // launched (accessThemes can only ever contain
+                        // DEFAULT_THEME today).
+                        style={{ background: "var(--tc-primary)" }}
                       />
                       <div className="min-w-0">
                         <div className="text-sm sm:text-base font-semibold text-text-primary truncate">
@@ -220,7 +235,7 @@ export default async function PurchaseSuccessPage({
                     <Link
                       href={`/themes/${slug}`}
                       data-testid={`access-start-${slug}`}
-                      className="inline-flex items-center justify-center h-11 px-5 text-sm font-medium font-mono rounded-none border-2 border-primary bg-primary text-page hover:bg-transparent hover:text-primary transition-colors brutalist-hover"
+                      className="inline-flex items-center justify-center h-11 px-5 text-sm font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover"
                     >
                       Start Now &rarr;
                     </Link>
@@ -323,7 +338,7 @@ export default async function PurchaseSuccessPage({
           <Link
             href={`/themes/${firstThemeSlug}`}
             data-testid="cta-first-lesson"
-            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-primary bg-primary text-page hover:bg-transparent hover:text-primary transition-colors brutalist-hover brutalist-shadow"
+            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover brutalist-shadow"
           >
             Start your first lesson &rarr;
           </Link>

@@ -215,7 +215,7 @@ export function DashboardView(props: DashboardProps) {
                   m.status === "active"
                     ? "color-mix(in srgb, var(--tc-primary) 3%, transparent)"
                     : hovM === i && m.status !== "locked"
-                      ? "rgba(255,255,255,0.02)"
+                      ? "var(--tc-primary-muted)"
                       : "transparent",
                 transition: "background 0.1s",
                 position: "relative",
@@ -249,7 +249,7 @@ export function DashboardView(props: DashboardProps) {
                     color:
                       m.status === "done"
                         ? "color-mix(in srgb, var(--tc-primary) 50%, transparent)"
-                        : "#A0A0A0",
+                        : "var(--tc-muted)",
                     letterSpacing: "0.06em",
                     marginBottom: 3,
                   }}
@@ -316,7 +316,8 @@ export function DashboardView(props: DashboardProps) {
               data-testid="streak-at-risk-toast"
               style={{
                 padding: "12px 40px",
-                background: "color-mix(in srgb, #FF8A2A 8%, transparent)",
+                background:
+                  "color-mix(in srgb, var(--tc-streak) 8%, transparent)",
                 borderBottom: `1px solid ${BORDER_VAR}`,
                 display: "flex",
                 alignItems: "center",
@@ -327,7 +328,7 @@ export function DashboardView(props: DashboardProps) {
               }}
             >
               <span style={{ color: WHITE }}>
-                <strong style={{ color: "#FF8A2A", fontWeight: 700 }}>
+                <strong style={{ color: "var(--tc-streak)", fontWeight: 700 }}>
                   Streak at risk.
                 </strong>{" "}
                 Yesterday you stayed active. Show up today to keep the count.
@@ -336,7 +337,7 @@ export function DashboardView(props: DashboardProps) {
                 <Link
                   href={resumeUrl}
                   style={{
-                    color: "#FF8A2A",
+                    color: "var(--tc-streak)",
                     textTransform: "uppercase",
                     letterSpacing: "0.12em",
                     fontSize: 10,
@@ -558,11 +559,13 @@ export function DashboardView(props: DashboardProps) {
                   padding: "36px 40px",
                   borderRight: i < 2 ? `1px solid ${BORDER_VAR}` : "none",
                   background: s.onFire
-                    ? "color-mix(in srgb, #FF8A2A 8%, transparent)"
+                    ? "color-mix(in srgb, var(--tc-streak) 8%, transparent)"
                     : s.accent
                       ? "color-mix(in srgb, var(--tc-primary) 2.5%, transparent)"
                       : "transparent",
-                  borderLeft: s.onFire ? "2px solid #FF8A2A" : undefined,
+                  borderLeft: s.onFire
+                    ? "2px solid var(--tc-streak)"
+                    : undefined,
                 }}
               >
                 <div

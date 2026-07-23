@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { DEFAULT_THEME, LAUNCHED_THEMES, PRICING } from "@tensorcraft/shared";
+import {
+  DEFAULT_THEME,
+  LAUNCHED_THEMES,
+  PRICING,
+  SCHEME_STORAGE_KEY,
+} from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
 import { ThemeProvider } from "./components/theme-provider";
 import { Nav } from "./components/nav";
@@ -88,10 +93,19 @@ export const metadata: Metadata = {
 // `viewportFit: "cover"` lets the layout extend behind the iOS notch when
 // pages opt in with `env(safe-area-inset-*)`. User-zoom is intentionally left
 // at the UA default (allowed), disabling zoom violates WCAG SC 1.4.4.
+// `themeColor` (light-mode rollout, 2026-07-22) sets the browser-chrome
+// (address bar / task switcher) color per OS scheme. SSR can't know the
+// resolved app scheme (that's the FOUC script's job for the DOM attribute),
+// but the media-query form lets the UA pick the right entry itself, so no
+// client JS is needed for this one.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#181818" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f5f2" },
+  ],
 };
 
 export default function RootLayout({
@@ -104,11 +118,21 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable}`}
       data-theme={DEFAULT_THEME}
+      // The FOUC script below sets `data-scheme="light"` synchronously
+      // before hydration for OS-light visitors. React 19 compares the
+      // server-rendered attributes (which never include `data-scheme`)
+      // against the live DOM at hydration time and flags the difference as
+      // a mismatch; `data-theme` never triggered this because
+      // `LAUNCHED_THEMES` only ever resolves to the same server default.
+      // Scoped one element deep (standard next-themes-style fix) — it only
+      // silences the warning for `<html>`'s own attributes, not its
+      // subtree.
+      suppressHydrationWarning
     >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&${JSON.stringify(LAUNCHED_THEMES)}.includes(t)){document.documentElement.dataset.theme=t}}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&${JSON.stringify(LAUNCHED_THEMES)}.includes(t)){document.documentElement.dataset.theme=t}}catch(e){}try{var s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)});if(s!=="light"&&s!=="dark"){s=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}if(s==="light"){document.documentElement.dataset.scheme="light"}}catch(e){}})()`,
           }}
         />
         <script
@@ -307,7 +331,7 @@ export default function RootLayout({
                 className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
                 style={{
                   background: "var(--tc-primary, #6BAA8A)",
-                  color: "var(--tc-bg, #181818)",
+                  color: "var(--tc-on-primary, #181818)",
                 }}
               >
                 Skip to content

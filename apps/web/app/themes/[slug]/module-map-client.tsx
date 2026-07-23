@@ -113,7 +113,7 @@ export function ModuleMapClient({
         className={`mt-6 inline-flex w-full items-center justify-between rounded-none border px-6 py-4 font-mono text-sm font-bold uppercase tracking-widest transition-all brutalist-hover ${FOCUS_RING}`}
         style={{
           background: "var(--tc-primary)",
-          color: "var(--tc-bg)",
+          color: "var(--tc-on-primary)",
           borderColor: "var(--tc-primary)",
         }}
         data-testid="continue-cta"
@@ -491,7 +491,7 @@ function LessonCard({
               className="shrink-0 rounded-none px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
               style={{
                 background: "var(--tc-primary)",
-                color: "var(--tc-bg)",
+                color: "var(--tc-on-primary)",
               }}
             >
               &#x2713; Complete

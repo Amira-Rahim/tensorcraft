@@ -37,7 +37,7 @@ export function DispatchTease({
       <p className="text-base text-text-primary leading-relaxed mb-5">{body}</p>
       <Link
         href={`/themes/${toThemeId}`}
-        className="inline-block px-5 py-2 text-xs font-mono font-semibold uppercase tracking-wider bg-primary text-page border-2 border-primary hover:bg-transparent hover:text-primary transition-colors"
+        className="inline-block px-5 py-2 text-xs font-mono font-semibold uppercase tracking-wider bg-primary text-on-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-colors"
         data-testid="dispatch-tease-cta"
       >
         {ctaLabel ?? `Continue this thread in ${toThemeName} →`}

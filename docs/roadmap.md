@@ -2,6 +2,8 @@
 
 > **Status:** living document. Supersedes the version-roadmap tables in `docs/prd.md` §7 and `docs/dev-plan.md` "Version Roadmap", both of which predate the 100k-paying-users goal and are reconciled below.
 > **Scope:** what to build, in what order, to grow revenue. Engineering phase detail stays in `docs/dev-plan.md`; pricing/positioning detail stays in `docs/product-plan.md`.
+> **Task index (2026-07-21):** the Horizon 1-3 work items are indexed canonically in `docs/post-launch-backlog.md` §8, the single source of truth for post-launch tasks. This file remains the strategy detail doc (arithmetic, gates, framing). Still-open Horizon 0 defects: `docs/launch-blockers.md`.
+> **Deduped 2026-07-22:** horizon sections carry rationale, decisions, and codebase facts only — item enumerations and exit criteria live solely in the backlog §8 index; still-open defect lists live solely in `launch-blockers.md`.
 
 ---
 
@@ -81,7 +83,7 @@ Conversion repairs to the current product, most of them trivial. **Several resto
   2. A returning customer whose session merely expired reads as a guest, and the route carries neither the already-own guard nor the upgrade credit → charged full price a second time.
   3. `checkout.session.async_payment_succeeded` resolves identity from `client_reference_id` only → a guest paying by bank debit stays `pending` forever: money taken, access never granted, nothing logged.
 
-  None were caught by the 30 passing API tests, because those mock `lib/guest-account.ts` wholesale and never exercise the post-payment redirect. **Before re-enabling:** guest-safe success page, ownership + credit checks (an email field collects the address without an inbox round-trip), guest fallback in both `async_payment_*` handlers, a unique index on `lower(profiles.email)`, an anon (not service-role) client for the OTP send, and real unmocked tests for `guest-account.ts`. See the corrections in `docs/privacy-compliance.md` — the original justification contained a false claim that payment verifies the email address.
+  None were caught by the 30 passing API tests, because those mock `lib/guest-account.ts` wholesale and never exercise the post-payment redirect. **Before re-enabling:** guest-safe success page, ownership + credit checks (an email field collects the address without an inbox round-trip), guest fallback in both `async_payment_*` handlers, a unique index on `lower(profiles.email)`, an anon (not service-role) client for the OTP send, and real unmocked tests for `guest-account.ts`. See the corrections in `docs/privacy-compliance.md` — the original justification contained a false claim that payment verifies the email address. (Re-enable is tracked as a work item in `post-launch-backlog.md` §8 Horizon 1, 2026-07-22; this block remains the defect record.)
 - [x] ~~Collapse the unbuyable bundle tiers.~~ **Won't do.** Sequential release (ship one theme, learn, apply) is deliberate strategy, and the gating is already honest — no one can overpay for missing content.
 
 ### P3 — Trust and qualification
@@ -99,32 +101,13 @@ Conversion repairs to the current product, most of them trivial. **Several resto
 
 **Treat all historical funnel data as unreliable, not merely sparse.** Rates were computed against a doubled denominator, and first-session behaviour — the entire acquisition and activation path — was never recorded at all.
 
-### Still open from the 2026-07-21 re-audit (not yet fixed)
+### Still open from the 2026-07-21 re-audit
 
-Ranked. The first two are the ones to do next.
-
-- [ ] **SECURITY: `SECURITY DEFINER` functions are world-callable via PostgREST.** Migration `036` documents this exact vulnerability class in its own header, then fixes exactly one function — it is the only `revoke` in the schema. Still exposed to `anon`: `refresh_dashboard_stats()` (`012:48`, no args, no guard, forces a full materialized-view refresh → trivial DoS) and `compute_user_skill_genome(p_user_id, p_theme_id)` (`014:6`, accepts an **arbitrary user id**, no `auth.uid()` check). The Hono rate limiter does not protect this surface: PostgREST is a separate public endpoint reached with the anon key that ships in `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-- [ ] **Total-outage SPOF.** `middleware.ts` calls `auth.getUser()` with no try/catch and matches everything in `public/`. If Supabase Auth is slow or down, *every* request 500s — including the static landing page.
-- [ ] **`skill_events` partitions end 2027-04-01** and `ensure_skill_events_partitions()` has zero callers. Inserts are fire-and-forget, so this fails **silently** and the skill genome dies unnoticed.
-- [ ] **Six `auth.getUser()` round-trips per authenticated page view**; no `React.cache()` anywhere in the repo.
-- [ ] **`hasThemePurchase` fails closed and silently** (`lib/progress.ts:55-69` discards the error) — a transient fault shows a **paying customer** the paywall, with no error state or retry. Refund/support driver.
-- [ ] **Checkout has no timeout and a double-charge window.** `checkout-button.tsx` uses raw `fetch` instead of the project's own `apiFetch` (10s abort + toast), and re-enables the button while the browser is still navigating to Stripe.
-- [ ] **No signup instrumentation at all** — no `signup_started` / `signup_completed` / `magic_link_sent` anywhere. The single most important funnel step is unmeasurable.
-- [ ] **First lesson opens with a ~15.5s auto-playing scene** during which the page is functionally blank, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the whole product.
-- [ ] **Lessons are near-empty for crawlers** (~100 indexable words each; steps 1-5 are not in the DOM) and require JS to render at all, with no `<noscript>`.
-- [ ] **Mobile: the code editor sets 13px type**, below the iOS 16px auto-zoom threshold, and there is no mobile affordance past the mandatory exercise gate. No axe run exists at any mobile viewport.
-- [ ] **Guest notice is false and discouraging** — the lesson header says "your progress is not saved" while `guest-progress-bridge.tsx` demonstrably does save and replay it.
-- [ ] **No email capture for guests anywhere in the free module** — a guest who reads two lessons and leaves is permanently unreachable.
-- [ ] Cost/perf: no `immutable` headers on `/vendor` or `/models` (1.4 MB TFJS revalidates every session, ~$800/yr from a one-line fix); ~249 kB gzipped of TFJS eager on the landing page; all 22 RLS policies use unwrapped `auth.uid()`; missing `(user_id, attempted_at DESC)` index.
+Tracked canonically in `docs/launch-blockers.md`; not duplicated here. Status has moved since this section was first written: the six Tier 1 defects (world-callable `SECURITY DEFINER` RPCs, middleware SPOF, paying customers shown the paywall, checkout hang/double-charge, missing signup instrumentation, false guest-progress notice) were **fixed in code the same day** — one blocking operator step remains (apply migration `039`). Everything else open lives in that doc's Tier 1-OPS (operator/distribution setup), Tier 2 (fix in week 1, pre-ad-spend) and Tier 3 (fix before ~10k users). One item this list previously carried was stale: `immutable` headers on `/vendor`/`/models` shipped 2026-07-21 (`next.config.ts`).
 
 ### New environment variables (operator)
 
-| Var | Purpose |
-|---|---|
-| `KIT_TAG_PAYWALL_HIT` | Kit tag id for the paywall-hit intent signal |
-| `KIT_TAG_MODULE_1_COMPLETE` | Kit tag id for end-of-free-content |
-
-Both degrade gracefully: an unset id makes `/api/email` return `{ ok: true, skipped: true }` rather than erroring.
+`KIT_TAG_PAYWALL_HIT` and `KIT_TAG_MODULE_1_COMPLETE` — documented with the rest of the Kit setup in `docs/launch-blockers.md` Tier 1-OPS. Setting them late is safe: R2-7 made missing-tag skips recoverable.
 
 **Why Horizon 0 came first:** it is the cheapest revenue in the plan, and it produces the funnel data (`paywall_hit`, conversion by step) that Gate 3 below requires before any spending scales. That data now exists for the first time.
 
@@ -143,31 +126,37 @@ Preconditions, not preferences. Violating the order wastes capital.
 
 ## 4. Horizon 1 — Fix the Economics (0–9 months)
 
-**Widen the market (Gate 1).** ICP coupling is thin and well-isolated: the ML lessons are framework-agnostic; "frontend dev" lives in one optional `concept.bridge` frontmatter field plus a `Framework = "react"` union (`packages/shared/src/bridges.ts:11`) that is **already typed for `variants`** but only ever populates `react`. Bridge content is already ~75% general JS. So: reframe copy to "web/JS developers", relabel the React-specific bridge subset, launch more of the 4 built-but-gated themes, and build the missing authoring scaffold (`scripts/new-lesson.mjs` — no generator exists today; authoring velocity is the volume bottleneck).
+_Work items: `docs/post-launch-backlog.md` §8, Horizon 1. This section carries rationale and decisions only._
 
-**Add recurring revenue (Gate 2).** Introduce an all-access subscription (~$15–25/mo) alongside one-time purchases. Requires: `subscriptions` table + persisted `stripe_customer_id`; a real `entitlements` table replacing ad-hoc derivation from `purchases.theme_ids`; `mode:"subscription"` checkout; webhook handling for `customer.subscription.*`, `invoice.paid`, `invoice.payment_failed` (dunning); billing management UI. Money-touching — full TDD and Stripe test-mode e2e before any live charge.
+**Widen the market (Gate 1).** Cheap to open, and the codebase proves it: ICP coupling is thin and well-isolated — the ML lessons are framework-agnostic, "frontend dev" lives in one optional `concept.bridge` frontmatter field plus a `Framework = "react"` union (`packages/shared/src/bridges.ts:11`) that is **already typed for `variants`**, and bridge content is already ~75% general JS. The volume bottleneck is authoring velocity (no lesson generator exists), which is what puts the authoring scaffold on the critical path.
 
-**Instrument growth.** Add activation metric, referral/virality events, and cohort-LTV dashboards. Existing PostHog taxonomy covers conversion and onboarding well but has **no virality instrumentation**.
+**Add recurring revenue (Gate 2).** An all-access subscription (~$15–25/mo) alongside one-time purchases, replacing ad-hoc entitlement derivation with a real entitlements model. Money-touching — full TDD and Stripe test-mode e2e before any live charge.
 
-**Exit:** LTV > 3×CAC provable; ads can turn on against warm traffic; ≥3 themes live.
+**Payment rails (decided 2026-07-22): stay on Stripe; Lemon Squeezy rejected.** Lemon Squeezy has been in maintenance mode since Stripe acquired it (July 2024) — its team now builds Stripe Managed Payments (SMP), Stripe's own merchant-of-record product, and LS support/updates have visibly slowed. Adopting it in 2026 means migrating twice. Fee reality on the $59–159 ladder: Stripe direct 2.9% + 30¢ (~3.2% effective on $99); Lemon Squeezy 5% + 50¢, plus 1.5% international and 0.5% subscription surcharges (~5.5%); SMP 6.4% + 30¢ (~6.7%). The MoR premium is 2.3–3.5 points of revenue, and what it buys — global tax registration, filing, remittance — matters to us almost entirely as EU/UK VAT, which is already a launch blocker (`docs/launch-blockers.md` R2-4). Stripe Tax (+0.5%/txn) automates calculation and collection but leaves OSS registration and filing with us.
+
+The money path is deep and freshly hardened (`apps/api/src/routes/payments.ts`, migrations 035/037/038, Run #7 behavioral proofs); switching providers pre-launch is pure risk with zero launch upside. Re-evaluate MoR only when the subscription launches or international mix makes OSS filing a real operating cost — and then compare Paddle (5% + 50¢, mature B2B invoicing, relevant to Horizon 3 seats) and Polar (~4% + 40¢) against SMP, not Lemon Squeezy.
+
+**Instrument growth.** Existing PostHog taxonomy covers conversion and onboarding well but has **no virality instrumentation** — nothing measures whether users bring users, which the Gate 2 LTV math and Horizon 2's K-factor exit both depend on.
 
 ---
 
 ## 5. Horizon 2 — Build Reach (9–24 months)
 
-**Viral competition arena.** The expensive half already exists: real in-browser TFJS grading with numeric scores in a sandboxed worker (`packages/ui/src/mdx/exercise-runner.ts`), reaction-time capture, trained model assets, and a public OG-imaged shareable (`certificates/[id]`). What is missing is purely the **cross-user layer** — every gamification table today is per-user RLS with zero aggregation, and the Arena exists only as prose in `docs/product-plan.md`. Build: public no-auth weekly challenge, `challenges`/`arena_submissions`/`leaderboard` tables, ranking service, arena result cards, referral loop, public profiles.
+_Work items: `docs/post-launch-backlog.md` §8, Horizon 2._
+
+**Viral competition arena.** The expensive half already exists: real in-browser TFJS grading with numeric scores in a sandboxed worker (`packages/ui/src/mdx/exercise-runner.ts`), reaction-time capture, trained model assets, and a public OG-imaged shareable (`certificates/[id]`). What is missing is purely the **cross-user layer** — every gamification table today is per-user RLS with zero aggregation, and the Arena exists only as prose in `docs/product-plan.md`.
 
 Keep the arena **free** — monetize via the free→paid funnel, not an arena paywall. The $29/yr arena concept in `product-plan.md` undercuts the virality that is the entire point.
 
-**Scale SEO.** Rebuild the deleted `/bridges` catalog as a public page (the 51-bridge dataset is still in `packages/shared/src/bridges.ts`, now rendered nowhere public), flip the sitemap from throttled "core" to "full", and raise the blog from its current single post using the existing news→lesson matching pipeline.
-
-**Exit:** K measurable and trending > 0.5; arena → signup → paid instrumented.
+**Scale SEO.** The assets already exist, disconnected: the 51-bridge dataset (`packages/shared/src/bridges.ts`) has rendered nowhere public since the 2026-05-05 revert, the sitemap is deliberately throttled to "core", and the blog sits at one post despite a working news→lesson matching pipeline.
 
 ---
 
 ## 6. Horizon 3 — Leverage the Count (24–48 months)
 
-**Enterprise / seats.** Currently zero: no orgs, members, seats, or invitations; role enum is a flat `user | admin`. Build orgs + org-scoped roles (`billing_owner | manager | learner`), seat-quantity Stripe billing with proration, a team progress dashboard, SSO/SCIM, and the procurement table stakes (SOC2, invoicing, DPA).
+_Work items: `docs/post-launch-backlog.md` §8, Horizon 3._
+
+**Enterprise / seats.** Currently zero exists in the codebase: no orgs, members, seats, or invitations; the role enum is a flat `user | admin`. Everything procurement expects — SSO/SCIM, SOC2, invoicing, DPA — is greenfield.
 
 **Sequenced last despite carrying ~60% of the count** — it sits behind Gate 3 (buyers demand completion data) and Gate 4 (a single narrow path fails procurement). Built earlier, it produces a seat-management system with nothing sellable to put in it.
 

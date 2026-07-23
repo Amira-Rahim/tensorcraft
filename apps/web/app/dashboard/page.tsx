@@ -400,6 +400,7 @@ export default async function DashboardPage() {
       tagline: theme.tagline,
       specialization: theme.specialization,
       primary: theme.palette.primary,
+      primaryLight: theme.paletteLight.primary,
       owned,
       isActive: theme.slug === activeTheme.slug && owned,
       completedLessons: completedForTheme,

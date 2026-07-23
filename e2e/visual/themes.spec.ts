@@ -20,23 +20,31 @@ const THEME_SLUGS = [
   "terra-grid",
 ] as const;
 
-test.describe("Visual: Theme Landing Pages", () => {
-  test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
+/* Scheme matrix (light-mode rollout, 2026-07-23): dark keeps the original
+   baseline names so the pre-light-mode baselines stay valid; light snapshots
+   get a `-light` suffix and are minted fresh. */
+for (const scheme of ["dark", "light"] as const) {
+  const suffix = scheme === "light" ? "-light" : "";
 
-  test.beforeEach(async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.emulateMedia({ reducedMotion: "reduce" });
-  });
+  test.describe(`Visual: Theme Landing Pages [${scheme}]`, () => {
+    test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
+    test.use({ colorScheme: scheme });
 
-  for (const slug of THEME_SLUGS) {
-    test(`theme ${slug} renders correct palette`, async ({ page }) => {
-      await page.goto(`/themes/${slug}`);
-      await page.waitForLoadState("networkidle");
-      await page.waitForFunction(() => document.fonts.ready);
-      await expect(page).toHaveScreenshot(`theme-${slug}.png`, {
-        fullPage: true,
-        maxDiffPixelRatio: 0.001,
-      });
+    test.beforeEach(async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await page.emulateMedia({ reducedMotion: "reduce" });
     });
-  }
-});
+
+    for (const slug of THEME_SLUGS) {
+      test(`theme ${slug} renders correct palette`, async ({ page }) => {
+        await page.goto(`/themes/${slug}`);
+        await page.waitForLoadState("networkidle");
+        await page.waitForFunction(() => document.fonts.ready);
+        await expect(page).toHaveScreenshot(`theme-${slug}${suffix}.png`, {
+          fullPage: true,
+          maxDiffPixelRatio: 0.001,
+        });
+      });
+    }
+  });
+}

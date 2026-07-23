@@ -59,20 +59,6 @@ interface LessonStepsProps {
     glossaryTerms?: Array<{ term: string; definition: string }>;
   };
   exercises: ExerciseData[];
-  theme: {
-    displayName: string;
-    palette: {
-      primary: string;
-      accent: string;
-      text: string;
-      muted: string;
-      surface: string;
-      bg: string;
-      border: string;
-      codeBg: string;
-    };
-    terminology: { lesson: string; module: string; exercise: string };
-  };
   themeSlug: string;
   moduleSlug: string;
   moduleName?: string;
@@ -172,7 +158,6 @@ export function LessonSteps(props: LessonStepsProps) {
 function LessonStepsInner({
   lesson,
   exercises,
-  theme,
   themeSlug,
   moduleSlug,
   moduleName,
@@ -460,7 +445,7 @@ function LessonStepsInner({
           <span key={i}>
             {i > 0 ? " " : ""}
             {i === idx ? (
-              <span style={{ color: theme.palette.primary }}>{word}</span>
+              <span style={{ color: "var(--tc-primary)" }}>{word}</span>
             ) : (
               word
             )}
@@ -480,7 +465,6 @@ function LessonStepsInner({
     themeSlug,
     moduleSlug,
     lessonSlug,
-    theme,
   };
 
   // Distinct speakers across the lesson dialogue, for the briefing cast chips.
@@ -489,7 +473,7 @@ function LessonStepsInner({
   const bottomNav = (
     <div
       className="flex items-center justify-between mt-10 pt-6"
-      style={{ borderTop: `1px solid ${theme.palette.border}` }}
+      style={{ borderTop: "1px solid var(--tc-border)" }}
     >
       {/* Back button: the nav was forward-only, leaving the thin 6px step
           segments as the only way back (2026-07-14 UX audit). */}
@@ -498,7 +482,7 @@ function LessonStepsInner({
           type="button"
           onClick={goBack}
           className="text-sm font-mono px-6 py-3 transition-colors"
-          style={{ color: theme.palette.muted }}
+          style={{ color: "var(--tc-muted)" }}
         >
           &larr; Back
         </button>
@@ -512,10 +496,8 @@ function LessonStepsInner({
           disabled={!canContinue}
           className="text-sm font-mono font-bold px-8 py-3 transition-all"
           style={{
-            background: canContinue
-              ? theme.palette.primary
-              : theme.palette.border,
-            color: canContinue ? theme.palette.bg : theme.palette.muted,
+            background: canContinue ? "var(--tc-primary)" : "var(--tc-border)",
+            color: canContinue ? "var(--tc-bg)" : "var(--tc-muted)",
             cursor: canContinue ? "pointer" : "not-allowed",
             opacity: canContinue ? 1 : 0.3,
           }}
@@ -531,7 +513,10 @@ function LessonStepsInner({
         <Link
           href={`/themes/${themeSlug}/${moduleSlug}/${nextLesson.slug}`}
           className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
-          style={{ background: theme.palette.primary, color: theme.palette.bg }}
+          style={{
+            background: "var(--tc-primary)",
+            color: "var(--tc-on-primary)",
+          }}
         >
           Next Lesson &rarr;
         </Link>
@@ -539,7 +524,10 @@ function LessonStepsInner({
         <Link
           href={`/themes/${themeSlug}`}
           className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
-          style={{ background: theme.palette.primary, color: theme.palette.bg }}
+          style={{
+            background: "var(--tc-primary)",
+            color: "var(--tc-on-primary)",
+          }}
         >
           Back to Mission Map &rarr;
         </Link>
@@ -558,7 +546,6 @@ function LessonStepsInner({
         lesson={lesson}
         moduleSlug={moduleSlug}
         exercises={exercises}
-        theme={theme}
         themeSlug={themeSlug}
         lessonSlug={lessonSlug}
         scriptAutoPlay={!scriptPlayedRef.current}
@@ -567,7 +554,6 @@ function LessonStepsInner({
     );
     shellRight = (
       <SceneCard
-        theme={theme}
         themeSlug={themeSlug}
         scene={lesson.scene}
         pattern={lesson.pattern}
@@ -631,7 +617,7 @@ function LessonStepsInner({
             data-testid="challenge-passed-banner"
             className="mt-4 flex items-center justify-between gap-4 border px-5 py-4"
             style={{
-              borderColor: theme.palette.primary,
+              borderColor: "var(--tc-primary)",
               background:
                 "color-mix(in srgb, var(--tc-primary) 8%, transparent)",
             }}
@@ -639,7 +625,7 @@ function LessonStepsInner({
           >
             <p
               className="font-mono text-xs uppercase tracking-widest"
-              style={{ color: theme.palette.primary }}
+              style={{ color: "var(--tc-primary)" }}
             >
               {exercises.length > 1
                 ? "All exercises passed"
@@ -650,8 +636,8 @@ function LessonStepsInner({
               onClick={goNext}
               className="text-sm font-mono font-bold px-6 py-2.5"
               style={{
-                background: theme.palette.primary,
-                color: theme.palette.bg,
+                background: "var(--tc-primary)",
+                color: "var(--tc-on-primary)",
               }}
             >
               Continue &rarr;
@@ -669,11 +655,7 @@ function LessonStepsInner({
           terms={lesson.glossaryTerms ?? []}
           activeTerm={activeTerm}
         />
-        <MissionProgress
-          theme={theme}
-          lessons={lessons}
-          lessonSlug={lessonSlug}
-        />
+        <MissionProgress lessons={lessons} lessonSlug={lessonSlug} />
       </div>
     );
   } else {
@@ -692,9 +674,10 @@ function LessonStepsInner({
         onClick={() => setPaneOpen((o) => !o)}
         className="lg:hidden mb-4 text-xs font-mono uppercase tracking-[2px] px-4 py-2 transition-colors"
         style={{
-          color: theme.palette.primary,
-          border: `1px solid ${theme.palette.primary}40`,
-          background: `${theme.palette.primary}10`,
+          color: "var(--tc-primary)",
+          border:
+            "1px solid color-mix(in srgb, var(--tc-primary) 25%, transparent)",
+          background: "color-mix(in srgb, var(--tc-primary) 6%, transparent)",
         }}
       >
         {paneOpen
@@ -739,7 +722,6 @@ function LessonStepsInner({
                 themeSlug={themeSlug}
                 moduleSlug={moduleSlug}
                 moduleName={moduleName}
-                theme={theme}
                 currentStep={currentStep}
                 maxStepReached={maxStepReached}
                 setCurrentStep={setCurrentStep}
@@ -793,7 +775,6 @@ function ChromeBar({
   themeSlug,
   moduleSlug,
   moduleName,
-  theme,
   currentStep,
   maxStepReached,
   setCurrentStep,
@@ -803,7 +784,6 @@ function ChromeBar({
   themeSlug: string;
   moduleSlug: string;
   moduleName?: string;
-  theme: LessonStepsProps["theme"];
   currentStep: number;
   maxStepReached: number;
   setCurrentStep: (n: number) => void;
@@ -827,13 +807,12 @@ function ChromeBar({
           themeSlug={themeSlug}
           moduleSlug={moduleSlug}
           moduleName={moduleName ?? "Module"}
-          theme={theme}
         />
       )}
       <Link
         href={`/themes/${themeSlug}`}
         className="text-sm font-mono flex items-center gap-2 shrink-0 px-3 py-2 border border-transparent opacity-70 transition-all hover:opacity-100 hover:border-current"
-        style={{ color: theme.palette.text }}
+        style={{ color: "var(--tc-text)" }}
       >
         {/* The label is the widest fixed child; drop the words on the
             narrowest screens so the first row still fits. The arrow plus the
@@ -870,9 +849,7 @@ function ChromeBar({
               <span
                 className="h-1.5 w-full transition-all duration-300"
                 style={{
-                  background: filled
-                    ? theme.palette.primary
-                    : theme.palette.border,
+                  background: filled ? "var(--tc-primary)" : "var(--tc-border)",
                   opacity: !visited ? 0.45 : 1,
                   borderRadius: 2,
                 }}
@@ -885,9 +862,10 @@ function ChromeBar({
       <span
         className="text-xs font-mono shrink-0 tracking-wider px-3 py-1"
         style={{
-          color: theme.palette.primary,
-          background: `${theme.palette.primary}12`,
-          border: `1px solid ${theme.palette.primary}25`,
+          color: "var(--tc-primary)",
+          background: "color-mix(in srgb, var(--tc-primary) 7%, transparent)",
+          border:
+            "1px solid color-mix(in srgb, var(--tc-primary) 15%, transparent)",
         }}
       >
         {currentStep + 1} / {TOTAL_STEPS}
@@ -913,13 +891,11 @@ export const PATTERN_LABELS: Record<
 
 /* Right-rail card for the Briefing: scene slugline + cast avatars. */
 function SceneCard({
-  theme,
   themeSlug,
   scene,
   pattern,
   speakers,
 }: {
-  theme: LessonStepsProps["theme"];
   themeSlug: string;
   scene?: { location: string; time?: string };
   pattern?: LessonStepsProps["lesson"]["pattern"];
@@ -932,7 +908,7 @@ function SceneCard({
     <div className="flex flex-col gap-5">
       <span
         className="font-mono text-xs uppercase tracking-[0.2em]"
-        style={{ color: theme.palette.primary }}
+        style={{ color: "var(--tc-primary)" }}
       >
         Scene
       </span>
@@ -940,14 +916,14 @@ function SceneCard({
         <div className="flex flex-col gap-1">
           <span
             className="font-mono text-sm"
-            style={{ color: theme.palette.text }}
+            style={{ color: "var(--tc-text)" }}
           >
             {scene.location}
           </span>
           {scene.time && (
             <span
               className="font-mono text-xs uppercase tracking-wider"
-              style={{ color: theme.palette.muted }}
+              style={{ color: "var(--tc-muted)" }}
             >
               {scene.time}
             </span>
@@ -958,17 +934,17 @@ function SceneCard({
         <div
           data-testid="pattern-format-tag"
           className="flex flex-col gap-1 border-l-2 pl-3"
-          style={{ borderColor: theme.palette.primary }}
+          style={{ borderColor: "var(--tc-primary)" }}
         >
           <span
             className="font-mono text-[10px] uppercase tracking-[2px]"
-            style={{ color: theme.palette.muted }}
+            style={{ color: "var(--tc-muted)" }}
           >
             Format
           </span>
           <span
             className="font-mono text-xs"
-            style={{ color: theme.palette.text }}
+            style={{ color: "var(--tc-text)" }}
           >
             {patternLabel}
           </span>
@@ -978,7 +954,7 @@ function SceneCard({
         <div className="flex flex-col gap-2">
           <span
             className="font-mono text-[10px] uppercase tracking-[2px]"
-            style={{ color: theme.palette.muted }}
+            style={{ color: "var(--tc-muted)" }}
           >
             Cast
           </span>
@@ -996,21 +972,21 @@ function SceneCard({
                         ? `/characters/${themeSlug}/${ch.slug}.webp`
                         : undefined
                     }
-                    accentColor={theme.palette.primary}
+                    accentColor={"var(--tc-primary)"}
                     isAI={ch?.isAI}
                     size={30}
                   />
                   <div className="flex flex-col">
                     <span
                       className="font-mono text-xs"
-                      style={{ color: theme.palette.text }}
+                      style={{ color: "var(--tc-text)" }}
                     >
                       {s}
                     </span>
                     {ch?.role && (
                       <span
                         className="font-mono text-[10px]"
-                        style={{ color: theme.palette.muted }}
+                        style={{ color: "var(--tc-muted)" }}
                       >
                         {ch.role}
                       </span>
@@ -1028,11 +1004,9 @@ function SceneCard({
 
 /* Right-rail mission progress for the Takeaways step. */
 function MissionProgress({
-  theme,
   lessons,
   lessonSlug,
 }: {
-  theme: LessonStepsProps["theme"];
   lessons: LessonStepsProps["lessons"];
   lessonSlug: string;
 }) {
@@ -1042,11 +1016,11 @@ function MissionProgress({
     <div className="flex flex-col gap-3">
       <span
         className="font-mono text-xs uppercase tracking-[0.2em]"
-        style={{ color: theme.palette.primary }}
+        style={{ color: "var(--tc-primary)" }}
       >
         Mission Progress
       </span>
-      <span className="text-sm" style={{ color: theme.palette.muted }}>
+      <span className="text-sm" style={{ color: "var(--tc-muted)" }}>
         {done} / {lessons.length} complete
       </span>
       <ul className="flex flex-col gap-1.5">
@@ -1057,7 +1031,7 @@ function MissionProgress({
               key={l.slug}
               className="text-sm flex items-center gap-2"
               style={{
-                color: isCurrent ? theme.palette.text : theme.palette.muted,
+                color: isCurrent ? "var(--tc-text)" : "var(--tc-muted)",
               }}
             >
               <span
@@ -1065,8 +1039,8 @@ function MissionProgress({
                 style={{
                   background:
                     l.completed || isCurrent
-                      ? theme.palette.primary
-                      : theme.palette.border,
+                      ? "var(--tc-primary)"
+                      : "var(--tc-border)",
                 }}
               />
               {l.title}
@@ -1117,7 +1091,6 @@ function StepBriefing({
   lesson,
   moduleSlug,
   exercises,
-  theme,
   themeSlug,
   lessonSlug,
   scriptAutoPlay,
@@ -1126,7 +1099,6 @@ function StepBriefing({
   lesson: LessonStepsProps["lesson"];
   moduleSlug: string;
   exercises: ExerciseData[];
-  theme: LessonStepsProps["theme"];
   themeSlug: string;
   lessonSlug: string;
   scriptAutoPlay: boolean;
@@ -1253,23 +1225,23 @@ function StepBriefing({
     >
       <div
         className="text-xs font-mono uppercase tracking-[3px] mb-6"
-        style={{ color: theme.palette.primary }}
+        style={{ color: "var(--tc-primary)" }}
       >
         SECTOR {moduleSlug} &middot; MISSION {lesson.order}
       </div>
 
       <h1
         className="text-4xl md:text-5xl font-bold mb-5 leading-[1.1] tracking-tight"
-        style={{ color: theme.palette.text }}
+        style={{ color: "var(--tc-text)" }}
       >
-        {highlightFirstLongWord(lesson.title, theme.palette.primary)}
+        {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
       </h1>
 
       <div
         className="font-mono text-xs uppercase tracking-wider mb-8 pt-5"
         style={{
-          color: theme.palette.muted,
-          borderTop: `1px solid ${theme.palette.border}`,
+          color: "var(--tc-muted)",
+          borderTop: "1px solid var(--tc-border)",
         }}
       >
         {/* Reading + embedded exercises: "14 min · 2 exercises" where the
@@ -1286,8 +1258,8 @@ function StepBriefing({
             onClick={() => finish(false)}
             className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
             style={{
-              color: theme.palette.muted,
-              border: `1px solid ${theme.palette.border}`,
+              color: "var(--tc-muted)",
+              border: "1px solid var(--tc-border)",
               background: "transparent",
             }}
           >
@@ -1299,8 +1271,8 @@ function StepBriefing({
             onClick={play}
             className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
             style={{
-              color: theme.palette.muted,
-              border: `1px solid ${theme.palette.border}`,
+              color: "var(--tc-muted)",
+              border: "1px solid var(--tc-border)",
               background: "transparent",
             }}
           >
@@ -1324,7 +1296,7 @@ function StepBriefing({
       <p
         data-script-beat=""
         className="text-sm italic leading-[1.85] mb-7 pl-6 max-w-[52ch]"
-        style={{ color: theme.palette.muted }}
+        style={{ color: "var(--tc-muted)" }}
       >
         {lesson.context.narrative}
       </p>
@@ -1353,21 +1325,19 @@ function StepConcept({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  theme,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  theme: LessonStepsProps["theme"];
 }) {
   return (
     <div>
-      <PhaseChip theme={theme} label="Concept" icon={"\u25CE"} />
+      <PhaseChip label="Concept" icon={"\u25CE"} />
       <p
         className="text-base leading-[1.85] mb-6"
-        style={{ color: theme.palette.muted }}
+        style={{ color: "var(--tc-muted)" }}
       >
         {lesson.concept.explanation}
       </p>
@@ -1395,18 +1365,16 @@ function StepCode({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  theme,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  theme: LessonStepsProps["theme"];
 }) {
   return (
     <div>
-      <PhaseChip theme={theme} label="Code" icon={"\u2318"} />
+      <PhaseChip label="Code" icon={"\u2318"} />
       <div className="lesson-prose">
         <LessonContent
           lesson={lesson}
@@ -1431,18 +1399,16 @@ function StepChallenge({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  theme,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  theme: LessonStepsProps["theme"];
 }) {
   return (
     <div>
-      <PhaseChip theme={theme} label="Challenge" icon={"\u26A1"} />
+      <PhaseChip label="Challenge" icon={"\u26A1"} />
       {/* Left column: brief + hints only. The Exercise editor itself renders
           in the right work pane (CHALLENGE_RIGHT) so its submit handler runs
           exactly once. */}
@@ -1470,18 +1436,16 @@ function StepTakeaways({
   themeSlug,
   moduleSlug,
   lessonSlug,
-  theme,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  theme: LessonStepsProps["theme"];
 }) {
   return (
     <div>
-      <PhaseChip theme={theme} label="Takeaways" icon={"\u2713"} />
+      <PhaseChip label="Takeaways" icon={"\u2713"} />
       <div className="lesson-prose">
         <LessonContent
           lesson={lesson}
@@ -1503,7 +1467,6 @@ function StepTakeaways({
 function StepConsequence({
   lesson,
   exercises,
-  theme,
   themeSlug,
   moduleSlug,
   lessonSlug,
@@ -1511,7 +1474,6 @@ function StepConsequence({
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
-  theme: LessonStepsProps["theme"];
   themeSlug: string;
   moduleSlug: string;
   lessonSlug: string;
@@ -1530,7 +1492,7 @@ function StepConsequence({
         aria-hidden="true"
         data-decorative="true"
         className="font-mono text-[9px] uppercase tracking-[3px] mb-8"
-        style={{ color: theme.palette.border }}
+        style={{ color: "var(--tc-border)" }}
       >
         Fade Out
       </div>
@@ -1547,21 +1509,22 @@ function StepConsequence({
       <div
         className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[2px] px-4 py-1.5 mb-6"
         style={{
-          color: theme.palette.primary,
-          border: `1px solid ${theme.palette.primary}25`,
-          background: `${theme.palette.primary}0F`,
+          color: "var(--tc-primary)",
+          border:
+            "1px solid color-mix(in srgb, var(--tc-primary) 15%, transparent)",
+          background: "color-mix(in srgb, var(--tc-primary) 6%, transparent)",
         }}
       >
         <span
           className="w-1.5 h-1.5 inline-block"
-          style={{ background: theme.palette.primary }}
+          style={{ background: "var(--tc-primary)" }}
         />
         Mission Complete
       </div>
 
       <h2
         className="text-[26px] font-bold mb-5"
-        style={{ color: theme.palette.text }}
+        style={{ color: "var(--tc-text)" }}
       >
         {lesson.title}
       </h2>
@@ -1569,7 +1532,7 @@ function StepConsequence({
       {/* Narrative as italic cinematic narration */}
       <p
         className="text-[15px] italic leading-[1.9] max-w-[520px] mx-auto mb-8"
-        style={{ color: theme.palette.muted }}
+        style={{ color: "var(--tc-muted)" }}
       >
         {lesson.consequence.narrative}
       </p>
@@ -1594,27 +1557,27 @@ function StepConsequence({
           href={`/themes/${themeSlug}/${moduleSlug}/${nextLesson.slug}`}
           className="inline-flex items-center gap-4 text-left px-6 py-5 max-w-[420px] mx-auto transition-all hover:translate-x-[-2px] hover:translate-y-[-2px]"
           style={{
-            background: theme.palette.surface,
-            border: `1px solid ${theme.palette.border}`,
+            background: "var(--tc-surface)",
+            border: "1px solid var(--tc-border)",
           }}
         >
           <div className="flex-1">
             <div
               className="text-[9px] font-mono uppercase tracking-[1.5px] mb-1"
-              style={{ color: theme.palette.muted }}
+              style={{ color: "var(--tc-muted)" }}
             >
               Next Mission
             </div>
             <div
               className="text-[15px] font-semibold"
-              style={{ color: theme.palette.text }}
+              style={{ color: "var(--tc-text)" }}
             >
               {nextLesson.title}
             </div>
           </div>
           <span
             className="text-base shrink-0"
-            style={{ color: theme.palette.primary }}
+            style={{ color: "var(--tc-primary)" }}
           >
             &rarr;
           </span>
@@ -1628,19 +1591,11 @@ function StepConsequence({
    Shared UI helpers
    ────────────────────────────────────────────── */
 
-function PhaseChip({
-  theme,
-  label,
-  icon,
-}: {
-  theme: LessonStepsProps["theme"];
-  label: string;
-  icon: string;
-}) {
+function PhaseChip({ label, icon }: { label: string; icon: string }) {
   return (
     <div
       className="text-[10px] font-mono uppercase tracking-[2px] mb-6 flex items-center gap-2"
-      style={{ color: theme.palette.primary }}
+      style={{ color: "var(--tc-primary)" }}
     >
       <span>{icon}</span> {label}
     </div>

@@ -714,7 +714,7 @@ export function SettingsForm({
                     className="font-mono font-bold rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       background: "var(--tc-primary)",
-                      color: "var(--tc-bg)",
+                      color: "var(--tc-on-primary)",
                       border: "2px solid var(--tc-primary)",
                       fontSize: 11,
                       padding: "12px 22px",
@@ -735,7 +735,7 @@ export function SettingsForm({
                   className="font-mono font-bold rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover brutalist-shadow disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     background: "var(--tc-primary)",
-                    color: "var(--tc-bg)",
+                    color: "var(--tc-on-primary)",
                     border: "2px solid var(--tc-primary)",
                     fontSize: 11,
                     padding: "12px 22px",

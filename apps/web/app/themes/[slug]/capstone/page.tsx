@@ -170,7 +170,22 @@ export default async function CapstonePage({ params }: Props) {
   const ownsAll = launchedSlugs.every((t) => ownedThemes.has(t));
 
   const displayName = profile?.display_name ?? "Engineer";
-  const P = theme.palette;
+  // Light-mode migration (Task 7): P used to alias theme.palette (dark-only
+  // hexes), which rendered dark regardless of data-scheme. Every P.x site
+  // below (and every color prop threaded into CapstoneClient.*) now resolves
+  // through the CSS cascade instead, so the cert card, nav and timeline all
+  // follow the active scheme with no JS branching.
+  const P = {
+    bg: "var(--tc-bg)",
+    primary: "var(--tc-primary)",
+    accent: "var(--tc-accent)",
+    surface: "var(--tc-surface)",
+    surfaceOverlay: "var(--tc-surface-overlay)",
+    text: "var(--tc-text)",
+    muted: "var(--tc-muted)",
+    border: "var(--tc-border)",
+    codeBg: "var(--tc-code-bg)",
+  };
 
   // Timeline data, numbered nodes with titles, completion dates, and
   // per-module bridge titles pulled from content.

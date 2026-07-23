@@ -290,7 +290,7 @@ export default async function ThemeDetailPage({ params }: Props) {
   return (
     <main
       className="min-h-screen relative overflow-hidden"
-      style={{ background: theme.palette.bg }}
+      style={{ background: "var(--tc-bg)" }}
     >
       <script
         type="application/ld+json"
@@ -299,29 +299,33 @@ export default async function ThemeDetailPage({ params }: Props) {
       {/* The theme's signature scene (Deep Orbit's orbital system for the
           live theme) behind the module map — same renderer as the homepage
           and /themes cards, viewport-capped with a bottom fade. */}
-      <ThemeSceneBackdrop slug={theme.slug} primary={theme.palette.primary} />
+      <ThemeSceneBackdrop
+        slug={theme.slug}
+        primary={theme.palette.primary}
+        primaryLight={theme.paletteLight.primary}
+      />
 
       {/* Page header */}
       <header
         className="relative z-10 px-12 pt-10 pb-9"
         style={{
-          borderBottom: `1px solid ${theme.palette.border}`,
-          background: `color-mix(in srgb, ${theme.palette.bg} 70%, transparent)`,
+          borderBottom: "1px solid var(--tc-border)",
+          background: "color-mix(in srgb, var(--tc-bg) 70%, transparent)",
         }}
       >
         <p
           className="font-mono text-xs uppercase mb-2.5"
-          style={{ color: theme.palette.primary, letterSpacing: "0.15em" }}
+          style={{ color: "var(--tc-primary)", letterSpacing: "0.15em" }}
         >
           {theme.displayName} &middot; {themeModules.length} MODULES
         </p>
         <h1
           className="font-mono text-3xl font-bold mb-2.5"
-          style={{ color: theme.palette.text, letterSpacing: "-0.02em" }}
+          style={{ color: "var(--tc-text)", letterSpacing: "-0.02em" }}
         >
           MODULE MAP
         </h1>
-        <p className="text-sm" style={{ color: theme.palette.muted }}>
+        <p className="text-sm" style={{ color: "var(--tc-muted)" }}>
           {themeModules.length} modules between your frontend and a deployed
           model. Pick up where you left off.
         </p>
@@ -338,13 +342,13 @@ export default async function ThemeDetailPage({ params }: Props) {
             <div key={label}>
               <div
                 className="font-mono text-xl font-bold"
-                style={{ color: theme.palette.primary }}
+                style={{ color: "var(--tc-primary)" }}
               >
                 {value}
               </div>
               <div
                 className="font-mono text-xs mt-0.5"
-                style={{ color: theme.palette.muted }}
+                style={{ color: "var(--tc-muted)" }}
               >
                 {label}
               </div>
@@ -360,25 +364,25 @@ export default async function ThemeDetailPage({ params }: Props) {
             href={`/themes/${slug}/capstone`}
             className="flex items-center justify-between p-5 border-2 brutalist-hover"
             style={{
-              borderColor: theme.palette.primary,
-              background: theme.palette.surface,
+              borderColor: "var(--tc-primary)",
+              background: "var(--tc-surface)",
             }}
           >
             <div>
               <span
                 className="text-xs font-mono uppercase tracking-widest"
-                style={{ color: theme.palette.primary }}
+                style={{ color: "var(--tc-primary)" }}
               >
                 Mission Complete
               </span>
               <p
                 className="text-sm font-mono font-semibold mt-1"
-                style={{ color: theme.palette.text }}
+                style={{ color: "var(--tc-text)" }}
               >
                 All modules completed; view your capstone &rarr;
               </p>
             </div>
-            <span style={{ color: theme.palette.primary, fontSize: 24 }}>
+            <span style={{ color: "var(--tc-primary)", fontSize: 24 }}>
               &#x25CE;
             </span>
           </Link>

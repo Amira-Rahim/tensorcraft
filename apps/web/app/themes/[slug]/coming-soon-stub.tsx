@@ -26,8 +26,12 @@ const plural = (word: string) => PLURALS[word] ?? `${word}s`;
  * engines surface the right rich snippet.
  *
  * Color is structural here: section borders and row hairlines mix the theme
- * primary into the neutral border (the raw `palette.border` is near-invisible
- * on `palette.bg`), and the free/capstone roster rows carry tinted washes.
+ * primary into the neutral border (`var(--tc-border)` is near-invisible on
+ * `var(--tc-bg)`), and the free/capstone roster rows carry tinted washes.
+ * bg/border/muted/text below read `var(--tc-*)` directly (they're identical
+ * across every theme's manifest in both schemes, so this stub never getting
+ * its own `data-theme` doesn't matter for them — see the paletteLight
+ * comment below for why primary/accent are handled differently).
  */
 export function ComingSoonStub({ theme }: Props) {
   const slug = theme.slug;
@@ -41,6 +45,17 @@ export function ComingSoonStub({ theme }: Props) {
     ...theme.palette,
     primary: "#6BAA8A",
     accent: "#6BAA8A",
+  };
+  // Light-scheme counterpart, forced to deep-orbit's light primary (the
+  // light equivalent of the brand green above, for the same reason: this
+  // stub never gets its own `data-theme` — only LAUNCHED themes make
+  // ThemeSync/theme-provider.tsx's setTheme() succeed, so a per-theme light
+  // hue here would read the wrong theme's value once a second theme
+  // launches). Feeds ComingSoonScene's rgbLight.
+  const paletteLight = {
+    ...theme.paletteLight,
+    primary: "#3B6550",
+    accent: "#3B6550",
   };
   const modulePlural = plural(theme.terminology.module);
   const lessonPlural = plural(theme.terminology.lesson);
@@ -60,10 +75,10 @@ export function ComingSoonStub({ theme }: Props) {
     Math.ceil(Math.max(0, ...careers.map((c) => c.high ?? 0)) / 50) * 50;
 
   // Theme-mixed structural colors (see doc comment above).
-  const edge = `color-mix(in srgb, ${palette.primary} 25%, ${palette.border})`;
-  const hairline = `color-mix(in srgb, ${palette.primary} 15%, ${palette.border})`;
-  const wash = `color-mix(in srgb, ${palette.primary} 7%, ${palette.bg})`;
-  const accentWash = `color-mix(in srgb, ${palette.accent} 9%, ${palette.bg})`;
+  const edge = `color-mix(in srgb, ${palette.primary} 25%, var(--tc-border))`;
+  const hairline = `color-mix(in srgb, ${palette.primary} 15%, var(--tc-border))`;
+  const wash = `color-mix(in srgb, ${palette.primary} 7%, var(--tc-bg))`;
+  const accentWash = `color-mix(in srgb, ${palette.accent} 9%, var(--tc-bg))`;
 
   const courseJsonLd = {
     "@context": "https://schema.org",
@@ -91,7 +106,7 @@ export function ComingSoonStub({ theme }: Props) {
   return (
     <main
       className="min-h-screen relative overflow-hidden"
-      style={{ background: palette.bg }}
+      style={{ background: "var(--tc-bg)" }}
       data-testid={`coming-soon-stub-${slug}`}
     >
       <script
@@ -104,10 +119,14 @@ export function ComingSoonStub({ theme }: Props) {
         className="relative"
         style={{ borderBottom: `1px solid ${edge}` }}
       >
-        <ComingSoonScene slug={slug} palette={palette} />
+        <ComingSoonScene
+          slug={slug}
+          palette={palette}
+          paletteLight={paletteLight}
+        />
         <div className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pt-12 pb-14">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-6 font-mono text-xs uppercase tracking-[0.2em]">
-            <p style={{ color: palette.muted }}>
+            <p style={{ color: "var(--tc-muted)" }}>
               {preview?.statusBoard.org ?? theme.specialization}
               <span className="sr-only"> (coming soon)</span>
             </p>
@@ -121,20 +140,20 @@ export function ComingSoonStub({ theme }: Props) {
           <div className="max-w-[640px]">
             <h1
               className="font-mono text-5xl md:text-7xl font-bold mb-4 leading-[1.05]"
-              style={{ color: palette.text, letterSpacing: "-0.02em" }}
+              style={{ color: "var(--tc-text)", letterSpacing: "-0.02em" }}
             >
               {theme.displayName}
             </h1>
             <p
               className="text-xl md:text-2xl leading-relaxed mb-5"
-              style={{ color: palette.text }}
+              style={{ color: "var(--tc-text)" }}
             >
               {theme.tagline}
             </p>
 
             <p
               className="text-base leading-relaxed max-w-[560px] mb-6"
-              style={{ color: palette.muted }}
+              style={{ color: "var(--tc-muted)" }}
             >
               {theme.description}
             </p>
@@ -150,7 +169,7 @@ export function ComingSoonStub({ theme }: Props) {
               />
               <p
                 className="font-mono text-xs mt-2"
-                style={{ color: palette.muted }}
+                style={{ color: "var(--tc-muted)" }}
               >
                 One email when {theme.displayName} ships. Nothing else.
               </p>
@@ -166,11 +185,14 @@ export function ComingSoonStub({ theme }: Props) {
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-5">
             <h2
               className="font-mono text-xl md:text-2xl font-bold tracking-tight"
-              style={{ color: palette.text }}
+              style={{ color: "var(--tc-text)" }}
             >
               The {THEME_CONTENT.modulesPerTheme} {modulePlural}
             </h2>
-            <p className="font-mono text-xs" style={{ color: palette.muted }}>
+            <p
+              className="font-mono text-xs"
+              style={{ color: "var(--tc-muted)" }}
+            >
               {THEME_CONTENT.lessonsPerModule} {lessonPlural} per{" "}
               {theme.terminology.module} ·{" "}
               {THEME_CONTENT.comingSoonLessonsPerTheme} in the full rebuild
@@ -202,7 +224,7 @@ export function ComingSoonStub({ theme }: Props) {
                       ? palette.primary
                       : m.capstone
                         ? palette.accent
-                        : palette.muted,
+                        : "var(--tc-muted)",
                   }}
                 >
                   {rosterPrefix}
@@ -211,7 +233,10 @@ export function ComingSoonStub({ theme }: Props) {
                 <span
                   className="flex-1"
                   style={{
-                    color: m.free || m.capstone ? palette.text : palette.muted,
+                    color:
+                      m.free || m.capstone
+                        ? "var(--tc-text)"
+                        : "var(--tc-muted)",
                   }}
                 >
                   {m.title}
@@ -223,7 +248,7 @@ export function ComingSoonStub({ theme }: Props) {
                       ? palette.primary
                       : m.capstone
                         ? palette.accent
-                        : palette.muted,
+                        : "var(--tc-muted)",
                   }}
                 >
                   {m.free ? "Online · Free" : m.capstone ? "Finale" : "Pending"}
@@ -248,13 +273,13 @@ export function ComingSoonStub({ theme }: Props) {
               <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-4">
                 <h2
                   className="font-mono text-xl md:text-2xl font-bold tracking-tight"
-                  style={{ color: palette.text }}
+                  style={{ color: "var(--tc-text)" }}
                 >
                   You&rsquo;ll master
                 </h2>
                 <p
                   className="font-mono text-xs"
-                  style={{ color: palette.muted }}
+                  style={{ color: "var(--tc-muted)" }}
                 >
                   {preview.skills.length} capabilities
                 </p>
@@ -270,7 +295,7 @@ export function ComingSoonStub({ theme }: Props) {
                         {" / "}
                       </span>
                     ) : null}
-                    <span style={{ color: palette.text }}>{skill}</span>
+                    <span style={{ color: "var(--tc-text)" }}>{skill}</span>
                   </span>
                 ))}
               </p>
@@ -280,12 +305,15 @@ export function ComingSoonStub({ theme }: Props) {
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-5">
             <h2
               className="font-mono text-xl md:text-2xl font-bold tracking-tight"
-              style={{ color: palette.text }}
+              style={{ color: "var(--tc-text)" }}
             >
               Where it leads
             </h2>
             {axisTop > 0 ? (
-              <p className="font-mono text-xs" style={{ color: palette.muted }}>
+              <p
+                className="font-mono text-xs"
+                style={{ color: "var(--tc-muted)" }}
+              >
                 to ${axisTop}K / yr
               </p>
             ) : null}
@@ -294,7 +322,7 @@ export function ComingSoonStub({ theme }: Props) {
             {careers.map((c) => (
               <li key={c.name} className="text-sm">
                 <div className="flex items-baseline justify-between gap-4 mb-1.5">
-                  <span style={{ color: palette.text }}>{c.name}</span>
+                  <span style={{ color: "var(--tc-text)" }}>{c.name}</span>
                   {c.low != null && c.high != null ? (
                     <span
                       className="font-mono text-xs whitespace-nowrap"
@@ -329,11 +357,14 @@ export function ComingSoonStub({ theme }: Props) {
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-4">
             <h2
               className="font-mono text-xl md:text-2xl font-bold tracking-tight"
-              style={{ color: palette.text }}
+              style={{ color: "var(--tc-text)" }}
             >
               The cast
             </h2>
-            <p className="font-mono text-xs" style={{ color: palette.muted }}>
+            <p
+              className="font-mono text-xs"
+              style={{ color: "var(--tc-muted)" }}
+            >
               {theme.characters.length} characters
             </p>
           </div>
@@ -353,19 +384,19 @@ export function ComingSoonStub({ theme }: Props) {
                 <div className="min-w-0">
                   <span
                     className="font-mono text-sm font-bold"
-                    style={{ color: palette.text }}
+                    style={{ color: "var(--tc-text)" }}
                   >
                     {c.name}
                   </span>
                   <span
                     className="font-mono text-xs uppercase tracking-[0.1em] ml-2"
-                    style={{ color: palette.muted }}
+                    style={{ color: "var(--tc-muted)" }}
                   >
                     {c.role}
                   </span>
                   <p
                     className="text-xs italic mt-1"
-                    style={{ color: palette.muted }}
+                    style={{ color: "var(--tc-muted)" }}
                   >
                     {c.personality}
                   </p>
@@ -376,7 +407,7 @@ export function ComingSoonStub({ theme }: Props) {
           {castRest.length > 0 ? (
             <p
               className="font-mono text-xs mt-3"
-              style={{ color: palette.muted }}
+              style={{ color: "var(--tc-muted)" }}
             >
               + {castRest.map((c) => c.name).join(", ")}
             </p>
@@ -392,13 +423,13 @@ export function ComingSoonStub({ theme }: Props) {
         >
           <h2
             className="font-mono text-lg md:text-xl font-bold tracking-tight mb-1"
-            style={{ color: palette.text }}
+            style={{ color: "var(--tc-text)" }}
           >
             Join the waitlist
           </h2>
           <p
             className="font-mono text-xs mb-4"
-            style={{ color: palette.muted }}
+            style={{ color: "var(--tc-muted)" }}
           >
             One email when {theme.displayName} ships. Nothing else.
           </p>
@@ -413,12 +444,12 @@ export function ComingSoonStub({ theme }: Props) {
             />
           </div>
         </div>
-        <p className="mt-4 text-sm" style={{ color: palette.muted }}>
+        <p className="mt-4 text-sm" style={{ color: "var(--tc-muted)" }}>
           Can&rsquo;t wait?{" "}
           <Link
             href="/themes/deep-orbit"
             className="underline underline-offset-4"
-            style={{ color: palette.text }}
+            style={{ color: "var(--tc-text)" }}
           >
             Start free in Deep Orbit
           </Link>

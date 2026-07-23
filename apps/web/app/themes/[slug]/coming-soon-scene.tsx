@@ -32,6 +32,11 @@ function hexToRgb(hex: string): [number, number, number] {
 interface Props {
   slug: string;
   palette: ThemePalette;
+  /**
+   * Light-scheme counterpart of `palette`, feeding SceneCanvas's rgbLight.
+   * Falls back to `palette` when absent (SceneCanvas.rgbLight default).
+   */
+  paletteLight?: ThemePalette;
 }
 
 /**
@@ -41,7 +46,7 @@ interface Props {
  * copy column legible and a bottom fade seats the scene into the page.
  * Decorative only; SceneCanvas renders a static frame under reduced motion.
  */
-export function ComingSoonScene({ slug, palette }: Props) {
+export function ComingSoonScene({ slug, palette, paletteLight }: Props) {
   const draw = SCENE_BY_SLUG[slug];
   if (!draw) return null;
 
@@ -57,19 +62,24 @@ export function ComingSoonScene({ slug, palette }: Props) {
       <SceneCanvas
         draw={draw}
         rgb={hexToRgb(palette.primary)}
+        rgbLight={paletteLight ? hexToRgb(paletteLight.primary) : undefined}
         intensity={0.85}
         className="absolute inset-0"
       />
+      {/* These scrims overlay the PAGE (not a cross-theme card), so they
+          follow the page's own scheme via var(--tc-bg) instead of the TS
+          palette hex — same value in dark scheme, and correctly flips to
+          the light neutral under data-scheme="light". */}
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(90deg, ${palette.bg} 18%, color-mix(in srgb, ${palette.bg} 45%, transparent) 52%, transparent 100%)`,
+          background: `linear-gradient(90deg, var(--tc-bg) 18%, color-mix(in srgb, var(--tc-bg) 45%, transparent) 52%, transparent 100%)`,
         }}
       />
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(180deg, color-mix(in srgb, ${palette.bg} 30%, transparent) 0%, transparent 30%, transparent 72%, ${palette.bg} 100%)`,
+          background: `linear-gradient(180deg, color-mix(in srgb, var(--tc-bg) 30%, transparent) 0%, transparent 30%, transparent 72%, var(--tc-bg) 100%)`,
         }}
       />
     </div>

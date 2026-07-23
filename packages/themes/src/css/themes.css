@@ -2,7 +2,7 @@
  * Tensorcraft Theme CSS Custom Properties
  *
  * Each theme sets --tc-* variables that the Tailwind @theme block
- * in packages/config/tailwind/base.css maps to utility classes.
+ * in apps/web/app/globals.css maps to utility classes.
  *
  * Theme switching: set data-theme="<slug>" on <html>.
  * Deep Orbit is the default (applied on :root).
@@ -44,6 +44,21 @@
   --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
+
+  /* Semantic colors (global — only declared here, on :root) */
+  --tc-success: #10b981;
+  --tc-warning: #f59e0b;
+  --tc-error: #ef4444;
+  --tc-streak: #ff8a2a;
+  /* Ink for primary-filled elements (buttons, chips, ::selection). Dark uses
+     the page bg (near-black on the bright primary); light CANNOT reuse the
+     page bg - #f5f5f2 on the darkened light primaries is 4.21:1, under AA.
+     Pure white clears 4.5:1 against every light primary (they were minted at
+     >=4.6:1 vs #ffffff). Locked by theme-properties.test.ts. */
+  --tc-on-primary: #181818;
+
+  /* Grid background overlay line color (global — only declared here, on :root) */
+  --tc-grid-line: rgba(255, 255, 255, 0.018);
 }
 
 /* ===== NEON PROTOCOL (Cyberpunk) ===== */
@@ -62,7 +77,7 @@
   --tc-surface-raised: #2c2c2c;
 
   /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
-  --tc-primary-rgb: 74, 144, 217;
+  --tc-primary-rgb: 63, 196, 220;
 
   /* Derived accent variables */
   --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
@@ -134,7 +149,7 @@
   --tc-surface-raised: #2c2c2c;
 
   /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
-  --tc-primary-rgb: 208, 112, 112;
+  --tc-primary-rgb: 224, 128, 88;
 
   /* Derived accent variables */
   --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
@@ -188,4 +203,111 @@
   --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
+}
+
+/* ===== LIGHT SCHEME ==========================================
+   Orthogonal to the narrative themes: data-scheme="light" on <html>
+   overrides the shared neutrals; per-theme blocks below re-tune each
+   palette's accents (darkened in HSL until >=4.6:1 on the light page bg
+   #f5f5f2 - NOT white; the first mint targeted white and failed axe at
+   4.21:1 on the real bg).
+   Must come after the theme blocks: [data-scheme="light"] ties
+   [data-theme="X"] on specificity, so source order decides the neutrals. */
+[data-scheme="light"] {
+  --tc-bg: #f5f5f2;
+  --tc-surface: #ffffff;
+  --tc-surface-overlay: #ffffff;
+  --tc-surface-raised: #fafaf7;
+  --tc-text: #1f1f1f;
+  --tc-muted: #555555;
+  --tc-border: #d8d8d4;
+  --tc-code-bg: #f6f6f2;
+  --tc-grid-line: rgba(0, 0, 0, 0.03);
+  --tc-success: #096949;
+  --tc-warning: #805306;
+  --tc-error: #b00f0f;
+  --tc-streak: #964400;
+  /* NOT --tc-bg: #f5f5f2 on the light primaries is 4.21:1 (AA fail); pure
+     white clears 4.5:1 against all five (minted >=4.6:1 vs #ffffff). */
+  --tc-on-primary: #ffffff;
+}
+
+/* deep-orbit is the :root default theme, so its light overrides must also
+   be reachable via a bare [data-scheme="light"] selector.
+   There is NO ordering constraint between this block and the four
+   per-theme light blocks below: [data-theme="X"][data-scheme="light"] is
+   (0,2,0), which unconditionally outranks this block's bare (0,1,0)
+   selector on any element with a non-default data-theme value — that's a
+   real specificity win, not a same-specificity tie broken by source
+   order. And the five [data-theme="X"][data-scheme="light"] compound
+   selectors (this one's + the other four's) never compete with each
+   other in the first place, since data-theme is single-valued per
+   element. So this block and the other four theme light blocks may be
+   freely reordered relative to one another.
+   The one genuine source-order dependency in this file is that the
+   LIGHT SCHEME section as a whole must follow the five dark theme blocks
+   above: the shared-neutral bare [data-scheme="light"] selector (0,1,0)
+   really does tie with :root / [data-theme="X"] (also (0,1,0)) on an
+   element that has both a data-theme and data-scheme="light" attribute,
+   and that tie is broken by source order — see the comment on the
+   neutrals block above. */
+[data-scheme="light"],
+[data-theme="deep-orbit"][data-scheme="light"] {
+  --tc-primary: #3b6550;
+  --tc-accent: #6b5a3b;
+  --tc-primary-rgb: 59, 101, 80;
+  --tc-tier-identity: #3b6550;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-theme="neon-protocol"][data-scheme="light"] {
+  --tc-primary: #166474;
+  --tc-accent: #9c2c7c;
+  --tc-primary-rgb: 22, 100, 116;
+  --tc-tier-identity: #215e9d;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-theme="signal-ward"][data-scheme="light"] {
+  --tc-primary: #2b683b;
+  --tc-accent: #416076;
+  --tc-primary-rgb: 43, 104, 59;
+  --tc-tier-identity: #2b683b;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-theme="nova-canvas"][data-scheme="light"] {
+  --tc-primary: #98411c;
+  --tc-accent: #6244c2;
+  --tc-primary-rgb: 152, 65, 28;
+  --tc-tier-identity: #a13434;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-theme="terra-grid"][data-scheme="light"] {
+  --tc-primary: #755820;
+  --tc-accent: #506330;
+  --tc-primary-rgb: 117, 88, 32;
+  --tc-tier-identity: #755820;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
 }

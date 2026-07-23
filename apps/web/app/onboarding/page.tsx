@@ -307,7 +307,7 @@ export default function OnboardingPage() {
 
       {/* Logo */}
       <div className="flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-text-primary mb-12 relative z-10">
-        <span className="bg-primary text-page px-1.5 py-0.5 text-xs font-bold rounded-none">
+        <span className="bg-primary text-on-primary px-1.5 py-0.5 text-xs font-bold rounded-none">
           T_
         </span>
         TENSORCRAFT
@@ -407,7 +407,7 @@ export default function OnboardingPage() {
               type="button"
               data-testid="onboarding-next"
               onClick={goNext}
-              className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-page bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-on-primary bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {step === 0 ? "Begin Briefing →" : "Continue →"}
             </button>
@@ -417,7 +417,7 @@ export default function OnboardingPage() {
               data-testid="onboarding-submit"
               onClick={completeOnboarding}
               disabled={saving}
-              className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-page bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-on-primary bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? "Launching..." : `Start ${LAUNCH_THEME_NAME} →`}
             </button>

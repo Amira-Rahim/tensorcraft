@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { tensorcraftTheme } from "./tensorcraft-theme";
+import { tensorcraftThemeLight } from "./tensorcraft-theme-light";
+import { contrastRatio } from "@tensorcraft/themes";
 
 /**
  * Syntax-token contrast gate (audit run #6, 2026-07-15).
@@ -61,6 +63,54 @@ describe("tensorcraft shiki theme", () => {
       expect(
         Number(ratio.toFixed(2)),
         `${foreground} on ${background} is ${ratio.toFixed(
+          2,
+        )}:1 for scope [${scope}] - below the ${AA_BODY_TEXT}:1 AA floor for ` +
+          `body text. Code tokens are body text: they are the lesson.`,
+      ).toBeGreaterThanOrEqual(AA_BODY_TEXT);
+    },
+  );
+});
+
+/**
+ * Light Shiki theme registration + contrast gate (Task 12, light-mode
+ * rollout, 2026-07-22).
+ *
+ * Mirrors the dark gate above exactly, on the light `--tc-code-bg`
+ * (#F6F6F2) background instead. Uses the shared `contrastRatio` helper
+ * from @tensorcraft/themes/wcag.ts rather than re-deriving the luminance
+ * math a third time (packages/themes/src/theme-properties.test.ts is the
+ * second consumer) - one implementation, three test suites.
+ */
+describe("tensorcraft shiki theme (light)", () => {
+  it('registers as name "tensorcraft-light", type "light"', () => {
+    expect(tensorcraftThemeLight.name).toBe("tensorcraft-light");
+    expect(tensorcraftThemeLight.type).toBe("light");
+  });
+
+  it("declares the canonical light code background (#F6F6F2)", () => {
+    expect(tensorcraftThemeLight.colors["editor.background"]).toBe("#F6F6F2");
+  });
+
+  const lightBackground = tensorcraftThemeLight.colors["editor.background"];
+
+  const lightTokens = tensorcraftThemeLight.tokenColors
+    .filter((token) => token.settings?.foreground)
+    .map((token) => ({
+      scope: Array.isArray(token.scope) ? token.scope.join(", ") : token.scope,
+      foreground: token.settings.foreground as string,
+    }));
+
+  it("has token colors to check", () => {
+    expect(lightTokens.length).toBeGreaterThan(10);
+  });
+
+  it.each(lightTokens)(
+    "$scope meets WCAG AA against the light code background",
+    ({ scope, foreground }) => {
+      const ratio = contrastRatio(foreground, lightBackground);
+      expect(
+        Number(ratio.toFixed(2)),
+        `${foreground} on ${lightBackground} is ${ratio.toFixed(
           2,
         )}:1 for scope [${scope}] - below the ${AA_BODY_TEXT}:1 AA floor for ` +
           `body text. Code tokens are body text: they are the lesson.`,

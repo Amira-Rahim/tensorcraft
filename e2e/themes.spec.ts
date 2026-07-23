@@ -45,10 +45,16 @@ test.describe("Themes Page", () => {
     page,
   }) => {
     await page.goto("/themes/signal-ward");
-    await expect(page.getByText("W01 · ML Through Text")).toBeVisible();
-    await expect(
-      page.getByText("W11 · Capstone: Diagnostic One"),
-    ).toBeVisible();
+    // The 2026-07-19 stub redesign renders the module code and title as
+    // separate spans (no " · " separator string); pre-existing test drift
+    // caught during the light-mode close-out battery (2026-07-23).
+    const roster = page
+      .getByTestId("coming-soon-roster")
+      .or(page.locator("main"));
+    await expect(roster.getByText("W01", { exact: true })).toBeVisible();
+    await expect(roster.getByText("ML Through Text")).toBeVisible();
+    await expect(roster.getByText("W11", { exact: true })).toBeVisible();
+    await expect(roster.getByText("Capstone: Diagnostic One")).toBeVisible();
   });
 
   test("coming-soon lesson + capstone routes 404", async ({ page }) => {

@@ -56,7 +56,7 @@ tensorcraft/
 
 ### Design Philosophy
 
-Dark mode only. Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every theme has a unique color palette but shares the same structural design tokens.
+Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every theme has a unique color palette but shares the same structural design tokens. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Light-mode rollout is still underway; `docs/dev-plan.md` (2026-07-22 entry) tracks status, and production remains dark-only in the meantime.
 
 ### 5 Themed Courses
 

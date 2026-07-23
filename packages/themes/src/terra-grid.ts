@@ -8,15 +8,26 @@ export const terraGrid: ThemeManifest = {
   description:
     "TERRA SYSTEMS' ML models achieve 99.9% in the lab and 67% in the field. Build Terra Grid Intelligence, an edge-deployed monitoring system.",
   palette: {
-    bg: "#1C1C1C",
+    bg: "#181818",
     primary: "#C49535",
     accent: "#8FB05A",
-    surface: "#252525",
+    surface: "#232323",
     text: "#E0E0E0",
-    muted: "#A0A0A0",
+    muted: "#B0B0B0",
     surfaceOverlay: "#313131",
-    border: "#2A2A2A",
-    codeBg: "#161616",
+    border: "#3D3D3D",
+    codeBg: "#141414",
+  },
+  paletteLight: {
+    bg: "#F5F5F2",
+    primary: "#755820",
+    accent: "#506330",
+    surface: "#FFFFFF",
+    text: "#1F1F1F",
+    muted: "#555555",
+    surfaceOverlay: "#FFFFFF",
+    border: "#D8D8D4",
+    codeBg: "#F6F6F2",
   },
   terminology: {
     lesson: "Operation",
@@ -24,7 +35,6 @@ export const terraGrid: ThemeManifest = {
     exercise: "Deployment",
   },
   protagonist: "Infrastructure Engineer",
-  sandpackTheme: "nightOwl",
   characters: [
     {
       name: "Chief Engineer Amira Hassan",

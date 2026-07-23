@@ -12,9 +12,9 @@ interface ConceptProps {
 }
 
 const tierColors: Record<BridgeMapping["tier"], string> = {
-  identity: "#6BAA8A",
-  structural: "#7096B0",
-  intuition: "#A89060",
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
 };
 
 const tierLabels: Record<BridgeMapping["tier"], string> = {
