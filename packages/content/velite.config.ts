@@ -3,6 +3,7 @@ import ts from "typescript";
 import { rehypeGlossary } from "./src/rehype-glossary";
 import { GLOSSARY } from "./src/glossary";
 import { findGlossaryTermsInText } from "./src/glossary-match";
+import { BUILT_THEME_GLOB } from "./src/built-themes";
 
 /**
  * Transpile TS-flavored exercise code to plain JS so the runtime worker
@@ -54,7 +55,9 @@ function tsToJs(src: string): string {
 // packages/shared/src/constants.ts. Coming-soon themes' .mdx/.yaml stay in the
 // repo (under packages/content/content/{slug}/) but are excluded from the build
 // so their content does not ship in `.velite/*` outputs.
-const LAUNCHED_THEME_DIRS = "{deep-orbit,extras}";
+// Single source (packages/content/src/built-themes.ts) shared with every QA
+// gate: launch a theme by adding it there once.
+const LAUNCHED_THEME_DIRS = BUILT_THEME_GLOB;
 
 const lessons = defineCollection({
   name: "Lesson",

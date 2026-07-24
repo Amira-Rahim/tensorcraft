@@ -58,7 +58,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
         </div>
         <div className="font-mono text-xs text-text-muted">
           <span className="text-primary font-bold">{collected.length}</span>
-          <span className="opacity-60">/{total}</span>
+          <span>/{total}</span>
         </div>
       </div>
 

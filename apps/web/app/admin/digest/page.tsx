@@ -147,19 +147,17 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
       </div>
 
       {item.is_content_gap ? (
-        <div className="mt-4 rounded border border-yellow-600 bg-yellow-50 p-3 dark:border-yellow-500 dark:bg-yellow-950">
-          <p className="font-mono text-xs uppercase tracking-wider text-yellow-800 dark:text-yellow-300">
+        <div className="mt-4 rounded border border-warning bg-warning/10 p-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-warning">
             Content gap detected
           </p>
           {item.gap_concept && (
-            <p className="mt-1 text-sm font-semibold text-yellow-900 dark:text-yellow-100">
+            <p className="mt-1 text-sm font-semibold text-text-primary">
               {item.gap_concept}
             </p>
           )}
           {item.gap_rationale && (
-            <p className="mt-1 text-xs text-yellow-800 dark:text-yellow-200">
-              {item.gap_rationale}
-            </p>
+            <p className="mt-1 text-xs text-text-muted">{item.gap_rationale}</p>
           )}
         </div>
       ) : item.matched_lessons.length > 0 ? (
@@ -210,7 +208,7 @@ function StatusActions({
         <button
           type="submit"
           disabled={status === "shortlisted"}
-          className="w-full rounded border border-green-700 bg-green-50 px-3 py-1 text-sm font-medium text-green-900 disabled:opacity-40 dark:bg-green-950 dark:text-green-100"
+          className="w-full rounded border border-success bg-success/10 px-3 py-1 text-sm font-medium text-success disabled:opacity-40"
         >
           Shortlist
         </button>
@@ -219,7 +217,7 @@ function StatusActions({
         <button
           type="submit"
           disabled={status === "rejected"}
-          className="w-full rounded border border-red-700 bg-red-50 px-3 py-1 text-sm text-red-900 disabled:opacity-40 dark:bg-red-950 dark:text-red-100"
+          className="w-full rounded border border-error bg-error/10 px-3 py-1 text-sm text-error disabled:opacity-40"
         >
           Reject
         </button>

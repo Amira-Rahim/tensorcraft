@@ -35,11 +35,11 @@ const THEME_CARDS = themeSlugs.map((slug, i) => {
     spec: t.specialization,
     tagline: t.tagline,
     col: t.palette.primary,
+    colLight: t.paletteLight.primary,
     rgb: hexToRgb(t.palette.primary),
-    // Light-scheme hue for the same canvas (see SceneCanvas.rgbLight in
-    // @tensorcraft/ui/effects); the surrounding badge/text colors above
-    // (`col`) stay on the dark hex for now — cross-theme text recoloring is
-    // out of this task's scope, see the Task 8 report's "concerns".
+    // Light-scheme hue pair: canvases pick rgb/rgbLight per frame; DOM
+    // text/badges ride the .tc-theme-card CSS pair (--card-primary /
+    // --card-primary-light -> --card-active-primary).
     rgbLight: hexToRgb(t.paletteLight.primary),
     launched: isLaunched(t.slug),
     scene: SCENE_BY_SLUG[t.slug],
@@ -93,9 +93,11 @@ export function FiveWorldsSection() {
             <span
               className="font-mono text-xs font-bold tracking-wider px-3 py-1 shrink-0"
               style={{
-                color: HERO_CARD.col,
-                background: `color-mix(in srgb, ${HERO_CARD.col} 12%, transparent)`,
-                border: `1px solid color-mix(in srgb, ${HERO_CARD.col} 35%, transparent)`,
+                color: "var(--tc-primary)",
+                background:
+                  "color-mix(in srgb, var(--tc-primary) 12%, transparent)",
+                border:
+                  "1px solid color-mix(in srgb, var(--tc-primary) 35%, transparent)",
               }}
             >
               LIVE NOW
@@ -106,8 +108,8 @@ export function FiveWorldsSection() {
           </h2>
           <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
             Same ML foundations track. Five story universes.{" "}
-            <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is
-            live; the other four ship in waves.
+            <span style={{ color: "var(--tc-primary)" }}>{HERO_CARD.name}</span>{" "}
+            is live; the other four ship in waves.
           </p>
 
           <Link
@@ -116,7 +118,7 @@ export function FiveWorldsSection() {
           >
             <div
               className="text-4xl md:text-6xl font-mono font-black tracking-tight mb-3"
-              style={{ color: HERO_CARD.col }}
+              style={{ color: "var(--tc-primary)" }}
             >
               {HERO_CARD.name}
             </div>
@@ -128,7 +130,7 @@ export function FiveWorldsSection() {
             </p>
             <span
               className="font-mono text-sm tracking-wider group-hover:opacity-80 transition-opacity"
-              style={{ color: HERO_CARD.col }}
+              style={{ color: "var(--tc-primary)" }}
             >
               Start Module 1 &rarr;
             </span>
@@ -141,20 +143,23 @@ export function FiveWorldsSection() {
         {COMING_SOON_CARDS.map((t, i) => (
           <motion.div
             key={t.code}
-            className="relative overflow-hidden group"
-            style={{
-              borderRight:
-                i < COMING_SOON_CARDS.length - 1
-                  ? "1px solid var(--tc-border)"
-                  : "none",
-              opacity: 0.85,
-            }}
+            className="relative overflow-hidden group tc-theme-card"
+            style={
+              {
+                borderRight:
+                  i < COMING_SOON_CARDS.length - 1
+                    ? "1px solid var(--tc-border)"
+                    : "none",
+                "--card-primary": t.col,
+                "--card-primary-light": t.colLight,
+              } as React.CSSProperties
+            }
             onMouseEnter={() => setHovered(t.slug)}
             onMouseLeave={() => setHovered(null)}
             onFocus={() => setHovered(t.slug)}
             onBlur={() => setHovered(null)}
             initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 0.85, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.06, duration: 0.4 }}
           >
@@ -180,20 +185,20 @@ export function FiveWorldsSection() {
                 <span
                   className="font-mono text-[10px] font-bold tracking-wider px-2 py-0.5 shrink-0"
                   style={{
-                    color: t.col,
-                    background: `color-mix(in srgb, ${t.col} 8%, transparent)`,
-                    border: `1px solid color-mix(in srgb, ${t.col} 22%, transparent)`,
+                    color: "var(--card-active-primary)",
+                    background:
+                      "color-mix(in srgb, var(--card-active-primary) 8%, transparent)",
+                    border:
+                      "1px solid color-mix(in srgb, var(--card-active-primary) 22%, transparent)",
                   }}
                 >
                   COMING SOON
                 </span>
               </div>
-              <div className="font-mono text-xs text-text-muted opacity-60">
-                {t.spec}
-              </div>
+              <div className="font-mono text-xs text-text-muted">{t.spec}</div>
               <span
-                className="font-mono text-xs tracking-wider opacity-60 group-hover:opacity-100 transition-opacity mt-1"
-                style={{ color: t.col }}
+                className="font-mono text-xs tracking-wider group-hover:opacity-100 transition-opacity mt-1"
+                style={{ color: "var(--card-active-primary)" }}
               >
                 Notify me &rarr;
               </span>

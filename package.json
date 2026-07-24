@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:exercises": "pnpm turbo build:content && node scripts/validate-exercises.mjs --starters",
+    "migrate:status": "node scripts/migration-status.mjs",
     "prepare": "husky"
   },
   "devDependencies": {

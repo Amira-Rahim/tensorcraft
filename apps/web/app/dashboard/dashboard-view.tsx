@@ -15,6 +15,7 @@ const CARD = "var(--tc-surface-overlay)";
 const WHITE = "var(--tc-text)";
 const MUTED = "var(--tc-muted)";
 const BORDER_VAR = "var(--tc-border)";
+const ON_PRIMARY = "var(--tc-on-primary)";
 const MONO = "var(--font-mono), 'JetBrains Mono', monospace";
 
 /* ── Types ── */
@@ -274,7 +275,6 @@ export function DashboardView(props: DashboardProps) {
                     fontFamily: MONO,
                     fontSize: 9,
                     color: MUTED,
-                    opacity: 0.6,
                   }}
                 >
                   {m.formula}
@@ -462,7 +462,7 @@ export function DashboardView(props: DashboardProps) {
                   gap: 8,
                   padding: "14px 28px",
                   background: hovBtn === "resume" ? "transparent" : LIME,
-                  color: hovBtn === "resume" ? LIME : BG,
+                  color: hovBtn === "resume" ? LIME : ON_PRIMARY,
                   fontSize: 14,
                   fontWeight: 900,
                   cursor: "pointer",
@@ -498,7 +498,7 @@ export function DashboardView(props: DashboardProps) {
                   gap: 8,
                   padding: "14px 28px",
                   background: hovBtn === "resume" ? "transparent" : LIME,
-                  color: hovBtn === "resume" ? LIME : BG,
+                  color: hovBtn === "resume" ? LIME : ON_PRIMARY,
                   fontSize: 14,
                   fontWeight: 900,
                   cursor: "pointer",

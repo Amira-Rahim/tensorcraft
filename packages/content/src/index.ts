@@ -5,6 +5,13 @@
  * Uses Velite for build-time validation with Zod schemas.
  */
 
+export {
+  BUILT_THEME_DIRS,
+  BUILT_THEME_GLOB,
+  BUILT_STORY_THEMES,
+} from "./built-themes";
+export type { BuiltThemeDir } from "./built-themes";
+
 export { lessonSchema, exerciseSchema, moduleSchema } from "./schemas";
 export type { Lesson, Exercise, Module } from "./schemas";
 

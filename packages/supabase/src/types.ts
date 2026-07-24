@@ -11,6 +11,23 @@ export type UserRole = "user" | "admin";
 export interface Database {
   public: {
     Tables: {
+      journey_enrollment: {
+        Row: {
+          user_id: string;
+          enrolled_at: string;
+          completed_at: string | null;
+        };
+        Insert: {
+          user_id: string;
+          enrolled_at?: string;
+          completed_at?: string | null;
+        };
+        Update: {
+          enrolled_at?: string;
+          completed_at?: string | null;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           id: string;
@@ -20,6 +37,7 @@ export interface Database {
           github_username: string | null;
           github_connected: boolean;
           github_token: string | null;
+          stripe_customer_id: string | null;
           onboarding_completed: boolean;
           email_alerts: boolean;
           weekly_digest: boolean;
@@ -46,6 +64,7 @@ export interface Database {
           github_username?: string | null;
           github_connected?: boolean;
           github_token?: string | null;
+          stripe_customer_id?: string | null;
           onboarding_completed?: boolean;
           email_alerts?: boolean;
           weekly_digest?: boolean;
@@ -68,6 +87,7 @@ export interface Database {
           github_username?: string | null;
           github_connected?: boolean;
           github_token?: string | null;
+          stripe_customer_id?: string | null;
           onboarding_completed?: boolean;
           email_alerts?: boolean;
           weekly_digest?: boolean;

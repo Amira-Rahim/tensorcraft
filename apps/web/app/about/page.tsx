@@ -56,7 +56,7 @@ export default function AboutPage() {
           }),
         }}
       />
-      <article className="max-w-3xl mx-auto prose-invert">
+      <article className="max-w-3xl mx-auto">
         <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
           ABOUT
         </p>

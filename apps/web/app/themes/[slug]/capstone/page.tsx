@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
-import { isValidThemeSlug, THEME_SLUGS, isLaunched } from "@tensorcraft/shared";
+import { THEME_SLUGS, isLaunched } from "@tensorcraft/shared";
 import {
   getModules,
   getModuleLessons,
@@ -10,6 +10,7 @@ import {
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserProgress } from "@/lib/progress";
+import { getEntitledThemes } from "@/lib/entitlements";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { CapstoneClient } from "./capstone-client";
 import { CapstoneEmailTag } from "./capstone-email-tag";
@@ -37,14 +38,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // segment's loading.tsx has streamed a 200 shell (soft-404 otherwise).
   if (!isLaunched(slug) || !theme) notFound();
   return {
-    title: `Mission Complete: ${theme.displayName} | Tensorcraft`,
+    title: `${theme.terminology.lesson} Complete: ${theme.displayName} | Tensorcraft`,
     description: `You've completed every module of ${theme.displayName}. View your certificate and stats.`,
     alternates: {
       canonical: `https://tensorcraft.app/themes/${slug}/capstone`,
     },
     openGraph: {
       images: [
-        `/api/og?title=${encodeURIComponent("Mission Complete")}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
+        `/api/og?title=${encodeURIComponent(`${theme.terminology.lesson} Complete`)}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
       ],
     },
   };
@@ -100,12 +101,14 @@ export default async function CapstonePage({ params }: Props) {
   const isThemeComplete = completedModuleCount === modules.length;
   if (!isThemeComplete) redirect(`/themes/${slug}`);
 
-  // Parallel: profile, certificate, exercise attempts, purchases
+  // Parallel: profile, certificate, exercise attempts, entitled themes.
+  // Entitlement comes from the single source (Tier 1 F4) rather than a
+  // fourth hand-rolled purchases query + theme_ids loop.
   const [
     { data: profile },
     { data: certRow },
     { data: exerciseAttemptRows },
-    { data: purchaseRows },
+    ownedThemes,
   ] = await Promise.all([
     supabase.from("profiles").select("display_name").eq("id", user.id).single(),
     supabase
@@ -120,11 +123,7 @@ export default async function CapstonePage({ params }: Props) {
       .eq("user_id", user.id)
       .eq("theme_id", slug)
       .limit(1000),
-    supabase
-      .from("purchases")
-      .select("theme_ids")
-      .eq("user_id", user.id)
-      .in("status", ["completed", "partially_refunded"]),
+    getEntitledThemes(user.id),
   ]);
 
   const attempts = exerciseAttemptRows ?? [];
@@ -148,15 +147,7 @@ export default async function CapstonePage({ params }: Props) {
       ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1)
       : null;
 
-  // Derive owned themes for the "next theme" teaser.
-  const ownedThemes = new Set<string>();
-  for (const row of purchaseRows ?? []) {
-    if (!Array.isArray(row.theme_ids)) continue;
-    for (const t of row.theme_ids) {
-      if (isValidThemeSlug(t)) ownedThemes.add(t);
-    }
-  }
-
+  // ownedThemes now comes from getEntitledThemes (above).
   // Next theme: first **launched** theme (in canonical order) the user has not
   // purchased and is not the current one. Coming-soon themes intentionally
   // excluded, V1 ships Deep Orbit only, so the teaser will be empty until
@@ -306,7 +297,7 @@ export default async function CapstonePage({ params }: Props) {
         >
           <span
             className="px-1.5 py-0.5 text-xs font-bold"
-            style={{ background: P.primary, color: P.bg }}
+            style={{ background: P.primary, color: "var(--tc-on-primary)" }}
           >
             T_
           </span>
@@ -338,7 +329,8 @@ export default async function CapstonePage({ params }: Props) {
             letterSpacing: "0.2em",
           }}
         >
-          MISSION COMPLETE &middot; {theme.displayName.toUpperCase()}
+          {theme.terminology.lesson.toUpperCase()} COMPLETE &middot;{" "}
+          {theme.displayName.toUpperCase()}
         </div>
         <h1
           className="font-mono font-bold mb-4"
@@ -429,7 +421,7 @@ export default async function CapstonePage({ params }: Props) {
             letterSpacing: "0.15em",
           }}
         >
-          MISSION RECORD
+          {theme.terminology.lesson.toUpperCase()} RECORD
         </div>
         <h2
           className="font-mono font-bold mb-10 no-print"
@@ -575,7 +567,7 @@ export default async function CapstonePage({ params }: Props) {
                   letterSpacing: "0.1em",
                 }}
               >
-                NEXT MISSION
+                NEXT {theme.terminology.lesson.toUpperCase()}
               </div>
               <div
                 className="font-mono font-bold mb-1"
@@ -624,7 +616,7 @@ export default async function CapstonePage({ params }: Props) {
                 letterSpacing: "0.1em",
               }}
             >
-              NEXT MISSION
+              NEXT {theme.terminology.lesson.toUpperCase()}
             </div>
             <div
               className="font-mono font-bold mb-1"

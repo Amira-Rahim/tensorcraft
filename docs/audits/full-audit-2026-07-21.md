@@ -605,16 +605,34 @@ Webhooks correctly exempt from rate limiting with sound reasoning.
   `theme-waitlist-form.tsx:85` — `focus:outline-none` with `borderColor`
   hard-pinned via inline style. This is the pre-launch capture on all four
   coming-soon pages. WCAG 2.4.7.
-- **[OPEN] `--tc-border #3d3d3d` is 1.63:1** against the page background —
-  roughly half the 3.0 WCAG 1.4.11 requires — and it draws the visible boundary
-  of **every form field in the app**. axe does not reliably flag 1.4.11.
+- **[FIXED 2026-07-24] `--tc-border #3d3d3d` is 1.63:1** against the page
+  background — roughly half the 3.0 WCAG 1.4.11 requires — and it drew the
+  visible boundary of **every form field in the app**. axe does not reliably
+  flag 1.4.11. **Fix (option b — raise only interactive borders):** new
+  `--tc-border-interactive` token (`themes.css`; `#808080` dark, `#8a8a8a`
+  light) mapped to a `border-interactive` Tailwind utility (`globals.css`),
+  swapped onto the resting boundary of every genuine control — text/number
+  inputs, textareas, select, radio/checkbox options (quiz + onboarding),
+  toggle tracks, and outline buttons (auth, newsletter, waitlist, onboarding
+  back, settings disconnect/sign-out, report-issue trigger/dropzone, exercise
+  action, payment-error dismiss). Decorative dividers/card outlines keep the
+  quiet `#3d3d3d`. `#808080` clears 3:1 against BOTH the page bg (4.50:1) and
+  the lightest surface a control sits on, surface-overlay `#313131` (3.30:1);
+  `#8a8a8a` clears white (3.45:1) and the light page bg (3.17:1). Locked by
+  4 new assertions in `theme-properties.test.ts` (contrast computed from the
+  real CSS text, both schemes, both adjacent surfaces).
 - **[OPEN] Opacity-dimmed text fails 1.4.3 at 41 sites** and is **invisible to
   axe**, which folds no `opacity` into contrast: `muted` @60% = 3.74:1, @50% =
   3.00:1 (`bridge-collection.tsx:61`, `five-worlds-section.tsx:184,188` — the
   landing "Notify me →" CTA), @40% = 2.38:1 (`ticker.tsx:158`); `primary`
   @50/60/70% = 2.59/3.18/3.84:1; all four `accent` + axis colours on
   `raised`/`overlay` = 3.86-4.44:1. (The `muted` **token** is fine at 8.19:1
-  solid — only composites fail. There is no light theme.)
+  solid — only composites fail. There is no light theme.) **Deferred by
+  decision 2026-07-24:** when the palette a11y work was scoped, the owner chose
+  option (b) — raise interactive borders only (1.4.11, now FIXED above) — and
+  left this 1.4.3 opacity-composite item for a later pass. Fix shape when taken:
+  replace `opacity`/`text-*/NN` dimming on text with a solid token that already
+  clears 4.5:1 (e.g. drop to `text-text-muted` solid), site by site.
 - **[OPEN] Four places replace a control with its own result, losing focus and
   announcing nothing:** `hint-panel.tsx:50-81` (**all 56 lessons**),
   `recall-prompt.tsx:37-76`, `auth-form.tsx:150-186` (magic-link sent),

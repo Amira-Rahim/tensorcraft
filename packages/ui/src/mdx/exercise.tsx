@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   createContext,
   useContext,
@@ -267,7 +268,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
           ? "bg-success/8 border-success/20"
           : partial
             ? "bg-warning/6 border-warning/15"
-            : "bg-red-400/8 border-red-400/20"
+            : "bg-error/8 border-error/20"
       }`}
     >
       {/* Section label */}
@@ -280,7 +281,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
         <div className="h-1 overflow-hidden mb-3 bg-border rounded-none">
           <div
             className={`h-full transition-all ${
-              allPassed ? "bg-success" : partial ? "bg-warning" : "bg-red-400"
+              allPassed ? "bg-success" : partial ? "bg-warning" : "bg-error"
             }`}
             style={{ width: `${score}%` }}
           />
@@ -290,11 +291,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
       <div className="flex items-center justify-between mb-3">
         <span
           className={`text-xs font-mono font-semibold uppercase tracking-widest ${
-            allPassed
-              ? "text-success"
-              : partial
-                ? "text-warning"
-                : "text-red-400"
+            allPassed ? "text-success" : partial ? "text-warning" : "text-error"
           }`}
         >
           {allPassed
@@ -309,7 +306,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
               ? "bg-success/15 text-success"
               : partial
                 ? "bg-warning/12 text-warning"
-                : "bg-red-400/15 text-red-400"
+                : "bg-error/15 text-error"
           }`}
         >
           {passed}/{total}
@@ -344,7 +341,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
                 {result.name}
               </span>
               {result.error && (
-                <p className="text-xs mt-0.5 font-mono text-red-400">
+                <p className="text-xs mt-0.5 font-mono text-error">
                   {result.error}
                 </p>
               )}
@@ -377,7 +374,7 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
               aria-hidden="true"
               className={
                 entry.level === "error"
-                  ? "text-red-400 flex-shrink-0"
+                  ? "text-error flex-shrink-0"
                   : entry.level === "warn"
                     ? "text-warning flex-shrink-0"
                     : "text-primary flex-shrink-0"
@@ -392,7 +389,7 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
             <span
               className={
                 entry.level === "error"
-                  ? "text-red-400 whitespace-pre-wrap break-all"
+                  ? "text-error whitespace-pre-wrap break-all"
                   : entry.level === "warn"
                     ? "text-warning whitespace-pre-wrap break-all"
                     : "text-text-primary/85 whitespace-pre-wrap break-all"
@@ -585,7 +582,7 @@ function ExerciseControls({
         type="button"
         onClick={handleRun}
         disabled={running}
-        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-surface border-2 border-primary rounded-none hover:bg-transparent hover:text-primary disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-on-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
       >
         {/* First run pulls ~1.4 MB of TFJS from the CDN into the worker;
             up to 30s of silence read as a hang (2026-07-14 UX audit). */}
@@ -617,7 +614,7 @@ function ExerciseControls({
         <button
           type="button"
           onClick={handleRestoreMyCode}
-          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-surface-overlay text-text-primary border border-border rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-surface-overlay text-text-primary border border-interactive rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
         >
           Restore My Code
         </button>
@@ -653,6 +650,19 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
   const [results, setResults] = useState<TestResult[]>([]);
   const [logs, setLogs] = useState<ConsoleEntry[]>([]);
   const [showSolution, setShowSolution] = useState(false);
+
+  // Sandpack resets the editor to props.files whenever the OBJECT IDENTITY
+  // changes (its useFiles effect depends on props.files by reference). An
+  // inline literal here meant ANY re-render - most visibly the scheme
+  // toggle re-render via useScheme() - silently wiped the learner's typed
+  // code back to starterCode (found in the 2026-07-23 transition audit).
+  // Stable identity per exercise; before the early return per hooks rules.
+  const sandpackFiles = useMemo(
+    () => ({
+      "/index.js": { code: exercise?.starterCode ?? "", active: true },
+    }),
+    [exercise?.starterCode],
+  );
 
   // Fallback if exercise data not provided via context
   if (!exercise) {
@@ -745,9 +755,7 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
           <SandpackProvider
             template="vanilla"
             theme={SANDPACK_THEMES[scheme]}
-            files={{
-              "/index.js": { code: exercise.starterCode, active: true },
-            }}
+            files={sandpackFiles}
           >
             <SandpackCodeEditor
               showLineNumbers

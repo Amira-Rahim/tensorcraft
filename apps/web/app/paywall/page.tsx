@@ -52,7 +52,7 @@ function renderFreeCell(value: ComparisonRow["free"]) {
   if (value === false) {
     return (
       <span
-        className="inline-block text-text-muted/60 font-mono"
+        className="inline-block text-text-muted font-mono"
         aria-label="Not included"
       >
         &#10007;

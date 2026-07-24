@@ -596,4 +596,60 @@ describe("WCAG contrast gate", () => {
       }
     },
   );
+
+  // --tc-border-interactive: the resting boundary of interactive controls
+  // (form fields, radio/checkbox options, toggle tracks, outline buttons).
+  // WCAG 1.4.11 requires a UI-component boundary to clear 3:1 against its
+  // ADJACENT colors — both the page bg behind it AND the (lighter) surface a
+  // control sits on. The decorative --tc-border (#3d3d3d, 1.63:1) is fine for
+  // dividers but fails here, which is why controls use this louder token.
+  // Extracted from real CSS so a palette edit can't drift past the gate.
+  const DARK_ROOT = darkRootBlockMatch[1]!;
+  const DARK_BORDER_INTERACTIVE = extractCssHexValue(
+    DARK_ROOT,
+    "--tc-border-interactive",
+  );
+  const DARK_BG = extractCssHexValue(DARK_ROOT, "--tc-bg");
+  // surface-overlay #313131 is the lightest dark surface a control lands on;
+  // clearing it is the binding constraint (clearing it implies clearing the
+  // darker page bg is easier, but we assert both explicitly).
+  const DARK_SURFACE_OVERLAY = extractCssHexValue(
+    DARK_ROOT,
+    "--tc-surface-overlay",
+  );
+  const LIGHT_BORDER_INTERACTIVE = extractCssHexValue(
+    lightNeutralBlock,
+    "--tc-border-interactive",
+  );
+
+  it("all five dark theme blocks declare --tc-border-interactive", () => {
+    for (const slug of themeSlugs) {
+      expect(
+        extractDarkThemeBlock(slug),
+        `${slug} dark block missing --tc-border-interactive`,
+      ).toContain("--tc-border-interactive");
+    }
+  });
+
+  it("light shared block declares --tc-border-interactive", () => {
+    expect(lightNeutralBlock).toContain("--tc-border-interactive");
+  });
+
+  it("dark interactive border clears 3:1 against page bg AND surface-overlay", () => {
+    expect(
+      contrastRatio(DARK_BORDER_INTERACTIVE, DARK_BG),
+    ).toBeGreaterThanOrEqual(3);
+    expect(
+      contrastRatio(DARK_BORDER_INTERACTIVE, DARK_SURFACE_OVERLAY),
+    ).toBeGreaterThanOrEqual(3);
+  });
+
+  it("light interactive border clears 3:1 against white surface AND page bg", () => {
+    expect(
+      contrastRatio(LIGHT_BORDER_INTERACTIVE, LIGHT_SURFACE),
+    ).toBeGreaterThanOrEqual(3);
+    expect(
+      contrastRatio(LIGHT_BORDER_INTERACTIVE, LIGHT_BG),
+    ).toBeGreaterThanOrEqual(3);
+  });
 });

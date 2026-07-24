@@ -112,6 +112,7 @@ export function Nav() {
           </NavLink>
         )}
         <NavLink href="/themes">Themes</NavLink>
+        <NavLink href="/journey">Journey</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>
         <NavLink href="/learn">Learn</NavLink>
         <NavLink href="/blog">Blog</NavLink>

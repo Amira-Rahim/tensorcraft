@@ -132,7 +132,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&${JSON.stringify(LAUNCHED_THEMES)}.includes(t)){document.documentElement.dataset.theme=t}}catch(e){}try{var s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)});if(s!=="light"&&s!=="dark"){s=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}if(s==="light"){document.documentElement.dataset.scheme="light"}}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&${JSON.stringify(LAUNCHED_THEMES)}.includes(t)){document.documentElement.dataset.theme=t}}catch(e){}try{var s=null;try{s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)})}catch(e){}if(s!=="light"&&s!=="dark"){s=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}if(s==="light"){document.documentElement.dataset.scheme="light"}}catch(e){}})()`,
           }}
         />
         <script

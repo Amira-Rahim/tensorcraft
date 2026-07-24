@@ -36,7 +36,7 @@ export function RecallPrompt({ question, answer }: RecallPromptProps) {
         <button
           type="button"
           onClick={handleReveal}
-          className="px-4 py-2 text-sm font-mono font-medium bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+          className="px-4 py-2 text-sm font-mono font-medium bg-primary text-on-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
         >
           Reveal Answer
         </button>

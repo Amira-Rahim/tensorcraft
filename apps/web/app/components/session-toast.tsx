@@ -26,12 +26,12 @@ export function SessionToast() {
 
   return (
     <div
-      className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-4 px-5 py-4 font-mono text-sm border border-red-500/30 bg-red-500/10 backdrop-blur-sm md:left-auto md:right-6 md:max-w-md"
+      className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-4 px-5 py-4 font-mono text-sm border border-error/30 bg-error/10 backdrop-blur-sm md:left-auto md:right-6 md:max-w-md"
       role="alert"
     >
       <div>
-        <p className="text-red-400 font-medium">Session expired</p>
-        <p className="text-red-400/70 text-xs mt-1">
+        <p className="text-error font-medium">Session expired</p>
+        <p className="text-error text-xs mt-1">
           Sign in again to save your progress.
         </p>
       </div>
@@ -39,13 +39,13 @@ export function SessionToast() {
         <button
           type="button"
           onClick={() => setVisible(false)}
-          className="text-xs text-red-400/50 hover:text-red-400"
+          className="text-xs text-text-muted hover:text-error"
         >
           Dismiss
         </button>
         <Link
           href={`/auth?redirectTo=${redirectTo}`}
-          className="text-xs font-semibold px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-colors"
+          className="text-xs font-semibold px-4 py-2 bg-error/15 text-error border border-error/30 hover:bg-error/30 transition-colors"
         >
           Sign in →
         </Link>

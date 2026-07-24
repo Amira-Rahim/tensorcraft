@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { BUILT_THEME_DIRS } from "./built-themes";
 import fs from "fs";
 import path from "path";
 
@@ -18,7 +19,7 @@ function lessonMdx(dir: string): string[] {
   return out;
 }
 
-const files = ["deep-orbit", "extras"].flatMap((d) =>
+const files = [...BUILT_THEME_DIRS].flatMap((d) =>
   lessonMdx(path.join(ROOT, d)),
 );
 

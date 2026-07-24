@@ -130,9 +130,20 @@ export function ParticleField({
       // consistently see both observers being disposed.
       const io = new IntersectionObserver(() => {});
       io.observe(canvas);
+      // The static frame bakes the resolved --tc-* color, so a scheme or
+      // narrative-theme flip would leave stale-colored dots on the new
+      // background until a resize. Repaint on the attribute change - the
+      // same fix AmbientBackground and SceneCanvas carry (2026-07-23
+      // transition audit).
+      const mo = new MutationObserver(() => drawFrame());
+      mo.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-scheme", "data-theme"],
+      });
       return () => {
         ro.disconnect();
         io.disconnect();
+        mo.disconnect();
       };
     }
 

@@ -658,6 +658,31 @@ payments.post("/webhook", async (c) => {
         return c.json({ error: "Database error" }, 500);
       }
 
+      // Persist the Stripe customer id (migration 043). One-time `mode:payment`
+      // sessions don't always create a customer, but when Stripe does attach
+      // one, capturing it now means recurring billing and seat subscriptions
+      // (roadmap H1/H3) already have a durable customer to manage instead of a
+      // backfill later. Best-effort: never fail a recorded purchase over it,
+      // and only write when the value actually changes.
+      const stripeCustomerId =
+        typeof session.customer === "string"
+          ? session.customer
+          : (session.customer?.id ?? null);
+      if (stripeCustomerId) {
+        try {
+          await supabase
+            .from("profiles")
+            .update({ stripe_customer_id: stripeCustomerId })
+            .eq("id", userId)
+            .is("stripe_customer_id", null);
+        } catch (custErr) {
+          logger.warn(
+            { err: custErr, route: "payments.webhook", userId },
+            "Webhook: failed to persist stripe_customer_id (non-fatal)",
+          );
+        }
+      }
+
       // Revenue event + confirmation email fire only once the payment has
       // actually settled. For delayed methods that happens in the
       // async_payment_succeeded handler below, not here.

@@ -182,7 +182,7 @@ export function CheckoutButton({
         </p>
       )}
       {error && (
-        <p className="mt-2 text-xs text-center text-red-500" role="alert">
+        <p className="mt-2 text-xs text-center text-error" role="alert">
           {error}
         </p>
       )}

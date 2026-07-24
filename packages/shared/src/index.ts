@@ -43,3 +43,15 @@ export type {
   Framework,
   BridgeVariant,
 } from "./bridges";
+
+export {
+  JOURNEY_ORDER,
+  JOURNEY_NODES,
+  SPINES,
+  getJourneyNode,
+  getArrivesFrom,
+  getLeadsTo,
+  getSpineStops,
+  recommendedNextTheme,
+} from "./journey";
+export type { JourneyNode, Spine, SpineStop } from "./journey";

@@ -17,7 +17,7 @@ function DashboardButton({ primary, bg }: { primary: string; bg: string }) {
       className="font-mono font-bold rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
       style={{
         background: hov ? "transparent" : primary,
-        color: hov ? primary : bg,
+        color: hov ? primary : "var(--tc-on-primary)",
         border: `2px solid ${primary}`,
         fontSize: 11,
         padding: "8px 20px",
@@ -351,7 +351,7 @@ function CertificateCard({
               status === "ready"
                 ? primary
                 : `color-mix(in srgb, ${primary} 33%, transparent)`,
-            color: bg,
+            color: "var(--tc-on-primary)",
             border: `2px solid ${primary}`,
             fontSize: 11,
             padding: "10px 20px",

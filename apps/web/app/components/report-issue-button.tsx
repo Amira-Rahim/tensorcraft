@@ -251,8 +251,8 @@ export function ReportIssueButton() {
             : "color-mix(in srgb, var(--tc-surface) 80%, transparent)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          border: `1px solid ${open ? "var(--tc-primary)" : "var(--tc-border)"}`,
-          color: open ? "var(--tc-bg)" : "var(--tc-text)",
+          border: `1px solid ${open ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
+          color: open ? "var(--tc-on-primary)" : "var(--tc-text)",
           fontSize: 11,
           fontWeight: 600,
           padding: "10px 20px",
@@ -271,7 +271,6 @@ export function ReportIssueButton() {
             display: "inline-block",
             marginRight: 6,
             fontSize: 9,
-            opacity: 0.7,
           }}
         >
           {open ? "x" : "?"}
@@ -491,8 +490,7 @@ export function ReportIssueButton() {
                   style={{
                     background:
                       "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
-                    border:
-                      "1px solid color-mix(in srgb, var(--tc-border) 80%, transparent)",
+                    border: "1px solid var(--tc-border-interactive)",
                     color: "var(--tc-text)",
                     fontSize: 12,
                     padding: "8px 12px",
@@ -546,8 +544,7 @@ export function ReportIssueButton() {
                   style={{
                     background:
                       "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
-                    border:
-                      "1px solid color-mix(in srgb, var(--tc-border) 80%, transparent)",
+                    border: "1px solid var(--tc-border-interactive)",
                     color: "var(--tc-text)",
                     fontSize: 12,
                     padding: "8px 12px",
@@ -562,7 +559,6 @@ export function ReportIssueButton() {
                         ? "var(--tc-primary)"
                         : "var(--tc-muted)",
                     marginTop: 2,
-                    opacity: 0.6,
                   }}
                 >
                   {description.length}/2000
@@ -600,7 +596,7 @@ export function ReportIssueButton() {
                         className="font-mono flex-1"
                         style={{
                           borderRadius: 999,
-                          border: `1px solid ${selected ? "var(--tc-primary)" : "color-mix(in srgb, var(--tc-border) 60%, transparent)"}`,
+                          border: `1px solid ${selected ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
                           background: selected
                             ? "color-mix(in srgb, var(--tc-primary) 10%, transparent)"
                             : "transparent",
@@ -658,7 +654,7 @@ export function ReportIssueButton() {
                   onClick={() => fileInputRef.current?.click()}
                   className="font-mono text-center"
                   style={{
-                    border: `1px dashed ${dragging ? "var(--tc-primary)" : "color-mix(in srgb, var(--tc-border) 60%, transparent)"}`,
+                    border: `1px dashed ${dragging ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
                     background: dragging
                       ? "color-mix(in srgb, var(--tc-primary) 5%, transparent)"
                       : "transparent",
@@ -704,7 +700,6 @@ export function ReportIssueButton() {
                       border: "none",
                       cursor: "pointer",
                       marginTop: 4,
-                      opacity: 0.6,
                       letterSpacing: "0.05em",
                     }}
                   >
@@ -744,8 +739,7 @@ export function ReportIssueButton() {
                     style={{
                       background:
                         "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
-                      border:
-                        "1px solid color-mix(in srgb, var(--tc-border) 80%, transparent)",
+                      border: "1px solid var(--tc-border-interactive)",
                       color: "var(--tc-text)",
                       fontSize: 12,
                       padding: "8px 12px",
@@ -786,7 +780,9 @@ export function ReportIssueButton() {
                 style={{
                   marginTop: 4,
                   background: hovSubmit ? "transparent" : "var(--tc-primary)",
-                  color: hovSubmit ? "var(--tc-primary)" : "var(--tc-bg)",
+                  color: hovSubmit
+                    ? "var(--tc-primary)"
+                    : "var(--tc-on-primary)",
                   border: "1px solid var(--tc-primary)",
                   fontSize: 10,
                   padding: "10px 24px",
@@ -809,7 +805,6 @@ export function ReportIssueButton() {
                 style={{
                   fontSize: 8,
                   color: "var(--tc-muted)",
-                  opacity: 0.4,
                   letterSpacing: "0.05em",
                   textAlign: "center",
                 }}

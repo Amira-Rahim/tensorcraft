@@ -124,15 +124,12 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@domain.com"
                   disabled={status === "submitting"}
-                  className="w-full border-2 border-border bg-page px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary rounded-none"
+                  className="w-full border-2 border-interactive bg-page px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary rounded-none"
                   data-testid="newsletter-email-input"
                 />
 
                 {status === "error" ? (
-                  <p
-                    role="alert"
-                    className="mt-2 font-mono text-xs text-red-400"
-                  >
+                  <p role="alert" className="mt-2 font-mono text-xs text-error">
                     Couldn&rsquo;t submit. Check the address and try again.
                   </p>
                 ) : null}

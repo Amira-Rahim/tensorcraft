@@ -86,7 +86,7 @@ export function Quiz({
         aria-label={question}
       >
         {options.map((option, i) => {
-          let borderClass = "border-border";
+          let borderClass = "border-interactive";
           let bgClass = "bg-transparent";
 
           if (submitted && i === selected) {
@@ -94,8 +94,8 @@ export function Quiz({
               borderClass = "border-primary";
               bgClass = "bg-primary/10";
             } else {
-              borderClass = "border-red-400";
-              bgClass = "bg-red-400/10";
+              borderClass = "border-error";
+              bgClass = "bg-error/10";
             }
           } else if (i === selected) {
             borderClass = "border-primary";
@@ -113,7 +113,7 @@ export function Quiz({
             >
               <div
                 className={`w-5 h-5 border-2 flex-shrink-0 flex items-center justify-center ${
-                  i === selected ? "border-primary" : "border-border"
+                  i === selected ? "border-primary" : "border-interactive"
                 }`}
               >
                 {i === selected && <div className="w-2.5 h-2.5 bg-primary" />}
@@ -132,7 +132,7 @@ export function Quiz({
             type="button"
             onClick={handleSubmit}
             disabled={selected === null}
-            className="px-4 py-2 text-sm font-mono font-medium bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover disabled:opacity-40"
+            className="px-4 py-2 text-sm font-mono font-medium bg-primary text-on-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover disabled:opacity-40"
           >
             Check Answer
           </button>
@@ -142,7 +142,7 @@ export function Quiz({
               role="status"
               aria-live="polite"
               aria-atomic="true"
-              className={`text-sm font-medium ${isCorrect ? "text-primary" : "text-red-400"}`}
+              className={`text-sm font-medium ${isCorrect ? "text-primary" : "text-error"}`}
             >
               {isCorrect
                 ? "Correct!"

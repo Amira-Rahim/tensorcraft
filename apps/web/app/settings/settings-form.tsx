@@ -72,7 +72,7 @@ export function Toggle({
         width: 44,
         height: 22,
         background: on ? "var(--tc-primary)" : "transparent",
-        border: `2px solid ${on ? "var(--tc-primary)" : "var(--tc-border)"}`,
+        border: `2px solid ${on ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
         cursor: disabled ? "not-allowed" : "pointer",
         transition: "background 0.12s linear, border-color 0.12s linear",
       }}
@@ -557,7 +557,7 @@ export function SettingsForm({
                 className="w-full font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                 style={{
                   background: "var(--tc-surface-overlay)",
-                  border: "2px solid var(--tc-border)",
+                  border: "2px solid var(--tc-border-interactive)",
                   color: "var(--tc-text)",
                   fontSize: 12,
                   padding: "10px 14px",
@@ -575,7 +575,7 @@ export function SettingsForm({
                 className="w-full font-mono cursor-not-allowed rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                 style={{
                   background: "var(--tc-code-bg)",
-                  border: "2px solid var(--tc-border)",
+                  border: "2px solid var(--tc-border-interactive)",
                   color: "var(--tc-muted)",
                   fontSize: 12,
                   padding: "10px 14px",
@@ -697,7 +697,7 @@ export function SettingsForm({
                     style={{
                       background: "transparent",
                       color: "var(--tc-text)",
-                      border: "2px solid var(--tc-border)",
+                      border: "2px solid var(--tc-border-interactive)",
                       fontSize: 11,
                       padding: "12px 22px",
                       minHeight: 44,
@@ -896,7 +896,7 @@ export function SettingsForm({
                     fontSize: 11,
                     padding: "12px 22px",
                     minHeight: 44,
-                    border: "2px solid var(--tc-border)",
+                    border: "2px solid var(--tc-border-interactive)",
                     background: "transparent",
                     color: "var(--tc-text)",
                     cursor: "pointer",
@@ -1080,7 +1080,7 @@ function SaveRow({
         className="font-mono font-bold rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50"
         style={{
           background: hov ? "transparent" : "var(--tc-primary)",
-          color: hov ? "var(--tc-primary)" : "var(--tc-bg)",
+          color: hov ? "var(--tc-primary)" : "var(--tc-on-primary)",
           border: "2px solid var(--tc-primary)",
           fontSize: 11,
           padding: "12px 28px",

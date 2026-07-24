@@ -200,7 +200,7 @@ function ModuleRow({
               borderColor: accentOn ? "var(--tc-primary)" : "var(--tc-muted)",
               background: isDone ? "var(--tc-primary)" : "transparent",
               color: isDone
-                ? "var(--tc-bg)"
+                ? "var(--tc-on-primary)"
                 : accentOn
                   ? "var(--tc-primary)"
                   : "var(--tc-muted)",

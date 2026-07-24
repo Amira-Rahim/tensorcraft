@@ -95,7 +95,7 @@ export function ThemeWaitlistForm({
           // and an inline longhand still wins over it.
           className="flex-1 border-2 px-4 py-3 font-mono text-sm rounded-none"
           style={{
-            borderColor: "var(--tc-border)",
+            borderColor: "var(--tc-border-interactive)",
             background: "var(--tc-bg)",
             color: "var(--tc-text)",
             outlineColor: palette.primary,
@@ -123,7 +123,7 @@ export function ThemeWaitlistForm({
         </button>
       </div>
       {status === "error" ? (
-        <p role="alert" className="font-mono text-xs text-red-400">
+        <p role="alert" className="font-mono text-xs text-error">
           Couldn&rsquo;t submit. Check the address and try again.
         </p>
       ) : null}

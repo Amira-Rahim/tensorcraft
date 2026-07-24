@@ -9,14 +9,10 @@ import {
   getThemeLessons,
   getLessonsWithBridges,
 } from "@tensorcraft/content";
-import {
-  isValidThemeSlug,
-  LAUNCHED_THEMES,
-  isLaunched,
-  isComingSoon,
-} from "@tensorcraft/shared";
+import { LAUNCHED_THEMES, isLaunched, isComingSoon } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase } from "@/lib/progress";
+import { getEntitledThemes } from "@/lib/entitlements";
 import type { Metadata } from "next";
 import {
   DashboardView,
@@ -52,7 +48,7 @@ export default async function DashboardPage() {
     { data: progressRecords },
     { data: streaksRaw },
     { data: exerciseAttempts },
-    { data: purchaseRows },
+    ownedThemes,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -79,11 +75,9 @@ export default async function DashboardPage() {
       .eq("user_id", user.id)
       .order("attempted_at", { ascending: false })
       .limit(800),
-    supabase
-      .from("purchases")
-      .select("theme_ids")
-      .eq("user_id", user.id)
-      .in("status", ["completed", "partially_refunded"]),
+    // Entitled themes from the single source (Tier 1 F4) — was a hand-rolled
+    // purchases query + theme_ids loop duplicated across three files.
+    getEntitledThemes(user.id),
   ]);
 
   // Streak nudge: any of the user's per-theme streaks where last_activity_date
@@ -117,15 +111,8 @@ export default async function DashboardPage() {
     ),
   };
 
-  // Compute owned theme set (defensive: only accept known theme slugs so
-  // an anomalous DB row cannot grant access to an unknown theme).
-  const ownedThemes = new Set<string>();
-  for (const row of purchaseRows ?? []) {
-    if (!Array.isArray(row.theme_ids)) continue;
-    for (const slug of row.theme_ids) {
-      if (isValidThemeSlug(slug)) ownedThemes.add(slug);
-    }
-  }
+  // ownedThemes now comes from getEntitledThemes (above) — the single
+  // entitlement source, which already validates slugs.
   // "Full bundle" = all currently-launched themes owned. Coming-soon themes
   // are excluded, they aren't purchasable. When a new theme launches and is
   // added to LAUNCHED_THEMES, this check expands automatically.

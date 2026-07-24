@@ -169,7 +169,7 @@ export function AuthForm() {
 
       {/* Error messages */}
       {authError && (
-        <div className="mb-6 border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 font-mono">
+        <div className="mb-6 border border-error/30 bg-error/10 px-4 py-3 text-sm text-error font-mono">
           {authError === "session_expired"
             ? ERROR_MESSAGES.session_expired
             : "Sign-in didn't go through. Try again, or request a fresh email link below."}
@@ -177,7 +177,7 @@ export function AuthForm() {
       )}
 
       {error && (
-        <div className="mb-6 border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 font-mono">
+        <div className="mb-6 border border-error/30 bg-error/10 px-4 py-3 text-sm text-error font-mono">
           {error}
         </div>
       )}
@@ -213,7 +213,7 @@ export function AuthForm() {
             <strong className="text-text-primary">{email}</strong>. Click the
             link and you&apos;ll be taken to your dashboard automatically.
           </p>
-          <p className="text-text-muted/60 text-xs font-mono mb-6">
+          <p className="text-text-muted text-xs font-mono mb-6">
             Didn&apos;t receive it? Check your spam folder or{" "}
             <button
               type="button"
@@ -315,12 +315,12 @@ export function AuthForm() {
               placeholder="you@example.com"
               autoComplete="email"
               required
-              className="w-full h-13 px-5 border border-border bg-code-bg text-text-primary text-[15px] font-mono rounded-none placeholder:text-text-muted/60 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary focus:bg-surface transition-all"
+              className="w-full h-13 px-5 border border-interactive bg-code-bg text-text-primary text-[15px] font-mono rounded-none placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary focus:bg-surface transition-all"
             />
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-13 border border-primary/40 bg-transparent text-primary text-[15px] font-mono font-medium uppercase tracking-wider rounded-none hover:bg-primary hover:text-code-bg focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-13 border border-primary/40 bg-transparent text-primary text-[15px] font-mono font-medium uppercase tracking-wider rounded-none hover:bg-primary hover:text-on-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Send magic link"}
             </button>

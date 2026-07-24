@@ -22,16 +22,16 @@ export function PaymentError() {
   return (
     <div
       role="alert"
-      className="flex items-center gap-3.5 relative mx-auto max-w-[720px] px-6 py-4 bg-surface-raised border border-red-500/35"
+      className="flex items-center gap-3.5 relative mx-auto max-w-[720px] px-6 py-4 bg-surface-raised border border-error/35"
     >
       {/* Red indicator dot */}
-      <span className="w-2 h-2 bg-red-500 shrink-0" />
+      <span className="w-2 h-2 bg-error shrink-0" />
 
       <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
         Payment could not be completed. Please try again or{" "}
         <a
           href="mailto:support@tensorcraft.app"
-          className="text-red-500 underline underline-offset-2"
+          className="text-error underline underline-offset-2"
         >
           contact support
         </a>
@@ -41,7 +41,7 @@ export function PaymentError() {
       <button
         onClick={dismiss}
         aria-label="Dismiss error"
-        className="flex items-center justify-center w-11 h-11 shrink-0 bg-transparent border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-colors cursor-pointer text-base leading-none p-0"
+        className="flex items-center justify-center w-11 h-11 shrink-0 bg-transparent border border-interactive text-text-muted hover:text-text-primary hover:border-primary/30 transition-colors cursor-pointer text-base leading-none p-0"
       >
         &#10005;
       </button>

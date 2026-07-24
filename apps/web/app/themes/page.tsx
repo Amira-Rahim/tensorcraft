@@ -4,11 +4,11 @@ import {
   PRICING,
   THEME_CONTENT,
   THEME_SLUGS,
-  isValidThemeSlug,
   isLaunched,
 } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getEntitledThemes } from "@/lib/entitlements";
 import { ThemeCardsGrid, type ThemeCardData } from "./theme-cards-grid";
 import type { Metadata } from "next";
 
@@ -108,21 +108,15 @@ async function loadOwnedThemes(): Promise<Set<string>> {
     } = await supabase.auth.getUser();
     if (!user) return new Set();
 
-    const { data } = await supabase
-      .from("purchases")
-      .select("theme_ids")
-      .eq("user_id", user.id)
-      .in("status", ["completed", "partially_refunded"]);
-
-    const owned = new Set<string>();
-    for (const row of data ?? []) {
-      if (!Array.isArray(row.theme_ids)) continue;
-      for (const slug of row.theme_ids) {
-        if (isValidThemeSlug(slug)) owned.add(slug);
-      }
-    }
-    return owned;
+    // Single entitlement source (Tier 1 F4). Was a hand-rolled purchases query
+    // + Set loop duplicated in three files; the rule lives in one place now,
+    // so adding seat-based access later changes only getEntitledThemes.
+    return await getEntitledThemes(user.id);
   } catch {
+    // This grid only paints "owned" badges — not an access gate — so a
+    // transient fault degrading to "nothing owned" is acceptable here (the
+    // real paywall is the lesson route, which surfaces the error). Keeping the
+    // swallow local and documented rather than in the shared helper.
     return new Set();
   }
 }

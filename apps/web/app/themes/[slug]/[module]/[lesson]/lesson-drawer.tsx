@@ -118,7 +118,7 @@ export function LessonDrawer({
                   return (
                     <div
                       key={l.slug}
-                      className="flex items-center gap-3 px-4 py-3 opacity-40"
+                      className="flex items-center gap-3 px-4 py-3"
                     >
                       <span
                         className="text-xs shrink-0"

@@ -47,6 +47,13 @@
   /* Border */
   --color-border: var(--tc-border);
   --color-border-focus: var(--tc-primary);
+  /* Interactive-control boundary (WCAG 1.4.11) → `border-interactive` utility.
+     Tailwind v4 names the color from everything after `border-`, so the key
+     MUST be `--color-interactive` (not `--color-border-interactive`, which
+     would spell `border-border-interactive`). Use on the resting border of
+     form fields, radio/checkbox options, toggle tracks and outline buttons;
+     decorative dividers keep `border-border`. */
+  --color-interactive: var(--tc-border-interactive);
 
   /* Fonts: loaded via next/font, variables injected on <html> */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

@@ -23,6 +23,7 @@ let mockExistingPurchases: { theme_ids: string[]; amount: number }[] | null =
   null;
 // Controls insert result for the auto-grant path
 const mockServerInsert = vi.fn();
+const mockProfileUpdate = vi.fn();
 let mockProfileEmail: string | null = "buyer@example.com";
 
 vi.mock("stripe", () => ({
@@ -82,6 +83,16 @@ vi.mock("@tensorcraft/supabase", () => ({
               single: () => Promise.resolve({ data: null, error: null }),
             }),
           }),
+          // The webhook persists stripe_customer_id via
+          // .update({...}).eq("id", …).is("stripe_customer_id", null)
+          update: (data: unknown) => {
+            mockProfileUpdate(data);
+            return {
+              eq: () => ({
+                is: () => Promise.resolve({ data: null, error: null }),
+              }),
+            };
+          },
         };
       }
       return {};
@@ -247,6 +258,70 @@ describe("POST /api/payments/webhook", () => {
       }),
       expect.objectContaining({ onConflict: "stripe_session_id" }),
     );
+  });
+
+  it("persists stripe_customer_id when the session carries a customer (migration 043)", async () => {
+    mockInsert.mockResolvedValue({ error: null });
+    mockProfileUpdate.mockClear();
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_cust_1",
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "paid",
+          customer: "cus_ABC123",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockProfileUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ stripe_customer_id: "cus_ABC123" }),
+    );
+  });
+
+  it("does not touch the profile when the session has no customer", async () => {
+    mockInsert.mockResolvedValue({ error: null });
+    mockProfileUpdate.mockClear();
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_nocust_1",
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "paid",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(mockProfileUpdate).not.toHaveBeenCalled();
   });
 
   it("records a delayed-payment (unpaid) session as pending, never completed", async () => {

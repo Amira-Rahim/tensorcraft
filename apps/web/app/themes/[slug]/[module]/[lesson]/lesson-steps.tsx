@@ -18,6 +18,29 @@ import { LessonShell } from "./lesson-shell";
 import { GlossaryProvider, useGlossary } from "./glossary-context";
 import { GlossaryRail } from "./glossary-rail";
 
+/**
+ * Per-theme vocabulary. The reader used to hardcode Deep Orbit's words
+ * (MISSION / SECTOR / "Mission Map" / "Mission Complete" / "Next Mission"),
+ * so Neon Protocol — whose lesson word is "Protocol" — would still render
+ * "MISSION 3", an immersion break on every lesson page of every non-orbit
+ * theme (scalability audit F1). The map surface already read from
+ * theme.terminology; the reader now does too. Falls back to neutral words for
+ * an unknown slug so nothing ever renders undefined.
+ */
+function terms(themeSlug: string): {
+  lesson: string;
+  module: string;
+  exercise: string;
+} {
+  return (
+    themes[themeSlug]?.terminology ?? {
+      lesson: "Lesson",
+      module: "Module",
+      exercise: "Exercise",
+    }
+  );
+}
+
 interface LessonStepsProps {
   lesson: {
     /** Velite frontmatter slug — the canonical lesson id used by every
@@ -497,7 +520,7 @@ function LessonStepsInner({
           className="text-sm font-mono font-bold px-8 py-3 transition-all"
           style={{
             background: canContinue ? "var(--tc-primary)" : "var(--tc-border)",
-            color: canContinue ? "var(--tc-bg)" : "var(--tc-muted)",
+            color: canContinue ? "var(--tc-on-primary)" : "var(--tc-muted)",
             cursor: canContinue ? "pointer" : "not-allowed",
             opacity: canContinue ? 1 : 0.3,
           }}
@@ -529,7 +552,7 @@ function LessonStepsInner({
             color: "var(--tc-on-primary)",
           }}
         >
-          Back to Mission Map &rarr;
+          Back to {terms(themeSlug).lesson} Map &rarr;
         </Link>
       )}
     </div>
@@ -655,7 +678,11 @@ function LessonStepsInner({
           terms={lesson.glossaryTerms ?? []}
           activeTerm={activeTerm}
         />
-        <MissionProgress lessons={lessons} lessonSlug={lessonSlug} />
+        <MissionProgress
+          lessons={lessons}
+          lessonSlug={lessonSlug}
+          themeSlug={themeSlug}
+        />
       </div>
     );
   } else {
@@ -818,8 +845,8 @@ function ChromeBar({
             narrowest screens so the first row still fits. The arrow plus the
             accessible name below keep it unambiguous. */}
         <span aria-hidden="true">&larr;</span>
-        <span className="hidden sm:inline">Mission Map</span>
-        <span className="sr-only sm:hidden">Mission Map</span>
+        <span className="hidden sm:inline">{terms(themeSlug).lesson} Map</span>
+        <span className="sr-only sm:hidden">{terms(themeSlug).lesson} Map</span>
       </Link>
 
       <div
@@ -1006,9 +1033,11 @@ function SceneCard({
 function MissionProgress({
   lessons,
   lessonSlug,
+  themeSlug,
 }: {
   lessons: LessonStepsProps["lessons"];
   lessonSlug: string;
+  themeSlug: string;
 }) {
   if (!lessons || lessons.length === 0) return null;
   const done = lessons.filter((l) => l.completed).length;
@@ -1018,7 +1047,7 @@ function MissionProgress({
         className="font-mono text-xs uppercase tracking-[0.2em]"
         style={{ color: "var(--tc-primary)" }}
       >
-        Mission Progress
+        {terms(themeSlug).lesson} Progress
       </span>
       <span className="text-sm" style={{ color: "var(--tc-muted)" }}>
         {done} / {lessons.length} complete
@@ -1227,7 +1256,8 @@ function StepBriefing({
         className="text-xs font-mono uppercase tracking-[3px] mb-6"
         style={{ color: "var(--tc-primary)" }}
       >
-        SECTOR {moduleSlug} &middot; MISSION {lesson.order}
+        {terms(themeSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
+        {terms(themeSlug).lesson.toUpperCase()} {lesson.order}
       </div>
 
       <h1
@@ -1519,7 +1549,7 @@ function StepConsequence({
           className="w-1.5 h-1.5 inline-block"
           style={{ background: "var(--tc-primary)" }}
         />
-        Mission Complete
+        {terms(themeSlug).lesson} Complete
       </div>
 
       <h2
@@ -1566,7 +1596,7 @@ function StepConsequence({
               className="text-[9px] font-mono uppercase tracking-[1.5px] mb-1"
               style={{ color: "var(--tc-muted)" }}
             >
-              Next Mission
+              Next {terms(themeSlug).lesson}
             </div>
             <div
               className="text-[15px] font-semibold"

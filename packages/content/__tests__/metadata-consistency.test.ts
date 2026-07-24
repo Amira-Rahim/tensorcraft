@@ -1,6 +1,7 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
+import { BUILT_THEME_DIRS } from "../src/built-themes";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
 import {
@@ -39,7 +40,9 @@ import {
  * Anything a customer can load, these gates check.
  */
 const CONTENT_ROOT = dirname(CONTENT_DIR);
-const LAUNCHED_THEME_DIRS = ["deep-orbit", "extras"];
+// Scope tracks the build via one shared constant (F3). Adding a launched
+// theme to BUILT_THEME_DIRS extends this gate automatically.
+const LAUNCHED_THEME_DIRS = [...BUILT_THEME_DIRS];
 
 function launchedLessonFiles(): string[] {
   return LAUNCHED_THEME_DIRS.flatMap((theme) =>

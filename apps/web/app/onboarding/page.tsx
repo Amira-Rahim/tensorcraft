@@ -397,7 +397,7 @@ export default function OnboardingPage() {
               data-testid="onboarding-back"
               onClick={goBack}
               disabled={saving}
-              className="px-7 py-3 font-mono text-xs uppercase tracking-[0.1em] text-text-primary border-2 border-border bg-transparent rounded-none hover:border-primary/60 transition-all brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50"
+              className="px-7 py-3 font-mono text-xs uppercase tracking-[0.1em] text-text-primary border-2 border-interactive bg-transparent rounded-none hover:border-primary/60 transition-all brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50"
             >
               ← Back
             </button>
@@ -553,7 +553,7 @@ function BackgroundStep(props: {
                 className={`flex items-start gap-4 px-6 py-4 text-left transition-all border-2 rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
                   selected
                     ? "bg-primary/10 border-primary"
-                    : "bg-surface border-border hover:border-primary/40"
+                    : "bg-surface border-interactive hover:border-primary/40"
                 }`}
               >
                 <span
@@ -602,7 +602,7 @@ function BackgroundStep(props: {
           value={years}
           onChange={(e) => setYears(e.target.value)}
           placeholder="0-50"
-          className="w-full md:w-40 font-mono text-sm bg-surface border-2 border-border rounded-none px-4 py-3 text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary"
+          className="w-full md:w-40 font-mono text-sm bg-surface border-2 border-interactive rounded-none px-4 py-3 text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary"
         />
         {!yearsValid && (
           <p
@@ -631,7 +631,7 @@ function BackgroundStep(props: {
           rows={3}
           maxLength={200}
           placeholder="Shipped a Next.js dashboard, tinkered with WebGL, etc."
-          className="w-full font-mono text-xs bg-surface border-2 border-border rounded-none px-4 py-3 text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary resize-none"
+          className="w-full font-mono text-xs bg-surface border-2 border-interactive rounded-none px-4 py-3 text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary resize-none"
         />
         <div className="font-mono text-[11px] text-text-muted mt-1">
           {feBackground.length}/200
@@ -685,7 +685,7 @@ function GoalStep(props: {
                 className={`flex items-center gap-4 px-6 py-4 text-left transition-all border-2 rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
                   selected
                     ? "bg-primary/10 border-primary"
-                    : "bg-surface border-border hover:border-primary/40"
+                    : "bg-surface border-interactive hover:border-primary/40"
                 }`}
               >
                 <span

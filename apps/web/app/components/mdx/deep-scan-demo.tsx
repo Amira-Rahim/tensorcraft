@@ -193,7 +193,7 @@ export function DeepScanDemo({
                 sample {row.id}
               </span>
               {row.score === null ? (
-                <span className="text-text-muted/50">…</span>
+                <span className="text-text-muted">…</span>
               ) : (
                 <>
                   <span className="text-text-primary w-14">

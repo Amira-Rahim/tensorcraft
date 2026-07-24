@@ -63,7 +63,7 @@ function ThemePicker({
             }
             className={`min-h-11 px-3 py-2 text-xs font-mono border rounded-none transition-all focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
               isOwned
-                ? "border-primary/50 bg-primary/5 text-primary/70 cursor-default"
+                ? "border-primary/50 bg-primary/5 text-primary cursor-default"
                 : isSelected
                   ? "border-primary bg-primary/10 text-primary font-semibold"
                   : isFull
@@ -73,7 +73,7 @@ function ThemePicker({
           >
             {t.name}
             {isOwned && (
-              <span className="ml-1.5 text-[10px] uppercase tracking-wider opacity-70">
+              <span className="ml-1.5 text-[10px] uppercase tracking-wider">
                 OWNED
               </span>
             )}
