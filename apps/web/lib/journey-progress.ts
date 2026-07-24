@@ -5,7 +5,7 @@ import {
   recommendedNextTheme,
   type ThemeSlug,
 } from "@tensorcraft/shared";
-import { THEME_CONTENT } from "@tensorcraft/shared";
+import { getThemeTotalLessons } from "@tensorcraft/shared";
 
 /** Per-theme state within the canonical journey. */
 export interface JourneyThemeState {
@@ -74,10 +74,11 @@ export async function getJourneyState(userId: string): Promise<JourneyState> {
     completedByTheme.get(t)!.add(l);
   }
 
-  // Every theme has the same lesson count (module-level overrides are already
-  // folded into the per-theme total). One constant, not a per-theme lookup.
-  const total = THEME_CONTENT.totalLessonsPerTheme;
+  // Per-theme total: the corpus is NOT uniform (deep-orbit 56, neon 54, the
+  // rest 55 — re-audit N2/F-A), so each theme's completion is measured against
+  // its OWN lesson count, not one shared constant.
   const themes: JourneyThemeState[] = JOURNEY_ORDER.map((slug, position) => {
+    const total = getThemeTotalLessons(slug);
     const done = completedByTheme.get(slug)?.size ?? 0;
     return {
       slug,

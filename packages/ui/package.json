@@ -17,12 +17,9 @@
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
-    "@codesandbox/sandpack-themes": "^2.0.21",
     "@tensorcraft/shared": "workspace:*",
     "@tensorcraft/themes": "workspace:*",
     "@tensorflow/tfjs": "^4.22.0",
-    "framer-motion": "^11.0.0",
-    "katex": "^0.16.38",
     "shiki": "^4.0.2"
   },
   "peerDependencies": {
@@ -31,7 +28,6 @@
   },
   "devDependencies": {
     "@tensorcraft/config": "workspace:*",
-    "@types/katex": "^0.16.8",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",

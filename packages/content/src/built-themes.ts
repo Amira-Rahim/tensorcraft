@@ -29,3 +29,12 @@ export const BUILT_THEME_GLOB = `{${BUILT_THEME_DIRS.join(",")}}`;
 export const BUILT_STORY_THEMES = BUILT_THEME_DIRS.filter(
   (d) => d !== "extras",
 );
+
+/**
+ * Lessons in the cross-theme `extras` dir (classical-ml, math-deep-dive,
+ * ethics-responsibility, python-bridge). Not a ThemeSlug, so it has no
+ * THEME_SHAPE row; named here so gates summing built lessons across themes
+ * (e.g. end-of-lesson) can add it without hardcoding a corpus total. Pinned to
+ * the filesystem by the same gates that count.
+ */
+export const EXTRAS_LESSON_COUNT = 21;

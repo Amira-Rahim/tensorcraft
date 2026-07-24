@@ -6,6 +6,7 @@ import { SkillGenome } from "./skill-genome";
 import { BridgeCollection } from "./bridge-collection";
 import { LossCurve, type WeeklyHints } from "@tensorcraft/ui/visualizations";
 import { UserAvatar } from "@/app/components/user-avatar";
+import { themes } from "@tensorcraft/themes";
 
 /* ── Design tokens (use CSS vars from theme system) ── */
 const LIME = "var(--tc-primary)";
@@ -112,6 +113,10 @@ export function DashboardView(props: DashboardProps) {
     themeCards,
     streakAtRisk = false,
   } = props;
+
+  // Resolve the theme's lesson word (re-audit N2/F-C): "Mission" is Deep
+  // Orbit's; other themes say Protocol/Procedure/etc. Falls back to "Mission".
+  const lessonTerm = themes[themeSlug]?.terminology.lesson ?? "Mission";
 
   const [heatVis, setHeatVis] = useState(false);
   const [hovM, setHovM] = useState<number | null>(null);
@@ -424,7 +429,7 @@ export function DashboardView(props: DashboardProps) {
                       color: LIME,
                     }}
                   >
-                    Mission Complete
+                    {lessonTerm} Complete
                   </h1>
                   <p style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
                     All {modules.length} modules finished. View your capstone.

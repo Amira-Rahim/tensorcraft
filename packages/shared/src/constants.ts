@@ -12,6 +12,58 @@ export const THEME_SLUGS = [
 export type ThemeSlug = (typeof THEME_SLUGS)[number];
 
 /**
+ * Per-theme corpus SHAPE — the real lesson/module counts on disk, per theme.
+ *
+ * Scalability re-audit 2026-07-24 (§RE-AUDIT / N2, finding F-A). The corpus is
+ * NOT uniform: deep-orbit has 56 lessons (browser-runtimes carries 6),
+ * neon-protocol 54 (image-data carries 4), the other three 55. Before this, the
+ * shape lived as single Deep-Orbit scalars (`totalLessonsPerTheme: 56`,
+ * `modulesPerTheme: 11`, a GLOBAL `moduleLessonOverrides`), so every count-gate
+ * asserted 56/11 against every built theme and the DISPATCH milestone producer
+ * sized every theme's modules from one global map. The moment a second theme
+ * joined the build those gates went RED and milestones misfired.
+ *
+ * Now each theme declares its own shape here, verified against the filesystem
+ * by packages/content/__tests__/module-counts.test.ts + structure-variety.
+ * Overrides are keyed by module slug WITHIN a theme, so two themes may share a
+ * module name with different counts (F-B). Launch a theme → its gate assertions
+ * and milestone sizing come from its own row, no per-test edit.
+ */
+export interface ThemeShape {
+  /** Total lessons authored for this theme (the certificate completion gate). */
+  totalLessons: number;
+  /** Module directories in this theme. */
+  modules: number;
+  /**
+   * Modules whose lesson count deviates from `lessonsPerModule` (5), keyed by
+   * module slug. Empty when every module holds the standard count.
+   */
+  moduleOverrides: Record<string, number>;
+}
+
+export const THEME_SHAPE: Record<ThemeSlug, ThemeShape> = {
+  "deep-orbit": {
+    totalLessons: 56,
+    modules: 11,
+    moduleOverrides: { "browser-runtimes": 6 },
+  },
+  "neon-protocol": {
+    totalLessons: 54,
+    modules: 11,
+    moduleOverrides: { "image-data": 4 },
+  },
+  "signal-ward": { totalLessons: 55, modules: 11, moduleOverrides: {} },
+  "nova-canvas": { totalLessons: 55, modules: 11, moduleOverrides: {} },
+  "terra-grid": { totalLessons: 55, modules: 11, moduleOverrides: {} },
+};
+
+/** Total lessons authored for a theme (the module-completion / cert gate). */
+export function getThemeTotalLessons(themeSlug: string): number {
+  const shape = THEME_SHAPE[themeSlug as ThemeSlug];
+  return shape ? shape.totalLessons : THEME_SHAPE["deep-orbit"].totalLessons;
+}
+
+/**
  * V1 launched themes. Other themes in THEME_SLUGS are "coming soon"; their
  * registry metadata still loads (palettes, taglines, characters), but build,
  * routing, payments, and dashboards gate on this set. Move a slug here when
@@ -94,11 +146,11 @@ export const THEME_CONTENT = {
   // assume Deep Orbit is in every bundle — true while it is the only
   // launched theme; revisit when a second theme ships.
   comingSoonLessonsPerTheme: 55,
-  // Modules that deviate from lessonsPerModule. The API can't import the
-  // content package (velite build artifact), so the DISPATCH milestone
-  // producer resolves module sizes from here; a gate in packages/content
-  // asserts these numbers against the real MDX corpus.
-  moduleLessonOverrides: { "browser-runtimes": 6 } as Record<string, number>,
+  // Per-module deviations moved to per-theme THEME_SHAPE (re-audit N2/F-B):
+  // module sizes are now theme-scoped, so getModuleLessonCount takes a theme.
+  // THEME_CONTENT.modulesPerTheme / totalLessonsPerTheme describe the LAUNCHED
+  // theme (deep-orbit) for marketing; a gate asserts they equal
+  // THEME_SHAPE["deep-orbit"] so the two cannot drift.
   // Lesson-embedded FE→ML bridges in the launched theme. Single source for
   // every marketing surface (/learn, FAQ, onboarding) — three surfaces
   // carried three different counts (50+/51/55) until 2026-07-14. Pinned to
@@ -124,14 +176,19 @@ export const EXERCISE_CONTENT = {
 } as const;
 
 /**
- * Lessons in a module, for code that cannot see the content package
- * (module completion = this many `completed` rows in theme_progress).
+ * Lessons in a module, for code that cannot see the content package (module
+ * completion = this many `completed` rows in theme_progress). Theme-scoped
+ * (re-audit N2/F-B): a module's size is read from THAT theme's shape, so the
+ * DISPATCH milestone producer sizes each theme's modules correctly and two
+ * themes may share a module name with different counts. Unknown theme/module
+ * falls back to the standard per-module count.
  */
-export function getModuleLessonCount(moduleSlug: string): number {
-  return (
-    THEME_CONTENT.moduleLessonOverrides[moduleSlug] ??
-    THEME_CONTENT.lessonsPerModule
-  );
+export function getModuleLessonCount(
+  themeSlug: string,
+  moduleSlug: string,
+): number {
+  const shape = THEME_SHAPE[themeSlug as ThemeSlug];
+  return shape?.moduleOverrides[moduleSlug] ?? THEME_CONTENT.lessonsPerModule;
 }
 
 /**
@@ -145,7 +202,7 @@ export function getModuleLessonCount(moduleSlug: string): number {
 export function getPaidLessonCount(): number {
   return (
     THEME_CONTENT.totalLessonsPerTheme -
-    getModuleLessonCount(THEME_CONTENT.freeModuleSlug)
+    getModuleLessonCount(DEFAULT_THEME, THEME_CONTENT.freeModuleSlug)
   );
 }
 

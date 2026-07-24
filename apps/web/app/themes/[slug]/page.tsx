@@ -373,7 +373,7 @@ export default async function ThemeDetailPage({ params }: Props) {
                 className="text-xs font-mono uppercase tracking-widest"
                 style={{ color: "var(--tc-primary)" }}
               >
-                Mission Complete
+                {theme.terminology.lesson} Complete
               </span>
               <p
                 className="text-sm font-mono font-semibold mt-1"

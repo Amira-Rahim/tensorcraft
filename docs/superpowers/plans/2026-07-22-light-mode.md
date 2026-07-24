@@ -66,9 +66,9 @@ Shared light tier/axis/semantic:
 | axis-evaluation | `#d07070` | `#A13434` |
 | axis-deployment | `#c49535` | `#755820` |
 | axis-fe-integration | `#4a90d9` | `#215E9D` |
-| `--tc-success` | `#10b981` | `#096949` |
+| `--tc-success` | `#4ade80` (re-minted from `#10b981`, round 3) | `#096949` |
 | `--tc-warning` | `#f59e0b` | `#805306` |
-| `--tc-error` | `#ef4444` | `#B00F0F` |
+| `--tc-error` | `#fca5a5` (re-minted from `#ef4444`, round 3) | `#B00F0F` |
 | `--tc-streak` (new, dashboard "on fire") | `#FF8A2A` | `#964400` |
 
 Note on dark-theme `--tc-primary-rgb` bugs found during audit: neon-protocol's dark triplet is `74, 144, 217` (that's `#4A90D9`, not its primary `#3FC4DC` → should be `63, 196, 220`) and nova-canvas's is `208, 112, 112` (`#D07070`, not `#E08058` → should be `224, 128, 88`). Fix these while touching the file (Task 2) — the comment says "must stay in sync with --tc-primary" and they aren't.

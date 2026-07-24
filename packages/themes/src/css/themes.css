@@ -51,10 +51,14 @@
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 
-  /* Semantic colors (global — only declared here, on :root) */
-  --tc-success: #10b981;
+  /* Semantic colors (global — only declared here, on :root). Success and
+     error are the old green-400/red-300 pastels, not the mid-tone emeralds/
+     reds: semantic text sits on its own 8-20% tints over RAISED surfaces
+     (exercise result panels, toasts), and mid-tones fail 4.5:1 there.
+     Locked by the semantic-surface gate in theme-properties.test.ts. */
+  --tc-success: #4ade80;
   --tc-warning: #f59e0b;
-  --tc-error: #ef4444;
+  --tc-error: #fca5a5;
   --tc-streak: #ff8a2a;
   /* Ink for primary-filled elements (buttons, chips, ::selection). Dark uses
      the page bg (near-black on the bright primary); light CANNOT reuse the

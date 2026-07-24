@@ -1240,7 +1240,7 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 All five themes share these visual design constraints to maintain platform coherence:
 
-- **Both dark and light color schemes are supported** (added 2026-07-22). Dark remains the brand-default aesthetic; light mode follows the OS `prefers-color-scheme` by default with a manual override toggle. Every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Rollout in progress per the 2026-07-22 entry in `docs/dev-plan.md`; the shipped app remains dark-only until it lands.
+- **Both dark and light color schemes are supported** (added 2026-07-22). Dark remains the brand-default aesthetic; light mode follows the OS `prefers-color-scheme` by default with a manual override toggle. Every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23 and verified end to end (axe matrix both schemes, runtime sweep of every route); see `docs/dev-plan.md`'s 2026-07-23 entry.
 - **Minimum contrast ratio:** 4.5:1 for body text, 3:1 for large text (WCAG AA).
 - **Animation budget:** No more than 3 simultaneous animations per viewport. All animations respect `prefers-reduced-motion`.
 - **Font loading:** Maximum 2 font families per theme. All fonts self-hosted (no Google Fonts CDN).

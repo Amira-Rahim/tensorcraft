@@ -12,7 +12,7 @@ import {
   lessonFiles,
 } from "../../../scripts/audit-structure-variety.mjs";
 import { BUILT_STORY_THEMES } from "../src/built-themes";
-import { THEME_CONTENT } from "@tensorcraft/shared";
+import { THEME_SHAPE, type ThemeSlug } from "@tensorcraft/shared";
 
 // Parent of every theme's content dir, derived from deep-orbit's dir.
 const CONTENT_ROOT = dirname(CONTENT_DIR);
@@ -51,8 +51,12 @@ for (const theme of BUILT_STORY_THEMES) {
 
   describe(`structure-variety floor (${theme})`, () => {
     it("analyzes the full lesson corpus", () => {
-      expect(facts.length).toBe(THEME_CONTENT.totalLessonsPerTheme);
-      expect(modules.length).toBe(THEME_CONTENT.modulesPerTheme);
+      // Per-theme shape (re-audit N2/F-A): each theme is held to ITS OWN
+      // lesson/module counts, not one Deep-Orbit scalar. deep-orbit 56, neon 54,
+      // the rest 55; all 11 modules.
+      const shape = THEME_SHAPE[theme as ThemeSlug];
+      expect(facts.length).toBe(shape.totalLessons);
+      expect(modules.length).toBe(shape.modules);
     });
 
     it("every lesson carries a scene slugline", () => {

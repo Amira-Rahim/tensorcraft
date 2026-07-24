@@ -1,6 +1,34 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+/**
+ * Reads a single claim from an already-validated access token WITHOUT a network
+ * call. getUser() (in updateSession) is what AUTHENTICATES the request; this
+ * only decodes the payload of that same token to read a non-security-critical
+ * flag (onboarding gating). Returns undefined if the token is absent/opaque or
+ * the claim is missing — callers then fall back to a profiles read, so gating
+ * stays correct for tokens minted before the custom-access-token hook
+ * (migration 046) was enabled.
+ */
+function readTokenClaim(
+  accessToken: string | undefined,
+  claim: string,
+): unknown {
+  if (!accessToken) return undefined;
+  const payload = accessToken.split(".")[1];
+  if (!payload) return undefined;
+  try {
+    // JWT payloads are base64url and unpadded; atob wants standard base64 with
+    // padding, so translate -_ → +/ and re-pad to a multiple of 4.
+    let b64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    b64 = b64.padEnd(b64.length + ((4 - (b64.length % 4)) % 4), "=");
+    const json = atob(b64);
+    return (JSON.parse(json) as Record<string, unknown>)[claim];
+  } catch {
+    return undefined;
+  }
+}
+
 export async function updateSession(request: NextRequest) {
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -128,19 +156,37 @@ export async function updateSession(request: NextRequest) {
   // Redirect to onboarding if user hasn't completed it (only on protected routes
   // to avoid a DB query on every single page load like landing, pricing, blog, etc.)
   if (user && isProtected) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("onboarding_completed")
-      .eq("id", user.id)
-      .single();
-
     const isOnboarding = request.nextUrl.pathname.startsWith("/onboarding");
+
+    // Prefer the `onboarding_completed` claim injected into the JWT by the
+    // custom access token hook (migration 046) — reading it off the already-
+    // validated token costs no DB round-trip on this hot authed path.
+    // getSession() reads the cookie (no network); we only decode the token for
+    // this non-security-critical flag, identity still comes from getUser above.
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const claim = readTokenClaim(session?.access_token, "onboarding_completed");
+
+    // Fall back to a profiles read only when the claim is absent — tokens
+    // minted before the hook was enabled, or if the hook is not yet configured.
+    // This keeps gating correct in every state; the read simply disappears once
+    // tokens carry the claim.
+    let onboardingCompleted = typeof claim === "boolean" ? claim : undefined;
+    if (onboardingCompleted === undefined) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarding_completed")
+        .eq("id", user.id)
+        .single();
+      if (profile) onboardingCompleted = profile.onboarding_completed;
+    }
 
     // Incomplete onboarding → force to /onboarding (unless already there).
     // Carry the requested destination along: the wizard used to exit every
     // learner to /themes/deep-orbit regardless of what they asked for
     // (2026-07-14 UX audit).
-    if (profile && !profile.onboarding_completed && !isOnboarding) {
+    if (onboardingCompleted === false && !isOnboarding) {
       const url = request.nextUrl.clone();
       const requested = url.pathname + url.search;
       url.pathname = "/onboarding";
@@ -149,7 +195,7 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Completed onboarding → block re-entry to /onboarding
-    if (profile && profile.onboarding_completed && isOnboarding) {
+    if (onboardingCompleted === true && isOnboarding) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";
       return NextResponse.redirect(url);

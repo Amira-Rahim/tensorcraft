@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { BUILT_THEME_DIRS } from "./built-themes";
+import {
+  BUILT_THEME_DIRS,
+  BUILT_STORY_THEMES,
+  EXTRAS_LESSON_COUNT,
+} from "./built-themes";
+import { THEME_SHAPE, type ThemeSlug } from "@tensorcraft/shared";
 import fs from "fs";
 import path from "path";
 
@@ -23,9 +28,19 @@ const files = [...BUILT_THEME_DIRS].flatMap((d) =>
   lessonMdx(path.join(ROOT, d)),
 );
 
+// Expected built-lesson total, summed per-theme (re-audit N2/F-A) rather than a
+// hardcoded 77: each built story theme contributes its own THEME_SHAPE total
+// (deep-orbit 56, others 54/55), plus the cross-theme extras dir. Adding a
+// theme to BUILT_THEME_DIRS updates this automatically.
+const EXPECTED_BUILT_LESSONS =
+  BUILT_STORY_THEMES.reduce(
+    (sum, t) => sum + THEME_SHAPE[t as ThemeSlug].totalLessons,
+    0,
+  ) + EXTRAS_LESSON_COUNT;
+
 describe("end-of-lesson migration completeness (built lessons)", () => {
   it("found the built lessons", () => {
-    expect(files.length).toBe(77);
+    expect(files.length).toBe(EXPECTED_BUILT_LESSONS);
   });
 
   it.each(files)("%s has the new close and none of the old", (file) => {

@@ -44,8 +44,11 @@ vi.mock("@tensorcraft/shared", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@tensorcraft/shared")>();
   return {
     ...actual,
-    // Pin the lesson total so the "completed" threshold is deterministic here.
-    THEME_CONTENT: { ...actual.THEME_CONTENT, totalLessonsPerTheme: 2 },
+    // Pin every theme's lesson total to 2 so the "completed" threshold is
+    // deterministic here. journey-progress now reads getThemeTotalLessons(slug)
+    // per theme (re-audit N2/F-A), so the pin lives on that function, not on
+    // the old THEME_CONTENT scalar.
+    getThemeTotalLessons: () => 2,
   };
 });
 

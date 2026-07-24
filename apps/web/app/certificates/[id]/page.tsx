@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://tensorcraft.app/certificates/${cert.id}`,
       type: "profile",
       images: [
-        `/api/og?title=${encodeURIComponent(`${themeName}: Mission Complete`)}&theme=${encodeURIComponent(cert.theme_id)}&subtitle=${encodeURIComponent(learner)}`,
+        `/api/og?title=${encodeURIComponent(`${themeName}: ${theme?.terminology.lesson ?? "Mission"} Complete`)}&theme=${encodeURIComponent(cert.theme_id)}&subtitle=${encodeURIComponent(learner)}`,
       ],
     },
   };

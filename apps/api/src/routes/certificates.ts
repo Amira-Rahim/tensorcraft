@@ -7,7 +7,7 @@ import {
 import {
   isValidThemeSlug,
   isLaunched,
-  THEME_CONTENT,
+  getThemeTotalLessons,
 } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
@@ -129,7 +129,7 @@ certificates.post("/", async (c) => {
 
   const rows = (progressRows ?? []) as Array<{ status: string }>;
   const completed = rows.filter((r) => r.status === "completed").length;
-  const expected = THEME_CONTENT.totalLessonsPerTheme;
+  const expected = getThemeTotalLessons(themeId);
 
   // Theme must be fully completed. We check against the canonical
   // expected lesson count rather than comparing `completed === total`

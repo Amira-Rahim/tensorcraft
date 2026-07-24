@@ -96,6 +96,30 @@ Pick one per surface and state which in the migration header. The convention
 exists so seats and arena reuse it instead of each re-deriving — and
 re-tripping — the leak.
 
+## Authoritative writes (service-role-write-only tables)
+
+When a table's rows must be trustworthy — a score, an audit record, anything a
+client must not be able to fabricate — give it RLS with a **self-read policy and
+NO insert/update/delete policy at all**. `service_role` bypasses RLS, so the
+Hono API (the sole holder of the service key) becomes the only writer; an
+authenticated client physically cannot write. Template: `arena_submissions`
+(`048`) — a leaderboard is only as honest as its write model, and today's
+`exercise_attempts` / `theme_progress` / `skill_events` are client-written and
+therefore forgeable. Do not add a client write policy to an authoritative table
+"for convenience" later; that is the retrofit the pattern exists to prevent.
+
+## Custom Access Token hook reads
+
+To surface a `profiles` flag as a JWT claim (so middleware/hot paths stop
+reading the row per request), use a Supabase **Custom Access Token hook**
+function that runs as `supabase_auth_admin`. Grant that role `execute` on the
+function and `select` on the one table it reads, plus a **role-scoped** RLS
+policy (`to supabase_auth_admin`) — never a broad grant, and revoke `execute`
+from `authenticated`/`anon`/`public`. Template: `custom_access_token_hook`
+(`046`, surfaces `onboarding_completed`). Always pair it with a read-side
+fallback so the app is correct whether or not the operator has enabled the hook
+in Auth config.
+
 ## The tracking table
 
 `public.schema_migrations (version int primary key, name text, applied_at

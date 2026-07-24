@@ -11,6 +11,8 @@ export {
   PRICING,
   ROUTES,
   THEME_CONTENT,
+  THEME_SHAPE,
+  getThemeTotalLessons,
   EXERCISE_CONTENT,
   DEFAULT_THEME,
   getModuleLessonCount,
@@ -24,6 +26,7 @@ export {
 } from "./constants";
 export type {
   ThemeSlug,
+  ThemeShape,
   LaunchedTheme,
   PricingTier,
   ColorScheme,

@@ -28,6 +28,40 @@ export interface Database {
         };
         Relationships: [];
       };
+      arena_submissions: {
+        Row: {
+          id: string;
+          user_id: string;
+          challenge_id: string;
+          score: number;
+          submitted_code: string | null;
+          verified_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          challenge_id: string;
+          score: number;
+          submitted_code?: string | null;
+          verified_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          score?: number;
+          submitted_code?: string | null;
+          verified_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "arena_submissions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           id: string;
@@ -184,6 +218,9 @@ export interface Database {
           theme_ids: string[];
           amount: number;
           currency: string;
+          tax_amount: number | null;
+          tax_country: string | null;
+          customer_tax_id: string | null;
           stripe_session_id: string | null;
           stripe_payment_intent: string | null;
           status:
@@ -201,6 +238,9 @@ export interface Database {
           theme_ids: string[];
           amount: number;
           currency?: string;
+          tax_amount?: number | null;
+          tax_country?: string | null;
+          customer_tax_id?: string | null;
           stripe_session_id?: string | null;
           stripe_payment_intent?: string | null;
           status?:
@@ -212,6 +252,9 @@ export interface Database {
             | "disputed";
         };
         Update: {
+          tax_amount?: number | null;
+          tax_country?: string | null;
+          customer_tax_id?: string | null;
           stripe_session_id?: string | null;
           stripe_payment_intent?: string | null;
           status?:

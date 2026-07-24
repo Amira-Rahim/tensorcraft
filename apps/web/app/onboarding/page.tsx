@@ -225,6 +225,14 @@ export default function OnboardingPage() {
           setSaving(false);
           return;
         }
+
+        // Mint a fresh JWT so it carries the updated onboarding_completed claim
+        // (custom access token hook, migration 046) immediately — otherwise the
+        // learner's current token still reads false and middleware would bounce
+        // the very next protected navigation back into onboarding until the
+        // token refreshed on its own. Best-effort: if the hook isn't enabled,
+        // this is a harmless no-op and middleware's profiles fallback covers it.
+        await supabase.auth.refreshSession();
       }
 
       // 3. Tag onboarded in Kit (best-effort).

@@ -597,6 +597,77 @@ describe("WCAG contrast gate", () => {
     },
   );
 
+  // Semantic tokens ON ELEVATED SURFACES AND SELF-TINTS, both schemes.
+  // Found in the 2026-07-23 deep-verification pass: the error-token sweep
+  // (red-400 -> --tc-error) silently regressed DARK - the mid-tone
+  // #ef4444 failed 4.5:1 on surface-raised/overlay and on its own chip
+  // tints (exercise result panels, session toast), which is exactly why
+  // the bright red-400 pastel existed in the first place. Dark semantic
+  // values are now the pastels (#fca5a5 / #4ade80); this gate encodes the
+  // REAL usage floors so neither scheme can drift:
+  //   - semantic text sits directly on all four surfaces
+  //   - error/success text sits on its own tints up to 15% (score chips),
+  //     warning up to 10% (hint chrome), streak up to 8% (color-mix chips),
+  //     each over the page bg AND surface-raised.
+  const SEMANTIC_TINT_CAP: Record<string, number> = {
+    "--tc-error": 0.15,
+    "--tc-success": 0.15,
+    "--tc-warning": 0.1,
+    "--tc-streak": 0.08,
+  };
+  const semanticSurfaces = (block: string) => ({
+    bg: extractCssHexValue(block, "--tc-bg"),
+    surface: extractCssHexValue(block, "--tc-surface"),
+    raised: extractCssHexValue(block, "--tc-surface-raised"),
+    overlay: extractCssHexValue(block, "--tc-surface-overlay"),
+  });
+  const schemes: Array<[string, string]> = [
+    ["dark", darkRootBlockMatch[1]!],
+    ["light", lightNeutralBlock],
+  ];
+  // Light shares neutrals with the dark :root block only for props the light
+  // block does not override; resolve each prop from the light block first,
+  // falling back to the dark root (the cascade the browser applies).
+  const resolveLight = (prop: string): string => {
+    try {
+      return extractCssHexValue(lightNeutralBlock, prop);
+    } catch {
+      return extractCssHexValue(darkRootBlockMatch[1]!, prop);
+    }
+  };
+  it.each(schemes.map(([name]) => name))(
+    "%s semantic tokens clear 4.5:1 on every surface and their own usage-tier tints",
+    (schemeName) => {
+      const get =
+        schemeName === "dark"
+          ? (prop: string) => extractCssHexValue(darkRootBlockMatch[1]!, prop)
+          : resolveLight;
+      const surfaces = {
+        bg: get("--tc-bg"),
+        surface: get("--tc-surface"),
+        raised: get("--tc-surface-raised"),
+        overlay: get("--tc-surface-overlay"),
+      };
+      for (const [prop, cap] of Object.entries(SEMANTIC_TINT_CAP)) {
+        const color = get(prop);
+        for (const [surfName, surf] of Object.entries(surfaces)) {
+          expect(
+            contrastRatio(color, surf),
+            `${schemeName} ${prop} on ${surfName}`,
+          ).toBeGreaterThanOrEqual(4.5);
+        }
+        for (const alpha of [0.08, 0.1, 0.15].filter((a) => a <= cap)) {
+          for (const surf of [surfaces.bg, surfaces.raised]) {
+            expect(
+              contrastRatio(color, srgbBlend(color, surf, alpha)),
+              `${schemeName} ${prop} on ${Math.round(alpha * 100)}% self-tint`,
+            ).toBeGreaterThanOrEqual(4.5);
+          }
+        }
+      }
+    },
+  );
+
   // --tc-border-interactive: the resting boundary of interactive controls
   // (form fields, radio/checkbox options, toggle tracks, outline buttons).
   // WCAG 1.4.11 requires a UI-component boundary to clear 3:1 against its

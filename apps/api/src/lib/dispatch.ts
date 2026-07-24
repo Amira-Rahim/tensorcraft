@@ -13,7 +13,10 @@
 // the real MDX corpus by packages/content/__tests__/module-counts.test.ts.
 
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
-import { getModuleLessonCount, THEME_CONTENT } from "@tensorcraft/shared";
+import {
+  getModuleLessonCount,
+  getThemeTotalLessons,
+} from "@tensorcraft/shared";
 import { logger } from "./logger";
 
 function titleCase(slug: string): string {
@@ -79,7 +82,7 @@ export async function fireMilestonesForCompletion(params: {
     (r) => r.module_id === moduleId,
   ).length;
 
-  if (completedInModule === getModuleLessonCount(moduleId)) {
+  if (completedInModule === getModuleLessonCount(themeId, moduleId)) {
     const moduleTitle = titleCase(moduleId);
     const sent = await fireOnce(
       supabase,
@@ -97,12 +100,12 @@ export async function fireMilestonesForCompletion(params: {
     }
   }
 
-  if (completed.length === THEME_CONTENT.totalLessonsPerTheme) {
+  if (completed.length === getThemeTotalLessons(themeId)) {
     const sent = await fireOnce(
       supabase,
       userId,
       `DISPATCH · board clear: ${titleCase(themeId)}`,
-      `All ${THEME_CONTENT.totalLessonsPerTheme} lessons read complete. No open items anywhere on my board. The capstone model is yours to keep, and the certificate desk already knows your name.`,
+      `All ${getThemeTotalLessons(themeId)} lessons read complete. No open items anywhere on my board. The capstone model is yours to keep, and the certificate desk already knows your name.`,
       "Back to the dashboard",
       "/dashboard",
     );

@@ -260,6 +260,90 @@ describe("POST /api/payments/webhook", () => {
     );
   });
 
+  it("captures tax jurisdiction + amount on the purchase (re-audit N0)", async () => {
+    mockInsert.mockResolvedValue({ error: null });
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_tax_1",
+          client_reference_id: "user_tax",
+          amount_total: 5880,
+          payment_status: "paid",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+          // What Stripe attaches once Stripe Tax + address collection are on.
+          total_details: { amount_tax: 980 },
+          customer_details: {
+            address: { country: "DE" },
+            tax_ids: [{ type: "eu_vat", value: "DE123456789" }],
+          },
+        },
+      },
+    };
+
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stripe_session_id: "cs_tax_1",
+        tax_amount: 9.8,
+        tax_country: "DE",
+        customer_tax_id: "DE123456789",
+      }),
+      expect.objectContaining({ onConflict: "stripe_session_id" }),
+    );
+  });
+
+  it("leaves tax fields null when Stripe collected none (tax not yet enabled)", async () => {
+    mockInsert.mockResolvedValue({ error: null });
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_notax",
+          client_reference_id: "user_notax",
+          amount_total: 4900,
+          payment_status: "paid",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stripe_session_id: "cs_notax",
+        tax_amount: null,
+        tax_country: null,
+        customer_tax_id: null,
+      }),
+      expect.objectContaining({ onConflict: "stripe_session_id" }),
+    );
+  });
+
   it("persists stripe_customer_id when the session carries a customer (migration 043)", async () => {
     mockInsert.mockResolvedValue({ error: null });
     mockProfileUpdate.mockClear();

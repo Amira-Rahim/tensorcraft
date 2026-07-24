@@ -111,6 +111,27 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
+- [ ] **Light-mode follow-ups** (deferred from the 2026-07-23 rollout; context
+  in `docs/dev-plan.md` 2026-07-23 entry + `docs/superpowers/plans/2026-07-22-light-mode.md`):
+  - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless —
+    no site nav — so today learners flip scheme from other pages or the OS;
+    candidate spot: the lesson ChromeBar).
+  - [ ] Scheme toggle inside the open mobile-nav drawer (overlay covers the
+    top bar while open; duplicate the toggle next to the drawer's close button).
+  - [ ] One-time Windows/Linux visual check of the nav toggle glyphs
+    (◐ U+25D0 has no production precedent and sits outside the latin font
+    subset; tofu risk on non-mac platforms).
+  - [ ] `Ticker`/`TickerCanvas` appears to be dead code (no live importer,
+    only a stale layout.test mock) — confirm and delete or re-mount.
+  - [ ] Tighten `SceneCanvas`'s `rgbLight` from optional-with-fallback to a
+    required dark/light tuple once all call sites are stable (a new consumer
+    can currently omit it and silently render dark-only hues in light).
+  - [ ] Optional: scope `transition-colors`/`transition-all` utilities to
+    hover/focus states so the scheme flip is perfectly uniform (today ~186
+    small chrome elements ease 150ms while surfaces snap — assessed fine).
+  - [ ] Optional: client-sync `meta[name=theme-color]` when the user's manual
+    override disagrees with the OS (browser chrome color mismatch, cosmetic).
+
 - [ ] **Story-voice Phase 4 spot-check editorial pass** (~3.5h): dump 702
   dialogue blocks, spot-check top 5 speakers against `docs/voice-guide.md`,
   edit ~20 outliers per character, re-run velite + build.
@@ -362,8 +383,17 @@ post-launch work.
 - [ ] Viral competition arena (FREE, monetize via funnel, not arena
   paywall): public no-auth weekly challenge, `challenges` /
   `arena_submissions` / `leaderboard` tables, ranking service, arena result
-  cards, referral loop, public profiles. Grading/scoring/OG-shareable
-  infrastructure already exists; the missing part is the cross-user layer.
+  cards, referral loop, public profiles.
+  **Write-model bone LAID (2026-07-24, migration 048):** `arena_submissions`
+  exists, **service-role-write-only** (self-read RLS, no client write policy),
+  so scores cannot be forged. **Correction (scalability re-audit 2026-07-24):**
+  it is NOT true that "scoring infra already exists" — today's grading is
+  CLIENT-authoritative and forgeable, and the cert stack proves payment not
+  skill. The real remaining bones + the exact design are in
+  `docs/arena-scoring-contract.md`: server-authoritative re-scoring against a
+  hidden hold-out (A-F1), a hardened sandbox for the exec path (A-F2, do NOT
+  reuse `WORKER_BODY_STRING`), an RNG-seeding/determinism convention (A-F3),
+  plus the public top-N leaderboard `SECURITY DEFINER` RPC.
   Ships WITH: moderation + report flow + anti-cheat + ToS update — public
   no-auth UGC (usernames, code, leaderboards) griefs on day one without
   them; also update `product-plan.md`'s stale $29/yr arena pricing (free

@@ -24,9 +24,19 @@ const getSessionMock = vi.fn(async () => ({
   data: { session: { access_token: "TOKEN" } },
 }));
 const updateEqMock = vi.fn(() => Promise.resolve({ data: null, error: null }));
+// Onboarding completion refreshes the session so the new JWT carries the
+// onboarding_completed claim (custom access token hook, migration 046).
+const refreshSessionMock = vi.fn(async () => ({
+  data: { session: null },
+  error: null,
+}));
 vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
-    auth: { getUser: getUserMock, getSession: getSessionMock },
+    auth: {
+      getUser: getUserMock,
+      getSession: getSessionMock,
+      refreshSession: refreshSessionMock,
+    },
     from: () => ({
       update: () => ({ eq: updateEqMock }),
     }),

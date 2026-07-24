@@ -45,7 +45,7 @@ tensorcraft/
 | Styling | Tailwind CSS 4 | CSS-native `@theme` directive, zero-JS theming |
 | Animation | Framer Motion | Declarative, layout animations, gesture support |
 | Content | MDX 3 + Velite (Zod schemas) | Type-safe content with build-time validation. 3 collections: lessons, exercises, modules |
-| Code Highlighting | Shiki 4.x (via CodeBlock component) | Custom `tensorcraft-dark` theme; lazy-loaded singleton; 11 languages. Code Hike deferred to post-V1 |
+| Code Highlighting | Shiki 4.x (via CodeBlock component) | Custom `tensorcraft-dark` + `tensorcraft-light` themes (picked via `data-scheme`); lazy-loaded singleton; 11 languages. Code Hike deferred to post-V1 |
 | Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with custom async test runner and TF.js mock (295 exercises) |
 | Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
 | Email | Kit (ConvertKit) | Waitlist, per-theme segmented lists, nurture sequences |
@@ -56,7 +56,7 @@ tensorcraft/
 
 ### Design Philosophy
 
-Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every theme has a unique color palette but shares the same structural design tokens. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Light-mode rollout is still underway; `docs/dev-plan.md` (2026-07-22 entry) tracks status, and production remains dark-only in the meantime.
+Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every theme has a unique color palette but shares the same structural design tokens. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23; `docs/dev-plan.md` (2026-07-23 entry) has the implementation and verification record.
 
 ### 5 Themed Courses
 
@@ -71,8 +71,8 @@ Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box s
 ### How Theming Works
 
 1. **CSS Custom Properties** (`packages/themes/src/css/themes.css`): Each theme defines `--tc-*` variables under a `[data-theme="theme-slug"]` selector.
-2. **Tailwind 4 `@theme`** (`packages/config/tailwind/base.css`): Maps Tailwind utility classes to `--tc-*` variables so `bg-surface`, `text-primary`, `border-border` all resolve dynamically.
-3. **Runtime Switching**: Set `data-theme` attribute on `<html>` to switch themes. No JS bundle cost — pure CSS resolution.
+2. **Tailwind 4 `@theme`** (`apps/web/app/globals.css`): Maps Tailwind utility classes to `--tc-*` variables so `bg-surface`, `text-primary`, `border-border` all resolve dynamically. (`packages/config/tailwind/base.css` was a dead duplicate and was deleted 2026-07-22.)
+3. **Runtime Switching**: Set `data-theme` attribute on `<html>` to switch narrative themes, and `data-scheme="light"` for the light color scheme (absent = dark). No JS bundle cost — pure CSS resolution.
 4. **Brutalist Utilities** (`apps/web/app/globals.css`): `.brutalist-shadow`, `.brutalist-hover`, `.comment-label` — offset box shadows and monospace section labels. All animations respect `prefers-reduced-motion`.
 
 ### Theme Manifests

@@ -343,3 +343,201 @@ convention plus entitlement centralization (both already on your launch list),
 and three story-spine items that should land before theme 2 — none of them a
 rewrite, all of them "move a hardcoded thing into data that already exists next
 to it."
+
+---
+
+# RE-AUDIT — 2026-07-24
+
+**Method this round.** Five independent adversarial deep-dives (multi-tenancy,
+arena, content/story, runtime/infra/cost, billing/tax), each re-verifying the
+original claims against the actual SQL/TS rather than trusting this doc. Ran
+*after* the 2026-07-21 remediation (migration process, entitlement resolver,
+journey model, `stripe_customer_id`, terminology F1, gate-scope F3, plus the
+security migrations 039–041 and the a11y work). Goal unchanged: does the
+skeleton still have the potential, and what NEW foundational-now items exist.
+
+## Refreshed verdict
+
+**Still yes — no axis needs a rewrite, confirmed on all five.** The connection
+model, index coverage, RLS discipline, CDN immutability, static-lesson
+rendering, webhook isolation, the isomorphic real-TFJS grader, and the
+bare-`user_id` data model all verified as genuinely scale-ready. The
+remediation held: migration ledger, single entitlement resolver, journey ring,
+durable Stripe customer all confirmed in code.
+
+**But the rerun found items the first pass missed or overstated.** Two classes:
+(a) genuinely-new foundational-now items (tax capture; arena scoring/sandbox
+bones), and (b) this session's own F1/F3 work verified as **necessary but
+incomplete**. Recorded honestly below.
+
+## Corrections to the 2026-07-21 audit (were overstated)
+
+- **Arena "grader is a pure deterministic function" — FALSE.** It executes
+  arbitrary user JS (`new Function`) against real TFJS whose stochastic ops are
+  **unseeded** (`grep setSeed` = nothing); re-scoring is not guaranteed
+  reproducible. The *twin* is real and byte-identical (browser Blob worker ==
+  Node `worker_threads`, `exercise-runner-node.ts:11-17`) — that half holds.
+- **Arena "certificate stack is the exact shape a leaderboard needs" — FALSE.**
+  Certs have **no score/rank column** and **no enumerable public list** (by-id
+  SECURITY DEFINER RPC only), and a cert proves **payment, not skill**
+  (`certificates.ts:84-112` counts client-written `theme_progress`). It is a
+  *share* primitive, not a *ranking* one.
+- **Content "launch a theme = add one line to `BUILT_THEME_DIRS`" — NOT YET
+  TRUE.** Gate *scope* is single-sourced (real), but theme *shape* (counts) is
+  still Deep-Orbit scalars, so the count-gates assert 56/11/77 against every
+  built theme and go RED for neon(54)/signal/nova/terra(55) on launch.
+
+## NEW convergent foundational-now list (this rerun)
+
+Ordered by irreversibility, not effort.
+
+### N0 — Irreversible: capture tax jurisdiction on every sale (billing FN1)
+Checkout is flat USD, no `automatic_tax`, no address/tax-id collection;
+`purchases` stores only `amount` + hardcoded `currency 'USD'` — **no
+tax_amount, tax_country, or customer_tax_id** (`payments.ts:210-248,314-342`;
+`001_initial_schema.sql:114-124`). EU VAT is due at the buyer's rate from the
+*first* sale and cannot be reconstructed from a flat USD row after 100k
+transactions. **This is the single most retrofit-exponential item across all
+five axes.** Fix: enable Stripe Tax + `billing_address_collection` +
+`tax_id_collection` on both sessions; add nullable `tax_amount`/`tax_country`/
+`customer_tax_id` columns written from the webhook (migration-043 pattern).
+Also emit a real VAT invoice (`invoice_creation:{enabled:true}` — one param,
+same session lines). *Note: turning on Stripe Tax is an operational/legal
+decision (OSS registration) — flagged for the owner, not auto-done.*
+
+### N1 — Arena write-model bones (lay before any submission code)
+- **A-F1. Server-authoritative scoring path.** All scoring is client-reported
+  today (`exercise.tsx:512`, `exercise-attempts.ts:86-99` inserts client
+  `passed`/`score` with zero re-grade under the user's JWT). A leaderboard on
+  any current table is forgeable (`POST {passed:true,score:100}`). The arena
+  table must be **service-role-write-only, no client INSERT** — retrofitting
+  client-writable→authoritative after launch invalidates every posted score.
+- **A-F2. Sandbox the server execution path.** Both server-capable graders run
+  untrusted code with ambient authority (`worker_threads {eval:true}`;
+  `vm.createContext`, which Node docs say is **not** a security boundary). Fine
+  for CI on authored solutions; an RCE farm on adversarial learner code at
+  scale. Building arena scoring around "reuse the Node runner" bakes the hole
+  in. Needs a hardened isolate (isolated-vm / microVM), warm-pooled (today it
+  spawns one worker + `importScripts` 1.4 MB **per run**).
+- **A-F3. RNG-seeding convention.** Seed `tf` at the single chokepoint
+  (`exercise-runner.ts:968-977`) so challenge exercises authored now are
+  re-scorable/fair. Cheap to add; expensive to retrofit across authored
+  challenges later.
+
+### N2 — Finish the content parameterization (completes this session's F1/F3; ~1 day)
+- **C-F-A. Theme shape → per-theme data.** `constants.ts:85-111` hardcodes
+  `totalLessonsPerTheme:56`, `modulesPerTheme:11`; `structure-variety.test.ts:54`
+  and `end-of-lesson.test.ts:28` (literal 77) assert these against every built
+  theme. Replace with a `THEME_SHAPE` record (the `interval-canon` per-theme
+  registry is the pattern to copy); each gate asserts a theme against its own
+  shape.
+- **C-F-B. `module-counts.test.ts` + DISPATCH sizing per-theme.** The gate
+  (`module-counts.test.ts:23`) was **not** in the F3 refactor — Deep-Orbit-locked;
+  the API DISPATCH "module complete" producer sizes from the same global
+  `moduleLessonOverrides` (theme-blind), so milestones misfire for non-orbit
+  themes with no gate catching it. Loop over `BUILT_THEME_DIRS`; key overrides
+  by `theme/module`.
+- **C-F-C. Three residual terminology leaks (F1 incomplete).** Hardcoded
+  "Mission Complete" at `themes/[slug]/page.tsx:376`,
+  `dashboard/dashboard-view.tsx:427`, `certificates/[id]/page.tsx:85` — resolve
+  via `themes[slug].terminology.lesson` (reuse the `terms()` helper).
+
+### N3 — Infra: cheap now, compounding under load (runtime)
+- **Two composite indexes** for the dashboard's in-memory sorts:
+  `exercise_attempts (user_id, attempted_at DESC)` and
+  `theme_progress (user_id, updated_at DESC)` — today the indexes satisfy the
+  filter but not the sort, so a heavy learner sorts 10k rows per render.
+- **Move `onboarding_completed` into a JWT/app_metadata claim** — kills a
+  `profiles` SELECT on *every* protected-route request in middleware
+  (`lib/supabase/middleware.ts:131-135`), the hottest authed path.
+- **GIN index on `purchases.theme_ids`** (multi-tenancy) — reverse "who owns
+  theme X" (`.contains`) seq-scans at 100k; needed by the seat-entitlement
+  query. `CREATE INDEX CONCURRENTLY`, online.
+
+### Hard constraint to record (not a change now)
+Future subscriptions/seats entitlement must carry its own `valid_until` and the
+resolver must exclude expired rows. **Do NOT shoehorn time-bounded grants into
+`purchases.theme_ids`** — it is a permanent-ownership snapshot with no expiry
+(`entitlements.ts:35-36` filters by status only). The backlog's "real
+`entitlements` table" commitment (`post-launch-backlog.md:331`) stands.
+
+## What the rerun re-confirmed as SOLID (no action)
+Connection model is PostgREST-HTTP end to end — no `pg` pool to exhaust, no
+PgBouncer needed. Every user-facing hot query hits an indexed prefix. TFJS is
+self-hosted, immutable-cached, CDN-fallback, timeout-safe. Lessons are
+statically pre-rendered (`dynamicParams=false`). Webhooks are rate-limit- and
+body-limit-exempt so Stripe/Kit retries can't desync. The data model keys on
+bare `user_id` (zero `org_id` on any leaf table — seats join on top). Entitlement
+is one resolver; the webhook is a `switch` with an acknowledging `default`
+(subs/seats bolt on as cases); refunds/disputes already flow through webhooks +
+a DB terminal-status trigger. Migration discipline (ledger + conventions +
+status script) is in place. The journey ring is a real 5-theme data model, wired
+into the reader, dispatch-tease, and `/journey`.
+
+### One-sentence answer (rerun)
+Still yes — the skeleton carries the goal on every axis — but four things now
+get more expensive by waiting: **tax capture on the money path** (irreversible),
+the **arena's authoritative-scoring + sandbox bones** (lay before submission
+code), **finishing the per-theme shape/terminology parameterization** (completes
+this session's work, ~1 day), and **two dashboard indexes + the onboarding
+claim** (cheap now, compounding later). None is a rewrite.
+
+---
+
+## STATUS — RE-AUDIT remediation SHIPPED (2026-07-24, uncommitted)
+
+All four selected item-groups executed the same session. Battery green:
+typecheck 11/11, vitest 1553 passed, `next build` 123/123, migrations 001–048
+consistent (`pnpm migrate:status`).
+
+**N0 — tax capture (the irreversible one): DONE (code) / operator-gated (switch).**
+Migration 047 adds nullable `tax_amount` / `tax_country` / `customer_tax_id` to
+`purchases`; the webhook writes them on both the sync and async(delayed)-payment
+paths (`payments.ts`). A `taxSessionParams()` helper adds `automatic_tax` +
+address/tax-id collection + `invoice_creation` to both checkout sessions, gated
+behind `STRIPE_TAX_ENABLED` (OFF by default — identical to today until the
+operator enables Stripe Tax + OSS/VAT registration; turning it on before Tax is
+configured makes session creation fail). Tests: 2 new webhook cases (captures
+DE/VAT; null when tax off). The columns exist NOW so no jurisdiction is lost
+before the switch flips.
+
+**N2 — finished the content parameterization (completes F1/F3): DONE.**
+`THEME_SHAPE` per-theme record in `constants.ts` (deep-orbit 56 / neon 54 /
+others 55, per-theme module overrides), verified against the filesystem.
+`getModuleLessonCount(theme, module)` + `getThemeTotalLessons(theme)` are
+theme-aware; DISPATCH producer, cert completion gate, and journey-progress all
+consume them (were flat 56 across all themes — a real neon bug). Gates
+(structure-variety, end-of-lesson, module-counts) now assert each theme against
+its own shape; a drift-guard ties `THEME_CONTENT` to `THEME_SHAPE["deep-orbit"]`.
+The 3 residual "Mission Complete" leaks (theme page, dashboard, cert OG) now
+resolve `terminology.lesson`. Launching a theme is closer to the "one line"
+promise: add it to `BUILT_THEME_DIRS` + `THEME_SHAPE` and the gates cover it.
+
+**N3 — infra bones: DONE.** Migration 045 adds the two dashboard composite
+indexes (`theme_progress (user_id, updated_at desc)`, `exercise_attempts
+(user_id, attempted_at desc)`) + a GIN on `purchases.theme_ids`. Migration 046 +
+middleware move `onboarding_completed` to a JWT claim via a Custom Access Token
+hook, with a **profiles fallback** so it is correct whether or not the operator
+has enabled the hook; onboarding completion now `refreshSession()`s to avoid
+staleness. Tests: 4 new middleware cases (claim path reads no DB; fallback path
+does).
+
+**N1 — arena bones: table + contract SHIPPED; engine deferred by decision.**
+Migration 048 lays `arena_submissions` **service-role-write-only** (self-read
+policy, NO client write policy — the irreversible A-F1 write-model bone).
+A-F2 (hardened isolate) and A-F3 (RNG-seeding) are captured as a design contract
+in `docs/arena-scoring-contract.md` rather than coded: modifying the live
+`WORKER_BODY_STRING` grader (blast radius = all 315 exercises) for an unbuilt
+feature is disproportionate risk, and partial tf-random seeding gives *false*
+determinism (weight-init + `fit` shuffle aren't covered by wrapping the `tf`
+namespace). The contract documents exactly where and how to wire both when the
+arena scoring service is built.
+
+**OPERATOR STEPS (not code) added this round:**
+- Apply migrations **045–048** in order via the runbook.
+- Enable the **Custom Access Token hook** (Auth → Hooks →
+  `public.custom_access_token_hook`) to activate the onboarding claim (optional;
+  fallback works without it).
+- When ready for tax: enable **Stripe Tax** + origin address + default product
+  tax code/behaviour + OSS/VAT registration, then set `STRIPE_TAX_ENABLED=true`.
+- Arena is design-only; no arena ops until that feature is scheduled.

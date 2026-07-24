@@ -362,10 +362,15 @@ has already been written off once (see above) — do not launch dark again.
 - [ ] **Distribution head start:** write + publish the first blog batch and
   begin the audience track. `roadmap.md` §7: longest lead time in the plan,
   runs in parallel, starts before the code is ready.
-- [ ] **Reconcile the migration ledger before applying anything.** No
-  `schema_migrations`, no CI step, four docs disagree on applied state;
-  037-040 pending and nobody can state the production schema (R2-5).
-  Establish a ledger first, then apply.
+- [ ] **Apply the pending migrations in order.** The `schema_migrations`
+  ledger now EXISTS (migration 042 built it + backfilled 001–041), so this is
+  no longer "establish a ledger" — run `pnpm migrate:status`, then apply each
+  PENDING file in numeric order via the runbook. Pending as of 2026-07-24:
+  **037–048** (037–044 from prior sessions; 045 dashboard indexes, 046
+  onboarding token-hook, 047 tax columns, 048 arena_submissions added in the
+  scalability re-audit). None of 045–048 is launch-blocking on its own, but
+  they apply cleanly now on near-empty tables and 047's tax columns should be
+  live before the first sale so no jurisdiction is lost once Stripe Tax flips.
 - [ ] **Move Vercel off the Hobby plan.** Hobby prohibits commercial use;
   selling a $59-159 product on it is a ToS/takedown risk before it is a
   cost one (R2-5).

@@ -33,6 +33,28 @@ function getStripe(): Stripe {
 }
 
 /**
+ * Stripe Tax + compliant-invoice params for a Checkout Session (re-audit N0).
+ *
+ * Gated behind STRIPE_TAX_ENABLED and OFF by default, so checkout behaves
+ * exactly as today until the operator turns it on. Enabling requires work in
+ * the Stripe dashboard FIRST — activate Stripe Tax, set the origin address and
+ * a default product tax code/behaviour, and register for OSS/VAT — because
+ * turning `automatic_tax` on before Tax is configured makes session creation
+ * fail. Once on: Stripe collects the buyer's billing country + VAT id, computes
+ * tax, and issues a real (VAT-grade) invoice; the webhook persists the country
+ * and tax amount, which cannot be reconstructed from a flat USD row afterward.
+ */
+function taxSessionParams(): Partial<Stripe.Checkout.SessionCreateParams> {
+  if (process.env.STRIPE_TAX_ENABLED !== "true") return {};
+  return {
+    automatic_tax: { enabled: true },
+    billing_address_collection: "required",
+    tax_id_collection: { enabled: true },
+    invoice_creation: { enabled: true },
+  };
+}
+
+/**
  * Validate that every theme ID is launched (purchasable). Coming-soon themes
  * still pass `isValidThemeSlug` (registry knows them) but must NOT be
  * checkout-able. See packages/shared/src/constants.ts → LAUNCHED_THEMES.
@@ -210,6 +232,7 @@ payments.post("/checkout", async (c) => {
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     client_reference_id: userId,
+    ...taxSessionParams(),
     // Abandoned-cart recovery. Stripe can only mail a buyer who drops out of
     // checkout when the session carries their email AND recovery is enabled;
     // with neither set the session just expired in silence. `customer_email`
@@ -313,6 +336,7 @@ payments.post("/guest-checkout", async (c) => {
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
+    ...taxSessionParams(),
     // No client_reference_id: there is no user yet. The webhook resolves
     // identity from customer_details.email instead, and `guest: "true"`
     // marks which branch a row came from for support and analytics.
@@ -631,12 +655,27 @@ payments.post("/webhook", async (c) => {
         break;
       }
 
+      // Tax jurisdiction + amount, captured at the moment of sale (re-audit
+      // N0). Unlike seats or subscriptions, this CANNOT be reconstructed from a
+      // flat USD row after 100k transactions — EU VAT is owed at the buyer's
+      // rate from the first sale. Persist whatever Stripe collected; the fields
+      // are null/0 until the operator enables Stripe Tax (STRIPE_TAX_ENABLED),
+      // at which point every new sale records its jurisdiction. `amount_tax` is
+      // in cents, like `amount_total`.
+      const taxAmount = session.total_details?.amount_tax;
+      const taxCountry = session.customer_details?.address?.country ?? null;
+      const customerTaxId =
+        session.customer_details?.tax_ids?.[0]?.value ?? null;
+
       const { error: upsertError } = await supabase.from("purchases").upsert(
         {
           user_id: userId,
           plan_id: metadata.planId,
           theme_ids: themeIds,
           amount: amount ? amount / 100 : expectedAmount,
+          tax_amount: typeof taxAmount === "number" ? taxAmount / 100 : null,
+          tax_country: taxCountry,
+          customer_tax_id: customerTaxId,
           stripe_session_id: sessionId,
           stripe_payment_intent: paymentIntent,
           status: rowStatus,
@@ -866,6 +905,10 @@ payments.post("/webhook", async (c) => {
             !existingAsyncRow ||
             !TERMINAL_STATUSES.has(existingAsyncRow.status)
           ) {
+            // Same tax capture as the sync path (N0): delayed payment methods
+            // (SEPA, bank transfer) incur VAT too, and this is where they
+            // settle.
+            const asyncTaxAmount = asyncSession.total_details?.amount_tax;
             const { error: asyncUpsertError } = await supabase
               .from("purchases")
               .upsert(
@@ -876,6 +919,14 @@ payments.post("/webhook", async (c) => {
                   amount: asyncSession.amount_total
                     ? asyncSession.amount_total / 100
                     : asyncPlan.price,
+                  tax_amount:
+                    typeof asyncTaxAmount === "number"
+                      ? asyncTaxAmount / 100
+                      : null,
+                  tax_country:
+                    asyncSession.customer_details?.address?.country ?? null,
+                  customer_tax_id:
+                    asyncSession.customer_details?.tax_ids?.[0]?.value ?? null,
                   stripe_session_id: asyncSession.id,
                   stripe_payment_intent: asyncPaymentIntent,
                   status: "completed",

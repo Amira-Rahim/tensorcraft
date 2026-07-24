@@ -4,6 +4,7 @@ import {
   PRICING,
   ROUTES,
   THEME_CONTENT,
+  DEFAULT_THEME,
   getModuleLessonCount,
   getPaidLessonCount,
   SCHEME_STORAGE_KEY,
@@ -95,7 +96,7 @@ describe("getPaidLessonCount", () => {
   it("is the full theme minus the free first module", () => {
     expect(getPaidLessonCount()).toBe(
       THEME_CONTENT.totalLessonsPerTheme -
-        getModuleLessonCount(THEME_CONTENT.freeModuleSlug),
+        getModuleLessonCount(DEFAULT_THEME, THEME_CONTENT.freeModuleSlug),
     );
   });
 
