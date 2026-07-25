@@ -633,8 +633,11 @@ that touch THIS document's lists):
 (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `FLY_API_TOKEN`); Stripe
 dashboard (Tax setup, receipt toggle, SEPA decision) + `STRIPE_TAX_ENABLED`
 flip; Kit dashboard emails (T0-2, the "highest ratio of customer-facing
-words to reviewed words"); buy the product twice (T0-3); real name on
-/about; manual light-mode + 375px pass; Tier 1-OPS accounts; Tier 1-LEGAL
+words to reviewed words"); buy the product twice (T0-3); ~~real name on
+/about~~ — **RESOLVED 2026-07-25 by owner decision: identity stays
+private.** /about now opens with the collective origin story ("built by a
+group of frontend engineers…"); do not add a personal name without asking;
+manual light-mode + 375px pass; Tier 1-OPS accounts; Tier 1-LEGAL
 advisor items; theme-2 build-or-reprice decision (now costed in
 `docs/theme-launch-checklist.md`).
 

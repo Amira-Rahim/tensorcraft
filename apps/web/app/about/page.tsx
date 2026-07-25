@@ -65,6 +65,17 @@ export default function AboutPage() {
         </h1>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans">
+          {/* Origin, kept collective by the owner's explicit choice
+              (2026-07-25): Tensorcraft speaks as the group that built it, not
+              as a named individual. Do not add a personal name or byline
+              here without asking. */}
+          <p>
+            Tensorcraft was built by a group of frontend engineers who wanted an
+            easy way into machine learning. We looked for a course that spoke
+            our language and did not find one, so we took matters into our own
+            hands.
+          </p>
+
           <p>
             Most ML courses teach you ML. Tensorcraft teaches you ML by mapping
             it to the frontend code you already write:{" "}
