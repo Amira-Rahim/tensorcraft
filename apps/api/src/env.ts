@@ -20,14 +20,16 @@
 
 import { logger } from "./lib/logger";
 
-const ALWAYS_REQUIRED = [
+// Exported for scripts/deploy-preflight.mjs's drift-guard test: the deploy
+// workflow diffs these names against `flyctl secrets list` before deploying.
+export const ALWAYS_REQUIRED = [
   "SUPABASE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
   "STRIPE_SECRET_KEY",
   "STRIPE_WEBHOOK_SECRET",
 ] as const;
 
-const PROD_REQUIRED = [
+export const PROD_REQUIRED = [
   // payments.checkout throws per-request without it; fail at boot instead.
   "APP_URL",
   // Certificate issuance 500s fail-closed without it — the capstone payoff.

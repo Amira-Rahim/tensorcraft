@@ -139,7 +139,20 @@ The API has its own `fly.toml` and `Dockerfile` in its directory. The root `.doc
 - Health check: `GET /api/health`
 - V8 heap capped at 200MB
 
-Set secrets with `fly secrets set -a tensorcraft-api KEY=VALUE`.
+Set secrets with `fly secrets set -a tensorcraft-api KEY=VALUE`, or bulk-import
+from the local env file without values touching argv:
+`grep '^KEY=' apps/api/.env | fly secrets import -a tensorcraft-api`.
+
+**Secrets preflight:** `pnpm deploy:preflight` diffs the required lists in
+`apps/api/src/env.ts` (ALWAYS_REQUIRED + PROD_REQUIRED — the image bakes
+`NODE_ENV=production`, so both apply) against `fly secrets list` names.
+`deploy-api.yml` runs it before `flyctl deploy` and fails closed (exit 1 =
+missing vars, exit 2 = could not check). Added after the 2026-07-25 incident
+where a green deploy crash-looped at boot on two unset secrets
+(`CERT_SIGNING_SECRET`, `KIT_WEBHOOK_SECRET`) — the migration gate cannot see
+runtime env, so this gate exists specifically for it. A drift-guard test
+(`apps/api/src/__tests__/deploy-preflight.test.ts`) pins the script's env.ts
+parse against the real exports.
 
 ### Database (Supabase)
 

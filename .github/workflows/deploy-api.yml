@@ -50,6 +50,16 @@ jobs:
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
+      # Fail-closed, same contract as the migration gate: the 2026-07-25
+      # deploy was green yet crash-looped at boot on two Fly secrets the
+      # image required but nobody had set (CERT_SIGNING_SECRET,
+      # KIT_WEBHOOK_SECRET). This diffs env.ts's required lists against
+      # `flyctl secrets list` BEFORE flyctl deploys — names only, no values.
+      - name: Verify required runtime secrets exist on Fly
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: pnpm deploy:preflight
+
       - name: Deploy
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
