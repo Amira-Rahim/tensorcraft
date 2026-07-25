@@ -790,13 +790,14 @@ has already been written off once (see above) — do not launch dark again.
   begin the audience track. `roadmap.md` §7: longest lead time in the plan,
   runs in parallel, starts before the code is ready.
 - [x] **Apply the pending migrations — DONE 2026-07-25 (ops-deploy session):** 037-055 applied to production in order; `pnpm migrate:status` = IN SYNC 55/55; GitHub secrets set (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FLY_API_TOKEN); `deploy-api.yml` ran green; `/api/health` + `/api/health/ready` both 200. Remaining sub-step: enable the 046 Custom Access Token hook in the Supabase Auth dashboard (middleware falls back safely meanwhile). Original text retained below for the record.
-- [ ] **Apply migration 056** (written AFTER the 037-055 apply): purchases
-  FK → ON DELETE SET NULL so tax records survive account deletion. **The
-  new self-serve deletion endpoint must not ship to production before 056
-  is applied** — with the old cascade, deleting an account erases VAT
-  records the law requires you to keep. Same procedure as before:
-  `pnpm migrate:status` will show it PENDING; the deploy workflow blocks
-  until it is applied.
+- [x] **Apply migration 056 — DONE 2026-07-25:** applied to production via
+  the same Node `pg` procedure as 037-055; pre/post state verified in
+  `pg_constraint` (delete rule CASCADE → SET NULL, `user_id` now nullable,
+  still references `profiles`); `pnpm migrate:status` = IN SYNC 56/56, so
+  the deploy-api.yml gate passes again. The deletion endpoint is now safe
+  to deploy. Original text: purchases FK → ON DELETE SET NULL so tax
+  records survive account deletion — with the old cascade, deleting an
+  account erases VAT records the law requires you to keep.
 - [ ] ~~**Apply the pending migrations in order — BEFORE the next API deploy.**~~
   The `schema_migrations` ledger now EXISTS (migration 042 built it +
   backfilled 001–041), so this is no longer "establish a ledger" — run
@@ -893,9 +894,9 @@ flagging exposure, not legal advice).
   `POST /api/profiles/delete` (typed-DELETE confirmation, ESP cleanup,
   waitlist rows removed by email, auth user deleted) + real Settings flow.
   **Requires migration 056** (purchases FK → ON DELETE SET NULL) so tax
-  records survive erasure unlinked (Art. 17(3)(b)) — **056 is PENDING and
-  must be applied before this ships**; 037-055 were applied 2026-07-25,
-  056 was written after.
+  records survive erasure unlinked (Art. 17(3)(b)) — **056 APPLIED to
+  production 2026-07-25** (same session-day as the build; ledger IN SYNC
+  56/56), so this is clear to ship.
 - [x] GDPR data export (code) — **BUILT 2026-07-25.**
   `GET /api/profiles/export` returns a JSON attachment (account + all 12
   user tables + waitlist rows by email; the GitHub token is disclosed but
