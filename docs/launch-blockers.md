@@ -628,6 +628,14 @@ that touch THIS document's lists):
   validator, with a regression test; all 9 exercise test suites hardened;
   0/10 defeatable on re-check.
 
+> **Owner tracking split (2026-07-25, owner decision):** the ADVISOR items
+> (Tier 1-LEGAL) are handled separately by the owner and are no longer
+> tracked through this session's action list. DISTRIBUTION work (blog
+> batch, Product Hunt, X/Twitter, Search Console, domain warmup, Discord)
+> executes under `docs/marketing-plan.md` — the reach-flavored Tier 1-OPS
+> checkboxes above remain the launch-gating subset of that plan. "Buy your
+> own product twice" is sequenced AFTER testing completes.
+
 **Owner-only remainder (unchanged in nature, restated):** apply migrations
 **037–055** then deploy via the new workflow; GitHub secrets
 (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `FLY_API_TOKEN`); Stripe
@@ -846,7 +854,15 @@ has already been written off once (see above) — do not launch dark again.
   (bandwidth), Supabase (egress/compute), Fly, PostHog (1M-event
   overage), Upstash. One viral spike currently produces a surprise bill
   with zero warning (added 2026-07-22).
-- [ ] **Migration + runbook safety** (do with the ledger reconcile):
+- [x] **Migration + runbook safety** — closed 2026-07-25: `skill_events_old`
+  VERIFIED still existing in production with ZERO rows (PostgREST probe);
+  **migration 057** now drops it (pending apply — the deploy gate will
+  block until it lands, by design). The 019 rollback-signature and
+  runbook-vs-038 items were superseded earlier: the ledger (042) replaced
+  the rollback-SQL page as the source of truth, and migration 051's
+  `restore_purchase_after_dispute` is the sanctioned repair path the old
+  runbook SQL lacked. Original text below for the record.
+- [ ] ~~**Migration + runbook safety** (do with the ledger reconcile):~~
   verify `skill_events_old` was actually dropped (013's DROP is commented
   out — production may carry a full duplicate); fix the 019 rollback
   signature mismatch (`(text)` vs `(p_id uuid)` — it silently succeeds
