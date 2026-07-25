@@ -1,8 +1,39 @@
 slug: normalize-data
 lessonSlug: normalization
-title: "Normalize, and Save the Stats"
-instructions: "Real normalization is two jobs: scale the training data AND keep the statistics so future readings get the identical treatment. Given a [4, 2] batch (4 readings × 2 features: temperature, signal strength), (1) compute per-column mean and std into `mean` and `std` using tf.moments with axis 0, (2) z-score the batch into `normalized`, (3) write `normalizeReading(reading)` that applies THOSE SAVED STATS to any new 1D reading; at inference time there is no batch to recompute from."
-starterCode: "const batch = tf.tensor2d([\n  [20, 0.2],\n  [22, 0.8],\n  [24, 0.4],\n  [26, 0.6],\n]);\n\n// 1. Per-column stats (axis 0). std = variance.sqrt()\nconst mean = null; // your code here\nconst std = null;\n\n// 2. Z-score the batch with those stats\nconst normalized = null;\n\n// 3. Same treatment for any future reading\nfunction normalizeReading(reading) {\n  // your code here\n}"
+title: "Normalize, Then Ask the Preview Neuron"
+instructions: "Real normalization is two jobs: scale the training data AND keep the statistics so future readings get the identical treatment. This time the pipeline ends where every pipeline should: at a model. Given a [4, 2] batch (4 readings × 2 features: temperature, signal strength), (1) compute per-column mean and std into `mean` and `std` using tf.moments with axis 0, (2) z-score the batch into `normalized`, (3) build `previewModel`: one dense neuron with sigmoid activation (tf.sequential + tf.layers.dense, inputShape [2]), then load Farah's frozen weights with setWeights, (4) score the whole normalized batch in one predict() call into `scores`, (5) write `scoreReading(reading)` that applies THOSE SAVED STATS to any new 1D reading and returns the neuron's verdict; at inference time there is no batch to recompute from."
+starterCode: |
+  const batch = tf.tensor2d([
+    [20, 0.2],
+    [22, 0.8],
+    [24, 0.4],
+    [26, 0.6],
+  ]);
+
+  // Farah's preview neuron, frozen: one weight per feature, one bias.
+  const KERNEL = [[0.9], [-1.4]];
+  const BIAS = [-0.3];
+
+  // 1. Per-column stats (axis 0). std = variance.sqrt()
+  const mean = null; // your code here
+  const std = null;
+
+  // 2. Z-score the batch with those stats
+  const normalized = null;
+
+  // 3. One dense neuron: tf.sequential(), add a dense layer
+  //    (units 1, activation 'sigmoid', inputShape [2]), then
+  //    setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)])
+  const previewModel = null;
+
+  // 4. The whole normalized batch, scored in one predict() call
+  const scores = null;
+
+  // 5. Same treatment for any future reading: normalize with the
+  //    SAVED stats, reshape to [1, 2], return the neuron's verdict
+  function scoreReading(reading) {
+    // your code here
+  }
 solutionCode: |
   const batch = tf.tensor2d([
     [20, 0.2],
@@ -11,43 +42,69 @@ solutionCode: |
     [26, 0.6],
   ]);
 
+  const KERNEL = [[0.9], [-1.4]];
+  const BIAS = [-0.3];
+
   const moments = tf.moments(batch, 0);
   const mean = moments.mean;
   const std = moments.variance.sqrt();
 
   const normalized = batch.sub(mean).div(std);
 
-  function normalizeReading(reading) {
-    return reading.sub(mean).div(std);
+  const previewModel = tf.sequential();
+  previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
+  previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]);
+
+  const scores = previewModel.predict(normalized);
+
+  function scoreReading(reading) {
+    const z = reading.sub(mean).div(std);
+    return previewModel.predict(z.reshape([1, 2]));
   }
 testCode: |
-  describe('Normalize and Save', () => {
+  describe('Normalize, Then Ask the Preview Neuron', () => {
     it('per-column mean is [23, 0.5]', () => {
       const m = Array.from(mean.dataSync());
       expect(m[0]).toBeCloseTo(23, 4);
       expect(m[1]).toBeCloseTo(0.5, 4);
     });
-    it('normalized columns have mean ~0', () => {
+    it('normalized columns have mean ~0 and std ~1', () => {
       const colMeans = Array.from(normalized.mean(0).dataSync());
       expect(Math.abs(colMeans[0])).toBeLessThan(1e-5);
       expect(Math.abs(colMeans[1])).toBeLessThan(1e-5);
-    });
-    it('normalized columns have std ~1', () => {
-      const v = tf.moments(normalized, 0).variance.sqrt();
-      const stds = Array.from(v.dataSync());
+      const stds = Array.from(tf.moments(normalized, 0).variance.sqrt().dataSync());
       expect(stds[0]).toBeCloseTo(1, 4);
       expect(stds[1]).toBeCloseTo(1, 4);
     });
-    it('normalizeReading applies the SAVED stats to a new reading', () => {
-      const out = normalizeReading(tf.tensor([23, 0.5]));
-      const vals = Array.from(out.dataSync());
-      expect(vals[0]).toBeCloseTo(0, 4);
-      expect(vals[1]).toBeCloseTo(0, 4);
-      const out2 = normalizeReading(tf.tensor([25, 0.8]));
-      expect(out2.dataSync()[0]).toBeGreaterThan(0);
+    it('previewModel is a real dense layer carrying the frozen weights', () => {
+      const w = previewModel.getWeights();
+      expect(w).toHaveLength(2);
+      expect(w[0].shape).toEqual([2, 1]);
+      const k = Array.from(w[0].dataSync());
+      expect(k[0]).toBeCloseTo(0.9, 5);
+      expect(k[1]).toBeCloseTo(-1.4, 5);
+      expect(w[1].dataSync()[0]).toBeCloseTo(-0.3, 5);
+    });
+    it('scores = predict(normalized): one sigmoid verdict per reading', () => {
+      expect(scores.shape).toEqual([4, 1]);
+      const s = Array.from(scores.dataSync());
+      expect(s[0]).toBeCloseTo(0.5917, 3);
+      expect(s[1]).toBeCloseTo(0.0704, 3);
+      expect(s[2]).toBeCloseTo(0.6745, 3);
+      expect(s[3]).toBeCloseTo(0.5699, 3);
+    });
+    it('the neuron computes on inputs it has never seen', () => {
+      const out = previewModel.predict(tf.tensor2d([[1, -1]]));
+      expect(out.dataSync()[0]).toBeCloseTo(0.8808, 3);
+    });
+    it('scoreReading applies the SAVED stats, then asks the neuron', () => {
+      const centre = scoreReading(tf.tensor([23, 0.5]));
+      expect(centre.dataSync()[0]).toBeCloseTo(0.4256, 3);
+      const archived = scoreReading(tf.tensor([24, 0.51]));
+      expect(archived.dataSync()[0]).toBeCloseTo(0.51, 3);
     });
   });
-estimatedMinutes: 12
+estimatedMinutes: 15
 difficulty: intermediate
-mlContent: data
+mlContent: model
 skillAxis: data_prep

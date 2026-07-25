@@ -70,7 +70,8 @@ The right answer depends on whether the task is **custom** (TFJS) or **commodity
 import { pipeline } from '@huggingface/transformers';
 
 // First call: downloads the model + tokenizer (tens of MB; v3 defaults
-// to a quantized dtype in the browser, ~80MB only if you force fp32)
+// to a quantized dtype in the browser. Forcing fp32 means 4 bytes per
+// weight: ~268MB for this ~67M-parameter sentiment model)
 // into the browser's
 // Cache Storage (the Cache API). Note the contrast with two lessons
 // ago: TFJS saves models to IndexedDB via the indexeddb:// scheme;

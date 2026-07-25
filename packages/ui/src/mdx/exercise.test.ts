@@ -61,6 +61,21 @@ describe("parseAndRunTests", () => {
     expect(results[0].passed).toBe(true);
   });
 
+  it("fails toBeCloseTo for non-numeric actuals (NaN guard)", async () => {
+    // Regression: `Math.abs({} - 0.3)` is NaN and `NaN >= limit` is false, so
+    // the old comparison silently passed any non-numeric actual — a constant
+    // `return {}` defeated every toBeCloseTo-only suite.
+    const userCode = "var objResult = {}; var nanResult = NaN;";
+    const testCode = `
+      it('object is not close', function() { expect(objResult).toBeCloseTo(0.3, 5); });
+      it('NaN is not close', function() { expect(nanResult).toBeCloseTo(0.3, 5); });
+    `;
+
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(2);
+    expect(results.every((r) => !r.passed)).toBe(true);
+  });
+
   it("strips import statements", async () => {
     const userCode = `import * as tf from '@tensorflow/tfjs';
 var t = tf.tensor([1, 2, 3]);`;

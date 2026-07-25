@@ -63,7 +63,11 @@ export default async function DashboardPage() {
       .limit(300),
     supabase
       .from("streaks")
-      .select("theme_id, current_streak, longest_streak")
+      // last_activity_date rides along so the streak-at-risk nudge below
+      // doesn't need its own BLOCKING second query over the same table
+      // (fresh-eyes rerun T2-26: the dashboard issued the streaks query
+      // twice, the second serially).
+      .select("theme_id, current_streak, longest_streak, last_activity_date")
       .eq("user_id", user.id),
     // One query serves both averageScore/moduleScoreMap (whole-history) and
     // lossCurveData (client-side filtered to the last 12 weeks). Keeping the
@@ -90,11 +94,7 @@ export default async function DashboardPage() {
   yesterday.setUTCDate(yesterday.getUTCDate() - 1);
   const yesterdayKey = yesterday.toISOString().slice(0, 10);
   const todayKey = today.toISOString().slice(0, 10);
-  const { data: streaksWithDate } = await supabase
-    .from("streaks")
-    .select("last_activity_date, current_streak")
-    .eq("user_id", user.id);
-  const streakAtRisk = (streaksWithDate ?? []).some(
+  const streakAtRisk = (streaksRaw ?? []).some(
     (s) =>
       (s.current_streak ?? 0) >= 1 &&
       s.last_activity_date === yesterdayKey &&

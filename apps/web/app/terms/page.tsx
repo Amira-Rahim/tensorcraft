@@ -89,9 +89,9 @@ export default function TermsPage() {
             </h2>
             <p>
               Theme purchases are one-time payments that grant lifetime access
-              to the purchased theme content. All prices are in USD. Refund
-              requests may be submitted within 14 days of purchase if less than
-              20% of the course content has been accessed.
+              to the purchased theme content. All prices are in USD. Refunds are
+              available within 14 days of purchase, no questions asked: email
+              support@tensorcraft.app.
             </p>
           </section>
 

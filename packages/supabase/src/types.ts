@@ -62,6 +62,23 @@ export interface Database {
           },
         ];
       };
+      // Migration 053: webhook idempotency ledger. Service-role only.
+      payment_events: {
+        Row: {
+          stripe_event_id: string;
+          event_type: string;
+          received_at: string;
+        };
+        Insert: {
+          stripe_event_id: string;
+          event_type: string;
+          received_at?: string;
+        };
+        Update: {
+          event_type?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           id: string;

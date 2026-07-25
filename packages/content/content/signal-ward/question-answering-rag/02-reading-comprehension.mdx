@@ -100,9 +100,17 @@ function buildComprehensionModel(
   const questionEncoded = biLSTM.apply(questionEmb) as tf.SymbolicTensor;
   const contextEncoded = biLSTM.apply(contextEmb) as tf.SymbolicTensor;
 
-  // Attention-based fusion
-  const attention = tf.layers.attention();
-  const attended = attention.apply([questionEncoded, contextEncoded]) as tf.SymbolicTensor;
+  // Attention-based fusion. TFJS ships no attention layer, so build
+  // Luong-style attention from layers that do exist: dot for scores,
+  // softmax for weights, dot again to pool the question, concat to fuse.
+  const scores = tf.layers.dot({ axes: -1 })
+    .apply([contextEncoded, questionEncoded]) as tf.SymbolicTensor;
+  const weights = tf.layers.softmax()
+    .apply(scores) as tf.SymbolicTensor;
+  const pooledQuestion = tf.layers.dot({ axes: [2, 1] })
+    .apply([weights, questionEncoded]) as tf.SymbolicTensor;
+  const attended = tf.layers.concatenate()
+    .apply([contextEncoded, pooledQuestion]) as tf.SymbolicTensor;
 
   // Predict answer span
   const startLogits = tf.layers.dense({ units: 1, name: 'start' })

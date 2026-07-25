@@ -30,7 +30,55 @@ hints:
   - level: guidance
     content: "decomposeIntervals loops to length - 1 pushing intervals[i + 1] / intervals[i]. isFibonacciTrain compares against [1, 2, 1.5, 5/3, 1.6, 1.625] aligned FROM THE TAIL (slice the expected list to the ratios' length from the end), each within 2% relative error. classifyAnomaly gets mean/variance from tf.moments inside tf.tidy, z = (actual - mean) / std with z = 0 when std is 0; statistical fires on |z| > 3, autoencoder on reconstructionError > reconThreshold, lstm on |predicted - actualForecast| > predTolerance; votes counts the fired detectors, isAnomaly needs 2 of 3, classification is 'confirmed-anomaly' only when the vote AND the Fibonacci train agree, and scoreDelta is the rounded ensembleScore - module3Score."
   - level: solution
-    content: "const ratios = []; for (let i = 0; i < intervals.length - 1; i++) { ratios.push(intervals[i + 1] / intervals[i]); } return ratios; const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625]; const expected = fibonacciRatios.slice( fibonacciRatios.length - ratios.length, ); if (expected.length !== ratios.length) return false; return ratios.every( (r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02, ); const std = Math.sqrt(variance); const z = std === 0 ? 0 : (reading.actual - mean) / std; const verdicts = { statistical: Math.abs(z) > 3, autoencoder: reading.reconstructionError > reading.reconThreshold, lstm: Math.abs(reading.predicted - reading.actualForecast) > reading.predTolerance, }; const votes = Object.values(verdicts).filter(Boolean).length; const isAnomaly = votes >= 2; return { votes, isAnomaly, ratios, fibonacciTrain, classification: isAnomaly && fibonacciTrain ? \"confirmed-anomaly\" : isAnomaly ? \"anomaly\" : \"noise\", scoreDelta: Math.round((reading.ensembleScore - reading.module3Score) * 1000) / 1000, };"
+    content: |
+      const ratios = [];
+      for (let i = 0; i < intervals.length - 1; i++) {
+        ratios.push(intervals[i + 1] / intervals[i]);
+      }
+      return ratios;
+      const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
+      const expected = fibonacciRatios.slice(
+        fibonacciRatios.length - ratios.length,
+      );
+      if (expected.length !== ratios.length) return false;
+      return ratios.every(
+        (r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02,
+      );
+      const { mean, variance } = tf.tidy(() => {
+        const m = tf.moments(tf.tensor1d(reading.window));
+        return {
+          mean: m.mean.dataSync()[0],
+          variance: m.variance.dataSync()[0],
+        };
+      });
+      const std = Math.sqrt(variance);
+      const z = std === 0 ? 0 : (reading.actual - mean) / std;
+      const verdicts = {
+        statistical: Math.abs(z) > 3,
+        autoencoder: reading.reconstructionError > reading.reconThreshold,
+        lstm:
+          Math.abs(reading.predicted - reading.actualForecast) >
+          reading.predTolerance,
+      };
+      const votes = Object.values(verdicts).filter(Boolean).length;
+      const isAnomaly = votes >= 2;
+      const ratios = decomposeIntervals(reading.intervals);
+      const fibonacciTrain = isFibonacciTrain(ratios);
+      return {
+        votes,
+        isAnomaly,
+        ratios,
+        fibonacciTrain,
+        classification:
+          isAnomaly && fibonacciTrain
+            ? "confirmed-anomaly"
+            : isAnomaly
+              ? "anomaly"
+              : "noise",
+        scoreDelta:
+          Math.round((reading.ensembleScore - reading.module3Score) * 1000) /
+          1000,
+      };
 keywords:
   - deployment
   - github-pages
@@ -192,7 +240,7 @@ async function classifyAnomalousSignal(): Promise<void> {
   console.log('=== DEEP SCAN v1.0: Final Classification ===');
   console.log('');
   console.log('Signal source: 4.2 light-years, bearing 127.3');
-  console.log('Pulse interval: 30.0s, down from 73.4s at first measurement');
+  console.log('Pulse interval: 29.7s, down from 73.4s at first measurement');
   console.log('');
 
   // Load the anomalous signal, the one that started everything

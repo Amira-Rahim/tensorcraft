@@ -27,7 +27,22 @@ hints:
   - level: guidance
     content: "In manualGradient, run the forward pass first (z1 = w1*x, a1 = relu of z1, z2 = w2*a1) and keep the intermediates, then multiply four local derivatives: 2*(z2 - y), then w2, then the ReLU gate (1 if z1 > 0, else 0), then x. With x=2, y=1, w1=0.5, w2=-0.3 the product is 1.56. autoGradient wraps the same forward pass in tf.grad and calls the returned function on tf.scalar(w1)."
   - level: solution
-    content: "const z1 = w1 * x; const a1 = Math.max(0, z1); const z2 = w2 * a1; const dLoss_dz2 = 2 * (z2 - y); const dz2_da1 = w2; const da1_dz1 = z1 > 0 ? 1 : 0; const dz1_dw1 = x; return dLoss_dz2 * dz2_da1 * da1_dz1 * dz1_dw1; const gradFn = tf.grad((w1t: tf.Tensor) => {; const z1 = w1t.mul(x); const a1 = z1.relu(); const z2 = tf.scalar(w2).mul(a1); return z2.sub(y).square(); }); return gradFn(tf.scalar(w1));"
+    content: |
+      const z1 = w1 * x;
+      const a1 = Math.max(0, z1);
+      const z2 = w2 * a1;
+      const dLoss_dz2 = 2 * (z2 - y);
+      const dz2_da1 = w2;
+      const da1_dz1 = z1 > 0 ? 1 : 0;
+      const dz1_dw1 = x;
+      return dLoss_dz2 * dz2_da1 * da1_dz1 * dz1_dw1;
+      const gradFn = tf.grad((w1t: tf.Tensor) => {
+        const z1 = w1t.mul(x);
+        const a1 = z1.relu();
+        const z2 = tf.scalar(w2).mul(a1);
+        return z2.sub(y).square();
+      });
+      return gradFn(tf.scalar(w1));
 keywords:
   - partial-derivatives
   - chain-rule

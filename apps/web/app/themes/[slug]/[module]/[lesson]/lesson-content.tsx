@@ -81,6 +81,16 @@ interface LessonContentProps {
   storyRegister?: boolean;
   onExerciseComplete?: (exerciseSlug: string, score: number) => void;
   glossaryTerms?: Array<{ term: string; definition: string }>;
+  /**
+   * XS renderer slice (fresh-eyes rerun §4/T1-16): prose visibility is a
+   * single boolean, so all 56 lessons rendered the task brief ("## Challenge"
+   * onward — "Now it's your turn…") on Briefing/Concept/Code, BEFORE the
+   * teaching. When true, a CSS rule hides the Challenge heading and every
+   * following sibling. CSS-only by design: the full prose partition is
+   * deliberately deferred until real completion data exists (ledger §4
+   * counter-argument; the last structural renderer change was reverted).
+   */
+  hideChallengeOnward?: boolean;
 }
 
 /**
@@ -129,6 +139,7 @@ export function LessonContent({
   storyRegister,
   onExerciseComplete,
   glossaryTerms,
+  hideChallengeOnward,
 }: LessonContentProps) {
   const { activeTerm, setActiveTerm } = useGlossary();
 
@@ -248,6 +259,21 @@ export function LessonContent({
       string,
       React.ComponentType</* eslint-disable-line @typescript-eslint/no-explicit-any */ any>
     > = {
+      // Stamps the one heading the hideChallengeOnward CSS rule anchors on
+      // (globals.css). All 56 lessons carry exactly one "## Challenge";
+      // MDX has no rehype-slug, so headings have no ids to target.
+      h2: ({ children, ...rest }: React.HTMLAttributes<HTMLHeadingElement>) => (
+        <h2
+          {...rest}
+          data-heading={
+            typeof children === "string" && children.trim() === "Challenge"
+              ? "challenge"
+              : undefined
+          }
+        >
+          {children}
+        </h2>
+      ),
       Concept: wrapVisibility("Concept", Concept),
       Dialogue: (props: React.ComponentProps<typeof Dialogue>) => {
         // Mirror wrapVisibility's epilogue bypass: inside an <Epilogue>, the
@@ -451,6 +477,7 @@ export function LessonContent({
         className="max-w-none lesson-prose lesson-step-content"
         data-show-prose={showProse ? "true" : "false"}
         data-story-register={storyRegister ? "true" : undefined}
+        data-hide-challenge-onward={hideChallengeOnward ? "true" : undefined}
       >
         <Content />
         {shouldShow("HintPanel") && lesson.hints && (

@@ -84,6 +84,11 @@ testCode: |
     });
   });
 estimatedMinutes: 15
-difficulty: advanced
+# Retagged advanced -> intermediate 2026-07-25: the predict-correct loop is
+# spelled out step-by-step in the starter comments and the solution is plain
+# JS arithmetic (mlContent: arithmetic). The published taxonomy rule (blog:
+# audit-exercise-mlcontent) bans an advanced badge on arithmetic content;
+# pinned by packages/content/__tests__/mlcontent-taxonomy.test.ts.
+difficulty: intermediate
 mlContent: arithmetic
 skillAxis: model_arch

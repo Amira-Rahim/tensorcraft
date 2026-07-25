@@ -170,8 +170,8 @@ export default function PricingPage() {
                   14-day money-back guarantee
                 </span>
                 <span className="text-text-muted">
-                  : full refund if you&rsquo;ve used less than 20% of a
-                  theme.{" "}
+                  : full refund within 14 days, no questions asked. Email
+                  support@tensorcraft.app.{" "}
                 </span>
                 <Link
                   href="/terms#refunds"

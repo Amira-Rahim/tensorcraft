@@ -63,7 +63,7 @@ const base = computeLoss();             // forward pass 0
 const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 </CodeBlock>
 
-It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; overnight becomes next month. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
+It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; a run the backward pass finishes in minutes stretches past thirty hours. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
 
 <Dialogue speaker="ARIA">
 Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a cost of roughly two forward passes. It has a name.
@@ -161,7 +161,7 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 Nazari times it herself, stopwatch against the console, because she doesn't trust benchmarks she didn't run. One forward pass, one backward pass: 120 milliseconds, all 673 gradients. Then she makes Demir run it the naive way, 673 separate forward passes with one nudged weight at a time, and stands there for the full 27 seconds, arms folded, watching the waste accumulate.
 
 <Dialogue speaker="Chief Nazari">
-Twenty-seven seconds against a hundred and twenty milliseconds, a few thousand times per training run. That's the difference between an answer by morning and an answer next month. Use the backward pass.
+Twenty-seven seconds against a hundred and twenty milliseconds, a few thousand times per training run. That's the difference between an answer in minutes and an answer thirty-some hours from now. Use the backward pass.
 </Dialogue>
 
 </Epilogue>

@@ -60,7 +60,7 @@ The model's architecture lives in `model.json`; the learned weights live in bina
 
 // Loading a model is a fetch with extra steps
 // model.json contains the architecture (layers, shapes, activations)
-// group1-shard1of1.bin contains the learned weights (Float32Array)
+// weights.bin contains the learned weights (Float32Array)
 const model = await tf.loadLayersModel('/models/deep-scan/model.json');
 
 // Inspect what we loaded, like checking an API response shape
@@ -68,9 +68,9 @@ console.log('Input shape:', model.inputs[0].shape);   // [null, 3]
 console.log('Output shape:', model.outputs[0].shape);  // [null, 1]
 model.summary();
 // Layer (type)              Output shape       Param #
-// dense_Dense1 (Dense)      [null, 32]         128
-// dense_Dense2 (Dense)      [null, 16]         528
-// dense_Dense3 (Dense)      [null, 1]          17`}
+// dense_Dense1 (Dense)      [null, 16]         64
+// dense_Dense2 (Dense)      [null, 8]          136
+// dense_Dense3 (Dense)      [null, 1]          9`}
 </CodeBlock>
 
 Under the hood, `tf.loadLayersModel()` does exactly what you'd do manually:
@@ -84,7 +84,7 @@ const manifest = await fetch('/models/deep-scan/model.json').then(r => r.json())
 // manifest.weightsManifest = list of .bin files and their tensor names
 
 // 2. Fetch the weight binaries
-const weightData = await fetch('/models/deep-scan/group1-shard1of1.bin')
+const weightData = await fetch('/models/deep-scan/weights.bin')
   .then(r => r.arrayBuffer());
 // Raw Float32 values: the numbers the network learned during training
 

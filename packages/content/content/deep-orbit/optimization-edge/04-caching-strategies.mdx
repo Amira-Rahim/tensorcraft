@@ -15,9 +15,9 @@ concept:
   explanation: "Caching inference results means the model never computes the same answer twice. The hard part is deciding when two inputs count as the same."
   bridge:
     feTitle: "Service Worker Cache"
-    feCode: "caches.match(request) || fetch(request).then(cache) // cache-first"
+    feCode: "(await caches.match(request)) ?? fetch(request) // cache-first"
     mlTitle: "Inference Cache"
-    mlCode: "cache.get(inputHash) || model.predict(input).then(cache) // cache-first"
+    mlCode: "cache.get(inputHash) ?? model.predict(input) // cache-first, predict is sync"
     tier: structural
     breaks: "Service worker cache keys requests by URL: exact-match. Inference cache keys must include input hash (post-quantization), model version, and runtime parameters (batch size, fp precision). The cache-first pattern transfers; cache-key design does not."
 consequence:

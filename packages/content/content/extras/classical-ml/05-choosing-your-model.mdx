@@ -25,7 +25,23 @@ hints:
   - level: guidance
     content: "Chain if statements on spec.dataType. image and audio always return 'deep-learning'. text returns 'logistic-regression' when spec.datasetSize < 1000, else 'deep-learning'. tabular checks spec.needsInterpretability first ('decision-tree'), then size: < 100 gives 'knn', < 10000 gives 'random-forest', otherwise 'xgboost'. time-series returns 'classical-stats' under 1000 samples, else 'deep-learning'."
   - level: solution
-    content: "if (spec.dataType === 'image' || spec.dataType === 'audio') {; return 'deep-learning'; }; if (spec.dataType === 'text') {; return spec.datasetSize < 1000 ? 'logistic-regression' : 'deep-learning'; }; if (spec.dataType === 'tabular') {; if (spec.needsInterpretability) return 'decision-tree'; if (spec.datasetSize < 100) return 'knn'; if (spec.datasetSize < 10000) return 'random-forest'; return 'xgboost'; }; if (spec.dataType === 'time-series') {; return spec.datasetSize < 1000 ? 'classical-stats' : 'deep-learning'; }; return 'logistic-regression';"
+    content: |
+      if (spec.dataType === 'image' || spec.dataType === 'audio') {
+        return 'deep-learning';
+      }
+      if (spec.dataType === 'text') {
+        return spec.datasetSize < 1000 ? 'logistic-regression' : 'deep-learning';
+      }
+      if (spec.dataType === 'tabular') {
+        if (spec.needsInterpretability) return 'decision-tree';
+        if (spec.datasetSize < 100) return 'knn';
+        if (spec.datasetSize < 10000) return 'random-forest';
+        return 'xgboost';
+      }
+      if (spec.dataType === 'time-series') {
+        return spec.datasetSize < 1000 ? 'classical-stats' : 'deep-learning';
+      }
+      return 'logistic-regression';
 keywords:
   - model-selection
   - decision-framework
@@ -76,7 +92,7 @@ function recommendModel(spec: ProblemSpec): string {
     if (spec.needsInterpretability) {
       return spec.datasetSize < 500
         ? 'Logistic Regression / Decision Tree'
-        : 'Explainable Boosted Machine (EBM)';
+        : 'Explainable Boosting Machine (EBM)';
     }
 
     if (spec.datasetSize < 100) return 'KNN or Logistic Regression';

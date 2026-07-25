@@ -27,7 +27,17 @@ hints:
   - level: guidance
     content: "bayesUpdate multiplies prior[i] by likelihood[i], sums those products into a total, and divides each product by the total so the posterior sums to 1. sequentialBayesUpdate keeps a current distribution starting at initialPrior, calls bayesUpdate once per likelihood array, and pushes each posterior, so the result holds one distribution per observation."
   - level: solution
-    content: "const unnormalized = prior.map((p, i) => p * likelihood[i]); const total = unnormalized.reduce((s, v) => s + v, 0); return unnormalized.map(v => v / total); const posteriors: number[][] = []; let current = initialPrior; for (const likelihood of likelihoods) {; current = bayesUpdate(current, likelihood); posteriors.push(current); }; return posteriors;"
+    content: |
+      const unnormalized = prior.map((p, i) => p * likelihood[i]);
+      const total = unnormalized.reduce((s, v) => s + v, 0);
+      return unnormalized.map(v => v / total);
+      const posteriors: number[][] = [];
+      let current = initialPrior;
+      for (const likelihood of likelihoods) {
+        current = bayesUpdate(current, likelihood);
+        posteriors.push(current);
+      }
+      return posteriors;
 keywords:
   - bayes-theorem
   - prior

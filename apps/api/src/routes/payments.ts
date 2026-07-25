@@ -66,6 +66,42 @@ function validateThemeIds(ids: string[]): boolean {
 }
 
 /**
+ * Claim this delivery's right to fire ONE-SHOT side effects (revenue event,
+ * confirmation email) for a Stripe event, via the payment_events ledger
+ * (migration 053). The row-status guards already suppress SEQUENTIAL
+ * re-deliveries; this closes the CONCURRENT window where two deliveries of
+ * the same event both read a stale row and both fire (run-2 diff review's
+ * accepted TOCTOU; fresh-eyes rerun irreversible list #6).
+ *
+ * Returns true when this delivery won the insert (or when the ledger is
+ * unavailable — 053 not yet applied — where blocking payments over a
+ * missing observability table would be the worse failure; the sequential
+ * guards still hold in that window).
+ */
+async function claimEventSideEffects(
+  supabase: ReturnType<typeof getSupabaseAdminClient>,
+  eventId: string,
+  eventType: string,
+): Promise<boolean> {
+  const { error } = await supabase
+    .from("payment_events")
+    .insert({ stripe_event_id: eventId, event_type: eventType });
+  if (!error) return true;
+  if (error.code === "23505") {
+    logger.info(
+      { route: "payments.webhook", eventId, eventType },
+      "Webhook: duplicate delivery lost the side-effect claim; skipping",
+    );
+    return false;
+  }
+  logger.warn(
+    { err: error, route: "payments.webhook", eventId, eventType },
+    "Webhook: payment_events ledger unavailable (053 applied?); proceeding on row-status guards only",
+  );
+  return true;
+}
+
+/**
  * Terminal purchase statuses, once set, a retry of the same webhook
  * must NOT regress the row (e.g. back to "completed"). See §338.
  */
@@ -801,11 +837,15 @@ payments.post("/webhook", async (c) => {
 
       // Revenue event + confirmation email fire only once the payment has
       // actually settled. For delayed methods that happens in the
-      // async_payment_succeeded handler below, not here. Guard on the prior
-      // status exactly like the async handler does (§942): a re-delivered
-      // completed event for an already-completed row must not double-fire
-      // the revenue source-of-truth event or re-send the confirmation email.
-      if (rowStatus === "completed" && existingRow?.status !== "completed") {
+      // async_payment_succeeded handler below, not here. Two layers of
+      // dedupe: the row-status guard suppresses sequential re-deliveries,
+      // and the payment_events claim (migration 053) closes the concurrent
+      // window where two deliveries both read a stale row.
+      if (
+        rowStatus === "completed" &&
+        existingRow?.status !== "completed" &&
+        (await claimEventSideEffects(supabase, event.id, event.type))
+      ) {
         // Fire authoritative server-side conversion event (§6i).
         // Client may also fire one, but this is the revenue source of truth.
         captureServer(
@@ -1107,7 +1147,29 @@ payments.post("/webhook", async (c) => {
             // deferred the revenue event and the confirmation email to here.
             // Guard on prior status so a retried async_payment_succeeded
             // does not double-fire.
-            if (!asyncUpsertError && existingAsyncRow?.status !== "completed") {
+            if (asyncUpsertError) {
+              // A failed settle upsert must be RETRIED, not ACKed: swallowing
+              // it locked a delayed-method buyer (SEPA/bank transfer) out
+              // permanently and silently — the money moved, the row never
+              // promoted, and Stripe was told all was well (fresh-eyes rerun
+              // T0-6).
+              logger.error(
+                {
+                  err: asyncUpsertError,
+                  route: "payments.webhook",
+                  eventType: event.type,
+                  userId: asyncUserId,
+                  stripeSessionId: asyncSession.id,
+                },
+                "Webhook: failed to settle delayed payment; requesting retry",
+              );
+              return c.json({ error: "Database error" }, 500);
+            }
+
+            if (
+              existingAsyncRow?.status !== "completed" &&
+              (await claimEventSideEffects(supabase, event.id, event.type))
+            ) {
               captureServer(
                 SERVER_EVENTS.PAYMENT_COMPLETED,
                 {

@@ -70,10 +70,11 @@ interface LLMClient {
   complete(prompt: string, options?: { system?: string; temperature?: number; maxTokens?: number }): Promise<string>;
 }
 
-// In production, this calls an API (OpenAI, Anthropic, etc.). Every
-// current provider speaks the MESSAGES shape: a system role that sets
-// the job, a user role that carries the data. For DEEP SCAN, we point
-// it at the ship's onboard model.
+// In production, this calls an API (OpenAI, Anthropic, etc.). Most
+// providers expose a messages-shaped chat API, each with its own
+// dialect (Anthropic, for one, takes system as a top-level field,
+// not a message role). For DEEP SCAN, we point it at the ship's
+// onboard model.
 async function createLLMClient(apiKey: string, baseUrl: string): Promise<LLMClient> {
   return {
     async complete(prompt, options = {}) {

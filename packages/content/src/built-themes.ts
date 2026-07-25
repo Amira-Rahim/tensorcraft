@@ -10,10 +10,19 @@
  * keeps 5C variety, metadata truth and numeric canon coherent would NOT cover
  * it — it saw only the 77 shipped lessons out of ~275 authored.
  *
- * Now there is one list. Launch a theme by adding its dir here (and to
- * LAUNCHED_THEMES in @tensorcraft/shared): Velite compiles it and every gate
- * covers it, with no per-test edits. That is the parameterization — gate scope
- * tracks the build from a single constant.
+ * Now there is one list. Adding a dir here (and to LAUNCHED_THEMES in
+ * @tensorcraft/shared) is the MECHANICAL half of launching a theme: Velite
+ * compiles it and every gate extends to it with no per-test edits.
+ *
+ * It is NOT the whole cost, and an earlier version of this comment claimed
+ * it was ("one line, no per-test edits"), which mispriced the roadmap
+ * (fresh-eyes rerun 2026-07-25 §8). What the one line actually does is turn
+ * the QA gates LOOSE on a corpus that has never passed them: measured at
+ * HEAD, every unbuilt lesson needs step-5 close conversion, every hint
+ * ladder fails Gate B's excerpt convention, and none of the 219 lessons has
+ * had a fact-check pass (Deep Orbit needed four adversarial rounds). Budget
+ * 12-20 focused weeks per theme; the full measured punch list lives in
+ * docs/theme-launch-checklist.md — read it before flipping any theme on.
  *
  * `extras` is cross-theme companion content, always built alongside the
  * launched story themes.

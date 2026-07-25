@@ -1,6 +1,7 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
+import ts from "typescript";
 import { BUILT_THEME_DIRS } from "../src/built-themes";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
@@ -198,6 +199,30 @@ describe("consequence.narrative numbers appear in the lesson body", () => {
  * Prose is banned at the solution level - that is what nudge/guidance are
  * for. Fragments under 12 normalized characters are ignored (connectors,
  * step numerals); everything longer must be found in solutionCode.
+ *
+ * HARDENED 2026-07-25 (fresh-eyes rerun §5/§6, T0-9 + T1-19). The previous
+ * version of this gate split hint fragments on `;` - the exact character
+ * that newline→`; ` flattening corruption introduces - so 15 of 77 hints
+ * carried artifacts like `{;` and `,;` under a green gate, 2 of them hard
+ * syntax errors if pasted. Four layers now make that class unrepresentable:
+ *
+ *   1. PARSE: every solution hint must transpile with zero syntactic
+ *      diagnostics (wrapped in an async generator body, since hints are
+ *      statement fragments that may use await/yield/return).
+ *   2. ARTIFACTS: `,;` and `{;` are asserted absent outright. They are the
+ *      two flattening signatures the parser cannot be the authority on -
+ *      `{;` parses as block + empty statement, and `,;` only errors in some
+ *      positions. All other signatures (`(;`, `; .method`, `; )`) ARE parse
+ *      errors, so layer 1 is their authority. `};` is deliberately NOT
+ *      banned: it is legal at the end of every object-literal assignment;
+ *      a stray one is caught by layer 3 instead.
+ *   3. INCLUSION: fragments are the hint's top-level STATEMENTS as the
+ *      TypeScript parser sees them - never a split on raw `;` - so an
+ *      interpolated delimiter stays inside its statement's text and fails
+ *      the verbatim-excerpt match against solutionCode.
+ *   4. COUNT PIN: the suite must discover exactly EXPECTED_SOLUTION_HINTS
+ *      cases, so a hint edit that silently drops a case out of discovery
+ *      (malformed YAML, renamed exercise) goes red instead of green.
  */
 
 /** Collapse whitespace so YAML block-scalar vs single-line quoting differences never matter. */
@@ -205,10 +230,114 @@ function normalizeCode(code: string): string {
   return code.replace(/\s+/g, " ").trim();
 }
 
-/** Undo YAML double-quote escaping in frontmatter hint strings. */
-function unescapeHint(hint: string): string {
-  return hint.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+/**
+ * Undo YAML double-quote escaping left-to-right, so `\\n` in the source
+ * becomes a literal `\n` sequence rather than a newline (a right-to-left
+ * chain of .replace calls gets that case wrong).
+ */
+function unescapeDoubleQuoted(scalar: string): string {
+  return scalar.replace(/\\(.)/g, (_, c: string) =>
+    c === "n" ? "\n" : c === "t" ? "\t" : c,
+  );
 }
+
+/**
+ * The solution hint out of a lesson's frontmatter. Two YAML shapes exist:
+ * single-line double-quoted (the original convention) and block scalar
+ * (restored 2026-07-25 for the 15 hints whose newlines had been flattened
+ * into `; ` corruption - and for any future multi-line excerpt).
+ */
+function solutionHint(fm: string): string | null {
+  const quoted = fm.match(
+    /^ {2}- level: solution\n {4}content:\s*"([\s\S]*?)"\n(?= {2}[-\w]|\w)/m,
+  );
+  if (quoted) return unescapeDoubleQuoted(quoted[1]);
+  const block = fm.match(
+    /^ {2}- level: solution\n {4}content: \|-?\n((?: {6}.*\n?|\n)+)/m,
+  );
+  if (block) return block[1].replace(/^ {6}/gm, "").trimEnd();
+  return null;
+}
+
+/**
+ * The decoded solutionCode of one exercise YAML. The raw file text is NOT
+ * comparable: 26 of 85 exercises use double-quoted scalars whose `\n` is a
+ * two-character escape, and a multi-line hint statement (a for-loop body)
+ * can never match across a literal backslash-n. Decoding first makes the
+ * whitespace-normalized comparison honest for both YAML styles.
+ */
+function exerciseSolution(path: string): string {
+  const raw =
+    readFileSync(path, "utf8").match(
+      /^solutionCode:[\s\S]*?(?=^testCode:)/m,
+    )?.[0] ?? "";
+  if (!raw.trim()) return "";
+  if (/^solutionCode:\s*"/.test(raw)) {
+    return unescapeDoubleQuoted(
+      raw.replace(/^solutionCode:\s*"/, "").replace(/"\s*$/, ""),
+    );
+  }
+  return raw.replace(/^solutionCode:\s*\|-?\n?/, "");
+}
+
+/**
+ * Hints are statement fragments, not modules: they may use `await`, `yield`
+ * (data pipelines excerpt generator bodies) and bare `return`, so they are
+ * wrapped in an async generator body before parsing. transpileModule
+ * reports SYNTACTIC diagnostics only, which is exactly right here: a hint
+ * stitching excerpts from two functions legitimately redeclares a const
+ * (semantic), but `,;` inside an object literal (syntactic) must fail.
+ */
+function wrapHint(hint: string): string {
+  return `async function* __hint__() {\n${hint}\n}`;
+}
+
+function hintParseDiagnostics(hint: string): string[] {
+  const result = ts.transpileModule(wrapHint(hint), {
+    compilerOptions: { target: ts.ScriptTarget.ES2020 },
+    reportDiagnostics: true,
+  });
+  return (result.diagnostics ?? []).map((d) =>
+    ts.flattenDiagnosticMessageText(d.messageText, " "),
+  );
+}
+
+/**
+ * The hint's top-level statements, by the parser's reckoning. This is the
+ * fragment set for the inclusion check - splitting on raw `;` is exactly
+ * the delimiter blindness that hid the flattening corruption, because the
+ * corruption character became a fragment boundary and vanished. A statement
+ * keeps every character between its start and end, so a stray `;` inside a
+ * for-loop stays in the fragment and fails the verbatim match.
+ */
+function hintStatements(hint: string): string[] {
+  const wrapped = wrapHint(hint);
+  const sf = ts.createSourceFile(
+    "hint.ts",
+    wrapped,
+    ts.ScriptTarget.ES2020,
+    true,
+  );
+  const fn = sf.statements[0];
+  if (!fn || !ts.isFunctionDeclaration(fn) || !fn.body) return [];
+  return fn.body.statements
+    .filter((st) => !ts.isEmptyStatement(st))
+    .map((st) => wrapped.slice(st.getStart(sf), st.end));
+}
+
+/**
+ * Count pin (T1-19d). 77 = every launched lesson that ships a 3-level
+ * ladder. Adding a lesson with a ladder legitimately raises this; anything
+ * else that moves it means a hint silently fell out of discovery.
+ */
+const EXPECTED_SOLUTION_HINTS = 77;
+
+/**
+ * Flattening signatures the parser cannot rule on (see layer 2 above).
+ * Calibrated against all 77 hints: zero false positives; present in the 15
+ * corrupted hints found on 2026-07-25 before their restoration.
+ */
+const FLATTENING_ARTIFACTS = /,;|\{;/;
 
 describe("solution hints are verbatim excerpts of their exercise's solutionCode", () => {
   const cases: {
@@ -219,9 +348,7 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
 
   for (const file of launchedLessonFiles()) {
     const source = readFileSync(file, "utf8");
-    const hint = frontmatter(source).match(
-      /^ {2}- level: solution\n {4}content:\s*"([\s\S]*?)"\n(?= {2}[-\w]|\w)/m,
-    )?.[1];
+    const hint = solutionHint(frontmatter(source));
     if (!hint) continue;
 
     // The ladder targets ONE of the lesson's exercises. Usually the first,
@@ -238,10 +365,7 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
     const solutions = slugs.flatMap((slug) => {
       const path = join(dirname(file), "exercises", `${slug}.yaml`);
       if (!existsSync(path)) return [];
-      const solution =
-        readFileSync(path, "utf8").match(
-          /^solutionCode:[\s\S]*?(?=^testCode:)/m,
-        )?.[0] ?? "";
+      const solution = exerciseSolution(path);
       return solution.trim() ? [solution] : [];
     });
     if (solutions.length === 0) continue;
@@ -252,8 +376,36 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
     });
   }
 
-  it("found a solution hint for most lessons (sanity)", () => {
-    expect(cases.length).toBeGreaterThan(60);
+  it(`discovers exactly ${EXPECTED_SOLUTION_HINTS} solution-hint cases (count pin)`, () => {
+    // A hint edit that malforms the YAML, or an exercise rename that breaks
+    // the slug -> file mapping, silently DROPS a case from this suite - and
+    // a dropped case is a hint nobody is checking. Raise the constant only
+    // when a lesson legitimately gains or loses a solution ladder.
+    expect(cases.length).toBe(EXPECTED_SOLUTION_HINTS);
+  });
+
+  it("capstone finale hint declares the four identifiers its excerpt references (Run-8 regression)", () => {
+    // Run #8's capstone retarget shipped a solution hint whose excerpt used
+    // mean, variance, ratios and fibonacciTrain without ever declaring
+    // them - on the last lesson of the only purchasable theme, under a
+    // green gate (fresh-eyes rerun 2026-07-25, §5 regression 1). The three
+    // statements below declare all four. The parse check cannot see a
+    // missing declaration (undeclared identifiers are semantic), so the
+    // specific repaired hint is pinned here.
+    const finale = launchedLessonFiles().find((f: string) =>
+      f.endsWith(join("deep-orbit", "capstone", "05-launch.mdx")),
+    );
+    expect(finale).toBeDefined();
+    const hint = normalizeCode(
+      solutionHint(frontmatter(readFileSync(finale as string, "utf8"))) ?? "",
+    );
+    for (const declaration of [
+      "const { mean, variance } = tf.tidy(", // declares mean + variance
+      "const ratios = decomposeIntervals(reading.intervals);",
+      "const fibonacciTrain = isFibonacciTrain(ratios);",
+    ]) {
+      expect(hint).toContain(declaration);
+    }
   });
 
   it.each(cases)(
@@ -267,8 +419,28 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
       hint: string;
       solutions: string[];
     }) => {
-      const fragments = unescapeHint(hint)
-        .split(";")
+      // Layer 2 - flattening artifacts the parser cannot rule on. `,;` and
+      // `{;` only ever appear when a newline was collapsed into `; `.
+      expect(
+        FLATTENING_ARTIFACTS.test(hint),
+        `${id}: the solution hint contains a newline-flattening artifact ` +
+          `(",;" or "{;"). This is what a multi-line excerpt looks like ` +
+          `after its newlines were collapsed into "; ". Restore the hint ` +
+          `as a block scalar (content: |) copied verbatim from solutionCode.`,
+      ).toBe(false);
+
+      // Layer 1 - the hint must be pasteable code. Statement fragments are
+      // legal; syntax errors are not.
+      const diagnostics = hintParseDiagnostics(hint);
+      expect(
+        diagnostics,
+        `${id}: the solution hint does not parse as TypeScript: ` +
+          `${diagnostics.join(" | ")}. A stuck learner pastes this hint ` +
+          `verbatim - it must at minimum be syntactically valid.`,
+      ).toEqual([]);
+
+      // Layer 3 - fragments are top-level statements per the parser.
+      const fragments = hintStatements(hint)
         .map((f) => normalizeCode(f))
         .filter((f) => f.length >= 12);
 

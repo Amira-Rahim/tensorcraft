@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { isValidThemeSlug } from "@tensorcraft/shared";
 
@@ -22,8 +23,15 @@ import { isValidThemeSlug } from "@tensorcraft/shared";
  * transient DB fault must not silently show a paying customer the paywall
  * (the bug this codebase already fixed once in `hasThemePurchase`). Callers
  * are server components, so a throw surfaces the nearest error boundary.
+ *
+ * React.cache: several server components on one page (dashboard, theme map,
+ * journey) each call this — per-request memoization collapses them into one
+ * purchases query per render (fresh-eyes rerun T2-26). cache() is
+ * per-request, so entitlement changes still take effect on the next request.
  */
-export async function getEntitledThemes(userId: string): Promise<Set<string>> {
+export const getEntitledThemes = cache(async function getEntitledThemes(
+  userId: string,
+): Promise<Set<string>> {
   const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from("purchases")
@@ -50,7 +58,7 @@ export async function getEntitledThemes(userId: string): Promise<Set<string>> {
     }
   }
   return themes;
-}
+});
 
 /** Does this user have access to a single theme? Delegates to the one source. */
 export async function canAccessTheme(

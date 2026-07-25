@@ -1,0 +1,44 @@
+# Scheduled partition maintenance (fresh-eyes rerun T2-27).
+#
+# skill_events is month-partitioned and migration 013 pre-created partitions only
+# through 2027-04-01. `ensure_skill_events_partitions()` exists precisely to
+# extend them — and had ZERO callers, so inserts would start failing at the
+# partition cliff with nobody watching. Monthly is plenty: each run keeps a
+# rolling window of future partitions.
+#
+# The RPC is service-role-only (migration 039), so this calls PostgREST with
+# the service key. Requires the same two repo secrets as the migrations job.
+name: DB partition maintenance
+
+on:
+  schedule:
+    # 03:17 UTC on the 1st of every month (odd minute to avoid the top-of-
+    # hour scheduler crunch).
+    - cron: "17 3 1 * *"
+  workflow_dispatch:
+
+jobs:
+  extend-partitions:
+    name: ensure_skill_events_partitions()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the partition RPC
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Missing Supabase secrets — failing loud (never a silent green)."
+            exit 2
+          fi
+          code=$(curl -s -o /tmp/resp.txt -w "%{http_code}" \
+            -X POST "$SUPABASE_URL/rest/v1/rpc/ensure_skill_events_partitions" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{}')
+          cat /tmp/resp.txt
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "Partition RPC failed with HTTP $code"
+            exit 1
+          fi

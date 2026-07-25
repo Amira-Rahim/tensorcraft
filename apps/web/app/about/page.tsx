@@ -93,12 +93,17 @@ export default function AboutPage() {
           </p>
 
           <p>
-            Every exercise grades against real TensorFlow.js, not a mock.{" "}
-            {EXERCISE_CONTENT.liveExercises} exercises live today at 100%
-            solution-passes-all-tests, all running in a worker in your browser,
-            with {EXERCISE_CONTENT.authoredFiveThemes} authored across the
-            five-theme roadmap and held to the same bar. If a test fails, the
-            model behavior is actually wrong; not a string-match heuristic.
+            Every exercise grades by executing your code, not by string-matching
+            it. {EXERCISE_CONTENT.liveExercises} exercises live today at 100%
+            solution-passes-all-tests, all running against real TensorFlow.js in
+            a worker in your browser, with {EXERCISE_CONTENT.authoredFiveThemes}{" "}
+            authored across the five-theme roadmap. Only the shipped set has
+            been through our validation gates; we do not claim the rest meet
+            that bar until they ship. Roughly half of the live exercises drive
+            tensor and model APIs directly, and there a failing test means the
+            model behavior is actually wrong. The other half grade the data
+            preparation and production plumbing around a model, and there a
+            failing test means that logic is wrong.
           </p>
 
           <p>

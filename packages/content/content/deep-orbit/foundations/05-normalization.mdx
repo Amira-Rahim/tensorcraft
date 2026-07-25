@@ -25,11 +25,11 @@ consequence:
   narrative: "The normalized feed goes live. Four sensors, one scale, and one archived sample that refuses to look like the others."
 hints:
   - level: nudge
-    content: "Subtract the mean, divide by standard deviation. Per COLUMN: each feature gets its own statistics."
+    content: "Stats first, verdict second. Per COLUMN: each feature gets its own mean and std. Then one dense neuron with sigmoid activation reads each normalized row."
   - level: guidance
-    content: "tf.moments(batch, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature. Without the 0 you get one global mean over all numbers, which mixes temperature with signal strength. Standard deviation is variance.sqrt(). Inside normalizeReading, apply those SAME saved mean and std tensors to the new reading; never recompute them at inference time"
+    content: "tf.moments(batch, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature; without the 0 you get one global mean that mixes temperature with signal strength. Standard deviation is variance.sqrt(). Build the neuron with tf.sequential() plus one dense layer (units 1, activation 'sigmoid', inputShape [2]), then setWeights takes kernel first and bias second: tf.tensor2d(KERNEL) is [2, 1], tf.tensor1d(BIAS) is [1]. Inside scoreReading, normalize with the SAVED mean and std, reshape to [1, 2] because predict expects a batch, and return the prediction; never recompute stats at inference time"
   - level: solution
-    content: "const moments = tf.moments(batch, 0); const mean = moments.mean; const std = moments.variance.sqrt(); const normalized = batch.sub(mean).div(std); function normalizeReading(reading) { return reading.sub(mean).div(std); }"
+    content: "const moments = tf.moments(batch, 0); const mean = moments.mean; const std = moments.variance.sqrt(); const normalized = batch.sub(mean).div(std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]); const scores = previewModel.predict(normalized); function scoreReading(reading) { const z = reading.sub(mean).div(std); return previewModel.predict(z.reshape([1, 2])); }"
 keywords:
   - normalization
   - z-score
@@ -50,7 +50,7 @@ The thermal channel reads in the thirties, signal strength lives under one. If w
 Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic it can't avoid. Fix the scales and the bias never exists.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand why normalization is critical for ML", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy"]} />
+<LearningObjectives objectives={["Understand why normalization is critical for ML", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy", "Feed normalized readings through a real dense neuron and read its verdict"]} />
 
 <BossBeat
   beatId="deep-orbit-foundations-7741-first-flag"
@@ -141,7 +141,9 @@ One practical wrinkle that bites in production: whatever mean and std you comput
 
 ## Challenge
 
-Normalize the Archimedes sensor data using z-score normalization.
+Normalization has a customer, and the customer is a model. Farah lends you one neuron out of her preview build, weights frozen, so the pipeline can be proven end to end: two features in, one verdict out. It is the smallest real model TensorFlow.js can make, and it is enough to show why the saved statistics matter. Feed it a reading normalized with different stats and it answers a different question.
+
+Normalize the Archimedes sensor data using z-score normalization, then run every reading through the preview neuron.
 
 <Exercise slug="normalize-data" />
 
@@ -155,10 +157,11 @@ Normalize the Archimedes sensor data using z-score normalization.
     "Unnormalized scales bias gradient updates toward whichever feature has the largest raw values. Normalization gives every feature comparable numerical influence during training.",
     "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call.",
     "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds like pixel values. Live sensor streams have no such bounds, which is why z-score wins there.",
-    "Save the training-time mean and standard deviation. Inference data must be normalized with those same statistics; never recompute them from the new batch."
+    "Save the training-time mean and standard deviation. Inference data must be normalized with those same statistics; never recompute them from the new batch.",
+    "A normalization pipeline is proven at a model's front door: a single dense sigmoid neuron (tf.sequential, tf.layers.dense, setWeights) turns normalized readings into verdicts via predict()."
   ]}
   bridge="Min-max normalization is the same formula as scroll-progress: `scrollY / (docHeight - viewportHeight)` maps pixels to 0-1, and `data.sub(min).div(max.sub(min))` maps sensor readings to 0-1 the same way."
-  youCanNow="Apply z-score and min-max normalization to tensor data using TensorFlow.js, choose the right strategy for a given data type, and preserve training statistics for consistent inference."
+  youCanNow="Apply z-score and min-max normalization to tensor data using TensorFlow.js, preserve training statistics for consistent inference, and run normalized readings through a real dense layer to get a prediction."
 />
 
 <Epilogue>

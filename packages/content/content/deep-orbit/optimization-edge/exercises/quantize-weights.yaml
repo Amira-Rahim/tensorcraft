@@ -71,6 +71,17 @@ testCode: |
       const original = [0.5, -0.5, 1.0, -1.0, 0.0];
       const quantized = quantize(original);
       const recovered = dequantize(quantized);
+      expect(Array.isArray(recovered)).toBe(true);
+      expect(recovered).toHaveLength(original.length);
+      original.forEach((w, i) => {
+        expect(recovered[i]).toBeCloseTo(w, 1);
+      });
+    });
+
+    it('round-trips a different weight set', () => {
+      const original = [2, 4, 8];
+      const recovered = dequantize(quantize(original));
+      expect(recovered).toHaveLength(3);
       original.forEach((w, i) => {
         expect(recovered[i]).toBeCloseTo(w, 1);
       });

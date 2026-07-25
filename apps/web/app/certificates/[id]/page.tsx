@@ -152,8 +152,11 @@ export default async function CertificateSharePage({ params }: Props) {
               <dd>{certNumber}</dd>
             </div>
             <div className="col-span-2">
+              {/* Label renamed 2026-07-25 (T0-10): no verification endpoint
+                  exists, so this must never be presented as a verification
+                  mechanism. It is the certificate's identifier, nothing more. */}
               <dt className="text-text-muted uppercase tracking-wider mb-1">
-                Verification hash
+                Certificate ID
               </dt>
               <dd className="break-all text-text-muted">
                 {hashPreview}…<span className="sr-only">{cert.cert_hash}</span>

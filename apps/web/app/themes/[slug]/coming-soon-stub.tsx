@@ -1,6 +1,10 @@
 import Link from "next/link";
 import type { ThemeManifest } from "@tensorcraft/themes";
-import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import {
+  PRICING,
+  THEME_CONTENT,
+  getThemeTotalLessons,
+} from "@tensorcraft/shared";
 // Subpath import: the root barrel pulls in sandpack-react, which the
 // coming-soon page (and its jsdom tests) has no reason to load.
 import { CharacterAvatar } from "@tensorcraft/ui/character-avatar";
@@ -195,7 +199,9 @@ export function ComingSoonStub({ theme }: Props) {
             >
               {THEME_CONTENT.lessonsPerModule} {lessonPlural} per{" "}
               {theme.terminology.module} ·{" "}
-              {THEME_CONTENT.comingSoonLessonsPerTheme} in the full rebuild
+              {/* Per-theme count from THEME_SHAPE: neon-protocol authors 54,
+                  not the flat 55 this line promised until 2026-07-25. */}
+              {getThemeTotalLessons(slug)} in the full rebuild
             </p>
           </div>
           <ul

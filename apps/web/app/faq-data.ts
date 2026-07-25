@@ -28,6 +28,6 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "What if it turns out not to be for me?",
-    a: "Module 1 is free before any money moves. After purchase there's a 14-day money-back guarantee: full refund if you've used less than 20% of a theme.",
+    a: "Module 1 is free before any money moves. After purchase there's a 14-day money-back guarantee: full refund, no questions asked. Email support@tensorcraft.app.",
   },
 ];

@@ -17,7 +17,7 @@ concept:
     feTitle: "Canvas WebGL"
     feCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
     mlTitle: "WebGPU Compute"
-    mlCode: "const device = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
+    mlCode: "const adapter = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
     tier: structural
     breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference: different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
 consequence:
@@ -148,7 +148,9 @@ console.log('5. WebGPU:         15ms → 5ms inference');
 console.log('');
 console.log('Result:');
 console.log('  Size:     340 MB → 42 MB (8x smaller)');
-console.log('  Speed:    45ms → 5ms (9x faster)');
+console.log('  Speed:    45ms → 5ms (9x, and the backend swap did it:');
+console.log('            steps 2-3 shrink bytes, not FLOPs; step 4 cuts');
+console.log('            call count, not per-call time)');
 console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
 console.log('  Fits in dashboard: YES ✓');`}
 </CodeBlock>

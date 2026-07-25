@@ -591,6 +591,55 @@ later, that is a NEW advisory — the intended behavior, not a broken gate.
 
 ---
 
+## ROUND 3, WAVE 3 (2026-07-25) — the fresh-eyes ledger executed
+
+The owner directed that every item in
+`docs/audits/fresh-eyes-rerun-2026-07-25.md` be worked; everything not
+requiring the owner is now in code (the ledger carries the full EXECUTED
+annotation at its top — read it there; this entry only records the deltas
+that touch THIS document's lists):
+
+- **Pending migrations are now 037–055.** 052 entitlement-provenance
+  columns (irreversible list #1/#2) · 053 `payment_events` webhook
+  idempotency (#6; wired into both settle paths — closes the accepted
+  TOCTOU from run 2) · 054 bounds `exercise_attempts.submitted_code`
+  (register P2) · 055 skill-genome normalization (T1-21; asymptotic curve
+  replaces the clamp that pinned every finished theme's axes at 100).
+- **New workflows:** `deploy-api.yml` (manual deploy gated on ZERO pending
+  migrations — the §7 "breaks first on deploy day" ordering is now
+  mechanical, needs `FLY_API_TOKEN` as a third secret) ·
+  `partitions.yml` (monthly `ensure_skill_events_partitions()` — the
+  2027-04 partition cliff now has a caller).
+- **Refund terms simplified in code** (T0-8): the unenforceable 20% clause
+  is GONE from terms/pricing/FAQ — the Tier 1-LEGAL refund item is now
+  advisor-review-only, not a code change.
+- **Tier 2 closures from the ledger wave:** free-module guest email
+  capture (was "no email capture anywhere in the free module") · the
+  renderer XS slice (task brief no longer precedes the teaching on steps
+  1-3) · solution hints render as code · health check no longer DB-gates
+  liveness (`/api/health` = liveness, `/api/health/ready` = readiness;
+  also removes the R2-5 count-scan) · rate limiting keyed on identity
+  (closes the `cf-connecting-ip` bypass for authenticated traffic; the
+  anonymous-IP path remains and the Fly origin lock is still worth doing).
+- **Correction to the register:** T2-30's "7 exercises defeated by
+  constant returns" was NINE, and the dominant cause was a `toBeCloseTo`
+  NaN hole in BOTH grading harnesses (non-numeric actuals passed every
+  closeTo-only suite). Harness fixed in the shipped runtime AND the CI
+  validator, with a regression test; all 9 exercise test suites hardened;
+  0/10 defeatable on re-check.
+
+**Owner-only remainder (unchanged in nature, restated):** apply migrations
+**037–055** then deploy via the new workflow; GitHub secrets
+(`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `FLY_API_TOKEN`); Stripe
+dashboard (Tax setup, receipt toggle, SEPA decision) + `STRIPE_TAX_ENABLED`
+flip; Kit dashboard emails (T0-2, the "highest ratio of customer-facing
+words to reviewed words"); buy the product twice (T0-3); real name on
+/about; manual light-mode + 375px pass; Tier 1-OPS accounts; Tier 1-LEGAL
+advisor items; theme-2 build-or-reprice decision (now costed in
+`docs/theme-launch-checklist.md`).
+
+---
+
 ## Tier 1 — STATUS: ALL SIX FIXED IN CODE (2026-07-21)
 
 Typecheck 11/11, 1367 unit tests passing. (Re-verified 2026-07-25 at HEAD

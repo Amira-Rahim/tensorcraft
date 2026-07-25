@@ -26,7 +26,25 @@ hints:
   - level: guidance
     content: "Tally count and positives per group in one pass over data, then build each GroupAudit: proportion is the group's count divided by data.length, positiveRate is its positives divided by its count. Every entry must carry the underrepresented boolean computed as proportion < 0.1, so healthy groups get an explicit false; the tests check result['A'].underrepresented === false, not just the flagged group."
   - level: solution
-    content: "const total = data.length; const groups: Record<string, { count: number; positives: number }> = {}; for (const point of data) {; if (!groups[point.group]) groups[point.group] = { count: 0, positives: 0 }; groups[point.group].count++; if (point.label === 1) groups[point.group].positives++; }; const result: Record<string, GroupAudit> = {}; for (const [group, stats] of Object.entries(groups)) {; const proportion = stats.count / total; result[group] = {; count: stats.count,; proportion,; positiveRate: stats.positives / stats.count,; underrepresented: proportion < 0.1,; }; }; return result;"
+    content: |
+      const total = data.length;
+      const groups: Record<string, { count: number; positives: number }> = {};
+      for (const point of data) {
+        if (!groups[point.group]) groups[point.group] = { count: 0, positives: 0 };
+        groups[point.group].count++;
+        if (point.label === 1) groups[point.group].positives++;
+      }
+      const result: Record<string, GroupAudit> = {};
+      for (const [group, stats] of Object.entries(groups)) {
+        const proportion = stats.count / total;
+        result[group] = {
+          count: stats.count,
+          proportion,
+          positiveRate: stats.positives / stats.count,
+          underrepresented: proportion < 0.1,
+        };
+      }
+      return result;
 keywords:
   - bias
   - selection-bias

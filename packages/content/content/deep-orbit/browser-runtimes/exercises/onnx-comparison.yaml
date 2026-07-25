@@ -35,16 +35,22 @@ testCode: |
       expect(result).toBeGreaterThanOrEqual(0);
       expect(result).toBeLessThanOrEqual(1);
     });
-    it('actually creates an inference session (create is invoked)', async () => {
+    it('actually creates an inference session for the requested path', async () => {
+      // Sentinel path: only calls made with THIS path count, so the sibling
+      // test's own ort.InferenceSession.create call (tests run concurrently)
+      // cannot satisfy the spy on behalf of a constant-returning runONNX.
       const orig = ort.InferenceSession.create;
-      let calls = 0;
-      ort.InferenceSession.create = function (...args) { calls++; return orig.apply(this, args); };
+      let sentinelCalls = 0;
+      ort.InferenceSession.create = function (...args) {
+        if (args[0] === '/models/spy-check.onnx') sentinelCalls++;
+        return orig.apply(this, args);
+      };
       try {
-        await runONNX('/models/deep-scan.onnx');
+        await runONNX('/models/spy-check.onnx');
       } finally {
         ort.InferenceSession.create = orig;
       }
-      expect(calls).toBeGreaterThanOrEqual(1);
+      expect(sentinelCalls).toBeGreaterThanOrEqual(1);
     });
   });
 estimatedMinutes: 12

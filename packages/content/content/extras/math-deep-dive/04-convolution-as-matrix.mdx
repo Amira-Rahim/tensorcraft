@@ -27,7 +27,22 @@ hints:
   - level: guidance
     content: "buildToeplitz returns inputLength - kernel.length + 1 rows, each a length-inputLength array of zeros with kernel[j] written at column i + j. convolveViaMatrix reads inputLength from input.shape[0], turns the matrix into a tensor with tf.tensor2d, and multiplies it against the input reshaped to [inputLength, 1] via input.reshape (tf.tensor2d cannot wrap a Tensor1D), then flattens the column result back to 1D."
   - level: solution
-    content: "const outputLength = inputLength - kernel.length + 1; const matrix: number[][] = []; for (let i = 0; i < outputLength; i++) {; const row = new Array(inputLength).fill(0); for (let j = 0; j < kernel.length; j++) {; row[i + j] = kernel[j]; }; matrix.push(row); }; return matrix; const inputLength = input.shape[0]; const T = buildToeplitz(kernel, inputLength); const toeplitzTensor = tf.tensor2d(T); const result = tf.matMul(toeplitzTensor, input.reshape([inputLength, 1])); return result.flatten() as tf.Tensor1D;"
+    content: |
+      const outputLength = inputLength - kernel.length + 1;
+      const matrix: number[][] = [];
+      for (let i = 0; i < outputLength; i++) {
+        const row = new Array(inputLength).fill(0);
+        for (let j = 0; j < kernel.length; j++) {
+          row[i + j] = kernel[j];
+        }
+        matrix.push(row);
+      }
+      return matrix;
+      const inputLength = input.shape[0];
+      const T = buildToeplitz(kernel, inputLength);
+      const toeplitzTensor = tf.tensor2d(T);
+      const result = tf.matMul(toeplitzTensor, input.reshape([inputLength, 1]));
+      return result.flatten() as tf.Tensor1D;
 keywords:
   - toeplitz-matrix
   - convolution-theorem

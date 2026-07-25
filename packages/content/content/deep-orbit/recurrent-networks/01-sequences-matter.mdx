@@ -17,7 +17,7 @@ concept:
     feTitle: "React List Keys"
     feCode: "items.map(item => <Item key={item.id} />)"
     mlTitle: "Sequence Order"
-    mlCode: "model.predict(tf.tensor2d([t1, t2, t3, t4, t5]))"
+    mlCode: "model.predict(tf.tensor3d([[[t1], [t2], [t3], [t4], [t5]]])) // [batch, steps, features]"
     tier: structural
     breaks: "React list keys identify elements for diffing; order matters for reconciliation but not for the values themselves. In sequences, position is part of the meaning ('not good' vs 'good not') and the model must learn order-dependent patterns, not just track identity."
 consequence:

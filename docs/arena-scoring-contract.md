@@ -10,6 +10,17 @@ and cannot be quietly designed wrong later.
 The arena itself (matchmaking, tournaments, ELO, live leaderboards, cosmetics)
 is additive and remains deferred to `docs/post-launch-backlog.md`.
 
+## A-F0 — THE ARENA STARTS AT ZERO (binding, added 2026-07-25)
+
+**No arena ranking, leaderboard, or seed may ever be derived from historical
+`theme_progress` / `exercise_attempts` scores.** Every score recorded before
+the server-authoritative harness exists is client-reported and forgeable
+(see below); seeding from it would launder forged history into the
+competitive ladder, and that laundering is UNRECOVERABLE once ratings
+propagate (fresh-eyes rerun 2026-07-25, irreversible list #4). Rankings
+begin from the first server-verified `arena_submissions` row and from
+nothing else.
+
 ---
 
 ## Why this exists: scoring today is client-authoritative

@@ -45,10 +45,23 @@ vi.mock("stripe", () => ({
 // charge.dispute.closed (won) restores access through the migration-051 RPC.
 const mockRpc = vi.fn();
 
+// payment_events idempotency ledger (migration 053): default = this
+// delivery WINS the claim. Set `data: null, error: {code: "23505"}` to
+// simulate losing to a concurrent duplicate.
+const mockEventLedgerInsert = vi.fn();
+
 vi.mock("@tensorcraft/supabase", () => ({
   getSupabaseAdminClient: () => ({
     rpc: (...args: unknown[]) => mockRpc(...args),
     from: (table: string) => {
+      if (table === "payment_events") {
+        return {
+          insert: (...args: unknown[]) => {
+            mockEventLedgerInsert(...args);
+            return Promise.resolve({ data: null, error: null });
+          },
+        };
+      }
       if (table === "purchases") {
         return {
           upsert: mockInsert,

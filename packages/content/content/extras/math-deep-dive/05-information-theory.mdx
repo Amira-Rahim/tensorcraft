@@ -27,7 +27,19 @@ hints:
   - level: guidance
     content: "All three functions are a single reduce with natural log. entropy accumulates p * Math.log(p) over the array, skipping p === 0 entries, and negates the total; entropy([0.5, 0.5]) should equal Math.log(2), about 0.6931. crossEntropy is the same loop but logs predictedProbs[i] while weighting by the true p. klDivergence accumulates pi * Math.log(pi / q[i]) with no negation, skipping pi === 0."
   - level: solution
-    content: "return -probs.reduce((sum, p) => {; if (p === 0) return sum; return sum + p * Math.log(p); }, 0); return -trueProbs.reduce((sum, p, i) => {; if (p === 0) return sum; return sum + p * Math.log(predictedProbs[i]); }, 0); return p.reduce((sum, pi, i) => {; if (pi === 0) return sum; return sum + pi * Math.log(pi / q[i]); }, 0);"
+    content: |
+      return -probs.reduce((sum, p) => {
+        if (p === 0) return sum;
+        return sum + p * Math.log(p);
+      }, 0);
+      return -trueProbs.reduce((sum, p, i) => {
+        if (p === 0) return sum;
+        return sum + p * Math.log(predictedProbs[i]);
+      }, 0);
+      return p.reduce((sum, pi, i) => {
+        if (pi === 0) return sum;
+        return sum + pi * Math.log(pi / q[i]);
+      }, 0);
 keywords:
   - entropy
   - cross-entropy

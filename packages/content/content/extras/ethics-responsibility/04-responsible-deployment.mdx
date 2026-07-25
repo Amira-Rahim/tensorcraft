@@ -26,7 +26,20 @@ hints:
   - level: guidance
     content: "Order the checks from most to least severe. First scan failureModes with .some for a mode whose severity === 'critical' and hasHumanFallback is false: that returns 'do-not-deploy'. Past that, any 'critical' or 'high' mode (all with fallbacks by then) returns 'deploy-with-oversight'. Only when neither scan hits do you return 'deploy'."
   - level: solution
-    content: "const hasCriticalWithoutFallback = failureModes.some(; f => f.severity === 'critical' && !f.hasHumanFallback; ); if (hasCriticalWithoutFallback) {; return 'do-not-deploy'; }; const hasHighOrCritical = failureModes.some(; f => f.severity === 'critical' || f.severity === 'high'; ); if (hasHighOrCritical) {; return 'deploy-with-oversight'; }; return 'deploy';"
+    content: |
+      const hasCriticalWithoutFallback = failureModes.some(
+        f => f.severity === 'critical' && !f.hasHumanFallback
+      );
+      if (hasCriticalWithoutFallback) {
+        return 'do-not-deploy';
+      }
+      const hasHighOrCritical = failureModes.some(
+        f => f.severity === 'critical' || f.severity === 'high'
+      );
+      if (hasHighOrCritical) {
+        return 'deploy-with-oversight';
+      }
+      return 'deploy';
 keywords:
   - deployment
   - failure-modes

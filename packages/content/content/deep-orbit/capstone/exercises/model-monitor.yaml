@@ -87,6 +87,7 @@ testCode: |
     it('detects drift when data shifts', () => {
       const monitor = new ModelMonitor([0, 0]);
       const drift = monitor.computeDrift([[3, 4], [3, 4]]);
+      expect(Number.isFinite(drift)).toBe(true);
       expect(drift).toBeCloseTo(5, 5);
     });
 

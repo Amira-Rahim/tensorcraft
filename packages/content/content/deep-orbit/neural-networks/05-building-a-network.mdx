@@ -64,7 +64,7 @@ model.add(tf.layers.dense({
 model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
-// 3. Compile (like ReactDOM.render: prepares for execution)
+// 3. Compile (like createRoot(): prepares for execution)
 model.compile({
   optimizer: 'adam',              // how to update weights
   loss: 'binaryCrossentropy',    // how to measure error

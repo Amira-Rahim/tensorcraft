@@ -8,6 +8,8 @@ import {
   LAUNCHED_THEMES,
   PRICING,
   THEME_CONTENT,
+  THEME_SLUGS,
+  getThemeTotalLessons,
   isValidThemeSlug,
 } from "@tensorcraft/shared";
 import { CheckoutButton } from "./checkout-button";
@@ -195,9 +197,17 @@ export function PricingTiers() {
 
   const lessonsPerModule = THEME_CONTENT.lessonsPerModule;
   const totalLessons = THEME_CONTENT.totalLessonsPerTheme;
-  // Only Deep Orbit carries 56; bundle totals must match the numbers the
-  // coming-soon stubs promise (shared constant, not 56 x N).
-  const comingThemeLessons = THEME_CONTENT.comingSoonLessonsPerTheme;
+  // Bundle totals come from the per-theme THEME_SHAPE counts (neon-protocol
+  // authors 54 lessons, not the flat 55 the retired comingSoonLessonsPerTheme
+  // constant promised). Pick-N bundles quote the smallest sum any selection
+  // can produce, rendered with a "+", so no theme choice is overpromised;
+  // the all-five card is a fixed set and quotes the exact total.
+  const themeTotals = THEME_SLUGS.map(getThemeTotalLessons).sort(
+    (a, b) => a - b,
+  );
+  const minBundleLessons = (themeCount: number) =>
+    themeTotals.slice(0, themeCount).reduce((sum, n) => sum + n, 0);
+  const allFiveLessons = themeTotals.reduce((sum, n) => sum + n, 0);
   const modulesPerTheme = THEME_CONTENT.modulesPerTheme;
 
   return (
@@ -364,14 +374,13 @@ export function PricingTiers() {
               Two Themes
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Any two specializations. {totalLessons + comingThemeLessons}{" "}
-              lessons total.
+              Any two specializations. {minBundleLessons(2)}+ lessons total.
             </p>
             <ul className="flex-1 mb-4 space-y-2">
               {[
                 "Everything in Single",
                 "2 full themes",
-                `${totalLessons + comingThemeLessons} lessons`,
+                `${minBundleLessons(2)}+ lessons`,
                 "2 capstone projects",
               ].map((f) => (
                 <li
@@ -430,14 +439,13 @@ export function PricingTiers() {
               Three Themes
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Any three specializations. {totalLessons + comingThemeLessons * 2}{" "}
-              lessons total.
+              Any three specializations. {minBundleLessons(3)}+ lessons total.
             </p>
             <ul className="flex-1 mb-4 space-y-2">
               {[
                 "Everything in Two",
                 "3 full themes",
-                `${totalLessons + comingThemeLessons * 2} lessons`,
+                `${minBundleLessons(3)}+ lessons`,
                 "3 capstone projects",
               ].map((f) => (
                 <li
@@ -513,14 +521,13 @@ export function PricingTiers() {
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
               All five specializations: time-series, vision, NLP, generative,
-              edge. {totalLessons + comingThemeLessons * 4} lessons, 5
-              capstones, one payment.
+              edge. {allFiveLessons} lessons, 5 capstones, one payment.
             </p>
             <ul className="flex-1 mb-6 space-y-2">
               {[
                 "Everything in Three",
                 "All 5 themes",
-                `${totalLessons + comingThemeLessons * 4} lessons`,
+                `${allFiveLessons} lessons`,
                 "5 capstone projects",
                 // "Priority support" removed 2026-07-14: no support-tier
                 // mechanism exists; don't promise one before building it.

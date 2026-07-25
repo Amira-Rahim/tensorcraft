@@ -1,0 +1,56 @@
+# API deploy with the migration gate the runbook used to rely on a human
+# for. The fresh-eyes rerun (§7 "Where it breaks FIRST") called the failure
+# mode precisely: payments.ts writes 047's tax columns unconditionally and
+# calls 051's restore RPC — deploy the API before applying 037-051 and every
+# checkout webhook 500s AFTER the customer is charged. This workflow makes
+# that ordering mechanical: `pnpm migrate:status` must report ZERO pending
+# migrations (exit 0) before flyctl runs.
+#
+# Manual trigger only (workflow_dispatch): API deploys are deliberate acts.
+# Required repo secrets: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (ledger
+# check), FLY_API_TOKEN (deploy).
+name: Deploy API
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Migration gate + fly deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Fail-closed: pending migrations exit 1, missing secrets exit 2 —
+      # either blocks the deploy. The API must never ship code that assumes
+      # a schema production does not have yet (047/051 class).
+      - name: Verify all migrations applied
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: pnpm migrate:status
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: flyctl deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile --remote-only

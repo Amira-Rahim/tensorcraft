@@ -25,7 +25,20 @@ hints:
   - level: guidance
     content: "bootstrapSample builds a new array of the same length by looping data.length times and pushing data[idx] for a random idx from Math.floor(Math.random() * data.length); duplicates are expected because sampling is WITH replacement. majorityVote tallies each prediction's count in a Map and returns the value with the highest count. randomForestPredict maps every tree to tree.predict(features) and returns the majorityVote of those predictions."
   - level: solution
-    content: "const sample: T[] = []; for (let i = 0; i < data.length; i++) {; const idx = Math.floor(Math.random() * data.length); sample.push(data[idx]); }; return sample; const votes = new Map<number, number>(); for (const pred of predictions) {; votes.set(pred, (votes.get(pred) ?? 0) + 1); }; return [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0]; const predictions = trees.map(tree => tree.predict(features)); return majorityVote(predictions);"
+    content: |
+      const sample: T[] = [];
+      for (let i = 0; i < data.length; i++) {
+        const idx = Math.floor(Math.random() * data.length);
+        sample.push(data[idx]);
+      }
+      return sample;
+      const votes = new Map<number, number>();
+      for (const pred of predictions) {
+        votes.set(pred, (votes.get(pred) ?? 0) + 1);
+      }
+      return [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      const predictions = trees.map(tree => tree.predict(features));
+      return majorityVote(predictions);
 keywords:
   - random-forest
   - bagging

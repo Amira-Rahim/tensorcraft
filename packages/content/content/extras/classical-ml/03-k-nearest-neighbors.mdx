@@ -25,7 +25,17 @@ hints:
   - level: guidance
     content: "In euclideanDistance, reduce over a, summing (val - b[i]) ** 2 for each coordinate, then take Math.sqrt of the total. In knnClassify, map every data point to its label plus its euclideanDistance from query, sort ascending by that distance, slice off the first k as neighbors, tally their labels in a votes object, and return the label with the highest count."
   - level: solution
-    content: "return Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0)); const sorted = data; .map(point => ({ label: point.label, distance: euclideanDistance(query, point.features) })); .sort((a, b) => a.distance - b.distance); const neighbors = sorted.slice(0, k); const votes: Record<string, number> = {}; for (const n of neighbors) {; votes[n.label] = (votes[n.label] ?? 0) + 1; }; return Object.entries(votes).sort((a, b) => b[1] - a[1])[0][0];"
+    content: |
+      return Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0));
+      const sorted = data
+        .map(point => ({ label: point.label, distance: euclideanDistance(query, point.features) }))
+        .sort((a, b) => a.distance - b.distance);
+      const neighbors = sorted.slice(0, k);
+      const votes: Record<string, number> = {};
+      for (const n of neighbors) {
+        votes[n.label] = (votes[n.label] ?? 0) + 1;
+      }
+      return Object.entries(votes).sort((a, b) => b[1] - a[1])[0][0];
 keywords:
   - knn
   - distance-metrics

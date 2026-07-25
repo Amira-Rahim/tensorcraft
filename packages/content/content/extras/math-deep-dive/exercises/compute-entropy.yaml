@@ -6,5 +6,10 @@ starterCode: "// Shannon entropy: H(p) = -sum(p_i * ln(p_i))\nexport function en
 solutionCode: "export function entropy(probs: number[]): number {\n  return -probs.reduce((sum, p) => {\n    if (p === 0) return sum;\n    return sum + p * Math.log(p);\n  }, 0);\n}\n\nexport function crossEntropy(\n  trueProbs: number[],\n  predictedProbs: number[]\n): number {\n  return -trueProbs.reduce((sum, p, i) => {\n    if (p === 0) return sum;\n    return sum + p * Math.log(predictedProbs[i]);\n  }, 0);\n}\n\nexport function klDivergence(\n  p: number[],\n  q: number[]\n): number {\n  return p.reduce((sum, pi, i) => {\n    if (pi === 0) return sum;\n    return sum + pi * Math.log(pi / q[i]);\n  }, 0);\n}"
 testCode: "describe('Information Theory', () => { it('entropy of fair coin is ln(2)', () => { expect(entropy([0.5, 0.5])).toBeCloseTo(Math.log(2), 6); }); it('entropy of certain outcome is 0', () => { expect(entropy([1, 0, 0])).toBeCloseTo(0, 6); }); it('entropy of uniform distribution over 4 is ln(4)', () => { expect(entropy([0.25, 0.25, 0.25, 0.25])).toBeCloseTo(Math.log(4), 6); }); it('crossEntropy >= entropy (Gibbs inequality)', () => { const p = [0.7, 0.2, 0.1]; const q = [0.3, 0.4, 0.3]; expect(crossEntropy(p, q)).toBeGreaterThanOrEqual(entropy(p) - 1e-10); }); it('crossEntropy equals entropy when p === q', () => { const p = [0.5, 0.3, 0.2]; expect(crossEntropy(p, p)).toBeCloseTo(entropy(p), 6); }); it('klDivergence is 0 when p === q', () => { const p = [0.5, 0.3, 0.2]; expect(klDivergence(p, p)).toBeCloseTo(0, 6); }); it('klDivergence is non-negative', () => { const p = [0.7, 0.2, 0.1]; const q = [0.3, 0.4, 0.3]; expect(klDivergence(p, q)).toBeGreaterThanOrEqual(-1e-10); }); it('klDivergence equals crossEntropy minus entropy', () => { const p = [0.7, 0.2, 0.1]; const q = [0.3, 0.4, 0.3]; expect(klDivergence(p, q)).toBeCloseTo(crossEntropy(p, q) - entropy(p), 6); }); });"
 estimatedMinutes: 20
-difficulty: advanced
+# Retagged advanced -> intermediate 2026-07-25: the three formulas are given
+# verbatim in the instructions; the solution is plain JS summation
+# (mlContent: arithmetic). The published taxonomy rule bans an advanced badge
+# on arithmetic content; pinned by
+# packages/content/__tests__/mlcontent-taxonomy.test.ts.
+difficulty: intermediate
 mlContent: arithmetic

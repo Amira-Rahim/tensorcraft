@@ -26,7 +26,20 @@ hints:
   - level: guidance
     content: "For demographicParity, bucket predictions by p.group, counting each group's total and its predicted === 1 entries; the group's rate is positive / total. In the test data group A comes out at 0.75 and B at 0.25. disparateImpactRatio takes Object.values of that rates object and divides the minimum by the maximum: 0.25 / 0.75 is about 0.333, well under the 0.8 threshold."
   - level: solution
-    content: "const groups: Record<string, { positive: number; total: number }> = {}; for (const p of predictions) {; if (!groups[p.group]) groups[p.group] = { positive: 0, total: 0 }; groups[p.group].total++; if (p.predicted === 1) groups[p.group].positive++; }; const rates: Record<string, number> = {}; for (const [group, stats] of Object.entries(groups)) {; rates[group] = stats.positive / stats.total; }; return rates; const values = Object.values(rates); return Math.min(...values) / Math.max(...values);"
+    content: |
+      const groups: Record<string, { positive: number; total: number }> = {};
+      for (const p of predictions) {
+        if (!groups[p.group]) groups[p.group] = { positive: 0, total: 0 };
+        groups[p.group].total++;
+        if (p.predicted === 1) groups[p.group].positive++;
+      }
+      const rates: Record<string, number> = {};
+      for (const [group, stats] of Object.entries(groups)) {
+        rates[group] = stats.positive / stats.total;
+      }
+      return rates;
+      const values = Object.values(rates);
+      return Math.min(...values) / Math.max(...values);
 keywords:
   - fairness
   - demographic-parity

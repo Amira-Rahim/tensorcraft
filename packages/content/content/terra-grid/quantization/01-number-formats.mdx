@@ -107,11 +107,11 @@ INT8: signed 8-bit integer, range [-128, 127]
 **Quantization formula** (FP32 → INT8 with affine quantization):
 
 ```
-x_int = round((x_float − zero_point) / scale)
-x_recovered = x_int · scale + zero_point
+x_int = round(x_float / scale) + zero_point
+x_recovered = (x_int − zero_point) · scale
 ```
 
-Where `scale = (x_max − x_min) / 255` and `zero_point = round(−x_min / scale)`. Per-tensor (one scale for the whole tensor) is simpler; per-channel (one scale per output channel of conv/dense) is more accurate but more compute.
+Where `scale = (x_max − x_min) / 255` (float units per integer level) and `zero_point = round(−x_min / scale)` (an integer, in quantized units like x_int). Per-tensor (one scale for the whole tensor) is simpler; per-channel (one scale per output channel of conv/dense) is more accurate but more compute.
 </DerivationDrawer>
 
 ## Knowledge check

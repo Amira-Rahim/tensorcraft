@@ -34,7 +34,9 @@ testCode: |
   describe('findDominantFrequency', () => {
     it('finds a 5 Hz tone in a 1-second, 128 Hz signal', () => {
       const signal = Array.from({ length: 128 }, (_, i) => Math.sin(2 * Math.PI * 5 * i / 128));
-      expect(findDominantFrequency(signal, 128)).toBeCloseTo(5, 1);
+      const freq = findDominantFrequency(signal, 128);
+      expect(Number.isFinite(freq)).toBe(true);
+      expect(freq).toBeCloseTo(5, 1);
     });
     it('picks the stronger of two components (1.0x 20 Hz over 0.3x 3 Hz)', () => {
       const signal = Array.from({ length: 256 }, (_, i) =>

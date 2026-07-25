@@ -20,7 +20,7 @@ concept:
     mlTitle: "Windowing"
     mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
     tier: structural
-    breaks: "Virtual scrolling renders only the visible viewport; off-screen DOM is not computed at all. Signal windowing computes overlapping FFTs over the entire signal at every position, with overlap ratio (50-75%) tunable to balance frequency resolution against time resolution. Compute scales with signal-length × overlap, not viewport size."
+    breaks: "Virtual scrolling renders only the visible viewport; off-screen DOM is not computed at all. Signal windowing computes overlapping FFTs over the entire signal at every position, with overlap ratio (50-75%) tunable to trade smoother time coverage against compute; frequency resolution is set by window length, not overlap. Compute scales with signal-length × overlap, not viewport size."
 consequence:
   narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
 hints:

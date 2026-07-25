@@ -97,7 +97,7 @@ const predicted = [0.3, 0.2, 0.7, 0.8]; // [xmin, ymin, xmax, ymax]
 const actual    = [0.35, 0.25, 0.75, 0.85];
 
 const iou = computeIoU(predicted, actual);
-console.log(iou.toFixed(3)); // 0.680, decent but not great`}
+console.log(iou.toFixed(3)); // 0.670, decent but not great`}
 </CodeBlock>
 
 ## IoU Thresholds
@@ -151,7 +151,7 @@ const truth: GroundTruth = {
 
 const result = evaluateDetection(droneDetection, truth);
 console.log(result);
-// { match: true, iou: 0.82 }, solid detection`}
+// { match: true, iou: 0.849 }, solid detection`}
 </CodeBlock>
 
 ## Batch Evaluation

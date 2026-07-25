@@ -30,13 +30,15 @@ import { join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
-export const CONTENT_DIR = join(
-  ROOT,
-  "packages",
-  "content",
-  "content",
-  "deep-orbit",
-);
+/** All themes live here; per-theme dirs are its children. */
+export const CONTENT_ROOT = join(ROOT, "packages", "content", "content");
+// Kept for back-compat with existing importers; prefer CONTENT_ROOT + a
+// theme dir. The hardcoded deep-orbit anchor was a gate bug: analyze()
+// computed lesson ids relative to THIS dir, so every other theme's lessons
+// resolved to "../<theme>/..." and moduleOf() collapsed to ".." — the
+// per-module variety floor silently measured one giant bucket (fresh-eyes
+// rerun §6, T2-23).
+export const CONTENT_DIR = join(CONTENT_ROOT, "deep-orbit");
 
 export function lessonFiles(dir) {
   const out = [];
@@ -102,7 +104,14 @@ function countTakeaways(body) {
 export function analyze(file) {
   const source = readFileSync(file, "utf8");
   const { fm, body } = splitFrontmatter(source);
-  const rel = relative(CONTENT_DIR, file).replace(/\.mdx$/, "");
+  // Lesson id is "module/lesson" for EVERY theme: resolve against the
+  // content root and strip the theme segment. (Previously relative to the
+  // deep-orbit dir, which turned other themes' ids into "../..." — T2-23.)
+  const rel = relative(CONTENT_ROOT, file)
+    .replace(/\.mdx$/, "")
+    .split("/")
+    .slice(1)
+    .join("/");
   const ariaBlocks =
     body.match(/<Dialogue speaker="ARIA">[\s\S]*?<\/Dialogue>/g) ?? [];
   const ariaText = ariaBlocks.join("\n");
@@ -154,9 +163,21 @@ if (!isMain) {
 }
 
 function main() {
-  const rows = lessonFiles(CONTENT_DIR).map(analyze);
-  const summary = summarize(rows);
-  report(rows, summary);
+  // CLI counts every theme dir on disk (un-anchored from deep-orbit,
+  // T2-23). `--theme <dir>` scopes to one.
+  const themeArgIdx = process.argv.indexOf("--theme");
+  const themes =
+    themeArgIdx !== -1
+      ? [process.argv[themeArgIdx + 1]]
+      : readdirSync(CONTENT_ROOT).filter((d) =>
+          statSync(join(CONTENT_ROOT, d)).isDirectory(),
+        );
+  for (const theme of themes) {
+    const rows = lessonFiles(join(CONTENT_ROOT, theme)).map(analyze);
+    if (rows.length === 0) continue;
+    console.log(`\n=== ${theme} ===`);
+    report(rows, summarize(rows));
+  }
 }
 
 function report(rows, summary) {

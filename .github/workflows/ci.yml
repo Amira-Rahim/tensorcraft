@@ -104,6 +104,37 @@ jobs:
             test-results/
           retention-days: 7
 
+  exercise-runtime:
+    name: Exercise corpus through the shipped runtime
+    runs-on: ubuntu-latest
+    # The corpus gate was written but never wired: `describe.runIf(
+    # process.env.EXERCISE_CORPUS === "1")` had ZERO hits in .github/, so
+    # the runtime that grades every paid exercise had no CI coverage at all
+    # (fresh-eyes rerun §6, T1-18).
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build content
+        run: pnpm turbo build:content
+
+      - name: Run corpus through the shipped runtime
+        env:
+          EXERCISE_CORPUS: "1"
+        run: pnpm vitest run packages/ui/src/mdx/exercise-corpus.test.ts
+
   migrations:
     name: Migration ledger drift check
     runs-on: ubuntu-latest

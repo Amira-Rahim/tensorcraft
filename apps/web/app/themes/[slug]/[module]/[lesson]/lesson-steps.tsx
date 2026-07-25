@@ -20,6 +20,7 @@ import { SceneHeading, CharacterAvatar } from "@tensorcraft/ui";
 import { themes } from "@tensorcraft/themes";
 import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
+import { GuestEmailCapture } from "./guest-email-capture";
 import { GlossaryProvider, useGlossary } from "./glossary-context";
 import { GlossaryRail } from "./glossary-rail";
 
@@ -760,7 +761,11 @@ function LessonStepsInner({
   } else {
     rightKind = "none";
     shellLeft = (
-      <StepConsequence {...sharedContentProps} nextLesson={nextLesson} />
+      <StepConsequence
+        {...sharedContentProps}
+        nextLesson={nextLesson}
+        isFreeModule={moduleOrder === 1}
+      />
     );
   }
 
@@ -1428,6 +1433,7 @@ function StepBriefing({
         glossaryTerms={lesson.glossaryTerms}
         visibleComponents={BRIEFING_COMPONENTS}
         storyRegister
+        hideChallengeOnward
       />
     </div>
   );
@@ -1467,6 +1473,7 @@ function StepConcept({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONCEPT_LEFT}
+          hideChallengeOnward
         />
       </div>
     </div>
@@ -1501,6 +1508,7 @@ function StepCode({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CODE_LEFT}
+          hideChallengeOnward
         />
       </div>
     </div>
@@ -1588,6 +1596,7 @@ function StepConsequence({
   moduleSlug,
   lessonSlug,
   nextLesson,
+  isFreeModule,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
@@ -1595,6 +1604,7 @@ function StepConsequence({
   moduleSlug: string;
   lessonSlug: string;
   nextLesson: { slug: string; title: string } | null;
+  isFreeModule?: boolean;
 }) {
   return (
     <div className="text-center py-12">
@@ -1667,6 +1677,12 @@ function StepConsequence({
           visibleComponents={CONSEQUENCE_COMPONENTS}
         />
       </div>
+
+      {/* Guest email capture at the free-trial consumption point
+          (T1-13/§9): every free-module lesson end is a potential leave
+          point, and a guest who leaves was permanently unreachable. Guests
+          only; the component itself checks the session. */}
+      {isFreeModule && <GuestEmailCapture themeSlug={themeSlug} />}
 
       {/* Next lesson card */}
       {nextLesson && (

@@ -26,7 +26,20 @@ hints:
   - level: guidance
     content: "Call predict(input) once for the baseline. Then for each index, copy the input with [...input], set that slot to 0, re-predict, and record featureNames[i] with the absolute difference from the baseline as its importance. Sort the array by importance descending before returning; for the linear test model the ranking comes out age, income, score."
   - level: solution
-    content: "const basePrediction = predict(input); const explanations: FeatureExplanation[] = []; for (let i = 0; i < input.length; i++) {; const perturbed = [...input]; perturbed[i] = 0; const newPrediction = predict(perturbed); explanations.push({; feature: featureNames[i],; importance: Math.abs(basePrediction - newPrediction),; }); }; explanations.sort((a, b) => b.importance - a.importance); return explanations;"
+    content: |
+      const basePrediction = predict(input);
+      const explanations: FeatureExplanation[] = [];
+      for (let i = 0; i < input.length; i++) {
+        const perturbed = [...input];
+        perturbed[i] = 0;
+        const newPrediction = predict(perturbed);
+        explanations.push({
+          feature: featureNames[i],
+          importance: Math.abs(basePrediction - newPrediction),
+        });
+      }
+      explanations.sort((a, b) => b.importance - a.importance);
+      return explanations;
 keywords:
   - interpretability
   - LIME

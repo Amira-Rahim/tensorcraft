@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { themeSlugs } from "@tensorcraft/themes";
 import { isLaunched } from "@tensorcraft/shared";
-import { getThemeLessons, getPosts } from "@tensorcraft/content";
+import { getThemeLessons, getModules, getPosts } from "@tensorcraft/content";
 
 const BASE_URL = "https://tensorcraft.app";
 
@@ -112,8 +112,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Re-add these only if the capstone gains a public, signed-out preview.
   const capstoneRoutes: MetadataRoute.Sitemap = [];
 
+  // FREE-module lessons join even the core phase (fresh-eyes rerun T3-32:
+  // "treat the sitemap as the acquisition product"). They are the only
+  // lesson pages fully readable signed-out, they are the pages organic
+  // visitors can actually convert from, and there are only ~5 per launched
+  // theme — no crawl-budget cost worth deferring. Paid lessons stay in the
+  // "full" phase per the crawl-budget note above.
+  const freeModuleLessonRoutes: MetadataRoute.Sitemap = themeSlugs
+    .filter((slug) => isLaunched(slug))
+    .flatMap((slug) => {
+      const freeModule = getModules(slug).find((m) => m.order === 1);
+      if (!freeModule) return [];
+      return getThemeLessons(slug)
+        .filter((lesson) => lesson.moduleId === freeModule.slug)
+        .map((lesson) => ({
+          url: `${BASE_URL}/themes/${slug}/${lesson.moduleId}/${lesson.slug}`,
+          lastModified: new Date(),
+          changeFrequency: "monthly" as const,
+          priority: 0.7,
+        }));
+    });
+
   if (SITEMAP_PHASE === "core") {
-    return [...staticRoutes, ...themeRoutes, ...capstoneRoutes];
+    return [
+      ...staticRoutes,
+      ...themeRoutes,
+      ...capstoneRoutes,
+      ...freeModuleLessonRoutes,
+    ];
   }
 
   // Lesson pages exist only for launched themes, coming-soon routes 404.

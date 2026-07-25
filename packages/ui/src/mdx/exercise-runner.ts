@@ -39,7 +39,17 @@ const HARNESS = `
     var savedAE = __afterEach.slice();
     __currentDescribe = name;
     var ret;
-    try { ret = fn(); } catch(e) { /* individual its handle errors */ }
+    try { ret = fn(); } catch(e) {
+      // A throw in a describe BODY silently dropped every later it() and
+      // the UI then read the surviving green subset as "All tests passed!"
+      // (fresh-eyes rerun §6). Record it as a failing result so a
+      // partially-defined suite can never present as a pass.
+      __results.push({
+        name: name + ' > (suite body threw before defining all tests)',
+        passed: false,
+        error: (e && e.message) || String(e)
+      });
+    }
     if (ret && typeof ret.then === 'function') {
       __pending.push(ret.catch(function(){}).then(function(){
         __currentDescribe = prev;
@@ -162,7 +172,9 @@ const HARNESS = `
         precision = precision === undefined ? 5 : precision;
         var diff = Math.abs(actual - expected);
         var limit = Math.pow(10, -precision) / 2;
-        if (diff >= limit) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
+        // NaN-safe: a non-numeric actual makes diff NaN, and 'NaN >= limit'
+        // is false — the negated form fails instead of silently passing.
+        if (!(diff < limit)) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
       },
       toHaveProperty: function(key, expected) {
         var path = key.split('.');

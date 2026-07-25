@@ -27,7 +27,24 @@ hints:
   - level: guidance
     content: "sgdStep computes newVelocity as momentum * velocity - lr * gradient, adds it to the weight, and returns both in a { weight, velocity } object. optimizeWithMomentum needs the loss L(w) = sin(3w) + 0.5*w^2 - w and its gradient 3*cos(3w) + w - 1, records { weight, loss } once for the initial state, then runs steps iterations feeding each step's weight and velocity into the next, so the history ends up steps + 1 entries long."
   - level: solution
-    content: "const newVelocity = momentum * velocity - lr * gradient; const newWeight = weight + newVelocity; return { weight: newWeight, velocity: newVelocity }; const loss = (w: number) => Math.sin(3 * w) + 0.5 * w * w - w; const grad = (w: number) => 3 * Math.cos(3 * w) + w - 1; const history: Array<{ weight: number; loss: number }> = []; let w = initialWeight; let v = 0; history.push({ weight: w, loss: loss(w) }); for (let i = 0; i < steps; i++) {; const g = grad(w); const result = sgdStep(w, g, lr, v, momentum); w = result.weight; v = result.velocity; history.push({ weight: w, loss: loss(w) }); }; return history;"
+    content: |
+      const newVelocity = momentum * velocity - lr * gradient;
+      const newWeight = weight + newVelocity;
+      return { weight: newWeight, velocity: newVelocity };
+      const loss = (w: number) => Math.sin(3 * w) + 0.5 * w * w - w;
+      const grad = (w: number) => 3 * Math.cos(3 * w) + w - 1;
+      const history: Array<{ weight: number; loss: number }> = [];
+      let w = initialWeight;
+      let v = 0;
+      history.push({ weight: w, loss: loss(w) });
+      for (let i = 0; i < steps; i++) {
+        const g = grad(w);
+        const result = sgdStep(w, g, lr, v, momentum);
+        w = result.weight;
+        v = result.velocity;
+        history.push({ weight: w, loss: loss(w) });
+      }
+      return history;
 keywords:
   - convexity
   - saddle-point

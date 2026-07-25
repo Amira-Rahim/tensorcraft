@@ -174,7 +174,16 @@ const HARNESS = `
     var savedAE = __afterEach.slice();
     var savedBA = __beforeAll.slice();
     var savedAA = __afterAll.slice();
-    try { await fn(); } catch(e) {}
+    try { await fn(); } catch(e) {
+      // Mirror of the shipped runtime's fix (fresh-eyes rerun §6): a throw
+      // in a describe body must surface as a FAILING result, not silently
+      // drop every later it() while the survivors read as a full pass.
+      __results.push({
+        name: name + ' > (suite body threw before defining all tests)',
+        passed: false,
+        error: (e && e.message) || String(e)
+      });
+    }
     // beforeAll fires exactly once, at registration time (see beforeAll
     // below) — matching the shipped runtime harness. Do NOT re-fire here:
     // a non-idempotent setup (counter, push) must behave identically in
@@ -311,7 +320,9 @@ const HARNESS = `
         precision = precision === undefined ? 5 : precision;
         var diff = Math.abs(actual - expected);
         var limit = Math.pow(10, -precision) / 2;
-        if (diff >= limit) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
+        // NaN-safe: a non-numeric actual makes diff NaN, and 'NaN >= limit'
+        // is false — the negated form fails instead of silently passing.
+        if (!(diff < limit)) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
       },
       toHaveProperty: function(key, value) {
         var path = String(key).split('.');

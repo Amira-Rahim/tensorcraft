@@ -25,7 +25,19 @@ hints:
   - level: guidance
     content: "In giniImpurity, guard the edge case first: an empty labels array must return 0, not 1. Otherwise count each label's occurrences, then start impurity at 1 and subtract each class's squared proportion p * p. For findBestSplit, loop over every feature index and every midpoint threshold between sorted neighboring values, partition the data into left (<= threshold) and right (> threshold), and keep the featureIndex/threshold pair with the lowest length-weighted average of the two sides' giniImpurity."
   - level: solution
-    content: "const total = labels.length; if (total === 0) return 0; const counts = new Map<number, number>(); for (const label of labels) {; counts.set(label, (counts.get(label) ?? 0) + 1); }; let impurity = 1; for (const count of counts.values()) {; const p = count / total; impurity -= p * p; }; return impurity;"
+    content: |
+      const total = labels.length;
+      if (total === 0) return 0;
+      const counts = new Map<number, number>();
+      for (const label of labels) {
+        counts.set(label, (counts.get(label) ?? 0) + 1);
+      }
+      let impurity = 1;
+      for (const count of counts.values()) {
+        const p = count / total;
+        impurity -= p * p;
+      }
+      return impurity;
 keywords:
   - decision-tree
   - gini-impurity

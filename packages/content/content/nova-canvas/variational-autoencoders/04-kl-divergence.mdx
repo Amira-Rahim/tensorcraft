@@ -61,11 +61,12 @@ KL divergence answers: "How different is the encoder's distribution from a stand
 
 function klDivergence(mu: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
   // KL = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))
+  // Terms rearranged below, so the sign flips to +0.5: KL is never negative
   const kl = mu.square()
     .add(logVar.exp())
     .sub(logVar)
     .sub(1)
-    .mul(-0.5)
+    .mul(0.5)
     .sum(1)     // sum over latent dimensions
     .mean();    // average over batch
   return kl as tf.Scalar;

@@ -36,6 +36,8 @@ type Row = Record<string, unknown>;
 const db: Record<string, Row[]> = {
   profiles: [],
   purchases: [],
+  // Webhook idempotency ledger (migration 053).
+  payment_events: [],
 };
 
 const mockAuthGetUser = vi.fn();
@@ -76,6 +78,20 @@ function makeFrom(table: string) {
 
   api.insert = (payload: Row | Row[]) => {
     const rows = Array.isArray(payload) ? payload : [payload];
+    // payment_events has a PRIMARY KEY on stripe_event_id: mimic the
+    // unique-violation so the idempotency claim behaves like production
+    // (second insert of the same event id loses with 23505).
+    if (table === "payment_events") {
+      for (const row of rows) {
+        if (
+          db[table].some(
+            (r) => r.stripe_event_id === (row as Row).stripe_event_id,
+          )
+        ) {
+          return Promise.resolve({ error: { code: "23505" } });
+        }
+      }
+    }
     db[table].push(...rows);
     return Promise.resolve({ error: null });
   };
@@ -166,6 +182,7 @@ function createApp() {
 beforeEach(() => {
   db.profiles = [];
   db.purchases = [];
+  db.payment_events = [];
   mockAuthGetUser.mockReset();
   captureServerMock.mockReset();
   kitAddSubscriber.mockClear();

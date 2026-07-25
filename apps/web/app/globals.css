@@ -186,6 +186,17 @@ body {
   color: var(--tc-text);
 }
 
+/* XS renderer slice (fresh-eyes rerun §4/T1-16): on Briefing/Concept/Code the
+   task brief must not precede the teaching. The h2 override in
+   lesson-content.tsx stamps data-heading="challenge" on the one "## Challenge"
+   heading every lesson carries; hide it and every following sibling on steps
+   that set the container flag. CSS-only on purpose — the full prose partition
+   is deferred until real completion data exists (ledger §4). */
+[data-hide-challenge-onward="true"] [data-heading="challenge"],
+[data-hide-challenge-onward="true"] [data-heading="challenge"] ~ * {
+  display: none;
+}
+
 .lesson-prose ul,
 .lesson-prose ol {
   margin-bottom: 1.5em;

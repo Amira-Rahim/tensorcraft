@@ -18,8 +18,9 @@ concept:
     feTitle: "Array.reduce()"
     feCode: "inputs.reduce((sum, x, i) => sum + x * weights[i], bias)"
     mlTitle: "Neuron"
-    mlCode: "const output = activation(tf.dot(inputs, weights).add(bias))"
+    mlCode: "const output = tf.dot(inputs, weights).add(bias)"
     tier: structural
+    breaks: "reduce() walks elements one at a time and hands back a plain number you can log and forget. A neuron's weighted sum is one vectorized dot product over a tensor, and its weights and bias are not constants you wrote: they are parameters training will rewrite. The reduce() mental model stops at 'compute once'; a neuron exists to be adjusted."
 consequence:
   narrative: "The single neuron can now distinguish between two types of signals. But Commander Mirza needs more. Much more."
 hints:

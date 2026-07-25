@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { Context, Next } from "hono";
 import { getRedis } from "../lib/redis";
 import { logger } from "../lib/logger";
@@ -43,20 +44,39 @@ export async function rateLimitMiddleware(
   return applyRateLimit(c, next, MAX_REQUESTS, "rl");
 }
 
+/**
+ * Rate-limit key: IDENTITY first, IP second (fresh-eyes rerun T2-28 /
+ * irreversible list #5). This middleware runs before auth, so identity is
+ * derived from the bearer token itself — a salted-free SHA-256 prefix, never
+ * the token — which is stable per session and cannot be spoofed by rotating
+ * `cf-connecting-ip` (the recorded bypass: no Fly origin lock, so a direct
+ * hit with a rotated header minted unlimited IP buckets). Anonymous traffic
+ * still keys on IP; the naive "use c.get('userId')" fix is a no-op here
+ * because auth has not run yet.
+ */
+function rateLimitSubject(c: Context): string {
+  const auth = c.req.header("authorization");
+  if (auth?.startsWith("Bearer ") && auth.length > 24) {
+    return `t:${createHash("sha256").update(auth.slice(7)).digest("hex").slice(0, 16)}`;
+  }
+  const ip =
+    c.req.header("cf-connecting-ip") ||
+    (c.req.header("x-forwarded-for") || "").split(",").pop()?.trim() ||
+    "unknown";
+  return `ip:${ip}`;
+}
+
 async function applyRateLimit(
   c: Context,
   next: Next,
   maxRequests: number,
   keyPrefix: string,
 ): Promise<Response | void> {
-  const ip =
-    c.req.header("cf-connecting-ip") ||
-    (c.req.header("x-forwarded-for") || "").split(",").pop()?.trim() ||
-    "unknown";
+  const subject = rateLimitSubject(c);
 
   try {
     const redis = getRedis();
-    const key = `${keyPrefix}:${ip}`;
+    const key = `${keyPrefix}:${subject}`;
     const now = Date.now();
     const windowStart = now - WINDOW_MS;
 

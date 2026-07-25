@@ -21,7 +21,15 @@ hints:
   - level: guidance
     content: "Make sensorGen loop i from 0 to 15, call readSample(i) inside the loop, and yield { xs, ys } tensors built with tf.tensor. Then dataset = tf.data.generator(sensorGen).shuffle(10).batch(4), and drain it with await dataset.forEachAsync, pushing each batch's xs.shape into batchShapes"
   - level: solution
-    content: "for (let i = 0; i < 16; i++) {; const row = readSample(i); yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) }; }; const dataset = tf.data.generator(sensorGen).shuffle(10).batch(4); await dataset.forEachAsync((b) => {; batchShapes.push(b.xs.shape); });"
+    content: |
+      for (let i = 0; i < 16; i++) {
+        const row = readSample(i);
+        yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };
+      }
+      const dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);
+      await dataset.forEachAsync((b) => {
+        batchShapes.push(b.xs.shape);
+      });
 keywords:
   - data-loading
   - batching

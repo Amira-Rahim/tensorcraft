@@ -140,12 +140,11 @@ export const THEME_CONTENT = {
   // 10 modules x 5 + browser-runtimes' 6 = 56 (Deep Orbit actual; also the
   // certificate completion gate). Revisit if a future theme ships a different count.
   totalLessonsPerTheme: 56,
-  // Coming-soon themes are scoped at 11 x 5 = 55. Single source for the
-  // coming-soon stubs AND the pricing bundle math (56 + 55·(N−1)); the two
-  // surfaces carried separate literals until 2026-07-13. Bundle totals
-  // assume Deep Orbit is in every bundle — true while it is the only
-  // launched theme; revisit when a second theme ships.
-  comingSoonLessonsPerTheme: 55,
+  // comingSoonLessonsPerTheme (flat 55) RETIRED 2026-07-25: neon-protocol
+  // authors 54 lessons, so the flat scalar overpromised on every surface
+  // that quoted it (fresh-eyes rerun 2026-07-25, T0). Coming-soon stubs and
+  // the pricing bundle math now read per-theme counts from THEME_SHAPE via
+  // getThemeTotalLessons.
   // Per-module deviations moved to per-theme THEME_SHAPE (re-audit N2/F-B):
   // module sizes are now theme-scoped, so getModuleLessonCount takes a theme.
   // THEME_CONTENT.modulesPerTheme / totalLessonsPerTheme describe the LAUNCHED
@@ -170,9 +169,12 @@ export const THEME_CONTENT = {
  */
 export const EXERCISE_CONTENT = {
   /** Shipped exercises: deep-orbit + extras (the dirs velite compiles). */
-  liveExercises: 85,
+  // 85 -> 86 (2026-07-25): T3-34 added capstone/export-model-artifact so the
+  // "walk out with a deployable model" claim has a .save() exercise behind it.
+  liveExercises: 86,
   /** Authored across the five theme directories (extras excluded). */
-  authoredFiveThemes: 299,
+  // 299 -> 300 (2026-07-25): same addition, counted in deep-orbit.
+  authoredFiveThemes: 300,
 } as const;
 
 /**
@@ -195,9 +197,9 @@ export function getModuleLessonCount(
  * Lessons behind the paywall in the launched theme: everything except the
  * free first module. 56 - 5 = 51.
  *
- * Only meaningful for a LAUNCHED theme. Coming-soon themes are scoped at
- * `comingSoonLessonsPerTheme` and are not purchasable, so a paywall surface
- * must not quote this number for them.
+ * Only meaningful for a LAUNCHED theme. Coming-soon themes carry their own
+ * per-theme counts in THEME_SHAPE (via getThemeTotalLessons) and are not
+ * purchasable, so a paywall surface must not quote this number for them.
  */
 export function getPaidLessonCount(): number {
   return (

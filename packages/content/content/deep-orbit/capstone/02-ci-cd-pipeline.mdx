@@ -26,11 +26,11 @@ consequence:
   narrative: "The pipeline goes green twice: once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
 hints:
   - level: nudge
-    content: "A CI gate is arithmetic plus a comparison: accuracy is correct over total, and the gate passes only when that accuracy clears the minimum threshold."
+    content: "For the export: model.save() never touches a disk it was not given. tf.io.withSaveHandler wraps an async function that receives the serialized artifacts; capture them, then count what the cache would hash. (The gate exercise carries its own recipe in its starter comments.)"
   - level: guidance
-    content: "Count predictions where predicted === actual, set total = predictions.length, and compute accuracy = correct / total, forcing accuracy to 0 when total is 0 so an empty eval batch fails cleanly instead of yielding NaN. Return a GateResult { accuracy, passed, total, correct } where passed requires both total > 0 and accuracy >= minAccuracy."
+    content: "Pass tf.io.withSaveHandler(async (a) => { ... }) to model.save() and await the save; inside the handler stash a into artifacts and return { modelArtifactsInfo }. Then describeArtifact reads three things off the artifacts object: weightSpecs.length is the named-tensor count, each spec's shape multiplied out and summed is totalParams (a reduce over weightSpecs with an inner reduce over shape), and weightData.byteLength is the payload; float32 means it must land at exactly four bytes per parameter"
   - level: solution
-    content: "const correct = predictions.filter(p => p.predicted === p.actual).length; const total = predictions.length; const accuracy = total === 0 ? 0 : correct / total; return { accuracy, passed: total > 0 && accuracy >= minAccuracy, total, correct, };"
+    content: "await model.save(tf.io.withSaveHandler(async (a) => { artifacts = a; return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } }; })); const totalParams = a.weightSpecs.reduce( (sum, spec) => sum + spec.shape.reduce((n, d) => n * d, 1), 0, ); return { tensors: a.weightSpecs.length, totalParams, weightBytes: a.weightData.byteLength, }; const manifest = describeArtifact(artifacts);"
 keywords:
   - ci-cd
   - github-actions
@@ -54,7 +54,7 @@ It's the same shape as any web app CI: GitHub Actions, test on push, deploy on m
 
 Demir is one assumption away from being right. The workflow engine transfers whole; the belief that a green build tested the artifact you actually ship does not, and that assumption is about to cost forty minutes.
 
-<LearningObjectives objectives={["Extend a standard CI/CD pipeline with ML-specific validation steps", "Implement model accuracy gates that block deployment on regression", "Add inference performance benchmarks as CI checks", "Configure automated deployment with rollback on failure"]} />
+<LearningObjectives objectives={["Extend a standard CI/CD pipeline with ML-specific validation steps", "Implement model accuracy gates that block deployment on regression", "Add inference performance benchmarks as CI checks", "Configure automated deployment with rollback on failure", "Export a model with model.save() and an in-memory save handler, and read its topology, weight specs, and byte count"]} />
 
 ## ML-Aware CI/CD
 
@@ -242,6 +242,10 @@ Write a model validation gate for CI/CD.
 
 <Exercise slug="ci-cd-gate" />
 
+The gate checks the artifact. Now produce one. Nazari's hash-pin order has a quiet prerequisite: bytes to hash, and `model.save()` is where they come from. It will save to anything that implements a handler, including plain memory; no filesystem, no network, just the serialized model in your hands: topology, weight specs, and the weight bytes the cache key is a hash of. Prove the export path on the bench copy of DEEP SCAN before anyone points it at the real 42 MB build.
+
+<Exercise slug="export-model-artifact" />
+
 <RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. CI caches CAN pin content (GitHub Actions keys support hashFiles() over the artifact), but if the key omits the model's content hash, a weight file from a previous training run satisfies the cache hit and passes every accuracy gate, measuring a model that no longer exists. Version weights separately and key the cache on the artifact's hash." />
 
 <RecallPrompt
@@ -253,10 +257,11 @@ Write a model validation gate for CI/CD.
   whatYouLearned={[
     "Standard CI/CD pipelines extend naturally to ML by adding model-specific gate steps (accuracy thresholds and inference benchmarks) that block the merge the same way failing unit tests do.",
     "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately and key CI caches on the content hash of the artifact.",
-    "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on."
+    "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on.",
+    "model.save() serializes to whatever save handler it is given: tf.io.withSaveHandler captures the artifacts in memory, where modelTopology, weightSpecs, and weightData.byteLength (four bytes per float32 parameter) are exactly the bytes a CI cache key should hash."
   ]}
   bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed; the workflow shape is identical, but `model.json` must be hash-pinned the way a `package-lock.json` pins dependencies."
-  youCanNow="Extend a GitHub Actions workflow with ML accuracy gates and performance benchmarks that block deployment on model regression."
+  youCanNow="Extend a GitHub Actions workflow with ML accuracy gates and performance benchmarks that block deployment on model regression, and export the model artifact itself with model.save() into an in-memory handler."
 />
 
 <Epilogue>

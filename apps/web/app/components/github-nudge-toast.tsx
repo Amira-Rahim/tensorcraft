@@ -34,8 +34,8 @@ export function GithubNudgeToast() {
         <p className="text-primary font-medium">Exercise solved. Repo empty.</p>
         <p className="text-text-muted text-xs mt-1">
           Connect GitHub in Settings and every solved exercise lands in your
-          repo as a commit. A retroactive push covers everything you&apos;ve
-          already solved.
+          repo as a commit. Repos are created public on your GitHub account. A
+          retroactive push covers everything you&apos;ve already solved.
         </p>
       </div>
       <div className="flex items-center gap-3 shrink-0">

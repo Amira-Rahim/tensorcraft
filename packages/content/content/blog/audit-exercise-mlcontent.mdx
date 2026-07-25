@@ -30,6 +30,8 @@ Arithmetic dominating is not a scandal by itself: hand-computing a z-score or a 
 
 ## The part that keeps it honest today
 
-The classification is not a one-time report. The `mlContent` tag lives in each exercise's metadata, the live Deep Orbit corpus (85 graded exercises) runs against real TFJS in CI, every solution must pass its own tests, and every starter must fail them. When we change an exercise, the gates rerun.
+The classification is not a one-time report. The `mlContent` tag lives in each exercise's metadata, the live Deep Orbit corpus (86 graded exercises) runs against real TFJS in CI, every solution must pass its own tests, and every starter must fail them. When we change an exercise, the gates rerun.
 
 Found an exercise whose badge oversells it? Email [support@tensorcraft.app](mailto:support@tensorcraft.app) and we will reclassify it in public.
+
+*Errata (2026-07-25): a re-run of this audit found four arithmetic exercises that had drifted back to an advanced badge since the fix pass; all four were reclassified to intermediate, and the no-advanced-on-arithmetic rule is now pinned by a CI gate so it cannot regress silently.*

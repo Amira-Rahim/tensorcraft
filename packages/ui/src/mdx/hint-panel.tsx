@@ -95,9 +95,20 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                   >
                     {config.label}
                   </span>
-                  <p className="text-sm leading-relaxed text-text-primary/80">
-                    {hint.content}
-                  </p>
+                  {hint.level === "solution" ? (
+                    // Solution hints are code excerpts by convention (Gate B:
+                    // hint ⊆ solutionCode). Rendering them as a wrapped
+                    // sans-serif paragraph made the longest one a 1,031-char
+                    // unbroken line of prose-styled code (fresh-eyes rerun
+                    // T1-15). Monospace + preserved whitespace + scroll.
+                    <pre className="text-[13px] leading-relaxed text-text-primary/90 font-mono whitespace-pre-wrap break-words overflow-x-auto m-0">
+                      <code>{hint.content}</code>
+                    </pre>
+                  ) : (
+                    <p className="text-sm leading-relaxed text-text-primary/80">
+                      {hint.content}
+                    </p>
+                  )}
                 </div>
               ) : isNext ? (
                 <button
