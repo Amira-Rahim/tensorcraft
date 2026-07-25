@@ -637,9 +637,15 @@ words to reviewed words"); buy the product twice (T0-3); ~~real name on
 /about~~ — **RESOLVED 2026-07-25 by owner decision: identity stays
 private.** /about now opens with the collective origin story ("built by a
 group of frontend engineers…"); do not add a personal name without asking;
-manual light-mode + 375px pass; Tier 1-OPS accounts; Tier 1-LEGAL
-advisor items; theme-2 build-or-reprice decision (now costed in
-`docs/theme-launch-checklist.md`).
+~~manual light-mode + 375px pass~~ — **DONE 2026-07-25, owner-verified
+clean** (8 core routes at phone width in light scheme; no defects
+reported); Tier 1-OPS accounts; Tier 1-LEGAL
+advisor items; ~~theme-2 build-or-reprice decision~~ — **DECIDED
+2026-07-25: theme 2 is DEFERRED until theme 1 is launched, distributed to
+at least 200 users, and the data is collected.** Until that gate: bundles
+stay `disabled` (already true in source), pricing keeps the honest
+OutOfStock markup, and no theme-2 authoring starts. Cost basis when the
+gate opens: `docs/theme-launch-checklist.md`.
 
 ---
 
@@ -776,13 +782,22 @@ has already been written off once (see above) — do not launch dark again.
   the account must predate launch; also removes handle-squatting risk. The
   old "DEFERRED to V1.0" note contradicted §10b and is resolved in favor of
   pre-launch (2026-07-22).
-- [ ] **FAQPage JSON-LD on `/pricing`** — ~30 min of markup over the FAQ
-  content that already renders there (Horizon 0 P3). Rich-result
-  eligibility has weeks of lead time; start the clock before launch.
+- [x] **FAQPage JSON-LD on `/pricing`** — **DONE 2026-07-25**: FaqSection
+  now emits the FAQPage markup itself, so `/` and `/pricing` both carry it,
+  and the sitewide copy was removed from the root layout (wrong-page
+  markup, same class as the Course dedup).
 - [ ] **Distribution head start:** write + publish the first blog batch and
   begin the audience track. `roadmap.md` §7: longest lead time in the plan,
   runs in parallel, starts before the code is ready.
-- [ ] **Apply the pending migrations in order — BEFORE the next API deploy.**
+- [x] **Apply the pending migrations — DONE 2026-07-25 (ops-deploy session):** 037-055 applied to production in order; `pnpm migrate:status` = IN SYNC 55/55; GitHub secrets set (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FLY_API_TOKEN); `deploy-api.yml` ran green; `/api/health` + `/api/health/ready` both 200. Remaining sub-step: enable the 046 Custom Access Token hook in the Supabase Auth dashboard (middleware falls back safely meanwhile). Original text retained below for the record.
+- [ ] **Apply migration 056** (written AFTER the 037-055 apply): purchases
+  FK → ON DELETE SET NULL so tax records survive account deletion. **The
+  new self-serve deletion endpoint must not ship to production before 056
+  is applied** — with the old cascade, deleting an account erases VAT
+  records the law requires you to keep. Same procedure as before:
+  `pnpm migrate:status` will show it PENDING; the deploy workflow blocks
+  until it is applied.
+- [ ] ~~**Apply the pending migrations in order — BEFORE the next API deploy.**~~
   The `schema_migrations` ledger now EXISTS (migration 042 built it +
   backfilled 001–041), so this is no longer "establish a ledger" — run
   `pnpm migrate:status`, then apply each PENDING file in numeric order via the
@@ -856,8 +871,10 @@ flagging exposure, not legal advice).
   `billing_address_collection`, `tax_id_collection`, `invoice_creation`.
   Remaining: Stripe-dashboard Tax setup + OSS registration, document + set
   `STRIPE_TAX_ENABLED=true`, apply migration 047 first (R3-2).
-- [ ] Refund terms: collect the express withdrawal-right waiver +
-  acknowledgment, or drop the 20%-accessed condition for EU/UK buyers.
+- [x] Refund terms — **RESOLVED in code 2026-07-25 (wave 3):** the
+  20%-accessed condition is dropped from terms/pricing/FAQ; refunds are an
+  unconditional 14 days via support@. Advisor sanity-check remains part of
+  the general terms review, but no waiver mechanism is needed anymore.
 - [ ] Add legal entity, postal address, and jurisdiction clause to terms +
   privacy pages.
 - [ ] Send a real receipt/invoice on purchase (the Kit receipt automation
@@ -872,14 +889,19 @@ flagging exposure, not legal advice).
   digest sender's `subscribed = true` filter now selects exactly the
   consented set. OPERATOR DECISION remains: whether to un-enroll the
   pre-050 auto-enrolled rows (one-line SQL in the migration header).
-- [ ] Self-serve account deletion (code): right to erasure is listed as
-  "`/api/profiles/delete` (planned §6h)" in `privacy-compliance.md:103`
-  but was never built — the Settings "Delete Account" control is a
-  contact-support stub. Build the endpoint + wire the button before
-  selling in the EU (added 2026-07-22).
-- [ ] GDPR data export (code): `/api/profiles/export` also "planned §6h",
-  never built, while `privacy/page.tsx:170` **promises** export. Build it,
-  write a DSAR runbook (30-day clock), unify `privacy@` vs `support@`.
+- [x] Self-serve account deletion (code) — **BUILT 2026-07-25.**
+  `POST /api/profiles/delete` (typed-DELETE confirmation, ESP cleanup,
+  waitlist rows removed by email, auth user deleted) + real Settings flow.
+  **Requires migration 056** (purchases FK → ON DELETE SET NULL) so tax
+  records survive erasure unlinked (Art. 17(3)(b)) — **056 is PENDING and
+  must be applied before this ships**; 037-055 were applied 2026-07-25,
+  056 was written after.
+- [x] GDPR data export (code) — **BUILT 2026-07-25.**
+  `GET /api/profiles/export` returns a JSON attachment (account + all 12
+  user tables + waitlist rows by email; the GitHub token is disclosed but
+  never exported — it is a live credential); Settings has the download
+  button. STILL OPEN: DSAR runbook (30-day clock) + unify `privacy@` vs
+  `support@` (advisor/copy).
 - [x] Vercel Analytics consent gating (code) — **DONE 2026-07-25.**
   `ConsentGatedVercelAnalytics` renders nothing pre-consent and drops
   queued events via `beforeSend` after a withdrawal.
@@ -901,11 +923,13 @@ flagging exposure, not legal advice).
   retention (048, pre-ship) — and resolve the §7 "30-day removal" clause
   against ~10-year VAT/OSS record retention with the advisor (the deletion
   endpoint must carve out tax records).
-- [ ] **GitHub integration disclosure (R3-8):** terms say nothing about the
-  GitHub push feature; repos are created **public** by default
-  (`lib/github.ts:259`). Either default private, or disclose prominently.
-  Also fix privacy's "industry-standard OAuth 2.0 / PKCE" line, contradicted
-  by the plaintext browser-readable `github_token` (Tier 2 encryption item).
+- [x] **GitHub integration disclosure (R3-8)** — terms side **DONE
+  2026-07-25**: new Terms §6 "GitHub Integration" (public-by-default
+  repos, token storage + removal on disconnect, code ownership);
+  consent-moment disclosures were already added in wave 3. STILL OPEN:
+  privacy's "industry-standard OAuth 2.0 / PKCE" line vs the plaintext
+  browser-readable `github_token` (Tier 2 encryption item + advisor copy
+  pass).
 
 ---
 

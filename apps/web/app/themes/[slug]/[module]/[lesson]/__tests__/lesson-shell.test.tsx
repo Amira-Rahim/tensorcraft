@@ -34,17 +34,18 @@ describe("LessonShell", () => {
   });
 
   /**
-   * For "pane", the caller renders the same pane behind a mobile toggle
-   * inside `left`. If this slot is also visible below lg, the interactive
-   * pane mounts TWICE on a phone — for the exercise step that meant two live
-   * editors sharing one `tc-code-{slug}` localStorage key and two Run Tests
-   * buttons, i.e. two code buffers racing on the graded path.
+   * SINGLE-MOUNT contract (fresh-eyes rerun §6 / R3-7): this slot is the
+   * ONLY place the pane exists. The earlier fix hid this slot below lg
+   * while the caller mounted its own second copy — CSS-only, so two live
+   * Sandpack editors still raced one `tc-code-{slug}` key at every width
+   * and a rotate across lg showed a stale buffer. Now the same single
+   * instance toggles visibility via `paneOpenOnMobile`, so editor state
+   * survives toggles and orientation changes by construction.
    *
-   * jsdom does not evaluate Tailwind breakpoints, so this asserts the class
-   * contract rather than computed layout. It is still the guard that would
-   * have caught the regression, which desktop-only e2e never could.
+   * jsdom does not evaluate Tailwind breakpoints, so the visibility half
+   * asserts the class contract; the mount half asserts the DOM itself.
    */
-  it("hides the pane slot below lg so it cannot mount twice on mobile", () => {
+  it("mounts the pane exactly once, hidden below lg while the toggle is closed", () => {
     render(
       <LessonShell
         left={<p>prose</p>}
@@ -52,9 +53,26 @@ describe("LessonShell", () => {
         rightKind="pane"
       />,
     );
+    // The mount half: exactly one pane instance in the whole tree.
+    expect(screen.getAllByText("pane")).toHaveLength(1);
     const right = screen.getByTestId("lesson-right");
     expect(right.className).toContain("hidden");
     expect(right.className).toContain("lg:block");
+  });
+
+  it("shows the SAME single pane instance on mobile when the toggle opens", () => {
+    render(
+      <LessonShell
+        left={<p>prose</p>}
+        right={<aside>pane</aside>}
+        rightKind="pane"
+        paneOpenOnMobile
+      />,
+    );
+    expect(screen.getAllByText("pane")).toHaveLength(1);
+    const right = screen.getByTestId("lesson-right");
+    expect(right.className).toContain("block");
+    expect(right.className).not.toMatch(/(?:^|\s)hidden(?:\s|$)/);
   });
 
   it("keeps the rail slot visible at every width", () => {

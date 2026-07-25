@@ -5,7 +5,6 @@ import {
   LAUNCHED_THEMES,
   SCHEME_STORAGE_KEY,
 } from "@tensorcraft/shared";
-import { FAQ_ITEMS } from "./faq-data";
 import { ThemeProvider } from "./components/theme-provider";
 import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
@@ -159,17 +158,11 @@ export default function RootLayout({
               // /themes/[slug] (different name + offer for the same URL),
               // risking rich-result confusion. Course markup now lives only
               // on the page that describes the course.
-              {
-                "@context": "https://schema.org",
-                "@type": "FAQPage",
-                // Mirrors the visible landing FAQ, single source in
-                // app/faq-data.ts so schema and page content can't drift.
-                mainEntity: FAQ_ITEMS.map((item) => ({
-                  "@type": "Question",
-                  name: item.q,
-                  acceptedAnswer: { "@type": "Answer", text: item.a },
-                })),
-              },
+              // FAQPage moved OUT of this sitewide block 2026-07-25
+              // (Tier 1-OPS FAQPage item): claiming FAQPage on routes that
+              // render no FAQ is the same wrong-page markup class as the
+              // Course dedup above. It now lives on the two pages that
+              // visibly render FAQ_ITEMS: / (page.tsx) and /pricing.
               {
                 "@context": "https://schema.org",
                 "@type": "WebSite",

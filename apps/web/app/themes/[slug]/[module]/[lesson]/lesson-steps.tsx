@@ -792,17 +792,19 @@ function LessonStepsInner({
       </button>
     ) : null;
 
-  // For pane steps on mobile we render a single column whose body is either
-  // the prose or the pane (toggled). lg+ always uses the two-column shell.
+  // For pane steps on mobile the toggle swaps which column is VISIBLE; the
+  // pane itself renders exactly once, in the shell's right slot, and
+  // LessonShell shows/hides that single instance via paneOpenOnMobile.
+  // The old version mounted a SECOND copy of shellRight here behind the
+  // toggle — two live Sandpack editors at every width, racing one
+  // tc-code-{slug} key and showing a stale buffer after a rotate across lg
+  // (fresh-eyes rerun §6 / R3-7; single-mount is now the shell's contract).
   const shellLeftWithToggle =
     rightKind === "pane" ? (
       <>
         {mobileToggle}
         <div className={paneOpen ? "hidden lg:block" : "block"}>
           {shellLeft}
-        </div>
-        <div className={paneOpen ? "block lg:hidden" : "hidden"}>
-          {shellRight}
         </div>
       </>
     ) : (
@@ -818,6 +820,7 @@ function LessonStepsInner({
       <div className="py-6">
         <LessonShell
           rightKind={rightKind}
+          paneOpenOnMobile={paneOpen}
           chrome={
             <div className="mx-auto w-full max-w-[1200px] px-6 md:px-12">
               <ChromeBar

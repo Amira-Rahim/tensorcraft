@@ -107,9 +107,26 @@ export default function TermsPage() {
             </p>
           </section>
 
+          <section id="github">
+            <h2 className="text-xl font-semibold text-text-primary mb-3">
+              6. GitHub Integration
+            </h2>
+            <p>
+              Connecting GitHub is optional. If you connect it, Tensorcraft
+              creates a repository on your GitHub account per theme and pushes
+              your passing exercise solutions to it. These repositories are
+              created <strong className="text-text-primary">public</strong> on
+              your account; you can make them private or delete them in GitHub
+              at any time. Your GitHub access token is stored so pushes work
+              across sessions and is removed when you disconnect GitHub in
+              Settings. The code pushed is your own work and belongs to you (see
+              Section 5).
+            </p>
+          </section>
+
           <section>
             <h2 className="text-xl font-semibold text-text-primary mb-3">
-              6. Acceptable Use
+              7. Acceptable Use
             </h2>
             <p>
               You agree not to: (a) share your account credentials with others;
@@ -121,7 +138,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mb-3">
-              7. Limitation of Liability
+              8. Limitation of Liability
             </h2>
             <p>
               The Service is provided &quot;as is&quot; without warranties of
@@ -133,7 +150,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mb-3">
-              8. Changes to Terms
+              9. Changes to Terms
             </h2>
             <p>
               We may update these terms from time to time. We will notify you of
@@ -145,7 +162,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mb-3">
-              9. Contact
+              10. Contact
             </h2>
             <p>
               Questions about these terms? Contact us at{" "}

@@ -153,6 +153,14 @@ export function SettingsForm({
 
   // Account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  // Self-serve erasure (Tier 1-LEGAL): typed confirmation + real endpoint.
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleteState, setDeleteState] = useState<"idle" | "deleting" | "error">(
+    "idle",
+  );
+  const [exportState, setExportState] = useState<
+    "idle" | "exporting" | "error"
+  >("idle");
 
   // ------------------------------------------------------------------
   // Avatar upload (Profile tab)
@@ -923,6 +931,61 @@ export function SettingsForm({
                   Delete Account
                 </button>
               </div>
+              {/* Data export (GDPR Art. 15/20). Same panel as deletion so
+                  both rights live where the privacy page points. */}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  data-testid="export-data"
+                  disabled={exportState === "exporting"}
+                  onClick={async () => {
+                    setExportState("exporting");
+                    try {
+                      const { apiFetch } = await import("@/lib/api-fetch");
+                      const res = await apiFetch("/api/profiles/export", {
+                        timeoutMs: 30_000,
+                      });
+                      if (!res.ok) throw new Error(String(res.status));
+                      const blob = await res.blob();
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `tensorcraft-export-${new Date().toISOString().slice(0, 10)}.json`;
+                      document.body.appendChild(a);
+                      a.click();
+                      a.remove();
+                      URL.revokeObjectURL(url);
+                      setExportState("idle");
+                    } catch {
+                      setExportState("error");
+                    }
+                  }}
+                  className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                  style={{
+                    fontSize: 11,
+                    padding: "12px 22px",
+                    minHeight: 44,
+                    border: "2px solid var(--tc-border-interactive)",
+                    background: "transparent",
+                    color: "var(--tc-text)",
+                    cursor: "pointer",
+                  }}
+                >
+                  {exportState === "exporting"
+                    ? "Preparing export…"
+                    : "Export my data (JSON)"}
+                </button>
+                {exportState === "error" && (
+                  <p
+                    role="alert"
+                    className="font-mono mt-2"
+                    style={{ fontSize: 11, color: "var(--color-error)" }}
+                  >
+                    Export failed. Try again, or email support@tensorcraft.app.
+                  </p>
+                )}
+              </div>
+
               {showDeleteConfirm && (
                 <div
                   role="alert"
@@ -938,12 +1001,88 @@ export function SettingsForm({
                     lineHeight: 1.6,
                   }}
                 >
-                  Account deletion is not yet self-service. Email{" "}
-                  <strong style={{ color: "var(--color-error)" }}>
-                    support@tensorcraft.app
-                  </strong>{" "}
-                  from your signed-in address and we&apos;ll wipe everything
-                  within 48 hours.
+                  <p className="m-0 mb-3">
+                    This permanently deletes your account, progress,
+                    certificates, and settings. Purchase records are retained
+                    without any link to you, as tax law requires. This cannot be
+                    undone. Type{" "}
+                    <strong style={{ color: "var(--color-error)" }}>
+                      DELETE
+                    </strong>{" "}
+                    to confirm.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <label htmlFor="delete-confirm-input" className="sr-only">
+                      Type DELETE to confirm account deletion
+                    </label>
+                    <input
+                      id="delete-confirm-input"
+                      data-testid="delete-confirm-input"
+                      value={deleteConfirmText}
+                      onChange={(e) => setDeleteConfirmText(e.target.value)}
+                      placeholder="DELETE"
+                      className="flex-1 min-w-0 font-mono bg-page px-3 py-2 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                      style={{
+                        fontSize: 12,
+                        border: "1px solid var(--tc-border-interactive)",
+                        color: "var(--tc-text)",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      data-testid="delete-confirm-submit"
+                      disabled={
+                        deleteConfirmText !== "DELETE" ||
+                        deleteState === "deleting"
+                      }
+                      onClick={async () => {
+                        setDeleteState("deleting");
+                        try {
+                          const { apiFetch } = await import("@/lib/api-fetch");
+                          const res = await apiFetch("/api/profiles/delete", {
+                            method: "POST",
+                            timeoutMs: 30_000,
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ confirm: "DELETE" }),
+                          });
+                          if (!res.ok) throw new Error(String(res.status));
+                          // The auth user no longer exists; drop the local
+                          // session and land on the homepage.
+                          const supabase = getSupabaseBrowserClient();
+                          await supabase.auth.signOut().catch(() => {});
+                          window.location.assign("/");
+                        } catch {
+                          setDeleteState("error");
+                        }
+                      }}
+                      className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50"
+                      style={{
+                        fontSize: 11,
+                        padding: "10px 18px",
+                        minHeight: 44,
+                        border: "2px solid var(--color-error)",
+                        background: "var(--color-error)",
+                        color: "var(--tc-on-primary)",
+                        cursor:
+                          deleteConfirmText === "DELETE"
+                            ? "pointer"
+                            : "default",
+                      }}
+                    >
+                      {deleteState === "deleting"
+                        ? "Deleting…"
+                        : "Permanently delete"}
+                    </button>
+                  </div>
+                  {deleteState === "error" && (
+                    <p
+                      className="m-0 mt-2"
+                      style={{ color: "var(--color-error)" }}
+                    >
+                      Deletion failed. Try again, or email
+                      support@tensorcraft.app from your signed-in address.
+                    </p>
+                  )}
                 </div>
               )}
             </div>

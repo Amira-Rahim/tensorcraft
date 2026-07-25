@@ -24,8 +24,10 @@ interface FaqSectionProps {
  * in both places (rather than moving it) keeps objection handling on the
  * highest-traffic page too.
  *
- * Items are single-sourced with the sitewide FAQPage JSON-LD via
- * `app/faq-data.ts` so schema and on-page content cannot drift.
+ * This component also EMITS the FAQPage JSON-LD (moved here from the root
+ * layout 2026-07-25, Tier 1-OPS): schema markup belongs on the pages that
+ * visibly render the FAQ, not on every route sitewide — and co-locating it
+ * with the render makes page-content/schema drift structurally impossible.
  */
 export function FaqSection({
   testId,
@@ -36,6 +38,20 @@ export function FaqSection({
 }: FaqSectionProps) {
   return (
     <section data-testid={testId} className={className}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: FAQ_ITEMS.map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: { "@type": "Answer", text: item.a },
+            })),
+          }),
+        }}
+      />
       <div className={`${containerClassName} pt-16 pb-10`}>
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
           <span className="w-[7px] h-[7px] bg-primary inline-block" />

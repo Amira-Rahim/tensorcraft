@@ -14,6 +14,7 @@ import { versionMiddleware } from "./middleware/version";
 import { requestIdMiddleware } from "./middleware/request-id";
 import { sentryMiddleware } from "./middleware/sentry";
 import { logger } from "./lib/logger";
+import { assertEnv } from "./env";
 import { health } from "./routes/health";
 import { waitlist } from "./routes/waitlist";
 import { progress } from "./routes/progress";
@@ -125,6 +126,12 @@ app.get("/", (c) => {
 const port = Number(process.env.PORT) || 3001;
 
 logger.info({ port }, `Tensorcraft API running on http://localhost:${port}`);
+
+// Fail loud at boot, never silently at request time (env.ts). Placed
+// directly before serve(): every import above is side-effect-safe without
+// env, and a misconfigured deploy should die HERE with a named list, not
+// serve requests with features silently off.
+assertEnv();
 
 const server = serve({
   fetch: app.fetch,

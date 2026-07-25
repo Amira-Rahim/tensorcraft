@@ -344,15 +344,37 @@ describe("SettingsForm", () => {
     });
   });
 
-  it("Account tab: delete button toggles a support-contact notice", async () => {
+  it("Account tab: delete flow requires typing DELETE before the destructive button arms", async () => {
+    // The old contact-support stub became a real self-serve erasure flow
+    // (Tier 1-LEGAL, 2026-07-25): confirm notice + typed confirmation +
+    // endpoint call. The submit must stay disabled until the exact literal
+    // is typed — a one-click irreversible delete would be the worse bug.
     await renderForm();
     fireEvent.click(screen.getByTestId("settings-tab-account"));
     expect(screen.queryByTestId("delete-confirm-notice")).toBeNull();
     fireEvent.click(screen.getByTestId("delete-account"));
     expect(screen.getByTestId("delete-confirm-notice")).toBeTruthy();
-    expect(screen.getByTestId("delete-confirm-notice").textContent).toMatch(
-      /support@tensorcraft\.app/,
-    );
+
+    const submit = screen.getByTestId(
+      "delete-confirm-submit",
+    ) as HTMLButtonElement;
+    expect(submit.disabled).toBe(true);
+
+    fireEvent.change(screen.getByTestId("delete-confirm-input"), {
+      target: { value: "delete" },
+    });
+    expect(submit.disabled).toBe(true);
+
+    fireEvent.change(screen.getByTestId("delete-confirm-input"), {
+      target: { value: "DELETE" },
+    });
+    expect(submit.disabled).toBe(false);
+  });
+
+  it("Account tab: offers a data export control", async () => {
+    await renderForm();
+    fireEvent.click(screen.getByTestId("settings-tab-account"));
+    expect(screen.getByTestId("export-data")).toBeTruthy();
   });
 
   it("Profile save: writes display_name to profiles (no notification prefs)", async () => {
