@@ -42,26 +42,45 @@ function handleMutations(mutations: MutationRecord[]) {
   }
 }
 
-function ensureObserver() {
-  // First subscriber creates the observer. Guarded for SSR/module-eval
-  // safety, same as use-scheme.ts's ensureObserver — this only ever runs
-  // from `subscribe` (client-side, post-mount), but costs nothing to guard.
-  if (observer || typeof document === "undefined") return;
-  observer = new MutationObserver(handleMutations);
-  // The union of every attribute any consumer has ever cared about, so far,
-  // is exactly {"data-theme", "data-scheme"} — the two axes that exist. If a
-  // third scheme-like attribute ever appears, add it here.
+// The attributeFilter currently observed, as a sorted key. Used to detect
+// when a new consumer widens the union and the observer must re-attach.
+let observedAttrsKey = "";
+
+function syncObserver() {
+  // Guarded for SSR/module-eval safety, same as use-scheme.ts — this only
+  // ever runs from subscribe/unsubscribe (client-side, post-mount), but
+  // costs nothing to guard.
+  if (typeof document === "undefined") return;
+
+  const union = new Set<string>();
+  for (const c of consumers) for (const a of c.attrs) union.add(a);
+
+  if (union.size === 0) {
+    observer?.disconnect();
+    observer = null;
+    observedAttrsKey = "";
+    return;
+  }
+
+  // The filter is DERIVED from the live consumers, never hardcoded: the old
+  // version pinned ["data-theme", "data-scheme"] while the hook accepted
+  // arbitrary attribute names, so a consumer watching anything else silently
+  // never fired (R3-7). When the union widens, re-observe IN PLACE —
+  // calling observe() again on the same node replaces the options per spec,
+  // so the shared observer is never disconnected while consumers remain.
+  // On shrink we keep the wider filter (handleMutations dispatches
+  // per-consumer, so over-observing is harmless).
+  const observed = new Set(observedAttrsKey.split(",").filter(Boolean));
+  const covered = observer && [...union].every((a) => observed.has(a));
+  if (covered) return;
+
+  for (const a of observed) union.add(a);
+  if (!observer) observer = new MutationObserver(handleMutations);
   observer.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ["data-theme", "data-scheme"],
+    attributeFilter: [...union],
   });
-}
-
-function teardownObserverIfIdle() {
-  if (consumers.length === 0 && observer) {
-    observer.disconnect();
-    observer = null;
-  }
+  observedAttrsKey = [...union].sort().join(",");
 }
 
 /**
@@ -92,10 +111,10 @@ export function useAttributeObserver(
       onChange: () => onChangeRef.current(),
     };
     consumers = [...consumers, consumer];
-    ensureObserver();
+    syncObserver();
     return () => {
       consumers = consumers.filter((c) => c !== consumer);
-      teardownObserverIfIdle();
+      syncObserver();
     };
     // `attrsKey` is the stable, content-derived stand-in for `attributes`;
     // `onChange` is read via `onChangeRef`, not a dependency — the deps

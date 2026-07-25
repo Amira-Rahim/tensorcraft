@@ -14,7 +14,6 @@ vi.mock("./components/theme-provider", () => ({
   ),
 }));
 vi.mock("./components/nav", () => ({ Nav: () => null }));
-vi.mock("./components/ticker", () => ({ Ticker: () => null }));
 vi.mock("./components/cookie-consent", () => ({
   CookieConsent: () => null,
 }));

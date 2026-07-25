@@ -9,7 +9,12 @@ import {
   emitSkillEvent,
 } from "@/lib/progress-client";
 import { recordGuestCompletion } from "@/lib/guest-progress";
-import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
+import {
+  trackLessonStarted,
+  trackLessonCompleted,
+  track,
+  EVENTS,
+} from "@/lib/analytics";
 import type { ExerciseData } from "@tensorcraft/ui";
 import { SceneHeading, CharacterAvatar } from "@tensorcraft/ui";
 import { themes } from "@tensorcraft/themes";
@@ -197,6 +202,10 @@ function LessonStepsInner({
   const [passedExercises, setPassedExercises] = useState<Set<string>>(
     () => new Set(),
   );
+  // Mirror of passedExercises for handleExerciseComplete's first-pass
+  // dedupe. A ref, not the state, so the callback identity stays stable
+  // (diff review D2). Seeded alongside the state in the mount-restore.
+  const passedExercisesRef = useRef<Set<string>>(new Set());
   const exerciseScoresRef = useRef<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
   // The left column carries key={currentStep} so the step animation retriggers,
@@ -229,6 +238,11 @@ function LessonStepsInner({
   const storageKey = getStorageKey(themeSlug, lesson.slug);
   const maxStorageKey = getMaxStorageKey(themeSlug, lesson.slug);
 
+  // True when the mount-restore below landed directly on step 5. Consumed
+  // (and cleared) by the completion effect so a restored arrival never
+  // fires the emit-once completion signals (diff review D1).
+  const restoredAtFinalStepRef = useRef(false);
+
   // Read persisted step + furthest step reached on mount
   useEffect(() => {
     let step = 0;
@@ -239,6 +253,15 @@ function LessonStepsInner({
         const parsed = parseInt(saved, 10);
         if (!isNaN(parsed) && parsed >= 0 && parsed < TOTAL_STEPS) {
           step = parsed;
+          // A restore ONTO step 5 is not an in-session transition. The
+          // prevStepRef stamp alone cannot express this: the completion
+          // effect's first run (currentStep still 0) stamps prev=0 before
+          // this setCurrentStep lands, so its second run would read 0→5 and
+          // fire the emit-once signals on every reload of a finished lesson
+          // — the exact refire the guard exists to stop (diff review D1;
+          // verified empirically). The flag suppresses exactly that first
+          // restored arrival and is cleared once consumed.
+          if (parsed === 5) restoredAtFinalStepRef.current = true;
           setCurrentStep(parsed);
         }
       }
@@ -259,7 +282,10 @@ function LessonStepsInner({
         const valid = slugs.filter((s) =>
           exercises.some((ex) => ex.slug === s),
         );
-        if (valid.length > 0) setPassedExercises(new Set(valid));
+        if (valid.length > 0) {
+          setPassedExercises(new Set(valid));
+          passedExercisesRef.current = new Set(valid);
+        }
       }
     } catch {
       // localStorage unavailable
@@ -310,14 +336,36 @@ function LessonStepsInner({
     trackLessonStarted(themeSlug, moduleSlug, lesson.slug);
   }, [themeSlug, moduleSlug, lesson.slug]);
 
+  // Tracks the previous step so the completion effect can distinguish an
+  // in-session TRANSITION into step 5 from a mount that merely restored a
+  // persisted step-5 position. Without this, every page load of a finished
+  // lesson re-fired the completion analytics and one skill event per axis —
+  // reopening a lesson 10× added +40 proficiency for zero work, and
+  // completion metrics inflated from day 1 (R3-7).
+  const prevStepRef = useRef<number | null>(null);
+
   // Mark lesson complete when reaching final step (Consequence)
   useEffect(() => {
+    const prevStep = prevStepRef.current;
+    prevStepRef.current = currentStep;
     if (currentStep === 5) {
+      // prevStep alone cannot distinguish a mount-restore onto 5 from a
+      // real walk: the effect's first run stamps prev=0 before the restore
+      // effect's setCurrentStep(5) lands, so the second run reads 0→5.
+      // restoredAtFinalStepRef covers exactly that first restored arrival
+      // (diff review D1) and is consumed so later genuine 4→5 transitions
+      // in the same session still count.
+      const restored = restoredAtFinalStepRef.current;
+      restoredAtFinalStepRef.current = false;
+      const enteredThisSession = !restored && prevStep !== null && prevStep < 5;
       const scores = Object.values(exerciseScoresRef.current);
       const avgScore =
         scores.length > 0
           ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length)
           : null;
+      // The completion WRITE always runs: it is an idempotent upsert, and the
+      // guest fallback below is what GuestProgressBridge replays after
+      // signup. Only the emit-once signals live behind the transition guard.
       markLessonCompleted(themeSlug, moduleSlug, lesson.slug, avgScore)
         .then((result) => {
           // Null = no signed-in user (or a failed write): keep local
@@ -330,29 +378,39 @@ function LessonStepsInner({
         .catch(() => {
           recordGuestCompletion(themeSlug, moduleSlug, lesson.slug);
         });
-      trackLessonCompleted(themeSlug, moduleSlug, lesson.slug);
 
-      // Skill genome. `emitSkillEvent` had ZERO call sites until now: the
-      // buffer, the 5s flush, the keepalive batch endpoint and
-      // POST /api/skill-events were all built and all dead, so `skill_events`
-      // was empty for every user and the dashboard radar chart was
-      // structurally always zero — a feature that appeared to exist and did
-      // not. (It would also have failed silently even once wired, because
-      // migration 013 carried over only a SELECT policy; migration 041 adds
-      // the INSERT policy.)
-      //
-      // One event per axis: compute_user_skill_genome loops
-      // `SELECT DISTINCT skill_axis`, so multi-axis lessons are expected.
-      // Fire-and-forget by design — a lost skill event must never affect
-      // lesson completion.
-      for (const axis of lesson.skillAxes ?? []) {
-        emitSkillEvent(themeSlug, "lesson_complete", axis, {
-          lessonId: lesson.slug,
-          moduleId: moduleSlug,
-        });
+      if (enteredThisSession) {
+        trackLessonCompleted(themeSlug, moduleSlug, lesson.slug);
+
+        // Skill genome. `emitSkillEvent` had ZERO call sites until now: the
+        // buffer, the 5s flush, the keepalive batch endpoint and
+        // POST /api/skill-events were all built and all dead, so
+        // `skill_events` was empty for every user and the dashboard radar
+        // chart was structurally always zero — a feature that appeared to
+        // exist and did not. (It would also have failed silently even once
+        // wired, because migration 013 carried over only a SELECT policy;
+        // migration 041 adds the INSERT policy.)
+        //
+        // One event per axis: compute_user_skill_genome loops
+        // `SELECT DISTINCT skill_axis`, so multi-axis lessons are expected.
+        // Fire-and-forget by design — a lost skill event must never affect
+        // lesson completion. Guarded by enteredThisSession: 014's SUM has no
+        // dedupe, so these must fire only when the learner actually walked
+        // to step 5 this session, never on a restored mount.
+        for (const axis of lesson.skillAxes ?? []) {
+          emitSkillEvent(themeSlug, "lesson_complete", axis, {
+            lessonId: lesson.slug,
+            moduleId: moduleSlug,
+          });
+        }
       }
 
-      // Kit lifecycle tags. Dedupe correctness lives in tagKitEventOnce: the
+      // Kit lifecycle tags stay OUTSIDE the transition guard on purpose:
+      // tagKitEventOnce records its dedupe flag only when Kit actually
+      // tagged someone, so re-attempting on a restored mount is exactly the
+      // retry path that recovers users who first finished while the tag env
+      // vars were unconfigured.
+      // Dedupe correctness lives in tagKitEventOnce: the
       // "already tagged" flag is recorded only when Kit actually tagged
       // someone. Both of these previously burned the flag on a pass that
       // tagged nobody (no session, or an unconfigured tag id answering
@@ -388,8 +446,18 @@ function LessonStepsInner({
 
   const handleExerciseComplete = useCallback(
     (exerciseSlug: string, score: number) => {
+      // Dedupe via ref, NOT the passedExercises state: putting the Set in
+      // this callback's deps gave it a new identity on every pass, which
+      // cascaded through the MDX components memo and REMOUNTED the whole
+      // subtree — wiping the exercise's just-shown results panel the
+      // instant it appeared (diff review D2). The ref keeps the callback
+      // identity stable; the state updater below also returns `prev`
+      // unchanged for repeat passes so no render churn occurs.
+      const alreadyPassed = passedExercisesRef.current.has(exerciseSlug);
+      passedExercisesRef.current.add(exerciseSlug);
       exerciseScoresRef.current[exerciseSlug] = score;
       setPassedExercises((prev) => {
+        if (prev.has(exerciseSlug)) return prev;
         const next = new Set(prev);
         next.add(exerciseSlug);
         return next;
@@ -397,13 +465,17 @@ function LessonStepsInner({
       // `exercise_pass` is the heaviest-weighted signal in the genome
       // computation (+3 vs +2 for a lesson, migration 014:26-37), so without
       // it the radar would be dominated by mere completion rather than
-      // demonstrated skill.
-      for (const axis of lesson.skillAxes ?? []) {
-        emitSkillEvent(themeSlug, "exercise_pass", axis, {
-          exerciseSlug,
-          score,
-          lessonId: lesson.slug,
-        });
+      // demonstrated skill. Emit only on the FIRST pass of this exercise:
+      // 014's SUM has no dedupe, so re-running an already-green exercise
+      // must not add +3/axis per click (R3-7).
+      if (!alreadyPassed) {
+        for (const axis of lesson.skillAxes ?? []) {
+          emitSkillEvent(themeSlug, "exercise_pass", axis, {
+            exerciseSlug,
+            score,
+            lessonId: lesson.slug,
+          });
+        }
       }
     },
     [themeSlug, lesson.skillAxes, lesson.slug],
@@ -1136,6 +1208,9 @@ function StepBriefing({
   const rootRef = useRef<HTMLDivElement | null>(null);
   const timeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const scrollPendingRef = useRef(false);
+  // When the current playback run started; feeds script_skipped's elapsedMs
+  // so the ">40% skip triggers narrative redesign" QA rule is computable.
+  const playStartedAtRef = useRef<number>(0);
   const [scriptState, setScriptState] = useState<"playing" | "done">(
     scriptAutoPlay ? "playing" : "done",
   );
@@ -1187,6 +1262,7 @@ function StepBriefing({
       finish(false);
       return;
     }
+    playStartedAtRef.current = Date.now();
     setBeatsShown(0);
     setScriptState("playing");
     let at = 350;
@@ -1285,7 +1361,18 @@ function StepBriefing({
         {scriptState === "playing" ? (
           <button
             type="button"
-            onClick={() => finish(false)}
+            onClick={() => {
+              // The scene only plays on the briefing step (step 0).
+              track(EVENTS.SCRIPT_SKIPPED, {
+                themeId: themeSlug,
+                lessonId: lessonSlug,
+                step: 0,
+                elapsedMs: playStartedAtRef.current
+                  ? Date.now() - playStartedAtRef.current
+                  : 0,
+              });
+              finish(false);
+            }}
             className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
             style={{
               color: "var(--tc-muted)",

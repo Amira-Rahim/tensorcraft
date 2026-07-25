@@ -10,7 +10,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://tensorcraft.app/learn",
   },
+  // An images-only openGraph REPLACES the root block (Next shallow-merges
+  // metadata objects), silently dropping og:url/type/siteName and inheriting
+  // the homepage twitter card — every share of this page presented as the
+  // site root (R3-7). Declare the full block.
   openGraph: {
+    type: "website",
+    url: "https://tensorcraft.app/learn",
+    title: "Learn Machine Learning with JavaScript | Tensorcraft",
+    images: [
+      "/api/og?title=Learn%20ML%20with%20JavaScript&theme=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learn Machine Learning with JavaScript | Tensorcraft",
     images: [
       "/api/og?title=Learn%20ML%20with%20JavaScript&theme=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
     ],

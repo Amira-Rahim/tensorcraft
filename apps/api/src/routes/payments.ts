@@ -149,9 +149,20 @@ payments.post("/checkout", async (c) => {
         .select("theme_ids, amount")
         .eq("user_id", userId)
         .in("status", ["completed", "partially_refunded"]),
-      supabase.from("profiles").select("email").eq("id", userId).single(),
+      supabase
+        .from("profiles")
+        .select("email, stripe_customer_id")
+        .eq("id", userId)
+        .single(),
     ]);
   const buyerEmail = (buyerProfile as { email?: string } | null)?.email;
+  // Reuse the Stripe Customer captured by the webhook (migration 043) so a
+  // repeat buyer doesn't mint a fresh Customer per purchase — with
+  // invoice_creation enabled (STRIPE_TAX_ENABLED) every duplicate Customer
+  // fragments billing history exactly where H1 subscriptions will need it.
+  const buyerCustomerId =
+    (buyerProfile as { stripe_customer_id?: string | null } | null)
+      ?.stripe_customer_id ?? null;
 
   const ownedThemes = new Set<string>();
   let credit = 0;
@@ -229,7 +240,7 @@ payments.post("/checkout", async (c) => {
     appUrl = "http://localhost:3000";
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const sessionParams: Stripe.Checkout.SessionCreateParams = {
     mode: "payment",
     client_reference_id: userId,
     ...taxSessionParams(),
@@ -237,8 +248,14 @@ payments.post("/checkout", async (c) => {
     // checkout when the session carries their email AND recovery is enabled;
     // with neither set the session just expired in silence. `customer_email`
     // is omitted rather than sent empty when the profile row has none, since
-    // Stripe rejects a blank string.
-    ...(buyerEmail ? { customer_email: buyerEmail } : {}),
+    // Stripe rejects a blank string. `customer` and `customer_email` are
+    // mutually exclusive on the API, so the stored Customer wins when we
+    // have one.
+    ...(buyerCustomerId
+      ? { customer: buyerCustomerId }
+      : buyerEmail
+        ? { customer_email: buyerEmail }
+        : {}),
     after_expiration: {
       recovery: {
         enabled: true,
@@ -268,7 +285,41 @@ payments.post("/checkout", async (c) => {
     },
     success_url: `${appUrl}/dashboard/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/pricing?purchase=cancelled`,
-  });
+  };
+
+  let session: Stripe.Checkout.Session;
+  try {
+    session = await stripe.checkout.sessions.create(sessionParams);
+  } catch (createErr) {
+    if (!buyerCustomerId) throw createErr;
+    // The stored Customer can be stale (deleted in the Stripe dashboard, or
+    // from a different mode/account). A broken saved id must never block a
+    // sale: fall back to a plain email session.
+    logger.warn(
+      { err: createErr, route: "payments.checkout", userId },
+      "Checkout: stored stripe_customer_id rejected; retrying without it",
+    );
+    delete sessionParams.customer;
+    if (buyerEmail) sessionParams.customer_email = buyerEmail;
+    session = await stripe.checkout.sessions.create(sessionParams);
+
+    // Clear the stale id so the webhook's `.is("stripe_customer_id", null)`
+    // capture can store the fresh Customer this session mints. Without
+    // this, "let the webhook re-capture" was a lie (diff review D3): the
+    // stale non-null id blocked the capture forever and every future
+    // checkout for this user paid the fail→warn→retry path. Admin client:
+    // migration 049 clamps this column to service-role writes.
+    const { error: clearError } = await getSupabaseAdminClient()
+      .from("profiles")
+      .update({ stripe_customer_id: null })
+      .eq("id", userId);
+    if (clearError) {
+      logger.warn(
+        { err: clearError, route: "payments.checkout", userId },
+        "Checkout: failed to clear stale stripe_customer_id (non-fatal)",
+      );
+    }
+  }
 
   return c.json({ url: session.url });
 });
@@ -492,10 +543,14 @@ payments.post("/webhook", async (c) => {
           if (userId) {
             // Best-effort: the purchase is recorded regardless, and the buyer
             // can always sign in from the site with the same address.
+            // APP_URL falls back to the production domain, NOT "" — every
+            // other unset-APP_URL site fails loud, but this one silently
+            // mailed a paying guest a relative (= broken) access link
+            // (R3-9).
             void sendPurchaseAccessLink(
               getSupabaseServerClient(),
               guestEmail,
-              `${process.env.APP_URL ?? ""}/dashboard/purchase-success`,
+              `${process.env.APP_URL ?? "https://tensorcraft.app"}/dashboard/purchase-success`,
             );
           }
         }
@@ -680,7 +735,19 @@ payments.post("/webhook", async (c) => {
           stripe_payment_intent: paymentIntent,
           status: rowStatus,
         },
-        { onConflict: "stripe_session_id", ignoreDuplicates: false },
+        // A "pending" write only ever needs to CREATE the row. The pre-check
+        // above guards the sequential demotion case, but a concurrently
+        // retried unpaid event can still interleave with
+        // async_payment_succeeded (pre-check reads pending → async promotes
+        // to completed → this upsert lands last). ON CONFLICT DO NOTHING for
+        // pending writes closes that window at the DB level; the eventual
+        // async settle fills payment_intent and the tax fields anyway.
+        // Completed writes keep DO UPDATE so promotion and field backfill
+        // still work.
+        {
+          onConflict: "stripe_session_id",
+          ignoreDuplicates: rowStatus === "pending",
+        },
       );
 
       if (upsertError) {
@@ -709,11 +776,21 @@ payments.post("/webhook", async (c) => {
           : (session.customer?.id ?? null);
       if (stripeCustomerId) {
         try {
-          await supabase
+          // supabase-js reports failures in the result object, it does not
+          // throw — the catch below only covers transport-level rejections.
+          // Inspect the error explicitly or a failure (e.g. migration 043
+          // not applied) is a silent no-op with no operator signal.
+          const { error: custError } = await supabase
             .from("profiles")
             .update({ stripe_customer_id: stripeCustomerId })
             .eq("id", userId)
             .is("stripe_customer_id", null);
+          if (custError) {
+            logger.warn(
+              { err: custError, route: "payments.webhook", userId },
+              "Webhook: failed to persist stripe_customer_id (non-fatal)",
+            );
+          }
         } catch (custErr) {
           logger.warn(
             { err: custErr, route: "payments.webhook", userId },
@@ -724,8 +801,11 @@ payments.post("/webhook", async (c) => {
 
       // Revenue event + confirmation email fire only once the payment has
       // actually settled. For delayed methods that happens in the
-      // async_payment_succeeded handler below, not here.
-      if (rowStatus === "completed") {
+      // async_payment_succeeded handler below, not here. Guard on the prior
+      // status exactly like the async handler does (§942): a re-delivered
+      // completed event for an already-completed row must not double-fire
+      // the revenue source-of-truth event or re-send the confirmation email.
+      if (rowStatus === "completed" && existingRow?.status !== "completed") {
         // Fire authoritative server-side conversion event (§6i).
         // Client may also fire one, but this is the revenue source of truth.
         captureServer(
@@ -766,6 +846,11 @@ payments.post("/webhook", async (c) => {
             "Kit email failed (non-blocking)",
           );
         }
+      } else if (rowStatus === "completed") {
+        logger.info(
+          { route: "payments.webhook", userId, stripeSessionId: sessionId },
+          "Webhook: duplicate completed delivery; revenue event and email already fired",
+        );
       } else {
         logger.info(
           { route: "payments.webhook", userId, stripeSessionId: sessionId },
@@ -854,10 +939,11 @@ payments.post("/webhook", async (c) => {
 
       if (disputePaymentIntent) {
         // Immediately revoke access on dispute to protect against fraud
-        const { error: disputeError } = await supabase
+        const { data: disputedRows, error: disputeError } = await supabase
           .from("purchases")
           .update({ status: "disputed" })
-          .eq("stripe_payment_intent", disputePaymentIntent);
+          .eq("stripe_payment_intent", disputePaymentIntent)
+          .select("id");
 
         if (disputeError) {
           logger.error(
@@ -871,6 +957,88 @@ payments.post("/webhook", async (c) => {
           );
           return c.json({ error: "Database error" }, 500);
         }
+
+        if (!disputedRows || disputedRows.length === 0) {
+          // Same failure mode the refund handler fixed in audit run #7:
+          // ACKing a dispute that matched no purchase row (missing intent,
+          // or the dispute outran fulfilment) permanently loses the access
+          // revocation. 500 so Stripe retries once the row exists.
+          logger.error(
+            {
+              route: "payments.webhook",
+              eventType: event.type,
+              paymentIntent: disputePaymentIntent,
+            },
+            "Webhook: dispute matched no purchase row; requesting retry",
+          );
+          return c.json({ error: "No purchase row for dispute yet" }, 500);
+        }
+      }
+
+      break;
+    }
+
+    case "charge.dispute.closed": {
+      // A WON dispute must restore access (gap sweep F2, 2026-07-25): the
+      // funds come back but the row sat terminally "disputed" forever — no
+      // handler existed, and 038's trigger silently blocked any manual
+      // repair. Restoration goes through the migration-051 RPC, the single
+      // sanctioned path through the trigger's transaction-local escape
+      // hatch (a plain UPDATE here would be clamped back to "disputed").
+      // A LOST dispute needs nothing: "disputed" stays, access stays
+      // revoked.
+      const closedDispute = event.data.object as Stripe.Dispute;
+      const closedPaymentIntent =
+        typeof closedDispute.payment_intent === "string"
+          ? closedDispute.payment_intent
+          : closedDispute.payment_intent?.id;
+
+      if (closedDispute.status === "won" && closedPaymentIntent) {
+        const { data: restoredCount, error: restoreError } = await supabase.rpc(
+          "restore_purchase_after_dispute",
+          {
+            p_payment_intent: closedPaymentIntent,
+          },
+        );
+
+        if (restoreError) {
+          logger.error(
+            {
+              err: restoreError,
+              route: "payments.webhook",
+              eventType: event.type,
+              paymentIntent: closedPaymentIntent,
+            },
+            "Webhook: failed to restore purchase after won dispute",
+          );
+          // 500 so Stripe retries — includes the migration-051-not-applied
+          // case (unknown function), which resolves once it is applied.
+          return c.json({ error: "Database error" }, 500);
+        }
+
+        if (!restoredCount) {
+          // No disputed row matched: either the intent is missing on the
+          // row or ordering raced. Same retry contract as refund/dispute
+          // zero-row handling.
+          logger.error(
+            {
+              route: "payments.webhook",
+              eventType: event.type,
+              paymentIntent: closedPaymentIntent,
+            },
+            "Webhook: won dispute matched no disputed purchase row; requesting retry",
+          );
+          return c.json({ error: "No disputed row to restore yet" }, 500);
+        }
+
+        logger.info(
+          {
+            route: "payments.webhook",
+            paymentIntent: closedPaymentIntent,
+            restored: restoredCount,
+          },
+          "Webhook: dispute won; purchase access restored",
+        );
       }
 
       break;

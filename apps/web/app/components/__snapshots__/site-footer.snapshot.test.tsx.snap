@@ -49,6 +49,13 @@ exports[`SiteFooter snapshots > matches snapshot 1`] = `
         >
           Privacy
         </a>
+        <button
+          class="inline-flex items-center min-h-11 font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          data-testid="cookie-settings"
+          type="button"
+        >
+          Cookie settings
+        </button>
       </div>
       <div
         class="font-mono text-xs"

@@ -69,7 +69,6 @@
 | `packages/themes` | Theme asset packages | Per-theme CSS (`@theme` overrides), illustrations, mascot SVGs, copy variants |
 | `packages/content` | Content source files | MDX lessons, exercise definitions, frontmatter schemas, validation scripts |
 | `packages/analytics` | Analytics abstraction | Event definitions, PostHog client wrapper, type-safe tracking functions |
-| `packages/github` | GitHub integration module | GitHub App client, GraphQL mutations, commit builders, repo scaffolding |
 
 ### 1.3 Environment Variables
 

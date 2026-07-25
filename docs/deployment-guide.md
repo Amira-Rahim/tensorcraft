@@ -36,11 +36,13 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service role key (server-side only, never expose to client) |
 | `STRIPE_SECRET_KEY` | Yes | Stripe secret key |
 | `STRIPE_WEBHOOK_SECRET` | Yes | Stripe webhook signing secret |
+| `STRIPE_TAX_ENABLED` | Launch | "true" enables Stripe Tax + invoices on checkout. Requires dashboard Tax setup + migration 047 applied first. Unset = silently untaxed sales (legal exposure R2-4/R3-3) |
+| `CERT_SIGNING_SECRET` | Yes | Certificate signing secret — unset, certificate issuance 500s (fail-closed) |
 | `PORT` | No | API server port (default: `3001`) |
 | `APP_URL` | No | Application URL used for Stripe checkout redirects (fallback: `NEXT_PUBLIC_APP_URL` or `http://localhost:3000`) |
 | `CORS_ORIGINS` | No | Comma-separated allowed origins (default: `http://localhost:3000`) |
-| `UPSTASH_REDIS_REST_URL` | No | Upstash Redis REST API URL for distributed rate limiting |
-| `UPSTASH_REDIS_REST_TOKEN` | No | Upstash Redis REST API token |
+| `UPSTASH_REDIS_REST_URL` | Prod: yes | Upstash Redis REST URL. Unset, the API still boots and serves but rate limiting + JWT cache are SILENTLY DISABLED (security degradation, R3-10) |
+| `UPSTASH_REDIS_REST_TOKEN` | Prod: yes | Upstash Redis REST token (same silent-degradation caveat) |
 | `ADMIN_API_KEY` | Yes | API key for admin endpoints (used by CI/scripts as fallback to role-based auth) |
 | `SENTRY_DSN` | No | Sentry DSN for the API (EU-region project) |
 | `POSTHOG_KEY` | No | PostHog server-side key for webhook-triggered conversion events |
@@ -52,8 +54,6 @@ Set these in Fly.io secrets or `.env` for local dev:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `GITHUB_APP_ID` | No | GitHub App ID for exercise solution push |
-| `GITHUB_PRIVATE_KEY` | No | GitHub App private key (RSA) |
 | `GITHUB_CLIENT_ID` | No | GitHub OAuth client ID |
 | `GITHUB_CLIENT_SECRET` | No | GitHub OAuth client secret |
 
@@ -181,7 +181,7 @@ The API uses a two-tier rate limiting strategy:
 1. **Primary: Upstash Redis** — When `UPSTASH_REDIS_REST_URL` is set, rate limits are stored in Redis for distributed, production-ready limiting across multiple instances.
 2. **Fallback: In-memory Map** — When Redis is not configured, an in-memory Map tracks request counts per IP. Suitable for single-instance deployments and local development.
 
-Limit: 120 requests per minute per IP. The Stripe webhook route is exempt.
+Limit: 60 requests per minute per IP (code truth; reconciled 2026-07-25). The Stripe webhook route is exempt.
 
 ---
 

@@ -43,7 +43,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://tensorcraft.app/themes/${slug}/capstone`,
     },
+    // Full blocks — images-only openGraph shallow-replaces the root block,
+    // dropping og:url and inheriting the homepage twitter card (R3-7).
     openGraph: {
+      type: "website",
+      url: `https://tensorcraft.app/themes/${slug}/capstone`,
+      title: `${theme.terminology.lesson} Complete: ${theme.displayName} | Tensorcraft`,
+      images: [
+        `/api/og?title=${encodeURIComponent(`${theme.terminology.lesson} Complete`)}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${theme.terminology.lesson} Complete: ${theme.displayName} | Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(`${theme.terminology.lesson} Complete`)}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
       ],

@@ -10,6 +10,7 @@ let mockProgressRows: Array<{
   status: string;
 }> = [];
 let mockOwned: Set<string> = new Set();
+let mockProgressError: { message: string } | null = null;
 
 vi.mock("@/lib/supabase/server", () => ({
   getSupabaseServerClient: async () => ({
@@ -28,7 +29,12 @@ vi.mock("@/lib/supabase/server", () => ({
       return {
         select: () => ({
           eq: () => ({
-            eq: () => Promise.resolve({ data: mockProgressRows, error: null }),
+            eq: () =>
+              Promise.resolve(
+                mockProgressError
+                  ? { data: null, error: mockProgressError }
+                  : { data: mockProgressRows, error: null },
+              ),
           }),
         }),
       };
@@ -52,6 +58,14 @@ vi.mock("@tensorcraft/shared", async (importOriginal) => {
   };
 });
 
+vi.mock("@tensorcraft/content", () => ({
+  // The corpus for these tests is two lessons per theme ("a", "b"), matching
+  // the pinned getThemeTotalLessons above. journey-progress filters progress
+  // rows against the CURRENT corpus so orphaned rows from re-slugged lessons
+  // can't overshoot totals (R3-6).
+  getThemeLessons: () => [{ slug: "a" }, { slug: "b" }],
+}));
+
 import { getJourneyState } from "../journey-progress";
 import { JOURNEY_ORDER } from "@tensorcraft/shared";
 
@@ -65,6 +79,7 @@ describe("getJourneyState", () => {
     mockEnrollment = null;
     mockProgressRows = [];
     mockOwned = new Set();
+    mockProgressError = null;
   });
 
   it("returns all five themes in ring order with derived progress", async () => {
@@ -120,5 +135,30 @@ describe("getJourneyState", () => {
     const s = await getJourneyState("u1");
     expect(s.ringComplete).toBe(true);
     expect(s.recommendedNext).toBeNull();
+  });
+
+  it("ignores progress rows for lessons no longer in the corpus (R3-6)", async () => {
+    const t0 = JOURNEY_ORDER[0];
+    mockProgressRows = [
+      { theme_id: t0, lesson_id: "a", status: "completed" },
+      // Orphans from a re-slugged/removed lesson (tl/05 was rebuilt once):
+      // counting them can mark a theme completed while live lessons remain,
+      // and push completedLessons past totalLessons.
+      { theme_id: t0, lesson_id: "old-slug-1", status: "completed" },
+      { theme_id: t0, lesson_id: "old-slug-2", status: "completed" },
+    ];
+    const s = await getJourneyState("u1");
+    expect(s.themes[0].completedLessons).toBe(1);
+    expect(s.themes[0].completed).toBe(false);
+  });
+
+  it("throws instead of misreporting when a lookup fails (R3-6)", async () => {
+    mockProgressError = { message: "connection reset" };
+    // Fail loud, not blank: a transient PostgREST fault must not render an
+    // enrolled learner as un-enrolled with zero progress (same contract as
+    // entitlements.ts).
+    await expect(getJourneyState("u1")).rejects.toThrow(
+      /Journey progress lookup failed/,
+    );
   });
 });

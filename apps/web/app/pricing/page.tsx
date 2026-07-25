@@ -42,13 +42,16 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 // A bundle Offer is only InStock once enough themes have launched to fill it
-// (mirrors the cart gating in pricing-tiers.tsx). Until then it is a genuine
-// pre-order, so the structured data must say PreOrder rather than overclaim
-// InStock on a basket the checkout would reject.
+// (mirrors the cart gating in pricing-tiers.tsx). Until then it is
+// OutOfStock, NOT PreOrder: schema.org PreOrder asserts an order can be
+// placed now for later delivery, and no pre-order mechanism exists — the
+// checkout buttons are hard-disabled (same overclaim the coming-soon stub
+// fixed on 2026-07-19; R3-7 caught these bundle offers still saying
+// PreOrder).
 const IN_STOCK = "https://schema.org/InStock";
-const PRE_ORDER = "https://schema.org/PreOrder";
+const OUT_OF_STOCK = "https://schema.org/OutOfStock";
 const availabilityFor = (themes: number) =>
-  LAUNCHED_THEMES.length >= themes ? IN_STOCK : PRE_ORDER;
+  LAUNCHED_THEMES.length >= themes ? IN_STOCK : OUT_OF_STOCK;
 
 export default function PricingPage() {
   const pricingJsonLd = {

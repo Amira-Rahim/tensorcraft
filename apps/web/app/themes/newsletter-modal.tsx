@@ -40,7 +40,11 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
         return;
       }
       setStatus("submitting");
-      const result = await submitWaitlist(trimmed, "all", "theme-selection");
+      // This modal IS the newsletter signup, so digest consent is explicit
+      // here — the only call site that passes it (see submitWaitlist docs).
+      const result = await submitWaitlist(trimmed, "all", "theme-selection", {
+        subscribeToDigest: true,
+      });
       setStatus(result);
     },
     [email, status],

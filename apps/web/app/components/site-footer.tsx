@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "./cookie-settings-button";
 
 const FOOTER_LINK_CLASS =
   "inline-flex items-center min-h-11 font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2";
@@ -36,6 +37,9 @@ export function SiteFooter() {
             <Link href="/privacy" className={FOOTER_LINK_CLASS}>
               Privacy
             </Link>
+            {/* Art. 7(3) withdrawal path — sitewide, same weight as the
+                privacy link that promises it (Tier 1-LEGAL). */}
+            <CookieSettingsButton className={FOOTER_LINK_CLASS} />
           </div>
           <div className="font-mono text-xs">
             &copy; {new Date().getFullYear()} Tensorcraft

@@ -1,23 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function SessionToast() {
   const [visible, setVisible] = useState(false);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
     function handleExpired() {
       setVisible(true);
-      // Auto-hide after 15 seconds
-      setTimeout(() => setVisible(false), 15_000);
+      // Auto-hide after 15 seconds. Clear any pending timer first:
+      // api-fetch dispatches this event on EVERY 401-with-session, so a
+      // re-fire near an old deadline used to hide the fresh toast almost
+      // immediately — and an uncleared timer survived unmount, setting
+      // state on a dead component (R3-7).
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = setTimeout(() => setVisible(false), 15_000);
     }
 
     window.addEventListener("tc:session-expired", handleExpired);
-    return () =>
+    return () => {
       window.removeEventListener("tc:session-expired", handleExpired);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
   }, []);
 
   if (!visible) return null;

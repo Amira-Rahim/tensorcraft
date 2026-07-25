@@ -35,7 +35,13 @@ export const config = {
     // and the crawler files robots.txt + sitemap.xml — route handlers, but
     // public by definition and no use for a session.
     //
+    // Also excluded (gap sweep F4, 2026-07-25): /api/og — every social
+    // scraper's card fetch was paying an edge invocation + a GoTrue call
+    // for an image that is public by definition — and the RFC 8058
+    // one-click unsubscribe POST, which authenticates by unguessable token,
+    // not session.
+    //
     // Still matched: every HTML page route, which is where auth matters.
-    "/((?!_next/static|_next/image|favicon.ico|vendor/|models/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|otf|js|json|bin|wasm|txt|xml)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|vendor/|models/|api/og|unsubscribe/one-click|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|otf|js|json|bin|wasm|txt|xml)$).*)",
   ],
 };

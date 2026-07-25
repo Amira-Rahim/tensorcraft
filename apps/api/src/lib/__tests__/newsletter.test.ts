@@ -93,6 +93,22 @@ describe("sendDigestNewsletter opt-out join", () => {
     const result = await sendDigestNewsletter("2026-W28");
     expect(result.sent).toBe(2);
   });
+
+  it("counts a Resend error result as failed, not sent (gap sweep F1)", async () => {
+    // The Resend SDK does NOT throw: 429/4xx/5xx resolve {data:null, error}.
+    // The old code ignored `error`, so result.failed was structurally
+    // unreachable and a fully-429'd launch blast reported sent:N failed:0.
+    tables["profiles"] = chain({ data: [], error: null });
+    sendSpy
+      .mockResolvedValueOnce({ data: { id: "email_ok" }, error: null })
+      .mockResolvedValueOnce({
+        data: null,
+        error: { name: "rate_limit_exceeded", message: "Too many requests" },
+      });
+    const result = await sendDigestNewsletter("2026-W28");
+    expect(result.sent).toBe(1);
+    expect(result.failed).toBe(1);
+  });
 });
 
 describe("sendDigestNewsletter lesson links", () => {

@@ -36,12 +36,20 @@ function exhaustPolling() {
 }
 
 describe("PendingPoller", () => {
-  it("renders nothing while polling", () => {
+  it("renders an empty, always-mounted live region while polling", () => {
+    // The role="status" region must exist BEFORE the timeout message lands:
+    // mounting a live region together with its content announces unreliably
+    // (same convention as exercise.tsx's TestResultsLiveRegion).
     const { container } = render(<PendingPoller sessionId="cs_test_123" />);
     act(() => {
       vi.advanceTimersByTime(3000);
     });
-    expect(container.firstChild).toBeNull();
+    const region = container.querySelector('[role="status"]');
+    expect(region).not.toBeNull();
+    expect(region?.textContent).toBe("");
+    expect(
+      container.querySelector('[data-testid="pending-timeout"]'),
+    ).toBeNull();
     expect(refreshMock).toHaveBeenCalled();
   });
 

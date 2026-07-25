@@ -98,13 +98,22 @@ export async function sendIssueNotification(
   `;
 
   try {
-    await client.emails.send({
+    // Resend's SDK reports failures in the result, it does not throw —
+    // ignoring `error` silently lost support notifications (gap sweep F1
+    // class, 2026-07-25). The catch only covers unexpected throws.
+    const { error: sendError } = await client.emails.send({
       from: "Tensorcraft <noreply@tensorcraft.app>",
       to,
       subject,
       text,
       html,
     });
+    if (sendError) {
+      captureException(new Error(sendError.message), {
+        source: "issues.email",
+        extra: { issueId: params.id, name: sendError.name },
+      });
+    }
   } catch (err) {
     captureException(err, { source: "issues.email" });
   }

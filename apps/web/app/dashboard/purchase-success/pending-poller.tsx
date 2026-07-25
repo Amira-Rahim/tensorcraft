@@ -43,17 +43,22 @@ export function PendingPoller({ sessionId }: { sessionId?: string }) {
     return () => clearInterval(id);
   }, [router, pollRun, timedOut]);
 
-  if (!timedOut) return null;
-
   const mailSubject = encodeURIComponent("Purchase not confirmed");
   const mailBody = encodeURIComponent(
     `My payment went through but the confirmation page is still pending.\n` +
       (sessionId ? `Checkout session: ${sessionId}\n` : ""),
   );
 
+  // The live region must exist BEFORE it has content: mounting
+  // role="status" together with its message announces unreliably across
+  // screen readers (same rule as exercise.tsx's TestResultsLiveRegion —
+  // the region is always in the tree, the message arrives later).
+  if (!timedOut) return <div role="status" aria-live="polite" />;
+
   return (
     <div
       role="status"
+      aria-live="polite"
       data-testid="pending-timeout"
       className="max-w-xl mx-auto mb-12 border border-border bg-surface-raised px-6 py-5 text-left"
     >

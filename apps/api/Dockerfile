@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 FROM base AS deps
@@ -7,7 +7,6 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json apps/api/
 COPY packages/supabase/package.json packages/supabase/
 COPY packages/shared/package.json packages/shared/
-COPY packages/github/package.json packages/github/
 RUN pnpm install --frozen-lockfile --filter @tensorcraft/api...
 
 FROM base AS build
@@ -18,7 +17,7 @@ COPY packages ./packages
 RUN pnpm --filter @tensorcraft/api build
 RUN pnpm --filter @tensorcraft/api deploy /app/deployed --prod --legacy
 
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 RUN npm install -g tsx
 ENV NODE_ENV=production

@@ -55,16 +55,13 @@ Failures are printed with `slug`, phase (`starter-syntax` / `solution-run` /
 
 #### Allowlist and strict mode
 
-The first CI run surfaced ~210 legacy exercises with pre-existing content
-issues (TF APIs the sandbox mock doesn't implement, TS signatures the coarse
-strip can't handle, solution bugs, etc.). These slugs live in
-[`scripts/validate-exercises.allowlist.json`](../scripts/validate-exercises.allowlist.json)
-and are reported as `WARN` rather than `FAIL` so CI is unblocked while the
-content team triages them.
-
-Remove a slug from the allowlist once its exercise is fixed. Running with
-`--strict` (`node scripts/validate-exercises.mjs --strict`) treats every
-allowlisted slug as a hard failure — useful for the cleanup pass.
+**The allowlist is EMPTY and the gate runs fully strict** (verified
+2026-07-25). Historical note: the first CI run surfaced ~210 legacy
+exercises with pre-existing content issues; all were fixed across the
+2026-04→07 content sprints and drained from
+[`scripts/validate-exercises.allowlist.json`](../scripts/validate-exercises.allowlist.json).
+If a slug ever needs to go back on the list, it is reported as `WARN`
+rather than `FAIL`; `--strict` treats allowlisted slugs as hard failures.
 
 ### Broken-link checking
 

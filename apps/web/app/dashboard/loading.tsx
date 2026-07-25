@@ -1,9 +1,6 @@
 export default function DashboardLoading() {
   return (
     <div className="min-h-screen bg-page flex flex-col animate-pulse">
-      {/* Ticker skeleton */}
-      <div className="h-8 bg-surface-raised border-b border-border" />
-
       <div className="flex flex-1">
         {/* Sidebar skeleton */}
         <aside className="hidden lg:block w-75 border-r border-border shrink-0">

@@ -1,32 +1,20 @@
 "use client";
 
 import { useEffect } from "react";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { getApiUrl } from "@/lib/api-url";
+import { tagKitEventOnce } from "@/lib/kit-tag";
 
+/**
+ * Tag the learner `capstone` in Kit, once per browser per theme.
+ *
+ * Routed through tagKitEventOnce (R3-6): the old inline version burned its
+ * localStorage dedupe flag BEFORE the request — the exact defect class R2-7
+ * fixed for paywall_hit/module_1_complete — so any browser that reached the
+ * capstone before the KIT_TAG_* env vars were configured could never be
+ * tagged, permanently.
+ */
 export function CapstoneEmailTag({ themeSlug }: { themeSlug: string }) {
   useEffect(() => {
-    const key = `tc_capstone_tagged_${themeSlug}`;
-    try {
-      if (localStorage.getItem(key)) return;
-      localStorage.setItem(key, "1");
-    } catch {
-      return;
-    }
-
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      const apiUrl = getApiUrl();
-      fetch(`${apiUrl}/api/email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ event: "capstone" }),
-      }).catch(() => {});
-    });
+    void tagKitEventOnce("capstone", `tc_capstone_tagged_${themeSlug}`);
   }, [themeSlug]);
 
   return null;

@@ -6,6 +6,7 @@ import {
   type ThemeSlug,
 } from "@tensorcraft/shared";
 import { getThemeTotalLessons } from "@tensorcraft/shared";
+import { getThemeLessons } from "@tensorcraft/content";
 
 /** Per-theme state within the canonical journey. */
 export interface JourneyThemeState {
@@ -50,20 +51,36 @@ export interface JourneyState {
 export async function getJourneyState(userId: string): Promise<JourneyState> {
   const supabase = await getSupabaseServerClient();
 
-  const [{ data: enrollment }, owned, { data: progressRows }] =
-    await Promise.all([
-      supabase
-        .from("journey_enrollment")
-        .select("enrolled_at, completed_at")
-        .eq("user_id", userId)
-        .maybeSingle(),
-      getEntitledThemes(userId),
-      supabase
-        .from("theme_progress")
-        .select("theme_id, lesson_id, status")
-        .eq("user_id", userId)
-        .eq("status", "completed"),
-    ]);
+  const [
+    { data: enrollment, error: enrollmentError },
+    owned,
+    { data: progressRows, error: progressError },
+  ] = await Promise.all([
+    supabase
+      .from("journey_enrollment")
+      .select("enrolled_at, completed_at")
+      .eq("user_id", userId)
+      .maybeSingle(),
+    getEntitledThemes(userId),
+    supabase
+      .from("theme_progress")
+      .select("theme_id, lesson_id, status")
+      .eq("user_id", userId)
+      .eq("status", "completed"),
+  ]);
+
+  // Fail loud, not blank (same contract as entitlements.ts): a transient
+  // PostgREST fault must not render an enrolled learner as un-enrolled with
+  // 0/56 progress. Throwing reaches the route's error boundary, which offers
+  // a retry instead of confidently lying.
+  if (enrollmentError) {
+    throw new Error(
+      `Journey enrollment lookup failed: ${enrollmentError.message}`,
+    );
+  }
+  if (progressError) {
+    throw new Error(`Journey progress lookup failed: ${progressError.message}`);
+  }
 
   // Count distinct completed lessons per theme.
   const completedByTheme = new Map<string, Set<string>>();
@@ -79,7 +96,15 @@ export async function getJourneyState(userId: string): Promise<JourneyState> {
   // its OWN lesson count, not one shared constant.
   const themes: JourneyThemeState[] = JOURNEY_ORDER.map((slug, position) => {
     const total = getThemeTotalLessons(slug);
-    const done = completedByTheme.get(slug)?.size ?? 0;
+    // Count only lessons that exist in the CURRENT corpus. theme_progress
+    // keeps rows for re-slugged/removed lessons (tl/05 was rebuilt once),
+    // and counting orphans can mark a theme "completed" while live lessons
+    // remain undone — and push done past total.
+    const validSlugs = new Set(getThemeLessons(slug).map((l) => l.slug));
+    let done = 0;
+    for (const lessonId of completedByTheme.get(slug) ?? []) {
+      if (validSlugs.has(lessonId)) done += 1;
+    }
     return {
       slug,
       position,

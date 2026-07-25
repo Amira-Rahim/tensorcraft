@@ -32,6 +32,27 @@ Status key: **[FIXED]** this session · **[OPEN]** · **[WONTFIX]** owner decisi
 > polish, §4 a11y sweep + DISPATCH, §5 theme-2 prereqs, §7 security-low +
 > data-integrity + CI/CD groups, §9 scale debt). This file stays the
 > findings record; statuses here are not updated as items get fixed.
+>
+> **Re-baselined 2026-07-25 (Round 3 + run 2, `docs/launch-blockers.md`).**
+> Per the rule above, entry statuses below are NOT edited — read these
+> [OPEN] items as CLOSED in code since this register was written: §2 tax
+> handling + invoice_creation (flag-gated `taxSessionParams`, migration
+> 047), waitlist consent (migration 050 + explicit digest opt-in), Vercel
+> Analytics pre-consent + no-withdrawal-path (ConsentGatedVercelAnalytics +
+> footer Cookie settings), GDPR-export/deletion still open; §3 migration
+> tracking (042 ledger + `pnpm migrate:status` + CI job); §4 env-doc traps
+> (GITHUB_APP vars deleted, Upstash "throws" refuted — silent degradation,
+> CERT_SIGNING_SECRET + STRIPE_TAX_ENABLED documented, rate-limit docs now
+> 60/min), Dependabot config now exists + `pnpm audit --prod` is a CI step
+> — and the 2026-07-21 "0 vulnerabilities" snapshot went stale within 4
+> days (Next.js/sharp/brace-expansion advisories; bumped clean 2026-07-25);
+> §5 step bar/waitlist focus/reveals/aria-pressed/h1s/border-token fixed,
+> e2e webServer 180s, runner 30s, opacity census 41→22 all-passing; §6
+> capstone-sitemap/session_expired/PreOrder/numberOfCredits/og:url fixed,
+> both 404 CTAs public, admin digest links fixed. The 038 trigger gained a
+> transaction-local escape hatch + dispute-won restoration RPC (migration
+> 051) — the incident-runbook reconciliation item should use
+> `restore_purchase_after_dispute` as the sanctioned repair path.
 
 ---
 

@@ -149,16 +149,15 @@ where table_schema='public' and table_name in (
 - `KIT_WEBHOOK_SECRET`
 - `KIT_TAG_SIGNED_UP`, `KIT_TAG_ONBOARDED`, `KIT_TAG_FIRST_LESSON`, `KIT_TAG_CAPSTONE`, `KIT_TAG_PURCHASED`, `KIT_TAG_EMAIL_ALERTS`, `KIT_TAG_WEEKLY_DIGEST`
 
-**GitHub integration:**
-- `GITHUB_APP_ID`
-- `GITHUB_PRIVATE_KEY` (PEM contents)
+**GitHub integration:** (App-key vars removed 2026-07-25 — nothing reads
+them since packages/github was deleted; OAuth vars are the live ones)
 - `GITHUB_CLIENT_ID`
 - `GITHUB_CLIENT_SECRET`
 - `GITHUB_CALLBACK_URL` (e.g., `https://api.tensorcraft.app/api/github/callback`)
 
 **Other:**
 - `CERT_SIGNING_SECRET` (rotate periodically)
-- `CORS_ALLOWED_ORIGINS=https://tensorcraft.app`
+- `CORS_ORIGINS=https://tensorcraft.app` (code reads `CORS_ORIGINS`; the old `CORS_ALLOWED_ORIGINS` name here was the last surviving trap — fixed 2026-07-25)
 - `SUPPORT_EMAIL` (for issue notifications)
 
 ### A4. Vercel web env vars — production

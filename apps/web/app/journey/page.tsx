@@ -37,6 +37,21 @@ export default async function JourneyPage() {
 
   const state = user ? await getJourneyState(user.id) : null;
 
+  // Record the durable completion timestamp the moment the closed ring is
+  // observed. Migration 044's header promises "recording it once … gives a
+  // durable completion timestamp", but nothing ever wrote the column (R3-6)
+  // — completedAt was permanently null. Idempotent (fires only while null),
+  // self-scoped under the journey_enrollment RLS policy, and best-effort:
+  // the ring UI derives ringComplete independently, so a failed write only
+  // delays the timestamp until the next visit.
+  if (user && state?.enrolled && state.ringComplete && !state.completedAt) {
+    await supabase
+      .from("journey_enrollment")
+      .update({ completed_at: new Date().toISOString() })
+      .eq("user_id", user.id)
+      .is("completed_at", null);
+  }
+
   return (
     <main className="min-h-screen bg-page px-6 py-20">
       <div className="max-w-3xl mx-auto">

@@ -88,15 +88,24 @@ export default async function PurchaseSuccessPage({
     stripe_session_id: string | null;
   } | null = null;
 
+  // A bounced delayed payment (async_payment_failed → status "failed") must
+  // not render as "Almost There" with a poller promising "nothing is lost by
+  // waiting" — that reads as still-confirming forever. Track it so the hero
+  // can say what actually happened and point back at checkout.
+  let paymentFailed = false;
+
   if (sessionId) {
     const { data } = await supabase
       .from("purchases")
-      .select(selectCols)
+      .select(`${selectCols}, status`)
       .eq("user_id", user.id)
       .eq("stripe_session_id", sessionId)
-      .eq("status", "completed")
       .maybeSingle();
-    purchase = data ?? null;
+    if (data?.status === "completed") {
+      purchase = data;
+    } else if (data?.status === "failed") {
+      paymentFailed = true;
+    }
   }
 
   // Fallback to the most recent completed purchase ONLY when the page was
@@ -168,17 +177,34 @@ export default async function PurchaseSuccessPage({
             &#10003;
           </div>
           <h1 className="text-4xl sm:text-6xl font-bold font-mono uppercase tracking-tight mb-4 text-text-primary">
-            {purchase ? <>You&apos;re In</> : <>Almost There</>}
+            {purchase ? (
+              <>You&apos;re In</>
+            ) : paymentFailed ? (
+              <>Payment Didn&apos;t Go Through</>
+            ) : (
+              <>Almost There</>
+            )}
           </h1>
           <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto">
             {purchase
               ? firstTheme
                 ? `${firstTheme.displayName} is yours: all ${firstThemeModules.length} modules are open.`
                 : "Your purchase is confirmed. Everything you bought is open."
-              : "We're confirming your payment with Stripe. This usually takes a few seconds; this page updates itself the moment it clears."}
+              : paymentFailed
+                ? "Your payment method declined the charge, so nothing was billed and no access was granted. You can try again with a different method."
+                : "We're confirming your payment with Stripe. This usually takes a few seconds; this page updates itself the moment it clears."}
           </p>
+          {paymentFailed && (
+            <Link
+              href="/pricing"
+              data-testid="payment-failed-retry"
+              className="mt-6 inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover"
+            >
+              Back to pricing &rarr;
+            </Link>
+          )}
         </div>
-        {!purchase && <PendingPoller sessionId={sessionId} />}
+        {!purchase && !paymentFailed && <PendingPoller sessionId={sessionId} />}
 
         {purchase && (
           <PurchaseAnalytics

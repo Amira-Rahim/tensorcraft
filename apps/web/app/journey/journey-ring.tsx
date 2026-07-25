@@ -27,9 +27,16 @@ export function JourneyRing({
         const manifest = themes[t.slug];
         const live = isLaunched(t.slug);
         const isNext = recommendedNext === t.slug;
+        // Clamp: theme_progress can carry rows for re-slugged/removed lessons
+        // (tl/05 was rebuilt once already), so completedLessons can exceed
+        // totalLessons. An unclamped value renders a bar wider than its track
+        // and a false "Complete".
         const pct =
           t.totalLessons > 0
-            ? Math.round((t.completedLessons / t.totalLessons) * 100)
+            ? Math.min(
+                100,
+                Math.round((t.completedLessons / t.totalLessons) * 100),
+              )
             : 0;
 
         const statusLabel = t.completed

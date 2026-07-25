@@ -753,6 +753,12 @@ export interface Database {
         Args: { p_user_id: string; p_theme_id: string };
         Returns: void;
       };
+      // Migration 051: dispute-won restoration through the 038 trigger's
+      // transaction-local escape hatch. Service-role only.
+      restore_purchase_after_dispute: {
+        Args: { p_payment_intent: string };
+        Returns: number;
+      };
       get_shared_certificate: {
         Args: { p_id: string };
         Returns: Array<{

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { track, EVENTS } from "@/lib/analytics-events";
 
 /**
  * Opt into the canonical journey. Writes directly to journey_enrollment via
@@ -21,6 +22,9 @@ export function EnrollButton() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
+        // Re-arm before navigating: if the user comes back via history the
+        // button must not sit on a dead "Enrolling…".
+        setState("idle");
         router.push("/auth?redirectTo=/journey");
         return;
       }
@@ -34,6 +38,12 @@ export function EnrollButton() {
         setState("error");
         return;
       }
+      track(EVENTS.JOURNEY_ENROLLED, { source: "journey_page" });
+      // refresh() swaps this button out for the enrolled view. Re-arm the
+      // local state anyway: if the refreshed render races a read replica and
+      // still shows the un-enrolled page, the learner keeps a live button
+      // instead of a spinner that never resolves.
+      setState("idle");
       router.refresh();
     } catch {
       setState("error");

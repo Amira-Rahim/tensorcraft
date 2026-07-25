@@ -1,0 +1,24 @@
+# Dependency-update surfacing (full-audit §4 gap: "no Dependabot/Renovate
+# config, so nothing surfaces the NEXT CVE"). Weekly, grouped, low-noise:
+# security updates always open PRs; version bumps are batched so the queue
+# stays reviewable by one person.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /apps/api
+    schedule:
+      interval: weekly

@@ -16,12 +16,25 @@ export async function submitWaitlist(
   email: string,
   themeId: string,
   source: string,
+  opts?: {
+    /**
+     * Explicit opt-in to the weekly digest. Only the newsletter modal — an
+     * actual newsletter signup — passes true. Theme waitlist forms leave it
+     * false: "tell me when this theme ships" is not newsletter consent
+     * (GDPR Art. 4(11); Tier 1-LEGAL waitlist consent fix, migration 050
+     * flipped the column default to false to match).
+     */
+    subscribeToDigest?: boolean;
+  },
 ): Promise<"done" | "error"> {
   try {
     const supabase = getSupabaseBrowserClient();
-    const { error } = await supabase
-      .from("waitlist")
-      .insert({ email: email.trim(), theme_id: themeId, source });
+    const { error } = await supabase.from("waitlist").insert({
+      email: email.trim(),
+      theme_id: themeId,
+      source,
+      subscribed: opts?.subscribeToDigest === true,
+    });
 
     // 23505 = unique violation: already on the list, which is a success from
     // the visitor's point of view.

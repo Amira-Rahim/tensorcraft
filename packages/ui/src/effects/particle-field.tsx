@@ -71,10 +71,11 @@ export function ParticleField({
     // unmount cleanup is consistent, but we skip all drawing work.
     const ctx = canvas.getContext("2d");
 
-    const prefersReducedMotion =
-      typeof window !== "undefined" &&
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mql =
+      typeof window !== "undefined" && typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)")
+        : null;
+    let reducedMotion = mql?.matches === true;
 
     const clamped = Math.max(0, Math.min(1, density));
     const count = Math.max(
@@ -102,10 +103,19 @@ export function ParticleField({
       });
     };
 
+    // Resolving the CSS variable is a getComputedStyle call — a style/layout
+    // read that must NOT run every rAF frame on the landing hero (the rule
+    // ticker.tsx and scene-canvas.tsx state explicitly; R3-7). Resolve once,
+    // re-resolve only when the scheme/theme attribute actually changes.
+    let fillColor = resolveColor(canvas, colorToken);
+    const refreshColor = () => {
+      fillColor = resolveColor(canvas, colorToken);
+    };
+
     const drawFrame = () => {
       if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = resolveColor(canvas, colorToken);
+      ctx.fillStyle = fillColor;
       for (const p of particles) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -117,35 +127,6 @@ export function ParticleField({
 
     // Static render first, covers both reduced-motion and initial paint.
     drawFrame();
-
-    if (prefersReducedMotion) {
-      // Respect the user's preference - no rAF loop, no observers beyond
-      // ResizeObserver so the static scatter stays sharp on reflow.
-      const ro = new ResizeObserver(() => {
-        applySize();
-        drawFrame();
-      });
-      ro.observe(canvas);
-      // Intersection observer is still attached so the unmount-cleanup tests
-      // consistently see both observers being disposed.
-      const io = new IntersectionObserver(() => {});
-      io.observe(canvas);
-      // The static frame bakes the resolved --tc-* color, so a scheme or
-      // narrative-theme flip would leave stale-colored dots on the new
-      // background until a resize. Repaint on the attribute change - the
-      // same fix AmbientBackground and SceneCanvas carry (2026-07-23
-      // transition audit).
-      const mo = new MutationObserver(() => drawFrame());
-      mo.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["data-scheme", "data-theme"],
-      });
-      return () => {
-        ro.disconnect();
-        io.disconnect();
-        mo.disconnect();
-      };
-    }
 
     let rafId: number | null = null;
     let isVisible = true;
@@ -165,7 +146,7 @@ export function ParticleField({
     };
 
     const start = () => {
-      if (rafId != null) return;
+      if (rafId != null || reducedMotion || !isVisible) return;
       rafId = window.requestAnimationFrame(step);
     };
     const stop = () => {
@@ -177,6 +158,7 @@ export function ParticleField({
 
     const ro = new ResizeObserver(() => {
       applySize();
+      drawFrame();
     });
     ro.observe(canvas);
 
@@ -192,13 +174,43 @@ export function ParticleField({
     );
     io.observe(canvas);
 
-    // Kick off immediately; IO will pause us if we're off-screen on mount.
+    // Any frame (static or animated) bakes the resolved --tc-* color, so a
+    // scheme or narrative-theme flip would leave stale-colored dots until a
+    // resize. Re-resolve + repaint on the attribute change — the same fix
+    // AmbientBackground and SceneCanvas carry (2026-07-23 transition audit).
+    const mo = new MutationObserver(() => {
+      refreshColor();
+      drawFrame();
+    });
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-scheme", "data-theme"],
+    });
+
+    // Live reduced-motion tracking (effects/index.ts contract #1): enabling
+    // the OS setting mid-session must stop the loop, not leave 60fps running
+    // until remount (R3-7); disabling it resumes if visible.
+    const onMotionChange = (e: MediaQueryListEvent) => {
+      reducedMotion = e.matches;
+      if (reducedMotion) {
+        stop();
+        drawFrame();
+      } else {
+        start();
+      }
+    };
+    mql?.addEventListener?.("change", onMotionChange);
+
+    // Kick off immediately; IO pauses us if off-screen, start() no-ops
+    // under reduced motion.
     start();
 
     return () => {
       stop();
       ro.disconnect();
       io.disconnect();
+      mo.disconnect();
+      mql?.removeEventListener?.("change", onMotionChange);
       particles = [];
     };
   }, [density, colorToken]);

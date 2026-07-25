@@ -62,7 +62,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://tensorcraft.app/themes/${slug}/${moduleSlug}/${lessonSlug}`,
     },
+    // Full blocks — images-only openGraph shallow-replaces the root block,
+    // dropping og:url and inheriting the homepage twitter card on every
+    // lesson share (R3-7).
     openGraph: {
+      type: "article",
+      url: `https://tensorcraft.app/themes/${slug}/${moduleSlug}/${lessonSlug}`,
+      title: `${lesson.title} | ${theme.displayName} | Tensorcraft`,
+      images: [
+        `/api/og?title=${encodeURIComponent(lesson.title)}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${lesson.title} | ${theme.displayName} | Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(lesson.title)}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
       ],

@@ -136,6 +136,10 @@ export function DeepScanDemo({
           await new Promise((r) =>
             setTimeout(r, i === STREAM.length - 1 ? 900 : 450),
           );
+          // Re-check AFTER the await: unmount during the sleep otherwise
+          // still fires one setRows on a dead component (the sibling checks
+          // at loadDeepScan and setStatus got this right).
+          if (cancelled) return;
           setRows((prev) =>
             prev.map((row, j) =>
               j === i ? { ...row, score: scores[i] } : row,

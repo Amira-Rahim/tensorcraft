@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import {
   DEFAULT_THEME,
   LAUNCHED_THEMES,
-  PRICING,
   SCHEME_STORAGE_KEY,
 } from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
@@ -19,7 +18,7 @@ import { SessionToast } from "./components/session-toast";
 import { GithubNudgeToast } from "./components/github-nudge-toast";
 import { GuestProgressBridge } from "./components/guest-progress-bridge";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
+import { ConsentGatedVercelAnalytics } from "./components/consent-gated-vercel-analytics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -154,146 +153,12 @@ export default function RootLayout({
                   "Interactive, story-driven ML education for frontend engineers.",
                 sameAs: [],
               },
-              {
-                "@context": "https://schema.org",
-                "@type": "Course",
-                name: "Deep Orbit: Time-Series & Signals",
-                description:
-                  "Build a deep-space signal classifier using RNNs and LSTMs. A story-driven course teaching time-series analysis and signal processing using browser-based ML. Built for frontend engineers.",
-                provider: {
-                  "@type": "Organization",
-                  name: "Tensorcraft",
-                  url: "https://tensorcraft.app",
-                },
-                url: "https://tensorcraft.app/themes/deep-orbit",
-                educationalLevel: "Intermediate",
-                programmingLanguage: ["JavaScript", "TypeScript"],
-                teaches: [
-                  "Time-series analysis",
-                  "Signal processing",
-                  "RNNs and LSTMs",
-                  "Browser-based machine learning",
-                  "TensorFlow.js",
-                ],
-                offers: {
-                  "@type": "Offer",
-                  price: String(PRICING.single.price),
-                  priceCurrency: "USD",
-                  availability: "https://schema.org/InStock",
-                },
-              },
-              {
-                "@context": "https://schema.org",
-                "@type": "Course",
-                name: "Neon Protocol: Computer Vision",
-                description:
-                  "Build an urban anomaly detection system using CNNs. A story-driven course teaching computer vision and image processing using browser-based ML. Built for frontend engineers.",
-                provider: {
-                  "@type": "Organization",
-                  name: "Tensorcraft",
-                  url: "https://tensorcraft.app",
-                },
-                url: "https://tensorcraft.app/themes/neon-protocol",
-                educationalLevel: "Intermediate",
-                programmingLanguage: ["JavaScript", "TypeScript"],
-                teaches: [
-                  "Computer vision",
-                  "Convolutional neural networks",
-                  "Image classification",
-                  "Object detection",
-                  "Browser-based machine learning",
-                ],
-                offers: {
-                  "@type": "Offer",
-                  price: String(PRICING.single.price),
-                  priceCurrency: "USD",
-                  availability: "https://schema.org/OutOfStock",
-                },
-              },
-              {
-                "@context": "https://schema.org",
-                "@type": "Course",
-                name: "Signal Ward: NLP & Text Intelligence",
-                description:
-                  "Build a clinical text intelligence assistant using transformers. A story-driven course teaching NLP and text processing using browser-based ML. Built for frontend engineers.",
-                provider: {
-                  "@type": "Organization",
-                  name: "Tensorcraft",
-                  url: "https://tensorcraft.app",
-                },
-                url: "https://tensorcraft.app/themes/signal-ward",
-                educationalLevel: "Intermediate",
-                programmingLanguage: ["JavaScript", "TypeScript"],
-                teaches: [
-                  "Natural language processing",
-                  "Transformer models",
-                  "Text classification",
-                  "Sentiment analysis",
-                  "Transformers.js",
-                ],
-                offers: {
-                  "@type": "Offer",
-                  price: String(PRICING.single.price),
-                  priceCurrency: "USD",
-                  availability: "https://schema.org/OutOfStock",
-                },
-              },
-              {
-                "@context": "https://schema.org",
-                "@type": "Course",
-                name: "Nova Canvas: Multimodal & Generative AI",
-                description:
-                  "Build a multimodal creative assistant using GANs and diffusion. A story-driven course teaching generative AI and multimodal systems using browser-based ML. Built for frontend engineers.",
-                provider: {
-                  "@type": "Organization",
-                  name: "Tensorcraft",
-                  url: "https://tensorcraft.app",
-                },
-                url: "https://tensorcraft.app/themes/nova-canvas",
-                educationalLevel: "Intermediate",
-                programmingLanguage: ["JavaScript", "TypeScript"],
-                teaches: [
-                  "Generative adversarial networks",
-                  "Diffusion models",
-                  "Multimodal AI",
-                  "Image generation",
-                  "Browser-based machine learning",
-                ],
-                offers: {
-                  "@type": "Offer",
-                  price: String(PRICING.single.price),
-                  priceCurrency: "USD",
-                  availability: "https://schema.org/OutOfStock",
-                },
-              },
-              {
-                "@context": "https://schema.org",
-                "@type": "Course",
-                name: "Terra Grid: Edge AI & Production ML",
-                description:
-                  "Build an edge-deployed monitoring system with MLOps. A story-driven course teaching Edge AI and production ML systems using browser-based ML. Built for frontend engineers.",
-                provider: {
-                  "@type": "Organization",
-                  name: "Tensorcraft",
-                  url: "https://tensorcraft.app",
-                },
-                url: "https://tensorcraft.app/themes/terra-grid",
-                educationalLevel: "Intermediate",
-                programmingLanguage: ["JavaScript", "TypeScript"],
-                teaches: [
-                  "Edge AI deployment",
-                  "MLOps",
-                  "Model optimization",
-                  "Production machine learning",
-                  "TensorFlow.js",
-                ],
-                offers: {
-                  "@type": "Offer",
-                  price: String(PRICING.single.price),
-                  priceCurrency: "USD",
-                  availability: "https://schema.org/OutOfStock",
-                },
-              },
+              // The five per-theme Course objects that used to live here were
+              // removed 2026-07-25 (R3-7): they rendered on EVERY route and
+              // duplicated the richer page-level Course JSON-LD on
+              // /themes/[slug] (different name + offer for the same URL),
+              // risking rich-result confusion. Course markup now lives only
+              // on the page that describes the course.
               {
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
@@ -317,7 +182,11 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col font-sans">
         <PlausibleScript />
-        <Analytics />
+        {/* Consent-gated (Tier 1-LEGAL): renders nothing pre-consent and
+            drops queued events via beforeSend after a withdrawal. The bare
+            <Analytics /> that sat here beaconed before consent and after
+            an explicit reject. */}
+        <ConsentGatedVercelAnalytics />
         <ThemeProvider>
           {/* <PostHogProvider> was mounted here too. It duplicated
               AnalyticsProvider's init and $pageview capture exactly, so every

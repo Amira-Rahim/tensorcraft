@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { LessonSteps } from "./lesson-steps";
+import { trackLessonCompleted } from "@/lib/analytics";
+import { markLessonCompleted, emitSkillEvent } from "@/lib/progress-client";
 
 // Stub next/link so render works without the Next router.
 vi.mock("next/link", () => ({
@@ -41,11 +43,15 @@ vi.mock("@tensorcraft/ui", () => ({
 vi.mock("@/lib/progress-client", () => ({
   markLessonStarted: vi.fn().mockResolvedValue(undefined),
   markLessonCompleted: vi.fn().mockResolvedValue(undefined),
+  emitSkillEvent: vi.fn(),
 }));
 
 vi.mock("@/lib/analytics", () => ({
   trackLessonStarted: vi.fn(),
   trackLessonCompleted: vi.fn(),
+  // The Skip control now emits script_skipped through the typed helper.
+  track: vi.fn(),
+  EVENTS: { SCRIPT_SKIPPED: "script_skipped" },
 }));
 
 // Reaching the final step fires a lazy import chain (api-url → supabase
@@ -282,6 +288,38 @@ describe("LessonSteps, step navigation chrome", () => {
     expect(screen.getByText("3 / 6")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /back/i }));
     expect(screen.getByText("2 / 6")).toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, completion signal dedupe (R3-7 / diff review D1)", () => {
+  beforeEach(() => {
+    vi.mocked(trackLessonCompleted).mockClear();
+    vi.mocked(emitSkillEvent).mockClear();
+    vi.mocked(markLessonCompleted).mockClear();
+  });
+
+  it("does NOT re-fire completion analytics or skill events on a mount restored to step 5", () => {
+    // The refire scenario: a finished lesson is reloaded. prevStepRef alone
+    // cannot catch this (the effect's first run stamps prev=0 before the
+    // restore's setCurrentStep(5) lands), so restoredAtFinalStepRef must.
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    renderSteps();
+    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(trackLessonCompleted).not.toHaveBeenCalled();
+    expect(emitSkillEvent).not.toHaveBeenCalled();
+    // The completion WRITE always runs (idempotent upsert + guest bridge).
+    expect(markLessonCompleted).toHaveBeenCalledTimes(1);
+  });
+
+  it("fires completion analytics exactly once when walking into step 5 in-session", () => {
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
+    renderSteps();
+    expect(screen.getByText("5 / 6")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /continue|complete/i }));
+    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(trackLessonCompleted).toHaveBeenCalledTimes(1);
   });
 });
 

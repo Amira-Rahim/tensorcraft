@@ -29,7 +29,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : `${theme.displayName}: Module Map | Tensorcraft`,
     description: theme.description,
     alternates: { canonical: `https://tensorcraft.app/themes/${slug}` },
+    // Full openGraph + twitter blocks: an images-only openGraph REPLACES the
+    // root block (shallow merge), dropping og:url/type and inheriting the
+    // homepage twitter card on the highest-share route in the product (R3-7).
     openGraph: {
+      type: "website",
+      url: `https://tensorcraft.app/themes/${slug}`,
+      title: `${theme.displayName} | Tensorcraft`,
+      images: [
+        `/api/og?title=${encodeURIComponent(theme.displayName)}&theme=${slug}&subtitle=${encodeURIComponent(theme.specialization)}`,
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${theme.displayName} | Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(theme.displayName)}&theme=${slug}&subtitle=${encodeURIComponent(theme.specialization)}`,
       ],

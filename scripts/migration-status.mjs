@@ -79,7 +79,11 @@ async function main() {
         `  ${files.length} migration files on disk (001..${pad(files.at(-1)?.version ?? 0)}).\n` +
         `  Set the env vars to diff against the live ledger.\n`,
     );
-    process.exit(0);
+    // Locally, offline is informational. Under CI it must FAIL: a gate job
+    // with missing secrets otherwise reads as "ledger clean" when nothing
+    // was checked at all (R3-9) — the exact green-but-blind gate pattern
+    // the 2026-07-21 audit closed elsewhere.
+    process.exit(process.env.CI ? 2 : 0);
   }
 
   const appliedVersions = new Set(ledger.map((r) => r.version));

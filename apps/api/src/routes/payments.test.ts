@@ -25,6 +25,9 @@ let mockExistingPurchases: { theme_ids: string[]; amount: number }[] | null =
 const mockServerInsert = vi.fn();
 const mockProfileUpdate = vi.fn();
 let mockProfileEmail: string | null = "buyer@example.com";
+// Stored Stripe customer id on the buyer's profile (migration 043). When set,
+// checkout must pass `customer` instead of `customer_email`.
+let mockProfileCustomerId: string | null = null;
 
 vi.mock("stripe", () => ({
   default: class MockStripe {
@@ -39,8 +42,12 @@ vi.mock("stripe", () => ({
   },
 }));
 
+// charge.dispute.closed (won) restores access through the migration-051 RPC.
+const mockRpc = vi.fn();
+
 vi.mock("@tensorcraft/supabase", () => ({
   getSupabaseAdminClient: () => ({
+    rpc: (...args: unknown[]) => mockRpc(...args),
     from: (table: string) => {
       if (table === "purchases") {
         return {
@@ -123,14 +130,19 @@ vi.mock("@tensorcraft/supabase", () => ({
         };
       }
       if (table === "profiles") {
-        // Checkout reads the buyer's email so Stripe can address its
-        // abandoned-cart recovery mail. .select("email").eq("id", …).single()
+        // Checkout reads the buyer's email + stored Stripe customer id.
+        // .select("email, stripe_customer_id").eq("id", …).single()
         return {
           select: () => ({
             eq: () => ({
               single: () =>
                 Promise.resolve({
-                  data: mockProfileEmail ? { email: mockProfileEmail } : null,
+                  data: mockProfileEmail
+                    ? {
+                        email: mockProfileEmail,
+                        stripe_customer_id: mockProfileCustomerId,
+                      }
+                    : null,
                   error: null,
                 }),
             }),
@@ -150,6 +162,23 @@ const mockSendAccessLink = vi.fn(async () => {});
 vi.mock("../lib/guest-account", () => ({
   resolveOrCreateUserByEmail: (...args: unknown[]) => mockResolveUser(...args),
   sendPurchaseAccessLink: (...args: unknown[]) => mockSendAccessLink(...args),
+}));
+
+// Revenue analytics + Kit email are asserted on directly by the duplicate-
+// delivery tests: a re-delivered completed event must not double-fire either.
+const mockCaptureServer = vi.fn();
+vi.mock("../lib/posthog", () => ({
+  captureServer: (...args: unknown[]) => mockCaptureServer(...args),
+  SERVER_EVENTS: {
+    PAYMENT_COMPLETED: "payment_completed",
+    PAYMENT_REFUNDED: "payment_refunded",
+  },
+}));
+const mockAddSubscriber = vi.fn(async () => {});
+const mockTagSubscriber = vi.fn(async () => {});
+vi.mock("../lib/kit", () => ({
+  addSubscriber: (...args: unknown[]) => mockAddSubscriber(...args),
+  tagSubscriber: (...args: unknown[]) => mockTagSubscriber(...args),
 }));
 
 vi.mock("@tensorcraft/shared", () => ({
@@ -670,6 +699,240 @@ describe("POST /api/payments/webhook", () => {
     );
   });
 
+  it("does not re-fire revenue event or email on a duplicate completed delivery (R3-4c)", async () => {
+    // Row already completed; Stripe re-delivers checkout.session.completed.
+    mockAdminExistingRow = { status: "completed" };
+    mockInsert.mockResolvedValue({ error: null });
+    mockCaptureServer.mockReset();
+    mockAddSubscriber.mockReset();
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_dup",
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "paid",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    // The sync path must mirror the async guard: no duplicate revenue
+    // source-of-truth event, no duplicate confirmation email.
+    expect(mockCaptureServer).not.toHaveBeenCalled();
+    expect(mockAddSubscriber).not.toHaveBeenCalled();
+  });
+
+  it("writes pending rows with ON CONFLICT DO NOTHING so a retried unpaid event cannot demote a promotion (R3-4b)", async () => {
+    mockInsert.mockResolvedValue({ error: null });
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_delayed_race",
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "unpaid",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "pending" }),
+      expect.objectContaining({ ignoreDuplicates: true }),
+    );
+  });
+
+  it("keeps ON CONFLICT DO UPDATE for completed writes so promotion still works (R3-4b)", async () => {
+    mockAdminExistingRow = { status: "pending" };
+    mockInsert.mockResolvedValue({ error: null });
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_promote",
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "paid",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "completed" }),
+      expect.objectContaining({ ignoreDuplicates: false }),
+    );
+  });
+
+  it("requests a retry (non-2xx) when a dispute matches no purchase row (R3-4a)", async () => {
+    // Same contract as the refund zero-row fix: ACKing a dispute that
+    // matched nothing permanently loses the access revocation.
+    mockEqResult = { data: [], error: null };
+
+    const event = {
+      type: "charge.dispute.created",
+      data: {
+        object: { id: "dp_1", payment_intent: "pi_orphan_dispute" },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(500);
+  });
+
+  it("revokes access when a dispute matches a purchase row (R3-4a)", async () => {
+    mockEqResult = { data: [{ id: "p_disputed" }], error: null };
+
+    const event = {
+      type: "charge.dispute.created",
+      data: {
+        object: { id: "dp_2", payment_intent: "pi_disputed_ok" },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockUpdate).toHaveBeenCalledWith({ status: "disputed" });
+    expect(mockEq).toHaveBeenCalledWith(
+      "stripe_payment_intent",
+      "pi_disputed_ok",
+    );
+  });
+
+  it("restores access via the 051 RPC when a dispute is WON (F2)", async () => {
+    mockRpc.mockReset();
+    mockRpc.mockResolvedValue({ data: 1, error: null });
+
+    const event = {
+      type: "charge.dispute.closed",
+      data: {
+        object: { id: "dp_won", status: "won", payment_intent: "pi_won_1" },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    // A plain UPDATE would be clamped back to "disputed" by the 038
+    // trigger; the RPC is the only sanctioned restoration path.
+    expect(mockRpc).toHaveBeenCalledWith("restore_purchase_after_dispute", {
+      p_payment_intent: "pi_won_1",
+    });
+  });
+
+  it("requests a retry when a WON dispute restores zero rows (F2)", async () => {
+    mockRpc.mockReset();
+    mockRpc.mockResolvedValue({ data: 0, error: null });
+
+    const event = {
+      type: "charge.dispute.closed",
+      data: {
+        object: { id: "dp_won2", status: "won", payment_intent: "pi_won_2" },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(500);
+  });
+
+  it("leaves a LOST dispute terminally disputed (F2)", async () => {
+    mockRpc.mockReset();
+
+    const event = {
+      type: "charge.dispute.closed",
+      data: {
+        object: { id: "dp_lost", status: "lost", payment_intent: "pi_lost" },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockRpc).not.toHaveBeenCalled();
+  });
+
   it("acknowledges unhandled event types", async () => {
     const event = {
       type: "invoice.paid",
@@ -704,6 +967,7 @@ describe("Upgrade path", () => {
     mockServerInsert.mockReset();
     mockExistingPurchases = null;
     mockProfileEmail = "buyer@example.com";
+    mockProfileCustomerId = null;
   });
 
   async function checkout(body: { planId: string; themeIds: string[] }) {
@@ -770,6 +1034,44 @@ describe("Upgrade path", () => {
         }),
       }),
     );
+  });
+
+  it("reuses the stored Stripe customer instead of customer_email (R3-4f)", async () => {
+    mockProfileCustomerId = "cus_stored_123";
+
+    const res = await checkout({ planId: "single", themeIds: ["deep-orbit"] });
+
+    expect(res.status).toBe(200);
+    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
+      customer?: string;
+      customer_email?: string;
+    };
+    // `customer` and `customer_email` are mutually exclusive on the Stripe
+    // API; the stored Customer must win so repeat buyers don't mint
+    // duplicates once invoice_creation is enabled.
+    expect(arg.customer).toBe("cus_stored_123");
+    expect(arg.customer_email).toBeUndefined();
+  });
+
+  it("falls back to customer_email when the stored customer is rejected (R3-4f)", async () => {
+    mockProfileCustomerId = "cus_stale_deleted";
+    mockSessionCreate
+      .mockRejectedValueOnce(new Error("No such customer: cus_stale_deleted"))
+      .mockResolvedValueOnce({ url: "https://stripe.test/retry" });
+
+    const res = await checkout({ planId: "single", themeIds: ["deep-orbit"] });
+
+    // A stale saved id must never block a sale.
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledTimes(2);
+    const retryArg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
+      customer?: string;
+      customer_email?: string;
+    };
+    expect(retryArg.customer).toBeUndefined();
+    expect(retryArg.customer_email).toBe("buyer@example.com");
+    const body = await res.json();
+    expect(body.url).toBe("https://stripe.test/retry");
   });
 
   it("still creates a session when the profile has no email", async () => {

@@ -166,7 +166,10 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
             <li key={`${m.themeId}/${m.moduleId}/${m.slug}`}>
               <span className="font-mono text-xs opacity-60">[{m.score}]</span>{" "}
               <a
-                href={`/learn/${m.themeId}/${m.moduleId}/${m.slug}`}
+                // Lesson routes live under /themes — the old /learn/... form
+                // predates the route rename and 404'd (register §6 "broken
+                // admin link"; /learn is now a single marketing page).
+                href={`/themes/${m.themeId}/${m.moduleId}/${m.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium hover:underline"

@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
@@ -33,6 +33,12 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      # Surfaces the NEXT CVE instead of relying on someone remembering to
+      # run it (full-audit §4: "pnpm audit is not a CI step"). Prod deps
+      # only; moderate floor keeps dev-chain noise out of the signal.
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level moderate
 
       - name: Typecheck
         run: pnpm typecheck
@@ -72,13 +78,18 @@ jobs:
           restore-keys: |
             playwright-${{ runner.os }}-
 
+      # webkit is REQUIRED, not optional: the mobile-iphone-se and
+      # tablet-ipad Playwright projects are WebKit-engined. Installing only
+      # chromium meant the mobile e2e gate failed with "Executable doesn't
+      # exist" on every browser-cache miss and otherwise rode a stale
+      # restore-key cache (R3-9).
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: Install Playwright deps (cached)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps chromium
+        run: pnpm exec playwright install-deps chromium webkit
 
       - name: Run E2E tests
         run: pnpm test:e2e
@@ -92,6 +103,38 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 7
+
+  migrations:
+    name: Migration ledger drift check
+    runs-on: ubuntu-latest
+    # ALWAYS runs, and HARD-FAILS until SUPABASE_URL +
+    # SUPABASE_SERVICE_ROLE_KEY exist as repo secrets (the script exits 2
+    # under CI when they are missing — fail-closed by design, never a
+    # silent green; R3-9). Fork PRs have no secrets and will always fail
+    # this job. Pending migrations exit 1 and fail the job, surfacing
+    # "code assumes a schema production doesn't have yet" before deploy —
+    # exactly the 047 class of failure (R3-2).
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check migration ledger
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: pnpm migrate:status
 
   links:
     name: Broken-link check (docs + markdown)

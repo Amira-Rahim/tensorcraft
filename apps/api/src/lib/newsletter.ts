@@ -233,6 +233,14 @@ export async function sendDigestNewsletter(
 
   const subject = `The Bridge: ${weekIso}`;
 
+  // Resend's default rate limit is 2 requests/second. An unthrottled loop
+  // over a launch-sized list (~500 recipients, §10b) gets the bulk 429'd —
+  // and because the SDK never throws (see below), it would previously have
+  // reported them all as sent. 600ms spacing stays safely under the limit;
+  // a weekly digest is not latency-sensitive. Zero under test so the suite
+  // doesn't sleep.
+  const SEND_SPACING_MS = process.env.NODE_ENV === "test" ? 0 : 600;
+
   for (const r of list) {
     const unsubUrl = `${SITE}/unsubscribe?token=${r.unsubscribe_token}`;
     // RFC 8058: providers POST to the List-Unsubscribe URL. The human
@@ -240,7 +248,12 @@ export async function sendDigestNewsletter(
     // (2026-07-13 P4 audit: provider one-click POSTs were bouncing 405).
     const oneClickUrl = `${SITE}/unsubscribe/one-click?token=${r.unsubscribe_token}`;
     try {
-      await client.emails.send({
+      // The Resend SDK does NOT throw on failure: 4xx/5xx/429 and network
+      // errors all resolve `{ data: null, error }`. Ignoring `error` made
+      // `result.failed` structurally unreachable — every failed send
+      // counted as sent, with zero Sentry captures (gap sweep F1,
+      // 2026-07-25; same defect class as the supabase-js R3-4e fix).
+      const { error: sendError } = await client.emails.send({
         from: FROM,
         to: r.email,
         subject,
@@ -251,7 +264,15 @@ export async function sendDigestNewsletter(
           "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
       });
-      result.sent += 1;
+      if (sendError) {
+        result.failed += 1;
+        captureException(new Error(sendError.message), {
+          source: "newsletter.send",
+          extra: { email: r.email, weekIso, name: sendError.name },
+        });
+      } else {
+        result.sent += 1;
+      }
     } catch (err) {
       result.failed += 1;
       captureException(err, {
@@ -259,6 +280,7 @@ export async function sendDigestNewsletter(
         extra: { email: r.email, weekIso },
       });
     }
+    await new Promise((resolve) => setTimeout(resolve, SEND_SPACING_MS));
   }
 
   logger.info(

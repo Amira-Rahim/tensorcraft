@@ -14,7 +14,7 @@ This document covers the production deployment architecture, scaling configurati
 [Vercel: Next.js App] → SSR (ISR planned for Phase 3)
        ↓ (client-side API calls)
 [Cloudflare CDN] → [Fly.io: Hono API ×3-5]
-                         → [Upstash Redis] (rate limiting + JWT cache + query cache)
+                         → [Upstash Redis] (rate limiting + JWT cache)
                          → [Supabase Supavisor] → [Postgres Primary]
                                                  → [Postgres Read Replica]
                          → [Inngest] → Background Workers (Phase 5)
@@ -133,7 +133,7 @@ Pre-computed aggregation prepared to replace 4 parallel queries on dashboard loa
 
 ## Upstash Redis
 
-**Required** — the API will not start without `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
+**Effectively required in production** — but note the real failure mode: the API BOOTS AND SERVES without `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`; every call site catches the client's throw, so rate limiting, the JWT cache, and issue-flood control are all **silently disabled** (a security degradation, not an outage). Verified 2026-07-25 (R3-10).
 
 ### Usage
 
@@ -146,9 +146,9 @@ Pre-computed aggregation prepared to replace 4 parallel queries on dashboard loa
 
 ### Rate Limiting
 
-Sliding-window algorithm using sorted sets. 120 requests/minute per IP (increased from 60 to support multi-tab usage). Consistent across all API instances. Graceful degradation: if Redis is unavailable, requests are allowed through (logged for monitoring). Headers returned:
+Sliding-window algorithm using sorted sets. **60 requests/minute per IP** (code truth, `rate-limit.ts:5`; the old "120, increased from 60" note described an increase that was never shipped — reconciled 2026-07-25). Consistent across all API instances. Graceful degradation: if Redis is unavailable, requests are allowed through (logged for monitoring). Headers returned:
 
-- `X-RateLimit-Limit: 120`
+- `X-RateLimit-Limit: 60`
 - `X-RateLimit-Remaining: N`
 - `Retry-After: 60` (on 429)
 

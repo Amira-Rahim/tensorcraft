@@ -230,9 +230,21 @@ export default function OnboardingPage() {
         // (custom access token hook, migration 046) immediately — otherwise the
         // learner's current token still reads false and middleware would bounce
         // the very next protected navigation back into onboarding until the
-        // token refreshed on its own. Best-effort: if the hook isn't enabled,
-        // this is a harmless no-op and middleware's profiles fallback covers it.
-        await supabase.auth.refreshSession();
+        // token refreshed on its own (middleware treats a PRESENT false claim
+        // as authoritative; the profiles fallback only covers an ABSENT one).
+        // A failed refresh is therefore worth one retry — but never worth
+        // blocking completion over: the DB row is already true, so the worst
+        // case is a bounce that resolves at the next natural token refresh.
+        const { error: refreshError } = await supabase.auth.refreshSession();
+        if (refreshError) {
+          const { error: retryError } = await supabase.auth.refreshSession();
+          if (retryError) {
+            console.warn(
+              "[onboarding] token refresh failed; stale onboarding_completed claim until next refresh",
+              retryError,
+            );
+          }
+        }
       }
 
       // 3. Tag onboarded in Kit (best-effort).

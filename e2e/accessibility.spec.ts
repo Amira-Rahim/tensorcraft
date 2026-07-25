@@ -12,6 +12,12 @@ const pages = [
   // theme page, auditing it just re-audits Theme Detail and races axe
   // against the navigation. Pricing is audited instead.
   { name: "Pricing", path: "/pricing" },
+  // /journey and /learn shipped 2026-07-23/24 with zero axe coverage
+  // (R3-6) — the exact "gate does not look there" failure mode this suite
+  // exists to prevent. Anonymous views: journey renders its signed-out
+  // band, learn is static.
+  { name: "Journey", path: "/journey" },
+  { name: "Learn", path: "/learn" },
   {
     name: "Lesson Viewer",
     path: "/themes/deep-orbit/foundations/introduction-to-tensors",

@@ -254,10 +254,14 @@ describe("NewsletterModal, interactions", () => {
     fireEvent.click(screen.getByTestId("newsletter-submit"));
 
     await waitFor(() => {
+      // The 4th arg is the explicit digest opt-in: this modal IS the
+      // newsletter signup, the only call site allowed to pass it
+      // (Tier 1-LEGAL waitlist consent fix, migration 050).
       expect(submitWaitlistMock).toHaveBeenCalledWith(
         "jane@example.com",
         "all",
         "theme-selection",
+        { subscribeToDigest: true },
       );
     });
 
