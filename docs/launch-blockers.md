@@ -856,8 +856,9 @@ has already been written off once (see above) — do not launch dark again.
   with zero warning (added 2026-07-22).
 - [x] **Migration + runbook safety** — closed 2026-07-25: `skill_events_old`
   VERIFIED still existing in production with ZERO rows (PostgREST probe);
-  **migration 057** now drops it (pending apply — the deploy gate will
-  block until it lands, by design). The 019 rollback-signature and
+  **migration 057** drops it — APPLIED to production 2026-07-26 (table
+  re-verified 0 rows immediately before drop; ledger IN SYNC 57/57;
+  deploy gate green). The 019 rollback-signature and
   runbook-vs-038 items were superseded earlier: the ledger (042) replaced
   the rollback-SQL page as the source of truth, and migration 051's
   `restore_purchase_after_dispute` is the sanctioned repair path the old
