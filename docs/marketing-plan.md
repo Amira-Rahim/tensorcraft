@@ -420,6 +420,55 @@ Create a library of shareable visual assets that illustrate the FE-to-ML bridge 
 - **Social calendar:** Publish one bridge graphic every day for 50 days as the "50 Days of Bridges" campaign. Schedule across Twitter/X, LinkedIn, and Instagram simultaneously. Each post includes the graphic and a 2-3 sentence caption explaining the bridge. Target: 50 days of consistent, highly shareable visual content that establishes Tensorcraft as the definitive source for FE-to-ML bridges.
 - **Blog integration:** Every blog post that discusses a bridge concept includes the corresponding bridge graphic as the hero image. Open Graph meta tags use the bridge graphic, ensuring the visual appears in social media shares. This creates a consistent visual language across all channels.
 
+## 4.10 Roadmap-Response Content (added 2026-07-27)
+
+> **Status: READY TO EXECUTE.** In scope for the V0.5 organic channels (blog + dev.to + email; X thread when the X push activates). The content prerequisite was closed on 2026-07-27: every topic in the reference roadmap now has a live lesson or deep-dive (see the map below), verified by a full coverage audit.
+
+### The signal
+
+On 2026-01-16, a plain-text X article titled "The Math Needed for AI/ML (Complete Roadmap)" (@TheVixhal) pulled **743K views** with tens of thousands of bookmarks. It is a topic list with resource links: no product, no code, no interactivity. Two facts make it a template rather than a one-off:
+
+1. **The audience is exactly Tensorcraft's ICP.** Developers asking "what do I need to learn for ML" is the top of our funnel, and the format ("the math you need") demonstrably reaches them at scale.
+2. **The top replies argue Tensorcraft's thesis for free.** The most-engaged responses said the roadmap is "overwhelming" as a prerequisite and that you should "learn as you go." That is our pedagogy, stated by the market, under a post with 743K views. Math-roadmap listicles go viral several times a year; each one is a recurring distribution event we can respond to.
+
+### The play
+
+Publish a standing **response asset**: "That viral ML math roadmap, except every topic is a running TypeScript lesson." It does not attack the roadmap format; it completes it. Roadmaps tell you *what* to learn and leave you alone with a textbook list. Our response hands the reader the same list where every line links to a lesson in which the concept is *used in code they can run in the browser*, with the math available on demand (derivation drawers + the math-deep-dive companion track).
+
+- **Primary asset:** blog post at `packages/content/content/blog/` ("The ML math roadmap, as running code"), structured as the topic map below with 2-3 sentences per topic on where it shows up in a working model. Free-module and guest-funnel links throughout; guest capture is already live.
+- **Derivatives:** dev.to cross-post (canonical to blog), an X thread version pinned during roadmap-virality windows, and one bridge graphic per §4.9 spec ("roadmap says: eigenvalues / Tensorcraft says: here is why your training run diverges").
+- **Counter-positioning line** (reusable on landing and /compare): "Roadmaps say learn 40 math topics first. Here is each one, taught inside the code that needs it."
+- **Repeatable trigger:** when any math-roadmap or "ML prerequisites" post is trending, reply with the relevant slice of the map plus the guest link. The asset is evergreen; the trigger is recurring.
+
+### The topic map (the asset's spine)
+
+Verified complete on 2026-07-27. "Deep dive" = `extras/math-deep-dive`; every deep dive is linked from a main lesson via a derivation drawer, so each row has both a "use it" and an "understand it" destination.
+
+| Roadmap topic | Where Tensorcraft teaches it |
+|---|---|
+| Populations, sampling, bias | Ethics extras: dataset bias; browser-runtimes data handling |
+| Mean, variance, std, baselines | Anomaly Detection 1 (z-score baselines from real telemetry) |
+| Random variables, PMF/PDF | Deep dive 6: Statistics of Signals |
+| Normal, Binomial, Uniform | Deep dive 6 (Binomial worked on the 64-channel board) |
+| Central Limit Theorem | Deep dive 6 (plus when it fails: heavy tails, correlation) |
+| Covariance, correlation | Deep dive 6; ensemble-variance drawer in Advanced Time Series 5 |
+| Conditional probability, Bayes | Deep dive 7; base-rate drawer in Training Loop 5 (evaluation) |
+| Maximum likelihood (MLE/MAP) | Deep dive 7 (worked coin-flip MLE; L2 = Gaussian prior, derived) |
+| Linear + logistic regression | Classical ML extras 1 (from-scratch implementation) |
+| Scalars → tensors, matrix ops | Foundations 1-3; Deep dive 1 (vector spaces, rank, determinant) |
+| Matrix inverse (and why ML avoids it) | Deep dive 8 |
+| Eigenvalues/eigenvectors | Deep dive 8 (power iteration in plain TS) |
+| SVD, low-rank, PCA | Deep dive 8 (ties to model compression in Optimization Edge 3) |
+| Derivatives, gradients, chain rule | Training Loop 2-3; Deep dive 2 (backprop by hand, verified with tf.grad) |
+| Jacobian, Hessian | Deep dive 2 |
+| Minima, saddle points, convexity | Deep dive 3; loss-landscape drawer in Training Loop 4 |
+
+### Targets and measurement
+
+- Blog post is the funnel entry: track guest-capture rate from `/blog/ml-math-roadmap*` UTM-tagged links (PostHog), target above the blog average since intent is pre-qualified.
+- X thread success = bookmarks over likes (same pattern as the source post; bookmark-heavy engagement is the "I will come back to this" signal).
+- Review quarterly alongside §6.2's competitive scan: refresh the map when lessons move, and re-run the reply play on each new viral roadmap.
+
 ---
 
 # PART 5: WAITLIST AND PROMOTION
