@@ -6,7 +6,7 @@ import {
   getLessonExercises,
   getThemeLessons,
 } from "@tensorcraft/content";
-import { LessonContent } from "@/app/themes/[slug]/[module]/[lesson]/lesson-content";
+import { ExtrasLessonBody } from "./extras-lesson-body";
 
 interface Props {
   params: Promise<{ module: string; lesson: string }>;
@@ -121,11 +121,12 @@ export default async function ExtrasLessonPage({ params }: Props) {
           {lesson.concept.explanation}
         </p>
 
-        {/* Reuse the same MDX renderer the main lesson path uses. */}
-        <LessonContent
-          lesson={lesson as Parameters<typeof LessonContent>[0]["lesson"]}
+        {/* Reuse the same MDX renderer the main lesson path uses, plus the
+            glossary provider/rail the theme reader gets (single-column
+            variant: rail renders as an appendix under the prose). */}
+        <ExtrasLessonBody
+          lesson={lesson as Parameters<typeof ExtrasLessonBody>[0]["lesson"]}
           exercises={exercises}
-          themeId="shared"
           lessonId={lesson.slug}
         />
 

@@ -125,7 +125,7 @@ for (const m of measurements) {
 // SHRINKING by roughly a sixth of a second per day. Speeding up.`}
 </CodeBlock>
 
-<DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance">
+<DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance" companionSlug="probability-and-bayes">
 The update blends prediction and measurement: `estimate = prediction + K(z - prediction)`. Why THAT K and not a hand-picked alpha? Because K is the value that minimizes the variance of the blended estimate.
 
 ```

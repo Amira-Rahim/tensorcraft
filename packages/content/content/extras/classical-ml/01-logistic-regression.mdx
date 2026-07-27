@@ -16,7 +16,7 @@ concept:
     mlTitle: "Binary classification"
     mlCode: "const prob = sigmoid(weights.dot(features) + bias)"
     tier: structural
-    breaks: "if/else with confidence is a hand-written threshold on a feature you chose. Logistic regression learns coefficients per feature from data and outputs a probability-shaped score between 0 and 1; the decision boundary moves with retraining, not with code edits. That score is only truly CALIBRATED if you check it against a reliability curve, the sigmoid alone does not guarantee it."
+    breaks: "if/else with confidence is a hand-written threshold on a feature you chose. Logistic regression learns coefficients per feature from data and outputs a probability-shaped score between 0 and 1; the decision boundary moves with retraining, not with code edits. And that 0.83 is only calibrated, meaning the model really is right about 83% of the time when it says 0.83, if you verify it with a reliability curve (a plot of predicted confidence against actual hit rate); the sigmoid shape alone does not guarantee it."
 consequence:
   narrative: "A working baseline classifier in under sixty lines of TypeScript. In production this is always the first model on the board. If logistic regression solves the problem, ship it."
 hints:
@@ -41,7 +41,7 @@ The whole model fits in two moves: a weighted sum and a squash. Multiply each fe
 
 <LearningObjectives objectives={["Understand the sigmoid function and why it produces probabilities", "Implement logistic regression from scratch in TypeScript", "Interpret a decision boundary as a threshold on a confidence score", "Know when logistic regression is the right (and wrong) choice"]} />
 
-Drop the squash and you have the other classical workhorse: **linear regression**. The weighted sum alone, `z = w·x + b`, trained with mean squared error, predicts unbounded numbers instead of probabilities: response times, temperatures, prices. Its loss surface is a perfect convex bowl, so training converges from any starting point and never needs a rerun. Logistic regression is that same weighted sum pushed through a sigmoid so the output can speak in confidences, and remarkably, its cross-entropy loss stays convex too.
+Drop the squash and you have the other classical workhorse: **linear regression**. The weighted sum alone, `z = w·x + b`, trained with mean squared error, predicts unbounded numbers instead of probabilities: response times, temperatures, prices. Its loss surface is a perfect convex bowl, so training converges from any starting point (given a sane learning rate; a too-large step can still overshoot even in a bowl) and never needs a rerun. Logistic regression is that same weighted sum pushed through a sigmoid so the output can speak in confidences, and remarkably, its cross-entropy loss stays convex too.
 
 ## The Sigmoid Turns Any Number Into Confidence
 

@@ -143,7 +143,7 @@ console.log('Fits in 512 MB dashboard: YES ✓');`}
 
 **Singular Value Decomposition makes the bet precise.** Any matrix factors as `W = U · Σ · Vᵀ`: rotate, scale along principal directions, rotate again. The scale factors (singular values) come out sorted, and in trained networks they usually decay fast: a few large directions carry the transformation, a long tail contributes noise. Truncate to the top k and the factors `U[:, :k] · Σ[:k] · V[:, :k]ᵀ` store `k · (512 + 512 + 1)` numbers instead of 262,144. At k = 40 that is 41,000 numbers, a 6.4x cut on that layer, with reconstruction error bounded by the singular values you dropped.
 
-**Why this works at all is the same fact pruning exploits from a different angle:** trained weight matrices concentrate their useful transformation in far fewer directions than their shape advertises. Magnitude pruning removes the smallest coordinates; SVD removes the smallest directions, which is strictly better aligned with what the matrix actually does and is why low-rank factorization (LoRA and friends) became the default way to fine-tune large models on small hardware.
+**Why this works at all is the same fact pruning exploits from a different angle:** trained weight matrices concentrate their useful transformation in far fewer directions than their shape advertises. Magnitude pruning removes the smallest coordinates; SVD removes the smallest directions, which is more directly aligned with the transformation the matrix performs, though the two bets pay off on different matrices; that alignment is part of why low-rank factorization (LoRA and friends) became the default way to fine-tune large models on small hardware.
 </DerivationDrawer>
 
 ## Challenge

@@ -97,7 +97,7 @@ const result = sensor1.add(sensor2).mul(tf.scalar(2));
 
 ## When You DO Want matMul
 
-So why does `matMul` exist at all? Because "every row dot-producted with every column" is the operation neural networks are made of, and no chain of element-wise ops can express it. It comes with the one inflexible shape rule the error message was enforcing:
+So why does `matMul` exist at all? Because "every row dot-producted with every column" (multiply matching entries, then sum) is the operation neural networks are made of, and no chain of element-wise ops can express it. It comes with the one inflexible shape rule the error message was enforcing:
 
 **`[m, n] × [n, p] → [m, p]`: the inner dimensions must match.**
 
@@ -120,6 +120,12 @@ output.print();
 </CodeBlock>
 
 Why care? Every layer of every neural network you'll build is essentially `matMul(input, weights) + bias`. The shape rule above is the single most common source of errors in ML code. The error that opened this lesson will find you again the day you build your first network layer; next time you'll read it in one pass.
+
+<DerivationDrawer summary="Why rows into columns: matMul as composed linear maps" companionSlug="tensors-as-linear-algebra">
+**The shape rule is not a convention; it is what composing linear maps looks like.** A matrix is a linear map, and its columns record where each input direction lands. Chaining two maps only makes sense when the first outputs exactly as many coordinates as the second expects, and that handoff is the inner dimension of `[m, n] × [n, p]`.
+
+**The companion lesson builds the full picture.** Vector spaces, basis vectors, linear independence, and rank: the number that says how many directions a weight matrix actually preserves, and why a low-rank layer quietly throws information away.
+</DerivationDrawer>
 
 ## Challenge
 

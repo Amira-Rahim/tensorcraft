@@ -55,7 +55,7 @@ keywords:
 In the Signal Processing module, you applied convolution as a sliding window over data. That's the intuitive view. But mathematically, convolution is matrix multiplication in disguise. The kernel becomes a special structured matrix called a Toeplitz matrix, and the "sliding" becomes a single matrix-vector multiply. GPUs are built for matrix math, which is why they run convolutions so fast.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the Toeplitz matrix and how it encodes a sliding window", "Convert a 1D convolution into an equivalent matrix multiplication", "Explain why convolution in time domain equals multiplication in frequency domain", "Connect CSS transform matrices to the structured matrices used in convolution", "Reason about computational cost of convolution vs. FFT-based approaches"]} />
+<LearningObjectives objectives={["Understand the Toeplitz matrix and how it encodes a sliding window", "Convert a 1D convolution into an equivalent matrix multiplication", "Explain why convolution in time domain equals multiplication in frequency domain, and verify it with an FFT round trip", "Connect CSS transform matrices to the structured matrices used in convolution", "Reason about computational cost of convolution vs. FFT-based approaches"]} />
 
 ## The Sliding Window as a Matrix
 
@@ -129,7 +129,9 @@ function buildToeplitz(kernel: number[], inputLength: number): number[][] {
 }
 
 // Build Toeplitz for a 3-element kernel on 7-element input
-const kernel = [1, -2, 1]; // second-difference operator
+const kernel = [1, -2, 1]; // second-difference operator: the discrete
+// version of a second derivative (lesson 2 of this module), it measures
+// how sharply the signal bends at each point
 const T = buildToeplitz(kernel, 7);
 
 console.log('Toeplitz matrix:');
@@ -150,7 +152,7 @@ console.log('Result:', await result.flatten().array());`}
 
 ## The Convolution Theorem
 
-One of the most beautiful results in mathematics: **convolution in the time domain equals element-wise multiplication in the frequency domain**. This means you can compute convolution by:
+A classic result, and the reason FFT-based convolution exists: **convolution in the time domain equals element-wise multiplication in the frequency domain**. The FFT and the frequency view here are the ones you built in Signal Processing lessons 1 and 2. The theorem means you can compute convolution by:
 
 1. FFT the input
 2. FFT the kernel
@@ -162,50 +164,82 @@ For large kernels, this is dramatically faster than sliding the window.
 <CodeBlock language="typescript" title="convolution-theorem.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Demonstrate the convolution theorem
-// For simplicity, we'll work with compatible sizes
+// Demonstrate the convolution theorem: run the direct path and the
+// FFT path on the same input and compare the numbers.
 
-// The idea: conv(a, b) = ifft(fft(a) * fft(b))
-// This is why audio processing uses FFT-based convolution
-// for reverb effects: the impulse response kernel can be huge
+// Why anyone bothers: direct convolution costs O(n * k) where n = input
+// size, k = kernel size. The FFT route costs O(n * log(n)) no matter
+// how big k gets. In neural networks kernels are small (3x3, 5x5), so
+// the direct matrix-multiply path is usually faster. In audio, a reverb
+// kernel is a recorded echo pattern of a room (an "impulse response")
+// and can be 48000 samples long; there the FFT route wins massively.
 
-// Direct convolution: O(n * k) where n=input size, k=kernel size
-// FFT convolution:    O(n * log(n))
-// When k is large (e.g., audio reverb with 48000-sample kernel),
-// FFT wins massively
+// One catch before the code: the DFT silently assumes your signal
+// repeats forever, so FFT-based convolution is CIRCULAR: samples the
+// kernel would slide past on the right re-enter from the left, as if
+// the array were a loop. Padding both signals to length n + k - 1
+// gives the k - 1 wrapped samples nothing but zeros to land on, so
+// the circular answer equals the ordinary linear one.
 
-// In neural networks, kernels are small (3x3, 5x5)
-// so direct convolution (via matrix multiply) is usually faster.
-// But for signal processing with large kernels, FFT is essential.
-
-// The connection to matrix multiplication:
-// For CIRCULAR convolution, the Toeplitz matrix becomes circulant,
-// and circulant matrices are diagonalized by the DFT matrix:
-// C = F^(-1) * D * F, where D has the FFT of the kernel on diagonal.
-// This is WHY the convolution theorem works. It gives you CIRCULAR
-// convolution, though: to recover ordinary linear convolution, zero-pad
-// both signals to length >= n + k - 1 so the wraparound only touches
-// zeros, then crop the result to the 'valid' region.
-
-const inputSize = 8;
-const input = tf.randomNormal([inputSize]);
+const n = 8;
+const k = 3;
+const input = tf.tensor1d([1, 2, 4, 3, 0, 1, 2, 1]);
 const kernel = tf.tensor1d([0.25, 0.5, 0.25]); // smoothing kernel
 
-// Direct convolution
-const directResult = tf.conv1d(
-  input.reshape([1, inputSize, 1]),
-  kernel.reshape([3, 1, 1]),
+// Path 1: direct convolution
+const direct = tf.conv1d(
+  input.reshape([1, n, 1]),
+  kernel.reshape([k, 1, 1]),
   1,
   'valid'
 );
+console.log('Direct: ', await direct.flatten().array());
+// [2.25, 3.25, 2.5, 1, 1, 1.5]
+// Check position 0 by hand: 0.25*1 + 0.5*2 + 0.25*4 = 2.25
 
-console.log('Direct convolution:', await directResult.flatten().array());
-// FFT-based would give the same result, but is only faster for large kernels`}
+// Path 2: FFT both, multiply, inverse FFT.
+// The naming caveat from the first block matters here: tf.conv1d slides
+// WITHOUT flipping, so the FFT path needs the FLIPPED kernel. Ours is
+// symmetric ([0.25, 0.5, 0.25] reads the same both ways), so the flip
+// is a no-op; for an asymmetric kernel, tf.reverse it first.
+const len = n + k - 1; // 10: room for the wraparound to hit only zeros
+const inputF = tf.spectral.rfft(input.pad([[0, len - n]]));
+const kernelF = tf.spectral.rfft(kernel.pad([[0, len - k]]));
+
+// Element-wise COMPLEX multiply. tf.mul does not handle complex
+// tensors, so use real/imag parts: (a+bi)(c+di) = (ac-bd) + (ad+bc)i
+const a = tf.real(inputF);
+const b = tf.imag(inputF);
+const c = tf.real(kernelF);
+const d = tf.imag(kernelF);
+const product = tf.complex(
+  a.mul(c).sub(b.mul(d)),
+  a.mul(d).add(b.mul(c))
+);
+
+// Inverse FFT gives the FULL length-10 convolution; the 'valid' region
+// starts after the k - 1 = 2 edge samples and holds n - k + 1 = 6 values.
+const full = tf.spectral.irfft(product);
+const viaFft = full.slice([k - 1], [n - k + 1]);
+console.log('Via FFT:', await viaFft.array());
+// [2.25, 3.25, 2.5, 1, 1, 1.5] (up to float32 rounding): the same six
+// numbers, computed as a multiplication in the frequency domain
+
+// The connection to matrix multiplication: for CIRCULAR convolution,
+// the Toeplitz matrix becomes "circulant": each row still shifts the
+// kernel right, but whatever falls off the right edge wraps back in on
+// the left. Circulant matrices have a special property: FFT the input
+// first, and multiplying by the matrix collapses into independent
+// per-frequency scalings, where the scale factors are the FFT of the
+// kernel; an inverse FFT brings you back. Name the FFT step F, its
+// undo-step F^(-1), and the diagonal matrix of scale factors D, and
+// that reads C = F^(-1) * D * F. The three-step pipeline you just ran
+// IS that equation. This is WHY the convolution theorem works.`}
 </CodeBlock>
 
 ## Why This Matters for GPUs
 
-GPUs have thousands of cores optimized for matrix multiplication. By expressing convolution as a matrix multiply (via Toeplitz or the related im2col approach), convolution layers run at near-peak GPU throughput. This is the fundamental reason deep learning took off when GPUs became accessible.
+GPUs have thousands of cores optimized for matrix multiplication. By expressing convolution as a matrix multiply (via Toeplitz or the related im2col approach), convolution layers run at near-peak GPU throughput. Frameworks never materialize the giant Toeplitz matrix itself; im2col builds a compact matrix of input patches that achieves the same single-multiply effect, which is the structure-exploiting shortcut the bridge callout mentions. This is the fundamental reason deep learning took off when GPUs became accessible.
 
 <CodeBlock language="typescript" title="performance-insight.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -217,21 +251,48 @@ GPUs have thousands of cores optimized for matrix multiplication. By expressing 
 //
 // This trades memory for speed: classic CS tradeoff
 
-// Benchmark: sliding window vs matrix multiply
+// Benchmark: naive JS sliding window vs tf.conv1d, 100 runs each
 const inputLength = 1000;
 const kernelSize = 5;
-const input = tf.randomNormal([1, inputLength, 1]);
-const filter = tf.randomNormal([kernelSize, 1, 1]);
+const inputData = Float32Array.from({ length: inputLength }, () => Math.random());
+const kernelData = Float32Array.from({ length: kernelSize }, () => Math.random());
 
-// Time the convolution (internally uses matrix multiply on GPU)
-const start = performance.now();
-for (let i = 0; i < 100; i++) {
-  const result = tf.conv1d(input, filter, 1, 'valid');
-  result.dispose();
+// Baseline: the sliding window as a plain JS loop
+const jsStart = performance.now();
+for (let run = 0; run < 100; run++) {
+  const out = new Float32Array(inputLength - kernelSize + 1);
+  for (let i = 0; i < out.length; i++) {
+    let sum = 0;
+    for (let j = 0; j < kernelSize; j++) {
+      sum += inputData[i + j] * kernelData[j];
+    }
+    out[i] = sum;
+  }
 }
-const elapsed = performance.now() - start;
-console.log(\`100 convolutions: \${elapsed.toFixed(1)}ms\`);
-// Fast because it's matrix multiplication under the hood`}
+const jsElapsed = performance.now() - jsStart;
+
+// The same work through tf.conv1d (matrix multiply under the hood)
+const input = tf.tensor1d(inputData).reshape([1, inputLength, 1]);
+const filter = tf.tensor1d(kernelData).reshape([kernelSize, 1, 1]);
+
+const tfStart = performance.now();
+let result: tf.Tensor | null = null;
+for (let i = 0; i < 100; i++) {
+  result?.dispose();
+  result = tf.conv1d(input, filter, 1, 'valid');
+}
+await result!.data(); // force the GPU to finish before reading the clock
+const tfElapsed = performance.now() - tfStart;
+
+console.log(\`Sliding window (JS): \${jsElapsed.toFixed(1)}ms\`);
+console.log(\`tf.conv1d:           \${tfElapsed.toFixed(1)}ms\`);
+
+// Run it and read your own numbers. At this toy size the plain loop can
+// win: each conv1d call pays a fixed GPU-dispatch cost that dwarfs the
+// 996 windows x 5 taps = 4980 multiply-adds. The matrix path pulls
+// ahead as the work grows: make the kernel 2D, the input an image
+// batch, the channels 64, and the JS loop falls hopelessly behind
+// while conv stays one matrix multiply.`}
 </CodeBlock>
 
 ## Challenge
@@ -242,4 +303,4 @@ Build a Toeplitz matrix from a kernel and verify it matches TensorFlow.js convol
 
 <RecallPrompt question="How does expressing a convolution as a Toeplitz matrix multiplication explain why GPUs run convolutional layers so fast?" answer="A Toeplitz matrix encodes the sliding window as rows: each row is the kernel shifted one position to the right. Multiplying that matrix by the input vector produces all convolution outputs in one operation. GPUs have thousands of cores built for matrix multiplication, so the convolution runs at near-peak hardware throughput." />
 
-<LessonRecap whatYouLearned={["A convolution can be rewritten as a single matrix-vector multiply using a Toeplitz matrix, where each row is the kernel shifted by one position.", "The convolution theorem states that convolution in the time domain equals element-wise multiplication in the frequency domain, which is why FFT-based convolution is faster for large kernels.", "For small kernels (typical in neural networks) the Toeplitz/im2col matrix approach wins; for large kernels (audio reverb) the FFT approach wins."]} bridge="A CSS `transform: matrix()` is a fixed matrix you write by hand; a Toeplitz matrix is automatically derived from a convolutional kernel and exploits the same matrix-multiply hardware path that makes GPU transforms fast." youCanNow="Build a Toeplitz matrix from a kernel and verify its output matches `tf.conv1d`, then reason about when to prefer matrix versus FFT convolution." />
+<LessonRecap whatYouLearned={["A convolution can be rewritten as a single matrix-vector multiply using a Toeplitz matrix, where each row is the kernel shifted by one position.", "The convolution theorem states that convolution in the time domain equals element-wise multiplication in the frequency domain, which is why FFT-based convolution is faster for large kernels.", "FFT-based convolution is circular: the transform treats the signal as a loop, so the kernel wraps from the right edge back to the left. Zero-padding both signals to length n + k - 1 makes the wraparound land only on zeros and recovers ordinary linear convolution.", "For small kernels (typical in neural networks) the Toeplitz/im2col matrix approach wins; for large kernels (audio reverb) the FFT approach wins."]} bridge="A CSS `transform: matrix()` is a fixed matrix you write by hand; a Toeplitz matrix is automatically derived from a convolutional kernel and exploits the same matrix-multiply hardware path that makes GPU transforms fast." youCanNow="Build a Toeplitz matrix from a kernel and verify its output matches `tf.conv1d`, then reason about when to prefer matrix versus FFT convolution." />

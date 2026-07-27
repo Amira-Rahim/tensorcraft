@@ -84,7 +84,7 @@ describe("DerivationDrawer", () => {
       </DerivationDrawer>,
     );
     fireEvent.click(screen.getByRole("button"));
-    const link = screen.getByRole("link", { name: /full derivation/i });
+    const link = screen.getByRole("link", { name: /companion deep dive/i });
     expect(link.getAttribute("href")).toBe(
       "/extras/math-deep-dive/calculus-of-neurons",
     );
@@ -101,7 +101,7 @@ describe("DerivationDrawer", () => {
       </DerivationDrawer>,
     );
     fireEvent.click(screen.getByRole("button"));
-    const link = screen.getByRole("link", { name: /full derivation/i });
+    const link = screen.getByRole("link", { name: /companion deep dive/i });
     expect(link.getAttribute("href")).toBe("/custom/path");
   });
 
@@ -112,6 +112,8 @@ describe("DerivationDrawer", () => {
       </DerivationDrawer>,
     );
     fireEvent.click(screen.getByRole("button"));
-    expect(screen.queryByRole("link", { name: /full derivation/i })).toBeNull();
+    expect(
+      screen.queryByRole("link", { name: /companion deep dive/i }),
+    ).toBeNull();
   });
 });

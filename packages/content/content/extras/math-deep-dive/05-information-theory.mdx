@@ -11,14 +11,14 @@ context:
   narrative: "Cross-entropy loss measures something specific: the information gap between what your model believes and what's true."
   speaker: "Instructor"
 concept:
-  explanation: "Entropy quantifies uncertainty, cross-entropy measures prediction quality, and KL divergence measures the distance between distributions."
+  explanation: "Entropy quantifies uncertainty, cross-entropy measures prediction quality, and KL divergence measures the gap between distributions (the extra bits wasted by using the wrong one)."
   bridge:
     feTitle: "Gzip Compression"
     feCode: "const ratio = compressed.length / original.length"
     mlTitle: "Entropy"
     mlCode: "const H = -probs.reduce((s, p) => s + p * Math.log2(p), 0)"
     tier: structural
-    breaks: "Gzip compression measures redundancy in a single file. Entropy in ML measures expected information across a distribution and shows up in cross-entropy loss, mutual information, and KL divergence. Gzip is a useful intuition for compressibility but does not yield gradients."
+    breaks: "Gzip compression measures redundancy in a single file. Entropy in ML measures expected information across a distribution and shows up in cross-entropy loss, KL divergence, and mutual information (how much knowing one variable tells you about another). Gzip is a useful intuition for compressibility but does not yield gradients."
 consequence:
   narrative: "Understanding information theory turns loss function selection from guesswork into principled choice."
 hints:
@@ -56,7 +56,7 @@ Every classification model you've trained used cross-entropy loss. But why cross
 
 ## Entropy Measures Surprise
 
-You've used gzip on web assets. Files with repetitive content compress well (low entropy); random data doesn't compress at all (high entropy). Entropy is literally the theoretical minimum number of bits needed to encode a message.
+You've used gzip on web assets. Files with repetitive content compress well (low entropy); random data doesn't compress at all (high entropy). Entropy is the theoretical floor on how many bits per symbol any encoder can average. No compressor beats it over the long run, which is why the biased coin below comes out at 0.4690 bits: that number is only reachable as an average over many flips, never on a single flip.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -131,7 +131,9 @@ console.log('Terrible prediction CE:', crossEntropy(trueLabel, terriblePred).toF
 
 // TensorFlow.js built-in (uses natural log, not log2).
 // softmaxCrossEntropy expects LOGITS, the raw pre-softmax scores,
-// not probabilities. Log-probabilities work as logits here because
+// not probabilities. Recall softmax from the Neural Networks module:
+// exponentiate each score, then normalize so the results sum to 1.
+// Log-probabilities work as logits here because
 // softmax(ln(p)) recovers p exactly when p sums to 1.
 const labels = tf.tensor2d([[1, 0, 0]]);
 const logits = tf.tensor2d([
@@ -139,13 +141,14 @@ const logits = tf.tensor2d([
 ]);
 const ce = tf.losses.softmaxCrossEntropy(labels, logits);
 console.log('TF cross-entropy:', await ce.array());
-// 0.1054 nats. Divide by ln(2) and you get 0.1520 bits,
-// the same number we computed by hand for goodPred above.`}
+// 0.1054 nats (the natural-log counterpart of bits).
+// Divide by ln(2) and you get 0.1520 bits, the same number
+// we computed by hand for goodPred above.`}
 </CodeBlock>
 
-## KL Divergence: Distance Between Distributions
+## KL Divergence: The Gap Between Distributions
 
-KL divergence measures how different distribution q is from distribution p. It's cross-entropy minus entropy: the **extra** bits wasted by using the wrong distribution.
+KL divergence measures how different distribution q is from distribution p. It's cross-entropy minus entropy: the **extra** bits wasted by using the wrong distribution. It is not a true distance: as the demo below shows, it is asymmetric.
 
 <CodeBlock language="typescript" title="kl-divergence.ts">
 {`function klDivergence(p: number[], q: number[]): number {
@@ -159,14 +162,24 @@ const p = [0.7, 0.2, 0.1]; // true distribution
 const q = [0.3, 0.4, 0.3]; // model's distribution
 
 console.log('KL(p || q):', klDivergence(p, q).toFixed(4));
-// Positive: q is not a perfect model of p
+// 0.4972 bits: positive, q is not a perfect model of p
 
 console.log('KL(q || p):', klDivergence(q, p).toFixed(4));
-// Different value! KL divergence is ASYMMETRIC
+// 0.5088 bits. Different value! KL divergence is ASYMMETRIC
 // KL(p||q) != KL(q||p)
 // This asymmetry has practical consequences:
 // - Minimizing KL(p||q) = minimizing cross-entropy (what we do in training)
-// - Minimizing KL(q||p) = mode-seeking (used in variational inference)
+// - Minimizing KL(q||p) instead makes q lock onto ONE peak of p
+//   rather than covering all of them ('mode-seeking'). That flipped
+//   direction powers a technique called variational inference,
+//   which this course never needs.
+
+// The decomposition, checked with entropy() and crossEntropy()
+// from the blocks above:
+console.log('H(p):', entropy(p).toFixed(4));
+// 1.1568 bits: the floor set by p itself
+console.log('H(p, q):', crossEntropy(p, q).toFixed(4));
+// 1.6540 bits = 1.1568 + 0.4972: cross-entropy is entropy plus KL
 
 // KL divergence of p from itself
 console.log('KL(p || p):', klDivergence(p, p).toFixed(4));
@@ -182,6 +195,8 @@ console.log('KL(p || p):', klDivergence(p, p).toFixed(4));
 
 <CodeBlock language="typescript" title="ce-vs-mse.ts">
 {`// Consider a confident wrong prediction: true=[1,0], pred=[0.01, 0.99]
+// The derivatives below use the rules from The Calculus of Neurons
+// (lesson 2 of this module).
 const trueLabel = 1.0;
 
 // MSE gradient at pred=0.01:
@@ -213,4 +228,4 @@ Implement entropy, cross-entropy, and KL divergence from scratch. One base switc
 
 <RecallPrompt question="Why does cross-entropy loss produce much stronger gradients than mean squared error when a model makes a confident wrong prediction?" answer="Cross-entropy loss uses a logarithm: when the predicted probability for the correct class approaches zero, the gradient is -1/p, which blows up. MSE gradient is -2(1-p), which stays moderate even for very wrong predictions. Cross-entropy effectively screams at the model for confident mistakes, while MSE whispers." />
 
-<LessonRecap whatYouLearned={["Entropy measures the average surprise of a distribution: a perfectly predictable outcome has zero entropy, a uniform distribution has maximum entropy.", "Cross-entropy is the TOTAL average bits needed to encode data from p using a code built for q: H(p, q) = H(p) + KL(p || q). On this lesson's distributions that is 1.6540 bits, and it is the natural training objective for classification.", "KL divergence is only the EXCESS above entropy, not the total: KL = H(p, q) - H(p) = 1.6540 - 1.1568 = 0.4972. Because H(p) is fixed by the data, minimizing cross-entropy and minimizing KL(true || predicted) are the same optimization. KL is asymmetric: KL(p || q) is not KL(q || p)."]} bridge="A low gzip ratio (compressed size over original) means the file compressed well: high redundancy, and therefore LOW entropy. Low ratio, low entropy; low cross-entropy, close to the true distribution. The analogy runs in the same direction on both sides: in each case the small number is the good news." youCanNow="Implement entropy, cross-entropy, and KL divergence from scratch, and explain why cross-entropy is the correct loss function for classification tasks." />
+<LessonRecap whatYouLearned={["Entropy measures the average surprise of a distribution: a perfectly predictable outcome has zero entropy, a uniform distribution has maximum entropy.", "Cross-entropy is the TOTAL average bits needed to encode data from p using a code built for q: H(p, q) = H(p) + KL(p || q). On the p = [0.7, 0.2, 0.1] and q = [0.3, 0.4, 0.3] from the KL section, that is 1.6540 bits, and it is the natural training objective for classification.", "KL divergence is only the EXCESS above entropy, not the total: KL = H(p, q) - H(p) = 1.6540 - 1.1568 = 0.4972. Because H(p) is fixed by the data, minimizing cross-entropy and minimizing KL(true || predicted) are the same optimization. KL is asymmetric: KL(p || q) is not KL(q || p)."]} bridge="A low gzip ratio (compressed size over original) means the file compressed well: high redundancy, and therefore LOW entropy. Low ratio, low entropy; low cross-entropy, close to the true distribution. The analogy runs in the same direction on both sides: in each case the small number is the good news." youCanNow="Implement entropy, cross-entropy, and KL divergence from scratch, and explain why cross-entropy is the correct loss function for classification tasks." />

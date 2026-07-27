@@ -18,12 +18,12 @@ concept:
     mlTitle: "Low-Rank Approximation"
     mlCode: "W ≈ U[:, :k] · Σ[:k] · Vᵀ[:k, :]"
     tier: structural
-    breaks: "JPEG discards high-frequency detail using one fixed basis (the DCT) chosen once for all images. SVD finds the best basis for THIS matrix and truncating it gives the provably optimal rank-k approximation. The JPEG basis never adapts; the SVD basis is the adaptation."
+    breaks: "JPEG discards high-frequency detail using one fixed basis: the DCT (discrete cosine transform), a set of wave patterns chosen once for all images. SVD finds the best basis for THIS matrix and truncating it gives the provably optimal rank-k approximation. The JPEG basis never adapts; the SVD basis is the adaptation."
 consequence:
   narrative: "Pruning, quantization, and now rank: the third compression axis explains the other two's success. Trained matrices do less than their shape claims."
 hints:
   - level: nudge
-    content: "matVec is a dot product per row, normalizeVec divides by the vector's Euclidean length, and powerIteration is just: start uniform, repeatedly apply the matrix and re-normalize, then read the eigenvalue off with a dot product"
+    content: "matVec is a dot product per row, normalizeVec divides by the vector's length (the square root of its summed squares), and powerIteration is just: start uniform, repeatedly apply the matrix and re-normalize, then read the eigenvalue off with a dot product"
   - level: guidance
     content: "matVec maps each row of A to row.reduce((s, a, j) => s + a * v[j], 0). normalizeVec computes Math.sqrt of the summed squares and divides every component by it. powerIteration builds a start vector of ones normalized to unit length, then loops `steps` times doing v = normalizeVec(matVec(A, v)); the eigenvalue is the dot product of the final v with matVec(A, v) (the Rayleigh quotient)"
   - level: solution
@@ -54,9 +54,9 @@ In Optimization Edge you shrank a model 8x by zeroing weights and rounding the s
 
 ## Directions a Matrix Only Scales
 
-Apply `transform: scale(2, 0.5)` to a div and two directions behave specially: anything pointing along the x-axis doubles, anything along the y-axis halves, and neither *rotates*. Every other vector gets both stretched and turned. Those special directions are the **eigenvectors** of the transform matrix, and the stretch factors (2 and 0.5) are their **eigenvalues**: the vectors v where `A·v = λ·v`.
+Apply `transform: scale(2, 0.5)` to a div and two directions behave specially: anything pointing along the x-axis doubles, anything along the y-axis halves, and neither *rotates*. Every other vector gets both stretched and turned. Those special directions are the **eigenvectors** of the transform matrix: the vectors v where `A·v = λ·v`. The stretch factors (2 and 0.5) are the **eigenvalues**, the λ in that equation.
 
-Not every matrix has them in real coordinates: a 90-degree rotation turns *every* vector, so no direction survives unrotated. But the matrices ML cares most about (covariance matrices, Gram matrices, anything symmetric) always have a full set of perpendicular eigenvectors, which is what makes the rest of this lesson work.
+Not every matrix has them in real coordinates: a 90-degree rotation turns *every* vector, so no direction survives unrotated. But the matrices ML cares most about are symmetric (mirror-image across the main diagonal: entry (i, j) equals entry (j, i)), and symmetric matrices always have a full set of perpendicular eigenvectors, which is what makes the rest of this lesson work.
 
 <CodeBlock language="typescript" title="power-iteration.ts">
 {`// Repeatedly applying A crushes every vector toward the eigenvector
@@ -77,7 +77,8 @@ function powerIteration(A: number[][], steps: number) {
   let v = normalizeVec(Array(A.length).fill(1));
   for (let i = 0; i < steps; i++) v = normalizeVec(matVec(A, v));
   const Av = matVec(A, v);
-  const value = v.reduce((s, x, i) => s + x * Av[i], 0); // Rayleigh quotient
+  // v · Av recovers the eigenvalue (textbooks call it the Rayleigh quotient)
+  const value = v.reduce((s, x, i) => s + x * Av[i], 0);
   return { vector: v, value };
 }
 
@@ -89,9 +90,9 @@ Deep networks repeat matrix multiplication layer after layer, so eigenvalues com
 
 ## The Inverse, and Why ML Refuses to Compute It
 
-Solving `A·x = b` for x is the founding problem of linear algebra, and the textbook answer is `x = A⁻¹·b`. The inverse exists exactly when A is **full rank** (no direction collapses to zero, determinant nonzero). Rank-deficient matrices flatten some direction entirely, and information that was flattened cannot be un-flattened: those matrices have no inverse.
+Solving `A·x = b` for x is the founding problem of linear algebra, and the textbook answer is `x = A⁻¹·b`. For a square A, the inverse exists exactly when it is **full rank** (no direction collapses to zero; equivalently, the determinant, the volume-scaling factor of the transform, is nonzero). A non-square matrix never has a true inverse. Rank-deficient matrices flatten some direction entirely, and information that was flattened cannot be un-flattened: those matrices have no inverse.
 
-ML almost never computes an inverse even when it exists, for two compounding reasons. Cost: inversion is O(n³), and n for a modern layer is in the thousands. Stability: a matrix that is *nearly* rank-deficient has an inverse full of huge, delicately canceling numbers, and floating point turns delicate cancellation into noise. Gradient descent sidesteps both: it only ever needs `A` applied forward, never undone. When a true solve is unavoidable, libraries reach for factorizations (and, for rank-deficient cases, the SVD-based pseudo-inverse) rather than the inverse itself.
+ML almost never computes an inverse even when it exists, for two compounding reasons. Cost: inversion is O(n³), and n for a modern layer is in the thousands. Stability: a matrix that is *nearly* rank-deficient has an inverse full of huge, delicately canceling numbers, and floating point turns delicate cancellation into noise. Gradient descent sidesteps both: it only ever needs `A` applied forward, never undone. When a true solve is unavoidable, libraries reach for factorizations (rewriting A as a product of simpler matrices) rather than the inverse itself; for rank-deficient cases they use the pseudo-inverse, a near-inverse built from the SVD you are about to meet.
 
 ## SVD: Every Matrix Is Rotate, Scale, Rotate
 
@@ -99,6 +100,9 @@ Eigenvectors require square matrices and can fail to exist. The **Singular Value
 
 <CodeBlock language="typescript" title="svd-shape.ts">
 {`// W = U · Σ · Vᵀ
+//
+// Vᵀ is V transposed: rows and columns swapped, the same
+// .transpose() you called back in Foundations.
 //
 //   Vᵀ : rotate the input space to align with W's preferred axes
 //   Σ  : scale each axis by a singular value σ₁ ≥ σ₂ ≥ ... ≥ 0
@@ -110,6 +114,11 @@ Eigenvectors require square matrices and can fail to exist. The **Singular Value
 // Rank-k truncation: keep the top k directions.
 //   W_k = U[:, :k] · Σ[:k] · Vᵀ[:k, :]
 //
+// Notation: [:, :k] is Python-style slicing borrowed from ML papers.
+// U[:, :k] keeps all rows and the first k columns (in JS terms,
+// U.map(row => row.slice(0, k))); Σ[:k] is the first k singular
+// values; Vᵀ[:k, :] is the first k rows.
+//
 // Eckart-Young theorem: W_k is the BEST rank-k approximation of W,
 // and the error you accept is exactly the singular values you drop.
 //
@@ -118,11 +127,11 @@ Eigenvectors require square matrices and can fail to exist. The **Singular Value
 // with a certificate for what it cost.`}
 </CodeBlock>
 
-This is the honest version of what pruning gropes toward. Magnitude pruning deletes small *coordinates* and hopes the coordinates were the right frame; SVD truncation deletes small *directions* in the matrix's own preferred frame, with a theorem guaranteeing nothing better was possible at that size. It is also why low-rank fine-tuning works: freezing W and learning a small rank-r update matrix touches the few directions that matter instead of half a million coordinates that mostly do not.
+This is the honest version of what pruning gropes toward. Magnitude pruning deletes small *coordinates* and hopes the coordinate axes were the right basis; SVD truncation deletes small *directions* in the matrix's own preferred basis, with a theorem guaranteeing nothing better was possible at that size. It is also why low-rank fine-tuning works: to adapt a trained model, freeze W and learn only a small correction matrix capped at rank r (a budget like k above); the correction touches the few directions that matter instead of half a million coordinates that mostly do not.
 
 ## PCA: SVD Pointed at Data
 
-Aim the same machinery at a data matrix instead of a weight matrix and it earns a different name. Center each column (subtract its mean), run SVD, and the right singular vectors become the **principal components**: perpendicular directions through the data, sorted by how much variance each carries. Projecting onto the top k components is **Principal Component Analysis**, the optimal k-dimensional flattening of the cloud.
+Aim the same machinery at a data matrix instead of a weight matrix and it earns a different name. Center each column (subtract its mean), run SVD, and the columns of V (called the right singular vectors because Vᵀ sits on the right of U·Σ·Vᵀ) become the **principal components**: perpendicular directions through the data, sorted by how much variance each carries. Projecting onto the top k components is **Principal Component Analysis**, the optimal k-dimensional flattening of the cloud.
 
 <CodeBlock language="typescript" title="pca-sketch.ts">
 {`// 64-channel telemetry, one row per reading: shape [n, 64]

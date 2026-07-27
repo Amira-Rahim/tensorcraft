@@ -59,11 +59,11 @@ In the Neural Networks module, you used backpropagation to train models. The fra
 
 ## Derivatives as Rates of Change
 
-You already think in derivatives when you write animation code. In `requestAnimationFrame`, velocity is the derivative of position with respect to time: how fast the position changes per frame.
+You already think in derivatives when you write animation code. In `requestAnimationFrame`, velocity is the derivative of position with respect to time: how fast the position changes per unit of time. Dividing by `deltaTime` is what turns a raw per-frame difference into that rate.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A gradient in ML is the same idea: how fast does the loss change when you nudge a weight? If the gradient is large, a small weight change causes a big loss change. If it's near zero, that weight isn't doing much.
+A gradient in ML is the same idea: how fast does the loss change when you nudge a weight? If the gradient is large, a small weight change causes a big loss change. If it's near zero, nudging that weight barely changes the loss right now. Careful: that does not mean the weight is unimportant. It can be sitting on a flat spot, like a ReLU whose input is negative, where a weight the network badly needs still receives a zero gradient. That stuck-on-flat situation is what vanishing gradients are, and you will see the ReLU's 0-or-1 gate up close in the chain rule section below.
 
 <CodeBlock language="typescript" title="derivative-intuition.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -73,7 +73,7 @@ function animationDerivative(lastPos: number, currentPos: number, dt: number) {
   return (currentPos - lastPos) / dt;  // This IS a derivative
 }
 
-// In ML: gradient = rate of change of loss w.r.t. weight
+// In ML: gradient = rate of change of loss with respect to a weight
 // For f(x) = x^2, the derivative is f'(x) = 2x
 const f = (x: tf.Tensor) => x.square();
 const df = tf.grad(f);
@@ -116,6 +116,8 @@ console.log(await dfdy(tf.scalar(3)).array()); // 31`}
 
 The chain rule is the single most important idea in deep learning. Every neural network is a deeply nested composite function, and the chain rule tells you how to compute the derivative of the whole thing.
 
+Why do the local derivatives multiply? Think in rates, like the velocity example above. Suppose the loss changes 2 units for every unit the layer output moves, and the layer output changes 3 units for every unit the weight moves. Then the loss changes 2 * 3 = 6 units for every unit the weight moves. Rates through a pipeline multiply, and that is the whole chain rule: the derivative of a composed function is the product of the local derivatives at each step.
+
 <CodeBlock language="typescript" title="chain-rule.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
@@ -123,7 +125,7 @@ The chain rule is the single most important idea in deep learning. Every neural 
 //   z1 = w1 * x         (layer 1: linear)
 //   a1 = relu(z1)       (activation)
 //   z2 = w2 * a1        (layer 2: linear)
-//   loss = (z2 - y)^2   (MSE loss)
+//   loss = (z2 - y)^2   (squared-error loss, the MSE from the Neural Networks module)
 //
 // Chain rule for dLoss/dw1:
 //   dLoss/dw1 = dLoss/dz2 * dz2/da1 * da1/dz1 * dz1/dw1
@@ -144,7 +146,7 @@ const loss = (z2 - y) ** 2;  // 1.69
 // Backward pass (chain rule, right to left)
 const dLoss_dz2 = 2 * (z2 - y);         // 2 * (-1.3) = -2.6
 const dz2_da1 = w2;                      // -0.3
-const da1_dz1 = z1 > 0 ? 1 : 0;         // 1 (ReLU derivative)
+const da1_dz1 = z1 > 0 ? 1 : 0;         // 1 (slope of Math.max(0, z): 1 when z > 0, else 0)
 const dz1_dw1 = x;                       // 2
 
 // Chain them together:
@@ -201,7 +203,7 @@ console.log('dL/dw1:', await dw1.array()); // 1.56
 console.log('dL/dw2:', await dw2.array()); // -2.6 (= dL/dz2 * a1 = -2.6 * 1.0)`}
 </CodeBlock>
 
-**Two names you will meet in papers.** Stack the partial derivatives of a vector-valued function into a matrix and you have the **Jacobian**: row i holds the partials of output i with respect to every input. When the output is a single scalar loss, the Jacobian collapses to one row, which is exactly the gradient `tf.grads` returned above. Differentiate once more and you get the **Hessian**, the matrix of second derivatives that describes curvature: all-positive curvature marks a minimum, mixed signs a saddle point.
+**Two names you will meet in papers.** Stack the partial derivatives of a vector-valued function into a matrix and you have the **Jacobian**: row i holds the partials of output i with respect to every input. When the output is a single scalar loss, the Jacobian collapses to one row, which is exactly the gradient `tf.grads` returned above. Differentiate once more and you get the **Hessian**, the matrix of second derivatives that describes curvature. If the loss curves upward along every direction you could step, you are at a minimum; if it curves up along some directions and down along others, you are at a saddle point, the shape of a mountain pass. The next lesson, the optimization landscape, walks through why saddles dominate in high dimensions.
 
 ## Challenge
 
@@ -211,4 +213,4 @@ Compute gradients by hand for a simple network, then verify with TensorFlow.js.
 
 <RecallPrompt question="What mathematical rule makes backpropagation work, and how does it let you compute a gradient through many layers?" answer="The chain rule. It says the derivative of a composed function is the product of the local derivatives at each step. Backpropagation applies this rule in reverse through the computational graph, multiplying local gradients from the loss back to each weight." />
 
-<LessonRecap whatYouLearned={["A partial derivative measures how much the loss changes when you nudge exactly one weight while holding all others fixed.", "The chain rule decomposes the derivative of a deeply nested function into a product of simple local derivatives, one per operation.", "Backpropagation walks the computational graph in reverse, applying the chain rule at each node to deliver a gradient to every weight."]} bridge="Just as `requestAnimationFrame` velocity is a finite difference of position over time, `tf.grad()` computes the exact rate of change of the loss with respect to a weight using reverse-mode autodiff through the same kind of incremental update logic." youCanNow="Trace gradient flow through a simple network by hand and use `tf.grad()` to verify the result." />
+<LessonRecap whatYouLearned={["A partial derivative measures how much the loss changes when you nudge exactly one weight while holding all others fixed.", "The chain rule decomposes the derivative of a deeply nested function into a product of simple local derivatives, one per operation.", "Backpropagation walks the computational graph in reverse, applying the chain rule at each node to deliver a gradient to every weight."]} bridge="Both answer the same question: how fast does this value change? `requestAnimationFrame` velocity answers it by measuring two frames after the fact. `tf.grad()` answers it exactly, walking the computational graph backwards with the chain rule before you take the step." youCanNow="Trace gradient flow through a simple network by hand and use `tf.grad()` to verify the result." />

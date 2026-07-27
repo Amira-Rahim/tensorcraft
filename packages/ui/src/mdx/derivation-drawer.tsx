@@ -98,7 +98,7 @@ export function DerivationDrawer({
                 href={href}
                 className="font-mono text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
-                Read full derivation in math-deep-dive →
+                Read the full companion deep dive →
               </a>
             </div>
           )}

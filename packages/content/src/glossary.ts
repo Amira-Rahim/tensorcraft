@@ -31,8 +31,15 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "rank",
     definition:
-      "The number of dimensions (axes) a tensor has. A scalar is rank 0, a vector rank 1, a matrix rank 2.",
+      "The number of dimensions (axes) a tensor has: a scalar is rank 0, a vector rank 1, a matrix rank 2. Distinct from matrix rank in linear algebra, which counts the independent directions a matrix preserves.",
     aliases: ["ranks"],
+    scope: "global",
+  },
+  {
+    term: "matrix rank",
+    definition:
+      "The number of independent directions a matrix preserves, distinct from tensor rank, which counts axes. Full rank means no direction collapses to zero; a rank-deficient matrix collapses some directions and loses information.",
+    aliases: ["full rank", "full-rank", "rank-deficient"],
     scope: "global",
   },
   {
@@ -232,6 +239,13 @@ export const GLOSSARY: GlossaryEntry[] = [
     definition:
       "An optimization method that repeatedly steps the weights in the direction that lowers the loss.",
     aliases: ["descent"],
+    scope: "global",
+  },
+  {
+    term: "sgd",
+    definition:
+      "Stochastic gradient descent: gradient descent where each update uses the gradient from a random mini-batch instead of the full dataset, making steps noisy but cheap.",
+    aliases: ["SGD", "stochastic gradient descent"],
     scope: "global",
   },
   {
@@ -676,6 +690,13 @@ export const GLOSSARY: GlossaryEntry[] = [
     definition:
       "The probability-weighted average of a random variable over all outcomes. Sample means estimate it, and every ML loss is an expected value estimated by a batch average.",
     aliases: ["expectation"],
+    scope: "global",
+  },
+  {
+    term: "normal distribution",
+    definition:
+      "The bell-curve distribution, also called Gaussian, described entirely by its center (mean) and spread (standard deviation). Sums of many small independent effects tend toward it.",
+    aliases: ["Gaussian", "Gaussian distribution", "bell curve"],
     scope: "global",
   },
   {

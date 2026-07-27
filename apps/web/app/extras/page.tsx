@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://tensorcraft.app/extras" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
-  // this page presented as the site root — wrong title, wrong image, wrong
+  // this page presented as the site root: wrong title, wrong image, wrong
   // destination preview. Matters most during a distribution push.
   openGraph: {
     type: "website",

@@ -77,6 +77,7 @@ function convexLoss(w1: number, w2: number): number {
 }
 
 // Gradient: [dL/dw1, dL/dw2] = [2*w1, 6*w2]
+// (dL/dw1 = how fast loss changes as w1 moves; lesson 2 of this module)
 function convexGradient(w1: number, w2: number): [number, number] {
   return [2 * w1, 6 * w2];
 }
@@ -96,7 +97,7 @@ for (let step = 0; step < 20; step++) {
 
 ## Convexity and Non-Convexity
 
-A **convex** function is bowl-shaped: any line between two points on the surface stays above the surface. This guarantees a single global minimum. Linear regression loss is convex, so gradient descent always finds the best answer.
+A **convex** function is bowl-shaped: any line between two points on the surface stays above the surface. Two terms worth pinning down before going further: a **local minimum** is a point lower than everything nearby, and the **global minimum** is the lowest point on the whole surface. On a convex bowl they coincide: there is exactly one valley. Linear regression loss is convex, so gradient descent with a reasonable learning rate always finds the best answer, no matter where you start.
 
 Neural network loss functions are **non-convex**. They have multiple valleys, ridges, and saddle points, and there's no guarantee you'll find the global minimum.
 
@@ -126,6 +127,8 @@ for (const start of [-2.0, 0.0, 2.0, 4.0]) {
 
 In high dimensions, local minima are rare. **Saddle points** are far more common: points where the gradient is zero but the surface curves up in some directions and down in others. Think of a mountain pass: it's the lowest point along the ridge but the highest point along the valley.
 
+Why are saddles the common case? Recall lesson 2's Hessian rule: a zero-gradient point is a minimum only if the surface curves upward along every direction you could step. In a landscape with n weights there are n independent directions to check, and at a random zero-gradient point each one can curve up or down. If each direction were a fair coin flip, all n landing up would have probability 1 in 2^n; even a small network with 100 weights makes that roughly 1 in 10^30. Real loss surfaces are not fair coins, but the counting argument survives: every added dimension is one more chance for some direction to curve down, so almost every zero-gradient point you meet is a saddle, not a minimum.
+
 <CodeBlock language="typescript" title="saddle-point.ts">
 {`// Saddle point example: f(x, y) = x^2 - y^2
 // At (0, 0): gradient is [0, 0] but it's NOT a minimum
@@ -151,12 +154,12 @@ for (let i = 0; i < 10; i++) {
   console.log(\`Step \${i}: (\${x.toFixed(6)}, \${y.toFixed(6)}) loss=\${saddleLoss(x, y).toFixed(6)}\`);
 }
 // y escapes (gradient pushes it away): 6.19x growth in these 10 steps
-// while x shrinks by 0.8 per step. Slow drift out, not a trap`}
+// while x shrinks to 0.8 of its value each step. Slow drift out, not a trap`}
 </CodeBlock>
 
 ## SGD with Momentum
 
-Momentum solves two problems: it helps escape saddle points and accelerates through flat regions. The physics analogy is perfect. A ball rolling downhill accumulates velocity.
+SGD (stochastic gradient descent) is gradient descent where each step uses the gradient from a random mini-batch, so the steps are noisy. The toy examples below use the exact gradient; the momentum mechanics are the same. Momentum solves two problems: it helps escape saddle points and accelerates through flat regions. The physics analogy is unusually tight here: a ball rolling downhill accumulates velocity.
 
 <CodeBlock language="typescript" title="sgd-momentum.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -200,7 +203,7 @@ console.log('Momentum:', momentumResult.map(v => v.toFixed(4)));
 
 ## Learning Rate Schedules
 
-A fixed learning rate is one compromise applied to the whole journey: large steps cross plateaus quickly but orbit the valley floor without ever settling, while small steps settle precisely but crawl across every flat region. A schedule changes the rate as training progresses, so you spend large steps where the landscape is flat and small ones where it narrows. Warmup covers the other end of the run: the first updates are computed from raw random weights (and, for adaptive optimizers like Adam, from moment estimates that are still noise), so ramping the rate up over a few epochs keeps those first steps from launching the weights somewhere unrecoverable.
+A fixed learning rate is one compromise applied to the whole journey: large steps cross plateaus quickly but orbit the valley floor without ever settling, while small steps settle precisely but crawl across every flat region. A schedule changes the rate as training progresses, so you spend large steps where the landscape is flat and small ones where it narrows. Warmup covers the other end of the run: the first updates are computed from raw random weights (and adaptive optimizers like Adam size each step from running averages of recent gradients, averages that are pure noise until enough steps have accumulated), so ramping the rate up over a few epochs keeps those first steps from launching the weights somewhere unrecoverable.
 
 <CodeBlock language="typescript" title="lr-schedules.ts">
 {`// Step decay: cut the rate at fixed milestones
@@ -236,4 +239,4 @@ Build a visualization of gradient descent on a loss surface and implement moment
 
 <RecallPrompt question="Why does adding momentum to gradient descent help more than just increasing the learning rate?" answer="Momentum accumulates velocity across steps, so it carries the optimizer through flat regions and past shallow saddle points where the gradient is near zero. A high learning rate alone overshoots valleys; momentum builds speed gradually and damps oscillations in narrow canyons." />
 
-<LessonRecap whatYouLearned={["The loss function defines a surface in weight space; gradient descent navigates this surface by stepping in the direction of steepest descent at each point.", "Neural network loss surfaces are non-convex, so gradient descent can converge to different valleys depending on where training starts.", "Saddle points, where the gradient is zero but the surface curves up in some directions and down in others, are more common than true local minima in high-dimensional spaces."]} bridge="A physics game applies `velocity += gravity * dt` to carry a character through dips in terrain; SGD momentum applies the same update rule to carry the optimizer through flat regions and past shallow saddle points on the loss surface." youCanNow="Implement SGD with momentum and explain why the loss surface geometry determines when learning rate schedules are needed." />
+<LessonRecap whatYouLearned={["The loss function defines a surface in weight space; gradient descent navigates this surface by stepping in the direction of steepest descent at each point.", "Neural network loss surfaces are non-convex, so gradient descent can converge to different valleys depending on where training starts.", "Saddle points, where the gradient is zero but the surface curves up in some directions and down in others, are more common than true local minima in high-dimensional spaces: a true minimum needs upward curvature along every direction at once, and that coincidence gets rarer with every added dimension."]} bridge="A physics game applies `velocity += gravity * dt` to carry a character through dips in terrain; SGD momentum applies the same update rule to carry the optimizer through flat regions and past shallow saddle points on the loss surface." youCanNow="Implement SGD with momentum and explain why the loss surface geometry determines when learning rate schedules are needed." />

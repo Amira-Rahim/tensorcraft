@@ -85,6 +85,14 @@ tf.sigmoid(board).print();            // [0.0000167, 1]
 
 Placement falls out of the ranges. ReLU stays in the hidden layers, where speed matters and the outputs feed more math. Sigmoid takes the output slot when the question is yes/no, because (0, 1) reads as a probability. Tanh takes it when values need to swing negative.
 
+<DerivationDrawer summary="Sigmoid's math, and the classical model built from it" companionHref="/extras/classical-ml/logistic-regression">
+**Why sigmoid lands strictly inside (0, 1).** The formula is `sigmoid(z) = 1 / (1 + Math.exp(-z))`, where `z` is the raw pre-activation score. `Math.exp(-z)` is positive for every `z`, so the denominator is always bigger than 1 and the division always lands strictly between 0 and 1. At `z = 0`, `Math.exp(0) = 1` and the output is exactly 0.5, which is why the activations table above shows 0.5 in the middle slot. Push `z` positive and `Math.exp(-z)` shrinks toward zero, pulling the output toward 1; push `z` negative and the denominator blows up, pushing the output toward 0. The endpoints are approached, never reached: 600 printed as exactly 1 above only because float32 ran out of digits, not because the math got there.
+
+**The curve is symmetric around 0.5.** `sigmoid(-z) = 1 - sigmoid(z)`: write `1 - sigmoid(z)` as `Math.exp(-z) / (1 + Math.exp(-z))`, multiply top and bottom by `Math.exp(z)`, and you are left with `1 / (Math.exp(z) + 1)`, which is `sigmoid(-z)`. Check it against the printed values: `sigmoid(-1)` is 0.27, and `1 - sigmoid(1)` is `1 - 0.73 = 0.27`. A no is exactly as confident as the mirror-image yes.
+
+**A sigmoid on a weighted sum is a complete model by itself.** Take a single neuron's weighted sum (each input times its weight, plus a bias), put sigmoid in the output slot, and you have **logistic regression**: the classical baseline that handles most production yes/no problems with no hidden layers at all. The companion lesson builds it from scratch in TypeScript, trains it with gradient descent, and covers when it is the right call over a network.
+</DerivationDrawer>
+
 ## When Activations Die
 
 Each choice has a failure mode with a name. A ReLU neuron whose weighted sum stays negative outputs zero forever and stops learning: the dying ReLU. A sigmoid pushed hard into either tail goes flat and stops responding: saturation. Both failures live inside a quantity called the gradient, which you will build in module 3; that is where the crew rounds up these suspects.

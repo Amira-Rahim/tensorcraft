@@ -140,6 +140,8 @@ One entry for the strangest page in the ship's records: back before this network
 - **Both accuracies high** → Ship it.
 
 <DerivationDrawer summary="Why accuracy alone is not enough: precision, recall, F1">
+**Every prediction lands in one of four buckets:** true positive (TP: real anomaly, flagged), false positive (FP: calm reading, flagged anyway), true negative (TN: calm reading, left alone), false negative (FN: real anomaly, missed). Every metric below is a ratio of these four counts.
+
 **Accuracy** = `(TP + TN) / (TP + TN + FP + FN)`. This breaks under class imbalance: if 99% of signals are normal, predicting "normal" for everything scores 99% accuracy and zero useful detections.
 
 **Precision** = `TP / (TP + FP)`: of all signals you flagged as anomalous, what fraction actually were?
@@ -159,17 +161,19 @@ Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26
 
 **F1 score** = `2 · (precision · recall) / (precision + recall)`: harmonic mean. Use when you need a single number that punishes either extreme. For DEEP SCAN, missing a true anomaly might cost a ship. False alarms cost crew time. The right metric depends on which cost you're willing to absorb.
 
-**ROC and PR curves** plot precision-recall (or TPR-FPR) across all thresholds. Reporting one accuracy number from one threshold hides this entire surface.
+**ROC and PR curves.** Sweep the threshold and plot the results: a precision-recall (PR) curve shows precision against recall, and an ROC (receiver operating characteristic) curve shows the true-positive rate (the recall you just computed) against the false-positive rate, the fraction of calm rows falsely flagged. One accuracy number from one threshold hides both curves.
 </DerivationDrawer>
 
-One number in that table deserves suspicion before anyone celebrates: precision 1.000 was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice.
+One number in that table deserves suspicion before anyone celebrates: precision 1.000 was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. An eval set built to be balanced instead of drawn from production is selection bias in miniature; the Dataset Bias lesson in the Ethics & Responsible AI extras covers where else that trap hides.
 
 <DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates" companionSlug="probability-and-bayes">
 **Precision belongs to the detector plus the world it runs in.** Sensitivity and false-positive rate are properties of the model alone. Precision also depends on how common anomalies are in the data you run it on, and the held-out slice (26 anomalous, 24 calm) was assembled to be near balanced. Live hull telemetry is overwhelmingly calm.
 
-**Bayes' theorem converts between the two.** The number the bridge actually needs is P(anomaly | alarm), and an alarm can happen two ways, a caught anomaly or a false positive:
+**Bayes' theorem converts between the two.** The number the bridge actually needs is P(anomaly | alarm), read as: the probability an anomaly is really there, given that the alarm fired. The bar means "given that", not "or". An alarm can happen two ways, a caught anomaly or a false positive:
 
 `P(anomaly | alarm) = (sens · prior) / (sens · prior + FPR · (1 - prior))`
+
+Here sens is the sensitivity (the recall from the drawer above), FPR is the false-positive rate (the share of calm readings falsely flagged), and the prior is how common anomalies are before any alarm fires.
 
 **First, honesty about the false-positive rate.** FP = 0 on 24 calm rows says less than it seems: a detector with a true 4% FPR would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely; it does not make it zero.
 
@@ -179,7 +183,7 @@ One number in that table deserves suspicion before anyone celebrates: precision 
 
 An alarm on the live stream is about a 4% bet that something is really there, from the same detector whose test-slice precision printed 1.000. Nothing about the model changed; the base rate did. Every percentage point of FPR is 10 false alarms per 1,000 calm readings, and each one costs crew time.
 
-**Raising the posterior means changing one of the three inputs:** a lower FPR (better detector), a higher prior (alarm only on readings that already passed a cheaper filter), or better sensitivity. Production monitoring stacks detectors in exactly that order: cheap filter first, expensive model on the survivors.
+**Raising P(anomaly | alarm), the posterior in Bayes' terms, means changing one of the three inputs:** a lower FPR (better detector), a higher prior (alarm only on readings that already passed a cheaper filter), or better sensitivity. Production monitoring stacks detectors in exactly that order: cheap filter first, expensive model on the survivors.
 </DerivationDrawer>
 
 ## Challenge

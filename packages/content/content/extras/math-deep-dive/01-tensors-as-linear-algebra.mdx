@@ -14,7 +14,7 @@ concept:
   explanation: "Tensors are elements of vector spaces with transformation rules, not just arrays of numbers."
   bridge:
     feTitle: "CSS Transform"
-    feCode: "transform: matrix(a, b, c, d, tx, ty)"
+    feCode: "transform: matrix(a, b, c, d, 0, 0)"
     mlTitle: "Linear Map"
     mlCode: "const result = tf.matMul(transformMatrix, vector)"
     tier: structural
@@ -34,23 +34,26 @@ keywords:
   - linear-independence
   - matrix-multiplication
   - rank
+  - determinant
 ---
 
 <Dialogue speaker="Instructor">
-You've been creating tensors and running operations on them since Module 1. But there's a deeper structure here that most tutorials skip. Tensors aren't just arrays. They're elements of vector spaces, and the operations you've been using are linear maps. Understanding this changes how you think about every layer in a neural network.
+You've been creating tensors and running operations on them since Module 1. But there's a deeper structure here that most tutorials skip. Tensors aren't just arrays. They're elements of vector spaces, and the operations you've been using are linear maps; both terms get pinned down in the next section. Understanding this changes how you think about every layer in a neural network.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand vector spaces and why tensors live inside them", "Identify basis vectors and linear independence in practical terms", "Perform matrix multiplication as composition of linear maps", "Connect CSS transform matrices to ML weight matrices", "Compute the rank of a matrix and understand what it means for data"]} />
+<LearningObjectives objectives={["Understand vector spaces and why tensors live inside them", "Identify basis vectors and linear independence in practical terms", "Perform matrix multiplication as composition of linear maps", "Connect CSS transform matrices to ML weight matrices", "Test linear independence with the 2x2 determinant and understand what matrix rank means for data"]} />
 
 ## From Arrays to Vector Spaces
 
 In frontend development, you've used CSS transforms without thinking twice:
 
 ```css
-transform: matrix(1, 0, 0, 1, 50, 100);
+transform: matrix(0, 1, -1, 0, 0, 0); /* same transform as rotate(90deg) */
 ```
 
-That 2D transform matrix lives in a vector space. Every CSS transform you've ever written is a linear map: it takes a coordinate, produces a new coordinate, and respects addition and scaling. ML weight matrices work identically.
+That 2D transform matrix acts on a vector space: the space of screen coordinates. The a, b, c, d block of every `matrix()` you've written is a linear map: it takes a coordinate, produces a new coordinate, and keeps two promises. Mapping a sum gives the sum of the maps, map(u + v) = map(u) + map(v), and mapping a scaled vector gives the scaled map, map(s * u) = s * map(u). That pair of promises is the whole definition of linear, and ML weight matrices keep both.
+
+The last two slots, tx and ty, are the exception. A shift is not a linear map: it moves the origin, and doubling the input of a pure shift does not double the output, so the scaling promise breaks. CSS smuggles the shift in through an extra matrix column, which is why chaining transforms still composes as pure matrix multiplication. ML has the same split: the weight matrix is the linear part of a layer, and the bias vector is the shift.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -88,12 +91,31 @@ const W = tf.tensor2d([
 // Transform our point
 const transformed = tf.matMul(W, point.reshape([2, 1]));
 console.log(await transformed.array());
-// [[-1], [24]]: the point [3,7] mapped through the linear transformation`}
+// [[-1], [24]]: the point [3,7] mapped through the linear transformation
+
+// A linear map keeps two promises: map(u + v) = map(u) + map(v),
+// and map(s * u) = s * map(u). Check both with W:
+const u = tf.tensor1d([1, 2]);
+const v = tf.tensor1d([3, 0]);
+const mapOfSum = tf.matMul(W, u.add(v).reshape([2, 1]));
+const sumOfMaps = tf.matMul(W, u.reshape([2, 1]))
+  .add(tf.matMul(W, v.reshape([2, 1])));
+console.log(await mapOfSum.array());  // [[6], [10]]
+console.log(await sumOfMaps.array()); // [[6], [10]], same answer
+
+const mapOfScaled = tf.matMul(W, u.mul(2).reshape([2, 1]));
+const scaledMap = tf.matMul(W, u.reshape([2, 1])).mul(2);
+console.log(await mapOfScaled.array()); // [[0], [14]]
+console.log(await scaledMap.array());   // [[0], [14]], same answer`}
 </CodeBlock>
 
 ## Linear Independence and Rank
 
 Vectors are **linearly independent** if none can be written as a combination of the others. The **rank** of a matrix tells you how many independent directions it preserves. If a weight matrix has low rank, it's collapsing your data into fewer dimensions. Information is being lost.
+
+Careful: this is a second, unrelated meaning of the word rank. The `tensor.rank` you met in Foundations lesson 1 counts axes, so every 2x2 matrix has tensor rank 2. Matrix rank counts independent directions, and the 2x2 matrix below has matrix rank 1. Linear algebra had the word first; TensorFlow overloaded it.
+
+For two 2D vectors, independence has a one-line test. Take v1 = [a, b] and v2 = [c, d] and form the **determinant**: a * d - b * c. Geometrically it is the signed area of the parallelogram the two vectors span, and the area-scale factor of the matrix built from them. Zero area means the parallelogram has collapsed onto a single line, which is exactly dependence. Check it on the rows of the rank-1 matrix below, [1, 2] and [2, 4]: 1 * 4 - 2 * 2 = 0. Dependent, rank 1. A nonzero determinant means no direction collapses: the matrix is full rank, and the transformation can be undone. One warning before the Challenge: in floating point you never test `det === 0`. You compare `Math.abs(det)` against a small epsilon like `1e-6`, a threshold decision you'll make yourself in the exercise below.
 
 <CodeBlock language="typescript" title="matrix-rank.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -109,35 +131,40 @@ const rank1 = tf.tensor2d([
   [1, 2],
   [2, 4]  // Row 2 = 2 * Row 1, not independent!
 ]);
+// Note: rank1.rank prints 2. The TFJS .rank property is tensor rank
+// (it counts axes); the matrix rank we're probing counts directions.
 
-// Apply rank-1 matrix to different points
+// Apply the rank-1 matrix to three points at once. Each point sits in
+// a ROW of points (one point per row). Multiplying on the RIGHT by the
+// transposed matrix applies the same map as matMul(rank1, point) did
+// for a single column vector, just to all three points in one op.
+// (rank1 happens to be symmetric, so transpose leaves its values
+// unchanged here; the transpose is about the row-vs-column convention,
+// not the numbers.)
 const points = tf.tensor2d([[1, 0], [0, 1], [1, 1]]);
 const collapsed = tf.matMul(points, rank1.transpose());
 console.log(await collapsed.array());
 // All outputs land on the same line: dimension reduced
 
-// In ML, this is why weight initialization matters:
-// a rank-deficient weight matrix can't learn distinct features
+// In ML, this is why weight initialization matters: a rank-deficient
+// (less than full rank) weight matrix can't learn distinct features
 
-// Reveal the rank with a QR decomposition: tf.linalg.qr rewrites the
-// matrix as Q (a rotation) times R (upper triangular). A near-zero
-// entry on R's diagonal marks a column that added (almost) no new
-// direction. One catch: on an EXACTLY singular matrix like rank1,
-// TFJS's qr returns NaN instead of a clean zero. So probe a nearly
-// singular neighbor and read the diagonal against a threshold:
-const nearSingular = tf.tensor2d([
-  [1, 2],
-  [2, 4.001]  // second row is ALMOST 2x the first
-]);
-const [q, r] = tf.linalg.qr(nearSingular);
-console.log(await r.array());
-// [[-2.2361, -4.4730],
-//  [ 0,      -0.0004]]
-// |R[1][1]| = 0.0004 vs |R[0][0]| = 2.2361: nearly four orders of
-// magnitude smaller. Treat any diagonal entry below a tolerance (say
-// 1e-3 times the largest one) as zero: this matrix is effectively
-// rank 1. Numerical rank is always a threshold decision, never an
-// equality test.`}
+// The determinant turns the collapse into a number:
+const [row1, row2] = await rank1.array();
+const det = row1[0] * row2[1] - row1[1] * row2[0];
+console.log(det); // 1 * 4 - 2 * 2 = 0: dependent rows, rank 1
+
+// A nearly singular neighbor keeps a sliver of area:
+const near = [[1, 2], [2, 4.001]];  // second row is ALMOST 2x the first
+const detNear = near[0][0] * near[1][1] - near[0][1] * near[1][0];
+console.log(detNear);
+// 1 * 4.001 - 2 * 2 = 0.001 in exact arithmetic. The console prints
+// 0.001000000000000334 instead, because doubles can't store 4.001
+// exactly. That rounding noise is why you compare Math.abs(det) against an epsilon
+// (the Challenge uses 1e-6) instead of testing det === 0. Numerical
+// rank is always a threshold decision, never an equality test.
+// (For bigger matrices, libraries read rank off a decomposition
+// instead of a determinant; lesson 8 covers the SVD.)`}
 </CodeBlock>
 
 ## Matrix Multiplication as Composition
@@ -172,7 +199,8 @@ const layer1 = tf.randomNormal([4, 3]);
 const layer2 = tf.randomNormal([3, 4]);
 const collapsed = tf.matMul(layer2, layer1);
 // collapsed is 3x3: two layers = one linear map
-// This is why we NEED nonlinear activations between layers`}
+// This is why we NEED nonlinear activations between layers:
+// small nonlinear gates like ReLU, covered in the Neural Networks module`}
 </CodeBlock>
 
 ## Challenge
@@ -183,4 +211,4 @@ Put your linear algebra knowledge to work by implementing core vector space oper
 
 <RecallPrompt question="If you stack two linear layers with no activation function between them, how many effective linear maps do you get?" answer="One. Any composition of linear maps is itself a linear map, so two weight matrices multiply into a single equivalent matrix. This is why nonlinear activations are essential: they break that collapse and let deep networks represent non-linear functions." />
 
-<LessonRecap whatYouLearned={["A matrix applied to a vector is a linear map: it scales and rotates the space while respecting addition and scalar multiplication.", "Matrix rank measures how many independent directions a transformation preserves; a rank-deficient matrix collapses data into fewer dimensions and loses information.", "Stacking linear layers without activations is equivalent to a single matrix multiply, because composing linear maps produces another linear map."]} bridge="Just as chaining CSS `transform: matrix()` calls multiplies the matrices together, stacking neural network weight matrices composes linear maps into one combined transformation." youCanNow="Explain why neural networks need nonlinear activations and how matrix rank affects what a layer can represent." />
+<LessonRecap whatYouLearned={["A matrix applied to a vector is a linear map: it scales and rotates the space while respecting addition and scalar multiplication.", "Matrix rank measures how many independent directions a transformation preserves; a rank-deficient matrix collapses data into fewer dimensions and loses information.", "For two 2D vectors [a, b] and [c, d], the determinant a * d - b * c is the signed area of the parallelogram they span; zero means the vectors are dependent, and in floating point you compare its absolute value against an epsilon instead of exact zero.", "Stacking linear layers without activations is equivalent to a single matrix multiply, because composing linear maps produces another linear map."]} bridge="Just as chaining CSS `transform: matrix()` calls multiplies the matrices together, stacking neural network weight matrices composes linear maps into one combined transformation." youCanNow="Explain why neural networks need nonlinear activations and how matrix rank affects what a layer can represent." />

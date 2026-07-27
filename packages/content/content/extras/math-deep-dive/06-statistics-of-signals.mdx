@@ -23,9 +23,9 @@ consequence:
   narrative: "The z-score threshold stops being a recipe and becomes a claim about distributions, one you can now state and check."
 hints:
   - level: nudge
-    content: "All three functions are direct translations of formulas in this lesson: the binomial formula needs the number of ways to choose k of n, the normal PDF is one exponential expression, and standardizing subtracts the mean then divides by the standard deviation"
+    content: "Everything you need is already written out: the binomial formula sits in this lesson's binomial.ts block, the Normal density is the one-line formula in the Normal paragraph, and standardizing subtracts the mean then divides by the population standard deviation. The instructions above the editor repeat each formula verbatim; translate them line by line"
   - level: guidance
-    content: "binomialProbability computes C(n, k) with an iterative loop (multiply by (n - i) / (i + 1) for i from 0 to k - 1), then multiplies by p ** k and (1 - p) ** (n - k). normalPdf returns Math.exp(-((x - mu) ** 2) / (2 * sigma ** 2)) divided by (sigma * Math.sqrt(2 * Math.PI)). standardize computes the mean, then the population standard deviation (divide the squared deviations by n, not n - 1), and maps each value to (value - mean) / std"
+    content: "binomialProbability computes C(n, k) with an iterative loop (multiply by (n - i) / (i + 1) for i from 0 to k - 1), then multiplies by p ** k and (1 - p) ** (n - k). normalPdf returns Math.exp(-((x - mu) ** 2) / (2 * sigma ** 2)) divided by (sigma * Math.sqrt(2 * Math.PI)). standardize computes the mean, then the population standard deviation (divide the squared deviations by n, not n - 1; the Expectation and Variance section explains why both versions exist), and maps each value to (value - mean) / std"
   - level: solution
     content: |
       let c = 1;
@@ -45,15 +45,17 @@ keywords:
   - expected-value
   - central-limit-theorem
   - binomial-distribution
+  - covariance
+  - correlation
   - conditional-probability
   - independence
 ---
 
 <Dialogue speaker="Instructor">
-In Anomaly Detection you flagged any reading more than 3 standard deviations from a channel's mean. It works. But why 3? Why standard deviations? That recipe is actually a stack of probability claims: that a channel's readings follow a distribution, that the distribution is roughly Gaussian, and that Gaussian tails assign tiny probability past 3 sigma. This lesson unpacks the stack, because when detection misbehaves in production, the broken piece is almost always one of those claims.
+In Anomaly Detection you flagged any reading more than 3 standard deviations from a channel's mean. It works. But why 3? Why standard deviations? That recipe is actually a stack of probability claims: that a channel's readings follow a distribution, that the distribution is roughly Gaussian (the bell curve formally called the Normal distribution; two names for one shape, and no relation to 'normal' meaning non-anomalous), and that Gaussian tails (the far edges of the curve) assign tiny probability past 3 sigma. This lesson unpacks the stack, because when detection misbehaves in production, the broken piece is almost always one of those claims.
 </Dialogue>
 
-<LearningObjectives objectives={["Model a data source as a random variable with a distribution", "Distinguish PMFs from PDFs and read density correctly", "Compute expected value and variance from a distribution rather than a sample", "Use the Uniform, Normal, and Binomial distributions where each applies", "Explain what the Central Limit Theorem does and does not justify"]} />
+<LearningObjectives objectives={["Model a data source as a random variable with a distribution", "Distinguish PMFs from PDFs and read density correctly", "Compute expected value and variance from a distribution rather than a sample", "Use the Uniform, Normal, and Binomial distributions where each applies", "Explain what the Central Limit Theorem does and does not justify, and measure shared noise with covariance and correlation"]} />
 
 ## A Reading Is a Random Variable
 
@@ -80,7 +82,7 @@ function empiricalPmf(samples: number[]): Map<number, number> {
 }`}
 </CodeBlock>
 
-A continuous random variable cannot have a PMF: the probability of latency being *exactly* 137.2941... ms is zero. Instead it has a **probability density function (PDF)**. Density is not probability; it is probability per unit of width. Only areas under the PDF are probabilities, and the total area is 1. This is why a PDF can exceed 1 without contradiction: a Normal with sigma = 0.1 peaks near 4, and that is a density, not a chance.
+A continuous random variable cannot have a PMF: the probability of latency being *exactly* 137.2941... ms is zero. Instead it has a **probability density function (PDF)**. Density is not probability; it is probability per unit of width. Only areas under the PDF are probabilities, and the total area is 1. This is why a PDF can exceed 1 without contradiction: a Normal distribution (introduced below) with sigma = 0.1 peaks near 4, and that is a density, not a chance.
 
 ## Expectation and Variance, from the Distribution Side
 
@@ -107,15 +109,17 @@ console.log(expectedValue(faces, fair));  // 3.5
 console.log(distVariance(faces, fair));   // 2.9166...`}
 </CodeBlock>
 
-The sample mean estimates E[X]; the sample variance estimates Var[X]. Every loss function you have minimized is an expectation estimated by an average over training examples: MSE is E[(prediction - truth)^2] with the expectation replaced by a mean over the batch. That substitution, average-for-expectation, is the single most used move in machine learning.
+The sample mean estimates E[X]; the sample variance estimates Var[X]. One wrinkle worth naming: the sample variance measures deviations from the sample's own mean, and that mean sits closer to its data than the true E[X] does, so the squared deviations come out systematically a little small and dividing by n underestimates Var[X]. Dividing by n - 1 instead is the standard correction for that bias, which is why pandas and many calculators default to it. For [2, 4, 6] the divide-by-n version gives 8/3, about 2.667, while the n - 1 version gives 4. This course grades the divide-by-n (population) formula throughout, for consistency with tf.moments and numpy; the pandas lesson in the Python Bridge module shows the numeric cost of mixing the two.
+
+Every loss function you have minimized is an expectation estimated by an average over training examples: MSE (mean squared error, from the Training Loop module) is E[(prediction - truth)^2] with the expectation replaced by a mean over the batch. That substitution, average-for-expectation, is the single most used move in machine learning.
 
 ## Three Distributions That Cover Most of ML
 
-**Uniform(a, b): total ignorance over a range.** Every value in [a, b] equally dense. `Math.random()` samples Uniform(0, 1); weight initializers draw from scaled uniforms precisely because before training there is no reason to prefer one direction over another.
+**Uniform(a, b): total ignorance over a range.** Every value between a and b is equally dense. `Math.random()` samples Uniform(0, 1); weight initializers draw from scaled uniforms precisely because before training there is no reason to prefer one direction over another.
 
-**Normal(mu, sigma): the shape of accumulated noise.** Symmetric, bell-curved, fully described by its center and spread. Sensor noise, measurement error, and (after enough training) residuals tend Normal, for a reason the next section makes precise. The 3-sigma rule is a fact about THIS distribution: it puts probability about 0.0027 outside mu plus or minus 3 sigma. Quote "3 sigma catches 99.7%" and you are implicitly claiming your data is Gaussian.
+**Normal(mu, sigma): the shape of accumulated noise.** Symmetric, bell-curved, fully described by its center and spread. Its density is `pdf(x) = exp(-((x - mu) ** 2) / (2 * sigma ** 2)) / (sigma * Math.sqrt(2 * Math.PI))`. Plug in x = mu and sigma = 0.1: the exponential is exp(0) = 1, so the peak is the coefficient alone, 1 / (0.1 * sqrt(2 * PI)) = 3.989, the peak near 4 from the PDF section. Sensor noise, measurement error, and (after enough training) residuals (the leftover errors, prediction minus truth) tend Normal, for a reason the next section makes precise. The 3-sigma rule is a fact about THIS distribution: it puts probability about 0.0027 outside mu plus or minus 3 sigma. Quote "3 sigma catches 99.7%" and you are implicitly claiming your data is Gaussian.
 
-**Binomial(n, p): counting successes in independent tries.** Flip n independent coins that each land heads with probability p; the count of heads is Binomial. The workhorse question it answers for a detector: if each of 64 channels independently has a 5% chance of tripping its threshold on a calm reading, how many trips should a calm reading produce?
+**Binomial(n, p): counting successes in independent tries.** Flip n independent coins that each land heads with probability p; the count of heads is Binomial. The workhorse question it answers for a detector: if each of 64 channels independently has a 5% chance of tripping its threshold on a calm reading, how many trips should one sweep of the whole board produce?
 
 <CodeBlock language="typescript" title="binomial.ts">
 {`// P(exactly k successes in n tries) = C(n, k) * p^k * (1-p)^(n-k)
@@ -127,11 +131,11 @@ function binomialProbability(n: number, k: number, p: number): number {
 
 // 64 channels, each 5% likely to trip on calm data:
 console.log(binomialProbability(64, 0, 0.05));  // 0.0375: all-quiet is RARE
-// Expected trips on a perfectly calm reading: n * p = 3.2 channels
+// Expected trips on one perfectly calm sweep of the board: n * p = 3.2 channels
 // A calm board should show a few lit channels. Zero lit is itself unusual.`}
 </CodeBlock>
 
-That 0.0375 is worth staring at: on a fully calm signal, a completely dark board happens less than 4% of the time. A detector that treats *any* tripped channel as an anomaly will fire on nearly every calm reading. Per-channel thresholds must be combined with the Binomial in mind, not summed with a straight face.
+That 0.0375 is worth staring at: on a fully calm signal, a completely dark board happens less than 4% of the time. A detector that treats *any* tripped channel as an anomaly will fire on nearly every calm sweep. Per-channel thresholds must be combined with the Binomial in mind: expect about n * p = 3.2 tripped channels on a calm sweep, and alarm on counts well above that, never on a single trip.
 
 ## The Central Limit Theorem
 
@@ -147,26 +151,53 @@ function averageOfUniforms(n: number): number {
 
 const samples = Array.from({ length: 10_000 }, () => averageOfUniforms(64));
 // Histogram these and the flat source produces a tight bell curve:
-// mean 0.5, standard deviation 1 / sqrt(12 * 64) = 0.036.
+// mean 0.5, standard deviation 0.036. Where that comes from: Uniform(0, 1)
+// has variance 1/12 (check it with distVariance on a fine grid over [0, 1]),
+// and averaging n independent draws divides variance by n, so
+// sd = sqrt((1/12) / 64) = 1 / sqrt(768) = 0.036. Or skip the algebra:
+// compute the sd of the samples array directly; it lands within a hair of 0.036.
 // Nothing Gaussian went in. Gaussian came out. That is the CLT working.`}
 </CodeBlock>
 
-This is the missing justification for the z-score recipe: a channel reading that aggregates many small independent physical effects is pushed toward Normal by the CLT, and once it is Normal, 3 sigma really does mean probability 0.0027. But read the fine print, because production data violates it in two standard ways. **Heavy tails:** if rare huge effects dominate (one GC pause, one solar flare), averages converge slowly or not at all, and 3-sigma events become routine. **Correlation:** the CLT needs independence; 64 channels wired to the same hull vibrate together, and correlated readings do not average their noise away. When your detector cries wolf in production, check these two before blaming the threshold.
+This is the missing justification for the z-score recipe: a channel reading that aggregates many small independent physical effects is pushed toward Normal by the CLT, and once it is Normal, 3 sigma really does mean probability 0.0027. But read the fine print, because production data violates it in two standard ways. **Heavy tails:** if rare huge effects dominate (one GC pause, one solar flare), averages converge slowly or not at all, and 3-sigma events become routine. **Correlation:** the CLT needs the many small effects inside one reading to be independent, with none of them dominant. Hull vibration is a single shared driver that dominates them all, so the reading's distribution follows the hull's shape, whatever that is, instead of being pushed toward Normal. Correlation across channels is a different failure: it leaves each channel's distribution alone, but it makes trips arrive in clusters, which breaks the board-level Binomial count from the previous section. When your detector cries wolf in production, check these two before blaming the threshold.
+
+## Covariance and Correlation
+
+The fine print said "correlated" without measuring it. The measure is two lines of arithmetic. Take paired readings from two channels, x and y, and look at each pair's deviations from its own channel's mean. **Covariance** is the average product of those paired deviations. Channels that vibrate together produce deviations that share a sign, so the products pile up positive; channels that move independently produce as many opposite-sign products as matching ones, and the average cancels toward zero.
+
+Covariance carries units (channel units squared), which makes its raw size hard to judge. Divide by both standard deviations and the units cancel: **correlation**, written rho, is cov(x, y) / (sigma_x * sigma_y), where sigma_x and sigma_y are the two channels' standard deviations. It always lands between -1 and 1: independent noise gives rho near 0, and two channels bolted to the same vibrating hull push rho toward 1.
+
+<CodeBlock language="typescript" title="covariance.ts">
+{`// Average product of paired deviations
+function covariance(x: number[], y: number[]): number {
+  const mx = x.reduce((s, v) => s + v, 0) / x.length;
+  const my = y.reduce((s, v) => s + v, 0) / y.length;
+  return x.reduce((s, v, i) => s + (v - mx) * (y[i] - my), 0) / x.length;
+}
+
+function correlation(x: number[], y: number[]): number {
+  const sx = Math.sqrt(covariance(x, x));  // cov(x, x) is just Var[x]
+  const sy = Math.sqrt(covariance(y, y));
+  return covariance(x, y) / (sx * sy);
+}`}
+</CodeBlock>
+
+Correlation is the number that prices the fine print. Average n independent readings and the noise variance divides by n; average n readings that share a driver and the shared part never shrinks, so the variance of the average floors at rho times the single-reading variance no matter how large n grows. That floor is why a wall of correlated channels smooths less than the independence math promises, and it reappears anywhere averaging is supposed to cancel error, model ensembles included.
 
 ## Conditional Probability and the Independence Assumption
 
-`P(A | B)`, the probability of A given that B happened, is computed by shrinking the world to outcomes where B is true and renormalizing: `P(A | B) = P(A and B) / P(B)`. Two events are **independent** when conditioning changes nothing: `P(A | B) = P(A)`. Knowing B told you nothing about A.
+`P(A | B)`, the probability of A given that B happened, is computed by shrinking the world to outcomes where B is true and renormalizing (dividing by P(B) so the probabilities in the shrunken world again sum to 1): `P(A | B) = P(A and B) / P(B)`. Two events are **independent** when conditioning changes nothing: `P(A | B) = P(A)`. Knowing B told you nothing about A.
 
-Every claim in this lesson quietly leaned on independence: the Binomial assumed channels trip independently; the CLT assumed effects accumulate independently. Independence is the assumption you buy convenience with, and hull channels bolted to the same frame are the standard counterexample. The companion lesson on Bayes' theorem, next in this module, is what conditional probability becomes when you run it backwards: from P(evidence | cause), which physics gives you, to P(cause | evidence), which the bridge crew actually needs.
+Every claim in this lesson quietly leaned on independence: the Binomial assumed channels trip independently; the CLT assumed effects accumulate independently. Independence is the assumption you buy convenience with, and hull channels bolted to the same frame are the standard counterexample. Bayes' theorem, covered in the next lesson of this module, is what you get when you run conditional probability backwards: from P(evidence | cause), which physics gives you, to P(cause | evidence), which the bridge crew actually needs.
 
 ## Challenge
 
-Implement the three formulas this lesson leaned on: the Binomial PMF, the Normal PDF, and standardization.
+Implement the three formulas this lesson leaned on: the Binomial PMF, the Normal PDF, and standardization (the z-score move from Anomaly Detection).
 
 <Exercise slug="signal-statistics" />
 
 <RecallPrompt question="A monitoring channel's PDF has a peak value of 4.2. A teammate says probabilities cannot exceed 1, so the model must be broken. What is wrong with that objection?" answer="A PDF reports density, probability per unit of width, not probability. Only areas under the curve are probabilities, and the total area is 1. A narrow distribution (small sigma) concentrates its unit of area in a thin region, pushing the peak density above 1 without any single outcome having probability above 1." />
 
-<RecallPrompt question="Your anomaly detector uses a 3-sigma threshold and fires constantly in production despite calm signals. Name the two standard CLT violations you would check first." answer="Heavy tails and correlated inputs. If rare large effects dominate the data, the Gaussian tail probabilities the 3-sigma rule relies on are wrong and extreme values are routine. If the channels are correlated, their noise does not average away and the effective distribution is wider than the per-channel statistics suggest." />
+<RecallPrompt question="Your anomaly detector uses a 3-sigma threshold and fires constantly in production despite calm signals. Name the two standard CLT violations you would check first." answer="Heavy tails and broken independence. If rare large effects dominate the data, the Gaussian tail probabilities the 3-sigma rule relies on are wrong and extreme values are routine. If the small effects inside each reading share a dominant driver, like hull vibration, the reading was never pushed toward Normal in the first place and its tails are not Gaussian tails. Correlation across channels is a separate failure: it leaves each channel's trip rate intact but makes trips arrive in clusters, so board-level trip counts misbehave even when per-channel rates look right." />
 
-<LessonRecap whatYouLearned={["A random variable is a quantity with unpredictable outcomes but a stable long-run pattern, described by a PMF (discrete, probabilities summing to 1) or a PDF (continuous, areas are probabilities and density can exceed 1).", "Expected value and variance are distribution-side quantities; sample means and variances estimate them, and every ML loss is an expectation estimated by a batch average.", "The Uniform, Normal, and Binomial distributions cover initialization, noise, and success-counting; the 3-sigma rule is a Gaussian fact that holds only as far as the data is Gaussian.", "The Central Limit Theorem pushes averages of independent effects toward Normal, which justifies z-score thresholds and fails under heavy tails or correlation."]} bridge="A p95 latency dashboard and a fitted distribution answer different questions: the dashboard describes requests that already happened, while the distribution models the process generating the next one, which is what lets you assign a probability to an event you have never observed." youCanNow="Implement the Binomial PMF, the Normal PDF, and standardization, and state explicitly which distributional assumptions a z-score threshold makes." />
+<LessonRecap whatYouLearned={["A random variable is a quantity with unpredictable outcomes but a stable long-run pattern, described by a PMF (discrete, probabilities summing to 1) or a PDF (continuous, areas are probabilities and density can exceed 1).", "Expected value and variance are distribution-side quantities; sample means and variances estimate them, and every ML loss is an expectation estimated by a batch average.", "The Uniform, Normal, and Binomial distributions cover initialization, noise, and success-counting; the 3-sigma rule is a Gaussian fact that holds only as far as the data is Gaussian.", "The Central Limit Theorem pushes averages of independent effects toward Normal, which justifies z-score thresholds and fails under heavy tails or correlation.", "Covariance is the average product of paired deviations, and correlation (rho, covariance divided by both standard deviations) normalizes it to the range -1 to 1; the shared part of correlated readings never averages away, so the variance of an average floors at rho times the single-reading variance."]} bridge="A p95 latency dashboard and a fitted distribution answer different questions: the dashboard describes requests that already happened, while the distribution models the process generating the next one, which is what lets you assign a probability to an event you have never observed." youCanNow="Implement the Binomial PMF, the Normal PDF, and standardization, and state explicitly which distributional assumptions a z-score threshold makes." />

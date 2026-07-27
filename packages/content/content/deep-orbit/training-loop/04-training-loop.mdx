@@ -123,7 +123,7 @@ const history = await model.fit(trainX, trainY, {
 
 **That is why the 400 reruns disagree.** Random initialization drops each run at a different point on the same landscape. Different basin, different descent path, different epoch-10 accuracy (the 0.46 to 1.00 bounce above). No code changed between runs; only the starting coordinates did.
 
-**Saddle points outnumber local minima in high dimensions.** A saddle curves up in some directions and down in others; the Hessian (the matrix of second derivatives) classifies the point by its eigenvalue signs, all positive for a minimum, mixed for a saddle. A true local minimum needs upward curvature in all n directions at once, and with thousands of weights that coincidence gets rarer with every added dimension. What actually stalls training is the near-zero gradient on the plateaus around saddles. Momentum-based optimizers like Adam carry enough velocity to coast across them, which is one reason `optimizer: 'adam'` is the house default.
+**Saddle points outnumber local minima in high dimensions.** A saddle curves up in some directions and down in others; the Hessian (the matrix of second derivatives, introduced in the Math Deep Dive's Calculus of Neurons lesson) classifies the point by the sign of its curvature along each direction: all positive for a minimum, mixed for a saddle. A true local minimum needs upward curvature in all n directions at once, and with thousands of weights that coincidence gets rarer with every added dimension. What actually stalls training is the near-zero gradient on the plateaus around saddles. Momentum-based optimizers like Adam carry enough velocity to coast across them, which is one reason `optimizer: 'adam'` is the house default.
 </DerivationDrawer>
 
 **Key parameters:**
@@ -177,14 +177,14 @@ await rerun.fit(trainX, tf.tensor2d(labels), {
 Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
 </Dialogue>
 
-<DerivationDrawer summary="The 7-step SGD loop that fit() hides">
-**`model.fit()` is a wrapper around this loop**, repeated `epochs × (datasetSize / batchSize)` times:
+<DerivationDrawer summary="The 7-step loop that fit() hides (SGD)">
+**`model.fit()` is a wrapper around this loop**, called SGD, stochastic gradient descent: "stochastic" because each mini-batch is a random sample of the data, so each gradient is only an estimate of the true one. The inner update (steps 1-4) runs `epochs × (datasetSize / batchSize)` times:
 
 ```
 for epoch in 1..N:
   shuffle(trainX, trainY)
   for batch in chunks(trainX, batchSize):
-      // 1. Forward pass: predictions for this batch
+      // 1. Forward pass: predictions ŷ (y-hat) for this batch
       ŷ = model.forward(batch.x)
 
       // 2. Loss: how wrong on this batch

@@ -165,6 +165,20 @@ function evaluateEnsemble(
 }`}
 </CodeBlock>
 
+<DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor" companionSlug="statistics-of-signals">
+**The sqrt(N) claim above has fine print, and the fine print is one formula.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.
+
+**Variance of a sum runs through covariance.** For two variables, `Var(x + y) = Var(x) + Var(y) + 2·Cov(x, y)`; the covariance term measures how the two move together (the companion lesson builds it from paired samples). Write each pairwise covariance through the correlation `ρ = Cov(eᵢ, eⱼ) / σ²`. Summing the N member errors picks up one `σ²` per member plus one `ρσ²` per ordered pair, and there are `N(N-1)` ordered pairs:
+
+`Var(sum of the N errors) = Nσ² + N(N-1)·ρσ²`
+
+**Averaging divides variance by N².** Divide through and regroup:
+
+`Var(ensemble error) = σ²/N + ((N-1)/N)·ρσ² = ρσ² + (1-ρ)·σ²/N`
+
+**Read the two terms.** `(1-ρ)·σ²/N` is the part averaging can cancel; it dies as members are added. `ρσ²` does not contain N: it is a floor that no ensemble size removes. At `ρ = 0` the formula collapses to `σ²/N`, the sqrt(N) cut in typical error. At `ρ = 0.5`, three members give `0.5σ² + 0.5σ²/3 ≈ 0.667σ²`: a variance cut of one third, where independent members would have delivered two thirds. And the formula is about variance only; shared bias, like every member training on the same mislabeled batch, passes through the average untouched.
+</DerivationDrawer>
+
 ## Challenge
 
 Build a weighted ensemble from multiple model predictions.

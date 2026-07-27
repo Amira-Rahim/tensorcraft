@@ -48,7 +48,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-In the Training Loop module, L2 regularization came up as one of the standard answers to overfitting, though the crew's fix that night was early stopping. But why would adding a penalty on weight magnitude help at all? The answer comes from Bayesian probability: L2 regularization is equivalent to assuming a Gaussian prior on your weights. This lesson connects probability theory to the practical techniques you've already used.
+In the Training Loop module, L2 regularization came up as one of the standard answers to overfitting, though the crew's fix that night was early stopping. But why would adding a penalty on weight magnitude help at all? The answer comes from Bayesian probability: L2 regularization is equivalent to assuming a Gaussian prior on your weights (a Gaussian is the Normal bell curve from The Statistics of Signals). This lesson connects probability theory to the practical techniques you've already used.
 </Dialogue>
 
 <LearningObjectives objectives={["Apply Bayes' theorem to update beliefs with new evidence", "Connect priors and posteriors to state management patterns in frontend code", "Explain why L2 regularization is a Gaussian prior on weights", "Implement MAP estimation and compare it to maximum likelihood", "Understand why dropout approximates Bayesian inference"]} />
@@ -83,7 +83,9 @@ function bayesUpdate(
 ): number[] {
   // Unnormalized posterior
   const unnormalized = prior.map((p, i) => p * likelihood[i]);
-  // Normalize so probabilities sum to 1
+  // Normalize so probabilities sum to 1. This total IS the evidence
+  // P(data) from the formula: dividing by it is all the denominator
+  // ever does.
   const total = unnormalized.reduce((s, v) => s + v, 0);
   return unnormalized.map(v => v / total);
 }`}
@@ -130,6 +132,8 @@ console.log('After CAPTCHA pass:', beliefs.map(b => b.toFixed(4)));
 
 The connection runs deep: when you add L2 regularization to your loss function, you're making a Bayesian statement about your weights.
 
+**Why squared error is a negative log probability.** Combine two things you already built. The Statistics of Signals gave you the Normal PDF, density proportional to `exp(-(error^2) / (2 * sigma^2))`, along with the observation that prediction residuals tend Gaussian. Information Theory for ML priced a probability at `-log(p)`. Now assume each training example's error (its `y_pred - y_true` gap) is independent bell-curve noise with a fixed spread `sigma`. Then `P(data | weights)` is a product of `exp(-error^2 / (2 * sigma^2))` terms, one per data point. Take `-log` of that product: the log turns the product into a sum and cancels the `exp`, leaving `sum(error^2) / (2 * sigma^2)` plus a constant that does not involve the weights. Constants and positive scale factors never move the location of a minimum, so minimizing squared error IS maximizing the Gaussian likelihood. The same move applied to a Gaussian prior on the weights, `P(w)` proportional to `exp(-w^2 / (2 * sigma_prior^2))`, yields `lambda * sum(w^2)` with `lambda = 1 / (2 * sigma_prior^2)`: the tighter your prior belief, the bigger the lambda.
+
 <CodeBlock language="typescript" title="regularization-prior.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
@@ -139,17 +143,20 @@ The connection runs deep: when you add L2 regularization to your loss function, 
 // L2 regularized loss: minimize error + keep weights small
 // L = sum((y_pred - y_true)^2) + lambda * sum(w^2)
 
-// Bayesian interpretation:
-// sum((y_pred - y_true)^2)  =  -log P(data | weights)    [likelihood]
-// lambda * sum(w^2)         =  -log P(weights)            [prior]
-// Total loss                =  -log P(weights | data)     [posterior]
+// Bayesian interpretation (assuming each observation is the true value
+// plus Gaussian noise of fixed variance, as derived above):
+// sum((y_pred - y_true)^2)  =  -log P(data | weights) + const   [likelihood]
+// lambda * sum(w^2)         =  -log P(weights) + const          [prior]
+// Total loss                =  -log P(weights | data) + const   [posterior]
+// Each equality holds up to constants and positive scale factors
+// that do not move the minimum.
 
 // Minimizing L2-regularized loss = finding the MAP estimate
 // (Maximum A Posteriori: the most probable weights given data AND prior)
 
 // The lambda * sum(w^2) term is equivalent to a Gaussian prior
-// centered at zero: P(w) = Normal(0, 1/(2*lambda))
-// Larger lambda = tighter prior = more regularization
+// centered at zero with variance 1/(2*lambda)
+// Larger lambda = smaller variance = tighter prior = more regularization
 
 // Demonstration
 const x = tf.tensor2d([[1], [2], [3], [4], [5]]);
@@ -179,6 +186,43 @@ console.log('MAP estimate:', await wMAP.array());
 // MAP estimate is pulled toward zero by the prior`}
 </CodeBlock>
 
+## Maximum Likelihood, Concretely
+
+Before contrasting maximum likelihood with MAP, pin the term down with the smallest example that works: estimating a coin's bias. You flip a coin 10 times and see 7 heads. For any candidate bias p, the Binomial PMF from The Statistics of Signals tells you exactly how probable that outcome was. Maximum likelihood scans the candidates and keeps the one that made your data most probable.
+
+<CodeBlock language="typescript" title="mle-coin.ts">
+{`// Estimate a coin's bias by maximum likelihood.
+// Data: 7 heads in 10 flips. Which bias p explains this best?
+
+// The Binomial PMF from The Statistics of Signals:
+// C(n, k) * p^k * (1-p)^(n-k)
+function binomialProbability(n: number, k: number, p: number): number {
+  let coeff = 1;
+  for (let i = 0; i < k; i++) coeff *= (n - i) / (i + 1);
+  return coeff * p ** k * (1 - p) ** (n - k);
+}
+
+let bestP = 0;
+let bestL = 0;
+for (let i = 0; i <= 20; i++) {
+  const p = i / 20;                                 // 0.00, 0.05, ..., 1.00
+  const likelihood = binomialProbability(10, 7, p); // P(7 heads | p)
+  if (likelihood > bestL) { bestL = likelihood; bestP = p; }
+}
+console.log('Best p:', bestP.toFixed(2), 'likelihood:', bestL.toFixed(4));
+// Best p: 0.70 likelihood: 0.2668
+
+// Spot-check the neighborhood (C(10, 7) = 120):
+// L(0.5) = 120 * 0.5^7 * 0.5^3 = 0.1172
+// L(0.6) = 120 * 0.6^7 * 0.4^3 = 0.2150
+// L(0.7) = 120 * 0.7^7 * 0.3^3 = 0.2668   <- the peak
+// L(0.8) = 120 * 0.8^7 * 0.2^3 = 0.2013
+// The peak lands at exactly k/n = 7/10: the observed frequency.
+// No prior, no regularization: the data alone picks the answer.`}
+</CodeBlock>
+
+This is where the losses you already use come from. Binary cross-entropy from the Training Loop module is the negative log likelihood of 0/1 labels under the model's predicted probabilities, which is why a classifier that knows nothing and outputs 0.5 opens at ln(2), 0.6931: the negative log likelihood of a fair coin. And mean squared error is a negative log likelihood too, but only under the Gaussian noise assumption from the previous section. Training by minimizing loss is maximum likelihood wearing different clothes; MAP, next, is what you get when a prior joins in.
+
 ## Maximum Likelihood vs MAP
 
 <CodeBlock language="typescript" title="ml-vs-map.ts">
@@ -190,7 +234,9 @@ console.log('MAP estimate:', await wMAP.array());
 // Maximum A Posteriori (MAP): Find weights that maximize P(weights | data)
 //   = P(data | weights) * P(weights), likelihood times prior
 //   = L2 regularization when prior is Gaussian
-//   = L1 regularization when prior is Laplacian
+//   = L1 regularization (sum of |w|) when the prior is the Laplace
+//     distribution, a sharp peak at zero with heavy tails, which is
+//     why L1 pushes weights to exactly zero
 //   = Better generalization
 
 // With lots of data, ML and MAP converge (data overwhelms the prior)
@@ -208,7 +254,15 @@ function mapEstimate(
   const n = data.length;
   const dataMean = data.reduce((s, v) => s + v, 0) / n;
 
-  // MAP estimate: weighted average of prior mean and data mean
+  // MAP estimate: weighted average of prior mean and data mean.
+  // Each vote's weight is confidence, and confidence is 1/variance:
+  // a tight distribution earns a big vote, a vague one a small vote.
+  // The data side casts n votes of 1/dataVariance each; equivalently,
+  // averaging n independent readings shrinks the mean's variance to
+  // dataVariance/n (the averaging effect behind the Central Limit
+  // Theorem in The Statistics of Signals), so its confidence is
+  // n/dataVariance. For a Gaussian prior plus Gaussian noise this
+  // weighted average is the exact posterior mean, not an approximation.
   const priorWeight = 1 / priorVariance;
   const dataWeight = n / dataVariance;
 
@@ -218,13 +272,13 @@ function mapEstimate(
 
 // Few data points: prior has strong influence
 console.log('MAP (2 points):', mapEstimate([5, 7], 0, 1, 1).toFixed(3));
-// Pulled toward prior mean of 0
+// 4.000: the data mean of 6, dragged a third of the way to the prior's 0
 
 // Many data points: data dominates
 console.log('MAP (100 points):', mapEstimate(
   Array(100).fill(6), 0, 1, 1
 ).toFixed(3));
-// Close to data mean of 6`}
+// 5.941: one hundred votes of 6 against a single vote of 0`}
 </CodeBlock>
 
 ## Dropout as Approximate Bayesian Inference
@@ -236,7 +290,16 @@ console.log('MAP (100 points):', mapEstimate(
 // Bayesian interpretation: dropout trains an ensemble of
 // sub-networks, each with different weights zeroed out.
 //
-// At inference with dropout ON (Monte Carlo dropout):
+// Recall MAP: it keeps only the single most probable set of weights.
+// The full posterior is a whole distribution of plausible weights.
+// Each random sub-network behaves like one sample drawn from that
+// distribution. Average many samples and you approximate the
+// posterior mean; their spread plays the role of the posterior's
+// width, the uncertainty computed below.
+//
+// At inference with dropout ON (Monte Carlo dropout; "Monte Carlo"
+// is the standard name for estimating something by repeated random
+// sampling):
 // - Run the same input N times with random dropout
 // - The variance of outputs estimates model uncertainty
 //
@@ -260,7 +323,9 @@ async function mcDropoutPredict(
   }
 
   // Mean = best estimate
-  // Std = uncertainty (Bayesian posterior width)
+  // Standard deviation (the sqrt of the variance) = uncertainty:
+  // how widely the sampled predictions spread, which is how wide
+  // the posterior is
   const mean = predictions[0].map((_, j) =>
     predictions.reduce((s, p) => s + p[j], 0) / nSamples
   );
@@ -285,4 +350,4 @@ Implement Bayesian updating to classify events based on sequential observations.
 
 <RecallPrompt question="Why does L2 regularization help more with small datasets than with large ones, viewed through a Bayesian lens?" answer="L2 regularization is equivalent to a Gaussian prior on the weights, pulling them toward zero. With little data, the likelihood is weak and the prior dominates, preventing overfitting. As the dataset grows, the likelihood overwhelms the prior and the regularized solution converges to the unregularized one. The prior fills the gaps left by missing data." />
 
-<LessonRecap whatYouLearned={["Bayes' theorem updates a prior distribution with observed evidence to produce a posterior, the same incremental pattern as a state management reducer that applies actions to state.", "L2 regularization is mathematically equivalent to MAP estimation with a Gaussian prior on weights centered at zero: the regularization strength controls how tightly the prior constrains the weights.", "Maximum Likelihood finds weights that best fit the data; MAP adds a prior and is equivalent to regularized training, which generalizes better when data is scarce."]} bridge="A Redux reducer applies `newState = reducer(prevState, action)` deterministically; Bayesian updating applies `posterior = normalize(likelihood * prior)` to combine incoming evidence with existing beliefs, a probabilistic version of the same accumulation pattern." youCanNow="Implement sequential Bayesian updating and explain the Bayesian interpretation of L2 regularization and dropout." />
+<LessonRecap whatYouLearned={["Bayes' theorem updates a prior distribution with observed evidence to produce a posterior, the same incremental pattern as a state management reducer that applies actions to state.", "L2 regularization is mathematically equivalent to MAP estimation with a Gaussian prior on weights centered at zero: the regularization strength controls how tightly the prior constrains the weights.", "Maximum likelihood picks the parameter that made the observed data most probable: for 7 heads in 10 flips, the Binomial likelihood peaks at exactly 7/10, and the everyday losses are negative log likelihoods in disguise (MSE assumes Gaussian noise; binary cross-entropy scores 0/1 labels).", "Maximum Likelihood finds weights that best fit the data; MAP adds a prior and is equivalent to regularized training, which generalizes better when data is scarce."]} bridge="A Redux reducer applies `newState = reducer(prevState, action)` deterministically; Bayesian updating applies `posterior = normalize(likelihood * prior)` to combine incoming evidence with existing beliefs, a probabilistic version of the same accumulation pattern." youCanNow="Implement sequential Bayesian updating and explain the Bayesian interpretation of L2 regularization and dropout." />
