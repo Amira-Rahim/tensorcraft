@@ -238,6 +238,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] neon-protocol has 54 MDX files vs the 55 that
     `THEME_CONTENT.comingSoonLessonsPerTheme` promises (`image-data` has
     4); add a test pinning coming-soon counts.
+  - [x] ~~PCA/SVD deep-dive~~ SHIPPED EARLY (2026-07-27) as shared
+    `extras/math-deep-dive/08-eigenvectors-svd-compression` (companion to
+    optimization-edge, drawer entry in 03-pruning), since extras are
+    cross-theme and Deep Orbit had its own hook. Remaining theme-2 slice:
+    when neon-protocol's feature-extraction module launches, add a
+    DerivationDrawer entry point from its embeddings lessons to the same
+    deep-dive (no new authoring).
 
 ## 6. Big deferred bets
 

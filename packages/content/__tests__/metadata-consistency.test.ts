@@ -330,7 +330,9 @@ function hintStatements(hint: string): string[] {
  * ladder. Adding a lesson with a ladder legitimately raises this; anything
  * else that moves it means a hint silently fell out of discovery.
  */
-const EXPECTED_SOLUTION_HINTS = 77;
+// 77 -> 79 (2026-07-27): math-deep-dive gained statistics-of-signals and
+// eigenvectors-svd-compression, each with a solution ladder.
+const EXPECTED_SOLUTION_HINTS = 79;
 
 /**
  * Flattening signatures the parser cannot rule on (see layer 2 above).

@@ -3,7 +3,7 @@ slug: probability-and-bayes
 title: "Probability & Bayesian Thinking"
 moduleId: math-deep-dive
 themeId: shared
-order: 6
+order: 7
 estimatedMinutes: 35
 difficulty: advanced
 companionTo: training-loop
@@ -89,7 +89,11 @@ function bayesUpdate(
 }`}
 </CodeBlock>
 
-## Bayes' Theorem in Action
+## Conditional Probability, the Grammar Underneath
+
+`P(A | B)` reads "the probability of A, given that B happened." Conditioning shrinks the world: throw away every outcome where B is false, then ask how often A holds among what survives. Formally, `P(A | B) = P(A and B) / P(B)`, and the division is what renormalizes the shrunken world so its probabilities sum to 1 again.
+
+The order of the bar matters more than any other notation in this lesson. `P(rapid clicks | bot)` asks how bots behave; `P(bot | rapid clicks)` asks what a click burst means. They are different numbers computed from different shrunken worlds, and swapping them is the classic base-rate mistake. Bayes' theorem, next, is nothing more than the algebra that converts the one you can measure into the one you actually want.
 
 <CodeBlock language="typescript" title="bayes-example.ts">
 {`// Scenario: Is a user a bot or human?

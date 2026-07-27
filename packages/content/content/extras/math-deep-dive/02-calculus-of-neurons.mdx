@@ -201,6 +201,8 @@ console.log('dL/dw1:', await dw1.array()); // 1.56
 console.log('dL/dw2:', await dw2.array()); // -2.6 (= dL/dz2 * a1 = -2.6 * 1.0)`}
 </CodeBlock>
 
+**Two names you will meet in papers.** Stack the partial derivatives of a vector-valued function into a matrix and you have the **Jacobian**: row i holds the partials of output i with respect to every input. When the output is a single scalar loss, the Jacobian collapses to one row, which is exactly the gradient `tf.grads` returned above. Differentiate once more and you get the **Hessian**, the matrix of second derivatives that describes curvature: all-positive curvature marks a minimum, mixed signs a saddle point.
+
 ## Challenge
 
 Compute gradients by hand for a simple network, then verify with TensorFlow.js.

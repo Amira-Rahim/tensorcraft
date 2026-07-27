@@ -138,6 +138,14 @@ console.log('Pruned + Quantized:      42 MB, 91.8% accuracy');
 console.log('Fits in 512 MB dashboard: YES ✓');`}
 </CodeBlock>
 
+<DerivationDrawer summary="The third compression axis: low-rank structure and SVD" companionSlug="eigenvectors-svd-compression">
+**Pruning bets on sparsity; quantization bets on precision. The third bet is rank.** A weight matrix of shape [512, 512] holds 262,144 numbers, but if its rank is effectively 40, those numbers are redundant: the matrix is 40 independent directions dressed up as 512.
+
+**Singular Value Decomposition makes the bet precise.** Any matrix factors as `W = U · Σ · Vᵀ`: rotate, scale along principal directions, rotate again. The scale factors (singular values) come out sorted, and in trained networks they usually decay fast: a few large directions carry the transformation, a long tail contributes noise. Truncate to the top k and the factors `U[:, :k] · Σ[:k] · V[:, :k]ᵀ` store `k · (512 + 512 + 1)` numbers instead of 262,144. At k = 40 that is 41,000 numbers, a 6.4x cut on that layer, with reconstruction error bounded by the singular values you dropped.
+
+**Why this works at all is the same fact pruning exploits from a different angle:** trained weight matrices concentrate their useful transformation in far fewer directions than their shape advertises. Magnitude pruning removes the smallest coordinates; SVD removes the smallest directions, which is strictly better aligned with what the matrix actually does and is why low-rank factorization (LoRA and friends) became the default way to fine-tune large models on small hardware.
+</DerivationDrawer>
+
 ## Challenge
 
 Prune weights and measure the accuracy impact.

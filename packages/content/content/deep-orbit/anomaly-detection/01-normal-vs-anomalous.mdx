@@ -123,6 +123,16 @@ console.log(isAnomaly(0.55, baseline));  // false: normal
 console.log(isAnomaly(1.82, baseline));  // true: 8.7 sigmas away!`}
 </CodeBlock>
 
+<DerivationDrawer summary="What the 3-sigma rule assumes, and when it lies" companionSlug="statistics-of-signals">
+**The z-score recipe is a stack of probability claims.** Dividing by the standard deviation and comparing to 3 asserts: readings follow a distribution, that distribution is roughly Gaussian, and Gaussian tails put probability 0.0027 beyond 3 sigma. The recipe works exactly as far as those claims hold.
+
+**Why Gaussian is a reasonable default:** the Central Limit Theorem. A reading that sums many small independent physical effects gets pushed toward the bell curve no matter what shaped its parts. Sensor noise usually qualifies.
+
+**Two standard ways production data breaks it.** Heavy tails: when rare large effects dominate, 3-sigma events stop being rare and the detector cries wolf. Correlation: channels mounted on the same hull move together, so their noise does not average away and the effective spread is wider than any per-channel std reports.
+
+**Per-channel thresholds also compound.** If each of 64 channels independently trips 5% of the time on calm data, a fully dark board has probability 0.95⁶⁴ ≈ 0.0375: some channels lit is the calm state. Counting tripped channels is a Binomial question, not a sum of independent alarms.
+</DerivationDrawer>
+
 ## Precision vs Recall
 
 <CodeBlock language="typescript" title="precision-recall.ts">

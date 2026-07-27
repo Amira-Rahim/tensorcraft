@@ -641,4 +641,85 @@ export const GLOSSARY: GlossaryEntry[] = [
     aliases: ["feature engineering"],
     scope: "global",
   },
+
+  // Math deep-dive: statistics of signals
+  {
+    term: "random variable",
+    definition:
+      "A quantity whose individual outcomes are unpredictable but whose long-run pattern is stable, like request latency or a sensor reading. Described by a probability distribution.",
+    aliases: ["random variables"],
+    scope: "global",
+  },
+  {
+    term: "probability distribution",
+    definition:
+      "The full description of which values a random variable takes and how often. Discrete variables use a PMF, continuous ones a PDF.",
+    aliases: ["probability distributions", "distribution"],
+    scope: "global",
+  },
+  {
+    term: "PDF",
+    definition:
+      "Probability density function, the continuous distribution curve. Density is probability per unit of width, so only areas under the curve are probabilities and the peak can exceed 1.",
+    aliases: ["probability density function"],
+    scope: "global",
+  },
+  {
+    term: "PMF",
+    definition:
+      "Probability mass function, the discrete distribution table. Maps each outcome to its probability, with all entries summing to 1.",
+    aliases: ["probability mass function"],
+    scope: "global",
+  },
+  {
+    term: "expected value",
+    definition:
+      "The probability-weighted average of a random variable over all outcomes. Sample means estimate it, and every ML loss is an expected value estimated by a batch average.",
+    aliases: ["expectation"],
+    scope: "global",
+  },
+  {
+    term: "central limit theorem",
+    definition:
+      "Averages of many independent random effects approach a Normal distribution regardless of the source distribution. It is why Gaussian assumptions and z-score thresholds are usually reasonable, and it fails under heavy tails or correlated inputs.",
+    aliases: ["CLT"],
+    scope: "global",
+  },
+  {
+    term: "conditional probability",
+    definition:
+      "The probability of one event given that another happened, written P(A | B). Computed by restricting attention to outcomes where B is true and renormalizing.",
+    aliases: ["conditional probabilities"],
+    scope: "global",
+  },
+
+  // Math deep-dive: eigenvectors, SVD, compression
+  {
+    term: "eigenvector",
+    definition:
+      "A direction a matrix scales without rotating. The scale factor is its eigenvalue, and the largest one dominates repeated multiplication, which drives both power iteration and exploding or vanishing gradients.",
+    aliases: ["eigenvectors", "eigenvalue", "eigenvalues"],
+    scope: "global",
+  },
+  {
+    term: "SVD",
+    definition:
+      "Singular Value Decomposition, which factors any matrix into rotate, scale, rotate. Keeping only the largest scale factors gives the best possible low-rank compression of the matrix.",
+    aliases: ["singular value decomposition"],
+    scope: "global",
+  },
+  {
+    term: "PCA",
+    definition:
+      "Principal Component Analysis, the result of applying SVD to centered data. It sorts perpendicular directions through the data by variance so the top few can stand in for the rest.",
+    aliases: ["principal component analysis", "principal components"],
+    scope: "global",
+  },
+  {
+    term: "low-rank approximation",
+    definition:
+      "Replacing a large matrix with the product of much smaller factors that keep only its most important directions. The mathematical basis for model compression and low-rank fine-tuning.",
+    aliases: ["low-rank", "low rank"],
+    scope: "global",
+  },
 ];

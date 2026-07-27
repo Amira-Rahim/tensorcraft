@@ -116,6 +116,16 @@ const history = await model.fit(trainX, trainY, {
 // about it.`}
 </CodeBlock>
 
+<DerivationDrawer summary="Why identical code lands on different losses: the loss landscape" companionSlug="optimization-landscape">
+**Loss is a surface over weight space.** A network with n weights defines `L(w)`: one loss value for every point in n-dimensional weight space. Training is descent on that surface, and the epoch trace above is an altitude log.
+
+**Convex vs non-convex.** A convex surface is a bowl: every local minimum is the global minimum, and gradient descent converges to it from any starting point. Linear and logistic regression have convex losses, which is why they never need a rerun. Neural networks give that up: stacking layers with nonlinear activations folds the bowl into many basins separated by ridges and flats.
+
+**That is why the 400 reruns disagree.** Random initialization drops each run at a different point on the same landscape. Different basin, different descent path, different epoch-10 accuracy (the 0.46 to 1.00 bounce above). No code changed between runs; only the starting coordinates did.
+
+**Saddle points outnumber local minima in high dimensions.** A saddle curves up in some directions and down in others; the Hessian (the matrix of second derivatives) classifies the point by its eigenvalue signs, all positive for a minimum, mixed for a saddle. A true local minimum needs upward curvature in all n directions at once, and with thousands of weights that coincidence gets rarer with every added dimension. What actually stalls training is the near-zero gradient on the plateaus around saddles. Momentum-based optimizers like Adam carry enough velocity to coast across them, which is one reason `optimizer: 'adam'` is the house default.
+</DerivationDrawer>
+
 **Key parameters:**
 - **epochs**: How many times to iterate over the full dataset. More epochs = more learning (up to a point).
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.

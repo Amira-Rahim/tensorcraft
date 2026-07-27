@@ -1,0 +1,153 @@
+---
+slug: eigenvectors-svd-compression
+title: "Eigenvectors, SVD, and Why Compression Works"
+moduleId: math-deep-dive
+themeId: shared
+order: 8
+estimatedMinutes: 35
+difficulty: advanced
+companionTo: optimization-edge
+context:
+  narrative: "A weight matrix advertises half a million numbers. Most of them are the same few directions wearing different coordinates."
+  speaker: "Instructor"
+concept:
+  explanation: "Eigenvectors are the directions a matrix only scales; SVD generalizes them to any matrix and sorts a transformation by importance, which is what makes principled compression possible."
+  bridge:
+    feTitle: "Lossy Image Compression"
+    feCode: "sharp(input).jpeg({ quality: 60 })"
+    mlTitle: "Low-Rank Approximation"
+    mlCode: "W ≈ U[:, :k] · Σ[:k] · Vᵀ[:k, :]"
+    tier: structural
+    breaks: "JPEG discards high-frequency detail using one fixed basis (the DCT) chosen once for all images. SVD finds the best basis for THIS matrix and truncating it gives the provably optimal rank-k approximation. The JPEG basis never adapts; the SVD basis is the adaptation."
+consequence:
+  narrative: "Pruning, quantization, and now rank: the third compression axis explains the other two's success. Trained matrices do less than their shape claims."
+hints:
+  - level: nudge
+    content: "matVec is a dot product per row, normalizeVec divides by the vector's Euclidean length, and powerIteration is just: start uniform, repeatedly apply the matrix and re-normalize, then read the eigenvalue off with a dot product"
+  - level: guidance
+    content: "matVec maps each row of A to row.reduce((s, a, j) => s + a * v[j], 0). normalizeVec computes Math.sqrt of the summed squares and divides every component by it. powerIteration builds a start vector of ones normalized to unit length, then loops `steps` times doing v = normalizeVec(matVec(A, v)); the eigenvalue is the dot product of the final v with matVec(A, v) (the Rayleigh quotient)"
+  - level: solution
+    content: |
+      return A.map((row) => row.reduce((s, a, j) => s + a * v[j], 0));
+      const norm = Math.sqrt(v.reduce((s, x) => s + x * x, 0));
+      return v.map((x) => x / norm);
+      let v = normalizeVec(Array(A.length).fill(1));
+      for (let i = 0; i < steps; i++) v = normalizeVec(matVec(A, v));
+      const Av = matVec(A, v);
+      const value = v.reduce((s, x, i) => s + x * Av[i], 0);
+      return { vector: v, value };
+keywords:
+  - eigenvector
+  - eigenvalue
+  - power-iteration
+  - matrix-inverse
+  - singular-value-decomposition
+  - low-rank-approximation
+  - principal-component-analysis
+---
+
+<Dialogue speaker="Instructor">
+In Optimization Edge you shrank a model 8x by zeroing weights and rounding the survivors, and the accuracy barely moved. That should bother you. If those numbers could vanish so cheaply, what were they doing in the first place? The answer is a fact about trained matrices: they concentrate their real work in far fewer directions than their shape suggests. This lesson builds the machinery that makes "direction" and "fewer" precise.
+</Dialogue>
+
+<LearningObjectives objectives={["Identify eigenvectors as the directions a matrix only scales", "Find the dominant eigenvector numerically with power iteration", "Explain why ML solves linear systems with gradient descent instead of matrix inversion", "Read an SVD as rotate-scale-rotate and use truncation for optimal low-rank compression", "Run PCA as SVD applied to centered data and interpret the principal components"]} />
+
+## Directions a Matrix Only Scales
+
+Apply `transform: scale(2, 0.5)` to a div and two directions behave specially: anything pointing along the x-axis doubles, anything along the y-axis halves, and neither *rotates*. Every other vector gets both stretched and turned. Those special directions are the **eigenvectors** of the transform matrix, and the stretch factors (2 and 0.5) are their **eigenvalues**: the vectors v where `A·v = λ·v`.
+
+Not every matrix has them in real coordinates: a 90-degree rotation turns *every* vector, so no direction survives unrotated. But the matrices ML cares most about (covariance matrices, Gram matrices, anything symmetric) always have a full set of perpendicular eigenvectors, which is what makes the rest of this lesson work.
+
+<CodeBlock language="typescript" title="power-iteration.ts">
+{`// Repeatedly applying A crushes every vector toward the eigenvector
+// with the LARGEST |eigenvalue|: each application multiplies the
+// components along each eigenvector by that eigenvector's lambda, and the
+// biggest lambda compounds fastest. That observation is an algorithm:
+
+function matVec(A: number[][], v: number[]): number[] {
+  return A.map((row) => row.reduce((s, a, j) => s + a * v[j], 0));
+}
+
+function normalizeVec(v: number[]): number[] {
+  const norm = Math.sqrt(v.reduce((s, x) => s + x * x, 0));
+  return v.map((x) => x / norm);
+}
+
+function powerIteration(A: number[][], steps: number) {
+  let v = normalizeVec(Array(A.length).fill(1));
+  for (let i = 0; i < steps; i++) v = normalizeVec(matVec(A, v));
+  const Av = matVec(A, v);
+  const value = v.reduce((s, x, i) => s + x * Av[i], 0); // Rayleigh quotient
+  return { vector: v, value };
+}
+
+console.log(powerIteration([[2, 0], [0, 1]], 30));
+// vector ≈ [1, 0], value ≈ 2: the doubling direction wins`}
+</CodeBlock>
+
+Deep networks repeat matrix multiplication layer after layer, so eigenvalues compound: dominant eigenvalues above 1 amplify activations and gradients toward explosion, below 1 shrink them toward vanishing. The exploding and vanishing gradient problems from the recurrent-networks module are eigenvalue statements about the same weight matrix applied over and over.
+
+## The Inverse, and Why ML Refuses to Compute It
+
+Solving `A·x = b` for x is the founding problem of linear algebra, and the textbook answer is `x = A⁻¹·b`. The inverse exists exactly when A is **full rank** (no direction collapses to zero, determinant nonzero). Rank-deficient matrices flatten some direction entirely, and information that was flattened cannot be un-flattened: those matrices have no inverse.
+
+ML almost never computes an inverse even when it exists, for two compounding reasons. Cost: inversion is O(n³), and n for a modern layer is in the thousands. Stability: a matrix that is *nearly* rank-deficient has an inverse full of huge, delicately canceling numbers, and floating point turns delicate cancellation into noise. Gradient descent sidesteps both: it only ever needs `A` applied forward, never undone. When a true solve is unavoidable, libraries reach for factorizations (and, for rank-deficient cases, the SVD-based pseudo-inverse) rather than the inverse itself.
+
+## SVD: Every Matrix Is Rotate, Scale, Rotate
+
+Eigenvectors require square matrices and can fail to exist. The **Singular Value Decomposition** works for *every* matrix, square or not:
+
+<CodeBlock language="typescript" title="svd-shape.ts">
+{`// W = U · Σ · Vᵀ
+//
+//   Vᵀ : rotate the input space to align with W's preferred axes
+//   Σ  : scale each axis by a singular value σ₁ ≥ σ₂ ≥ ... ≥ 0
+//   U  : rotate the result into the output space
+//
+// The singular values arrive SORTED. That ordering is the entire
+// point: it ranks the matrix's directions by how much they matter.
+//
+// Rank-k truncation: keep the top k directions.
+//   W_k = U[:, :k] · Σ[:k] · Vᵀ[:k, :]
+//
+// Eckart-Young theorem: W_k is the BEST rank-k approximation of W,
+// and the error you accept is exactly the singular values you drop.
+//
+// Storage: a [512, 512] layer holds 262,144 numbers.
+// Its rank-40 factors hold 40 * (512 + 512 + 1) = 41,000. A 6.4x cut,
+// with a certificate for what it cost.`}
+</CodeBlock>
+
+This is the honest version of what pruning gropes toward. Magnitude pruning deletes small *coordinates* and hopes the coordinates were the right frame; SVD truncation deletes small *directions* in the matrix's own preferred frame, with a theorem guaranteeing nothing better was possible at that size. It is also why low-rank fine-tuning works: freezing W and learning a small rank-r update matrix touches the few directions that matter instead of half a million coordinates that mostly do not.
+
+## PCA: SVD Pointed at Data
+
+Aim the same machinery at a data matrix instead of a weight matrix and it earns a different name. Center each column (subtract its mean), run SVD, and the right singular vectors become the **principal components**: perpendicular directions through the data, sorted by how much variance each carries. Projecting onto the top k components is **Principal Component Analysis**, the optimal k-dimensional flattening of the cloud.
+
+<CodeBlock language="typescript" title="pca-sketch.ts">
+{`// 64-channel telemetry, one row per reading: shape [n, 64]
+// After centering, SVD gives 64 principal components.
+//
+// Typical finding on correlated sensors: the first 2-3 components
+// carry most of the variance, because channels bolted to the same
+// hull move together. The "64 dimensions" were largely one shared
+// vibration wearing 64 coordinate systems.
+//
+// projection = centered · V[:, :2]   // [n, 2]: plottable
+// reconstruction = projection · Vᵀ[:2, :]  // back to [n, 64], flattened
+//
+// Anomaly signal: a reading whose reconstruction error is large
+// does not live in the plane the calm data spans. Off-plane IS anomalous.`}
+</CodeBlock>
+
+If that last move feels familiar, it should: project to few dimensions, reconstruct, flag big reconstruction error is exactly the autoencoder recipe from Anomaly Detection. An autoencoder with linear activations and MSE loss *learns* PCA; the nonlinear ones you trained learn a curved generalization of it. The math you just built is the straight-line special case of a tool you have already shipped.
+
+## Challenge
+
+Implement power iteration and find a dominant eigenvector by hand.
+
+<Exercise slug="power-iteration" />
+
+<RecallPrompt question="A colleague proposes speeding up training by computing the exact solution x = A⁻¹b instead of running gradient descent. Give the two standard reasons ML libraries refuse." answer="Cost and stability. Inversion is O(n³) in the matrix size, which is prohibitive at network scale. And near-rank-deficient matrices have inverses made of huge, delicately canceling values that floating point corrupts; gradient descent only applies A forward and never needs the unstable inverse. When a real solve is needed, factorizations or the pseudo-inverse are used instead." />
+
+<LessonRecap whatYouLearned={["Eigenvectors are the directions a matrix scales without rotating, and repeated multiplication is dominated by the largest eigenvalue, which is both the power-iteration algorithm and the root of exploding and vanishing gradients.", "Matrix inversion exists only at full rank and is avoided in ML for its O(n³) cost and numerical instability; gradient descent needs the matrix only in the forward direction.", "SVD factors any matrix into rotate-scale-rotate with sorted singular values, and truncating to the top k gives the provably optimal rank-k approximation, the principled version of model compression.", "PCA is SVD applied to centered data: principal components sort the data's directions by variance, and reconstruction error from the top-k projection is a linear anomaly detector."]} bridge="A JPEG quality slider and SVD truncation make the same trade, fidelity for bytes, but JPEG discards detail against one fixed basis while SVD derives the optimal basis from the matrix itself; the compression insight transfers, the adaptivity is new." youCanNow="Find a dominant eigenvector with power iteration, justify avoiding matrix inversion, and explain model compression and PCA as one low-rank idea." />

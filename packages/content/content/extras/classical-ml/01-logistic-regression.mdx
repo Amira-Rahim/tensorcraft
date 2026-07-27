@@ -41,6 +41,8 @@ The whole model fits in two moves: a weighted sum and a squash. Multiply each fe
 
 <LearningObjectives objectives={["Understand the sigmoid function and why it produces probabilities", "Implement logistic regression from scratch in TypeScript", "Interpret a decision boundary as a threshold on a confidence score", "Know when logistic regression is the right (and wrong) choice"]} />
 
+Drop the squash and you have the other classical workhorse: **linear regression**. The weighted sum alone, `z = w·x + b`, trained with mean squared error, predicts unbounded numbers instead of probabilities: response times, temperatures, prices. Its loss surface is a perfect convex bowl, so training converges from any starting point and never needs a rerun. Logistic regression is that same weighted sum pushed through a sigmoid so the output can speak in confidences, and remarkably, its cross-entropy loss stays convex too.
+
 ## The Sigmoid Turns Any Number Into Confidence
 
 In frontend code, you write hard thresholds:

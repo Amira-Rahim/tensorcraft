@@ -46,4 +46,6 @@ export const BUILT_STORY_THEMES = BUILT_THEME_DIRS.filter(
  * (e.g. end-of-lesson) can add it without hardcoding a corpus total. Pinned to
  * the filesystem by the same gates that count.
  */
-export const EXTRAS_LESSON_COUNT = 21;
+// 21 -> 23 (2026-07-27): math-deep-dive gained statistics-of-signals and
+// eigenvectors-svd-compression (viral-roadmap gap audit).
+export const EXTRAS_LESSON_COUNT = 23;

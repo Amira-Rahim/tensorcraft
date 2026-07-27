@@ -162,6 +162,26 @@ Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26
 **ROC and PR curves** plot precision-recall (or TPR-FPR) across all thresholds. Reporting one accuracy number from one threshold hides this entire surface.
 </DerivationDrawer>
 
+One number in that table deserves suspicion before anyone celebrates: precision 1.000 was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice.
+
+<DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates" companionSlug="probability-and-bayes">
+**Precision belongs to the detector plus the world it runs in.** Sensitivity and false-positive rate are properties of the model alone. Precision also depends on how common anomalies are in the data you run it on, and the held-out slice (26 anomalous, 24 calm) was assembled to be near balanced. Live hull telemetry is overwhelmingly calm.
+
+**Bayes' theorem converts between the two.** The number the bridge actually needs is P(anomaly | alarm), and an alarm can happen two ways, a caught anomaly or a false positive:
+
+`P(anomaly | alarm) = (sens · prior) / (sens · prior + FPR · (1 - prior))`
+
+**First, honesty about the false-positive rate.** FP = 0 on 24 calm rows says less than it seems: a detector with a true 4% FPR would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely; it does not make it zero.
+
+**Worked example.** Take sens = 0.885 (the recall above), assume FPR = 2%, and suppose 1 reading in 1,000 on the live stream is genuinely anomalous (prior = 0.001):
+
+`(0.885 × 0.001) / (0.885 × 0.001 + 0.02 × 0.999) = 0.000885 / 0.020865 ≈ 0.042`
+
+An alarm on the live stream is about a 4% bet that something is really there, from the same detector whose test-slice precision printed 1.000. Nothing about the model changed; the base rate did. Every percentage point of FPR is 10 false alarms per 1,000 calm readings, and each one costs crew time.
+
+**Raising the posterior means changing one of the three inputs:** a lower FPR (better detector), a higher prior (alarm only on readings that already passed a cheaper filter), or better sensitivity. Production monitoring stacks detectors in exactly that order: cheap filter first, expensive model on the survivors.
+</DerivationDrawer>
+
 ## Challenge
 
 Evaluate DEEP SCAN on unseen signal data and make predictions.

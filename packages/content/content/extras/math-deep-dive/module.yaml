@@ -7,7 +7,7 @@ description: |
   calculus, and probability: not required to complete the course, but
   essential for advancing beyond it. Bridge: "Math is like TypeScript: you
   can ship without it, but it catches bugs in your thinking."
-lessonCount: 6
+lessonCount: 8
 prerequisites:
   - foundations
   - neural-networks
@@ -75,9 +75,23 @@ lessons:
       (it measures the information gap between predicted and true distributions).
       Mutual information and feature selection.
 
+  - slug: statistics-of-signals
+    title: "The Statistics of Signals"
+    order: 6
+    estimatedMinutes: 35
+    difficulty: advanced
+    companionTo: anomaly-detection
+    bridge: "Latency percentiles → cumulative distributions"
+    summary: |
+      Companion to Anomaly Detection. Random variables, PMFs vs PDFs,
+      expectation and variance from the distribution side. The Uniform,
+      Normal, and Binomial distributions, the Central Limit Theorem, and
+      the assumptions hiding inside every z-score threshold. Conditional
+      probability and independence as the on-ramp to Bayes.
+
   - slug: probability-and-bayes
     title: "Probability & Bayesian Thinking"
-    order: 6
+    order: 7
     estimatedMinutes: 35
     difficulty: advanced
     companionTo: training-loop
@@ -86,3 +100,17 @@ lessons:
       Bayes' theorem, prior/posterior/likelihood. Why L2 regularization is a
       Gaussian prior on weights. MAP estimation, and how it differs from
       maximum likelihood. Why dropout approximates Bayesian inference.
+
+  - slug: eigenvectors-svd-compression
+    title: "Eigenvectors, SVD, and Why Compression Works"
+    order: 8
+    estimatedMinutes: 35
+    difficulty: advanced
+    companionTo: optimization-edge
+    bridge: "Lossy image compression → low-rank approximation"
+    summary: |
+      Companion to Optimization Edge. Eigenvectors as the directions a
+      matrix only scales, power iteration, and why ML avoids computing
+      matrix inverses. SVD as rotate-scale-rotate, optimal rank-k
+      truncation, and PCA as SVD applied to centered data: model
+      compression and linear anomaly detection as one low-rank idea.
