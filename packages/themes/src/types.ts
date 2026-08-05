@@ -48,6 +48,13 @@ export interface ThemeCharacter {
   aliases?: string[];
   /** AI characters render an abstract glyph, not a portrait/monogram. */
   isAI?: boolean;
+  /**
+   * Canonical expression variant ids, kebab-case, matching the avatar asset
+   * naming `<slug>-<expression>.webp`. "neutral" maps to the base portrait
+   * `<slug>.webp`. For isAI characters these are waveform state ids rendered
+   * procedurally, not files.
+   */
+  expressions?: readonly string[];
 }
 
 /**

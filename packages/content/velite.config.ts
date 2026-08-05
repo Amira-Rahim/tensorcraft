@@ -102,6 +102,10 @@ const lessons = defineCollection({
           location: s.string(),
           time: s.string().optional(),
           epilogueLocation: s.string().optional(),
+          // Alt text for the per-scene portrait art; absent means the
+          // portrait renders decorative (alt="") until authored.
+          portraitAlt: s.string().optional(),
+          epiloguePortraitAlt: s.string().optional(),
         })
         .optional(),
 

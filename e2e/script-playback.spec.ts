@@ -9,6 +9,14 @@ test.describe("Lesson script playback", () => {
       localStorage.removeItem("tc_step_max_deep-orbit_introduction-to-tensors");
       localStorage.setItem("tc-cookie-consent", "declined");
     });
+    // Pin the art-agnostic fixture: with no scene art served, ScenePortrait
+    // must error out and remove itself (and its beat) BEFORE the timeline
+    // math below. Aborting the route makes that deterministic; relying on
+    // the dev server's 404 timing let a pending request keep the figure (and
+    // a 7th beat) alive through "done", and a mid-timeline error could even
+    // drop an already-revealed beat, breaking monotonicity. This assertion
+    // set stays truthful after real art ships because the route stays dead.
+    await page.route("**/scenes/**", (route) => route.abort());
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
 
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();

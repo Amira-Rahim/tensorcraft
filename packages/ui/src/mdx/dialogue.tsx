@@ -10,6 +10,14 @@ interface DialogueProps {
   avatarSrc?: string;
   avatarName?: string;
   isAI?: boolean;
+  /** Canonical expression id for this line (validated against the theme
+   *  manifest by the packages/content gate). The component itself does not
+   *  consume it; the host app's wrapper reads it to build `avatarSlot`. */
+  expression?: string;
+  /** Fully-built avatar element from the host app (AnimatedAvatar or the
+   *  ARIA waveform). Takes precedence over the avatarSrc/avatarName path,
+   *  which stays for consumers without an app-side resolver. */
+  avatarSlot?: ReactNode;
   children: ReactNode;
 }
 
@@ -20,11 +28,14 @@ export function Dialogue({
   avatarSrc,
   avatarName,
   isAI,
+  avatarSlot,
   children,
 }: DialogueProps) {
   return (
     <div className="mb-7 mx-auto max-w-[440px]" data-dialogue="true">
-      {avatarName && (
+      {avatarSlot ? (
+        <div className="flex justify-center mb-2">{avatarSlot}</div>
+      ) : avatarName ? (
         <div className="flex justify-center mb-2">
           <CharacterAvatar
             name={avatarName}
@@ -33,7 +44,7 @@ export function Dialogue({
             size={44}
           />
         </div>
-      )}
+      ) : null}
       <div
         className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1.5 text-center"
         style={{ color: "var(--tc-primary, #E0E0E0)" }}

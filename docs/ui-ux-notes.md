@@ -276,6 +276,16 @@ The Tailwind `@theme` block in `apps/web/app/globals.css` maps CSS custom proper
 
 Canvas scene art gets a genuinely different render language per scheme rather than a recolor: the dark scheme is "light emitted from darkness" (additive `"lighter"` compositing, hues lifted toward white), while the light scheme is "ink on paper" (`"multiply"` compositing, so overlapping marks pool darker like wet ink; hues are deepened toward near-black instead of lifted toward white; base alphas scale up because a tinted ink mark needs more body than a glow on black to read). Scene geometry never branches on scheme, only the render mode does. The `color-scheme` value tracks the active scheme so the browser can style scrollbars, form controls, etc. accordingly, and OG images and favicons intentionally stay dark regardless of scheme. System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale and `docs/superpowers/plans/2026-07-22-light-mode.md` for the implementation plan.
 
+**Character-art motion rules (added 2026-08-05, character animation stream):**
+
+- Character portraits are diegetic stills (personnel-file photos, ship-monitor frames), so an avatar at rest is fully static: no breathing, no scale loops, no idle motion. The permitted motion vocabulary is exactly three moves, all confined to script playback on the Briefing step:
+  1. **Entrance**: the portrait "develops" from grayscale to color (opacity + `filter: grayscale`) 0.15s after its dialogue beat reveals; it never gets its own transform, so it cannot fight the beat's translateY.
+  2. **Talking**: the newest revealed dialogue's avatar runs a 2px scanline sweep (`.tc-avatar-scan`, `steps(24)`, ~2.2s loop, `--tc-primary` at 35%): a mechanical CRT-refresh read, not a glow. Selected in pure CSS off the `[data-beat-shown]` attributes the playback timeline already stamps.
+  3. **Expression crossfade**: `AnimatedAvatar` fades an expression variant over the neutral portrait (240ms opacity), gated on the variant's own `onLoad` so a half-decoded frame never shows.
+- ARIA is the exception and the counterpoint: never raster, never a face (character bible hard rule). Her avatar is a live procedural waveform (`AriaWaveformAvatar`, a `SceneDraw` on `SceneCanvas`) whose continuous animation IS her liveness, so she carries no scanline. Her four waveform states map 1:1 to her manifest expression ids.
+- All three moves collapse under `prefers-reduced-motion`: the global duration backstop nulls the transitions, the scanline is hidden outright, and playback already short-circuits to the finished state.
+- Raster portraits keep their near-black art in BOTH schemes (they cannot re-render like canvas art); the frame presents them as diegetic panels, with the house `4px 4px 0` offset shadow added in light scheme so a panel reads as a mounted print, not a hole in the page.
+
 ---
 
 ## PART 6: AUTH, ONBOARDING, PAYWALL, AND BRIDGE EXPLORER SCREENS

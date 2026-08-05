@@ -23,6 +23,10 @@ export {
 } from "./mdx";
 export type { ExerciseData, ExerciseSubmitResult, LessonPrefs } from "./mdx";
 export { CharacterAvatar } from "./character-avatar";
+export { AnimatedAvatar } from "./animated-avatar";
+export type { AnimatedAvatarProps } from "./animated-avatar";
+export { ScenePortrait } from "./scene-portrait";
+export type { ScenePortraitProps } from "./scene-portrait";
 // Renamed on export: "getServerSnapshot" is too generic a name for this
 // barrel (every useSyncExternalStore-backed hook has one); "Scheme" keeps it
 // unambiguous alongside any future hook's own getServerSnapshot.

@@ -164,14 +164,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - **Character personas follow-ups** (avatars shipped 2026-06-15 as monogram /
   AI-glyph placeholders via `CharacterAvatar`; bible + prompts:
   `docs/character-bible.md`):
+  - [x] **Character animation stream** (SHIPPED 2026-08-05): expression
+    crossfade + entrance + talking scanline via `AnimatedAvatar`, ARIA as a
+    live procedural waveform (`AriaWaveformAvatar` on SceneCanvas, 4 states),
+    `expression="..."` Dialogue annotations gated by
+    `packages/content/src/expressions.test.ts` against the manifest
+    `expressions` field. Motion rules recorded in `docs/ui-ux-notes.md` 5.3.
+    Also shipped art-agnostic **scene portrait slots** (`ScenePortrait`,
+    Briefing establishing shot as a playback beat + the 7 epilogue variants;
+    paths `public/scenes/<theme>/<module>/<lesson>[-epilogue].webp`, alt from
+    `scene.portraitAlt` / `scene.epiloguePortraitAlt` frontmatter).
   - [ ] Real cel-shaded art, external production from the bible's image-gen
-    prompts. Drop files at `apps/web/public/characters/<theme>/<slug>.webp`;
-    no code change (component swaps via onError).
-  - [ ] **Character animation stream: entrance / talking / expression
-    states per persona**, consuming the per-character expression sets in
-    the bible (variant files `<slug>-<expression>.webp`).
+    prompts. Drop files at `apps/web/public/characters/<theme>/<slug>.webp`
+    (+ `<slug>-<expression>.webp` variants, now consumed); no code change
+    (component swaps via onError). Production pipeline design (tooling
+    bake-off, canon-then-variants workflow, gates, ~$60 budget): plan file
+    `~/.claude/plans/earlier-i-mentioned-that-streamed-barto.md`.
+  - [ ] Scene portrait art: author `docs/scene-bible.md` (location master
+    plates + 63 per-lesson prompts + alt text), generate + ingest to
+    `public/scenes/deep-orbit/`; content pass annotating `expression=` on
+    high-value Dialogue blocks. Same plan file as above.
   - [ ] The other 20 character sheets (Neon / Signal / Nova / Terra) +
-    theme wiring: gated on those themes launching (see §5).
+    theme wiring + their scene art: gated on those themes launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in
   `pre-launch-checklist.md` Rounds 11-12 but never filed until 2026-07-22;
   a third item, "HintPanel coverage 3/56", was dropped as stale — Run #7

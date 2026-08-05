@@ -345,6 +345,79 @@ body {
   }
 }
 
+/* Avatar entrance during playback: the portrait "develops" grayscale to
+   color a beat-tick after its dialogue block fades in. Style only, driven
+   by the same [data-beat-shown] attributes the timeline already stamps; no
+   transform of its own so it never fights the parent's translateY. */
+[data-script-state] [data-dialogue] [data-testid="animated-avatar"],
+[data-script-state] [data-dialogue] [data-testid="aria-waveform-avatar"],
+[data-script-state]
+  [data-dialogue]
+  [data-testid="character-avatar-placeholder"] {
+  transition:
+    opacity 0.4s ease 0.15s,
+    filter 0.4s ease 0.15s;
+}
+
+[data-script-state="playing"]
+  [data-dialogue]:not([data-beat-shown])
+  :is(
+    [data-testid="animated-avatar"],
+    [data-testid="aria-waveform-avatar"],
+    [data-testid="character-avatar-placeholder"]
+  ) {
+  opacity: 0;
+  filter: grayscale(1) contrast(1.15);
+}
+
+/* "Talking" indicator: while the script plays, the newest revealed
+   dialogue (a revealed beat with no revealed beat after it) runs a 2px
+   monitor-refresh scanline over its avatar. steps() keeps the sweep
+   mechanical, a CRT refresh on a ship console: no glow, no easing, per the
+   brutalist rules (docs/ui-ux-notes.md 5.3). The span ships hidden from
+   @tensorcraft/ui (same opt-in pattern as .tc-cut-to above). */
+@keyframes tc-avatar-scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+[data-script-state="playing"]
+  .lesson-step-content[data-story-register="true"]
+  > [data-dialogue][data-beat-shown]:not(:has(~ [data-beat-shown]))
+  .tc-avatar-scan {
+  /* Full-size layer whose bottom edge carries the 2px line; translating
+     the layer -100% to 0 sweeps the line top-to-bottom in its own size
+     units (compositor-only, no layout), clipped by the avatar frame. */
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent calc(100% - 2px),
+    color-mix(in srgb, var(--tc-primary) 35%, transparent) calc(100% - 2px)
+  );
+  animation: tc-avatar-scan 2.2s steps(24) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The global backstop nulls durations; the scanline is pure ornament, so
+     hide it outright rather than leave a frozen bar on the portrait. */
+  .tc-avatar-scan {
+    display: none !important;
+  }
+}
+
+/* Scene portraits keep their near-black art in both schemes (raster cannot
+   re-render like the canvas scenes); on paper the house offset shadow makes
+   the panel read as a mounted print instead of a hole in the page. */
+[data-scheme="light"] .tc-scene-portrait {
+  box-shadow: 4px 4px 0 var(--tc-border);
+}
+
 /* Step-in animation for lesson steps */
 @keyframes step-in {
   from {

@@ -265,6 +265,9 @@ importers:
       '@tensorcraft/shared':
         specifier: workspace:*
         version: link:../shared
+      '@tensorcraft/themes':
+        specifier: workspace:*
+        version: link:../themes
       eslint:
         specifier: ^9.0.0
         version: 9.39.4(jiti@2.6.1)

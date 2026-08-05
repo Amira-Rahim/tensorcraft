@@ -37,7 +37,22 @@ vi.mock("./lesson-drawer", () => ({
 
 vi.mock("@tensorcraft/ui", () => ({
   SceneHeading: () => null,
-  CharacterAvatar: () => null,
+  AnimatedAvatar: ({ name, src }: { name: string; src?: string }) => (
+    <div
+      data-testid="animated-avatar-stub"
+      data-name={name}
+      data-src={src ?? ""}
+    />
+  ),
+  ScenePortrait: ({ src }: { src: string }) => (
+    <div data-testid="scene-portrait-stub" data-src={src} />
+  ),
+}));
+
+vi.mock("@tensorcraft/ui/effects", () => ({
+  AriaWaveformAvatar: ({ name }: { name?: string }) => (
+    <div data-testid="aria-waveform-stub" data-name={name ?? "ARIA"} />
+  ),
 }));
 
 vi.mock("@/lib/progress-client", () => ({
@@ -413,5 +428,53 @@ describe("LessonSteps, script playback", () => {
       document.querySelector("[data-script-state='done']"),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /replay/i })).toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, SceneCard cast avatars", () => {
+  // The Cast list is regex-extracted from the compiled body's
+  // speaker: "..." attributes; three registers matter: a human character
+  // (portrait via the art resolver), ARIA (procedural waveform, never
+  // raster) and an unregistered speaker (extras' Instructor), which must
+  // stay on the monogram path with no src.
+  const castLesson = {
+    ...lesson,
+    body: `jsx(Dialogue, {speaker: "Dr. Farah", children: "x"});
+jsx(Dialogue, {speaker: "ARIA", children: "y"});
+jsx(Dialogue, {speaker: "Instructor", children: "z"});`,
+  };
+
+  function renderCast() {
+    return render(
+      <LessonSteps
+        lesson={castLesson}
+        exercises={[]}
+        themeSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+  }
+
+  it("routes human cast rows through the portrait resolver", () => {
+    renderCast();
+    const stubs = screen.getAllByTestId("animated-avatar-stub");
+    const farah = stubs.find((s) => s.dataset.name === "Dr. Farah");
+    expect(farah?.dataset.src).toBe("/characters/deep-orbit/dr-farah.webp");
+  });
+
+  it("renders ARIA as the live waveform glyph", () => {
+    renderCast();
+    expect(screen.getByTestId("aria-waveform-stub")).toBeInTheDocument();
+  });
+
+  it("keeps unregistered speakers on the srcless monogram path", () => {
+    renderCast();
+    const stubs = screen.getAllByTestId("animated-avatar-stub");
+    const instructor = stubs.find((s) => s.dataset.name === "Instructor");
+    expect(instructor).toBeDefined();
+    expect(instructor?.dataset.src).toBe("");
   });
 });

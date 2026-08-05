@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
+  AnimatedAvatar,
   Dialogue,
   BridgeCallout,
   CodeBlock,
@@ -16,7 +17,14 @@ import {
   LessonRecap,
   Quiz,
 } from "@tensorcraft/ui";
+import { AriaWaveformAvatar } from "@tensorcraft/ui/effects";
 import { themes } from "@tensorcraft/themes";
+import {
+  ariaWaveformState,
+  hexToRgb,
+  portraitSources,
+  resolveCharacter,
+} from "@/lib/character-art";
 import { useGlossary } from "./glossary-context";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
@@ -279,21 +287,33 @@ export function LessonContent({
         // Mirror wrapVisibility's epilogue bypass: inside an <Epilogue>, the
         // epilogue wrapper is the gate, so render unconditionally; elsewhere
         // gate on shouldShow("Dialogue"). Then resolve the speaker to a theme
-        // character to inject an avatar.
+        // character to build the avatar slot: ARIA renders as her live
+        // procedural waveform (never raster art, per the bible), humans as
+        // the expression-crossfading portrait. Unknown speakers (extras'
+        // Instructor) stay avatar-less, exactly as before.
         const insideEpilogue = useContext(EpilogueContext);
         if (!insideEpilogue && !shouldShow("Dialogue")) return null;
-        const chars = themeId ? (themes[themeId]?.characters ?? []) : [];
-        const ch = chars.find(
-          (c) => c.name === props.speaker || c.aliases?.includes(props.speaker),
-        );
-        const avatar = ch?.slug
-          ? {
-              avatarSrc: `/characters/${themeId}/${ch.slug}.webp`,
-              avatarName: ch.name,
-              isAI: ch.isAI,
-            }
-          : {};
-        return <Dialogue {...props} {...avatar} />;
+        const theme = themeId ? themes[themeId] : undefined;
+        const ch = themeId
+          ? resolveCharacter(themeId, props.speaker)
+          : undefined;
+        let avatarSlot: React.ReactNode;
+        if (themeId && theme && ch?.slug) {
+          avatarSlot = ch.isAI ? (
+            <AriaWaveformAvatar
+              name={ch.name}
+              state={ariaWaveformState(ch, props.expression)}
+              rgb={hexToRgb(theme.palette.primary)}
+              rgbLight={hexToRgb(theme.paletteLight.primary)}
+            />
+          ) : (
+            <AnimatedAvatar
+              name={ch.name}
+              {...portraitSources(themeId, ch, props.expression)}
+            />
+          );
+        }
+        return <Dialogue {...props} avatarSlot={avatarSlot} />;
       },
       CodeBlock: wrapVisibility("CodeBlock", CodeBlock),
       HintPanel: (props: { hints: unknown }) =>

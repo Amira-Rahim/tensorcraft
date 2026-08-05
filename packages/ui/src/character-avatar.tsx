@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { useImgSettled } from "./use-img-settled";
 
 interface CharacterAvatarProps {
   name: string;
@@ -28,6 +29,13 @@ export function CharacterAvatar({
   size = 40,
 }: CharacterAvatarProps) {
   const [failed, setFailed] = useState(false);
+  // An SSR'd portrait can 404 before hydration attaches onError; recover
+  // the lost verdict from the DOM (see use-img-settled.ts).
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const settle = useCallback((ok: boolean) => {
+    if (!ok) setFailed(true);
+  }, []);
+  useImgSettled(imgRef, src, settle);
   const frame = {
     width: size,
     height: size,
@@ -60,6 +68,7 @@ export function CharacterAvatar({
 
   return (
     <img
+      ref={imgRef}
       data-testid="character-avatar-img"
       src={src}
       alt={name}

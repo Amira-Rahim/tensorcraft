@@ -16,8 +16,14 @@ import {
   EVENTS,
 } from "@/lib/analytics";
 import type { ExerciseData } from "@tensorcraft/ui";
-import { SceneHeading, CharacterAvatar } from "@tensorcraft/ui";
+import { SceneHeading, AnimatedAvatar, ScenePortrait } from "@tensorcraft/ui";
+import { AriaWaveformAvatar } from "@tensorcraft/ui/effects";
 import { themes } from "@tensorcraft/themes";
+import {
+  hexToRgb,
+  portraitSources,
+  resolveCharacter,
+} from "@/lib/character-art";
 import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
@@ -79,6 +85,8 @@ interface LessonStepsProps {
       location: string;
       time?: string;
       epilogueLocation?: string;
+      portraitAlt?: string;
+      epiloguePortraitAlt?: string;
     };
     hints?: Array<{
       level: "nudge" | "guidance" | "solution";
@@ -1008,7 +1016,6 @@ function SceneCard({
   pattern?: LessonStepsProps["lesson"]["pattern"];
   speakers: string[];
 }) {
-  const chars = themes[themeSlug]?.characters ?? [];
   const patternLabel =
     pattern && pattern !== "standard" ? PATTERN_LABELS[pattern] : undefined;
   return (
@@ -1067,22 +1074,27 @@ function SceneCard({
           </span>
           <div className="flex flex-col gap-3">
             {speakers.map((s) => {
-              const ch = chars.find(
-                (c) => c.name === s || c.aliases?.includes(s),
-              );
+              // Dossier roster: always the neutral portrait (a cast card is
+              // not a performance). ARIA renders her live waveform glyph;
+              // unknown speakers keep the monogram via the no-src fallback.
+              const ch = resolveCharacter(themeSlug, s);
+              const theme = themes[themeSlug];
               return (
                 <div key={s} className="flex items-center gap-2">
-                  <CharacterAvatar
-                    name={s}
-                    src={
-                      ch?.slug
-                        ? `/characters/${themeSlug}/${ch.slug}.webp`
-                        : undefined
-                    }
-                    accentColor={"var(--tc-primary)"}
-                    isAI={ch?.isAI}
-                    size={30}
-                  />
+                  {ch?.isAI && theme ? (
+                    <AriaWaveformAvatar
+                      name={s}
+                      size={30}
+                      rgb={hexToRgb(theme.palette.primary)}
+                      rgbLight={hexToRgb(theme.paletteLight.primary)}
+                    />
+                  ) : (
+                    <AnimatedAvatar
+                      name={s}
+                      src={portraitSources(themeSlug, ch).src}
+                      size={30}
+                    />
+                  )}
                   <div className="flex flex-col">
                     <span
                       className="font-mono text-xs"
@@ -1417,6 +1429,18 @@ function StepBriefing({
         </div>
       )}
 
+      {/* Establishing shot: its own playback beat, slugline then picture
+          then stage direction, screenplay order. The src is speculative
+          (art ships incrementally per docs/scene-bible.md); on 404 the
+          component removes itself and the timeline matches today's. */}
+      {lesson.scene && (
+        <ScenePortrait
+          beat
+          src={`/scenes/${themeSlug}/${moduleSlug}/${lessonSlug}.webp`}
+          alt={lesson.scene.portraitAlt}
+        />
+      )}
+
       {/* Narrative as stage direction */}
       <p
         data-script-beat=""
@@ -1632,6 +1656,17 @@ function StepConsequence({
         <SceneHeading
           prefix="Epilogue"
           location={lesson.scene.epilogueLocation ?? lesson.scene.location}
+        />
+      )}
+
+      {/* Epilogue shot, only for the lessons with a distinct epilogue
+          location (the -epilogue asset variant). No beat: this step has no
+          playback. Missing art removes itself, as on the Briefing. */}
+      {lesson.scene?.epilogueLocation && (
+        <ScenePortrait
+          src={`/scenes/${themeSlug}/${moduleSlug}/${lessonSlug}-epilogue.webp`}
+          alt={lesson.scene.epiloguePortraitAlt}
+          className="mb-7 mx-auto max-w-[440px]"
         />
       )}
 

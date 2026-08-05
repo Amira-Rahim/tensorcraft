@@ -41,12 +41,14 @@ export const deepOrbit: ThemeManifest = {
       role: "Mentor",
       personality: "Calm authority, measured decisions",
       slug: "commander-mirza",
+      expressions: ["neutral", "resolved", "concerned", "approving"],
     },
     {
       name: "Dr. Farah",
       role: "Astrophysicist",
       personality: "Curious, data-driven",
       slug: "dr-farah",
+      expressions: ["neutral", "delighted", "absorbed", "shaken"],
     },
     {
       name: "Chief Nazari",
@@ -54,12 +56,14 @@ export const deepOrbit: ThemeManifest = {
       personality:
         "Distrusts ML: a rule-based system froze on his last mission",
       slug: "chief-nazari",
+      expressions: ["neutral", "skeptical", "grudging-respect", "haunted"],
     },
     {
       name: "Ensign Demir",
       role: "Communications",
       personality: "Eager, quick learner",
       slug: "ensign-demir",
+      expressions: ["neutral", "overwhelmed", "breakthrough", "focused"],
     },
     {
       name: "ARIA",
@@ -67,6 +71,7 @@ export const deepOrbit: ThemeManifest = {
       personality: "Dry-witted, precise",
       slug: "aria",
       isAI: true,
+      expressions: ["neutral", "emphasis", "deadpan", "alarm"],
     },
   ],
   specialization: "Time-Series & Signals",

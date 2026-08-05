@@ -127,4 +127,27 @@ describe("Dialogue avatar", () => {
     expect(screen.getByTestId("character-avatar-img")).toBeInTheDocument();
     expect(screen.getByText("Chief Nazari")).toBeInTheDocument();
   });
+  it("renders a provided avatarSlot", () => {
+    render(
+      <Dialogue speaker="ARIA" avatarSlot={<div data-testid="custom-avatar" />}>
+        Line.
+      </Dialogue>,
+    );
+    expect(screen.getByTestId("custom-avatar")).toBeInTheDocument();
+  });
+  it("prefers avatarSlot over the legacy avatarSrc path", () => {
+    render(
+      <Dialogue
+        speaker="Chief Nazari"
+        avatarName="Chief Nazari"
+        avatarSrc="/characters/deep-orbit/chief-nazari.webp"
+        avatarSlot={<div data-testid="custom-avatar" />}
+      >
+        Line.
+      </Dialogue>,
+    );
+    expect(screen.getByTestId("custom-avatar")).toBeInTheDocument();
+    expect(screen.queryByTestId("character-avatar-img")).toBeNull();
+    expect(screen.queryByTestId("character-avatar-placeholder")).toBeNull();
+  });
 });

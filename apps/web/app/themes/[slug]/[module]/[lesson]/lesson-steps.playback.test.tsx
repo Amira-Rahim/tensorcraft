@@ -40,10 +40,14 @@ vi.mock("@tensorcraft/ui", async () => {
   const { SceneHeading } = await vi.importActual<{
     SceneHeading: React.ComponentType<{ location: string }>;
   }>("@tensorcraft/ui/mdx/scene-heading");
+  const { ScenePortrait } = await vi.importActual<{
+    ScenePortrait: React.ComponentType<{ src: string; beat?: boolean }>;
+  }>("@tensorcraft/ui/scene-portrait");
   return {
     Dialogue,
     SceneHeading,
-    CharacterAvatar: () => null,
+    ScenePortrait,
+    AnimatedAvatar: () => null,
     ExerciseDataProvider: ({ children }: { children: React.ReactNode }) => (
       <>{children}</>
     ),
@@ -212,6 +216,69 @@ describe("LessonSteps, playback against real MDX DOM", () => {
       vi.advanceTimersByTime(30_000);
     });
     expect(shownBeatCount()).toBe(4);
+  });
+});
+
+describe("LessonSteps, scene portrait beat", () => {
+  const sceneLesson = {
+    ...lesson,
+    scene: { location: "Archimedes, Bridge", time: "After hours" },
+  };
+
+  function renderWithScene() {
+    return render(
+      <StrictMode>
+        <LessonSteps
+          lesson={sceneLesson}
+          exercises={[]}
+          themeSlug="deep-orbit"
+          moduleSlug="foundations"
+          prevLesson={null}
+          nextLesson={null}
+          moduleName="Foundations"
+        />
+      </StrictMode>,
+    );
+  }
+
+  it("plays slugline, then establishing shot, then stage direction", () => {
+    renderWithScene();
+    // Six beats now: slugline + portrait + narrative + dialogue + story P
+    // + dialogue. jsdom never loads images, so the portrait stays mounted.
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    expect(shownBeatCount()).toBe(6);
+
+    const beats = Array.from(document.querySelectorAll("[data-beat-shown]"));
+    const portraitIdx = beats.findIndex(
+      (b) => b.getAttribute("data-testid") === "scene-portrait",
+    );
+    expect(portraitIdx).toBe(1);
+  });
+
+  it("collapses to today's timeline when the portrait 404s (art-agnostic)", () => {
+    renderWithScene();
+    const img = document.querySelector("[data-testid='scene-portrait'] img")!;
+    act(() => {
+      img.dispatchEvent(new Event("error"));
+    });
+    expect(
+      document.querySelector("[data-testid='scene-portrait']"),
+    ).not.toBeInTheDocument();
+
+    // Replay collects beats fresh from the DOM: back to the 5 art-less
+    // beats (slugline + narrative + dialogue + story P + dialogue).
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    act(() => {
+      screen.getByRole("button", { name: /replay/i }).click();
+    });
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    expect(shownBeatCount()).toBe(5);
   });
 });
 
