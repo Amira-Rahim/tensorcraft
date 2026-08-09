@@ -7,10 +7,18 @@ This document is the single source of truth for how the Tensorcraft cast looks, 
 Append this token to every character image-generation prompt so the whole cast reads as one cohesive set. Copy it verbatim.
 
 ```text
-cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, head-and-shoulders framing, near-black background, theme-accent rim light, cohesive ensemble cast, not photorealistic.
+cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, tight head-and-shoulders crop from the upper chest up with both shoulders inside the frame, hands and all furniture out of frame, the head filling the upper two thirds of the image with the eyeline about one third down from the top, identical head scale across the cast, near-black background, theme-accent rim light, cohesive ensemble cast, not photorealistic, absolutely no text, lettering, numerals or logos anywhere in frame.
 ```
 
 The only per-character variation to the token is the theme-accent rim light color, which is named explicitly on each sheet (for Deep Orbit it is the primary green `#6BAA8A`).
+
+**Age rule (learned at Gate 0, 2026-08-09).** Generators skew every face young:
+"a woman in her early fifties" produced three candidates reading 35-40. State
+the age as a number AND name the specific markers you want (crow's feet, lines
+from nose to mouth, silvered temples, weathering). The same applies to any
+sheet whose age read matters. Also state "watch face plain with no numerals"
+or equivalent for any dial or gauge in frame: generated numerals always
+artifact.
 
 ## Asset convention and placeholder behavior
 
@@ -46,7 +54,7 @@ Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in th
 - **Palette** Deep charcoal jacket, warm brass `#A89060` trim, green `#6BAA8A` rim light catching the silver at her temples.
 - **Expression set** neutral (composed, level gaze); resolved (jaw set, giving an order); concerned (brow drawn, eyes on a readout); approving (the smallest warm half-smile).
 - **Do / Don't** Do read as senior, grounded, and physically still. Don't make her severe or cold. Her authority is warm, not sharp.
-- **Image-gen prompt** Portrait of Commander Mirza, a calm Black woman in her early fifties, dark brown skin, close-cropped natural hair silvering at the temples, strong brow and steady level gaze, faint focus lines, upright posture, wearing a dark charcoal command jacket with restrained brass piping and a single rank bar, a brass mission chronometer clipped at her chest. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, head-and-shoulders framing, near-black background, theme-accent rim light in green #6BAA8A, cohesive ensemble cast, not photorealistic.
+- **Image-gen prompt** Portrait of Commander Mirza, a calm Black woman aged 52 with a visibly mature face, dark brown skin, clear crow's feet at the outer eyes and faint lines from nose to mouth, close-cropped natural hair heavily silvered at the temples, strong brow and steady level gaze carrying the weathered focus of years reading instruments in low light, upright posture, wearing a dark charcoal command jacket with restrained brass piping and a single rank bar, a brass mission chronometer clipped high at her chest just inside the frame, watch face plain and blank with no numerals. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, tight head-and-shoulders crop from the upper chest up with both shoulders inside the frame, hands and all furniture out of frame, the head filling the upper two thirds of the image with the eyeline about one third down from the top, identical head scale across the cast, near-black background #1C1C1C, rim light strictly green #6BAA8A with no cyan or blue glow anywhere, cohesive ensemble cast, not photorealistic, absolutely no text, lettering, numerals or logos anywhere in frame.
 
 ### Dr. Farah (Sato)
 
@@ -59,7 +67,7 @@ Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in th
 - **Palette** Cool slate base layer, green `#6BAA8A` reading strongly in the holographic stylus glow and the AR lens, brass `#A89060` lanyard hardware.
 - **Expression set** neutral (curious, slightly raised brows); delighted (wide-eyed grin, a discovery); absorbed (eyes unfocused, lost in the abstraction); shaken (the M7 moment, hands not quite steady, awe and unease).
 - **Do / Don't** Do make her kinetic and bright, mid-gesture. Don't make her scattered or unserious. She is brilliant first, enthusiastic second.
-- **Image-gen prompt** Portrait of Dr. Farah, a curious astrophysicist woman in her late thirties, warm olive-tan skin, expressive wide dark eyes, dark wavy hair loosely pulled back with escaping strands, leaning slightly forward mid-explanation, wearing a soft lab jacket with sleeves pushed up over a ship uniform, a lanyard of data chips, a faint augmented-reality lens glowing at one eye, holding a stylus that trails a thin holographic line. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, head-and-shoulders framing, near-black background, theme-accent rim light in green #6BAA8A, cohesive ensemble cast, not photorealistic.
+- **Image-gen prompt** Portrait of Dr. Farah, a curious astrophysicist woman aged 38 with a clearly adult face, faint smile lines at the eyes, warm olive-tan skin, expressive wide dark eyes, dark wavy hair loosely pulled back with escaping strands, attentive with slightly raised brows and mouth closed in a resting expression, wearing the collar and shoulders of a soft muted slate-grey lab jacket over a ship uniform, a plain unlettered lanyard strap at the neck, a faint augmented-reality lens glowing green at one eye, hands out of frame. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, tight head-and-shoulders crop from the upper chest up with both shoulders inside the frame, hands and all furniture out of frame, the head filling the upper two thirds of the image with the eyeline about one third down from the top, identical head scale across the cast, near-black background #1C1C1C, rim light strictly green #6BAA8A with no cyan or blue glow anywhere, cohesive ensemble cast, not photorealistic, absolutely no text, lettering, numerals or logos anywhere in frame.
 
 ### Chief Nazari (Torres)
 
@@ -72,7 +80,7 @@ Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in th
 - **Palette** Muted gunmetal and olive coverall, brass `#A89060` on the tool hardware and patch trim, green `#6BAA8A` rim light along the gray in her hair and the edge of her jaw.
 - **Expression set** neutral (guarded, arms-crossed read in the face); skeptical (one brow up, unconvinced); grudging respect (a reluctant nod, mouth not quite a smile); haunted (the rare flicker when the Vanguard surfaces).
 - **Do / Don't** Do show competence and wariness; let the warmth be earned and small. Don't make her a villain or a grump for its own sake. Her doubt protects people.
-- **Image-gen prompt** Portrait of Chief Nazari, a weathered pragmatic woman engineer in her late forties, tan skin with faint scar nicks on her hands, practical short dark hair shot with gray and half-tucked, guarded evaluating expression, wearing a scuffed muted gunmetal and olive engineering coverall with rolled sleeves and tool loops at the hip, a faded crew patch on the shoulder, turning a multitool in her capable hands. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, head-and-shoulders framing, near-black background, theme-accent rim light in green #6BAA8A, cohesive ensemble cast, not photorealistic.
+- **Image-gen prompt** Portrait of Chief Nazari, a weathered pragmatic woman engineer aged 48 with a visibly mature lined face, crow's feet and a set jaw, tan skin with faint scar nicks on her hands, practical short dark hair shot with gray and half-tucked, guarded evaluating expression, wearing the collar and shoulders of a scuffed muted gunmetal and olive engineering coverall, a blank unlettered crew patch on the shoulder, hands out of frame. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, tight head-and-shoulders crop from the upper chest up with both shoulders inside the frame, hands and all furniture out of frame, the head filling the upper two thirds of the image with the eyeline about one third down from the top, identical head scale across the cast, near-black background #1C1C1C, rim light strictly green #6BAA8A with no cyan or blue glow anywhere, cohesive ensemble cast, not photorealistic, absolutely no text, lettering, numerals or logos anywhere in frame.
 
 ### Ensign Demir (Park)
 
@@ -85,7 +93,7 @@ Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in th
 - **Palette** Plain slate-blue junior uniform, minimal brass `#A89060` trim, green `#6BAA8A` glow from his wrist terminal lighting his face and the rim of his jaw.
 - **Expression set** neutral (alert, leaning in); overwhelmed (wide eyes, eyebrows up, slightly lost); breakthrough (delighted grin, the moment a concept clicks); focused (the late-course look, calm and locked on a problem).
 - **Do / Don't** Do keep him approachable and a little unpolished, the audience surrogate. Don't make him a generic hero; his charm is the growth, not the swagger.
-- **Image-gen prompt** Portrait of Ensign Demir, an eager young man in his mid-twenties, light-medium warm skin, open expressive face, dark tousled hair with light uneven stubble, bright alert eyes, leaning in with engaged curiosity, wearing a slightly rumpled slate-blue junior crew uniform with sleeves pushed up, a glowing comms earpiece, a wrist-mounted terminal showing scrolling telemetry that lights his face. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, head-and-shoulders framing, near-black background, theme-accent rim light in green #6BAA8A, cohesive ensemble cast, not photorealistic.
+- **Image-gen prompt** Portrait of Ensign Demir, an eager young man in his mid-twenties, light-medium warm skin, open expressive face, dark tousled hair with light uneven stubble, bright alert eyes, attentive with mouth closed in a resting expression, wearing the collar and shoulders of a slightly rumpled slate-blue junior crew uniform, a glowing comms earpiece, green #6BAA8A light from an off-screen terminal lighting his face from below, hands out of frame. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, tight head-and-shoulders crop from the upper chest up with both shoulders inside the frame, hands and all furniture out of frame, the head filling the upper two thirds of the image with the eyeline about one third down from the top, identical head scale across the cast, near-black background #1C1C1C, rim light strictly green #6BAA8A with no cyan or blue glow anywhere, cohesive ensemble cast, not photorealistic, absolutely no text, lettering, numerals or logos anywhere in frame.
 
 ### ARIA
 
@@ -135,3 +143,49 @@ The four themes below are gated on launch. Rosters are confirmed from the theme 
 - Dr. Nina Park - Skeptic - sheet pending (gated on theme launch)
 - Operator Jin - Stakeholder - sheet pending (gated on theme launch)
 - GRID - Infrastructure AI - sheet pending (gated on theme launch)
+
+## Production log
+
+### Deep Orbit portraits, 2026-08-09
+
+All 16 portraits generated and shipped: 4 human characters x (neutral + 3
+expressions). ARIA is excluded by design and rendered procedurally in code
+(`AriaWaveformAvatar`), never as raster art.
+
+- **Tool** FLUX.2 [pro] via fal.ai, chosen at a Gate 0 bake-off against
+  OpenAI GPT Image 2. It won on multi-reference editing (the mechanism the
+  expression variants depend on), exposed seeds, commercial licensing
+  included, and roughly half the unit cost. Driver `scripts/art/generate.mjs`,
+  conversion and budget enforcement `scripts/art/ingest.mjs`.
+- **Cost** about $1.75 across 57 generations for 16 keepers.
+- **Regeneration anchors** the four approved canon neutrals are committed at
+  `docs/art-refs/deep-orbit/<slug>.png`. Regenerate an expression by passing
+  its character's anchor as `--ref`; never regenerate identity from text
+  alone, which produces a different person wearing the same description.
+- **Gates** 0 (tooling) passed 2026-08-09; A (canon neutrals + ensemble
+  cohesion) passed after four rounds; B (expression identity strips) passed
+  after two.
+
+What the gates taught, all now folded into the prompts above:
+
+1. **Generators skew young.** See the age rule near the top of this file.
+2. **Vivid props beat abstract framing.** "Head-and-shoulders" loses to
+   "holding a multitool": the generator draws the noun and widens the crop to
+   fit it. Props that must not drag the camera back are now written as "hands
+   out of frame", and anything below the chest was cut from the wardrobe
+   lines. This matters because the product renders these at 30-44px, where
+   only a tight crop stays legible.
+3. **Head scale must be stated numerically-ish.** Four portraits that each
+   obeyed "head-and-shoulders" still disagreed on head size until the token
+   pinned "head filling the upper two thirds, eyeline about one third down".
+4. **Ban text explicitly.** Unbanned, the model invents garbled lettering on
+   patches, name tags and screens every time.
+5. **An edit pass preserves structure, not detail.** Reference-based variants
+   held identity perfectly but silently dropped Farah's AR lens and softened
+   Mirza's and Nazari's age lines. Anything that must survive an edit has to
+   be restated in the variant prompt (see the `hold` fields in
+   `scripts/art/expressions.mjs`). Residual, accepted: the two older women
+   still de-age slightly in variants; invisible at avatar size.
+6. **Emotional direction needs negatives.** "Haunted" produced literal tears
+   and "grudging respect" produced worry until the prompts said what the
+   expression is not.

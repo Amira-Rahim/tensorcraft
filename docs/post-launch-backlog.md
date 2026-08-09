@@ -174,16 +174,24 @@ memory was refuted by that audit: `pnpm audit` clean.)
     Briefing establishing shot as a playback beat + the 7 epilogue variants;
     paths `public/scenes/<theme>/<module>/<lesson>[-epilogue].webp`, alt from
     `scene.portraitAlt` / `scene.epiloguePortraitAlt` frontmatter).
-  - [ ] Real cel-shaded art, external production from the bible's image-gen
-    prompts. Drop files at `apps/web/public/characters/<theme>/<slug>.webp`
-    (+ `<slug>-<expression>.webp` variants, now consumed); no code change
-    (component swaps via onError). Production pipeline design (tooling
-    bake-off, canon-then-variants workflow, gates, ~$60 budget): plan file
-    `~/.claude/plans/earlier-i-mentioned-that-streamed-barto.md`.
-  - [ ] Scene portrait art: author `docs/scene-bible.md` (location master
-    plates + 63 per-lesson prompts + alt text), generate + ingest to
-    `public/scenes/deep-orbit/`; content pass annotating `expression=` on
-    high-value Dialogue blocks. Same plan file as above.
+  - [x] **Real cel-shaded art, Deep Orbit** (SHIPPED 2026-08-09): all 16
+    portraits (4 humans x neutral + 3 expressions; ARIA stays procedural)
+    live at `apps/web/public/characters/deep-orbit/`, 22-31 KB each. Made
+    with FLUX.2 [pro] via fal.ai through `scripts/art/generate.mjs` +
+    `scripts/art/ingest.mjs`; approved canons kept as regeneration anchors
+    in `docs/art-refs/deep-orbit/`. Gates 0/A/B cleared; production log and
+    the prompt rules the gates taught (age markers, framing, no-text) are in
+    `docs/character-bible.md`. Other themes remain gated on theme launch.
+  - [x] **Scene portrait art** (SHIPPED 2026-08-09): all 63 scenes (56
+    briefings + 7 epilogues) live at `apps/web/public/scenes/deep-orbit/`,
+    median 116 KB webp. Four approved location master plates at
+    `docs/art-refs/deep-orbit/masters/` are the reference for every scene, so
+    each set stays itself across the corpus. Alt text is in lesson
+    frontmatter. Gates C and D cleared; `docs/scene-bible.md` holds the
+    entries, the production log and the prompt rules the gates taught.
+  - [ ] Content pass annotating `expression="..."` on high-value Dialogue
+    blocks (the gate and all 16 assets are live, so annotations take effect
+    the moment they are authored).
   - [ ] The other 20 character sheets (Neon / Signal / Nova / Terra) +
     theme wiring + their scene art: gated on those themes launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in

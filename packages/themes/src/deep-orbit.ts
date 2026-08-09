@@ -54,7 +54,7 @@ export const deepOrbit: ThemeManifest = {
       name: "Chief Nazari",
       role: "Skeptic",
       personality:
-        "Distrusts ML: a rule-based system froze on his last mission",
+        "Distrusts ML: a rule-based system froze on her last mission",
       slug: "chief-nazari",
       expressions: ["neutral", "skeptical", "grudging-respect", "haunted"],
     },

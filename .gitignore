@@ -34,3 +34,8 @@ playwright-report/
 
 # Session artifacts
 .superpowers/
+
+# Art pipeline staging (candidates + lineage stay local; approved winners
+# ship via scripts/art/ingest.mjs) and its API keys
+art-src/
+.env.art
