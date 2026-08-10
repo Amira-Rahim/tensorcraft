@@ -58,7 +58,11 @@ The reconstruction error is twelve times the normal baseline. The frequency deco
 What am I looking at, Dr. Farah?
 </Dialogue>
 
-A React error boundary firing means the application hit a case no developer anticipated. DEEP SCAN's anomaly alert is the same class of event: every detector agrees this signal is unlike anything in the training data.
+<Dialogue speaker="Dr. Farah">
+Something the training data has never contained, Commander. That is the one claim three agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
+</Dialogue>
+
+In frontend terms, the bridge just watched an error boundary fire: the application hit a case no developer anticipated. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on.
 
 <LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Assemble the full detection ensemble and wire its verdicts into the DEEP SCAN dashboard feed"]} />
 

@@ -40,7 +40,7 @@ skillAxes: [model_arch, evaluation]
 ---
 
 <Dialogue speaker="Dr. Farah">
-Z-scores work for simple distributions. But our signals are high-dimensional: amplitude, frequency, phase, plus FFT features. We need a model that learns the full structure of normal signals. An autoencoder compresses and reconstructs. If it can't reconstruct a signal, that signal is anomalous.
+The z-score gate cleared a reading this morning that I flagged by eye an hour later. Amplitude normal, frequency normal, phase normal, and the three have never once occurred together in eleven days of archive. A threshold reads one dial at a time. Whatever replaces it has to learn what normal looks like across every dial at once.
 </Dialogue>
 
 Think of gzip: it finds repeated patterns in your data and exploits them to compress. Decompress and you get the original back; feed the decompressor a stream encoded under a different pattern set and you get garbage. Autoencoders run on the same bet. They learn to compress and rebuild "normal," so "abnormal" comes back mangled.

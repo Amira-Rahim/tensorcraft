@@ -10,7 +10,7 @@ test.describe("Legal Pages", () => {
       page.getByRole("heading", { name: /1\. acceptance of terms/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: /9\. contact/i }),
+      page.getByRole("heading", { name: /10\. contact/i }),
     ).toBeVisible();
     await expect(
       page.getByRole("link", { name: /legal@tensorcraft\.app/i }),

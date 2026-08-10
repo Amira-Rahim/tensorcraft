@@ -7,6 +7,10 @@
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    // Env assertion first: a misconfigured deploy should fail to boot
+    // before it initializes anything else (Tier 1-OPS env-var hygiene).
+    const { assertWebEnv } = await import("./lib/env");
+    assertWebEnv();
     await import("./sentry.server.config");
   }
   if (process.env.NEXT_RUNTIME === "edge") {

@@ -797,7 +797,7 @@ has already been written off once (see above) — do not launch dark again.
 - [ ] **Distribution head start:** write + publish the first blog batch and
   begin the audience track. `roadmap.md` §7: longest lead time in the plan,
   runs in parallel, starts before the code is ready.
-- [x] **Apply the pending migrations — DONE 2026-07-25 (ops-deploy session):** 037-055 applied to production in order; `pnpm migrate:status` = IN SYNC 55/55; GitHub secrets set (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FLY_API_TOKEN); `deploy-api.yml` ran green; `/api/health` + `/api/health/ready` both 200. Remaining sub-step: enable the 046 Custom Access Token hook in the Supabase Auth dashboard (middleware falls back safely meanwhile). Original text retained below for the record.
+- [x] **Apply the pending migrations — DONE 2026-07-25 (ops-deploy session):** 037-055 applied to production in order; `pnpm migrate:status` = IN SYNC 55/55; GitHub secrets set (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FLY_API_TOKEN); `deploy-api.yml` ran green; `/api/health` + `/api/health/ready` both 200. ~~Remaining sub-step: enable the 046 Custom Access Token hook in the Supabase Auth dashboard (middleware falls back safely meanwhile).~~ 046 hook ENABLED in the Supabase dashboard 2026-07-25 (ops-deploy session); ledger now IN SYNC **57/57** after 056/057 (entries below). Original text retained below for the record.
 - [x] **Apply migration 056 — DONE 2026-07-25:** applied to production via
   the same Node `pg` procedure as 037-055; pre/post state verified in
   `pg_constraint` (delete rule CASCADE → SET NULL, `user_id` now nullable,
@@ -833,12 +833,18 @@ has already been written off once (see above) — do not launch dark again.
   deployment-guide~~ (added); ~~CORS_ALLOWED_ORIGINS straggler~~ (fixed);
   ~~KIT_TAG_PAYWALL_HIT / MODULE_1_COMPLETE in .env.example~~ (added);
   ~~rate-limit 60-vs-120 doc split~~ (all docs now say 60, the code truth).
-  STILL OPEN: add a startup env assertion (`env.ts`/zod); operator must set
-  `SENTRY_AUTH_TOKEN` (absent → production stack traces minified),
-  `SUPABASE_URL` + service key on **Vercel** (RFC 8058 one-click unsubscribe
-  throws unset — Gmail/Yahoo bulk rules), and `APP_URL` on Fly (guest email
-  now falls back to the production domain rather than a broken link, but the
-  explicit var is still correct).
+  ~~STILL OPEN: add a startup env assertion (`env.ts`/zod)~~ **Code side
+  DONE 2026-08-11:** API had `apps/api/src/env.ts` since the R3 wave
+  (three tiers, boot-called, deploy-preflight diffs its exported lists);
+  web now mirrors it in `apps/web/lib/env.ts` wired through
+  `instrumentation.ts` (nodejs runtime, skips the build phase, keys the
+  prod tier off `VERCEL_ENV` so previews stay bootable; unit-tested).
+  REMAINING (operator): set `SENTRY_AUTH_TOKEN` (absent → production stack
+  traces minified), `SUPABASE_URL` + service key on **Vercel** (RFC 8058
+  one-click unsubscribe throws unset — Gmail/Yahoo bulk rules; the boot
+  assertion now refuses to start production without them), and `APP_URL`
+  on Fly (guest email falls back to the production domain rather than a
+  broken link, but the explicit var is still correct).
 - [ ] **Upstash paid plan.** Free tier is 10k commands/day ≈ **1,700 API
   requests** at ~5-6 commands each. Dies on launch day.
 - [ ] **Email domain warmup + Postmaster.** §10b plans a launch-week blast

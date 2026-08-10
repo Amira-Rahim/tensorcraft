@@ -1,0 +1,44 @@
+---
+slug: ship-ml-like-you-ship-fonts
+title: "Ship ML like you ship fonts, until the day you roll back"
+publishedAt: 2026-08-11
+summary: Deploying a browser ML app is npm run build with the model as one more static asset. The operational contract underneath is not the same, and the difference is the most useful production fact we teach.
+themeSlug: deep-orbit
+primaryLessonSlug: launch
+matchedLessons:
+  - themeId: deep-orbit
+    moduleId: browser-runtimes
+    slug: tensorflow-js-setup
+    title: TensorFlow.js Setup
+    rationale: Where the model-as-asset pipeline starts, from install to first inference in the browser.
+  - themeId: deep-orbit
+    moduleId: capstone
+    slug: launch
+    title: Launch
+    rationale: The deployment lesson this post summarizes, including the verification suite and the rollback contract.
+tags:
+  - deployment
+  - browser-ml
+  - tensorflow-js
+---
+
+## The part that is exactly what you think
+
+A browser-side ML app deploys like any static site you have ever shipped: `npm run build`, push `dist/` to a static host, done. The model is two files in the output, a small JSON topology and a weights binary, sitting next to your fonts and your images. Same CDN, same caching headers, same mental model. No Python service, no GPU fleet, no inference endpoint to page anyone about.
+
+That identity is real, and it is why frontend engineers are closer to shipping ML than most of them believe. The build config treats `model.json` and `weights.bin` as assets because that is genuinely all they are: bytes the browser fetches and runs.
+
+## The part that will surprise you at 2 AM
+
+The file copy is identical; the operational contract is not.
+
+Roll back a web app and you are done: the previous artifact was the previous state, fully. The user gets the prior page, byte for byte, and the world it assumed still exists.
+
+Roll back a model and you restore the weights, not the world they were trained on. The input distribution has kept moving since the training cutoff, and a rollback does not rewind it. Yesterday's weights meet today's data, and they can perform worse than the version you just pulled, because drift is measured from training time, not deploy time. A CDN cache goes stale on a TTL; a model's staleness clock has no TTL, only a retrain.
+
+Two practical consequences we drill in the capstone:
+
+1. **Verification is three independent checks, not one.** The model file loads from the deployed URL, inference returns a valid result, and latency meets budget. Any one can fail while the other two pass.
+2. **A rollback is an undo, not a test.** It restores weights in seconds, but it shares your new deploy's preprocessing path; a bug that mangles inputs on the way in rides both models equally. That is what canaries are for.
+
+The full deployment lesson, including the verification script you write yourself, closes the course's capstone. The first module is free if you want to see whether the on-ramp holds its promises.

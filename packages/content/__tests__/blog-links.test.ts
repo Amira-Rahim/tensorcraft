@@ -43,6 +43,18 @@ function lessonExists(theme: string, moduleId: string, lesson: string) {
 
 const posts = readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
 
+// Blog-to-blog links resolve against frontmatter slugs, not filenames
+// (they can differ in case, e.g. 2026-W18-… vs slug 2026-w18-…).
+const postSlugs = new Set(
+  posts
+    .map(
+      (f) =>
+        readFileSync(join(BLOG_DIR, f), "utf8").match(/^slug:\s*(\S+)/m)?.[1] ??
+        "",
+    )
+    .filter(Boolean),
+);
+
 describe("blog internal links resolve", () => {
   it("has at least the audit posts", () => {
     expect(posts.length).toBeGreaterThanOrEqual(4);
@@ -63,6 +75,8 @@ describe("blog internal links resolve", () => {
         continue;
       }
       if (path.match(/^\/themes\/[^/]+$/)) continue; // theme landing pages
+      const blogMatch = path.match(/^\/blog\/([^/]+)$/);
+      if (blogMatch && postSlugs.has(blogMatch[1])) continue;
       bad.push(href);
     }
     expect(bad, `unresolvable links in ${file}: ${bad.join(", ")}`).toEqual([]);

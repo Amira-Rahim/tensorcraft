@@ -1,7 +1,7 @@
 /**
  * Startup env assertion (Tier 1-OPS, fresh-eyes T-item "env.ts").
  *
- * There was NO env validation anywhere — every var was read ad-hoc at point
+ * There was NO env validation anywhere: every var was read ad-hoc at point
  * of use, so misconfiguration surfaced as a silently disabled feature
  * discovered by a user not receiving something (full-audit §4). This module
  * fails LOUD at boot instead. Plain TypeScript on purpose: the env surface
@@ -14,7 +14,7 @@
  *    their absence is a legitimate dev mode.
  *  - WARN_IF_UNSET    → log one loud warning per var naming the EXACT
  *    feature that is silently off. Never throws: these degrade, and
- *    degrading beats an outage — but degrading silently is how the R2-era
+ *    degrading beats an outage; but degrading silently is how the R2-era
  *    misconfigurations shipped.
  */
 
@@ -32,12 +32,12 @@ export const ALWAYS_REQUIRED = [
 export const PROD_REQUIRED = [
   // payments.checkout throws per-request without it; fail at boot instead.
   "APP_URL",
-  // Certificate issuance 500s fail-closed without it — the capstone payoff.
+  // Certificate issuance 500s fail-closed without it (the capstone payoff).
   "CERT_SIGNING_SECRET",
   // Kit bounce webhook 503s fail-closed without it.
   "KIT_WEBHOOK_SECRET",
   // Unset, rate limiting + JWT cache + issue-flood control are SILENTLY
-  // DISABLED (every call site catches) — a security degradation no
+  // DISABLED (every call site catches), a security degradation no
   // production deploy should start in.
   "UPSTASH_REDIS_REST_URL",
   "UPSTASH_REDIS_REST_TOKEN",
@@ -85,7 +85,7 @@ export function assertEnv(): void {
 
   for (const { name, consequence } of WARN_IF_UNSET) {
     if (!process.env[name]) {
-      logger.warn({ envVar: name }, `ENV: ${name} is unset — ${consequence}`);
+      logger.warn({ envVar: name }, `ENV: ${name} is unset; ${consequence}`);
     }
   }
 }

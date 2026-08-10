@@ -1,0 +1,43 @@
+---
+slug: fe-mental-models-that-transfer
+title: "Which of your frontend mental models transfer to ML, and which will lie to you"
+publishedAt: 2026-08-11
+summary: We build every lesson on a bridge from a frontend concept to an ML concept, and we grade each bridge by how far it holds. Here is the grading system, with the three bridges we trust most and the one that breaks the fastest.
+themeSlug: deep-orbit
+matchedLessons:
+  - themeId: deep-orbit
+    moduleId: foundations
+    slug: introduction-to-tensors
+    title: Introduction to Tensors
+    rationale: The first bridge in the course, typed arrays to tensors, and the module is free.
+tags:
+  - bridges
+  - mental-models
+  - react
+---
+
+## The bet this course is built on
+
+You have spent years building mental models: component trees, memoization, build pipelines, event loops. The bet behind Tensorcraft is that most of those models are reusable collateral for learning ML, provided somebody tells you exactly where each one stops holding.
+
+That last clause is the whole product. An analogy that quietly breaks teaches a wrong model that costs you a debugging week later. So we grade every bridge we use into one of three tiers, and the tier is printed on the lesson.
+
+## The three tiers
+
+- **Identity.** The same thing under a different name. Loading TensorFlow.js is `npm install` plus an import; there is nothing to unlearn. These are rare, about 1 bridge in 20, because ML mostly is not frontend engineering in disguise.
+- **Structural.** The shape matches, the internals differ, and the lesson must say where it bends. A `Float32Array` and a tensor look like siblings until device placement and autodiff enter the room. Roughly 5 of every 6 bridges in the course sit here, on purpose.
+- **Intuition.** A feel-level pointer only, rationed hardest because it decays fastest. When we use one, the correction ships on the same page, not in a footnote.
+
+We audited every bridge in the course against a canonical registry and published the numbers, including the failures we fixed. The audit is [here](/blog/audit-bridge-tiers).
+
+## Three bridges we trust
+
+1. **`expect(actual).toBe(expected)` is a loss function with the resolution turned down.** Your assertion returns pass or fail; a loss function returns a distance. Training is the process of making that assertion fail less, numerically.
+2. **A model file is a static asset.** It ships in `dist/` next to your fonts, cached and versioned the same way. The place this bends (rollbacks, see below) is where production ML actually starts.
+3. **Typed arrays are already tensors minus the bookkeeping.** If you have staged a `Float32Array` for WebGL, you have done the hard part of understanding what a tensor is: flat memory plus a shape you promised to respect.
+
+## The one that lies fastest
+
+"Rolling back a model is like rolling back a deploy." It is not, and the difference is the single most useful production-ML fact we teach: reverting a web app restores the previous state fully, because the artifact is the state. Reverting a model restores yesterday's weights but not yesterday's world. Drift accumulates from the training cutoff, not the deploy time, so the rolled-back model can be worse than the one you just pulled. The artifact was never the whole state.
+
+Module 1 is free, and the first bridge is waiting in the first lesson.

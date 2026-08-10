@@ -31,6 +31,24 @@ decode answers back.
   calibration harmonics (anomaly-detection/05). Correlation 0.9987.
 - DEEP SCAN is the learner-built system. ARIA is the ship's legacy
   rule-based AI.
+- **Deploy night is canonical** (2026-08-10): at 0157 DEEP SCAN went out as
+  a hot canary on a single bridge console over one live pulse, thirty
+  verdicts matched the shadow model, fleet-wide followed two minutes later.
+  The BossBeat's three untaken calls exist in-fiction as ARIA's simulated
+  transcripts, filed unrequested under `deploy/counterfactuals`.
+- **The operator of record** is the learner's in-fiction identity (the
+  BossBeats address them as "operator"). ARIA's 0213 deploy-record entry
+  (`operator_of_record: uncredentialed … disposition: noted with approval`)
+  is the only time the cast addresses them directly; do not add more. The
+  final `operator_note: none` row is that entry's unanswered reply and
+  must stay the last beat of the season.
+- The 73.4 Hz / 73.4 s coincidence is canonically a constant of the shared
+  instrument chain, named by ARIA in the finale ("I note both correlations.
+  I resolve neither.") and deliberately left unresolved. Do not explain it
+  further anywhere.
+- The bridge dashboard is the deploy target because it sits on the hardened
+  bus inside the 24/7 watch rotation (Nazari, capstone/01); the engineering
+  rig is faster but reboots with firmware flashes and has no standing watch.
 
 ## Character registers (hard rules)
 

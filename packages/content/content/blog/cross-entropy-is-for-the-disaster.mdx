@@ -1,0 +1,43 @@
+---
+slug: cross-entropy-is-for-the-disaster
+title: "Cross-entropy is not for the boundary, it is for the disaster"
+publishedAt: 2026-08-11
+summary: The standard answer for why classification uses cross-entropy instead of MSE is wrong in an instructive way. The real reason is a derivative built to cancel a sigmoid, and you can verify every number here with a calculator.
+themeSlug: deep-orbit
+primaryLessonSlug: loss-functions
+matchedLessons:
+  - themeId: deep-orbit
+    moduleId: training-loop
+    slug: loss-functions
+    title: Loss Functions
+    rationale: The full derivation with the training loop it belongs to, plus the exercise that makes you compute it.
+tags:
+  - fundamentals
+  - loss-functions
+  - tensorflow-js
+---
+
+## A loss function is an assertion that returns a distance
+
+If you have written `expect(actual).toBe(expected)`, you already hold the concept: a check comparing what the model produced against what it should have produced. The only upgrade is resolution. Your assertion returns pass or fail; a loss function returns how far off you were, as a number an optimizer can push downhill.
+
+The network predicts 0.52 for a signal labeled 1.0. The miss is 0.48; square it and you get 0.2304. Average the squares over a batch and that is mean squared error. So far, nothing a frontend engineer has not effectively built before.
+
+The interesting question is why classification abandons MSE for cross-entropy, because the answer you will find in most explanations is wrong.
+
+## The folk answer, and what a calculator says
+
+The usual claim: "MSE's gradient goes flat near 0 and 1, so learning stalls." Check it. Label `y = 1`, confident wrong prediction `ŷ = 0.01`. MSE's gradient with respect to the prediction is `2(ŷ - y) = -1.98`, which is not flat; it is the largest that gradient ever gets. Nothing is wrong with MSE's own slope.
+
+What flattens is the sigmoid in front of it. Backprop multiplies by the sigmoid's derivative, `ŷ(1-ŷ)`, and at 0.01 that factor is 0.0099. So what actually reaches the weights:
+
+- MSE through a sigmoid: `-1.98 × 0.0099 = -0.0196`
+- Cross-entropy through a sigmoid: the log and the sigmoid derivative cancel exactly, leaving `ŷ - y = -0.99`
+
+Same wrongness, fifty times more learning signal. Cross-entropy's advantage is not a steeper curve; its derivative is built to cancel the sigmoid's, so a confidently wrong prediction arrives at the weights at full strength.
+
+## Where the advantage actually lives
+
+At the decision boundary (`ŷ = 0.5`) the two losses are nearly the same: gradients of -0.25 versus -0.5, a factor of two that hardly matters. The gap opens as the model becomes more confidently wrong: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`. Cross-entropy is not for the boundary. It is for the disaster.
+
+Every number above is arithmetic you can redo on a napkin, which is the standard we hold the whole course to: if a lesson makes a quantitative claim, you should be able to check it. The full derivation, the training loop around it, and the exercise where you compute this yourself live in the lesson linked below. The first module of the course is free.

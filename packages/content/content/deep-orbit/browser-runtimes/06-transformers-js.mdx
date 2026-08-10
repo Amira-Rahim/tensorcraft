@@ -44,8 +44,10 @@ We spent three modules learning to train models from scratch. But all the bridge
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-No. Transformers.js. Pretrained models from the Hugging Face Hub, running in the browser via ONNX Runtime Web. Install the package and call it like any other dependency. No training loop, no labeled data, no GPU.
+No. I spent last night reading the Transformers.js docs so you don't spend three weeks not reading them. Pretrained model, same ONNX runtime we already ship. Cost of training your own: three modules, and we both lived them. Cost of this: one dependency and a download I will be auditing. Install it and call it.
 </Dialogue>
+
+The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads every one the night shift files. She wants the ones that need her attention surfaced first. Triage, not surveillance.
 
 <LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Use `pipeline()` to run pretrained models in the browser", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, ASR)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
 
@@ -108,6 +110,8 @@ zero-shot-classification    feature-extraction          automatic-speech-recogni
 ```
 
 Each pipeline is one line. Each downloads a model file the first time and caches it. The library ships ONNX Runtime Web underneath; TFJS is not involved at all when you use Transformers.js.
+
+Aboard the Archimedes the download comes from the ship's mirrored model archive, synced at the last relay pass; the live Hub is eleven light-minutes of latency away on a good day. The cache math is the same either way: the first call pays, every later call rides.
 
 ## When NOT to Use Transformers.js
 
