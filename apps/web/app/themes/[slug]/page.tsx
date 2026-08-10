@@ -9,7 +9,9 @@ import {
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase, getUserProgress } from "@/lib/progress";
+import { heroPlateSrc } from "@/lib/location-art";
 import { ThemeSceneBackdrop } from "./theme-scene-backdrop";
+import { ThemeCast } from "./theme-cast";
 import { ModuleMapClient } from "./module-map-client";
 import { GuestModuleBanner } from "./guest-module-banner";
 import { ComingSoonStub } from "./coming-soon-stub";
@@ -311,16 +313,27 @@ export default async function ThemeDetailPage({ params }: Props) {
       />
       {/* The theme's signature scene (Deep Orbit's orbital system for the
           live theme) behind the module map — same renderer as the homepage
-          and /themes cards, viewport-capped with a bottom fade. */}
+          and /themes cards, viewport-capped with a bottom fade. Themes with
+          shipped art also get their location master plate under the canvas;
+          the four unlaunched themes resolve to undefined and render exactly
+          as before. */}
       <ThemeSceneBackdrop
         slug={theme.slug}
         primary={theme.palette.primary}
         primaryLight={theme.paletteLight.primary}
+        plateSrc={heroPlateSrc(theme.slug)}
       />
 
       {/* Page header */}
+      {/* tc-on-art when a plate is behind it: the veil below is --tc-bg at
+          70%, which over dark art is an invisible darkening in dark scheme
+          but a white wash in light, bleaching the plate and stopping dead at
+          this border. Opting the header back onto the dark palette keeps the
+          veil dark and the type legible in both schemes. */}
       <header
-        className="relative z-10 px-12 pt-10 pb-9"
+        className={`relative z-10 px-12 pt-10 pb-9${
+          heroPlateSrc(theme.slug) ? " tc-on-art" : ""
+        }`}
         style={{
           borderBottom: "1px solid var(--tc-border)",
           background: "color-mix(in srgb, var(--tc-bg) 70%, transparent)",
@@ -369,6 +382,11 @@ export default async function ThemeDetailPage({ params }: Props) {
           ))}
         </div>
       </header>
+
+      {/* The crew, directly under the header: who you'll be working with,
+          before the module list says what you'll do. Self-hides for a theme
+          with no characters. */}
+      <ThemeCast slug={theme.slug} />
 
       {/* Capstone banner */}
       {isThemeComplete && (

@@ -46,6 +46,9 @@ vi.mock("@/app/components/ambient-background", () => ({
 }));
 
 vi.mock("@tensorcraft/content", () => ({
+  // 2026-08-09: pricing-tiers free tier reads its "N bonus deep-dive
+  // lessons" copy from this constant (was a hardcoded, stale "21").
+  EXTRAS_LESSON_COUNT: 23,
   getModules: (slug: string) =>
     slug === "deep-orbit"
       ? [
@@ -117,11 +120,17 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     expect(h1).toHaveTextContent(/Buy once\. Keep forever\./i);
   });
 
-  it("renders the 5-tier grid (embedded PricingTiers)", () => {
+  it("renders the buyable tier grid plus the bundle roadmap below it", () => {
+    // 2026-08-09: the three bundle cards left the grid. With one theme
+    // launched they could only render as dead CTAs, which anchored $59 as a
+    // stripped entry tier and implied a schedule the theme-2 gate does not
+    // promise. Their prices moved to <BundleRoadmap />, stated not sold.
     render(<PricingPage />);
     expect(screen.getByTestId("pricing-tiers")).toBeInTheDocument();
     expect(screen.getByTestId("tier-card-free")).toBeInTheDocument();
-    expect(screen.getByTestId("tier-card-all-five")).toBeInTheDocument();
+    expect(screen.getByTestId("tier-card-single")).toBeInTheDocument();
+    expect(screen.queryByTestId("tier-card-all-five")).toBeNull();
+    expect(screen.getByTestId("bundle-roadmap")).toBeInTheDocument();
   });
 
   it("does not render the removed comparison table", () => {

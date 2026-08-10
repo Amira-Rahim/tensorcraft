@@ -330,3 +330,72 @@ A V1.0 feature for browsing all FE-to-ML bridges across themes.
 - **Filters:** Filter by theme (checkboxes), by ML category (e.g., "Training", "Architecture", "Data Prep"), or by FE category (e.g., "React", "CSS", "DOM").
 - **Card interaction:** Clicking a bridge card expands it inline to show the full analogy text, code examples for both FE and ML sides, and a "Go to lesson" link.
 - **Responsive:** On mobile, bridge cards stack vertically. The filter panel collapses into a slide-out drawer accessible via a filter icon button.
+
+---
+
+## PART 7: RASTER ART ON MARKETING SURFACES
+
+Added 2026-08-10 with the Deep Orbit location plates. Spec:
+`docs/superpowers/specs/2026-08-09-art-marketing-surfaces-design.md`.
+
+### 7.1 The problem this part exists to solve
+
+The Deep Orbit art is dark raster and cannot re-render per colour scheme the
+way the procedural canvases do. Light mode ships. So every surface that puts
+art behind content has to answer: what happens on paper?
+
+### 7.2 Art is optional by contract
+
+`ArtPlate` (`packages/ui/src/art-plate.tsx`) renders **nothing** when its
+image is missing or fails, matching `ScenePortrait`. Components may ship
+before their assets, and a surface with no art is byte-identical to the
+layout it had before the art existed. Never add a placeholder frame.
+
+The failure has to be proven in a real browser, not only in jsdom: an SSR'd
+`<img>` can settle before hydration attaches `onError`, which is what
+`useImgSettled` recovers. `e2e/art.spec.ts` aborts the asset route rather
+than pointing at a missing file, so the request dies mid-stream.
+
+### 7.3 The frame
+
+A plate is presented as a lit monitor, never bled as a page background:
+2px `--tc-border`, a brass inner rule on `--tc-brass`, and the house
+`4px 4px 0` offset shadow in light scheme only. `--tc-brass` is constant
+across schemes and is deliberately NOT `--tc-accent`, which holds the same
+value in dark but darkens to clear AA as text in light.
+
+Full-bleed grounds (`bleed`) drop the frame, because the section's own
+borders already do that job.
+
+### 7.4 `tc-on-art`: regions that sit on the art
+
+A region laid over dark art is a lit viewport in a room, not part of the
+page surface. In light scheme it opts back onto the dark palette via
+`.tc-on-art`. Without it, `--tc-text` (#1f1f1f) lands on a near-black plate
+at roughly 1:1.
+
+Three separate overrides are required, and each fixes a different failure:
+
+1. **`--tc-*` tokens** — for anything reading `var(--tc-…)` directly.
+2. **`--color-*` tokens** — Tailwind's `@theme` emits
+   `--color-text-muted: var(--tc-muted)` at `:root`, and a custom property is
+   substituted where it is *declared*, so it already computed to the light
+   value up there. Redefining `--tc-muted` deeper cannot reach
+   `text-text-muted`.
+3. **`color`** — inherits as a computed value, so an element with no colour
+   of its own already holds body's. Re-resolving it is what reaches headings
+   that carry no colour class.
+
+Canvases layered over a plate also keep their **dark** hue: `rgbLight` was
+minted for a paper background and all but vanishes on near-black art.
+
+### 7.5 What the gates can and cannot see
+
+- **axe cannot check text over an image.** It compares CSS colours and never
+  samples the picture behind. Text on a busy passage of a plate needs a veil
+  and a human eye, not a green axe run.
+- **The axe suite is unreliable against `next dev`.** Two runs gave 26 and
+  then 9 failures on pages the change never touched, barely overlapping, in
+  34 minutes; the same suite against a production build gave 37/37 in 14.7s.
+  Run accessibility gates against `pnpm build` + `pnpm --filter
+  @tensorcraft/web start`, not the dev server.

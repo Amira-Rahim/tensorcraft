@@ -49,12 +49,6 @@ vi.mock("@tensorcraft/ui", () => ({
   ),
 }));
 
-vi.mock("@tensorcraft/ui/effects", () => ({
-  AriaWaveformAvatar: ({ name }: { name?: string }) => (
-    <div data-testid="aria-waveform-stub" data-name={name ?? "ARIA"} />
-  ),
-}));
-
 vi.mock("@/lib/progress-client", () => ({
   markLessonStarted: vi.fn().mockResolvedValue(undefined),
   markLessonCompleted: vi.fn().mockResolvedValue(undefined),
@@ -465,9 +459,13 @@ jsx(Dialogue, {speaker: "Instructor", children: "z"});`,
     expect(farah?.dataset.src).toBe("/characters/deep-orbit/dr-farah.webp");
   });
 
-  it("renders ARIA as the live waveform glyph", () => {
+  it("gives ARIA a portrait like the rest of the cast", () => {
+    // Her art is an abstract voice-orb glyph, never a face, so she takes the
+    // same avatar path as the humans rather than a special-cased renderer.
     renderCast();
-    expect(screen.getByTestId("aria-waveform-stub")).toBeInTheDocument();
+    const stubs = screen.getAllByTestId("animated-avatar-stub");
+    const aria = stubs.find((s) => s.dataset.name === "ARIA");
+    expect(aria?.dataset.src).toBe("/characters/deep-orbit/aria.webp");
   });
 
   it("keeps unregistered speakers on the srcless monogram path", () => {

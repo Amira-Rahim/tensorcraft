@@ -51,6 +51,25 @@ Generate and approve these four first (Gate C); they are the reference
 images for every per-lesson shot. Masters are also reusable as marketing /
 theme-page art.
 
+**Shipped 2026-08-10.** All four ingest to
+`apps/web/public/locations/deep-orbit/<location>.webp` via
+`node scripts/art/ingest.mjs masters`, at the same 1536x1024 / 200 KB cap as
+scenes (shipped at 99-130 KB). The Bridge plate is the ground of the landing
+page's Five Worlds band and of the Deep Orbit theme page backdrop; see
+`docs/superpowers/specs/2026-08-09-art-marketing-surfaces-design.md`.
+
+Two things to know before regenerating them:
+
+- `newest()` in the ingest script picks by name sort, which means the latest
+  timestamp, not the approved plate. Masters are the only asset class with a
+  human approval gate, so those two rules can silently disagree. Check each
+  winner against its canon below before ingesting, and if the wrong file
+  wins, rename the approved one rather than teaching the picker a second
+  rule (it is shared with portraits and scenes, which have no such gate).
+- Accepted deviation: the shipped `dashboard-station` plate shows five
+  monitors where the prompt below says three. It reads correctly as the
+  aft-rail alcove and it was the only candidate, so it was taken as-is.
+
 ### Bridge (`masters/bridge`)
 
 - **Set** Two-tier command deck of the survey ship Archimedes. Forward

@@ -418,6 +418,76 @@ body {
   box-shadow: 4px 4px 0 var(--tc-border);
 }
 
+/* Raster art plates on marketing surfaces (packages/ui/src/art-plate.tsx).
+   Same problem as .tc-scene-portrait, same answer: the art is dark in both
+   schemes, so it is framed as a lit monitor rather than bled as a page
+   background. The brass inner rule rides an outline rather than an inset
+   box-shadow so the light-scheme offset shadow can be declared on its own
+   without restating the ring. --tc-brass is constant across schemes on
+   purpose; see the note beside it in packages/themes/src/css/themes.css. */
+.tc-art-plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid var(--tc-border);
+  border-radius: 0;
+  outline: 1px solid
+    color-mix(in srgb, var(--tc-brass, var(--tc-border)) 45%, transparent);
+  outline-offset: -3px;
+}
+
+[data-scheme="light"] .tc-art-plate {
+  box-shadow: 4px 4px 0 var(--tc-border);
+}
+
+/* Scrim between a bleeding plate and the type laid over it. Constant rather
+   than token-derived on purpose: the art underneath is the same dark image in
+   both schemes, so the veil that makes type legible on it must be too. */
+.tc-art-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: color-mix(in srgb, #181818 45%, transparent);
+}
+
+/* A region laid over dark raster art is a lit viewport in a room, not part of
+   the page surface. In light scheme it opts back out to the dark palette,
+   because the art underneath cannot lighten with the page: without this,
+   --tc-text (#1f1f1f) lands on a near-black plate at roughly 1:1.
+   Values are Deep Orbit's dark tokens, the only theme with shipped art; a
+   second art theme needs its own block here. */
+[data-scheme="light"] .tc-on-art {
+  --tc-bg: #181818;
+  --tc-text: #e0e0e0;
+  --tc-muted: #b0b0b0;
+  --tc-primary: #6baa8a;
+  --tc-border: #3d3d3d;
+  /* The Tailwind layer has to be restated as literals, not left to inherit.
+     @theme emits --color-text-muted: var(--tc-muted) at :root, and a custom
+     property's value is substituted where it is DECLARED, so it computed to
+     the light #555555 up there and inherits down as that fixed colour.
+     Redefining --tc-muted below it cannot reach `text-text-muted`. */
+  --color-text-primary: #e0e0e0;
+  --color-text-muted: #b0b0b0;
+  --color-primary: #6baa8a;
+  --color-border: #3d3d3d;
+  /* Same trap one level simpler: `color` inherits as a computed value, so an
+     element with no colour of its own already holds body's #1f1f1f.
+     Re-resolving it here is what reaches the headings inside. */
+  color: var(--tc-text);
+}
+
+/* Full-bleed section ground: the section's own borders frame it. */
+.tc-art-plate-bleed {
+  border: 0;
+  outline: 0;
+}
+
+[data-scheme="light"] .tc-art-plate-bleed {
+  box-shadow: none;
+}
+
 /* Step-in animation for lesson steps */
 @keyframes step-in {
   from {

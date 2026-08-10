@@ -17,13 +17,8 @@ import {
 } from "@/lib/analytics";
 import type { ExerciseData } from "@tensorcraft/ui";
 import { SceneHeading, AnimatedAvatar, ScenePortrait } from "@tensorcraft/ui";
-import { AriaWaveformAvatar } from "@tensorcraft/ui/effects";
 import { themes } from "@tensorcraft/themes";
-import {
-  hexToRgb,
-  portraitSources,
-  resolveCharacter,
-} from "@/lib/character-art";
+import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
@@ -1081,20 +1076,11 @@ function SceneCard({
               const theme = themes[themeSlug];
               return (
                 <div key={s} className="flex items-center gap-2">
-                  {ch?.isAI && theme ? (
-                    <AriaWaveformAvatar
-                      name={s}
-                      size={30}
-                      rgb={hexToRgb(theme.palette.primary)}
-                      rgbLight={hexToRgb(theme.paletteLight.primary)}
-                    />
-                  ) : (
-                    <AnimatedAvatar
-                      name={s}
-                      src={portraitSources(themeSlug, ch).src}
-                      size={30}
-                    />
-                  )}
+                  <AnimatedAvatar
+                    name={s}
+                    src={portraitSources(themeSlug, ch).src}
+                    size={30}
+                  />
                   <div className="flex flex-col">
                     <span
                       className="font-mono text-xs"

@@ -14,6 +14,10 @@ import {
   drawTerraGrid,
   type SceneDraw,
 } from "@tensorcraft/ui/effects";
+// Subpath, not the barrel: @tensorcraft/ui's index pulls in the MDX lesson
+// components and with them sandpack, which the landing page must not ship.
+import { ArtPlate } from "@tensorcraft/ui/art-plate";
+import { heroPlateSrc } from "@/lib/location-art";
 
 /* ── Theme card data derived from manifests ──────────────── */
 
@@ -47,6 +51,12 @@ const THEME_CARDS = themeSlugs.map((slug, i) => {
 });
 
 const HERO_CARD = THEME_CARDS.find((c) => c.launched) ?? THEME_CARDS[0];
+
+// The flagship band is a viewport onto the Archimedes: the location master
+// plate is the ground, and OrbitCanvas keeps running above it as the
+// reflection on the glass. Undefined for a flagship with no shipped art, in
+// which case the band is exactly the canvas-only band it was before.
+const HERO_PLATE_SRC = heroPlateSrc(HERO_CARD.slug);
 const COMING_SOON_CARDS = THEME_CARDS.filter((c) => !c.launched);
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -79,13 +89,38 @@ export function FiveWorldsSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
       >
+        {HERO_PLATE_SRC && (
+          <ArtPlate
+            src={HERO_PLATE_SRC}
+            bleed
+            className="absolute inset-0 z-0"
+          />
+        )}
         <OrbitCanvas
           rgb={HERO_CARD.rgb}
-          rgbLight={HERO_CARD.rgbLight}
+          // Over a plate the band is a dark viewport in both schemes, so the
+          // canvas keeps its dark hue: the light hue (#3b6550) was minted for
+          // a paper background and all but vanishes on the near-black art.
+          rgbLight={HERO_PLATE_SRC ? HERO_CARD.rgb : HERO_CARD.rgbLight}
           hovered={hovered === HERO_CARD.slug}
-          className="absolute inset-0 z-0 pointer-events-none"
+          // z-1, not z-0: over a plate the canvas is the reflection on the
+          // glass, so it has to paint above the art rather than under it.
+          // OrbitCanvasProps exposes className but not style, so the dimming
+          // rides a utility class.
+          className={`absolute inset-0 z-1 pointer-events-none${
+            HERO_PLATE_SRC ? " opacity-50" : ""
+          }`}
         />
-        <div className="relative z-10 px-10 md:px-20 pt-16 pb-16">
+        {HERO_PLATE_SRC && (
+          <div aria-hidden="true" className="tc-art-scrim z-2" />
+        )}
+        {/* tc-on-art: the band is a lit viewport onto the ship, so its type
+            stays on the dark palette even when the page around it is paper. */}
+        <div
+          className={`relative z-10 px-10 md:px-20 pt-16 pb-16${
+            HERO_PLATE_SRC ? " tc-on-art" : ""
+          }`}
+        >
           <div className="flex items-start justify-between gap-6 mb-3">
             <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase">
               CHOOSE YOUR WORLD

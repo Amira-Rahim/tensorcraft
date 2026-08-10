@@ -76,6 +76,27 @@ const CAST = {
       focused: "calm and locked on a problem, brows level, mouth closed",
     },
   },
+  // ARIA is a glyph, not a person: her "expressions" are the shape of the
+  // trace inside the ring, so the hold clause protects the ring furniture
+  // and the state changes only the waveform. Never a face, ever.
+  aria: {
+    hold:
+      "This is an abstract AI glyph with no face, no eyes, no body and no " +
+      "humanoid form of any kind. Keep the concentric brass tick rings, the " +
+      "faceted geometric outer ring and the green to brass rim exactly as in " +
+      "the reference. Only the waveform trace inside the ring changes.",
+    states: {
+      emphasis:
+        "the trace is calm and level except for one clean tall spike at the " +
+        "centre, a single decisive peak",
+      deadpan:
+        "the trace is a perfectly flat straight horizontal line across the " +
+        "ring, no peaks at all, absolute stillness",
+      alarm:
+        "the trace is a tight agitated scatter of many sharp jagged peaks " +
+        "crowded across the whole width, urgent and unsettled",
+    },
+  },
 };
 
 /**

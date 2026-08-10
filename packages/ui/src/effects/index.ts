@@ -31,13 +31,3 @@ export {
   drawNovaCanvas,
   drawTerraGrid,
 } from "./theme-scenes";
-export {
-  AriaWaveformAvatar,
-  makeAriaWaveformDraw,
-  ARIA_WAVEFORM_STATES,
-} from "./aria-waveform";
-export type {
-  AriaWaveformAvatarProps,
-  AriaWaveformOptions,
-  AriaWaveformState,
-} from "./aria-waveform";

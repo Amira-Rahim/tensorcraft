@@ -14,6 +14,13 @@
   --tc-bg: #181818;
   --tc-primary: #6baa8a;
   --tc-accent: #a89060;
+  /* Brass trim of the Deep Orbit art, for the frame around raster art plates
+     (.tc-art-plate). Deliberately NOT --tc-accent, which holds the same value
+     here: --tc-accent is a text-capable theme accent and is darkened to
+     #6b5a3b in light scheme to clear AA, while this is decorative only and
+     must stay constant, because the raster art it frames is the same dark
+     image in both schemes. Do not merge the two. */
+  --tc-brass: #a89060;
   --tc-surface: #232323;
   --tc-surface-overlay: #313131;
   --tc-text: #e0e0e0;
@@ -294,6 +301,9 @@
 [data-theme="deep-orbit"][data-scheme="light"] {
   --tc-primary: #3b6550;
   --tc-accent: #6b5a3b;
+  /* Restated, not darkened: the art plate this frames does not change
+     between schemes, so neither does its trim (see the dark block). */
+  --tc-brass: #a89060;
   --tc-primary-rgb: 59, 101, 80;
   --tc-tier-identity: #3b6550;
   --tc-tier-structural: #3b6079;

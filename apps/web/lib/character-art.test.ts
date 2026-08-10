@@ -1,11 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { deepOrbit } from "@tensorcraft/themes";
-import {
-  ariaWaveformState,
-  hexToRgb,
-  portraitSources,
-  resolveCharacter,
-} from "./character-art";
+import { hexToRgb, portraitSources, resolveCharacter } from "./character-art";
 
 const farah = deepOrbit.characters.find((c) => c.slug === "dr-farah")!;
 const aria = deepOrbit.characters.find((c) => c.slug === "aria")!;
@@ -50,18 +45,6 @@ describe("portraitSources", () => {
 
   it("resolves to nothing without a character or slug", () => {
     expect(portraitSources("deep-orbit", undefined)).toEqual({});
-  });
-});
-
-describe("ariaWaveformState", () => {
-  it("passes canonical ids straight through", () => {
-    expect(ariaWaveformState(aria, "alarm")).toBe("alarm");
-    expect(ariaWaveformState(aria, "deadpan")).toBe("deadpan");
-  });
-
-  it("settles on neutral for absent or unknown annotations", () => {
-    expect(ariaWaveformState(aria)).toBe("neutral");
-    expect(ariaWaveformState(aria, "smoldering")).toBe("neutral");
   });
 });
 

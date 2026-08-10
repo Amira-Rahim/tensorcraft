@@ -15,9 +15,17 @@ const BREAKPOINTS = [
   { label: "1440", width: 1440, height: 900 },
 ] as const;
 
+/* maskCanvas mirrors the per-page flag in key-pages.spec.ts.
+   Until 2026-08-09 this file masked `canvas` on BOTH pages. On /pricing the
+   only canvas is AmbientBackground, which is absolutely positioned at
+   inset-0, so the mask covered the entire page: all four pricing baselines
+   were a magenta rectangle with a nav and a footer, and no layout regression
+   inside the page body could ever fail them. The mask exists for the
+   five-worlds cards on the landing page, which do not honour reduced-motion;
+   pricing has no such canvas and needs none. */
 const PAGES = [
-  { name: "landing", path: "/" },
-  { name: "pricing", path: "/pricing" },
+  { name: "landing", path: "/", maskCanvas: true },
+  { name: "pricing", path: "/pricing", maskCanvas: false },
 ] as const;
 
 test.describe("Visual: Responsive Breakpoints", () => {
@@ -33,13 +41,22 @@ test.describe("Visual: Responsive Breakpoints", () => {
         await page.setViewportSize({ width: bp.width, height: bp.height });
         await page.goto(pageDef.path);
         await page.waitForLoadState("networkidle");
-        await page.waitForFunction(() => document.fonts.ready);
+        // Await the fonts promise for real. The old form was
+        // `waitForFunction(() => document.fonts.ready)`, and waitForFunction
+        // resolves on any truthy return: a Promise object is ALWAYS truthy,
+        // so it waited for nothing and screenshots raced font swap. That is
+        // why nav and footer text ghosted, and why auth and themes-index
+        // behaved as coin flips (2026-08-09: three consecutive runs each
+        // passed a different subset with no code change between them).
+        await page.evaluate(async () => {
+          await document.fonts.ready;
+        });
         await expect(page).toHaveScreenshot(`${pageDef.name}-${bp.label}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,
           // Canvas animations (five-worlds cards) don't all honor
           // reduced-motion; mask them so frame timing can't flake the diff.
-          mask: [page.locator("canvas")],
+          mask: pageDef.maskCanvas ? [page.locator("canvas")] : undefined,
         });
       });
     }

@@ -87,7 +87,7 @@ const fetchMock = vi.fn().mockResolvedValue({
   json: () => Promise.resolve({ url: "https://checkout.stripe.com/abc" }),
 });
 
-describe("PricingTiers (brutalist 5-tier grid)", () => {
+describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     getSessionMock.mockResolvedValue({
@@ -105,26 +105,27 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
     window.location = { href: "" };
   });
 
-  it("renders exactly 5 tier cards", () => {
-    render(<PricingTiers />);
+  it("renders exactly the buyable tiers", () => {
+    // The three bundle tiers left the grid: with one theme launched they
+    // could only ever render as dead CTAs, which anchored $59 as a stripped
+    // entry tier and implied a delivery schedule the theme-2 gate does not
+    // promise. Their prices now live in <BundleRoadmap /> as information.
+    render(<PricingTiers extrasLessons={23} />);
     expect(screen.getByTestId("tier-card-free")).toBeInTheDocument();
     expect(screen.getByTestId("tier-card-single")).toBeInTheDocument();
-    expect(screen.getByTestId("tier-card-two")).toBeInTheDocument();
-    expect(screen.getByTestId("tier-card-three")).toBeInTheDocument();
-    expect(screen.getByTestId("tier-card-all-five")).toBeInTheDocument();
+    expect(screen.queryByTestId("tier-card-two")).toBeNull();
+    expect(screen.queryByTestId("tier-card-three")).toBeNull();
+    expect(screen.queryByTestId("tier-card-all-five")).toBeNull();
   });
 
-  it("renders canonical dollar amounts on every tier", () => {
-    render(<PricingTiers />);
+  it("renders canonical dollar amounts on every buyable tier", () => {
+    render(<PricingTiers extrasLessons={23} />);
     expect(screen.getByTestId("tier-card-free")).toHaveTextContent("$0");
     expect(screen.getByTestId("tier-card-single")).toHaveTextContent("$59");
-    expect(screen.getByTestId("tier-card-two")).toHaveTextContent("$99");
-    expect(screen.getByTestId("tier-card-three")).toHaveTextContent("$129");
-    expect(screen.getByTestId("tier-card-all-five")).toHaveTextContent("$159");
   });
 
   it("maps plan ids to tier cards", () => {
-    render(<PricingTiers />);
+    render(<PricingTiers extrasLessons={23} />);
     expect(screen.getByTestId("tier-card-free")).toHaveAttribute(
       "data-plan-id",
       "free",
@@ -133,55 +134,25 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
       "data-plan-id",
       "single",
     );
-    expect(screen.getByTestId("tier-card-two")).toHaveAttribute(
-      "data-plan-id",
-      "twoBundle",
-    );
-    expect(screen.getByTestId("tier-card-three")).toHaveAttribute(
-      "data-plan-id",
-      "threeBundle",
-    );
-    expect(screen.getByTestId("tier-card-all-five")).toHaveAttribute(
-      "data-plan-id",
-      "allFive",
-    );
   });
 
   it("recommends the buyable Single tier while only one theme is launched (2026-07-14 UX audit: never ribbon an unbuyable tier)", () => {
-    render(<PricingTiers />);
+    render(<PricingTiers extrasLessons={23} />);
     const single = screen.getByTestId("tier-card-single");
     expect(single).toHaveAttribute("data-recommended", "true");
     expect(single).toHaveTextContent(/Available Now/i);
-    const allFive = screen.getByTestId("tier-card-all-five");
-    expect(allFive).not.toHaveAttribute("data-recommended");
-    expect(allFive).not.toHaveTextContent(/Best Value/i);
   });
 
   it("uses rounded-none (brutalist) on every tier card", () => {
-    render(<PricingTiers />);
-    for (const slug of ["free", "single", "two", "three", "all-five"]) {
+    render(<PricingTiers extrasLessons={23} />);
+    for (const slug of ["free", "single"]) {
       const card = screen.getByTestId(`tier-card-${slug}`);
       expect(card.className).toMatch(/rounded-none/);
     }
   });
 
-  it("All 5 CTA is disabled at V1 (only Deep Orbit launched) and shows wait copy", () => {
-    // V1 scope-revert: bundle tiers (2/3/all-five) are auto-disabled while
-    // `LAUNCHED_THEMES.length` is below the bundle size, so the cart can
-    // never produce a basket the API would reject. Re-enable this test as
-    // a positive checkout assertion when all 5 themes ship.
-    render(<PricingTiers />);
-    const card = screen.getByTestId("tier-card-all-five");
-    const btn = Array.from(card.querySelectorAll("button")).find((b) =>
-      /Get All 5/i.test(b.textContent ?? ""),
-    ) as HTMLButtonElement | undefined;
-    expect(btn).toBeTruthy();
-    expect(btn!.disabled).toBe(true);
-    expect(card.textContent).toMatch(/Available when all 5 themes launch/i);
-  });
-
   it("Single tier CTA sends planId=single with the preselected theme (no extra click while one theme is launched)", async () => {
-    render(<PricingTiers />);
+    render(<PricingTiers extrasLessons={23} />);
     const card = screen.getByTestId("tier-card-single");
     // 2026-07-14 UX audit: with exactly one launched theme, the picker
     // preselects it — the CTA must be enabled immediately.
@@ -196,5 +167,35 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
     const body = JSON.parse(init.body);
     expect(body.planId).toBe("single");
     expect(body.themeIds).toEqual(["deep-orbit"]);
+  });
+
+  it("renders the extras lesson count from the prop, never a hardcoded literal", () => {
+    render(<PricingTiers extrasLessons={23} />);
+    expect(screen.getByTestId("tier-card-free")).toHaveTextContent(
+      /23 bonus deep-dive lessons/,
+    );
+  });
+
+  // 63 scene plates shipped 2026-08-09 and no buying surface mentioned them.
+  // The claim is phrased as coverage, not a count: every briefing has a plate,
+  // so "every lesson" stays true as lessons are added, whereas "63" would go
+  // stale the way the "21 bonus lessons" literal did. Licensed by
+  // packages/content/__tests__/scene-art-coverage.test.ts, which fails if any
+  // built lesson is missing its plate.
+  it("tells the buyer the course is illustrated", () => {
+    render(<PricingTiers extrasLessons={23} />);
+    expect(screen.getByTestId("tier-card-single")).toHaveTextContent(
+      /every lesson illustrated/i,
+    );
+    expect(screen.getByTestId("tier-card-free")).toHaveTextContent(
+      /illustrated/i,
+    );
+  });
+
+  it("never prints a raw scene-plate count that could drift", () => {
+    render(<PricingTiers extrasLessons={23} />);
+    expect(screen.getByTestId("tier-card-single")).not.toHaveTextContent(
+      /\b63\b/,
+    );
   });
 });

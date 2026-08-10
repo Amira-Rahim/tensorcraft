@@ -9,6 +9,7 @@ export {
   BUILT_THEME_DIRS,
   BUILT_THEME_GLOB,
   BUILT_STORY_THEMES,
+  EXTRAS_LESSON_COUNT,
 } from "./built-themes";
 export type { BuiltThemeDir } from "./built-themes";
 

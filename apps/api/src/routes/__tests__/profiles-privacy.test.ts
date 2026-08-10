@@ -13,7 +13,7 @@ const mockDeleteUser = vi.fn();
 const mockWaitlistDelete = vi.fn();
 const mockUnsubscribeFromAll = vi.fn(async () => null);
 
-let mockProfileRow: Record<string, unknown> | null = {
+const mockProfileRow: Record<string, unknown> | null = {
   id: "user-test-123",
   email: "learner@example.com",
   display_name: "Learner",

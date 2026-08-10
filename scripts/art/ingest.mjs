@@ -6,12 +6,13 @@
  * (the UI collapses missing art to a monogram, so a misnamed file would
  * never announce itself).
  *
- * Portraits: 512x512 webp, budget 40 KB.  Scenes: 1536x1024 webp, budget
- * 150 KB target / 200 KB hard cap. Over-cap files fail loudly.
+ * Portraits: 512x512 webp, budget 40 KB.  Scenes and masters: 1536x1024
+ * webp, budget 150 KB target / 200 KB hard cap. Over-cap files fail loudly.
  *
  * Usage:
  *   node scripts/art/ingest.mjs portraits   # art-src/{neutrals,expressions}
  *   node scripts/art/ingest.mjs scenes      # art-src/scenes
+ *   node scripts/art/ingest.mjs masters     # art-src/masters
  *   node scripts/art/ingest.mjs portraits --dry-run
  */
 
@@ -48,6 +49,9 @@ const CHARACTERS = {
   "dr-farah": ["delighted", "absorbed", "shaken"],
   "chief-nazari": ["skeptical", "grudging-respect", "haunted"],
   "ensign-demir": ["overwhelmed", "breakthrough", "focused"],
+  // ARIA ships art like the rest of the cast; her states are waveform
+  // shapes inside the voice-orb ring, never a face.
+  aria: ["emphasis", "deadpan", "alarm"],
 };
 
 const PORTRAIT = { size: 512, quality: 82, budget: 40 * 1024 };
@@ -55,6 +59,15 @@ const PORTRAIT = { size: 512, quality: 82, budget: 40 * 1024 };
 // visual delta is invisible at the lesson column's render width, and it keeps
 // a two-scene lesson page comfortably inside a sane image budget.
 const SCENE = { width: 1536, height: 1024, quality: 72, budget: 200 * 1024 };
+
+const LOCATIONS = ["bridge", "lab", "engineering", "dashboard-station"];
+
+// Same frame as a scene: the masters ARE the reference plates every scene was
+// generated against (docs/scene-bible.md), so they share dimensions and
+// budget. `emit()` picks its resize branch by `spec === PORTRAIT` reference
+// equality, so a distinct object falls through to the width/height branch
+// with no change to emit().
+const MASTER = { width: 1536, height: 1024, quality: 72, budget: 200 * 1024 };
 
 /** Newest staged candidate whose name starts with `stem-fal-` / `stem-openai-`. */
 function newest(dir, stem) {
@@ -154,10 +167,30 @@ async function scenes() {
   }
 }
 
+/** Location master plates, reused as marketing / theme-page art. Unlike
+    portraits and scenes these went through a human approval gate, so the
+    caller is responsible for making the newest staged file BE the approved
+    one: `newest()` picks by name sort and knows nothing about approval. */
+async function masters() {
+  for (const location of LOCATIONS) {
+    const src = newest("art-src/masters", location);
+    if (!src) {
+      results.missing.push(`${location} (master plate)`);
+      continue;
+    }
+    await emit(
+      src,
+      `apps/web/public/locations/${THEME}/${location}.webp`,
+      MASTER,
+    );
+  }
+}
+
 if (mode === "portraits") await portraits();
 else if (mode === "scenes") await scenes();
+else if (mode === "masters") await masters();
 else {
-  console.error("usage: ingest.mjs portraits|scenes [--dry-run]");
+  console.error("usage: ingest.mjs portraits|scenes|masters [--dry-run]");
   process.exit(1);
 }
 

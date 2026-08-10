@@ -189,3 +189,25 @@ What the gates taught, all now folded into the prompts above:
 6. **Emotional direction needs negatives.** "Haunted" produced literal tears
    and "grudging respect" produced worry until the prompts said what the
    expression is not.
+
+### ARIA gets real art too (correction, 2026-08-09)
+
+ARIA originally shipped as a procedurally drawn canvas waveform
+(`AriaWaveformAvatar`) on the reasoning that her sheet forbids a face. That
+conflated "no face" with "no art": this sheet has always carried an image-gen
+prompt for her, and specifies the final art as a glyph motif rather than a
+portrait. The code-drawn version was also visibly poorer than her castmates,
+a thin ring next to four richly rendered portraits.
+
+She now ships the same way as everyone else: four raster states at
+`apps/web/public/characters/deep-orbit/aria[-state].webp`, crossfaded by
+`AnimatedAvatar`, with the waveform inside the voice-orb ring carrying the
+expression (calm ripple, one tall spike, a flat line, an agitated scatter).
+Her `hold` clause in `scripts/art/expressions.mjs` protects the ring
+furniture so only the trace changes between states. The procedural component
+and its golden tests were deleted; they are in git history if the
+theme-adaptive version is ever wanted back.
+
+The `isAI` flag still means something: `CharacterAvatar` renders the abstract
+glyph placeholder rather than initials for an AI with no art yet, which is
+what the other themes' AI characters get until their sheets are written.

@@ -67,7 +67,16 @@ for (const scheme of ["dark", "light"] as const) {
       test(`${name} matches baseline`, async ({ page }) => {
         await page.goto(path);
         await page.waitForLoadState("networkidle");
-        await page.waitForFunction(() => document.fonts.ready);
+        // Await the fonts promise for real. The old form was
+        // `waitForFunction(() => document.fonts.ready)`, and waitForFunction
+        // resolves on any truthy return: a Promise object is ALWAYS truthy,
+        // so it waited for nothing and screenshots raced font swap. That is
+        // why nav and footer text ghosted, and why auth and themes-index
+        // behaved as coin flips (2026-08-09: three consecutive runs each
+        // passed a different subset with no code change between them).
+        await page.evaluate(async () => {
+          await document.fonts.ready;
+        });
         await expect(page).toHaveScreenshot(`${base}${suffix}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,

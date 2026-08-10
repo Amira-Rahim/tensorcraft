@@ -27,6 +27,8 @@ export { AnimatedAvatar } from "./animated-avatar";
 export type { AnimatedAvatarProps } from "./animated-avatar";
 export { ScenePortrait } from "./scene-portrait";
 export type { ScenePortraitProps } from "./scene-portrait";
+export { ArtPlate } from "./art-plate";
+export type { ArtPlateProps } from "./art-plate";
 // Renamed on export: "getServerSnapshot" is too generic a name for this
 // barrel (every useSyncExternalStore-backed hook has one); "Scheme" keeps it
 // unambiguous alongside any future hook's own getServerSnapshot.

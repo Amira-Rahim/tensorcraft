@@ -1,7 +1,5 @@
 import { themes } from "@tensorcraft/themes";
 import type { ThemeCharacter } from "@tensorcraft/themes";
-import type { AriaWaveformState } from "@tensorcraft/ui/effects";
-import { ARIA_WAVEFORM_STATES } from "@tensorcraft/ui/effects";
 
 /* Character art resolution for the lesson UI. Lives app-side because
    packages/ui is deliberately manifest-blind: components take srcs and
@@ -49,22 +47,6 @@ export function portraitSources(
         expressionSrc: `/characters/${themeSlug}/${character.slug}-${expression}.webp`,
       }
     : { src };
-}
-
-/**
- * Maps a dialogue expression annotation onto ARIA's procedural waveform
- * states. Her manifest expression ids ARE the waveform state ids; anything
- * unknown or absent settles on the calm neutral ripple.
- */
-export function ariaWaveformState(
-  character: ThemeCharacter,
-  expression?: string,
-): AriaWaveformState {
-  const valid =
-    expression !== undefined &&
-    (character.expressions?.includes(expression) ?? false) &&
-    (ARIA_WAVEFORM_STATES as readonly string[]).includes(expression);
-  return valid ? (expression as AriaWaveformState) : "neutral";
 }
 
 /** Shared "#rrggbb" to [r,g,b] (previously inlined per component). */

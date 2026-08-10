@@ -17,14 +17,7 @@ import {
   LessonRecap,
   Quiz,
 } from "@tensorcraft/ui";
-import { AriaWaveformAvatar } from "@tensorcraft/ui/effects";
-import { themes } from "@tensorcraft/themes";
-import {
-  ariaWaveformState,
-  hexToRgb,
-  portraitSources,
-  resolveCharacter,
-} from "@/lib/character-art";
+import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useGlossary } from "./glossary-context";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
@@ -293,20 +286,15 @@ export function LessonContent({
         // Instructor) stay avatar-less, exactly as before.
         const insideEpilogue = useContext(EpilogueContext);
         if (!insideEpilogue && !shouldShow("Dialogue")) return null;
-        const theme = themeId ? themes[themeId] : undefined;
         const ch = themeId
           ? resolveCharacter(themeId, props.speaker)
           : undefined;
         let avatarSlot: React.ReactNode;
-        if (themeId && theme && ch?.slug) {
-          avatarSlot = ch.isAI ? (
-            <AriaWaveformAvatar
-              name={ch.name}
-              state={ariaWaveformState(ch, props.expression)}
-              rgb={hexToRgb(theme.palette.primary)}
-              rgbLight={hexToRgb(theme.paletteLight.primary)}
-            />
-          ) : (
+        if (themeId && ch?.slug) {
+          // ARIA takes the same path as the human cast: her art is an
+          // abstract voice-orb glyph whose four states are waveform shapes,
+          // so it crossfades exactly like a face would (docs/character-bible.md).
+          avatarSlot = (
             <AnimatedAvatar
               name={ch.name}
               {...portraitSources(themeId, ch, props.expression)}

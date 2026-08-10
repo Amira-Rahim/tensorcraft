@@ -1,25 +1,35 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { LAUNCHED_THEMES, PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import { PRICING } from "@tensorcraft/shared";
+import { EXTRAS_LESSON_COUNT } from "@tensorcraft/content";
+import { BundleRoadmap } from "./bundle-roadmap";
 import { CurriculumPreview } from "./curriculum-preview";
 import { PaymentError } from "./payment-error";
 import { PaywallNotice } from "./paywall-notice";
 import { PricingAnalytics } from "./pricing-analytics";
 import { PricingTiers } from "./pricing-tiers";
+import { buildPricingOffers } from "./pricing-jsonld";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { FaqSection } from "@/app/components/faq-section";
 
+// 2026-08-09: the three descriptions below used to end "bundles up to $159".
+// With one theme launched, no bundle is purchasable at any price, so a search
+// result promising them invited a click the page could not honour. The
+// descriptions now name only what is buyable. The TITLE keeps its "$0 to $159"
+// range on purpose: a range describes the ladder, which genuinely exists and is
+// stated on the page, rather than advertising an unbuyable SKU. Restore the
+// bundle clause when LAUNCHED_THEMES grows past one.
 export const metadata: Metadata = {
   title: `ML Course Pricing: From $0 to $${PRICING.allFive.price} | Tensorcraft`,
-  description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
+  description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per theme.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/pricing",
     siteName: "Tensorcraft",
     title: "Buy a Theme. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme.`,
     images: [
       {
         url: "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
@@ -32,7 +42,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Buy a Theme. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme.`,
     images: [
       "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
     ],
@@ -40,18 +50,6 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 3600;
-
-// A bundle Offer is only InStock once enough themes have launched to fill it
-// (mirrors the cart gating in pricing-tiers.tsx). Until then it is
-// OutOfStock, NOT PreOrder: schema.org PreOrder asserts an order can be
-// placed now for later delivery, and no pre-order mechanism exists — the
-// checkout buttons are hard-disabled (same overclaim the coming-soon stub
-// fixed on 2026-07-19; R3-7 caught these bundle offers still saying
-// PreOrder).
-const IN_STOCK = "https://schema.org/InStock";
-const OUT_OF_STOCK = "https://schema.org/OutOfStock";
-const availabilityFor = (themes: number) =>
-  LAUNCHED_THEMES.length >= themes ? IN_STOCK : OUT_OF_STOCK;
 
 export default function PricingPage() {
   const pricingJsonLd = {
@@ -61,50 +59,7 @@ export default function PricingPage() {
     url: "https://tensorcraft.app/pricing",
     description:
       "One-payment lifetime-access tiers for the Tensorcraft browser-ML course. Per-theme single purchase, multi-theme bundles, and an all-five bundle.",
-    itemListElement: [
-      {
-        "@type": "Offer",
-        name: "Free preview",
-        price: String(PRICING.free.price),
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-        description:
-          "Module 1 of Deep Orbit free: lessons and exercises, no account required. The other four themes ship in waves with per-theme waitlists.",
-      },
-      {
-        "@type": "Offer",
-        name: "Single theme",
-        price: String(PRICING.single.price),
-        priceCurrency: "USD",
-        availability: availabilityFor(PRICING.single.themes),
-        description: `One full theme: ${THEME_CONTENT.totalLessonsPerTheme} lessons across ${THEME_CONTENT.modulesPerTheme} modules, capstone, lifetime access.`,
-      },
-      {
-        "@type": "Offer",
-        name: "Two-theme bundle",
-        price: String(PRICING.twoBundle.price),
-        priceCurrency: "USD",
-        availability: availabilityFor(PRICING.twoBundle.themes),
-        description: "Any two themes bundled, lifetime access.",
-      },
-      {
-        "@type": "Offer",
-        name: "Three-theme bundle",
-        price: String(PRICING.threeBundle.price),
-        priceCurrency: "USD",
-        availability: availabilityFor(PRICING.threeBundle.themes),
-        description: "Any three themes bundled, lifetime access.",
-      },
-      {
-        "@type": "Offer",
-        name: "All five themes",
-        price: String(PRICING.allFive.price),
-        priceCurrency: "USD",
-        availability: availabilityFor(PRICING.allFive.themes),
-        description:
-          "All five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid). Lifetime access.",
-      },
-    ],
+    itemListElement: buildPricingOffers(),
   };
 
   return (
@@ -140,9 +95,13 @@ export default function PricingPage() {
           >
             Buy once. Keep forever.
           </h1>
+          {/* 2026-08-09: was "Buy one, bundle a few, or all five themes",
+              which offered two actions no buyer can take while one theme is
+              launched. Same defect as the metadata above and the tier grid
+              below; fixed in the same pass so the page tells one story. */}
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
-            Each theme is a separate ML specialization. Buy one, bundle a few,
-            or all five themes, one payment, lifetime access.
+            Each theme is a separate ML specialization. Buy the one that fits,
+            one payment, lifetime access, no subscription.
           </p>
         </section>
 
@@ -185,12 +144,17 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* 5-tier Pricing Grid */}
+        {/* Buyable tiers: Free and Single. */}
         {/* Suspense: PricingTiers reads useSearchParams to restore a
             selection carried through the auth roundtrip. */}
         <Suspense fallback={null}>
-          <PricingTiers />
+          <PricingTiers extrasLessons={EXTRAS_LESSON_COUNT} />
         </Suspense>
+
+        {/* The bundle ladder, stated rather than sold. It sits BELOW the
+            grid on purpose: the buyable product leads, and the prices a
+            buyer cannot act on are context, not competition for the CTA. */}
+        <BundleRoadmap />
 
         {/* Curriculum preview, what a purchase unlocks */}
         <CurriculumPreview />

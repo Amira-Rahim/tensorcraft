@@ -86,6 +86,20 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 3. Data-gated content work
 
+- [ ] **Re-test `PRICING.single` at $79** (gate: 200 paying users, the same
+  threshold as the theme-2 gate). Deliberately NOT raised on 2026-08-09 when
+  63 scene plates and 16 portraits shipped: art is a quality signal, not a
+  scope signal, marginal cost was ~$5, and nobody had paid anything yet, so a
+  raise would have stacked a second unvalidated guess on the 2026-06-20 raise
+  from $49. Distribution is the binding constraint; a raise tightens it.
+  Revisit only on real conversion data. Reasoning:
+  `docs/superpowers/specs/2026-08-09-pricing-reevaluation-design.md`.
+- [ ] **Restore the bundle surfaces when theme 2 launches.** Three things
+  self-heal off `LAUNCHED_THEMES` with no edit (the tier cards, the JSON-LD
+  `availabilityFor`, and `BundleRoadmap`, which returns `null` once nothing is
+  gated). Two do NOT and must be done by hand: the `metadata` descriptions in
+  `apps/web/app/pricing/page.tsx` dropped their "bundles up to $N" clause, and
+  the hero paragraph dropped "bundle a few, or all five themes".
 - [ ] **BossBeat expansion** (6 ranked beats, one per dormant module).
   Gate: ~100 real lesson completions so placement follows observed drop-off.
   Detail spec + non-negotiable quality gates:
@@ -174,8 +188,9 @@ memory was refuted by that audit: `pnpm audit` clean.)
     Briefing establishing shot as a playback beat + the 7 epilogue variants;
     paths `public/scenes/<theme>/<module>/<lesson>[-epilogue].webp`, alt from
     `scene.portraitAlt` / `scene.epiloguePortraitAlt` frontmatter).
-  - [x] **Real cel-shaded art, Deep Orbit** (SHIPPED 2026-08-09): all 16
-    portraits (4 humans x neutral + 3 expressions; ARIA stays procedural)
+  - [x] **Real cel-shaded art, Deep Orbit** (SHIPPED 2026-08-09): all 20
+    portraits (5 characters x neutral + 3 expressions, ARIA included as an
+    abstract voice-orb glyph)
     live at `apps/web/public/characters/deep-orbit/`, 22-31 KB each. Made
     with FLUX.2 [pro] via fal.ai through `scripts/art/generate.mjs` +
     `scripts/art/ingest.mjs`; approved canons kept as regeneration anchors
