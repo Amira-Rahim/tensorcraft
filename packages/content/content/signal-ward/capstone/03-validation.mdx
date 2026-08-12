@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dr. Karimi places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction, verified by experts. Your system needs to match these annotations. Not perfectly, but well enough that I trust it at 3 AM.' Imran opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It's like a snapshot test,' she says. 'Known inputs, expected outputs.'"
+  narrative: "Dr. Karimi places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Each entity, classification, and interaction verified by experts. Your system needs to match these annotations. Not perfectly, but well enough that I trust it at 3 AM.' Imran opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It's like a snapshot test,' she says. 'Known inputs, expected outputs.'"
   speaker: "Dr. Karimi"
 concept:
   explanation: "Validating Diagnostic One against expert annotations is the same discipline as end-to-end testing: running automated checks against known-good outputs. Precision, recall, and F1 score are the clinical equivalents of test pass rates, measuring how well your system matches expert-verified ground truth."
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-Five hundred clinical notes. Each one annotated by two board-certified physicians who independently marked every drug name, every condition, every interaction. Where they disagreed, a third physician resolved. This is the gold standard. If your system cannot match these annotations, it does not deploy.
+Five hundred clinical notes. Each one annotated by two board-certified physicians who independently marked each drug name, condition, and interaction. Where they disagreed, a third physician resolved. This is the gold standard. If your system cannot match these annotations, it does not deploy.
 </Dialogue>
 
 <Dialogue speaker="Imran">
@@ -210,4 +210,4 @@ Build a validation suite that computes precision, recall, and F1 for NLP predict
 
 <Exercise slug="validate-annotations" />
 
-<KeyTakeaways takeaways={["The gold standard here is 500 notes annotated by two physicians each; the suite scored precision 0.89, recall 0.84, F1 0.86 against it", "Precision measures false positive rate (false alarms), recall measures false negative rate (missed detections)", "In clinical settings, high recall is prioritized over high precision: better to investigate a false alarm than miss a real drug interaction", "The confusion matrix reveals systematic errors: if the system consistently confuses DOSAGE with DRUG, that is a training data problem"]} />
+<KeyTakeaways takeaways={["The gold standard here is 500 notes annotated by two physicians each; the suite scored precision 0.89, recall 0.84, F1 0.86 against it", "Precision counts how many of the system's flags were real interactions; recall counts how many real interactions the system caught", "In clinical settings, high recall is prioritized over high precision: better to investigate a false alarm than miss a real drug interaction", "The confusion matrix reveals systematic errors: if the system consistently confuses DOSAGE with DRUG, that is a training data problem"]} />

@@ -17,9 +17,9 @@ concept:
     mlTitle: "Biased Training Data"
     mlCode: "// Only trained on English text; fails on multilingual input"
     tier: intuition
-    breaks: "Cross-browser bugs surface immediately on a Firefox/Safari pageview; the failure mode is loud (broken layout, JS error). Dataset bias is silent: a face-recognition model trained mostly on light-skinned faces may still return a confident match on a darker-skinned face that is wrong. Detecting bias requires per-subgroup evaluation against a labelled holdout. There's no equivalent of 'open it in Firefox' that surfaces it on demand."
+    breaks: "Cross-browser bugs surface immediately on a Firefox/Safari pageview; the failure mode is loud (broken layout, JS error). Dataset bias is silent: a face-recognition model trained mostly on light-skinned faces may still return a confident match on a darker-skinned face that is wrong. Detecting bias means evaluating each subgroup separately on labelled test data. There's no equivalent of 'open it in Firefox' that surfaces it on demand."
 consequence:
-  narrative: "Understanding bias is the first step toward building ML systems that serve everyone."
+  narrative: "You can now count who is in a dataset and who is missing: per-group proportions, positive rates, and an underrepresentation flag."
 hints:
   - level: nudge
     content: "Bias audits start with counting: how much of the dataset does each group actually occupy?"
@@ -56,7 +56,7 @@ keywords:
 Before we write a single line of model code, we need to talk about something that will determine whether your model helps people or harms them: the data you train on.
 </Dialogue>
 
-In 2018, researchers tested commercial face-recognition systems and found error rates up to 34.7% for darker-skinned women. For light-skinned men: under 1%. The models weren't broken. Their training data was. That gap, between who your data represents and who your model serves, is dataset bias, and the consequences run far past a broken layout.
+In 2018, the Gender Shades study tested commercial face-recognition systems and found error rates up to 34.7% for darker-skinned women. For light-skinned men: under 1%. The models weren't broken. Their training data was. That gap, between who your data represents and who your model serves, is dataset bias, and the consequences run far past a broken layout.
 
 <LearningObjectives objectives={["Identify the three main types of dataset bias: selection, measurement, and historical", "Recognize how biased data leads to discriminatory model outputs", "Audit a dataset for demographic representation gaps", "Connect dataset bias to the familiar problem of insufficient cross-browser testing"]} />
 

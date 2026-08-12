@@ -11,7 +11,7 @@ instructions: |
       severity: 'low'|'med'|'high',  // <5pp = low, 5-15pp = med, >15pp = high
     }
 
-  Use Math.round(x * 10) / 10 for one-decimal rounding. This is how a real on-call engineer triages a drift alert in 30 seconds.
+  Use Math.round(x * 10) / 10 for one-decimal rounding.
 mlContent: systems
 starterCode: |
   function diagnoseDrift(predictions, baseline) {

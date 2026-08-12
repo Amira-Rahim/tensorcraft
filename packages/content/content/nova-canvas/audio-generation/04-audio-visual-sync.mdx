@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "rAF + AudioContext let you align rendering to wall-clock time. Synchronized generation across modalities (audio + video) requires the model to maintain temporal alignment internally. Drift between modalities is a model failure with no clock to correct it."
 consequence:
-  narrative: "Colors pulse with bass frequencies. Shapes morph in rhythm with melody. The installation is no longer visual or auditory. It is synaesthetic. MUSE whispers: 'They are listening with their eyes.'"
+  narrative: "Colors pulse with bass frequencies. Shapes morph in rhythm with melody. MUSE whispers: 'They are listening with their eyes.'"
 hints:
   - level: nudge
     content: "Use AudioContext.currentTime as the single source of truth for both audio and visual timing"
@@ -191,4 +191,4 @@ Audio and visual events sampled by separate clocks drift over time. Even tiny ra
 For browser inference, `AudioContext.outputLatency` reports actual sample queue depth → use to compute drift in real-time.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["AudioContext.currentTime and requestAnimationFrame are the browser's two timing systems; sync them for AV coherence", "AnalyserNode extracts real-time frequency and amplitude data without interrupting playback", "Shared latent spaces ensure audio and visual generation are semantically linked, not just temporally", "Audio-reactive visuals use the same data-binding pattern as reactive UI frameworks"]} />
+<KeyTakeaways takeaways={["AudioContext.currentTime and requestAnimationFrame are the browser's two timing systems; sync them so sound and image stay aligned", "AnalyserNode extracts real-time frequency and amplitude data without interrupting playback", "Generating audio and visuals from one latent vector links their content as well as their timing", "Audio-reactive visuals use the same data-binding pattern as reactive UI frameworks"]} />

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Diagnostic One's NER pipeline catches a drug interaction that three doctors missed: the midpoint breakthrough."
+  narrative: "Diagnostic One's NER pipeline catches a drug interaction that three doctors missed."
   speaker: "Dr. Karimi"
 concept:
   explanation: "Combining NER with relationship extraction and a drug interaction database creates a safety net: drugs extracted from separate documents, written by separate prescribers, get checked against each other before the combination reaches the patient."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "Drug Interaction Detection"
     mlCode: "nerPipeline(notes) // ALERT: interaction between warfarin and aspirin"
     tier: structural
-    breaks: "package.json dependency resolution is deterministic given lockfile. Drug interaction detection requires entity linking, relation extraction across sentences, and a reliable knowledge base; most interactions are documented but novel pairs require inference, not lookup."
+    breaks: "package.json dependency resolution is deterministic given lockfile. Drug interaction detection requires entity linking (mapping every mention to one canonical drug), relation extraction across sentences, and a reliable knowledge base; most interactions are documented but novel pairs require inference, not lookup."
 consequence:
-  narrative: "Diagnostic One proves its clinical value, augmenting human judgment by systematically catching dangerous combinations across siloed medical records."
+  narrative: "Diagnostic One catches a dangerous drug combination hidden across siloed medical records; the treatment decision stays with Karimi."
 hints:
   - level: nudge
     content: "Extract all drug entities from multiple documents, then check each pair against a known interaction database"
@@ -62,7 +62,7 @@ When you run `npm install`, the package manager resolves dependencies. If `packa
 
 Drug interaction detection works identically. Each clinical note is a `package.json`. Each prescribed drug is a dependency. The NER pipeline extracts all "dependencies" across all "packages" and checks for conflicts against a known interaction database.
 
-The critical parallel: just like dependency conflicts span multiple `package.json` files from different teams, drug interactions span multiple clinical notes from different prescribers. No single doctor sees the full picture. The system does.
+Dependency conflicts span multiple `package.json` files from different teams; drug interactions span multiple clinical notes from different prescribers. No single doctor sees the full picture. The system does.
 
 <CodeBlock language="typescript" title="drug-interaction-detector.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -170,18 +170,18 @@ alerts.forEach(a => {
 });`}
 </CodeBlock>
 
-## The Human-AI Partnership
+## Who Decides
 
 <Dialogue speaker="Dr. Karimi">
-Diagnostic One did not replace the three doctors who missed this interaction. It augmented them. It read every note across every department, extracted every drug, and checked every pair, something no human can do reliably across thousands of patients. But the clinical decision, adjusting Mrs. Begum's medications safely, that is still mine.
+Diagnostic One did not replace the three doctors who missed this interaction. It did the reading none of them had time for: every note from every department, each drug extracted, each pair checked against the database. No human does that reliably across thousands of patients. But the clinical decision, adjusting Mrs. Begum's medications safely, that is still mine.
 </Dialogue>
 
 <Dialogue speaker="Imran">
-And we need to be transparent about what the system can and cannot catch. It found a pairwise interaction from a known database. It would not catch a novel interaction that's not in the database, or a three-way interaction, or a dosage-dependent interaction. Augmentation, not replacement.
+And we need to be transparent about what the system can and cannot catch. It found a pairwise interaction from a known database. It would not catch a novel interaction that's not in the database, or a three-way interaction, or a dosage-dependent interaction.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Like a linter. ESLint catches patterns it knows about. It doesn't catch every bug. But the bugs it does catch (consistently, across every file, every commit) save lives. In our case, literally.
+Like a linter. ESLint catches patterns it knows about. It doesn't catch every bug. But what it does know, it checks on every commit, and that consistency is what just caught Mrs. Begum's interaction.
 </Dialogue>
 
 ## Challenge

@@ -17,7 +17,7 @@ concept:
     mlTitle: "RAG Pipeline"
     mlCode: "async function answer(q) { const docs = await retrieve(q); return generate(q, docs); }"
     tier: structural
-    breaks: "React Server Components render server-side and stream HTML. RAG retrieves passages then conditions an LLM on them; retrieval recall, chunking strategy, and the LLM's tendency to ignore retrieved content (or hallucinate around it) are the dominant failure modes."
+    breaks: "React Server Components render server-side and stream HTML. RAG retrieves passages then conditions an LLM on them; retrieval recall, chunking strategy (how documents are split into indexable pieces), and the LLM's tendency to ignore retrieved content (or hallucinate around it) are the dominant failure modes."
 consequence:
   narrative: "The RAG pipeline retrieves the three most relevant documents from 47 records in 12 milliseconds. One is a Spanish-language discharge summary from a clinic in Guatemala. The QA model extracts the critical allergy information. Imran exhales. 'That would have taken me twenty minutes.'"
 hints:
@@ -43,7 +43,7 @@ One document, one answer. That was a proof of concept. This patient has 47 recor
 It is the same pattern as React Server Components. Fetch the data you need on the server, then render on the client. Retrieve the relevant documents first, then pass them to the QA model. Retrieval-Augmented Generation.
 </Dialogue>
 
-React Server Components changed how we think about data fetching. Instead of shipping a loading spinner and fetching on the client, you fetch on the server and stream the result. RAG does the same thing for question answering: instead of feeding the entire corpus to the model, you retrieve the relevant documents first, then pass only those as context.
+With React Server Components, instead of shipping a loading spinner and fetching on the client, you fetch on the server and stream the result. RAG does the same thing for question answering: instead of feeding the entire corpus to the model, you retrieve the relevant documents first, then pass only those as context.
 
 <LearningObjectives objectives={["Build a dense retrieval system using document embeddings and cosine similarity", "Implement a vector index for fast nearest-neighbor search in the browser", "Construct a complete RAG pipeline: embed → retrieve → comprehend → answer", "Handle multilingual retrieval for clinical documents in different languages"]} />
 

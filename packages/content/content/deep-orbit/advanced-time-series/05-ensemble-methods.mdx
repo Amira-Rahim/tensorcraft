@@ -192,7 +192,7 @@ Build a weighted ensemble from multiple model predictions.
   whatYouLearned={[
     "An ensemble runs all member models on every input and combines their predictions; errors partially cancel when the members make uncorrelated mistakes.",
     "Weighted averaging assigns each member influence proportional to its measured confidence, letting better-performing models contribute more to the final output.",
-    "Architectural diversity, using models with different inductive biases like LSTM, attention, and Kalman, is the main driver of uncorrelated errors and ensemble gain."
+    "Architectural diversity, using models with different built-in assumptions like LSTM, attention, and Kalman, is the main driver of uncorrelated errors and ensemble gain."
   ]}
   bridge="Like micro-frontends composing independent apps into one view, a `prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))` ensemble combines independent models, though unlike micro-frontends every member runs on every input rather than owning a separate slice."
   youCanNow="Build a weighted ensemble from multiple model predictions and evaluate whether it outperforms the best individual member."

@@ -17,7 +17,7 @@ concept:
     mlTitle: "Clinical Attention Bias"
     mlCode: "scores.add(clinicalBias); // boost medical term weights"
     tier: structural
-    breaks: "Search result highlighting marks exact-match keywords. Clinical attention bias is the learned tendency for the model to over- or under-weight certain patient features, invisible without targeted audits, and the bias is in the weights, not the highlight rendering."
+    breaks: "Search result highlighting marks exact-match keywords. Clinical attention bias lives in the learned weights, not the highlight rendering. The model can over- or under-weight certain patient features, and nothing shows it without a targeted audit."
 consequence:
   narrative: "Diagnostic One now focuses on clinically meaningful words, improving its accuracy on real patient notes."
 hints:
@@ -121,9 +121,9 @@ Implement clinical attention weights that prioritize medical terminology.
 <DerivationDrawer summary="Bias in attention: when the model attends to the wrong signal">
 Clinical attention bias: the model learns to attend to features that correlate with the label in training but are spurious in deployment. Example: a chest X-ray classifier that attends to the X-ray machine's metadata stamp (which differs by hospital, and hospital correlates with disease prevalence) rather than the lung tissue.
 
-**Detection:** compute attention statistics per demographic slice. If attention concentrates on features that should be irrelevant (machine model, scan timestamp, hospital ID), retrain with these features removed or with adversarial debiasing.
+**Detection:** compute attention statistics per demographic slice. If attention concentrates on features that should be irrelevant (machine model, scan timestamp, hospital ID), retrain with these features removed, or with training that penalizes reliance on them (adversarial debiasing).
 
-**Auditable property:** for each output, the top-k attended input regions should be in the regions a clinician would also attend to. Mismatches in top-k ↔ clinical relevance map are flags for review.
+**Auditable property:** for each output, the most-attended input regions should be ones a clinician would also attend to. When they are not, flag the case for review.
 </DerivationDrawer>
 
 ## Knowledge check
@@ -136,4 +136,4 @@ Clinical attention bias: the model learns to attend to features that correlate w
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Clinical attention adds domain-specific bias to standard attention scores", "Soft biasing boosts medical terms without silencing context words", "Vocabulary masks identify drugs, conditions, dosages, and symptoms", "Domain adaptation improves attention relevance without retraining"]} />
+<KeyTakeaways takeaways={["Clinical attention adds domain-specific bias to standard attention scores", "Soft biasing boosts medical terms without silencing context words", "Vocabulary masks identify drugs, conditions, dosages, and symptoms", "A vocabulary bias adapts attention to the clinical domain without retraining the model"]} />

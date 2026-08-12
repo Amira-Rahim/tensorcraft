@@ -44,11 +44,11 @@ That's like DevTools highlighting. When you hover over an element in the inspect
 
 <LearningObjectives objectives={["Extract attention weight matrices from a model", "Render attention weights as a visual heatmap", "Interpret attention patterns in clinical context", "Build interactive token-pair attention displays"]} />
 
-## Making the Invisible Visible
+## Rendering the Weight Matrix
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Attention weights form a matrix where each cell `[i, j]` represents how much token `i` attends to token `j`. Visualizing this matrix reveals the model's internal reasoning.
+Attention weights form a matrix where each cell `[i, j]` represents how much token `i` attends to token `j`. Visualizing this matrix shows where the model put its weight.
 
 <CodeBlock language="typescript" title="attention-heatmap.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -141,7 +141,7 @@ An attention heatmap visualizes the `[seq_len, seq_len]` softmax matrix from one
 - Aggregated influence. Multi-head + multi-layer means a single heatmap is one slice of dozens.
 - Robustness. Tiny input perturbations can shift the heatmap dramatically without changing output.
 
-**Aggregation tricks** (rollout, attention flow) try to combine heads/layers into one map. Each adds its own assumptions. Triangulate with multiple interpretation methods (attention + integrated gradients + saliency).
+**Aggregation tricks** (rollout, attention flow) try to combine heads/layers into one map. Each adds its own assumptions. Triangulate with multiple interpretation methods: attention alongside gradient-based ones such as integrated gradients and saliency maps.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Attention weights form a seqLen x seqLen matrix you can render directly as a heatmap", "Common patterns include diagonal, vertical stripes, and block structures", "A heatmap shows where weight went, not proof of causal reasoning: treat it as one interpretability signal among several"]} />

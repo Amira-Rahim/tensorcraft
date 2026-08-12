@@ -61,7 +61,7 @@ In HTML, `<span class="drug">` tells the browser: "A drug entity starts here." `
 | `</span>` (implicit at next B or O) | next tag |
 | text outside any tag | `O` |
 
-The critical insight: in HTML, forgetting to close a tag merges everything into one element. In BIO, forgetting the B tag on a new entity merges it with the previous one.
+In HTML, forgetting to close a tag merges everything into one element. In BIO, forgetting the B tag on a new entity merges it with the previous one.
 
 <CodeBlock language="typescript" title="bio-tagging.ts">
 {`import * as tf from '@tensorflow/tfjs';

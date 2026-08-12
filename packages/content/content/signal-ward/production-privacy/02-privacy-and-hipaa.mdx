@@ -10,7 +10,7 @@ context:
   narrative: "The hospital's compliance officer joins the ethics review. 'Your model processes Protected Health Information. Where does patient data go? Who has access? What gets logged?' Khalil starts from what he knows: GDPR consent banners, data minimization, audit trails. The officer doesn't disagree. 'Keep the mindset. Lose the confidence. A cookie banner was never a federal filing. One clinical note in a crash log is.'"
   speaker: "Khalil"
 concept:
-  explanation: "HIPAA compliance for ML systems follows the same principles as GDPR cookie consent and web data privacy (data minimization, explicit consent, access logging, and encryption) applied to Protected Health Information with higher stakes."
+  explanation: "HIPAA compliance for ML systems follows the same principles as GDPR cookie consent and web data privacy: data minimization, explicit consent, access logging, and encryption. Here they apply to Protected Health Information, with higher stakes."
   bridge:
     feTitle: "GDPR Cookie Consent"
     feCode: "// Consent banner, data minimization, right to deletion, audit trail: regulatory compliance for user data"
@@ -38,14 +38,14 @@ keywords:
 ---
 
 <Dialogue speaker="Khalil">
-Every frontend application I have built handles sensitive data: passwords, payment details, personal information. We follow GDPR rules: consent banners, data minimization, right to deletion, audit trails. HIPAA is the same regulatory mindset applied to medical data. The principles are identical. The consequences of failure are higher.
+Every frontend application I have built handles sensitive data: passwords, payment details, personal information. We follow GDPR rules: consent banners, data minimization, right to deletion, audit trails. HIPAA is the same regulatory mindset applied to medical data. The consequences of failure are higher.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-The critical advantage of browser-based inference is architectural. The model weights travel to the browser. The clinical notes stay on the hospital network. Patient data never touches a cloud server. No PHI exfiltration risk. That is a privacy guarantee no cloud-based ML system can match.
+The advantage of browser-based inference is architectural. The model weights travel to the browser; the clinical notes stay on the hospital network. Patient data never touches a cloud server, so there is nothing to exfiltrate.
 </Dialogue>
 
-One clinical note in a crash report is a reportable HIPAA breach. Not a bug ticket. A federal filing: who was exposed, when, how, and what you are doing about it. That is the stakes level this lesson designs for. The toolkit is the one GDPR already taught the web industry: ask before collecting, minimize what you store, keep audit trails. HIPAA applies it to Protected Health Information (PHI). And browser-based ML adds a structural advantage: if inference runs on-device, patient data never leaves the hospital network.
+One clinical note in a crash report is a reportable HIPAA breach, a federal filing: who was exposed, when, how, and what you are doing about it. The toolkit is the one GDPR already taught the web industry: ask before collecting, minimize what you store, keep audit trails. HIPAA applies it to Protected Health Information (PHI). And browser-based ML adds a structural advantage: if inference runs on-device, patient data never leaves the hospital network.
 
 <LearningObjectives objectives={["Implement PHI detection and redaction to prevent accidental exposure in logs and caches", "Design on-device inference architectures where patient data never leaves the browser", "Build HIPAA-compliant audit logging that tracks access events without storing sensitive content", "Apply data minimization principles from GDPR to ML training and inference pipelines"]} />
 

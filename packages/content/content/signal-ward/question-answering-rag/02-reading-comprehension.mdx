@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The extractive QA model found the allergy note, but Vikram raises a concern. 'Finding a keyword match is not comprehension. What if the record says the allergy was ruled out? Or that a family member has the allergy, not the patient?' Khalil realizes the model needs to understand context, not just locate text."
+  narrative: "The extractive QA model found the allergy note, but Vikram raises a concern. 'Finding a keyword match is not comprehension. What if the record says the allergy was ruled out? Or that a family member has the allergy, not the patient?' Khalil realizes that locating text is not the same as understanding it."
   speaker: "Vikram"
 concept:
   explanation: "Reading comprehension models don't just locate text; they model the relationship between question and context, so 'allergy ruled out' and 'mother's allergy' stop counting as answers about the patient."
@@ -169,4 +169,4 @@ Implement a cross-attention function that computes question-aware context repres
 
 <Exercise slug="reading-comprehension" />
 
-<KeyTakeaways takeaways={["Fluent output is no evidence of comprehension: verify the cited span actually exists in the input passage", "Question-aware representations prevent false matches (family allergies, discontinued medications, ruled-out conditions)", "Adversarial clinical examples are essential for validating comprehension vs. keyword matching", "Attention weight visualization reveals which context tokens the model focuses on for each question"]} />
+<KeyTakeaways takeaways={["Fluent output is no evidence of comprehension: verify the cited span actually exists in the input passage", "Question-aware representations prevent false matches (family allergies, discontinued medications, ruled-out conditions)", "Adversarial clinical examples separate real comprehension from keyword matching", "Attention weight visualization reveals which context tokens the model focuses on for each question"]} />

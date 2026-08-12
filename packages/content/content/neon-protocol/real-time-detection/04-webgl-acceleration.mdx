@@ -17,7 +17,7 @@ concept:
     mlTitle: "WebGL Compute Backend"
     mlCode: "await tf.setBackend('webgl'); // GPU access for tensor math"
     tier: structural
-    breaks: "WebGL rendering pipeline targets pixel output through fragment shaders. WebGL backend for ML co-opts the same pipeline for matmul and conv, but precision (float16/32), texture upload cost, and lack of native compute make it slower than WebGPU for ML."
+    breaks: "WebGL rendering pipeline targets pixel output through fragment shaders. WebGL backend for ML co-opts the same pipeline for matmul and convolutions, but precision limits (float16/32), texture upload cost, and the lack of native compute shaders make it slower than WebGPU for ML."
 consequence:
   narrative: "WebGL backend: 22fps becomes 38fps. Protocol Sentinel runs in real-time for the first time. Amir allows a rare half-smile. NEON: 'GPU utilization at 74%. Acceptable. For a resistance operation running on stolen hardware.'"
 hints:
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Your browser already uses the GPU. Every CSS 3D transform, every canvas composite operation, every WebGL game. They all route through the same graphics pipeline. TensorFlow.js can use that pipeline for matrix math. Same hardware, different purpose.
+Your browser already uses the GPU. Every CSS 3D transform, every canvas composite operation, every WebGL game. They all route through the same graphics pipeline. TensorFlow.js can use that pipeline for matrix math.
 </Dialogue>
 
 <Dialogue speaker="Noor">

@@ -1,7 +1,7 @@
 slug: apply-convolution
 lessonSlug: convolution-operations
 title: "Apply a 2D Convolution"
-instructions: "Apply a 2D convolution to a grayscale image using TensorFlow.js. Build `convolve2D(image, kernel)` that takes a `[H, W]` image tensor and a `[kH, kW]` kernel tensor, reshapes them to the conv2d-required `[batch, H, W, channels]` and `[kH, kW, in, out]` shapes, runs `tf.conv2d` with valid padding and stride 1, and returns the `[outH, outW]` 2D result tensor."
+instructions: "Apply a 2D convolution to a grayscale image using TensorFlow.js. Build `convolve2D(image, kernel)` that takes a `[H, W]` image tensor and a `[kH, kW]` kernel tensor. Reshape both to the shapes `tf.conv2d` requires: `[batch, H, W, channels]` for the image and `[kH, kW, in, out]` for the kernel. Run `tf.conv2d` with valid padding and stride 1, then return the `[outH, outW]` 2D result tensor."
 starterCode: |
   function convolve2D(image, kernel) {
     // 1. Reshape image [H, W] → [1, H, W, 1]

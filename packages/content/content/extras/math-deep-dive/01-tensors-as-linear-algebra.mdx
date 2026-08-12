@@ -11,7 +11,7 @@ context:
   narrative: "The numbers you've been pushing through tensors follow rules older than computers: the rules of linear algebra."
   speaker: "Instructor"
 concept:
-  explanation: "Tensors are elements of vector spaces with transformation rules, not just arrays of numbers."
+  explanation: "Tensors are elements of vector spaces that obey linear algebra's transformation rules; the array of numbers is only the storage format."
   bridge:
     feTitle: "CSS Transform"
     feCode: "transform: matrix(a, b, c, d, 0, 0)"
@@ -38,7 +38,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-You've been creating tensors and running operations on them since Module 1. But there's a deeper structure here that most tutorials skip. Tensors aren't just arrays. They're elements of vector spaces, and the operations you've been using are linear maps; both terms get pinned down in the next section. Understanding this changes how you think about every layer in a neural network.
+You've been creating tensors and running operations on them since Module 1. But there's a deeper structure here that most tutorials skip. A tensor is an element of a vector space, and the operations you've been using are linear maps; both terms get pinned down in the next section. Understanding this changes how you think about every layer in a neural network.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand vector spaces and why tensors live inside them", "Identify basis vectors and linear independence in practical terms", "Perform matrix multiplication as composition of linear maps", "Connect CSS transform matrices to ML weight matrices", "Test linear independence with the 2x2 determinant and understand what matrix rank means for data"]} />
@@ -192,7 +192,7 @@ console.log(await combined.array());
 
 // This is why deep networks are powerful:
 // each layer adds a new linear map (plus nonlinearity)
-// The composition can represent incredibly complex transforms
+// The composition can represent transforms no single matrix can
 
 // Without activation functions, N layers collapse to 1 matrix:
 const layer1 = tf.randomNormal([4, 3]);

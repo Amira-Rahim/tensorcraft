@@ -17,7 +17,7 @@ concept:
     mlTitle: "Latent Dimensions"
     mlCode: "encoder.add(tf.layers.dense({ units: 16 }))  // 16 dimensions"
     tier: structural
-    breaks: "CSS custom properties are a small set of named scalars you authored. Latent dimensions are 100-10000 unnamed learned axes; meaningful directions are typically entangled across dimensions and require dedicated discovery (PCA on samples, attribute classifiers). Increasing latent dimensionality changes capacity, trainability, and disentanglement, not just expressivity."
+    breaks: "CSS custom properties are a small set of named scalars you authored. Latent dimensions are 100-10000 unnamed axes the model learns for itself. A human concept like 'color' usually spreads across several of them, so finding meaningful directions takes extra analysis after training. Changing the dimension count also changes model capacity, how training behaves, and how cleanly concepts separate."
 consequence:
   narrative: "Samir experiments with different latent sizes and discovers the tradeoff: too small and the reconstructions blur, too large and the space becomes sparse."
 hints:
@@ -56,7 +56,7 @@ The budget question is measurable. A 28x28 pattern arrives as 784 numbers, and t
 
 ## The Bottleneck
 
-The latent dimension is a bottleneck. A 28x28 image has 784 values. Compressing that into 16 dimensions means the encoder must learn which 16 numbers best capture the image's essence.
+The latent dimension is a bottleneck. A 28x28 image has 784 values. Compressing that into 16 dimensions means the encoder must learn which 16 numbers preserve the most information about the image.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -123,7 +123,7 @@ async function measureReconstruction(
 <DerivationDrawer summary="Intrinsic dimension: why N-dim data may live on a much smaller manifold">
 **Ambient dimension:** the number of features in the data (e.g. 784 for MNIST 28x28 grayscale).
 
-**Intrinsic dimension:** the actual degrees of freedom. For MNIST handwritten digits, the intrinsic dim is estimated at ~7-15, even though pixels have 784 axes, valid digits live on a 10-dim manifold.
+**Intrinsic dimension:** the actual degrees of freedom. For MNIST handwritten digits, the intrinsic dim is estimated at ~7-15: pixels give 784 axes, but valid digits occupy a manifold of roughly 10 dimensions inside that space.
 
 **How to estimate:**
 

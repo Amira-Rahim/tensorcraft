@@ -46,7 +46,7 @@ That's like class inheritance in TypeScript. You don't rewrite the entire base c
 If only it were that safe. `extends` never touches the base class. Fine-tuning does: gradients flow into the same weights that encode grammar and semantics, and what they knew can erode while your clinical metric climbs. That's catastrophic forgetting. So we add the classification head, train gently, and validate the general-language behaviors the new task never exercises, not just the new score.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the fine-tuning paradigm: inherit general knowledge, add task specialization", "Add a task-specific classification head to a pre-trained encoder", "Apply learning rate strategies to prevent catastrophic forgetting", "Implement gradual unfreezing for stable domain adaptation"]} />
+<LearningObjectives objectives={["Understand fine-tuning: inherit general knowledge, add task specialization", "Add a task-specific classification head to a pre-trained encoder", "Apply learning rate strategies to prevent catastrophic forgetting", "Implement gradual unfreezing for stable domain adaptation"]} />
 
 ## Inheritance, Not Rewriting
 

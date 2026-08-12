@@ -17,7 +17,7 @@ concept:
     mlTitle: "Fairness Metric"
     mlCode: "// Demographic parity: 0.65. Which groups are disadvantaged?"
     tier: intuition
-    breaks: "Lighthouse accessibility produces a single composite score against fixed rules. Fairness metrics are a family of incompatible measures (demographic parity, equalized odds, calibration) and you cannot satisfy all of them simultaneously; the choice is value-laden."
+    breaks: "Lighthouse accessibility produces a single composite score against fixed rules. Fairness metrics are a family of incompatible measures: demographic parity, equalized odds, calibration (whether confidence scores match real outcome rates). You cannot satisfy all of them at once, so choosing one is a value judgment."
 consequence:
   narrative: "Fairness has numbers attached now: parity ratios, TPR gaps per group. Which number matters for your application is a judgment the metrics cannot make for you."
 hints:
@@ -144,7 +144,7 @@ A stricter metric: does each group have the same true positive rate AND false po
 
 ## The Impossibility Theorem
 
-Here's the uncomfortable truth: you mathematically cannot satisfy all fairness definitions at the same time (unless your model is perfect or the base rates are equal across groups). This is called the impossibility theorem.
+You mathematically cannot satisfy all fairness definitions at the same time, unless your model is perfect or the groups have equal base rates (the underlying share of positive outcomes in each group, like the fraction of applicants who really would repay). This is called the impossibility theorem.
 
 This is like trying to optimize for Lighthouse performance, accessibility, SEO, and best practices all at 100 simultaneously. Sometimes improving one metric degrades another. You have to make a judgment call about which metric matters most for your specific application.
 

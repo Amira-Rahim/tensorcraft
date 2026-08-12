@@ -125,6 +125,18 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
+- [ ] **Em-dash sweep of developer code comments** (2026-08-12 slop audit):
+  206 em dashes in `apps/web` + `packages/ui` + `packages/shared` source
+  comments, all written after the 2026-06-10 repo-wide sweep. User-visible
+  strings are clean (verified); this is a style-bible rule 6 regression in
+  dev-facing text only. Sweep them, then add a grep gate or lint rule so
+  comments can't regress again.
+- [ ] **sequence-models/01 (signal-ward) order-vs-word coherence bug**: the
+  lesson claims "same words, different order" for an example pair that
+  differs by a word ("denied" vs "reported"); its own BoW vectors differ.
+  Load-bearing for the quiz framing; needs a content rewrite when the
+  signal-ward launch sprint runs (see `docs/audits/ai-slop-audit-2026-08-12.md`).
+
 - [ ] **Light-mode follow-ups** (deferred from the 2026-07-23 rollout; context
   in `docs/dev-plan.md` 2026-07-23 entry + `docs/superpowers/plans/2026-07-22-light-mode.md`):
   - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless —

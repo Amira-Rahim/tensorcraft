@@ -17,7 +17,7 @@ concept:
     mlTitle: "Feature Importance (SHAP)"
     mlCode: "// SHAP: 'income' contributes +0.32 to loan approval prediction"
     tier: intuition
-    breaks: "DevTools Performance tab shows actual measured execution down to the function call. SHAP feature importances are estimates from input perturbation and different SHAP variants (Tree, Kernel, Deep) disagree on the same prediction. The 'explanation' is itself a model approximating the model, so verify with multiple techniques before trusting it."
+    breaks: "DevTools Performance tab shows actual measured execution down to the function call. SHAP feature importances are estimates built by perturbing inputs, and different SHAP variants (Tree, Kernel, Deep) can disagree on the same prediction. The 'explanation' is itself a model approximating the model, so verify with multiple techniques before trusting it."
 consequence:
   narrative: "Feature attribution turns 'the model said so' into a list of which inputs pushed the prediction, and by how much. Whether those reasons hold up is the question the deployment review asks next."
 hints:
@@ -128,7 +128,7 @@ const result = await featureImportance(model, applicant, features);
 
 ## LIME: Local Explanations
 
-LIME (Local Interpretable Model-Agnostic Explanations) works by creating small perturbations around a single prediction and fitting a simple, interpretable model to those perturbations. Think of it as zooming into one point on your performance timeline. You don't need to understand the entire app, just what happened in that 342ms window.
+LIME (Local Interpretable Model-Agnostic Explanations) explains one prediction at a time. It makes many slightly modified copies of the input, runs each through the model, and fits a simple interpretable model to how the output responds. Think of it as zooming into one point on your performance timeline. You don't need to understand the entire app, just what happened in that 342ms window.
 
 ## SHAP: Fair Credit Assignment
 

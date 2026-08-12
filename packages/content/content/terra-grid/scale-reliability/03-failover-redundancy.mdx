@@ -156,4 +156,4 @@ Primary model server returns 503s. Pick a fallback that respects the latency bud
 
 <Exercise slug="incident-failover" />
 
-<KeyTakeaways takeaways={["Failover needs health monitoring, not just try/catch: a degraded model keeps answering without ever throwing", "Consecutive failure thresholds prevent flapping between primary and fallback on transient errors", "Recovery checks periodically test whether the primary model is available again", "Degraded accuracy from a fallback model is always better than no predictions at all"]} />
+<KeyTakeaways takeaways={["Failover needs health monitoring, not just try/catch: a degraded model keeps answering without ever throwing", "Consecutive failure thresholds prevent flapping between primary and fallback on transient errors", "Recovery checks periodically test whether the primary model is available again", "Degraded accuracy from a fallback model beats no predictions, as long as the system knows it is degraded"]} />

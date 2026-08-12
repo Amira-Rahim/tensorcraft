@@ -116,9 +116,9 @@ const decompositions = {
   'gastroenteritis': ['gastro', '##enter', '##itis'], // stomach/intestine inflammation
 };
 
-// The model learns that '##itis' = inflammation
-// So when it sees a new word ending in '##itis',
-// it already knows the concept!`}
+// The model learns that '##itis' = inflammation,
+// so a new word ending in '##itis' maps to a
+// token it already has an embedding for`}
 </CodeBlock>
 
 ## Challenge
@@ -127,4 +127,4 @@ Implement a WordPiece-style subword tokenizer.
 
 <Exercise slug="subword-tokenize" />
 
-<KeyTakeaways takeaways={["Subword tokenization breaks words into known morpheme-like pieces", "Decomposing unseen words means far fewer [UNK] tokens, though the fallback still fires when no vocabulary piece matches", "Medical terminology is highly compositional, making subword tokenization ideal", "The ## prefix marks continuation pieces (not the start of a word)"]} />
+<KeyTakeaways takeaways={["Subword tokenization breaks words into known morpheme-like pieces", "Decomposing unseen words means far fewer [UNK] tokens, though the fallback still fires when no vocabulary piece matches", "Medical terminology builds words from reusable prefixes and suffixes, which is exactly what subword vocabularies capture", "The ## prefix marks continuation pieces (not the start of a word)"]} />

@@ -29,7 +29,7 @@ hints:
     content: "Replace the recurrent loop with a single matrix multiplication for attention"
 keywords:
   - transformer
-  - paradigm-shift
+  - architecture-shift
   - parallelism
   - self-attention
 ---
@@ -105,7 +105,7 @@ console.log('All tokens processed in parallel:', output.shape);`}
 3. **No information bottleneck**: Each token retains its own representation
 
 <Dialogue speaker="Vikram">
-For clinical text, this is transformative. A drug mentioned in the admission note and a contraindication mentioned in the lab results are directly connected. No information decay over distance.
+For clinical text, the constant path length is the payoff. A drug mentioned in the admission note and a contraindication mentioned in the lab results are directly connected. No information decay over distance.
 </Dialogue>
 
 ## Challenge

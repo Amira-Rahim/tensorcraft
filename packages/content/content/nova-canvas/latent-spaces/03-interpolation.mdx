@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Yara wants a smooth transition between two art pieces for the exhibition walkway. Samir discovers that walking between two points in latent space creates a seamless morph."
+  narrative: "Yara wants a smooth transition between two art pieces for the exhibition walkway. Samir discovers that walking between two points in latent space creates a smooth morph."
   speaker: "Yara"
 concept:
   explanation: "Interpolation in latent space means blending between two encoded points. Because the space is structured, intermediate points produce meaningful, smooth transitions."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "Latent Interpolation"
     mlCode: "const mid = z1.mul(1 - t).add(z2.mul(t))"
     tier: structural
-    breaks: "CSS transitions interpolate pixel-level numeric properties along defined easing curves between two valid CSS states. Latent interpolation walks a path in a learned vector space where intermediate points may decode to coherent images, garbage, or sudden category jumps. The latent manifold is not convex, and easing assumptions don't transfer."
+    breaks: "CSS transitions interpolate pixel-level numeric properties along defined easing curves between two valid CSS states. Latent interpolation walks a path in a learned vector space where intermediate points may decode to coherent images, garbage, or sudden category jumps. The region of valid latent points has holes, a straight line between two good points can leave it, and easing assumptions don't transfer."
 consequence:
-  narrative: "The walkway prototype shows visitors a seamless morph between styles (abstract geometry flowing into organic curves), all generated from latent interpolation."
+  narrative: "The walkway prototype shows visitors an unbroken morph between styles (abstract geometry flowing into organic curves), all generated from latent interpolation."
 hints:
   - level: nudge
     content: "CSS transitions interpolate between two states. Latent interpolation does the same in feature space."
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-The walkway between Gallery A and Gallery B is thirty meters long. I want visitors to experience a seamless transformation, geometric precision melting into organic chaos, as they walk. No jump cuts. Pure gradient.
+The walkway between Gallery A and Gallery B is thirty meters long. I want visitors to walk through one continuous transformation, geometric precision melting into organic chaos. No jump cuts. Pure gradient.
 </Dialogue>
 
 <Dialogue speaker="MUSE">

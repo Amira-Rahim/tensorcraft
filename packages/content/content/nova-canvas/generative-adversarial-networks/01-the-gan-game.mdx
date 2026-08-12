@@ -42,9 +42,9 @@ The generator is a student artist. The discriminator is a harsh critic. The stud
 So you'd split me in two. One half forges, one half audits the forgeries. For the first few epochs the auditor wins almost every round, my fakes get caught 95 times out of 100. What interests me is what happens when it drops to a coin flip.
 </Dialogue>
 
-If you have ever used a fuzzer in testing (a tool that generates random inputs to find bugs in a validator), you already understand the GAN architecture. The fuzzer (generator) creates inputs. The validator (discriminator) judges them. The tension between creation and criticism drives improvement.
+If you have ever used a fuzzer in testing (a tool that generates random inputs to find bugs in a validator), you already understand the GAN architecture. The fuzzer (generator) creates inputs. The validator (discriminator) judges them. Each one trains on the other's failures.
 
-<LearningObjectives objectives={["Understand the adversarial training paradigm of GANs", "Identify the roles of generator and discriminator", "Connect fuzzer/validator testing patterns to GAN architecture", "Describe the minimax game that drives GAN training"]} />
+<LearningObjectives objectives={["Understand how adversarial training works in a GAN", "Identify the roles of generator and discriminator", "Connect fuzzer/validator testing patterns to GAN architecture", "Describe the minimax game that drives GAN training"]} />
 
 ## Two Players, One Game
 

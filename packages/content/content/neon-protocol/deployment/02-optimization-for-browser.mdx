@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Dilan reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Amir runs the numbers: 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Trim the fat. Keep the signal.'"
+  narrative: "Dilan reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Amir runs the numbers: 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Most of that weight is precision nobody can see. Cut it.'"
   speaker: "Amir"
 concept:
   explanation: "Model optimization shrinks a network for delivery: quantization reduces the precision of every weight, and pruning removes connections that barely contribute. Together they can cut a 45MB model to a quarter of its size with accuracy loss measured in fractions of a point."
@@ -42,7 +42,7 @@ Forty-five megabytes. That is the model size. Dilan's device in District 4 takes
 Dead code elimination, tree-shaking, minification. You perform these rituals on every bundle without being asked. Perform them on the network. It is hauling 45 megabytes, and most of that is precision no one can see.
 </Dialogue>
 
-A model that is too large to load is a model that does not exist in the field. Browser-based ML has hard constraints: network bandwidth, memory limits, cold start time. Optimization makes the difference between a usable tool and a tech demo.
+In the field, a model that takes twelve seconds to load does not get used. Browser-based ML has hard constraints: network bandwidth, memory limits, cold start time. Optimization makes the difference between a usable tool and a tech demo.
 
 <LearningObjectives objectives={["Apply post-training quantization to reduce model size by 2-4x", "Implement weight pruning to remove low-impact connections", "Measure the accuracy-size trade-off after optimization", "Choose the right optimization strategy for browser deployment constraints"]} />
 

@@ -35,14 +35,14 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Look at this room. Every surface alive with generated visuals, and it's completely silent. Sound isn't decoration, Rohan. It's a dimension. Without it, this installation is a painting pretending to be a world.
+Look at this room. Every surface alive with generated visuals, and it's completely silent. Sound is a dimension, Rohan, not decoration. Without it, this installation is a painting pretending to be a world.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
 You know what a spectrogram is? It is an image. Pixel intensity mapped to frequency over time. We already know how to work with images. Audio is the same math, different domain.
 </Dialogue>
 
-Call `audioBuffer.getChannelData(0)` and inspect the return value: a `Float32Array`, every sample between -1 and 1. Now check what `tf.tensor1d()` accepts. A `Float32Array`. The audio you've been routing through `AudioContext` for years was tensor-shaped the whole time; the only thing the handoff loses is metadata, and that's where this lesson earns its keep.
+Call `audioBuffer.getChannelData(0)` and inspect the return value: a `Float32Array`, every sample between -1 and 1. Now check what `tf.tensor1d()` accepts. A `Float32Array`. The audio you've been routing through `AudioContext` for years was tensor-shaped the whole time. The handoff loses only the metadata: sample rate, channel layout, timing.
 
 <LearningObjectives objectives={["Convert raw audio waveforms into TensorFlow.js tensors", "Understand the relationship between sample rate, duration, and tensor shape", "Build a spectrogram by applying Short-Time Fourier Transform (STFT) to audio tensors", "Visualize audio data as both waveforms and spectrograms in the browser"]} />
 
@@ -114,7 +114,7 @@ console.log('Spectrogram shape:', spectrogram.shape);
 // [numTimeFrames, numFrequencyBins], a grayscale image`}
 </CodeBlock>
 
-A spectrogram is an image. That single insight is the bridge between everything you have built with visual generation and the world of audio. The same convolutional networks, the same latent spaces, the same generation techniques: they all apply.
+A spectrogram is an image, and that is the bridge from visual generation to audio: the same convolutional networks, latent spaces, and generation techniques apply.
 
 ## Challenge
 
@@ -145,4 +145,4 @@ Convert a raw audio waveform into a tensor and compute its basic properties.
 Most speech/audio models work on mel spectrograms, not raw waveforms. Mel binning compresses 22 kHz into ~80 perceptually-meaningful bands.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["tf.tensor1d keeps the samples but drops the sample rate: track 44100 yourself and resample to whatever the model expects", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "If you can generate images, you can generate audio; spectrograms bridge the two domains"]} />
+<KeyTakeaways takeaways={["tf.tensor1d keeps the samples but drops the sample rate: track 44100 yourself and resample to whatever the model expects", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "Spectrograms let the same networks that generate images generate audio"]} />

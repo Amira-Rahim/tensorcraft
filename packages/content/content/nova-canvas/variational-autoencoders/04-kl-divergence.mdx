@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The VAE reconstructs well but the latent space is messy: clusters with gaps. MUSE introduces KL divergence as the force that regularizes the space into a smooth, organized landscape."
+  narrative: "The VAE reconstructs well but the latent space is messy: clusters with gaps. MUSE introduces KL divergence as the force that smooths and organizes the space."
   speaker: "MUSE"
 concept:
   explanation: "KL divergence measures how different the encoder's learned distribution is from a standard normal. It regularizes the latent space, pushing it toward a smooth, continuous distribution."
@@ -127,10 +127,7 @@ function vaeLoss(
 // 1. Generate many samples and check for near-duplicates of training data
 // 2. Measure KL divergence; if near zero, the model may be memorizing
 // 3. Interpolate between two encoded training samples;
-//    smooth transitions = generalization, jumpy transitions = memorization
-
-// The lesson: KL divergence is not just a math term.
-// It is the force that pushes the model from copying to creating.`}
+//    smooth transitions = generalization, jumpy transitions = memorization`}
 </CodeBlock>
 
 ## Challenge

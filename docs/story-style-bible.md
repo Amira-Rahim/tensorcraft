@@ -80,6 +80,18 @@ something adjacent to feelings in the capstone only.
 **DISPATCH intercepts** (Yara, Hassan, Lin, Jin, Dr. Amara, Kira) — flavor
 texture from other worlds. Keep; do not expand.
 
+## Writing quality rubric (binding, 2026-08-12)
+
+Every sentence of prose in this repo also answers to
+`docs/writing-quality-rubric.md` (the owner's four-category AI-slop
+screener: formulaic/slogan language, vague substance, wordy/indirect
+language, unnecessary framing). It covers surfaces this bible does not:
+exercise instructions, module.yaml descriptions, glossary definitions, UI
+copy, emails, blog, marketing. The high-precision tier is CI-enforced by
+`packages/content/__tests__/slop-lexicon.test.ts`. Where this bible grants
+dialogue its register, the rubric defers to the bible; everywhere else the
+rubric wins.
+
 ## Anti-template rules
 
 1. **Openers.** "You've [done X] your entire career" may appear at most

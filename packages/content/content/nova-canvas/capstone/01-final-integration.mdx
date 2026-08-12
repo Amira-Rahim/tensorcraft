@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Monorepo integration ships when packages publish and tests pass. Multi-modal pipelines must validate that each model handles outputs from upstream models without compounding error. Failure modes propagate silently across modalities."
 consequence:
-  narrative: "For the first time, all modalities run together. A visitor speaks a prompt. Text becomes an image. The image generates a soundscape. The soundscape drives visual effects. A complete creative loop."
+  narrative: "For the first time, all modalities run together. A visitor speaks a prompt. Text becomes an image. The image generates a soundscape. The soundscape drives visual effects."
 hints:
   - level: nudge
     content: "The MultiModalPipeline only composes calls like imageModel.predict(z) and audioModel.predict(z); start by listing each model's input and output tensor shapes"
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-We've built an image generator, a style transfer engine, a text-to-image pipeline, an audio synthesizer, and a real-time synchronization system. Separately, each one is impressive. Together, they should be transcendent.
+We've built an image generator, a style transfer engine, a text-to-image pipeline, an audio synthesizer, and a real-time synchronization system. Separately, each one works. Together, they have to become one instrument.
 </Dialogue>
 
 <Dialogue speaker="Samir">

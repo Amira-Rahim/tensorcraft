@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "srcset selects from pre-rendered image variants. Cascaded diffusion runs an entirely separate super-resolution model conditioned on the low-res output. The high-res image is generated, not selected. Each cascade stage adds compute on the order of the base generation."
 consequence:
-  narrative: "3.4 seconds. Low-res generation plus a fast upscaler. The gallery kiosks hum with life. Erdem's hands are shaking, not from panic this time, but from something closer to awe. 'We open in three days,' he says quietly. 'We are ready.'"
+  narrative: "3.4 seconds. Low-res generation plus a fast upscaler. Erdem's hands are shaking, not from panic this time, but from something closer to awe. 'We open in three days,' he says quietly. 'We are ready.'"
 hints:
   - level: nudge
     content: "Generate at 64x64 where diffusion is cheap; let a separate super-resolution model handle the climb to print size"
@@ -168,4 +168,4 @@ Diffusion runs on the small latent. The VAE adds quality loss (the latent can't 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser; pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "The gallery kiosks are saved: high-quality images at interactive speed"]} />
+<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser; pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "Latent diffusion is the alternative: run the denoising loop in a compressed latent space instead of pixel space"]} />

@@ -155,7 +155,7 @@ jobs:
           exit 1`}
 </CodeBlock>
 
-The last two steps are the rollback objective made concrete: the smoke test re-runs the accuracy gate against what actually deployed, and on failure the previous model artifact is restored and republished while the workflow stays red, because a rollback that quietly succeeds is how a bad model stays shipped.
+The last two steps are the rollback objective made concrete: the smoke test re-runs the accuracy gate against what actually deployed, and on failure the previous model artifact is restored and republished while the workflow stays red. A rollback that quietly succeeds is how a bad model stays shipped.
 
 ## Validation Scripts
 
@@ -243,11 +243,11 @@ Write a model validation gate for CI/CD.
 
 <Exercise slug="ci-cd-gate" />
 
-The gate checks the artifact. Now produce one. Nazari's hash-pin order has a quiet prerequisite: bytes to hash, and `model.save()` is where they come from. It will save to anything that implements a handler, including plain memory; no filesystem, no network, just the serialized model in your hands: topology, weight specs, and the weight bytes the cache key is a hash of. Prove the export path on the bench copy of DEEP SCAN before anyone points it at the real 42 MB build.
+The gate checks the artifact. Now produce one. Nazari's hash-pin order has a quiet prerequisite: bytes to hash, and `model.save()` is where they come from. It will save to anything that implements a handler, including plain memory. Nothing touches a filesystem or a network, and you end up holding the serialized model: topology, weight specs, and the weight bytes the cache key is a hash of. Prove the export path on the bench copy of DEEP SCAN before anyone points it at the real 42 MB build.
 
 <Exercise slug="export-model-artifact" />
 
-<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. CI caches CAN pin content (GitHub Actions keys support hashFiles() over the artifact), but if the key omits the model's content hash, a weight file from a previous training run satisfies the cache hit and passes every accuracy gate, measuring a model that no longer exists. Version weights separately and key the cache on the artifact's hash." />
+<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. CI caches CAN pin content (GitHub Actions keys support hashFiles() over the artifact). But if the key omits the model's content hash, a weight file from a previous training run satisfies the cache hit and passes every accuracy gate, measuring a model that no longer exists. Version weights separately and key the cache on the artifact's hash." />
 
 <RecallPrompt
   question="What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"

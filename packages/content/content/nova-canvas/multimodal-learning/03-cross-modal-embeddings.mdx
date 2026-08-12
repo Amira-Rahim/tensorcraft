@@ -136,4 +136,4 @@ Build a projection head that maps encoder outputs to a shared normalized embeddi
 Newer approaches (LLaVA, BLIP-2) keep CLIP's image encoder but replace the alignment with a generative LLM that can reason about multimodal input.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Projection heads do the aligning: small linear layers that map each encoder's raw output into the shared dimensionality", "Projection heads adapt modality-specific features to the shared space dimensionality", "L2 normalization ensures all embeddings live on a unit hypersphere, making cosine similarity meaningful", "After alignment, you can directly compare an image to a text description using vector distance"]} />
+<KeyTakeaways takeaways={["Projection heads do the aligning: small linear layers that map each encoder's raw output into the shared dimensionality", "L2 normalization ensures all embeddings live on a unit hypersphere, making cosine similarity meaningful", "After alignment, you can directly compare an image to a text description using vector distance"]} />

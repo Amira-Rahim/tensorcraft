@@ -12,7 +12,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "How does Tensorcraft teach ML to frontend developers?",
-    a: `Through ${WORLD_CONTENT.lessonBridges} 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story-driven narrative where you build real ML models.`,
+    a: `Through ${WORLD_CONTENT.lessonBridges} 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story in which you build real ML models.`,
   },
   {
     q: "How much math do I need?",
@@ -20,7 +20,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit, the live world, is free, no account or credit card required. The other four worlds ship in waves, each with a waitlist. Full worlds cost $${PRICING.single.price} each; bundle discounts, up to $${PRICING.allFive.price} for all 5 worlds, open once all five have launched.`,
+    a: `Module 1 of Deep Orbit, the live world, is free, no account or credit card required. The other four worlds ship in waves, each with a waitlist. Full worlds cost $${PRICING.single.price} each. Bundle discounts open once all five have launched, up to $${PRICING.allFive.price} for all 5 worlds.`,
   },
   {
     q: "What ML topics does Tensorcraft cover?",

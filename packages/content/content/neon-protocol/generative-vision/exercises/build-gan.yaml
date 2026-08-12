@@ -1,8 +1,8 @@
 slug: build-gan
 lessonSlug: gans-primer
-title: "Binary Cross-Entropy with tf.losses"
+title: "Binary Cross-Entropy with tf Ops"
 mlContent: training
-instructions: "Build `binaryCrossEntropy(predicted, target)` returning a number. Wrap inputs as tf.tensor1d. Use tf.losses.sigmoidCrossEntropy with the predicted tensor as logits; but here predicted is already a probability, so clamp it and use the BCE formula directly: -(t*log(p) + (1-t)*log(1-p)) via tf ops. Read scalar with dataSync."
+instructions: "Build `binaryCrossEntropy(predicted, target)` returning a number. Wrap inputs as tf.tensor1d. Do not use tf.losses.sigmoidCrossEntropy here: it expects raw logits, and predicted is already a probability. Instead, clamp predicted and compute the BCE formula directly via tf ops: -(t*log(p) + (1-t)*log(1-p)). Read scalar with dataSync."
 starterCode: |
   function binaryCrossEntropy(predicted, target) {
     return 0;

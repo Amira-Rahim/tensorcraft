@@ -21,6 +21,7 @@ signal-ward, nova-canvas, terra-grid.
 | 5 | Character registry | **520 of 626 speakers absent** | Only deep-orbit has avatar slugs in the manifest; every other world's Dialogue speakers render unresolved. |
 | 6 | Missing breaks panels | **28 bridges** | Falsifies the unqualified absolutes on `/learn` and `/compare` the day world 2 ships (the bridge-breaks gate now extends automatically and will catch these — red until fixed). |
 | 7 | Word density | **26-41% below Deep Orbit** | The prose is thinner than the shipped bar; parity is a writing pass, not a copyedit. |
+| 8 | Consequence-number sync (Gate A) | **~14 known lessons** | consequence.narrative numbers that never appear in the lesson body pass today only because Gate A scopes to launched worlds; they fire the day the dir joins `BUILT_WORLD_DIRS`. Known list in `docs/audits/ai-slop-audit-2026-08-12.md` §Report-only #4 (terra-grid scale-reliability/01-05 + monitoring-drift/02, nova-canvas clip-alignment/01+03 + capstone/03+05 + creative-deployment/04 + vae/03, signal-ward tc/05 + pp/04 + qa/04), plus whatever the gate finds beyond it. Also fix the two known consequence/body numeral contradictions: neon feature-extraction/04 (48ms vs 45ms) and nova vae/03 (epoch 50 vs 40-42). |
 
 ## Mechanical steps (the cheap part, do LAST)
 

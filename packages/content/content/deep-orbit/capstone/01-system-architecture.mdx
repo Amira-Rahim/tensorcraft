@@ -189,7 +189,7 @@ Design a typed pipeline and validate the dependency graph.
 
 <LessonRecap
   whatYouLearned={[
-    "Modeling an ML pipeline as a dependency graph of typed stages documents the contract between stages, but do not mistake that for compile-time safety: the stage list is PipelineStage<any, any>[], so the types erase at exactly the boundary you care about. The check that actually fires is the runtime validate() throw. TypeScript records what you meant; only validate() knows what arrived.",
+    "Modeling an ML pipeline as a dependency graph of typed stages documents the contract between stages. Do not mistake that for compile-time safety: the stage list is PipelineStage<any, any>[], so the types erase at exactly the boundary you care about. The check that actually fires is the runtime validate() throw. TypeScript records what you meant; only validate() knows what arrived.",
     "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
     "A component manifest with dependency declarations lets you run cycle and completeness checks before any inference runs."
   ]}

@@ -17,7 +17,7 @@ concept:
     mlTitle: "Named Entity Recognition"
     mlCode: "ner(tokens); // find specific entities in a sea of words"
     tier: structural
-    breaks: "querySelectorAll matches DOM nodes by an exact CSS selector. NER tags spans by learned token-classification probabilities: novel entities are missed, compound entities (e.g. 'New York City Hall') get fragmented or merged incorrectly, and overlapping entity types collide. Post-processing must dedupe, merge, and validate against gazetteers."
+    breaks: "querySelectorAll matches DOM nodes by an exact CSS selector. NER tags spans from learned per-token probabilities: novel entities are missed, compound entities (e.g. 'New York City Hall') get fragmented or merged incorrectly, and overlapping entity types collide. Post-processing must dedupe, merge, and validate against gazetteers (curated lists of known entity names)."
 consequence:
   narrative: "Khalil understands that NER transforms free text into structured, computable data, the same way querySelectorAll turns a DOM tree into a usable collection."
 hints:
@@ -52,7 +52,7 @@ Here, run your selector on this sentence: "Patient prescribed methotrexate 15mg 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-An NER model walks through every token and decides whether it belongs to an entity type. But where a CSS selector matches exactly or not at all, the model outputs probabilities. It has to learn which tokens are drugs, which are conditions, and which are just connecting words like "the" or "prescribed," and it will sometimes fragment a compound term or miss a drug it has never seen.
+An NER model walks through every token and decides whether it belongs to an entity type. But where a CSS selector matches exactly or not at all, the model outputs probabilities. It has to learn which tokens are drugs, which are conditions, and which are just connecting words like "the" or "prescribed." It will sometimes fragment a compound term or miss a drug it has never seen.
 
 <CodeBlock language="typescript" title="what-is-ner.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -119,7 +119,7 @@ Think of a hospital's electronic health records as one massive web page with mil
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-And it's not just search. Once we have structured entities, we can detect drug interactions, track treatment outcomes, and flag anomalies across thousands of patients. NER is the foundation of everything Diagnostic One will do.
+And search is only the first use. Once we have structured entities, we can detect drug interactions, track treatment outcomes, and flag anomalies across thousands of patients. Everything else Diagnostic One does starts from those entities.
 </Dialogue>
 
 ## The Classification Pipeline
@@ -139,4 +139,4 @@ Find and classify entities in a clinical sentence using token-level classificati
 
 <Exercise slug="find-entities" />
 
-<KeyTakeaways takeaways={["NER output needs post-processing: compound entities fragment and novel terms get missed, so dedupe, merge, and validate spans against gazetteers", "Each token gets classified as an entity type (DRUG, CONDITION, etc.) or O (outside)", "Clinical NER transforms unstructured notes into structured, queryable data"]} />
+<KeyTakeaways takeaways={["NER output needs post-processing: compound entities fragment and novel terms get missed, so dedupe, merge, and validate spans against lists of known names (gazetteers)", "Each token gets classified as an entity type (DRUG, CONDITION, etc.) or O (outside)", "Clinical NER transforms unstructured notes into structured, queryable data"]} />

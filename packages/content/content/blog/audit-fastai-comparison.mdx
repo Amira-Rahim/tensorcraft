@@ -22,7 +22,7 @@ fast.ai is free and it is excellent. If our neural-networks module cannot surviv
 
 ## Where fast.ai wins
 
-**Mechanistic depth.** Chapter 4 builds SGD, the loss function, and gradient computation from scratch before ever touching a library. Our NN module is library-first: `tf.layers.dense`, `model.compile`. A learner who finishes Chapter 4 can debug a training loop; a learner who finishes only our NN module can ship one but not yet take it apart. (Our training-loop module, one module later, closes part of that gap: you pay the cost of nudge-by-hand gradient estimation before backprop is named, and the chain rule is derived in an optional drawer. But at equal points in each course, fast.ai is deeper.)
+**Mechanistic depth.** Chapter 4 builds SGD, the loss function, and gradient computation from scratch before ever touching a library. Our NN module is library-first: `tf.layers.dense`, `model.compile`. A learner who finishes Chapter 4 can debug a training loop; a learner who finishes only our NN module can ship one but not yet take it apart. (Our training-loop module, one module later, closes part of that gap: you estimate gradients by nudging weights by hand before backprop is even named, and the chain rule is derived in an optional drawer. But at equal points in each course, fast.ai is deeper.)
 
 **Volume.** ~18.7k words and 137 runnable cells against our ~3.5k words and 5 exercises for the equivalent concepts.
 

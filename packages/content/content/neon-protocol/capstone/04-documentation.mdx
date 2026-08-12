@@ -17,9 +17,9 @@ concept:
     mlTitle: "Model Card"
     mlCode: "## Model Details\n## Intended Use\n## Training Data\n## Performance Metrics\n## Limitations\n## Ethical Considerations"
     tier: structural
-    breaks: "OpenAPI documents an API contract that the server enforces. A model card documents intended use, training data composition, and known disparities. But nothing enforces that operators read it before shipping the model into a new context. The doc is advisory; the contract is statistical. Misreading a model card causes a fairness incident, not a 400 error."
+    breaks: "OpenAPI documents an API contract that the server enforces. A model card documents intended use, training data composition, and known disparities. But nothing enforces that operators read it before shipping the model into a new context. Misreading a model card causes a fairness incident, not a 400 error."
 consequence:
-  narrative: "Noor writes the documentation through the night. Model cards for each component. API docs for every stage. A deployment runbook with step-by-step instructions. By morning, any resistance cell with a browser and an internet connection can deploy Protocol Sentinel. The Architect built a surveillance empire on proprietary, undocumented systems. The resistance fights back with open documentation."
+  narrative: "Noor writes the documentation through the night. Model cards for each component. API docs for every stage. A deployment runbook with step-by-step instructions. By morning, any resistance cell with a browser and an internet connection can deploy Protocol Sentinel. The Architect built a surveillance empire on proprietary, undocumented systems. Sentinel ships with its manual."
 hints:
   - level: nudge
     content: "A model card has the same sections as a good README, just focused on ML-specific details"
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-Protocol Sentinel is not a weapon. It is a tool. And a tool without documentation is a liability. When we distribute this to 200 cells, every operator needs to understand what this system can do, what it cannot do, and when it will fail. Write it all down.
+Protocol Sentinel is a tool, not a weapon, and a tool without documentation is a liability. When we distribute this to 200 cells, every operator needs to understand what this system can do, what it cannot do, and when it will fail. Write it all down.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -44,10 +44,10 @@ I've written hundreds of README files. Package documentation, API references, co
 </Dialogue>
 
 <Dialogue speaker="NEON">
-Meridian never documented my limitations. They deployed me to track 14 million people without a single line about my 23% false positive rate on dark-skinned faces. Documentation is not just courtesy. It is accountability.
+Meridian never documented my limitations. They deployed me to track 14 million people without a single line about my 23% false positive rate on dark-skinned faces. Documentation is accountability.
 </Dialogue>
 
-Every open-source package you have used has a README. Every API you have integrated has documentation. Model cards serve the same purpose for ML systems. They tell the next developer (or operator, or resistance cell) what the model does, how it performs, where it fails, and when it should not be trusted. The format is standardized. If you can write a good README, you can write a good model card.
+Open-source packages ship READMEs; APIs ship reference docs. Model cards serve the same purpose for ML systems. They tell the next developer (or operator, or resistance cell) what the model does, how it performs, where it fails, and when it should not be trusted. The format is standardized. If you can write a good README, you can write a good model card.
 
 <LearningObjectives objectives={["Write a model card documenting an ML system's capabilities, limitations, and ethical considerations", "Create API documentation for a multi-stage ML pipeline", "Document performance metrics with appropriate context and caveats", "Build a deployment runbook for non-technical operators"]} />
 

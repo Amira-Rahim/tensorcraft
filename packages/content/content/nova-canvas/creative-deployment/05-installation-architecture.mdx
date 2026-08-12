@@ -17,9 +17,9 @@ concept:
     mlTitle: "Installation Architecture"
     mlCode: "// offline inference, local models, sync results when connected"
     tier: structural
-    breaks: "PWA installation gives offline asset access. ML installation must additionally bundle model weights (often 50-500MB), handle model-version updates separately from app updates, and gate inference on weight-load completion. The service-worker pattern transfers; the payload size and update lifecycle do not."
+    breaks: "PWA installation gives offline asset access. ML installation must additionally bundle model weights (often 50-500MB), handle model-version updates separately from app updates, and gate inference on weight-load completion."
 consequence:
-  narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference. No server dependency. No internet required. Erdem: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
+  narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference and no server dependency. Erdem: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
 hints:
   - level: nudge
     content: "navigator.serviceWorker.register is the easy half; the hard half is caching the model weight files and gating generation until they finish loading"
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Samir">
-Three walls, twelve tablets, one gallery space. The Wi-Fi will drop. The internet will lag. The power might flicker. We need an architecture that does not care about any of that. This is a PWA. Offline-first. Local inference. Sync when you can.
+Three walls, twelve tablets, one gallery space. The Wi-Fi will drop. The internet will lag. The power might flicker. We need an architecture that does not care about any of that. This is a PWA: offline-first, local inference, sync when you can.
 </Dialogue>
 
 <Dialogue speaker="Erdem">

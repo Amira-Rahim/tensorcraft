@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dilan calls the final briefing. Every module they have built (detection, classification, adversarial defense, streaming inference) must fuse into one deployable system. Amir spreads a holographic diagram across the table: Protocol Sentinel's complete architecture. 'This is the blueprint. Every component, every connection, every fallback.' Noor sees it immediately: it looks exactly like a component architecture diagram."
+  narrative: "Dilan calls the final briefing. Every module they have built (detection, classification, adversarial defense, streaming inference) must fuse into one deployable system. Amir spreads a holographic diagram across the table: Protocol Sentinel's complete architecture. 'This is the blueprint, down to the fallbacks.' Noor sees it immediately: it looks exactly like a component architecture diagram."
   speaker: "Dilan"
 concept:
   explanation: "A production ML system is a component tree with typed data flowing between nodes, identical to a React component architecture diagram. Each node has props (inputs), state (weights), and renders output (predictions)."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "System Architecture Diagram"
     mlCode: "Ingest → Preprocess → Detect → Classify → AdversarialGuard → Broadcast"
     tier: structural
-    breaks: "Component architecture diagrams describe code you wrote. ML system architecture diagrams must include data flow, model versions, feature stores, training pipelines, and monitoring. The boxes carry far more state and the arrows have schema contracts."
+    breaks: "Component architecture diagrams describe code you wrote. ML system architecture diagrams must include data flow, model versions, feature storage, training pipelines, and monitoring. The boxes carry far more state and the arrows have schema contracts."
 consequence:
-  narrative: "The architecture crystallizes on screen. Six stages, typed interfaces between each. NEON overlays failure scenarios: what happens when a camera goes dark, when a model returns garbage, when Meridian jams the signal. Every edge case accounted for. Zara grins: 'Now that is engineering.'"
+  narrative: "The architecture crystallizes on screen. Six stages, typed interfaces between each. NEON overlays failure scenarios: what happens when a camera goes dark, when a model returns garbage, when Meridian jams the signal. Each scenario ends in a fallback, not a crash. Zara grins: 'Now that is engineering.'"
 hints:
   - level: nudge
     content: "Type each pipeline stage the way you type component props: declare what tensor shape goes in, what comes out, and what happens when it fails"
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-Ten modules of training. Detection, classification, segmentation, adversarial defense, streaming inference. Every skill you've learned points to this moment. Protocol Sentinel is not one model. It is a system. Amir, show them the architecture.
+Ten modules of training. Detection, classification, segmentation, adversarial defense, streaming inference. All of it lands here. Protocol Sentinel is a pipeline of models, not one model. Amir, show them the architecture.
 </Dialogue>
 
 <Dialogue speaker="Amir">
@@ -47,7 +47,7 @@ Six stages. Camera ingestion, frame preprocessing, surveillance detection, class
 This looks exactly like a component architecture diagram. Each stage is a component with props and output. The data flows down like a render tree.
 </Dialogue>
 
-Six stages, one rule: every boundary declares its contract before code gets wired. Each ML module is a component. Data flows through the tree. Typed interfaces catch errors at the edges. It is the same discipline that keeps a fifty-component page from collapsing: declare the props, validate at the boundary, trust nothing downstream. Same pattern, heavier payloads.
+Six stages share one rule: every boundary declares its contract before code gets wired. Each ML module is a component. Data flows through the tree. Typed interfaces catch errors at the edges. It is the same discipline that keeps a fifty-component page from collapsing: declare the props, validate at the boundary, trust nothing downstream. Same pattern, heavier payloads.
 
 <LearningObjectives objectives={["Design a complete ML system architecture as a typed component graph", "Define interfaces between pipeline stages: ingestion, preprocessing, detection, classification, defense, output", "Implement a component registry with dependency validation", "Map failure modes and design graceful degradation for each stage", "Trace one frame's data shape through all six stages, from raw pixels to broadcast payload"]} />
 

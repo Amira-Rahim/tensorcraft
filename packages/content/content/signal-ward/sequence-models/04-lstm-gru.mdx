@@ -54,7 +54,7 @@ So the LSTM can choose to remember that "denied" appeared 20 words ago when it f
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Correct. The LSTM cell state acts as a long-term memory highway. The forget gate selectively preserves critical clinical context across arbitrarily long sequences.
+Correct. The LSTM cell state acts as a long-term memory highway. The forget gate selectively preserves clinical context across long sequences.
 </Dialogue>
 
 In React, `useMemo` and `useCallback` control what values persist across re-renders. Without them, expensive computations run unnecessarily or stale closures cause bugs. LSTMs solve the analogous problem in sequences: without gates, information either vanishes or explodes over long timesteps.

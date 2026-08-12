@@ -23,7 +23,7 @@ concept:
     mlCode: "const loss = tf.losses.meanSquaredError(labels, predictions)"
     tier: structural
 consequence:
-  narrative: "Now we can quantify exactly how wrong the network is. The loss score becomes our north star for improvement."
+  narrative: "Now we can quantify exactly how wrong the network is. The rest of training exists to make that number smaller."
 hints:
   - level: nudge
     content: "MSE is the mean of the squared differences between the true labels and the model's predictions, and TFJS ships it as a built-in loss."

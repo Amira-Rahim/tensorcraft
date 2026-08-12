@@ -97,7 +97,7 @@ function knnClassify(
 }`}
 </CodeBlock>
 
-That's the entire algorithm. No training loop, no weights, no backpropagation. Just sort, slice, and vote.
+That's the entire algorithm: three array operations and no training step.
 
 ## Distance Metrics: Choosing Your Ruler
 
@@ -169,7 +169,7 @@ findBestK(trainSet, valSet, [1, 3, 5, 7, 11, 15]);`}
 
 ## The Curse of Dimensionality
 
-KNN works beautifully in low dimensions (2-10 features). But as dimensions increase, a strange thing happens: all points become approximately equidistant. It's like trying to find your "nearest neighbor" in a city versus in a universe. In high-dimensional space, the concept of "nearest" loses meaning.
+KNN works beautifully in low dimensions (2-10 features). But as dimensions increase, a strange thing happens: all points become approximately equidistant, and the concept of "nearest" loses meaning.
 
 This is why KNN struggles with raw image data (thousands of pixels) but excels at tabular data with a handful of meaningful features.
 
@@ -179,6 +179,6 @@ Implement KNN classification with configurable k and distance metric.
 
 <Exercise slug="implement-knn" />
 
-<RecallPrompt question="Why does KNN have no training step, and what is the practical consequence of that design?" answer="KNN stores the entire training dataset and defers all computation to prediction time. There are no learned weights or model artifacts. The consequence is zero training overhead but real per-prediction cost: O(n·d) distance computations for n stored points with d features, and O(n log n) with the sort-based implementation shown, and all training data must stay in memory. This also means the model updates instantly when new data is added, but it scales poorly as dataset size grows." />
+<RecallPrompt question="Why does KNN have no training step, and what is the practical consequence of that design?" answer="KNN stores the entire training dataset and defers all computation to prediction time. There are no learned weights or model artifacts. The consequence is zero training overhead but real per-prediction cost: O(n·d) distance computations for n stored points with d features, and O(n log n) with the sort-based implementation shown. All training data must also stay in memory. This also means the model updates instantly when new data is added, but it scales poorly as dataset size grows." />
 
 <LessonRecap whatYouLearned={["KNN skips training entirely and classifies by finding the k closest points in stored data, then taking a majority vote", "The full algorithm is three array operations: sort by distance, slice to k, reduce to most frequent label", "In high-dimensional feature spaces all points become roughly equidistant, breaking the concept of nearest neighbors and making KNN unreliable above roughly 10-20 features"]} bridge="`Sort and slice` in JavaScript finds the closest items in an array you already have in memory; `KNN` applies the same idea to ML classification but requires a distance metric, stores the full dataset at prediction time, and degrades with dimensionality in ways array operations do not." youCanNow="Implement KNN classification, choose a distance metric, validate the right value of k, and recognize when high dimensionality makes KNN the wrong choice." />

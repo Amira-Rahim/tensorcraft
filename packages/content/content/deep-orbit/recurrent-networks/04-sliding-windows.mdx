@@ -21,7 +21,7 @@ concept:
     mlTitle: "Sliding Window"
     mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
     tier: structural
-    breaks: "IntersectionObserver fires a discrete event when an element crosses a threshold. Signal sliding windows shift by a stride parameter (often 1 step) and overlap by a hop parameter; every position produces a new sample. Compute scales with sequence length × overlap ratio, not viewport size."
+    breaks: "IntersectionObserver fires a discrete event when an element crosses a threshold. Signal sliding windows shift by a stride parameter (often 1 step), so consecutive windows overlap heavily; every position produces a new sample. Compute scales with sequence length × overlap ratio, not viewport size."
 consequence:
   narrative: "Perfectly shaped windows stream into the LSTM, and Demir can finally process the continuous signal feed in real time."
 hints:

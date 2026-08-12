@@ -1,7 +1,7 @@
 slug: ground-knowledge
 lessonSlug: knowledge-grounding
 title: "Verify Answers Against Source Documents"
-instructions: "Implement a knowledge grounding system that verifies whether a generated answer is supported by source documents. Build three functions: tokenize to split text into lowercase word tokens, computeOverlap to calculate the fraction of answer tokens found in a source text, and groundAnswer to check each claim in a generated answer against source documents and return a grounding verdict with per-claim evidence scores. A claim is considered grounded if its overlap score meets or exceeds the threshold."
+instructions: "Implement a knowledge grounding system that verifies whether a generated answer is supported by source documents. Build three functions. tokenize splits text into lowercase word tokens. computeOverlap calculates the fraction of answer tokens found in a source text. groundAnswer checks each claim in a generated answer against source documents and returns a grounding verdict with per-claim evidence scores. A claim is grounded if its overlap score meets or exceeds the threshold."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "One week to opening. Erdem builds the load test. 'We simulate 300 visitors, fifty more than capacity. Every interaction pattern, every edge case, every failure mode. If it breaks now, we fix it. If it breaks on opening night, we are finished.'"
+  narrative: "One week to opening. Erdem builds the load test. 'We simulate 300 visitors, fifty more than capacity. If it breaks now, we fix it. If it breaks on opening night, we are finished.'"
   speaker: "Erdem"
 concept:
   explanation: "Load testing for ML installations simulates concurrent users making generation requests: the same methodology as load testing web APIs, but with heavier compute per request."
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "k6 load tests measure latency and throughput under known input shapes. ML load testing must additionally vary input distribution. The same RPS with adversarial prompts degrades output quality without changing latency. A load test that returns green on synthetic prompts can pass while the production prompt mix exhausts memory or triggers content-safety classifiers. Load shape AND content shape both need stress."
 consequence:
-  narrative: "The load test reveals three critical issues: WebSocket reconnection fails after 180 connections, tensor memory leaks after 500 generations, and the audio pipeline blocks the main thread at high concurrency. All fixable. All caught before opening night."
+  narrative: "The load test reveals three critical issues: WebSocket reconnection fails after 180 connections, tensor memory leaks after 500 generations, and the audio pipeline blocks the main thread at high concurrency. All three are fixable, and they surfaced in a test instead of in front of visitors."
 hints:
   - level: nudge
     content: "Model your load test scenarios after real visitor behavior: not constant load, but waves"

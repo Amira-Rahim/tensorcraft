@@ -17,7 +17,7 @@ concept:
     mlTitle: "Bidirectional RNN"
     mlCode: "const [fwd, bwd] = biLSTM(tokens); const full = tf.concat([fwd, bwd]);"
     tier: structural
-    breaks: "reduce + reduceRight produce two separate folds you compose afterward. Bidirectional RNNs run forward and backward passes whose hidden states are concatenated per timestep; two passes is at training and inference, not just an additional traversal."
+    breaks: "reduce + reduceRight produce two separate folds you compose afterward. Bidirectional RNNs run forward and backward passes whose hidden states are concatenated per timestep; you pay for both passes at training and at inference, not just an additional traversal."
 consequence:
   narrative: "Diagnostic One now reads clinical notes in both directions, catching negation and context that unidirectional models miss."
 hints:

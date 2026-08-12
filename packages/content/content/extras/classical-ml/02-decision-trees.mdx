@@ -16,7 +16,7 @@ concept:
     mlTitle: "Decision tree"
     mlCode: "tree.split('age', 30).split('income', 50000).predict()"
     tier: structural
-    breaks: "Hand-written if/else encodes rules YOU chose. A decision tree learns split features and thresholds from data via algorithms like CART (Gini impurity, information gain). The runtime shape rhymes; the authoring story is opposite. One is engineered, one is fitted."
+    breaks: "Hand-written if/else encodes rules YOU chose. A decision tree learns its split features and thresholds by scoring candidate splits with a measure like Gini impurity. The runtime shape is the same, but the authoring is opposite: you write the if/else by hand, and the tree is fitted from data."
 consequence:
   narrative: "Every prediction from your tree now traces back to a readable chain of if/else rules, an explanation a compliance officer can audit. Regulated industries require nothing less."
 hints:

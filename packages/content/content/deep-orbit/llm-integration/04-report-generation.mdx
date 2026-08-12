@@ -146,7 +146,7 @@ Build a section-by-section report generator from signal data.
 <LessonRecap
   whatYouLearned={[
     "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
-    "Low temperature (0.1-0.3) reduces VARIABILITY, not hallucination: it narrows which token gets sampled, and a greedy decode invents just as confidently, only reproducibly. Farah's draft in this lesson fabricated a Band-3 cluster at temperature 0.3. The only thing that catches a fabricated claim is validating it against the data.",
+    "Low temperature (0.1-0.3) reduces VARIABILITY, not hallucination: it narrows which token gets sampled, and even at temperature zero (always picking the likeliest token) the model invents just as confidently, only reproducibly. Farah's draft in this lesson fabricated a Band-3 cluster at temperature 0.3. The only thing that catches a fabricated claim is validating it against the data.",
     "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
   ]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."

@@ -41,7 +41,7 @@ March 2024. Model v2.3 deployed to all 12,400 devices simultaneously. Power grid
 We had the monitoring. We had the metrics. What we didn't have was a controlled comparison. The old model was gone. Nothing to measure against.
 </Dialogue>
 
-Route 10% of the fleet to the new model. Keep 90% on the old one. Let live metrics pick the winner. The mechanism is a feature flag with a model version behind it instead of a checkout flow. The waiting is the unfamiliar part: a conversion confirms itself in minutes, while the ground truth for a bearing-failure prediction can take hours to arrive, so the comparison has to be designed to outlast its own impatience.
+Route 10% of the fleet to the new model. Keep 90% on the old one. Let live metrics pick the winner. The mechanism is a feature flag with a model version behind it instead of a checkout flow. The waiting is the unfamiliar part. A conversion confirms itself in minutes, but the ground truth for a bearing-failure prediction can take hours to arrive, so the test has to run long enough for those answers to come back.
 
 <LearningObjectives objectives={["Understand why A/B testing is critical for production ML deployments", "Map feature flag concepts to model version routing", "Implement a basic model router that assigns devices to model versions", "Define metrics that determine whether a new model is actually better"]} />
 

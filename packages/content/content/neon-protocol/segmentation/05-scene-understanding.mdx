@@ -7,10 +7,10 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Dilan calls the team to the war room. The holotable projects District 7 in full segmented view: every pixel classified, every object outlined. 'We do not just detect drones anymore,' Dilan says. 'We understand the entire scene. Which streets are clear. Which rooftops have coverage. Where the blind spots are.'"
+  narrative: "Dilan calls the team to the war room. The holotable projects District 7 in full segmented view: every pixel classified, every object outlined. 'Detection told us where the drones were,' Dilan says. 'This tells us which streets are clear, which rooftops have coverage, where the blind spots are.'"
   speaker: "Dilan"
 concept:
-  explanation: "Scene understanding combines segmentation maps with spatial reasoning to extract meaning: object relationships, traversable paths, and contextual semantics. A drone above a person is not two labels. It is a surveillance event."
+  explanation: "Scene understanding combines segmentation maps with spatial reasoning to extract meaning: object relationships and traversable paths. A drone above a person is a surveillance event, not two independent labels."
   bridge:
     feTitle: "Semantic HTML"
     feCode: "<nav>, <main>, <aside>: structure implies meaning"
@@ -19,7 +19,7 @@ concept:
     tier: intuition
     breaks: "Semantic HTML conveys meaning via tag choice (`<nav>`, `<article>`). Scene understanding requires inferring object identity, spatial relationships, and context from pixels; there is no markup, and inference is probabilistic, not declarative."
 consequence:
-  narrative: "Safe corridors glow green, high-surveillance zones pulse red, drone patrol routes trace themselves across the city grid: the war room display is alive now, updating in real time. For the first time, the resistance has a living map of Meridian's coverage. NEON observes: 'You have built what took Meridian three years. In a browser.'"
+  narrative: "Safe corridors glow green, high-surveillance zones pulse red, drone patrol routes trace themselves across the city grid: the war room display updates in real time. For the first time, the resistance has a living map of Meridian's coverage. NEON observes: 'You have built what took Meridian three years. In a browser.'"
 hints:
   - level: nudge
     content: "Scene understanding combines segmentation labels with spatial relationships between classes"
@@ -35,7 +35,7 @@ keywords:
   - adjacency
 ---
 
-WAR ROOM // DISTRICT 7 COMPOSITE. On the holotable the district renders as regions instead of video: roads in blue, rooftops in green, four red silhouettes moving along Carmine Street, one orange drone hanging above the transit hub. Every pixel in the frame carries a label now. The question has changed, from what is in the frame to what the frame is doing.
+WAR ROOM - DISTRICT 7 COMPOSITE. On the holotable the district renders as regions instead of video: roads in blue, rooftops in green, four red silhouettes moving along Carmine Street, one orange drone hanging above the transit hub. Every pixel in the frame carries a label now. The question has changed, from what is in the frame to what the frame is doing.
 
 <Dialogue speaker="Dilan">
 A segmentation mask tells you what each pixel is. Scene understanding tells you what it means. If a person is on a road next to a crosswalk, that is a pedestrian crossing. If a drone is above a building, that is a surveillance post. Context comes from relationships.
@@ -142,4 +142,4 @@ Build a scene analysis function that detects contextual events from a segmentati
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Scene understanding reads spatial relationships between segmented regions to extract meaning", "Adjacency maps encode which classes neighbor each other in the mask", "Event detection applies rules to adjacency patterns; like semantic HTML, structure implies meaning", "The resistance now has a real-time contextual map of the entire district"]} />
+<KeyTakeaways takeaways={["Scene understanding reads spatial relationships between segmented regions to extract meaning", "Adjacency maps encode which classes neighbor each other in the mask", "Event detection applies rules to adjacency patterns; like semantic HTML, structure implies meaning"]} />

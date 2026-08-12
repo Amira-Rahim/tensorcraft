@@ -16,7 +16,7 @@ concept:
     mlTitle: "Model selection"
     mlCode: "// Tabular? XGBoost. Images? CNN. Text? Transformer. Small data? KNN"
     tier: structural
-    breaks: "Choosing npm packages weighs maintenance, downloads, license. Choosing a model weighs accuracy on your data, inference cost, training cost, calibration, interpretability, and you cannot know which model wins without empirically training each one."
+    breaks: "Choosing npm packages weighs maintenance, downloads, license. Choosing a model weighs accuracy on your data, inference cost, training cost, calibration (whether confidence scores match real hit rates), and interpretability. And you cannot know which model wins without training each one and measuring."
 consequence:
   narrative: "Five questions (data type, dataset size, interpretability, compute budget, deploy target) and the framework names your model family. Run the next problem that lands on your desk through it before you write a line of training code."
 hints:
@@ -50,10 +50,10 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-I've seen teams spend months building a neural network that a logistic regression could have matched in an afternoon. Wrong hyperparameters cost you days; the wrong model family costs you the quarter. This lesson is about not losing the quarter.
+I've seen teams spend months building a neural network that a logistic regression could have matched in an afternoon. Wrong hyperparameters (the training knobs like learning rate or tree depth) cost you days; the wrong model family costs you the quarter. This lesson is about not losing the quarter.
 </Dialogue>
 
-Choosing an ML model is like choosing a frontend framework. You wouldn't use Next.js for a static landing page, and you wouldn't use plain HTML for a real-time dashboard. The right tool depends on the job.
+Choosing an ML model is like choosing a frontend framework. You wouldn't use Next.js for a static landing page, and you wouldn't use plain HTML for a real-time dashboard.
 
 <LearningObjectives objectives={["Apply a systematic decision framework for model selection", "Identify when classical ML outperforms deep learning", "Evaluate trade-offs between accuracy, interpretability, and compute cost", "Match problem types (tabular, image, text, time-series) to model families"]} />
 
@@ -215,4 +215,4 @@ Given real-world scenarios, choose the right model and justify your reasoning.
 
 <RecallPrompt question="What are the five questions to answer before choosing a model, and why does data type come first?" answer="Data type, dataset size, interpretability requirement, compute budget, and deployment target. Data type comes first because it narrows the candidate pool immediately: unstructured inputs (images, audio) almost always require deep learning, while tabular data almost always favors classical methods. Answering the remaining four questions within the data type's branch then points to a specific model family without unnecessary training runs." />
 
-<LessonRecap whatYouLearned={["Tabular data consistently favors classical models like random forests and XGBoost over neural networks, which need feature engineering that trees handle natively", "Always establish a logistic regression baseline first; only add complexity when evidence shows it is needed", "Model selection trades off accuracy, interpretability, compute cost, and dataset size, and the best choice is the simplest model that meets the actual requirements"]} bridge="Choosing npm packages weighs bundle size, maintenance, and license; `Model selection` weighs accuracy, interpretability, training cost, and inference cost, and the right choice cannot be known from the package name alone without empirically evaluating on your specific data." youCanNow="Apply a five-question decision framework to match any new problem to the right model family before writing a line of training code." />
+<LessonRecap whatYouLearned={["Tabular data consistently favors classical models like random forests and XGBoost over neural networks, which need feature engineering that trees handle natively", "Always establish a logistic regression baseline first; only add complexity when evidence shows it is needed", "Model selection trades off accuracy, interpretability, compute cost, and dataset size. The best choice is the simplest model that meets the actual requirements"]} bridge="Choosing npm packages weighs bundle size, maintenance, and license; `Model selection` weighs accuracy, interpretability, training cost, and inference cost, and only a trial run on your own data reveals the winner." youCanNow="Apply a five-question decision framework to match any new problem to the right model family before writing a line of training code." />

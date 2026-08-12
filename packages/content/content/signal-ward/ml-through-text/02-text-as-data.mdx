@@ -17,9 +17,9 @@ concept:
     mlTitle: "Bag of Words"
     mlCode: "const bow = textToVector('patient takes aspirin daily')"
     tier: structural
-    breaks: "JSON.parse converts a known string into a known structure. Bag-of-words discards order and frequency-encodes tokens; useful baseline but loses every syntactic and contextual cue that newer text models exploit."
+    breaks: "JSON.parse converts a known string into a known structure. Bag-of-words throws away word order and keeps only word counts: a useful baseline, but it loses the sentence structure and context that newer text models rely on."
 consequence:
-  narrative: "Khalil successfully converts his first batch of clinical notes into numerical vectors."
+  narrative: "Khalil converts his first batch of clinical notes into numerical vectors."
 hints:
   - level: nudge
     content: "Count how many times each word appears in the text."
@@ -48,7 +48,7 @@ A vector, yes. But careful with the JSON.parse comparison. Parsing keeps structu
 
 `JSON.parse()` turns a raw string into structured data your app can use. Bag-of-words turns raw text into a vector your model can process, at the cost Vikram named: the structure is gone, and only counts remain.
 
-<LearningObjectives objectives={["Convert text into a bag-of-words vector", "Understand why models require numerical input", "Build a vocabulary from a corpus of clinical notes", "Recognize the limitations of bag-of-words for clinical text"]} />
+<LearningObjectives objectives={["Convert text into a bag-of-words vector", "Understand why models require numerical input", "Build a vocabulary from a set of clinical notes", "Recognize the limitations of bag-of-words for clinical text"]} />
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 

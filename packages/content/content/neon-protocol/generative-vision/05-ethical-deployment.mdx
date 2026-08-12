@@ -10,7 +10,7 @@ context:
   narrative: "Dilan halts the entire deployment. The adversarial patches work, the style transfer camouflage works, the generators produce convincing fakes. And that is exactly the problem. 'We deploy this responsibly or we do not deploy it at all. Every capability needs governance. Every output needs an audit trail.' She pulls up the model governance framework she has been building in parallel."
   speaker: "Dilan"
 concept:
-  explanation: "Model governance defines what a generative system is allowed to do, who can use it, and how outputs are tracked. It is the ML equivalent of Content Security Policy headers: explicit rules about what resources can be loaded, what scripts can execute, and what connections are permitted. Without governance, a powerful model is an open attack surface."
+  explanation: "Model governance defines what a generative system is allowed to do, who can use it, and how outputs are tracked. It is the ML equivalent of Content Security Policy headers: explicit rules about what resources can be loaded, what scripts can execute, and what connections are permitted. Without governance, a model is an open attack surface."
   bridge:
     feTitle: "Content Security Policy Headers"
     feCode: "Content-Security-Policy: default-src 'self'; script-src 'self'; img-src 'self' data:; // Explicit allow-list"
@@ -275,4 +275,4 @@ Build a governance policy system that constrains model operations.
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["A governance policy names allowed targets, caps perturbation strength (maxEpsilon), and requires an audit log before any operation runs", "Every operation should be audited: who ran it, what was the target, what were the parameters, was it approved", "Cryptographic fingerprinting binds capabilities to specific targets: no collateral damage", "The most powerful tools are the ones with the strongest constraints; governance enables deployment, not just restricts it"]} />
+<KeyTakeaways takeaways={["A governance policy names allowed targets, caps perturbation strength (maxEpsilon), and requires an audit log before any operation runs", "Every operation should be audited: who ran it, what was the target, what were the parameters, was it approved", "Cryptographic fingerprinting binds capabilities to specific targets: no collateral damage", "Constraints are what make a dual-use capability deployable at all: without scoped targets and audit logs, it is too dangerous to ship"]} />

@@ -864,7 +864,7 @@ function LessonStepsInner({
               */}
               {currentStep !== 0 && (
                 <h1 className="sr-only">
-                  {lesson.title} — {STEP_NAMES[currentStep]}
+                  {lesson.title}: {STEP_NAMES[currentStep]}
                 </h1>
               )}
               {shellLeftWithToggle}

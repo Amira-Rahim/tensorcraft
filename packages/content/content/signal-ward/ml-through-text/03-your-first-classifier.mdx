@@ -17,7 +17,7 @@ concept:
     mlTitle: "Linear Classifier"
     mlCode: "prediction = tf.add(tf.mul(input, weights), bias)"
     tier: structural
-    breaks: "`items.map(x => x * weight + bias)` applies a function YOU wrote. A linear classifier learns the weight + bias from labeled data via gradient descent, and adds a decision rule (sign, softmax) that .map doesn't have. The arithmetic shape matches; the authoring direction (you write vs model learns) is opposite."
+    breaks: "`items.map(x => x * weight + bias)` applies a function YOU wrote. A linear classifier learns the weight + bias from labeled data via gradient descent, and adds a decision rule that turns the score into a category, which .map doesn't have. The arithmetic shape matches; the authoring direction (you write vs model learns) is opposite."
 consequence:
   narrative: "Three of the four test notes land in the right bucket. Khalil stares at the fourth, an allergy note filed under 'progress', and starts a list titled WHY."
 hints:

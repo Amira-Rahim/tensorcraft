@@ -17,7 +17,7 @@ concept:
     mlTitle: "Load Testing Models"
     mlCode: "// Stress test: concurrent predictions\nconst results = await Promise.all(\n  Array(50).fill(null).map(() => sentinel.predict(randomInput))\n);\nassert(results.every(r => r.confidence >= 0));"
     tier: structural
-    breaks: "Load testing APIs hits known endpoints with known payloads; success means latency stays under SLO. Load testing models also requires representative input distributions; the same RPS with adversarial inputs degrades accuracy without changing latency, and that's still a production failure. You must measure both latency under load AND accuracy under representative-vs-adversarial input mixes."
+    breaks: "Load testing APIs hits known endpoints with known payloads; success means latency stays under your service-level objective (SLO). Load testing models also needs realistic inputs. The same request rate with adversarial inputs degrades accuracy without changing latency, and that is still a production failure. Measure both latency under load and accuracy on normal versus adversarial inputs."
 consequence:
   narrative: "Sentinel survives every test. Memory stays stable under 200 concurrent requests. Corrupted inputs return errors instead of crashes. Timeout handling works. Amir marks the system as deployment-ready. NEON: 'Protocol Sentinel is hardened. Deploy to all districts.'"
 hints:
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Before we deploy to all districts, I want to break it. Every edge case. Every failure mode. Corrupted camera feeds. Memory pressure. Fifty concurrent users. If Sentinel crashes in the field, people get caught.
+Before we deploy to all districts, I want to break it: corrupted camera feeds, memory pressure, fifty concurrent users, every failure mode we can stage. If Sentinel crashes in the field, people get caught.
 </Dialogue>
 
 <Dialogue speaker="NEON">
 Break it yourself, thoroughly, before Meridian does it for free. Load testing, chaos engineering, fault injection. The model will fail eventually; the only question is whether you attend the rehearsal.
 </Dialogue>
 
-A model that works in development is not a model that works in production. Production means corrupted inputs, resource constraints, concurrent users, and failure modes you did not anticipate. Hardening is the process of finding and fixing every way the system can fail. Before it does.
+Development is a gentle environment. Production means corrupted inputs, resource constraints, concurrent users, and failure modes you did not anticipate. Hardening is the process of finding and fixing every way the system can fail. Before it does.
 
 <LearningObjectives objectives={["Stress-test a TensorFlow.js model with concurrent prediction requests", "Detect and prevent memory leaks in long-running model deployments", "Implement graceful error handling for invalid and corrupted inputs", "Add timeout and circuit-breaker patterns to model inference"]} />
 

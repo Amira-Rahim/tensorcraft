@@ -42,7 +42,7 @@ Two hundred people in the gallery. Each one generating. That is 200 concurrent W
 Same problem as a chat application with thousands of users. Connection pooling, message queuing, backpressure. The generation is just the payload. The infrastructure is pure frontend engineering.
 </Dialogue>
 
-Every request that can't run right now needs three things: a place in line, a connection that stays alive, and an honest estimate of the wait. That's the whole system. Connection management, request queuing, graceful degradation. You've built it before as a chat room, a live dashboard, a multiplayer lobby. The generation model is just the expensive operation at the end of a very familiar pipeline.
+Every request that can't run right now needs three things: a place in line, a connection that stays alive, and an honest estimate of the wait. That's the whole system. You've built it before as a chat room, a live dashboard, a multiplayer lobby. The generation model is just the expensive operation at the end of a very familiar pipeline.
 
 <LearningObjectives objectives={["Implement a generation queue with configurable concurrency limits", "Manage WebSocket connections for multiple simultaneous users", "Provide real-time progress updates and estimated wait times", "Design graceful degradation when demand exceeds generation capacity"]} />
 

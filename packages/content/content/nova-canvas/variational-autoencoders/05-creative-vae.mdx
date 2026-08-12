@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Samir builds the final creative VAE: a controllable generative model for the exhibition. Visitors can explore a smooth latent space of art, blending styles and attributes with precision."
+  narrative: "Samir builds the final creative VAE: a controllable generative model for the exhibition. Visitors can explore a smooth latent space of art, blending styles and attributes."
   speaker: "Yara"
 concept:
   explanation: "A creative VAE combines encoding, reparameterization, KL regularization, and decoding into a unified model for controllable generation. Design system tokens map to latent dimensions."
@@ -17,12 +17,12 @@ concept:
     mlTitle: "VAE Latent Controls"
     mlCode: "z: { warmth: 0.3, complexity: -0.8, symmetry: 1.2 }"
     tier: structural
-    breaks: "Design system tokens are discrete authored variables with semantic names (`--color-primary`). VAE latent dimensions are unnamed continuous learned axes; identifying which dimension controls smile vs. age requires running attribution experiments. You cannot rename a dimension to give it meaning."
+    breaks: "Design system tokens are discrete authored variables with semantic names (`--color-primary`). VAE latent dimensions are unnamed continuous learned axes; identifying which dimension controls smile vs. age requires running traversal experiments. You cannot rename a dimension to give it meaning."
 consequence:
-  narrative: "Visitors will walk through a space where every surface displays generated art that responds to their presence: unique, controllable, and running entirely in the browser. The creative VAE is the centerpiece of the exhibition."
+  narrative: "Visitors will walk through a space where every surface displays generated art that responds to their presence, decoded live in the browser."
 hints:
   - level: nudge
-    content: "Design tokens give you named, semantic control. VAE latent dimensions do the same for generated art."
+    content: "Unlike design tokens, latent dimensions come unnamed: you find out what one controls by sweeping it while holding the others fixed."
   - level: guidance
     content: "Combine encoder, sampling layer, and decoder into one model. Add KL loss as a regularizer."
   - level: solution

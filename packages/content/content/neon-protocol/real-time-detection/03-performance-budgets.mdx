@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Lighthouse budgets are bytes and milliseconds with hard pass/fail thresholds. Inference budgets must trade off latency vs accuracy, and the same model meets budget on a desktop GPU but misses by 10× on mobile; single-budget targets hide device variance. Budgets must be set per-device-class and monitored separately."
 consequence:
-  narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms. Over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
+  narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms. Over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game.'"
 hints:
   - level: nudge
     content: "Break down the total frame time into stages, just like you break down a Lighthouse audit"
@@ -44,10 +44,10 @@ If we go pure browser, we lose 15% accuracy. That 15% is people, Noor. Misidenti
 </Dialogue>
 
 <Dialogue speaker="Dilan">
-Build both. Test both. Let the data decide. But first, profile what you have. You cannot optimize what you cannot measure.
+Build both. Test both. Let the data decide. But first, profile what you have. I want stage times, not opinions.
 </Dialogue>
 
-33.3 milliseconds. That is the entire budget for one frame at 30fps, and preprocessing, inference, and postprocessing all eat from it. The discipline is Lighthouse with the stakes raised: instead of First Contentful Paint under 1.8 seconds and Total Blocking Time under 200ms, you are policing a budget thirty times tighter, thirty times a second.
+33.3 milliseconds. That is the entire budget for one frame at 30fps, and preprocessing, inference, and postprocessing all eat from it. The discipline is Lighthouse with the stakes raised: instead of First Contentful Paint under 1.8 seconds and Total Blocking Time under 200ms, you are policing a single frame's budget, thirty times a second.
 
 <LearningObjectives objectives={["Define performance budgets for real-time ML inference", "Profile each stage of the inference pipeline using performance.now()", "Identify bottlenecks through systematic measurement", "Apply frame-skipping and resolution reduction strategies when over budget"]} />
 

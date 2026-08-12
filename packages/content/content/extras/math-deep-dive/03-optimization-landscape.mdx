@@ -203,7 +203,7 @@ console.log('Momentum:', momentumResult.map(v => v.toFixed(4)));
 
 ## Learning Rate Schedules
 
-A fixed learning rate is one compromise applied to the whole journey: large steps cross plateaus quickly but orbit the valley floor without ever settling, while small steps settle precisely but crawl across every flat region. A schedule changes the rate as training progresses, so you spend large steps where the landscape is flat and small ones where it narrows. Warmup covers the other end of the run: the first updates are computed from raw random weights (and adaptive optimizers like Adam size each step from running averages of recent gradients, averages that are pure noise until enough steps have accumulated), so ramping the rate up over a few epochs keeps those first steps from launching the weights somewhere unrecoverable.
+A fixed learning rate is one compromise applied to the whole training run: large steps cross plateaus quickly but orbit the valley floor without ever settling, while small steps settle precisely but crawl across every flat region. A schedule changes the rate as training progresses, so you spend large steps where the landscape is flat and small ones where it narrows. Warmup covers the other end of the run. The first updates are computed from raw random weights, so ramping the rate up over a few epochs keeps those first steps from launching the weights somewhere unrecoverable. Adaptive optimizers like Adam raise the stakes: they size each step from running averages of recent gradients, and those averages are pure noise until enough steps have accumulated.
 
 <CodeBlock language="typescript" title="lr-schedules.ts">
 {`// Step decay: cut the rate at fixed milestones
@@ -229,7 +229,7 @@ for (const epoch of [0, 4, 29, 30, 60, 89]) {
 // epoch 89: step=0.0025, warm+cos=0.0000`}
 </CodeBlock>
 
-The geometry of this lesson says why a schedule beats any single fixed rate: early training happens in wide, nearly flat basins where only a large step makes progress, and late training happens inside a narrow valley where that same step bounces between the walls instead of descending. Momentum carries you through the flats, but only a shrinking learning rate lets the optimizer stop orbiting the minimum and actually land on it.
+The lesson's geometry explains why a schedule beats any single fixed rate. Early training happens in wide, nearly flat basins where only a large step makes progress. Late training happens inside a narrow valley where that same step bounces between the walls instead of descending. Momentum carries you through the flats, but only a shrinking learning rate lets the optimizer stop orbiting the minimum and actually land on it.
 
 ## Challenge
 

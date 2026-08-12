@@ -34,7 +34,7 @@ keywords:
   - server-side-rendering
 ---
 
-It already happened. Twenty minutes ago Samir typed "a sunset over a digital city," and the screen now shows one: rough edges, colors not quite right, but a horizon, buildings, light. The collective spent the first ten minutes celebrating and the last ten arguing about how it works. This lesson is the argument, settled: walking back through the pipeline that turned eight words into pixels.
+It already happened. Twenty minutes ago Samir typed "a sunset over a digital city," and the screen now shows one: rough edges, colors not quite right, but a horizon, buildings, light. The collective spent the first ten minutes celebrating and the last ten arguing about how it works. This lesson is the argument, settled: walking back through the pipeline that turned six words into pixels.
 
 <Dialogue speaker="Samir">
 Everything we built converges here. The text encoder from multimodal learning. The diffusion model from module five. The classifier-free guidance for prompt adherence. Text in, image out.
@@ -145,4 +145,4 @@ Wire up the text-to-image pipeline: encode text, condition diffusion, generate.
 
 <Exercise slug="text-to-image" />
 
-<KeyTakeaways takeaways={["The text embedding conditions the U-Net at every denoising step, not just the first one", "The pipeline combines text encoding, conditioned diffusion, classifier-free guidance, and super-resolution", "Text embeddings condition the U-Net at each denoising step, steering what the model generates", "MUSE's first text-to-image output is rough but recognizable; the bridge from words to art is crossed"]} />
+<KeyTakeaways takeaways={["The text embedding conditions the U-Net at every denoising step, not just the first one", "The pipeline combines text encoding, conditioned diffusion, classifier-free guidance, and super-resolution", "MUSE's first text-to-image output is rough but recognizable; prompt adherence is the next thing to raise"]} />

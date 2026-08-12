@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Dynamic imports split bundles by route: each chunk runs independently. Model sharding splits a single model across devices and shards must communicate per inference (tensor parallelism, pipeline parallelism), so interconnect bandwidth becomes the bottleneck."
 consequence:
-  narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Priya: 'Sharding solved the memory constraint without sacrificing model capability.'"
+  narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Priya: 'Sharding solved the memory constraint without shrinking the model.'"
 hints:
   - level: nudge
     content: "Split the model at layer boundaries, like splitting a bundle at route boundaries"

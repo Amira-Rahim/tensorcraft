@@ -17,7 +17,7 @@ concept:
     mlTitle: "Probability Distribution"
     mlCode: "const sample = tf.randomNormal([1], mean, std)"
     tier: structural
-    breaks: "Random color generators sample from a uniform RGB box. Learned probability distributions place mass in arbitrary regions of high-dimensional space and sampling from them requires methods (rejection, MCMC, ancestral) that are non-trivial."
+    breaks: "Random color generators sample from a uniform RGB box. A learned distribution concentrates probability in a few regions of a high-dimensional space, and drawing samples from it takes specialized methods, not a single random() call."
 consequence:
   narrative: "Samir realizes that every dataset has a hidden shape, a distribution, and learning that shape is the first step to generating new data."
 hints:

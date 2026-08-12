@@ -17,7 +17,7 @@ concept:
     mlTitle: "Discriminator Network"
     mlCode: "const realness = discriminator.predict(image)  // → 0.0 to 1.0"
     tier: structural
-    breaks: "Form validation runs hand-written rules against user input. Discriminators learn to distinguish real from generated samples and the decision boundary is implicit, dataset-dependent, and shifts as the generator improves during training."
+    breaks: "Form validation runs hand-written rules against user input. Discriminators learn to distinguish real from generated samples. The rule they learn is never written down anywhere, it depends on the dataset, and it shifts as the generator improves during training."
 consequence:
   narrative: "Both halves of the GAN now exist: a creator and a judge. Neither has met the other yet."
 hints:

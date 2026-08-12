@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dr. Karimi delivers the hard truth in the ethics review: 'Your model performs 12% worse on records written in non-standard English. Notes from our night shift, predominantly staffed by nurses who speak English as a second language, have higher error rates. This isn't a bug report. It's an equity crisis.' Khalil reaches for familiar ground: accessibility audits, Lighthouse scores. Karimi lets him finish, then adds the part his parallel doesn't carry: 'WCAG hands you a checklist. Fairness won't.'"
+  narrative: "Dr. Karimi delivers the hard truth in the ethics review: 'Your model performs 12% worse on records written in non-standard English. Notes from our night shift, predominantly staffed by nurses who speak English as a second language, have higher error rates. Don't file this as a bug. It's an equity crisis.' Khalil reaches for familiar ground: accessibility audits, Lighthouse scores. Karimi lets him finish, then adds the part his parallel doesn't carry: 'WCAG hands you a checklist. Fairness won't.'"
   speaker: "Dr. Karimi"
 concept:
   explanation: "Bias auditing for ML models follows the same methodology as running a Lighthouse accessibility audit: systematically testing across user groups to ensure no population is excluded or underserved."
@@ -220,7 +220,7 @@ const diagnosticOneSlices: AuditSlice[] = [
 </CodeBlock>
 
 <Dialogue speaker="Vikram">
-The fairness card is the model's Lighthouse report. You wouldn't ship a website with a Lighthouse accessibility score of 40. You shouldn't ship a model with a 12% accuracy gap between demographic groups. Measure, document, remediate.
+The fairness card is the model's Lighthouse report. You wouldn't ship a website with a Lighthouse accessibility score of 40. You shouldn't ship a model with a 12% accuracy gap between demographic groups.
 </Dialogue>
 
 ## Challenge
@@ -229,4 +229,4 @@ Build a bias auditor that computes per-group accuracy and flags demographic disp
 
 <Exercise slug="audit-bias" />
 
-<KeyTakeaways takeaways={["Fairness metrics are mutually incompatible; a bias audit chooses which disparities to measure, and no checklist guarantees fairness", "Targeted augmentation and retraining cut this model's gap from 12% to 2.3%: measured, not assumed", "Fairness cards document per-group performance honestly; a known limitation is safer than a hidden one", "Aggregate metrics (overall accuracy) hide group-level failures; disaggregate by slice before trusting the average"]} />
+<KeyTakeaways takeaways={["Fairness metrics are mutually incompatible; a bias audit chooses which disparities to measure, and no checklist guarantees fairness", "Targeted augmentation and retraining cut this model's gap from 12% to 2.3%: measured, not assumed", "Fairness cards document per-group performance, including the gaps that remain after remediation", "Aggregate metrics (overall accuracy) hide group-level failures; disaggregate by slice before trusting the average"]} />

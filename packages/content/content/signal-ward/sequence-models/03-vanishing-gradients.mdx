@@ -175,7 +175,7 @@ BPTT computes gradients as products of per-step Jacobians:
 
 **For tanh activation** with weight matrix W_h, J_t = diag(1 - tanh²(...)) · W_h. The diagonal term has values in [0, 1], capping at 1 only when tanh is at 0.
 
-**Spectral radius** ρ(W_h) controls behavior:
+**Spectral radius** ρ(W_h), the largest absolute eigenvalue of W_h, controls behavior:
 - ρ < 1 → product collapses to 0 (vanishing)
 - ρ > 1 → product explodes (exploding, often resolved by gradient clipping)
 - ρ ≈ 1 → information can flow but is fragile

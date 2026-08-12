@@ -1,7 +1,7 @@
 slug: clinical-qa
 lessonSlug: clinical-queries
 title: "Build a Clinical Query System with Confidence Scoring"
-instructions: "Implement a clinical query system that handles medical terminology and returns confidence-scored answers. Build three functions: expandQuery to augment a clinical query with known synonyms from a medical terminology map, rankCandidates to score candidate answers using token overlap between the expanded query and each candidate then normalize scores with softmax, and clinicalQA to orchestrate the full pipeline returning the top-k answers above a confidence threshold. The system should handle medical abbreviations and synonyms to improve retrieval quality."
+instructions: "Implement a clinical query system that handles medical terminology and returns confidence-scored answers. Build three functions. expandQuery augments a clinical query with known synonyms from a medical terminology map. rankCandidates scores candidate answers by token overlap with the expanded query, then normalizes the scores with softmax. clinicalQA runs the full pipeline and returns the top-k answers above a confidence threshold."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

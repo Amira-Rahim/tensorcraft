@@ -17,7 +17,7 @@ concept:
     mlTitle: "Generator Network"
     mlCode: "const output = generator.predict(tf.randomNormal([1, 64]))"
     tier: structural
-    breaks: "Procedural canvas drawing produces visuals from rules you wrote. Generator networks produce visuals from learned weights. The same architecture trained twice produces different outputs and 'understanding' the rules requires interpretability tools, not reading code."
+    breaks: "Procedural canvas drawing produces visuals from rules you wrote. Generator networks produce visuals from learned weights. The same architecture trained twice produces different outputs, and you cannot learn the rules by reading code: they live in the learned weights."
 consequence:
   narrative: "The first generated patterns appear on screen: crude but unmistakably structured. The Biennale installation has its first heartbeat."
 hints:
@@ -129,8 +129,6 @@ await autoEncoder.fit(targets, targets, {
 </CodeBlock>
 
 ## Rendering to Canvas
-
-The final step: bringing the generated pattern into the browser where it belongs.
 
 <CodeBlock language="typescript" title="render-pattern.ts">
 {`async function renderPattern(tensor: tf.Tensor, canvas: HTMLCanvasElement) {

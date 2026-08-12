@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Browser compatibility gaps are documented per feature with known shims. Performance disparity across patient subgroups is often hidden in aggregate metrics; the model can hit 95% overall accuracy while failing entirely for a 5% subgroup."
 consequence:
-  narrative: "After augmentation and retraining, the disparity drops from 12% to 2.3%. Khalil presents the updated fairness card. Dr. Karimi studies it. 'Two point three percent. Not zero. Document the remaining gap in the model card. Ship it with an honest account of what we know and what we do not. That is responsible deployment.' The ethics committee votes unanimously to approve the pilot."
+  narrative: "After augmentation and retraining, the disparity drops from 12% to 2.3%. Khalil presents the updated fairness card. Dr. Karimi studies it. 'Two point three percent. Not zero. Document the remaining gap in the model card. Ship it with an honest account of what we know and what we do not.' The ethics committee votes unanimously to approve the pilot."
 hints:
   - level: nudge
     content: "Identify which data slices underperform, then augment training data for those specific groups"
@@ -50,7 +50,7 @@ The bar was never an average. Go tell the night shift their patients get the lef
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Then I've seen this shape before. Browser compatibility. You build a beautiful interface in Chrome, ship it, and discover it's broken in Safari. Same code, different rendering engine. Same model, different writing style. The fix is the same: identify the failure modes, build targeted polyfills, and test across every environment. Not just the one you developed in.
+Then I've seen this shape before. Browser compatibility. You build a beautiful interface in Chrome, ship it, and discover it's broken in Safari. Same code, different rendering engine. Same model, different writing style. The fix is the same: identify the failure modes, build targeted polyfills, and test across every environment, not just the one you developed in.
 </Dialogue>
 
 The 12% disparity is Diagnostic One's cross-browser bug. The model was trained primarily on attending physician notes, the "Chrome" of clinical writing. Night shift notes, ICU shorthand, and Spanish-language records are the "Safari," "Firefox," and "mobile" of the dataset. The remediation strategy follows the same playbook: identify which environments fail, build targeted fixes (data augmentation instead of polyfills), test across all environments, and document any remaining gaps.
@@ -273,7 +273,7 @@ function generateModelCard(
 </CodeBlock>
 
 <Dialogue speaker="Dr. Karimi">
-Two point three percent. Not zero. But it is honest. Document the remaining gap. Ship the model card with every deployment. A known limitation is safer than a hidden one. That is responsible ML.
+Two point three percent. Not zero, but honest. Document the remaining gap and ship the model card with every deployment. A known limitation is safer than a hidden one.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -286,4 +286,4 @@ Implement a disparity remediation pipeline that augments underperforming data sl
 
 <Exercise slug="fix-disparity" />
 
-<KeyTakeaways takeaways={["A model can score 94% on attending notes and 82% on night-shift notes; the aggregate number hides who it fails", "Data augmentation generates paraphrased and transformed examples to cover underrepresented writing styles", "Sample re-weighting gives underperforming groups more influence during training, like priority bug fixes for failing browsers", "Document the remaining gap (here, 2.3% after remediation) in the model card: what works, what does not, what limitations remain"]} />
+<KeyTakeaways takeaways={["A model can score 94% on attending notes and 82% on night-shift notes; the aggregate number hides who it fails", "Data augmentation generates paraphrased and transformed examples to cover underrepresented writing styles", "Sample re-weighting gives underperforming groups more influence during training, like priority bug fixes for failing browsers", "Document the remaining gap (here, 2.3% after remediation) in the model card: what works and what does not"]} />

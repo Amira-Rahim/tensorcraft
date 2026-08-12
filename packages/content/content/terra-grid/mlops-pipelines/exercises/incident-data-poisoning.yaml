@@ -11,7 +11,7 @@ instructions: |
       requiresQuarantine: boolean,  // true if untrustedRatio > 0.05 OR hashCollisions.length > 0
     }
 
-  This is the first 5 minutes of a real data-poisoning investigation. You isolate, you don't retrain.
+  Isolate the suspect samples. Do not retrain on them.
 mlContent: systems
 starterCode: |
   function auditTrainingSet(samples, trustedSources, suspectClass) {

@@ -152,7 +152,7 @@ Build a temporal attention mechanism and identify the focused time steps.
 
 <Exercise slug="temporal-attention" />
 
-<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions influenced the pooled representation most. That is a map of where the model looked, not a verified explanation of WHY it decided; attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Even so, a where-it-looked map is far more diagnostic than an LSTM's opaque hidden state." />
+<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions influenced the pooled representation most. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Even so, a where-it-looked map is far more diagnostic than an LSTM's opaque hidden state." />
 
 <LessonRecap
   whatYouLearned={[

@@ -9,7 +9,7 @@ import {
 export const metadata: Metadata = {
   title: "About Tensorcraft | Why this course exists",
   description:
-    "Why Tensorcraft was built, the bridge-tier method, and what we deliberately left out. Honest authorship, not a marketing manifesto.",
+    "Why Tensorcraft was built, the bridge-tier method, and what we deliberately left out.",
   alternates: { canonical: "https://tensorcraft.app/about" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -105,25 +105,26 @@ export default function AboutPage() {
 
           <p>
             Every exercise grades by executing your code, not by string-matching
-            it. {EXERCISE_CONTENT.liveExercises} exercises live today at 100%
-            solution-passes-all-tests, all running against real TensorFlow.js in
-            a worker in your browser, with {EXERCISE_CONTENT.authoredFiveWorlds}{" "}
-            authored across the five-world roadmap. Only the shipped set has
-            been through our validation gates; we do not claim the rest meet
-            that bar until they ship. Roughly half of the live exercises drive
-            tensor and model APIs directly, and there a failing test means the
-            model behavior is actually wrong. The other half grade the data
-            preparation and production plumbing around a model, and there a
-            failing test means that logic is wrong.
+            it. {EXERCISE_CONTENT.liveExercises} exercises are live today at
+            100% solution-passes-all-tests, each one running against real
+            TensorFlow.js in a worker in your browser.{" "}
+            {EXERCISE_CONTENT.authoredFiveWorlds} are authored across the
+            five-world roadmap. Only the shipped set has been through our
+            validation gates; we do not claim the rest meet that bar until they
+            ship. Roughly half of the live exercises drive tensor and model APIs
+            directly, and there a failing test means the model behavior is
+            actually wrong. The other half grade the data preparation and
+            production plumbing around a model, and there a failing test means
+            that logic is wrong.
           </p>
 
           <p>
             Five worlds (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas,
             Terra Grid) wrap the curriculum in narrative. Each one builds toward
             a working browser-side ML system, assembled piece by piece across
-            the modules; connect GitHub and every solved exercise pushes to your
-            repo. The story keeps you on the page; understanding every layer of
-            what you built is what you take to interviews.
+            the modules. Connect GitHub and every solved exercise pushes to your
+            repo. The story keeps you on the page. What you take to interviews
+            is the ability to explain every layer of what you built.
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">

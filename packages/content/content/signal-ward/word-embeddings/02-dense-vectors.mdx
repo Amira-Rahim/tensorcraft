@@ -88,7 +88,7 @@ console.log(vectors.shape); // [1, 4, 64]: four 64-dim vectors
 
 ## How Word2Vec Learns
 
-Word2Vec uses a simple but powerful training signal: predict a word from its neighbors (CBOW) or predict neighbors from a word (Skip-gram). Words that successfully predict each other's contexts end up with similar vectors.
+Word2Vec uses a simple training signal: predict a word from its neighbors (CBOW) or predict neighbors from a word (Skip-gram). Words that successfully predict each other's contexts end up with similar vectors.
 
 <CodeBlock language="typescript" title="word2vec-concept.ts">
 {`// Skip-gram intuition: given a word, predict its context
@@ -152,7 +152,7 @@ So if a patient record mentions ibuprofen and the model was trained mostly on as
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Yes. Because their vectors are nearly identical, the model treats them as near-equivalents. That's the power of dense representations: generalization through geometric proximity.
+Yes. Because their vectors are nearly identical, the model treats them as near-equivalents. Proximity in the space is doing the generalizing.
 </Dialogue>
 
 ## Challenge

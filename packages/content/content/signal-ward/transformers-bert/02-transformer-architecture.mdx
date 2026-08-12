@@ -46,7 +46,7 @@ Self-attention alone isn't enough. We need to wrap it in a complete encoder bloc
 A transformer encoder block has two sub-layers, each wrapped in a residual connection and layer normalization:
 
 1. **Multi-Head Self-Attention**: tokens attend to each other
-2. **Position-wise Feed-Forward Network**: each token processed independently through a small MLP
+2. **Position-wise Feed-Forward Network**: each token processed independently through a small stack of dense layers
 
 <CodeBlock language="typescript" title="encoder-block.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -112,7 +112,7 @@ for (let i = 0; i < 3; i++) {
 console.log('Encoder output:', x.shape); // [10, 64]`}
 </CodeBlock>
 
-## Residual Connections: Preserving What Matters
+## Residual Connections
 
 The `x.add(attnOut)` step is critical. Without it, deep networks suffer from vanishing gradients, and information from early layers fades. The residual connection provides a highway for gradients and information to flow through unchanged, while the attention layer adds refinements.
 
@@ -126,4 +126,4 @@ Build a complete transformer encoder block with attention, feedforward, residual
 
 <Exercise slug="build-encoder" />
 
-<KeyTakeaways takeaways={["An encoder block = multi-head attention + feedforward, each with residual + layer norm", "Residual connections prevent information loss in deep networks", "Layer normalization stabilizes training by normalizing activations", "Stacking blocks increases the model's representational capacity"]} />
+<KeyTakeaways takeaways={["An encoder block = multi-head attention + feedforward, each with residual + layer norm", "Residual connections prevent information loss in deep networks", "Layer normalization stabilizes training by normalizing activations", "Stacking blocks lets the model represent more complex patterns"]} />

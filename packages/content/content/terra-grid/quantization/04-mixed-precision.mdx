@@ -38,7 +38,7 @@ keywords:
 I ran a sensitivity analysis. The first and last layers lose significant accuracy when quantized to Int8. The middle layers are robust. We should use different precision for different parts of the model.
 </Dialogue>
 
-Elif's sensitivity table reads like a srcset: a few consumers need the full-resolution asset, most are fine with the compressed one. Mixed precision applies that judgment per layer: keep precision where accuracy is fragile, spend Int8 everywhere it is not.
+Elif's sensitivity table reads like a srcset: a few consumers need the full-resolution asset, most are fine with the compressed one. Mixed precision applies that judgment per layer: keep precision where accuracy is fragile, and use Int8 everywhere it is not.
 
 <LearningObjectives objectives={["Understand why different layers have different precision sensitivity", "Implement per-layer precision assignment", "Calculate memory savings from mixed precision strategies", "Map responsive image strategies to mixed precision model deployment"]} />
 
@@ -94,7 +94,7 @@ const mixed = assignPrecision(layers);
 console.log('Mixed precision:', totalSizeMB(mixed).toFixed(2) + 'MB'); // 0.75MB`}
 </CodeBlock>
 
-The edge layers (first and last) are kept at Float16 because they directly interface with input data and output predictions. The middle layers, which learn abstract features, tolerate Int8 well. This is analogous to serving hero images at full resolution while compressing thumbnails.
+The edge layers (first and last) stay at Float16 because they touch the raw input data and produce the final predictions. The middle layers, which learn abstract features, tolerate Int8 well. This is analogous to serving hero images at full resolution while compressing thumbnails.
 
 ## Challenge
 

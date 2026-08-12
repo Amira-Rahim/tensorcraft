@@ -127,7 +127,7 @@ export const SPINES: Record<string, Spine> = {
     id: "signal-continuity",
     label: "Signal thread · the anomaly answers back",
     description:
-      "The main ring: each world's finale hands its signal to the next domain — the tensor as lingua franca.",
+      "The main ring: each world's finale hands its signal to the next domain, the tensor as lingua franca.",
     stops: [],
   },
 };

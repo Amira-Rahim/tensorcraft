@@ -50,7 +50,7 @@ One wrinkle, and it's expensive. A web canary runs identical code at two percent
 Then we stratify the split. Every region, every device tier represented in both arms, and we hold the observation window open longer than a code canary would ever need. The routing stays; the patience changes.
 </Dialogue>
 
-A canary, in deploy jargon, is the small first slice of traffic that absorbs the risk of a new version, named for the bird miners carried underground. Priya and Tariq just designed one for models: weighted routing you already trust, plus the two disciplines code canaries never needed, stratified sampling so both arms see comparable inputs and observation windows long enough to outlast the confounders.
+A canary, in deploy jargon, is the small first slice of traffic that absorbs the risk of a new version, named for the bird miners carried underground. Priya and Tariq just designed one for models: the weighted routing you already trust, plus two disciplines code canaries never needed. Stratified sampling keeps both arms on comparable inputs. A longer observation window keeps a one-week cold snap from deciding the verdict.
 
 <LearningObjectives objectives={["Implement weighted traffic splitting across model versions", "Configure graduated rollout schedules (5% -> 20% -> 50% -> 100%)", "Build automatic rollback triggers based on metric thresholds", "Track per-version metrics to validate traffic split decisions"]} />
 

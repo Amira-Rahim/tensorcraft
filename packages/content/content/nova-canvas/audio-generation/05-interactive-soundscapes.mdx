@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The gallery prototype runs. Visitors stand still, observing. Yara shakes her head. 'They are spectators. They need to be participants. The sound should follow them, respond to them, belong to them.'"
+  narrative: "The gallery prototype runs. Visitors stand still, observing. Yara shakes her head. 'They are spectators. They need to be participants. The sound should follow them and respond to them.'"
   speaker: "Yara"
 concept:
   explanation: "Interactive soundscapes map user input (pointer position, gestures, movement) to audio generation parameters: the same event-driven pattern as drag-and-drop or interactive charts."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "Input-Driven Generation"
     mlCode: "const z = tf.tensor2d([[x / width, y / height, ...params]]); model.predict(z);"
     tier: structural
-    breaks: "Pointer events fire deterministically per user action. Input-driven generation conditions a probabilistic model on the user's input. The same gesture twice produces different audio. Coherence across interactions requires explicit state (seed, latent persistence), not just feeding input to the model each frame."
+    breaks: "Pointer events fire deterministically per user action. Input-driven generation conditions a probabilistic model on the user's input. The same gesture twice produces different audio. Keeping interactions coherent requires explicit state (seed, latent persistence). Feeding input to the model each frame is not enough."
 consequence:
-  narrative: "A visitor reaches toward the screen. The soundscape shifts: lower tones as their hand descends, crystalline chimes as it rises. They laugh, startled. They reach again. The installation has found its voice."
+  narrative: "A visitor reaches toward the screen. The soundscape shifts: lower tones as their hand descends, crystalline chimes as it rises. They laugh, startled. They reach again."
 hints:
   - level: nudge
     content: "Pointer coordinates are just numbers. Normalize them and feed them into your latent vector"
@@ -35,16 +35,16 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Art that doesn't respond to its audience is a monologue. We're building a conversation. Every gesture, every step, every breath should change the sound.
+Art that doesn't respond to its audience is a monologue. We're building a conversation. Every move a visitor makes should change the sound.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
 We already know how to do this. A slider changes a CSS variable. A drag event repositions an element. We are just swapping the output: instead of moving a div, we are reshaping a sound.
 </Dialogue>
 
-Every interactive UI you have built follows the same pattern: capture user input, transform it into parameters, update the output. Drag-and-drop, interactive charts, color pickers, sliders. All of it is event-driven parameter mapping. Interactive audio generation is identical. The pointer moves, the latent vector shifts, the sound transforms.
+Every interactive UI you have built follows the same pattern: capture user input, transform it into parameters, update the output. Drag-and-drop, interactive charts, color pickers, sliders. All of it is event-driven parameter mapping. Interactive audio generation is identical: pointer movement shifts the latent vector, and the sound follows.
 
-<LearningObjectives objectives={["Map pointer events to audio generation parameters in real time", "Build a continuous sound generation loop driven by user interaction", "Implement smooth parameter transitions to avoid audio artifacts", "Design multi-dimensional input mappings (position, velocity, pressure) for rich soundscapes"]} />
+<LearningObjectives objectives={["Map pointer events to audio generation parameters in real time", "Build a continuous sound generation loop driven by user interaction", "Implement smooth parameter transitions to avoid audio artifacts", "Design multi-dimensional input mappings (position, velocity, pressure) for layered soundscapes"]} />
 
 ## Event-Driven Audio Parameters
 

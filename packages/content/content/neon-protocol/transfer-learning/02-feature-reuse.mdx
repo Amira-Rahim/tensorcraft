@@ -18,7 +18,7 @@ concept:
     mlCode: "// Early layers = universal components. Later layers = domain-specific pages."
     tier: structural
 consequence:
-  narrative: "Noor stares at the heatmaps. Layer 3 activates on edges. The same edges in cats, cars, and drones. 'It learned edges from cats,' she says slowly. 'And those same edges outline a Meridian X-7.' Amir nods. 'Features transfer. That is the whole trick.'"
+  narrative: "Noor stares at the heatmaps. Layer 3 activates on edges. The same edges in cats, cars, and drones. 'It learned edges from cats,' she says slowly. 'And those same edges outline a Meridian X-7.' Amir nods. 'Features transfer. Meridian paid for the lesson.'"
 hints:
   - level: nudge
     content: "Early layers learn universal features like edges and textures; they work for any visual task"
@@ -47,7 +47,7 @@ So the early layers of a model are like a component library, generic building bl
 For the first few layers, yes. The analogy decays with depth. A layer-2 edge detector is a Box primitive: it works anywhere. A layer-11 "golden retriever" detector is somebody else's checkout page. Reuse the primitives. Replace the pages.
 </Dialogue>
 
-Take NEON's decay curve seriously; it is the entire economics of transfer learning. A model's internal features (edges, textures, shapes) compose into new recognitions for tasks it was never trained on, exactly the way `Button`, `Input`, and `Card` compose into an app their authors never imagined. You import the components without caring how they were built. The catch is depth: the deeper the layer, the more it belongs to someone else's app.
+Take NEON's decay curve seriously; it is the entire economics of transfer learning. A model's internal features (edges, textures, shapes) recombine to recognize objects it was never trained on. `Button`, `Input`, and `Card` do the same when they compose into an app their authors never imagined. You import the components without caring how they were built. The catch is depth: the deeper the layer, the more it belongs to someone else's app.
 
 <LearningObjectives objectives={["Understand the feature hierarchy: edges, textures, shapes, objects", "Explain why features learned on one dataset transfer to different domains", "Extract intermediate features from a pre-trained model", "Connect feature reuse to component library patterns in frontend development"]} />
 

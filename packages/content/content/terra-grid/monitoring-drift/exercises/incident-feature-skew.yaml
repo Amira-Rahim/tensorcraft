@@ -11,7 +11,7 @@ instructions: |
       requiresRetrain: boolean,    // true if any feature exceeds 3σ
     }
 
-  Z-score = (prod.mean - train.mean) / train.std. This is the field method for catching skew before it eats your model's accuracy.
+  Z-score = (prod.mean - train.mean) / train.std.
 mlContent: systems
 starterCode: |
   function detectSkew(trainStats, prodStats, threshold = 2) {

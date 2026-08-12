@@ -18,7 +18,7 @@ concept:
     mlCode: "const z = encoder.predict(image) // [784] → [16]"
     tier: structural
 consequence:
-  narrative: "Samir sees that beneath the surface of every image is a compact code, a position in latent space that captures its essence."
+  narrative: "Samir sees that beneath the surface of every image is a compact code: its position in latent space."
 hints:
   - level: nudge
     content: "encoder.predict(image) takes a [784] tensor down to [16]; the decoder's whole job is rebuilding all 784 values from those 16"
@@ -115,7 +115,7 @@ function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): tf.Scalar {
 <Exercise slug="encode-decode-latent" />
 
 <DerivationDrawer summary="Latent variables: the bottleneck principle">
-A **latent variable** is an unobserved variable inferred from observations. The bottleneck principle: if a model must reconstruct/predict X from a smaller representation z, z is forced to capture only the most-information-preserving features of X.
+A **latent variable** is an unobserved variable inferred from observations. The bottleneck principle: if a model must reconstruct/predict X from a smaller representation z, z is forced to keep only the features of X that preserve the most information.
 
 **Information-theoretic view:**
 

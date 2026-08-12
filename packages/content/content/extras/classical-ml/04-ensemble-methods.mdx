@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "One model can be wrong. But when dozens of models vote, the errors cancel out. This is the principle behind the most winning approach in applied ML."
+  narrative: "One model can be wrong. But when dozens of models vote, the errors cancel out. This is the principle behind random forests and gradient boosting, the models that win most applied ML competitions."
 concept:
   explanation: "Ensemble methods combine multiple weak models into a strong one through bagging (parallel, independent) or boosting (sequential, corrective)."
   bridge:
@@ -157,7 +157,7 @@ Why does this work? Each individual tree is mediocre, seeing only part of the da
 
 ## Boosting: Sequential Error Correction
 
-While bagging trains models in parallel, boosting trains them sequentially. Each new model focuses on the mistakes of the previous one. It's like code review: each reviewer catches different bugs.
+While bagging trains models in parallel, boosting trains them sequentially. Each new model focuses on the mistakes of the previous one, like successive code review rounds where each pass targets what the previous one missed.
 
 <CodeBlock language="typescript" title="boosting-concept.ts">
 {`// Conceptual boosting: each model focuses on previous errors

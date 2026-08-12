@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Search bars with NLU parse known intents. Clinical query parsing must handle ambiguous medical terms, abbreviations with multiple expansions, and a knowledge base with strict licensing; failure modes include silently ignoring critical context."
 consequence:
-  narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Karimi and 'Who needs their blood thinner levels checked?' from Imran. Same intent, different language. Khalil's NLU layer normalizes both into the same structured query."
+  narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Karimi and 'Who needs their blood thinner levels checked?' from Imran. Same intent, different language. Khalil's query-understanding layer normalizes both into the same structured query."
 hints:
   - level: nudge
     content: "Break query understanding into intent classification and entity extraction"

@@ -644,7 +644,7 @@ export default async function CapstonePage({ params }: Props) {
               }}
             >
               You&apos;ve completed every mission in every world. New V1.0
-              content lands on the roadmap; watch your inbox.
+              content is on the roadmap. Watch your inbox.
             </div>
           </div>
         ) : null}

@@ -796,7 +796,7 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
       {/* Solution revealed indicator */}
       {showSolution && (
         <p className="text-xs mt-3 italic text-warning font-mono">
-          Solution revealed. Try modifying it to deepen your understanding.
+          Solution revealed. Try changing it and re-running the tests.
         </p>
       )}
     </div>

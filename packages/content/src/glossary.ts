@@ -718,7 +718,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "eigenvector",
     definition:
-      "A direction a matrix scales without rotating. The scale factor is its eigenvalue, and the largest one dominates repeated multiplication, which drives both power iteration and exploding or vanishing gradients.",
+      "A direction a matrix scales without rotating; the scale factor is its eigenvalue. The largest eigenvalue dominates repeated multiplication, which is what drives both power iteration and exploding or vanishing gradients.",
     aliases: ["eigenvectors", "eigenvalue", "eigenvalues"],
     scope: "global",
   },

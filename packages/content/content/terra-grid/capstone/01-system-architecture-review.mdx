@@ -35,14 +35,14 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-Ten modules. Edge basics, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling. Each one solved a specific problem. Now we assemble them into one production system. Priya, lay out the complete architecture. Every component, every connection, every failure mode.
+Ten modules. Edge basics, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling. Each one solved a specific problem. Now we assemble them into one production system. Priya, lay out the complete architecture: every component, with its connections and failure modes.
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
 It is a dependency graph, same as a monorepo. Each module is a package with typed inputs and outputs. I connect them into a pipeline: sensor data flows in, predictions flow out, and every component in between has a clear interface and a fallback strategy.
 </Dialogue>
 
-47 sites. 12,400 devices. 2 million sensors. One pipeline from raw vibration reading to maintenance dispatch, and no component allowed to fail alone. On the whiteboard, Terra Grid Intelligence is a monorepo dependency graph, and it gets the monorepo discipline you know from Turborepo: every ML component a self-contained package with typed interfaces, every design choice captured in an architecture decision record.
+47 sites. 12,400 devices. 2 million sensors. One pipeline from raw vibration reading to maintenance dispatch, with a fallback behind every component. On the whiteboard, Terra Grid Intelligence is a monorepo dependency graph, and it gets the monorepo discipline you know from Turborepo: every ML component a self-contained package with typed interfaces, every design choice captured in an architecture decision record.
 
 <LearningObjectives objectives={["Map the complete Terra Grid Intelligence architecture from sensor to prediction", "Document component interfaces, dependencies, and failure modes", "Create architecture decision records for key design choices", "Validate the dependency graph for completeness and circular reference detection"]} />
 

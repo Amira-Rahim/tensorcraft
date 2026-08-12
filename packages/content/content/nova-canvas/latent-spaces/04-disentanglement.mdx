@@ -18,7 +18,7 @@ concept:
     mlCode: "z[0] = color, z[1] = shape, z[2] = texture  // independent"
     tier: structural
 consequence:
-  narrative: "Samir builds a prototype where each slider controls a single visual attribute: one for color warmth, one for complexity, one for symmetry. The curators are thrilled."
+  narrative: "Samir builds a prototype where each slider controls a single visual attribute: one for color warmth, one for complexity, one for symmetry."
 hints:
   - level: nudge
     content: "Decode baseVector as-is, then set modified[dimension] = value and decode again; only one visual attribute should differ between the two outputs"
@@ -146,4 +146,4 @@ function controlsToLatent(controls: ArtControls): number[] {
 **Locatello et al. 2019:** showed empirically that disentanglement without inductive bias is impossible. β-VAE, FactorVAE, TCVAE all produce LOOK-disentangled latents on toy data but fail to generalize to real data without explicit factor labels.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Disentanglement means each latent dimension controls one independent factor", "Map each kiosk slider to a single latent index and hold the remaining dimensions at 0", "Test disentanglement by sweeping one dimension while fixing the rest", "Disentangled spaces enable intuitive creative control for end users"]} />
+<KeyTakeaways takeaways={["Disentanglement means each latent dimension controls one independent factor", "Map each kiosk slider to a single latent index and hold the remaining dimensions at 0", "Test disentanglement by sweeping one dimension while fixing the rest", "Disentangled spaces make slider controls predictable for end users"]} />

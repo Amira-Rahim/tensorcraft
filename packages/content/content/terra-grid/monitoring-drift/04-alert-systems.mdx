@@ -41,7 +41,7 @@ Two hundred alerts in one hour. The team stopped reading them after the first th
 Alert suppression configured. Severity tiers active. Deduplication window: 30 minutes. Estimated actionable alerts: 6-10 per hour.
 </Dialogue>
 
-The night the drift monitors went live, they fired 200 alerts in the first hour. The on-call engineer read thirty, muted the channel, and went back to bed. Somewhere around alert 140 was a real sensor failure in Region 2, indistinguishable from the noise burying it. You have built this exact failure before, with Sentry rules that page on every minor JavaScript error at 3 AM. The cure is the same in both worlds: thresholds that separate signal from noise, severity tiers that route appropriately, and cooldowns that keep duplicates from burying the real ones.
+The night the drift monitors went live, they fired 200 alerts in the first hour. The on-call engineer read thirty, muted the channel, and went back to bed. Somewhere around alert 140 was a real sensor failure in Region 2, indistinguishable from the noise burying it. You have built this exact failure before, with Sentry rules that page on every minor JavaScript error at 3 AM. The cure is the same in both worlds: thresholds that separate signal from noise, severity tiers that decide what reaches a pager, and cooldowns that keep duplicates from burying the real ones.
 
 <LearningObjectives objectives={["Design multi-tier alert systems with info, warning, and critical severity levels", "Configure windowed thresholds that smooth out noise while catching sustained degradation", "Implement alert deduplication and cooldowns to prevent fatigue", "Route alerts to the right channel based on severity and scope"]} />
 

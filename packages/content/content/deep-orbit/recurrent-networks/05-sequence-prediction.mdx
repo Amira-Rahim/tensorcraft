@@ -122,7 +122,7 @@ const forecast = await forecastMultiStep(model, recentWindow, 47);
 // The LSTM predicts a spike at step 47 of this one-second-step demo horizon.`}
 </CodeBlock>
 
-One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes because it runs on a different series: one value per pulse, the interval sequence, where 47 minutes is only about 38 steps at the current 73-second spacing. Its target is the 47-minute macro-cycle that has sat in Farah's residue plots since module 5. If the forecast lands close, credit the signal's regularity and the short step count before you credit the model.
+One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes because it runs on a different series: the interval sequence, one value per pulse. At the current 73-second spacing, 47 minutes is only about 38 steps. Its target is the 47-minute macro-cycle that has sat in Farah's residue plots since module 5. If the forecast lands close, credit the signal's regularity and the short step count before you credit the model.
 
 ## Challenge
 
@@ -147,7 +147,7 @@ Train a prediction model and forecast the next signal value.
 
 <Epilogue>
 
-The forecast goes up on the main bridge display at 2010: predicted recurrence, 47 minutes; nobody is assigned to watch the countdown, and by 2050 the entire bridge crew is watching it anyway. The display is tuned to the macro-cycle: between episodes the 73-second pulses drop below the noise floor and the anomaly trace reads flat, which is exactly why the return of the full episode will be unmissable when it comes. Nazari kills the room audio. 46:59, then 47:00, and the trace stays flat, and Demir feels the whole room not breathe. 47:01, 47:02. At 47:03 the spike walks onto the display exactly as drawn.
+The forecast goes up on the main bridge display at 2010: predicted recurrence, 47 minutes; nobody is assigned to watch the countdown, and by 2050 the entire bridge crew is watching it anyway. The display is tuned to the macro-cycle: between episodes the 73-second pulses drop below the noise floor and the anomaly trace reads flat. That flatness is exactly why the return of the full episode will be unmissable when it comes. Nazari kills the room audio. 46:59, then 47:00, and the trace stays flat, and Demir feels the whole room not breathe. 47:01, 47:02. At 47:03 the spike walks onto the display exactly as drawn.
 
 <Dialogue speaker="Commander Mirza">
 Log the three seconds. I want to know whose error that is: ours or theirs.

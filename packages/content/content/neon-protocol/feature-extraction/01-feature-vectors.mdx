@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-When I worked at Meridian, we processed 14 million camera frames per hour. You cannot store 14 million images. But you can store 14 million vectors of 512 numbers each. A feature vector is an image compressed to its essence. What the network considers important, stripped of everything it doesn't.
+When I worked at Meridian, we processed 14 million camera frames per hour. You cannot store 14 million images. But you can store 14 million vectors of 512 numbers each. A feature vector is an image compressed down to what the network considers important, stripped of everything it doesn't.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -119,7 +119,7 @@ Build a function that calculates compression ratios for feature extraction.
 <Exercise slug="extract-features" />
 
 <DerivationDrawer summary="Why dense vectors carry meaning a flat array doesn't">
-A feature vector is a point in d-dimensional space chosen so that **distances encode similarity**. Two embeddings have small distance ⟺ they share semantic structure.
+A feature vector is a point in d-dimensional space chosen so that **distances encode similarity**. Two such vectors (called embeddings) have small distance ⟺ they share semantic structure.
 
 **Mathematical property required:** the embedding map `f: input → R^d` should preserve a meaningful relation. Common choices:
 

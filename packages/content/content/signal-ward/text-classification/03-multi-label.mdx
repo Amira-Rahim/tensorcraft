@@ -51,7 +51,7 @@ Ah, that's the difference between a radio button and a checkbox group. Radio but
 
 In HTML forms, radio buttons enforce mutual exclusivity: pick exactly one. Checkboxes allow any combination. Multi-label classification works like checkboxes: each label gets its own independent sigmoid, outputting a probability between 0 and 1. You can check as many boxes as apply, or none at all.
 
-The critical insight: switch from softmax (probabilities sum to 1) to sigmoid (each probability is independent). Each output neuron is its own binary classifier.
+The change is in the output activation: switch from softmax (probabilities sum to 1) to sigmoid (each probability is independent). Each output neuron is its own binary classifier.
 
 <CodeBlock language="typescript" title="multi-label-tagger.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -168,11 +168,11 @@ function perLabelMetrics(
 </CodeBlock>
 
 <Dialogue speaker="Vikram">
-So every document is like a patient: it can have multiple conditions at once. And we need to catch all of them, not just the primary diagnosis.
+So a single document can carry multiple conditions at once, and we need to catch all of them, not just the primary diagnosis.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-And a missed tag isn't a cosmetic bug. Overlook renal insufficiency in a cardiac patient and someone may prescribe a nephrotoxic drug, one that damages kidneys that were already struggling. Every relevant tag matters.
+And a missed tag isn't a cosmetic bug. Overlook renal insufficiency in a cardiac patient and someone may prescribe a nephrotoxic drug, one that damages kidneys that were already struggling.
 </Dialogue>
 
 ## Challenge

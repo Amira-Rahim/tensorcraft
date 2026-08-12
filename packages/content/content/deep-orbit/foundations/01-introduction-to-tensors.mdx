@@ -21,7 +21,7 @@ concept:
     mlTitle: "Tensor"
     mlCode: "const t = tf.tensor([1, 2, 3])"
     tier: structural
-    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), gradient information for autograd, and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not: you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
+    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), gradient information for training, and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not: you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
 consequence:
   narrative: "The signal begins to take shape as structured data."
 hints:
@@ -48,7 +48,7 @@ Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. A
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
-Then we need someone who doesn't start from rules. Demir, you think in data structures. Start there.
+Then we need someone who doesn't start from rules. Demir, you think in data structures; start there.
 </Dialogue>
 
 You've worked with arrays your entire career: DOM elements, API responses, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage. That list is the gap this lesson closes.
@@ -138,7 +138,7 @@ Now it's your turn. Create your first tensor from a JavaScript array.
 
 One more thing the archive files between lessons, starting now: DISPATCH intercepts, relay chatter from other crews working the same band on other missions. This is the first.
 
-> **DISPATCH archive · field intercept #02-T:** Yara's collective ships image latents in Nova Canvas as `[batch, channels, h, w]`, channels-first: a different layout from the channels-last `[batch, h, w, channels]` this course's TFJS models use. Different domain, different layout, same primitive. The tensor is the lingua franca; the meaning is the lesson.
+> **DISPATCH archive · field intercept #02-T:** Yara's collective ships image latents in Nova Canvas as `[batch, channels, h, w]`, channels-first: a different layout from the channels-last `[batch, h, w, channels]` this course's TFJS models use. Different domain, different layout, same primitive.
 
 <Epilogue>
 

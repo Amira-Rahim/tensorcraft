@@ -1,7 +1,7 @@
 slug: wrangle-data
 lessonSlug: pandas-data-wrangling
 title: "Data Wrangling in JavaScript"
-instructions: "Translate a pandas data pipeline to JavaScript. You have an array of sensor reading objects. Implement the pipeline: (1) filter out rows with null values, (2) filter to only readings above a threshold, (3) add a normalized column, (4) group by sensorId and compute the mean of the normalized values. This mirrors a typical pandas preprocessing pipeline."
+instructions: "Translate a pandas data pipeline to JavaScript. You have an array of sensor reading objects. Implement the pipeline: (1) filter out rows with null values, (2) filter to only readings above a threshold, (3) add a normalized column, (4) group by sensorId and compute the mean of the normalized values."
 starterCode: |
   // Translate this pandas pipeline to JavaScript:
   //

@@ -10,7 +10,7 @@ context:
   narrative: "The ethics review begins. Khalil presents Diagnostic One's capabilities, but the committee chair interrupts: 'How does a clinician actually use this in a trauma bay?' Khalil turns to the whiteboard and sketches the contract he knows: POST clinical text, GET structured predictions. The chair stops him at the second box. 'A trauma bay doesn't retry on a timeout. What happens at millisecond 201?'"
   speaker: "Khalil"
 concept:
-  explanation: "An ML serving API follows the exact same pattern as a REST API with SLA guarantees (request validation, processing, and response formatting), but the processing step is neural network inference instead of a database query, and the SLA covers latency budgets, error handling, and graceful degradation."
+  explanation: "An ML serving API follows the exact same pattern as a REST API with SLA guarantees: validate the request, process it, format the response. The difference is the processing step, which runs neural network inference instead of a database query. The SLA covers latency budgets, error handling, and graceful degradation."
   bridge:
     feTitle: "REST API with SLA"
     feCode: "app.post('/api/data', validate, async (req, res) => { const result = await db.query(req.body); res.json(result); })"
@@ -263,4 +263,4 @@ Build a production NLP API class that validates requests, runs inference, enforc
 
 <Exercise slug="build-nlp-api" />
 
-<KeyTakeaways takeaways={["Enforce the 200ms SLA with Promise.race: inference that overruns returns a clean 504, never a stalled request", "Cap input size at validation (here, 10,000 characters): inference latency grows with token count", "Request batching collects up to 8 requests for at most 10ms and runs one GPU pass for all of them", "Health check endpoints for ML APIs monitor model readiness and tensor memory, not just uptime"]} />
+<KeyTakeaways takeaways={["Enforce the 200ms SLA with Promise.race: inference that overruns returns a clean 504, never a stalled request", "Cap input size at validation (here, 10,000 characters): inference latency grows with token count", "Request batching collects up to 8 requests for at most 10ms and runs one GPU pass for all of them", "Health check endpoints for ML APIs monitor model readiness and tensor memory in addition to uptime"]} />

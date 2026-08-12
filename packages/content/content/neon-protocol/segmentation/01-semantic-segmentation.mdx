@@ -18,7 +18,7 @@ concept:
     mlCode: "const mask = model.predict(image); // [H, W, numClasses]"
     tier: structural
 consequence:
-  narrative: "The feed transforms. Instead of boxes, every pixel glows with color: roads blue, buildings green, people red, drones orange. Zara nods. 'Now you are not just detecting. You are understanding the entire scene.'"
+  narrative: "The feed transforms. Instead of boxes, every pixel glows with color: roads blue, buildings green, people red, drones orange. Zara nods. 'There it is. Where the road ends and the sidewalk begins.'"
 hints:
   - level: nudge
     content: "A segmentation mask has the same height and width as the input image, but each pixel holds a class index instead of a color"
@@ -50,7 +50,7 @@ Yes. That map is called a **segmentation mask**: a tensor with the same height a
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-With `clip-path`, you define polygon regions that carve out visible areas of an element. A segmentation model does this for every object category in the image (roads, buildings, people, sky), producing a dense map of non-overlapping regions. One difference deserves respect before the code: you author a clip-path polygon, so the region sits exactly where you declared it. The model predicts its regions pixel by pixel, and it can be wrong about any one of them.
+With `clip-path`, you define polygon regions that carve out visible areas of an element. A segmentation model does this for every object category in the image (roads, buildings, people, sky), producing a dense map of non-overlapping regions. One difference matters before the code: you author a clip-path polygon, so the region sits exactly where you declared it. The model predicts its regions pixel by pixel, and it can be wrong about any one of them.
 
 <CodeBlock language="typescript" title="semantic-segmentation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -107,8 +107,7 @@ function renderMask(mask: tf.Tensor2D, canvas: HTMLCanvasElement): void {
   ctx.putImageData(imageData, 0, 0);
 }
 
-// Overlay onto the original feed; the resistance can now
-// see District 7 parsed into meaningful regions`}
+// Overlay onto the original feed to show each pixel's class`}
 </CodeBlock>
 
 ## Challenge
@@ -149,4 +148,4 @@ Where γ ≥ 1 (typical 2). Down-weights easy examples (high p_true) → focuses
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses]; use argMax to pick the winning class per pixel", "Class imbalance is the standard failure: when background covers 90% of pixels, weight the loss per class or the model predicts background everywhere", "This gives the resistance full scene understanding, not just object locations"]} />
+<KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses]; use argMax to pick the winning class per pixel", "Class imbalance is the standard failure: when background covers 90% of pixels, weight the loss per class or the model predicts background everywhere"]} />

@@ -52,7 +52,7 @@ I built the records interface at Meridian Health. Their discharge summaries are 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Ctrl+F matches characters. Extractive QA matches meaning. The model reads both the question and the context passage, then predicts two positions: where the answer **starts** and where it **ends**.
+The model reads both the question and the context passage, then predicts two positions: where the answer **starts** and where it **ends**.
 
 <CodeBlock language="typescript" title="extractive-qa.ts">
 {`import * as tf from '@tensorflow/tfjs';

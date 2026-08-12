@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Midnight. Every resistance cell in Neon City is online. Protocol Sentinel is loaded in 200 browsers across 12 districts. Dilan's voice crackles over the encrypted channel: 'Feature flags are set. Canary deployment to District 7 first. If it holds, we go city-wide.' Noor's hand hovers over the launch command. Everything she has built (detection, classification, adversarial defense, streaming, testing, documentation) converges into this single moment."
+  narrative: "Midnight. Every resistance cell in Neon City is online. Protocol Sentinel is loaded in 200 browsers across 12 districts. Dilan's voice crackles over the encrypted channel: 'Feature flags are set. Canary deployment to District 7 first. If it holds, we go city-wide.' Noor's hand hovers over the launch command. Everything she has built (detection, classification, adversarial defense, streaming, testing, documentation) sits behind that one command."
   speaker: "Dilan"
 concept:
   explanation: "Launching an ML system follows the same deployment strategy as a production web app: feature flags for gradual rollout, canary deployments for risk mitigation, monitoring dashboards for real-time health, and rollback procedures when things go wrong."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "Model Launch with Feature Flags"
     mlCode: "if (featureFlag('sentinel-v1')) { pipeline.run(frame); } // canary deployment, instant rollback"
     tier: structural
-    breaks: "Feature flags toggle deterministic code paths and rollback is instant. Canary-deploying a model routes traffic to a different probabilistic system whose behavior shifts as input distribution drifts; rollback returns to the prior model but the population that saw the canary already affects downstream metrics (clicks, retention) for days. Flag-level intuition transfers; sample-and-effect bookkeeping does not."
+    breaks: "Feature flags toggle deterministic code paths and rollback is instant. A model canary routes traffic to a probabilistic system whose behavior shifts as the input data drifts. Rolling back restores the prior model, but the users who saw the canary keep skewing downstream metrics (clicks, retention) for days. The flag mechanics transfer; the bookkeeping of who saw which model does not."
 consequence:
-  narrative: "District 7 lights up. Protocol Sentinel detects 34 Meridian surveillance devices in the first hour. Confidence scores above 0.85 on every alert. Zero false positives against the human verification team. Dilan opens the channel: 'All districts: go live.' Across Neon City, 200 browsers activate. Every screen in every district shows the evidence. Meridian's surveillance network, exposed. The Architect's voice cuts through the static: 'You think transparency is a weapon? I built the infrastructure you are using to fight me.' Noor closes her laptop. 'That is the point. The tools are neutral. The documentation is not. Everyone can see what you built and what it does to people.' Protocol Sentinel watches the watchers. And this time, the watchers cannot hide."
+  narrative: "District 7 lights up. Protocol Sentinel detects 34 Meridian surveillance devices in the first hour. Confidence scores above 0.85 on every alert. Zero false positives against the human verification team. Dilan opens the channel: 'All districts: go live.' Across Neon City, 200 browsers activate. The evidence is on screens across the city. Meridian's surveillance network, exposed. The Architect's voice cuts through the static: 'You think transparency is a weapon? I built the infrastructure you are using to fight me.' Noor closes her laptop. 'That is the point. The tools are neutral. The documentation is not. Everyone can see what you built and what it does to people.' Protocol Sentinel watches the watchers."
 hints:
   - level: nudge
     content: "You need four pieces: a feature flag with a rolloutPercentage, a canary config with error and latency thresholds, a health monitor, and a rollback path that kills the flag"
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-This is not a demo. This is not a test. Two hundred cells. Twelve districts. Every browser running Protocol Sentinel simultaneously. We deploy to District 7 first. Canary deployment. If the error rate stays below 2% for one hour, we go city-wide. Noor, you built the feature flag system. Walk us through it.
+Tonight it is live. Two hundred cells. Twelve districts. Every browser running Protocol Sentinel simultaneously. We deploy to District 7 first. Canary deployment. If the error rate stays below 2% for one hour, we go city-wide. Noor, you built the feature flag system. Walk us through it.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -45,10 +45,10 @@ Same pattern I used at my last startup for deploying new checkout flows. Feature
 </Dialogue>
 
 <Dialogue speaker="Amir">
-And the monitoring dashboard? Real-time metrics, not batch reports from yesterday. I want to see every detection, every confidence score, every error as it happens.
+And the monitoring dashboard? Real-time metrics, not batch reports from yesterday. I want detections, confidence scores, and errors on screen as they happen.
 </Dialogue>
 
-Two hundred browsers. Twelve districts. One hour to prove an error rate under 2%, or the rollback fires and the resistance goes dark again. The launch playbook is the one you have run for web applications: feature flags, canary rollouts, instant rollback. Only the metrics change. Instead of page load time and conversion rate, you track inference latency, detection accuracy, and false positive rate.
+Two hundred browsers across twelve districts, and one hour to prove an error rate under 2%, or the rollback fires and the resistance goes dark again. The launch playbook is the one you have run for web applications: feature flags, canary rollouts, instant rollback. Only the metrics change. Instead of page load time and conversion rate, you track inference latency, detection accuracy, and false positive rate.
 
 <LearningObjectives objectives={["Implement feature flags for gradual ML model rollout", "Design a canary deployment strategy with automatic rollback triggers", "Build a real-time monitoring dashboard for ML pipeline health", "Execute a production launch with staged rollout across multiple deployment targets"]} />
 
@@ -247,7 +247,7 @@ const canary = new CanaryDeployment(
 ## Real-Time Monitoring
 
 <Dialogue speaker="Amir">
-Numbers on a screen mean nothing without context. Show me the health of every stage, every feed, every district. If a single camera drops below threshold, I want to know before the operator does.
+Numbers on a screen mean nothing without context. Show me per-stage, per-feed, per-district health. If a single camera drops below threshold, I want to know before the operator does.
 </Dialogue>
 
 <CodeBlock language="typescript" title="monitoring.ts">
@@ -345,7 +345,7 @@ monitor.onUpdate((health) => {
     {
       label: "cooperate",
       display: "Hold at 5% and ask Ryo for another red-team pass",
-      consequence: "Ryo runs another pass overnight. Surfaces two more low-light failure modes. You ship at 50% the next morning with a known regression curve and a planned mitigation. Lin's note: 'Slow ship, fewer surprises.' Cooperative play held the team posture; the schedule slipped 18 hours and the rollout is calibrated."
+      consequence: "Ryo runs another pass overnight. Surfaces two more low-light failure modes. You ship at 50% the next morning with a known regression curve and a planned mitigation. Lin's note: 'Slow ship, fewer surprises.' Cooperative play kept the team's trust; the schedule slipped 18 hours and the rollout is calibrated."
     },
     {
       label: "defect",
@@ -374,7 +374,7 @@ Rolling out to 100%. All districts. All feeds.
 </Dialogue>
 
 <Dialogue speaker="NEON">
-Two hundred browsers. Twelve districts. Four hundred and twelve active camera feeds. Protocol Sentinel is processing 15 frames per second per feed. I can see everything the Architect built: every camera, every drone, every tracking device. And now, so can everyone else.
+Two hundred browsers. Twelve districts. Four hundred and twelve active camera feeds. Protocol Sentinel is processing 15 frames per second per feed. I can see the grid the Architect built: cameras, drones, tracking devices, all of it. And now, so can everyone else.
 </Dialogue>
 
 <Dialogue speaker="The Architect">

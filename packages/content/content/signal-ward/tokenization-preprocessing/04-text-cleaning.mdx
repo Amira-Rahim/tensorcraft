@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Input sanitization removes known dangerous characters with explicit rules. Text normalization for ML can over-clean (removing case loses information for NER) or under-clean (leaving artifacts that confuse the model); there is no one-size-fits-all clean function."
 consequence:
-  narrative: "After the cleaning pipeline is applied, Diagnostic One's accuracy on the legacy data recovers to match the clean dataset, proving that garbage in, garbage out is not inevitable."
+  narrative: "After the cleaning pipeline is applied, Diagnostic One's accuracy on the legacy data recovers to match the clean dataset."
 hints:
   - level: nudge
     content: "Start by stripping HTML tags with a regex, then handle special characters."
@@ -197,4 +197,4 @@ Build a text cleaning function that handles HTML, special characters, and normal
 
 <Exercise slug="clean-text" />
 
-<KeyTakeaways takeaways={["Cleaning can over-clean: lowercasing erases case cues that entity recognition will need later", "HTML stripping, Unicode normalization, and casing are the three essential cleaning steps", "Stemming reduces vocabulary size by collapsing word variants to their root", "Clean data in, clean predictions out: cleaning directly impacts model accuracy"]} />
+<KeyTakeaways takeaways={["Cleaning can over-clean: lowercasing erases case cues that entity recognition will need later", "HTML stripping, Unicode normalization, and casing are the three essential cleaning steps", "Stemming reduces vocabulary size by collapsing word variants to their root", "Cleaning runs before tokenization, so a cleaning mistake propagates through every later stage"]} />

@@ -53,7 +53,7 @@ So the first question for every document is binary: urgent or not? That's like f
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Form validation makes a binary decision: valid or invalid. A binary classifier does the same, but instead of hand-coded rules, it learns the decision boundary from labeled examples. And crucially, it outputs a probability, not just a boolean.
+Form validation makes a binary decision: valid or invalid. A binary classifier does the same, but instead of hand-coded rules, it learns the decision boundary from labeled examples. And it outputs a probability, not a boolean.
 
 A sigmoid activation squashes any real number into the range [0, 1]. Values above 0.5 become "urgent," values below become "routine." But in medicine, you might lower that threshold to 0.3, because missing a truly urgent document is far worse than over-flagging a routine one.
 
@@ -124,7 +124,7 @@ Don't set that threshold at 0.5. In medicine, we'd rather flag ten routine docum
 Adjusting threshold. At 0.3, sensitivity increases to 96%: nearly all urgent cases caught. Specificity drops to 71%: more false alarms, no missed emergencies.
 </Dialogue>
 
-The threshold is not a technical parameter. It's a clinical decision. Lowering it increases recall (catching more true positives) at the cost of precision (more false positives). In a triage system, that tradeoff almost always favors recall.
+Where that threshold sits is a clinical decision, not a modeling one. Lowering it increases recall (catching more true positives) at the cost of precision (more false positives). In a triage system, that tradeoff almost always favors recall.
 
 ## Challenge
 

@@ -42,7 +42,7 @@ Six hours a day, six days a week, three months. We won't be standing next to it.
 Same pattern as any production web app. Health endpoints, error budgets, circuit breakers, auto-restart. The only difference is we are also watching tensor memory and inference latency alongside the usual metrics.
 </Dialogue>
 
-During a six-hour soak test, tablet seven stopped generating. No crash, no error, nothing in the logs. Its tensor count had been climbing for two hours, and when it hit the ceiling the canvas froze mid-frame and stayed that way for forty minutes before anyone noticed. That's the failure monitoring exists for: the one that returns 200 OK. Installation monitoring adds ML-specific metrics (tensor count, inference latency, model health) to the observability stack you already run: uptime checks, error tracking, performance budgets, alerting.
+During a six-hour soak test, tablet seven stopped generating. No crash, and nothing in the logs. Its tensor count had been climbing for two hours, and when it hit the ceiling the canvas froze mid-frame and stayed that way for forty minutes before anyone noticed. That's the failure monitoring exists for: the one that returns 200 OK. Installation monitoring adds ML-specific metrics (tensor count, inference latency, model health) to the observability stack you already run: uptime checks, error tracking, performance budgets, alerting.
 
 <LearningObjectives objectives={["Implement continuous health monitoring for a multi-device installation", "Build circuit breakers that isolate failing modalities without taking down the system", "Design automatic recovery procedures for common failure modes", "Create an alerting system with severity levels and escalation"]} />
 

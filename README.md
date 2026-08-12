@@ -1,6 +1,6 @@
 # Tensorcraft
 
-An interactive, story-driven web application that teaches frontend engineers browser-based machine learning — bridging familiar web development concepts to ML through 50+ concept mappings.
+An interactive, story-driven web application that teaches frontend engineers browser-based machine learning. It bridges familiar web development concepts to ML through 50+ concept mappings.
 
 ## Worlds
 
@@ -14,7 +14,7 @@ Tensorcraft is organized into five worlds, each with its own narrative:
 | **Nova Canvas**   | Creative AI | Multimodal & Generative |
 | **Terra Grid**    | Industrial  | Edge AI & Production ML |
 
-Each world contains 11 modules × 5 lessons (~22 hours of content) with hands-in-browser exercises.
+Each world contains 11 modules × 5 lessons (~22 hours of content) with hands-on, in-browser exercises.
 
 ## Tech Stack
 
@@ -22,7 +22,7 @@ Each world contains 11 modules × 5 lessons (~22 hours of content) with hands-in
 - **Monorepo:** Turborepo + pnpm workspaces
 - **Content:** MDX v3 + Velite (Zod-validated content pipeline)
 - **Exercises:** Sandpack (in-browser code) + Jest (validation)
-- **Styling:** Tailwind CSS 4 with `@world` directive (CSS custom properties); no CSS Modules in use. Dark mode only.
+- **Styling:** Tailwind CSS 4 with `@world` directive (CSS custom properties); no CSS Modules in use. Dark and light schemes: follows the OS, with a manual toggle.
 - **Auth & DB:** Supabase (Postgres + Auth)
 - **Payments:** Stripe (one-time per-world purchases)
 - **Analytics:** PostHog + Plausible
@@ -77,10 +77,10 @@ cp apps/web/.env.example apps/web/.env.local
 
 You'll need:
 
-- `NEXT_PUBLIC_SUPABASE_URL` — Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase anon key
-- `STRIPE_SECRET_KEY` — Stripe secret key
-- `STRIPE_WEBHOOK_SECRET` — Stripe webhook signing secret
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon key
+- `STRIPE_SECRET_KEY`: Stripe secret key
+- `STRIPE_WEBHOOK_SECRET`: Stripe webhook signing secret
 
 ## Development
 
@@ -110,10 +110,10 @@ See [docs/deployment-guide.md](docs/deployment-guide.md) for environment variabl
 
 Lessons are written in MDX and live in `packages/content/content/<world>/<module>/`. Each module contains:
 
-- `01-*.mdx` through `05-*.mdx` — lesson files
-- `exercises/*.yaml` — exercise definitions with Sandpack configs
+- `01-*.mdx` through `05-*.mdx`: lesson files
+- `exercises/*.yaml`: exercise definitions with Sandpack configs
 
-Content is validated at build time through Velite with Zod schemas, ensuring type-safe content throughout the app.
+Content is validated at build time through Velite with Zod schemas, and the generated types are used throughout the app.
 
 ## License
 

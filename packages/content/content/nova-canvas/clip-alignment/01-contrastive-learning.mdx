@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Rohan puts two images side by side. 'Which one matches the caption a melancholy cityscape at twilight?' One is moody, blue-toned. The other is a bright daytime city. 'The model learns by comparison,' he says. 'Not by being told the answer, but by seeing which pairs match and which don't. Like an A/B test.'"
+  narrative: "Rohan puts two images side by side. 'Which one matches the caption a melancholy cityscape at twilight?' One is moody, blue-toned. The other is a bright daytime city. 'The model learns by comparison,' he says. 'It sees which pairs match and which don't. Nobody tells it the answer. Like an A/B test.'"
   speaker: "Rohan"
 concept:
   explanation: "Contrastive learning trains a model by comparison instead of instruction: pull matched image-text pairs together in embedding space, push the mismatched ones apart. Nobody tells the model what a sunset is; it learns what survives the comparisons."
@@ -19,7 +19,7 @@ concept:
     tier: intuition
     breaks: "A/B testing measures user behavior across two known variants. Contrastive learning trains a model to pull matched pairs together and push unmatched pairs apart in embedding space. The 'A' and 'B' are dynamically sampled from the dataset, not user-assigned."
 consequence:
-  narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters: the difference between a description and an evocation. Rohan: 'Mood is a direction in a 512-dimensional vector space.'"
+  narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters: the difference between a description and an evocation."
 hints:
   - level: nudge
     content: "A/B tests compare two variants to find which is better. Contrastive learning compares pairs to find which match."
@@ -44,7 +44,7 @@ So it's an A/B test. Two known variants, assign half the traffic to each, and me
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-That's where my analogy stops carrying. An A/B test measures users against two fixed variants somebody chose. Here nobody assigns anything: in a batch of 32, the 32 matched pairs and 992 mismatched ones are sampled fresh from the dataset every step. The model learns by telling them apart. Comparison, not memorization.
+That's where my analogy stops carrying. An A/B test measures users against two fixed variants somebody chose. Here nobody assigns anything: in a batch of 32, the 32 matched pairs and 992 mismatched ones are sampled fresh from the dataset every step. The model learns by telling them apart.
 </Dialogue>
 
 You already use A/B testing to learn what works by comparison. Contrastive learning applies the same principle to embeddings: the model learns which image-text pairs match by comparing them against mismatches.

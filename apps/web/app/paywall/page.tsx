@@ -97,7 +97,7 @@ export default function PaywallPage() {
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
             You&rsquo;ve seen the bridge. Modules 2-11 are where you stop
             translating and start shipping: tensors, backprop, signal
-            processing, and a capstone: a working browser-side ML system you
+            processing, and a capstone, a working browser-side ML system you
             assemble piece by piece.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -229,7 +229,7 @@ export default function PaywallPage() {
                 This course is new, so there are no testimonials here yet, and
                 we won&apos;t invent any. What it produces instead is
                 verifiable: every solved exercise lands in your GitHub as a
-                commit you can point an interviewer at, and completing all 56
+                commit you can point an interviewer at. Completing all 56
                 lessons issues a certificate with a public, shareable page.
               </p>
             </div>
@@ -246,8 +246,7 @@ export default function PaywallPage() {
             Ready for Module 2?
           </h2>
           <p className="text-base mb-10 text-text-muted font-sans max-w-130 mx-auto">
-            Single world, a bundle, or all five: no subscriptions, no expiring
-            access.
+            One payment, lifetime access: no subscriptions, no expiring access.
           </p>
           <PaywallCtaTracker>
             <Link

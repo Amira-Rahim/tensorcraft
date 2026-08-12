@@ -22,7 +22,7 @@ consequence:
   narrative: "Yara creates a library of style tokens: Gram matrices extracted from her favorite paintings. Each one is a reusable identity. 'I can apply any of these to any photograph,' she realizes. 'An infinite palette.'"
 hints:
   - level: nudge
-    content: "Design tokens capture the essence of a brand. Gram matrices capture the essence of an artistic style."
+    content: "A Gram matrix does for a painting style what design tokens do for a brand: it reduces the look to numbers you can reuse."
   - level: guidance
     content: "Extract Gram matrices from multiple layers to capture style at different scales: fine textures, medium patterns, large structures."
   - level: solution
@@ -142,4 +142,4 @@ Extract Gram matrices from multiple CNN layers to build a multi-scale style repr
 **Computational note:** G is `[C, C]` where C is the number of channels (typically 64-512). For VGG layer with 256 channels, G is 256×256 = 65k entries. Computing G_style for one image once + caching is a major speedup.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["One multi-output model returns all style layers in a single forward pass: outputs: [conv1, conv2, conv3]", "Early layers encode fine textures (brushstrokes, color patches); deep layers encode large-scale patterns", "Multi-scale style representations produce richer, more faithful style transfer", "Style tokens are reusable: extract once from a painting, apply to any content image"]} />
+<KeyTakeaways takeaways={["One multi-output model returns all style layers in a single forward pass: outputs: [conv1, conv2, conv3]", "Early layers encode fine textures (brushstrokes, color patches); deep layers encode large-scale patterns", "Multi-scale style representations make the transfer more faithful than any single layer alone", "Style tokens are reusable: extract once from a painting, apply to any content image"]} />

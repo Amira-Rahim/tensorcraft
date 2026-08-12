@@ -67,7 +67,7 @@ export function PendingPoller({ sessionId }: { sessionId?: string }) {
       </p>
       <p className="text-sm leading-relaxed text-text-primary mb-4">
         Your payment is still being confirmed. That can take a few minutes for
-        some payment methods; your access unlocks automatically the moment it
+        some payment methods. Your access unlocks automatically the moment it
         clears, and nothing is lost by waiting. If this page still shows
         &quot;Almost There&quot; after that, tell us and we&apos;ll sort it out
         directly.

@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Single-pass rendering produces final HTML in one server pass. YOLO does single-shot detection in one forward pass but pays for it with anchor-grid design choices, multi-scale prediction heads, and harder training compared to two-stage detectors."
 consequence:
-  narrative: "Twenty-four frames per second. On Noor's laptop, in a web worker with WebGL acceleration, the browser-based detector chews through drone footage faster than the drones change course. NEON watches the feed. 'For the first time, you see them before they see you. Meridian will not expect detection coming from a browser tab.' Dilan smiles. 'This changes everything.'"
+  narrative: "Twenty-four frames per second. On Noor's laptop, in a web worker with WebGL acceleration, the browser-based detector chews through drone footage faster than the drones change course. NEON watches the feed. 'For the first time, you see them before they see you. Meridian will not expect detection coming from a browser tab.' Dilan smiles. 'Put it on every feed we have.'"
 hints:
   - level: nudge
     content: "YOLO divides the image into a grid and predicts boxes, confidence, and class probabilities at each cell"
@@ -51,7 +51,7 @@ Same instinct. But know what the single pass costs before you fall in love with 
 If it runs in the browser, there is no server to trace. No API to intercept. Just a web worker and a WebGL context. For the first time, we see the drones before they see us.
 </Dialogue>
 
-YOLO revolutionized object detection by doing everything in a **single forward pass**. No separate region proposal step. No multi-stage pipeline. One network, one pass, all detections.
+YOLO does object detection in a **single forward pass**: one network reads the whole image and predicts all the boxes, labels, and confidence scores at once, with no separate region-proposal stage.
 
 <LearningObjectives objectives={["Understand the YOLO single-shot detection architecture and why it is fast", "Decode YOLO output tensors into bounding boxes with class predictions", "Compare single-pass vs multi-pass approaches in both ML and frontend rendering", "Build the detection pipeline: predict, decode, threshold, NMS"]} />
 

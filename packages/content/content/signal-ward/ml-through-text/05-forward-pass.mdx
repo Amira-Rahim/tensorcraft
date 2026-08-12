@@ -17,7 +17,7 @@ concept:
     mlTitle: "Forward Pass"
     mlCode: "tokenize(text).then(embed).then(model).then(classify)"
     tier: structural
-    breaks: "Promise chains pass values forward through pure async functions. Forward pass through a text model passes activations through learned weight matrices and the same input always produces the same output (given fixed weights) but the intermediate values are not human-readable."
+    breaks: "Promise chains pass values forward through pure async functions. A forward pass through a text model sends activations through learned weight matrices instead. With fixed weights the same input always produces the same output, but the intermediate values are not human-readable."
 consequence:
   narrative: "Diagnostic One runs its first successful end-to-end classification. Dr. Karimi is cautiously optimistic."
 hints:
@@ -46,7 +46,7 @@ It's a Promise chain. fetch, then parse, then validate, then render. Each step t
 Show me. Run a clinical note through the entire pipeline. I want to see it classify in real time.
 </Dialogue>
 
-In a forward pass, data flows through layers in sequence, each one transforming it, until a prediction emerges at the end. There is no training here, no learning. Inference is running data through functions whose parameters are already set.
+In a forward pass, data flows through layers in sequence, each one transforming it, until a prediction emerges at the end. Nothing is trained here. Inference is running data through functions whose parameters are already set.
 
 <LearningObjectives objectives={["Chain tokenization, encoding, and classification into a complete pipeline", "Run a forward pass through a simple text classifier", "Understand that inference is just data flowing through functions", "Build an end-to-end text classification pipeline in TensorFlow.js"]} />
 
@@ -135,4 +135,4 @@ Build a complete forward pass pipeline that takes raw clinical text and outputs 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A forward pass chains tokenization → encoding → model → prediction", "With fixed weights, the same note always produces the same prediction: inference is deterministic", "Inference is just running data through learned functions, no magic involved", "The full pipeline: raw text in, probability out"]} />
+<KeyTakeaways takeaways={["A forward pass chains tokenization → encoding → model → prediction", "With fixed weights, the same note always produces the same prediction: inference is deterministic", "Inference is just running data through learned functions", "The full pipeline: raw text in, probability out"]} />

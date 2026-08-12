@@ -142,4 +142,4 @@ InstanceNorm: normalize over (H, W) per sample, per channel
 Applied at each layer of the generator. This is the basis for arbitrary style transfer (one model, any style).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Iterative transfer pays hundreds of optimization steps per image; the feedforward version paid them once, during training, for one style", "Feedforward networks pre-compile a style into learned weights: single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds. True real-time performance"]} />
+<KeyTakeaways takeaways={["Iterative transfer pays hundreds of optimization steps per image; the feedforward version paid them once, during training, for one style", "Feedforward networks pre-compile a style into learned weights: single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds"]} />

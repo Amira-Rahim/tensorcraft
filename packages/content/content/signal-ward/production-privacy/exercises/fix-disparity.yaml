@@ -1,7 +1,7 @@
 slug: fix-disparity
 lessonSlug: the-disparity
 title: "Fix the Performance Disparity"
-instructions: "Implement two functions: augmentSlice and measureImprovement. augmentSlice takes an array of text samples and returns an augmented array that includes all original samples plus new synthetic samples created by applying a simple abbreviation transformation (replace 'patient' with 'pt', 'temperature' with 'temp', 'blood pressure' with 'BP', 'without' with 'w/o'). Each original sample should produce one synthetic sample. measureImprovement takes before and after accuracy values for two groups and returns a report showing the original disparity, the new disparity, the improvement (reduction in gap), and whether the equity threshold is met."
+instructions: "Implement two functions: augmentSlice and measureImprovement. augmentSlice takes an array of text samples. It returns all the original samples plus synthetic samples made by applying a simple abbreviation transformation (replace 'patient' with 'pt', 'temperature' with 'temp', 'blood pressure' with 'BP', 'without' with 'w/o'). Each original sample should produce one synthetic sample. measureImprovement takes before and after accuracy values for two groups and returns a report showing the original disparity, the new disparity, the improvement (reduction in gap), and whether the equity threshold is met."
 starterCode: |
   interface Sample {
     text: string;

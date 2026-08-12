@@ -22,10 +22,10 @@ only Deep Orbit is live).
   written for Python people. So we built the course we wanted: every
   concept anchored to something a JS developer already knows (typed arrays
   to tensors, expect() to loss functions, static deploys to model
-  shipping), and every analogy graded by how far it actually holds, with
-  the audits published on our blog. The first module is free and runs a
-  real model in your browser. We would genuinely like to hear where the
-  bridges break for you.
+  shipping). Every analogy is graded by how far it actually holds, and
+  the audits are published on our blog. The first module is free and runs a
+  real model in your browser. We would like to hear where the bridges
+  break for you.
 
 ## X account @tensorcraft
 
@@ -56,8 +56,8 @@ only Deep Orbit is live).
      wrong. Analogies are load-bearing; a bad one costs you a debugging
      week. (Link: audit-bridge-tiers)
   5. Rule-based systems fail on the case nobody wrote a rule for. That
-     sentence is both why you are debugging that if/else cascade and the
-     entire premise of our course's story. Module 1 is free: (link)
+     sentence is why you are debugging that if/else cascade, and it is
+     the entire premise of our course's story. Module 1 is free: (link)
 - **Cadence note:** account exists to predate launch (handle risk +
   §10b announcement); daily posting can wait until the launch window.
 

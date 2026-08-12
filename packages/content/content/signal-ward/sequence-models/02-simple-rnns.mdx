@@ -196,11 +196,11 @@ Where:
 - `x_t` is the input at this timestep (shape: input_size)
 - `W_h`, `W_x`, `W_y` are learned weight matrices
 
-**Backprop through time (BPTT):** unroll the recurrence over T steps and apply chain rule. The gradient at step 1 includes a product of T Jacobians:
+**Backprop through time (BPTT):** unroll the recurrence over T steps and apply chain rule. The gradient at step 1 includes a product of T Jacobians (the step-to-step derivative matrices):
 
 `∂L / ∂h_1 = ∏_{t=1..T} (∂h_{t+1} / ∂h_t)`
 
-If each Jacobian's spectral radius is < 1, the product shrinks exponentially → **vanishing gradients**. If > 1 → **exploding gradients**. Both are why vanilla RNNs struggle with long sequences and why LSTMs (gated) and Transformers (no recurrence) replaced them.
+If each Jacobian's spectral radius (its largest absolute eigenvalue) is < 1, the product shrinks exponentially → **vanishing gradients**. If > 1 → **exploding gradients**. Both are why vanilla RNNs struggle with long sequences and why LSTMs (gated) and Transformers (no recurrence) replaced them.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["An RNN processes tokens sequentially, just like Array.reduce accumulates state", "The hidden state carries context forward; it 'remembers' what came before", "Embedding + SimpleRNN + Dense is a complete text classification pipeline", "Use returnSequences to inspect how hidden state evolves at each timestep"]} />

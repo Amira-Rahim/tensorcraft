@@ -10,7 +10,7 @@ import { EnrollButton } from "./enroll-button";
 export const metadata: Metadata = {
   title: "The Journey: five worlds, one arc | Tensorcraft",
   description:
-    "The five Tensorcraft worlds are one connected story. Each finale hands its problem to the next domain — the tensor as lingua franca. Follow the canonical journey or play any world on its own.",
+    "The five Tensorcraft worlds are one connected story. Each finale hands its problem to the next domain: the tensor as lingua franca. Follow the canonical journey or play any world on its own.",
   alternates: { canonical: "https://tensorcraft.app/journey" },
   openGraph: {
     type: "website",
@@ -63,7 +63,7 @@ export default async function JourneyPage() {
           Five worlds, one journey
         </h1>
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-4 max-w-2xl">
-          Each world is a complete ML specialization with its own story — and
+          Each world is a complete ML specialization with its own story, and
           each finale hands its problem to the next. Deep Orbit&rsquo;s anomaly
           becomes Neon Protocol&rsquo;s heatmap; the signal answers back across
           all five. Play any world on its own, or follow the canonical journey
@@ -78,7 +78,7 @@ export default async function JourneyPage() {
               data-testid="journey-complete"
             >
               <p className="font-mono text-sm font-bold text-primary">
-                Journey complete — you closed the ring.
+                Journey complete: you closed the ring.
               </p>
               <p className="text-sm text-text-muted mt-1">
                 Every world finished. The signal came all the way back to Deep
@@ -113,7 +113,7 @@ export default async function JourneyPage() {
             >
               <p className="text-sm text-text-muted mb-4 leading-relaxed">
                 Commit to the whole arc. The canonical journey tracks your run
-                through all five worlds as one storyline — it never blocks
+                through all five worlds as one storyline. It never blocks
                 anything, it just marks the path.
               </p>
               <EnrollButton />

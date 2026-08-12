@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Most cutting-edge ML research uses PyTorch. When you find an interesting paper or model on GitHub, it will almost certainly be in PyTorch. But you already know TF.js, and they're the same thing."
+  narrative: "Most new ML research uses PyTorch. When you find an interesting paper or model on GitHub, it will almost certainly be in PyTorch. But you already know TF.js, and they're the same thing."
 concept:
   explanation: "PyTorch nn.Module and TensorFlow.js tf.LayersModel express the same abstractions (layers, forward passes, loss functions, and optimizers) with different syntax."
   bridge:
@@ -112,7 +112,7 @@ const model = tf.sequential({
 const output = model.predict(inputTensor);`}
 </CodeBlock>
 
-Same layer sizes. Same activations. Same dropout rates. Different syntax. One deliberate difference, on the last line, and it is the difference this lesson exists to teach: translating that layer *exactly* is what breaks the model, because the softmax you cannot see in the PyTorch source is hiding inside its loss function. A faithful port is not a literal one.
+Same layer sizes. Same activations. Same dropout rates. Different syntax. One deliberate difference remains, on the last line, and it is the one this lesson exists to teach. Translating that layer *exactly* is what breaks the model: the softmax you cannot see in the PyTorch source is hiding inside its loss function. A faithful port is not a literal one.
 
 ## Optimizers and Loss Functions
 
@@ -198,4 +198,4 @@ Read a PyTorch model definition and build the equivalent in TensorFlow.js.
 
 <RecallPrompt question="What are the five steps in a PyTorch training loop, and where do they appear in TF.js?" answer="Clear gradients, forward pass, compute loss, backward pass, update weights. In TF.js, model.fit() performs all five steps internally on each batch, so you never write the loop explicitly." />
 
-<LessonRecap whatYouLearned={["PyTorch nn.Module and tf.sequential express the same architecture with different syntax: nn.Linear maps to tf.layers.dense, nn.Conv2d to tf.layers.conv2d, nn.LSTM to tf.layers.lstm", "PyTorch's explicit training loop runs the same five steps (zero grads, forward, loss, backward, update) that tf.model.fit() wraps automatically", "Optimizers map directly (optim.Adam -> tf.train.adam), but nn.CrossEntropyLoss -> 'categoricalCrossentropy' ONLY together with a softmax on the final layer: PyTorch's loss applies log-softmax internally and TFJS's does not, the single most common porting bug"]} bridge="A PyTorch `nn.Sequential` block and a `tf.sequential` model define the same data flow, same layer order, same shapes; only the method names and loop structure differ." youCanNow="Read a PyTorch model definition, identify each layer's TF.js equivalent, and understand how its training loop maps to model.fit()." />
+<LessonRecap whatYouLearned={["PyTorch nn.Module and tf.sequential express the same architecture with different syntax: nn.Linear maps to tf.layers.dense, nn.Conv2d to tf.layers.conv2d, nn.LSTM to tf.layers.lstm", "PyTorch's explicit training loop runs the same five steps (zero grads, forward, loss, backward, update) that tf.model.fit() wraps automatically", "Optimizers map directly (optim.Adam -> tf.train.adam), but nn.CrossEntropyLoss -> 'categoricalCrossentropy' ONLY together with a softmax on the final layer. PyTorch's loss applies log-softmax internally and TFJS's does not; that mismatch is the single most common porting bug"]} bridge="A PyTorch `nn.Sequential` block and a `tf.sequential` model define the same data flow, same layer order, same shapes; only the method names and loop structure differ." youCanNow="Read a PyTorch model definition, identify each layer's TF.js equivalent, and understand how its training loop maps to model.fit()." />

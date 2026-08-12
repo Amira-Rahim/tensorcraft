@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-Build is green. Tests pass. Model card approved. FHIR adapter validated. Monitoring dashboard live. Feature flag set to 10% rollout. I have deployed hundreds of web apps. This one just happens to include a trained NLP model.
+Build is green. Tests pass. Model card approved. FHIR adapter validated. Monitoring dashboard live. Feature flag set to 10% rollout. I've deployed hundreds of web apps. This one just happens to include a trained NLP model.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-The model file is 28 MB, smaller than some hero images I have shipped. It is a static asset. It loads in the browser. The inference runs client-side. The deployment is identical to every Next.js app you have ever shipped.
+The model file is 28 MB, smaller than some hero images I've shipped. It's a static asset. It loads in the browser. The inference runs client-side. The deployment is identical to every Next.js app you've ever shipped.
 </Dialogue>
 
-Khalil is almost right. The TensorFlow.js model is a static asset, a JSON topology file and a binary weights file that ship in the build output next to your bundles and images, and the pipeline, monitoring, and rollback plan are all standard web practice. Here is the part that isn't: rolling back the weights does not roll back the predictions the bad model already wrote into the EHR. A web rollback fixes the next request. A clinical rollback also needs a forward-correction pass over every prediction issued during the bad window.
+Khalil is almost right. The TensorFlow.js model is a static asset: a JSON topology file and a binary weights file that ship in the build output next to your bundles and images. The pipeline, monitoring, and rollback plan are all standard web practice. Here is the part that isn't: rolling back the weights does not roll back the predictions the bad model already wrote into the EHR. A web rollback fixes the next request. A clinical rollback also needs a forward-correction pass over every prediction issued during the bad window.
 
 <LearningObjectives objectives={["Deploy Diagnostic One as a production web application with model assets", "Implement health checks and monitoring for a live clinical NLP system", "Set up feature flags for gradual rollout and instant rollback", "Handle the first real alert: the methotrexate-trimethoprim interaction"]} />
 
@@ -254,7 +254,7 @@ class DiagnosticOneMonitor {
 />
 
 <CodeBlock language="typescript" title="day-nine.ts">
-{`// Day 9 of the pilot. The moment Diagnostic One proves itself.
+{`// Day 9 of the pilot.
 
 async function dayNine(): Promise<void> {
   console.log('=== Diagnostic One: Day 9 ===');
@@ -312,7 +312,7 @@ Write a deployment verification function that checks model health, latency, and 
 
 <Exercise slug="deploy-diagnostic-one" />
 
-<KeyTakeaways takeaways={["Rollback triggers are explicit numbers: error rate above 5%, p95 latency above 500ms, or memory above 512MB flips the flag off", "Feature flags enable gradual rollout (10% to 50% to 100%) and instant rollback if something breaks", "The methotrexate-trimethoprim alert proved Diagnostic One works: it flagged a real interaction, the clinician reviewed it, and made an informed override", "Eleven modules ago this was a regex over clinical notes. Now it's a 28 MB model with a rollback plan, and a clinician who knows when to overrule it."]} />
+<KeyTakeaways takeaways={["Rollback triggers are explicit numbers: error rate above 5%, p95 latency above 500ms, or memory above 512MB flips the flag off", "Feature flags enable gradual rollout (10% to 50% to 100%) and instant rollback if something breaks", "The methotrexate-trimethoprim alert proved Diagnostic One works: it flagged a real interaction, the clinician reviewed it, and made an informed override", "The trained model ships as a 28 MB static asset; what makes the deploy clinical is the rollback plan and the clinician who can overrule the flag"]} />
 
 <DispatchTease
   toWorldId="nova-canvas"

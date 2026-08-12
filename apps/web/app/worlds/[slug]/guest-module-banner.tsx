@@ -59,7 +59,7 @@ export function GuestModuleBanner({
         style={{ color: "var(--tc-text)" }}
       >
         You finished the free {moduleTerm.toLowerCase()} without an account.
-        Your progress only lives in this browser; create a free account and
+        Your progress only lives in this browser. Create a free account and
         we&apos;ll transfer it, so {moduleTerm.toLowerCase()} 2 opens where you
         left off.
       </p>

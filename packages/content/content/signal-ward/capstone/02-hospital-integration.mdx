@@ -10,16 +10,16 @@ context:
   narrative: "Khalil opens the hospital's API documentation. HL7 FHIR, a standard for exchanging healthcare data. 'It's just REST,' he says, scrolling through resource types. 'Patient, Observation, MedicationRequest, Condition. Each resource has a schema. I've integrated with worse APIs.' Imran looks over his shoulder. 'Worse APIs that didn't involve patient safety.' Khalil pauses. 'Fair point. Let's be very careful with this one.'"
   speaker: "Khalil"
 concept:
-  explanation: "Integrating Diagnostic One with hospital EHR systems through HL7 FHIR is the same discipline as integrating with any third-party API: adapting your internal data models to external contracts, handling versioning, and building robust error handling for data you do not control."
+  explanation: "Integrating Diagnostic One with hospital EHR systems through HL7 FHIR is the same discipline as integrating with any third-party API: adapting your internal data models to external contracts, handling versioning, and catching errors in data you do not control."
   bridge:
     feTitle: "Third-Party API Integration"
     feCode: "// Stripe API: adapt your Order model to Stripe's PaymentIntent schema"
     mlTitle: "EHR Integration"
     mlCode: "// FHIR API: adapt your ClinicalNote model to FHIR's Observation resource schema"
     tier: structural
-    breaks: "Third-party API integration is bounded by published OpenAPI specs. EHR integration involves HL7/FHIR variants per vendor, PHI handling requirements, and clinical workflow constraints that no spec captures; most cost is in the integration, not the model."
+    breaks: "Third-party API integration is bounded by published OpenAPI specs. EHR integration involves HL7/FHIR variants per vendor, PHI (protected health information) handling requirements, and clinical workflow constraints that no spec captures; most cost is in the integration, not the model."
 consequence:
-  narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Vikram watches the data flow on his monitor. 'It is like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Karimi reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook: we log it, reject it, and alert the team.'"
+  narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Vikram watches the data flow on his monitor. 'It's like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Karimi reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook: we log it, reject it, and alert the team.'"
 hints:
   - level: nudge
     content: "Map each FHIR resource's fields onto your ClinicalNote type in the adapter, and reject malformed resources before they reach the pipeline"

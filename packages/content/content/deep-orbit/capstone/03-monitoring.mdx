@@ -50,7 +50,7 @@ Commander, I must flag a concern. The model performs at 91.8% accuracy now. In t
 Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
 </Dialogue>
 
-So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw: confidence decay, latency creep, and drift, production inputs walking quietly away from the training distribution.
+So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw. Those failures are confidence decay, latency creep, and drift (production inputs walking quietly away from the training distribution).
 
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and anomaly rates", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 

@@ -17,9 +17,9 @@ concept:
     mlTitle: "Pre-trained Model"
     mlCode: "const model = await tf.loadLayersModel('mobilenet_v2'); // millions of $ of training"
     tier: intuition
-    breaks: "An npm package ships versioned code that runs deterministically; `lodash@4.17.21` behaves the same on every machine. A pretrained model ships weights from a specific training run on a specific dataset distribution. ImageNet is biased toward Western consumer photography (overrepresentation of dogs, US suburbs, pizza); fine-tuning to non-Western contexts often shows accuracy drop. Loading the model also imports its license, its bias, and its failure modes. `loadLayersModel('mobilenet')` is *not* reproducible across data domains."
+    breaks: "An npm package ships versioned code that runs deterministically; `lodash@4.17.21` behaves the same on every machine. A pretrained model ships weights from a specific training run on a specific dataset. ImageNet is biased toward Western consumer photography (overrepresentation of dogs, US suburbs, pizza); models fine-tuned for non-Western contexts often lose accuracy. Loading the model also imports its license, its bias, and its failure modes. `loadLayersModel('mobilenet')` will *not* behave the same on every dataset."
 consequence:
-  narrative: "Forty seconds, 25 megabytes, done. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it. That is the power of pre-trained models.'"
+  narrative: "Forty seconds, 25 megabytes, done. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it.'"
 hints:
   - level: guidance
     content: "Use tf.loadLayersModel() or tf.loadGraphModel() to load pre-trained weights from a URL"
@@ -47,7 +47,7 @@ So `tf.loadLayersModel('mobilenet')` is basically `npm install mobilenet`?
 With one difference. This package cost two million credits to build, and the vendor does not know we are customers.
 </Dialogue>
 
-An npm package encapsulates thousands of hours of development. A pre-trained model encapsulates thousands of GPU-hours of training. Both let you start with a proven foundation instead of building from zero. That is transfer learning: knowledge learned on one task transfers to another.
+An npm package encapsulates thousands of hours of development. A pre-trained model encapsulates thousands of GPU-hours of training. Both let you build on finished work instead of starting from zero. That is transfer learning: knowledge learned on one task transfers to another.
 
 <LearningObjectives objectives={["Understand pre-trained models as reusable trained networks you download and use", "Load MobileNet and ResNet models in TensorFlow.js", "Use a pre-trained model for immediate inference without any training"]} />
 
@@ -55,7 +55,7 @@ An npm package encapsulates thousands of hours of development. A pre-trained mod
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-When you run `npm install react`, you get a decade of engineering from hundreds of contributors. When you load MobileNetV2, you get months of GPU training on 14 million images. The economics are identical: amortize the cost of creation across every user who downloads the artifact.
+When you run `npm install react`, you get a decade of engineering from hundreds of contributors. When you load MobileNetV2, you get months of GPU training on 14 million images. The economics are identical: the build cost is paid once, then spread across everyone who downloads the result.
 
 <CodeBlock language="typescript" title="load-mobilenet.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -119,8 +119,7 @@ async function classifyImage(
   return { classIndex, confidence };
 }
 
-// No training. No dataset. Just load and predict.
-// Two million credits of compute, delivered in one function call.`}
+// No local training: the pretrained weights do all the work here.`}
 </CodeBlock>
 
 ## Choosing the Right Model

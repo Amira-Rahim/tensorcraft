@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Yara shows Samir her generative art sketches: intricate patterns grown from pure noise. Every generative model starts with randomness and shapes it into structure."
+  narrative: "Yara shows Samir her generative art sketches: patterns grown from pure noise. Every generative model starts with randomness and shapes it into structure."
   speaker: "Yara"
 concept:
   explanation: "Generative models take random noise as input and transform it into structured output. The noise provides the raw variation; the model provides the structure."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Latent Noise Vector"
     mlCode: "const z = tf.randomNormal([1, 100])"
     tier: structural
-    breaks: "Perlin noise produces visually coherent random fields from a deterministic algorithm. Every input gives an aesthetic output. Latent noise vectors only decode to coherent images near the training data manifold; vectors sampled outside that region decode to garbage. The noise distribution must match training (typically standard normal) exactly."
+    breaks: "Perlin noise produces visually coherent random fields from a deterministic algorithm. Every input gives an aesthetic output. Latent noise vectors only decode to coherent images near the region the training data occupies; vectors sampled outside it decode to garbage. The noise distribution must match training (typically standard normal) exactly."
 consequence:
   narrative: "Samir builds a canvas sketch driven by noise vectors and sees the parallel: noise is the clay, the model is the sculptor."
 hints:
@@ -34,7 +34,7 @@ keywords:
   - random-input
 ---
 
-Open a console and run `tf.randomNormal([1, 100]).print()`. One hundred numbers, no meaning, no structure. Keep them in view for the rest of this module, because they are the entire input budget of everything you will generate: every stripe, every palette, every pattern, conjured out of exactly that much static. Noise is not the enemy of creation. It is the raw material.
+Open a console and run `tf.randomNormal([1, 100]).print()`. One hundred numbers, no meaning, no structure. Keep them in view for the rest of this module: they are the entire input budget of everything you will generate. Stripes, palettes, patterns, all shaped out of exactly that much static. Noise is the raw material.
 
 <Dialogue speaker="Yara">
 Every painting I make starts the same way: with a mess. A splash of paint, a smear of charcoal, a random gesture. The art is not in the first mark. The art is in what I do with it afterward. Generative models work the same way.
@@ -48,7 +48,7 @@ I started this morning with the same 100 random numbers you did. The difference 
 
 ## Why Start from Noise?
 
-A generative model needs a source of variation. If you gave it the same input every time, it would produce the same output every time. Noise provides infinite variation: each random vector is a unique seed for a unique creation.
+A generative model needs a source of variation. If you gave it the same input every time, it would produce the same output every time. Noise provides infinite variation: each random vector seeds a different creation.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

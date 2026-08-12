@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "'Patient denied chest pain' versus 'Patient reported chest pain': in clinical text, word order can be the difference between life and death."
+  narrative: "'Patient denied chest pain' versus 'Patient reported chest pain': in clinical text, word order can reverse the meaning of a finding."
   speaker: "Dr. Karimi"
 concept:
   explanation: "Word order changes meaning, and bag-of-words throws order away. Sequence models process tokens in order, preserving the positional context that separates 'denied chest pain' from 'reported chest pain'."
@@ -51,7 +51,7 @@ And unlike your code, no compiler ever rejects the wrong order. Clinical notes a
 Alert: current bag-of-words model cannot distinguish "denied chest pain" from "reported chest pain." Both contain the same unigrams.
 </Dialogue>
 
-Strip the order out of a sentence and you strip out part of its meaning. A bag-of-words model does exactly that. "No fever, but reports nausea" becomes an unordered pile of tokens, and nothing records whether the negation landed on the fever or the nausea. You already manage this constraint in async code, where `fetch` then `render` produces a different application state than `render` then `fetch`. In clinical text, the same inversion changes the medical record, and getting it wrong has real consequences.
+Strip the order out of a sentence and you strip out part of its meaning. A bag-of-words model does exactly that. "No fever, but reports nausea" becomes an unordered pile of tokens, and nothing records whether the negation landed on the fever or the nausea. You already manage this constraint in async code, where `fetch` then `render` produces a different application state than `render` then `fetch`. In clinical text, the same inversion changes the medical record.
 
 <LearningObjectives objectives={["Understand why word order is critical for clinical text interpretation", "Identify cases where bag-of-words fails: negation, temporal phrases, conditionals", "Represent text as ordered sequences of token IDs"]} />
 
@@ -106,7 +106,7 @@ console.log('Tensor A shape:', tensorA.shape);`}
 
 ## Clinical Negation: The Most Dangerous Pattern
 
-Negation is the most dangerous pattern in clinical NLP. "No fever" and "fever" mean opposite things but share the same keyword. This is exactly like how `if (!isValid) save()` and `if (isValid) save()` execute the same function but under opposite conditions.
+"No fever" and "fever" mean opposite things but share the same keyword. This is exactly like how `if (!isValid) save()` and `if (isValid) save()` execute the same function but under opposite conditions.
 
 <CodeBlock language="typescript" title="negation-danger.ts">
 {`// Negation examples that bag-of-words gets WRONG
@@ -212,4 +212,4 @@ Without positional encoding, a transformer treats "not good" and "good not" iden
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Word order determines meaning: 'denied pain' is the opposite of 'reported pain'", "Bag-of-words fails on negation, the most dangerous pattern in clinical NLP", "Sequence representations preserve token positions for order-aware processing", "Execution order in async code maps directly to token order in sequences"]} />
+<KeyTakeaways takeaways={["Word order determines meaning: 'denied pain' is the opposite of 'reported pain'", "Bag-of-words fails on negation, temporal phrases, and conditionals", "Sequence representations preserve token positions for order-aware processing", "Execution order in async code maps directly to token order in sequences"]} />

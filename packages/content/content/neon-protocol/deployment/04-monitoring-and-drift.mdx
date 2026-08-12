@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Protocol Sentinel has been live for three days. Accuracy reports from District 9 show a drop from 94% to 71%. Something has changed. Not in the model. In the world. NEON: 'Meridian updated their drone fleet. Your training data is stale. Welcome to data drift.'"
+  narrative: "Protocol Sentinel has been live for three days. Accuracy reports from District 9 show a drop from 94% to 71%. NEON: 'Meridian updated their drone fleet. Your training data is stale. Welcome to data drift.'"
   speaker: "Amir"
 concept:
   explanation: "Model monitoring is error tracking for ML, with one catch: drift throws no exceptions. You track confidence scores, latency, and input distributions against a baseline, because predictions stay confident while they get steadily worse."
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Sentry/DataDog catch exceptions and latency spikes, observable failures. Drift produces no errors: predictions remain confident but get steadily worse as input distribution shifts. Detection requires comparing against a baseline you set, not waiting for an alarm."
 consequence:
-  narrative: "Amir sets up automated drift alerts. When District 9's confidence scores drop below 80%, the system flags it immediately. Dilan begins collecting new samples of Meridian's updated drones. NEON: 'The model is not broken. The world moved. Now you can see it moving.' District 9 still runs at 71% tonight. Seeing the problem is not the same as fixing it."
+  narrative: "Amir sets up automated drift alerts. When District 9's confidence scores drop below 80%, the system flags it immediately. Dilan begins collecting new samples of Meridian's updated drones. NEON: 'The world moved. Now you can see it move.' District 9 still runs at 71% tonight. Seeing the problem is not the same as fixing it."
 hints:
   - level: nudge
     content: "Track prediction confidence over time; a downward trend means something in the input data has changed"
@@ -43,7 +43,7 @@ District 9 is reporting false negatives. Meridian drones flying right past Senti
 The model has not changed. The world has. Meridian deployed new drone models: different shapes, different paint, different flight patterns. Your training data does not include them. This is data drift, and it will kill any deployed model that is not monitored.
 </Dialogue>
 
-Deploying a model is not the end of the job. It is the beginning of a new one. Models decay. The real world changes. Data drift is the ML equivalent of an API breaking because a third-party service changed their response format. You need monitoring to catch it.
+Deployment starts a second job: watching the model decay as the world changes around it. Data drift is the ML equivalent of an API breaking because a third-party service changed their response format. You need monitoring to catch it.
 
 <LearningObjectives objectives={["Implement real-time confidence score tracking for deployed models", "Detect data drift by comparing input distributions against a baseline", "Build alerting thresholds for model performance degradation", "Design a monitoring dashboard for browser-based ML systems"]} />
 

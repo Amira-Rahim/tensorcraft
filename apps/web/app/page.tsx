@@ -44,8 +44,8 @@ export default function Home() {
               </h2>
               <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] font-sans mb-5">
                 By Module 11 you have assembled and deploy-drilled every
-                component of a real-time anomaly detection system, all of it
-                running in the browser, with your solutions committed to your
+                component of a real-time anomaly detection system. All of it
+                runs in the browser, and your solutions are committed to your
                 GitHub.
               </p>
               <Link

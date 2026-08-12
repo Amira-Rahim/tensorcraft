@@ -125,7 +125,7 @@ DEPARTMENTS.forEach((dept, i) => {
 
 ## Softmax: The Probability Router
 
-The key difference between binary and multi-class classification is in the output layer. Binary uses sigmoid (one probability). Multi-class uses softmax (a probability distribution). Softmax is like a competitive election: each class "votes," and the probabilities must sum to 1.
+The key difference between binary and multi-class classification is in the output layer. Binary uses sigmoid (one probability). Multi-class uses softmax (a probability distribution). The classes compete for probability mass: raising one class's probability necessarily lowers the others, because the total is fixed at 1.
 
 <Dialogue speaker="Vikram">
 What happens when a document could go to two departments? A patient with chest pain might need both cardiology and emergency.

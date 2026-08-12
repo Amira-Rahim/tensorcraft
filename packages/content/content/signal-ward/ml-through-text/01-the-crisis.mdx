@@ -10,7 +10,7 @@ context:
   narrative: "The hospital's vendor NLP system misclassified a drug allergy note, nearly causing a fatal interaction. Dr. Karimi cancels the vendor contract and assembles an in-house team."
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Machine learning finds patterns in data that rule-based systems miss. For clinical text, ML models learn to classify, extract, and interpret medical language, turning unstructured notes into actionable information."
+  explanation: "Machine learning finds patterns in data that rule-based systems miss. For clinical text, ML models learn to classify, extract, and interpret medical language, turning unstructured notes into structured data a system can act on."
   bridge:
     feTitle: "App Architecture"
     feCode: "const app = { ui: 'React', state: 'Redux', api: 'REST' }"
@@ -37,7 +37,7 @@ scene:
   epilogueLocation: "Server Room"
 ---
 
-The pharmacy alert fired at 11:47 last night: amoxicillin, ordered for a patient whose chart documents a penicillin allergy with anaphylaxis in 2019. The vendor NLP system had filed the note under "no known allergies." A pharmacist caught the order because she happened to remember the patient. By morning the printout is on the conference room table, and nobody has touched the coffee.
+The pharmacy alert fired at 11:47 last night: amoxicillin, ordered for a patient whose chart documents a penicillin allergy with anaphylaxis in 2019. The vendor NLP system (natural language processing: software that reads free text) had filed the note under "no known allergies." A pharmacist caught the order because she happened to remember the patient. By morning the printout is on the conference room table, and nobody has touched the coffee.
 
 <Dialogue speaker="Dr. Karimi">
 We caught it at the pharmacy. Barely. I'm canceling the vendor contract today.
@@ -112,4 +112,4 @@ Create a simple feature vector representing a clinical note's characteristics.
 
 <Exercise slug="text-to-numbers" />
 
-<KeyTakeaways takeaways={["ML learns patterns from data instead of relying on hand-coded rules", "A dot product of binary features and learned weights already yields a usable risk score; the lesson's five-feature allergy note scores ~2.4 and gets flagged for review", "Clinical text requires ML because abbreviations and context make rules brittle", "The first step is always converting text into numerical representations"]} />
+<KeyTakeaways takeaways={["ML learns patterns from data instead of relying on hand-coded rules", "A dot product of binary features and learned weights (multiply each pair, sum the results) already yields a usable risk score; the lesson's five-feature allergy note scores ~2.4 and gets flagged for review", "Clinical text requires ML because abbreviations and context make rules brittle", "The first step is always converting text into numerical representations"]} />

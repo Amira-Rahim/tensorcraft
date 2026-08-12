@@ -239,7 +239,7 @@ console.log('Via FFT:', await viaFft.array());
 
 ## Why This Matters for GPUs
 
-GPUs have thousands of cores optimized for matrix multiplication. By expressing convolution as a matrix multiply (via Toeplitz or the related im2col approach), convolution layers run at near-peak GPU throughput. Frameworks never materialize the giant Toeplitz matrix itself; im2col builds a compact matrix of input patches that achieves the same single-multiply effect, which is the structure-exploiting shortcut the bridge callout mentions. This is the fundamental reason deep learning took off when GPUs became accessible.
+GPUs have thousands of cores optimized for matrix multiplication. By expressing convolution as a matrix multiply (via Toeplitz or the related im2col approach), convolution layers run at near-peak GPU throughput. Frameworks never materialize the giant Toeplitz matrix itself; im2col instead builds a compact matrix of input patches that achieves the same single-multiply effect. That is the structure-exploiting shortcut the bridge callout mentions. This is the fundamental reason deep learning took off when GPUs became accessible.
 
 <CodeBlock language="typescript" title="performance-insight.ts">
 {`import * as tf from '@tensorflow/tfjs';

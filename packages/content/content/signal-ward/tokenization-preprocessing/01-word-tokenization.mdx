@@ -48,7 +48,7 @@ String.split() with a regex. I've done this a hundred times for search inputs.
 
 You already use `String.split()` to break strings apart: CSV rows, search queries, URL parameters. Clinical notes are a harder version of that job: periods inside abbreviations, hyphens inside drug names, slashes inside blood pressure readings.
 
-<LearningObjectives objectives={["Split clinical text into word tokens using regex patterns", "Handle punctuation, numbers, and special characters in medical text", "Understand whitespace vs. regex-based tokenization strategies", "Build a robust word tokenizer for clinical notes"]} />
+<LearningObjectives objectives={["Split clinical text into word tokens using regex patterns", "Handle punctuation, numbers, and special characters in medical text", "Understand whitespace vs. regex-based tokenization strategies", "Build a word tokenizer for clinical notes"]} />
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
@@ -112,4 +112,4 @@ Build a word tokenizer that handles clinical text edge cases.
 
 <Exercise slug="word-tokenize" />
 
-<KeyTakeaways takeaways={["Extracting with text.match(/[a-z0-9]+/g) beats splitting on spaces: '120/80,' stops dragging its comma along", "Naive space-splitting fails on punctuation, hyphens, and medical patterns", "Regex-based tokenizers can preserve meaningful units like vitals and compound words", "The quality of your tokenizer directly affects model accuracy"]} />
+<KeyTakeaways takeaways={["Extracting with text.match(/[a-z0-9]+/g) beats splitting on spaces: '120/80,' stops dragging its comma along", "Naive space-splitting fails on punctuation, hyphens, and medical patterns", "Regex-based tokenizers can preserve meaningful units like vitals and compound words", "The model only ever sees what the tokenizer emits, so tokenizer mistakes become model mistakes"]} />

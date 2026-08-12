@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Lossy image compression has a perceptual quality target: the user sees the result and judges it directly. Quantization tradeoffs are measured against held-out test accuracy; a 1% drop may be invisible to the developer running locally on familiar inputs but unacceptable in production where it manifests as silently wrong predictions on edge cases."
 consequence:
-  narrative: "Every model in the registry now carries a minimum-accuracy threshold next to its size budget. The Site 23 lesson is learned."
+  narrative: "Every model in the registry now carries a minimum-accuracy threshold next to its size budget."
 hints:
   - level: nudge
     content: "Define the accuracy floor before you start compressing"

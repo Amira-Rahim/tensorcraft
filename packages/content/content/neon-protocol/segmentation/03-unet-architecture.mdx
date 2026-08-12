@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Zara sketches an architecture diagram on the holotable. It looks like a U: layers descend on the left, compress the image into abstract features, then ascend on the right, expanding back to full resolution. 'Content flows down. Detail flows up. The skip connections are the secret.'"
+  narrative: "Zara sketches an architecture diagram on the holotable. It looks like a U: layers descend on the left, compress the image into abstract features, then ascend on the right, expanding back to full resolution. 'Content flows down. Detail comes back across the skip connections.'"
   speaker: "Zara"
 concept:
   explanation: "U-Net is an encoder-decoder architecture for dense prediction. The encoder compresses spatial information into features (like a funnel). The decoder expands features back to full resolution. Skip connections bridge corresponding encoder-decoder layers, preserving spatial detail."
@@ -165,4 +165,4 @@ Conv [256, 256, num_classes]
 
 <KeyTakeaways takeaways={["U-Net compresses images through an encoder then expands through a decoder back to full resolution", "Skip connections concatenate encoder features with decoder features, preserving spatial detail", "The output has the same spatial dimensions as the input: [H, W, numClasses]"]} />
 
-> **DISPATCH archive · field intercept #23-V:** Yara's collective uses U-Net variants for image-to-image generation. Skip connections preserve content the bottleneck would otherwise lose. Same architecture, opposite optimization target: they want the input back, you want the segmentation. Symmetry is structural, not semantic.
+> **DISPATCH archive · field intercept #23-V:** Yara's collective uses U-Net variants for image-to-image generation. Skip connections preserve content the bottleneck would otherwise lose. Same architecture, opposite optimization target: they want the input back, you want the segmentation.

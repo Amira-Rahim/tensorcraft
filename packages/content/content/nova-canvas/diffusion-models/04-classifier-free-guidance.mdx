@@ -167,4 +167,4 @@ Where `w` is the **guidance scale**:
 **Common values: w = 7-12** for text-to-image. The cost is doubled inference compute (two model calls per step).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Guidance runs the model twice per denoising step, with and without the prompt, so it roughly doubles inference cost", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact", "Cost: two model forward passes per denoising step, one conditioned, one unconditioned"]} />
+<KeyTakeaways takeaways={["Guidance runs the model twice per denoising step, with and without the prompt, so it roughly doubles inference cost", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact"]} />

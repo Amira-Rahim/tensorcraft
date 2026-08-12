@@ -155,7 +155,7 @@ Implement a k-nearest neighbor search function.
 - **IVF (Inverted File):** k-means clusters the dataset. Query: find nearest centroid, search within cluster. Tunable recall/speed via `nprobe` (number of clusters to search).
 - **PQ (Product Quantization):** compresses vectors to bytes via codebooks. 4-32× memory reduction at the cost of approximate distances.
 
-**Recall vs latency tradeoff:** ANN is parameterized: pick higher recall (slower) or lower recall (faster) per query. Production systems target 95-99% recall at 10-100× speedup over exact.
+**Recall vs latency tradeoff:** recall here means the fraction of the true nearest neighbors the approximate search actually returns. ANN is parameterized: pick higher recall (slower) or lower recall (faster) per query. Production systems target 95-99% recall at 10-100× speedup over exact.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Similarity search finds the closest feature vectors in a database, like fuzzy text search for images", "k-nearest neighbors ranks all candidates by distance and returns the top k", "Cosine similarity is the standard distance metric for visual feature comparison", "The resistance can now track specific drones across weeks of footage with a single query image"]} />

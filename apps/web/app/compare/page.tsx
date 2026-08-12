@@ -147,7 +147,7 @@ export default function ComparePage() {
             already know JavaScript, and you want a course that respects what
             you already know without watering down the ML. Every analogy ships
             with a label naming where it stops being literal: the bridge-tier
-            system is woven directly into each lesson.
+            system is built directly into each lesson.
           </p>
         </section>
 

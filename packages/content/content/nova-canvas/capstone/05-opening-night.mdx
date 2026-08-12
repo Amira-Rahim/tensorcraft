@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Pre-launch checklists for web apps verify config, certs, dependencies, all reproducible. Generative-model pre-launch must additionally verify content-safety thresholds, prompt-injection defenses, and rate-limits per user. None of which are reproducible by replaying logs because the model output varies per call. 'Green checks' for a generative system is a snapshot, not a guarantee."
 consequence:
-  narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice. Both times, the circuit breakers engage and recover within 30 seconds. Rohan: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
+  narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice. Both times, the circuit breakers engage and recover within 30 seconds. Rohan: 'Tomorrow we fix the memory leak in the WebSocket handler.'"
 hints:
   - level: nudge
     content: "A launch checklist is a pre-flight checklist: verify every system before the doors open"
@@ -46,9 +46,9 @@ Look at them. They're not looking at screens. They're inside the art. A woman is
 Tomorrow we fix the memory leak in the WebSocket handler. Tonight we watch.
 </Dialogue>
 
-Every production launch you have done follows the same rhythm: weeks of preparation, a launch checklist, the deployment, the anxious monitoring, the first real users. An installation opening night is a production deployment you can see happening in front of you, with your users standing in the room instead of hiding in the analytics.
+You know the rhythm of a production launch: weeks of preparation, a checklist, the deploy, the anxious monitoring, the first real users. An installation opening night is a production deployment you can see happening in front of you, with your users standing in the room instead of hiding in the analytics.
 
-<LearningObjectives objectives={["Build a comprehensive pre-launch checklist that verifies every system component", "Create a runbook with typed failure scenarios and recovery procedures", "Monitor a live system in production, knowing when to act and when to watch", "Conduct a post-launch retrospective that captures lessons for future deployments"]} />
+<LearningObjectives objectives={["Build a pre-launch checklist that verifies every system component", "Create a runbook with typed failure scenarios and recovery procedures", "Monitor a live system in production, knowing when to act and when to watch", "Conduct a post-launch retrospective that captures lessons for future deployments"]} />
 
 ## Launch Checklist
 
@@ -231,7 +231,7 @@ async function handleIncident(scenario: string) {
     {
       label: "random",
       display: "Coin flip; let the room decide via reaction sensor",
-      consequence: "Sensor reads 60% disengaged. Auto-pull triggers. Same outcome as cooperate, but the moment was decided by averaged audience attention rather than artistic intent. The gallery's role as filter became outsourced. Erdem, not looking up from the dashboard: 'Mixed strategies in art are how you get nothing on the wall.'"
+      consequence: "Sensor reads 60% disengaged. Auto-pull triggers. Same outcome as cooperate, but the moment was decided by averaged audience attention rather than artistic intent. The gallery outsourced its role as filter. Erdem, not looking up from the dashboard: 'Mixed strategies in art are how you get nothing on the wall.'"
     },
     {
       label: "dominant",

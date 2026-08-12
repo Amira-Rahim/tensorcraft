@@ -17,7 +17,7 @@ concept:
     mlTitle: "Multimodal pipeline"
     mlCode: "const embedding = encodeText(text); const image = decodeImage(embedding);"
     tier: intuition
-    breaks: "Full-stack apps separate concerns by tier with explicit interfaces. Multimodal pipelines fuse modalities via shared embedding spaces or cross-attention and the 'API' between modalities is learned. Debugging requires tracing through learned intermediate representations."
+    breaks: "Full-stack apps separate concerns by tier with explicit interfaces. Multimodal pipelines fuse modalities via shared embedding spaces or cross-attention, and the 'API' between modalities is learned rather than written down. Debugging requires tracing through learned intermediate representations."
 consequence:
   narrative: "On the whiteboard, the architecture takes shape: a text encoder, an image encoder, and a shared embedding space where both modalities meet. 'Two languages,' Rohan says, 'one translator.'"
 hints:

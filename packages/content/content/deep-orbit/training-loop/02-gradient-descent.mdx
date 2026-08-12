@@ -38,7 +38,7 @@ keywords:
 skillAxes: [training]
 ---
 
-You have already written this lesson. Every easing loop that runs `pos += (target - pos) * 0.1` is doing gradient descent on the loss `(target - pos)² / 2`: the derivative of that loss with respect to `pos` is `-(target - pos)`, and stepping opposite the derivative, scaled by 0.1, reproduces the lerp line character for character. Run both from `pos = 2` toward `target = 10` and each lands on 2.8: your version because you wrote the easing, `tf.variableGrads` because it measured the slope (-8) and subtracted a tenth of it. What this lesson adds is only the part lerp never needed: where the slope comes from when nobody can tell you the target.
+You have already written this lesson. Every easing loop that runs `pos += (target - pos) * 0.1` is doing gradient descent on the loss `(target - pos)² / 2`. The derivative of that loss with respect to `pos` is `-(target - pos)`, and stepping opposite the derivative, scaled by 0.1, reproduces the lerp line character for character. Run both from `pos = 2` toward `target = 10` and each lands on 2.8: your version because you wrote the easing, `tf.variableGrads` because it measured the slope (-8) and subtracted a tenth of it. What this lesson adds is only the part lerp never needed: where the slope comes from when nobody can tell you the target.
 
 <Dialogue speaker="Chief Nazari">
 Great, so the loss tells us we're wrong. But which knobs do I turn? Which weights need to go up, which need to go down, and by how much?
@@ -78,7 +78,7 @@ for (let step = 0; step < 20; step++) {
 // (x prints after the update, loss is measured before it)`}
 </CodeBlock>
 
-**Learning rate** is the hyperparameter that matters most, and you already own the intuition from lerp factors. Crank `0.1` up to `1.5` in your easing code and the element oscillates wildly past its target; drop it to `0.001` and the animation takes all afternoon. Same failure modes, same knob.
+**Learning rate** is a hyperparameter: a setting you pick by hand rather than a weight the model learns, and the one that matters most. You already own the intuition from lerp factors. Crank `0.1` up to `1.5` in your easing code and the element oscillates wildly past its target; drop it to `0.001` and the animation takes all afternoon. Same failure modes, same knob.
 
 <DerivationDrawer summary="Why the gradient is the steepest-ascent direction" companionSlug="optimization-landscape">
 **The gradient is a vector of partial derivatives.** For loss `L(w₁, w₂, ..., wₙ)`:

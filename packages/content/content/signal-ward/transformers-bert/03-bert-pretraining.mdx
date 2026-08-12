@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Vikram explains how BERT learns language before it ever sees a clinical note, through two clever self-supervised tasks."
+  narrative: "Vikram explains how BERT learns language before it ever sees a clinical note, through two self-supervised tasks."
   speaker: "Vikram"
 concept:
   explanation: "BERT is pre-trained with two tasks: Masked Language Modeling (predicting hidden words from context) and Next Sentence Prediction (understanding document structure)."
@@ -46,7 +46,7 @@ Self-supervised learning? That's like how VS Code IntelliSense learns from your 
 Useful comparison, wrong machinery. IntelliSense looks completions up in a static index keyed by symbol names. BERT learns contextual embeddings: "bank" next to "river" fills the blank differently than "bank" next to "money," and no index can store that. The first game is Masked Language Modeling, MLM. Hide a word, predict it from context. The second is Next Sentence Prediction, NSP. Given two sentences, did the second actually follow the first?
 </Dialogue>
 
-<LearningObjectives objectives={["Understand BERT's two pre-training objectives: MLM and NSP", "Implement masked language modeling with proper masking strategy", "Implement next sentence prediction as a binary classification task", "Explain why self-supervised pre-training creates powerful representations"]} />
+<LearningObjectives objectives={["Understand BERT's two pre-training objectives: MLM and NSP", "Implement masked language modeling with proper masking strategy", "Implement next sentence prediction as a binary classification task", "Explain how self-supervised pre-training creates its own training signal from unlabeled text"]} />
 
 ## Game 1: Masked Language Modeling
 
@@ -216,9 +216,9 @@ Summed over all masked positions in the batch.
 - 10%: replace with a random token
 - 10%: keep the original token unchanged
 
-**Why?** The downstream fine-tuning task never sees `[MASK]` tokens (real text). If the model only learned to fill in `[MASK]`, it would degrade on real input. The 10/10/80 mix forces the model to maintain rich representations for ALL tokens, not just masked ones, because it can't tell which tokens are "real" and which were swapped.
+**Why?** The downstream fine-tuning task never sees `[MASK]` tokens (real text). If the model only learned to fill in `[MASK]`, it would degrade on real input. The 10/10/80 mix forces the model to maintain useful representations for ALL tokens, not just masked ones, because it can't tell which tokens are "real" and which were swapped.
 
 **Combined with NSP** (Next Sentence Prediction, since dropped in RoBERTa) for the original BERT objective. Modern models (RoBERTa, DeBERTa) keep MLM with 80/10/10 but skip NSP.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["BERT pre-trains with two self-supervised tasks: MLM (predict masked tokens) and NSP (predict sentence order)", "MLM uses an 80/10/10 masking strategy: [MASK] token, random token, or unchanged", "NSP teaches the model to understand document structure and sentence relationships", "Pre-training on general text creates universal language representations that can be specialized through fine-tuning"]} />
+<KeyTakeaways takeaways={["BERT pre-trains with two self-supervised tasks: MLM (predict masked tokens) and NSP (predict sentence order)", "MLM uses an 80/10/10 masking strategy: [MASK] token, random token, or unchanged", "NSP teaches the model to understand document structure and sentence relationships", "Pre-training on general text learns language patterns that transfer; fine-tuning specializes them to clinical data"]} />

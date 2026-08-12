@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "srcset picks one image variant based on viewport; the alternatives still exist. Max pooling discards information permanently: only the strongest activation in each region survives forward. The downsampled tensor cannot reconstruct the original."
 consequence:
-  narrative: "A quarter of the size, sharpest activations intact: the pooled feature maps roll across the display. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million. Your browser will thank you.'"
+  narrative: "A quarter of the size, sharpest activations intact: the pooled feature maps roll across the display. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million.'"
 hints:
   - level: nudge
     content: "Max pooling takes the maximum value from each non-overlapping region. Think of it as keeping only the strongest signal."
@@ -43,7 +43,7 @@ At Meridian, our first surveillance model choked because the feature maps were t
 So it is like serving a 400px image instead of an 800px one via srcset? You lose resolution but the content is still recognizable.
 </Dialogue>
 
-Srcset is gentler than that. The 800px original still sits on the server; the browser just picked a smaller variant. Max pooling has no original to fall back on. Only the strongest activation in each region moves forward, and the rest is discarded permanently; the downsampled tensor cannot reconstruct what it threw away. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean); max is far more common because strong activations usually signal important features.
+Srcset is gentler than that. The 800px original still sits on the server; the browser just picked a smaller variant. Max pooling has no original to fall back on. Only the strongest activation in each region moves forward, and the rest is discarded permanently. The downsampled tensor cannot reconstruct what it threw away. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean). Max is far more common because strong activations usually signal important features.
 
 <LearningObjectives objectives={["Understand why spatial downsampling is necessary in CNNs", "Implement max pooling and average pooling from scratch", "Calculate output dimensions after pooling operations"]} />
 
@@ -186,7 +186,7 @@ For input width W, pool size K, stride S (often S = K):
 
 With `K = S = 2` (the standard), `W_out = floor(W/2)`. A 224×224 input becomes 112×112 after one max-pool.
 
-**Information loss is permanent:** max-pool keeps only the highest activation per window. The downsampled tensor cannot reconstruct the original. This is by design: pooling enforces translation invariance and reduces compute.
+**Information loss is permanent:** max-pool keeps only the highest activation per window. The downsampled tensor cannot reconstruct the original. This is by design: pooling enforces translation invariance (a feature that shifts by a pixel still pools to the same value) and reduces compute.
 
 **Average pooling** preserves more low-frequency information; max pooling preserves the strongest activation regardless of position. Which one to use depends on whether the task cares about edge-like features (max) or texture-like features (average).
 </DerivationDrawer>

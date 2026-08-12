@@ -96,14 +96,14 @@ console.log('Output shape:', output.shape); // [10, 64]`}
 
 ## What Do Heads Specialize In?
 
-Research on clinical transformers shows heads naturally specialize:
+Inspect the heads of a trained clinical transformer and specializations show up on their own:
 - **Head 1** might learn syntactic relationships (subject-verb agreement)
 - **Head 2** might learn entity coreference ("the patient... she... her")
 - **Head 3** might learn negation scope ("denied" modifying "chest pain")
 - **Head 4** might learn medication-condition pairs
 
 <Dialogue speaker="Vikram">
-We don't tell the heads what to specialize in. They discover it during training. That's the beauty: the model finds structure we might not have thought to look for.
+We don't tell the heads what to specialize in. They discover it during training, and sometimes they find structure we wouldn't have thought to look for.
 </Dialogue>
 
 ## Challenge

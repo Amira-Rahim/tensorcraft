@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "ESLint surfaces deterministic rule violations. CLIP guidance steers a generator by backpropagating through CLIP similarity. Guidance strength is a continuous knob and too much causes mode collapse, too little ignores the prompt."
 consequence:
-  narrative: "With CLIP guidance, the images come alive. 'A melancholy cityscape at twilight' now produces deep blues, long shadows, a sense of solitude in the architecture. Erdem stares at the gallery wall. 'It feels something now,' he says. But then, the AI-Wrong moment: a style transfer produces technically perfect but emotionally hollow output. 'Technically competent,' Erdem repeats. 'Artistically dead.' The team realizes CLIP alignment is not the same as artistic truth."
+  narrative: "With CLIP guidance, 'A melancholy cityscape at twilight' produces deep blues, long shadows, solitude in the architecture. Erdem stares at the gallery wall. 'It feels something now,' he says. Then a style transfer comes back with a high CLIP score and nothing behind it. 'Technically competent,' Erdem repeats. 'Artistically dead.'"
 hints:
   - level: nudge
     content: "The image gets updated, not the model: take the gradient of the CLIP score with respect to the pixels and step along it between denoising steps"
@@ -43,7 +43,7 @@ Technically competent. Artistically dead. The cityscape has buildings and a sky.
 Use CLIP as a critic. Like ESLint for code: it doesn't write the code, but it steers you toward better patterns. At each generation step, ask CLIP: "Does this image match the emotional intent of the prompt?" Then nudge the image in that direction.
 </Dialogue>
 
-Yara's analogy earns its keep about halfway. A linter's rules are deterministic; CLIP's score is a learned opinion, and the guidance scale decides how loudly that opinion speaks. Push it too hard and every output collapses toward CLIP's favorite cliche of the prompt. Too soft and the prompt washes out entirely.
+Yara's analogy holds about halfway. A linter's rules are deterministic; CLIP's score is a learned opinion, and the guidance scale decides how loudly that opinion speaks. Push it too hard and every output collapses toward CLIP's favorite cliche of the prompt. Too soft and the prompt washes out entirely.
 
 <LearningObjectives objectives={["Understand CLIP-guided generation: using CLIP as a scoring function during diffusion", "Compute CLIP similarity gradients with respect to the image", "Integrate CLIP guidance into the denoising loop", "Tune guidance strength between its two failure modes: mode collapse and prompt drift"]} />
 
@@ -150,4 +150,4 @@ x ← x − η · ∇_x loss        // pixel-space guidance (more flexible)
 **Modern: diffusion guidance.** Classifier-free guidance (CFG) is the dominant technique now (see the diffusion lessons). CLIP guidance was the bridge between old GAN-based art and modern diffusion.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Guidance strength is a continuous knob: too strong collapses the image toward CLIP's favorite artifacts, too weak ignores the prompt", "At each denoising step, compute the gradient of CLIP similarity and nudge the image toward the prompt", "Guidance strength controls how aggressively the image is steered; too much causes artifacts", "The AI-Wrong moment: high CLIP score does not guarantee artistic quality; alignment is not truth"]} />
+<KeyTakeaways takeaways={["Guidance strength is a continuous knob: too strong collapses the image toward CLIP's favorite artifacts, too weak ignores the prompt", "At each denoising step, compute the gradient of CLIP similarity and nudge the image toward the prompt", "A high CLIP score does not guarantee artistic quality: CLIP measures alignment with the prompt, not taste"]} />

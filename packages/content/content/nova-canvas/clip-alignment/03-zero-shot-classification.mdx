@@ -48,7 +48,7 @@ No training data at all? How?
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-It does not memorize categories. It compares. Encode the image, encode each candidate label as text, pick the closest match. The categories are just text. You can change them anytime.
+It compares instead of memorizing categories. Encode the image, encode each candidate label as text, pick the closest match. The categories are just text. You can change them anytime.
 </Dialogue>
 
 The trick generalizes to any label set you can type, with one catch Rohan's routing analogy hides: there is no default route. CLIP will confidently pick the closest label even for an image that belongs to none of them. Production zero-shot means thresholding the similarity score and treating low confidence as "none of the above."

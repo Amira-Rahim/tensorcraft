@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Noor has the pieces: feature extraction, embedding spaces, similarity search, backbone selection. Now Amir pulls up a schematic on the holotable: a full pipeline diagram. 'Individual tools mean nothing if they do not connect,' he says. 'Meridian's power was never any single algorithm. It was the pipeline (ingest, preprocess, extract, index, query) running end-to-end on every camera in the city. We are going to build the same thing in the browser.'"
+  narrative: "Noor has the pieces: feature extraction, embedding spaces, similarity search, backbone selection. Now Amir pulls up a schematic on the holotable: a full pipeline diagram. 'Meridian's power was not one algorithm but the pipeline (ingest, preprocess, extract, index, query) running end-to-end on every camera in the city,' he says. 'We are going to build the same thing in the browser.'"
   speaker: "Amir"
 concept:
   explanation: "A feature pipeline chains together preprocessing, feature extraction, normalization, and indexing into a single end-to-end system. Each stage transforms data for the next, like middleware in an Express server. The pipeline pattern decouples stages so you can swap backbones, change normalization, or upgrade indexing without rewriting the entire system."
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Express middleware composes synchronous transforms you wrote. Feature pipelines must produce identical features at training and inference time (training/serving skew is the canonical bug) and must handle missing values, drift, and feature freshness."
 consequence:
-  narrative: "Noor runs the pipeline against a live district camera feed. Frames flow in, features flow out, the search index updates in real time. Forty seconds later, the system flags a Meridian drone circling Block 7. 'We have a working surveillance detector,' Zara says quietly. 'Built entirely in the browser. No server. No Meridian infrastructure. Just JavaScript.'"
+  narrative: "Noor runs the pipeline against a live district camera feed. Frames flow in, features flow out, the search index updates in real time. Forty seconds later, the system flags a Meridian drone circling Block 7. 'We have a working surveillance detector,' Zara says quietly. 'Built entirely in the browser, no server anywhere in the loop. Just JavaScript.'"
 hints:
   - level: nudge
     content: "A feature pipeline chains multiple processing steps; each stage takes input from the previous one, like middleware"
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-In a production Express server, you do not write one giant handler that does authentication, validation, logging, and business logic. You build a middleware pipeline. Each function does one thing and passes the result to the next. Feature extraction works the same way. Preprocess the image. Extract features with a backbone. Normalize the vector. Add it to the index. Each stage is independent. Each stage is replaceable.
+In a production Express server, you do not write one giant handler that does authentication, validation, logging, and business logic. You build a middleware pipeline. Each function does one thing and passes the result to the next. Feature extraction works the same way. Preprocess the image. Extract features with a backbone. Normalize the vector. Add it to the index. Each stage is independent and replaceable.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -214,7 +214,7 @@ This is exactly how I structure Express APIs. Each middleware does one job. The 
 </Dialogue>
 
 <Dialogue speaker="Amir">
-That is why Meridian's system scaled to every camera in the city. Not because any single component was brilliant. Because the pipeline made components interchangeable. Now you have the same architecture running in a browser tab.
+That is why Meridian's system scaled to every camera in the city: the pipeline made its components interchangeable, and no single one of them had to be brilliant. Now you have the same architecture running in a browser tab.
 </Dialogue>
 
 ## Challenge

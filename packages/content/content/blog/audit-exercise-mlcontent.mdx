@@ -24,14 +24,14 @@ Course platforms love difficulty badges. The dishonest version: an exercise tagg
 
 ## The numbers (audit of 2026-04-26)
 
-At audit time, 315 authored exercises across all five worlds classified as 73.7% arithmetic, 13.3% data, and the rest spread over model, training, evaluation, and deployment. Difficulty badges contradicting the classification: **zero** after the fix pass. Where an intermediate badge sat on arithmetic content, either the badge came down or the exercise was rebuilt on real TFJS primitives; a follow-up sprint rewrote twelve arithmetic exercises into tensor-native versions.
+At audit time, 315 authored exercises across all five worlds classified as 73.7% arithmetic, 13.3% data, and the rest spread over model, training, evaluation, and deployment. Difficulty badges contradicting the classification: **zero** after the fix pass. Where an intermediate badge sat on arithmetic content, either the badge came down or the exercise was rebuilt on real TFJS primitives. A follow-up sprint rewrote twelve arithmetic exercises into tensor-native versions.
 
 Arithmetic dominating is not a scandal by itself: hand-computing a z-score or a gradient step teaches the mechanism before the library hides it. The scandal would be labeling that "advanced." We do not.
 
 ## The part that keeps it honest today
 
-The classification is not a one-time report. The `mlContent` tag lives in each exercise's metadata, the live Deep Orbit corpus (86 graded exercises) runs against real TFJS in CI, every solution must pass its own tests, and every starter must fail them. When we change an exercise, the gates rerun.
+The classification is not a one-time report. The `mlContent` tag lives in each exercise's metadata. The live Deep Orbit corpus (86 graded exercises) runs against real TFJS in CI: every solution must pass its own tests, and every starter must fail them. When we change an exercise, the gates rerun.
 
 Found an exercise whose badge oversells it? Email [support@tensorcraft.app](mailto:support@tensorcraft.app) and we will reclassify it in public.
 
-*Errata (2026-07-25): a re-run of this audit found four arithmetic exercises that had drifted back to an advanced badge since the fix pass; all four were reclassified to intermediate, and the no-advanced-on-arithmetic rule is now pinned by a CI gate so it cannot regress silently.*
+*Errata (2026-07-25): a re-run of this audit found four arithmetic exercises that had drifted back to an advanced badge since the fix pass. All four were reclassified to intermediate, and the no-advanced-on-arithmetic rule is now pinned by a CI gate so it cannot regress silently.*

@@ -17,9 +17,9 @@ concept:
     mlTitle: "ML Pipeline Architecture"
     mlCode: "// Tokenizer → NER → Classifier → QA → Reviewer: independent models, typed interfaces"
     tier: structural
-    breaks: "Microservices have versioned API contracts and explicit error semantics. ML pipeline architecture has implicit data contracts (schemas, distributions) that fail silently and a model is itself a microservice with non-deterministic outputs."
+    breaks: "Microservices have versioned API contracts and explicit error semantics. ML pipeline architecture has implicit data contracts (schemas, distributions) that fail silently, and each model is a microservice with non-deterministic outputs."
 consequence:
-  narrative: "The architecture diagram fills the entire wall. Six stages, twelve components, typed interfaces at every boundary. Dr. Karimi reviews it and nods. 'This is how you build a system that can catch a drug interaction at 3 AM when no one is watching. Each piece does one thing well. Together they do something none of them could do alone.' Vikram photographs the wall. MEDI logs the architecture. Diagnostic One has a blueprint."
+  narrative: "The architecture diagram fills the entire wall. Six stages, twelve components, typed interfaces at every boundary. Dr. Karimi reviews it and nods. 'This is how you build a system that can catch a drug interaction at 3 AM when no one is watching.' Vikram photographs the wall. MEDI logs the architecture. Diagnostic One has a blueprint."
 hints:
   - level: nudge
     content: "Map each NLP module to a pipeline stage with clear input and output types"
@@ -40,7 +40,7 @@ Nine modules of work. Tokenization, embeddings, sequence models, attention, tran
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-It is a microservices architecture. I have built these before: auth service, user service, payment service, notification service. Each service has a typed API contract. Each service can be tested independently. You compose them through an API gateway. Diagnostic One is the same pattern: independent NLP services composed through a pipeline orchestrator.
+It's a microservices architecture. I've built these before: auth service, user service, payment service, notification service. Each service has a typed API contract. Each service can be tested independently. You compose them through an API gateway. Diagnostic One is the same pattern: independent NLP services composed through a pipeline orchestrator.
 </Dialogue>
 
 Nine modules, six pipeline stages, twelve components, one diagram on the briefing room wall. Khalil has the right instinct: this is the microservices discipline you already know. Independent services with typed inputs and outputs, behind a gateway that routes requests, handles failures, and aggregates responses. Here the orchestrator routes clinical text through each NLP service in sequence, falls back when a stage fails, and assembles the final diagnostic report.
@@ -220,4 +220,4 @@ Design a typed pipeline configuration that maps Diagnostic One's components and 
 
 <Exercise slug="design-diagnostic-one" />
 
-<KeyTakeaways takeaways={["ML pipeline data contracts are implicit (schemas, distributions) and fail silently; there is no 400 response for drifted input, so type every boundary", "Every pipeline stage has typed interfaces, catching integration errors at compile time, not at 3 AM in production", "Error boundaries and fallback paths ensure partial failures degrade gracefully, not catastrophically", "Nine modules of NLP work compose into six pipeline stages: process, analyze, retrieve, ground, verify, output"]} />
+<KeyTakeaways takeaways={["ML pipeline data contracts are implicit (schemas, distributions) and fail silently; there is no 400 response for drifted input, so type every boundary", "Every pipeline stage has typed interfaces, catching integration errors at compile time, not at 3 AM in production", "Error boundaries and fallback paths turn a failed stage into a degraded report instead of a dead pipeline", "Nine modules of NLP work compose into six pipeline stages: process, analyze, retrieve, ground, verify, output"]} />

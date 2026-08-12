@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "API documentation describes deterministic behavior. Model cards must document training data composition, intended use, known failure modes, and performance disparities; the document is non-trivial to author and is itself a deliverable, not a generated artifact."
 consequence:
-  narrative: "The model card is complete. Four pages covering intended use, validation results, known limitations, fairness analysis, and override guidance. Dr. Karimi reads every line. 'This is honest documentation,' she says. 'It tells clinicians exactly what the system can and cannot do. It tells them when to trust it and when to question it.' She adds her signature. The regulatory submission package is complete. Imran formats the model card as a static page in the Diagnostic One interface, accessible from every screen with a single click."
+  narrative: "The model card is complete. Four pages covering intended use, validation results, known limitations, fairness analysis, and override guidance. Dr. Karimi reads every line. 'This is honest documentation,' she says. 'A clinician can read this and know exactly where the system stops being reliable.' She adds her signature. The regulatory submission package is complete. Imran formats the model card as a static page in the Diagnostic One interface, accessible from every screen with a single click."
 hints:
   - level: nudge
     content: "Write down what the system accepts, what it returns, and the conditions under which a clinician should override it; that last section matters most"
@@ -234,4 +234,4 @@ Write a function that generates a formatted clinical model card from structured 
 
 <Exercise slug="write-clinical-card" />
 
-<KeyTakeaways takeaways={["A model card is an authored deliverable, not a generated artifact: training data composition, failure modes, and per-group performance must be written by someone who knows the system", "Clinical documentation must be honest about limitations: not marketing copy, but a tool for informed decision-making", "Override guidance is unique to clinical ML: tell clinicians exactly when to trust the system and when to question it", "Version history records what changed between model versions and why: retraining data, thresholds, and behavior shifts"]} />
+<KeyTakeaways takeaways={["A model card is an authored deliverable, not a generated artifact: training data composition, failure modes, and per-group performance must be written by someone who knows the system", "Clinical documentation states limitations plainly: what the system misses, where accuracy drops, and when confidence scores cannot be taken at face value", "Override guidance is unique to clinical ML: tell clinicians exactly when to trust the system and when to question it", "Version history records what changed between model versions and why: retraining data, thresholds, and behavior shifts"]} />
