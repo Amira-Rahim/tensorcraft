@@ -1,0 +1,362 @@
+/*
+ * Tensorcraft World CSS Custom Properties
+ *
+ * Each world sets --tc-* variables that the Tailwind @world block
+ * in apps/web/app/globals.css maps to utility classes.
+ *
+ * World switching: set data-world="<slug>" on <html>.
+ * Deep Orbit is the default (applied on :root).
+ */
+
+/* ===== DEEP ORBIT (Space) — Default World ===== */
+:root,
+[data-world="deep-orbit"] {
+  --tc-bg: #181818;
+  --tc-primary: #6baa8a;
+  --tc-accent: #a89060;
+  /* Brass trim of the Deep Orbit art, for the frame around raster art plates
+     (.tc-art-plate). Deliberately NOT --tc-accent, which holds the same value
+     here: --tc-accent is a text-capable world accent and is darkened to
+     #6b5a3b in light scheme to clear AA, while this is decorative only and
+     must stay constant, because the raster art it frames is the same dark
+     image in both schemes. Do not merge the two. */
+  --tc-brass: #a89060;
+  --tc-surface: #232323;
+  --tc-surface-overlay: #313131;
+  --tc-text: #e0e0e0;
+  --tc-muted: #b0b0b0;
+  --tc-border: #3d3d3d;
+  /* Interactive-control boundary (WCAG 1.4.11): the resting border of form
+     fields, radio/checkbox options, toggle tracks and outline buttons. Louder
+     than the decorative --tc-border (#3d3d3d = 1.63:1, fine for dividers, fails
+     for controls). #808080 clears 3:1 against BOTH the page bg (4.50:1) and the
+     lightest surface a control sits on, surface-overlay #313131 (3.30:1). */
+  --tc-border-interactive: #808080;
+  --tc-code-bg: #141414;
+
+  /* New surface tier */
+  --tc-surface-raised: #2c2c2c;
+
+  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  --tc-primary-rgb: 107, 170, 138;
+
+  /* Derived accent variables */
+  --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
+  --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
+  --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
+
+  /* Secondary palette for bridge tiers */
+  --tc-tier-identity: #6baa8a;
+  --tc-tier-structural: #78a2bd;
+  --tc-tier-intuition: #a89060;
+
+  /* Skill Genome axis colors */
+  --tc-axis-data-prep: var(--tc-primary);
+  --tc-axis-model-arch: var(--tc-tier-structural);
+  --tc-axis-training: var(--tc-tier-intuition);
+  --tc-axis-evaluation: #d07070;
+  --tc-axis-deployment: #c49535;
+  --tc-axis-fe-integration: #4a90d9;
+
+  /* Semantic colors (global — only declared here, on :root). Success and
+     error are the old green-400/red-300 pastels, not the mid-tone emeralds/
+     reds: semantic text sits on its own 8-20% tints over RAISED surfaces
+     (exercise result panels, toasts), and mid-tones fail 4.5:1 there.
+     Locked by the semantic-surface gate in world-properties.test.ts. */
+  --tc-success: #4ade80;
+  --tc-warning: #f59e0b;
+  --tc-error: #fca5a5;
+  --tc-streak: #ff8a2a;
+  /* Ink for primary-filled elements (buttons, chips, ::selection). Dark uses
+     the page bg (near-black on the bright primary); light CANNOT reuse the
+     page bg - #f5f5f2 on the darkened light primaries is 4.21:1, under AA.
+     Pure white clears 4.5:1 against every light primary (they were minted at
+     >=4.6:1 vs #ffffff). Locked by world-properties.test.ts. */
+  --tc-on-primary: #181818;
+
+  /* Grid background overlay line color (global — only declared here, on :root) */
+  --tc-grid-line: rgba(255, 255, 255, 0.018);
+}
+
+/* ===== NEON PROTOCOL (Cyberpunk) ===== */
+[data-world="neon-protocol"] {
+  --tc-bg: #181818;
+  --tc-primary: #3fc4dc;
+  --tc-accent: #d468b4;
+  --tc-surface: #232323;
+  --tc-surface-overlay: #313131;
+  --tc-text: #e0e0e0;
+  --tc-muted: #b0b0b0;
+  --tc-border: #3d3d3d;
+  /* Interactive-control boundary (WCAG 1.4.11): the resting border of form
+     fields, radio/checkbox options, toggle tracks and outline buttons. Louder
+     than the decorative --tc-border (#3d3d3d = 1.63:1, fine for dividers, fails
+     for controls). #808080 clears 3:1 against BOTH the page bg (4.50:1) and the
+     lightest surface a control sits on, surface-overlay #313131 (3.30:1). */
+  --tc-border-interactive: #808080;
+  --tc-code-bg: #141414;
+
+  /* New surface tier */
+  --tc-surface-raised: #2c2c2c;
+
+  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  --tc-primary-rgb: 63, 196, 220;
+
+  /* Derived accent variables */
+  --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
+  --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
+  --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
+
+  --tc-tier-identity: #4a90d9;
+  --tc-tier-structural: #78a2bd;
+  --tc-tier-intuition: #a89060;
+
+  /* Skill Genome axis colors */
+  --tc-axis-data-prep: var(--tc-primary);
+  --tc-axis-model-arch: var(--tc-tier-structural);
+  --tc-axis-training: var(--tc-tier-intuition);
+  --tc-axis-evaluation: #d07070;
+  --tc-axis-deployment: #c49535;
+  --tc-axis-fe-integration: #4a90d9;
+}
+
+/* ===== SIGNAL WARD (Medical) ===== */
+[data-world="signal-ward"] {
+  --tc-bg: #181818;
+  --tc-primary: #65c07d;
+  --tc-accent: #7096b0;
+  --tc-surface: #232323;
+  --tc-surface-overlay: #313131;
+  --tc-text: #e0e0e0;
+  --tc-muted: #b0b0b0;
+  --tc-border: #3d3d3d;
+  /* Interactive-control boundary (WCAG 1.4.11): the resting border of form
+     fields, radio/checkbox options, toggle tracks and outline buttons. Louder
+     than the decorative --tc-border (#3d3d3d = 1.63:1, fine for dividers, fails
+     for controls). #808080 clears 3:1 against BOTH the page bg (4.50:1) and the
+     lightest surface a control sits on, surface-overlay #313131 (3.30:1). */
+  --tc-border-interactive: #808080;
+  --tc-code-bg: #141414;
+
+  /* New surface tier */
+  --tc-surface-raised: #2c2c2c;
+
+  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  --tc-primary-rgb: 101, 192, 125;
+
+  /* Derived accent variables */
+  --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
+  --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
+  --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
+
+  --tc-tier-identity: #65c07d;
+  --tc-tier-structural: #78a2bd;
+  --tc-tier-intuition: #a89060;
+
+  /* Skill Genome axis colors */
+  --tc-axis-data-prep: var(--tc-primary);
+  --tc-axis-model-arch: var(--tc-tier-structural);
+  --tc-axis-training: var(--tc-tier-intuition);
+  --tc-axis-evaluation: #d07070;
+  --tc-axis-deployment: #c49535;
+  --tc-axis-fe-integration: #4a90d9;
+}
+
+/* ===== NOVA CANVAS (Creative AI) ===== */
+[data-world="nova-canvas"] {
+  --tc-bg: #181818;
+  --tc-primary: #e08058;
+  --tc-accent: #9a88d8;
+  --tc-surface: #232323;
+  --tc-surface-overlay: #313131;
+  --tc-text: #e0e0e0;
+  --tc-muted: #b0b0b0;
+  --tc-border: #3d3d3d;
+  /* Interactive-control boundary (WCAG 1.4.11): the resting border of form
+     fields, radio/checkbox options, toggle tracks and outline buttons. Louder
+     than the decorative --tc-border (#3d3d3d = 1.63:1, fine for dividers, fails
+     for controls). #808080 clears 3:1 against BOTH the page bg (4.50:1) and the
+     lightest surface a control sits on, surface-overlay #313131 (3.30:1). */
+  --tc-border-interactive: #808080;
+  --tc-code-bg: #141414;
+
+  /* New surface tier */
+  --tc-surface-raised: #2c2c2c;
+
+  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  --tc-primary-rgb: 224, 128, 88;
+
+  /* Derived accent variables */
+  --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
+  --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
+  --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
+
+  --tc-tier-identity: #d07070;
+  --tc-tier-structural: #78a2bd;
+  --tc-tier-intuition: #a89060;
+
+  /* Skill Genome axis colors */
+  --tc-axis-data-prep: var(--tc-primary);
+  --tc-axis-model-arch: var(--tc-tier-structural);
+  --tc-axis-training: var(--tc-tier-intuition);
+  --tc-axis-evaluation: #d07070;
+  --tc-axis-deployment: #c49535;
+  --tc-axis-fe-integration: #4a90d9;
+}
+
+/* ===== TERRA GRID (Industrial) ===== */
+[data-world="terra-grid"] {
+  --tc-bg: #181818;
+  --tc-primary: #c49535;
+  --tc-accent: #8fb05a;
+  --tc-surface: #232323;
+  --tc-surface-overlay: #313131;
+  --tc-text: #e0e0e0;
+  --tc-muted: #b0b0b0;
+  --tc-border: #3d3d3d;
+  /* Interactive-control boundary (WCAG 1.4.11): the resting border of form
+     fields, radio/checkbox options, toggle tracks and outline buttons. Louder
+     than the decorative --tc-border (#3d3d3d = 1.63:1, fine for dividers, fails
+     for controls). #808080 clears 3:1 against BOTH the page bg (4.50:1) and the
+     lightest surface a control sits on, surface-overlay #313131 (3.30:1). */
+  --tc-border-interactive: #808080;
+  --tc-code-bg: #141414;
+
+  /* New surface tier */
+  --tc-surface-raised: #2c2c2c;
+
+  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  --tc-primary-rgb: 196, 149, 53;
+
+  /* Derived accent variables */
+  --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
+  --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
+  --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
+
+  --tc-tier-identity: #c49535;
+  --tc-tier-structural: #78a2bd;
+  --tc-tier-intuition: #a89060;
+
+  /* Skill Genome axis colors */
+  --tc-axis-data-prep: var(--tc-primary);
+  --tc-axis-model-arch: var(--tc-tier-structural);
+  --tc-axis-training: var(--tc-tier-intuition);
+  --tc-axis-evaluation: #d07070;
+  --tc-axis-deployment: #c49535;
+  --tc-axis-fe-integration: #4a90d9;
+}
+
+/* ===== LIGHT SCHEME ==========================================
+   Orthogonal to the narrative worlds: data-scheme="light" on <html>
+   overrides the shared neutrals; per-world blocks below re-tune each
+   palette's accents (darkened in HSL until >=4.6:1 on the light page bg
+   #f5f5f2 - NOT white; the first mint targeted white and failed axe at
+   4.21:1 on the real bg).
+   Must come after the world blocks: [data-scheme="light"] ties
+   [data-world="X"] on specificity, so source order decides the neutrals. */
+[data-scheme="light"] {
+  --tc-bg: #f5f5f2;
+  --tc-surface: #ffffff;
+  --tc-surface-overlay: #ffffff;
+  --tc-surface-raised: #fafaf7;
+  --tc-text: #1f1f1f;
+  --tc-muted: #555555;
+  --tc-border: #d8d8d4;
+  /* Interactive-control boundary (WCAG 1.4.11), light scheme. #8a8a8a clears
+     3:1 against the lightest control neighbour white/#ffffff (3.45:1) and the
+     page bg #f5f5f2 (3.17:1); the decorative #d8d8d4 (~1.3:1) fails for
+     controls. */
+  --tc-border-interactive: #8a8a8a;
+  --tc-code-bg: #f6f6f2;
+  --tc-grid-line: rgba(0, 0, 0, 0.03);
+  --tc-success: #096949;
+  --tc-warning: #805306;
+  --tc-error: #b00f0f;
+  --tc-streak: #964400;
+  /* NOT --tc-bg: #f5f5f2 on the light primaries is 4.21:1 (AA fail); pure
+     white clears 4.5:1 against all five (minted >=4.6:1 vs #ffffff). */
+  --tc-on-primary: #ffffff;
+}
+
+/* deep-orbit is the :root default world, so its light overrides must also
+   be reachable via a bare [data-scheme="light"] selector.
+   There is NO ordering constraint between this block and the four
+   per-world light blocks below: [data-world="X"][data-scheme="light"] is
+   (0,2,0), which unconditionally outranks this block's bare (0,1,0)
+   selector on any element with a non-default data-world value — that's a
+   real specificity win, not a same-specificity tie broken by source
+   order. And the five [data-world="X"][data-scheme="light"] compound
+   selectors (this one's + the other four's) never compete with each
+   other in the first place, since data-world is single-valued per
+   element. So this block and the other four world light blocks may be
+   freely reordered relative to one another.
+   The one genuine source-order dependency in this file is that the
+   LIGHT SCHEME section as a whole must follow the five dark world blocks
+   above: the shared-neutral bare [data-scheme="light"] selector (0,1,0)
+   really does tie with :root / [data-world="X"] (also (0,1,0)) on an
+   element that has both a data-world and data-scheme="light" attribute,
+   and that tie is broken by source order — see the comment on the
+   neutrals block above. */
+[data-scheme="light"],
+[data-world="deep-orbit"][data-scheme="light"] {
+  --tc-primary: #3b6550;
+  --tc-accent: #6b5a3b;
+  /* Restated, not darkened: the art plate this frames does not change
+     between schemes, so neither does its trim (see the dark block). */
+  --tc-brass: #a89060;
+  --tc-primary-rgb: 59, 101, 80;
+  --tc-tier-identity: #3b6550;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-world="neon-protocol"][data-scheme="light"] {
+  --tc-primary: #166474;
+  --tc-accent: #9c2c7c;
+  --tc-primary-rgb: 22, 100, 116;
+  --tc-tier-identity: #215e9d;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-world="signal-ward"][data-scheme="light"] {
+  --tc-primary: #2b683b;
+  --tc-accent: #416076;
+  --tc-primary-rgb: 43, 104, 59;
+  --tc-tier-identity: #2b683b;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-world="nova-canvas"][data-scheme="light"] {
+  --tc-primary: #98411c;
+  --tc-accent: #6244c2;
+  --tc-primary-rgb: 152, 65, 28;
+  --tc-tier-identity: #a13434;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}
+
+[data-world="terra-grid"][data-scheme="light"] {
+  --tc-primary: #755820;
+  --tc-accent: #506330;
+  --tc-primary-rgb: 117, 88, 32;
+  --tc-tier-identity: #755820;
+  --tc-tier-structural: #3b6079;
+  --tc-tier-intuition: #6b5a3b;
+  --tc-axis-evaluation: #a13434;
+  --tc-axis-deployment: #755820;
+  --tc-axis-fe-integration: #215e9d;
+}

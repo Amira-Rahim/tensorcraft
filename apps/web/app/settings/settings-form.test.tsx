@@ -7,7 +7,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
  * Covers: 4-tab sidebar (Profile / Notifications / GitHub / Account), Toggle
  * component ON/OFF states, GitHub connect/disconnect wiring to
  * `/api/github/*` endpoints, and `rounded-none` brutalist surfaces. The
- * preferred-theme picker was removed when launch scoped to a single theme.
+ * preferred-world picker was removed when launch scoped to a single world.
  */
 
 // ---------------------------------------------------------------------------
@@ -133,7 +133,7 @@ describe("SettingsForm", () => {
     expect(screen.getByTestId("settings-tab-notifications")).toBeTruthy();
     expect(screen.getByTestId("settings-tab-github")).toBeTruthy();
     expect(screen.getByTestId("settings-tab-account")).toBeTruthy();
-    expect(screen.queryByTestId("settings-tab-theme")).toBeNull();
+    expect(screen.queryByTestId("settings-tab-world")).toBeNull();
   });
 
   it("defaults to the Profile tab and exposes display name + email fields", async () => {
@@ -184,10 +184,10 @@ describe("SettingsForm", () => {
     expect(emailToggle.getAttribute("aria-checked")).toBe("true");
   });
 
-  it("does not render the deprecated Theme tab or theme picker grid", async () => {
+  it("does not render the deprecated World tab or world picker grid", async () => {
     await renderForm();
-    expect(screen.queryByTestId("settings-tab-theme")).toBeNull();
-    expect(screen.queryByTestId("theme-grid")).toBeNull();
+    expect(screen.queryByTestId("settings-tab-world")).toBeNull();
+    expect(screen.queryByTestId("world-grid")).toBeNull();
   });
 
   it("GitHub: shows NOT CONNECTED + Connect button when disconnected", async () => {
@@ -265,7 +265,7 @@ describe("SettingsForm", () => {
     });
   });
 
-  it("retroactive push: POSTs per launched theme and shows the summary", async () => {
+  it("retroactive push: POSTs per launched world and shows the summary", async () => {
     const fetchMock = vi.fn(async () => ({
       ok: true,
       json: async () => ({ pushed: 12, skipped: 3, failed: 0 }),
@@ -287,7 +287,7 @@ describe("SettingsForm", () => {
           headers: expect.objectContaining({
             Authorization: "Bearer TOKEN",
           }),
-          body: JSON.stringify({ themeId: "deep-orbit" }),
+          body: JSON.stringify({ worldId: "deep-orbit" }),
         }),
       );
     });
@@ -323,7 +323,7 @@ describe("SettingsForm", () => {
       purchases: [
         {
           planId: "single",
-          themeIds: ["deep-orbit"],
+          worldIds: ["deep-orbit"],
           amount: 49,
           createdAt: "2026-04-01T00:00:00Z",
         },

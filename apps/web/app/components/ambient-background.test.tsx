@@ -7,7 +7,7 @@ import { mockMatchMedia } from "./test-utils/mock-match-media";
    `document.documentElement.dataset.scheme` every frame (cheap attribute
    read — never getComputedStyle, which would force a style recalc per
    frame). The CSS-var *palette* itself is only read via getComputedStyle at
-   mount and on data-theme/data-scheme mutation (via the shared
+   mount and on data-world/data-scheme mutation (via the shared
    useAttributeObserver hook), never per frame. These tests cover: the
    parsing helper itself, the mount+mutation re-read wiring, the light-mode
    glow-halo skip, and the reduced-motion static-frame refresh. */
@@ -100,14 +100,14 @@ describe("AmbientBackground", () => {
   afterEach(() => {
     // See scene-canvas.test.tsx's afterEach comment: cleanup() first,
     // disconnecting each component's attribute observer, before touching
-    // the shared data-scheme/data-theme attrs.
+    // the shared data-scheme/data-world attrs.
     cleanup();
     delete document.documentElement.dataset.scheme;
-    delete document.documentElement.dataset.theme;
+    delete document.documentElement.dataset.world;
     vi.restoreAllMocks();
   });
 
-  it("re-reads the CSS palette on mount and again on each data-theme/data-scheme mutation", async () => {
+  it("re-reads the CSS palette on mount and again on each data-world/data-scheme mutation", async () => {
     const { ctx } = makeFakeCtx();
     vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,15 +119,15 @@ describe("AmbientBackground", () => {
     const afterMount = computedStyleSpy.mock.calls.length;
     expect(afterMount).toBeGreaterThan(0);
 
-    document.documentElement.dataset.theme = "neon-protocol";
+    document.documentElement.dataset.world = "neon-protocol";
     await waitFor(() =>
       expect(computedStyleSpy.mock.calls.length).toBeGreaterThan(afterMount),
     );
 
-    const afterTheme = computedStyleSpy.mock.calls.length;
+    const afterWorld = computedStyleSpy.mock.calls.length;
     document.documentElement.dataset.scheme = "light";
     await waitFor(() =>
-      expect(computedStyleSpy.mock.calls.length).toBeGreaterThan(afterTheme),
+      expect(computedStyleSpy.mock.calls.length).toBeGreaterThan(afterWorld),
     );
   });
 

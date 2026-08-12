@@ -1,7 +1,7 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { describe, it, expect } from "vitest";
-import { BUILT_THEME_DIRS } from "../src/built-themes";
+import { BUILT_WORLD_DIRS } from "../src/built-worlds";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
 import {
@@ -57,8 +57,8 @@ interface Link {
 }
 
 const links: Link[] = [];
-for (const theme of BUILT_THEME_DIRS) {
-  for (const file of lessonFiles(join(CONTENT_ROOT, theme))) {
+for (const world of BUILT_WORLD_DIRS) {
+  for (const file of lessonFiles(join(CONTENT_ROOT, world))) {
     const src = readFileSync(file, "utf8");
     const rel = relative(CONTENT_ROOT, file);
     for (const m of src.matchAll(/companionSlug="([^"]+)"/g)) {

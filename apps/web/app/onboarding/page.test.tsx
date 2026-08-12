@@ -6,8 +6,8 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
  *
  * Covers the 4-step wizard (Welcome, Background, Goal, Ready), back
  * navigation, canonical enum values from migration 018, and the final PATCH
- * to `/api/onboarding`. Theme selection step was removed when launch was
- * scoped to Deep Orbit only, every learner is auto-routed to that theme.
+ * to `/api/onboarding`. World selection step was removed when launch was
+ * scoped to Deep Orbit only, every learner is auto-routed to that world.
  */
 
 // ---------------------------------------------------------------------------
@@ -43,7 +43,7 @@ vi.mock("@/lib/supabase/client", () => ({
   }),
 }));
 
-vi.mock("@/lib/analytics", () => ({ trackThemeSelected: vi.fn() }));
+vi.mock("@/lib/analytics", () => ({ trackWorldSelected: vi.fn() }));
 
 const trackMock = vi.fn();
 vi.mock("@/lib/analytics-events", async (importOriginal) => {
@@ -101,8 +101,8 @@ function clickBack() {
   fireEvent.click(btn);
 }
 
-// (Theme-step helpers removed, onboarding no longer asks the learner to
-//  pick a theme; Deep Orbit is auto-selected on submit.)
+// (World-step helpers removed, onboarding no longer asks the learner to
+//  pick a world; Deep Orbit is auto-selected on submit.)
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -189,14 +189,14 @@ describe("OnboardingPage", () => {
     );
   });
 
-  it("does not render the legacy Theme step", async () => {
+  it("does not render the legacy World step", async () => {
     await renderPage();
     clickNext();
     fireEvent.click(screen.getByTestId("experience-beginner"));
     clickNext();
     fireEvent.click(screen.getByTestId("goal-hobby"));
-    clickNext(); // would have been -> Theme; now -> Ready
-    expect(screen.queryByTestId("step-theme")).toBeNull();
+    clickNext(); // would have been -> World; now -> Ready
+    expect(screen.queryByTestId("step-world")).toBeNull();
     expect(screen.getByTestId("step-ready")).toBeTruthy();
   });
 

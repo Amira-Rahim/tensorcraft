@@ -13,7 +13,7 @@ is additive and remains deferred to `docs/post-launch-backlog.md`.
 ## A-F0 — THE ARENA STARTS AT ZERO (binding, added 2026-07-25)
 
 **No arena ranking, leaderboard, or seed may ever be derived from historical
-`theme_progress` / `exercise_attempts` scores.** Every score recorded before
+`world_progress` / `exercise_attempts` scores.** Every score recorded before
 the server-authoritative harness exists is client-reported and forgeable
 (see below); seeding from it would launder forged history into the
 competitive ladder, and that laundering is UNRECOVERABLE once ratings
@@ -31,7 +31,7 @@ Verified in code (re-audit, Axis B):
   => r.passed)`).
 - `POST /api/exercise-attempts` inserts the client-reported `passed`/`score`
   with only shape validation, under the **user's own JWT**.
-- `theme_progress` and `skill_events` are likewise client-written.
+- `world_progress` and `skill_events` are likewise client-written.
 
 ⇒ A leaderboard built on any existing table is forgeable with
 `POST {passed:true, score:100}`. The certificate stack is a *share* primitive

@@ -65,7 +65,7 @@ export default defineConfig({
     // timeout fires, the whole run aborts before a single spec executes —
     // and that reads as infra flake, not as "accessibility was never
     // checked". The a11y suite in particular was passing only 4 of 14 specs
-    // for that reason, with the ten covering Themes, Theme Detail, Pricing
+    // for that reason, with the ten covering Worlds, World Detail, Pricing
     // and every lesson step — the entire paid surface — simply never run.
     //
     // A gate whose absence is indistinguishable from its success is worse

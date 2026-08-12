@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       // `/api/og` must be allowed explicitly. Every OG and Twitter card image
       // on the site is generated at `/api/og?...` (root layout, pricing,
-      // privacy, terms, learn, blog, themes, capstone, lessons, extras,
+      // privacy, terms, learn, blog, worlds, capstone, lessons, extras,
       // certificates), so the blanket `/api/` disallow below was telling
       // every crawler and social scraper not to fetch any of them — every
       // share card sitewide would render imageless. More specific Allow rules

@@ -12,7 +12,7 @@ import { test, expect } from "@playwright/test";
  *   - tablet-ipad      - iPad gen 7 (810×1080, proxy for iPad Air)
  *
  * We cover the routes the dev-plan calls out: landing, auth, pricing,
- * themes, paywall. For each, we assert (1) the page renders, (2) no
+ * worlds, paywall. For each, we assert (1) the page renders, (2) no
  * horizontal scroll at the viewport width, and (3) the primary CTA is
  * visible and has a touch-friendly hit area (>= 44×44 px).
  */
@@ -21,7 +21,7 @@ const ROUTES = [
   { name: "Landing", path: "/" },
   { name: "Auth", path: "/auth" },
   { name: "Pricing", path: "/pricing" },
-  { name: "Themes", path: "/themes" },
+  { name: "Worlds", path: "/worlds" },
   { name: "Paywall", path: "/paywall" },
 ] as const;
 

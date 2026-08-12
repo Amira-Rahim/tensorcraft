@@ -19,8 +19,8 @@ export default async function SettingsPage() {
 
   if (!user) redirect("/auth");
 
-  // Note: `preferred_theme_id` is no longer read or rendered. The column is
-  // kept on the table as a tombstone so a future re-introduction of theme
+  // Note: `preferred_world_id` is no longer read or rendered. The column is
+  // kept on the table as a tombstone so a future re-introduction of world
   // preference doesn't require a destructive migration.
   const { data: profile } = await supabase
     .from("profiles")
@@ -33,14 +33,14 @@ export default async function SettingsPage() {
   // Fetch completed purchases
   const { data: purchaseRows } = await supabase
     .from("purchases")
-    .select("plan_id, theme_ids, amount, created_at")
+    .select("plan_id, world_ids, amount, created_at")
     .eq("user_id", user.id)
     .in("status", ["completed", "partially_refunded"])
     .order("created_at", { ascending: false });
 
   const purchases = (purchaseRows ?? []).map((p) => ({
     planId: p.plan_id,
-    themeIds: p.theme_ids,
+    worldIds: p.world_ids,
     amount: p.amount,
     createdAt: p.created_at,
   }));

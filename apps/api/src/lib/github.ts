@@ -401,34 +401,34 @@ export async function getGitHubUsername(
 // README + repo name helpers (per tech-spec 5.4)
 // ──────────────────────────────────────────────────────────────────────────
 
-/** Builds the canonical repo name for a theme: tensorcraft-{theme-slug} */
-export function buildRepoName(themeSlug: string): string {
-  return `tensorcraft-${themeSlug}`;
+/** Builds the canonical repo name for a world: tensorcraft-{world-slug} */
+export function buildRepoName(worldSlug: string): string {
+  return `tensorcraft-${worldSlug}`;
 }
 
 /**
- * Auto-generates the README template for a Tensorcraft theme repo.
- * Includes theme badge, description, module list, and a link back to the platform.
+ * Auto-generates the README template for a Tensorcraft world repo.
+ * Includes world badge, description, module list, and a link back to the platform.
  */
 export function buildReadmeTemplate(params: {
-  themeSlug: string;
-  themeName?: string;
+  worldSlug: string;
+  worldName?: string;
   description?: string;
-  /** Optional module list for the theme; omitted → default "Modules 01-11". */
+  /** Optional module list for the world; omitted → default "Modules 01-11". */
   modules?: Array<{ slug: string; title: string }>;
 }): string {
-  const { themeSlug } = params;
-  const themeName =
-    params.themeName ??
-    themeSlug
+  const { worldSlug } = params;
+  const worldName =
+    params.worldName ??
+    worldSlug
       .split("-")
       .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
       .join(" ");
   const description =
     params.description ??
-    `Exercise solutions for the Tensorcraft ${themeName} course.`;
-  const badge = `![Theme](https://img.shields.io/badge/Tensorcraft-${encodeURIComponent(
-    themeName,
+    `Exercise solutions for the Tensorcraft ${worldName} course.`;
+  const badge = `![World](https://img.shields.io/badge/Tensorcraft-${encodeURIComponent(
+    worldName,
   )}-0a84ff)`;
 
   const modulesSection = (() => {
@@ -442,7 +442,7 @@ export function buildReadmeTemplate(params: {
   })();
 
   return [
-    `# tensorcraft-${themeSlug}`,
+    `# tensorcraft-${worldSlug}`,
     "",
     badge,
     "",
@@ -464,16 +464,16 @@ export function buildReadmeTemplate(params: {
 }
 
 /**
- * Creates (or fetches) the per-theme repo and writes the README template if
+ * Creates (or fetches) the per-world repo and writes the README template if
  * the repo was just created. Safe to call repeatedly.
  */
-export async function ensureThemeRepo(
+export async function ensureWorldRepo(
   accessToken: string,
   username: string,
-  themeSlug: string,
-  opts?: { themeName?: string; description?: string; isPrivate?: boolean },
+  worldSlug: string,
+  opts?: { worldName?: string; description?: string; isPrivate?: boolean },
 ): Promise<GitHubRepoResponse> {
-  const repoName = buildRepoName(themeSlug);
+  const repoName = buildRepoName(worldSlug);
   const repo = await createOrGetRepo(accessToken, repoName, {
     description: opts?.description,
     isPrivate: opts?.isPrivate,
@@ -483,8 +483,8 @@ export async function ensureThemeRepo(
   const existing = await getFile(accessToken, username, repoName, "README.md");
   if (!existing) {
     const readme = buildReadmeTemplate({
-      themeSlug,
-      themeName: opts?.themeName,
+      worldSlug,
+      worldName: opts?.worldName,
       description: opts?.description,
     });
     await pushFile(
@@ -501,14 +501,14 @@ export async function ensureThemeRepo(
 }
 
 /**
- * Commits a single lesson artifact to the user's per-theme repo with
+ * Commits a single lesson artifact to the user's per-world repo with
  * exponential-backoff retries on transient failures. Optionally appends
  * `readmeDelta` to `PROGRESS.md` (not README.md, to avoid churn).
  */
 export async function commitLessonArtifact(params: {
   accessToken: string;
   username: string;
-  themeSlug: string;
+  worldSlug: string;
   moduleId: string;
   lessonId: string;
   code: string;
@@ -528,7 +528,7 @@ export async function commitLessonArtifact(params: {
   const {
     accessToken,
     username,
-    themeSlug,
+    worldSlug,
     moduleId,
     lessonId,
     code,
@@ -537,7 +537,7 @@ export async function commitLessonArtifact(params: {
     fileExt = "ts",
   } = params;
 
-  const repoName = buildRepoName(themeSlug);
+  const repoName = buildRepoName(worldSlug);
   const artifactId = exerciseSlug ?? lessonId;
   const filePath = `${moduleId}/${artifactId}.${fileExt}`;
   const commitMessage = `feat(${moduleId}): Complete exercise -- ${artifactId}`;
@@ -573,7 +573,7 @@ export async function commitLessonArtifact(params: {
         {
           err,
           source: "github.commitLessonArtifact",
-          themeSlug,
+          worldSlug,
           moduleId,
           lessonId,
           githubRepo: repoName,

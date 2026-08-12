@@ -69,7 +69,7 @@ vi.mock("@tensorcraft/content", () => ({
   getModule: () => null,
   getModuleLessons: () => [],
   getLesson: () => null,
-  getThemeLessons: () => [],
+  getWorldLessons: () => [],
   getLessonsWithBridges: () => [],
 }));
 
@@ -82,10 +82,10 @@ vi.mock("../dashboard-view", () => ({
   },
 }));
 
-// `theme-cards` is rendered as JSX inside the page; stub it out so tests
+// `world-cards` is rendered as JSX inside the page; stub it out so tests
 // don't need its full props surface.
-vi.mock("../theme-cards", () => ({
-  ThemeCards: () => null,
+vi.mock("../world-cards", () => ({
+  WorldCards: () => null,
 }));
 
 /**

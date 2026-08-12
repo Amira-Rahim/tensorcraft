@@ -49,13 +49,13 @@ Append verbatim to every scene prompt:
 
 Generate and approve these four first (Gate C); they are the reference
 images for every per-lesson shot. Masters are also reusable as marketing /
-theme-page art.
+world-page art.
 
 **Shipped 2026-08-10.** All four ingest to
 `apps/web/public/locations/deep-orbit/<location>.webp` via
 `node scripts/art/ingest.mjs masters`, at the same 1536x1024 / 200 KB cap as
 scenes (shipped at 99-130 KB). The Bridge plate is the ground of the landing
-page's Five Worlds band and of the Deep Orbit theme page backdrop; see
+page's Five Worlds band and of the Deep Orbit world page backdrop; see
 `docs/superpowers/specs/2026-08-09-art-marketing-surfaces-design.md`.
 
 Two things to know before regenerating them:
@@ -133,7 +133,7 @@ Two things to know before regenerating them:
   diagnostics bay center, rule-engine cabinet visible in the aft shadow.
 - **Light states** work (hanging lamps, warm-leaning), diagnostic (green
   display wash), incident (a single red-orange status lamp allowed, the
-  only non-palette accent in the theme).
+  only non-palette accent in the world).
 - **Do / Don't** Do keep Nazari's discipline: nothing out of place, wear
   without mess. Don't make it grimy or sparks-flying; competence, not
   chaos.
@@ -785,5 +785,5 @@ it is what the asset path and `scripts/art/ingest.mjs` validate against)
 - 2026-08-05: all 63 entries drafted (56 briefings + 7 epilogues) from the
   lesson MDX briefing zones; awaiting Gate C-prime user review. Canon note:
   Chief Nazari is a woman per the character bible; the manifest personality
-  line in packages/themes/src/deep-orbit.ts was corrected to match
+  line in packages/worlds/src/deep-orbit.ts was corrected to match
   ("froze on her last mission").

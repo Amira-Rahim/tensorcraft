@@ -6,9 +6,9 @@ import { SkillGenome } from "./skill-genome";
 import { BridgeCollection } from "./bridge-collection";
 import { LossCurve, type WeeklyHints } from "@tensorcraft/ui/visualizations";
 import { UserAvatar } from "@/app/components/user-avatar";
-import { themes } from "@tensorcraft/themes";
+import { worlds } from "@tensorcraft/worlds";
 
-/* ── Design tokens (use CSS vars from theme system) ── */
+/* ── Design tokens (use CSS vars from world system) ── */
 const LIME = "var(--tc-primary)";
 const BG = "var(--tc-bg)";
 const PANEL = "var(--tc-surface)";
@@ -48,8 +48,8 @@ export interface ActivityRecord {
 export interface DashboardProps {
   displayName: string;
   avatarUrl?: string | null;
-  themeName: string;
-  themeSlug: string;
+  worldName: string;
+  worldSlug: string;
   modules: DashboardModule[];
   currentModule: {
     number: number;
@@ -59,8 +59,8 @@ export interface DashboardProps {
     estimatedMinutes: number;
     topic: string;
   } | null;
-  themeProgressPercent: number;
-  themePoints: { current: number; total: number };
+  worldProgressPercent: number;
+  worldPoints: { current: number; total: number };
   currentStreak: number;
   bestStreak: number;
   averageScore: number;
@@ -80,7 +80,7 @@ export interface DashboardProps {
     velocity: number;
   }>;
   lossCurveData: { weekly: WeeklyHints[] };
-  themeCards?: ReactNode;
+  worldCards?: ReactNode;
   /**
    * True when at least one streak's last_activity_date == today - 1 AND the
    * user has not yet completed a lesson today. Renders a gentle nudge toast.
@@ -92,12 +92,12 @@ export function DashboardView(props: DashboardProps) {
   const {
     displayName,
     avatarUrl,
-    themeName,
-    themeSlug,
+    worldName,
+    worldSlug,
     modules,
     currentModule,
-    themeProgressPercent,
-    themePoints,
+    worldProgressPercent,
+    worldPoints,
     currentStreak,
     bestStreak,
     averageScore,
@@ -110,13 +110,13 @@ export function DashboardView(props: DashboardProps) {
     completedModules,
     genomeData,
     lossCurveData,
-    themeCards,
+    worldCards,
     streakAtRisk = false,
   } = props;
 
-  // Resolve the theme's lesson word (re-audit N2/F-C): "Mission" is Deep
-  // Orbit's; other themes say Protocol/Procedure/etc. Falls back to "Mission".
-  const lessonTerm = themes[themeSlug]?.terminology.lesson ?? "Mission";
+  // Resolve the world's lesson word (re-audit N2/F-C): "Mission" is Deep
+  // Orbit's; other worlds say Protocol/Procedure/etc. Falls back to "Mission".
+  const lessonTerm = worlds[worldSlug]?.terminology.lesson ?? "Mission";
 
   const [heatVis, setHeatVis] = useState(false);
   const [hovM, setHovM] = useState<number | null>(null);
@@ -127,12 +127,12 @@ export function DashboardView(props: DashboardProps) {
     let f = 0;
     const ri = setInterval(() => {
       f++;
-      setRing(Math.min(f * 1.6, themeProgressPercent));
-      if (f > Math.ceil(themeProgressPercent / 1.6)) clearInterval(ri);
+      setRing(Math.min(f * 1.6, worldProgressPercent));
+      if (f > Math.ceil(worldProgressPercent / 1.6)) clearInterval(ri);
     }, 32);
     setTimeout(() => setHeatVis(true), 400);
     return () => clearInterval(ri);
-  }, [themeProgressPercent]);
+  }, [worldProgressPercent]);
 
   return (
     <div
@@ -206,7 +206,7 @@ export function DashboardView(props: DashboardProps) {
             <Link
               key={m.slug}
               href={
-                m.status !== "locked" ? `/themes/${themeSlug}/${m.slug}` : "#"
+                m.status !== "locked" ? `/worlds/${worldSlug}/${m.slug}` : "#"
               }
               onMouseEnter={() => setHovM(i)}
               onMouseLeave={() => setHovM(null)}
@@ -446,7 +446,7 @@ export function DashboardView(props: DashboardProps) {
                       marginBottom: 6,
                     }}
                   >
-                    {themeName}
+                    {worldName}
                   </h1>
                   <p style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
                     {completedModules > 0
@@ -492,8 +492,8 @@ export function DashboardView(props: DashboardProps) {
               <Link
                 href={
                   modules.every((m) => m.status === "done")
-                    ? `/themes/${themeSlug}/capstone`
-                    : `/themes/${themeSlug}`
+                    ? `/worlds/${worldSlug}/capstone`
+                    : `/worlds/${worldSlug}`
                 }
                 onMouseEnter={() => setHovBtn("resume")}
                 onMouseLeave={() => setHovBtn(null)}
@@ -539,9 +539,9 @@ export function DashboardView(props: DashboardProps) {
           >
             {[
               {
-                label: "Theme progress",
+                label: "World progress",
                 val: `${Math.round(ring)}%`,
-                sub: `${themePoints.current} / ${themePoints.total} pts`,
+                sub: `${worldPoints.current} / ${worldPoints.total} pts`,
                 accent: true,
               },
               {
@@ -742,8 +742,8 @@ export function DashboardView(props: DashboardProps) {
             </div>
           </section>
 
-          {/* Theme catalog, owned vs locked */}
-          {themeCards}
+          {/* World catalog, owned vs locked */}
+          {worldCards}
 
           {/* Recent activity */}
           {recentActivity.length > 0 && (

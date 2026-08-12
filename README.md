@@ -2,11 +2,11 @@
 
 An interactive, story-driven web application that teaches frontend engineers browser-based machine learning — bridging familiar web development concepts to ML through 50+ concept mappings.
 
-## Themes
+## Worlds
 
-Tensorcraft is organized into five themed courses, each with its own narrative world:
+Tensorcraft is organized into five worlds, each with its own narrative:
 
-| Theme             | Setting     | Focus Area              |
+| World             | Setting     | Focus Area              |
 | ----------------- | ----------- | ----------------------- |
 | **Deep Orbit**    | Space       | Time-Series & Signals   |
 | **Neon Protocol** | Cyberpunk   | Computer Vision         |
@@ -14,7 +14,7 @@ Tensorcraft is organized into five themed courses, each with its own narrative w
 | **Nova Canvas**   | Creative AI | Multimodal & Generative |
 | **Terra Grid**    | Industrial  | Edge AI & Production ML |
 
-Each theme contains 11 modules × 5 lessons (~22 hours of content) with hands-in-browser exercises.
+Each world contains 11 modules × 5 lessons (~22 hours of content) with hands-in-browser exercises.
 
 ## Tech Stack
 
@@ -22,9 +22,9 @@ Each theme contains 11 modules × 5 lessons (~22 hours of content) with hands-in
 - **Monorepo:** Turborepo + pnpm workspaces
 - **Content:** MDX v3 + Velite (Zod-validated content pipeline)
 - **Exercises:** Sandpack (in-browser code) + Jest (validation)
-- **Styling:** Tailwind CSS 4 with `@theme` directive (CSS custom properties); no CSS Modules in use. Dark mode only.
+- **Styling:** Tailwind CSS 4 with `@world` directive (CSS custom properties); no CSS Modules in use. Dark mode only.
 - **Auth & DB:** Supabase (Postgres + Auth)
-- **Payments:** Stripe (one-time per-theme purchases)
+- **Payments:** Stripe (one-time per-world purchases)
 - **Analytics:** PostHog + Plausible
 - **Testing:** Vitest (unit), Playwright (e2e), axe-core (a11y)
 
@@ -38,7 +38,7 @@ tensorcraft/
 ├── packages/
 │   ├── content/      # MDX lessons, exercises, Velite config
 │   ├── ui/           # Shared UI components
-│   ├── themes/       # Theme configuration (colors, assets)
+│   ├── worlds/       # World configuration (colors, assets)
 │   ├── shared/       # Shared utilities and types
 │   ├── config/       # Shared config (ESLint, TypeScript)
 │   ├── github/       # GitHub integration (commit builder)
@@ -108,7 +108,7 @@ See [docs/deployment-guide.md](docs/deployment-guide.md) for environment variabl
 
 ## Content Authoring
 
-Lessons are written in MDX and live in `packages/content/content/<theme>/<module>/`. Each module contains:
+Lessons are written in MDX and live in `packages/content/content/<world>/<module>/`. Each module contains:
 
 - `01-*.mdx` through `05-*.mdx` — lesson files
 - `exercises/*.yaml` — exercise definitions with Sandpack configs

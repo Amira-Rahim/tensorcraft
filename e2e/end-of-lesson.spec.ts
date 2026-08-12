@@ -23,7 +23,7 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
       );
       localStorage.setItem("tc-cookie-consent", "declined");
     });
-    await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
+    await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
 
     // Both close blocks render on the Takeaways step.
     const recall = page.getByText("Recall Prompt", { exact: true }).first();

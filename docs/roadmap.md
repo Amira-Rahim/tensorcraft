@@ -13,10 +13,10 @@ Honest current state, verified against the codebase:
 
 | Dimension | Reality |
 |---|---|
-| Themes purchasable | **1** (`deep-orbit`). 4 exist as unbuilt MDX, gated coming-soon |
+| Worlds purchasable | **1** (`deep-orbit`). 4 exist as unbuilt MDX, gated coming-soon |
 | Revenue model | One-time only. Stripe `mode:"payment"`. No subscriptions |
 | Account model | Individual only. No teams/orgs/seats. Flat `user \| admin` role |
-| Entitlement | Derived ad-hoc from `purchases.theme_ids`; no entitlements table |
+| Entitlement | Derived ad-hoc from `purchases.world_ids`; no entitlements table |
 | Cross-user features | **None.** All gamification is per-user RLS. No leaderboard |
 | Free tier | Module 1 (5 lessons) + 21 public `/extras` lessons |
 | Product quality | High. Content, grading, and trust handling are genuinely strong |
@@ -34,7 +34,7 @@ This is a different order of magnitude than every previously written plan, and t
 | Prior plan | Its terminal milestone | vs. new goal |
 |---|---|---|
 | `prd.md` §7 V5.0 "Universe" (2028-Q3) | **100,000 _free_ users**, $250K MRR | Goal is ~**30×** this, in paying users |
-| `prd.md` §7 V1.0 "Liftoff" (2026-Q3 — now) | 2,000 free users, 3% conversion ≈ **60 paying**; requires all 5 themes | **Already slipping**: 1 theme launched |
+| `prd.md` §7 V1.0 "Liftoff" (2026-Q3 — now) | 2,000 free users, 3% conversion ≈ **60 paying**; requires all 5 worlds | **Already slipping**: 1 world launched |
 | `dev-plan.md` V2.0 (2027-Q1) | Team tier, admin dashboard | Correct instinct — this is the enterprise lever, and it matters far more than its position implied |
 
 **Implication:** the old roadmap paces toward ~$3M ARR by 2028. 100k paying implies **$10–50M ARR**. Re-base, don't extend.
@@ -84,7 +84,7 @@ Conversion repairs to the current product, most of them trivial. **Several resto
   3. `checkout.session.async_payment_succeeded` resolves identity from `client_reference_id` only → a guest paying by bank debit stays `pending` forever: money taken, access never granted, nothing logged.
 
   None were caught by the 30 passing API tests, because those mock `lib/guest-account.ts` wholesale and never exercise the post-payment redirect. **Before re-enabling:** guest-safe success page, ownership + credit checks (an email field collects the address without an inbox round-trip), guest fallback in both `async_payment_*` handlers, a unique index on `lower(profiles.email)`, an anon (not service-role) client for the OTP send, and real unmocked tests for `guest-account.ts`. See the corrections in `docs/privacy-compliance.md` — the original justification contained a false claim that payment verifies the email address. (Re-enable is tracked as a work item in `post-launch-backlog.md` §8 Horizon 1, 2026-07-22; this block remains the defect record.)
-- [x] ~~Collapse the unbuyable bundle tiers.~~ **Won't do.** Sequential release (ship one theme, learn, apply) is deliberate strategy, and the gating is already honest — no one can overpay for missing content.
+- [x] ~~Collapse the unbuyable bundle tiers.~~ **Won't do.** Sequential release (ship one world, learn, apply) is deliberate strategy, and the gating is already honest — no one can overpay for missing content.
 
 ### P3 — Trust and qualification
 
@@ -117,7 +117,7 @@ Tracked canonically in `docs/launch-blockers.md`; not duplicated here. Status ha
 
 Preconditions, not preferences. Violating the order wastes capital.
 
-- **Gate 1 — Denominator.** Only 1 theme is purchasable and the ICP is "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies — impossible arithmetic. Widen to web/JS devs (10M+) and launch more themes. *Nothing downstream matters until this opens.*
+- **Gate 1 — Denominator.** Only 1 world is purchasable and the ICP is "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies — impossible arithmetic. Widen to web/JS devs (10M+) and launch more worlds. *Nothing downstream matters until this opens.*
 - **Gate 2 — LTV.** No recurring revenue exists. Until LTV > 3×CAC, paid acquisition is a furnace, not an engine.
 - **Gate 3 — Proof.** Do not hire sales or buy traffic against an unproven funnel. Activation/retention curves must exist and flatten — and enterprise buyers will demand completion data. (Horizon 0 produces it.)
 - **Gate 4 — Catalog.** Enterprises buy *broad* upskilling. One narrow path does not clear procurement. Catalog breadth is a hard dependency for enterprise being sellable.

@@ -12,7 +12,7 @@ import { submitWaitlist } from "../waitlist";
 /**
  * `submitWaitlist` must never throw.
  *
- * Both callers (`theme-waitlist-form.tsx`, `newsletter-modal.tsx`) do
+ * Both callers (`world-waitlist-form.tsx`, `newsletter-modal.tsx`) do
  * `setStatus("submitting")` then `setStatus(await submitWaitlist(...))` with no
  * try/catch. An exception skipped the second setStatus and left the form stuck
  * on "submitting" forever — with a working error state rendered just below

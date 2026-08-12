@@ -1,5 +1,5 @@
-import { themes } from "@tensorcraft/themes";
-import type { ThemeCharacter } from "@tensorcraft/themes";
+import { worlds } from "@tensorcraft/worlds";
+import type { WorldCharacter } from "@tensorcraft/worlds";
 
 /* Character art resolution for the lesson UI. Lives app-side because
    packages/ui is deliberately manifest-blind: components take srcs and
@@ -15,28 +15,28 @@ export interface PortraitSources {
 
 /** Speaker string (Dialogue prop or frontmatter) to manifest character. */
 export function resolveCharacter(
-  themeSlug: string,
+  worldSlug: string,
   speaker: string | undefined,
-): ThemeCharacter | undefined {
+): WorldCharacter | undefined {
   if (!speaker) return undefined;
-  const chars = themes[themeSlug]?.characters ?? [];
+  const chars = worlds[worldSlug]?.characters ?? [];
   return chars.find((c) => c.name === speaker || c.aliases?.includes(speaker));
 }
 
 /**
  * Asset URLs for a character portrait per the bible convention:
- * `/characters/<theme>/<slug>.webp`, variants `<slug>-<expression>.webp`.
+ * `/characters/<world>/<slug>.webp`, variants `<slug>-<expression>.webp`.
  * Unknown or "neutral" expressions resolve to the base portrait only, so a
  * bad annotation can never mint a guaranteed-404 URL (the content gate in
  * packages/content also rejects it at build time).
  */
 export function portraitSources(
-  themeSlug: string,
-  character: ThemeCharacter | undefined,
+  worldSlug: string,
+  character: WorldCharacter | undefined,
   expression?: string,
 ): PortraitSources {
   if (!character?.slug) return {};
-  const src = `/characters/${themeSlug}/${character.slug}.webp`;
+  const src = `/characters/${worldSlug}/${character.slug}.webp`;
   const valid =
     expression !== undefined &&
     expression !== "neutral" &&
@@ -44,7 +44,7 @@ export function portraitSources(
   return valid
     ? {
         src,
-        expressionSrc: `/characters/${themeSlug}/${character.slug}-${expression}.webp`,
+        expressionSrc: `/characters/${worldSlug}/${character.slug}-${expression}.webp`,
       }
     : { src };
 }

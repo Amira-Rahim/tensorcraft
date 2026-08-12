@@ -7,13 +7,13 @@ export type { ColorScheme } from "@tensorcraft/shared";
 
 // ---------------------------------------------------------------------------
 // packages/ui components (CodeBlock, Exercise, SceneCanvas, ...) can't import
-// apps/web's ThemeProvider — that would create a reverse dependency from the
+// apps/web's WorldProvider — that would create a reverse dependency from the
 // shared component library onto the app. Instead they observe the DOM: the
-// app-side provider (apps/web/app/components/theme-provider.tsx) is the only
+// app-side provider (apps/web/app/components/world-provider.tsx) is the only
 // writer of `document.documentElement.dataset.scheme`, and this hook is a
 // read-only mirror of that attribute. THE ATTRIBUTE IS THE STORE.
 //
-// Mirrors theme-provider's module-level listener-array + useSyncExternalStore
+// Mirrors world-provider's module-level listener-array + useSyncExternalStore
 // pattern, but the underlying subscription primitive is a single shared
 // MutationObserver (refcounted) rather than a plain listener array, since
 // there is no app-level notifier this module can hook into directly.
@@ -73,7 +73,7 @@ export function getServerSnapshot(): ColorScheme {
 /**
  * Read-only mirror of the app's `data-scheme` attribute on `<html>`, for
  * packages/ui components that need to know the resolved light/dark scheme
- * but must not depend on apps/web's ThemeProvider.
+ * but must not depend on apps/web's WorldProvider.
  */
 export function useScheme(): ColorScheme {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);

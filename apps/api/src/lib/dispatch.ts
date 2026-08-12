@@ -6,7 +6,7 @@
 // the nav link stayed hidden (2026-07-13 audit). This is the missing
 // writer. The progress route calls it fire-and-forget when a lesson
 // completes; it sends a milestone message when that completion closes out
-// a module, and a second one when it closes out the whole theme.
+// a module, and a second one when it closes out the whole world.
 //
 // Module sizes come from getModuleLessonCount() in @tensorcraft/shared
 // (the API cannot import the content package); the constant is pinned to
@@ -15,7 +15,7 @@
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import {
   getModuleLessonCount,
-  getThemeTotalLessons,
+  getWorldTotalLessons,
 } from "@tensorcraft/shared";
 import { logger } from "./logger";
 
@@ -63,17 +63,17 @@ async function fireOnce(
  */
 export async function fireMilestonesForCompletion(params: {
   userId: string;
-  themeId: string;
+  worldId: string;
   moduleId: string;
 }): Promise<void> {
-  const { userId, themeId, moduleId } = params;
+  const { userId, worldId, moduleId } = params;
   const supabase = getSupabaseAdminClient();
 
   const { data: rows, error } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .select("module_id")
     .eq("user_id", userId)
-    .eq("theme_id", themeId)
+    .eq("world_id", worldId)
     .eq("status", "completed");
   if (error) throw new Error(`dispatch producer read: ${error.message}`);
 
@@ -82,7 +82,7 @@ export async function fireMilestonesForCompletion(params: {
     (r) => r.module_id === moduleId,
   ).length;
 
-  if (completedInModule === getModuleLessonCount(themeId, moduleId)) {
+  if (completedInModule === getModuleLessonCount(worldId, moduleId)) {
     const moduleTitle = titleCase(moduleId);
     const sent = await fireOnce(
       supabase,
@@ -90,29 +90,29 @@ export async function fireMilestonesForCompletion(params: {
       `DISPATCH · module cleared: ${moduleTitle}`,
       `Operator. Every lesson in ${moduleTitle} reads complete on my board. I logged the clearance the moment it happened; the next module was already listening.`,
       "Open the mission map",
-      `/themes/${themeId}`,
+      `/worlds/${worldId}`,
     );
     if (sent) {
       logger.info(
-        { source: "dispatch.producer", userId, themeId, moduleId },
+        { source: "dispatch.producer", userId, worldId, moduleId },
         "module milestone sent",
       );
     }
   }
 
-  if (completed.length === getThemeTotalLessons(themeId)) {
+  if (completed.length === getWorldTotalLessons(worldId)) {
     const sent = await fireOnce(
       supabase,
       userId,
-      `DISPATCH · board clear: ${titleCase(themeId)}`,
-      `All ${getThemeTotalLessons(themeId)} lessons read complete. No open items anywhere on my board. The capstone model is yours to keep, and the certificate desk already knows your name.`,
+      `DISPATCH · board clear: ${titleCase(worldId)}`,
+      `All ${getWorldTotalLessons(worldId)} lessons read complete. No open items anywhere on my board. The capstone model is yours to keep, and the certificate desk already knows your name.`,
       "Back to the dashboard",
       "/dashboard",
     );
     if (sent) {
       logger.info(
-        { source: "dispatch.producer", userId, themeId },
-        "theme milestone sent",
+        { source: "dispatch.producer", userId, worldId },
+        "world milestone sent",
       );
     }
   }

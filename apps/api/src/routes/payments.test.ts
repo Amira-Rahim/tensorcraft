@@ -19,7 +19,7 @@ let mockAdminExistingRow: { status: string } | null = null;
 let mockEqResult: { data: unknown; error: unknown } | null = null;
 
 // Controls what the server-client purchases query resolves to for upgrade tests
-let mockExistingPurchases: { theme_ids: string[]; amount: number }[] | null =
+let mockExistingPurchases: { world_ids: string[]; amount: number }[] | null =
   null;
 // Controls insert result for the auto-grant path
 const mockServerInsert = vi.fn();
@@ -196,13 +196,13 @@ vi.mock("../lib/kit", () => ({
 
 vi.mock("@tensorcraft/shared", () => ({
   PRICING: {
-    free: { price: 0, themes: 0, label: "Free Preview" },
-    single: { price: 49, themes: 1, label: "Single Theme" },
-    twoBundle: { price: 79, themes: 2, label: "Two Themes" },
-    threeBundle: { price: 99, themes: 3, label: "Three Themes" },
-    allFive: { price: 129, themes: 5, label: "All 5 Themes" },
+    free: { price: 0, worlds: 0, label: "Free Preview" },
+    single: { price: 49, worlds: 1, label: "Single World" },
+    twoBundle: { price: 79, worlds: 2, label: "Two Worlds" },
+    threeBundle: { price: 99, worlds: 3, label: "Three Worlds" },
+    allFive: { price: 129, worlds: 5, label: "All 5 Worlds" },
   },
-  isValidThemeSlug: (slug: string) =>
+  isValidWorldSlug: (slug: string) =>
     [
       "deep-orbit",
       "neon-protocol",
@@ -271,7 +271,7 @@ describe("POST /api/payments/webhook", () => {
           // The money has actually moved. An unpaid session must NOT be
           // written as completed (see the delayed-payment test below).
           payment_status: "paid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -293,7 +293,7 @@ describe("POST /api/payments/webhook", () => {
       expect.objectContaining({
         user_id: "user_456",
         plan_id: "single",
-        theme_ids: ["deep-orbit"],
+        world_ids: ["deep-orbit"],
         amount: 49,
         stripe_session_id: "cs_test_123",
         status: "completed",
@@ -313,7 +313,7 @@ describe("POST /api/payments/webhook", () => {
           client_reference_id: "user_tax",
           amount_total: 5880,
           payment_status: "paid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
           // What Stripe attaches once Stripe Tax + address collection are on.
           total_details: { amount_tax: 980 },
           customer_details: {
@@ -358,7 +358,7 @@ describe("POST /api/payments/webhook", () => {
           client_reference_id: "user_notax",
           amount_total: 4900,
           payment_status: "paid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -399,7 +399,7 @@ describe("POST /api/payments/webhook", () => {
           amount_total: 4900,
           payment_status: "paid",
           customer: "cus_ABC123",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -432,7 +432,7 @@ describe("POST /api/payments/webhook", () => {
           client_reference_id: "user_456",
           amount_total: 4900,
           payment_status: "paid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -465,7 +465,7 @@ describe("POST /api/payments/webhook", () => {
           client_reference_id: "user_456",
           amount_total: 4900,
           payment_status: "unpaid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -578,9 +578,9 @@ describe("POST /api/payments/webhook", () => {
     expect(mockEq).toHaveBeenCalledWith("stripe_payment_intent", "pi_789");
   });
 
-  it("rejects webhook with empty theme_ids metadata (§6h)", async () => {
-    // An empty themeIds array must be rejected, every paid purchase
-    // grants at least one theme. Guards against a future bug in the
+  it("rejects webhook with empty world_ids metadata (§6h)", async () => {
+    // An empty worldIds array must be rejected, every paid purchase
+    // grants at least one world. Guards against a future bug in the
     // checkout handler emitting a malformed metadata blob.
     const event = {
       type: "checkout.session.completed",
@@ -589,7 +589,7 @@ describe("POST /api/payments/webhook", () => {
           id: "cs_test_empty",
           client_reference_id: "user_empty",
           amount_total: 4900,
-          metadata: { planId: "single", themeIds: "" },
+          metadata: { planId: "single", worldIds: "" },
         },
       },
     };
@@ -608,7 +608,7 @@ describe("POST /api/payments/webhook", () => {
     expect(mockInsert).not.toHaveBeenCalled();
   });
 
-  it("rejects webhook with unknown theme slug in metadata (§6h)", async () => {
+  it("rejects webhook with unknown world slug in metadata (§6h)", async () => {
     const event = {
       type: "checkout.session.completed",
       data: {
@@ -616,7 +616,7 @@ describe("POST /api/payments/webhook", () => {
           id: "cs_test_bad",
           client_reference_id: "user_bad",
           amount_total: 4900,
-          metadata: { planId: "single", themeIds: "not-a-real-theme" },
+          metadata: { planId: "single", worldIds: "not-a-real-world" },
         },
       },
     };
@@ -648,7 +648,7 @@ describe("POST /api/payments/webhook", () => {
           id: "cs_test_retry",
           client_reference_id: "user_retry",
           amount_total: 4900,
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -684,7 +684,7 @@ describe("POST /api/payments/webhook", () => {
           amount_total: 4900,
           payment_status: "paid",
           payment_intent: "pi_late_arriving",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -727,7 +727,7 @@ describe("POST /api/payments/webhook", () => {
           client_reference_id: "user_456",
           amount_total: 4900,
           payment_status: "paid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -760,7 +760,7 @@ describe("POST /api/payments/webhook", () => {
           client_reference_id: "user_456",
           amount_total: 4900,
           payment_status: "unpaid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -794,7 +794,7 @@ describe("POST /api/payments/webhook", () => {
           client_reference_id: "user_456",
           amount_total: 4900,
           payment_status: "paid",
-          metadata: { planId: "single", themeIds: "deep-orbit" },
+          metadata: { planId: "single", worldIds: "deep-orbit" },
         },
       },
     };
@@ -983,7 +983,7 @@ describe("Upgrade path", () => {
     mockProfileCustomerId = null;
   });
 
-  async function checkout(body: { planId: string; themeIds: string[] }) {
+  async function checkout(body: { planId: string; worldIds: string[] }) {
     return app.request("/api/payments/checkout", {
       method: "POST",
       headers: {
@@ -994,15 +994,15 @@ describe("Upgrade path", () => {
     });
   }
 
-  it("allows upgrade when user owns some themes", async () => {
+  it("allows upgrade when user owns some worlds", async () => {
     // User paid $49 for deep-orbit. Requests twoBundle (deep-orbit + neon-protocol, $79).
     // Not allOwned (neon-protocol not yet owned). credit=$49, adjustedPrice=$30.
     // Should create a Stripe session with the reduced price.
-    mockExistingPurchases = [{ theme_ids: ["deep-orbit"], amount: 49 }];
+    mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 49 }];
 
     const res = await checkout({
       planId: "twoBundle",
-      themeIds: ["deep-orbit", "neon-protocol"],
+      worldIds: ["deep-orbit", "neon-protocol"],
     });
 
     expect(res.status).toBe(200);
@@ -1035,7 +1035,7 @@ describe("Upgrade path", () => {
 
     const res = await checkout({
       planId: "single",
-      themeIds: ["deep-orbit"],
+      worldIds: ["deep-orbit"],
     });
 
     expect(res.status).toBe(200);
@@ -1052,7 +1052,7 @@ describe("Upgrade path", () => {
   it("reuses the stored Stripe customer instead of customer_email (R3-4f)", async () => {
     mockProfileCustomerId = "cus_stored_123";
 
-    const res = await checkout({ planId: "single", themeIds: ["deep-orbit"] });
+    const res = await checkout({ planId: "single", worldIds: ["deep-orbit"] });
 
     expect(res.status).toBe(200);
     const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
@@ -1072,7 +1072,7 @@ describe("Upgrade path", () => {
       .mockRejectedValueOnce(new Error("No such customer: cus_stale_deleted"))
       .mockResolvedValueOnce({ url: "https://stripe.test/retry" });
 
-    const res = await checkout({ planId: "single", themeIds: ["deep-orbit"] });
+    const res = await checkout({ planId: "single", worldIds: ["deep-orbit"] });
 
     // A stale saved id must never block a sale.
     expect(res.status).toBe(200);
@@ -1094,7 +1094,7 @@ describe("Upgrade path", () => {
 
     const res = await checkout({
       planId: "single",
-      themeIds: ["deep-orbit"],
+      worldIds: ["deep-orbit"],
     });
 
     expect(res.status).toBe(200);
@@ -1106,23 +1106,23 @@ describe("Upgrade path", () => {
 
   it("auto-grants when credit covers full price", async () => {
     // Reachable auto-grant scenario without allOwned:
-    // Mock a purchase whose credit (for overlapping themes) is >= plan.price,
-    // with at least one requested theme NOT in ownedThemes.
+    // Mock a purchase whose credit (for overlapping worlds) is >= plan.price,
+    // with at least one requested world NOT in ownedWorlds.
     // Purchase: deep-orbit at $200 (hypothetical inflated amount via mock).
     // Request twoBundle (deep-orbit + neon-protocol) at $79. Not allOwned.
     // credit=$200 → capped at plan.price ($79) → adjustedPrice=0 → auto-grant.
-    mockExistingPurchases = [{ theme_ids: ["deep-orbit"], amount: 200 }];
+    mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 200 }];
     mockServerInsert.mockResolvedValue({ error: null });
 
     const res = await checkout({
       planId: "twoBundle",
-      themeIds: ["deep-orbit", "neon-protocol"],
+      worldIds: ["deep-orbit", "neon-protocol"],
     });
 
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.granted).toBe(true);
-    expect(body.themes).toEqual(["deep-orbit", "neon-protocol"]);
+    expect(body.worlds).toEqual(["deep-orbit", "neon-protocol"]);
     expect(mockServerInsert).toHaveBeenCalledWith(
       expect.objectContaining({
         amount: 0,
@@ -1131,15 +1131,15 @@ describe("Upgrade path", () => {
     );
   });
 
-  it("rejects when user owns all requested themes", async () => {
-    // User already owns both themes in the requested bundle.
+  it("rejects when user owns all requested worlds", async () => {
+    // User already owns both worlds in the requested bundle.
     mockExistingPurchases = [
-      { theme_ids: ["deep-orbit", "neon-protocol"], amount: 79 },
+      { world_ids: ["deep-orbit", "neon-protocol"], amount: 79 },
     ];
 
     const res = await checkout({
       planId: "twoBundle",
-      themeIds: ["deep-orbit", "neon-protocol"],
+      worldIds: ["deep-orbit", "neon-protocol"],
     });
 
     expect(res.status).toBe(400);
@@ -1150,12 +1150,12 @@ describe("Upgrade path", () => {
   it("caps credit at plan price so adjustedPrice is never negative", async () => {
     // Credit ($80) exceeds plan price ($79 for twoBundle) for a partial overlap.
     // credit is capped to $79, adjustedPrice = max(0, 79 - 79) = 0 → auto-grant, not negative.
-    mockExistingPurchases = [{ theme_ids: ["deep-orbit"], amount: 80 }];
+    mockExistingPurchases = [{ world_ids: ["deep-orbit"], amount: 80 }];
     mockServerInsert.mockResolvedValue({ error: null });
 
     const res = await checkout({
       planId: "twoBundle",
-      themeIds: ["deep-orbit", "neon-protocol"],
+      worldIds: ["deep-orbit", "neon-protocol"],
     });
 
     // credit=$80 capped to $79 (plan.price), adjustedPrice=0 → auto-grant
@@ -1192,7 +1192,7 @@ describe("POST /api/payments/guest-checkout", () => {
   it("creates a session with no auth header at all", async () => {
     const res = await guestCheckout({
       planId: "single",
-      themeIds: ["deep-orbit"],
+      worldIds: ["deep-orbit"],
     });
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -1200,7 +1200,7 @@ describe("POST /api/payments/guest-checkout", () => {
   });
 
   it("omits client_reference_id and marks the session as guest", async () => {
-    await guestCheckout({ planId: "single", themeIds: ["deep-orbit"] });
+    await guestCheckout({ planId: "single", worldIds: ["deep-orbit"] });
 
     const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
       client_reference_id?: string;
@@ -1210,7 +1210,7 @@ describe("POST /api/payments/guest-checkout", () => {
     // keys off metadata.guest to know it must resolve identity by email.
     expect(arg.client_reference_id).toBeUndefined();
     expect(arg.metadata.guest).toBe("true");
-    expect(arg.metadata.themeIds).toBe("deep-orbit");
+    expect(arg.metadata.worldIds).toBe("deep-orbit");
   });
 
   it("charges full price with no upgrade credit applied", async () => {
@@ -1218,7 +1218,7 @@ describe("POST /api/payments/guest-checkout", () => {
     // is deliberately absent from this route rather than returning 0.
     // 4900 = the `single` price in this file's PRICING mock, which pins the
     // pre-2026-06-20 ladder rather than the live one.
-    await guestCheckout({ planId: "single", themeIds: ["deep-orbit"] });
+    await guestCheckout({ planId: "single", worldIds: ["deep-orbit"] });
     const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
       line_items: { price_data: { unit_amount: number } }[];
     };
@@ -1226,31 +1226,31 @@ describe("POST /api/payments/guest-checkout", () => {
   });
 
   it("enables abandoned-cart recovery like the authed route", async () => {
-    await guestCheckout({ planId: "single", themeIds: ["deep-orbit"] });
+    await guestCheckout({ planId: "single", worldIds: ["deep-orbit"] });
     const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
       after_expiration?: { recovery?: { enabled?: boolean } };
     };
     expect(arg.after_expiration?.recovery?.enabled).toBe(true);
   });
 
-  it("rejects a theme count that does not match the plan", async () => {
+  it("rejects a world count that does not match the plan", async () => {
     const res = await guestCheckout({
       planId: "single",
-      themeIds: ["deep-orbit", "neon-protocol"],
+      worldIds: ["deep-orbit", "neon-protocol"],
     });
     expect(res.status).toBe(400);
   });
 
-  it("rejects an unknown theme slug", async () => {
+  it("rejects an unknown world slug", async () => {
     const res = await guestCheckout({
       planId: "single",
-      themeIds: ["not-a-real-theme"],
+      worldIds: ["not-a-real-world"],
     });
     expect(res.status).toBe(400);
   });
 
   it("rejects the free plan", async () => {
-    const res = await guestCheckout({ planId: "free", themeIds: [] });
+    const res = await guestCheckout({ planId: "free", worldIds: [] });
     expect(res.status).toBe(400);
   });
 });
@@ -1281,7 +1281,7 @@ describe("webhook: guest session identity resolution", () => {
           customer_details: { email: "guest@example.com" },
           metadata: {
             planId: "single",
-            themeIds: "deep-orbit",
+            worldIds: "deep-orbit",
             guest: "true",
           },
           ...overrides,
@@ -1313,7 +1313,7 @@ describe("webhook: guest session identity resolution", () => {
     expect(mockInsert).toHaveBeenCalledWith(
       expect.objectContaining({
         user_id: "user_guest_provisioned",
-        theme_ids: ["deep-orbit"],
+        world_ids: ["deep-orbit"],
         stripe_session_id: "cs_guest_1",
       }),
       expect.anything(),
@@ -1347,7 +1347,7 @@ describe("webhook: guest session identity resolution", () => {
     await post(
       guestEvent({
         client_reference_id: "user_456",
-        metadata: { planId: "single", themeIds: "deep-orbit" },
+        metadata: { planId: "single", worldIds: "deep-orbit" },
       }),
     );
     expect(mockResolveUser).not.toHaveBeenCalled();

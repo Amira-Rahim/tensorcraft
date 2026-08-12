@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { themes } from "@tensorcraft/themes";
+import { worlds } from "@tensorcraft/worlds";
 import { JOURNEY_ORDER, getLeadsTo } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getJourneyState } from "@/lib/journey-progress";
@@ -8,23 +8,23 @@ import { JourneyRing } from "./journey-ring";
 import { EnrollButton } from "./enroll-button";
 
 export const metadata: Metadata = {
-  title: "The Journey: five themes, one arc | Tensorcraft",
+  title: "The Journey: five worlds, one arc | Tensorcraft",
   description:
-    "The five Tensorcraft themes are one connected story. Each finale hands its problem to the next domain — the tensor as lingua franca. Follow the canonical journey or play any theme on its own.",
+    "The five Tensorcraft worlds are one connected story. Each finale hands its problem to the next domain — the tensor as lingua franca. Follow the canonical journey or play any world on its own.",
   alternates: { canonical: "https://tensorcraft.app/journey" },
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/journey",
-    title: "The Journey: five themes, one arc | Tensorcraft",
+    title: "The Journey: five worlds, one arc | Tensorcraft",
     images: [
-      "/api/og?title=Five%20themes%2C%20one%20arc&theme=deep-orbit&subtitle=The%20signal%20answers%20back",
+      "/api/og?title=Five%20worlds%2C%20one%20arc&world=deep-orbit&subtitle=The%20signal%20answers%20back",
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Journey: five themes, one arc | Tensorcraft",
+    title: "The Journey: five worlds, one arc | Tensorcraft",
     images: [
-      "/api/og?title=Five%20themes%2C%20one%20arc&theme=deep-orbit&subtitle=The%20signal%20answers%20back",
+      "/api/og?title=Five%20worlds%2C%20one%20arc&world=deep-orbit&subtitle=The%20signal%20answers%20back",
     ],
   },
 };
@@ -60,13 +60,13 @@ export default async function JourneyPage() {
           The arc
         </div>
         <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-4">
-          Five themes, one journey
+          Five worlds, one journey
         </h1>
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-4 max-w-2xl">
-          Each theme is a complete ML specialization with its own story — and
+          Each world is a complete ML specialization with its own story — and
           each finale hands its problem to the next. Deep Orbit&rsquo;s anomaly
           becomes Neon Protocol&rsquo;s heatmap; the signal answers back across
-          all five. Play any theme on its own, or follow the canonical journey
+          all five. Play any world on its own, or follow the canonical journey
           through the whole ring.
         </p>
 
@@ -81,7 +81,7 @@ export default async function JourneyPage() {
                 Journey complete — you closed the ring.
               </p>
               <p className="text-sm text-text-muted mt-1">
-                Every theme finished. The signal came all the way back to Deep
+                Every world finished. The signal came all the way back to Deep
                 Orbit.
               </p>
             </div>
@@ -97,10 +97,10 @@ export default async function JourneyPage() {
                 <p className="text-sm text-text-muted mt-1">
                   Up next:{" "}
                   <Link
-                    href={`/themes/${state.recommendedNext}`}
+                    href={`/worlds/${state.recommendedNext}`}
                     className="text-primary hover:underline underline-offset-4"
                   >
-                    {themes[state.recommendedNext]?.displayName}
+                    {worlds[state.recommendedNext]?.displayName}
                   </Link>
                   .
                 </p>
@@ -113,7 +113,7 @@ export default async function JourneyPage() {
             >
               <p className="text-sm text-text-muted mb-4 leading-relaxed">
                 Commit to the whole arc. The canonical journey tracks your run
-                through all five themes as one storyline — it never blocks
+                through all five worlds as one storyline — it never blocks
                 anything, it just marks the path.
               </p>
               <EnrollButton />
@@ -140,19 +140,19 @@ export default async function JourneyPage() {
         {/* The ring */}
         {state ? (
           <JourneyRing
-            themeStates={state.themes}
+            worldStates={state.worlds}
             recommendedNext={state.recommendedNext}
             showProgress
           />
         ) : (
           <ol className="space-y-4">
             {JOURNEY_ORDER.map((slug, i) => {
-              const manifest = themes[slug];
+              const manifest = worlds[slug];
               const leadsTo = getLeadsTo(slug);
               return (
                 <li
                   key={slug}
-                  className="brutalist-shadow border border-border bg-surface-raised p-5 tc-theme-card"
+                  className="brutalist-shadow border border-border bg-surface-raised p-5 tc-world-card"
                   style={
                     {
                       "--card-primary": manifest?.palette.primary,
@@ -180,7 +180,7 @@ export default async function JourneyPage() {
                       </p>
                       {leadsTo ? (
                         <p className="text-[11px] font-mono uppercase tracking-wider text-text-muted mt-2">
-                          Leads to {themes[leadsTo]?.displayName}
+                          Leads to {worlds[leadsTo]?.displayName}
                         </p>
                       ) : null}
                     </div>

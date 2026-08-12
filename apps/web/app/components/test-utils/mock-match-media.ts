@@ -2,10 +2,10 @@ import { vi } from "vitest";
 
 /**
  * Shared `window.matchMedia` mock for `apps/web` component tests that read
- * `(prefers-color-scheme: dark)` (theme-provider.test.tsx, scheme-toggle
+ * `(prefers-color-scheme: dark)` (world-provider.test.tsx, scheme-toggle
  * test.tsx). Supports both the modern `addEventListener`/`removeEventListener`
  * pair and the legacy `addListener`/`removeListener` pair, since
- * theme-provider.tsx registers via the modern API but jsdom/older browsers
+ * world-provider.tsx registers via the modern API but jsdom/older browsers
  * only exposed the legacy one.
  *
  * This was previously copy-pasted verbatim into both files; extracted here

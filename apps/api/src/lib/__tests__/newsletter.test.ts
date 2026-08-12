@@ -53,7 +53,7 @@ beforeEach(() => {
         summary: "s",
         matched_lessons: [
           {
-            themeId: "deep-orbit",
+            worldId: "deep-orbit",
             moduleId: "anomaly-detection",
             slug: "threshold-tuning",
             title: "Threshold Tuning",
@@ -112,13 +112,13 @@ describe("sendDigestNewsletter opt-out join", () => {
 });
 
 describe("sendDigestNewsletter lesson links", () => {
-  // Lessons live at /themes/[slug]/[module]/[lesson]. The digest linked
+  // Lessons live at /worlds/[slug]/[module]/[lesson]. The digest linked
   // /learn/... for months and every "Teaches:" link 404'd (P4 round 3).
-  it("links matched lessons at their real /themes route in text and HTML", async () => {
+  it("links matched lessons at their real /worlds route in text and HTML", async () => {
     await sendDigestNewsletter("2026-W28");
     const call = sendSpy.mock.calls[0][0];
     const expected =
-      "https://tensorcraft.app/themes/deep-orbit/anomaly-detection/threshold-tuning?utm_source=newsletter";
+      "https://tensorcraft.app/worlds/deep-orbit/anomaly-detection/threshold-tuning?utm_source=newsletter";
     expect(call.text).toContain(expected);
     expect(call.html).toContain(expected);
     expect(call.text).not.toContain("/learn/");

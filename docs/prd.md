@@ -4,10 +4,10 @@
 > Last updated: 2026-04-22 (audit fixes: accessibility hardening, user menu, checkout button, admin API + rate limiting + error tracking, new DB tables, CI/CD pipeline additions)
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Where this document says
-> "all 5 themes launch simultaneously," the actual V1 ships **Deep Orbit
-> only** — the other 4 themes are "coming soon" with per-theme waitlists.
+> "all 5 worlds launch simultaneously," the actual V1 ships **Deep Orbit
+> only** — the other 4 worlds are "coming soon" with per-world waitlists.
 > See [`docs/launch-scope.md`](./launch-scope.md) for the canonical record
-> of what shipped, what's gated, and how to revive an unlaunched theme.
+> of what shipped, what's gated, and how to revive an unlaunched world.
 
 ---
 
@@ -29,7 +29,7 @@
 
 ## 1. Executive Summary
 
-TensorCraft is an interactive, browser-based learning platform that teaches machine learning concepts to front-end developers through themed, hands-on coding lessons. By mapping ML concepts to familiar front-end paradigms (the "FE-to-ML bridge"), TensorCraft lowers the barrier to entry and accelerates comprehension for a population of developers who already possess strong JavaScript, CSS, and DOM-manipulation skills but lack exposure to data science, linear algebra, and model training.
+TensorCraft is an interactive, browser-based learning platform that teaches machine learning concepts to front-end developers through world-based, hands-on coding lessons. By mapping ML concepts to familiar front-end paradigms (the "FE-to-ML bridge"), TensorCraft lowers the barrier to entry and accelerates comprehension for a population of developers who already possess strong JavaScript, CSS, and DOM-manipulation skills but lack exposure to data science, linear algebra, and model training.
 
 ### Vision
 
@@ -49,7 +49,7 @@ Deliver a gamified, project-based curriculum that meets FE developers where they
 - **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning their frontend identity. Wants a portfolio project that proves ML skills to employers.
 - **Job to be done:** "Help me learn ML using the tools and mental models I already have, so I can build ML-powered features and expand my career options."
 - **Pain points:** Existing ML courses assume Python + math background. Academic courses are dry and theoretical. No courses teach browser-based ML. No interactive courses for Transformers.js/WebGPU/ONNX Runtime Web.
-- **Willingness to pay:** $59 one-time for a complete theme. $99–$159 for bundles (2, 3, or all 5 themes).
+- **Willingness to pay:** $59 one-time for a complete world. $99–$159 for bundles (2, 3, or all 5 worlds).
 
 ### Secondary: The Career Transitioner
 
@@ -68,11 +68,11 @@ Deliver a gamified, project-based curriculum that meets FE developers where they
 
 ## 3. Product Requirements
 
-### 3.1 Themes
+### 3.1 Worlds
 
-TensorCraft organizes its curriculum into five thematic worlds. Each theme wraps a core ML syllabus in a domain-specific narrative, dataset, and set of projects. Learners choose a theme at onboarding and can switch or run multiple themes in parallel.
+TensorCraft organizes its curriculum into five thematic worlds. Each world wraps a core ML syllabus in a domain-specific narrative, dataset, and set of projects. Learners choose a world at onboarding and can switch or run multiple worlds in parallel.
 
-| # | Theme | World | Specialization | Primary Model Types | Status |
+| # | World | World | Specialization | Primary Model Types | Status |
 |---|---|---|---|---|---|
 | 1 | Deep Orbit | Space exploration | Time-Series & Signals | RNN, LSTM, Autoencoder, Anomaly Detection | Available |
 | 2 | Neon Protocol | Cyberpunk | Computer Vision | CNN, Object Detection, Segmentation, GAN | Available |
@@ -82,7 +82,7 @@ TensorCraft organizes its curriculum into five thematic worlds. Each theme wraps
 
 ### 3.2 Curriculum Structure
 
-Each theme contains **11 modules** with **5 lessons per module**, totaling **55 lessons per theme** and **275 lessons across all five themes**.
+Each world contains **11 modules** with **5 lessons per module**, totaling **55 lessons per world** and **275 lessons across all five worlds**.
 
 #### Content Split per Lesson
 
@@ -96,7 +96,7 @@ Each theme contains **11 modules** with **5 lessons per module**, totaling **55 
 
 **Estimated total time per lesson:** 20–30 minutes
 **Estimated total time per module:** 100–150 minutes
-**Estimated total time per theme:** 1,100–1,650 minutes (~18–27 hours)
+**Estimated total time per world:** 1,100–1,650 minutes (~18–27 hours)
 
 ### 3.3 The 5C Lesson Loop
 
@@ -104,7 +104,7 @@ Every lesson follows the **5C pedagogical loop**, implemented as a **6-step Duol
 
 | Step | Name | 5C Phase | Description | Variations by Position |
 |---|---|---|---|---|
-| 1 | **Briefing** | Context | Set the scene within the theme narrative (Context + Dialogue merged); state the learning objective; character dialogue frames the problem | Lesson 1 of module: extended world-building intro + dialogue; Lessons 2–4: brief recap + new objective + dialogue; Lesson 5 (capstone): project brief |
+| 1 | **Briefing** | Context | Set the scene within the world narrative (Context + Dialogue merged); state the learning objective; character dialogue frames the problem | Lesson 1 of module: extended world-building intro + dialogue; Lessons 2–4: brief recap + new objective + dialogue; Lesson 5 (capstone): project brief |
 | 2 | **Concept** | Concept | Teach the ML idea using the FE-to-ML bridge | Odd lessons: analogy-first; Even lessons: code-first |
 | 3 | **Code** | Code | Hands-on editor exercise | Lessons 1–3: scaffolded (fill-in-the-blank); Lesson 4: guided (fewer hints); Lesson 5: open (build from scratch) |
 | 4 | **Challenge** | Code/Check | Interactive exercise with automated tests | Lessons 1–4: inline exercise; Lesson 5: open project |
@@ -155,15 +155,15 @@ The bridge system is TensorCraft's core differentiator. Each ML concept is paire
 
 ## 4. Feature Requirements
 
-### 4.1 Theme Selection Screen
+### 4.1 World Selection Screen
 
-The entry point where learners browse, preview, and enroll in themes.
+The entry point where learners browse, preview, and enroll in worlds.
 
 | # | Requirement | Priority | Description |
 |---|---|---|---|
-| 1 | Theme cards | P0 | Display all 5 themes as fully interactive cards with title, world illustration, specialization tagline, lesson count, estimated duration, and "Start Learning" CTA |
+| 1 | World cards | P0 | Display all 5 worlds as fully interactive cards with title, world illustration, specialization tagline, lesson count, estimated duration, and "Start Learning" CTA |
 | 2 | Responsive layout | P0 | Grid adapts from 3-column (desktop) to 2-column (tablet) to single-column stacked (mobile); cards maintain aspect ratio |
-| 3 | No status gating | P0 | All 5 themes are available simultaneously. No theme status gating. |
+| 3 | No status gating | P0 | All 5 worlds are available simultaneously. No world status gating. |
 
 ### 4.2 Lesson Experience
 
@@ -173,7 +173,7 @@ The core learning interface where users read, code, and interact.
 |---|---|---|---|
 | 1 | Desktop three-column layout | P0 | Left panel: lesson narrative (scrollable); Center panel: code editor; Right panel: live preview / model output canvas |
 | 2 | Mobile tabbed layout | P0 | On viewports < 768px, collapse three columns into a tabbed interface: "Learn" / "Code" / "Preview" tabs |
-| 3 | Code editor | P0 | Embedded Monaco-based editor with syntax highlighting, autocompletion, and theme-aware color scheme; supports JavaScript and TypeScript |
+| 3 | Code editor | P0 | Embedded Monaco-based editor with syntax highlighting, autocompletion, and world-aware color scheme; supports JavaScript and TypeScript |
 | 4 | FE bridge sidebar | P1 | Collapsible sidebar (or drawer on mobile) showing the current lesson's FE-to-ML bridge card with analogy, visual diagram, and link to the related FE concept |
 | 5 | Checkpoint integration | P0 | At designated points in the lesson, the editor locks and a checkpoint panel slides in from the right, presenting the quiz or code test; learner must pass to proceed |
 | 6 | Hint system | P1 | Progressive hints (up to 3 per exercise) revealed on demand; each hint reduces the maximum score for that exercise by 10% |
@@ -182,12 +182,12 @@ The core learning interface where users read, code, and interact.
 
 ### 4.3 Progress Diagram
 
-A visual map of the learner's journey through a theme.
+A visual map of the learner's journey through a world.
 
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Node-graph style | P0 | Render modules as nodes connected by directional edges; lessons within a module shown as sub-nodes or dots along the edge |
-| 2 | State coloring | P0 | Nodes use four visual states: locked (grey, no interaction), available (theme accent, pulsing border), in-progress (theme accent, filled 50%), complete (theme accent, filled 100%, checkmark icon) |
+| 2 | State coloring | P0 | Nodes use four visual states: locked (grey, no interaction), available (world accent, pulsing border), in-progress (world accent, filled 50%), complete (world accent, filled 100%, checkmark icon) |
 | 3 | Click to navigate | P0 | Clicking an available or in-progress node navigates to that lesson; clicking a complete node opens a review/replay mode |
 | 4 | Share snapshot | P2 | "Share Progress" button generates a branded PNG or SVG of the current diagram state for social sharing |
 | 5 | Reduced motion | P1 | Respect `prefers-reduced-motion`; disable pulsing borders and animated transitions when set |
@@ -201,11 +201,11 @@ Screens for user signup/login and the post-signup orientation flow.
 | 1 | Auth screen | P0 | Signup/login screen with three methods: GitHub OAuth, Google OAuth, and email magic link. Centered card layout with Tensorcraft branding. Toggle between signup and login modes. |
 | 2 | OAuth providers | P0 | GitHub OAuth (via Supabase Auth, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
 | 3 | Email magic link | P0 | Passwordless email login via Supabase Auth email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
-| 4 | Onboarding flow | P1 | 6-step post-signup flow: (1) Welcome screen with "Welcome Aboard the Archimedes" + 3 feature cards, (2) Your Background (5 options, saved to `fe_background`), (3) Your Goal (5 options, saved to `learning_goal`), (4) Your Framework — React/Vue/Angular/Svelte/Vanilla with live bridge preview (saved to `fe_framework`), (5) Theme selection with Deep Orbit pre-highlighted, (6) Ready — configuration summary + "Begin First Lesson" CTA. Stepper indicator shows progress through all 6 steps. |
+| 4 | Onboarding flow | P1 | 6-step post-signup flow: (1) Welcome screen with "Welcome Aboard the Archimedes" + 3 feature cards, (2) Your Background (5 options, saved to `fe_background`), (3) Your Goal (5 options, saved to `learning_goal`), (4) Your Framework — React/Vue/Angular/Svelte/Vanilla with live bridge preview (saved to `fe_framework`), (5) World selection with Deep Orbit pre-highlighted, (6) Ready — configuration summary + "Begin First Lesson" CTA. Stepper indicator shows progress through all 6 steps. |
 | 5 | Onboarding persistence | P1 | Onboarding completion stored in user profile; completed users skip directly to dashboard on future logins. |
 | 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible — user returns to accessible content. |
 | 7 | Bridge collectibles | P2 | FE-to-ML bridges surfaced on the dashboard as collectible cards (`bridge-collection.tsx`), integrated with learner progress rather than a standalone reference page. The earlier `/bridges` standalone route was removed in favor of in-context discovery. |
-| 8 | Capstone completion screen | P1 | Celebratory screen shown after completing all 11 modules of a theme. Displays: completion stats (modules, lessons, bridges mastered, time invested), simplified journey map showing all modules complete, narrative conclusion with character appearances, "Download Certificate" and "Share Progress" CTAs, "Push to GitHub" link, and "What's Next" suggestions (explore another theme, browse bridges, view dashboard). |
+| 8 | Capstone completion screen | P1 | Celebratory screen shown after completing all 11 modules of a world. Displays: completion stats (modules, lessons, bridges mastered, time invested), simplified journey map showing all modules complete, narrative conclusion with character appearances, "Download Certificate" and "Share Progress" CTAs, "Push to GitHub" link, and "What's Next" suggestions (explore another world, browse bridges, view dashboard). |
 | 9 | User menu component | P0 | Authenticated header dropdown with auth-state detection. Shows avatar (Supabase user metadata or fallback initials), display name, and a dropdown menu with links to Dashboard, Settings, and Sign Out. Unauthenticated state shows "Sign In" button. Sign-out calls Supabase `signOut()` and redirects to landing page. |
 
 ### 4.5 GitHub Integration
@@ -215,7 +215,7 @@ Allow learners to persist their project code in a GitHub repository.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | GitHub OAuth | P1 | Support "Sign in with GitHub" via OAuth 2.0 PKCE flow; request `repo` and `read:user` scopes |
-| 2 | Auto-commit on checkpoint | P1 | After each successful checkpoint, auto-commit the learner's code to a branch named `tensorcraft/<theme>/<module>-<lesson>` in their connected repo |
+| 2 | Auto-commit on checkpoint | P1 | After each successful checkpoint, auto-commit the learner's code to a branch named `tensorcraft/<world>/<module>-<lesson>` in their connected repo |
 | 3 | Opt-out toggle | P2 | Settings toggle to disable auto-commit; code is still saved server-side regardless |
 | 4 | Repo creation | P2 | If no repo is connected, prompt to create a new repo named `tensorcraft-projects` under the user's GitHub account |
 
@@ -226,13 +226,13 @@ Monetization layer supporting free and paid tiers.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Payment processor | P0 | Integrate Stripe for one-time payments; support credit card and Google Pay / Apple Pay |
-| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 — Module 1 of one theme, 5 lessons), **Single Theme** ($59 — all 11 modules, lifetime access, GitHub integration), **Two Themes** ($99), **Three Themes** ($129), **All 5 Themes** ($159) |
+| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 — Module 1 of one world, 5 lessons), **Single World** ($59 — all 11 modules, lifetime access, GitHub integration), **Two Worlds** ($99), **Three Worlds** ($129), **All 5 Worlds** ($159) |
 | 3 | Purchasing-power parity (PPP) | P1 | Apply automatic regional discounts (up to 60% off) based on IP geolocation using a PPP index table; display original and discounted price |
 | 4 | Upgrade prompts | P1 | When a free-tier user reaches the paywall (end of Module 2), show an in-context upgrade modal with benefit comparison, testimonial, and a 7-day free trial CTA |
 | 5 | Webhook handling | P0 | Listen for Stripe webhooks (`checkout.session.completed`, `charge.refunded`, `charge.failed`) to update user entitlements in real time |
-| 6 | Post-purchase confirmation | P0 | Screen shown after successful payment. Displays: green checkmark animation, "You're In" heading, order summary (theme name, price, "one-time purchase"), list of all 11 newly-unlocked modules, "Continue Learning" and "Connect GitHub" CTAs, Discord community invite, and receipt confirmation note. |
+| 6 | Post-purchase confirmation | P0 | Screen shown after successful payment. Displays: green checkmark animation, "You're In" heading, order summary (world name, price, "one-time purchase"), list of all 11 newly-unlocked modules, "Continue Learning" and "Connect GitHub" CTAs, Discord community invite, and receipt confirmation note. |
 | 7 | Payment failure handling | P1 | When a payment fails (charge.failed webhook), display an error modal on the pricing page with: error description, "Try Again" button, alternative payment method suggestion, and "Contact Support" link. Do not redirect away from the pricing page. |
-| 8 | Checkout button client component | P0 | Client component (`"use client"`) that initiates a Stripe Checkout session via the Hono API (`POST /api/checkout`), passing `themeId`, `tier`, and `userId`. On success, redirects the browser to the Stripe-hosted checkout URL. Displays loading spinner during session creation. Handles errors with inline toast notification. |
+| 8 | Checkout button client component | P0 | Client component (`"use client"`) that initiates a Stripe Checkout session via the Hono API (`POST /api/checkout`), passing `worldId`, `tier`, and `userId`. On success, redirects the browser to the Stripe-hosted checkout URL. Displays loading spinner during session creation. Handles errors with inline toast notification. |
 
 ### 4.7 Analytics
 
@@ -242,8 +242,8 @@ Track learning behavior, engagement, and conversion events.
 
 | Event | Payload |
 |---|---|
-| `lesson_started` | `userId`, `themeId`, `moduleId`, `lessonId`, `timestamp` |
-| `lesson_completed` | `userId`, `themeId`, `moduleId`, `lessonId`, `score`, `duration`, `hintsUsed`, `timestamp` |
+| `lesson_started` | `userId`, `worldId`, `moduleId`, `lessonId`, `timestamp` |
+| `lesson_completed` | `userId`, `worldId`, `moduleId`, `lessonId`, `score`, `duration`, `hintsUsed`, `timestamp` |
 | `checkpoint_passed` | `userId`, `lessonId`, `checkpointType` (`quiz` or `code`), `score`, `attempts`, `timestamp` |
 | `capstone_submitted` | `userId`, `moduleId`, `rubricScores`, `totalScore`, `timestamp` |
 
@@ -251,8 +251,8 @@ Track learning behavior, engagement, and conversion events.
 
 | Event | Payload |
 |---|---|
-| `paywall_hit` | `userId`, `themeId`, `moduleId`, `timestamp` |
-| `upgrade_modal_shown` | `userId`, `themeId`, `source` (`paywall`, `pricing_page`, `banner`), `timestamp` |
+| `paywall_hit` | `userId`, `worldId`, `moduleId`, `timestamp` |
+| `upgrade_modal_shown` | `userId`, `worldId`, `source` (`paywall`, `pricing_page`, `banner`), `timestamp` |
 | `purchase_completed` | `userId`, `tier`, `price`, `pppDiscount`, `timestamp` |
 | `refund_requested` | `userId`, `tier`, `reason`, `timestamp` |
 
@@ -260,8 +260,8 @@ Track learning behavior, engagement, and conversion events.
 
 | Event | Payload |
 |---|---|
-| `theme_selected` | `userId`, `themeId`, `timestamp` |
-| `progress_shared` | `userId`, `themeId`, `platform` (`twitter`, `linkedin`, `download`), `timestamp` |
+| `world_selected` | `userId`, `worldId`, `timestamp` |
+| `progress_shared` | `userId`, `worldId`, `platform` (`twitter`, `linkedin`, `download`), `timestamp` |
 | `streak_achieved` | `userId`, `streakType` (`daily`, `weekly`), `count`, `timestamp` |
 | `hint_requested` | `userId`, `lessonId`, `hintNumber`, `timestamp` |
 
@@ -286,12 +286,12 @@ Track learning behavior, engagement, and conversion events.
 |---|---|---|
 | Framework | Next.js 15 (App Router) | Server components by default; client components for interactive panels |
 | Language | TypeScript 5.x | Strict mode enabled; no `any` types in production code |
-| Styling | Tailwind CSS 4 + CSS custom properties | Tailwind for utility-first layout; CSS custom properties for per-theme theming via `data-theme` attribute |
+| Styling | Tailwind CSS 4 + CSS custom properties | Tailwind for utility-first layout; CSS custom properties for per-world theming via `data-world` attribute |
 | ML runtime | TensorFlow.js (tfjs-core + tfjs-layers) | Runs models in-browser via WebGL backend; WASM fallback for unsupported GPUs |
-| Code editor / exercises | Sandpack (@codesandbox/sandpack-react) | Browser-based sandbox for interactive exercises with custom async test runner and TensorFlow.js mock. 295 exercises across all themes. |
-| Syntax highlighting | Shiki 4.x | Lazy-loaded, cached singleton; custom `tensorcraft-dark` theme; supports TS/JS/Python/JSON/Bash/YAML/MDX |
+| Code editor / exercises | Sandpack (@codesandbox/sandpack-react) | Browser-based sandbox for interactive exercises with custom async test runner and TensorFlow.js mock. 295 exercises across all worlds. |
+| Syntax highlighting | Shiki 4.x | Lazy-loaded, cached singleton; custom `tensorcraft-dark` world; supports TS/JS/Python/JSON/Bash/YAML/MDX |
 | API layer | Hono (separate service, port 3001) | REST API on `@hono/node-server`; independent deployment and scaling from Next.js frontend |
-| Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data. Additional tables: `streaks` (per-theme streak tracking with `current_streak`, `longest_streak`, `last_activity_date`), `achievements` (user achievement badges with `badge_type`, `earned_at`, `theme_id`), `exercise_attempts` (exercise submission history with `user_id`, `exercise_slug`, `submitted_code`, `passed`, `score`, `attempted_at`) |
+| Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data. Additional tables: `streaks` (per-world streak tracking with `current_streak`, `longest_streak`, `last_activity_date`), `achievements` (user achievement badges with `badge_type`, `earned_at`, `world_id`), `exercise_attempts` (exercise submission history with `user_id`, `exercise_slug`, `submitted_code`, `passed`, `score`, `attempted_at`) |
 | Auth | Supabase Auth via `@supabase/ssr` | Providers: GitHub OAuth (PKCE), Google OAuth, email magic link. Cookie-based session management via Next.js middleware. |
 | Content pipeline | MDX 3 + Velite (Zod schemas) | Build-time validation; missing/invalid fields = build error. 3 collections: lessons, exercises, modules. |
 | Hosting | Vercel (frontend) + Fly.io/Railway (API, planned) | Edge functions for PPP lookup; ISR for lesson content pages |
@@ -306,17 +306,17 @@ Track learning behavior, engagement, and conversion events.
 | `@tensorcraft/ui` | `packages/ui` | Shared React component library for MDX content rendering: CodeBlock (Shiki), Exercise (Sandpack), Dialogue, BridgeCallout, HintPanel, Quiz, LearningObjectives, KeyTakeaways |
 | `@tensorcraft/content` | `packages/content` | MDX lesson files, exercise YAML files, module metadata, Velite config, Zod schemas, and content query API |
 | `@tensorcraft/supabase` | `packages/supabase` | Supabase client/server instances, database type definitions, migrations (6 files), seed scripts, and admin operations |
-| `@tensorcraft/themes` | `packages/themes` | 5 theme manifests (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) with TypeScript configs and CSS custom properties |
-| `@tensorcraft/shared` | `packages/shared` | Shared constants (THEME_SLUGS, PRICING, ROUTES, V05_SCOPE, THEME_CONTENT), 50+ FE-to-ML bridge definitions, and shared TypeScript types |
+| `@tensorcraft/worlds` | `packages/worlds` | 5 world manifests (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) with TypeScript configs and CSS custom properties |
+| `@tensorcraft/shared` | `packages/shared` | Shared constants (WORLD_SLUGS, PRICING, ROUTES, V05_SCOPE, WORLD_CONTENT), 50+ FE-to-ML bridge definitions, and shared TypeScript types |
 | `@tensorcraft/config` | `packages/config` | Shared ESLint, TypeScript, and Tailwind configurations |
 
 ### 5.3 Content Pipeline
 
 Lesson content is authored in **MDX** files stored in the `@tensorcraft/content` package and compiled at build time by **Velite** with **Zod schema validation**. Three collections are defined:
 
-1. **Lessons** (`**/*.mdx`) — Front matter validated by Zod: `slug`, `title`, `moduleId`, `themeId`, `order`, `estimatedMinutes`, `difficulty` (beginner/intermediate/advanced), `context` (narrative + speaker), `concept` (explanation + optional bridge with tier), `consequence` (narrative + next-lesson teaser), `hints` (3-level: nudge/guidance/solution), `keywords`. Body is compiled MDX with embedded components.
+1. **Lessons** (`**/*.mdx`) — Front matter validated by Zod: `slug`, `title`, `moduleId`, `worldId`, `order`, `estimatedMinutes`, `difficulty` (beginner/intermediate/advanced), `context` (narrative + speaker), `concept` (explanation + optional bridge with tier), `consequence` (narrative + next-lesson teaser), `hints` (3-level: nudge/guidance/solution), `keywords`. Body is compiled MDX with embedded components.
 2. **Exercises** (`**/exercises/*.yaml`) — `slug`, `lessonSlug`, `title`, `instructions`, `starterCode`, `solutionCode`, `testCode`, `estimatedMinutes`, `difficulty`.
-3. **Modules** (`**/module.yaml`) — `slug`, `title`, `themeId`, `order`, `description`, `lessonCount` (always 5), `prerequisites`, `track` (foundations/specialization).
+3. **Modules** (`**/module.yaml`) — `slug`, `title`, `worldId`, `order`, `description`, `lessonCount` (always 5), `prerequisites`, `track` (foundations/specialization).
 
 **Build step:** Velite compiles MDX to JavaScript and outputs to `.velite/` directory. Turbo task dependency ensures `build:content` runs before `build`. Strict mode fails the build on any invalid frontmatter. Content is queried at runtime via `packages/content/src/queries.ts` (getModules, getModuleLessons, getLesson, getExercise, getAdjacentLessons).
 
@@ -327,7 +327,7 @@ Lesson content is authored in **MDX** files stored in the `@tensorcraft/content`
 | Page Type | Strategy | Cache TTL | Notes |
 |---|---|---|---|
 | Marketing / landing | SSG (Static Site Generation) | Indefinite (rebuild on deploy) | Fastest possible TTFB |
-| Theme selection | ISR (Incremental Static Regeneration) | 60 seconds | Reflects theme status changes (e.g., new launch) within 1 minute |
+| World selection | ISR (Incremental Static Regeneration) | 60 seconds | Reflects world status changes (e.g., new launch) within 1 minute |
 | Lesson page (narrative) | ISR | 300 seconds | Content changes are infrequent; 5-minute staleness is acceptable |
 | Lesson page (editor + preview) | CSR (Client-Side Rendering) | N/A | Heavy interactivity; hydrated on mount |
 | Dashboard / progress | SSR (Server-Side Rendering) | 0 (no cache) | Must reflect real-time progress |
@@ -361,7 +361,7 @@ Lesson content is authored in **MDX** files stored in the `@tensorcraft/content`
 
 ### 6.1 Design Aesthetic — Brutalist Terminal
 
-The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, monospace-first typography. No glow effects, no glassmorphism. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23 (implementation + verification ledger in `docs/dev-plan.md`).
+The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, monospace-first typography. No glow effects, no glassmorphism. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every world palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23 (implementation + verification ledger in `docs/dev-plan.md`).
 
 **Shell tokens** (shared across all pages):
 
@@ -385,13 +385,13 @@ The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, mo
 - `// COMMENT` style section labels
 - Buttons: square, offset shadow on hover with `translate(-2px,-2px)`
 
-### 6.2 Theme Colors
+### 6.2 World Colors
 
-Each theme has a distinct color palette within the lesson content area. Colors are defined as CSS custom properties (`--tc-*`) and toggled via a `data-theme` attribute on `<html>`.
+Each world has a distinct color palette within the lesson content area. Colors are defined as CSS custom properties (`--tc-*`) and toggled via a `data-world` attribute on `<html>`.
 
-**ThemePalette interface** (`packages/themes/src/types.ts`): `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`.
+**WorldPalette interface** (`packages/worlds/src/types.ts`): `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`.
 
-| Theme | Primary | Accent | Background | Surface |
+| World | Primary | Accent | Background | Surface |
 |---|---|---|---|---|
 | Deep Orbit | `#6BAA8A` | `#A89060` | `#181818` | `#232323` |
 | Neon Protocol | `#4A90D9` | `#A07090` | `#181818` | `#232323` |
@@ -417,16 +417,16 @@ Each theme has a distinct color palette within the lesson content area. Colors a
 
 ## 7. Release Plan
 
-> **All 5 themes are available simultaneously at V1.0.** There is no phased theme rollout.
+> **All 5 worlds are available simultaneously at V1.0.** There is no phased world rollout.
 
 | Version | Codename | Scope | Target Date | Gate Criteria |
 |---|---|---|---|---|
-| V0.5 | Ignition | All 5 themes (Modules 1–3, 15 lessons each); free tier only; basic progress diagram; no payments | 2026-Q2 | 500 beta sign-ups; lesson completion rate >= 50% in internal testing |
-| V1.0 | Liftoff | All 5 themes full (all 11 modules, 55 lessons each, 275 lessons total); Pro tier + Stripe payments; GitHub integration; skill radar | 2026-Q3 | 2,000 free users; 3% conversion to Pro; NPS >= 40 |
+| V0.5 | Ignition | All 5 worlds (Modules 1–3, 15 lessons each); free tier only; basic progress diagram; no payments | 2026-Q2 | 500 beta sign-ups; lesson completion rate >= 50% in internal testing |
+| V1.0 | Liftoff | All 5 worlds full (all 11 modules, 55 lessons each, 275 lessons total); Pro tier + Stripe payments; GitHub integration; skill radar | 2026-Q3 | 2,000 free users; 3% conversion to Pro; NPS >= 40 |
 | V2.0 | Constellation | Team tier; admin dashboard; PPP pricing | 2027-Q1 | 10,000 free users; $30K monthly revenue; 30-day retention >= 45% |
 | V3.0 | Galaxy | Mobile app (React Native); offline lesson caching | 2027-Q3 | 25,000 free users; $80K monthly revenue |
 | V4.0 | Nebula | AI tutor (LLM-assisted hints); community features (forums, code reviews); advanced analytics dashboard | 2028-Q1 | 50,000 free users; $150K monthly revenue; AI tutor beta positive feedback >= 70% |
-| V5.0 | Universe | Certification program; employer partnerships; custom theme SDK for third-party content | 2028-Q3 | 100,000 free users; $250K monthly revenue; at least 2 employer partnerships signed |
+| V5.0 | Universe | Certification program; employer partnerships; custom world SDK for third-party content | 2028-Q3 | 100,000 free users; $250K monthly revenue; at least 2 employer partnerships signed |
 | i18n | Babel | Localization: Spanish, Portuguese, Japanese, Hindi; RTL support for future Arabic/Hebrew | 2028-Q4 | Community translation volunteers onboarded; i18n framework integrated by V3.0 |
 
 ### V0.5 Content Calendar
@@ -443,21 +443,21 @@ Each theme has a distinct color palette within the lesson content area. Colors a
 
 ## 8. Pricing
 
-### Pricing Model — Per-Theme (Lifetime Access)
+### Pricing Model — Per-World (Lifetime Access)
 
-Tensorcraft uses a **per-theme, one-time purchase model**. Each theme is a standalone product with lifetime access. No subscriptions.
+Tensorcraft uses a **per-world, one-time purchase model**. Each world is a standalone product with lifetime access. No subscriptions.
 
 ### Individual Pricing
 
 | Tier | Price | What's Included |
 |---|---|---|
-| Free Preview | $0 | Module 1 of any launched theme (5 lessons). Full code editor, bridges, and graded exercises. No GitHub integration. |
-| Single Theme | $59 | All 11 modules (56 lessons in Deep Orbit) of one theme. Lifetime access. GitHub integration. Progress sharing. |
-| Two Themes | $99 | Any two themes. Save $19 vs buying separately. |
-| Three Themes | $129 | Any three themes. Save $48 vs buying separately. |
-| All 5 Themes | $159 | All five themes. Save $136 vs buying separately. |
+| Free Preview | $0 | Module 1 of any launched world (5 lessons). Full code editor, bridges, and graded exercises. No GitHub integration. |
+| Single World | $59 | All 11 modules (56 lessons in Deep Orbit) of one world. Lifetime access. GitHub integration. Progress sharing. |
+| Two Worlds | $99 | Any two worlds. Save $19 vs buying separately. |
+| Three Worlds | $129 | Any three worlds. Save $48 vs buying separately. |
+| All 5 Worlds | $159 | All five worlds. Save $136 vs buying separately. |
 
-*All 5 themes are available simultaneously.*
+*All 5 worlds are available simultaneously.*
 
 ### Team Pricing
 
@@ -469,7 +469,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 
 ### Revenue Projections (Per-Model)
 
-| Period | Free Users | Single Theme | Bundles | Revenue |
+| Period | Free Users | Single World | Bundles | Revenue |
 |---|---|---|---|---|
 | Y1 (end) | 15,000 | 800 | 200 | ~$150,000 |
 | Y2 (end) | 45,000 | 3,000 | 800 | ~$550,000 |
@@ -482,7 +482,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | Year 3 | $1,000,000 | $1,400,000 | $1,900,000 |
 | 3-Year Cumulative | $1,500,000 | $2,100,000 | $2,870,000 |
 
-*Note: Projections assume all 5 themes available from Y1 (simultaneous launch). Team pricing not included — will be added post-V1.0.*
+*Note: Projections assume all 5 worlds available from Y1 (simultaneous launch). Team pricing not included — will be added post-V1.0.*
 
 ---
 
@@ -510,7 +510,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 
 ### 9.4 Organic & Community
 
-- **Discord community:** Free for all users; channels per theme; weekly office hours with curriculum authors
+- **Discord community:** Free for all users; channels per world; weekly office hours with curriculum authors
 - **Social sharing:** Built-in "Share Progress" generates branded images; incentivize sharing with bonus streak days
 - **Referral program:** Refer 3 friends who sign up => 1 month Pro free; tracked via unique referral codes
 - **Conference presence:** Sponsor or present at JSConf, React Summit, and ML-adjacent meetups
@@ -522,14 +522,14 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | # | Risk | Severity | Likelihood | Impact | Mitigation |
 |---|---|---|---|---|---|
 | 1 | TensorFlow.js performance on low-end devices | High | Medium | Learners on budget hardware experience laggy model training, leading to drop-off | Implement WASM fallback; offer "lite" model variants with smaller architectures; add performance warning + recommended specs |
-| 2 | Content authoring bottleneck | High | High | 275 lessons across 5 themes requires significant writing effort; delays entire roadmap | Hire 2 dedicated curriculum authors by V1.0; build authoring tooling (MDX templates, preview server); prioritize one theme at a time |
+| 2 | Content authoring bottleneck | High | High | 275 lessons across 5 worlds requires significant writing effort; delays entire roadmap | Hire 2 dedicated curriculum authors by V1.0; build authoring tooling (MDX templates, preview server); prioritize one world at a time |
 | 3 | Low free-to-paid conversion | High | Medium | Revenue targets missed if conversion stays below 3% | A/B test paywall placement (end of Module 2 vs. Module 3); offer 7-day free trial; implement upgrade nudges based on engagement signals |
 | 4 | Monaco Editor bundle size | Medium | High | Monaco adds ~2MB to initial bundle, hurting LCP and mobile performance | Lazy-load Monaco only on lesson pages; use dynamic import with loading skeleton; explore lighter alternatives (CodeMirror 6) if size remains problematic |
 | 5 | Stripe regional compliance | Medium | Medium | Tax calculation, invoicing requirements, and payment method support vary by country | Use Stripe Tax for automated tax calculation; enable local payment methods (iDEAL, Boleto) via Stripe; consult legal counsel for EU/India/Brazil compliance |
 | 6 | GitHub OAuth scope changes | Low | Low | GitHub may deprecate or modify OAuth scopes, breaking integration | Abstract GitHub API behind an adapter layer; monitor GitHub changelog; implement graceful degradation if repo access is revoked |
 | 7 | Curriculum staleness | Medium | Medium | ML ecosystem evolves rapidly; lessons may reference outdated APIs or deprecated model architectures | Schedule quarterly content reviews; version lessons with "last updated" date; community contribution pipeline for corrections |
 | 8 | Accessibility compliance | Medium | Medium | Complex interactive components (editor, progress diagram, canvas) may not meet WCAG 2.2 AA | Conduct accessibility audit before each release; use `aria-live` regions for dynamic content; provide text-only alternatives for visual components. **Audit fixes completed:** skip-to-content link on all pages; `sr-only` or visible labels on all form inputs; `aria-pressed` on filter toggle buttons; `aria-label` on OAuth buttons and SVG icons; focus trap and focus restore on modals; `role="progressbar"` with `aria-valuenow`/`aria-valuemin`/`aria-valuemax` on progress bars; color-only indicators supplemented with text labels. |
-| 9 | Competitor response | Medium | High | Established platforms (freeCodeCamp, Codecademy, Scrimba) launch similar FE-to-ML courses | Differentiate on bridge pedagogy and themed worlds; build community moat; move fast on content — first-mover advantage in this niche is significant |
+| 9 | Competitor response | Medium | High | Established platforms (freeCodeCamp, Codecademy, Scrimba) launch similar FE-to-ML courses | Differentiate on bridge pedagogy and story worlds; build community moat; move fast on content — first-mover advantage in this niche is significant |
 
 ---
 
@@ -537,7 +537,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 
 ### A. Deep Orbit Module Map
 
-The Deep Orbit theme comprises 11 modules, each containing 5 lessons. Modules 1–3 and 6 cover shared core ML concepts (foundations track), while Modules 4–5 and 7–10 dive into the theme's specialization (signal processing, recurrent networks, anomaly detection, LLM integration, optimization). Module 11 is the capstone.
+The Deep Orbit world comprises 11 modules, each containing 5 lessons. Modules 1–3 and 6 cover shared core ML concepts (foundations track), while Modules 4–5 and 7–10 dive into the world's specialization (signal processing, recurrent networks, anomaly detection, LLM integration, optimization). Module 11 is the capstone.
 
 All 11 modules are fully authored with 55 lessons and 56 exercises.
 

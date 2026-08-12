@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { isValidThemeSlug } from "@tensorcraft/shared";
+import { isValidWorldSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
@@ -39,7 +39,7 @@ skillEvents.post("/", async (c) => {
   const token = c.get("accessToken");
 
   let body: {
-    themeId: string;
+    worldId: string;
     eventType: string;
     skillAxis: string;
     metadata?: Record<string, unknown>;
@@ -51,15 +51,15 @@ skillEvents.post("/", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.themeId || !body.eventType || !body.skillAxis) {
+  if (!body.worldId || !body.eventType || !body.skillAxis) {
     return c.json(
-      { error: "themeId, eventType, and skillAxis are required" },
+      { error: "worldId, eventType, and skillAxis are required" },
       400,
     );
   }
 
-  if (!isValidThemeSlug(body.themeId)) {
-    return c.json({ error: "Invalid themeId" }, 400);
+  if (!isValidWorldSlug(body.worldId)) {
+    return c.json({ error: "Invalid worldId" }, 400);
   }
 
   if (!VALID_EVENT_TYPES.includes(body.eventType as EventType)) {
@@ -74,7 +74,7 @@ skillEvents.post("/", async (c) => {
 
   const { error } = await supabase.from("skill_events").insert({
     user_id: userId,
-    theme_id: body.themeId,
+    world_id: body.worldId,
     event_type: body.eventType as EventType,
     skill_axis: body.skillAxis as SkillAxis,
     metadata: body.metadata ?? {},
@@ -104,7 +104,7 @@ skillEvents.post("/batch", async (c) => {
 
   let body: {
     events: Array<{
-      themeId: string;
+      worldId: string;
       eventType: string;
       skillAxis: string;
       metadata?: Record<string, unknown>;
@@ -124,8 +124,8 @@ skillEvents.post("/batch", async (c) => {
   }
 
   for (const e of events) {
-    if (!e.themeId || !isValidThemeSlug(e.themeId)) {
-      return c.json({ error: `Invalid themeId: ${e.themeId}` }, 400);
+    if (!e.worldId || !isValidWorldSlug(e.worldId)) {
+      return c.json({ error: `Invalid worldId: ${e.worldId}` }, 400);
     }
     if (!VALID_EVENT_TYPES.includes(e.eventType as EventType)) {
       return c.json({ error: `Invalid eventType: ${e.eventType}` }, 400);
@@ -139,7 +139,7 @@ skillEvents.post("/batch", async (c) => {
   const { error } = await supabase.from("skill_events").insert(
     events.map((e) => ({
       user_id: userId,
-      theme_id: e.themeId,
+      world_id: e.worldId,
       event_type: e.eventType as EventType,
       skill_axis: e.skillAxis as SkillAxis,
       metadata: e.metadata ?? {},

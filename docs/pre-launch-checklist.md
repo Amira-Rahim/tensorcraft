@@ -4,10 +4,10 @@
 > **Audience: solo dev preparing to flip V0.5 live before executing marketing plan.**
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
-> The other 4 themes are gated to "coming soon" stub pages w/ waitlist (see
+> The other 4 worlds are gated to "coming soon" stub pages w/ waitlist (see
 > [`docs/launch-scope.md`](./launch-scope.md)). Wherever this checklist
-> cites "all 5 themes" / "275 lessons" / "5 capstones," the actual launch
-> set is **1 theme / 55 lessons / 1 capstone / ~65 exercises**. Validator,
+> cites "all 5 worlds" / "275 lessons" / "5 capstones," the actual launch
+> set is **1 world / 55 lessons / 1 capstone / ~65 exercises**. Validator,
 > bridge counts, and content metrics measured against the launched subset
 > only. Pricing-related items (§A3 Stripe price IDs, §A5 Stripe products,
 > §A6 real-money smoke) are owned by a parallel pricing session — confirm
@@ -32,11 +32,11 @@ This is the definitive gate-list. Work it top to bottom. When every **BLOCKING**
 - 2026-04-28 (Round 6 — A+ confirmed: re-audit caught 6 mlCode P0s + 2 production blockers, all resolved). See `docs/audits/a-plus-confirmed-2026-04-28.md`.
 - 2026-05-04 (Round 7 — post news-pipeline re-verify: working tree clean, validator regressed 297/300 → 292/315 with 23 new failures from 15 added exercises + mock-TF gaps, see §A14c).
 - 2026-05-05 (Round 8 — validator mock retired, real `@tensorflow/tfjs` v4.22 wired through `vm.createContext` with `loadLayersModel`/`loadGraphModel` Proxy overrides + `inputShape` getter polyfill; 315/315 pass, vitest 749/749, `pnpm run build` green; e2e blocked by port :3000 collision with separate ops-portal dev server, requires user to free port).
-- 2026-05-05 (Round 9 — deep audit post V1 scope-revert: 8 theme-allowlist leaks fixed (§A15) across `layout.tsx`, `theme-provider.tsx`, `github.ts`, `certificates.ts`, `exercise-attempts.ts`, `profiles.ts`, `capstone/page.tsx`, `purchase-success/page.tsx`; tests + fixtures realigned; validator 80/80 (Deep Orbit + extras only per launch-scope), vitest 748/748, build green. Stripe `charge.dispute.created` case already implemented — audit-agent false positive, no code change needed).
-- 2026-05-05 (Round 10 — 5-agent deep audit covering flow leakage / security / DB-RLS / observability / privacy. 6 BLOCKING + STRONG fixes landed (§A16): Sentry server+edge config now read `SENTRY_DSN` first, lesson error boundary forwards to Sentry, orphaned `apps/web/app/providers/posthog-provider.tsx` removed (sole `posthog.init` callsite is now `lib/posthog.ts` singleton), pricing 2/3/all-five tiers auto-disable when `LAUNCHED_THEMES.length` is below the bundle size, newsletter `matched_lessons` filtered through `isLaunched` so digest never links to a 404'd lesson, GitHub OAuth `state` pinned to a HttpOnly `tc_gh_oauth_state` cookie + timing-safe comparison on callback. §II1 doc warnings added to `product-plan.md`, `marketing-plan.md`, `ui-ux-notes.md`. §B11 V1 visual + waitlist scope-revert smoke gate added. Tests + integration fixtures updated. vitest 748/748, build green).
+- 2026-05-05 (Round 9 — deep audit post V1 scope-revert: 8 world-allowlist leaks fixed (§A15) across `layout.tsx`, `world-provider.tsx`, `github.ts`, `certificates.ts`, `exercise-attempts.ts`, `profiles.ts`, `capstone/page.tsx`, `purchase-success/page.tsx`; tests + fixtures realigned; validator 80/80 (Deep Orbit + extras only per launch-scope), vitest 748/748, build green. Stripe `charge.dispute.created` case already implemented — audit-agent false positive, no code change needed).
+- 2026-05-05 (Round 10 — 5-agent deep audit covering flow leakage / security / DB-RLS / observability / privacy. 6 BLOCKING + STRONG fixes landed (§A16): Sentry server+edge config now read `SENTRY_DSN` first, lesson error boundary forwards to Sentry, orphaned `apps/web/app/providers/posthog-provider.tsx` removed (sole `posthog.init` callsite is now `lib/posthog.ts` singleton), pricing 2/3/all-five tiers auto-disable when `LAUNCHED_WORLDS.length` is below the bundle size, newsletter `matched_lessons` filtered through `isLaunched` so digest never links to a 404'd lesson, GitHub OAuth `state` pinned to a HttpOnly `tc_gh_oauth_state` cookie + timing-safe comparison on callback. §II1 doc warnings added to `product-plan.md`, `marketing-plan.md`, `ui-ux-notes.md`. §B11 V1 visual + waitlist scope-revert smoke gate added. Tests + integration fixtures updated. vitest 748/748, build green).
 - 2026-05-05 (Round 11 — full end-to-end audit across all 5 user flows: signup→onboarding→dashboard, lesson→exercise→progress, paywall→checkout→email, capstone→certificate→GitHub, waitlist+digest pipeline. 5 parallel deep-Explore agents reviewed FE→BE→DB→content paths. 2 real BLOCKING fixes landed (§A17): auth callback now forwards Supabase exchange errors to Sentry (was console-only), and the missing public `/certificates/[id]` share page is now implemented (consumes `GET /api/certificates/:id` SECURITY DEFINER RPC, JSON-LD `EducationalOccupationalCredential`, no auth, OG tags). 3 audit-flagged "blockers" verified as false positives (paywall short-circuit was already correct via Next.js `redirect()` 307 short-circuit; exercise dedup is intentional UX with `disabled={running}` button gate; Stripe webhook subscriptions complete). Other Round-11 STRONG findings (Sandpack offline fallback, arrow-key support, refund-comms email, news-scrape failure alerts, newsletter retry queue, post-unsubscribe re-signup blocked by unique constraint, GitHub token plaintext column) parked on post-launch backlog — none gate launch. vitest 748/748, build green).
-- 2026-05-05 (Round 12 — content/perf/a11y/SEO/mobile deep sweep via 3 parallel Explore agents. 11 fixes landed (§A18) across BLOCKING + STRONG categories: (1) `text-muted` palette token bumped `#a0a0a0 → #b0b0b0` to clear WCAG AA 4.5:1, (2) `Viewport` metadata export added to `layout.tsx`, (3) lesson page parallelizes auth+purchase+prereq+progress+profile via single `Promise.all`, (4) `generateStaticParams` enumerates all 55 launched lessons so first paint comes from edge cache, (5) `Exercise` lazy-loaded via `next/dynamic({ ssr: false })` from `lesson-content.tsx` — Sandpack runtime stays out of lesson chunk, (6) `100vh → 100svh` on `global-error.tsx` + `dashboard-view.tsx` + `capstone/page.tsx` for iOS Safari URL-bar stability, (7) `report-issue-button` keyframes scoped to `[data-ri-root]` + `prefers-reduced-motion` kill switch, (8) `AmbientBackground` renders one static frame when reduced motion preferred (skips rAF loop), (9) `/api/og` input clamps title/subtitle to 200 chars + theme allowlist + `s-maxage=86400 stale-while-revalidate=604800` cache directives, (10) `next.config.ts` headers add `Cache-Control` for `/_next/static/*` (immutable 1yr) + `/_next/image/*` (1d + 30d SWR), (11) `robots.txt` adds `/admin` disallow + intentionally allows `/certificates/` for SEO. False positives verified: onboarding `aria-checked` already present on all 3 radiogroups (Round-12 agent C wrong). Other Round-12 STRONG findings (HintPanel coverage 3/56 lessons, touch-target sweep, user-menu focus trap, Plausible+PostHog consolidation, sitemap "core→full" phase flip) deferred to post-launch backlog. vitest 772/772 (24 new tests added by sister session), `pnpm run build` green).
-- 2026-05-05 (Round 13 — final marketing + operational + regression sweep via 3 parallel Explore agents covering (A) marketing readiness + conversion funnel, (B) operational resilience + incident readiness, (C) 5-commit delta + Rounds 9-12 fix survival. 4 fixes landed (§A19): (1) `/api/og` route had 3 stale `#A0A0A0` hex literals that survived the Round-12 contrast bump on the design-system token — all 3 swapped to `#B0B0B0`; (2) `apps/web/lib/api-fetch.ts` had no `AbortController` — wrapped every API request in a 10 s timeout that emits a `tc:api-timeout` window event so the session-toast UI can render "Network slow"; caller-supplied signals are chained; (3) Sentry server + edge `tracesSampleRate` bumped `0.1 → 0.3` for launch-day debuggability + `maxBreadcrumbs: 50` and `maxValueLength: 500` added on all three (`server`, `edge`, `client`); (4) paywall "// SOCIAL PROOF PENDING" placeholder section removed entirely (its presence hurts conversion more than its absence — restore once 3+ real beta quotes land), paywall tests updated. False positives verified by direct file read: `/api/og` already has route-level Cache-Control (Round 12); CORS already guards production (`process.env.NODE_ENV === "production" ? [] : ...`); favicon + apple-icon already ship as Next.js 15 file-based metadata (`apps/web/app/{icon,apple-icon}.tsx`, both dynamic Edge `ImageResponse` rendering the theme-tinted `T_` monogram). Round-13 regression sweep confirmed all Rounds 9-12 fixes survive: theme-allowlist `isLaunched()` gates intact across api routes + dashboard pages; lesson page parallel `Promise.all` intact; Stripe `charge.dispute.created` case intact; GitHub OAuth CSRF cookie intact; robots `/admin` disallow + `/certificates/` allow intact; contrast token still `#b0b0b0`. Round-13 DISCRETIONARY items parked on post-launch backlog: onboarding step persistence, Kit bounce-handler persistence, Supabase outage graceful degradation, Sandpack 10s timeout, status page, refund-comms email, news-pipeline alerts, A/B framework. vitest 742/742 across 102 files, `pnpm run build` 10 tasks green).
+- 2026-05-05 (Round 12 — content/perf/a11y/SEO/mobile deep sweep via 3 parallel Explore agents. 11 fixes landed (§A18) across BLOCKING + STRONG categories: (1) `text-muted` palette token bumped `#a0a0a0 → #b0b0b0` to clear WCAG AA 4.5:1, (2) `Viewport` metadata export added to `layout.tsx`, (3) lesson page parallelizes auth+purchase+prereq+progress+profile via single `Promise.all`, (4) `generateStaticParams` enumerates all 55 launched lessons so first paint comes from edge cache, (5) `Exercise` lazy-loaded via `next/dynamic({ ssr: false })` from `lesson-content.tsx` — Sandpack runtime stays out of lesson chunk, (6) `100vh → 100svh` on `global-error.tsx` + `dashboard-view.tsx` + `capstone/page.tsx` for iOS Safari URL-bar stability, (7) `report-issue-button` keyframes scoped to `[data-ri-root]` + `prefers-reduced-motion` kill switch, (8) `AmbientBackground` renders one static frame when reduced motion preferred (skips rAF loop), (9) `/api/og` input clamps title/subtitle to 200 chars + world allowlist + `s-maxage=86400 stale-while-revalidate=604800` cache directives, (10) `next.config.ts` headers add `Cache-Control` for `/_next/static/*` (immutable 1yr) + `/_next/image/*` (1d + 30d SWR), (11) `robots.txt` adds `/admin` disallow + intentionally allows `/certificates/` for SEO. False positives verified: onboarding `aria-checked` already present on all 3 radiogroups (Round-12 agent C wrong). Other Round-12 STRONG findings (HintPanel coverage 3/56 lessons, touch-target sweep, user-menu focus trap, Plausible+PostHog consolidation, sitemap "core→full" phase flip) deferred to post-launch backlog. vitest 772/772 (24 new tests added by sister session), `pnpm run build` green).
+- 2026-05-05 (Round 13 — final marketing + operational + regression sweep via 3 parallel Explore agents covering (A) marketing readiness + conversion funnel, (B) operational resilience + incident readiness, (C) 5-commit delta + Rounds 9-12 fix survival. 4 fixes landed (§A19): (1) `/api/og` route had 3 stale `#A0A0A0` hex literals that survived the Round-12 contrast bump on the design-system token — all 3 swapped to `#B0B0B0`; (2) `apps/web/lib/api-fetch.ts` had no `AbortController` — wrapped every API request in a 10 s timeout that emits a `tc:api-timeout` window event so the session-toast UI can render "Network slow"; caller-supplied signals are chained; (3) Sentry server + edge `tracesSampleRate` bumped `0.1 → 0.3` for launch-day debuggability + `maxBreadcrumbs: 50` and `maxValueLength: 500` added on all three (`server`, `edge`, `client`); (4) paywall "// SOCIAL PROOF PENDING" placeholder section removed entirely (its presence hurts conversion more than its absence — restore once 3+ real beta quotes land), paywall tests updated. False positives verified by direct file read: `/api/og` already has route-level Cache-Control (Round 12); CORS already guards production (`process.env.NODE_ENV === "production" ? [] : ...`); favicon + apple-icon already ship as Next.js 15 file-based metadata (`apps/web/app/{icon,apple-icon}.tsx`, both dynamic Edge `ImageResponse` rendering the world-tinted `T_` monogram). Round-13 regression sweep confirmed all Rounds 9-12 fixes survive: world-allowlist `isLaunched()` gates intact across api routes + dashboard pages; lesson page parallel `Promise.all` intact; Stripe `charge.dispute.created` case intact; GitHub OAuth CSRF cookie intact; robots `/admin` disallow + `/certificates/` allow intact; contrast token still `#b0b0b0`. Round-13 DISCRETIONARY items parked on post-launch backlog: onboarding step persistence, Kit bounce-handler persistence, Supabase outage graceful degradation, Sandpack 10s timeout, status page, refund-comms email, news-pipeline alerts, A/B framework. vitest 742/742 across 102 files, `pnpm run build` 10 tasks green).
 
 **Content quality grade: A+** (defensible). Math floor canonical, 315/315 grader pass on real TFJS, 71 quizzes Q1-Q4 verified, 50 bridges with mlCode + 100% breaks coverage on non-identity, 5 capstone artifacts shipped, /compare + /bridges + /pricing prerender static, 0 AI-slop across all dimensions.
 
@@ -120,7 +120,7 @@ Paste each into [Supabase SQL editor](https://supabase.com/dashboard/project/tlh
 ```sql
 select count(*)::int as tables from information_schema.tables
 where table_schema='public' and table_name in (
-  'profiles','purchases','theme_progress','waitlist','streaks',
+  'profiles','purchases','world_progress','waitlist','streaks',
   'achievements','exercise_attempts','skill_genome','skill_events',
   'certificates','issues','news_items'
 );
@@ -192,9 +192,9 @@ Five services need projects created + DSN/keys captured:
 
 After §A2–§A5 complete:
 
-1. Use a personal card to buy the $59 Single Theme tier on production.
+1. Use a personal card to buy the $59 Single World tier on production.
 2. Verify: redirect to `/dashboard/purchase-success?session_id=...` renders correct receipt.
-3. Query DB: new row in `purchases` with `status='completed'` + `theme_ids: ['<chosen-theme>']`.
+3. Query DB: new row in `purchases` with `status='completed'` + `world_ids: ['<chosen-world>']`.
 4. Check PostHog dashboard: `payment_completed` event fired with user_id.
 5. Check Kit: subscriber tagged with `purchased`.
 6. Check email inbox: purchase-confirmation email arrives with unsubscribe link + receipt.
@@ -297,26 +297,26 @@ After the news-pipeline + content-dashboard work landed (commits `e3075a5` → `
 2. Walk each failing YAML; fix solution code or test expectations. ~2-3 hrs (19 exercises).
 3. Re-run validator until 315/315. **Do not allowlist** — same rationale as A14b.
 
-### A15. ~~V1 scope-revert theme-allowlist leaks~~ ✅ FIXED 2026-05-05
+### A15. ~~V1 scope-revert world-allowlist leaks~~ ✅ FIXED 2026-05-05
 
-The 2026-05-05 launch-scope revert (`LAUNCHED_THEMES = ["deep-orbit"]`) left 8 places still accepting any valid theme slug instead of gating on `isLaunched()`. Each could let a coming-soon theme reach production via direct API call, stale localStorage value, or DB anomaly. All fixed in this round; tests + fixtures realigned.
+The 2026-05-05 launch-scope revert (`LAUNCHED_WORLDS = ["deep-orbit"]`) left 8 places still accepting any valid world slug instead of gating on `isLaunched()`. Each could let a coming-soon world reach production via direct API call, stale localStorage value, or DB anomaly. All fixed in this round; tests + fixtures realigned.
 
 | File | Before | After |
 | --- | --- | --- |
-| `apps/web/app/layout.tsx` line 99 | Inline script whitelist hardcoded all 5 theme slugs | `${JSON.stringify(LAUNCHED_THEMES)}.includes(t)` (build-time embed) |
-| `apps/web/app/components/theme-provider.tsx` line 15 | Iterated `themeSlugs` from `@tensorcraft/themes` (all 5) | `isLaunched(value)` |
-| `apps/api/src/routes/github.ts` lines 345 + 464 | Only `isValidThemeSlug` on commit + retroactive-push | Added `isLaunched` 400 gate after both validations |
-| `apps/api/src/routes/certificates.ts` line 54 | POST /api/certificates accepted coming-soon themes | Added `isLaunched` 400 gate |
+| `apps/web/app/layout.tsx` line 99 | Inline script whitelist hardcoded all 5 world slugs | `${JSON.stringify(LAUNCHED_WORLDS)}.includes(t)` (build-time embed) |
+| `apps/web/app/components/world-provider.tsx` line 15 | Iterated `worldSlugs` from `@tensorcraft/worlds` (all 5) | `isLaunched(value)` |
+| `apps/api/src/routes/github.ts` lines 345 + 464 | Only `isValidWorldSlug` on commit + retroactive-push | Added `isLaunched` 400 gate after both validations |
+| `apps/api/src/routes/certificates.ts` line 54 | POST /api/certificates accepted coming-soon worlds | Added `isLaunched` 400 gate |
 | `apps/api/src/routes/exercise-attempts.ts` line 43 | Logged attempts against any slug | Added `isLaunched` 400 gate |
-| `apps/api/src/routes/profiles.ts` line 56 | PATCH allowed `preferred_theme_id` to be coming-soon | Added `isLaunched` validator branch |
-| `apps/web/app/themes/[slug]/capstone/page.tsx` lines 150-154 | Next-theme teaser used full `THEME_SLUGS` (always picked coming-soon) | Filter to launched themes via `THEME_SLUGS.filter(isLaunched)` |
-| `apps/web/app/dashboard/purchase-success/page.tsx` line 116 | `purchasedThemeIds` rendered every theme on the purchase row | Filter through `isLaunched` upstream so access cards + first-theme CTA both stay launched-only |
+| `apps/api/src/routes/profiles.ts` line 56 | PATCH allowed `preferred_world_id` to be coming-soon | Added `isLaunched` validator branch |
+| `apps/web/app/worlds/[slug]/capstone/page.tsx` lines 150-154 | Next-world teaser used full `WORLD_SLUGS` (always picked coming-soon) | Filter to launched worlds via `WORLD_SLUGS.filter(isLaunched)` |
+| `apps/web/app/dashboard/purchase-success/page.tsx` line 116 | `purchasedWorldIds` rendered every world on the purchase row | Filter through `isLaunched` upstream so access cards + first-world CTA both stay launched-only |
 
 **Test fixtures updated:**
 
 - `apps/api/src/routes/__tests__/exercise-attempts.test.ts`: `vi.mock("@tensorcraft/shared")` now exports `isLaunched: (slug) => slug === "deep-orbit"`.
-- `apps/web/app/dashboard/purchase-success/page.test.tsx`: two access-card tests rewritten to assert that coming-soon themes are stripped from the access list and that the primary CTA falls back to `DEFAULT_THEME` when only coming-soon ids are owned.
-- `apps/web/app/themes/[slug]/capstone/__tests__/page.test.tsx`: "next-theme teaser to neon-protocol" test rewritten to assert that the V1.0-coming placeholder fires when only Deep Orbit is launched.
+- `apps/web/app/dashboard/purchase-success/page.test.tsx`: two access-card tests rewritten to assert that coming-soon worlds are stripped from the access list and that the primary CTA falls back to `DEFAULT_WORLD` when only coming-soon ids are owned.
+- `apps/web/app/worlds/[slug]/capstone/__tests__/page.test.tsx`: "next-world teaser to neon-protocol" test rewritten to assert that the V1.0-coming placeholder fires when only Deep Orbit is launched.
 
 **Note on §A16 (audit-agent false positive):** Round 9 audit flagged `charge.dispute.created` as a missing webhook case, but the handler is already implemented in `apps/api/src/routes/payments.ts:528-557` (sets `status='disputed'`). No code change needed.
 
@@ -335,10 +335,10 @@ Round 10 dispatched 5 parallel deep audits (flow leakage, security/auth, DB/RLS,
 | Finding | Severity | File:line | Fix |
 | --- | --- | --- | --- |
 | Sentry server + edge config read `NEXT_PUBLIC_SENTRY_DSN` instead of server-only `SENTRY_DSN` — server-side errors silently dropped if only the secret var is set | **BLOCKING** | `apps/web/sentry.server.config.ts:11`, `apps/web/sentry.edge.config.ts:11` | DSN now `SENTRY_DSN ?? NEXT_PUBLIC_SENTRY_DSN` |
-| Lesson error boundary only logged to console; root boundary already calls `Sentry.captureException` | **BLOCKING** | `apps/web/app/themes/[slug]/[module]/[lesson]/error.tsx:14` | Added `Sentry.captureException(error, { tags: { boundary: "lesson-error" }, ... })` |
+| Lesson error boundary only logged to console; root boundary already calls `Sentry.captureException` | **BLOCKING** | `apps/web/app/worlds/[slug]/[module]/[lesson]/error.tsx:14` | Added `Sentry.captureException(error, { tags: { boundary: "lesson-error" }, ... })` |
 | Orphan `apps/web/app/providers/posthog-provider.tsx` called `posthog.init` directly, bypassing the `lib/posthog.ts` singleton — risk of double-init on future imports | **BLOCKING** | deleted | Orphan file + empty dir removed; `apps/web/app/posthog-provider.tsx` is the sole mount |
-| Pricing 2/3/all-five tiers were purchasable in UI; `themeIds={[...themeSlugs]}` for allFive would always send all 5 slugs and fail server-side `validateThemeIds` (UX bounce) | **BLOCKING** | `apps/web/app/pricing/pricing-tiers.tsx:10,423` | `themeList` now derived from `LAUNCHED_THEMES`; bundles auto-disable when `LAUNCHED_THEMES.length` is below the bundle size with "Available when more themes launch" copy |
-| Admin newsletter rendered `matched_lessons[0]` for any theme — curator picking a coming-soon lesson would email a 404 link | STRONG | `apps/api/src/lib/newsletter.ts:64-74,99` | `loadDigestItems` filters each row's `matched_lessons` through `isLaunched` |
+| Pricing 2/3/all-five tiers were purchasable in UI; `worldIds={[...worldSlugs]}` for allFive would always send all 5 slugs and fail server-side `validateWorldIds` (UX bounce) | **BLOCKING** | `apps/web/app/pricing/pricing-tiers.tsx:10,423` | `worldList` now derived from `LAUNCHED_WORLDS`; bundles auto-disable when `LAUNCHED_WORLDS.length` is below the bundle size with "Available when more worlds launch" copy |
+| Admin newsletter rendered `matched_lessons[0]` for any world — curator picking a coming-soon lesson would email a 404 link | STRONG | `apps/api/src/lib/newsletter.ts:64-74,99` | `loadDigestItems` filters each row's `matched_lessons` through `isLaunched` |
 | GitHub OAuth `state` was returned to client without server-side pin; callback only extracted `userId` from the state string. Attacker could craft a callback with their own `userId.uuid` and bind the victim's GitHub identity to the attacker's profile (CSRF) | **BLOCKING** | `apps/api/src/routes/github.ts:131,169` | `/connect` now sets `tc_gh_oauth_state` HttpOnly + Secure + SameSite=Lax cookie (10-min TTL, scoped to `/api/github`); `/callback` rejects 400 if the cookie is missing or `timingSafeEqual` against `state` fails; cookie deleted after one-shot use |
 
 **Test fixture updates:**
@@ -386,11 +386,11 @@ Round 11 dispatched 5 parallel deep agents tracing every user journey end-to-end
 | File | Gap | Fix |
 | --- | --- | --- |
 | [apps/web/app/auth/callback/route.ts:18](apps/web/app/auth/callback/route.ts#L18) | Supabase `exchangeCodeForSession` failures only logged to `console.error` — auth callback is the entry path for every new account, so a silent prod failure masks real issues. | Added `Sentry.captureException(error, { tags: { route: "auth/callback" } })` (no-op when DSN unset; matches root + lesson error-boundary pattern). |
-| `apps/web/app/certificates/[id]/page.tsx` (NEW) | Capstone share button copies `${origin}/certificates/${cert.id}` ([capstone-client.tsx:204](apps/web/app/themes/[slug]/capstone/capstone-client.tsx#L204)) but the public page didn't exist — recipients would land on 404, breaking capstone email + share UX. | New SSR page consumes `GET /api/certificates/:id` (the `get_shared_certificate` SECURITY DEFINER RPC from migration 019), renders learner name / theme / issued date / cert number / hash preview, ships JSON-LD `EducationalOccupationalCredential` for SEO, generates OG image via `/api/og`. Cached for 5 min, no auth, UUID shape validated. |
+| `apps/web/app/certificates/[id]/page.tsx` (NEW) | Capstone share button copies `${origin}/certificates/${cert.id}` ([capstone-client.tsx:204](apps/web/app/worlds/[slug]/capstone/capstone-client.tsx#L204)) but the public page didn't exist — recipients would land on 404, breaking capstone email + share UX. | New SSR page consumes `GET /api/certificates/:id` (the `get_shared_certificate` SECURITY DEFINER RPC from migration 019), renders learner name / world / issued date / cert number / hash preview, ships JSON-LD `EducationalOccupationalCredential` for SEO, generates OG image via `/api/og`. Cached for 5 min, no auth, UUID shape validated. |
 
 #### Audit-agent false positives (verified — no code change needed)
 
-- **Paywall "SSR-before-redirect" claim:** Next.js `redirect()` from `next/navigation` throws a redirect error before any RSC body streams; the response is a 307 well before content render. Lesson page at [apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx:71-103](apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx#L71-L103) handles unauth + unpurchased correctly.
+- **Paywall "SSR-before-redirect" claim:** Next.js `redirect()` from `next/navigation` throws a redirect error before any RSC body streams; the response is a 307 well before content render. Lesson page at [apps/web/app/worlds/[slug]/[module]/[lesson]/page.tsx:71-103](apps/web/app/worlds/[slug]/[module]/[lesson]/page.tsx#L71-L103) handles unauth + unpurchased correctly.
 - **Exercise dedup claim:** `disabled={running}` on the Run button at [packages/ui/src/mdx/exercise.tsx:409](packages/ui/src/mdx/exercise.tsx#L409) blocks rapid re-clicks at the UI; multiple intentional attempts are by-design (learner iterating on a solution), so server-side dedup would be wrong.
 - **Stripe webhook subscription gap:** `charge.dispute.created` already implemented at [apps/api/src/routes/payments.ts:528-557](apps/api/src/routes/payments.ts#L528-L557) (Round 9 false positive too).
 
@@ -404,9 +404,9 @@ These are real but not BLOCKING for V1; document explicitly so future-you doesn'
 - **Refund / dispute notification email** — webhook flips `purchases.status` and revokes access, but no Kit `refunded` tag fires. Acceptable for V1 (dashboard reflects status), polish later.
 - **News-scrape feed failures silent** — `scripts/news/scrape.mjs` `.catch(() => [])` swallows 5xx with no Sentry / Slack alert. Add a failure-rate alert post-launch.
 - **Newsletter send retry** — Resend 429/5xx counted but never re-played. Acceptable while volume is low; add a persistent job queue post-launch.
-- **Re-subscribe blocked post-unsubscribe** — `(email, theme_id)` UNIQUE constraint on `waitlist` rejects a fresh signup with `code: 23505`, masked as success. Either flip to `INSERT … ON CONFLICT DO UPDATE SET subscribed = true` or surface a "you're already on the list — manage preferences" UX.
+- **Re-subscribe blocked post-unsubscribe** — `(email, world_id)` UNIQUE constraint on `waitlist` rejects a fresh signup with `code: 23505`, masked as success. Either flip to `INSERT … ON CONFLICT DO UPDATE SET subscribed = true` or surface a "you're already on the list — manage preferences" UX.
 - **Onboarding step persistence** — already in `§G.8` known gaps. ~2-min flow, browser-close drop is rare; acceptable for V1.
-- **First-lesson-email vs completion-RPC race** ([lesson-steps.tsx:146-185](apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.tsx#L146-L185)) — email fires even if `compute_user_skill_genome` RPC fails. Wrap in `Promise.allSettled` post-launch.
+- **First-lesson-email vs completion-RPC race** ([lesson-steps.tsx:146-185](apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx#L146-L185)) — email fires even if `compute_user_skill_genome` RPC fails. Wrap in `Promise.allSettled` post-launch.
 - **APP_VERSION hardcoded `0.0.0`** in API logger — bump from `package.json` at build.
 
 #### Verification this round
@@ -425,15 +425,15 @@ Three parallel deep-Explore agents covered ground untouched by Rounds 1–11: co
 
 | # | Category | File | Bug | Fix |
 | --- | --- | --- | --- | --- |
-| 1 | A11y BLOCKING | [packages/themes/src/css/themes.css](packages/themes/src/css/themes.css) | `--tc-muted: #a0a0a0` over `#181818` = 4.3:1 — fails WCAG AA 4.5:1 for normal text on auth, footer, prose, dashboard subtitles | Bumped to `#b0b0b0` (~4.7:1) across all 5 theme blocks via `replace_all` |
+| 1 | A11y BLOCKING | [packages/worlds/src/css/worlds.css](packages/worlds/src/css/worlds.css) | `--tc-muted: #a0a0a0` over `#181818` = 4.3:1 — fails WCAG AA 4.5:1 for normal text on auth, footer, prose, dashboard subtitles | Bumped to `#b0b0b0` (~4.7:1) across all 5 world blocks via `replace_all` |
 | 2 | Mobile BLOCKING | [apps/web/app/layout.tsx](apps/web/app/layout.tsx) | No `Viewport` export — Next 15 needs explicit viewport config for mobile scaling | Added `export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" }`; user-zoom intentionally left enabled (WCAG 1.4.4) |
-| 3 | Perf STRONG (LCP) | [apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx](apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx) | Sequential `await` chain: getUser → purchase → prereq → getUser → progress → profile | Single `Promise.all([purchased, prevCompleted, progress, profile])` keyed off one client. Redirect order preserved; module-1 path skips purchase + prereq via constant promises |
-| 4 | Perf STRONG (LCP) | same file | No `generateStaticParams` — every lesson on-demand at cold start | Pre-renders all `LAUNCHED_THEMES` × `getThemeLessons()` pairs at build (~55 routes for V1) |
-| 5 | Perf STRONG (FID/INP) | [apps/web/app/themes/[slug]/[module]/[lesson]/lesson-content.tsx](apps/web/app/themes/[slug]/[module]/[lesson]/lesson-content.tsx) | `Exercise` static-imported from `@tensorcraft/ui` pulled the full Sandpack runtime into the lesson chunk regardless of inner `lazy()` boundaries | Wrapped via `dynamic(() => import("@tensorcraft/ui").then(m => ({ default: m.Exercise })), { ssr: false, loading: <Skeleton /> })` — Sandpack defers until learner reaches Step 3 |
-| 6 | Mobile STRONG | `apps/web/app/global-error.tsx`, `apps/web/app/dashboard/dashboard-view.tsx`, `apps/web/app/themes/[slug]/capstone/page.tsx` | `minHeight: "100vh"` triggers reflow when iOS Safari URL bar collapses | All three switched to `minHeight: "100svh"` (small viewport unit) |
+| 3 | Perf STRONG (LCP) | [apps/web/app/worlds/[slug]/[module]/[lesson]/page.tsx](apps/web/app/worlds/[slug]/[module]/[lesson]/page.tsx) | Sequential `await` chain: getUser → purchase → prereq → getUser → progress → profile | Single `Promise.all([purchased, prevCompleted, progress, profile])` keyed off one client. Redirect order preserved; module-1 path skips purchase + prereq via constant promises |
+| 4 | Perf STRONG (LCP) | same file | No `generateStaticParams` — every lesson on-demand at cold start | Pre-renders all `LAUNCHED_WORLDS` × `getWorldLessons()` pairs at build (~55 routes for V1) |
+| 5 | Perf STRONG (FID/INP) | [apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx](apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx) | `Exercise` static-imported from `@tensorcraft/ui` pulled the full Sandpack runtime into the lesson chunk regardless of inner `lazy()` boundaries | Wrapped via `dynamic(() => import("@tensorcraft/ui").then(m => ({ default: m.Exercise })), { ssr: false, loading: <Skeleton /> })` — Sandpack defers until learner reaches Step 3 |
+| 6 | Mobile STRONG | `apps/web/app/global-error.tsx`, `apps/web/app/dashboard/dashboard-view.tsx`, `apps/web/app/worlds/[slug]/capstone/page.tsx` | `minHeight: "100vh"` triggers reflow when iOS Safari URL bar collapses | All three switched to `minHeight: "100svh"` (small viewport unit) |
 | 7 | A11y STRONG | [apps/web/app/components/report-issue-button.tsx](apps/web/app/components/report-issue-button.tsx) | 6 `@keyframes` declared via inline `<style>` bypassed the global `prefers-reduced-motion` media query | Added scoped `@media (prefers-reduced-motion: reduce)` kill switch inside the same `<style>` block; root wrapped in `<div data-ri-root style={{ display: "contents" }}>` so selector targets the widget only |
 | 8 | A11y STRONG | [apps/web/app/components/ambient-background.tsx](apps/web/app/components/ambient-background.tsx) | Canvas particle rAF loop ran at ~60fps for every visitor regardless of motion preference (~3% CPU) | Reads `window.matchMedia("(prefers-reduced-motion: reduce)")` on mount; if true, paints one static frame and skips the rAF loop entirely |
-| 9 | Security STRONG | [apps/web/app/api/og/route.tsx](apps/web/app/api/og/route.tsx) | No input bounds — `?title=<10 KB string>` is reflectable; no theme allowlist | Title/subtitle/lessonTitle/sourceLabel clamped to 200 chars via `clamp()` helper; theme validated against `themeSlugs`; `kind` validated against `{default, digest}`. Cache directives upgraded to `public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800` so repeats hit edge cache for a week |
+| 9 | Security STRONG | [apps/web/app/api/og/route.tsx](apps/web/app/api/og/route.tsx) | No input bounds — `?title=<10 KB string>` is reflectable; no world allowlist | Title/subtitle/lessonTitle/sourceLabel clamped to 200 chars via `clamp()` helper; world validated against `worldSlugs`; `kind` validated against `{default, digest}`. Cache directives upgraded to `public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800` so repeats hit edge cache for a week |
 | 10 | Perf STRONG | [apps/web/next.config.ts](apps/web/next.config.ts) | `headers` only set security headers, no `Cache-Control` for static chunks or optimized images | Added: `/_next/static/:path*` → `public, max-age=31536000, immutable`; `/_next/image/:path*` → `public, max-age=86400, s-maxage=86400, stale-while-revalidate=2592000` |
 | 11 | SEO STRONG | [apps/web/app/robots.ts](apps/web/app/robots.ts) | Missing `/admin` disallow; needed to confirm `/certificates/` is intentionally crawlable | `/admin` added to disallow; `/certificates/` left allowed (JSON-LD `EducationalOccupationalCredential` is SEO-positive); comment added documenting why |
 
@@ -467,7 +467,7 @@ pnpm run build                           # 10 tasks green; lesson chunk should d
 
 Likely root cause: one of the new regex passes in `stripTypeScript` over-strips a paren in code containing TypeScript type annotations on multi-line function signatures or `as Type` assertions. Sample failing exercise: `packages/content/content/neon-protocol/convolutional-neural-networks/exercises/visualize-features.yaml` — solution uses multi-line param signatures + `as tf.Tensor` + `as number[]`.
 
-Failing exercises span every theme (Neon Protocol CNN/CLIP, Nova Canvas GANs/diffusion/style/multimodal/VAE, Signal Ward attention/RNN/text classification/transformers/embeddings, Deep Orbit autoencoders/inference, Terra Grid RNN/audio). 77 distinct slugs, none allowlisted.
+Failing exercises span every world (Neon Protocol CNN/CLIP, Nova Canvas GANs/diffusion/style/multimodal/VAE, Signal Ward attention/RNN/text classification/transformers/embeddings, Deep Orbit autoencoders/inference, Terra Grid RNN/audio). 77 distinct slugs, none allowlisted.
 
 **Do (any one of three):**
 1. **Debug the stripper** — re-run with debug logging on `stripTypeScript`; isolate which regex over-matches; patch + re-run validator until 295/295 again.
@@ -482,7 +482,7 @@ Recommend option 1 — single regression in stripper, 77 failures share the same
 
 ### B1. Lighthouse CI gate
 
-`./node_modules/.bin/lhci autorun` (if wired) or run Lighthouse manually on `tensorcraft.app/` + `/pricing` + `/themes`. Confirm:
+`./node_modules/.bin/lhci autorun` (if wired) or run Lighthouse manually on `tensorcraft.app/` + `/pricing` + `/worlds`. Confirm:
 
 - Performance ≥ 90
 - Accessibility ≥ 95
@@ -519,7 +519,7 @@ With Kit automations live (§A5):
 
 - Sign up new test user → verify welcome email delivered within 60s, has working unsubscribe link, has plain-text alternative (`View this email in a web browser` — toggle in Kit)
 - Complete Module 1 Lesson 1 → verify `first_lesson` automation fires
-- Purchase a theme → verify purchase-confirmation email
+- Purchase a world → verify purchase-confirmation email
 - Reach capstone → verify capstone-achievement email with certificate share link
 
 Failure modes to verify don't occur:
@@ -573,16 +573,16 @@ Cross-browser (§B2) only covers rendering correctness; this gate validates that
 
 Walk these flows manually in production after launch tag:
 
-1. **Landing (`/`):** Deep Orbit hero card renders LIVE; the other 4 themes render in a muted 2×2 "Coming soon" grid (no LIVE badge, no price).
-2. **`/themes`:** same shape — Deep Orbit hero + 4 coming-soon cards. Click a coming-soon card → lands on `/themes/{slug}` stub.
-3. **Coming-soon stub `/themes/neon-protocol` (and the 3 others):** hero art + tagline + character preview + waitlist email form render correctly. JSON-LD has `availability: "PreOrder"`. Lesson/capstone routes for that slug return **404**.
+1. **Landing (`/`):** Deep Orbit hero card renders LIVE; the other 4 worlds render in a muted 2×2 "Coming soon" grid (no LIVE badge, no price).
+2. **`/worlds`:** same shape — Deep Orbit hero + 4 coming-soon cards. Click a coming-soon card → lands on `/worlds/{slug}` stub.
+3. **Coming-soon stub `/worlds/neon-protocol` (and the 3 others):** hero art + tagline + character preview + waitlist email form render correctly. JSON-LD has `availability: "PreOrder"`. Lesson/capstone routes for that slug return **404**.
 4. **`/learn`:** Deep Orbit primary, the 4 others listed for SEO with "Coming soon" labels.
 5. **Dashboard (`/dashboard`):** Deep Orbit owned/locked card, the 4 others render as "Notify me" coming-soon cards.
-6. **Onboarding:** no theme-picker step (4 steps total, auto-routes to Deep Orbit on completion).
-7. **Settings:** no "active theme" tab (column kept as DB tombstone).
-8. **Waitlist round-trip:** submit a real email on a coming-soon stub → row appears in `waitlist` table with the right `theme_id` → Kit subscriber tagged with the matching theme tag → confirmation email arrives.
-9. **Payment:** attempt `POST /api/payments/checkout` with a coming-soon `theme_ids` (e.g. via curl) → 400 from `validateThemeIds`. Live UI hides this from learners, but the API guard is the last line of defense.
-10. **Sitemap (`/sitemap.xml`):** Deep Orbit lesson/capstone routes present at priority 0.9; coming-soon themes appear only at the `/themes/{slug}` level (priority 0.4).
+6. **Onboarding:** no world-picker step (4 steps total, auto-routes to Deep Orbit on completion).
+7. **Settings:** no "active world" tab (column kept as DB tombstone).
+8. **Waitlist round-trip:** submit a real email on a coming-soon stub → row appears in `waitlist` table with the right `world_id` → Kit subscriber tagged with the matching world tag → confirmation email arrives.
+9. **Payment:** attempt `POST /api/payments/checkout` with a coming-soon `world_ids` (e.g. via curl) → 400 from `validateWorldIds`. Live UI hides this from learners, but the API guard is the last line of defense.
+10. **Sitemap (`/sitemap.xml`):** Deep Orbit lesson/capstone routes present at priority 0.9; coming-soon worlds appear only at the `/worlds/{slug}` level (priority 0.4).
 
 Any inconsistency = stop, fix, redeploy.
 
@@ -643,8 +643,8 @@ Once real users sign up:
 Per 2026-04-20/21 decisions + plan Part II:
 
 - Discord server + Twitter/X @tensorcraft → V1.0
-- Theme script expansion (4 themes outline-only) → post-launch writing cadence
-- "AI-wrong moments" (2–3 per theme) → post-launch content sprint
+- World script expansion (4 worlds outline-only) → post-launch writing cadence
+- "AI-wrong moments" (2–3 per world) → post-launch content sprint
 - Account deletion flow (GDPR) → post-V0.5 (current workaround: Supabase dashboard `auth.admin.deleteUser` cascades all data per schema)
 - Background job queue for GitHub retroactive-push → post-V0.5 scalability work
 - Sandpack graceful-degradation fallback → UX polish
@@ -711,7 +711,7 @@ When all ticked, execute [`marketing-plan.md`](./marketing-plan.md) Part 5 "Laun
 These are explicitly accepted. Documented so future-you (or a contributor) doesn't confuse them for bugs:
 
 1. **`pattern` field on lessons is always `'standard'`** — schema landed, tagging variants is post-launch authoring.
-2. **Theme scripts for 4/5 themes are outline-only** — internal author docs, not user-facing. Expand as content scales.
+2. **World scripts for 4/5 worlds are outline-only** — internal author docs, not user-facing. Expand as content scales.
 3. **0 Quiz components rendered in lessons** — Quiz component exists + wired, but lessons don't invoke it yet. Add 1 per ~10 lessons over time.
 4. **No account self-deletion** — users who want delete email support (uses Supabase dashboard admin delete, cascades correctly).
 5. **162 exercises had solution bugs as of 2026-04-20; all fixed 2026-04-21** — if a learner reports an exercise failing, reproduce in Sandpack first (runtime ≠ validator environment).

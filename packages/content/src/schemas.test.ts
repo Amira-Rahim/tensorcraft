@@ -6,7 +6,7 @@ describe("lessonSchema", () => {
     slug: "introduction-to-tensors",
     title: "Introduction to Tensors",
     moduleId: "module-1",
-    themeId: "deep-orbit",
+    worldId: "deep-orbit",
     order: 1,
     estimatedMinutes: 25,
     difficulty: "beginner" as const,
@@ -129,7 +129,7 @@ describe("moduleSchema", () => {
   const validModule = {
     slug: "foundations",
     title: "Foundations",
-    themeId: "deep-orbit",
+    worldId: "deep-orbit",
     order: 1,
     description: "Learn the fundamentals of tensors and data loading",
     lessonCount: 5 as const,

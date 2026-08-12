@@ -16,7 +16,7 @@ test.describe("Pricing Page", () => {
     await expect(page.getByTestId("pricing-tiers")).toBeVisible();
     await expect(page.getByTestId("tier-card-free")).toBeVisible();
     await expect(page.getByTestId("tier-card-single")).toBeVisible();
-    // The bundle cards were removed on 2026-08-09: with one theme launched
+    // The bundle cards were removed on 2026-08-09: with one world launched
     // they were three dead CTAs, and a five-card grid whose only live paid
     // card is the second cheapest makes $59 read as an entry tier when it is
     // the entire product.

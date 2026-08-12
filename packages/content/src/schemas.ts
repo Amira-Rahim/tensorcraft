@@ -8,7 +8,7 @@ export const lessonSchema = z.object({
   slug: z.string(),
   title: z.string(),
   moduleId: z.string(),
-  themeId: z.string(),
+  worldId: z.string(),
   order: z.number().int().positive(),
   estimatedMinutes: z.number().int().positive(),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
@@ -136,7 +136,7 @@ export const exerciseSchema = z.object({
 export const moduleSchema = z.object({
   slug: z.string(),
   title: z.string(),
-  themeId: z.string(),
+  worldId: z.string(),
   order: z.number().int().positive(),
   description: z.string(),
   lessonCount: z.literal(5),

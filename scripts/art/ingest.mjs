@@ -40,7 +40,7 @@ function loadSharp() {
 }
 const sharp = loadSharp();
 
-const THEME = "deep-orbit";
+const WORLD = "deep-orbit";
 const DRY = process.argv.includes("--dry-run");
 const mode = process.argv[2];
 
@@ -109,7 +109,7 @@ async function portraits() {
   for (const [slug, expressions] of Object.entries(CHARACTERS)) {
     const neutral = newest("art-src/neutrals", slug);
     if (!neutral) results.missing.push(`${slug} (neutral)`);
-    else await emit(neutral, `apps/web/public/characters/${THEME}/${slug}.webp`, PORTRAIT);
+    else await emit(neutral, `apps/web/public/characters/${WORLD}/${slug}.webp`, PORTRAIT);
 
     for (const expression of expressions) {
       const src = newest("art-src/expressions", `${slug}-${expression}`);
@@ -119,7 +119,7 @@ async function portraits() {
       }
       await emit(
         src,
-        `apps/web/public/characters/${THEME}/${slug}-${expression}.webp`,
+        `apps/web/public/characters/${WORLD}/${slug}-${expression}.webp`,
         PORTRAIT,
       );
     }
@@ -129,7 +129,7 @@ async function portraits() {
 /** Lesson slugs are globbed from the content tree, so a scene file can only
     ship under a name some lesson actually resolves at runtime. */
 function lessonIds() {
-  const base = path.join(ROOT, "packages/content/content", THEME);
+  const base = path.join(ROOT, "packages/content/content", WORLD);
   const ids = [];
   for (const mod of fs.readdirSync(base, { withFileTypes: true })) {
     if (!mod.isDirectory()) continue;
@@ -161,13 +161,13 @@ async function scenes() {
     const name = isEpilogue ? `${lesson}-epilogue` : lesson;
     await emit(
       path.join(dir, file),
-      `apps/web/public/scenes/${THEME}/${mod}/${name}.webp`,
+      `apps/web/public/scenes/${WORLD}/${mod}/${name}.webp`,
       SCENE,
     );
   }
 }
 
-/** Location master plates, reused as marketing / theme-page art. Unlike
+/** Location master plates, reused as marketing / world-page art. Unlike
     portraits and scenes these went through a human approval gate, so the
     caller is responsible for making the newest staged file BE the approved
     one: `newest()` picks by name sort and knows nothing about approval. */
@@ -180,7 +180,7 @@ async function masters() {
     }
     await emit(
       src,
-      `apps/web/public/locations/${THEME}/${location}.webp`,
+      `apps/web/public/locations/${WORLD}/${location}.webp`,
       MASTER,
     );
   }

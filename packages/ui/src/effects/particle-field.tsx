@@ -11,7 +11,7 @@ export interface ParticleFieldProps {
   density?: number;
   /**
    * CSS var name used to fill particles. Default `var(--tc-primary)`.
-   * The canvas looks this up via getComputedStyle so the theme system works.
+   * The canvas looks this up via getComputedStyle so the world system works.
    */
   colorToken?: string;
 }
@@ -106,7 +106,7 @@ export function ParticleField({
     // Resolving the CSS variable is a getComputedStyle call — a style/layout
     // read that must NOT run every rAF frame on the landing hero (the rule
     // ticker.tsx and scene-canvas.tsx state explicitly; R3-7). Resolve once,
-    // re-resolve only when the scheme/theme attribute actually changes.
+    // re-resolve only when the scheme/world attribute actually changes.
     let fillColor = resolveColor(canvas, colorToken);
     const refreshColor = () => {
       fillColor = resolveColor(canvas, colorToken);
@@ -175,7 +175,7 @@ export function ParticleField({
     io.observe(canvas);
 
     // Any frame (static or animated) bakes the resolved --tc-* color, so a
-    // scheme or narrative-theme flip would leave stale-colored dots until a
+    // scheme or narrative-world flip would leave stale-colored dots until a
     // resize. Re-resolve + repaint on the attribute change — the same fix
     // AmbientBackground and SceneCanvas carry (2026-07-23 transition audit).
     const mo = new MutationObserver(() => {
@@ -184,7 +184,7 @@ export function ParticleField({
     });
     mo.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-scheme", "data-theme"],
+      attributeFilter: ["data-scheme", "data-world"],
     });
 
     // Live reduced-motion tracking (effects/index.ts contract #1): enabling

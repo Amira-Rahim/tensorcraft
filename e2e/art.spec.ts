@@ -12,7 +12,7 @@ import { test, expect } from "@playwright/test";
  */
 const SURFACES = [
   { name: "landing Five Worlds band", path: "/" },
-  { name: "Deep Orbit theme page", path: "/themes/deep-orbit" },
+  { name: "Deep Orbit world page", path: "/worlds/deep-orbit" },
 ];
 
 for (const surface of SURFACES) {
@@ -41,7 +41,7 @@ for (const surface of SURFACES) {
 }
 
 test("the plate sits under the canvas, not over it", async ({ page }) => {
-  await page.goto("/themes/deep-orbit");
+  await page.goto("/worlds/deep-orbit");
   const plate = page.getByTestId("art-plate").first();
   await expect(plate).toBeAttached();
   // The canvas is the reflection on the glass: it must paint above the art.

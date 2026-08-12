@@ -39,10 +39,10 @@ beforeEach(() => {
 
 describe("fireMilestonesForCompletion", () => {
   it("fires the module milestone at exactly 5/5 for a standard module", async () => {
-    tables["theme_progress"] = { data: rows("foundations", 5), error: null };
+    tables["world_progress"] = { data: rows("foundations", 5), error: null };
     await fireMilestonesForCompletion({
       userId: "u1",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "foundations",
     });
     expect(rpcSpy).toHaveBeenCalledTimes(1);
@@ -50,62 +50,62 @@ describe("fireMilestonesForCompletion", () => {
     expect(fn).toBe("dispatch_milestone");
     expect(args.p_user_id).toBe("u1");
     expect(args.p_subject).toBe("DISPATCH · module cleared: Foundations");
-    expect(args.p_cta_href).toBe("/themes/deep-orbit");
+    expect(args.p_cta_href).toBe("/worlds/deep-orbit");
   });
 
   it("stays silent at 4/5", async () => {
-    tables["theme_progress"] = { data: rows("foundations", 4), error: null };
+    tables["world_progress"] = { data: rows("foundations", 4), error: null };
     await fireMilestonesForCompletion({
       userId: "u1",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "foundations",
     });
     expect(rpcSpy).not.toHaveBeenCalled();
   });
 
   it("uses the shared override for browser-runtimes (6 lessons, not 5)", async () => {
-    tables["theme_progress"] = {
+    tables["world_progress"] = {
       data: rows("browser-runtimes", 5),
       error: null,
     };
     await fireMilestonesForCompletion({
       userId: "u1",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "browser-runtimes",
     });
     expect(rpcSpy).not.toHaveBeenCalled();
 
-    tables["theme_progress"] = {
+    tables["world_progress"] = {
       data: rows("browser-runtimes", 6),
       error: null,
     };
     await fireMilestonesForCompletion({
       userId: "u1",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "browser-runtimes",
     });
     expect(rpcSpy).toHaveBeenCalledTimes(1);
   });
 
   it("dedups on subject: an existing message means no second send", async () => {
-    tables["theme_progress"] = { data: rows("foundations", 5), error: null };
+    tables["world_progress"] = { data: rows("foundations", 5), error: null };
     tables["dispatch_messages"] = { data: [{ id: "existing" }], error: null };
     await fireMilestonesForCompletion({
       userId: "u1",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "foundations",
     });
     expect(rpcSpy).not.toHaveBeenCalled();
   });
 
-  it("fires module AND theme milestones when the 56th lesson completes", async () => {
-    tables["theme_progress"] = {
+  it("fires module AND world milestones when the 56th lesson completes", async () => {
+    tables["world_progress"] = {
       data: [...rows("capstone", 5), ...rows("other-modules", 51)],
       error: null,
     };
     await fireMilestonesForCompletion({
       userId: "u1",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "capstone",
     });
     expect(rpcSpy).toHaveBeenCalledTimes(2);

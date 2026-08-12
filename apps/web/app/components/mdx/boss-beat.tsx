@@ -20,7 +20,7 @@ interface BossBeatOption {
 interface BossBeatProps {
   /** Globally unique identifier for this beat (e.g. 'deep-orbit-launch-1'). */
   beatId: string;
-  themeId: string;
+  worldId: string;
   lessonId: string;
   /** Question/setup posed to the player. */
   prompt: string;
@@ -69,7 +69,7 @@ function displayOrder(beatId: string): number[] {
 
 export function BossBeat({
   beatId,
-  themeId,
+  worldId,
   lessonId,
   prompt,
   options,
@@ -146,7 +146,7 @@ export function BossBeat({
     const opt = options[idx];
     try {
       await recordBossBeatChoice({
-        themeId,
+        worldId,
         lessonId,
         beatId,
         choiceIndex: idx,

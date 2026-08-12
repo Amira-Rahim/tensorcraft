@@ -4,7 +4,7 @@ import { describe, it, expect } from "vitest";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
 import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
-import { BUILT_STORY_THEMES } from "../src/built-themes";
+import { BUILT_STORY_WORLDS } from "../src/built-worlds";
 
 /**
  * Pulse-interval canon gate (audit run #7, 2026-07-16).
@@ -14,24 +14,24 @@ import { BUILT_STORY_THEMES } from "../src/built-themes";
  * is numbers a skeptical reader can check. Run #7 found the ticker had
  * drifted; all repaired, and this gate pins the repaired canon.
  *
- * PER-THEME (scalability audit F3). The canon was a single deep-orbit table;
- * it now lives in THEME_INTERVAL_CANON keyed by theme, and the gate iterates
- * every BUILT story theme that declares one. A second theme with its own
- * numeric spine is covered by adding its table here — no gate rewrite. Themes
+ * PER-WORLD (scalability audit F3). The canon was a single deep-orbit table;
+ * it now lives in WORLD_INTERVAL_CANON keyed by world, and the gate iterates
+ * every BUILT story world that declares one. A second world with its own
+ * numeric spine is covered by adding its table here — no gate rewrite. Worlds
  * with no numeric-countdown spine simply declare no canon and are skipped.
  *
- * The content root is derived from deep-orbit's dir so each theme resolves to
+ * The content root is derived from deep-orbit's dir so each world resolves to
  * its own content directory.
  */
 
-// packages/content/content — parent of every theme's content dir.
+// packages/content/content — parent of every world's content dir.
 const CONTENT_ROOT: string = dirname(CONTENT_DIR);
 
-/** Per-theme module order + interval canon. Only themes with a numeric
+/** Per-world module order + interval canon. Only worlds with a numeric
  *  countdown spine appear here. */
-interface ThemeCanon {
+interface WorldCanon {
   moduleOrder: Record<string, number>;
-  /** file (relative to the theme dir) -> the interval mentions it must contain. */
+  /** file (relative to the world dir) -> the interval mentions it must contain. */
   canon: Record<string, number[]>;
 }
 
@@ -49,7 +49,7 @@ const DEEP_ORBIT_MODULE_ORDER: Record<string, number> = {
   capstone: 11,
 };
 
-/** deep-orbit: file (relative to the theme dir) -> required interval mentions. */
+/** deep-orbit: file (relative to the world dir) -> required interval mentions. */
 const DEEP_ORBIT_CANON: Record<string, number[]> = {
   "signal-processing/03-spectrograms.mdx": [73.4, 73.4],
   // Run #8: ad/05 stages the interval decomposition on-page and names the
@@ -74,11 +74,11 @@ const DEEP_ORBIT_CANON: Record<string, number[]> = {
 };
 
 /**
- * The per-theme registry. Only themes with a numeric countdown spine declare a
- * canon; the rest are simply absent and skipped. Add a theme's table here and
+ * The per-world registry. Only worlds with a numeric countdown spine declare a
+ * canon; the rest are simply absent and skipped. Add a world's table here and
  * the gate covers it — no rewrite.
  */
-const THEME_INTERVAL_CANON: Record<string, ThemeCanon> = {
+const WORLD_INTERVAL_CANON: Record<string, WorldCanon> = {
   "deep-orbit": {
     moduleOrder: DEEP_ORBIT_MODULE_ORDER,
     canon: DEEP_ORBIT_CANON,
@@ -87,7 +87,7 @@ const THEME_INTERVAL_CANON: Record<string, ThemeCanon> = {
 
 const INTERVAL = /(\d{2}\.\d) ?seconds?\b/g;
 
-function collect(themeDir: string): Record<string, number[]> {
+function collect(worldDir: string): Record<string, number[]> {
   const found: Record<string, number[]> = {};
   const walk = (dir: string, rel: string) => {
     for (const entry of readdirSync(dir)) {
@@ -105,18 +105,18 @@ function collect(themeDir: string): Record<string, number[]> {
       }
     }
   };
-  walk(themeDir, "");
+  walk(worldDir, "");
   return found;
 }
 
-// One describe block per BUILT story theme that declares a canon. Themes
+// One describe block per BUILT story world that declares a canon. Worlds
 // without a numeric spine (no registry entry) are skipped, not failed.
-for (const theme of BUILT_STORY_THEMES) {
-  const spec = THEME_INTERVAL_CANON[theme];
+for (const world of BUILT_STORY_WORLDS) {
+  const spec = WORLD_INTERVAL_CANON[world];
   if (!spec) continue;
 
-  describe(`pulse-interval canon (${theme})`, () => {
-    const found = collect(join(CONTENT_ROOT, theme));
+  describe(`pulse-interval canon (${world})`, () => {
+    const found = collect(join(CONTENT_ROOT, world));
 
     it("every interval mention matches the canon table", () => {
       expect(found).toEqual(spec.canon);

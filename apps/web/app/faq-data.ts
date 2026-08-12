@@ -1,4 +1,4 @@
-import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import { PRICING, WORLD_CONTENT } from "@tensorcraft/shared";
 
 /**
  * Single source for the landing FAQ: the visible <details> section on the
@@ -8,11 +8,11 @@ import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 export const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Can I learn machine learning with JavaScript?",
-    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser, no Python required. The launched theme covers neural networks, LSTMs, signal processing, and attention today; CNNs and full transformer architectures arrive with the Computer Vision and NLP themes now in development.",
+    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser, no Python required. The launched world covers neural networks, LSTMs, signal processing, and attention today; CNNs and full transformer architectures arrive with the Computer Vision and NLP worlds now in development.",
   },
   {
     q: "How does Tensorcraft teach ML to frontend developers?",
-    a: `Through ${THEME_CONTENT.lessonBridges} 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story-driven narrative where you build real ML models.`,
+    a: `Through ${WORLD_CONTENT.lessonBridges} 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story-driven narrative where you build real ML models.`,
   },
   {
     q: "How much math do I need?",
@@ -20,7 +20,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit, the live theme, is free, no account or credit card required. The other four themes ship in waves, each with a waitlist. Full themes cost $${PRICING.single.price} each; bundle discounts, up to $${PRICING.allFive.price} for all 5 themes, open once all five have launched.`,
+    a: `Module 1 of Deep Orbit, the live world, is free, no account or credit card required. The other four worlds ship in waves, each with a waitlist. Full worlds cost $${PRICING.single.price} each; bundle discounts, up to $${PRICING.allFive.price} for all 5 worlds, open once all five have launched.`,
   },
   {
     q: "What ML topics does Tensorcraft cover?",

@@ -1,19 +1,19 @@
-import { LAUNCHED_THEMES, PRICING } from "@tensorcraft/shared";
+import { LAUNCHED_WORLDS, PRICING } from "@tensorcraft/shared";
 
 /**
  * BundleRoadmap: the bundle ladder stated, not sold.
  *
  * The pricing grid used to render all five tiers, which meant three cards
- * whose only interaction was a dead CTA reading "Available when more themes
+ * whose only interaction was a dead CTA reading "Available when more worlds
  * launch". Two things were wrong with that.
  *
- * 1. Anchoring inversion. With one theme launched, the only live paid card
+ * 1. Anchoring inversion. With one world launched, the only live paid card
  *    was the SECOND cheapest of five, so $59 read as a stripped entry tier
  *    when $59 is in fact the entire product.
- * 2. An implied schedule. "Available when more themes launch" sounds like a
- *    roadmap with dates on it. Theme 2 is gated on theme 1 launching AND
+ * 2. An implied schedule. "Available when more worlds launch" sounds like a
+ *    roadmap with dates on it. World 2 is gated on world 1 launching AND
  *    reaching a paying-user threshold; that promises no date at all, and
- *    quoting a price against an unstarted theme is the part a buyer would
+ *    quoting a price against an unstarted world is the part a buyer would
  *    rightly call unfair.
  *
  * So the bundle prices stay visible (they are real, and a buyer comparing
@@ -29,7 +29,7 @@ import { LAUNCHED_THEMES, PRICING } from "@tensorcraft/shared";
  *
  * Accessibility: the unavailable state is carried by the words "not for
  * sale" on every row, never by the muted colour alone (WCAG 1.4.1), the
- * same rule the ThemePicker in pricing-tiers.tsx follows for selection.
+ * same rule the WorldPicker in pricing-tiers.tsx follows for selection.
  */
 
 const BUNDLE_TIERS = ["twoBundle", "threeBundle", "allFive"] as const;
@@ -39,7 +39,7 @@ export function BundleRoadmap() {
   // becomes buyable must not keep claiming it is not for sale. When no tier
   // is gated any more there is nothing to state and the strip disappears.
   const gated = BUNDLE_TIERS.filter(
-    (id) => LAUNCHED_THEMES.length < PRICING[id].themes,
+    (id) => LAUNCHED_WORLDS.length < PRICING[id].worlds,
   );
   if (gated.length === 0) return null;
 
@@ -56,8 +56,8 @@ export function BundleRoadmap() {
       <div className="max-w-4xl mx-auto">
         <div className="border border-border bg-surface/60 rounded-none p-6 sm:p-8">
           <p className="text-[11px] uppercase tracking-[0.2em] text-text-muted font-mono">
-            bundle pricing &middot; {LAUNCHED_THEMES.length} of{" "}
-            {PRICING.allFive.themes} themes built
+            bundle pricing &middot; {LAUNCHED_WORLDS.length} of{" "}
+            {PRICING.allFive.worlds} worlds built
           </p>
           <h2
             id="bundle-roadmap-heading"
@@ -67,15 +67,15 @@ export function BundleRoadmap() {
           </h2>
           {/* Register note (2026-08-09): an earlier draft named the internal
               gate ("enough paying learners to justify the work") and said
-              nobody had started theme two. Both were true, and both went past
+              nobody had started world two. Both were true, and both went past
               the brief: the requirement is to promise no date, not to hand a
               buyer reasons to doubt the roadmap exists. This says the same
-              three facts (one theme built, $59 is the product, no date) and
+              three facts (one world built, $59 is the product, no date) and
               volunteers nothing further. */}
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-muted font-sans">
-            Bundle pricing exists for when more themes do. Deep Orbit is the one
-            theme built today, and at ${PRICING.single.price} it is the only
-            thing on this page you can buy. The rest unlock as themes ship, and
+            Bundle pricing exists for when more worlds do. Deep Orbit is the one
+            world built today, and at ${PRICING.single.price} it is the only
+            thing on this page you can buy. The rest unlock as worlds ship, and
             we are not putting a date on that.
           </p>
 

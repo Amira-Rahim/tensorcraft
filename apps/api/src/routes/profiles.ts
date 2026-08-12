@@ -3,7 +3,7 @@ import {
   getSupabaseServerClient,
   getSupabaseAdminClient,
 } from "@tensorcraft/supabase";
-import { isValidThemeSlug, isLaunched } from "@tensorcraft/shared";
+import { isValidWorldSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { createRateLimiter } from "../middleware/rate-limit";
 import { unsubscribeFromAll } from "../lib/kit";
@@ -19,7 +19,7 @@ profiles.use("*", authMiddleware);
 const ALLOWED_FIELDS = [
   "display_name",
   "avatar_url",
-  "preferred_theme_id",
+  "preferred_world_id",
   "github_username",
   "email_alerts",
   "weekly_digest",
@@ -57,12 +57,12 @@ function validateField(field: AllowedField, value: unknown): string | null {
       }
       return null;
 
-    case "preferred_theme_id":
-      if (typeof value !== "string" || !isValidThemeSlug(value)) {
-        return "preferred_theme_id must be a valid theme slug";
+    case "preferred_world_id":
+      if (typeof value !== "string" || !isValidWorldSlug(value)) {
+        return "preferred_world_id must be a valid world slug";
       }
       if (!isLaunched(value)) {
-        return "preferred_theme_id must be a launched theme";
+        return "preferred_world_id must be a launched world";
       }
       return null;
 
@@ -178,7 +178,7 @@ profiles.patch("/:userId", async (c) => {
 // email and carry no user-readable policy.
 
 const USER_DATA_TABLES = [
-  "theme_progress",
+  "world_progress",
   "purchases",
   "certificates",
   "exercise_attempts",
@@ -241,7 +241,7 @@ profiles.get(
     // SELECT policy — admin client, scoped hard to the account's email.
     const { data: waitlistRows } = await getSupabaseAdminClient()
       .from("waitlist")
-      .select("email, theme_id, source, subscribed, created_at")
+      .select("email, world_id, source, subscribed, created_at")
       .eq("email", profile.email);
 
     const exportPayload = {

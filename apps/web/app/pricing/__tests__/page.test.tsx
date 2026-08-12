@@ -83,7 +83,7 @@ vi.mock("@tensorcraft/content", () => ({
     (l.estimatedMinutes ?? 18) + 10,
 }));
 
-vi.mock("@tensorcraft/themes", () => {
+vi.mock("@tensorcraft/worlds", () => {
   const slugs = [
     "deep-orbit",
     "neon-protocol",
@@ -92,8 +92,8 @@ vi.mock("@tensorcraft/themes", () => {
     "terra-grid",
   ] as const;
   return {
-    themeSlugs: slugs,
-    themes: {
+    worldSlugs: slugs,
+    worlds: {
       "deep-orbit": { displayName: "Deep Orbit", palette: { primary: "#0" } },
       "neon-protocol": {
         displayName: "Neon Protocol",
@@ -121,9 +121,9 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
   });
 
   it("renders the buyable tier grid plus the bundle roadmap below it", () => {
-    // 2026-08-09: the three bundle cards left the grid. With one theme
+    // 2026-08-09: the three bundle cards left the grid. With one world
     // launched they could only render as dead CTAs, which anchored $59 as a
-    // stripped entry tier and implied a schedule the theme-2 gate does not
+    // stripped entry tier and implied a schedule the world-2 gate does not
     // promise. Their prices moved to <BundleRoadmap />, stated not sold.
     render(<PricingPage />);
     expect(screen.getByTestId("pricing-tiers")).toBeInTheDocument();
@@ -138,11 +138,11 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     expect(screen.queryByTestId("comparison-table")).not.toBeInTheDocument();
   });
 
-  it("renders a curriculum preview of the launched theme's modules", () => {
+  it("renders a curriculum preview of the launched world's modules", () => {
     render(<PricingPage />);
     const section = screen.getByTestId("curriculum-preview");
     expect(section).toBeInTheDocument();
-    // Module titles from the launched theme are visible pre-purchase.
+    // Module titles from the launched world are visible pre-purchase.
     expect(section).toHaveTextContent("Foundations");
     expect(section).toHaveTextContent("Signal Processing");
     expect(section).toHaveTextContent("Neural Networks");

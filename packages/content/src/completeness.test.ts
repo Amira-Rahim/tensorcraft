@@ -5,11 +5,11 @@ describe("Content completeness", () => {
   it("every module has exactly lessonCount lessons", () => {
     for (const mod of modules) {
       const modLessons = lessons.filter(
-        (l) => l.moduleId === mod.slug && l.themeId === mod.themeId,
+        (l) => l.moduleId === mod.slug && l.worldId === mod.worldId,
       );
       expect(
         modLessons.length,
-        `Module "${mod.slug}" (theme: ${mod.themeId}) has ${modLessons.length} lessons, expected ${mod.lessonCount}`,
+        `Module "${mod.slug}" (world: ${mod.worldId}) has ${modLessons.length} lessons, expected ${mod.lessonCount}`,
       ).toBe(mod.lessonCount);
     }
   });
@@ -17,13 +17,13 @@ describe("Content completeness", () => {
   it("every lesson has sequential orders within its module", () => {
     for (const mod of modules) {
       const modLessons = lessons.filter(
-        (l) => l.moduleId === mod.slug && l.themeId === mod.themeId,
+        (l) => l.moduleId === mod.slug && l.worldId === mod.worldId,
       );
       const orders = modLessons.map((l) => l.order).sort((a, b) => a - b);
       const expected = Array.from({ length: mod.lessonCount }, (_, i) => i + 1);
       expect(
         orders,
-        `Module "${mod.slug}" (theme: ${mod.themeId}) has orders [${orders}], expected [${expected}]`,
+        `Module "${mod.slug}" (world: ${mod.worldId}) has orders [${orders}], expected [${expected}]`,
       ).toEqual(expected);
     }
   });
@@ -44,10 +44,10 @@ describe("Content completeness", () => {
     expect(dupes, `Duplicate lesson slugs: ${dupes.join(", ")}`).toEqual([]);
   });
 
-  it("every module slug is unique within its theme", () => {
+  it("every module slug is unique within its world", () => {
     const seen = new Set<string>();
     for (const mod of modules) {
-      const key = `${mod.themeId}/${mod.slug}`;
+      const key = `${mod.worldId}/${mod.slug}`;
       expect(seen.has(key), `Duplicate module: ${key}`).toBe(false);
       seen.add(key);
     }

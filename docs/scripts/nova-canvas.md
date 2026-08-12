@@ -1,13 +1,13 @@
 # Nova Canvas — Multimodal & Generative AI
 
-> Nova Canvas is the fourth theme in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
+> Nova Canvas is the fourth world in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
 ---
 
 ## SCRIPT GUIDE
 
 **Tags:** `generative-AI` `GANs` `VAE` `diffusion` `CLIP` `multimodal` `style-transfer`
-**Theme:** AI-powered creative tools for a digital art collective preparing for a global exhibition
+**World:** AI-powered creative tools for a digital art collective preparing for a global exhibition
 **Setting:** NOVA LABS — The Nova Collective is a digital art community housed in a converted warehouse district known as "The Grid." Part gallery, part laboratory, part performance space, it exists at the intersection of art and technology. The collective has been invited to create the centerpiece installation for the Global Digital Arts Biennale — a multimodal AI system that generates art across mediums (visual, audio, text) and responds to audience interaction in real time.
 **Model being built:** Nova Canvas — a multimodal creative assistant
 **GitHub repo deployed at end:** `nova-canvas-creative-ai`
@@ -38,7 +38,7 @@
 
 ---
 
-## THEME PREVIEW
+## WORLD PREVIEW
 
 ### Preview Art
 
@@ -318,12 +318,12 @@ Ren builds a real-time style transfer system. The team experiments with blending
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
 | 1 | Content vs Style | Separating what from how | Content vs presentation (HTML vs CSS) |
-| 2 | Neural Style Transfer | Applying artistic styles to images | CSS theme switching — same content, different appearance |
+| 2 | Neural Style Transfer | Applying artistic styles to images | CSS world switching — same content, different appearance |
 | 3 | Style Representations | How networks encode artistic style | Design tokens — encoded visual identity |
 | 4 | Real-time Style Transfer | Fast style transfer in the browser | CSS `filter` chains — real-time visual transforms |
 | 5 | Artistic Control | Blending multiple styles | CSS `mix-blend-mode` — combining visual layers |
 
-**FE BRIDGE (Module-Level):** Style transfer is CSS theme switching. When you switch a website's theme from light to dark mode, the content stays the same but the visual presentation changes completely — colors, backgrounds, shadows all transform. Neural style transfer does the same: the content (shapes, objects, composition) stays the same, but the style (brushstrokes, color palette, texture) transforms to match a different artist.
+**FE BRIDGE (Module-Level):** Style transfer is CSS world switching. When you switch a website's world from light to dark mode, the content stays the same but the visual presentation changes completely — colors, backgrounds, shadows all transform. Neural style transfer does the same: the content (shapes, objects, composition) stays the same, but the style (brushstrokes, color palette, texture) transforms to match a different artist.
 
 ### GITHUB
 
@@ -550,7 +550,7 @@ Petrov's arc traces a traditional curator who starts dismissive of AI-generated 
 
 ---
 
-## Theme-Specific Terminology
+## World-Specific Terminology
 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|

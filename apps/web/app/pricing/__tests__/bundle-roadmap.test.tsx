@@ -5,11 +5,11 @@ import { BundleRoadmap } from "../bundle-roadmap";
 
 /**
  * BundleRoadmap is the informational replacement for the three disabled
- * bundle cards. Only `free` and `single` are buyable while one theme is
+ * bundle cards. Only `free` and `single` are buyable while one world is
  * launched, so a five-card grid whose only live paid card was the second
  * cheapest anchored $59 as a stripped entry tier, and the dead CTAs read
- * "Available when more themes launch" — an implied schedule the 200-user
- * theme-2 gate does not promise.
+ * "Available when more worlds launch" — an implied schedule the 200-user
+ * world-2 gate does not promise.
  *
  * These tests pin the two properties that make the strip honest: it states
  * the ladder without selling it, and it never implies a date.

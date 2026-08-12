@@ -102,7 +102,7 @@ describe("GET /api/profiles/export", () => {
     expect(JSON.stringify(body)).not.toMatch(/gho_|ghp_/);
     // Every user-data table appears, even when empty.
     expect(Object.keys(body.tables)).toContain("purchases");
-    expect(Object.keys(body.tables)).toContain("theme_progress");
+    expect(Object.keys(body.tables)).toContain("world_progress");
     expect(Array.isArray(body.waitlist)).toBe(true);
   });
 });

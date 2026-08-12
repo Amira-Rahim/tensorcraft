@@ -18,14 +18,14 @@ const VIEWPORT_320 = { width: 320, height: 800 };
 
 const routes = [
   { name: "Landing", path: "/" },
-  { name: "Themes", path: "/themes" },
-  { name: "Theme Detail", path: "/themes/deep-orbit" },
+  { name: "Worlds", path: "/worlds" },
+  { name: "World Detail", path: "/worlds/deep-orbit" },
   { name: "Pricing", path: "/pricing" },
   { name: "Auth", path: "/auth" },
   { name: "Learn", path: "/learn" },
   {
     name: "Lesson Viewer",
-    path: "/themes/deep-orbit/foundations/introduction-to-tensors",
+    path: "/worlds/deep-orbit/foundations/introduction-to-tensors",
   },
 ];
 

@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import {
   getLesson,
   getLessonExercises,
-  getThemeLessons,
+  getWorldLessons,
 } from "@tensorcraft/content";
 import { ExtrasLessonBody } from "./extras-lesson-body";
 
@@ -17,7 +17,7 @@ interface Props {
  * full HTML for SEO + zero TTFB.
  */
 export function generateStaticParams() {
-  return getThemeLessons("shared").map((l) => ({
+  return getWorldLessons("shared").map((l) => ({
     module: l.moduleId,
     lesson: l.slug,
   }));
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     openGraph: {
       images: [
-        `/api/og?title=${encodeURIComponent(lesson.title)}&theme=deep-orbit&subtitle=${encodeURIComponent("Extras: " + moduleSlug)}`,
+        `/api/og?title=${encodeURIComponent(lesson.title)}&world=deep-orbit&subtitle=${encodeURIComponent("Extras: " + moduleSlug)}`,
       ],
     },
   };
@@ -122,7 +122,7 @@ export default async function ExtrasLessonPage({ params }: Props) {
         </p>
 
         {/* Reuse the same MDX renderer the main lesson path uses, plus the
-            glossary provider/rail the theme reader gets (single-column
+            glossary provider/rail the world reader gets (single-column
             variant: rail renders as an appendix under the prose). */}
         <ExtrasLessonBody
           lesson={lesson as Parameters<typeof ExtrasLessonBody>[0]["lesson"]}

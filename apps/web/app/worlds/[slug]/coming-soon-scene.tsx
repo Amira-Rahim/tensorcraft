@@ -1,0 +1,87 @@
+"use client";
+
+import {
+  SceneCanvas,
+  drawNeonProtocol,
+  drawSignalWard,
+  drawNovaCanvas,
+  drawTerraGrid,
+  type SceneDraw,
+} from "@tensorcraft/ui/effects";
+import type { WorldPalette } from "@tensorcraft/worlds";
+
+// Signature scene per world, shared with the homepage five-worlds strip and
+// the /worlds cards, so a world's motion identity follows it onto its own
+// coming-soon page. Deep Orbit is live and never renders this stub.
+const SCENE_BY_SLUG: Record<string, SceneDraw> = {
+  "neon-protocol": drawNeonProtocol,
+  "signal-ward": drawSignalWard,
+  "nova-canvas": drawNovaCanvas,
+  "terra-grid": drawTerraGrid,
+};
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
+}
+
+interface Props {
+  slug: string;
+  palette: WorldPalette;
+  /**
+   * Light-scheme counterpart of `palette`, feeding SceneCanvas's rgbLight.
+   * Falls back to `palette` when absent (SceneCanvas.rgbLight default).
+   */
+  paletteLight?: WorldPalette;
+}
+
+/**
+ * Ambient hero backdrop for the coming-soon page: the world's signature
+ * scene runs full-bleed behind the status-board copy, exactly how the
+ * renderers sit behind the /worlds card content. A left scrim keeps the
+ * copy column legible and a bottom fade seats the scene into the page.
+ * Decorative only; SceneCanvas renders a static frame under reduced motion.
+ */
+export function ComingSoonScene({ slug, palette, paletteLight }: Props) {
+  const draw = SCENE_BY_SLUG[slug];
+  if (!draw) return null;
+
+  return (
+    <div
+      data-testid={`coming-soon-scene-${slug}`}
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none"
+    >
+      {/* Full intensity: a page backdrop has no hover to ignite the scene,
+          so it runs at its hover-bright ceiling; the scrims below carry
+          legibility instead of the scene's own rest-fade. */}
+      <SceneCanvas
+        draw={draw}
+        rgb={hexToRgb(palette.primary)}
+        rgbLight={paletteLight ? hexToRgb(paletteLight.primary) : undefined}
+        intensity={0.85}
+        className="absolute inset-0"
+      />
+      {/* These scrims overlay the PAGE (not a cross-world card), so they
+          follow the page's own scheme via var(--tc-bg) instead of the TS
+          palette hex — same value in dark scheme, and correctly flips to
+          the light neutral under data-scheme="light". */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(90deg, var(--tc-bg) 18%, color-mix(in srgb, var(--tc-bg) 45%, transparent) 52%, transparent 100%)`,
+        }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(180deg, color-mix(in srgb, var(--tc-bg) 30%, transparent) 0%, transparent 30%, transparent 72%, var(--tc-bg) 100%)`,
+        }}
+      />
+    </div>
+  );
+}

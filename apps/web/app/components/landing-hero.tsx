@@ -4,7 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ParticleField } from "@tensorcraft/ui/effects";
-import { THEME_CONTENT } from "@tensorcraft/shared";
+import { WORLD_CONTENT } from "@tensorcraft/shared";
 
 // The hero's proof panel is the free-tier Deep Scan demo: a real 4 KB TFJS
 // model classifying readings live in the visitor's tab. ssr:false, tfjs is
@@ -69,13 +69,13 @@ export function LandingHero() {
             data-testid="hero-stat-line"
             className="font-mono text-xs text-text-primary tracking-[0.14em] uppercase border-l-2 border-primary pl-4 mb-8"
           >
-            {THEME_CONTENT.modulesPerTheme} modules ·{" "}
-            {THEME_CONTENT.totalLessonsPerTheme} lessons · 1 deployable model
+            {WORLD_CONTENT.modulesPerWorld} modules ·{" "}
+            {WORLD_CONTENT.totalLessonsPerWorld} lessons · 1 deployable model
           </p>
 
           <div className="flex gap-4 flex-wrap mb-5">
             <Link
-              href="/themes/deep-orbit/foundations/introduction-to-tensors"
+              href="/worlds/deep-orbit/foundations/introduction-to-tensors"
               data-testid="landing-cta-primary"
               className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >

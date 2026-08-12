@@ -92,7 +92,7 @@ export interface Database {
           onboarding_completed: boolean;
           email_alerts: boolean;
           weekly_digest: boolean;
-          preferred_theme_id: string | null;
+          preferred_world_id: string | null;
           role: UserRole;
           fe_background: string | null;
           learning_goal: string | null;
@@ -119,7 +119,7 @@ export interface Database {
           onboarding_completed?: boolean;
           email_alerts?: boolean;
           weekly_digest?: boolean;
-          preferred_theme_id?: string | null;
+          preferred_world_id?: string | null;
           role?: UserRole;
           fe_background?: string | null;
           learning_goal?: string | null;
@@ -142,7 +142,7 @@ export interface Database {
           onboarding_completed?: boolean;
           email_alerts?: boolean;
           weekly_digest?: boolean;
-          preferred_theme_id?: string | null;
+          preferred_world_id?: string | null;
           role?: UserRole;
           fe_background?: string | null;
           learning_goal?: string | null;
@@ -162,7 +162,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          theme_id: string;
+          world_id: string;
           issued_at: string;
           cert_hash: string;
           pdf_url: string | null;
@@ -170,7 +170,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          theme_id: string;
+          world_id: string;
           issued_at?: string;
           cert_hash: string;
           pdf_url?: string | null;
@@ -181,11 +181,11 @@ export interface Database {
         };
         Relationships: [];
       };
-      theme_progress: {
+      world_progress: {
         Row: {
           id: string;
           user_id: string;
-          theme_id: string;
+          world_id: string;
           module_id: string;
           lesson_id: string;
           status: "not_started" | "in_progress" | "completed";
@@ -199,7 +199,7 @@ export interface Database {
         };
         Insert: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           module_id: string;
           lesson_id: string;
           status?: "not_started" | "in_progress" | "completed";
@@ -219,7 +219,7 @@ export interface Database {
         };
         Relationships: [
           {
-            foreignKeyName: "theme_progress_user_id_fkey";
+            foreignKeyName: "world_progress_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
@@ -232,7 +232,7 @@ export interface Database {
           id: string;
           user_id: string;
           plan_id: string;
-          theme_ids: string[];
+          world_ids: string[];
           amount: number;
           currency: string;
           tax_amount: number | null;
@@ -252,7 +252,7 @@ export interface Database {
         Insert: {
           user_id: string;
           plan_id: string;
-          theme_ids: string[];
+          world_ids: string[];
           amount: number;
           currency?: string;
           tax_amount?: number | null;
@@ -296,7 +296,7 @@ export interface Database {
         Row: {
           id: string;
           email: string;
-          theme_id: string | null;
+          world_id: string | null;
           source: string | null;
           created_at: string;
           subscribed: boolean;
@@ -304,14 +304,14 @@ export interface Database {
         };
         Insert: {
           email: string;
-          theme_id?: string | null;
+          world_id?: string | null;
           source?: string | null;
           subscribed?: boolean;
           unsubscribe_token?: string;
         };
         Update: {
           email?: string;
-          theme_id?: string | null;
+          world_id?: string | null;
           source?: string | null;
           subscribed?: boolean;
           unsubscribe_token?: string;
@@ -321,7 +321,7 @@ export interface Database {
       counterfactual_choices: {
         Row: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           lesson_id: string;
           decision_node: string;
           original_choice_index: number;
@@ -330,7 +330,7 @@ export interface Database {
         };
         Insert: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           lesson_id: string;
           decision_node: string;
           original_choice_index: number;
@@ -351,7 +351,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          theme_id: string;
+          world_id: string;
           lesson_id: string;
           beat_id: string;
           choice_index: number;
@@ -361,7 +361,7 @@ export interface Database {
         };
         Insert: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           lesson_id: string;
           beat_id: string;
           choice_index: number;
@@ -418,7 +418,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          theme_id: string;
+          world_id: string;
           current_streak: number;
           longest_streak: number;
           last_activity_date: string | null;
@@ -426,7 +426,7 @@ export interface Database {
         };
         Insert: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           current_streak?: number;
           longest_streak?: number;
           last_activity_date?: string | null;
@@ -452,18 +452,18 @@ export interface Database {
           id: string;
           user_id: string;
           achievement_type: string;
-          theme_id: string | null;
+          world_id: string | null;
           unlocked_at: string;
         };
         Insert: {
           user_id: string;
           achievement_type: string;
-          theme_id?: string | null;
+          world_id?: string | null;
           unlocked_at?: string;
         };
         Update: {
           achievement_type?: string;
-          theme_id?: string | null;
+          world_id?: string | null;
         };
         Relationships: [
           {
@@ -481,7 +481,7 @@ export interface Database {
           user_id: string;
           exercise_slug: string;
           lesson_id: string;
-          theme_id: string;
+          world_id: string;
           passed: boolean;
           score: number;
           hints_used: number;
@@ -494,7 +494,7 @@ export interface Database {
           user_id: string;
           exercise_slug: string;
           lesson_id: string;
-          theme_id: string;
+          world_id: string;
           passed?: boolean;
           score?: number;
           hints_used?: number;
@@ -524,7 +524,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          theme_id: string;
+          world_id: string;
           skill_axis:
             | "data_prep"
             | "model_arch"
@@ -540,7 +540,7 @@ export interface Database {
         };
         Insert: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           skill_axis:
             | "data_prep"
             | "model_arch"
@@ -611,7 +611,7 @@ export interface Database {
           raw_json: Record<string, unknown>;
           matched_concepts: string[];
           matched_lessons: Array<{
-            themeId: string;
+            worldId: string;
             moduleId: string;
             slug: string;
             title: string;
@@ -636,7 +636,7 @@ export interface Database {
           raw_json?: Record<string, unknown>;
           matched_concepts?: string[];
           matched_lessons?: Array<{
-            themeId: string;
+            worldId: string;
             moduleId: string;
             slug: string;
             title: string;
@@ -654,7 +654,7 @@ export interface Database {
         Update: {
           matched_concepts?: string[];
           matched_lessons?: Array<{
-            themeId: string;
+            worldId: string;
             moduleId: string;
             slug: string;
             title: string;
@@ -675,7 +675,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          theme_id: string;
+          world_id: string;
           event_type:
             | "exercise_pass"
             | "exercise_fail"
@@ -696,7 +696,7 @@ export interface Database {
         };
         Insert: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           event_type:
             | "exercise_pass"
             | "exercise_fail"
@@ -727,10 +727,10 @@ export interface Database {
       };
     };
     Views: {
-      theme_progress_summary: {
+      world_progress_summary: {
         Row: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           total_lessons: number;
           completed_lessons: number;
           in_progress_lessons: number;
@@ -743,7 +743,7 @@ export interface Database {
       dashboard_stats: {
         Row: {
           user_id: string;
-          theme_id: string;
+          world_id: string;
           total_lessons: number;
           completed_lessons: number;
           in_progress_lessons: number;
@@ -759,7 +759,7 @@ export interface Database {
         Returns: boolean;
       };
       record_streak_activity: {
-        Args: { p_theme_id: string };
+        Args: { p_world_id: string };
         Returns: void;
       };
       refresh_dashboard_stats: {
@@ -767,7 +767,7 @@ export interface Database {
         Returns: void;
       };
       compute_user_skill_genome: {
-        Args: { p_user_id: string; p_theme_id: string };
+        Args: { p_user_id: string; p_world_id: string };
         Returns: void;
       };
       // Migration 051: dispute-won restoration through the 038 trigger's
@@ -780,7 +780,7 @@ export interface Database {
         Args: { p_id: string };
         Returns: Array<{
           id: string;
-          theme_id: string;
+          world_id: string;
           issued_at: string;
           cert_hash: string;
           user_display_name: string | null;
@@ -807,7 +807,7 @@ export interface Database {
       };
       record_boss_beat_choice: {
         Args: {
-          p_theme_id: string;
+          p_world_id: string;
           p_lesson_id: string;
           p_beat_id: string;
           p_choice_index: number;
@@ -828,7 +828,7 @@ export interface Database {
       };
       record_counterfactual: {
         Args: {
-          p_theme_id: string;
+          p_world_id: string;
           p_lesson_id: string;
           p_decision_node: string;
           p_original_choice_index: number;
@@ -837,9 +837,9 @@ export interface Database {
         Returns: boolean;
       };
       get_counterfactual: {
-        Args: { p_theme_id: string };
+        Args: { p_world_id: string };
         Returns: Array<{
-          theme_id: string;
+          world_id: string;
           lesson_id: string;
           decision_node: string;
           original_choice_index: number;

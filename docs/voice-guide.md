@@ -2,7 +2,7 @@
 
 Phase 1 (voice cards) and Phase 2 (naming consolidation) executed 2026-04-25. The full Phase 4 spot-check edit pass remains to be run by a human editor — see "Remaining work" below.
 
-**Cards refreshed 2026-06-10:** Rohan's card corrected (he is Nova Canvas's audio artist, not a Terra Grid ops lead — the old card described a character who does not exist in his theme). New cards added for Erdem and Samir (Nova Canvas) and Tariq Hussain, Priya Sharma, and Elif Yilmaz (Terra Grid), each derived from their actual dialogue blocks.
+**Cards refreshed 2026-06-10:** Rohan's card corrected (he is Nova Canvas's audio artist, not a Terra Grid ops lead — the old card described a character who does not exist in his world). New cards added for Erdem and Samir (Nova Canvas) and Tariq Hussain, Priya Sharma, and Elif Yilmaz (Terra Grid), each derived from their actual dialogue blocks.
 
 ## Status
 
@@ -30,8 +30,8 @@ These are the canonical voices. When editing dialogue, match the card.
 - **Verboten:** never hand-waves a tradeoff — always names which side wins and why.
 - **Example:** *"Self-attention isn't enough. Wrap it in residuals and norm. Like React's vDOM diff — minimal targeted updates, not a full rebuild every layer."*
 
-### Hassan Al-Rashid (cross-theme advisor, 36 blocks)
-- **Background:** Senior architect, multi-theme presence (Deep Orbit + Terra Grid). Has shipped ML in production before.
+### Hassan Al-Rashid (cross-world advisor, 36 blocks)
+- **Background:** Senior architect, multi-world presence (Deep Orbit + Terra Grid). Has shipped ML in production before.
 - **Tone:** authoritative, calm. Speaks in tradeoffs.
 - **Speech:** medium-long sentences, full names not contractions, sparing with jokes.
 - **Verboten:** never says "best practice" — names the constraint instead. Never gives advice without naming the cost.
@@ -110,7 +110,7 @@ These are the canonical voices. When editing dialogue, match the card.
 - **Example:** *"The gallery opens in nine days and each kiosk takes forty-three seconds to produce a single image. We will have a queue around the block, and not the good kind."*
 
 ### Samir (Nova Canvas — frontend engineer, ~25 blocks)
-- **Background:** Senior frontend developer, newest member of the collective. The learner's mirror in this theme: maps every ML mechanism onto a web-dev pattern, and is usually 80% right.
+- **Background:** Senior frontend developer, newest member of the collective. The learner's mirror in this world: maps every ML mechanism onto a web-dev pattern, and is usually 80% right.
 - **Tone:** eager-systematic, confident in his own domain, openly curious outside it. Likes architectures and clean pipelines.
 - **Speech:** medium, structured ("Two encoders. One for images, one for text."), heavy on web vocabulary (monorepo, SSR, progressive disclosure, state machines). Proposes the FE analogy as a question or claim that someone else then corrects or sharpens.
 - **Verboten:** never the one who delivers the correction — his role is the plausible first draft. Never bluffs about the math; when he doesn't know, he asks.
@@ -148,14 +148,14 @@ Estimated remaining cost: ~3.5h. Defers to human editor for taste calls.
 
 ## Why this matters
 
-Each theme has named characters who appear repeatedly in `<Dialogue speaker="X">` blocks. When character voice drifts (formal one lesson, casual the next), readers feel the seam. The course already invests in narrative scaffolding to keep learners engaged — voice consistency is the cheapest 10% improvement on top of that investment.
+Each world has named characters who appear repeatedly in `<Dialogue speaker="X">` blocks. When character voice drifts (formal one lesson, casual the next), readers feel the seam. The course already invests in narrative scaffolding to keep learners engaged — voice consistency is the cheapest 10% improvement on top of that investment.
 
 ## Current state (audit run 2026-04-25)
 
 ```
 Total dialogue blocks   : 702
 Unique speaker names    : 32
-Speakers per theme      : ~6
+Speakers per world      : ~6
 Lessons containing dialogue : ~280 / 297
 Average blocks per lesson   : 2.36
 ```
@@ -192,7 +192,7 @@ Average blocks per lesson   : 2.36
 
 For each canonical character, write a 100-word voice card answering:
 
-- **Background:** one-line role and theme (e.g. *Noor — clinical lead, Signal Ward*).
+- **Background:** one-line role and world (e.g. *Noor — clinical lead, Signal Ward*).
 - **Tone:** one of `terse`, `procedural`, `warm`, `dry-witty`, `urgent`, `professorial`, `nervous-but-bright`.
 - **Speech patterns:** typical sentence length (short / medium / long), domain jargon level (high / mid / low), uses contractions Y/N.
 - **Verboten phrases:** things this character would never say (e.g. ARIA never says "great question").
@@ -233,7 +233,7 @@ pnpm --filter @tensorcraft/content build:content   # all MDX still parses
 pnpm --filter @tensorcraft/web build               # static pages regenerate
 ```
 
-Re-read 3 random lessons per theme cold. If voice still drifts, return to Phase 4 for that character.
+Re-read 3 random lessons per world cold. If voice still drifts, return to Phase 4 for that character.
 
 ## Total cost
 
@@ -265,6 +265,6 @@ Execute Phases 1-2 + spot-check the top 5 speakers (Noor, Vikram, Hassan Al-Rash
 ## Out of scope here
 
 - Plot continuity (separate concern — different audit)
-- Theme-internal arc rewriting
+- World-internal arc rewriting
 - Adding new dialogue blocks to lessons that have none
 - Voice for non-character narration (the lesson body itself)

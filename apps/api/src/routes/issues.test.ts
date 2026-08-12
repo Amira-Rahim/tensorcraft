@@ -92,7 +92,7 @@ const validFields = {
   severity: "high",
   email: "user@example.com",
   context: JSON.stringify({
-    url: "https://tensorcraft.app/themes/deep-orbit/1/1",
+    url: "https://tensorcraft.app/worlds/deep-orbit/1/1",
     userAgent: "Mozilla/5.0",
     viewport: JSON.stringify({ width: 1920, height: 1080 }),
   }),

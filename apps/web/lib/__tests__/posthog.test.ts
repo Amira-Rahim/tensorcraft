@@ -34,7 +34,7 @@ describe("lib/posthog", () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "");
 
     const mod = await import("../posthog");
-    mod.capture("lesson_started", { themeId: "deep-orbit" });
+    mod.capture("lesson_started", { worldId: "deep-orbit" });
 
     expect(posthog.capture).not.toHaveBeenCalled();
   });

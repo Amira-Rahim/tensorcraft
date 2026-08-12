@@ -11,7 +11,7 @@ interface DerivationDrawerProps {
   summary: string;
   /**
    * Slug of the companion deep-dive lesson. Renders a "Read full derivation"
-   * link that resolves to /themes/<themeSlug>/<moduleSlug>/<companionSlug>
+   * link that resolves to /worlds/<worldSlug>/<moduleSlug>/<companionSlug>
    * when wrapped by a parent that knows the route. For now we surface the
    * slug as a relative link the parent route can rewrite if needed.
    */

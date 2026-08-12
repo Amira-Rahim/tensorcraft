@@ -70,12 +70,12 @@ describe("ROUTES constant values are well-formed", () => {
   });
 
   it("dynamic route functions produce valid paths", () => {
-    expect(ROUTES.theme("deep-orbit")).toBe("/themes/deep-orbit");
+    expect(ROUTES.world("deep-orbit")).toBe("/worlds/deep-orbit");
     expect(ROUTES.module("deep-orbit", "foundations")).toBe(
-      "/themes/deep-orbit/foundations",
+      "/worlds/deep-orbit/foundations",
     );
     expect(ROUTES.lesson("deep-orbit", "foundations", "intro-to-tensors")).toBe(
-      "/themes/deep-orbit/foundations/intro-to-tensors",
+      "/worlds/deep-orbit/foundations/intro-to-tensors",
     );
   });
 });

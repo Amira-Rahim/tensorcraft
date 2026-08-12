@@ -16,7 +16,7 @@ import { SceneCanvas } from "./scene-canvas";
    - light: ink laid on paper — "multiply" compositing so overlaps pool
      darker like wet ink, highlights deepened toward near-black, alphas
      scaled up because tinted marks on paper need more body than glows on
-     black. Target: an etched orbital diagram in theme-ink on paper.
+     black. Target: an etched orbital diagram in world-ink on paper.
 
    Extracted from the landing-page five-worlds section so the auth page and the
    homepage render the identical, vibrant orbit from one source. */
@@ -65,7 +65,7 @@ export function drawOrbit(
   scheme: "dark" | "light",
 ) {
   const [r, g, b] = rgb;
-  // Highlight for near-side particles: in dark scheme the theme colour is
+  // Highlight for near-side particles: in dark scheme the world colour is
   // pushed toward white so the near edge of each ring glows hotter than the
   // body; in light scheme highlight() flips the target toward deep ink, so
   // the near edge presses HARDER into the paper instead.
@@ -81,7 +81,7 @@ export function drawOrbit(
   // Watercolour-wash tints for ink mode's large soft fields (nebula, halo).
   // Multiply compositing squares mid-value colours toward black wherever
   // fields overlap themselves or the marks, so a big gradient in the raw
-  // theme ink reads as a storm cloud; starting the wash near paper value
+  // world ink reads as a storm cloud; starting the wash near paper value
   // keeps the pool a tinted green, like thinned ink. (wr.. = pale wash,
   // dr.. = slightly deeper wash for the halo's centre.)
   const wr = Math.round(r + (255 - r) * 0.55);
@@ -211,7 +211,7 @@ export function drawOrbit(
       const front = (depth + 1) / 2; // 0 far … 1 near
       const radius = 0.7 + 1.8 * front;
       const alpha = scaleA((0.12 + 0.55 * front) * boost);
-      // Colour shifts from theme-hue (far) toward the scheme highlight
+      // Colour shifts from world-hue (far) toward the scheme highlight
       // (near): hot-white in dark, deep ink in light — highlight() already
       // flipped the lerp target, so this needs no scheme branch.
       const pr = Math.round(r + (hr - r) * front);
@@ -256,9 +256,9 @@ export function drawOrbit(
 }
 
 export interface OrbitCanvasProps {
-  /** Theme colour as an [r,g,b] triple (0–255), used in dark scheme. */
+  /** World colour as an [r,g,b] triple (0–255), used in dark scheme. */
   rgb: [number, number, number];
-  /** Theme colour for light scheme. Falls back to `rgb` when absent. */
+  /** World colour for light scheme. Falls back to `rgb` when absent. */
   rgbLight?: [number, number, number];
   /** Speeds/brightens the system (hover state on the homepage cards). */
   hovered?: boolean;

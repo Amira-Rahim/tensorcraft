@@ -5,7 +5,7 @@ let mockEnrollment: {
   completed_at: string | null;
 } | null = null;
 let mockProgressRows: Array<{
-  theme_id: string;
+  world_id: string;
   lesson_id: string;
   status: string;
 }> = [];
@@ -25,7 +25,7 @@ vi.mock("@/lib/supabase/server", () => ({
           }),
         };
       }
-      // theme_progress
+      // world_progress
       return {
         select: () => ({
           eq: () => ({
@@ -43,27 +43,27 @@ vi.mock("@/lib/supabase/server", () => ({
 }));
 
 vi.mock("@/lib/entitlements", () => ({
-  getEntitledThemes: async () => mockOwned,
+  getEntitledWorlds: async () => mockOwned,
 }));
 
 vi.mock("@tensorcraft/shared", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@tensorcraft/shared")>();
   return {
     ...actual,
-    // Pin every theme's lesson total to 2 so the "completed" threshold is
-    // deterministic here. journey-progress now reads getThemeTotalLessons(slug)
-    // per theme (re-audit N2/F-A), so the pin lives on that function, not on
-    // the old THEME_CONTENT scalar.
-    getThemeTotalLessons: () => 2,
+    // Pin every world's lesson total to 2 so the "completed" threshold is
+    // deterministic here. journey-progress now reads getWorldTotalLessons(slug)
+    // per world (re-audit N2/F-A), so the pin lives on that function, not on
+    // the old WORLD_CONTENT scalar.
+    getWorldTotalLessons: () => 2,
   };
 });
 
 vi.mock("@tensorcraft/content", () => ({
-  // The corpus for these tests is two lessons per theme ("a", "b"), matching
-  // the pinned getThemeTotalLessons above. journey-progress filters progress
+  // The corpus for these tests is two lessons per world ("a", "b"), matching
+  // the pinned getWorldTotalLessons above. journey-progress filters progress
   // rows against the CURRENT corpus so orphaned rows from re-slugged lessons
   // can't overshoot totals (R3-6).
-  getThemeLessons: () => [{ slug: "a" }, { slug: "b" }],
+  getWorldLessons: () => [{ slug: "a" }, { slug: "b" }],
 }));
 
 import { getJourneyState } from "../journey-progress";
@@ -82,32 +82,32 @@ describe("getJourneyState", () => {
     mockProgressError = null;
   });
 
-  it("returns all five themes in ring order with derived progress", async () => {
+  it("returns all five worlds in ring order with derived progress", async () => {
     const s = await getJourneyState("u1");
-    expect(s.themes.map((t) => t.slug)).toEqual([...JOURNEY_ORDER]);
-    expect(s.themes.every((t) => t.totalLessons === 2)).toBe(true);
+    expect(s.worlds.map((t) => t.slug)).toEqual([...JOURNEY_ORDER]);
+    expect(s.worlds.every((t) => t.totalLessons === 2)).toBe(true);
   });
 
-  it("marks a theme completed only when all its lessons are done", async () => {
+  it("marks a world completed only when all its lessons are done", async () => {
     const t0 = JOURNEY_ORDER[0];
     mockProgressRows = [
-      { theme_id: t0, lesson_id: "a", status: "completed" },
-      { theme_id: t0, lesson_id: "b", status: "completed" },
+      { world_id: t0, lesson_id: "a", status: "completed" },
+      { world_id: t0, lesson_id: "b", status: "completed" },
     ];
     const s = await getJourneyState("u1");
-    expect(s.themes[0].completed).toBe(true);
-    expect(s.themes[0].completedLessons).toBe(2);
-    expect(s.themes[1].completed).toBe(false);
+    expect(s.worlds[0].completed).toBe(true);
+    expect(s.worlds[0].completedLessons).toBe(2);
+    expect(s.worlds[1].completed).toBe(false);
   });
 
   it("dedupes lesson rows so double-writes don't over-count", async () => {
     const t0 = JOURNEY_ORDER[0];
     mockProgressRows = [
-      { theme_id: t0, lesson_id: "a", status: "completed" },
-      { theme_id: t0, lesson_id: "a", status: "completed" },
+      { world_id: t0, lesson_id: "a", status: "completed" },
+      { world_id: t0, lesson_id: "a", status: "completed" },
     ];
     const s = await getJourneyState("u1");
-    expect(s.themes[0].completedLessons).toBe(1);
+    expect(s.worlds[0].completedLessons).toBe(1);
   });
 
   it("reflects enrollment state", async () => {
@@ -117,20 +117,20 @@ describe("getJourneyState", () => {
     expect(s.enrolledAt).toBe("2026-01-01");
   });
 
-  it("recommends the next uncompleted theme in ring order", async () => {
+  it("recommends the next uncompleted world in ring order", async () => {
     const t0 = JOURNEY_ORDER[0];
     mockProgressRows = [
-      { theme_id: t0, lesson_id: "a", status: "completed" },
-      { theme_id: t0, lesson_id: "b", status: "completed" },
+      { world_id: t0, lesson_id: "a", status: "completed" },
+      { world_id: t0, lesson_id: "b", status: "completed" },
     ];
     const s = await getJourneyState("u1");
     expect(s.recommendedNext).toBe(JOURNEY_ORDER[1]);
   });
 
-  it("reports ringComplete only when every theme is finished", async () => {
+  it("reports ringComplete only when every world is finished", async () => {
     mockProgressRows = JOURNEY_ORDER.flatMap((t) => [
-      { theme_id: t, lesson_id: "a", status: "completed" },
-      { theme_id: t, lesson_id: "b", status: "completed" },
+      { world_id: t, lesson_id: "a", status: "completed" },
+      { world_id: t, lesson_id: "b", status: "completed" },
     ]);
     const s = await getJourneyState("u1");
     expect(s.ringComplete).toBe(true);
@@ -140,16 +140,16 @@ describe("getJourneyState", () => {
   it("ignores progress rows for lessons no longer in the corpus (R3-6)", async () => {
     const t0 = JOURNEY_ORDER[0];
     mockProgressRows = [
-      { theme_id: t0, lesson_id: "a", status: "completed" },
+      { world_id: t0, lesson_id: "a", status: "completed" },
       // Orphans from a re-slugged/removed lesson (tl/05 was rebuilt once):
-      // counting them can mark a theme completed while live lessons remain,
+      // counting them can mark a world completed while live lessons remain,
       // and push completedLessons past totalLessons.
-      { theme_id: t0, lesson_id: "old-slug-1", status: "completed" },
-      { theme_id: t0, lesson_id: "old-slug-2", status: "completed" },
+      { world_id: t0, lesson_id: "old-slug-1", status: "completed" },
+      { world_id: t0, lesson_id: "old-slug-2", status: "completed" },
     ];
     const s = await getJourneyState("u1");
-    expect(s.themes[0].completedLessons).toBe(1);
-    expect(s.themes[0].completed).toBe(false);
+    expect(s.worlds[0].completedLessons).toBe(1);
+    expect(s.worlds[0].completed).toBe(false);
   });
 
   it("throws instead of misreporting when a lookup fails (R3-6)", async () => {

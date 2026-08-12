@@ -49,7 +49,7 @@ describe("CheckoutButton", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     render(
-      <CheckoutButton planId="single" themeIds={["deep-orbit"]}>
+      <CheckoutButton planId="single" worldIds={["deep-orbit"]}>
         Buy Deep Orbit
       </CheckoutButton>,
     );

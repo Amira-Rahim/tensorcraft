@@ -1,4 +1,4 @@
-// DEPRECATED: replaced by RecallPrompt/LessonRecap in the lesson close; retained for unbuilt coming-soon theme MDX. See docs/superpowers/specs/2026-06-15-end-of-lesson-design.md
+// DEPRECATED: replaced by RecallPrompt/LessonRecap in the lesson close; retained for unbuilt coming-soon world MDX. See docs/superpowers/specs/2026-06-15-end-of-lesson-design.md
 "use client";
 
 import { useState } from "react";
@@ -28,7 +28,7 @@ interface QuizProps {
   correct?: number;
   /** Shown once the learner submits, regardless of correctness. */
   explanation?: string;
-  /** Bridge tier hint for themed styling, currently informational. */
+  /** Bridge tier hint for world styling, currently informational. */
   tier?: QuizTier;
   /** Fired on every submit so the host app can wire analytics. */
   onSubmit?: (result: QuizSubmitResult) => void;

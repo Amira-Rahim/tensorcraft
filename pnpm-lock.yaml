@@ -151,12 +151,12 @@ importers:
       '@tensorcraft/supabase':
         specifier: workspace:*
         version: link:../../packages/supabase
-      '@tensorcraft/themes':
-        specifier: workspace:*
-        version: link:../../packages/themes
       '@tensorcraft/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@tensorcraft/worlds':
+        specifier: workspace:*
+        version: link:../../packages/worlds
       '@tensorflow/tfjs':
         specifier: 4.22.0
         version: 4.22.0(seedrandom@3.0.5)
@@ -265,9 +265,9 @@ importers:
       '@tensorcraft/shared':
         specifier: workspace:*
         version: link:../shared
-      '@tensorcraft/themes':
+      '@tensorcraft/worlds':
         specifier: workspace:*
-        version: link:../themes
+        version: link:../worlds
       eslint:
         specifier: ^9.0.0
         version: 9.39.4(jiti@2.6.1)
@@ -318,18 +318,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/themes:
-    devDependencies:
-      '@tensorcraft/config':
-        specifier: workspace:*
-        version: link:../config
-      eslint:
-        specifier: ^9.0.0
-        version: 9.39.4(jiti@2.6.1)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   packages/ui:
     dependencies:
       '@codesandbox/sandpack-react':
@@ -338,9 +326,9 @@ importers:
       '@tensorcraft/shared':
         specifier: workspace:*
         version: link:../shared
-      '@tensorcraft/themes':
+      '@tensorcraft/worlds':
         specifier: workspace:*
-        version: link:../themes
+        version: link:../worlds
       '@tensorflow/tfjs':
         specifier: ^4.22.0
         version: 4.22.0(seedrandom@3.0.5)
@@ -366,6 +354,18 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.4(react@19.2.4)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/worlds:
+    devDependencies:
+      '@tensorcraft/config':
+        specifier: workspace:*
+        version: link:../config
+      eslint:
+        specifier: ^9.0.0
+        version: 9.39.4(jiti@2.6.1)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

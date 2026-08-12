@@ -2,7 +2,7 @@
 
 How to evolve the Tensorcraft database safely. This is the process half of
 Tier 0 in `docs/audits/scalability-architecture-2026-07-21.md` — the half that
-gates every schema change the scale roadmap (seats, arena, the cross-theme
+gates every schema change the scale roadmap (seats, arena, the cross-world
 journey) depends on.
 
 Authoring rules live in `packages/supabase/migrations/CONVENTIONS.md`. This

@@ -1,6 +1,6 @@
 # Capstone Reference Models
 
-The five theme capstones each illustrate loading + serving a pretrained TFJS model. Lesson code blocks reference URLs like `/models/<name>/model.json`. The exercises themselves do **not** require these artifacts — they grade pure systems logic in the worker. The URLs exist so learners can read the deployment shape without us shipping production-grade weights.
+The five world capstones each illustrate loading + serving a pretrained TFJS model. Lesson code blocks reference URLs like `/models/<name>/model.json`. The exercises themselves do **not** require these artifacts — they grade pure systems logic in the worker. The URLs exist so learners can read the deployment shape without us shipping production-grade weights.
 
 This doc documents the I/O contract per capstone. Treat it as the spec a learner can implement against if they want to build the actual artifact themselves (or if we ship pretrained artifacts in V2).
 
@@ -8,7 +8,7 @@ This doc documents the I/O contract per capstone. Treat it as the spec a learner
 
 5 reference models trained on synthetic data + shipped at `apps/web/public/models/`. All under 400 KB per artifact. Trained via `/tmp/train-capstone-models.mjs` for reproducibility.
 
-| Theme | Path | Architecture | Train acc/loss |
+| World | Path | Architecture | Train acc/loss |
 |---|---|---|---:|
 | Deep Orbit | `/models/deep-scan-v1` | 3 → 16 → 8 → 1 sigmoid | 98.9% acc |
 | Neon Protocol | `/models/sentinel-v1` | conv 8 → pool → conv 16 → flatten → 32 → 4 softmax | 100% acc |
@@ -20,7 +20,7 @@ This doc documents the I/O contract per capstone. Treat it as the spec a learner
 
 **Note on synthetic data:** Models train on synthetic distributions for reproducibility, not labelled production data. They demonstrate the architecture + I/O contract end-to-end. Real deployment requires retraining on domain data — see "Building your own" below.
 
-## Per-theme contract
+## Per-world contract
 
 ### Deep Orbit — DEEP SCAN signal classifier
 
@@ -90,7 +90,7 @@ const model = tf.sequential();
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 await model.fit(trainX, trainY, { epochs: 50, batchSize: 32 });
 
-await model.save('file:///path/to/apps/web/public/models/<theme>-v1');
+await model.save('file:///path/to/apps/web/public/models/<world>-v1');
 // Outputs model.json + weights.bin under that directory
 ```
 

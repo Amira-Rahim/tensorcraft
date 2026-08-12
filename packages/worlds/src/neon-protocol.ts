@@ -1,0 +1,101 @@
+import type { WorldManifest } from "./types";
+
+export const neonProtocol: WorldManifest = {
+  id: "cyberpunk",
+  slug: "neon-protocol",
+  displayName: "Neon Protocol",
+  tagline: "See the city through the eyes of AI",
+  description:
+    "NeuralCore HQ. 200 surveillance cameras went dark overnight. Rebuild Protocol Sentinel, an urban anomaly detection system.",
+  palette: {
+    bg: "#181818",
+    primary: "#3FC4DC",
+    accent: "#D468B4",
+    surface: "#232323",
+    text: "#E0E0E0",
+    muted: "#B0B0B0",
+    surfaceOverlay: "#313131",
+    border: "#3D3D3D",
+    codeBg: "#141414",
+  },
+  paletteLight: {
+    bg: "#F5F5F2",
+    primary: "#166474",
+    accent: "#9C2C7C",
+    surface: "#FFFFFF",
+    text: "#1F1F1F",
+    muted: "#555555",
+    surfaceOverlay: "#FFFFFF",
+    border: "#D8D8D4",
+    codeBg: "#F6F6F2",
+  },
+  terminology: {
+    lesson: "Protocol",
+    module: "Sector",
+    exercise: "Simulation",
+  },
+  protagonist: "Protocol Engineer",
+  characters: [
+    {
+      name: "Kira Tanaka",
+      role: "Mentor",
+      personality: "Sharp, demanding, brilliant",
+    },
+    {
+      name: "Zara",
+      role: "Vision Specialist",
+      personality: "Methodical, detail-oriented",
+    },
+    {
+      name: "Ryo",
+      role: "Skeptic",
+      personality: "Questions everything, proves through data",
+    },
+    {
+      name: "Lin",
+      role: "Performance Engineer",
+      personality: "Obsessed with latency and optimization",
+    },
+    {
+      name: "NEON",
+      role: "City AI",
+      personality: "Sarcastic, deadpan humor",
+    },
+  ],
+  specialization: "Real-Time Computer Vision",
+  modelBuilt: "Protocol Sentinel: urban anomaly detector",
+  careerPaths: [
+    "CV Engineer ($102K-$168K)",
+    "Perception Engineer ($168K-$333K)",
+  ],
+  preview: {
+    statusBoard: {
+      org: "NEURALCORE HQ · SURVEILLANCE GRID",
+      status: "200 CAMERAS DARK · REBUILD PENDING",
+    },
+    ctaLabel: "Get the signal",
+    modules: [
+      { order: 1, title: "ML Through Vision", free: true },
+      { order: 2, title: "Image Data" },
+      { order: 3, title: "Convolutional Neural Networks" },
+      { order: 4, title: "Object Detection" },
+      { order: 5, title: "Segmentation" },
+      { order: 6, title: "Feature Extraction" },
+      { order: 7, title: "Transfer Learning" },
+      { order: 8, title: "Real-Time Detection" },
+      { order: 9, title: "Generative Vision" },
+      { order: 10, title: "Deployment" },
+      { order: 11, title: "Capstone: Protocol Sentinel", capstone: true },
+    ],
+    skills: [
+      "CNNs",
+      "object detection",
+      "segmentation",
+      "transfer learning",
+      "real-time vision",
+      "GANs",
+      "model optimization",
+      "in-browser inference",
+    ],
+  },
+};

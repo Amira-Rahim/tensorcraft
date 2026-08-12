@@ -6,10 +6,10 @@ const pages = [
   { name: "Auth", path: "/auth" },
   { name: "Terms", path: "/terms" },
   { name: "Privacy", path: "/privacy" },
-  { name: "Themes", path: "/themes" },
-  { name: "Theme Detail", path: "/themes/deep-orbit" },
-  // The module route (/themes/{slug}/{module}) is a redirect shim to the
-  // theme page, auditing it just re-audits Theme Detail and races axe
+  { name: "Worlds", path: "/worlds" },
+  { name: "World Detail", path: "/worlds/deep-orbit" },
+  // The module route (/worlds/{slug}/{module}) is a redirect shim to the
+  // world page, auditing it just re-audits World Detail and races axe
   // against the navigation. Pricing is audited instead.
   { name: "Pricing", path: "/pricing" },
   // /journey and /learn shipped 2026-07-23/24 with zero axe coverage
@@ -20,7 +20,7 @@ const pages = [
   { name: "Learn", path: "/learn" },
   {
     name: "Lesson Viewer",
-    path: "/themes/deep-orbit/foundations/introduction-to-tensors",
+    path: "/worlds/deep-orbit/foundations/introduction-to-tensors",
   },
 ];
 
@@ -68,7 +68,7 @@ async function settle(page: import("@playwright/test").Page, path: string) {
  * light pass exercises the real system-follow path end to end, not a
  * localStorage shortcut. This suite is the contrast gate that certifies the
  * light palette; a light-only violation is a palette bug (darken the token in
- * themes.css), never a reason to mute the rule. The global `colorScheme:
+ * worlds.css), never a reason to mute the rule. The global `colorScheme:
  * "dark"` pin in playwright.config.ts is overridden per-describe here.
  */
 const SCHEMES = ["dark", "light"] as const;
@@ -100,7 +100,7 @@ for (const scheme of SCHEMES) {
  * and end-of-lesson.spec do (see getStorageKey in lesson-steps.tsx); the max
  * key must be seeded too or the step bar clamps back to 0.
  */
-const LESSON_PATH = "/themes/deep-orbit/foundations/introduction-to-tensors";
+const LESSON_PATH = "/worlds/deep-orbit/foundations/introduction-to-tensors";
 const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
 const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
 const STEP_NAMES = [

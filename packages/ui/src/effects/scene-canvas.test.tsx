@@ -62,7 +62,7 @@ describe("SceneCanvas reduced-motion static frame", () => {
     // Order matters: `cleanup()` unmounts the rendered tree FIRST, which
     // disconnects each SceneCanvas's attribute MutationObserver via its
     // effect cleanup. Only then is it safe to clear the shared
-    // data-scheme/data-theme attrs — doing that first (while a describe-
+    // data-scheme/data-world attrs — doing that first (while a describe-
     // scoped afterEach still races RTL's own module-level afterEach, which
     // runs its cleanup() *after* this one) would itself be an observed
     // mutation, queuing one more `render()` microtask against an
@@ -74,7 +74,7 @@ describe("SceneCanvas reduced-motion static frame", () => {
     // real observer teardown is correct) — purely this file's hook order.
     cleanup();
     delete document.documentElement.dataset.scheme;
-    delete document.documentElement.dataset.theme;
+    delete document.documentElement.dataset.world;
     vi.restoreAllMocks();
   });
 
@@ -149,13 +149,13 @@ describe("SceneCanvas reduced-motion static frame", () => {
     expect(rgbArg).toEqual(RGB);
   });
 
-  it("re-renders when data-theme mutates too (cross-theme card colors change)", async () => {
+  it("re-renders when data-world mutates too (cross-world card colors change)", async () => {
     const draw = vi.fn();
     render(<SceneCanvas draw={draw as unknown as SceneDraw} rgb={RGB} />);
     await waitFor(() => expect(draw).toHaveBeenCalled());
     draw.mockClear();
 
-    document.documentElement.dataset.theme = "neon-protocol";
+    document.documentElement.dataset.world = "neon-protocol";
 
     await waitFor(() => expect(draw).toHaveBeenCalled());
   });

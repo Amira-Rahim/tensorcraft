@@ -18,13 +18,13 @@ post-launch index).
   Body: You made an account and then the real world happened, that is
   fine. Module 1 of Deep Orbit is free, no card, about an hour end to end.
   The first lesson takes fifteen minutes and ends with real TensorFlow.js
-  running in your browser. Link: /themes/deep-orbit.
+  running in your browser. Link: /worlds/deep-orbit.
 - **A2, +3 days** — subject: `One analogy, free: Array.reduce() is a neuron`
   Body: The whole course works like this: 55 bridges from frontend
   concepts you already know to the ML concept they secretly are, each one
   labeled where the analogy breaks. Here is the first one in full
   [short reduce/neuron bridge inline]. If that clicked, lesson one is
-  where it starts paying off. Link: /themes/deep-orbit.
+  where it starts paying off. Link: /worlds/deep-orbit.
 
 ### B. Started, stalled (opened a lesson, then went quiet)
 
@@ -79,8 +79,8 @@ built before or after the ids are configured.
 1. Sender name "Tensorcraft", reply-to a monitored inbox.
 2. Create the three automations above; exits exactly as specified so
    nobody gets a nudge for a stage they passed.
-3. Links only to launched routes (/themes/deep-orbit, /dashboard); no
-   /bridges, no coming-soon themes.
+3. Links only to launched routes (/worlds/deep-orbit, /dashboard); no
+   /bridges, no coming-soon worlds.
 4. Kit's unsubscribe footer on every template (this is Kit-managed; the
    Resend digest's unsubscribe machinery is separate and already built).
 5. Send every template to yourself once; click every link against prod.

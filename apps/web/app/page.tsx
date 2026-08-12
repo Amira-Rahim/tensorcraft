@@ -31,7 +31,7 @@ export default function Home() {
         <BridgePreviewSection />
 
         {/* ===== WHAT YOU'LL BUILD (server-rendered, zero JS) =====
-            Outcome before catalog: the payoff motivates the theme choice
+            Outcome before catalog: the payoff motivates the world choice
             in Five Worlds below. ===== */}
         <section id="how-it-works" className="border-b border-border">
           {/* One pipeline band: header owns the first cell, steps 01-04 fill
@@ -134,7 +134,7 @@ export default function Home() {
             <span className="text-primary">the gap.</span>
           </h2>
           <p className="text-base text-text-muted max-w-[420px] leading-relaxed font-sans">
-            Open the lesson and start reading. If it clicks, the full theme is $
+            Open the lesson and start reading. If it clicks, the full world is $
             {PRICING.single.price} once, no subscription.
           </p>
           {/* Free-first stays the primary action. The secondary link exists
@@ -143,7 +143,7 @@ export default function Home() {
               nowhere to act on it without going back to the nav. */}
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Link
-              href="/themes/deep-orbit/foundations/introduction-to-tensors"
+              href="/worlds/deep-orbit/foundations/introduction-to-tensors"
               data-testid="landing-cta-final"
               className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-on-primary font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow brutalist-stamp focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >

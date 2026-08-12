@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getModules } from "@tensorcraft/content";
-import { themes } from "@tensorcraft/themes";
-import { DEFAULT_THEME, isLaunched } from "@tensorcraft/shared";
+import { worlds } from "@tensorcraft/worlds";
+import { DEFAULT_WORLD, isLaunched } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 import { PurchaseAnalytics } from "./purchase-analytics";
@@ -11,7 +11,7 @@ import { PendingPoller } from "./pending-poller";
 
 export const metadata: Metadata = {
   title: "Purchase Confirmed | Tensorcraft",
-  description: "Your theme is yours: every module is open.",
+  description: "Your world is yours: every module is open.",
   robots: { index: false, follow: false },
 };
 
@@ -78,11 +78,11 @@ export default async function PurchaseSuccessPage({
         : undefined;
 
   const selectCols =
-    "plan_id, theme_ids, amount, created_at, stripe_session_id";
+    "plan_id, world_ids, amount, created_at, stripe_session_id";
 
   let purchase: {
     plan_id: string;
-    theme_ids: string[];
+    world_ids: string[];
     amount: number;
     created_at: string;
     stripe_session_id: string | null;
@@ -112,7 +112,7 @@ export default async function PurchaseSuccessPage({
   // reached without a session_id (direct nav / refresh after the param was
   // dropped). When a session_id IS present but its row hasn't landed yet,
   // falling back here rendered the PREVIOUS purchase's full receipt - wrong
-  // amount, wrong themes - and skipped the poller, so the page never
+  // amount, wrong worlds - and skipped the poller, so the page never
   // corrected itself (audit run #7; latent until a second purchase is
   // possible). With a pending session_id we stay in the "Almost There"
   // state and let the poller pick up the real row.
@@ -128,26 +128,26 @@ export default async function PurchaseSuccessPage({
     purchase = data ?? null;
   }
 
-  // V1 scope-revert: filter to launched themes only. A DB anomaly or stale
-  // pre-revert purchase row could otherwise surface a coming-soon theme as
+  // V1 scope-revert: filter to launched worlds only. A DB anomaly or stale
+  // pre-revert purchase row could otherwise surface a coming-soon world as
   // owned, breaking the access-card render below.
-  const purchasedThemeIds: string[] = (purchase?.theme_ids ?? []).filter(
+  const purchasedWorldIds: string[] = (purchase?.world_ids ?? []).filter(
     (slug: string) => isLaunched(slug),
   );
-  const firstThemeSlug = purchasedThemeIds[0] ?? DEFAULT_THEME;
-  const firstTheme = themes[firstThemeSlug];
-  const firstThemeModules = firstTheme ? getModules(firstThemeSlug) : [];
+  const firstWorldSlug = purchasedWorldIds[0] ?? DEFAULT_WORLD;
+  const firstWorld = worlds[firstWorldSlug];
+  const firstWorldModules = firstWorld ? getModules(firstWorldSlug) : [];
 
-  // Build the access-card rows (one per purchased theme) so we can
+  // Build the access-card rows (one per purchased world) so we can
   // render a "Start Now" CTA for each.
-  const accessThemes = purchasedThemeIds
-    .map((slug) => ({ slug, manifest: themes[slug] }))
+  const accessWorlds = purchasedWorldIds
+    .map((slug) => ({ slug, manifest: worlds[slug] }))
     .filter(
       (
         entry,
       ): entry is {
         slug: string;
-        manifest: (typeof themes)[string];
+        manifest: (typeof worlds)[string];
       } => Boolean(entry.manifest),
     );
 
@@ -161,15 +161,15 @@ export default async function PurchaseSuccessPage({
             className="text-5xl mb-6"
             style={{
               // Light-mode migration (Task 7): was
-              // `firstTheme?.palette.primary ?? "var(--tc-primary)"`. Under
+              // `firstWorld?.palette.primary ?? "var(--tc-primary)"`. Under
               // the current V1 scope only Deep Orbit is launched, so
-              // firstTheme is always the app's DEFAULT_THEME (== the root
-              // data-theme) and this var already matched the old hex
-              // exactly. NOTE for a future multi-theme launch: if a second
-              // theme ships and someone's first purchase is that theme, this
-              // will render the *root* theme's primary rather than the
-              // purchased theme's brand color — same cross-theme-identity
-              // caveat as the /themes and dashboard grid cards (Task 8
+              // firstWorld is always the app's DEFAULT_WORLD (== the root
+              // data-world) and this var already matched the old hex
+              // exactly. NOTE for a future multi-world launch: if a second
+              // world ships and someone's first purchase is that world, this
+              // will render the *root* world's primary rather than the
+              // purchased world's brand color — same cross-world-identity
+              // caveat as the /worlds and dashboard grid cards (Task 8
               // territory), revisit then.
               color: "var(--tc-primary)",
             }}
@@ -187,8 +187,8 @@ export default async function PurchaseSuccessPage({
           </h1>
           <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto">
             {purchase
-              ? firstTheme
-                ? `${firstTheme.displayName} is yours: all ${firstThemeModules.length} modules are open.`
+              ? firstWorld
+                ? `${firstWorld.displayName} is yours: all ${firstWorldModules.length} modules are open.`
                 : "Your purchase is confirmed. Everything you bought is open."
               : paymentFailed
                 ? "Your payment method declined the charge, so nothing was billed and no access was granted. You can try again with a different method."
@@ -214,7 +214,7 @@ export default async function PurchaseSuccessPage({
         )}
 
         {/* ── Access Card ──────────────────────────── */}
-        {accessThemes.length > 0 && (
+        {accessWorlds.length > 0 && (
           <section
             aria-labelledby="access-card-heading"
             className="rounded-none border-2 border-border bg-surface-raised brutalist-shadow p-6 sm:p-8 mb-10"
@@ -227,12 +227,12 @@ export default async function PurchaseSuccessPage({
                 Access Granted
               </h2>
               <span className="text-xs font-mono text-text-muted">
-                {accessThemes.length}
-                {accessThemes.length === 1 ? " theme" : " themes"}
+                {accessWorlds.length}
+                {accessWorlds.length === 1 ? " world" : " worlds"}
               </span>
             </div>
             <ul className="space-y-3">
-              {accessThemes.map(({ slug, manifest }) => {
+              {accessWorlds.map(({ slug, manifest }) => {
                 const moduleCount = getModules(slug).length;
                 return (
                   <li
@@ -243,10 +243,10 @@ export default async function PurchaseSuccessPage({
                       <span
                         aria-hidden="true"
                         className="inline-block w-3 h-3 shrink-0"
-                        // Same latent multi-theme caveat as the hero
-                        // checkmark above: fine while only one theme is
-                        // launched (accessThemes can only ever contain
-                        // DEFAULT_THEME today).
+                        // Same latent multi-world caveat as the hero
+                        // checkmark above: fine while only one world is
+                        // launched (accessWorlds can only ever contain
+                        // DEFAULT_WORLD today).
                         style={{ background: "var(--tc-primary)" }}
                       />
                       <div className="min-w-0">
@@ -259,7 +259,7 @@ export default async function PurchaseSuccessPage({
                       </div>
                     </div>
                     <Link
-                      href={`/themes/${slug}`}
+                      href={`/worlds/${slug}`}
                       data-testid={`access-start-${slug}`}
                       className="inline-flex items-center justify-center h-11 px-5 text-sm font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover"
                     >
@@ -329,14 +329,14 @@ export default async function PurchaseSuccessPage({
               </div>
               <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0 sm:col-span-2">
                 <dt className="text-xs uppercase tracking-wider text-text-muted">
-                  Themes
+                  Worlds
                 </dt>
                 <dd
-                  data-testid="receipt-themes"
+                  data-testid="receipt-worlds"
                   className="text-text-primary sm:mt-1 break-all"
                 >
-                  {purchase.theme_ids.length > 0
-                    ? purchase.theme_ids.join(", ")
+                  {purchase.world_ids.length > 0
+                    ? purchase.world_ids.join(", ")
                     : "–"}
                 </dd>
               </div>
@@ -362,18 +362,18 @@ export default async function PurchaseSuccessPage({
         {/* ── CTAs ─────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
           <Link
-            href={`/themes/${firstThemeSlug}`}
+            href={`/worlds/${firstWorldSlug}`}
             data-testid="cta-first-lesson"
             className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover brutalist-shadow"
           >
             Start your first lesson &rarr;
           </Link>
           <Link
-            href="/themes"
-            data-testid="cta-view-all-themes"
+            href="/worlds"
+            data-testid="cta-view-all-worlds"
             className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-border text-text-muted hover:text-text-primary hover:border-primary transition-colors brutalist-hover"
           >
-            View all themes
+            View all worlds
           </Link>
         </div>
       </div>

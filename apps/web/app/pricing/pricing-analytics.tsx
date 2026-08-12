@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { themeSlugs } from "@tensorcraft/themes";
+import { worldSlugs } from "@tensorcraft/worlds";
 import { trackPricingPageViewed } from "@/lib/analytics";
 
 /**
@@ -22,16 +22,16 @@ export function PricingAnalytics() {
     const purchase = searchParams.get("purchase");
 
     let source: "direct" | "paywall" | "dashboard" | "upgrade_cta" = "direct";
-    let lockedThemeId: string | undefined;
+    let lockedWorldId: string | undefined;
 
-    if (locked && (themeSlugs as readonly string[]).includes(locked)) {
+    if (locked && (worldSlugs as readonly string[]).includes(locked)) {
       source = "paywall";
-      lockedThemeId = locked;
+      lockedWorldId = locked;
     } else if (purchase === "cancelled") {
       source = "upgrade_cta";
     }
 
-    trackPricingPageViewed(source, lockedThemeId);
+    trackPricingPageViewed(source, lockedWorldId);
   }, [searchParams]);
 
   return null;

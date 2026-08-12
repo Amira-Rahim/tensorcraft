@@ -22,12 +22,12 @@ vi.mock("next/link", () => ({
 // Minimal router stub, CheckoutButton pulls in next/navigation.
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
-  // PricingTiers reads ?plan=&themes= to restore a selection carried
+  // PricingTiers reads ?plan=&worlds= to restore a selection carried
   // through the auth roundtrip; default empty params.
   useSearchParams: () => new URLSearchParams(),
 }));
 
-// Supabase client, no session so we don't hit owned-theme lookups.
+// Supabase client, no session so we don't hit owned-world lookups.
 const getSessionMock = vi.fn().mockResolvedValue({ data: { session: null } });
 vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
@@ -46,7 +46,7 @@ vi.mock("@/lib/analytics", () => ({
   trackCheckoutStarted: vi.fn(),
 }));
 
-vi.mock("@tensorcraft/themes", () => {
+vi.mock("@tensorcraft/worlds", () => {
   const slugs = [
     "deep-orbit",
     "neon-protocol",
@@ -55,8 +55,8 @@ vi.mock("@tensorcraft/themes", () => {
     "terra-grid",
   ] as const;
   return {
-    themeSlugs: slugs,
-    themes: {
+    worldSlugs: slugs,
+    worlds: {
       "deep-orbit": {
         displayName: "Deep Orbit",
         palette: { primary: "#00f0ff" },
@@ -106,9 +106,9 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   });
 
   it("renders exactly the buyable tiers", () => {
-    // The three bundle tiers left the grid: with one theme launched they
+    // The three bundle tiers left the grid: with one world launched they
     // could only ever render as dead CTAs, which anchored $59 as a stripped
-    // entry tier and implied a delivery schedule the theme-2 gate does not
+    // entry tier and implied a delivery schedule the world-2 gate does not
     // promise. Their prices now live in <BundleRoadmap /> as information.
     render(<PricingTiers extrasLessons={23} />);
     expect(screen.getByTestId("tier-card-free")).toBeInTheDocument();
@@ -136,7 +136,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     );
   });
 
-  it("recommends the buyable Single tier while only one theme is launched (2026-07-14 UX audit: never ribbon an unbuyable tier)", () => {
+  it("recommends the buyable Single tier while only one world is launched (2026-07-14 UX audit: never ribbon an unbuyable tier)", () => {
     render(<PricingTiers extrasLessons={23} />);
     const single = screen.getByTestId("tier-card-single");
     expect(single).toHaveAttribute("data-recommended", "true");
@@ -151,10 +151,10 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     }
   });
 
-  it("Single tier CTA sends planId=single with the preselected theme (no extra click while one theme is launched)", async () => {
+  it("Single tier CTA sends planId=single with the preselected world (no extra click while one world is launched)", async () => {
     render(<PricingTiers extrasLessons={23} />);
     const card = screen.getByTestId("tier-card-single");
-    // 2026-07-14 UX audit: with exactly one launched theme, the picker
+    // 2026-07-14 UX audit: with exactly one launched world, the picker
     // preselects it — the CTA must be enabled immediately.
     const cta = Array.from(card.querySelectorAll("button")).find((b) =>
       /Get Single/i.test(b.textContent ?? ""),
@@ -166,7 +166,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     const [, init] = fetchMock.mock.calls[0];
     const body = JSON.parse(init.body);
     expect(body.planId).toBe("single");
-    expect(body.themeIds).toEqual(["deep-orbit"]);
+    expect(body.worldIds).toEqual(["deep-orbit"]);
   });
 
   it("renders the extras lesson count from the prop, never a hardcoded literal", () => {

@@ -19,7 +19,7 @@ interface Particle {
 
 // Dark deep-orbit values — used only when CSS custom properties are missing
 // (SSR-adjacent edge cases, or the properties failing to parse). Real
-// rendering reads the live theme/scheme palette via readPalettes() below.
+// rendering reads the live world/scheme palette via readPalettes() below.
 const FALLBACK_PALETTES: [number, number, number][] = [
   [107, 170, 138], // primary teal
   [112, 150, 176], // blue-grey (tier-structural)
@@ -43,11 +43,11 @@ function hexToRgb(hex: string): [number, number, number] | null {
 }
 
 /**
- * Reads the current theme + scheme's ambient palette straight off the live
+ * Reads the current world + scheme's ambient palette straight off the live
  * CSS custom properties on `<html>` (`--tc-primary-rgb`, `--tc-tier-
  * structural`, `--tc-tier-intuition`) — the same three hues the old
  * hardcoded PALETTES array approximated for deep-orbit-dark only, now
- * correct for every narrative theme and both color schemes. Falls back to
+ * correct for every narrative world and both color schemes. Falls back to
  * the dark deep-orbit defaults if a property is missing or unparsable.
  */
 export function readPalettes(): [number, number, number][] {
@@ -95,7 +95,7 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
   const timeRef = useRef(0);
   const palettesRef = useRef<[number, number, number][]>(FALLBACK_PALETTES);
   // Set inside the main effect below, read from the attribute-change handler
-  // so a theme/scheme flip can repaint the reduced-motion static frame
+  // so a world/scheme flip can repaint the reduced-motion static frame
   // without that handler needing its own matchMedia listener.
   const motionQueryRef = useRef<MediaQueryList | null>(null);
 
@@ -189,7 +189,7 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
     const c = ref.current;
     if (!c) return;
 
-    // Read the live theme/scheme palette once up front so the very first
+    // Read the live world/scheme palette once up front so the very first
     // resize()'s particle spawn already uses the right hues (avoids a
     // one-frame flash of the fallback palette).
     palettesRef.current = readPalettes();
@@ -237,20 +237,20 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
     };
   }, [count, draw, renderFrame]);
 
-  // Re-read the palette whenever the narrative theme or color scheme
+  // Re-read the palette whenever the narrative world or color scheme
   // changes (fixes the pre-existing bug where the ambient dust ignored
   // both and always rendered deep-orbit-dark's hues). Newly spawned
   // particles pick up the change immediately; already-alive ones age out
   // naturally within their ~4-11s lifespan. If a static reduced-motion
   // frame is showing, repaint it immediately so it doesn't go stale.
-  const handleThemeOrSchemeChange = useCallback(() => {
+  const handleWorldOrSchemeChange = useCallback(() => {
     palettesRef.current = readPalettes();
     if (motionQueryRef.current?.matches) renderFrame();
   }, [renderFrame]);
 
   useAttributeObserver(
-    ["data-theme", "data-scheme"],
-    handleThemeOrSchemeChange,
+    ["data-world", "data-scheme"],
+    handleWorldOrSchemeChange,
   );
 
   return (

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { themes } from "@tensorcraft/themes";
-import { LAUNCHED_THEMES } from "@tensorcraft/shared";
+import { worlds } from "@tensorcraft/worlds";
+import { LAUNCHED_WORLDS } from "@tensorcraft/shared";
 import {
   getModules,
   getModuleLessons,
@@ -8,7 +8,7 @@ import {
 } from "@tensorcraft/content";
 
 /**
- * Server-rendered module map for every launched theme, shown on /pricing.
+ * Server-rendered module map for every launched world, shown on /pricing.
  *
  * Locked users land here via the lesson-page redirect
  * (`/pricing?locked=<slug>`) and previously saw only tier cards, a blind
@@ -24,23 +24,23 @@ export function CurriculumPreview() {
       data-testid="curriculum-preview"
     >
       <div className="max-w-4xl mx-auto">
-        {LAUNCHED_THEMES.map((slug) => {
-          const theme = themes[slug];
+        {LAUNCHED_WORLDS.map((slug) => {
+          const world = worlds[slug];
           const modules = getModules(slug);
-          if (!theme || modules.length === 0) return null;
+          if (!world || modules.length === 0) return null;
 
           return (
             <div key={slug}>
               <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-text-primary font-mono tracking-tight">
-                What&rsquo;s in a Theme
+                What&rsquo;s in a World
               </h2>
               <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
-                every module in {theme.displayName}, lesson by lesson
+                every module in {world.displayName}, lesson by lesson
               </p>
               <ol className="border border-border divide-y divide-border list-none m-0 p-0">
                 {modules.map((mod, i) => {
                   const lessons = getModuleLessons(slug, mod.slug);
-                  // Lesson + exercise minutes: the same basis as the theme
+                  // Lesson + exercise minutes: the same basis as the world
                   // page's courseWorkload JSON-LD, so the visible module
                   // sums and the SEO total tell one story.
                   const minutes = lessons.reduce(
@@ -104,10 +104,10 @@ export function CurriculumPreview() {
               <p className="mt-4 text-center text-sm text-text-muted font-sans">
                 Module 1 is free, no account needed.{" "}
                 <Link
-                  href={`/themes/${slug}`}
+                  href={`/worlds/${slug}`}
                   className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
                 >
-                  Browse the full {theme.displayName} syllabus
+                  Browse the full {world.displayName} syllabus
                 </Link>
                 .
               </p>

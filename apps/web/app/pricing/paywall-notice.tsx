@@ -2,21 +2,21 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { themes } from "@tensorcraft/themes";
+import { worlds } from "@tensorcraft/worlds";
 import { isLaunched, getPaidLessonCount } from "@tensorcraft/shared";
 import { EVENTS, track } from "@/lib/analytics-events";
 
 /**
  * Banner shown on /pricing when a user was redirected here from a
- * paywalled lesson (see apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx).
- * The `?locked=<themeSlug>` query param carries the context so we can
- * tell the user *why* they landed here and which theme is gated.
+ * paywalled lesson (see apps/web/app/worlds/[slug]/[module]/[lesson]/page.tsx).
+ * The `?locked=<worldSlug>` query param carries the context so we can
+ * tell the user *why* they landed here and which world is gated.
  *
  * Renders nothing when `locked` is absent or not a LAUNCHED slug - we never
  * want to render a banner for an arbitrary user-supplied value, and a
- * coming-soon theme has nothing to unlock. It previously accepted any
+ * coming-soon world has nothing to unlock. It previously accepted any
  * canonical slug, so /pricing?locked=neon-protocol rendered a purchase
- * banner quoting Deep Orbit's lesson count for a theme that ships no
+ * banner quoting Deep Orbit's lesson count for a world that ships no
  * lessons at all.
  *
  * Fires `upgrade_cta_shown` (source=`paywall`) on mount when the banner is
@@ -39,12 +39,12 @@ export function PaywallNotice() {
   useEffect(() => {
     if (!isValidLocked) return;
     track(EVENTS.PAYWALL_HIT, {
-      themeId: locked ?? undefined,
+      worldId: locked ?? undefined,
       moduleId: gatedModule ?? "unknown",
     });
     track(EVENTS.UPGRADE_CTA_SHOWN, {
       source: "paywall",
-      themeId: locked ?? undefined,
+      worldId: locked ?? undefined,
     });
 
     // Tag the buyer in Kit so retention sequence B can reach someone who ran
@@ -59,7 +59,7 @@ export function PaywallNotice() {
   if (!locked) return null;
   if (!isValidLocked) return null;
 
-  const displayName = themes[locked as keyof typeof themes].displayName;
+  const displayName = worlds[locked as keyof typeof worlds].displayName;
 
   return (
     <div

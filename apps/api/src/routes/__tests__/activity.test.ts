@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../../types";
 
 // ─────────────────────────────────────────────────────────────
-// Mocks, cover both theme_progress (completions) and
+// Mocks, cover both world_progress (completions) and
 // exercise_attempts queries behind the activity-daily endpoint.
 // ─────────────────────────────────────────────────────────────
 
@@ -11,11 +11,11 @@ const mockGetUser = vi.fn();
 
 let mockCompletions: Array<{
   completed_at: string | null;
-  theme_id?: string;
+  world_id?: string;
 }> = [];
 let mockCompletionsError: unknown = null;
 
-let mockAttempts: Array<{ attempted_at: string | null; theme_id?: string }> =
+let mockAttempts: Array<{ attempted_at: string | null; world_id?: string }> =
   [];
 let mockAttemptsError: unknown = null;
 
@@ -35,7 +35,7 @@ vi.mock("@tensorcraft/supabase", () => ({
   getSupabaseServerClient: () => ({
     auth: { getUser: mockGetUser },
     from: (table: string) => {
-      if (table === "theme_progress") {
+      if (table === "world_progress") {
         return makeThenable(() => ({
           data: mockCompletions,
           error: mockCompletionsError,
@@ -172,10 +172,10 @@ describe("GET /api/progress/activity/daily", () => {
     expect(res.status).toBe(400);
   });
 
-  it("rejects invalid themeId", async () => {
+  it("rejects invalid worldId", async () => {
     authedUser();
     const res = await createApp().request(
-      "/api/progress/activity/daily?themeId=not-a-theme",
+      "/api/progress/activity/daily?worldId=not-a-world",
       {
         headers: { Authorization: "Bearer valid" },
       },

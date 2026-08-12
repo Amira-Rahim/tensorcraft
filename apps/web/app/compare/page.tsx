@@ -16,14 +16,14 @@ export const metadata: Metadata = {
     url: "https://tensorcraft.app/compare",
     title: "Tensorcraft vs fast.ai vs Karpathy | Tensorcraft",
     images: [
-      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&theme=deep-orbit&subtitle=An%20honest%20course%20comparison",
+      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&world=deep-orbit&subtitle=An%20honest%20course%20comparison",
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tensorcraft vs fast.ai vs Karpathy | Tensorcraft",
     images: [
-      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&theme=deep-orbit&subtitle=An%20honest%20course%20comparison",
+      "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&world=deep-orbit&subtitle=An%20honest%20course%20comparison",
     ],
   },
 };
@@ -63,7 +63,7 @@ const ROWS: Row[] = [
   {
     feature: "Math depth",
     tensorcraft:
-      "Chain rule, DFT, cross-entropy derived in optional drawers; KL divergence in the math companion (ELBO, DDPM with future themes)",
+      "Chain rule, DFT, cross-entropy derived in optional drawers; KL divergence in the math companion (ELBO, DDPM with future worlds)",
     fastai: "Pragmatic depth, not paper-grade",
     karpathy: "Paper-grade: autograd from scratch, attention from scratch",
     coursera: "Theory + math, exam-grade",
@@ -78,14 +78,14 @@ const ROWS: Row[] = [
   {
     feature: "Capstone artifact you ship",
     tensorcraft:
-      "Every component of a browser-side ML system, built and graded piece by piece, pushed to your GitHub (one theme live today, four in the pipeline)",
+      "Every component of a browser-side ML system, built and graded piece by piece, pushed to your GitHub (one world live today, four in the pipeline)",
     fastai: "fast.ai notebooks shareable as Hugging Face Spaces",
     karpathy: "Final notebook trained from scratch",
     coursera: "Certificates",
   },
   {
     feature: "Cost (full curriculum)",
-    tensorcraft: `$0 preview / $${PRICING.single.price} per theme / $${PRICING.allFive.price} for all five (bundle opens once all five launch)`,
+    tensorcraft: `$0 preview / $${PRICING.single.price} per world / $${PRICING.allFive.price} for all five (bundle opens once all five launch)`,
     fastai: "Free",
     karpathy: "Free",
     coursera: "$49-79/mo (specialization $200-500)",
@@ -252,7 +252,7 @@ export default function ComparePage() {
 
         <div className="mt-16 flex flex-wrap items-center gap-4">
           <Link
-            href="/themes"
+            href="/worlds"
             className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
             Start the course →

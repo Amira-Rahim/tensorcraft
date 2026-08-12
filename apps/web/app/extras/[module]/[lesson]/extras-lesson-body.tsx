@@ -3,9 +3,9 @@
 import {
   GlossaryProvider,
   useGlossary,
-} from "@/app/themes/[slug]/[module]/[lesson]/glossary-context";
-import { GlossaryRail } from "@/app/themes/[slug]/[module]/[lesson]/glossary-rail";
-import { LessonContent } from "@/app/themes/[slug]/[module]/[lesson]/lesson-content";
+} from "@/app/worlds/[slug]/[module]/[lesson]/glossary-context";
+import { GlossaryRail } from "@/app/worlds/[slug]/[module]/[lesson]/glossary-rail";
+import { LessonContent } from "@/app/worlds/[slug]/[module]/[lesson]/lesson-content";
 
 type LessonContentProps = Parameters<typeof LessonContent>[0];
 
@@ -18,9 +18,9 @@ interface ExtrasLessonBodyProps {
 }
 
 /* Extras lessons render as one column, so the glossary sits below the prose
-   as an appendix instead of the sidebar rail the theme reader uses. Clicking
+   as an appendix instead of the sidebar rail the world reader uses. Clicking
    an underlined term in the prose highlights its entry here via the shared
-   glossary context, same as the theme path. */
+   glossary context, same as the world path. */
 function Body({ lesson, exercises, lessonId }: ExtrasLessonBodyProps) {
   const { activeTerm } = useGlossary();
   return (
@@ -28,7 +28,7 @@ function Body({ lesson, exercises, lessonId }: ExtrasLessonBodyProps) {
       <LessonContent
         lesson={lesson}
         exercises={exercises}
-        themeId="shared"
+        worldId="shared"
         lessonId={lessonId}
         glossaryTerms={lesson.glossaryTerms}
       />

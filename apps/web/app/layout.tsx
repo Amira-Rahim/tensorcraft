@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import {
-  DEFAULT_THEME,
-  LAUNCHED_THEMES,
+  DEFAULT_WORLD,
+  LAUNCHED_WORLDS,
   SCHEME_STORAGE_KEY,
 } from "@tensorcraft/shared";
-import { ThemeProvider } from "./components/theme-provider";
+import { WorldProvider } from "./components/world-provider";
 import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
 import { ReportIssueButton } from "./components/report-issue-button";
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
       "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for frontend developers: train real models in the browser, no Python required.",
     images: [
       {
-        url: "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&theme=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
+        url: "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&world=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
         width: 1200,
         height: 630,
         alt: "Tensorcraft: ML for Frontend Engineers",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     description:
       "Learn machine learning with JavaScript and TensorFlow.js. Train real models in the browser, no Python required.",
     images: [
-      "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&theme=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
+      "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&world=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
     ],
   },
 };
@@ -115,14 +115,14 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable}`}
-      data-theme={DEFAULT_THEME}
+      data-world={DEFAULT_WORLD}
       // The FOUC script below sets `data-scheme="light"` synchronously
       // before hydration for OS-light visitors. React 19 compares the
       // server-rendered attributes (which never include `data-scheme`)
       // against the live DOM at hydration time and flags the difference as
-      // a mismatch; `data-theme` never triggered this because
-      // `LAUNCHED_THEMES` only ever resolves to the same server default.
-      // Scoped one element deep (standard next-themes-style fix) — it only
+      // a mismatch; `data-world` never triggered this because
+      // `LAUNCHED_WORLDS` only ever resolves to the same server default.
+      // Scoped one element deep (standard next-worlds-style fix) — it only
       // silences the warning for `<html>`'s own attributes, not its
       // subtree.
       suppressHydrationWarning
@@ -130,7 +130,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&${JSON.stringify(LAUNCHED_THEMES)}.includes(t)){document.documentElement.dataset.theme=t}}catch(e){}try{var s=null;try{s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)})}catch(e){}if(s!=="light"&&s!=="dark"){s=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}if(s==="light"){document.documentElement.dataset.scheme="light"}}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem("tc-active-world");if(t&&${JSON.stringify(LAUNCHED_WORLDS)}.includes(t)){document.documentElement.dataset.world=t}}catch(e){}try{var s=null;try{s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)})}catch(e){}if(s!=="light"&&s!=="dark"){s=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}if(s==="light"){document.documentElement.dataset.scheme="light"}}catch(e){}})()`,
           }}
         />
         <script
@@ -152,10 +152,10 @@ export default function RootLayout({
                   "Interactive, story-driven ML education for frontend engineers.",
                 sameAs: [],
               },
-              // The five per-theme Course objects that used to live here were
+              // The five per-world Course objects that used to live here were
               // removed 2026-07-25 (R3-7): they rendered on EVERY route and
               // duplicated the richer page-level Course JSON-LD on
-              // /themes/[slug] (different name + offer for the same URL),
+              // /worlds/[slug] (different name + offer for the same URL),
               // risking rich-result confusion. Course markup now lives only
               // on the page that describes the course.
               // FAQPage moved OUT of this sitewide block 2026-07-25
@@ -180,7 +180,7 @@ export default function RootLayout({
             <Analytics /> that sat here beaconed before consent and after
             an explicit reject. */}
         <ConsentGatedVercelAnalytics />
-        <ThemeProvider>
+        <WorldProvider>
           {/* <PostHogProvider> was mounted here too. It duplicated
               AnalyticsProvider's init and $pageview capture exactly, so every
               pageview was counted twice and every conversion-rate denominator
@@ -211,7 +211,7 @@ export default function RootLayout({
               <ReportIssueButton />
             </AnalyticsProvider>
           </>
-        </ThemeProvider>
+        </WorldProvider>
       </body>
     </html>
   );

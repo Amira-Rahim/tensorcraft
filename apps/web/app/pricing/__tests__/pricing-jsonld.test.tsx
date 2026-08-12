@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LAUNCHED_THEMES, PRICING } from "@tensorcraft/shared";
+import { LAUNCHED_WORLDS, PRICING } from "@tensorcraft/shared";
 import { buildPricingOffers } from "../pricing-jsonld";
 
 /**
@@ -14,38 +14,38 @@ describe("buildPricingOffers", () => {
   it("lists every tier, so the catalog describes the whole product", () => {
     expect(buildPricingOffers().map((o) => o.name)).toEqual([
       "Free preview",
-      "Single theme",
-      "Two-theme bundle",
-      "Three-theme bundle",
-      "All five themes",
+      "Single world",
+      "Two-world bundle",
+      "Three-world bundle",
+      "All five worlds",
     ]);
   });
 
-  it("never claims PreOrder: no order can be placed for an unlaunched theme", () => {
+  it("never claims PreOrder: no order can be placed for an unlaunched world", () => {
     // The R3-7 regression guard. PreOrder asserts an order can be placed now
     // for later delivery; the checkout API rejects any basket with an
-    // unlaunched theme, so no such path exists at any price.
+    // unlaunched world, so no such path exists at any price.
     for (const offer of buildPricingOffers()) {
       expect(offer.availability).not.toContain("PreOrder");
     }
   });
 
-  it("marks a tier InStock exactly when enough themes have launched", () => {
+  it("marks a tier InStock exactly when enough worlds have launched", () => {
     const availability = Object.fromEntries(
       buildPricingOffers().map((o) => [o.name, o.availability]),
     );
-    const expected = (themes: number) =>
-      LAUNCHED_THEMES.length >= themes
+    const expected = (worlds: number) =>
+      LAUNCHED_WORLDS.length >= worlds
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock";
 
-    expect(availability["Free preview"]).toBe(expected(PRICING.free.themes));
-    expect(availability["Single theme"]).toBe(expected(PRICING.single.themes));
-    expect(availability["Two-theme bundle"]).toBe(
-      expected(PRICING.twoBundle.themes),
+    expect(availability["Free preview"]).toBe(expected(PRICING.free.worlds));
+    expect(availability["Single world"]).toBe(expected(PRICING.single.worlds));
+    expect(availability["Two-world bundle"]).toBe(
+      expected(PRICING.twoBundle.worlds),
     );
-    expect(availability["All five themes"]).toBe(
-      expected(PRICING.allFive.themes),
+    expect(availability["All five worlds"]).toBe(
+      expected(PRICING.allFive.worlds),
     );
   });
 
@@ -53,7 +53,7 @@ describe("buildPricingOffers", () => {
     const priced = Object.fromEntries(
       buildPricingOffers().map((o) => [o.name, o.price]),
     );
-    expect(priced["Single theme"]).toBe(String(PRICING.single.price));
-    expect(priced["All five themes"]).toBe(String(PRICING.allFive.price));
+    expect(priced["Single world"]).toBe(String(PRICING.single.price));
+    expect(priced["All five worlds"]).toBe(String(PRICING.allFive.price));
   });
 });

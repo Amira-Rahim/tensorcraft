@@ -57,7 +57,7 @@ describe("Dialogue", () => {
     ).toBeInTheDocument();
   });
 
-  it("colors the speaker with the theme primary variable", () => {
+  it("colors the speaker with the world primary variable", () => {
     render(<Dialogue speaker="ARIA">Test</Dialogue>);
     expect(screen.getByText("ARIA")).toHaveAttribute(
       "style",

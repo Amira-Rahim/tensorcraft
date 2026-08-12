@@ -11,7 +11,7 @@ import { test, expect } from "@playwright/test";
  * Uses the free-tier lesson foundations/01 (create-a-tensor).
  * Requires network access for the TFJS CDN script inside the worker.
  */
-const LESSON = "/themes/deep-orbit/foundations/introduction-to-tensors";
+const LESSON = "/worlds/deep-orbit/foundations/introduction-to-tensors";
 const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
 const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
 

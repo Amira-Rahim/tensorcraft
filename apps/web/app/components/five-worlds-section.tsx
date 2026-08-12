@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { themes, themeSlugs } from "@tensorcraft/themes";
+import { worlds, worldSlugs } from "@tensorcraft/worlds";
 import { isLaunched } from "@tensorcraft/shared";
 import {
   OrbitCanvas,
@@ -19,7 +19,7 @@ import {
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
 import { heroPlateSrc } from "@/lib/location-art";
 
-/* ── Theme card data derived from manifests ──────────────── */
+/* ── World card data derived from manifests ──────────────── */
 
 // Signature scene per world (Deep Orbit's lives in OrbitCanvas). Each is a
 // sibling of drawOrbit: ambient-faint at rest, ignited by hover/focus.
@@ -30,8 +30,8 @@ const SCENE_BY_SLUG: Record<string, SceneDraw> = {
   "terra-grid": drawTerraGrid,
 };
 
-const THEME_CARDS = themeSlugs.map((slug, i) => {
-  const t = themes[slug];
+const WORLD_CARDS = worldSlugs.map((slug, i) => {
+  const t = worlds[slug];
   return {
     code: String(i + 1).padStart(2, "0"),
     name: t.displayName,
@@ -42,7 +42,7 @@ const THEME_CARDS = themeSlugs.map((slug, i) => {
     colLight: t.paletteLight.primary,
     rgb: hexToRgb(t.palette.primary),
     // Light-scheme hue pair: canvases pick rgb/rgbLight per frame; DOM
-    // text/badges ride the .tc-theme-card CSS pair (--card-primary /
+    // text/badges ride the .tc-world-card CSS pair (--card-primary /
     // --card-primary-light -> --card-active-primary).
     rgbLight: hexToRgb(t.paletteLight.primary),
     launched: isLaunched(t.slug),
@@ -50,14 +50,14 @@ const THEME_CARDS = themeSlugs.map((slug, i) => {
   };
 });
 
-const HERO_CARD = THEME_CARDS.find((c) => c.launched) ?? THEME_CARDS[0];
+const HERO_CARD = WORLD_CARDS.find((c) => c.launched) ?? WORLD_CARDS[0];
 
 // The flagship band is a viewport onto the Archimedes: the location master
 // plate is the ground, and OrbitCanvas keeps running above it as the
 // reflection on the glass. Undefined for a flagship with no shipped art, in
 // which case the band is exactly the canvas-only band it was before.
 const HERO_PLATE_SRC = heroPlateSrc(HERO_CARD.slug);
-const COMING_SOON_CARDS = THEME_CARDS.filter((c) => !c.launched);
+const COMING_SOON_CARDS = WORLD_CARDS.filter((c) => !c.launched);
 
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
@@ -148,7 +148,7 @@ export function FiveWorldsSection() {
           </p>
 
           <Link
-            href={`/themes/${HERO_CARD.slug}`}
+            href={`/worlds/${HERO_CARD.slug}`}
             className="block mt-12 group max-w-[640px]"
           >
             <div
@@ -178,7 +178,7 @@ export function FiveWorldsSection() {
         {COMING_SOON_CARDS.map((t, i) => (
           <motion.div
             key={t.code}
-            className="relative overflow-hidden group tc-theme-card"
+            className="relative overflow-hidden group tc-world-card"
             style={
               {
                 borderRight:
@@ -206,7 +206,7 @@ export function FiveWorldsSection() {
               className="absolute inset-0 z-0 pointer-events-none"
             />
             <Link
-              href={`/themes/${t.slug}`}
+              href={`/worlds/${t.slug}`}
               className="flex flex-col gap-1.5 relative z-10 px-8 py-8 h-full"
               data-testid={`coming-soon-card-${t.slug}`}
             >

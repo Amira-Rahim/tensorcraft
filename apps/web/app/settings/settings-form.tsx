@@ -9,10 +9,10 @@
  *   - POST /api/github/connect , returns { url } → redirect into OAuth flow.
  *   - POST /api/github/disconnect, revokes token + clears DB columns.
  *
- * The "Theme" tab + preferred-theme picker were removed when the launch
- * scoped down to one theme. Active theme is route-derived now (whichever
- * theme the learner is currently inside), not user-selected. The
- * `profiles.preferred_theme_id` column is left as a tombstone for revival.
+ * The "World" tab + preferred-world picker were removed when the launch
+ * scoped down to one world. Active world is route-derived now (whichever
+ * world the learner is currently inside), not user-selected. The
+ * `profiles.preferred_world_id` column is left as a tombstone for revival.
  *
  * All controls use `rounded-none`, mono labels, CSS vars, and
  * `focus-visible:outline-2 focus-visible:outline-primary`. Purchases live on
@@ -23,8 +23,8 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getApiUrl } from "@/lib/api-url";
-import { themes } from "@tensorcraft/themes";
-import { LAUNCHED_THEMES } from "@tensorcraft/shared";
+import { worlds } from "@tensorcraft/worlds";
+import { LAUNCHED_WORLDS } from "@tensorcraft/shared";
 import { UserAvatar } from "@/app/components/user-avatar";
 import { resizeImage } from "@/lib/resize-image";
 import { ERROR_MESSAGES } from "@/lib/error-messages";
@@ -107,7 +107,7 @@ interface SettingsFormProps {
   weeklyDigest: boolean;
   purchases: Array<{
     planId: string;
-    themeIds: string[];
+    worldIds: string[];
     amount: number;
     createdAt: string;
   }>;
@@ -392,18 +392,18 @@ export function SettingsForm({
         return;
       }
 
-      // One request per launched theme; V1 this is just Deep Orbit.
+      // One request per launched world; V1 this is just Deep Orbit.
       let pushed = 0;
       let skipped = 0;
       let failed = 0;
-      for (const themeId of LAUNCHED_THEMES) {
+      for (const worldId of LAUNCHED_WORLDS) {
         const res = await fetch(`${getApiUrl()}/api/github/retroactive-push`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify({ themeId }),
+          body: JSON.stringify({ worldId }),
         });
         if (!res.ok) {
           const body = (await res.json().catch(() => ({}))) as {
@@ -675,7 +675,7 @@ export function SettingsForm({
                   className="font-mono mt-1"
                   style={{ fontSize: 10, color: "var(--tc-muted)" }}
                 >
-                  Lesson artifacts push to tensorcraft-&lt;theme&gt; repos.
+                  Lesson artifacts push to tensorcraft-&lt;world&gt; repos.
                 </div>
               </div>
             )}
@@ -813,16 +813,16 @@ export function SettingsForm({
                         className="font-mono mb-1"
                         style={{ fontSize: 12, color: "var(--tc-text)" }}
                       >
-                        {purchase.themeIds
-                          .map((id) => themes[id]?.displayName ?? id)
+                        {purchase.worldIds
+                          .map((id) => worlds[id]?.displayName ?? id)
                           .join(" + ")}
                         {": "}
                         {purchase.planId === "single"
-                          ? "Single Theme"
+                          ? "Single World"
                           : purchase.planId === "twoBundle"
-                            ? "Two Themes"
+                            ? "Two Worlds"
                             : purchase.planId === "threeBundle"
-                              ? "Three Themes"
+                              ? "Three Worlds"
                               : purchase.planId === "allFive"
                                 ? "All Five"
                                 : purchase.planId}

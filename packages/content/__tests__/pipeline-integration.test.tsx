@@ -53,7 +53,7 @@ const SAMPLE_FRONTMATTER = {
   slug: "introduction-to-tensors",
   title: "Introduction to Tensors",
   moduleId: "foundations",
-  themeId: "deep-orbit",
+  worldId: "deep-orbit",
   order: 1,
   estimatedMinutes: 25,
   difficulty: "beginner" as const,
@@ -92,7 +92,7 @@ describe("Content pipeline: frontmatter → Zod → components", () => {
       const result = lessonSchema.safeParse(SAMPLE_FRONTMATTER);
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.themeId).toBe("deep-orbit");
+        expect(result.data.worldId).toBe("deep-orbit");
         expect(result.data.concept.bridge?.tier).toBe("identity");
         expect(result.data.hints).toHaveLength(3);
       }

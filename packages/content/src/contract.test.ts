@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { lessonSchema, exerciseSchema, moduleSchema } from "./schemas";
-import { THEME_SLUGS } from "@tensorcraft/shared";
+import { WORLD_SLUGS } from "@tensorcraft/shared";
 import sampleModule from "./fixtures/sample-module.json";
 import sampleLessons from "./fixtures/sample-lessons.json";
 import sampleExercises from "./fixtures/sample-exercises.json";
@@ -11,8 +11,8 @@ describe("Content contract: module", () => {
     expect(result.success).toBe(true);
   });
 
-  it("module themeId is a valid THEME_SLUG", () => {
-    expect(THEME_SLUGS).toContain(sampleModule.themeId);
+  it("module worldId is a valid WORLD_SLUG", () => {
+    expect(WORLD_SLUGS).toContain(sampleModule.worldId);
   });
 });
 
@@ -43,9 +43,9 @@ describe("Content contract: lessons", () => {
     expect(tiers).toContain("intuition");
   });
 
-  it("all lesson themeIds are valid THEME_SLUGs", () => {
+  it("all lesson worldIds are valid WORLD_SLUGs", () => {
     sampleLessons.forEach((l) => {
-      expect(THEME_SLUGS).toContain(l.themeId);
+      expect(WORLD_SLUGS).toContain(l.worldId);
     });
   });
 

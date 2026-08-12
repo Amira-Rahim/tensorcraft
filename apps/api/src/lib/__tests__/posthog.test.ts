@@ -44,7 +44,7 @@ describe("api/lib/posthog", () => {
       SERVER_EVENTS.PAYMENT_COMPLETED,
       {
         planId: "single",
-        themeIds: ["deep-orbit"],
+        worldIds: ["deep-orbit"],
         amount: 49,
         sessionId: "cs_test_1",
       },
@@ -56,7 +56,7 @@ describe("api/lib/posthog", () => {
       event: "payment_completed",
       properties: {
         planId: "single",
-        themeIds: ["deep-orbit"],
+        worldIds: ["deep-orbit"],
         amount: 49,
         sessionId: "cs_test_1",
       },
@@ -76,7 +76,7 @@ describe("api/lib/posthog", () => {
     captureServer(
       SERVER_EVENTS.CODE_PUSHED,
       {
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         lessonId: "intro-tensors",
         exerciseSlug: "intro-tensors",
         commitSha: "abc1234",
@@ -88,7 +88,7 @@ describe("api/lib/posthog", () => {
       distinctId: "user-77",
       event: "code_pushed",
       properties: {
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         lessonId: "intro-tensors",
         exerciseSlug: "intro-tensors",
         commitSha: "abc1234",

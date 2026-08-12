@@ -141,8 +141,8 @@ Pre-computed aggregation prepared to replace 4 parallel queries on dashboard loa
 |---------|------------|-----|
 | Rate limiting | `rl:{ip}` (sorted set) | 120s |
 | JWT cache | `jwt:{sha256_prefix}` | 30s |
-| Dashboard cache (Phase 4) | `dash:{userId}:{themeId}` | 60s |
-| Purchase cache (Phase 4) | `purchase:{userId}:{themeSlug}` | 5 min |
+| Dashboard cache (Phase 4) | `dash:{userId}:{worldId}` | 60s |
+| Purchase cache (Phase 4) | `purchase:{userId}:{worldSlug}` | 5 min |
 
 ### Rate Limiting
 
@@ -173,8 +173,8 @@ API endpoint `POST /api/skill-events/batch` accepts 1–50 events per request wi
 
 ## Skill Genome Computation
 
-After each lesson completion, the client calls `compute_user_skill_genome(p_user_id, p_theme_id)` via Supabase RPC (fire-and-forget). The SQL function (migration 014):
-- Reads skill_events from the last 90 days for the user+theme
+After each lesson completion, the client calls `compute_user_skill_genome(p_user_id, p_world_id)` via Supabase RPC (fire-and-forget). The SQL function (migration 014):
+- Reads skill_events from the last 90 days for the user+world
 - Computes weighted proficiency per skill axis (pass=+3, complete=+2, bridge=+1, fail=-0.5, hint=-0.25, solution=-1)
 - Normalizes to 0–100, computes confidence (event_count/50, capped at 1.0) and velocity (delta from previous)
 - Upserts into `skill_genome` table

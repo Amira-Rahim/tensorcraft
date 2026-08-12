@@ -16,9 +16,9 @@ let mockProfileSelectError: unknown = null;
 const mockProfileUpdate = vi.fn();
 const mockAdminProfileUpdate = vi.fn();
 
-// theme_progress rows for retroactive-push tests
-let mockThemeProgressRows: Array<Record<string, unknown>> = [];
-let mockThemeProgressError: unknown = null;
+// world_progress rows for retroactive-push tests
+let mockWorldProgressRows: Array<Record<string, unknown>> = [];
+let mockWorldProgressError: unknown = null;
 
 // exercise_attempts rows (used by retroactive-push to fetch code)
 let mockAttemptsRows: Array<Record<string, unknown>> = [];
@@ -43,14 +43,14 @@ function makeProfilesQuery() {
   };
 }
 
-function makeThemeProgressQuery() {
+function makeWorldProgressQuery() {
   const thenable = {
     select: () => thenable,
     eq: () => thenable,
     order: () =>
       Promise.resolve({
-        data: mockThemeProgressRows,
-        error: mockThemeProgressError,
+        data: mockWorldProgressRows,
+        error: mockWorldProgressError,
       }),
   };
   return thenable;
@@ -75,7 +75,7 @@ vi.mock("@tensorcraft/supabase", () => ({
     auth: { getUser: mockGetUser },
     from: (table: string) => {
       if (table === "profiles") return makeProfilesQuery();
-      if (table === "theme_progress") return makeThemeProgressQuery();
+      if (table === "world_progress") return makeWorldProgressQuery();
       if (table === "exercise_attempts") return makeExerciseAttemptsQuery();
       return {};
     },
@@ -123,8 +123,8 @@ beforeEach(() => {
   mockAdminProfileUpdate.mockReset();
   mockProfileRow = null;
   mockProfileSelectError = null;
-  mockThemeProgressRows = [];
-  mockThemeProgressError = null;
+  mockWorldProgressRows = [];
+  mockWorldProgressError = null;
   mockAttemptsRows = [];
   fetchHandler = async () => {
     throw new Error("Unhandled fetch in test");
@@ -339,7 +339,7 @@ describe("GitHub routes, commit", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         lessonId: "lesson-01",
         code: "console.log('hi')",
       }),
@@ -349,7 +349,7 @@ describe("GitHub routes, commit", () => {
     expect(body.code).toBe("github_not_connected");
   });
 
-  it("rejects unknown themeId", async () => {
+  it("rejects unknown worldId", async () => {
     authedUser();
     mockProfileRow = { github_token: "ghu_x", github_username: "amira" };
 
@@ -360,7 +360,7 @@ describe("GitHub routes, commit", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "not-a-theme",
+        worldId: "not-a-world",
         lessonId: "lesson-01",
         code: "x",
       }),
@@ -453,7 +453,7 @@ describe("GitHub routes, commit", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "mod-01",
         lessonId: "lesson-01",
         code: "export const answer = 42;",
@@ -480,7 +480,7 @@ describe("GitHub routes, commit", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "mod-01",
         lessonId: "lesson-01",
         code: "x",
@@ -498,7 +498,7 @@ describe("GitHub routes, commit", () => {
 
     let repoCalls = 0;
     fetchHandler = async (url, init) => {
-      // ensureThemeRepo: createOrGetRepo, flaky first 2 tries (500), then OK
+      // ensureWorldRepo: createOrGetRepo, flaky first 2 tries (500), then OK
       if (
         url === "https://api.github.com/user/repos" &&
         init?.method === "POST"
@@ -550,7 +550,7 @@ describe("GitHub routes, commit", () => {
       throw new Error(`unexpected ${url}`);
     };
 
-    // ensureThemeRepo is *not* wrapped in withRetry directly, only
+    // ensureWorldRepo is *not* wrapped in withRetry directly, only
     // pushFile inside commitLessonArtifact is. We still verify retry is
     // exercised for the lesson PUT path by failing once.
     // For simplicity, this test just ensures the commit endpoint handles
@@ -562,7 +562,7 @@ describe("GitHub routes, commit", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "mod-01",
         lessonId: "lesson-01",
         code: "x",
@@ -579,7 +579,7 @@ describe("GitHub routes, retroactive push", () => {
   it("returns 0 counts when no completed lessons", async () => {
     authedUser();
     mockProfileRow = { github_token: "ghu_x", github_username: "amira" };
-    mockThemeProgressRows = [];
+    mockWorldProgressRows = [];
 
     // Still needs repo ensure to succeed
     fetchHandler = async (url, init) => {
@@ -587,8 +587,8 @@ describe("GitHub routes, retroactive push", () => {
         url === "https://api.github.com/user/repos" &&
         init?.method === "POST"
       ) {
-        // returns immediately so ensureThemeRepo short-circuits
-        // but actually we skip ensureThemeRepo entirely when no lessons
+        // returns immediately so ensureWorldRepo short-circuits
+        // but actually we skip ensureWorldRepo entirely when no lessons
         throw new Error("should not be called");
       }
       throw new Error(`unexpected ${url}`);
@@ -600,7 +600,7 @@ describe("GitHub routes, retroactive push", () => {
         Authorization: "Bearer valid",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ themeId: "deep-orbit" }),
+      body: JSON.stringify({ worldId: "deep-orbit" }),
     });
 
     expect(res.status).toBe(200);
@@ -612,7 +612,7 @@ describe("GitHub routes, retroactive push", () => {
   it("pushes all completed lessons in order", async () => {
     authedUser();
     mockProfileRow = { github_token: "ghu_x", github_username: "amira" };
-    mockThemeProgressRows = [
+    mockWorldProgressRows = [
       {
         module_id: "mod-01",
         lesson_id: "lesson-01",
@@ -682,7 +682,7 @@ describe("GitHub routes, retroactive push", () => {
         Authorization: "Bearer valid",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ themeId: "deep-orbit" }),
+      body: JSON.stringify({ worldId: "deep-orbit" }),
     });
 
     expect(res.status).toBe(200);
@@ -703,7 +703,7 @@ describe("GitHub routes, retroactive push", () => {
     // up with one file per exercise slug.
     authedUser();
     mockProfileRow = { github_token: "ghu_x", github_username: "amira" };
-    mockThemeProgressRows = [
+    mockWorldProgressRows = [
       {
         module_id: "anomaly-detection",
         lesson_id: "threshold-tuning",
@@ -766,7 +766,7 @@ describe("GitHub routes, retroactive push", () => {
         Authorization: "Bearer valid",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ themeId: "deep-orbit" }),
+      body: JSON.stringify({ worldId: "deep-orbit" }),
     });
 
     expect(res.status).toBe(200);
@@ -786,7 +786,7 @@ describe("GitHub routes, retroactive push", () => {
   it("skips lessons without submitted_code", async () => {
     authedUser();
     mockProfileRow = { github_token: "ghu_x", github_username: "amira" };
-    mockThemeProgressRows = [
+    mockWorldProgressRows = [
       {
         module_id: "mod-01",
         lesson_id: "lesson-01",
@@ -828,7 +828,7 @@ describe("GitHub routes, retroactive push", () => {
         Authorization: "Bearer valid",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ themeId: "deep-orbit" }),
+      body: JSON.stringify({ worldId: "deep-orbit" }),
     });
 
     expect(res.status).toBe(200);
@@ -841,7 +841,7 @@ describe("GitHub routes, retroactive push", () => {
     expect(body.pushed).toBe(0);
   });
 
-  it("returns 400 for invalid themeId", async () => {
+  it("returns 400 for invalid worldId", async () => {
     authedUser();
     const res = await createApp().request("/api/github/retroactive-push", {
       method: "POST",
@@ -849,7 +849,7 @@ describe("GitHub routes, retroactive push", () => {
         Authorization: "Bearer valid",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ themeId: "bogus" }),
+      body: JSON.stringify({ worldId: "bogus" }),
     });
     expect(res.status).toBe(400);
   });

@@ -20,7 +20,7 @@ describe("commitExerciseArtifact", () => {
   it("POSTs the artifact to /api/github/commit with the full payload", () => {
     vi.mocked(apiFetch).mockResolvedValue(new Response(null));
     commitExerciseArtifact({
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       lessonId: "tensor-operations",
       moduleId: "foundations",
       exerciseSlug: "amplify-gains",
@@ -29,7 +29,7 @@ describe("commitExerciseArtifact", () => {
     expect(apiFetch).toHaveBeenCalledWith("/api/github/commit", {
       method: "POST",
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         lessonId: "tensor-operations",
         moduleId: "foundations",
         exerciseSlug: "amplify-gains",
@@ -56,14 +56,14 @@ describe("commitExerciseArtifact", () => {
         { status: 400 },
       ),
     );
-    commitExerciseArtifact({ themeId: "deep-orbit", lessonId: "x", code: "y" });
+    commitExerciseArtifact({ worldId: "deep-orbit", lessonId: "x", code: "y" });
     await new Promise((r) => setTimeout(r, 0));
     expect(dispatched).toContain("tc:github-nudge");
     expect(window.localStorage.getItem("tc_github_nudge_shown")).toBe("1");
 
     // Second failure: guard holds, no second toast ever.
     dispatched.length = 0;
-    commitExerciseArtifact({ themeId: "deep-orbit", lessonId: "x", code: "y" });
+    commitExerciseArtifact({ worldId: "deep-orbit", lessonId: "x", code: "y" });
     await new Promise((r) => setTimeout(r, 0));
     expect(dispatched).not.toContain("tc:github-nudge");
     spy.mockRestore();
@@ -78,7 +78,7 @@ describe("commitExerciseArtifact", () => {
     vi.mocked(apiFetch).mockRejectedValue(new Error("401"));
     expect(() =>
       commitExerciseArtifact({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         lessonId: "x",
         code: "y",
       }),

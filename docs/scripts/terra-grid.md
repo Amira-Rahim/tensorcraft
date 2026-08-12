@@ -1,13 +1,13 @@
 # Terra Grid — Edge AI & MLOps
 
-> Terra Grid is the fifth theme in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
+> Terra Grid is the fifth world in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
 ---
 
 ## SCRIPT GUIDE
 
 **Tags:** `edge-AI` `MLOps` `quantization` `pruning` `distillation` `federated-learning` `drift-detection`
-**Theme:** Global infrastructure monitoring with edge-deployed ML models
+**World:** Global infrastructure monitoring with edge-deployed ML models
 **Setting:** TERRA SYSTEMS — Terra Grid is a global industrial monitoring network managing critical infrastructure: power plants, water treatment facilities, transportation networks, and communication towers across 47 sites worldwide. The network processes petabytes of data from millions of sensors, and the AI models that analyze this data must run at the edge — on low-power devices in remote locations with intermittent connectivity. The team must build Terra Grid Intelligence, an edge AI system that monitors, predicts, and responds to infrastructure anomalies at global scale.
 **Model being built:** Terra Grid Intelligence — an edge-deployed anomaly detection and prediction system
 **GitHub repo deployed at end:** `terra-grid-intelligence`
@@ -38,7 +38,7 @@
 
 ---
 
-## THEME PREVIEW
+## WORLD PREVIEW
 
 ### Preview Art
 
@@ -143,7 +143,7 @@ Park shows the current models' resource profiles:
 
 > **PARK:** "This model uses 1.8GB RAM. Our edge devices have 512MB. Your first job is to make it fit."
 
-The student learns to profile and benchmark, discovering that model size and speed are as important as accuracy in edge environments. This module establishes the optimization mindset that drives the rest of the theme.
+The student learns to profile and benchmark, discovering that model size and speed are as important as accuracy in edge environments. This module establishes the optimization mindset that drives the rest of the world.
 
 **Unique content:** The student implements model profiling (measuring size, speed, memory), architecture efficiency analysis (choosing designs that are inherently efficient), computational budgets (working within hardware limits), benchmarking (standardized performance testing), and optimization strategy planning.
 
@@ -529,7 +529,7 @@ Park's arc traces a data engineer who starts by viewing ML as overhyped and grad
 
 ---
 
-## Theme-Specific Terminology
+## World-Specific Terminology
 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|

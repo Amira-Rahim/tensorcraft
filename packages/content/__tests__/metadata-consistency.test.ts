@@ -2,7 +2,7 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
 import ts from "typescript";
-import { BUILT_THEME_DIRS } from "../src/built-themes";
+import { BUILT_WORLD_DIRS } from "../src/built-worlds";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
 import {
@@ -37,17 +37,17 @@ import {
  * and why run #6 was the first to notice that extras/math-deep-dive defines
  * cross-entropy as KL divergence.
  *
- * Velite ships `{deep-orbit,extras}` (velite.config.ts LAUNCHED_THEME_DIRS).
+ * Velite ships `{deep-orbit,extras}` (velite.config.ts LAUNCHED_WORLD_DIRS).
  * Anything a customer can load, these gates check.
  */
 const CONTENT_ROOT = dirname(CONTENT_DIR);
 // Scope tracks the build via one shared constant (F3). Adding a launched
-// theme to BUILT_THEME_DIRS extends this gate automatically.
-const LAUNCHED_THEME_DIRS = [...BUILT_THEME_DIRS];
+// world to BUILT_WORLD_DIRS extends this gate automatically.
+const LAUNCHED_WORLD_DIRS = [...BUILT_WORLD_DIRS];
 
 function launchedLessonFiles(): string[] {
-  return LAUNCHED_THEME_DIRS.flatMap((theme) =>
-    lessonFiles(join(CONTENT_ROOT, theme)),
+  return LAUNCHED_WORLD_DIRS.flatMap((world) =>
+    lessonFiles(join(CONTENT_ROOT, world)),
   );
 }
 
@@ -389,7 +389,7 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
   it("capstone finale hint declares the four identifiers its excerpt references (Run-8 regression)", () => {
     // Run #8's capstone retarget shipped a solution hint whose excerpt used
     // mean, variance, ratios and fibonacciTrain without ever declaring
-    // them - on the last lesson of the only purchasable theme, under a
+    // them - on the last lesson of the only purchasable world, under a
     // green gate (fresh-eyes rerun 2026-07-25, §5 regression 1). The three
     // statements below declare all four. The parse check cannot see a
     // missing declaration (undeclared identifiers are semantic), so the
@@ -487,7 +487,7 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
  * shipped phantoms (saliency maps, frequentist statistics) were hiding in
  * lesson summaries, while advanced-time-series promised "temporal
  * convolutional networks" in its description and no TCN, conv1d, or dilated
- * convolution existed anywhere in the theme.
+ * convolution existed anywhere in the world.
  *
  * The term list is deliberately curated rather than derived. A generic
  * noun-phrase extractor flags prose ("production system", "real signals");
@@ -531,10 +531,10 @@ const PROMISED_TOPICS = [
 describe("module.yaml only advertises topics the module teaches", () => {
   const modules: { id: string; description: string; corpus: string }[] = [];
 
-  for (const theme of LAUNCHED_THEME_DIRS) {
-    const themeDir = join(CONTENT_ROOT, theme);
-    for (const mod of readdirSync(themeDir)) {
-      const modDir = join(themeDir, mod);
+  for (const world of LAUNCHED_WORLD_DIRS) {
+    const worldDir = join(CONTENT_ROOT, world);
+    for (const mod of readdirSync(worldDir)) {
+      const modDir = join(worldDir, mod);
       const yaml = join(modDir, "module.yaml");
       if (!existsSync(yaml)) continue;
 
@@ -552,7 +552,7 @@ describe("module.yaml only advertises topics the module teaches", () => {
       }
 
       modules.push({
-        id: `${theme}/${mod}`,
+        id: `${world}/${mod}`,
         description: readFileSync(yaml, "utf8").toLowerCase(),
         corpus: corpus.toLowerCase(),
       });
@@ -581,7 +581,7 @@ describe("module.yaml only advertises topics the module teaches", () => {
         `${id}/module.yaml advertises ${phantom
           .map((p) => `"${p}"`)
           .join(", ")} but no lesson or exercise in the module mentions it. ` +
-          `This copy renders on the theme page before purchase.`,
+          `This copy renders on the world page before purchase.`,
       ).toEqual([]);
     },
   );

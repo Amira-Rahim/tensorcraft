@@ -15,7 +15,7 @@ export const metadata: Metadata = {
       "Data practices, third-party services, cookies, retention, and your rights.",
     images: [
       {
-        url: "/api/og?title=Privacy%20Policy&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+        url: "/api/og?title=Privacy%20Policy&subtitle=Tensorcraft%20legal&world=deep-orbit",
         width: 1200,
         height: 630,
         alt: "Tensorcraft Privacy Policy",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy | Tensorcraft",
     description: "Data practices, third-party services, cookies, and rights.",
     images: [
-      "/api/og?title=Privacy%20Policy&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+      "/api/og?title=Privacy%20Policy&subtitle=Tensorcraft%20legal&world=deep-orbit",
     ],
   },
 };

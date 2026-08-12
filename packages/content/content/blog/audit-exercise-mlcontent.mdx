@@ -3,7 +3,7 @@ slug: audit-exercise-mlcontent
 title: "Audit: what each exercise actually exercises, versus what its badge claims"
 publishedAt: 2026-07-19
 summary: We auto-classified every exercise by the ML surface its solution really touches, then fixed every difficulty badge that overpromised. Zero mismatches remain. Method and numbers inside.
-themeSlug: deep-orbit
+worldSlug: deep-orbit
 tags:
   - audit
   - exercises
@@ -24,7 +24,7 @@ Course platforms love difficulty badges. The dishonest version: an exercise tagg
 
 ## The numbers (audit of 2026-04-26)
 
-At audit time, 315 authored exercises across all five themes classified as 73.7% arithmetic, 13.3% data, and the rest spread over model, training, evaluation, and deployment. Difficulty badges contradicting the classification: **zero** after the fix pass. Where an intermediate badge sat on arithmetic content, either the badge came down or the exercise was rebuilt on real TFJS primitives; a follow-up sprint rewrote twelve arithmetic exercises into tensor-native versions.
+At audit time, 315 authored exercises across all five worlds classified as 73.7% arithmetic, 13.3% data, and the rest spread over model, training, evaluation, and deployment. Difficulty badges contradicting the classification: **zero** after the fix pass. Where an intermediate badge sat on arithmetic content, either the badge came down or the exercise was rebuilt on real TFJS primitives; a follow-up sprint rewrote twelve arithmetic exercises into tensor-native versions.
 
 Arithmetic dominating is not a scandal by itself: hand-computing a z-score or a gradient step teaches the mechanism before the library hides it. The scandal would be labeling that "advanced." We do not.
 

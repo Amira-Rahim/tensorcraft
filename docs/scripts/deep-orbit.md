@@ -5,7 +5,7 @@
 ## SCRIPT GUIDE
 
 **Tags:** `time-series` `signals` `FFT` `LSTM` `anomaly-detection` `browser-ml`
-**Theme:** Deep space signal analysis aboard the research vessel *Archimedes*
+**World:** Deep space signal analysis aboard the research vessel *Archimedes*
 **Model being built:** DEEP SCAN — a multi-stage signal classification system
 **GitHub repo deployed at end:** `deep-scan-signal-classifier`
 
@@ -617,7 +617,7 @@ The model reaches 78% accuracy. Mirza says: "Good enough to trust? Not yet. Keep
 
 ### Shared Core
 
-This module covers foundational concepts shared across all themes: network architecture design, loss functions (MSE, cross-entropy), backpropagation algorithm, training loops (epochs, batches, learning rate), and evaluation metrics (accuracy, precision, recall, F1-score, confusion matrices).
+This module covers foundational concepts shared across all worlds: network architecture design, loss functions (MSE, cross-entropy), backpropagation algorithm, training loops (epochs, batches, learning rate), and evaluation metrics (accuracy, precision, recall, F1-score, confusion matrices).
 
 ### GITHUB
 
@@ -712,7 +712,7 @@ Demir builds a spectrogram visualizer and feeds FFT features into the classifier
 
 ### Shared Core
 
-Covers signal processing fundamentals shared with audio/signal themes: sampling theorem, Nyquist frequency, aliasing, spectral analysis, filter design.
+Covers signal processing fundamentals shared with audio/signal worlds: sampling theorem, Nyquist frequency, aliasing, spectral analysis, filter design.
 
 ### GITHUB
 
@@ -762,7 +762,7 @@ Demir builds an LSTM (Long Short-Term Memory) network to predict the next signal
 
 ### Shared Core
 
-Covers sequence modeling fundamentals shared across themes: vanishing/exploding gradients, gate mechanisms (forget, input, output), bidirectional RNNs, sequence-to-sequence architectures.
+Covers sequence modeling fundamentals shared across worlds: vanishing/exploding gradients, gate mechanisms (forget, input, output), bidirectional RNNs, sequence-to-sequence architectures.
 
 ### GITHUB
 
@@ -809,7 +809,7 @@ Mirza convenes the crew. The unknown signal has a structure that is unlike anyth
 
 ### Shared Core
 
-Covers anomaly detection fundamentals shared across themes: autoencoders (vanilla, variational), isolation forests, one-class SVM, reconstruction error thresholding, precision-recall tradeoffs for anomaly systems.
+Covers anomaly detection fundamentals shared across worlds: autoencoders (vanilla, variational), isolation forests, one-class SVM, reconstruction error thresholding, precision-recall tradeoffs for anomaly systems.
 
 ### GITHUB
 
@@ -857,7 +857,7 @@ The crew attempts to predict the anomalous signal's next occurrence. Demir build
 
 ### Shared Core
 
-Covers advanced temporal modeling shared across themes: attention mechanisms, multi-head attention, temporal convolutions, state-space models, ensemble techniques (bagging, boosting, stacking).
+Covers advanced temporal modeling shared across worlds: attention mechanisms, multi-head attention, temporal convolutions, state-space models, ensemble techniques (bagging, boosting, stacking).
 
 ### GITHUB
 
@@ -901,7 +901,7 @@ Demir integrates LLM capabilities into DEEP SCAN: prompt engineering for signal 
 
 ### Shared Core
 
-Covers LLM integration fundamentals shared across themes: tokenization, embedding, prompt design, RAG architecture, multi-model orchestration, hallucination mitigation, output validation.
+Covers LLM integration fundamentals shared across worlds: tokenization, embedding, prompt design, RAG architecture, multi-model orchestration, hallucination mitigation, output validation.
 
 ### GITHUB
 
@@ -949,7 +949,7 @@ The optimization work is no longer academic. Remaining fuel reserves limit compu
 
 ### Shared Core
 
-Covers optimization fundamentals shared across themes: profiling, quantization (PTQ, QAT), pruning (structured, unstructured), knowledge distillation, caching (memoization, LRU), hardware acceleration (WebGPU, WebGL, WASM SIMD).
+Covers optimization fundamentals shared across worlds: profiling, quantization (PTQ, QAT), pruning (structured, unstructured), knowledge distillation, caching (memoization, LRU), hardware acceleration (WebGPU, WebGL, WASM SIMD).
 
 ### GITHUB
 
@@ -1053,7 +1053,7 @@ Nazari's arc traces a pragmatic engineer learning to trust ML — not blindly, b
 
 ---
 
-## Theme-Specific Terminology
+## World-Specific Terminology
 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|

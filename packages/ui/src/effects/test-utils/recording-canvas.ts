@@ -1,6 +1,6 @@
 /**
  * Shared geometry-recording mock CanvasRenderingContext2D, used by
- * orbit-canvas.test.ts and theme-scenes.test.ts to lock the SceneDraw
+ * orbit-canvas.test.ts and world-scenes.test.ts to lock the SceneDraw
  * contract: every position must be a pure function of t; `hot`/`scheme` may
  * only affect styling. Both test files record EVERY geometry-producing call
  * (arcs, ellipses, line segments, quadratic curves, filled rects) and diff

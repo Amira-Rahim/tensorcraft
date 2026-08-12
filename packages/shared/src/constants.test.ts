@@ -1,58 +1,58 @@
 import { describe, it, expect } from "vitest";
 import {
-  THEME_SLUGS,
+  WORLD_SLUGS,
   PRICING,
   ROUTES,
-  THEME_CONTENT,
-  DEFAULT_THEME,
+  WORLD_CONTENT,
+  DEFAULT_WORLD,
   getModuleLessonCount,
   getPaidLessonCount,
   SCHEME_STORAGE_KEY,
   isColorScheme,
 } from "./constants";
 
-describe("THEME_SLUGS", () => {
-  it("contains exactly 5 themes", () => {
-    expect(THEME_SLUGS).toHaveLength(5);
+describe("WORLD_SLUGS", () => {
+  it("contains exactly 5 worlds", () => {
+    expect(WORLD_SLUGS).toHaveLength(5);
   });
 
-  it("includes all expected themes", () => {
-    expect(THEME_SLUGS).toContain("deep-orbit");
-    expect(THEME_SLUGS).toContain("neon-protocol");
-    expect(THEME_SLUGS).toContain("signal-ward");
-    expect(THEME_SLUGS).toContain("nova-canvas");
-    expect(THEME_SLUGS).toContain("terra-grid");
+  it("includes all expected worlds", () => {
+    expect(WORLD_SLUGS).toContain("deep-orbit");
+    expect(WORLD_SLUGS).toContain("neon-protocol");
+    expect(WORLD_SLUGS).toContain("signal-ward");
+    expect(WORLD_SLUGS).toContain("nova-canvas");
+    expect(WORLD_SLUGS).toContain("terra-grid");
   });
 });
 
 describe("PRICING", () => {
   it("has correct free tier", () => {
     expect(PRICING.free.price).toBe(0);
-    expect(PRICING.free.themes).toBe(0);
+    expect(PRICING.free.worlds).toBe(0);
   });
 
   it("has correct single tier at $59", () => {
     expect(PRICING.single.price).toBe(59);
-    expect(PRICING.single.themes).toBe(1);
+    expect(PRICING.single.worlds).toBe(1);
   });
 
   it("has correct bundle tiers", () => {
     expect(PRICING.twoBundle.price).toBe(99);
-    expect(PRICING.twoBundle.themes).toBe(2);
+    expect(PRICING.twoBundle.worlds).toBe(2);
     expect(PRICING.threeBundle.price).toBe(129);
-    expect(PRICING.threeBundle.themes).toBe(3);
+    expect(PRICING.threeBundle.worlds).toBe(3);
     expect(PRICING.allFive.price).toBe(159);
-    expect(PRICING.allFive.themes).toBe(5);
+    expect(PRICING.allFive.worlds).toBe(5);
   });
 
-  it("bundles are cheaper per-theme than single", () => {
-    const singlePerTheme = PRICING.single.price;
-    const twoPerTheme = PRICING.twoBundle.price / PRICING.twoBundle.themes;
-    const threePerTheme =
-      PRICING.threeBundle.price / PRICING.threeBundle.themes;
+  it("bundles are cheaper per-world than single", () => {
+    const singlePerWorld = PRICING.single.price;
+    const twoPerWorld = PRICING.twoBundle.price / PRICING.twoBundle.worlds;
+    const threePerWorld =
+      PRICING.threeBundle.price / PRICING.threeBundle.worlds;
 
-    expect(twoPerTheme).toBeLessThan(singlePerTheme);
-    expect(threePerTheme).toBeLessThan(twoPerTheme);
+    expect(twoPerWorld).toBeLessThan(singlePerWorld);
+    expect(threePerWorld).toBeLessThan(twoPerWorld);
   });
 });
 
@@ -64,13 +64,13 @@ describe("ROUTES", () => {
     expect(ROUTES.auth.callback).toBe("/auth/callback");
   });
 
-  it("generates correct theme routes", () => {
-    expect(ROUTES.theme("deep-orbit")).toBe("/themes/deep-orbit");
+  it("generates correct world routes", () => {
+    expect(ROUTES.world("deep-orbit")).toBe("/worlds/deep-orbit");
   });
 
   it("generates correct lesson routes", () => {
     expect(ROUTES.lesson("deep-orbit", "module-1", "lesson-1")).toBe(
-      "/themes/deep-orbit/module-1/lesson-1",
+      "/worlds/deep-orbit/module-1/lesson-1",
     );
   });
 
@@ -93,14 +93,14 @@ describe("ROUTES", () => {
  * deciding to pay.
  */
 describe("getPaidLessonCount", () => {
-  it("is the full theme minus the free first module", () => {
+  it("is the full world minus the free first module", () => {
     expect(getPaidLessonCount()).toBe(
-      THEME_CONTENT.totalLessonsPerTheme -
-        getModuleLessonCount(DEFAULT_THEME, THEME_CONTENT.freeModuleSlug),
+      WORLD_CONTENT.totalLessonsPerWorld -
+        getModuleLessonCount(DEFAULT_WORLD, WORLD_CONTENT.freeModuleSlug),
     );
   });
 
-  it("equals 51 for the launched theme", () => {
+  it("equals 51 for the launched world", () => {
     // 56 total - 5 in foundations. Pinned so a change to either input has to
     // be a deliberate edit here, not a silent drift in marketing copy.
     expect(getPaidLessonCount()).toBe(51);
@@ -110,12 +110,12 @@ describe("getPaidLessonCount", () => {
     // getModuleLessonCount falls back to lessonsPerModule for unknown slugs,
     // so a typo'd freeModuleSlug would silently still return 5. Assert the
     // slug is the one the content corpus ships as module 1.
-    expect(THEME_CONTENT.freeModuleSlug).toBe("foundations");
+    expect(WORLD_CONTENT.freeModuleSlug).toBe("foundations");
   });
 
   it("leaves the paid count smaller than the total", () => {
     expect(getPaidLessonCount()).toBeLessThan(
-      THEME_CONTENT.totalLessonsPerTheme,
+      WORLD_CONTENT.totalLessonsPerWorld,
     );
     expect(getPaidLessonCount()).toBeGreaterThan(0);
   });
@@ -123,9 +123,9 @@ describe("getPaidLessonCount", () => {
 
 /**
  * Light-mode rollout (2026-07-22): the scheme axis is orthogonal to the
- * narrative theme. `isColorScheme` is the boundary guard for a stored
+ * narrative world. `isColorScheme` is the boundary guard for a stored
  * localStorage value or hand-edited DOM attribute, same role `isLaunched`
- * plays for theme slugs.
+ * plays for world slugs.
  */
 describe("isColorScheme", () => {
   it("accepts 'light' and 'dark'", () => {

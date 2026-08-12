@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: [
     "@tensorcraft/ui",
-    "@tensorcraft/themes",
+    "@tensorcraft/worlds",
     "@tensorcraft/supabase",
     "@tensorcraft/content",
     "@tensorcraft/shared",
@@ -55,6 +55,17 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
+  // The five course worlds were called "themes" until 2026-08-12. Published
+  // links (audit blog posts, shared lesson URLs) still point at /themes/*,
+  // so keep them alive permanently.
+  redirects: async () => [
+    { source: "/themes", destination: "/worlds", permanent: true },
+    {
+      source: "/themes/:path*",
+      destination: "/worlds/:path*",
+      permanent: true,
+    },
+  ],
   headers: async () => [
     // Long-lived immutable cache for build-hashed chunks. Filenames carry
     // a content hash so the URL changes whenever bytes change, safe to
@@ -111,7 +122,7 @@ const nextConfig: NextConfig = {
       // Optimized images: long client cache + edge cache, with SWR so a
       // background revalidation refreshes the entry without stalling the
       // user. 30 days of stale-while-revalidate is well within next/image
-      // expectations for theme art + lesson illustrations.
+      // expectations for world art + lesson illustrations.
       source: "/_next/image/:path*",
       headers: [
         {

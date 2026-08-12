@@ -1,7 +1,7 @@
 import { readdirSync, existsSync, readFileSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { describe, it, expect } from "vitest";
-import { BUILT_THEME_DIRS } from "../src/built-themes";
+import { BUILT_WORLD_DIRS } from "../src/built-worlds";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
 import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
@@ -19,10 +19,10 @@ import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
  */
 
 const CONTENT_ROOT = dirname(CONTENT_DIR);
-const SHIPPED_DIRS = [...BUILT_THEME_DIRS];
+const SHIPPED_DIRS = [...BUILT_WORLD_DIRS];
 
-function exerciseYamls(themeDir: string): string[] {
-  const root = join(CONTENT_ROOT, themeDir);
+function exerciseYamls(worldDir: string): string[] {
+  const root = join(CONTENT_ROOT, worldDir);
   if (!existsSync(root)) return [];
   const files: string[] = [];
   for (const mod of readdirSync(root)) {

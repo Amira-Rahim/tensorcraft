@@ -15,15 +15,15 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 
-vi.mock("@tensorcraft/themes", () => ({
-  themeSlugs: [
+vi.mock("@tensorcraft/worlds", () => ({
+  worldSlugs: [
     "deep-orbit",
     "neon-protocol",
     "signal-ward",
     "nova-canvas",
     "terra-grid",
   ] as const,
-  themes: {
+  worlds: {
     "deep-orbit": { displayName: "Deep Orbit" },
     "neon-protocol": { displayName: "Neon Protocol" },
     "signal-ward": { displayName: "Signal Ward" },
@@ -57,15 +57,15 @@ describe("PaywallNotice", () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it("renders nothing for an unknown theme slug (defensive)", () => {
+  it("renders nothing for an unknown world slug (defensive)", () => {
     // A malicious or stale link shouldn't render anything, we only
-    // surface canonical theme slugs.
-    mockLocked = "not-a-real-theme";
+    // surface canonical world slugs.
+    mockLocked = "not-a-real-world";
     const { container } = render(<PaywallNotice />);
     expect(container.firstChild).toBeNull();
   });
 
-  it("renders the theme display name for a known slug", () => {
+  it("renders the world display name for a known slug", () => {
     mockLocked = "deep-orbit";
     render(<PaywallNotice />);
     expect(screen.getByRole("status")).toBeInTheDocument();
@@ -100,7 +100,7 @@ describe("PaywallNotice", () => {
     render(<PaywallNotice />);
     expect(trackMock).toHaveBeenCalledWith("upgrade_cta_shown", {
       source: "paywall",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
     });
   });
 
@@ -110,12 +110,12 @@ describe("PaywallNotice", () => {
    * route switched to redirect-based enforcement. The banner renders at
    * exactly the paywall-hit moment, so it is the correct home for the event.
    */
-  it("fires paywall_hit on mount with the gated theme and module", () => {
+  it("fires paywall_hit on mount with the gated world and module", () => {
     mockLocked = "deep-orbit";
     mockModule = "neural-networks";
     render(<PaywallNotice />);
     expect(trackMock).toHaveBeenCalledWith("paywall_hit", {
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "neural-networks",
     });
   });
@@ -125,12 +125,12 @@ describe("PaywallNotice", () => {
     mockModule = null;
     render(<PaywallNotice />);
     expect(trackMock).toHaveBeenCalledWith("paywall_hit", {
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "unknown",
     });
   });
 
-  it("does not fire paywall_hit for a coming-soon theme", () => {
+  it("does not fire paywall_hit for a coming-soon world", () => {
     mockLocked = "nova-canvas";
     mockModule = "neural-networks";
     render(<PaywallNotice />);
@@ -144,16 +144,16 @@ describe("PaywallNotice", () => {
    * These two used to pass with signal-ward / nova-canvas, which is the bug:
    * the banner accepted ANY canonical slug, so /pricing?locked=nova-canvas
    * rendered "Module 2 and beyond in Nova Canvas require a purchase" and
-   * quoted Deep Orbit's lesson count, for a theme that ships no lessons and
-   * cannot be bought. Only launched themes have something to unlock.
+   * quoted Deep Orbit's lesson count, for a world that ships no lessons and
+   * cannot be bought. Only launched worlds have something to unlock.
    */
-  it("renders nothing for a coming-soon theme", () => {
+  it("renders nothing for a coming-soon world", () => {
     mockLocked = "nova-canvas";
     const { container } = render(<PaywallNotice />);
     expect(container.firstChild).toBeNull();
   });
 
-  it("does not fire upgrade_cta_shown for a coming-soon theme", () => {
+  it("does not fire upgrade_cta_shown for a coming-soon world", () => {
     mockLocked = "signal-ward";
     render(<PaywallNotice />);
     expect(trackMock).not.toHaveBeenCalled();

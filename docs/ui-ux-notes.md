@@ -1,24 +1,24 @@
 # Tensorcraft UI/UX Design Notes v3.2
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
-> Onboarding has **no theme picker** — new users auto-route to Deep Orbit
+> Onboarding has **no world picker** — new users auto-route to Deep Orbit
 > (see Part 1 below for the pre-revert spec, kept as historical reference
-> for when additional themes launch). The settings "active theme" tab is
-> removed; the `preferred_theme_id` column is retained as a tombstone.
-> Theme cards on the dashboard / `/themes` / `/learn` render the launched
-> theme as the live hero, with the other 4 themes shown as muted
-> "coming soon" cards that link to per-theme stub pages with email-capture
+> for when additional worlds launch). The settings "active world" tab is
+> removed; the `preferred_world_id` column is retained as a tombstone.
+> World cards on the dashboard / `/worlds` / `/learn` render the launched
+> world as the live hero, with the other 4 worlds shown as muted
+> "coming soon" cards that link to per-world stub pages with email-capture
 > forms. Authoritative spec: [`launch-scope.md`](./launch-scope.md).
 
-This document specifies the interaction design, layout, animation, and visual system for the Tensorcraft learning platform. All measurements are in logical pixels unless otherwise noted. All colors reference CSS custom properties defined in the theme system (Part 5).
+This document specifies the interaction design, layout, animation, and visual system for the Tensorcraft learning platform. All measurements are in logical pixels unless otherwise noted. All colors reference CSS custom properties defined in the world system (Part 5).
 
 ---
 
-## PART 1: THEME SELECTION SCREEN
+## PART 1: WORLD SELECTION SCREEN
 
 ### 1.1 Layout
 
-The theme selection screen is the first meaningful interaction after signup. It presents all five Tensorcraft themes as selectable cards.
+The world selection screen is the first meaningful interaction after signup. It presents all five Tensorcraft worlds as selectable cards.
 
 - **Mobile (default):** Single-column stack (`grid grid-cols-1`). Each card is full-width. Gap: 16px. Container padding: 16px. Cards switch to a horizontal layout on mobile: artwork on the left (40%), text on the right (60%), using `flex-direction: row`. Card height is fixed at 120px on mobile to prevent excessive scrolling.
 - **md breakpoint (768px+):** 2-column grid (`md:grid-cols-2`). Gap: 20px. Container padding: 32px. The fifth card spans full width on its own row: `&:last-child { grid-column: 1 / -1; max-width: 50%; margin: 0 auto; }`. Cards have a 3:4 aspect ratio enforced via `aspect-ratio: 3/4`.
@@ -29,19 +29,19 @@ The theme selection screen is the first meaningful interaction after signup. It 
 
 ### 2.1 Art Style
 
-The progress diagram visualizes the learner's journey through a theme's modules and lessons as an interconnected node graph.
+The progress diagram visualizes the learner's journey through a world's modules and lessons as an interconnected node graph.
 
-- **Style:** Flat, 2D vector art. Clean geometric shapes. Inspired by Figma's layer panel and Linear's project views. Nodes are circles (lessons) connected by straight or gently curved lines (progress paths). Completed sections glow with the theme's accent color. The overall aesthetic is minimal, precise, and technical -- consistent with Tensorcraft's developer-tool feel.
+- **Style:** Flat, 2D vector art. Clean geometric shapes. Inspired by Figma's layer panel and Linear's project views. Nodes are circles (lessons) connected by straight or gently curved lines (progress paths). Completed sections glow with the world's accent color. The overall aesthetic is minimal, precise, and technical -- consistent with Tensorcraft's developer-tool feel.
 - **NOT:** Do not use isometric projection, 3D renders, skeuomorphic elements, or hand-drawn illustration styles. No gradients on nodes (flat fills only). No drop shadows (use border glow for elevation). The diagram should feel like a system diagram or circuit board, not a game map or fantasy adventure path.
 
 ### 2.2 Component States
 
 | State | Visual Treatment |
 |-------|-----------------|
-| **Locked** | Node fill: `--theme-bg` (dark). Node border: 1px solid `--theme-muted` at 30% opacity. Connection line: dashed, `--theme-muted` at 20% opacity. Icon: lock icon (16px, centered in node). Label text: `--theme-muted`. Node is non-interactive (no hover state, cursor: default). |
-| **Active** | Node fill: `--theme-bg`. Node border: 2px solid `--theme-accent`. Connection line from previous completed node: solid, `--theme-accent`. Subtle pulse animation on border (opacity 0.6 to 1.0, 2s ease-in-out infinite). Icon: play icon (16px, centered). Label text: `--theme-text`. Cursor: pointer. Hover: node scale(1.08) with 150ms ease-out. |
-| **Completed** | Node fill: `--theme-accent` at 15% opacity. Node border: 2px solid `--theme-accent`. Connection line to next node: solid, `--theme-accent`. Icon: checkmark (16px, `--theme-accent`). Label text: `--theme-text`. Hover: node scale(1.05) with 150ms ease-out. Click reopens lesson for review. |
-| **Connection** | Lines between nodes are SVG `<path>` elements. Default stroke-width: 2px. Completed connections animate a traveling dot (4px circle, `--theme-accent`, moves along path over 1.5s ease-in-out, plays once on completion). Active connections have a gradient stroke from `--theme-accent` to `--theme-muted`. |
+| **Locked** | Node fill: `--world-bg` (dark). Node border: 1px solid `--world-muted` at 30% opacity. Connection line: dashed, `--world-muted` at 20% opacity. Icon: lock icon (16px, centered in node). Label text: `--world-muted`. Node is non-interactive (no hover state, cursor: default). |
+| **Active** | Node fill: `--world-bg`. Node border: 2px solid `--world-accent`. Connection line from previous completed node: solid, `--world-accent`. Subtle pulse animation on border (opacity 0.6 to 1.0, 2s ease-in-out infinite). Icon: play icon (16px, centered). Label text: `--world-text`. Cursor: pointer. Hover: node scale(1.08) with 150ms ease-out. |
+| **Completed** | Node fill: `--world-accent` at 15% opacity. Node border: 2px solid `--world-accent`. Connection line to next node: solid, `--world-accent`. Icon: checkmark (16px, `--world-accent`). Label text: `--world-text`. Hover: node scale(1.05) with 150ms ease-out. Click reopens lesson for review. |
+| **Connection** | Lines between nodes are SVG `<path>` elements. Default stroke-width: 2px. Completed connections animate a traveling dot (4px circle, `--world-accent`, moves along path over 1.5s ease-in-out, plays once on completion). Active connections have a gradient stroke from `--world-accent` to `--world-muted`. |
 
 ### 2.3 Animation Specifications
 
@@ -58,11 +58,11 @@ The progress diagram visualizes the learner's journey through a theme's modules 
 
 ### 2.4 Stats Panel
 
-The stats panel provides an at-a-glance summary of the learner's progress within the current theme.
+The stats panel provides an at-a-glance summary of the learner's progress within the current world.
 
 - **Position:** Fixed to the right edge of the progress diagram viewport on desktop (320px wide, full height of diagram area). Slides up from bottom on mobile (full width, max-height 60vh, draggable to dismiss). Overlays the diagram with a semi-transparent backdrop (`rgba(0,0,0,0.3)`).
-- **Content:** Theme completion percentage (large, centered, circular progress ring using SVG). Lessons completed / total lessons. Current streak (consecutive days with at least one lesson completed). Estimated time remaining (based on average lesson duration and remaining lessons). FE bridges encountered / total bridges in theme. A mini-heatmap showing activity over the last 30 days (similar to GitHub contribution graph, using theme accent color at varying opacities).
-- **Style:** Background: `--theme-bg` with 1px border in `--theme-muted` at 30% opacity. All text in `--theme-text`. Numbers and percentages in `--theme-accent`. The circular progress ring stroke uses `--theme-accent` for the filled portion and `--theme-muted` at 20% for the remaining portion. Stroke-width: 8px. Ring diameter: 120px.
+- **Content:** World completion percentage (large, centered, circular progress ring using SVG). Lessons completed / total lessons. Current streak (consecutive days with at least one lesson completed). Estimated time remaining (based on average lesson duration and remaining lessons). FE bridges encountered / total bridges in world. A mini-heatmap showing activity over the last 30 days (similar to GitHub contribution graph, using world accent color at varying opacities).
+- **Style:** Background: `--world-bg` with 1px border in `--world-muted` at 30% opacity. All text in `--world-text`. Numbers and percentages in `--world-accent`. The circular progress ring stroke uses `--world-accent` for the filled portion and `--world-muted` at 20% for the remaining portion. Stroke-width: 8px. Ring diameter: 120px.
 - **Dismiss:** Click the X button, press Escape, click outside the panel, or swipe right (desktop) / swipe down (mobile). The panel remembers its open/closed state in localStorage.
 
 ### 2.5 Screenshot/Share
@@ -70,9 +70,9 @@ The stats panel provides an at-a-glance summary of the learner's progress within
 Learners can capture and share their progress diagram as an image.
 
 - **Capture method:** Use `html2canvas` to render the progress diagram (excluding the stats panel and UI chrome) to a canvas element. Scale factor: 2x for retina-quality output. Output format: PNG.
-- **Watermark:** Bottom-right corner of the captured image includes a subtle Tensorcraft watermark: the Tensorcraft logo (24px height) + "tensorcraft.app" text in `--theme-muted` at 50% opacity. The watermark is added programmatically after canvas capture, not rendered in the DOM.
-- **Share:** After capture, display a share modal with options: "Download PNG" (primary), "Copy to Clipboard" (using the Clipboard API), and "Share" (using the Web Share API where supported, falling back to Twitter/X and LinkedIn share URLs with pre-filled text). The pre-filled share text: "I've completed [X]% of [Theme Name] on Tensorcraft! Learning ML through frontend concepts." Include the captured image as the share attachment when the Web Share API supports files.
-- **Output:** 2x PNG at the diagram's rendered dimensions. Typical output: 2400x1600px for a desktop-width diagram. File name: `tensorcraft-[theme]-progress.png`.
+- **Watermark:** Bottom-right corner of the captured image includes a subtle Tensorcraft watermark: the Tensorcraft logo (24px height) + "tensorcraft.app" text in `--world-muted` at 50% opacity. The watermark is added programmatically after canvas capture, not rendered in the DOM.
+- **Share:** After capture, display a share modal with options: "Download PNG" (primary), "Copy to Clipboard" (using the Clipboard API), and "Share" (using the Web Share API where supported, falling back to Twitter/X and LinkedIn share URLs with pre-filled text). The pre-filled share text: "I've completed [X]% of [World Name] on Tensorcraft! Learning ML through frontend concepts." Include the captured image as the share attachment when the Web Share API supports files.
+- **Output:** 2x PNG at the diagram's rendered dimensions. Typical output: 2400x1600px for a desktop-width diagram. File name: `tensorcraft-[world]-progress.png`.
 
 ---
 
@@ -82,15 +82,15 @@ Learners can capture and share their progress diagram as an image.
 
 Three-column layout optimized for simultaneous reading and coding.
 
-- **Sidebar:** Fixed left column, 240px wide. Contains: theme logo (32px), module title, lesson list for current module (scrollable if exceeding viewport height), progress indicators (checkmarks for completed lessons, dot for current, lock for locked). Background: `--theme-bg` darkened 5%. Border-right: 1px solid `--theme-muted` at 20%.
+- **Sidebar:** Fixed left column, 240px wide. Contains: world logo (32px), module title, lesson list for current module (scrollable if exceeding viewport height), progress indicators (checkmarks for completed lessons, dot for current, lock for locked). Background: `--world-bg` darkened 5%. Border-right: 1px solid `--world-muted` at 20%.
 - **Narrative panel:** Center column, 60% of remaining width after sidebar. Contains the lesson narrative: MDX-rendered content with prose text, bridge callouts, diagrams, and embedded interactive elements. Max prose width: 680px, centered within the panel. Padding: 48px horizontal, 32px vertical. Scroll is independent of other columns. The narrative panel is the primary reading surface.
-- **Code panel:** Right column, 40% of remaining width. Contains the Sandpack-powered code editor and preview. The panel is split vertically: editor on top (60% height), live preview on bottom (40% height). A draggable divider between editor and preview allows resizing. The code panel has its own scroll context. Background: Sandpack's default dark theme, adjusted to match `--theme-bg`.
+- **Code panel:** Right column, 40% of remaining width. Contains the Sandpack-powered code editor and preview. The panel is split vertically: editor on top (60% height), live preview on bottom (40% height). A draggable divider between editor and preview allows resizing. The code panel has its own scroll context. Background: Sandpack's default dark world, adjusted to match `--world-bg`.
 
 ### 3.2 Tablet Layout (768px-1279px)
 
 The sidebar collapses. Narrative and code share the viewport via sticky tabs.
 
-- **Tabs:** Two sticky tabs at the top of the viewport: "Story" and "Code". Tabs are 48px tall, full width, with the active tab indicated by a 2px bottom border in `--theme-accent`. Tabs remain visible during scroll (sticky positioning). Tab switch is instant (no animation) to avoid disorienting the reader.
+- **Tabs:** Two sticky tabs at the top of the viewport: "Story" and "Code". Tabs are 48px tall, full width, with the active tab indicated by a 2px bottom border in `--world-accent`. Tabs remain visible during scroll (sticky positioning). Tab switch is instant (no animation) to avoid disorienting the reader.
 - **Story tab:** Full-width narrative content. Same MDX rendering as desktop. Max prose width: 640px, centered. Padding: 32px.
 - **Code tab:** Full-width Sandpack editor and preview. Editor takes 55% height, preview 45%. The tab remembers scroll position when switching -- returning to "Story" restores the previous scroll offset.
 
@@ -107,15 +107,15 @@ Single-column layout with careful space management.
 
 Bridge moments are the core pedagogical feature -- the point where a frontend concept is explicitly mapped to an ML concept. These require special UI treatment.
 
-- **Split-panel view:** When a bridge moment occurs in the narrative, the layout temporarily shifts to a side-by-side comparison. On desktop: the narrative panel splits into two equal columns -- left shows the FE concept (with code example), right shows the ML concept (with code example). A glowing bridge connector (animated SVG line with `--theme-accent` color) visually links the two sides. On tablet/mobile: the bridge is presented as a stacked comparison (FE on top, ML below) with the bridge connector rotated to vertical.
+- **Split-panel view:** When a bridge moment occurs in the narrative, the layout temporarily shifts to a side-by-side comparison. On desktop: the narrative panel splits into two equal columns -- left shows the FE concept (with code example), right shows the ML concept (with code example). A glowing bridge connector (animated SVG line with `--world-accent` color) visually links the two sides. On tablet/mobile: the bridge is presented as a stacked comparison (FE on top, ML below) with the bridge connector rotated to vertical.
 - **Sidebar indicator:** In the desktop sidebar, bridge moments are indicated with a small bridge icon (16px) next to the lesson title. Hovering the icon shows a tooltip: "This lesson contains [N] FE-to-ML bridges."
-- **Code Hike scrollytelling:** For complex bridges that require step-by-step explanation, use Code Hike's scrollytelling component. The narrative scrolls on the left while the code panel on the right highlights and transitions between code states in sync with the scroll position. Each scroll step corresponds to one mapping point in the bridge. Code Hike annotations highlight the specific lines being discussed with a `--theme-accent` background at 15% opacity.
+- **Code Hike scrollytelling:** For complex bridges that require step-by-step explanation, use Code Hike's scrollytelling component. The narrative scrolls on the left while the code panel on the right highlights and transitions between code states in sync with the scroll position. Each scroll step corresponds to one mapping point in the bridge. Code Hike annotations highlight the specific lines being discussed with a `--world-accent` background at 15% opacity.
 
 ### 3.5 Checkpoint Quiz Component
 
 After every 2-3 lessons, a checkpoint quiz tests comprehension. The quiz is embedded inline in the narrative flow.
 
-- **Radio button targets:** Each answer option is a radio button with a 44px minimum touch target (WCAG 2.5.5 compliant). The radio button is custom-styled: a 20px circle with 2px border in `--theme-muted`, filled with `--theme-accent` when selected. The label text is positioned to the right of the radio button with 12px gap. Each option has a full-width clickable area (the entire row is the hit target, not just the radio circle).
+- **Radio button targets:** Each answer option is a radio button with a 44px minimum touch target (WCAG 2.5.5 compliant). The radio button is custom-styled: a 20px circle with 2px border in `--world-muted`, filled with `--world-accent` when selected. The label text is positioned to the right of the radio button with 12px gap. Each option has a full-width clickable area (the entire row is the hit target, not just the radio circle).
 - **Wrong answer feedback:** When a wrong answer is submitted, the selected option's row flashes red (`#EF4444` at 20% opacity background) and shakes horizontally (3px amplitude, 3 cycles, 300ms total -- CSS `@keyframes shake`). A brief explanation appears below the option in red text: "Not quite. [Explanation of why this is wrong.]" The learner can try again immediately.
 - **Correct answer feedback:** When the correct answer is submitted, the row flashes green (`#22C55E` at 20% opacity background). A checkmark icon animates in (scale from 0 to 1, 200ms, spring easing). The explanation appears below: "Correct! [Reinforcement of the concept.]" The page auto-scrolls to bring the next content section into view (smooth scroll, 400ms).
 
@@ -156,7 +156,7 @@ Some UI elements that provide value on desktop create clutter on mobile. These a
 | Bridge connector SVG | Animated glowing line between FE and ML code panels | Hidden (replaced by a static "Bridge" label between stacked panels) |
 | Code editor line numbers | Visible | Hidden (saves horizontal space in the 300px editor) |
 | Hint level indicators | Visible (3 dots showing current hint level) | Hidden (replaced by swipe gesture with chevron affordance) |
-| Breadcrumb navigation | Visible (Theme > Module > Lesson) | Hidden (replaced by back arrow + lesson title in top bar) |
+| Breadcrumb navigation | Visible (World > Module > Lesson) | Hidden (replaced by back arrow + lesson title in top bar) |
 
 ### 4.3 Device Testing Priority
 
@@ -185,7 +185,7 @@ All sizes use a 1.25 ratio (Major Third) scale anchored at 16px body text.
 | `--text-base` | 16px / 1rem | 400 | Body text, prose paragraphs, quiz options, button labels |
 | `--text-lg` | 20px / 1.25rem | 500 | Section headings within lessons, bridge titles, card titles |
 | `--text-xl` | 25px / 1.5625rem | 600 | Lesson titles, module headings, stats panel primary numbers |
-| `--text-2xl` | 32px / 2rem | 700 | Page titles, theme names on selection screen, hero headings |
+| `--text-2xl` | 32px / 2rem | 700 | Page titles, world names on selection screen, hero headings |
 | `--text-3xl` | 40px / 2.5rem | 700 | Landing page hero headline, marketing pages only (not used in app) |
 
 **Font stack:** `'JetBrains Mono', ui-monospace, monospace` is the primary body font (set on `<body>` via `var(--font-mono)`). `'Inter', ui-sans-serif, system-ui, sans-serif` is available via `var(--font-sans)` for long-form prose paragraphs only. Both are loaded via `next/font/google` with `display: 'swap'` and subsets `['latin']`.
@@ -200,11 +200,11 @@ All sizes use a 1.25 ratio (Major Third) scale anchored at 16px body text.
 
 ### 5.2 Color System — Brutalist Terminal Aesthetic
 
-Tensorcraft uses a unified "Brutalist Terminal" aesthetic across the entire application. All themes share the same shell tokens; only `--tc-primary` and `--tc-accent` vary per theme. Theme switching is done via `data-theme="<slug>"` on `<html>`. Deep Orbit is the default (applied on `:root`).
+Tensorcraft uses a unified "Brutalist Terminal" aesthetic across the entire application. All worlds share the same shell tokens; only `--tc-primary` and `--tc-accent` vary per world. World switching is done via `data-world="<slug>"` on `<html>`. Deep Orbit is the default (applied on `:root`).
 
-CSS custom properties are defined in `packages/themes/src/css/themes.css` and consumed by the Tailwind `@theme` block in `apps/web/app/globals.css`.
+CSS custom properties are defined in `packages/worlds/src/css/worlds.css` and consumed by the Tailwind `@world` block in `apps/web/app/globals.css`.
 
-#### 5.2.1 Shared Shell Tokens (identical across all themes)
+#### 5.2.1 Shared Shell Tokens (identical across all worlds)
 
 | Token | CSS Variable | Value | Notes |
 | ------- | ------------- | ------- | ------- |
@@ -226,11 +226,11 @@ CSS custom properties are defined in `packages/themes/src/css/themes.css` and co
 | Glow | `--tc-glow` | `color-mix(in srgb, var(--tc-primary) 10%, transparent)` | Header glow |
 | Primary Muted | `--tc-primary-muted` | `color-mix(in srgb, var(--tc-primary) 8%, transparent)` | Tinted backgrounds |
 
-> **Rename note:** The old `--tc-glow` (which held a per-theme neon hex value) was renamed to `--tc-neon-glow`. The new `--tc-glow` above is a primary-derived `color-mix` token used for header glow effects.
+> **Rename note:** The old `--tc-glow` (which held a per-world neon hex value) was renamed to `--tc-neon-glow`. The new `--tc-glow` above is a primary-derived `color-mix` token used for header glow effects.
 
-#### 5.2.2 Per-Theme Tokens (only primary and accent vary)
+#### 5.2.2 Per-World Tokens (only primary and accent vary)
 
-| Theme | `--tc-primary` | `--tc-accent` |
+| World | `--tc-primary` | `--tc-accent` |
 | ------- | --------------- | -------------- |
 | Deep Orbit | `#6BAA8A` (sage green) | `#A89060` (warm gold) |
 | Neon Protocol | `#4A90D9` (steel blue) | `#A07090` (muted mauve) |
@@ -238,11 +238,11 @@ CSS custom properties are defined in `packages/themes/src/css/themes.css` and co
 | Nova Canvas | `#D07070` (warm red) | `#7868A8` (soft purple) |
 | Terra Grid | `#C49535` (industrial amber) | `#6BAA8A` (sage green) |
 
-Each theme also defines three bridge-tier tokens derived from the palette: `--tc-tier-identity` (matches primary), `--tc-tier-structural` (`#7096B0`), and `--tc-tier-intuition` (`#A89060`).
+Each world also defines three bridge-tier tokens derived from the palette: `--tc-tier-identity` (matches primary), `--tc-tier-structural` (`#7096B0`), and `--tc-tier-intuition` (`#A89060`).
 
 #### 5.2.3 Tailwind Utility Remapping
 
-The Tailwind `@theme` block in `apps/web/app/globals.css` maps CSS custom properties to utility classes:
+The Tailwind `@world` block in `apps/web/app/globals.css` maps CSS custom properties to utility classes:
 
 - `bg-surface` maps to `--tc-surface` (`#232323`) — used for card and panel backgrounds.
 - `bg-page` maps to `--tc-bg` (`#181818`) — used for page-level backgrounds.
@@ -260,7 +260,7 @@ The Tailwind `@theme` block in `apps/web/app/globals.css` maps CSS custom proper
 - Buttons: square, offset shadow on hover, `translate(-2px,-2px)` hover state
 - No glow effects, no neon lines, no animated gradients, no glassmorphism
 
-**ThemePalette interface** (in `packages/themes/src/types.ts`):
+**WorldPalette interface** (in `packages/worlds/src/types.ts`):
 
 - `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`
 - Removed: `glow`, `neonLine` (no longer part of the design system)
@@ -268,11 +268,11 @@ The Tailwind `@theme` block in `apps/web/app/globals.css` maps CSS custom proper
 **Accessibility requirements:**
 
 - `--tc-text` (`#E0E0E0`) on `--tc-bg` (`#181818`) = 12.1:1 contrast ratio, exceeds WCAG AA (4.5:1).
-- `--tc-primary` on `--tc-bg` must meet WCAG AA for large text (3:1 minimum). Verified for all themes.
+- `--tc-primary` on `--tc-bg` must meet WCAG AA for large text (3:1 minimum). Verified for all worlds.
 - `--tc-muted` (`#A0A0A0`) on `--tc-bg` (`#181818`) = 5.6:1 contrast (meets AA). Safe for body text, labels, and secondary information. Still recommended to use `--tc-text` for primary content.
 - Focus indicators: All interactive elements use a 2px `--tc-primary` outline with 2px offset on `:focus-visible`. This is a global style applied in the base CSS. Never suppress or override focus indicators.
 
-**Color scheme note:** Tensorcraft supports both light and dark color schemes (added 2026-07-22). Dark remains the core brand aesthetic and the default look designers should reach for first; light mode is a fully designed second palette, not a neutrals flip, built from darkened versions of the existing dark hues (identity preserved, not swapped) and re-verified to WCAG AA contrast per theme. The scheme axis is orthogonal to the narrative-theme axis: a `data-scheme="light"` (or `"dark"`) attribute on `<html>` sits alongside the existing `data-theme="<slug>"` attribute, and `packages/themes/src/css/themes.css` defines `[data-theme="<slug>"][data-scheme="light"]` override blocks for the same `--tc-*` custom properties, so every token-driven component works untouched. The active scheme persists in the `tc-scheme` localStorage key (`"light" | "dark" | null`; `null` means "follow the OS"); it defaults to following `prefers-color-scheme` and is overridden the moment the user flips the manual toggle. Shipped 2026-07-23; the 2026-07-23 entry in `docs/dev-plan.md` records the implementation and its verification passes. One deliberate gap: the lesson viewer is chromeless (no site nav), so there is no scheme toggle inside lessons - learners flip scheme from any other page or via the OS.
+**Color scheme note:** Tensorcraft supports both light and dark color schemes (added 2026-07-22). Dark remains the core brand aesthetic and the default look designers should reach for first; light mode is a fully designed second palette, not a neutrals flip, built from darkened versions of the existing dark hues (identity preserved, not swapped) and re-verified to WCAG AA contrast per world. The scheme axis is orthogonal to the narrative-world axis: a `data-scheme="light"` (or `"dark"`) attribute on `<html>` sits alongside the existing `data-world="<slug>"` attribute, and `packages/worlds/src/css/worlds.css` defines `[data-world="<slug>"][data-scheme="light"]` override blocks for the same `--tc-*` custom properties, so every token-driven component works untouched. The active scheme persists in the `tc-scheme` localStorage key (`"light" | "dark" | null`; `null` means "follow the OS"); it defaults to following `prefers-color-scheme` and is overridden the moment the user flips the manual toggle. Shipped 2026-07-23; the 2026-07-23 entry in `docs/dev-plan.md` records the implementation and its verification passes. One deliberate gap: the lesson viewer is chromeless (no site nav), so there is no scheme toggle inside lessons - learners flip scheme from any other page or via the OS.
 
 Canvas scene art gets a genuinely different render language per scheme rather than a recolor: the dark scheme is "light emitted from darkness" (additive `"lighter"` compositing, hues lifted toward white), while the light scheme is "ink on paper" (`"multiply"` compositing, so overlapping marks pool darker like wet ink; hues are deepened toward near-black instead of lifted toward white; base alphas scale up because a tinted ink mark needs more body than a glow on black to read). Scene geometry never branches on scheme, only the render mode does. The `color-scheme` value tracks the active scheme so the browser can style scrollbars, form controls, etc. accordingly, and OG images and favicons intentionally stay dark regardless of scheme. System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale and `docs/superpowers/plans/2026-07-22-light-mode.md` for the implementation plan.
 
@@ -305,8 +305,8 @@ The signup and login screen provides three authentication methods.
 A 3-step post-signup flow that orients the new user.
 
 - **Step 1 — Welcome:** Headline "You Already Think Like an ML Engineer" (matches the landing page hero). Brief value proposition paragraph. "Let's get started" CTA button.
-- **Step 2 — Choose Theme:** Displays available themes as selectable cards (same card style as theme-selection screen but simplified). User picks their starting theme. Deep Orbit is pre-highlighted as the recommended first theme.
-- **Step 3 — Start Learning:** Confirmation screen showing the selected theme, estimated time commitment, and a "Begin Module 1" CTA. Also shows a skip option: "Explore other themes first".
+- **Step 2 — Choose World:** Displays available worlds as selectable cards (same card style as world-selection screen but simplified). User picks their starting world. Deep Orbit is pre-highlighted as the recommended first world.
+- **Step 3 — Start Learning:** Confirmation screen showing the selected world, estimated time commitment, and a "Begin Module 1" CTA. Also shows a skip option: "Explore other worlds first".
 - **Progress indicator:** A 3-dot stepper at the top of the card shows current position (filled dot = current, hollow = remaining).
 - **Persistence:** Onboarding completion is stored in the user profile. Users who have completed onboarding are never shown it again.
 
@@ -316,18 +316,18 @@ Appears after completing the Module 1 free preview when a free-tier user attempt
 
 - **Trigger:** Navigating to any lesson in Module 2 or beyond while on the free tier.
 - **Layout:** Centered modal overlay with backdrop blur. Modal card (max-width: 520px) on `#0F1320` surface.
-- **Content:** Headline "Unlock the full [Theme Name] journey". Feature comparison (free vs. paid). Per-model price displayed prominently: "$59 — lifetime access to this theme". Pill-shaped CTA: "Unlock [Theme Name]". Secondary link: "View all themes" (links to pricing page).
+- **Content:** Headline "Unlock the full [World Name] journey". Feature comparison (free vs. paid). Per-model price displayed prominently: "$59 — lifetime access to this world". Pill-shaped CTA: "Unlock [World Name]". Secondary link: "View all worlds" (links to pricing page).
 - **Dismiss:** Click outside the modal or X button. User is returned to the Module 1 content they can still access.
 
-> **PRICING DISCREPANCY:** The PRD (Section 8) defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan (Part 2) and the prototypes use per-model pricing ($59 per theme, lifetime access). The paywall prototype implements per-model pricing. This discrepancy must be resolved before V1.0 launch. See also the flag in the PRD.
+> **PRICING DISCREPANCY:** The PRD (Section 8) defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan (Part 2) and the prototypes use per-model pricing ($59 per world, lifetime access). The paywall prototype implements per-model pricing. This discrepancy must be resolved before V1.0 launch. See also the flag in the PRD.
 
 ### 6.4 Bridge Explorer (`bridge-explorer.html`)
 
-A V1.0 feature for browsing all FE-to-ML bridges across themes.
+A V1.0 feature for browsing all FE-to-ML bridges across worlds.
 
 - **Purpose:** A standalone browsable directory of all 50+ FE-to-ML bridges, not tied to a specific lesson. Allows learners to search and explore bridges by FE concept or ML concept.
-- **Layout:** Full-page layout with search bar at top (pill-shaped input). Below: filterable grid of bridge cards. Each card shows: FE concept (left), arrow connector, ML concept (right), one-line summary, and the theme it belongs to.
-- **Filters:** Filter by theme (checkboxes), by ML category (e.g., "Training", "Architecture", "Data Prep"), or by FE category (e.g., "React", "CSS", "DOM").
+- **Layout:** Full-page layout with search bar at top (pill-shaped input). Below: filterable grid of bridge cards. Each card shows: FE concept (left), arrow connector, ML concept (right), one-line summary, and the world it belongs to.
+- **Filters:** Filter by world (checkboxes), by ML category (e.g., "Training", "Architecture", "Data Prep"), or by FE category (e.g., "React", "CSS", "DOM").
 - **Card interaction:** Clicking a bridge card expands it inline to show the full analogy text, code examples for both FE and ML sides, and a "Go to lesson" link.
 - **Responsive:** On mobile, bridge cards stack vertically. The filter panel collapses into a slide-out drawer accessible via a filter icon button.
 
@@ -377,7 +377,7 @@ at roughly 1:1.
 Three separate overrides are required, and each fixes a different failure:
 
 1. **`--tc-*` tokens** — for anything reading `var(--tc-…)` directly.
-2. **`--color-*` tokens** — Tailwind's `@theme` emits
+2. **`--color-*` tokens** — Tailwind's `@world` emits
    `--color-text-muted: var(--tc-muted)` at `:root`, and a custom property is
    substituted where it is *declared*, so it already computed to the light
    value up there. Redefining `--tc-muted` deeper cannot reach

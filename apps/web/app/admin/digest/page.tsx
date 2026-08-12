@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 type StatusFilter = "pending" | "shortlisted" | "rejected" | "all" | "gap";
 
 interface MatchedLesson {
-  themeId: string;
+  worldId: string;
   moduleId: string;
   slug: string;
   title: string;
@@ -163,13 +163,13 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
       ) : item.matched_lessons.length > 0 ? (
         <ol className="mt-4 space-y-1 text-sm">
           {item.matched_lessons.map((m) => (
-            <li key={`${m.themeId}/${m.moduleId}/${m.slug}`}>
+            <li key={`${m.worldId}/${m.moduleId}/${m.slug}`}>
               <span className="font-mono text-xs opacity-60">[{m.score}]</span>{" "}
               <a
-                // Lesson routes live under /themes — the old /learn/... form
+                // Lesson routes live under /worlds — the old /learn/... form
                 // predates the route rename and 404'd (register §6 "broken
                 // admin link"; /learn is now a single marketing page).
-                href={`/themes/${m.themeId}/${m.moduleId}/${m.slug}`}
+                href={`/worlds/${m.worldId}/${m.moduleId}/${m.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium hover:underline"
@@ -177,7 +177,7 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
                 {m.title}
               </a>{" "}
               <span className="opacity-50">
-                ({m.themeId}/{m.moduleId})
+                ({m.worldId}/{m.moduleId})
               </span>
               {m.rationale && (
                 <p className="ml-4 text-xs opacity-70">{m.rationale}</p>

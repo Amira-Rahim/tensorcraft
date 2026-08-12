@@ -54,8 +54,8 @@ export function InboxView({ messages }: { messages: InboxMessage[] }) {
         <EmptyState
           title="No intel yet"
           body="DISPATCH will check in once you complete your first lesson. Weekly intel arrives Sunday."
-          ctaHref="/themes"
-          ctaLabel="Browse themes"
+          ctaHref="/worlds"
+          ctaLabel="Browse worlds"
         />
       )}
 

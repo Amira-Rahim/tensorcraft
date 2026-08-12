@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { AuthForm } from "../components/auth-form";
 import { OrbitCanvas } from "@tensorcraft/ui/effects";
-import { themes, themeSlugs } from "@tensorcraft/themes";
+import { worlds, worldSlugs } from "@tensorcraft/worlds";
 import { isLaunched } from "@tensorcraft/shared";
 
 /**
@@ -15,12 +15,12 @@ import { isLaunched } from "@tensorcraft/shared";
  *    mark, headline, and an "FE → ML · bridge online" status line.
  *  - Right pane (full-width mobile, ~45% desktop): the form-only <AuthForm/>.
  *
- * Brutalist rules: `rounded-none`, theme color tokens only, mono accents.
+ * Brutalist rules: `rounded-none`, world color tokens only, mono accents.
  * Auth logic / Supabase wiring / `tc_visited` gate live in <AuthForm>.
  */
 
 // Hex "#rrggbb" → [r,g,b]. OrbitCanvas takes an rgb triple so the backdrop
-// matches the launched theme's primary without reading CSS vars at runtime.
+// matches the launched world's primary without reading CSS vars at runtime.
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
   return [
@@ -30,9 +30,9 @@ function hexToRgb(hex: string): [number, number, number] {
   ];
 }
 
-const HERO_SLUG = themeSlugs.find((s) => isLaunched(s)) ?? themeSlugs[0];
-const HERO_RGB = hexToRgb(themes[HERO_SLUG].palette.primary);
-const HERO_RGB_LIGHT = hexToRgb(themes[HERO_SLUG].paletteLight.primary);
+const HERO_SLUG = worldSlugs.find((s) => isLaunched(s)) ?? worldSlugs[0];
+const HERO_RGB = hexToRgb(worlds[HERO_SLUG].palette.primary);
+const HERO_RGB_LIGHT = hexToRgb(worlds[HERO_SLUG].paletteLight.primary);
 
 export default function AuthPage() {
   return (

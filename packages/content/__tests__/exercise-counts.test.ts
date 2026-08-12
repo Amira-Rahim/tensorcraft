@@ -1,7 +1,7 @@
 import { readdirSync, existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
-import { BUILT_THEME_DIRS } from "../src/built-themes";
+import { BUILT_WORLD_DIRS } from "../src/built-worlds";
 import { EXERCISE_CONTENT } from "@tensorcraft/shared";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
@@ -11,7 +11,7 @@ import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
  * Marketing exercise-count gate (audit run #7, 2026-07-16).
  *
  * /about quoted "80 exercises live today" and "315 authored across the
- * five-theme roadmap" while the corpus held 84 and 298: the copy was pasted
+ * five-world roadmap" while the corpus held 84 and 298: the copy was pasted
  * once and never updated as exercises shipped. The page now renders
  * EXERCISE_CONTENT from @tensorcraft/shared, and this gate pins those
  * constants to the actual YAML corpus, so adding or removing an exercise
@@ -20,8 +20,8 @@ import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
 
 const CONTENT_ROOT = dirname(CONTENT_DIR);
 // Scope tracks the build via one shared constant (F3).
-const SHIPPED_DIRS = [...BUILT_THEME_DIRS];
-const FIVE_THEME_DIRS = [
+const SHIPPED_DIRS = [...BUILT_WORLD_DIRS];
+const FIVE_WORLD_DIRS = [
   "deep-orbit",
   "neon-protocol",
   "nova-canvas",
@@ -29,8 +29,8 @@ const FIVE_THEME_DIRS = [
   "terra-grid",
 ];
 
-function countExerciseYamls(themeDir: string): number {
-  const root = join(CONTENT_ROOT, themeDir);
+function countExerciseYamls(worldDir: string): number {
+  const root = join(CONTENT_ROOT, worldDir);
   if (!existsSync(root)) return 0;
   let count = 0;
   for (const mod of readdirSync(root)) {
@@ -52,14 +52,14 @@ describe("EXERCISE_CONTENT matches the real corpus", () => {
     ).toBe(live);
   });
 
-  it("authoredFiveThemes equals the five theme dirs' YAML count", () => {
-    const authored = FIVE_THEME_DIRS.reduce(
+  it("authoredFiveWorlds equals the five world dirs' YAML count", () => {
+    const authored = FIVE_WORLD_DIRS.reduce(
       (n, d) => n + countExerciseYamls(d),
       0,
     );
     expect(
-      EXERCISE_CONTENT.authoredFiveThemes,
-      `constants say ${EXERCISE_CONTENT.authoredFiveThemes} authored, the ` +
+      EXERCISE_CONTENT.authoredFiveWorlds,
+      `constants say ${EXERCISE_CONTENT.authoredFiveWorlds} authored, the ` +
         `corpus holds ${authored}.`,
     ).toBe(authored);
   });
@@ -70,6 +70,6 @@ describe("EXERCISE_CONTENT matches the real corpus", () => {
       "utf8",
     );
     expect(about).toContain("EXERCISE_CONTENT.liveExercises");
-    expect(about).toContain("EXERCISE_CONTENT.authoredFiveThemes");
+    expect(about).toContain("EXERCISE_CONTENT.authoredFiveWorlds");
   });
 });

@@ -5,19 +5,19 @@
  */
 
 export {
-  THEME_SLUGS,
-  LAUNCHED_THEMES,
-  COMING_SOON_THEMES,
+  WORLD_SLUGS,
+  LAUNCHED_WORLDS,
+  COMING_SOON_WORLDS,
   PRICING,
   ROUTES,
-  THEME_CONTENT,
-  THEME_SHAPE,
-  getThemeTotalLessons,
+  WORLD_CONTENT,
+  WORLD_SHAPE,
+  getWorldTotalLessons,
   EXERCISE_CONTENT,
-  DEFAULT_THEME,
+  DEFAULT_WORLD,
   getModuleLessonCount,
   getPaidLessonCount,
-  isValidThemeSlug,
+  isValidWorldSlug,
   isValidSlug,
   isLaunched,
   isComingSoon,
@@ -25,9 +25,9 @@ export {
   isColorScheme,
 } from "./constants";
 export type {
-  ThemeSlug,
-  ThemeShape,
-  LaunchedTheme,
+  WorldSlug,
+  WorldShape,
+  LaunchedWorld,
   PricingTier,
   ColorScheme,
   SchemePreference,
@@ -55,6 +55,6 @@ export {
   getArrivesFrom,
   getLeadsTo,
   getSpineStops,
-  recommendedNextTheme,
+  recommendedNextWorld,
 } from "./journey";
 export type { JourneyNode, Spine, SpineStop } from "./journey";

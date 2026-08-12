@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getThemeLessons } from "@tensorcraft/content";
+import { getWorldLessons } from "@tensorcraft/content";
 
 export const metadata: Metadata = {
   title: "Extras: Math, Classical ML, Ethics, Python Bridge | Tensorcraft",
@@ -16,14 +16,14 @@ export const metadata: Metadata = {
     url: "https://tensorcraft.app/extras",
     title: "Extras: Math, Classical ML, Ethics | Tensorcraft",
     images: [
-      "/api/og?title=Extras%3A%20Math%2C%20Classical%20ML%2C%20Ethics&theme=deep-orbit&subtitle=Companion%20modules%2C%20free%20to%20read",
+      "/api/og?title=Extras%3A%20Math%2C%20Classical%20ML%2C%20Ethics&world=deep-orbit&subtitle=Companion%20modules%2C%20free%20to%20read",
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Extras: Math, Classical ML, Ethics | Tensorcraft",
     images: [
-      "/api/og?title=Extras%3A%20Math%2C%20Classical%20ML%2C%20Ethics&theme=deep-orbit&subtitle=Companion%20modules%2C%20free%20to%20read",
+      "/api/og?title=Extras%3A%20Math%2C%20Classical%20ML%2C%20Ethics&world=deep-orbit&subtitle=Companion%20modules%2C%20free%20to%20read",
     ],
   },
 };
@@ -42,7 +42,7 @@ const MODULE_DESCRIPTIONS: Record<string, string> = {
 };
 
 export default function ExtrasPage() {
-  const lessons = getThemeLessons("shared");
+  const lessons = getWorldLessons("shared");
   const byModule: Record<string, typeof lessons> = {};
   for (const l of lessons) {
     (byModule[l.moduleId] ||= []).push(l);

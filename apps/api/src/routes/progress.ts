@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { isValidThemeSlug, isValidSlug } from "@tensorcraft/shared";
+import { isValidWorldSlug, isValidSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { fireMilestonesForCompletion } from "../lib/dispatch";
 import type { AppEnv } from "../types";
@@ -11,7 +11,7 @@ const progress = new Hono<AppEnv>();
 progress.use("*", authMiddleware);
 
 /**
- * GET /api/progress?themeId=deep-orbit, Get user's progress for a theme.
+ * GET /api/progress?worldId=deep-orbit, Get user's progress for a world.
  *
  * NOTE: As of V0.5, the Next.js frontend queries Supabase directly via
  * lib/progress-client.ts rather than using this endpoint. This route is
@@ -21,23 +21,23 @@ progress.use("*", authMiddleware);
 progress.get("/", async (c) => {
   const userId = c.get("userId");
   const token = c.get("accessToken");
-  const themeId = c.req.query("themeId");
+  const worldId = c.req.query("worldId");
 
-  if (!themeId) {
-    return c.json({ error: "themeId query parameter is required" }, 400);
+  if (!worldId) {
+    return c.json({ error: "worldId query parameter is required" }, 400);
   }
 
-  if (!isValidThemeSlug(themeId)) {
-    return c.json({ error: "Invalid themeId" }, 400);
+  if (!isValidWorldSlug(worldId)) {
+    return c.json({ error: "Invalid worldId" }, 400);
   }
 
   const supabase = getSupabaseServerClient(token);
 
   const { data, error } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .select("*")
     .eq("user_id", userId)
-    .eq("theme_id", themeId)
+    .eq("world_id", worldId)
     .order("module_id")
     .order("lesson_id");
 
@@ -67,7 +67,7 @@ progress.post("/", async (c) => {
   const token = c.get("accessToken");
 
   let body: {
-    themeId: string;
+    worldId: string;
     moduleId: string;
     lessonId: string;
     status?: "not_started" | "in_progress" | "completed";
@@ -83,16 +83,16 @@ progress.post("/", async (c) => {
   }
 
   // Required fields
-  if (!body.themeId || !body.moduleId || !body.lessonId) {
+  if (!body.worldId || !body.moduleId || !body.lessonId) {
     return c.json(
-      { error: "themeId, moduleId, and lessonId are required" },
+      { error: "worldId, moduleId, and lessonId are required" },
       400,
     );
   }
 
-  // CRITICAL #2: Validate theme/module/lesson IDs
-  if (!isValidThemeSlug(body.themeId)) {
-    return c.json({ error: "Invalid themeId" }, 400);
+  // CRITICAL #2: Validate world/module/lesson IDs
+  if (!isValidWorldSlug(body.worldId)) {
+    return c.json({ error: "Invalid worldId" }, 400);
   }
   if (!isValidSlug(body.moduleId)) {
     return c.json({ error: "Invalid moduleId" }, 400);
@@ -134,19 +134,19 @@ progress.post("/", async (c) => {
 
   // CRITICAL #4: Fix started_at overwrite, check if record exists first
   const { data: existing } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .select("started_at, status")
     .eq("user_id", userId)
-    .eq("theme_id", body.themeId)
+    .eq("world_id", body.worldId)
     .eq("lesson_id", body.lessonId)
     .single();
 
   const { data, error } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .upsert(
       {
         user_id: userId,
-        theme_id: body.themeId,
+        world_id: body.worldId,
         module_id: body.moduleId,
         lesson_id: body.lessonId,
         status,
@@ -157,7 +157,7 @@ progress.post("/", async (c) => {
         started_at: existing?.started_at ?? now,
         ...(status === "completed" ? { completed_at: now } : {}),
       },
-      { onConflict: "user_id,theme_id,lesson_id" },
+      { onConflict: "user_id,world_id,lesson_id" },
     )
     .select()
     .single();
@@ -182,7 +182,7 @@ progress.post("/", async (c) => {
   ) {
     fireMilestonesForCompletion({
       userId,
-      themeId: body.themeId,
+      worldId: body.worldId,
       moduleId: body.moduleId,
     }).catch(() => {
       // Best-effort: the dedup-by-subject producer can be retried by any
@@ -194,8 +194,8 @@ progress.post("/", async (c) => {
 });
 
 /**
- * GET /api/progress/summary, Aggregated progress across all themes.
- * Returns per-theme counts of completed/total lessons and current streak.
+ * GET /api/progress/summary, Aggregated progress across all worlds.
+ * Returns per-world counts of completed/total lessons and current streak.
  *
  * NOTE: As of V0.5, the dashboard queries Supabase directly (server
  * component in dashboard/page.tsx). This endpoint aggregates the same
@@ -208,8 +208,8 @@ progress.get("/summary", async (c) => {
 
   // Fetch all progress records for this user
   const { data: records, error } = await supabase
-    .from("theme_progress")
-    .select("theme_id, module_id, lesson_id, status")
+    .from("world_progress")
+    .select("world_id, module_id, lesson_id, status")
     .eq("user_id", userId);
 
   if (error) {
@@ -222,44 +222,44 @@ progress.get("/summary", async (c) => {
     );
   }
 
-  // Group by theme
-  const byTheme: Record<
+  // Group by world
+  const byWorld: Record<
     string,
     { total: number; completed: number; inProgress: number }
   > = {};
   for (const r of records ?? []) {
-    if (!byTheme[r.theme_id]) {
-      byTheme[r.theme_id] = { total: 0, completed: 0, inProgress: 0 };
+    if (!byWorld[r.world_id]) {
+      byWorld[r.world_id] = { total: 0, completed: 0, inProgress: 0 };
     }
-    byTheme[r.theme_id].total++;
-    if (r.status === "completed") byTheme[r.theme_id].completed++;
-    if (r.status === "in_progress") byTheme[r.theme_id].inProgress++;
+    byWorld[r.world_id].total++;
+    if (r.status === "completed") byWorld[r.world_id].completed++;
+    if (r.status === "in_progress") byWorld[r.world_id].inProgress++;
   }
 
   // Fetch streaks
   const { data: streaksRaw } = await supabase
     .from("streaks")
-    .select("theme_id, current_streak, longest_streak")
+    .select("world_id, current_streak, longest_streak")
     .eq("user_id", userId);
 
   const streaks = streaksRaw ?? [];
   const streakMap: Record<string, { current: number; longest: number }> = {};
   for (const s of streaks) {
-    streakMap[s.theme_id] = {
+    streakMap[s.world_id] = {
       current: s.current_streak,
       longest: s.longest_streak,
     };
   }
 
   // Build summary
-  const themes = Object.entries(byTheme).map(([themeId, counts]) => ({
-    themeId,
+  const worlds = Object.entries(byWorld).map(([worldId, counts]) => ({
+    worldId,
     ...counts,
-    streak: streakMap[themeId] ?? { current: 0, longest: 0 },
+    streak: streakMap[worldId] ?? { current: 0, longest: 0 },
   }));
 
-  const totalCompleted = themes.reduce((sum, t) => sum + t.completed, 0);
-  const totalLessons = themes.reduce((sum, t) => sum + t.total, 0);
+  const totalCompleted = worlds.reduce((sum, t) => sum + t.completed, 0);
+  const totalLessons = worlds.reduce((sum, t) => sum + t.total, 0);
   const bestStreak = streaks.reduce(
     (max, s) => Math.max(max, s.longest_streak ?? 0),
     0,
@@ -270,13 +270,13 @@ progress.get("/summary", async (c) => {
       totalLessons,
       totalCompleted,
       bestStreak,
-      themes,
+      worlds,
     },
   });
 });
 
 /**
- * GET /api/progress/activity/daily?days=30&themeId=?
+ * GET /api/progress/activity/daily?days=30&worldId=?
  *
  * Returns one row per UTC date covering the last N days (default 30,
  * max 365). Each row contains:
@@ -288,22 +288,22 @@ progress.get("/summary", async (c) => {
  * Missing days are included with zero counts so consumers can render
  * a heat-map / sparkline without client-side bucketing.
  *
- * If `themeId` is provided, only that theme's activity is counted.
+ * If `worldId` is provided, only that world's activity is counted.
  */
 progress.get("/activity/daily", async (c) => {
   const userId = c.get("userId");
   const token = c.get("accessToken");
 
   const daysRaw = c.req.query("days");
-  const themeId = c.req.query("themeId");
+  const worldId = c.req.query("worldId");
 
   const days = daysRaw === undefined ? 30 : Number(daysRaw);
   if (!Number.isInteger(days) || days < 1 || days > 365) {
     return c.json({ error: "days must be an integer between 1 and 365" }, 400);
   }
 
-  if (themeId !== undefined && !isValidThemeSlug(themeId)) {
-    return c.json({ error: "Invalid themeId" }, 400);
+  if (worldId !== undefined && !isValidWorldSlug(worldId)) {
+    return c.json({ error: "Invalid worldId" }, 400);
   }
 
   // Compute the inclusive UTC window [startDate, today].
@@ -319,13 +319,13 @@ progress.get("/activity/daily", async (c) => {
 
   // Fetch completions
   let completionsQuery = supabase
-    .from("theme_progress")
-    .select("completed_at, theme_id")
+    .from("world_progress")
+    .select("completed_at, world_id")
     .eq("user_id", userId)
     .eq("status", "completed")
     .not("completed_at", "is", null)
     .gte("completed_at", startIso);
-  if (themeId) completionsQuery = completionsQuery.eq("theme_id", themeId);
+  if (worldId) completionsQuery = completionsQuery.eq("world_id", worldId);
 
   const { data: completions, error: completionsErr } = await completionsQuery;
   if (completionsErr) {
@@ -341,10 +341,10 @@ progress.get("/activity/daily", async (c) => {
   // Fetch attempts
   let attemptsQuery = supabase
     .from("exercise_attempts")
-    .select("attempted_at, theme_id")
+    .select("attempted_at, world_id")
     .eq("user_id", userId)
     .gte("attempted_at", startIso);
-  if (themeId) attemptsQuery = attemptsQuery.eq("theme_id", themeId);
+  if (worldId) attemptsQuery = attemptsQuery.eq("world_id", worldId);
 
   const { data: attempts, error: attemptsErr } = await attemptsQuery;
   if (attemptsErr) {

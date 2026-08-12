@@ -114,32 +114,33 @@ export function ExerciseDataProvider({
 
 /* Badge colors are scheme-paired: the dark values are bright pastels that
    sat at 1.5-2.4:1 on the light scheme's white cards (axe, 2026-07-23).
-   Light values are the same hues darkened until >=4.55:1 against both
-   white and their own 10% tint (the `${color}15` chip background). */
+   Light values are the same hues darkened until >=4.6:1 against both
+   white and their own `${color}15` tint composited on the light paper
+   surface #F5F5F2, the real chip background (axe, 2026-08-12). */
 const difficultyConfig = {
-  beginner: { label: "Beginner", color: "#4ADE80", light: "#177C3C" },
-  intermediate: { label: "Intermediate", color: "#FBBF24", light: "#8D6603" },
-  advanced: { label: "Advanced", color: "#F87171", light: "#D50B0B" },
+  beginner: { label: "Beginner", color: "#4ADE80", light: "#16773A" },
+  intermediate: { label: "Intermediate", color: "#FBBF24", light: "#866103" },
+  advanced: { label: "Advanced", color: "#F87171", light: "#CA0A0A" },
 };
 
 const mlContentConfig: Record<
   MLContent,
   { label: string; tone: string; light: string }
 > = {
-  arithmetic: { label: "Arithmetic", tone: "#9CA3AF", light: "#656D7D" },
-  data: { label: "Tensor Data", tone: "#60A5FA", light: "#0767DE" },
-  model: { label: "Model Build", tone: "#A78BFA", light: "#7448F7" },
-  training: { label: "Training", tone: "#F472B6", light: "#CC1073" },
-  evaluation: { label: "Evaluation", tone: "#FB923C", light: "#B05104" },
-  deployment: { label: "Deployment", tone: "#34D399", light: "#1B7B58" },
-  systems: { label: "Systems", tone: "#F59E0B", light: "#976106" },
+  arithmetic: { label: "Arithmetic", tone: "#9CA3AF", light: "#606877" },
+  data: { label: "Tensor Data", tone: "#60A5FA", light: "#0762D3" },
+  model: { label: "Model Build", tone: "#A78BFA", light: "#6E44EB" },
+  training: { label: "Training", tone: "#F472B6", light: "#C40F6E" },
+  evaluation: { label: "Evaluation", tone: "#FB923C", light: "#A74D04" },
+  deployment: { label: "Deployment", tone: "#34D399", light: "#1A7554" },
+  systems: { label: "Systems", tone: "#F59E0B", light: "#8F5C06" },
 };
 
 /* ------------------------------------------------------------------ */
 /*  Sandpack editor theme (dark/light, Task 12 - light-mode rollout,   */
-/*  2026-07-22). Sandpack is theme-agnostic chrome, not narrative-     */
-/*  themed, so both variants use the page-primary green as hover/      */
-/*  accent rather than a per-theme color.                              */
+/*  2026-07-22). Sandpack is editor chrome, not world-specific,        */
+/*  so both variants use the page-primary green as hover/              */
+/*  accent rather than a per-world color.                              */
 /* ------------------------------------------------------------------ */
 
 const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {

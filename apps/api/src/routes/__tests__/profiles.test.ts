@@ -149,7 +149,7 @@ describe("Profiles routes", () => {
       expect(body.error).toMatch(/avatar_url/i);
     });
 
-    it("validates preferred_theme_id against valid strings", async () => {
+    it("validates preferred_world_id against valid strings", async () => {
       mockGetUser.mockResolvedValue({
         data: { user: { id: "user_123" } },
         error: null,
@@ -161,12 +161,12 @@ describe("Profiles routes", () => {
           "Content-Type": "application/json",
           Authorization: "Bearer valid_token",
         },
-        body: JSON.stringify({ preferred_theme_id: "" }),
+        body: JSON.stringify({ preferred_world_id: "" }),
       });
 
       expect(res.status).toBe(400);
       const body = await res.json();
-      expect(body.error).toMatch(/preferred_theme_id/i);
+      expect(body.error).toMatch(/preferred_world_id/i);
     });
   });
 });

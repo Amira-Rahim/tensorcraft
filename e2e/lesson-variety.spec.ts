@@ -11,7 +11,7 @@ test.describe("Structure variety: pattern + scene render end-to-end", () => {
   test("foundations/tensor-operations shows FORMAT tag and slugline", async ({
     page,
   }) => {
-    await page.goto("/themes/deep-orbit/foundations/tensor-operations");
+    await page.goto("/worlds/deep-orbit/foundations/tensor-operations");
 
     // SceneCard rail: scene slugline fed from frontmatter.
     await expect(page.getByText("Archimedes, Bridge").first()).toBeVisible({
@@ -27,7 +27,7 @@ test.describe("Structure variety: pattern + scene render end-to-end", () => {
   test("the free-tier BossBeat renders without leaking its stance labels", async ({
     page,
   }) => {
-    await page.goto("/themes/deep-orbit/foundations/normalization");
+    await page.goto("/worlds/deep-orbit/foundations/normalization");
     const beat = page.getByTestId("boss-beat-option-dominant");
     await expect(beat).toBeVisible({ timeout: 15000 });
     // The stance enum must never appear as text anywhere in the beat UI.
@@ -39,7 +39,7 @@ test.describe("Structure variety: pattern + scene render end-to-end", () => {
   });
 
   test("a standard-pattern lesson renders no FORMAT tag", async ({ page }) => {
-    await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
+    await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
     // Scene renders (slugline machinery on), FORMAT tag does not.
     await expect(page.getByText("Archimedes, Bridge").first()).toBeVisible({
       timeout: 15000,

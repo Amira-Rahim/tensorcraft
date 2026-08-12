@@ -6,8 +6,8 @@ import { describe, it, expect } from "vitest";
  * Blog link-target gate (2026-07-19, Run #8).
  *
  * The only shipped blog post 404'd its own lesson CTA for two months
- * because it linked /learn/<theme>/<module>/<lesson> while lessons live
- * at /themes/... and nothing checked. The newsletter pipeline writes
+ * because it linked /learn/<world>/<module>/<lesson> while lessons live
+ * at /worlds/... and nothing checked. The newsletter pipeline writes
  * matchedLessons and body links mechanically, so this class will recur
  * without a gate. Every internal link in every post must resolve to a
  * route that exists.
@@ -24,15 +24,15 @@ const STATIC_ROUTES = new Set([
   "/learn",
   "/blog",
   "/about",
-  "/themes",
+  "/worlds",
   "/extras",
   "/auth",
   "/terms",
   "/privacy",
 ]);
 
-function lessonExists(theme: string, moduleId: string, lesson: string) {
-  const moduleDir = join(CONTENT_ROOT, theme, moduleId);
+function lessonExists(world: string, moduleId: string, lesson: string) {
+  const moduleDir = join(CONTENT_ROOT, world, moduleId);
   if (!existsSync(moduleDir)) return false;
   return readdirSync(moduleDir).some(
     (f) =>
@@ -67,14 +67,14 @@ describe("blog internal links resolve", () => {
     for (const href of hrefs) {
       const path = href.split(/[?#]/)[0];
       if (STATIC_ROUTES.has(path)) continue;
-      const lessonMatch = path.match(/^\/themes\/([^/]+)\/([^/]+)\/([^/]+)$/);
+      const lessonMatch = path.match(/^\/worlds\/([^/]+)\/([^/]+)\/([^/]+)$/);
       if (
         lessonMatch &&
         lessonExists(lessonMatch[1], lessonMatch[2], lessonMatch[3])
       ) {
         continue;
       }
-      if (path.match(/^\/themes\/[^/]+$/)) continue; // theme landing pages
+      if (path.match(/^\/worlds\/[^/]+$/)) continue; // world landing pages
       const blogMatch = path.match(/^\/blog\/([^/]+)$/);
       if (blogMatch && postSlugs.has(blogMatch[1])) continue;
       bad.push(href);
@@ -89,13 +89,13 @@ describe("blog internal links resolve", () => {
       const fm = raw.split("---")[1] ?? "";
       const entries = [
         ...fm.matchAll(
-          /themeId:\s*(\S+)[\s\S]*?moduleId:\s*(\S+)[\s\S]*?slug:\s*(\S+)/g,
+          /worldId:\s*(\S+)[\s\S]*?moduleId:\s*(\S+)[\s\S]*?slug:\s*(\S+)/g,
         ),
       ];
-      for (const [, theme, moduleId, slug] of entries) {
+      for (const [, world, moduleId, slug] of entries) {
         expect(
-          lessonExists(theme, moduleId, slug),
-          `${file} matchedLessons points at missing lesson ${theme}/${moduleId}/${slug}`,
+          lessonExists(world, moduleId, slug),
+          `${file} matchedLessons points at missing lesson ${world}/${moduleId}/${slug}`,
         ).toBe(true);
       }
     },

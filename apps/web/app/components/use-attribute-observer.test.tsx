@@ -9,7 +9,7 @@ function Probe({ attrs, onChange }: { attrs: string[]; onChange: () => void }) {
 
 afterEach(() => {
   delete document.documentElement.dataset.scheme;
-  delete document.documentElement.dataset.theme;
+  delete document.documentElement.dataset.world;
   vi.restoreAllMocks();
 });
 
@@ -31,7 +31,7 @@ describe("useAttributeObserver", () => {
     const onChange = vi.fn();
     render(<Probe attrs={["data-scheme"]} onChange={onChange} />);
 
-    document.documentElement.dataset.theme = "neon-protocol";
+    document.documentElement.dataset.world = "neon-protocol";
     // Flush past the observer's microtask window without asserting on a
     // fixed tick count: give it a macrotask, which always runs after any
     // pending microtasks, then assert the unrelated mutation never fired.
@@ -45,28 +45,28 @@ describe("useAttributeObserver", () => {
   });
 
   it("notifies each consumer only for the attributes it asked for", async () => {
-    const themeChange = vi.fn();
+    const worldChange = vi.fn();
     const schemeChange = vi.fn();
     render(
       <>
-        <Probe attrs={["data-theme"]} onChange={themeChange} />
+        <Probe attrs={["data-world"]} onChange={worldChange} />
         <Probe attrs={["data-scheme"]} onChange={schemeChange} />
       </>,
     );
 
     document.documentElement.dataset.scheme = "light";
     await waitFor(() => expect(schemeChange).toHaveBeenCalledTimes(1));
-    expect(themeChange).not.toHaveBeenCalled();
+    expect(worldChange).not.toHaveBeenCalled();
 
-    document.documentElement.dataset.theme = "neon-protocol";
-    await waitFor(() => expect(themeChange).toHaveBeenCalledTimes(1));
+    document.documentElement.dataset.world = "neon-protocol";
+    await waitFor(() => expect(worldChange).toHaveBeenCalledTimes(1));
     expect(schemeChange).toHaveBeenCalledTimes(1);
   });
 
   it("shares a single MutationObserver across multiple simultaneous consumers", () => {
     const observeSpy = vi.spyOn(MutationObserver.prototype, "observe");
     const a = render(
-      <Probe attrs={["data-theme", "data-scheme"]} onChange={vi.fn()} />,
+      <Probe attrs={["data-world", "data-scheme"]} onChange={vi.fn()} />,
     );
     const b = render(<Probe attrs={["data-scheme"]} onChange={vi.fn()} />);
 
@@ -79,7 +79,7 @@ describe("useAttributeObserver", () => {
   it("does not disconnect the shared observer while other consumers remain mounted", () => {
     const disconnectSpy = vi.spyOn(MutationObserver.prototype, "disconnect");
     const a = render(<Probe attrs={["data-scheme"]} onChange={vi.fn()} />);
-    const b = render(<Probe attrs={["data-theme"]} onChange={vi.fn()} />);
+    const b = render(<Probe attrs={["data-world"]} onChange={vi.fn()} />);
 
     a.unmount();
     expect(disconnectSpy).not.toHaveBeenCalled();

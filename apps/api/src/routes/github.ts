@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { setCookie, getCookie, deleteCookie } from "hono/cookie";
 import { timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { isValidThemeSlug, isValidSlug, isLaunched } from "@tensorcraft/shared";
+import { isValidWorldSlug, isValidSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
 import {
@@ -10,7 +10,7 @@ import {
   buildRepoName,
   commitLessonArtifact,
   createOrGetRepo,
-  ensureThemeRepo,
+  ensureWorldRepo,
   exchangeCodeForToken,
   getGitHubUsername,
   GitHubApiError,
@@ -348,7 +348,7 @@ github.post("/disconnect", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/commit, Commits a lesson artifact to per-theme repo
+// POST /api/github/commit, Commits a lesson artifact to per-world repo
 // ──────────────────────────────────────────────────────────────────────────
 
 github.use("/commit", authMiddleware);
@@ -357,7 +357,7 @@ github.post("/commit", async (c) => {
   const userId = c.get("userId");
 
   let body: {
-    themeId: string;
+    worldId: string;
     lessonId: string;
     code: string;
     moduleId?: string;
@@ -373,24 +373,24 @@ github.post("/commit", async (c) => {
     );
   }
 
-  const { themeId, lessonId, code, moduleId, exerciseSlug, readmeDelta } = body;
+  const { worldId, lessonId, code, moduleId, exerciseSlug, readmeDelta } = body;
 
-  if (!themeId || !lessonId || typeof code !== "string") {
+  if (!worldId || !lessonId || typeof code !== "string") {
     return c.json(
       structuredError(
         "validation_error",
-        "themeId, lessonId, and code are required",
+        "worldId, lessonId, and code are required",
       ),
       400,
     );
   }
 
-  if (!isValidThemeSlug(themeId)) {
-    return c.json(structuredError("validation_error", "Invalid themeId"), 400);
+  if (!isValidWorldSlug(worldId)) {
+    return c.json(structuredError("validation_error", "Invalid worldId"), 400);
   }
-  if (!isLaunched(themeId)) {
+  if (!isLaunched(worldId)) {
     return c.json(
-      structuredError("validation_error", "Theme is not yet launched"),
+      structuredError("validation_error", "World is not yet launched"),
       400,
     );
   }
@@ -441,13 +441,13 @@ github.post("/commit", async (c) => {
   }
 
   try {
-    // Ensure the per-theme repo + README exist.
-    await ensureThemeRepo(token, username, themeId, { isPrivate: false });
+    // Ensure the per-world repo + README exist.
+    await ensureWorldRepo(token, username, worldId, { isPrivate: false });
 
     const result = await commitLessonArtifact({
       accessToken: token,
       username,
-      themeSlug: themeId,
+      worldSlug: worldId,
       moduleId: moduleId ?? "module-unknown",
       lessonId,
       exerciseSlug,
@@ -460,7 +460,7 @@ github.post("/commit", async (c) => {
     captureServer(
       SERVER_EVENTS.CODE_PUSHED,
       {
-        themeId,
+        worldId,
         lessonId,
         // lessonId fallback covers pre-exerciseSlug callers, whose artifact
         // is stored at `${moduleId}/${lessonId}`.
@@ -478,7 +478,7 @@ github.post("/commit", async (c) => {
         err,
         route: "github.commit",
         userId,
-        themeId,
+        worldId,
         lessonId,
         status: mapped.status,
       },
@@ -489,7 +489,7 @@ github.post("/commit", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/retroactive-push, Push all completed artifacts for a theme
+// POST /api/github/retroactive-push, Push all completed artifacts for a world
 // ──────────────────────────────────────────────────────────────────────────
 //
 // Runs in-process (single request). For background infra, see the TODO in
@@ -501,7 +501,7 @@ github.use("/retroactive-push", authMiddleware);
 github.post("/retroactive-push", async (c) => {
   const userId = c.get("userId");
 
-  let body: { themeId: string };
+  let body: { worldId: string };
   try {
     body = await c.req.json();
   } catch {
@@ -511,15 +511,15 @@ github.post("/retroactive-push", async (c) => {
     );
   }
 
-  if (!body.themeId || !isValidThemeSlug(body.themeId)) {
+  if (!body.worldId || !isValidWorldSlug(body.worldId)) {
     return c.json(
-      structuredError("validation_error", "themeId must be a valid theme slug"),
+      structuredError("validation_error", "worldId must be a valid world slug"),
       400,
     );
   }
-  if (!isLaunched(body.themeId)) {
+  if (!isLaunched(body.worldId)) {
     return c.json(
-      structuredError("validation_error", "Theme is not yet launched"),
+      structuredError("validation_error", "World is not yet launched"),
       400,
     );
   }
@@ -550,16 +550,16 @@ github.post("/retroactive-push", async (c) => {
 
   // Fetch completed lessons in chronological order.
   const { data: lessonsRaw, error: lessonsErr } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .select("module_id, lesson_id, completed_at")
     .eq("user_id", userId)
-    .eq("theme_id", body.themeId)
+    .eq("world_id", body.worldId)
     .eq("status", "completed")
     .order("completed_at", { ascending: true });
 
   if (lessonsErr) {
     return c.json(
-      structuredError("internal_error", "Failed to fetch theme_progress"),
+      structuredError("internal_error", "Failed to fetch world_progress"),
       500,
     );
   }
@@ -584,7 +584,7 @@ github.post("/retroactive-push", async (c) => {
       .from("exercise_attempts")
       .select("exercise_slug, lesson_id, submitted_code, passed, attempted_at")
       .eq("user_id", userId)
-      .eq("theme_id", body.themeId)
+      .eq("world_id", body.worldId)
       .in("lesson_id", lessonIds)
       .order("attempted_at", { ascending: false });
 
@@ -615,9 +615,9 @@ github.post("/retroactive-push", async (c) => {
     });
   }
 
-  // Ensure the per-theme repo first (single call, not per lesson).
+  // Ensure the per-world repo first (single call, not per lesson).
   try {
-    await ensureThemeRepo(token, username, body.themeId, { isPrivate: false });
+    await ensureWorldRepo(token, username, body.worldId, { isPrivate: false });
   } catch (err) {
     const mapped = mapGitHubError(err);
     return c.json(mapped.body, mapped.status);
@@ -653,7 +653,7 @@ github.post("/retroactive-push", async (c) => {
         const res = await commitLessonArtifact({
           accessToken: token,
           username,
-          themeSlug: body.themeId,
+          worldSlug: body.worldId,
           moduleId,
           lessonId,
           exerciseSlug: artifact.exerciseSlug,
@@ -672,7 +672,7 @@ github.post("/retroactive-push", async (c) => {
         captureServer(
           SERVER_EVENTS.CODE_PUSHED,
           {
-            themeId: body.themeId,
+            worldId: body.worldId,
             lessonId,
             exerciseSlug: artifact.exerciseSlug,
             commitSha: res.commitSha,
@@ -761,7 +761,7 @@ github.post("/token", async (c) => {
 // ──────────────────────────────────────────────────────────────────────────
 // POST /api/github/push, (legacy) flat-file push to `tensorcraft-exercises`
 // Kept for backward compatibility with the existing frontend; new code should
-// use POST /api/github/commit which targets per-theme repos.
+// use POST /api/github/commit which targets per-world repos.
 // ──────────────────────────────────────────────────────────────────────────
 
 github.use("/push", authMiddleware);
@@ -772,7 +772,7 @@ github.post("/push", async (c) => {
   let body: {
     exerciseSlug: string;
     code: string;
-    themeId: string;
+    worldId: string;
     moduleId: string;
   };
   try {
@@ -781,18 +781,18 @@ github.post("/push", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  const { exerciseSlug, code, themeId, moduleId } = body;
+  const { exerciseSlug, code, worldId, moduleId } = body;
 
-  if (!exerciseSlug || !code || !themeId || !moduleId) {
+  if (!exerciseSlug || !code || !worldId || !moduleId) {
     return c.json(
-      { error: "exerciseSlug, code, themeId, and moduleId are required" },
+      { error: "exerciseSlug, code, worldId, and moduleId are required" },
       400,
     );
   }
 
   if (
     !isValidSlug(exerciseSlug) ||
-    !isValidSlug(themeId) ||
+    !isValidSlug(worldId) ||
     !isValidSlug(moduleId)
   ) {
     return c.json({ error: "Invalid slug in request" }, 400);
@@ -832,7 +832,7 @@ github.post("/push", async (c) => {
     const repoName = "tensorcraft-exercises";
     await createOrGetRepo(providerToken, repoName);
 
-    const filePath = `${themeId}/${moduleId}/${exerciseSlug}.ts`;
+    const filePath = `${worldId}/${moduleId}/${exerciseSlug}.ts`;
     const commitMessage = `feat(${moduleId}): Complete exercise -- ${exerciseSlug}`;
 
     const result = await pushFile(
@@ -851,7 +851,7 @@ github.post("/push", async (c) => {
       return c.json(mapped.body, mapped.status);
     }
     logger.error(
-      { err, route: "github.push", userId, themeId, moduleId, exerciseSlug },
+      { err, route: "github.push", userId, worldId, moduleId, exerciseSlug },
       "GitHub push failed",
     );
     return c.json(
@@ -888,7 +888,7 @@ github.get("/status", async (c) => {
     connected: !!data.github_connected && !!data.github_token,
     username: data.github_username ?? undefined,
     repoName: data.github_connected
-      ? buildRepoName("{theme-slug}") // placeholder client can substitute
+      ? buildRepoName("{world-slug}") // placeholder client can substitute
       : undefined,
   });
 });

@@ -24,7 +24,7 @@ const getUserMock = vi.fn();
 
 type PurchaseRow = {
   plan_id: string;
-  theme_ids: string[];
+  world_ids: string[];
   amount: number;
   created_at: string;
   stripe_session_id: string | null;
@@ -89,7 +89,7 @@ vi.mock("@/lib/supabase/server", () => ({
   }),
 }));
 
-// The page calls `getModules(slug)` for per-theme module counts. Keep
+// The page calls `getModules(slug)` for per-world module counts. Keep
 // this deterministic and independent of Velite output.
 vi.mock("@tensorcraft/content", () => ({
   getModules: (slug: string) =>
@@ -153,7 +153,7 @@ describe("dashboard/purchase-success/page", () => {
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "single",
-      theme_ids: ["deep-orbit"],
+      world_ids: ["deep-orbit"],
       amount: 79,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_abcdefgh12345678",
@@ -176,7 +176,7 @@ describe("dashboard/purchase-success/page", () => {
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "single",
-      theme_ids: ["neon-protocol"],
+      world_ids: ["neon-protocol"],
       amount: 49,
       created_at: "2026-01-01T00:00:00.000Z",
       stripe_session_id: "cs_test_OLDOLDOLDOLDOLD0",
@@ -186,7 +186,7 @@ describe("dashboard/purchase-success/page", () => {
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "twoBundle",
-      theme_ids: ["deep-orbit", "signal-ward"],
+      world_ids: ["deep-orbit", "signal-ward"],
       amount: 79,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_TARGETXYZ9999999",
@@ -217,7 +217,7 @@ describe("dashboard/purchase-success/page", () => {
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "single",
-      theme_ids: ["neon-protocol"],
+      world_ids: ["neon-protocol"],
       amount: 49,
       created_at: "2026-01-01T00:00:00.000Z",
       stripe_session_id: "cs_test_OLD1234567890AB",
@@ -226,7 +226,7 @@ describe("dashboard/purchase-success/page", () => {
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "twoBundle",
-      theme_ids: ["deep-orbit", "signal-ward"],
+      world_ids: ["deep-orbit", "signal-ward"],
       amount: 79,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_NEW9876543210ZZ",
@@ -241,17 +241,17 @@ describe("dashboard/purchase-success/page", () => {
     expect(html).not.toContain("$49.00");
   });
 
-  it("renders one access-card row per purchased launched theme with a Start Now CTA", async () => {
+  it("renders one access-card row per purchased launched world with a Start Now CTA", async () => {
     getUserMock.mockResolvedValue({
       data: { user: { id: "u-1" } },
       error: null,
     });
-    // V1 scope-revert: coming-soon theme ids in `theme_ids` are stripped from
+    // V1 scope-revert: coming-soon world ids in `world_ids` are stripped from
     // the access-card list (they still appear in the raw receipt above).
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "twoBundle",
-      theme_ids: ["deep-orbit", "signal-ward"],
+      world_ids: ["deep-orbit", "signal-ward"],
       amount: 79,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_abcdefgh12345678",
@@ -261,24 +261,24 @@ describe("dashboard/purchase-success/page", () => {
     const { html } = await renderPage();
 
     expect(html).toContain('data-testid="access-start-deep-orbit"');
-    expect(html).toContain('href="/themes/deep-orbit"');
+    expect(html).toContain('href="/worlds/deep-orbit"');
     expect(html).toContain("Start Now");
-    // Coming-soon theme has no access card at V1.
+    // Coming-soon world has no access card at V1.
     expect(html).not.toContain('data-testid="access-start-signal-ward"');
-    expect(html).not.toContain('href="/themes/signal-ward"');
+    expect(html).not.toContain('href="/worlds/signal-ward"');
   });
 
-  it("primary CTA falls back to default theme when only coming-soon themes are owned", async () => {
+  it("primary CTA falls back to default world when only coming-soon worlds are owned", async () => {
     getUserMock.mockResolvedValue({
       data: { user: { id: "u-1" } },
       error: null,
     });
-    // V1 scope-revert: only coming-soon themes purchased (e.g. via stale row)
-    // → access list is empty → primary CTA falls back to DEFAULT_THEME.
+    // V1 scope-revert: only coming-soon worlds purchased (e.g. via stale row)
+    // → access list is empty → primary CTA falls back to DEFAULT_WORLD.
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "single",
-      theme_ids: ["signal-ward"],
+      world_ids: ["signal-ward"],
       amount: 49,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_abcdefgh12345678",
@@ -288,15 +288,15 @@ describe("dashboard/purchase-success/page", () => {
     const { html } = await renderPage();
 
     expect(html).toContain('data-testid="cta-first-lesson"');
-    expect(html).toContain('href="/themes/deep-orbit"');
+    expect(html).toContain('href="/worlds/deep-orbit"');
     expect(html).toContain("Start your first lesson");
 
-    expect(html).toContain('data-testid="cta-view-all-themes"');
-    expect(html).toContain('href="/themes"');
-    expect(html).toContain("View all themes");
+    expect(html).toContain('data-testid="cta-view-all-worlds"');
+    expect(html).toContain('href="/worlds"');
+    expect(html).toContain("View all worlds");
   });
 
-  it("renders receipt with amount, plan, themes, date, and session-id tail (mono)", async () => {
+  it("renders receipt with amount, plan, worlds, date, and session-id tail (mono)", async () => {
     getUserMock.mockResolvedValue({
       data: { user: { id: "u-1" } },
       error: null,
@@ -304,7 +304,7 @@ describe("dashboard/purchase-success/page", () => {
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "allFive",
-      theme_ids: [
+      world_ids: [
         "deep-orbit",
         "neon-protocol",
         "signal-ward",
@@ -324,7 +324,7 @@ describe("dashboard/purchase-success/page", () => {
     expect(html).toContain("$129.00");
     expect(html).toContain("allFive");
     expect(html).toContain("LAST8CH");
-    // Themes list is rendered in a mono block.
+    // Worlds list is rendered in a mono block.
     expect(html).toContain(
       "deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid",
     );

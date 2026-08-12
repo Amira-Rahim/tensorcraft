@@ -1,16 +1,16 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
-import { themes, themeSlugs } from "@tensorcraft/themes";
-import { DEFAULT_THEME } from "@tensorcraft/shared";
+import { worlds, worldSlugs } from "@tensorcraft/worlds";
+import { DEFAULT_WORLD } from "@tensorcraft/shared";
 
 export const runtime = "edge";
 
 // Hard caps to keep `/api/og` from being abused as an arbitrary string
 // renderer. Two layers of defense:
-//   1. Input validation here (length caps + theme allowlist) so a hammer
+//   1. Input validation here (length caps + world allowlist) so a hammer
 //      attack can't reflect 10 KB strings into the PNG buffer.
 //   2. Aggressive `Cache-Control: public, max-age=86400, s-maxage=86400`
-//      headers below, so identical (title, subtitle, theme, kind) tuples
+//      headers below, so identical (title, subtitle, world, kind) tuples
 //      collapse to one render per day at Vercel's edge.
 // True per-IP rate-limit lives at the Vercel platform / firewall layer.
 const MAX_TITLE_LEN = 200;
@@ -34,13 +34,13 @@ export async function GET(req: NextRequest) {
   );
   const subtitle = clamp(searchParams.get("subtitle") || "", MAX_SUBTITLE_LEN);
 
-  const themeParam = searchParams.get("theme") || DEFAULT_THEME;
-  const theme = (themeSlugs as readonly string[]).includes(themeParam)
-    ? themeParam
-    : DEFAULT_THEME;
+  const worldParam = searchParams.get("world") || DEFAULT_WORLD;
+  const world = (worldSlugs as readonly string[]).includes(worldParam)
+    ? worldParam
+    : DEFAULT_WORLD;
 
   const accentColor =
-    themes[theme]?.palette.primary || themes[DEFAULT_THEME].palette.primary;
+    worlds[world]?.palette.primary || worlds[DEFAULT_WORLD].palette.primary;
 
   if (kind === "digest") {
     const lessonTitle = clamp(
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
           </h1>
         </div>
 
-        {/* Theme accent band */}
+        {/* World accent band */}
         <div tw="w-full h-3" style={{ backgroundColor: accentColor }} />
 
         {/* Bottom half: lesson teach */}

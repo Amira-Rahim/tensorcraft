@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { deepOrbit } from "@tensorcraft/themes";
+import { deepOrbit } from "@tensorcraft/worlds";
 import { hexToRgb, portraitSources, resolveCharacter } from "./character-art";
 
 const farah = deepOrbit.characters.find((c) => c.slug === "dr-farah")!;
@@ -14,7 +14,7 @@ describe("resolveCharacter", () => {
     expect(resolveCharacter("deep-orbit", "Instructor")).toBeUndefined();
   });
 
-  it("returns undefined for unknown themes and missing speakers", () => {
+  it("returns undefined for unknown worlds and missing speakers", () => {
     expect(resolveCharacter("neon-wrong", "Dr. Farah")).toBeUndefined();
     expect(resolveCharacter("deep-orbit", undefined)).toBeUndefined();
   });

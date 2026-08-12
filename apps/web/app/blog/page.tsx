@@ -56,7 +56,7 @@ export default function BlogIndexPage() {
                 <p className="font-mono text-xs text-text-muted tracking-wider uppercase mb-2">
                   {new Date(post.publishedAt).toISOString().slice(0, 10)}
                   {post.weekIso ? ` · ${post.weekIso}` : ""}
-                  {post.themeSlug ? ` · ${post.themeSlug}` : ""}
+                  {post.worldSlug ? ` · ${post.worldSlug}` : ""}
                 </p>
                 <h2 className="text-xl md:text-2xl font-mono font-bold mb-2">
                   <Link href={`/blog/${post.slug}`} className="hover:underline">

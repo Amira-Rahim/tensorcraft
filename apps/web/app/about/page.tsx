@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import {
-  THEME_CONTENT,
-  THEME_SLUGS,
+  WORLD_CONTENT,
+  WORLD_SLUGS,
   EXERCISE_CONTENT,
 } from "@tensorcraft/shared";
 
@@ -20,14 +20,14 @@ export const metadata: Metadata = {
     url: "https://tensorcraft.app/about",
     title: "About Tensorcraft | Tensorcraft",
     images: [
-      "/api/og?title=About%20Tensorcraft&theme=deep-orbit&subtitle=Why%20this%20course%20exists",
+      "/api/og?title=About%20Tensorcraft&world=deep-orbit&subtitle=Why%20this%20course%20exists",
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "About Tensorcraft | Tensorcraft",
     images: [
-      "/api/og?title=About%20Tensorcraft&theme=deep-orbit&subtitle=Why%20this%20course%20exists",
+      "/api/og?title=About%20Tensorcraft&world=deep-orbit&subtitle=Why%20this%20course%20exists",
     ],
   },
 };
@@ -51,7 +51,7 @@ export default function AboutPage() {
               "@type": "EducationalOrganization",
               name: "Tensorcraft",
               url: "https://tensorcraft.app",
-              description: `Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. ${THEME_CONTENT.totalLessonsPerTheme} lessons live in the first of ${THEME_SLUGS.length} planned themes.`,
+              description: `Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. ${WORLD_CONTENT.totalLessonsPerWorld} lessons live in the first of ${WORLD_SLUGS.length} planned worlds.`,
             },
           }),
         }}
@@ -107,8 +107,8 @@ export default function AboutPage() {
             Every exercise grades by executing your code, not by string-matching
             it. {EXERCISE_CONTENT.liveExercises} exercises live today at 100%
             solution-passes-all-tests, all running against real TensorFlow.js in
-            a worker in your browser, with {EXERCISE_CONTENT.authoredFiveThemes}{" "}
-            authored across the five-theme roadmap. Only the shipped set has
+            a worker in your browser, with {EXERCISE_CONTENT.authoredFiveWorlds}{" "}
+            authored across the five-world roadmap. Only the shipped set has
             been through our validation gates; we do not claim the rest meet
             that bar until they ship. Roughly half of the live exercises drive
             tensor and model APIs directly, and there a failing test means the
@@ -118,7 +118,7 @@ export default function AboutPage() {
           </p>
 
           <p>
-            Five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas,
+            Five worlds (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas,
             Terra Grid) wrap the curriculum in narrative. Each one builds toward
             a working browser-side ML system, assembled piece by piece across
             the modules; connect GitHub and every solved exercise pushes to your
@@ -198,7 +198,7 @@ export default function AboutPage() {
 
         <div className="mt-16 flex flex-wrap items-center gap-4">
           <Link
-            href="/themes"
+            href="/worlds"
             className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
             Start Module 1 →

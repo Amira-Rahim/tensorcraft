@@ -1,17 +1,17 @@
 /**
  * @tensorcraft/content
  *
- * MDX lesson content, exercise definitions, and theme content schemas.
+ * MDX lesson content, exercise definitions, and world content schemas.
  * Uses Velite for build-time validation with Zod schemas.
  */
 
 export {
-  BUILT_THEME_DIRS,
-  BUILT_THEME_GLOB,
-  BUILT_STORY_THEMES,
+  BUILT_WORLD_DIRS,
+  BUILT_WORLD_GLOB,
+  BUILT_STORY_WORLDS,
   EXTRAS_LESSON_COUNT,
-} from "./built-themes";
-export type { BuiltThemeDir } from "./built-themes";
+} from "./built-worlds";
+export type { BuiltWorldDir } from "./built-worlds";
 
 export { lessonSchema, exerciseSchema, moduleSchema } from "./schemas";
 export type { Lesson, Exercise, Module } from "./schemas";
@@ -46,7 +46,7 @@ export {
   getFoundationsModules,
   getSpecializationModules,
   isFoundationsModule,
-  getThemeLessons,
+  getWorldLessons,
   getModuleLessons,
   getLesson,
   getExercise,

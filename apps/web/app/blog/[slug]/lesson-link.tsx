@@ -6,7 +6,7 @@ import { EVENTS, track } from "@/lib/analytics-events";
 interface LessonLinkProps {
   postSlug: string;
   weekIso?: string;
-  themeId: string;
+  worldId: string;
   moduleId: string;
   slug: string;
   title: string;
@@ -16,20 +16,20 @@ interface LessonLinkProps {
 export function LessonLink({
   postSlug,
   weekIso,
-  themeId,
+  worldId,
   moduleId,
   slug,
   title,
   rationale,
 }: LessonLinkProps) {
-  const href = `/themes/${themeId}/${moduleId}/${slug}?utm_source=blog&utm_medium=post&utm_campaign=${weekIso ?? "evergreen"}&utm_content=${postSlug}`;
+  const href = `/worlds/${worldId}/${moduleId}/${slug}?utm_source=blog&utm_medium=post&utm_campaign=${weekIso ?? "evergreen"}&utm_content=${postSlug}`;
 
   function onClick() {
     track(EVENTS.DIGEST_LINK_CLICKED, {
       postSlug,
       lessonSlug: slug,
       moduleId,
-      themeId,
+      worldId,
       weekIso,
     });
   }
@@ -40,7 +40,7 @@ export function LessonLink({
         {title}
       </Link>
       <p className="text-xs text-text-muted">
-        {themeId} / {moduleId}
+        {worldId} / {moduleId}
       </p>
       {rationale && <p className="text-sm text-text-muted mt-1">{rationale}</p>}
     </>

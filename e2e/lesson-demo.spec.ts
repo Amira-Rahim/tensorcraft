@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
  * foundations/normalization must load the real 4 KB preview model and run
  * REAL TensorFlow.js inference in the browser, sample 7741 lands at ~51%.
  *
- * The lesson step index persists in localStorage (`tc_step_{theme}_{lesson}`),
+ * The lesson step index persists in localStorage (`tc_step_{world}_{lesson}`),
  * so the test jumps straight to step 5 (Consequence) rather than solving
  * the exercise gate.
  */
@@ -20,7 +20,7 @@ test.describe("DeepScanDemo: live inference on the free tier", () => {
       localStorage.setItem("tc_step_deep-orbit_normalization", "5");
       localStorage.setItem("tc_step_max_deep-orbit_normalization", "5");
     });
-    await page.goto("/themes/deep-orbit/foundations/normalization");
+    await page.goto("/worlds/deep-orbit/foundations/normalization");
 
     // Consequence step renders the epilogue scene with the demo inside.
     await expect(page.getByTestId("epilogue")).toBeVisible({ timeout: 15000 });

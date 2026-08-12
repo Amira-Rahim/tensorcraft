@@ -10,7 +10,7 @@ import {
 } from "@/lib/guest-progress";
 
 /**
- * Replays guest-recorded lesson completions into theme_progress once the
+ * Replays guest-recorded lesson completions into world_progress once the
  * visitor signs in (2026-07-19 UX audit: a buyer who did module 1 as a
  * guest hit the module-2 prerequisite gate and was told to re-walk five
  * lessons). Mounted globally; exits immediately when there is nothing
@@ -44,7 +44,7 @@ export function GuestProgressBridge() {
       );
       for (const c of ordered) {
         const result = await markLessonCompleted(
-          c.themeId,
+          c.worldId,
           c.moduleId,
           c.lessonId,
         );

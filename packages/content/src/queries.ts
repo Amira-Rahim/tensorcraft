@@ -21,21 +21,21 @@ export function getPost(slug: string) {
   return posts.find((p) => p.slug === slug) ?? null;
 }
 
-/** Get all modules for a theme, sorted by order */
-export function getModules(themeSlug: string) {
+/** Get all modules for a world, sorted by order */
+export function getModules(worldSlug: string) {
   return modules
-    .filter((m) => m.themeId === themeSlug)
+    .filter((m) => m.worldId === worldSlug)
     .sort((a, b) => a.order - b.order);
 }
 
-/** Get only foundations (shared core) modules for a theme */
-export function getFoundationsModules(themeSlug: string) {
-  return getModules(themeSlug).filter((m) => m.track === "foundations");
+/** Get only foundations (shared core) modules for a world */
+export function getFoundationsModules(worldSlug: string) {
+  return getModules(worldSlug).filter((m) => m.track === "foundations");
 }
 
-/** Get only specialization (theme-specific) modules for a theme */
-export function getSpecializationModules(themeSlug: string) {
-  return getModules(themeSlug).filter((m) => m.track === "specialization");
+/** Get only specialization (world-specific) modules for a world */
+export function getSpecializationModules(worldSlug: string) {
+  return getModules(worldSlug).filter((m) => m.track === "specialization");
 }
 
 /** Check if a module is part of the shared foundations track */
@@ -43,38 +43,38 @@ export function isFoundationsModule(mod: { track: string }) {
   return mod.track === "foundations";
 }
 
-/** Get a single module by theme and slug */
-export function getModule(themeSlug: string, moduleSlug: string) {
+/** Get a single module by world and slug */
+export function getModule(worldSlug: string, moduleSlug: string) {
   return (
-    modules.find((m) => m.themeId === themeSlug && m.slug === moduleSlug) ??
+    modules.find((m) => m.worldId === worldSlug && m.slug === moduleSlug) ??
     null
   );
 }
 
-/** Get all lessons for a theme, sorted by module order then lesson order */
-export function getThemeLessons(themeSlug: string) {
+/** Get all lessons for a world, sorted by module order then lesson order */
+export function getWorldLessons(worldSlug: string) {
   return lessons
-    .filter((l) => l.themeId === themeSlug)
+    .filter((l) => l.worldId === worldSlug)
     .sort((a, b) => a.order - b.order);
 }
 
 /** Get lessons for a specific module */
-export function getModuleLessons(themeSlug: string, moduleSlug: string) {
+export function getModuleLessons(worldSlug: string, moduleSlug: string) {
   return lessons
-    .filter((l) => l.themeId === themeSlug && l.moduleId === moduleSlug)
+    .filter((l) => l.worldId === worldSlug && l.moduleId === moduleSlug)
     .sort((a, b) => a.order - b.order);
 }
 
 /** Get a single lesson */
 export function getLesson(
-  themeSlug: string,
+  worldSlug: string,
   moduleSlug: string,
   lessonSlug: string,
 ) {
   return (
     lessons.find(
       (l) =>
-        l.themeId === themeSlug &&
+        l.worldId === worldSlug &&
         l.moduleId === moduleSlug &&
         l.slug === lessonSlug,
     ) ?? null
@@ -95,7 +95,7 @@ export function getLessonExercises(lessonSlug: string) {
  * Lesson + embedded-exercise minutes: the single user-facing time basis.
  * lesson.estimatedMinutes counts the reading/steps only, so every surface
  * that shows a learner "how long is this page" must add the exercises the
- * page embeds. The theme courseWorkload JSON-LD and /pricing's curriculum
+ * page embeds. The world courseWorkload JSON-LD and /pricing's curriculum
  * preview already sum on this basis; per-lesson surfaces drifted from it
  * when second (incident) exercises landed (2026-07-13 P4 round 3).
  */
@@ -121,10 +121,10 @@ export interface CollectibleBridge {
   tier: "identity" | "structural" | "intuition";
 }
 
-/** Get all lessons with bridges for a theme (for dashboard collectibles) */
-export function getLessonsWithBridges(themeSlug: string): CollectibleBridge[] {
+/** Get all lessons with bridges for a world (for dashboard collectibles) */
+export function getLessonsWithBridges(worldSlug: string): CollectibleBridge[] {
   return lessons
-    .filter((l) => l.themeId === themeSlug && l.concept?.bridge)
+    .filter((l) => l.worldId === worldSlug && l.concept?.bridge)
     .map((l) => ({
       lessonSlug: l.slug,
       moduleSlug: l.moduleId,
@@ -157,11 +157,11 @@ export function getLessonsByConcepts(
 
 /** Get prev/next lessons for navigation */
 export function getAdjacentLessons(lesson: {
-  themeId: string;
+  worldId: string;
   moduleId: string;
   order: number;
 }) {
-  const moduleLessons = getModuleLessons(lesson.themeId, lesson.moduleId);
+  const moduleLessons = getModuleLessons(lesson.worldId, lesson.moduleId);
   const index = moduleLessons.findIndex((l) => l.order === lesson.order);
 
   return {

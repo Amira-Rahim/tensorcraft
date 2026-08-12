@@ -1,13 +1,13 @@
 # Neon Protocol — Computer Vision
 
-> Neon Protocol is the second theme in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
+> Neon Protocol is the second world in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
 ---
 
 ## SCRIPT GUIDE
 
 **Tags:** `computer-vision` `CNN` `object-detection` `segmentation` `transfer-learning` `real-time`
-**Theme:** Cyberpunk surveillance resistance in Neon City, 2049
+**World:** Cyberpunk surveillance resistance in Neon City, 2049
 **Setting:** NeuralCore HQ — the resistance's underground base beneath Neon City. Above ground, Meridian Systems operates 200 cameras per city block. The resistance repurposes decommissioned server rooms, rooftop antenna arrays, and hidden safe houses as their operational network.
 **Model being built:** Protocol Sentinel — an anomaly detection system for surveillance networks
 **GitHub repo deployed at end:** `protocol-sentinel-vision`
@@ -38,7 +38,7 @@
 
 ---
 
-## THEME PREVIEW
+## WORLD PREVIEW
 
 ### Preview Art
 
@@ -349,7 +349,7 @@ Kira doesn't respond right away. She watches the loss curve descend on her scree
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
 | 1 | Pre-trained Models | Using models trained on massive datasets | npm packages — using others' work |
-| 2 | Fine-tuning | Adapting a model to your task | Customizing a UI framework's theme |
+| 2 | Fine-tuning | Adapting a model to your task | Customizing a UI framework's world |
 | 3 | Feature Freezing | Which layers to retrain | `Object.freeze()` — selective immutability |
 | 4 | Domain Adaptation | Bridging data distributions | i18n — adapting content across locales |
 | 5 | Meridian's Models | Repurposing the enemy's weights | Forking an open-source project |
@@ -433,7 +433,7 @@ The team agrees: the patches will be cryptographically bound to Meridian's archi
 | 1 | GANs Primer | Generator vs discriminator | Fuzzer vs validator in testing |
 | 2 | Image Generation | Creating synthetic training data | Procedural content generation |
 | 3 | Adversarial Patches | Patterns that fool classifiers | CSS `mix-blend-mode` — visual interference |
-| 4 | Style Transfer | Applying visual styles across images | CSS theme switching / CSS-in-JS |
+| 4 | Style Transfer | Applying visual styles across images | CSS world switching / CSS-in-JS |
 | 5 | Counter-Surveillance | Using generative AI defensively | Ad blockers — rewriting the visual stream |
 
 ### GITHUB
@@ -546,7 +546,7 @@ Ryo's arc is not a simple conversion from skeptic to believer. He knows ML works
 
 ---
 
-## Theme-Specific Terminology
+## World-Specific Terminology
 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|

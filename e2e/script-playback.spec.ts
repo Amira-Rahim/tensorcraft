@@ -17,7 +17,7 @@ test.describe("Lesson script playback", () => {
     // drop an already-revealed beat, breaking monotonicity. This assertion
     // set stays truthful after real art ships because the route stays dead.
     await page.route("**/scenes/**", (route) => route.abort());
-    await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
+    await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
 
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
 

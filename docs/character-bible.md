@@ -7,10 +7,10 @@ This document is the single source of truth for how the Tensorcraft cast looks, 
 Append this token to every character image-generation prompt so the whole cast reads as one cohesive set. Copy it verbatim.
 
 ```text
-cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, tight head-and-shoulders crop from the upper chest up with both shoulders inside the frame, hands and all furniture out of frame, the head filling the upper two thirds of the image with the eyeline about one third down from the top, identical head scale across the cast, near-black background, theme-accent rim light, cohesive ensemble cast, not photorealistic, absolutely no text, lettering, numerals or logos anywhere in frame.
+cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, tight head-and-shoulders crop from the upper chest up with both shoulders inside the frame, hands and all furniture out of frame, the head filling the upper two thirds of the image with the eyeline about one third down from the top, identical head scale across the cast, near-black background, world-accent rim light, cohesive ensemble cast, not photorealistic, absolutely no text, lettering, numerals or logos anywhere in frame.
 ```
 
-The only per-character variation to the token is the theme-accent rim light color, which is named explicitly on each sheet (for Deep Orbit it is the primary green `#6BAA8A`).
+The only per-character variation to the token is the world-accent rim light color, which is named explicitly on each sheet (for Deep Orbit it is the primary green `#6BAA8A`).
 
 **Age rule (learned at Gate 0, 2026-08-09).** Generators skew every face young:
 "a woman in her early fifties" produced three candidates reading 35-40. State
@@ -22,7 +22,7 @@ artifact.
 
 ## Asset convention and placeholder behavior
 
-Final art files live at `apps/web/public/characters/<theme-slug>/<character-slug>.webp` (for example `apps/web/public/characters/deep-orbit/commander-mirza.webp`). Until a file is present, the product renders a monogram placeholder built from the character initials in the theme palette, and AI characters render an abstract glyph placeholder instead of initials. Later, expression variants for the animation stream follow the pattern `<slug>-<expression>.webp` (for example `commander-mirza-concerned.webp`), drawn from the expression set listed on each sheet.
+Final art files live at `apps/web/public/characters/<world-slug>/<character-slug>.webp` (for example `apps/web/public/characters/deep-orbit/commander-mirza.webp`). Until a file is present, the product renders a monogram placeholder built from the character initials in the world palette, and AI characters render an abstract glyph placeholder instead of initials. Later, expression variants for the animation stream follow the pattern `<slug>-<expression>.webp` (for example `commander-mirza-concerned.webp`), drawn from the expression set listed on each sheet.
 
 ## Per-character template
 
@@ -34,14 +34,14 @@ Every full sheet uses these fields in this order:
 - **Imagined appearance** face, build, age read, distinguishing features.
 - **Attire** what they wear in-world.
 - **Signature / prop** the object or detail that telegraphs who they are.
-- **Palette** the colors that anchor the character against the theme.
+- **Palette** the colors that anchor the character against the world.
 - **Expression set** neutral plus three emotional states, for the later animation stream.
 - **Do / Don't** guardrails for artists.
-- **Image-gen prompt** a ready prompt that ends with the shared style token plus the named theme accent.
+- **Image-gen prompt** a ready prompt that ends with the shared style token plus the named world accent.
 
 ## Deep Orbit
 
-Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in the Proxima Centauri system. The crew builds DEEP SCAN, a deep-space signal classifier. Theme accent for all rim lights on this team is the primary green `#6BAA8A`, with the secondary brass accent `#A89060` available for warm metal and trim. Background near-black is `#1C1C1C`.
+Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in the Proxima Centauri system. The crew builds DEEP SCAN, a deep-space signal classifier. World accent for all rim lights on this team is the primary green `#6BAA8A`, with the secondary brass accent `#A89060` available for warm metal and trim. Background near-black is `#1C1C1C`.
 
 ### Commander Mirza (Okafor)
 
@@ -106,43 +106,43 @@ Setting: the research vessel *Archimedes*, deep inside an uncharted nebula in th
 - **Palette** Near-black `#1C1C1C` field, the waveform and ring in luminous green `#6BAA8A` as the primary glow, fine brass `#A89060` tick marks on the ring for warmth. The green rim light is intrinsic here since the glyph is self-illuminated.
 - **Expression set (waveform states, not faces)** neutral (calm even ripple); emphasis (one clean tall spike); deadpan (a flat steady line); alarm (a tight agitated scatter of peaks).
 - **Do / Don't** Do keep it strictly abstract, geometric, and luminous, a glyph that could sit in a terminal. Don't give ARIA a face, eyes, a robot head, or any humanoid form, and don't make the ring busy or ornamental.
-- **Image-gen prompt** An abstract AI glyph for ARIA, a ship's artificial intelligence with no face and no body: a steady horizontal oscilloscope waveform contained inside a thin concentric geometric voice-orb ring, fine brass tick marks on the ring, the waveform as the only living element, self-illuminated like glowing light on glass, calm and precise, strictly non-humanoid. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, centered glyph framing, near-black background, theme-accent rim light in green #6BAA8A, cohesive ensemble cast, not photorealistic.
+- **Image-gen prompt** An abstract AI glyph for ARIA, a ship's artificial intelligence with no face and no body: a steady horizontal oscilloscope waveform contained inside a thin concentric geometric voice-orb ring, fine brass tick marks on the ring, the waveform as the only living element, self-illuminated like glowing light on glass, calm and precise, strictly non-humanoid. cel-shaded cartoon illustration, clean bold linework, flat shading with one soft key light, slightly stylized proportions, centered glyph framing, near-black background, world-accent rim light in green #6BAA8A, cohesive ensemble cast, not photorealistic.
 
-## Other themes
+## Other worlds
 
-The four themes below are gated on launch. Rosters are confirmed from the theme manifests; full sheets will be authored when each theme ships. AI characters (NEON, MEDI, MUSE, GRID) will follow the ARIA pattern of an abstract glyph rather than a human portrait.
+The four worlds below are gated on launch. Rosters are confirmed from the world manifests; full sheets will be authored when each world ships. AI characters (NEON, MEDI, MUSE, GRID) will follow the ARIA pattern of an abstract glyph rather than a human portrait.
 
 ### Neon Protocol
 
-- Kira Tanaka - Mentor - sheet pending (gated on theme launch)
-- Zara - Vision Specialist - sheet pending (gated on theme launch)
-- Ryo - Skeptic - sheet pending (gated on theme launch)
-- Lin - Performance Engineer - sheet pending (gated on theme launch)
-- NEON - City AI - sheet pending (gated on theme launch)
+- Kira Tanaka - Mentor - sheet pending (gated on world launch)
+- Zara - Vision Specialist - sheet pending (gated on world launch)
+- Ryo - Skeptic - sheet pending (gated on world launch)
+- Lin - Performance Engineer - sheet pending (gated on world launch)
+- NEON - City AI - sheet pending (gated on world launch)
 
 ### Signal Ward
 
-- Dr. Vasquez - Mentor - sheet pending (gated on theme launch)
-- Dr. Obi - Radiologist - sheet pending (gated on theme launch)
-- Nurse Santos - Stakeholder - sheet pending (gated on theme launch)
-- Dr. Khalil - Skeptic - sheet pending (gated on theme launch)
-- MEDI - Hospital AI - sheet pending (gated on theme launch)
+- Dr. Vasquez - Mentor - sheet pending (gated on world launch)
+- Dr. Obi - Radiologist - sheet pending (gated on world launch)
+- Nurse Santos - Stakeholder - sheet pending (gated on world launch)
+- Dr. Khalil - Skeptic - sheet pending (gated on world launch)
+- MEDI - Hospital AI - sheet pending (gated on world launch)
 
 ### Nova Canvas
 
-- Director Yara Okonkwo - Mentor - sheet pending (gated on theme launch)
-- Kai Zhang - Peer - sheet pending (gated on theme launch)
-- Professor Elena Petrov - Skeptic - sheet pending (gated on theme launch)
-- Ren Kobayashi - Peer - sheet pending (gated on theme launch)
-- MUSE - Studio AI - sheet pending (gated on theme launch)
+- Director Yara Okonkwo - Mentor - sheet pending (gated on world launch)
+- Kai Zhang - Peer - sheet pending (gated on world launch)
+- Professor Elena Petrov - Skeptic - sheet pending (gated on world launch)
+- Ren Kobayashi - Peer - sheet pending (gated on world launch)
+- MUSE - Studio AI - sheet pending (gated on world launch)
 
 ### Terra Grid
 
-- Chief Engineer Amira Hassan - Mentor - sheet pending (gated on theme launch)
-- Marcus Cole - Peer - sheet pending (gated on theme launch)
-- Dr. Nina Park - Skeptic - sheet pending (gated on theme launch)
-- Operator Jin - Stakeholder - sheet pending (gated on theme launch)
-- GRID - Infrastructure AI - sheet pending (gated on theme launch)
+- Chief Engineer Amira Hassan - Mentor - sheet pending (gated on world launch)
+- Marcus Cole - Peer - sheet pending (gated on world launch)
+- Dr. Nina Park - Skeptic - sheet pending (gated on world launch)
+- Operator Jin - Stakeholder - sheet pending (gated on world launch)
+- GRID - Infrastructure AI - sheet pending (gated on world launch)
 
 ## Production log
 
@@ -206,8 +206,8 @@ expression (calm ripple, one tall spike, a flat line, an agitated scatter).
 Her `hold` clause in `scripts/art/expressions.mjs` protects the ring
 furniture so only the trace changes between states. The procedural component
 and its golden tests were deleted; they are in git history if the
-theme-adaptive version is ever wanted back.
+world-adaptive version is ever wanted back.
 
 The `isAI` flag still means something: `CharacterAvatar` renders the abstract
 glyph placeholder rather than initials for an AI with no art yet, which is
-what the other themes' AI characters get until their sheets are written.
+what the other worlds' AI characters get until their sheets are written.

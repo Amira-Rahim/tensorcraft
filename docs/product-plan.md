@@ -1,14 +1,14 @@
 # Tensorcraft — Product Plan v3.3
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
-> The other 4 themes (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid)
+> The other 4 worlds (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid)
 > are gated to "coming soon" stub pages with email-capture waitlists. See
 > [`launch-scope.md`](./launch-scope.md) for the authoritative spec. Where
-> this document still says "five themes," "275 lessons," "all themes
+> this document still says "five worlds," "275 lessons," "all worlds
 > simultaneously," or describes pricing tiers for 2-/3-/all-bundle, treat
 > those statements as describing the **post-V1 roadmap** rather than the V1
-> product. The shipped V1 surface is **1 theme / 11 modules / 55 lessons /
-> 1 capstone / ~65 exercises / single-theme purchase only**.
+> product. The shipped V1 surface is **1 world / 11 modules / 55 lessons /
+> 1 capstone / ~65 exercises / single-world purchase only**.
 
 ---
 
@@ -16,20 +16,20 @@
 
 ### 1.1 What Tensorcraft Is
 
-Tensorcraft is an **interactive, story-driven machine learning education platform** designed specifically for frontend developers transitioning into ML/AI roles. Rather than offering a single monolithic course, Tensorcraft delivers focused learning through **per-model purchases at $59 each**, organized around five immersive themes.
+Tensorcraft is an **interactive, story-driven machine learning education platform** designed specifically for frontend developers transitioning into ML/AI roles. Rather than offering a single monolithic course, Tensorcraft delivers focused learning through **per-model purchases at $59 each**, organized around five immersive worlds.
 
-Each theme places the learner inside a narrative world where they build a real ML model from scratch — not by copying tutorials, but by making decisions that shape both the story and the model. The platform combines cinematic storytelling, hands-on coding, and conceptual bridges from frontend development to make ML deeply intuitive for web developers.
+Each world places the learner inside a narrative world where they build a real ML model from scratch — not by copying tutorials, but by making decisions that shape both the story and the model. The platform combines cinematic storytelling, hands-on coding, and conceptual bridges from frontend development to make ML deeply intuitive for web developers.
 
 **Core Principles:**
 
 - **Story-driven**: Every lesson unfolds within a narrative arc. Learners don't just study ML — they experience it.
 - **Interactive**: Concepts are taught through interactive animations, code challenges, and decision points — not passive video.
-- **Per-model purchases**: Each theme is purchased independently at **$59**, allowing learners to start with what excites them most.
-- **Five themes**: Each theme teaches all ML fundamentals while specializing in a distinct area of machine learning.
+- **Per-model purchases**: Each world is purchased independently at **$59**, allowing learners to start with what excites them most.
+- **Five worlds**: Each world teaches all ML fundamentals while specializing in a distinct area of machine learning.
 
-### 1.2 The Five Themes
+### 1.2 The Five Worlds
 
-| Theme | World | Specialization | Model Built | Relevant Career Paths | Salary Range |
+| World | World | Specialization | Model Built | Relevant Career Paths | Salary Range |
 |-------|-------|---------------|-------------|----------------------|--------------|
 | **Deep Orbit** | Space exploration & celestial navigation | Time-series & signals | Multi-stage signal classifier for anomaly detection | ML-Enhanced Frontend Engineer, Time-Series Specialist | $120K–$160K |
 | **Neon Protocol** | Cyberpunk city & digital underworld | Real-Time Computer Vision | Real-time surveillance detection system | ML-Enhanced Frontend Engineer, Computer Vision Specialist | $120K–$160K |
@@ -37,7 +37,7 @@ Each theme places the learner inside a narrative world where they build a real M
 | **Nova Canvas** | Art colony & generative design studio | Multimodal & Generative AI | Real-time multimodal creative installation | ML-Enhanced Frontend Engineer, Creative Technologist | $120K–$160K |
 | **Terra Grid** | Industrial infrastructure & edge computing | Edge AI & production ML | Distributed edge anomaly detection system | ML-Enhanced Frontend Engineer, Edge ML Specialist | $120K–$160K |
 
-**Every theme teaches ALL ML fundamentals.** Regardless of which theme a learner starts with, they will cover:
+**Every world teaches ALL ML fundamentals.** Regardless of which world a learner starts with, they will cover:
 
 - Data preprocessing and feature engineering
 - Model architecture and design decisions
@@ -48,24 +48,24 @@ Each theme places the learner inside a narrative world where they build a real M
 - Hyperparameter tuning
 - Model deployment fundamentals
 
-The specialization (roughly 40% of each curriculum) goes deeper into the theme's domain, but the shared core (60%) ensures every learner gets a complete ML foundation.
+The specialization (roughly 40% of each curriculum) goes deeper into the world's domain, but the shared core (60%) ensures every learner gets a complete ML foundation.
 
 ### 1.3 Launch Strategy
 
-**All 5 themes launch simultaneously at V1.0.** There is no phased theme rollout. Every theme (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) ships with all 11 modules (55 lessons each, 275 lessons total) at V1.0.
+**All 5 worlds launch simultaneously at V1.0.** There is no phased world rollout. Every world (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) ships with all 11 modules (55 lessons each, 275 lessons total) at V1.0.
 
 | Version  | Content                                                  | Timing  | Status         |
 |----------|----------------------------------------------------------|---------|----------------|
-| **V0.5** | All 5 themes — Modules 1–3 (15 lessons each, free tier)  | Q2 2026 | In development |
-| **V1.0** | All 5 themes — Full 11 modules each (275 lessons total)  | Q3 2026 | Planned        |
+| **V0.5** | All 5 worlds — Modules 1–3 (15 lessons each, free tier)  | Q2 2026 | In development |
+| **V1.0** | All 5 worlds — Full 11 modules each (275 lessons total)  | Q3 2026 | Planned        |
 
-### 1.4 Theme Concept Disclaimers
+### 1.4 World Concept Disclaimers
 
-Each theme teaches all ML fundamentals plus its own specialization. Below is the full "What You'll Learn" breakdown for every theme.
+Each world teaches all ML fundamentals plus its own specialization. Below is the full "What You'll Learn" breakdown for every world.
 
 #### Deep Orbit — What You'll Learn
 
-**Fundamentals (shared across all themes):**
+**Fundamentals (shared across all worlds):**
 
 - Data loading, cleaning, and preprocessing
 - Feature engineering and selection
@@ -101,7 +101,7 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 #### Neon Protocol — What You'll Learn
 
-**Fundamentals (shared across all themes):**
+**Fundamentals (shared across all worlds):**
 
 - Data loading, cleaning, and preprocessing
 - Feature engineering and selection
@@ -137,7 +137,7 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 #### Signal Ward — What You'll Learn
 
-**Fundamentals (shared across all themes):**
+**Fundamentals (shared across all worlds):**
 
 - Data loading, cleaning, and preprocessing
 - Feature engineering and selection
@@ -173,7 +173,7 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 #### Nova Canvas — What You'll Learn
 
-**Fundamentals (shared across all themes):**
+**Fundamentals (shared across all worlds):**
 
 - Data loading, cleaning, and preprocessing
 - Feature engineering and selection
@@ -209,7 +209,7 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 #### Terra Grid — What You'll Learn
 
-**Fundamentals (shared across all themes):**
+**Fundamentals (shared across all worlds):**
 
 - Data loading, cleaning, and preprocessing
 - Feature engineering and selection
@@ -265,16 +265,16 @@ These statistics inform our marketing, pricing, and curriculum design — the $5
 
 | Tier | Description | Price |
 |------|------------|-------|
-| **Single Model** | One theme, full 11 modules | $59 |
-| **Two Models** | Any two themes | $99 (save $19) |
-| **Three Models** | Any three themes | $129 (save $48) |
-| **All 5 Models** | All five themes | $159 (save $136) |
+| **Single Model** | One world, full 11 modules | $59 |
+| **Two Models** | Any two worlds | $99 (save $19) |
+| **Three Models** | Any three worlds | $129 (save $48) |
+| **All 5 Models** | All five worlds | $159 (save $136) |
 
 #### Upgrade Path
 
 > **Implemented (2026-04-14):** Credit from prior purchases is calculated automatically. Adjusted price charged via Stripe. Auto-grant when credit covers full price.
 
-Learners who purchase a single theme can upgrade to a bundle at any time. The price they already paid is credited toward the bundle price. For example, a learner who bought Deep Orbit for $59 can upgrade to the Two Models tier by paying $40 ($99 – $59). This removes purchase anxiety and encourages starting with one theme.
+Learners who purchase a single world can upgrade to a bundle at any time. The price they already paid is credited toward the bundle price. For example, a learner who bought Deep Orbit for $59 can upgrade to the Two Models tier by paying $40 ($99 – $59). This removes purchase anxiety and encourages starting with one world.
 
 #### Purchasing Power Parity (PPP)
 
@@ -304,13 +304,13 @@ Years 4–5 projections are not included in this plan. Revenue growth in those y
 
 The **Tensorcraft Arena** is a competitive practice environment available for **$29/year** (subscription). Arena provides:
 
-- Weekly ML challenges themed around all five worlds
+- Weekly ML challenges drawn from all five worlds
 - Leaderboard rankings with ELO-style scoring
 - Community solutions and discussion
 - Seasonal tournaments with prizes
-- Access requires owning at least one theme
+- Access requires owning at least one world
 
-Arena is designed as a retention and engagement mechanism, not a primary revenue driver. It keeps learners active between theme purchases and builds community.
+Arena is designed as a retention and engagement mechanism, not a primary revenue driver. It keeps learners active between world purchases and builds community.
 
 ---
 
@@ -326,9 +326,9 @@ Every lesson in Tensorcraft follows the **5C Loop** — a repeating pedagogical 
 4. **Challenge** — A stretch problem that tests deeper understanding. Often involves a decision point in the story.
 5. **Consequence** — Show the result of the learner's code/decisions in the narrative. The story progresses based on their work.
 
-#### 5C Variations by Theme
+#### 5C Variations by World
 
-| Theme | Context Style | Concept Bridge | Code Environment | Challenge Type | Consequence Style |
+| World | Context Style | Concept Bridge | Code Environment | Challenge Type | Consequence Style |
 |-------|--------------|---------------|-----------------|---------------|------------------|
 | **Deep Orbit** | Mission briefings, sensor readings, crew dialogue | Signal processing & event-loop analogies, streaming data metaphors | Sandpack editor with TensorFlow.js signal processing | Detect anomalies in deep-space signal data under time pressure | Ship navigation changes, crew reactions, mission outcomes |
 | **Neon Protocol** | Surveillance footage, underground contacts, digital noir | Canvas/WebGL & visual processing analogies, pixel-level metaphors | Sandpack editor with TensorFlow.js image/video processing | Detect surveillance drones, identify threats in video feeds | Cover is maintained or blown, resistance succeeds or fails |
@@ -370,9 +370,9 @@ Arena participants see anonymized peer comparisons: how their solution compares 
 
 #### 3.2.6 Completion Certificates
 
-Upon completing all 11 modules in a theme, learners receive a verifiable completion certificate. The certificate is auto-generated on the capstone page via `POST /api/certificates` and publicly retrievable (no auth) via `GET /api/certificates/:id` for verification. It includes:
+Upon completing all 11 modules in a world, learners receive a verifiable completion certificate. The certificate is auto-generated on the capstone page via `POST /api/certificates` and publicly retrievable (no auth) via `GET /api/certificates/:id` for verification. It includes:
 
-- Theme name and specialization
+- World name and specialization
 - Completion date
 - Capstone project summary and final model metrics
 - A unique verification URL
@@ -406,9 +406,9 @@ Each bridge is classified into one of three quality tiers that indicate the stre
 
 The Bridge Explorer UI should display these tiers as badges on each bridge card, and allow filtering by tier.
 
-#### Shared Bridges (All Themes)
+#### Shared Bridges (All Worlds)
 
-These 20 bridges appear across all five themes:
+These 20 bridges appear across all five worlds:
 
 | # | ML Concept | Frontend Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
@@ -475,7 +475,7 @@ These 20 bridges appear across all five themes:
 | 3 | GAN (generator vs. discriminator) | Fuzzer vs. validator | Both are adversarial systems where one component generates and another judges. A fuzzer creates random inputs; a validator rejects bad ones. GANs formalize this into a training loop. |
 | 4 | VAE (encode/decode) | URL shortener | Both compress complex data into a compact representation and reconstruct the original. A URL shortener encodes a long URL into a short code and decodes it back; a VAE encodes data into a latent vector and decodes it back. |
 | 5 | Diffusion (noise → detail) | Progressive image loading | Both start with a degraded version and iteratively refine toward full quality. Progressive JPEG loads blurry-to-sharp; diffusion denoises random noise into a coherent image. Same trajectory, different domain. |
-| 6 | Style transfer | CSS theme switching | Both apply a different appearance to the same underlying content. CSS theme switching changes colors/fonts while keeping HTML structure; style transfer changes visual style while preserving content. Same content, different presentation. |
+| 6 | Style transfer | CSS world switching | Both apply a different appearance to the same underlying content. CSS world switching changes colors/fonts while keeping HTML structure; style transfer changes visual style while preserving content. Same content, different presentation. |
 
 #### Terra Grid Bridges
 
@@ -494,11 +494,11 @@ These 20 bridges appear across all five themes:
 
 ### 3.4 Interactive Animations — Progress Diagram
 
-The **Progress Diagram** is a central visual element showing the learner's journey through a theme's 11 modules.
+The **Progress Diagram** is a central visual element showing the learner's journey through a world's 11 modules.
 
 #### Art Style
 
-- **Low-poly, isometric environments** themed to each world
+- **Low-poly, isometric environments** styled to each world
 - Deep Orbit: starfield with orbital paths connecting stations
 - Neon Protocol: cityscape with neon-lit pathways between buildings
 - Signal Ward: medical facility with corridors between lab rooms
@@ -507,7 +507,7 @@ The **Progress Diagram** is a central visual element showing the learner's journ
 
 #### Active vs. Inactive States
 
-- **Completed modules**: Fully lit, with particle effects. Color-saturated using the theme's primary palette. Brutalist offset shadow on node.
+- **Completed modules**: Fully lit, with particle effects. Color-saturated using the world's primary palette. Brutalist offset shadow on node.
 - **Current module**: Pulsing border, slightly enlarged, with a beacon/marker animation. Draws the eye.
 - **Upcoming modules (unlocked)**: Dimmed but visible. Silhouette/outline of the environment. Subtle idle animation (e.g., flickering light).
 - **Locked modules**: Greyed out, no animation. Visible but clearly inaccessible. Silhouette only.
@@ -531,17 +531,17 @@ Clicking a module node in the progress diagram:
 
 #### Screenshot
 
-*[Design mockup to be produced by visual design team. The progress diagram should be the single most visually impressive element on the platform — it is the learner's constant companion and the primary navigation mechanism within a theme.]*
+*[Design mockup to be produced by visual design team. The progress diagram should be the single most visually impressive element on the platform — it is the learner's constant companion and the primary navigation mechanism within a world.]*
 
 ### 3.5 GitHub Integration
 
 Tensorcraft integrates with GitHub to give learners a real portfolio artifact from their learning:
 
-- **Auto-repository creation**: When a learner starts a theme, Tensorcraft creates a private GitHub repository (with learner permission) named `tensorcraft-{theme-name}`.
+- **Auto-repository creation**: When a learner starts a world, Tensorcraft creates a private GitHub repository (with learner permission) named `tensorcraft-{world-name}`.
 - **Commit per lesson**: Each completed lesson auto-commits the learner's code with a descriptive commit message. The commit history becomes a readable learning log.
 - **Branch per module**: Each module is developed on its own branch, merged to main upon module completion. This teaches Git workflow as a side effect.
 - **README generation**: A README is auto-generated and updated as the learner progresses, summarizing what they've built and learned.
-- **Portfolio-ready**: Upon theme completion, the repository is optionally made public. It serves as a portfolio piece demonstrating ML skills.
+- **Portfolio-ready**: Upon world completion, the repository is optionally made public. It serves as a portfolio piece demonstrating ML skills.
 - **No GitHub requirement**: GitHub integration is optional. Learners who prefer not to connect GitHub can still complete all content — code is saved on-platform.
 
 ### 3.6 Module Structure
@@ -558,13 +558,13 @@ Each module contains **5 lessons**, following a consistent structure:
 
 - **Lesson 5 — Capstone**: Module capstone project. Synthesizes all concepts from the module into a single larger exercise. Story reaches a module-level climax. Graded automatically with detailed feedback.
 
-### 3.7 UI/UX Design Notes: Theme Cards
+### 3.7 UI/UX Design Notes: World Cards
 
-All 5 themes launch simultaneously. There are no "Coming Soon" cards — every theme card is fully interactive and purchasable from V1.0.
+All 5 worlds launch simultaneously. There are no "Coming Soon" cards — every world card is fully interactive and purchasable from V1.0.
 
 #### Card Layout
 
-On the main themes page, all 5 theme cards are arranged in a responsive grid: 3 columns on desktop, 2 on tablet, 1 on mobile. All cards are the same size with full color, interactive hover effects, "Start Learning" CTA button, and price displayed prominently.
+On the main worlds page, all 5 world cards are arranged in a responsive grid: 3 columns on desktop, 2 on tablet, 1 on mobile. All cards are the same size with full color, interactive hover effects, "Start Learning" CTA button, and price displayed prominently.
 
 ### 3.8 UI/UX Design Notes: FE Bridge Visual Pedagogy
 
@@ -582,8 +582,8 @@ When an FE-to-ML bridge is introduced in a lesson:
 
 A dedicated "Bridge Explorer" page (accessible from the main navigation) lets learners:
 
-- Browse all bridges they've unlocked across all owned themes
-- Filter by category (shared, theme-specific)
+- Browse all bridges they've unlocked across all owned worlds
+- Filter by category (shared, world-specific)
 - Search by ML concept or FE concept
 - Mark bridges as "mastered" or "need review"
 - See which bridges are used in which modules
@@ -594,12 +594,12 @@ Each bridge has a shareable graphic (Open Graph-optimized) that learners can sha
 
 - The ML concept and FE concept side by side
 - The one-sentence deep structural connection
-- Tensorcraft branding and theme color
+- Tensorcraft branding and world color
 - A URL to the full bridge explanation (public, no login required — serves as marketing)
 
 ### 3.9 UI/UX Design Notes: Brutalist Terminal Aesthetic
 
-As of the Phase 11 redesign (2026-04-13 → 2026-04-20), Tensorcraft's UI/UX direction is **brutalist terminal**, replacing the earlier Zensman-DeFi-Neon direction. The redesign is load-bearing: marketing copy, onboarding, dashboard, theme picker, lesson surfaces, paywall, and settings all share a single visual language.
+As of the Phase 11 redesign (2026-04-13 → 2026-04-20), Tensorcraft's UI/UX direction is **brutalist terminal**, replacing the earlier Zensman-DeFi-Neon direction. The redesign is load-bearing: marketing copy, onboarding, dashboard, world picker, lesson surfaces, paywall, and settings all share a single visual language.
 
 **Core principles:**
 
@@ -607,7 +607,7 @@ As of the Phase 11 redesign (2026-04-13 → 2026-04-20), Tensorcraft's UI/UX dir
 - Hard offset shadows (`4px 4px 0 var(--tc-border)`), never blurred or glow shadows.
 - Monospace-first for code, data, numbers, and accent labels; Inter for body text.
 - Comment-style section labels (`# skill_genome`, `// loss.hints`, `— 12wk`) in uppercase tracking-wider JetBrains Mono.
-- No gradients. No glow effects. Neon CSS tokens (`--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) were removed from `themes.css` during the redesign.
+- No gradients. No glow effects. Neon CSS tokens (`--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) were removed from `worlds.css` during the redesign.
 - Focus outlines are brutalist (`focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2`), not `ring`-based.
 
 **Onboarding (5 steps):**
@@ -615,16 +615,16 @@ As of the Phase 11 redesign (2026-04-13 → 2026-04-20), Tensorcraft's UI/UX dir
 1. **Welcome** — product introduction, anti-hype framing.
 2. **Background** — captures `experience_level` (enum: `beginner`, `intermediate`, `advanced`, `expert`).
 3. **Goal** — captures `learning_goal` (enum: `hobby`, `career`, `research`, `team`, `curiosity`).
-4. **Theme** — theme picker (see below).
+4. **World** — world picker (see below).
 5. **Ready** — confirmation and launch into the dashboard.
 
-State is persisted via `PATCH /api/onboarding` per migration 018. The dual-robot ARIA narrator previously proposed as an onboarding companion was cut on 2026-04-20; narration is now handled inline by each theme's in-lesson character.
+State is persisted via `PATCH /api/onboarding` per migration 018. The dual-robot ARIA narrator previously proposed as an onboarding companion was cut on 2026-04-20; narration is now handled inline by each world's in-lesson character.
 
-**Theme Selection:**
+**World Selection:**
 
-- Responsive 5-card grid (1-col mobile → 2/3-col tablet → 3-col desktop) with every theme **LIVE simultaneously** — no "Coming Soon" cards.
-- Each card renders a per-theme `ParticleField` atmosphere tinted to the theme's primary color.
-- Cards share a brutalist layout: offset shadow, sharp corners, monospace accent labels, theme-specific primary and accent colors.
+- Responsive 5-card grid (1-col mobile → 2/3-col tablet → 3-col desktop) with every world **LIVE simultaneously** — no "Coming Soon" cards.
+- Each card renders a per-world `ParticleField` atmosphere tinted to the world's primary color.
+- Cards share a brutalist layout: offset shadow, sharp corners, monospace accent labels, world-specific primary and accent colors.
 
 **Dashboard:**
 
@@ -642,19 +642,19 @@ State is persisted via `PATCH /api/onboarding` per migration 018. The dual-robot
 
 - Timeline summary of the 11 modules.
 - Auto-generated **certificate card** (triggered by `POST /api/certificates` on completion) with unique id + public verification URL fetched via `GET /api/certificates/:id`.
-- Summary stats (lessons, exercises, score, time) and a teaser for the next theme.
+- Summary stats (lessons, exercises, score, time) and a teaser for the next world.
 
 **Paywall & Pricing:**
 
-- Standalone `/paywall` route for gated content, complementing the `/pricing?locked=<theme>` banner used on deep links.
-- **PurchaseConfirmation** — brutalist "access card" showing the granted theme(s) plus a receipt; confirms entitlement before routing back into content.
+- Standalone `/paywall` route for gated content, complementing the `/pricing?locked=<world>` banner used on deep links.
+- **PurchaseConfirmation** — brutalist "access card" showing the granted world(s) plus a receipt; confirms entitlement before routing back into content.
 
 **Settings (5-tab layout):**
 
-1. **Profile** — display name, avatar, preferred theme.
+1. **Profile** — display name, avatar, preferred world.
 2. **Notifications** — `email_alerts`, `weekly_digest`.
-3. **GitHub** — connection state + `tensorcraft-{theme}` repo link.
-4. **Theme** — runtime theme switch (persisted in `localStorage` as `tc-active-theme`, FOUC-prevention script hydrates on load).
+3. **GitHub** — connection state + `tensorcraft-{world}` repo link.
+4. **World** — runtime world switch (persisted in `localStorage` as `tc-active-world`, FOUC-prevention script hydrates on load).
 5. **Account** — email, password, sign-out, delete account.
 
 ---
@@ -663,12 +663,12 @@ State is persisted via `PATCH /api/onboarding` per migration 018. The dual-robot
 
 ### 4.1 Architecture
 
-Each theme's curriculum is structured as **foundations (modules 1-6) + specialization (modules 7-11)**.
+Each world's curriculum is structured as **foundations (modules 1-6) + specialization (modules 7-11)**.
 
-- **Foundations track (modules 1-6)**: The ML fundamentals that every theme teaches. These modules are included free or with any theme purchase. Once a learner completes foundations through one theme, they are permanently unlocked — purchasing a second theme does NOT re-serve this content. In the content schema, these modules have `track: "foundations"`.
-- **Specialization track (modules 7-11)**: Domain-specific concepts, techniques, and model architectures unique to the theme's focus area. This is what each theme purchase ($59) pays for — 25 lessons of unique, specialized content. In the content schema, these modules have `track: "specialization"`.
+- **Foundations track (modules 1-6)**: The ML fundamentals that every world teaches. These modules are included free or with any world purchase. Once a learner completes foundations through one world, they are permanently unlocked — purchasing a second world does NOT re-serve this content. In the content schema, these modules have `track: "foundations"`.
+- **Specialization track (modules 7-11)**: Domain-specific concepts, techniques, and model architectures unique to the world's focus area. This is what each world purchase ($59) pays for — 25 lessons of unique, specialized content. In the content schema, these modules have `track: "specialization"`.
 
-This structure eliminates redundancy across multi-theme purchases and makes pricing honest: each $59 buys 25 new specialized lessons, not 55 lessons where 30 are content you already completed.
+This structure eliminates redundancy across multi-world purchases and makes pricing honest: each $59 buys 25 new specialized lessons, not 55 lessons where 30 are content you already completed.
 
 ### 4.2 Module Map — Deep Orbit
 
@@ -827,7 +827,7 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 
 **Total:** 25/55 lessons written (45%), 24 exercises. Remaining: 6 modules (30 lessons).
 
-> **Updated (2026-04-14):** All 11 modules for all 5 themes are now fully authored with complete lesson content.
+> **Updated (2026-04-14):** All 11 modules for all 5 worlds are now fully authored with complete lesson content.
 
 ---
 
@@ -1012,7 +1012,7 @@ The module order follows a deliberate pedagogical arc:
 | 3 | GANs | Neural networks, layers, architecture | Generator vs discriminator; Bridge: fuzzer/validator = GAN |
 | 4 | Variational Autoencoders | Training loop, loss, gradients | VAE, reparameterization trick; Bridge: URL shortener = VAE encoder |
 | 5 | Diffusion Models | Optimization, regularization | Noise-to-image denoising; Bridge: progressive loading = diffusion |
-| 6 | Style Transfer | Browser ML runtimes, model export | Content/style separation; Bridge: CSS themes = style transfer |
+| 6 | Style Transfer | Browser ML runtimes, model export | Content/style separation; Bridge: CSS worlds = style transfer |
 
 #### Specialization (Modules 7-11)
 
@@ -1156,7 +1156,7 @@ The module order follows a deliberate pedagogical arc:
 
 ## Part 4.7: Curriculum Gap Modules (Post-Launch)
 
-These cross-theme modules address critical gaps identified in the content audit. They live in `packages/content/content/extras/` and are not part of any specific theme. Module YAMLs with full lesson outlines exist; MDX content will be written after Deep Orbit launches and validates.
+These cross-world modules address critical gaps identified in the content audit. They live in `packages/content/content/extras/` and are not part of any specific world. Module YAMLs with full lesson outlines exist; MDX content will be written after Deep Orbit launches and validates.
 
 ### Classical ML: When Neural Networks Aren't the Answer
 
@@ -1172,7 +1172,7 @@ Every ML interview asks about bias and fairness. Covers dataset bias detection, 
 
 ### Python Bridge
 
-**Track:** bonus (unlocked after completing any theme) | **Lessons:** 5
+**Track:** bonus (unlocked after completing any world) | **Lessons:** 5
 
 Eliminates the biggest career gap. Not "learn Python" — instead, "you know ML in JavaScript, here's how the same concepts look in Python/PyTorch." Covers Python syntax for JS devs, NumPy as TypedArrays, PyTorch as TF.js, pandas as Array methods, and reading ML papers/repos. Comprehension-focused, not implementation. Key bridge: "Python's ML ecosystem is like jQuery — it was there first, everything builds on it."
 
@@ -1238,16 +1238,16 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 ### 5.6 Shared Constraints
 
-All five themes share these visual design constraints to maintain platform coherence:
+All five worlds share these visual design constraints to maintain platform coherence:
 
-- **Both dark and light color schemes are supported** (added 2026-07-22). Dark remains the brand-default aesthetic; light mode follows the OS `prefers-color-scheme` by default with a manual override toggle. Every theme palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23 and verified end to end (axe matrix both schemes, runtime sweep of every route); see `docs/dev-plan.md`'s 2026-07-23 entry.
+- **Both dark and light color schemes are supported** (added 2026-07-22). Dark remains the brand-default aesthetic; light mode follows the OS `prefers-color-scheme` by default with a manual override toggle. Every world palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23 and verified end to end (axe matrix both schemes, runtime sweep of every route); see `docs/dev-plan.md`'s 2026-07-23 entry.
 - **Minimum contrast ratio:** 4.5:1 for body text, 3:1 for large text (WCAG AA).
 - **Animation budget:** No more than 3 simultaneous animations per viewport. All animations respect `prefers-reduced-motion`.
-- **Font loading:** Maximum 2 font families per theme. All fonts self-hosted (no Google Fonts CDN).
-- **Responsive breakpoints:** 320px (mobile min), 768px (tablet), 1024px (desktop), 1440px (wide). All themes use identical breakpoints.
-- **Icon system:** Shared icon set across all themes, tinted to theme colors. Lucide icons as the base set.
-- **Code blocks:** All themes use the same code syntax highlighting theme (custom, dark-on-dark) with theme-colored accents for keywords.
-- **Component library:** All themes built from the same base component library. Theme differences are achieved through CSS custom properties (colors, spacing, typography), not structural changes.
+- **Font loading:** Maximum 2 font families per world. All fonts self-hosted (no Google Fonts CDN).
+- **Responsive breakpoints:** 320px (mobile min), 768px (tablet), 1024px (desktop), 1440px (wide). All worlds use identical breakpoints.
+- **Icon system:** Shared icon set across all worlds, tinted to world colors. Lucide icons as the base set.
+- **Code blocks:** All worlds use the same code syntax highlighting world (custom, dark-on-dark) with world-colored accents for keywords.
+- **Component library:** All worlds built from the same base component library. World differences are achieved through CSS custom properties (colors, spacing, typography), not structural changes.
 
 ---
 
@@ -1257,26 +1257,26 @@ All five themes share these visual design constraints to maintain platform coher
 
 #### In Scope
 
-- All 5 themes — Modules 1–3 (15 lessons each, 75 lessons total)
+- All 5 worlds — Modules 1–3 (15 lessons each, 75 lessons total)
 - Full 5C Loop for all lessons
 - Interactive animations for core ML concepts (at least 10)
-- FE-to-ML bridges: all 20 shared bridges + per-theme bridges
-- Progress diagram (all themes, modules 1–3)
+- FE-to-ML bridges: all 20 shared bridges + per-world bridges
+- Progress diagram (all worlds, modules 1–3)
 - GitHub integration (auto-repo, auto-commit)
-- Module capstone projects (modules 1–3 per theme)
+- Module capstone projects (modules 1–3 per world)
 - User authentication and payment (Stripe)
 - Single-model and bundle purchases
 - Basic analytics (completion rates, lesson time, capstone scores)
 - Responsive design (mobile, tablet, desktop)
 - 5-step onboarding with `experience_level` + `learning_goal` capture (migration 018)
-- 5-tab Settings (Profile / Notifications / GitHub / Theme / Account)
+- 5-tab Settings (Profile / Notifications / GitHub / World / Account)
 - Standalone `/paywall` route + PurchaseConfirmation access card
 - Dashboard: `SkillGenome` radar, `LossCurve`, daily activity strip (via `GET /api/progress/activity/daily`)
 - Auto-generated completion certificates on capstone completion (via `POST /api/certificates`, publicly verifiable via `GET /api/certificates/:id`)
 
 #### Not in Scope
 
-- Modules 4–11 for any theme
+- Modules 4–11 for any world
 - Team licenses
 - Arena
 - PPP pricing (added in V1.0)
@@ -1285,7 +1285,7 @@ All five themes share these visual design constraints to maintain platform coher
 - Peer comparison features
 - `ActivityHeatmap` (deferred per a11y audit §5b — replaced by a simpler daily-activity strip for V0.5/V1.0)
 - `LossLandscape` visualization (deferred after Phase 11 — replaced by `ParticleField` on auth pages)
-- ARIA dual-robot narrator (cut 2026-04-20 — narration handled inline by per-theme characters)
+- ARIA dual-robot narrator (cut 2026-04-20 — narration handled inline by per-world characters)
 - ~~Light mode~~ (reversed 2026-07-22): both schemes are now supported; see §5.6 above and `docs/audits/light-mode-readiness-2026-07-22.md`
 - Localization / i18n
 - Native mobile app
@@ -1328,12 +1328,12 @@ All five themes share these visual design constraints to maintain platform coher
 |---|------|-----------|--------|------------|
 | 1 | **Story fatigue**: Learners skip narrative to get to code, rendering the 5C Loop's Context and Consequence phases wasted effort. | Medium | High | Make narrative optional but defaulted to "on." Track skip rates in analytics. If >40% skip, redesign narrative to be shorter and more decision-driven. |
 | 2 | **Bridge confusion**: FE-to-ML bridges feel forced or inaccurate, undermining trust in the teaching method. | Low | High | Extensive beta testing of bridges specifically. Each bridge reviewed by at least 2 frontend developers and 1 ML engineer. Remove or rewrite any bridge that beta testers rate below 3/5 clarity. |
-| 3 | **Pricing resistance**: $59 per model feels too high for the perceived value, especially with All 5 themes available at launch. | Medium | High | Validate willingness-to-pay in beta. If resistance is high, consider $49 launch promo with planned return to $59 once social proof accumulates. PPP pricing helps for international markets. |
+| 3 | **Pricing resistance**: $59 per model feels too high for the perceived value, especially with All 5 worlds available at launch. | Medium | High | Validate willingness-to-pay in beta. If resistance is high, consider $49 launch promo with planned return to $59 once social proof accumulates. PPP pricing helps for international markets. |
 | 4 | **Scope creep on V0.5**: The MVP takes longer than planned because of feature additions or quality bar escalation. | High | Medium | Strict scope document (Section 6.1). Weekly scope review meetings. Any addition to V0.5 must remove something of equal effort. "Not in scope" list is a commitment. |
 | 5 | **Technical complexity of interactive animations**: Building high-quality interactive ML concept visualizations takes longer and costs more than estimated. | Medium | Medium | Prototype the 3 most complex animations first (neural network forward pass, backpropagation, gradient descent). If any takes more than 2x estimated time, simplify or use pre-rendered alternatives. |
 | 6 | **GitHub integration reliability**: GitHub API rate limits, authentication edge cases, or merge conflicts break the auto-commit flow. | Medium | Low | Implement robust error handling and retry logic. GitHub integration is optional — if it breaks, the learner's progress is unaffected. Queue commits and retry on failure. |
-| 7 | **Content quality at scale**: Maintaining writing quality across 55 lessons (V0.5) and eventually 275 lessons (all themes) is challenging. | Medium | High | Establish a style guide and content templates. First 10 lessons set the quality bar. All subsequent lessons reviewed against the first 10. Consider hiring a narrative writer for story content. |
-| 8 | **Low free-to-paid conversion across themes**: Learners try free modules but don't purchase any theme. | Medium | Medium | Nurture email list with monthly content (free bridge cards, concept previews, story teasers). Offer launch-week pricing (10% off) for first 48 hours. A/B test paywall placement. |
+| 7 | **Content quality at scale**: Maintaining writing quality across 55 lessons (V0.5) and eventually 275 lessons (all worlds) is challenging. | Medium | High | Establish a style guide and content templates. First 10 lessons set the quality bar. All subsequent lessons reviewed against the first 10. Consider hiring a narrative writer for story content. |
+| 8 | **Low free-to-paid conversion across worlds**: Learners try free modules but don't purchase any world. | Medium | Medium | Nurture email list with monthly content (free bridge cards, concept previews, story teasers). Offer launch-week pricing (10% off) for first 48 hours. A/B test paywall placement. |
 | 9 | **Platform performance under load**: Interactive animations and code execution environments strain client/server resources at scale. | Low | High | Load test before launch. Code execution uses client-side WASM (Pyodide) — no server-side compute for exercises. Animations are CSS/Canvas — GPU-accelerated. CDN for all static assets. |
 
 ---

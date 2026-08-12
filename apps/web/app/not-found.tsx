@@ -16,13 +16,13 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row items-stretch gap-3">
           {/* Primary CTA must work for EVERYONE: /dashboard 307s anonymous
               visitors to the auth wall — a 404 → sign-in bounce for the
-              people most likely to hit a 404 (bad inbound link). /themes is
+              people most likely to hit a 404 (bad inbound link). /worlds is
               public and useful either way (Tier 2 small-UX, 2026-07-25). */}
           <Link
-            href="/themes"
+            href="/worlds"
             className="px-6 py-3 border-2 border-primary bg-primary/10 text-primary font-mono text-sm font-bold uppercase tracking-wider rounded-none hover:bg-primary/20 transition-colors text-center"
           >
-            Browse themes
+            Browse worlds
           </Link>
           <Link
             href="/"

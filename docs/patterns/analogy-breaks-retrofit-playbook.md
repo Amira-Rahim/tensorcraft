@@ -52,7 +52,7 @@ Manual pass. For each identity claim, verify the codes are literally interchange
 ## Tactical: per-lesson workflow
 
 ```
-1. cd packages/content/content/<theme>/<module>/
+1. cd packages/content/content/<world>/<module>/
 2. Open <NN>-<slug>.mdx
 3. In frontmatter `concept.bridge`, after `tier:`, add:
      breaks: "..."
@@ -79,7 +79,7 @@ For Batches 2-3, faster to:
 
 ## Escape hatches
 
-- **Bridge too weak to fix:** if you can't write a meaningful `breaks:` because the analogy itself is bad, replace the bridge entirely. Find a stronger one — registry has 50 candidates, also see `themes-and-bridges` memory note.
+- **Bridge too weak to fix:** if you can't write a meaningful `breaks:` because the analogy itself is bad, replace the bridge entirely. Find a stronger one — registry has 50 candidates, also see `worlds-and-bridges` memory note.
 - **Bridge truly identity:** if you find yourself with no `breaks:` because the FE concept literally is the ML concept, change tier to `identity`. Audit script will flag for review next pass.
 - **Bridge spans 3+ tiers depending on context:** split into separate bridges per lesson. Don't try to make one bridge serve "intuition for beginners, structural for advanced."
 

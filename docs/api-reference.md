@@ -29,13 +29,13 @@ Health check endpoint. No authentication required.
 
 Add an email to the waitlist. No authentication required.
 
-> **Note:** Originally designed for "coming soon" theme interest capture. Now used for general newsletter signups. All themes are available.
+> **Note:** Originally designed for "coming soon" world interest capture. Now used for general newsletter signups. All worlds are available.
 
 **Request Body:**
 ```json
 {
   "email": "user@example.com",
-  "themeId": "neon-protocol",
+  "worldId": "neon-protocol",
   "source": "newsletter"
 }
 ```
@@ -43,7 +43,7 @@ Add an email to the waitlist. No authentication required.
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `email` | string | Yes | Valid email address |
-| `themeId` | string | No | Theme slug the user is interested in |
+| `worldId` | string | No | World slug the user is interested in |
 | `source` | string | No | Where the signup originated |
 
 **Responses:**
@@ -55,21 +55,21 @@ Add an email to the waitlist. No authentication required.
 
 ## Progress
 
-### `GET /api/progress?themeId=<theme>`
+### `GET /api/progress?worldId=<world>`
 
-Get user's lesson progress for a theme. **Authenticated.**
+Get user's lesson progress for a world. **Authenticated.**
 
 **Query Parameters:**
 | Param | Type | Required | Description |
 |-------|------|----------|-------------|
-| `themeId` | string | Yes | Theme slug (e.g., `deep-orbit`) |
+| `worldId` | string | Yes | World slug (e.g., `deep-orbit`) |
 
 **Response:**
 ```json
 [
   {
     "id": "uuid",
-    "theme_id": "deep-orbit",
+    "world_id": "deep-orbit",
     "module_id": "foundations",
     "lesson_id": "what-is-a-tensor",
     "status": "completed",
@@ -83,12 +83,12 @@ Get user's lesson progress for a theme. **Authenticated.**
 
 ### `POST /api/progress`
 
-Create or update lesson progress. **Authenticated.** Upserts on `(user_id, theme_id, module_id, lesson_id)`.
+Create or update lesson progress. **Authenticated.** Upserts on `(user_id, world_id, module_id, lesson_id)`.
 
 **Request Body:**
 ```json
 {
-  "themeId": "deep-orbit",
+  "worldId": "deep-orbit",
   "moduleId": "foundations",
   "lessonId": "what-is-a-tensor",
   "status": "completed",
@@ -99,14 +99,14 @@ Create or update lesson progress. **Authenticated.** Upserts on `(user_id, theme
 
 ### `GET /api/progress/summary`
 
-Get aggregated progress across all themes. **Authenticated.** Uses the `theme_progress_summary` database view.
+Get aggregated progress across all worlds. **Authenticated.** Uses the `world_progress_summary` database view.
 
 **Response:**
 ```json
 [
   {
     "user_id": "uuid",
-    "theme_id": "deep-orbit",
+    "world_id": "deep-orbit",
     "total_lessons": 15,
     "completed_lessons": 8,
     "in_progress_lessons": 2,
@@ -129,28 +129,28 @@ Create a Stripe Checkout session. **Authenticated.**
 ```json
 {
   "planId": "single",
-  "themeIds": ["deep-orbit"]
+  "worldIds": ["deep-orbit"]
 }
 ```
 
 **Supported plan IDs:**
 
-| `planId` | `themeIds` | Price |
+| `planId` | `worldIds` | Price |
 |----------|-----------|-------|
-| `single` | Any one theme | $59 |
-| `two` | Any two themes | $99 |
-| `three` | Any three themes | $129 |
+| `single` | Any one world | $59 |
+| `two` | Any two worlds | $99 |
+| `three` | Any three worlds | $129 |
 | `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $159 |
 
-**Example — All 5 Themes:**
+**Example — All 5 Worlds:**
 ```json
 {
   "planId": "allFive",
-  "themeIds": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]
+  "worldIds": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]
 }
 ```
 
-**Upgrade credit behavior:** If the user already owns themes that overlap with the requested bundle, the amount paid for those themes is credited toward the new plan price. The adjusted price is charged via Stripe. If the total credit covers the full plan price, no Stripe session is created — themes are granted immediately.
+**Upgrade credit behavior:** If the user already owns worlds that overlap with the requested bundle, the amount paid for those worlds is credited toward the new plan price. The adjusted price is charged via Stripe. If the total credit covers the full plan price, no Stripe session is created — worlds are granted immediately.
 
 **Abandoned-cart recovery:** the session carries `customer_email` (read from `profiles`) and `after_expiration.recovery`, so Stripe can mail a buyer who drops out. `customer_email` is omitted rather than sent empty when the profile has no address, since Stripe rejects a blank string.
 
@@ -179,7 +179,7 @@ Differences from `/checkout`:
 ```json
 {
   "granted": true,
-  "themes": ["deep-orbit", "neon-protocol"]
+  "worlds": ["deep-orbit", "neon-protocol"]
 }
 ```
 
@@ -188,7 +188,7 @@ Differences from `/checkout`:
 | Field | Description |
 |-------|-------------|
 | `planId` | The plan ID (e.g. `twoBundle`) |
-| `themeIds` | Comma-separated theme slugs |
+| `worldIds` | Comma-separated world slugs |
 | `creditApplied` | Credit amount applied (in dollars) |
 | `originalPrice` | Original plan price before credit (in dollars) |
 
@@ -202,7 +202,7 @@ Get the authenticated user's purchase history. **Authenticated.**
   {
     "id": "uuid",
     "plan_id": "allFive",
-    "theme_ids": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"],
+    "world_ids": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"],
     "amount": 12900,
     "currency": "usd",
     "stripe_session_id": "cs_...",
@@ -217,7 +217,7 @@ Get the authenticated user's purchase history. **Authenticated.**
 Stripe webhook handler. **Not authenticated** (uses Stripe signature verification). Exempt from rate limiting.
 
 **Events handled:**
-- `checkout.session.completed` — Creates purchase record, grants theme access
+- `checkout.session.completed` — Creates purchase record, grants world access
 - `charge.refunded` — Updates purchase status, revokes access
 
 ---
@@ -260,7 +260,7 @@ Update current user's profile. **Authenticated.**
 {
   "displayName": "Jane Doe",
   "avatarUrl": "https://...",
-  "preferredThemeId": "deep-orbit"
+  "preferredWorldId": "deep-orbit"
 }
 ```
 
@@ -296,7 +296,7 @@ Batch-submit skill tracking events. **Authenticated.**
   "events": [
     {
       "skillId": "tensor-operations",
-      "themeId": "deep-orbit",
+      "worldId": "deep-orbit",
       "eventType": "practiced",
       "metadata": {}
     }
@@ -320,7 +320,7 @@ Submit an issue report. No authentication required.
 {
   "type": "bug",
   "description": "The code editor fails to run on Firefox.",
-  "url": "https://tensorcraft.app/themes/deep-orbit/foundations/what-is-a-tensor",
+  "url": "https://tensorcraft.app/worlds/deep-orbit/foundations/what-is-a-tensor",
   "email": "user@example.com"
 }
 ```
@@ -334,7 +334,7 @@ Submit an issue report. No authentication required.
 
 ## Exercise Attempts (User)
 
-### `GET /api/exercise-attempts?themeId=<theme>`
+### `GET /api/exercise-attempts?worldId=<world>`
 
 Get user's exercise attempt history. **Authenticated.**
 
@@ -347,7 +347,7 @@ Submit an exercise attempt. **Authenticated.**
 {
   "exerciseSlug": "tensor-operations",
   "lessonId": "tensor-ops",
-  "themeId": "deep-orbit",
+  "worldId": "deep-orbit",
   "score": 85,
   "hintsUsed": 1,
   "durationMs": 45000,
@@ -392,7 +392,7 @@ Paginated waitlist entries.
     {
       "id": "uuid",
       "email": "user@example.com",
-      "theme_id": "neon-protocol",
+      "world_id": "neon-protocol",
       "source": "newsletter",
       "created_at": "2026-03-13T12:00:00Z"
     }

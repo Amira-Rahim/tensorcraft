@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { isValidThemeSlug, isValidSlug, isLaunched } from "@tensorcraft/shared";
+import { isValidWorldSlug, isValidSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
 
@@ -18,7 +18,7 @@ exerciseAttempts.post("/", async (c) => {
   let body: {
     exerciseSlug: string;
     lessonId: string;
-    themeId: string;
+    worldId: string;
     passed: boolean;
     score?: number;
     hintsUsed?: number;
@@ -33,18 +33,18 @@ exerciseAttempts.post("/", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.exerciseSlug || !body.lessonId || !body.themeId) {
+  if (!body.exerciseSlug || !body.lessonId || !body.worldId) {
     return c.json(
-      { error: "exerciseSlug, lessonId, and themeId are required" },
+      { error: "exerciseSlug, lessonId, and worldId are required" },
       400,
     );
   }
 
-  if (!isValidThemeSlug(body.themeId)) {
-    return c.json({ error: "Invalid themeId" }, 400);
+  if (!isValidWorldSlug(body.worldId)) {
+    return c.json({ error: "Invalid worldId" }, 400);
   }
-  if (!isLaunched(body.themeId)) {
-    return c.json({ error: "Theme is not yet launched" }, 400);
+  if (!isLaunched(body.worldId)) {
+    return c.json({ error: "World is not yet launched" }, 400);
   }
   if (!isValidSlug(body.exerciseSlug)) {
     return c.json({ error: "Invalid exerciseSlug" }, 400);
@@ -89,7 +89,7 @@ exerciseAttempts.post("/", async (c) => {
       user_id: userId,
       exercise_slug: body.exerciseSlug,
       lesson_id: body.lessonId,
-      theme_id: body.themeId,
+      world_id: body.worldId,
       passed: body.passed ?? false,
       score,
       hints_used: hintsUsed,
@@ -114,13 +114,13 @@ exerciseAttempts.post("/", async (c) => {
 });
 
 /**
- * GET /api/exercise-attempts?lessonId=...&themeId=..., Get user's attempts for a lesson.
+ * GET /api/exercise-attempts?lessonId=...&worldId=..., Get user's attempts for a lesson.
  */
 exerciseAttempts.get("/", async (c) => {
   const userId = c.get("userId");
   const token = c.get("accessToken");
   const lessonId = c.req.query("lessonId");
-  const themeId = c.req.query("themeId");
+  const worldId = c.req.query("worldId");
 
   if (!lessonId) {
     return c.json({ error: "lessonId query parameter is required" }, 400);
@@ -131,15 +131,15 @@ exerciseAttempts.get("/", async (c) => {
   let query = supabase
     .from("exercise_attempts")
     .select(
-      "id, exercise_slug, lesson_id, theme_id, passed, score, hints_used, solution_viewed, duration_ms, attempted_at",
+      "id, exercise_slug, lesson_id, world_id, passed, score, hints_used, solution_viewed, duration_ms, attempted_at",
     )
     .eq("user_id", userId)
     .eq("lesson_id", lessonId)
     .order("attempted_at", { ascending: false })
     .limit(100);
 
-  if (themeId) {
-    query = query.eq("theme_id", themeId);
+  if (worldId) {
+    query = query.eq("world_id", worldId);
   }
 
   const { data, error } = await query;

@@ -27,7 +27,7 @@ export async function generateMetadata({
     kind: "digest",
     title: post.title,
   });
-  if (post.themeSlug) ogParams.set("theme", post.themeSlug);
+  if (post.worldSlug) ogParams.set("world", post.worldSlug);
   if (lessonTitle) ogParams.set("lessonTitle", lessonTitle);
   if (post.sourceLabel) ogParams.set("sourceLabel", post.sourceLabel);
   const og = `/api/og?${ogParams.toString()}`;
@@ -66,7 +66,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <p className="font-mono text-xs text-text-muted tracking-wider uppercase mb-4">
             {new Date(post.publishedAt).toISOString().slice(0, 10)}
             {post.weekIso ? ` · ${post.weekIso}` : ""}
-            {post.themeSlug ? ` · ${post.themeSlug}` : ""}
+            {post.worldSlug ? ` · ${post.worldSlug}` : ""}
             {post.sourceLabel ? ` · via ${post.sourceLabel}` : ""}
           </p>
           <h1 className="text-3xl md:text-5xl font-mono font-black leading-[1.05] tracking-[-0.03em] mb-4">
@@ -98,11 +98,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </h2>
             <ul className="space-y-3">
               {post.matchedLessons.map((m) => (
-                <li key={`${m.themeId}/${m.moduleId}/${m.slug}`}>
+                <li key={`${m.worldId}/${m.moduleId}/${m.slug}`}>
                   <LessonLink
                     postSlug={post.slug}
                     weekIso={post.weekIso}
-                    themeId={m.themeId}
+                    worldId={m.worldId}
                     moduleId={m.moduleId}
                     slug={m.slug}
                     title={m.title}

@@ -292,7 +292,7 @@ Enforced via Lighthouse CI on every pull request — see
 | Best Practices | 0.90 |
 | SEO | 0.90 |
 
-Tested URLs: `/`, `/pricing`, `/themes`, `/learn`. Dashboard + settings
+Tested URLs: `/`, `/pricing`, `/worlds`, `/learn`. Dashboard + settings
 require auth and are skipped until a test-mode session is plumbed through
 the middleware.
 
@@ -307,9 +307,9 @@ PR exceeds them, investigate before merging. Values below reflect
 | `/` (landing) | ~163 kB | **≤ 200 kB** |
 | `/pricing` | ~240 kB | **≤ 250 kB** |
 | `/onboarding` | ~237 kB | **≤ 250 kB** |
-| `/themes` | ~170 kB | **≤ 200 kB** |
+| `/worlds` | ~170 kB | **≤ 200 kB** |
 | `/dashboard` | ~120 kB | **≤ 200 kB** |
-| `/themes/[slug]/[module]/[lesson]` (exercise) | ~473 kB | **≤ 500 kB** |
+| `/worlds/[slug]/[module]/[lesson]` (exercise) | ~473 kB | **≤ 500 kB** |
 | Shared chunks | ~106 kB | **≤ 120 kB** |
 
 The lesson route is heaviest because it lazy-loads Sandpack

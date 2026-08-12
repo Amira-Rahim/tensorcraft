@@ -34,7 +34,7 @@ function getResend(): Resend | null {
 }
 
 interface MatchedLessonRef {
-  themeId: string;
+  worldId: string;
   moduleId: string;
   slug: string;
   title: string;
@@ -70,14 +70,14 @@ async function loadDigestItems(weekIso: string): Promise<DigestItem[]> {
     .eq("week_iso", weekIso)
     .order("scraped_at", { ascending: false });
   if (error) throw new Error(`load digest items: ${error.message}`);
-  // V1 scope-revert: strip matched_lessons for coming-soon themes so the
+  // V1 scope-revert: strip matched_lessons for coming-soon worlds so the
   // digest never links to a 404'd lesson route. Curators can still tag a
   // news item with a coming-soon lesson at draft time, but the rendered
-  // email + UTM chain only surface launched-theme lessons.
+  // email + UTM chain only surface launched-world lessons.
   return (data ?? []).map((row) => ({
     ...row,
     matched_lessons: (row.matched_lessons ?? []).filter(
-      (m: { themeId: string }) => isLaunched(m.themeId),
+      (m: { worldId: string }) => isLaunched(m.worldId),
     ),
   })) as DigestItem[];
 }
@@ -108,7 +108,7 @@ function renderText(
     const m = it.matched_lessons?.[0];
     if (m) {
       lines.push(
-        `  Teaches: ${m.title} → ${SITE}/themes/${m.themeId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`,
+        `  Teaches: ${m.title} → ${SITE}/worlds/${m.worldId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`,
       );
       if (m.rationale) lines.push(`  ${m.rationale}`);
     }
@@ -133,10 +133,10 @@ function renderHtml(
     .map((it) => {
       const m = it.matched_lessons?.[0];
       const lessonHref = m
-        ? // Lessons are served under /themes/[slug]/[module]/[lesson];
+        ? // Lessons are served under /worlds/[slug]/[module]/[lesson];
           // /learn is a single marketing page with no nested routes
           // (2026-07-13 P4 round-3 audit: every digest lesson link 404'd).
-          `${SITE}/themes/${m.themeId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`
+          `${SITE}/worlds/${m.worldId}/${m.moduleId}/${m.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=${weekIso}&utm_content=${encodeURIComponent(it.url)}`
         : null;
       return `<li style="margin: 0 0 24px 0;">
   <p style="margin: 0 0 4px 0; font-weight: 600;">

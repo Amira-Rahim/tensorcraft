@@ -36,7 +36,7 @@ type Row = Record<string, unknown>;
 type Tables =
   | "profiles"
   | "purchases"
-  | "theme_progress"
+  | "world_progress"
   | "exercise_attempts"
   | "streaks"
   | "skill_genome"
@@ -47,7 +47,7 @@ type Tables =
 const db: Record<Tables, Row[]> = {
   profiles: [],
   purchases: [],
-  theme_progress: [],
+  world_progress: [],
   exercise_attempts: [],
   streaks: [],
   skill_genome: [],
@@ -335,12 +335,12 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
       db.purchases.push(
         {
           user_id: "user-A",
-          theme_ids: ["deep-orbit"],
+          world_ids: ["deep-orbit"],
           status: "completed",
         },
         {
           user_id: "user-B",
-          theme_ids: ["neon-protocol"],
+          world_ids: ["neon-protocol"],
           status: "completed",
         },
       );
@@ -350,21 +350,21 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
         headers: authHeaders(),
       });
       expect(res.status).toBe(200);
-      const body = (await res.json()) as { themeIds: string[] };
-      expect(body.themeIds).toEqual(["deep-orbit"]);
-      expect(body.themeIds).not.toContain("neon-protocol");
+      const body = (await res.json()) as { worldIds: string[] };
+      expect(body.worldIds).toEqual(["deep-orbit"]);
+      expect(body.worldIds).not.toContain("neon-protocol");
     });
 
     it("user B sees only their own purchases (cross-user isolation)", async () => {
       db.purchases.push(
         {
           user_id: "user-A",
-          theme_ids: ["deep-orbit"],
+          world_ids: ["deep-orbit"],
           status: "completed",
         },
         {
           user_id: "user-B",
-          theme_ids: ["neon-protocol"],
+          world_ids: ["neon-protocol"],
           status: "completed",
         },
       );
@@ -374,24 +374,24 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
         headers: authHeaders(),
       });
       expect(res.status).toBe(200);
-      const body = (await res.json()) as { themeIds: string[] };
-      expect(body.themeIds).toEqual(["neon-protocol"]);
+      const body = (await res.json()) as { worldIds: string[] };
+      expect(body.worldIds).toEqual(["neon-protocol"]);
     });
   });
 
-  describe("theme_progress (dashboard read path)", () => {
-    it("GET /progress?themeId=... returns only own rows", async () => {
-      db.theme_progress.push(
+  describe("world_progress (dashboard read path)", () => {
+    it("GET /progress?worldId=... returns only own rows", async () => {
+      db.world_progress.push(
         {
           user_id: "user-A",
-          theme_id: "deep-orbit",
+          world_id: "deep-orbit",
           module_id: "foundations",
           lesson_id: "l1",
           status: "completed",
         },
         {
           user_id: "user-B",
-          theme_id: "deep-orbit",
+          world_id: "deep-orbit",
           module_id: "foundations",
           lesson_id: "l1",
           status: "completed",
@@ -400,7 +400,7 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
       authAs("user-A");
 
       const res = await createApp().request(
-        "/api/progress?themeId=deep-orbit",
+        "/api/progress?worldId=deep-orbit",
         { headers: authHeaders() },
       );
       expect(res.status).toBe(200);
@@ -419,7 +419,7 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
         body: JSON.stringify({
           exerciseSlug: "create-tensor",
           lessonId: "introduction-to-tensors",
-          themeId: "deep-orbit",
+          worldId: "deep-orbit",
           passed: true,
           score: 90,
         }),
@@ -434,14 +434,14 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
         {
           user_id: "user-A",
           lesson_id: "l1",
-          theme_id: "deep-orbit",
+          world_id: "deep-orbit",
           passed: true,
           score: 90,
         },
         {
           user_id: "user-B",
           lesson_id: "l1",
-          theme_id: "deep-orbit",
+          world_id: "deep-orbit",
           passed: false,
           score: 10,
         },
@@ -463,20 +463,20 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
       db.streaks.push(
         {
           user_id: "user-A",
-          theme_id: "deep-orbit",
+          world_id: "deep-orbit",
           current_streak: 3,
           longest_streak: 7,
         },
         {
           user_id: "user-B",
-          theme_id: "deep-orbit",
+          world_id: "deep-orbit",
           current_streak: 50,
           longest_streak: 50,
         },
       );
-      db.theme_progress.push({
+      db.world_progress.push({
         user_id: "user-A",
-        theme_id: "deep-orbit",
+        world_id: "deep-orbit",
         module_id: "foundations",
         lesson_id: "l1",
         status: "completed",
@@ -488,7 +488,7 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
       });
       expect(res.status).toBe(200);
       const body = (await res.json()) as {
-        summary: { bestStreak: number; themes: Array<Row> };
+        summary: { bestStreak: number; worlds: Array<Row> };
       };
       // user-B's 50-streak must NOT leak in.
       expect(body.summary.bestStreak).toBe(7);
@@ -502,7 +502,7 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({
-          themeId: "deep-orbit",
+          worldId: "deep-orbit",
           eventType: "exercise_pass",
           skillAxis: "training",
         }),
@@ -558,7 +558,7 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
       const endpoints = [
         ["PATCH", "/api/profiles/user-A"],
         ["GET", "/api/purchases/access"],
-        ["GET", "/api/progress?themeId=deep-orbit"],
+        ["GET", "/api/progress?worldId=deep-orbit"],
         ["POST", "/api/exercise-attempts"],
         ["POST", "/api/skill-events"],
         ["PATCH", "/api/onboarding"],
@@ -567,7 +567,7 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
         const res = await app.request(path, {
           method,
           headers: { "Content-Type": "application/json" },
-          body: method === "GET" ? undefined : JSON.stringify({ themeId: "x" }),
+          body: method === "GET" ? undefined : JSON.stringify({ worldId: "x" }),
         });
         expect(res.status, `${method} ${path}`).toBe(401);
       }

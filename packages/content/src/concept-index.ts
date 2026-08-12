@@ -1,7 +1,7 @@
 import type { Lesson } from "./schemas";
 
 export interface LessonRef {
-  themeId: string;
+  worldId: string;
   moduleId: string;
   slug: string;
   title: string;
@@ -120,7 +120,7 @@ export function buildConceptIndex(lessons: Lesson[]): ConceptIndex {
 
   for (const lesson of lessons) {
     const ref: Omit<LessonRef, "source"> = {
-      themeId: lesson.themeId,
+      worldId: lesson.worldId,
       moduleId: lesson.moduleId,
       slug: lesson.slug,
       title: lesson.title,
@@ -179,12 +179,12 @@ export function findLessonsByConcepts(
     const refs = index.byConcept[concept];
     if (!refs) continue;
     for (const ref of refs) {
-      const key = `${ref.themeId}/${ref.moduleId}/${ref.slug}`;
+      const key = `${ref.worldId}/${ref.moduleId}/${ref.slug}`;
       const slot =
         accum[key] ??
         (accum[key] = {
           lesson: {
-            themeId: ref.themeId,
+            worldId: ref.worldId,
             moduleId: ref.moduleId,
             slug: ref.slug,
             title: ref.title,

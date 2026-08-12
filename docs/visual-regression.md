@@ -9,8 +9,8 @@ Three spec files under `e2e/visual/`:
 
 | File                  | Coverage                                                                 |
 | --------------------- | ------------------------------------------------------------------------ |
-| `key-pages.spec.ts`   | Landing, Pricing, Themes index, Auth sign-in, Paywall (desktop 1280×800) |
-| `themes.spec.ts`      | All 5 theme landing pages — confirms CSS-var palette cascade per theme   |
+| `key-pages.spec.ts`   | Landing, Pricing, Worlds index, Auth sign-in, Paywall (desktop 1280×800) |
+| `worlds.spec.ts`      | All 5 world landing pages — confirms CSS-var palette cascade per world   |
 | `responsive.spec.ts`  | Landing + Pricing at 320 / 768 / 1024 / 1440 px widths                   |
 
 All tests use `expect(page).toHaveScreenshot(...)` with
@@ -26,8 +26,8 @@ Baselines generated **2026-04-21** locally on macOS (darwin, Chromium via
 Playwright). 18 PNGs committed:
 
 - `e2e/visual/key-pages.spec.ts-snapshots/` — 5 files (landing, pricing,
-  themes-index, auth-sign-in, paywall).
-- `e2e/visual/themes.spec.ts-snapshots/` — 5 files (one per theme slug).
+  worlds-index, auth-sign-in, paywall).
+- `e2e/visual/worlds.spec.ts-snapshots/` — 5 files (one per world slug).
 - `e2e/visual/responsive.spec.ts-snapshots/` — 8 files (landing + pricing
   × 320/768/1024/1440 widths).
 
@@ -86,8 +86,8 @@ Regenerate (and commit new PNGs) whenever:
 - A visual change is **intentional** (e.g. palette tweak, nav redesign,
   copy edit that changes line wrapping).
 - Font stack changes (e.g. new `@font-face` weights added).
-- A new theme is added — add its slug to
-  `e2e/visual/themes.spec.ts::THEME_SLUGS` then regenerate.
+- A new world is added — add its slug to
+  `e2e/visual/worlds.spec.ts::WORLD_SLUGS` then regenerate.
 - A new breakpoint or page is added to `responsive.spec.ts` or
   `key-pages.spec.ts`.
 

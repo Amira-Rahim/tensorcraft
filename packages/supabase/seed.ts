@@ -52,14 +52,14 @@ async function seedProfiles() {
       email: "alex.chen@demo.tensorcraft.app",
       display_name: "Alex Chen",
       onboarding_completed: true,
-      preferred_theme_id: "deep-orbit",
+      preferred_world_id: "deep-orbit",
     },
     {
       id: USER_IDS.jordan,
       email: "jordan.park@demo.tensorcraft.app",
       display_name: "Jordan Park",
       onboarding_completed: true,
-      preferred_theme_id: "deep-orbit",
+      preferred_world_id: "deep-orbit",
     },
     {
       id: USER_IDS.sam,
@@ -80,13 +80,13 @@ async function seedProfiles() {
 }
 
 async function seedProgress() {
-  const themeId = "deep-orbit";
+  const worldId = "deep-orbit";
   const userId = USER_IDS.alex;
 
   // Module 1: signals-in-space, all 5 lessons completed
   const completedLessons = Array.from({ length: 5 }, (_, i) => ({
     user_id: userId,
-    theme_id: themeId,
+    world_id: worldId,
     module_id: "signals-in-space",
     lesson_id: `signals-in-space-${i + 1}`,
     status: "completed" as const,
@@ -100,7 +100,7 @@ async function seedProgress() {
   // Module 2: neural-navigation, lessons 1-3 completed, 4-5 in progress
   const navCompleted = Array.from({ length: 3 }, (_, i) => ({
     user_id: userId,
-    theme_id: themeId,
+    world_id: worldId,
     module_id: "neural-navigation",
     lesson_id: `neural-navigation-${i + 1}`,
     status: "completed" as const,
@@ -113,7 +113,7 @@ async function seedProgress() {
 
   const navInProgress = Array.from({ length: 2 }, (_, i) => ({
     user_id: userId,
-    theme_id: themeId,
+    world_id: worldId,
     module_id: "neural-navigation",
     lesson_id: `neural-navigation-${i + 4}`,
     status: "in_progress" as const,
@@ -127,8 +127,8 @@ async function seedProgress() {
   const allProgress = [...completedLessons, ...navCompleted, ...navInProgress];
 
   const { data, error } = await supabase
-    .from("theme_progress")
-    .upsert(allProgress, { onConflict: "user_id,theme_id,lesson_id" })
+    .from("world_progress")
+    .upsert(allProgress, { onConflict: "user_id,world_id,lesson_id" })
     .select();
 
   if (error) throw new Error(`Failed to seed progress: ${error.message}`);
@@ -141,7 +141,7 @@ async function seedProgress() {
 async function seedStreaks() {
   const streak = {
     user_id: USER_IDS.alex,
-    theme_id: "deep-orbit",
+    world_id: "deep-orbit",
     current_streak: 5,
     longest_streak: 12,
     last_activity_date: "2026-03-12",
@@ -149,7 +149,7 @@ async function seedStreaks() {
 
   const { data, error } = await supabase
     .from("streaks")
-    .upsert([streak], { onConflict: "user_id,theme_id" })
+    .upsert([streak], { onConflict: "user_id,world_id" })
     .select();
 
   if (error) throw new Error(`Failed to seed streaks: ${error.message}`);
@@ -160,8 +160,8 @@ async function seedStreaks() {
 async function seedPurchases() {
   const purchase = {
     user_id: USER_IDS.alex,
-    plan_id: "theme-single",
-    theme_ids: ["deep-orbit"],
+    plan_id: "world-single",
+    world_ids: ["deep-orbit"],
     amount: 59.0,
     currency: "USD",
     stripe_session_id: "demo_session_deep_orbit_001",

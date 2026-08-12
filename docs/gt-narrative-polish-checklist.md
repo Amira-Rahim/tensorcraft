@@ -22,24 +22,24 @@ Have a seeded test user with at least:
 - [ ] Lighthouse: Performance ≥ 90, Accessibility ≥ 95
 - [ ] axe: zero violations
 - [ ] Click message → marks as read in DB → unread badge decrements → reload preserves state
-- [ ] Empty state: new user → "No intel yet" w/ CTA → `/themes`
+- [ ] Empty state: new user → "No intel yet" w/ CTA → `/worlds`
 - [ ] Auth gate: signed-out → `/auth?redirectTo=/inbox`
 - [ ] Open behavior: click row twice (open then close) — toggles in place, doesn't double-mark
-- [ ] CTA buttons inside open message navigate correctly to `/themes`, `/inbox`, etc.
+- [ ] CTA buttons inside open message navigate correctly to `/worlds`, `/inbox`, etc.
 - [ ] Real-time: when a milestone fires server-side (e.g. via `dispatch_milestone` RPC manually), reload reveals new unread message
 - [ ] Mobile: list scrolls, expanded message body wraps, CTA button stays tappable
 
 ## DispatchTease (Slice #1)
 
-- [ ] Visit `/themes/deep-orbit/capstone/launch` → tease renders below KeyTakeaways
-- [ ] CTA "Continue this thread in Neon Protocol →" navigates to `/themes/neon-protocol`
+- [ ] Visit `/worlds/deep-orbit/capstone/launch` → tease renders below KeyTakeaways
+- [ ] CTA "Continue this thread in Neon Protocol →" navigates to `/worlds/neon-protocol`
 - [ ] Reveal is unconditional (free-tier users completing Module 1 still see the tease — verify w/ a free-only test user)
 - [ ] axe: tease has correct heading hierarchy + landmark (`<aside>`)
 - [ ] Mobile: tease wraps cleanly, CTA button reachable
 
 ## BossBeat (Slice #6)
 
-- [ ] Visit `/themes/deep-orbit/capstone/launch` (after the BridgeCallout) → beat renders w/ 30s countdown
+- [ ] Visit `/worlds/deep-orbit/capstone/launch` (after the BridgeCallout) → beat renders w/ 30s countdown
 - [ ] Click each of 4 options → consequence beat renders inline → reload preserves choice w/ "Your call: X"
 - [ ] Timeout: walk away 30s → auto-submits `random` stance w/ `reaction_ms ≈ 30000`
 - [ ] Idempotency: try clicking twice fast → only one row inserted (server-side ON CONFLICT)
@@ -59,4 +59,4 @@ Have a seeded test user with at least:
 
 - Cron for `weekly_intel` dispatch messages: pick Supabase pg_cron OR Vercel Scheduled Function; out of scope for the in-session implementation
 - Email mirror for `dispatch_messages` via existing Resend config: deferred to email-marketing slice
-- Per-theme launch content (4 themes × finale tease + boss beat + counterfactuals + cameos) — separate writing-only sprint, see `docs/post-launch-backlog.md` §5
+- Per-world launch content (4 worlds × finale tease + boss beat + counterfactuals + cameos) — separate writing-only sprint, see `docs/post-launch-backlog.md` §5

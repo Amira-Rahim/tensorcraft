@@ -5,9 +5,9 @@
  *
  * 4-step wizard: Welcome → Background → Goal → Ready.
  *
- * Theme selection was removed when the launch was scoped down to Deep Orbit
- * only. Every learner is auto-routed to /themes/deep-orbit on submit. When a
- * second theme launches, restore a Theme step (filtered to LAUNCHED_THEMES).
+ * World selection was removed when the launch was scoped down to Deep Orbit
+ * only. Every learner is auto-routed to /worlds/deep-orbit on submit. When a
+ * second world launches, restore a World step (filtered to LAUNCHED_WORLDS).
  *
  * State is local-first; all selections are held in React state and committed
  * together on the final "Start Deep Orbit" CTA. The final submit:
@@ -18,7 +18,7 @@
  *   2. Marks `profiles.onboarding_completed = true` via the browser Supabase
  *      client (the column is not part of the onboarding PATCH contract).
  *   3. Tags the user as onboarded in Kit via `/api/email`.
- *   4. Routes the learner to /themes/deep-orbit.
+ *   4. Routes the learner to /worlds/deep-orbit.
  *
  * Keyboard navigation:
  *   - Enter (outside textareas) → advance to next step when allowed.
@@ -32,15 +32,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { THEME_CONTENT } from "@tensorcraft/shared";
+import { WORLD_CONTENT } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
-import { trackThemeSelected } from "@/lib/analytics";
+import { trackWorldSelected } from "@/lib/analytics";
 import { EVENTS, track } from "@/lib/analytics-events";
 import { getApiUrl } from "@/lib/api-url";
 import { ERROR_MESSAGES } from "@/lib/error-messages";
 
-const LAUNCH_THEME_SLUG = "deep-orbit";
-const LAUNCH_THEME_NAME = "Deep Orbit";
+const LAUNCH_WORLD_SLUG = "deep-orbit";
+const LAUNCH_WORLD_NAME = "Deep Orbit";
 
 // ---------------------------------------------------------------------------
 // Canonical enum values, MUST match migration 018 CHECK constraints.
@@ -203,8 +203,8 @@ export default function OnboardingPage() {
         return;
       }
 
-      // 2. Mark onboarding complete. preferred_theme_id is no longer set -
-      //    the active theme is route-derived now. (Column kept as tombstone.)
+      // 2. Mark onboarding complete. preferred_world_id is no longer set -
+      //    the active world is route-derived now. (Column kept as tombstone.)
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -257,17 +257,17 @@ export default function OnboardingPage() {
         body: JSON.stringify({ event: "onboarded" }),
       }).catch(() => {});
 
-      // 4. Route to the launched theme.
+      // 4. Route to the launched world.
       track(EVENTS.ONBOARDING_COMPLETED, {
         experienceLevel,
         learningGoal,
         framework: "react",
         ...(yearsAsNumber !== null ? { yearsExperience: yearsAsNumber } : {}),
       });
-      trackThemeSelected(LAUNCH_THEME_SLUG);
+      trackWorldSelected(LAUNCH_WORLD_SLUG);
       // Return the learner to wherever they were headed when the wizard
       // intercepted them (middleware passes it through); same-origin
-      // relative paths only, everything else falls back to the theme.
+      // relative paths only, everything else falls back to the world.
       const requested = new URLSearchParams(window.location.search).get(
         "redirectTo",
       );
@@ -286,7 +286,7 @@ export default function OnboardingPage() {
         !/[\u0000-\u001f]/.test(requested);
       const safeTarget = isSafePath
         ? (requested as string)
-        : `/themes/${LAUNCH_THEME_SLUG}`;
+        : `/worlds/${LAUNCH_WORLD_SLUG}`;
       router.push(safeTarget);
     } catch (e) {
       setError(e instanceof Error ? e.message : ERROR_MESSAGES.unknown);
@@ -439,7 +439,7 @@ export default function OnboardingPage() {
               disabled={saving}
               className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-on-primary bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {saving ? "Launching..." : `Start ${LAUNCH_THEME_NAME} →`}
+              {saving ? "Launching..." : `Start ${LAUNCH_WORLD_NAME} →`}
             </button>
           )}
         </div>
@@ -457,7 +457,7 @@ function WelcomeStep() {
     {
       icon: "◎",
       // Lesson-embedded bridge count, single-sourced with /learn and the FAQ.
-      name: `${THEME_CONTENT.lessonBridges} FE Bridges`,
+      name: `${WORLD_CONTENT.lessonBridges} FE Bridges`,
       desc: "Every concept mapped to React/JS",
     },
     {
@@ -678,7 +678,7 @@ function GoalStep(props: {
         What&apos;s your goal?
       </h2>
       <p className="text-sm text-text-muted mb-10 font-sans">
-        This tells us which bridges and future themes to build next.
+        This tells us which bridges and future worlds to build next.
       </p>
       <fieldset className="w-full text-left">
         <legend className="sr-only">Learning goal</legend>
@@ -742,7 +742,7 @@ function ReadyStep(props: {
   const { experienceLevel, learningGoal, feBackground, years } = props;
 
   const rows: Array<[string, string]> = [
-    ["Theme", `${LAUNCH_THEME_NAME} (live now)`],
+    ["World", `${LAUNCH_WORLD_NAME} (live now)`],
     [
       "Experience",
       experienceLevel

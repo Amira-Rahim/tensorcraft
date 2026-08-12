@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { deepOrbit } from "@tensorcraft/themes";
+import { deepOrbit } from "@tensorcraft/worlds";
 import fs from "fs";
 import path from "path";
 

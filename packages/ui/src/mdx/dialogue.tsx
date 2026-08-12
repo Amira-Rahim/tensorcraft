@@ -10,7 +10,7 @@ interface DialogueProps {
   avatarSrc?: string;
   avatarName?: string;
   isAI?: boolean;
-  /** Canonical expression id for this line (validated against the theme
+  /** Canonical expression id for this line (validated against the world
    *  manifest by the packages/content gate). The component itself does not
    *  consume it; the host app's wrapper reads it to build `avatarSlot`. */
   expression?: string;

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { relative } from "node:path";
 import { describe, it, expect } from "vitest";
-import { BUILT_THEME_DIRS } from "../src/built-themes";
+import { BUILT_WORLD_DIRS } from "../src/built-worlds";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
 import {
@@ -27,8 +27,8 @@ import { dirname, join } from "node:path";
 
 const CONTENT_ROOT = dirname(CONTENT_DIR);
 // Scope tracks the build via one shared constant (F3). Adding a launched
-// theme to BUILT_THEME_DIRS extends this gate automatically.
-const LAUNCHED_THEME_DIRS = [...BUILT_THEME_DIRS];
+// world to BUILT_WORLD_DIRS extends this gate automatically.
+const LAUNCHED_WORLD_DIRS = [...BUILT_WORLD_DIRS];
 
 interface TraceCase {
   id: string;
@@ -39,8 +39,8 @@ interface TraceCase {
 
 function collectCases(): TraceCase[] {
   const cases: TraceCase[] = [];
-  for (const theme of LAUNCHED_THEME_DIRS) {
-    for (const file of lessonFiles(join(CONTENT_ROOT, theme)) as string[]) {
+  for (const world of LAUNCHED_WORLD_DIRS) {
+    for (const file of lessonFiles(join(CONTENT_ROOT, world)) as string[]) {
       const source = readFileSync(file, "utf8");
       // Split on CodeBlock boundaries so an epochs: in one block never
       // pairs with a trace in another.

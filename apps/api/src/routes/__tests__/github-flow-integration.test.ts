@@ -29,7 +29,7 @@ import type { AppEnv } from "../../types";
 type Row = Record<string, unknown>;
 const db: Record<string, Row[]> = {
   profiles: [],
-  theme_progress: [],
+  world_progress: [],
   exercise_attempts: [],
 };
 
@@ -129,7 +129,7 @@ const fetchCalls: Array<{ method: string; url: string }> = [];
 
 beforeEach(() => {
   db.profiles = [];
-  db.theme_progress = [];
+  db.world_progress = [];
   db.exercise_attempts = [];
   mockGetUser.mockReset();
   mockAdminProfileUpdate.mockReset();
@@ -243,7 +243,7 @@ describe("GitHub flow, OAuth acquisition → commit → push", () => {
     });
 
     fetchHandler = async (url, init) => {
-      // ensureThemeRepo → createOrGetRepo: POST /user/repos
+      // ensureWorldRepo → createOrGetRepo: POST /user/repos
       if (
         url === "https://api.github.com/user/repos" &&
         init?.method === "POST"
@@ -316,7 +316,7 @@ describe("GitHub flow, OAuth acquisition → commit → push", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "foundations",
         lessonId: "lesson-01",
         code: "export const answer = 42;",
@@ -364,7 +364,7 @@ describe("GitHub flow, OAuth acquisition → commit → push", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "foundations",
         lessonId: "lesson-01",
         code: "x",
@@ -439,7 +439,7 @@ describe("GitHub flow, OAuth acquisition → commit → push", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "foundations",
         lessonId: "lesson-01",
         code: "x",
@@ -473,7 +473,7 @@ describe("GitHub flow, OAuth acquisition → commit → push", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "foundations",
         lessonId: "lesson-01",
         code: "x",

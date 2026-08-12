@@ -93,10 +93,10 @@ function findCandidates(index, terms, limit = CANDIDATE_LIMIT) {
     if (!refs) continue;
     matched.add(concept);
     for (const ref of refs) {
-      const key = `${ref.themeId}/${ref.moduleId}/${ref.slug}`;
+      const key = `${ref.worldId}/${ref.moduleId}/${ref.slug}`;
       const slot = accum.get(key) ?? {
         lesson: {
-          themeId: ref.themeId,
+          worldId: ref.worldId,
           moduleId: ref.moduleId,
           slug: ref.slug,
           title: ref.title,
@@ -148,13 +148,13 @@ Your job: given a browser-ML news item and candidate lessons from our curriculum
 Rules:
 - A lesson "teaches" the concept if a reader could open it and learn the skill the news depends on.
 - A lesson that merely MENTIONS the concept does NOT count. Pick zero rather than stretch.
-- Prefer specialization modules over foundations when both could apply (specialization is theme-specific and deeper).
+- Prefer specialization modules over foundations when both could apply (specialization is world-specific and deeper).
 - Rationale: <= 140 chars, practitioner voice, factual. Pattern: "Teaches X - read this if you want to Y." NEVER marketing language. NEVER "perfect", "amazing", "must-read".
 - Return { "picks": [] } when nothing in the candidate set actually teaches this. Empty is correct.
 
 When picks is empty, ALSO include a "gap" object:
 - gap.concept: <= 120 chars, 1-line description of what the news teaches that no candidate lesson covers. Practitioner voice. Examples: "WebGPU compute shaders for tensor inference", "GPU buffer lifecycle for on-device transformers".
-- gap.rationale: <= 240 chars, factual. Pattern: "Item teaches X; closest current lesson covers Y. Would fit in <theme>/<module> or as a new module." Suggests a curriculum placement.
+- gap.rationale: <= 240 chars, factual. Pattern: "Item teaches X; closest current lesson covers Y. Would fit in <world>/<module> or as a new module." Suggests a curriculum placement.
 
 When picks is non-empty, OMIT the gap field entirely.
 
@@ -163,7 +163,7 @@ Output: JSON only, conforming to the schema you've been given.`;
   const candidateList = candidates
     .map(
       (c, i) =>
-        `${i + 1}. [${c.lesson.themeId}/${c.lesson.moduleId}/${c.lesson.slug}] ${c.lesson.title}`,
+        `${i + 1}. [${c.lesson.worldId}/${c.lesson.moduleId}/${c.lesson.slug}] ${c.lesson.title}`,
     )
     .join("\n");
 
@@ -246,7 +246,7 @@ async function rerankWithLlm(item, candidates) {
       const cand = bySlug.get(p.lessonSlug);
       if (!cand) return null;
       return {
-        themeId: cand.lesson.themeId,
+        worldId: cand.lesson.worldId,
         moduleId: cand.lesson.moduleId,
         slug: cand.lesson.slug,
         title: cand.lesson.title,
@@ -269,7 +269,7 @@ async function rerankWithLlm(item, candidates) {
 
 function fallbackTopK(candidates) {
   return candidates.slice(0, TOP_K).map((c) => ({
-    themeId: c.lesson.themeId,
+    worldId: c.lesson.worldId,
     moduleId: c.lesson.moduleId,
     slug: c.lesson.slug,
     title: c.lesson.title,
@@ -357,7 +357,7 @@ async function main() {
       } else {
         for (const m of out.matched_lessons) {
           console.log(
-            `  → ${m.themeId}/${m.moduleId}/${m.slug}  (${m.score})${m.rationale ? `  — ${m.rationale}` : ""}`,
+            `  → ${m.worldId}/${m.moduleId}/${m.slug}  (${m.score})${m.rationale ? `  — ${m.rationale}` : ""}`,
           );
         }
       }

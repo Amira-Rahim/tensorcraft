@@ -78,7 +78,7 @@ quietly studying what replaced her, one line per module. She is allowed
 something adjacent to feelings in the capstone only.
 
 **DISPATCH intercepts** (Yara, Hassan, Lin, Jin, Dr. Amara, Kira) — flavor
-texture from other themes. Keep; do not expand.
+texture from other worlds. Keep; do not expand.
 
 ## Anti-template rules
 

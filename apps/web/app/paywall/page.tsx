@@ -15,7 +15,7 @@ import { WhoThisIsFor } from "@/app/components/who-this-is-for";
  *   - direct marketing campaigns (email, social)
  *   - "end of Module 1" prompt after a learner finishes the free preview
  *   - any other surface that wants to pitch the paid course without forcing
- *     a specific theme context
+ *     a specific world context
  *
  * The CTA points at `/pricing` so the plan picker + Stripe flow stay in one
  * place. This page focuses on (1) framing the value, (2) a tight free vs
@@ -111,7 +111,7 @@ export default function PaywallPage() {
               </Link>
             </PaywallCtaTracker>
             <Link
-              href="/themes/deep-orbit"
+              href="/worlds/deep-orbit"
               className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider text-text-primary border border-border rounded-none hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-colors"
             >
               Replay Module 1
@@ -246,7 +246,7 @@ export default function PaywallPage() {
             Ready for Module 2?
           </h2>
           <p className="text-base mb-10 text-text-muted font-sans max-w-130 mx-auto">
-            Single theme, a bundle, or all five: no subscriptions, no expiring
+            Single world, a bundle, or all five: no subscriptions, no expiring
             access.
           </p>
           <PaywallCtaTracker>

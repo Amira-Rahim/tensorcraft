@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { themes } from "@tensorcraft/themes";
-import { isValidThemeSlug } from "@tensorcraft/shared";
+import { worlds } from "@tensorcraft/worlds";
+import { isValidWorldSlug } from "@tensorcraft/shared";
 import { getApiUrl } from "@/lib/api-url";
 
 /**
@@ -11,7 +11,7 @@ import { getApiUrl } from "@/lib/api-url";
  * Reads the share record via the API's public `GET /api/certificates/:id`
  * endpoint, which itself goes through the `get_shared_certificate` SECURITY
  * DEFINER RPC (migration 019) so only the minimum public fields cross the
- * trust boundary: id, theme_id, issued_at, cert_hash, display_name,
+ * trust boundary: id, world_id, issued_at, cert_hash, display_name,
  * avatar_url.
  *
  * No auth required. UUID shape is validated server-side; an unknown id
@@ -22,7 +22,7 @@ import { getApiUrl } from "@/lib/api-url";
 
 type ShareRecord = {
   id: string;
-  theme_id: string;
+  world_id: string;
   issued_at: string;
   cert_hash: string;
   user_display_name: string | null;
@@ -65,11 +65,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const cert = await loadCertificate(id);
   if (!cert) return { title: "Certificate | Tensorcraft" };
-  const theme = isValidThemeSlug(cert.theme_id) ? themes[cert.theme_id] : null;
-  const themeName = theme?.displayName ?? cert.theme_id;
+  const world = isValidWorldSlug(cert.world_id) ? worlds[cert.world_id] : null;
+  const worldName = world?.displayName ?? cert.world_id;
   const learner = cert.user_display_name ?? "A Tensorcraft learner";
-  const title = `${learner} completed ${themeName} | Tensorcraft`;
-  const description = `Certificate of completion for the ${themeName} theme on Tensorcraft.`;
+  const title = `${learner} completed ${worldName} | Tensorcraft`;
+  const description = `Certificate of completion for the ${worldName} world on Tensorcraft.`;
   return {
     title,
     description,
@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://tensorcraft.app/certificates/${cert.id}`,
       type: "profile",
       images: [
-        `/api/og?title=${encodeURIComponent(`${themeName}: ${theme?.terminology.lesson ?? "Mission"} Complete`)}&theme=${encodeURIComponent(cert.theme_id)}&subtitle=${encodeURIComponent(learner)}`,
+        `/api/og?title=${encodeURIComponent(`${worldName}: ${world?.terminology.lesson ?? "Mission"} Complete`)}&world=${encodeURIComponent(cert.world_id)}&subtitle=${encodeURIComponent(learner)}`,
       ],
     },
   };
@@ -93,8 +93,8 @@ export default async function CertificateSharePage({ params }: Props) {
   const cert = await loadCertificate(id);
   if (!cert) notFound();
 
-  const theme = isValidThemeSlug(cert.theme_id) ? themes[cert.theme_id] : null;
-  const themeName = theme?.displayName ?? cert.theme_id;
+  const world = isValidWorldSlug(cert.world_id) ? worlds[cert.world_id] : null;
+  const worldName = world?.displayName ?? cert.world_id;
   const learner = cert.user_display_name ?? "A Tensorcraft learner";
   const issuedDate = new Date(cert.issued_at).toLocaleDateString("en-US", {
     year: "numeric",
@@ -107,8 +107,8 @@ export default async function CertificateSharePage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "EducationalOccupationalCredential",
-    name: `${themeName} | Tensorcraft`,
-    description: `Completion of the ${themeName} theme on Tensorcraft.`,
+    name: `${worldName} | Tensorcraft`,
+    description: `Completion of the ${worldName} world on Tensorcraft.`,
     credentialCategory: "Course Completion",
     educationalLevel: "Intermediate",
     recognizedBy: {
@@ -132,7 +132,7 @@ export default async function CertificateSharePage({ params }: Props) {
             Certificate of Completion
           </p>
           <h1 className="text-3xl md:text-4xl font-mono font-black tracking-[-0.03em] uppercase mb-6">
-            {themeName}
+            {worldName}
           </h1>
 
           <p className="text-sm text-text-muted mb-1">Awarded to</p>
@@ -165,7 +165,7 @@ export default async function CertificateSharePage({ params }: Props) {
           </dl>
 
           <p className="text-xs text-text-muted leading-relaxed">
-            This learner completed every module of the {themeName} theme on{" "}
+            This learner completed every module of the {worldName} world on{" "}
             <Link href="/" className="text-primary underline">
               Tensorcraft
             </Link>
@@ -179,10 +179,10 @@ export default async function CertificateSharePage({ params }: Props) {
             ← Tensorcraft
           </Link>
           <Link
-            href={`/themes/${cert.theme_id}`}
+            href={`/worlds/${cert.world_id}`}
             className="hover:text-text-primary"
           >
-            View the {themeName} theme →
+            View the {worldName} world →
           </Link>
         </div>
       </div>

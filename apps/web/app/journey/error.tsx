@@ -45,10 +45,10 @@ export default function JourneyError({
             Try again
           </button>
           <Link
-            href="/themes"
+            href="/worlds"
             className="px-6 py-3 border border-border bg-transparent text-text-muted font-mono text-sm font-bold uppercase tracking-wider rounded-none hover:text-text-primary hover:border-primary/30 transition-colors text-center"
           >
-            Browse themes
+            Browse worlds
           </Link>
         </div>
       </div>

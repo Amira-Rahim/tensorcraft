@@ -37,7 +37,7 @@ describe("lib/analytics-events", () => {
     expect(EVENTS.UPGRADE_CTA_SHOWN).toBe("upgrade_cta_shown");
     expect(EVENTS.UPGRADE_CTA_CLICKED).toBe("upgrade_cta_clicked");
     expect(EVENTS.CODE_PUSHED).toBe("code_pushed");
-    expect(EVENTS.THEME_SELECTED).toBe("theme_selected");
+    expect(EVENTS.WORLD_SELECTED).toBe("world_selected");
     expect(EVENTS.PROGRESS_SHARED).toBe("progress_shared");
     expect(EVENTS.SESSION_STARTED).toBe("session_started");
     expect(EVENTS.SESSION_ENDED).toBe("session_ended");
@@ -55,7 +55,7 @@ describe("lib/analytics-events", () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "");
 
     track(EVENTS.LESSON_STARTED, {
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "m1",
       lessonId: "l1",
     });
@@ -68,7 +68,7 @@ describe("lib/analytics-events", () => {
     initPostHog();
 
     track(EVENTS.EXERCISE_ATTEMPTED, {
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       lessonId: "l1",
       exerciseSlug: "ex-1",
       passed: true,
@@ -76,7 +76,7 @@ describe("lib/analytics-events", () => {
     });
 
     expect(posthog.capture).toHaveBeenCalledWith("exercise_attempted", {
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       lessonId: "l1",
       exerciseSlug: "ex-1",
       passed: true,
@@ -89,13 +89,13 @@ describe("lib/analytics-events", () => {
     initPostHog();
 
     track(EVENTS.PAYWALL_HIT, {
-      themeId: "signal-ward",
+      worldId: "signal-ward",
       moduleId: "m2",
       lessonId: "intro",
     });
 
     expect(posthog.capture).toHaveBeenLastCalledWith("paywall_hit", {
-      themeId: "signal-ward",
+      worldId: "signal-ward",
       moduleId: "m2",
       lessonId: "intro",
     });
@@ -132,18 +132,18 @@ describe("lib/analytics-events", () => {
     });
   });
 
-  it("track forwards progress_shared with platform + themeId", () => {
+  it("track forwards progress_shared with platform + worldId", () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
     initPostHog();
 
     track(EVENTS.PROGRESS_SHARED, {
       platform: "copy",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
     });
 
     expect(posthog.capture).toHaveBeenCalledWith("progress_shared", {
       platform: "copy",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
     });
   });
 
@@ -153,13 +153,13 @@ describe("lib/analytics-events", () => {
 
     track(EVENTS.UPGRADE_CTA_SHOWN, {
       source: "paywall",
-      themeId: "signal-ward",
+      worldId: "signal-ward",
     });
     track(EVENTS.UPGRADE_CTA_CLICKED, { source: "paywall" });
 
     expect(posthog.capture).toHaveBeenCalledWith("upgrade_cta_shown", {
       source: "paywall",
-      themeId: "signal-ward",
+      worldId: "signal-ward",
     });
     expect(posthog.capture).toHaveBeenCalledWith("upgrade_cta_clicked", {
       source: "paywall",
@@ -171,14 +171,14 @@ describe("lib/analytics-events", () => {
     initPostHog();
 
     track(EVENTS.CODE_PUSHED, {
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       lessonId: "l1",
       exerciseSlug: "l1",
       commitSha: "abc1234",
     });
 
     expect(posthog.capture).toHaveBeenCalledWith("code_pushed", {
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       lessonId: "l1",
       exerciseSlug: "l1",
       commitSha: "abc1234",

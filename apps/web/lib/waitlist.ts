@@ -5,7 +5,7 @@ import { getSupabaseBrowserClient } from "./supabase/client";
  * failure.
  *
  * This function must NEVER throw. Both callers
- * (`theme-waitlist-form.tsx`, `newsletter-modal.tsx`) do
+ * (`world-waitlist-form.tsx`, `newsletter-modal.tsx`) do
  * `setStatus("submitting")` then `setStatus(await submitWaitlist(...))` with no
  * try/catch, so an exception here skipped the second setStatus and left the
  * form stuck on "submitting" forever — with a perfectly good error state
@@ -14,13 +14,13 @@ import { getSupabaseBrowserClient } from "./supabase/client";
  */
 export async function submitWaitlist(
   email: string,
-  themeId: string,
+  worldId: string,
   source: string,
   opts?: {
     /**
      * Explicit opt-in to the weekly digest. Only the newsletter modal — an
-     * actual newsletter signup — passes true. Theme waitlist forms leave it
-     * false: "tell me when this theme ships" is not newsletter consent
+     * actual newsletter signup — passes true. World waitlist forms leave it
+     * false: "tell me when this world ships" is not newsletter consent
      * (GDPR Art. 4(11); Tier 1-LEGAL waitlist consent fix, migration 050
      * flipped the column default to false to match).
      */
@@ -31,7 +31,7 @@ export async function submitWaitlist(
     const supabase = getSupabaseBrowserClient();
     const { error } = await supabase.from("waitlist").insert({
       email: email.trim(),
-      theme_id: themeId,
+      world_id: worldId,
       source,
       subscribed: opts?.subscribeToDigest === true,
     });

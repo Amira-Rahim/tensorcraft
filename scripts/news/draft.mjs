@@ -43,7 +43,7 @@ function buildItemPrompt(item) {
   const lessons = (item.matched_lessons || [])
     .map(
       (m, i) =>
-        `${i + 1}. ${m.title}  →  /learn/${m.themeId}/${m.moduleId}/${m.slug}${m.rationale ? `\n   rationale: ${m.rationale}` : ""}`,
+        `${i + 1}. ${m.title}  →  /learn/${m.worldId}/${m.moduleId}/${m.slug}${m.rationale ? `\n   rationale: ${m.rationale}` : ""}`,
     )
     .join("\n");
 
@@ -106,7 +106,7 @@ function slugifyTitle(title) {
 }
 
 function frontmatter(item, slug, body) {
-  const themeSlug = item.matched_lessons?.[0]?.themeId;
+  const worldSlug = item.matched_lessons?.[0]?.worldId;
   const primaryLessonSlug = item.matched_lessons?.[0]?.slug;
   const sourceLabel = item.source.replace(/^(rss|github):/, "").replace(/\/.*$/, "");
   const summaryLine = body
@@ -117,7 +117,7 @@ function frontmatter(item, slug, body) {
   const matchedYaml = (item.matched_lessons || [])
     .slice(0, 3)
     .map(
-      (m) => `  - themeId: ${m.themeId}
+      (m) => `  - worldId: ${m.worldId}
     moduleId: ${m.moduleId}
     slug: ${m.slug}
     title: ${JSON.stringify(m.title)}${m.rationale ? `\n    rationale: ${JSON.stringify(m.rationale)}` : ""}`,
@@ -131,12 +131,12 @@ publishedAt: ${new Date().toISOString().slice(0, 10)}
 weekIso: ${WEEK}
 sourceUrl: ${item.url}
 sourceLabel: ${sourceLabel}
-${primaryLessonSlug ? `primaryLessonSlug: ${primaryLessonSlug}\n` : ""}${themeSlug ? `themeSlug: ${themeSlug}\n` : ""}summary: ${JSON.stringify(summaryLine.trim())}
+${primaryLessonSlug ? `primaryLessonSlug: ${primaryLessonSlug}\n` : ""}${worldSlug ? `worldSlug: ${worldSlug}\n` : ""}summary: ${JSON.stringify(summaryLine.trim())}
 matchedLessons:
 ${matchedYaml}
 tags:
   - news
-${themeSlug ? `  - ${themeSlug}\n` : ""}---
+${worldSlug ? `  - ${worldSlug}\n` : ""}---
 
 ${body}
 `;
@@ -155,7 +155,7 @@ function buildDigestPrompt(items) {
 Write the MDX body for a weekly digest covering ${items.length} items. Structure:
 
 ## This week
-1 short paragraph (2-3 sentences) on the through-line — what theme connects these items (e.g. "WebGPU keeps shipping", "transformers.js is doing what tfjs once promised"). If there is no through-line, say so honestly.
+1 short paragraph (2-3 sentences) on the through-line — what world connects these items (e.g. "WebGPU keeps shipping", "transformers.js is doing what tfjs once promised"). If there is no through-line, say so honestly.
 
 ## Items
 For each item, one bullet:
@@ -245,7 +245,7 @@ async function main() {
       .map(({ item }) => {
         const m = item.matched_lessons?.[0];
         if (!m) return "";
-        return `  - themeId: ${m.themeId}
+        return `  - worldId: ${m.worldId}
     moduleId: ${m.moduleId}
     slug: ${m.slug}
     title: ${JSON.stringify(m.title)}`;

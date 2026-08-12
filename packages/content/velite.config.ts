@@ -3,7 +3,7 @@ import ts from "typescript";
 import { rehypeGlossary } from "./src/rehype-glossary";
 import { GLOSSARY } from "./src/glossary";
 import { findGlossaryTermsInText } from "./src/glossary-match";
-import { BUILT_THEME_GLOB } from "./src/built-themes";
+import { BUILT_WORLD_GLOB } from "./src/built-worlds";
 
 /**
  * Transpile TS-flavored exercise code to plain JS so the runtime worker
@@ -51,24 +51,24 @@ function tsToJs(src: string): string {
   );
 }
 
-// V1 launched theme dirs; keep in sync with LAUNCHED_THEMES in
-// packages/shared/src/constants.ts. Coming-soon themes' .mdx/.yaml stay in the
+// V1 launched world dirs; keep in sync with LAUNCHED_WORLDS in
+// packages/shared/src/constants.ts. Coming-soon worlds' .mdx/.yaml stay in the
 // repo (under packages/content/content/{slug}/) but are excluded from the build
 // so their content does not ship in `.velite/*` outputs.
-// Single source (packages/content/src/built-themes.ts) shared with every QA
-// gate: launch a theme by adding it there once.
-const LAUNCHED_THEME_DIRS = BUILT_THEME_GLOB;
+// Single source (packages/content/src/built-worlds.ts) shared with every QA
+// gate: launch a world by adding it there once.
+const LAUNCHED_WORLD_DIRS = BUILT_WORLD_GLOB;
 
 const lessons = defineCollection({
   name: "Lesson",
-  // Scoped to launched theme dirs (extras included for shared cross-theme content).
-  pattern: `${LAUNCHED_THEME_DIRS}/**/*.mdx`,
+  // Scoped to launched world dirs (extras included for shared cross-world content).
+  pattern: `${LAUNCHED_WORLD_DIRS}/**/*.mdx`,
   schema: s
     .object({
       slug: s.slug("lessons"),
       title: s.string().min(1),
       moduleId: s.string().min(1),
-      themeId: s.string().min(1),
+      worldId: s.string().min(1),
       order: s.number().int().positive(),
       estimatedMinutes: s.number().int().positive(),
       difficulty: s.enum(["beginner", "intermediate", "advanced"]),
@@ -175,7 +175,7 @@ const lessons = defineCollection({
 
 const exercises = defineCollection({
   name: "Exercise",
-  pattern: `${LAUNCHED_THEME_DIRS}/**/exercises/*.yaml`,
+  pattern: `${LAUNCHED_WORLD_DIRS}/**/exercises/*.yaml`,
   schema: s.object({
     slug: s.slug("exercises"),
     lessonSlug: s.string().min(1),
@@ -220,16 +220,16 @@ const exercises = defineCollection({
 
 const modules = defineCollection({
   name: "Module",
-  pattern: `${LAUNCHED_THEME_DIRS}/**/module.yaml`,
+  pattern: `${LAUNCHED_WORLD_DIRS}/**/module.yaml`,
   schema: s.object({
     slug: s.slug("modules"),
     title: s.string().min(1),
-    themeId: s.string().min(1),
+    worldId: s.string().min(1),
     order: s.number().int().positive(),
     description: s.string().min(1),
     lessonCount: s.number().int().positive(),
     prerequisites: s.array(s.string()).default([]),
-    // "foundations" = shared core (modules 1-6), "specialization" = theme-specific (modules 7-11)
+    // "foundations" = shared core (modules 1-6), "specialization" = world-specific (modules 7-11)
     // "companion" = optional deep-dive companion modules, "bonus" = unlockable bonus content
     track: s
       .enum(["foundations", "specialization", "companion", "bonus"])
@@ -249,7 +249,7 @@ const posts = defineCollection({
     sourceUrl: s.string().url().optional(),
     sourceLabel: s.string().optional(),
     primaryLessonSlug: s.string().optional(),
-    themeSlug: s
+    worldSlug: s
       .enum([
         "deep-orbit",
         "neon-protocol",
@@ -262,7 +262,7 @@ const posts = defineCollection({
     matchedLessons: s
       .array(
         s.object({
-          themeId: s.string(),
+          worldId: s.string(),
           moduleId: s.string(),
           slug: s.string(),
           title: s.string(),

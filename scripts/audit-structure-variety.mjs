@@ -30,12 +30,12 @@ import { join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
-/** All themes live here; per-theme dirs are its children. */
+/** All worlds live here; per-world dirs are its children. */
 export const CONTENT_ROOT = join(ROOT, "packages", "content", "content");
 // Kept for back-compat with existing importers; prefer CONTENT_ROOT + a
-// theme dir. The hardcoded deep-orbit anchor was a gate bug: analyze()
-// computed lesson ids relative to THIS dir, so every other theme's lessons
-// resolved to "../<theme>/..." and moduleOf() collapsed to ".." — the
+// world dir. The hardcoded deep-orbit anchor was a gate bug: analyze()
+// computed lesson ids relative to THIS dir, so every other world's lessons
+// resolved to "../<world>/..." and moduleOf() collapsed to ".." — the
 // per-module variety floor silently measured one giant bucket (fresh-eyes
 // rerun §6, T2-23).
 export const CONTENT_DIR = join(CONTENT_ROOT, "deep-orbit");
@@ -104,9 +104,9 @@ function countTakeaways(body) {
 export function analyze(file) {
   const source = readFileSync(file, "utf8");
   const { fm, body } = splitFrontmatter(source);
-  // Lesson id is "module/lesson" for EVERY theme: resolve against the
-  // content root and strip the theme segment. (Previously relative to the
-  // deep-orbit dir, which turned other themes' ids into "../..." — T2-23.)
+  // Lesson id is "module/lesson" for EVERY world: resolve against the
+  // content root and strip the world segment. (Previously relative to the
+  // deep-orbit dir, which turned other worlds' ids into "../..." — T2-23.)
   const rel = relative(CONTENT_ROOT, file)
     .replace(/\.mdx$/, "")
     .split("/")
@@ -163,19 +163,19 @@ if (!isMain) {
 }
 
 function main() {
-  // CLI counts every theme dir on disk (un-anchored from deep-orbit,
-  // T2-23). `--theme <dir>` scopes to one.
-  const themeArgIdx = process.argv.indexOf("--theme");
-  const themes =
-    themeArgIdx !== -1
-      ? [process.argv[themeArgIdx + 1]]
+  // CLI counts every world dir on disk (un-anchored from deep-orbit,
+  // T2-23). `--world <dir>` scopes to one.
+  const worldArgIdx = process.argv.indexOf("--world");
+  const worlds =
+    worldArgIdx !== -1
+      ? [process.argv[worldArgIdx + 1]]
       : readdirSync(CONTENT_ROOT).filter((d) =>
           statSync(join(CONTENT_ROOT, d)).isDirectory(),
         );
-  for (const theme of themes) {
-    const rows = lessonFiles(join(CONTENT_ROOT, theme)).map(analyze);
+  for (const world of worlds) {
+    const rows = lessonFiles(join(CONTENT_ROOT, world)).map(analyze);
     if (rows.length === 0) continue;
-    console.log(`\n=== ${theme} ===`);
+    console.log(`\n=== ${world} ===`);
     report(rows, summarize(rows));
   }
 }

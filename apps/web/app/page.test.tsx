@@ -117,7 +117,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       const primary = screen.getByTestId("landing-cta-primary");
       expect(primary.textContent).toMatch(/run your first tensor/i);
       expect(primary.getAttribute("href")).toBe(
-        "/themes/deep-orbit/foundations/introduction-to-tensors",
+        "/worlds/deep-orbit/foundations/introduction-to-tensors",
       );
     });
 
@@ -187,7 +187,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       render(<BridgePreviewSection />);
       const cta = screen.getByTestId("bridge-section-cta");
       expect(cta.getAttribute("href")).toBe(
-        "/themes/deep-orbit/foundations/introduction-to-tensors",
+        "/worlds/deep-orbit/foundations/introduction-to-tensors",
       );
     });
 

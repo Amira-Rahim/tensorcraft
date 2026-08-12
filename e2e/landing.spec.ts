@@ -55,7 +55,7 @@ test.describe("Landing Page", () => {
     await expect(nav.getByRole("link", { name: /start now/i })).toBeVisible();
   });
 
-  test("shows theme section with Deep Orbit", async ({ page }) => {
+  test("shows world section with Deep Orbit", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByText(/deep orbit/i).first()).toBeVisible();
   });
@@ -72,7 +72,7 @@ test.describe("Landing Page", () => {
   }) => {
     await page.goto("/");
     await page.getByTestId("landing-cta-final").click();
-    await expect(page).toHaveURL(/\/themes\/deep-orbit\/foundations/);
+    await expect(page).toHaveURL(/\/worlds\/deep-orbit\/foundations/);
   });
 
   test("page title contains Tensorcraft", async ({ page }) => {

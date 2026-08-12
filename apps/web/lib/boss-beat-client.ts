@@ -47,7 +47,7 @@ export async function getBossBeatChoice(
  * silently doing nothing).
  */
 export async function recordBossBeatChoice(args: {
-  themeId: string;
+  worldId: string;
   lessonId: string;
   beatId: string;
   choiceIndex: number;
@@ -61,7 +61,7 @@ export async function recordBossBeatChoice(args: {
   if (!user) return false;
 
   const { data, error } = await supabase.rpc("record_boss_beat_choice", {
-    p_theme_id: args.themeId,
+    p_world_id: args.worldId,
     p_lesson_id: args.lessonId,
     p_beat_id: args.beatId,
     p_choice_index: args.choiceIndex,

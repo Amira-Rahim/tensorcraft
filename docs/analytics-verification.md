@@ -39,30 +39,30 @@ production release.
 | Event | Trigger | Expected properties |
 | --- | --- | --- |
 | `session_started` | Log in (any auth flow) | `userId` |
-| `theme_selected` | Complete onboarding with a theme picked | `themeId`, `source="onboarding"` |
+| `world_selected` | Complete onboarding with a world picked | `worldId`, `source="onboarding"` |
 | `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
 | `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `framework?`, `yearsExperience?` |
-| `lesson_started` | Open any lesson (step 1 auto-fires) | `themeId`, `moduleId`, `lessonId` |
+| `lesson_started` | Open any lesson (step 1 auto-fires) | `worldId`, `moduleId`, `lessonId` |
 | `hint_requested` | On a lesson step with hints: click "Reveal Nudge" | `hintLevel=1`, plus context ids |
 | `exercise_attempted` | Submit an exercise (any outcome) | `passed`, `score`, `exerciseSlug` |
 | `exercise_completed` | Submit a passing exercise | `score`, `exerciseSlug` |
 | `checkpoint_submitted` | Answer an in-lesson quiz | `passed`, `attempts` |
 | `recall_answered` | Click "Reveal Answer" on a RecallPrompt | `action="revealed"` |
-| `lesson_completed` | Reach step 6 (Consequence) of a lesson | `themeId`, `moduleId`, `lessonId` |
+| `lesson_completed` | Reach step 6 (Consequence) of a lesson | `worldId`, `moduleId`, `lessonId` |
 | `module_completed` | Finish the last lesson of a module | `lessonsCount` |
-| `paywall_hit` | Visit a Module 2+ lesson without access | `themeId`, `moduleId` |
+| `paywall_hit` | Visit a Module 2+ lesson without access | `worldId`, `moduleId` |
 | `pricing_page_viewed` | Land on `/pricing` (any path) | `source` |
 | `checkout_started` | Click a paid-tier CTA on `/pricing` | `planId` |
-| `payment_completed` | Server-side: Stripe `checkout.session.completed` | `planId`, `themeIds`, `amount`, `sessionId` |
+| `payment_completed` | Server-side: Stripe `checkout.session.completed` | `planId`, `worldIds`, `amount`, `sessionId` |
 | `payment_failed` | Server-side: Stripe `async_payment_failed` (use a test card) | `sessionId`, `reason` |
 | `payment_refunded` | Server-side: issue a refund in Stripe dashboard | `paymentIntentId`, `isFullRefund` |
 | `streak_achieved` | Complete a lesson after 24h of prior completion | `streakDays` |
 | `session_started` | App load / route into any page (fires from `AnalyticsProvider`) | `sessionId` |
 | `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
-| `upgrade_cta_shown` | `/pricing?locked=<slug>` banner renders, OR `/paywall` mounts | `source="paywall"`, `themeId?` |
+| `upgrade_cta_shown` | `/pricing?locked=<slug>` banner renders, OR `/paywall` mounts | `source="paywall"`, `worldId?` |
 | `upgrade_cta_clicked` | Click "See Plans" on `/paywall` hero or footer | `source="paywall"` |
-| `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `themeId` |
-| `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `themeId`, `lessonId`, `exerciseSlug`, `commitSha` |
+| `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `worldId` |
+| `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `worldId`, `lessonId`, `exerciseSlug`, `commitSha` |
 
 ## Stripe server-side events
 
@@ -85,9 +85,9 @@ whenever `commitLessonArtifact` succeeds — same authoritative pattern as
 
 1. Connect GitHub from `/settings` (OAuth round-trip).
 2. `curl -X POST $API_URL/api/github/commit -H 'Authorization: Bearer <jwt>' \
-   -d '{"themeId":"deep-orbit","lessonId":"intro-tensors","code":"// noop"}'`.
+   -d '{"worldId":"deep-orbit","lessonId":"intro-tensors","code":"// noop"}'`.
 3. Confirm a `code_pushed` event appears under your Supabase `auth.users.id`
-   with `themeId`, `lessonId`, `exerciseSlug`, `commitSha`.
+   with `worldId`, `lessonId`, `exerciseSlug`, `commitSha`.
 
 ## Diagnosing a missing event
 

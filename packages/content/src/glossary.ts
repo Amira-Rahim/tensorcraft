@@ -1,7 +1,7 @@
 /**
  * Curated ML glossary for Tensorcraft.
  *
- * Terms are drawn from the `keywords` of deep-orbit lessons (the only themes in
+ * Terms are drawn from the `keywords` of deep-orbit lessons (the only worlds in
  * the build) plus a few foundational entries. Definitions are learner-facing
  * refreshers: one or two plain sentences, no em dashes (style bible rule 6).
  *
@@ -15,7 +15,7 @@ export interface GlossaryEntry {
   definition: string;
   /** Extra surface forms to match in prose, e.g. ["ranks"]. */
   aliases?: string[];
-  /** "global" ML term, or a theme slug for theme-specific terms. */
+  /** "global" ML term, or a world slug for world-specific terms. */
   scope?: "global" | string;
 }
 

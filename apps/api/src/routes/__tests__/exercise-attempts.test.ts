@@ -39,7 +39,7 @@ vi.mock("@tensorcraft/supabase", () => ({
 }));
 
 vi.mock("@tensorcraft/shared", () => ({
-  isValidThemeSlug: (slug: string) =>
+  isValidWorldSlug: (slug: string) =>
     [
       "deep-orbit",
       "neon-protocol",
@@ -63,7 +63,7 @@ function createApp() {
 const validAttempt = {
   exerciseSlug: "tensor-basics",
   lessonId: "lesson-01",
-  themeId: "deep-orbit",
+  worldId: "deep-orbit",
   passed: true,
   score: 85,
 };
@@ -104,7 +104,7 @@ describe("Exercise attempts routes", () => {
       mockSelectQuery.mockResolvedValue({ data: attempts, error: null });
 
       const res = await app.request(
-        "/api/exercise-attempts?lessonId=lesson-01&themeId=deep-orbit",
+        "/api/exercise-attempts?lessonId=lesson-01&worldId=deep-orbit",
         {
           headers: { Authorization: "Bearer valid_token" },
         },

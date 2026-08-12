@@ -10,7 +10,7 @@
  *     static fallback (no RAF, no transform animation) when the user has
  *     opted out.
  *   - Canvas fills derive from CSS variables (`var(--tc-primary)`,
- *     `var(--tc-muted)`) so the theme system works without extra props.
+ *     `var(--tc-muted)`) so the world system works without extra props.
  *
  * If you add a new effect here, keep the same contract:
  *   1. Respect `prefers-reduced-motion`.
@@ -30,4 +30,4 @@ export {
   drawSignalWard,
   drawNovaCanvas,
   drawTerraGrid,
-} from "./theme-scenes";
+} from "./world-scenes";

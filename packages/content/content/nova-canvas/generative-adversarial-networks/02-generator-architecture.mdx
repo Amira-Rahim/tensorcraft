@@ -2,7 +2,7 @@
 slug: generator-architecture
 title: "Generator Architecture"
 moduleId: generative-adversarial-networks
-themeId: nova-canvas
+worldId: nova-canvas
 order: 2
 estimatedMinutes: 25
 difficulty: intermediate
@@ -13,7 +13,7 @@ concept:
   explanation: "The generator takes a low-dimensional noise vector and progressively upscales it through dense and reshape layers to produce full-resolution output."
   bridge:
     feTitle: "Template Engine"
-    feCode: "const html = template.render({ title, items, theme })"
+    feCode: "const html = template.render({ title, items, world })"
     mlTitle: "Generator Network"
     mlCode: "const image = generator.predict(tf.randomNormal([1, 100]))"
     tier: structural
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-A template engine takes a small data object (title, items, theme) and expands it into a full HTML page. Every template call produces a different page, but they all follow the same structure. A generator does the same thing: small input, structured output.
+A template engine takes a small data object (title, items, world) and expands it into a full HTML page. Every template call produces a different page, but they all follow the same structure. A generator does the same thing: small input, structured output.
 </Dialogue>
 
 <Dialogue speaker="MUSE">

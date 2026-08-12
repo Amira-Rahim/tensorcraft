@@ -3,42 +3,42 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { themes } from "@tensorcraft/themes";
+import { worlds } from "@tensorcraft/worlds";
 import {
-  LAUNCHED_THEMES,
+  LAUNCHED_WORLDS,
   PRICING,
-  THEME_CONTENT,
-  isValidThemeSlug,
+  WORLD_CONTENT,
+  isValidWorldSlug,
 } from "@tensorcraft/shared";
 import { CheckoutButton } from "./checkout-button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-// V1 scope-revert (2026-05-05): the picker shows only launched themes, so the
-// cart can never produce a basket the API would reject (`validateThemeIds` →
+// V1 scope-revert (2026-05-05): the picker shows only launched worlds, so the
+// cart can never produce a basket the API would reject (`validateWorldIds` →
 // `isLaunched`). The bundle tiers that used to sit alongside these two are
 // gone entirely (see <BundleRoadmap />); this grid renders only what a buyer
 // can actually put money on.
-const themeList = LAUNCHED_THEMES.map((slug) => ({
+const worldList = LAUNCHED_WORLDS.map((slug) => ({
   slug,
-  name: themes[slug].displayName,
+  name: worlds[slug].displayName,
 }));
-const launchedThemeCount = LAUNCHED_THEMES.length;
+const launchedWorldCount = LAUNCHED_WORLDS.length;
 
-function ThemePicker({
+function WorldPicker({
   max,
   selected,
   onToggle,
-  ownedThemes,
+  ownedWorlds,
 }: {
   max: number;
   selected: string[];
   onToggle: (slug: string) => void;
-  ownedThemes?: Set<string>;
+  ownedWorlds?: Set<string>;
 }) {
   return (
     <div className="flex flex-wrap gap-2 mb-5">
-      {themeList.map((t) => {
-        const isOwned = ownedThemes?.has(t.slug) ?? false;
+      {worldList.map((t) => {
+        const isOwned = ownedWorlds?.has(t.slug) ?? false;
         const isSelected = isOwned || selected.includes(t.slug);
         const isFull = selected.length >= max && !isSelected;
         return (
@@ -49,7 +49,7 @@ function ThemePicker({
             disabled={isOwned || isFull}
             // Selection was conveyed ONLY by colour (border/background/weight),
             // so a screen-reader user building a $99-$159 bundle had no way to
-            // know which themes were in their basket, and the state was
+            // know which worlds were in their basket, and the state was
             // invisible to anyone who cannot distinguish the accent. This is
             // purchasing information, not decoration. WCAG 4.1.2 and 1.4.1.
             aria-pressed={isSelected}
@@ -88,12 +88,12 @@ function ThemePicker({
 /**
  * PricingTiers, brutalist grid of the tiers a buyer can actually buy.
  *
- * Was a 5-card grid (Free, Single, Two, Three, All 5). With one theme
+ * Was a 5-card grid (Free, Single, Two, Three, All 5). With one world
  * launched, three of those five cards could only render as disabled cards
  * with dead CTAs, which cost the page twice: the only live PAID card was the
  * second cheapest of five, so $59 read as a stripped entry tier when $59 is
- * the entire product; and the dead CTAs read "Available when more themes
- * launch", which implies a schedule the theme-2 gate (launch + a paying-user
+ * the entire product; and the dead CTAs read "Available when more worlds
+ * launch", which implies a schedule the world-2 gate (launch + a paying-user
  * threshold) does not promise.
  *
  * Now the grid holds Free and Single only. The bundle prices did not vanish,
@@ -105,37 +105,37 @@ function ThemePicker({
  * details, and applies a brutalist offset shadow on hover.
  */
 export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
-  // Preselect when exactly one theme is launched: a one-option picker
+  // Preselect when exactly one world is launched: a one-option picker
   // that starts empty just disables the page's most important button
   // behind a pointless click (2026-07-14 UX audit).
-  const [singleTheme, setSingleTheme] = useState<string | null>(
-    LAUNCHED_THEMES.length === 1 ? LAUNCHED_THEMES[0] : null,
+  const [singleWorld, setSingleWorld] = useState<string | null>(
+    LAUNCHED_WORLDS.length === 1 ? LAUNCHED_WORLDS[0] : null,
   );
   // No picker reads these while the bundle cards are gone, but the
   // auth-roundtrip restore below still writes them, so the plumbing survives
   // intact for whenever bundles become buyable. Value bindings are elided
   // rather than left dangling.
-  const [, setTwoThemes] = useState<string[]>([]);
-  const [, setThreeThemes] = useState<string[]>([]);
-  const [ownedThemes, setOwnedThemes] = useState<Set<string>>(new Set());
+  const [, setTwoWorlds] = useState<string[]>([]);
+  const [, setThreeWorlds] = useState<string[]>([]);
+  const [ownedWorlds, setOwnedWorlds] = useState<Set<string>>(new Set());
   const [purchases, setPurchases] = useState<
-    { themeIds: string[]; amount: number }[]
+    { worldIds: string[]; amount: number }[]
   >([]);
 
   // Restore a selection carried through the auth roundtrip. CheckoutButton
-  // sends signed-out buyers to /auth with redirectTo=/pricing?plan=...&themes=...;
+  // sends signed-out buyers to /auth with redirectTo=/pricing?plan=...&worlds=...;
   // nothing ever read those params back, so the buyer returned to an
   // unselected picker (audit run #7). Only canonical slugs are accepted.
   const searchParams = useSearchParams();
   useEffect(() => {
     const plan = searchParams.get("plan");
-    const restored = (searchParams.get("themes") ?? "")
+    const restored = (searchParams.get("worlds") ?? "")
       .split(",")
-      .filter((s) => isValidThemeSlug(s));
+      .filter((s) => isValidWorldSlug(s));
     if (!plan || restored.length === 0) return;
-    if (plan === "single") setSingleTheme(restored[0]);
-    else if (plan === "twoBundle") setTwoThemes(restored.slice(0, 2));
-    else if (plan === "threeBundle") setThreeThemes(restored.slice(0, 3));
+    if (plan === "single") setSingleWorld(restored[0]);
+    else if (plan === "twoBundle") setTwoWorlds(restored.slice(0, 2));
+    else if (plan === "threeBundle") setThreeWorlds(restored.slice(0, 3));
     // allFive needs no selection state.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -146,19 +146,19 @@ export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
       if (!session) return;
       supabase
         .from("purchases")
-        .select("theme_ids, amount")
+        .select("world_ids, amount")
         .eq("user_id", session.user.id)
         .in("status", ["completed", "partially_refunded"])
         .then(({ data }) => {
           if (!data || data.length === 0) return;
           const owned = new Set<string>();
           for (const p of data) {
-            for (const t of p.theme_ids) owned.add(t);
+            for (const t of p.world_ids) owned.add(t);
           }
-          setOwnedThemes(owned);
+          setOwnedWorlds(owned);
           setPurchases(
             data.map((p) => ({
-              themeIds: p.theme_ids as string[],
+              worldIds: p.world_ids as string[],
               amount: Number(p.amount),
             })),
           );
@@ -168,25 +168,25 @@ export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
 
   /**
    * Credit for a specific basket, computed with the SERVER's rule
-   * (payments.ts checkout): only purchases whose themes OVERLAP the basket
+   * (payments.ts checkout): only purchases whose worlds OVERLAP the basket
    * count. This used to sum every completed purchase regardless of overlap,
-   * so a customer buying a non-overlapping theme was shown "covered by
+   * so a customer buying a non-overlapping world was shown "covered by
    * credit" and then charged full price by Stripe (audit run #7; latent
-   * until a second theme launches). The number rendered here must be the
+   * until a second world launches). The number rendered here must be the
    * number the server will charge against.
    */
-  function creditFor(planThemeIds: string[]): number {
+  function creditFor(planWorldIds: string[]): number {
     let credit = 0;
     for (const p of purchases) {
-      if (p.themeIds.some((id) => planThemeIds.includes(id))) {
+      if (p.worldIds.some((id) => planWorldIds.includes(id))) {
         credit += p.amount;
       }
     }
     return credit;
   }
 
-  function creditLine(planPrice: number, planThemeIds: string[]) {
-    const credit = Math.min(creditFor(planThemeIds), planPrice);
+  function creditLine(planPrice: number, planWorldIds: string[]) {
+    const credit = Math.min(creditFor(planWorldIds), planPrice);
     if (credit <= 0) return null;
     const pay = Math.max(0, planPrice - credit);
     return (
@@ -196,9 +196,9 @@ export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
     );
   }
 
-  const lessonsPerModule = THEME_CONTENT.lessonsPerModule;
-  const totalLessons = THEME_CONTENT.totalLessonsPerTheme;
-  const modulesPerTheme = THEME_CONTENT.modulesPerTheme;
+  const lessonsPerModule = WORLD_CONTENT.lessonsPerModule;
+  const totalLessons = WORLD_CONTENT.totalLessonsPerWorld;
+  const modulesPerWorld = WORLD_CONTENT.modulesPerWorld;
 
   return (
     <section className="px-6 pb-16" data-testid="pricing-tiers">
@@ -267,24 +267,24 @@ export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
               </li>
             </ul>
             <Link
-              href="/themes/deep-orbit"
+              href="/worlds/deep-orbit"
               className="flex items-center justify-center w-full h-11 text-[13px] font-medium font-mono uppercase tracking-wider transition-all border border-primary rounded-none text-primary hover:bg-primary hover:text-on-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
             >
               Start Free &rarr;
             </Link>
           </article>
 
-          {/* ───── TIER 2 · Single Theme ─────
+          {/* ───── TIER 2 · Single World ─────
               The only paid tier on the page, and the whole product today.
               The `< 5` guard stays so the ribbon retires itself if the
               bundle cards ever come back to this grid. */}
           <article
             data-testid="tier-card-single"
             data-plan-id="single"
-            data-recommended={launchedThemeCount < 5 ? "true" : undefined}
-            className={`relative flex flex-col border-2 ${launchedThemeCount < 5 ? "border-primary" : "border-border"} bg-surface rounded-none p-6 transition-all hover:border-primary hover:brutalist-shadow`}
+            data-recommended={launchedWorldCount < 5 ? "true" : undefined}
+            className={`relative flex flex-col border-2 ${launchedWorldCount < 5 ? "border-primary" : "border-border"} bg-surface rounded-none p-6 transition-all hover:border-primary hover:brutalist-shadow`}
           >
-            {launchedThemeCount < 5 && (
+            {launchedWorldCount < 5 && (
               <span
                 aria-hidden="true"
                 className="absolute -top-3 left-5 inline-flex items-center px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] bg-primary text-on-primary rounded-none"
@@ -297,24 +297,24 @@ export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
                 ${PRICING.single.price}
               </span>
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
-                one theme · lifetime access
+                one world · lifetime access
               </p>
               {creditLine(
                 PRICING.single.price,
-                singleTheme ? [singleTheme] : [],
+                singleWorld ? [singleWorld] : [],
               )}
             </div>
             <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
-              Single Theme
+              Single World
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Complete one theme: {totalLessons} lessons, {modulesPerTheme}{" "}
+              Complete one world: {totalLessons} lessons, {modulesPerWorld}{" "}
               modules, capstone.
             </p>
             <ul className="flex-1 mb-4 space-y-2">
               {[
                 `${totalLessons} lessons`,
-                `${modulesPerTheme} modules`,
+                `${modulesPerWorld} modules`,
                 // Coverage, not a count. Every briefing carries a scene plate,
                 // so this stays true as lessons are added; "63 scenes" would
                 // go stale the way the "21 bonus lessons" literal did. Pinned
@@ -337,21 +337,21 @@ export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
               ))}
             </ul>
             <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
-              pick 1 theme
+              pick 1 world
             </p>
-            <ThemePicker
+            <WorldPicker
               max={1}
-              selected={singleTheme ? [singleTheme] : []}
+              selected={singleWorld ? [singleWorld] : []}
               onToggle={(slug) =>
-                setSingleTheme(singleTheme === slug ? null : slug)
+                setSingleWorld(singleWorld === slug ? null : slug)
               }
-              ownedThemes={ownedThemes}
+              ownedWorlds={ownedWorlds}
             />
             <CheckoutButton
               planId="single"
-              themeIds={singleTheme ? [singleTheme] : []}
-              disabled={!singleTheme}
-              disabledReason="Select a theme above"
+              worldIds={singleWorld ? [singleWorld] : []}
+              disabled={!singleWorld}
+              disabledReason="Select a world above"
             >
               Get Single &rarr;
             </CheckoutButton>

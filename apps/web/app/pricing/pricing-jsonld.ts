@@ -1,6 +1,6 @@
-import { LAUNCHED_THEMES, PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import { LAUNCHED_WORLDS, PRICING, WORLD_CONTENT } from "@tensorcraft/shared";
 
-// A bundle Offer is only InStock once enough themes have launched to fill it
+// A bundle Offer is only InStock once enough worlds have launched to fill it
 // (mirrors the cart gating in pricing-tiers.tsx). Until then it is
 // OutOfStock, NOT PreOrder: schema.org PreOrder asserts an order can be
 // placed now for later delivery, and no pre-order mechanism exists — the
@@ -9,13 +9,13 @@ import { LAUNCHED_THEMES, PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 // PreOrder).
 const IN_STOCK = "https://schema.org/InStock";
 const OUT_OF_STOCK = "https://schema.org/OutOfStock";
-export const availabilityFor = (themes: number) =>
-  LAUNCHED_THEMES.length >= themes ? IN_STOCK : OUT_OF_STOCK;
+export const availabilityFor = (worlds: number) =>
+  LAUNCHED_WORLDS.length >= worlds ? IN_STOCK : OUT_OF_STOCK;
 
 interface PricingOfferDef {
   name: string;
   price: number;
-  themes: number;
+  worlds: number;
   description: string;
 }
 
@@ -30,34 +30,34 @@ const OFFER_DEFS: PricingOfferDef[] = [
   {
     name: "Free preview",
     price: PRICING.free.price,
-    themes: PRICING.free.themes,
+    worlds: PRICING.free.worlds,
     description:
-      "Module 1 of Deep Orbit free: lessons and exercises, no account required. The other four themes ship in waves with per-theme waitlists.",
+      "Module 1 of Deep Orbit free: lessons and exercises, no account required. The other four worlds ship in waves with per-world waitlists.",
   },
   {
-    name: "Single theme",
+    name: "Single world",
     price: PRICING.single.price,
-    themes: PRICING.single.themes,
-    description: `One full theme: ${THEME_CONTENT.totalLessonsPerTheme} lessons across ${THEME_CONTENT.modulesPerTheme} modules, capstone, lifetime access.`,
+    worlds: PRICING.single.worlds,
+    description: `One full world: ${WORLD_CONTENT.totalLessonsPerWorld} lessons across ${WORLD_CONTENT.modulesPerWorld} modules, capstone, lifetime access.`,
   },
   {
-    name: "Two-theme bundle",
+    name: "Two-world bundle",
     price: PRICING.twoBundle.price,
-    themes: PRICING.twoBundle.themes,
-    description: "Any two themes bundled, lifetime access.",
+    worlds: PRICING.twoBundle.worlds,
+    description: "Any two worlds bundled, lifetime access.",
   },
   {
-    name: "Three-theme bundle",
+    name: "Three-world bundle",
     price: PRICING.threeBundle.price,
-    themes: PRICING.threeBundle.themes,
-    description: "Any three themes bundled, lifetime access.",
+    worlds: PRICING.threeBundle.worlds,
+    description: "Any three worlds bundled, lifetime access.",
   },
   {
-    name: "All five themes",
+    name: "All five worlds",
     price: PRICING.allFive.price,
-    themes: PRICING.allFive.themes,
+    worlds: PRICING.allFive.worlds,
     description:
-      "All five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid). Lifetime access.",
+      "All five worlds (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid). Lifetime access.",
   },
 ];
 
@@ -69,7 +69,7 @@ const OFFER_DEFS: PricingOfferDef[] = [
  * several audits before R3-7 caught it by eye.
  *
  * Every tier is emitted. Availability, not membership, carries the "can you
- * buy this today" signal, and it flips on its own as themes launch.
+ * buy this today" signal, and it flips on its own as worlds launch.
  */
 export function buildPricingOffers() {
   return OFFER_DEFS.map((offer) => ({
@@ -77,7 +77,7 @@ export function buildPricingOffers() {
     name: offer.name,
     price: String(offer.price),
     priceCurrency: "USD",
-    availability: availabilityFor(offer.themes),
+    availability: availabilityFor(offer.worlds),
     description: offer.description,
   }));
 }

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 // ---------------------------------------------------------------------------
 // Shared, refcounted `MutationObserver` for `document.documentElement`
-// attribute changes (`data-theme`, `data-scheme`, ...). Mirrors the pattern
+// attribute changes (`data-world`, `data-scheme`, ...). Mirrors the pattern
 // in packages/ui/src/use-scheme.ts, generalized: instead of one hook hard-
 // wired to a single attribute, any number of consumers can each watch their
 // own subset of attributes, but they all share ONE observer instance.
@@ -63,7 +63,7 @@ function syncObserver() {
   }
 
   // The filter is DERIVED from the live consumers, never hardcoded: the old
-  // version pinned ["data-theme", "data-scheme"] while the hook accepted
+  // version pinned ["data-world", "data-scheme"] while the hook accepted
   // arbitrary attribute names, so a consumer watching anything else silently
   // never fired (R3-7). When the union widens, re-observe IN PLACE —
   // calling observe() again on the same node replaces the options per spec,
@@ -86,7 +86,7 @@ function syncObserver() {
 /**
  * Calls `onChange` whenever any of the given `attributes` change on
  * `document.documentElement` (e.g. `["data-scheme"]` or
- * `["data-theme", "data-scheme"]`). Backed by a single shared MutationObserver
+ * `["data-world", "data-scheme"]`). Backed by a single shared MutationObserver
  * module-wide, refcounted across every consumer — N components watching
  * attributes cost one observer, not N.
  *

@@ -43,20 +43,20 @@ export type { EventName, EventProperties } from "./analytics-events";
 /* ── Domain-specific helpers (back-compat) ── */
 
 export function trackLessonStarted(
-  themeId: string,
+  worldId: string,
   moduleId: string,
   lessonId: string,
 ) {
-  track(EVENTS.LESSON_STARTED, { themeId, moduleId, lessonId });
+  track(EVENTS.LESSON_STARTED, { worldId, moduleId, lessonId });
 }
 
 export function trackLessonCompleted(
-  themeId: string,
+  worldId: string,
   moduleId: string,
   lessonId: string,
   durationMs?: number,
 ) {
-  track(EVENTS.LESSON_COMPLETED, { themeId, moduleId, lessonId, durationMs });
+  track(EVENTS.LESSON_COMPLETED, { worldId, moduleId, lessonId, durationMs });
 }
 
 /**
@@ -65,7 +65,7 @@ export function trackLessonCompleted(
  * emits {@link EVENTS.EXERCISE_COMPLETED}.
  */
 export function trackExerciseSubmitted(
-  themeId: string,
+  worldId: string,
   lessonId: string,
   passed: boolean,
   score: number,
@@ -73,7 +73,7 @@ export function trackExerciseSubmitted(
   hintsUsed?: number,
 ) {
   track(EVENTS.EXERCISE_ATTEMPTED, {
-    themeId,
+    worldId,
     lessonId,
     exerciseSlug,
     passed,
@@ -82,7 +82,7 @@ export function trackExerciseSubmitted(
   });
   if (passed) {
     track(EVENTS.EXERCISE_COMPLETED, {
-      themeId,
+      worldId,
       lessonId,
       exerciseSlug,
       score,
@@ -112,19 +112,19 @@ export function trackCheckoutCompleted(planId: string, amount: number) {
   track(EVENTS.PAYMENT_COMPLETED, {
     planId,
     amount,
-    themeIds: [],
+    worldIds: [],
   });
 }
 
-export function trackThemeSelected(
-  themeId: string,
+export function trackWorldSelected(
+  worldId: string,
   source:
     | "onboarding"
-    | "themes_grid"
+    | "worlds_grid"
     | "dashboard"
     | "settings" = "onboarding",
 ) {
-  track(EVENTS.THEME_SELECTED, { themeId, source });
+  track(EVENTS.WORLD_SELECTED, { worldId, source });
 }
 
 export function trackStreakAchieved(streakDays: number) {
@@ -133,11 +133,11 @@ export function trackStreakAchieved(streakDays: number) {
 
 export function trackHintRequested(
   hintLevel: 1 | 2 | 3,
-  context?: { themeId?: string; lessonId?: string; exerciseSlug?: string },
+  context?: { worldId?: string; lessonId?: string; exerciseSlug?: string },
 ) {
   track(EVENTS.HINT_REQUESTED, {
     hintLevel,
-    themeId: context?.themeId,
+    worldId: context?.worldId,
     lessonId: context?.lessonId,
     exerciseSlug: context?.exerciseSlug,
   });
@@ -147,7 +147,7 @@ export function trackCheckpointSubmitted(
   passed: boolean,
   attempts: number,
   context?: {
-    themeId?: string;
+    worldId?: string;
     lessonId?: string;
     checkpointId?: string;
   },
@@ -155,7 +155,7 @@ export function trackCheckpointSubmitted(
   track(EVENTS.CHECKPOINT_SUBMITTED, {
     passed,
     attempts,
-    themeId: context?.themeId,
+    worldId: context?.worldId,
     lessonId: context?.lessonId,
     checkpointId: context?.checkpointId,
   });
@@ -163,26 +163,26 @@ export function trackCheckpointSubmitted(
 
 export function trackRecallAnswered(
   action: "revealed" | "hidden" | "got-it" | "review",
-  context?: { themeId?: string; lessonId?: string },
+  context?: { worldId?: string; lessonId?: string },
 ) {
   track(EVENTS.RECALL_ANSWERED, {
     action,
-    themeId: context?.themeId,
+    worldId: context?.worldId,
     lessonId: context?.lessonId,
   });
 }
 
 export function trackPricingPageViewed(
   source?: "direct" | "paywall" | "dashboard" | "landing" | "upgrade_cta",
-  lockedThemeId?: string,
+  lockedWorldId?: string,
 ) {
-  track(EVENTS.PRICING_PAGE_VIEWED, { source, lockedThemeId });
+  track(EVENTS.PRICING_PAGE_VIEWED, { source, lockedWorldId });
 }
 
 export function trackModuleCompleted(
-  themeId: string,
+  worldId: string,
   moduleId: string,
   lessonsCount: number,
 ) {
-  track(EVENTS.MODULE_COMPLETED, { themeId, moduleId, lessonsCount });
+  track(EVENTS.MODULE_COMPLETED, { worldId, moduleId, lessonsCount });
 }

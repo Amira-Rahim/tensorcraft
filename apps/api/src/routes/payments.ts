@@ -4,7 +4,7 @@ import {
   getSupabaseAdminClient,
   getSupabaseServerClient,
 } from "@tensorcraft/supabase";
-import { PRICING, isValidThemeSlug, isLaunched } from "@tensorcraft/shared";
+import { PRICING, isValidWorldSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { createRateLimiter } from "../middleware/rate-limit";
 import {
@@ -55,14 +55,14 @@ function taxSessionParams(): Partial<Stripe.Checkout.SessionCreateParams> {
 }
 
 /**
- * Validate that every theme ID is launched (purchasable). Coming-soon themes
- * still pass `isValidThemeSlug` (registry knows them) but must NOT be
- * checkout-able. See packages/shared/src/constants.ts → LAUNCHED_THEMES.
- * Rejects empty arrays, paid plans must carry at least one theme.
+ * Validate that every world ID is launched (purchasable). Coming-soon worlds
+ * still pass `isValidWorldSlug` (registry knows them) but must NOT be
+ * checkout-able. See packages/shared/src/constants.ts → LAUNCHED_WORLDS.
+ * Rejects empty arrays, paid plans must carry at least one world.
  */
-function validateThemeIds(ids: string[]): boolean {
+function validateWorldIds(ids: string[]): boolean {
   if (!Array.isArray(ids) || ids.length === 0) return false;
-  return ids.every((id) => isValidThemeSlug(id) && isLaunched(id));
+  return ids.every((id) => isValidWorldSlug(id) && isLaunched(id));
 }
 
 /**
@@ -142,15 +142,15 @@ payments.use("/checkout", authMiddleware);
 payments.post("/checkout", async (c) => {
   const userId = c.get("userId");
 
-  let body: { planId: string; themeIds: string[] };
+  let body: { planId: string; worldIds: string[] };
   try {
     body = await c.req.json();
   } catch {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.planId || !body.themeIds || !Array.isArray(body.themeIds)) {
-    return c.json({ error: "planId and themeIds[] are required" }, 400);
+  if (!body.planId || !body.worldIds || !Array.isArray(body.worldIds)) {
+    return c.json({ error: "planId and worldIds[] are required" }, 400);
   }
 
   // Validate plan
@@ -159,19 +159,19 @@ payments.post("/checkout", async (c) => {
     return c.json({ error: "Invalid planId" }, 400);
   }
 
-  // Validate theme count matches plan
-  if (body.themeIds.length !== plan.themes) {
+  // Validate world count matches plan
+  if (body.worldIds.length !== plan.worlds) {
     return c.json(
       {
-        error: `Plan "${body.planId}" requires exactly ${plan.themes} theme(s)`,
+        error: `Plan "${body.planId}" requires exactly ${plan.worlds} world(s)`,
       },
       400,
     );
   }
 
-  // Validate theme slugs
-  if (!validateThemeIds(body.themeIds)) {
-    return c.json({ error: "Invalid theme ID(s)" }, 400);
+  // Validate world slugs
+  if (!validateWorldIds(body.worldIds)) {
+    return c.json({ error: "Invalid world ID(s)" }, 400);
   }
 
   // Calculate upgrade credit from prior purchases, and read the buyer's email
@@ -182,7 +182,7 @@ payments.post("/checkout", async (c) => {
     await Promise.all([
       supabase
         .from("purchases")
-        .select("theme_ids, amount")
+        .select("world_ids, amount")
         .eq("user_id", userId)
         .in("status", ["completed", "partially_refunded"]),
       supabase
@@ -200,26 +200,26 @@ payments.post("/checkout", async (c) => {
     (buyerProfile as { stripe_customer_id?: string | null } | null)
       ?.stripe_customer_id ?? null;
 
-  const ownedThemes = new Set<string>();
+  const ownedWorlds = new Set<string>();
   let credit = 0;
 
   if (existingPurchases && existingPurchases.length > 0) {
     for (const p of existingPurchases as {
-      theme_ids: string[];
+      world_ids: string[];
       amount: number;
     }[]) {
-      const hasOverlap = p.theme_ids.some((id) => body.themeIds.includes(id));
-      for (const id of p.theme_ids) {
-        ownedThemes.add(id);
+      const hasOverlap = p.world_ids.some((id) => body.worldIds.includes(id));
+      for (const id of p.world_ids) {
+        ownedWorlds.add(id);
       }
       if (hasOverlap) {
         credit += p.amount;
       }
     }
 
-    const allOwned = body.themeIds.every((id) => ownedThemes.has(id));
+    const allOwned = body.worldIds.every((id) => ownedWorlds.has(id));
     if (allOwned) {
-      return c.json({ error: "You already own all these themes" }, 400);
+      return c.json({ error: "You already own all these worlds" }, 400);
     }
   }
 
@@ -234,14 +234,14 @@ payments.post("/checkout", async (c) => {
   // is rejected by RLS — and `amount: 0` additionally violated the original
   // `chk_amount_positive CHECK (amount > 0)` until migration 037 relaxed it
   // to `>= 0`. Both failures were silent 500s that made a fully-credited
-  // upgrade impossible to redeem (audit run #7; latent until theme 2).
+  // upgrade impossible to redeem (audit run #7; latent until world 2).
   if (adjustedPrice === 0) {
     const admin = getSupabaseAdminClient();
     const grantSessionId = `auto_grant_${crypto.randomUUID()}`;
     const { error: grantError } = await admin.from("purchases").insert({
       user_id: userId,
       plan_id: body.planId,
-      theme_ids: body.themeIds,
+      world_ids: body.worldIds,
       amount: 0,
       status: "completed",
       stripe_session_id: grantSessionId,
@@ -251,20 +251,20 @@ payments.post("/checkout", async (c) => {
         { err: grantError, route: "payments.checkout", userId },
         "Auto-grant insert failed",
       );
-      return c.json({ error: "Failed to grant themes" }, 500);
+      return c.json({ error: "Failed to grant worlds" }, 500);
     }
     captureServer(
       SERVER_EVENTS.PAYMENT_COMPLETED,
       {
         planId: body.planId,
-        themeIds: body.themeIds,
+        worldIds: body.worldIds,
         amount: 0,
         sessionId: grantSessionId,
         isUpgrade: true,
       },
       userId,
     );
-    return c.json({ granted: true, themes: body.themeIds });
+    return c.json({ granted: true, worlds: body.worldIds });
   }
 
   const stripe = getStripe();
@@ -306,7 +306,7 @@ payments.post("/checkout", async (c) => {
             name: isUpgrade
               ? `Tensorcraft: Upgrade to ${plan.label}`
               : `Tensorcraft: ${plan.label}`,
-            description: `Access to ${body.themeIds.join(", ")}`,
+            description: `Access to ${body.worldIds.join(", ")}`,
           },
           unit_amount: adjustedPrice * 100, // cents
         },
@@ -315,7 +315,7 @@ payments.post("/checkout", async (c) => {
     ],
     metadata: {
       planId: body.planId,
-      themeIds: body.themeIds.join(","),
+      worldIds: body.worldIds.join(","),
       creditApplied: String(credit),
       originalPrice: String(plan.price),
     },
@@ -383,15 +383,15 @@ payments.use(
 );
 
 payments.post("/guest-checkout", async (c) => {
-  let body: { planId: string; themeIds: string[] };
+  let body: { planId: string; worldIds: string[] };
   try {
     body = await c.req.json();
   } catch {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.planId || !body.themeIds || !Array.isArray(body.themeIds)) {
-    return c.json({ error: "planId and themeIds[] are required" }, 400);
+  if (!body.planId || !body.worldIds || !Array.isArray(body.worldIds)) {
+    return c.json({ error: "planId and worldIds[] are required" }, 400);
   }
 
   const plan = PRICING[body.planId as keyof typeof PRICING];
@@ -399,17 +399,17 @@ payments.post("/guest-checkout", async (c) => {
     return c.json({ error: "Invalid planId" }, 400);
   }
 
-  if (body.themeIds.length !== plan.themes) {
+  if (body.worldIds.length !== plan.worlds) {
     return c.json(
       {
-        error: `Plan "${body.planId}" requires exactly ${plan.themes} theme(s)`,
+        error: `Plan "${body.planId}" requires exactly ${plan.worlds} world(s)`,
       },
       400,
     );
   }
 
-  if (!validateThemeIds(body.themeIds)) {
-    return c.json({ error: "Invalid theme ID(s)" }, 400);
+  if (!validateWorldIds(body.worldIds)) {
+    return c.json({ error: "Invalid world ID(s)" }, 400);
   }
 
   const stripe = getStripe();
@@ -433,7 +433,7 @@ payments.post("/guest-checkout", async (c) => {
           currency: "usd",
           product_data: {
             name: `Tensorcraft: ${plan.label}`,
-            description: `Access to ${body.themeIds.join(", ")}`,
+            description: `Access to ${body.worldIds.join(", ")}`,
           },
           unit_amount: plan.price * 100, // cents
         },
@@ -442,7 +442,7 @@ payments.post("/guest-checkout", async (c) => {
     ],
     metadata: {
       planId: body.planId,
-      themeIds: body.themeIds.join(","),
+      worldIds: body.worldIds.join(","),
       guest: "true",
     },
     after_expiration: {
@@ -459,7 +459,7 @@ payments.post("/guest-checkout", async (c) => {
 // GET /api/payments/purchases, Check user's purchases
 //
 // NOTE: As of V0.5, the Next.js frontend checks purchases directly via
-// Supabase client in lib/progress.ts (hasThemePurchase). This endpoint
+// Supabase client in lib/progress.ts (hasWorldPurchase). This endpoint
 // is retained for future admin dashboards, mobile clients, or external
 // API consumers that can't use the Supabase client directly.
 // ──────────────────────────────────────────────
@@ -469,21 +469,21 @@ payments.use("/purchases", authMiddleware);
 payments.get("/purchases", async (c) => {
   const userId = c.get("userId");
   const token = c.get("accessToken");
-  const themeId = c.req.query("themeId");
+  const worldId = c.req.query("worldId");
 
   const supabase = getSupabaseServerClient(token);
 
   let query = supabase
     .from("purchases")
-    .select("id, plan_id, theme_ids, amount, status, created_at")
+    .select("id, plan_id, world_ids, amount, status, created_at")
     .eq("user_id", userId)
     .in("status", ["completed", "partially_refunded"]);
 
-  if (themeId) {
-    if (!isValidThemeSlug(themeId)) {
-      return c.json({ error: "Invalid themeId" }, 400);
+  if (worldId) {
+    if (!isValidWorldSlug(worldId)) {
+      return c.json({ error: "Invalid worldId" }, 400);
     }
-    query = query.contains("theme_ids", [themeId]);
+    query = query.contains("world_ids", [worldId]);
   }
 
   const { data, error } = await query;
@@ -500,7 +500,7 @@ payments.get("/purchases", async (c) => {
 
   return c.json({
     purchases: data,
-    hasAccess: themeId ? data.length > 0 : undefined,
+    hasAccess: worldId ? data.length > 0 : undefined,
   });
 });
 
@@ -620,24 +620,24 @@ payments.post("/webhook", async (c) => {
         return c.json({ error: "Missing planId in metadata" }, 500);
       }
 
-      const themeIds = metadata.themeIds
-        ? metadata.themeIds.split(",").filter(Boolean)
+      const worldIds = metadata.worldIds
+        ? metadata.worldIds.split(",").filter(Boolean)
         : [];
 
-      // Validate theme IDs from metadata against canonical slug list.
+      // Validate world IDs from metadata against canonical slug list.
       // Empty array is rejected, every paid purchase must grant at
-      // least one theme (§6h referential integrity).
-      if (!validateThemeIds(themeIds)) {
+      // least one world (§6h referential integrity).
+      if (!validateWorldIds(worldIds)) {
         logger.error(
           {
             route: "payments.webhook",
             userId,
             stripeSessionId: sessionId,
-            themeIds,
+            worldIds,
           },
-          "Webhook: Invalid theme IDs in metadata",
+          "Webhook: Invalid world IDs in metadata",
         );
-        return c.json({ error: "Webhook: Invalid theme IDs in metadata" }, 400);
+        return c.json({ error: "Webhook: Invalid world IDs in metadata" }, 400);
       }
 
       // Validate amount matches known price points
@@ -762,7 +762,7 @@ payments.post("/webhook", async (c) => {
         {
           user_id: userId,
           plan_id: metadata.planId,
-          theme_ids: themeIds,
+          world_ids: worldIds,
           amount: amount ? amount / 100 : expectedAmount,
           tax_amount: typeof taxAmount === "number" ? taxAmount / 100 : null,
           tax_country: taxCountry,
@@ -852,7 +852,7 @@ payments.post("/webhook", async (c) => {
           SERVER_EVENTS.PAYMENT_COMPLETED,
           {
             planId: metadata.planId,
-            themeIds,
+            worldIds,
             amount: amount ? amount / 100 : expectedAmount,
             sessionId,
             isUpgrade: creditApplied > 0,
@@ -1091,12 +1091,12 @@ payments.post("/webhook", async (c) => {
       const asyncMetadata = asyncSession.metadata;
 
       if (asyncUserId && asyncMetadata?.planId) {
-        const asyncThemeIds = asyncMetadata.themeIds
-          ? asyncMetadata.themeIds.split(",")
+        const asyncWorldIds = asyncMetadata.worldIds
+          ? asyncMetadata.worldIds.split(",")
           : [];
         const asyncPlan = PRICING[asyncMetadata.planId as keyof typeof PRICING];
 
-        if (asyncPlan && validateThemeIds(asyncThemeIds)) {
+        if (asyncPlan && validateWorldIds(asyncWorldIds)) {
           const asyncPaymentIntent =
             typeof asyncSession.payment_intent === "string"
               ? asyncSession.payment_intent
@@ -1123,7 +1123,7 @@ payments.post("/webhook", async (c) => {
                 {
                   user_id: asyncUserId,
                   plan_id: asyncMetadata.planId,
-                  theme_ids: asyncThemeIds,
+                  world_ids: asyncWorldIds,
                   amount: asyncSession.amount_total
                     ? asyncSession.amount_total / 100
                     : asyncPlan.price,
@@ -1174,7 +1174,7 @@ payments.post("/webhook", async (c) => {
                 SERVER_EVENTS.PAYMENT_COMPLETED,
                 {
                   planId: asyncMetadata.planId,
-                  themeIds: asyncThemeIds,
+                  worldIds: asyncWorldIds,
                   amount: asyncSession.amount_total
                     ? asyncSession.amount_total / 100
                     : asyncPlan.price,
@@ -1218,9 +1218,9 @@ payments.post("/webhook", async (c) => {
               eventType: event.type,
               userId: asyncUserId,
               stripeSessionId: asyncSession.id,
-              themeIds: asyncThemeIds,
+              worldIds: asyncWorldIds,
             },
-            "Webhook async: invalid theme IDs in metadata",
+            "Webhook async: invalid world IDs in metadata",
           );
         }
       }

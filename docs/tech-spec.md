@@ -29,11 +29,11 @@
 | Framework | Next.js 15 (App Router) | SSR/SSG hybrid rendering, file-based routing, React Server Components |
 | Backend API | Hono (standalone service) | Lightweight, high-performance HTTP server for API endpoints (auth callbacks, progress CRUD, payment webhooks) |
 | Language | TypeScript 5.4 | End-to-end type safety across monorepo packages |
-| Styling | Tailwind CSS 4 | Utility-first CSS with `@theme` directive for CSS-native theming; no CSS Modules needed |
+| Styling | Tailwind CSS 4 | Utility-first CSS with `@world` directive for CSS-native theming; no CSS Modules needed |
 | Content | MDX 3 + Velite (Zod schemas) | Type-safe lesson content with build-time frontmatter validation. Missing fields cause build errors, not runtime errors. |
 | Code Highlighting | Code Hike (Shiki-based) | Scrollytelling code walkthroughs, annotations, step-based tutorials, FE Bridge side-by-side code comparisons |
 | Code Exercises | Sandpack (CodeSandbox) | In-browser code editor and runtime for hands-on ML exercises |
-| Email | Kit (ConvertKit) | Waitlist capture, per-theme segmented lists, 11-email nurture sequence, launch emails |
+| Email | Kit (ConvertKit) | Waitlist capture, per-world segmented lists, 11-email nurture sequence, launch emails |
 | Database | Supabase (PostgreSQL) | User data, progress tracking, authentication, row-level security |
 | Auth | Supabase Auth + GitHub OAuth | Passwordless and social login; GitHub token acquisition for repo integration |
 | Payments | Stripe Checkout + Webhooks | Subscription billing, one-time purchases, webhook-driven fulfillment |
@@ -50,12 +50,12 @@
 >
 > **Product API Endpoints (landed Phase 11):**
 >
-> - `POST /api/certificates` --- Generate a completion certificate for a user + theme (called automatically from the capstone page on completion). Returns the certificate id + verification URL.
+> - `POST /api/certificates` --- Generate a completion certificate for a user + world (called automatically from the capstone page on completion). Returns the certificate id + verification URL.
 > - `GET /api/certificates/:id` --- Public, unauthenticated fetch of a certificate payload for verification rendering.
 > - `GET /api/progress/activity/daily` --- Daily lesson/exercise activity buckets for dashboard and streak display.
-> - `PATCH /api/onboarding` --- Persists the 5-step onboarding state. Accepts `experience_level` (enum: `beginner` | `intermediate` | `advanced` | `expert`) and `learning_goal` (enum: `hobby` | `career` | `research` | `team` | `curiosity`) per migration 018, in addition to the existing `display_name`, `github_username`, and `preferred_theme_id` fields.
+> - `PATCH /api/onboarding` --- Persists the 5-step onboarding state. Accepts `experience_level` (enum: `beginner` | `intermediate` | `advanced` | `expert`) and `learning_goal` (enum: `hobby` | `career` | `research` | `team` | `curiosity`) per migration 018, in addition to the existing `display_name`, `github_username`, and `preferred_world_id` fields.
 >
-> **Note:** Tailwind CSS 4 (not Tailwind + CSS Modules) is used with the `@theme` directive for CSS-native theming. Theme tokens are defined in CSS custom properties and consumed via `@theme` blocks, eliminating the need for JavaScript-based theme switching or CSS Modules. Each theme package exports a CSS file with its `@theme` overrides.
+> **Note:** Tailwind CSS 4 (not Tailwind + CSS Modules) is used with the `@world` directive for CSS-native theming. World tokens are defined in CSS custom properties and consumed via `@world` blocks, eliminating the need for JavaScript-based world switching or CSS Modules. Each world package exports a CSS file with its `@world` overrides.
 
 ### 1.2 Monorepo Structure
 
@@ -64,9 +64,9 @@
 | `apps/web` | Next.js 15 frontend application | Pages, layouts, route groups, client components, MDX rendering |
 | `apps/api` | Hono backend service | REST endpoints, middleware, auth callbacks, Stripe webhooks, Supabase client |
 | `packages/ui` | Shared UI component library (`@tensorcraft/ui`) | Design system primitives (Button, Card, Modal, CodeBlock, ProgressBar) plus subpath exports: `./visualizations` (SkillRadar, LossCurve), `./effects` (ParticleField, BridgeTicker), `./a11y` (FocusTrap). See §7 for component inventory. |
-| `packages/config` | Shared configuration | TypeScript configs, ESLint presets, Tailwind theme tokens, shared constants |
+| `packages/config` | Shared configuration | TypeScript configs, ESLint presets, Tailwind world tokens, shared constants |
 | `packages/supabase` | Database layer | Schema migrations, seed data, typed client, RLS policies, Edge Functions |
-| `packages/themes` | Theme asset packages | Per-theme CSS (`@theme` overrides), illustrations, mascot SVGs, copy variants |
+| `packages/worlds` | World asset packages | Per-world CSS (`@world` overrides), illustrations, mascot SVGs, copy variants |
 | `packages/content` | Content source files | MDX lessons, exercise definitions, frontmatter schemas, validation scripts |
 | `packages/analytics` | Analytics abstraction | Event definitions, PostHog client wrapper, type-safe tracking functions |
 
@@ -93,29 +93,29 @@ Required env vars for the API service (`apps/api`):
 
 ### 2.1 Content Architecture
 
-Tensorcraft uses a **Core + Theme Layer** architecture. All pedagogical content is authored once in a core layer, and theme-specific wrappers provide narrative context, visual styling, and flavor text.
+Tensorcraft uses a **Core + World Layer** architecture. All pedagogical content is authored once in a core layer, and world-specific wrappers provide narrative context, visual styling, and flavor text.
 
 #### Core Layer
 
-The core layer contains the canonical lesson content: explanations, code exercises, recall prompts, and learning objectives. It is theme-agnostic and uses neutral language.
+The core layer contains the canonical lesson content: explanations, code exercises, recall prompts, and learning objectives. It is world-agnostic and uses neutral language.
 
-#### Theme Layer
+#### World Layer
 
-Each theme provides overrides and extensions:
+Each world provides overrides and extensions:
 
 - **Narrative wrappers:** Story context that introduces and frames each lesson.
 - **Visual assets:** Illustrations, mascots, background patterns, color palettes.
-- **Flavor copy:** Theme-specific tooltips, encouragement messages, error messages.
-- **CSS overrides:** `@theme` directive blocks that re-skin the UI.
+- **Flavor copy:** World-specific tooltips, encouragement messages, error messages.
+- **CSS overrides:** `@world` directive blocks that re-skin the UI.
 
 #### Directory Structure
 
 | Directory | Purpose | Example Path |
 |-----------|---------|-------------|
-| `packages/content/core/` | Core curriculum (theme-agnostic MDX) | `core/module-01/lesson-01.mdx` |
-| `packages/content/themes/` | Theme narrative wrappers and flavor text | `themes/cyberpunk/module-01/lesson-01-wrapper.mdx` |
-| `packages/themes/{name}/assets/` | Theme illustrations, SVGs, images | `themes/cyberpunk/assets/mascot.svg` |
-| `packages/themes/{name}/css/` | Theme CSS with `@theme` directive | `themes/cyberpunk/css/theme.css` |
+| `packages/content/core/` | Core curriculum (world-agnostic MDX) | `core/module-01/lesson-01.mdx` |
+| `packages/content/worlds/` | World narrative wrappers and flavor text | `worlds/cyberpunk/module-01/lesson-01-wrapper.mdx` |
+| `packages/worlds/{name}/assets/` | World illustrations, SVGs, images | `worlds/cyberpunk/assets/mascot.svg` |
+| `packages/worlds/{name}/css/` | World CSS with `@world` directive | `worlds/cyberpunk/css/world.css` |
 | `packages/content/exercises/` | Sandpack exercise definitions (shared) | `exercises/module-01/exercise-01.json` |
 
 ### 2.2 MDX Lesson Schema
@@ -159,34 +159,34 @@ Lessons are authored in MDX and use a library of custom React components. These 
 | `<KeyTakeaways>` | End-of-lesson summary box listing 3--5 key points | `<KeyTakeaways points={["Tensors are...", "Gradients..."]} />` |
 | `<NextLesson>` | Navigation CTA linking to the next lesson in the module | `<NextLesson slug="backpropagation-basics" />` |
 
-### 2.4 Theme Manifest Specification
+### 2.4 World Manifest Specification
 
-Each theme is defined as a TypeScript `ThemeManifest` object in `packages/themes/src/<theme>.ts`. The manifest drives the theme selection UI, asset loading, and content resolution.
+Each world is defined as a TypeScript `WorldManifest` object in `packages/worlds/src/<world>.ts`. The manifest drives the world selection UI, asset loading, and content resolution.
 
-All themes are available. No status field — theme manifests contain only content and visual identity.
+All worlds are available. No status field — world manifests contain only content and visual identity.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `id` | `string` | Yes | Unique theme identifier (e.g., `space`, `cyberpunk`) |
+| `id` | `string` | Yes | Unique world identifier (e.g., `space`, `cyberpunk`) |
 | `slug` | `string` | Yes | URL-friendly slug (e.g., `deep-orbit`) |
-| `displayName` | `string` | Yes | Display name shown in the theme picker |
-| `tagline` | `string` | Yes | One-line description for the theme selection card |
+| `displayName` | `string` | Yes | Display name shown in the world picker |
+| `tagline` | `string` | Yes | One-line description for the world selection card |
 | `description` | `string` | Yes | Full description (narrative hook) |
-| `palette` | `ThemePalette` | Yes | 9-key color palette: `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`. Nova Canvas `primary` is `#D07070` (bumped from `#C06060` on 2026-04-20 to satisfy WCAG AA against `#232323` surface). Neon tokens (`--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) were removed from `themes.css` during the brutalist redesign; theme styling is driven entirely by the 9 palette keys plus shared brutalist utilities. |
-| `terminology` | `ThemeTerminology` | Yes | UI label overrides (`lesson`, `module`, `exercise`) |
+| `palette` | `WorldPalette` | Yes | 9-key color palette: `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`. Nova Canvas `primary` is `#D07070` (bumped from `#C06060` on 2026-04-20 to satisfy WCAG AA against `#232323` surface). Neon tokens (`--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) were removed from `worlds.css` during the brutalist redesign; world styling is driven entirely by the 9 palette keys plus shared brutalist utilities. |
+| `terminology` | `WorldTerminology` | Yes | UI label overrides (`lesson`, `module`, `exercise`) |
 | `protagonist` | `string` | Yes | Learner's role in the narrative |
-| `characters` | `ThemeCharacter[]` | Yes | Characters in the story (5 per theme) |
+| `characters` | `WorldCharacter[]` | Yes | Characters in the story (5 per world) |
 | `specialization` | `string` | Yes | ML specialization area |
 | `modelBuilt` | `string` | Yes | Model the learner builds |
 | `careerPaths` | `string[]` | Yes | Relevant career paths with salary ranges |
 
-#### Theme Selection UI Behavior
+#### World Selection UI Behavior
 
-1. **First Visit:** Users are presented with the theme picker as a full-screen modal during onboarding. All available themes are shown as cards with preview image, name, tagline, and primary color accent.
-2. **Selection:** Navigating to a theme route (`/themes/[slug]`) applies it immediately via CSS custom property injection on `<html data-theme>` and stores the preference in `localStorage` (`tc-active-theme`).
-3. **Switching:** Users can switch themes at any time from Settings. The switch is instant (CSS-only, no page reload) and persists across sessions.
-4. **Fallback:** If a theme does not yet have content for a specific lesson, the core (unthemed) version is rendered with a subtle banner: "This lesson is not yet available in your selected theme. Showing the standard version."
-5. **All Users:** Theme preference is stored in `localStorage` and applied via a FOUC-prevention script in `<head>`. The theme persists across navigation until the user views a different theme.
+1. **First Visit:** Users are presented with the world picker as a full-screen modal during onboarding. All available worlds are shown as cards with preview image, name, tagline, and primary color accent.
+2. **Selection:** Navigating to a world route (`/worlds/[slug]`) applies it immediately via CSS custom property injection on `<html data-world>` and stores the preference in `localStorage` (`tc-active-world`).
+3. **Switching:** Users can switch worlds at any time from Settings. The switch is instant (CSS-only, no page reload) and persists across sessions.
+4. **Fallback:** If a world does not yet have content for a specific lesson, the core (world-agnostic) version is rendered with a subtle banner: "This lesson is not yet available in your selected world. Showing the standard version."
+5. **All Users:** World preference is stored in `localStorage` and applied via a FOUC-prevention script in `<head>`. The world persists across navigation until the user views a different world.
 
 ### Database Schema (Supabase / PostgreSQL)
 
@@ -200,7 +200,7 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | email | text | Not null |
 | display_name | text | Nullable |
 | avatar_url | text | Nullable |
-| preferred_theme_id | text | Nullable (added in migration 002). Runtime theme switching uses `localStorage` (`tc-active-theme`) via client-side `ThemeProvider`. This column is retained for potential server-side personalization but is not used for real-time theme application. |
+| preferred_world_id | text | Nullable (added in migration 002). Runtime world switching uses `localStorage` (`tc-active-world`) via client-side `WorldProvider`. This column is retained for potential server-side personalization but is not used for real-time world application. |
 | github_connected | boolean | Default: `false` |
 | github_username | text | Nullable |
 | onboarding_completed | boolean | Default: `false` |
@@ -219,20 +219,20 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
 | plan_id | text | Not null |
-| theme_ids | text[] | Array of purchased theme slugs, default: `'{}'` |
+| world_ids | text[] | Array of purchased world slugs, default: `'{}'` |
 | amount | numeric(10,2) | Not null, must be > 0 |
 | currency | text | Default: `'USD'` |
 | stripe_session_id | text | Unique |
 | status | purchase_status enum | `'pending'`, `'completed'`, `'failed'`, `'refunded'`; default: `'pending'` |
 | created_at | timestamptz | Default: `now()` |
 
-#### `theme_progress`
+#### `world_progress`
 
 | Column | Type | Notes |
 | --- | --- | --- |
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
-| theme_id | text | Not null |
+| world_id | text | Not null |
 | module_id | text | Not null |
 | lesson_id | text | Not null |
 | status | progress_status enum | `'not_started'`, `'in_progress'`, `'completed'`; default: `'not_started'` |
@@ -244,7 +244,7 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | created_at | timestamptz | Default: `now()` |
 | updated_at | timestamptz | Default: `now()` |
 
-**Unique constraint:** `(user_id, theme_id, lesson_id)`
+**Unique constraint:** `(user_id, world_id, lesson_id)`
 
 #### `waitlist`
 
@@ -252,11 +252,11 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | --- | --- | --- |
 | id | uuid (PK) | |
 | email | text | Not null |
-| theme_id | text | Nullable |
+| world_id | text | Nullable |
 | source | text | Nullable |
 | created_at | timestamptz | Default: `now()` |
 
-**Unique constraint:** `(email, theme_id)`
+**Unique constraint:** `(email, world_id)`
 
 #### `streaks`
 
@@ -264,13 +264,13 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | --- | --- | --- |
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
-| theme_id | text | Not null |
+| world_id | text | Not null |
 | current_streak | integer | Default: `0` |
 | longest_streak | integer | Default: `0` |
 | last_activity_date | date | Nullable |
 | updated_at | timestamptz | Default: `now()` |
 
-**Unique constraint:** `(user_id, theme_id)`
+**Unique constraint:** `(user_id, world_id)`
 
 #### `achievements`
 
@@ -279,10 +279,10 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
 | achievement_type | text | Not null |
-| theme_id | text | Nullable |
+| world_id | text | Nullable |
 | unlocked_at | timestamptz | Default: `now()` |
 
-**Unique constraint:** `(user_id, achievement_type, theme_id)`
+**Unique constraint:** `(user_id, achievement_type, world_id)`
 
 #### `exercise_attempts`
 
@@ -292,7 +292,7 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | user_id | uuid (FK) | References `profiles.id` |
 | exercise_slug | text | Not null |
 | lesson_id | text | Not null |
-| theme_id | text | Not null |
+| world_id | text | Not null |
 | passed | boolean | Default: `false` |
 | score | integer | 0--100, default: `0` |
 | hints_used | integer | Default: `0`, must be >= 0 |
@@ -301,14 +301,14 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | duration_ms | integer | Nullable, must be >= 0 |
 | attempted_at | timestamptz | Default: `now()` |
 
-#### `theme_progress_summary` (view)
+#### `world_progress_summary` (view)
 
-Aggregated completion stats per user per theme for fast dashboard reads.
+Aggregated completion stats per user per world for fast dashboard reads.
 
 | Column | Type | Notes |
 | --- | --- | --- |
 | user_id | uuid | Grouped key |
-| theme_id | text | Grouped key |
+| world_id | text | Grouped key |
 | total_lessons | bigint | Count of all progress records |
 | completed_lessons | bigint | Count where status = `'completed'` |
 | in_progress_lessons | bigint | Count where status = `'in_progress'` |
@@ -393,7 +393,7 @@ Sandpack is a client-only component and cannot be server-side rendered. The foll
 #### Non-Essential UI
 
 - On mobile, the following elements are hidden: the diff view toggle, the file explorer sidebar, and the console tab (accessible via the output panel instead).
-- Theme decorations (mascot, background patterns) are simplified or hidden on mobile to reduce visual clutter.
+- World decorations (mascot, background patterns) are simplified or hidden on mobile to reduce visual clutter.
 
 #### Device Testing
 
@@ -424,21 +424,21 @@ All events are typed in `packages/analytics/events.ts` and tracked via a type-sa
 
 | Event Name | Properties | Trigger |
 |------------|-----------|---------|
-| `lesson_started` | `lessonId`, `moduleId`, `themeId`, `difficulty`, `estimatedMinutes` | User opens a lesson page and scrolls past the hero section |
-| `lesson_completed` | `lessonId`, `moduleId`, `themeId`, `timeSpentSeconds`, `scrollDepthPercent` | User reaches the `<KeyTakeaways>` component at the bottom |
+| `lesson_started` | `lessonId`, `moduleId`, `worldId`, `difficulty`, `estimatedMinutes` | User opens a lesson page and scrolls past the hero section |
+| `lesson_completed` | `lessonId`, `moduleId`, `worldId`, `timeSpentSeconds`, `scrollDepthPercent` | User reaches the `<KeyTakeaways>` component at the bottom |
 | `exercise_started` | `exerciseId`, `lessonId`, `moduleId` | Sandpack editor mounts and user makes their first keystroke |
 | `exercise_submitted` | `exerciseId`, `lessonId`, `attemptNumber`, `testsPassed`, `testsTotal`, `codeLength` | User clicks "Submit" or "Run Tests" |
 | `exercise_completed` | `exerciseId`, `lessonId`, `attemptNumber`, `timeSpentSeconds`, `hintsUsed` | All tests pass for the first time |
 | `exercise_hint_requested` | `exerciseId`, `lessonId`, `hintLevel` (1 = nudge, 2 = partial, 3 = solution) | User clicks "Hint" button (tracked per hint level) |
 | `quiz_answered` | `lessonId`, `questionIndex`, `isCorrect`, `selectedAnswer`, `timeSpentSeconds` | User submits a quiz answer |
-| `module_completed` | `moduleId`, `themeId`, `totalTimeSeconds`, `lessonsCompleted`, `exercisesCompleted` | User completes the final lesson in a module |
+| `module_completed` | `moduleId`, `worldId`, `totalTimeSeconds`, `lessonsCompleted`, `exercisesCompleted` | User completes the final lesson in a module |
 
 #### Engagement Events
 
 | Event Name | Properties | Trigger |
 |------------|-----------|---------|
-| `theme_selected` | `themeId`, `previousThemeId`, `isFirstSelection` | User selects or switches a theme |
-| `theme_switched` | `fromThemeId`, `toThemeId`, `lessonId` (if mid-lesson) | User changes theme from Settings |
+| `world_selected` | `worldId`, `previousWorldId`, `isFirstSelection` | User selects or switches a world |
+| `world_switched` | `fromWorldId`, `toWorldId`, `lessonId` (if mid-lesson) | User changes world from Settings |
 | `recall_prompt_shown` | `lessonId`, `referencedLessonId`, `concept` | A `<RecallPrompt>` component enters the viewport |
 | `recall_prompt_answered` | `lessonId`, `referencedLessonId`, `selfRatedRecall` (1--5) | User self-rates their recall |
 | `page_scroll_depth` | `lessonId`, `depth` (25, 50, 75, 100) | User scrolls past 25% increments of the page |
@@ -448,8 +448,8 @@ All events are typed in `packages/analytics/events.ts` and tracked via a type-sa
 
 | Event Name | Properties | Trigger |
 |------------|-----------|---------|
-| `signup_started` | `source` (landing, lesson-gate, pricing), `themeId` | User initiates signup flow |
-| `signup_completed` | `method` (github, email, google), `source`, `themeId` | Account successfully created |
+| `signup_started` | `source` (landing, lesson-gate, pricing), `worldId` | User initiates signup flow |
+| `signup_completed` | `method` (github, email, google), `source`, `worldId` | Account successfully created |
 | `paywall_shown` | `lessonId`, `moduleId`, `paywallType` (soft, hard) | Free content limit reached and paywall appears |
 | `checkout_started` | `planId`, `source` | User clicks "Purchase" and Stripe Checkout opens |
 | `checkout_completed` | `planId`, `revenue`, `currency`, `couponCode` | Stripe webhook confirms successful payment |
@@ -479,7 +479,7 @@ These metrics are computed from raw events and displayed on the internal analyti
 - **Client SDK:** `posthog-js` initialized in `apps/web/app/providers.tsx`. The wrapper in `packages/analytics` ensures all events pass through a single typed interface.
 - **Server-side:** The Hono API (`apps/api`) uses `posthog-node` to track server-side events (e.g., `checkout_completed` from Stripe webhooks, `github_commit_pushed` from the commit flow).
 - **Feature Flags:** PostHog feature flags gate new content and UI experiments. Flags are evaluated server-side in Next.js middleware for instant page-level gating.
-- **Session Replay:** Enabled for 10% of sessions initially. Sampling rate adjustable via PostHog dashboard. Replays are auto-tagged with `lessonId` and `themeId` for targeted review.
+- **Session Replay:** Enabled for 10% of sessions initially. Sampling rate adjustable via PostHog dashboard. Replays are auto-tagged with `lessonId` and `worldId` for targeted review.
 - **Data Retention:** Raw events retained for 12 months. Aggregated metrics retained indefinitely.
 - **PII Policy:** No PII (name, email) is sent to PostHog. Users are identified by a hashed `userId`. Email-based cohort analysis is done in Supabase directly.
 
@@ -561,14 +561,14 @@ When a user connects GitHub, Tensorcraft creates (or uses) a repository with the
 | Path | Content | Creation Timing |
 |------|---------|----------------|
 | `README.md` | Auto-generated repo overview with learning progress badge and module list | Created on first commit; updated on each subsequent commit |
-| `.tensorcraft/config.json` | Repo metadata: `userId`, `themeId`, `createdAt`, platform version | Created on first commit |
+| `.tensorcraft/config.json` | Repo metadata: `userId`, `worldId`, `createdAt`, platform version | Created on first commit |
 | `module-01/` | Directory for Module 1 exercises | Created when first Module 1 exercise is committed |
 | `module-01/exercise-01.py` | Completed exercise code | Created when exercise is completed and saved |
 | `module-01/exercise-01.test.py` | Test file that validates the exercise (read-only reference) | Created alongside exercise code |
 | `module-01/README.md` | Module overview: title, objectives, completion status | Created with first exercise in the module; updated on each commit |
 | `PROGRESS.md` | Markdown table of all completed exercises with dates and attempt counts | Created on first commit; appended on each subsequent commit |
 
-**Repository naming:** `tensorcraft-{theme-slug}` (e.g., `tensorcraft-deep-orbit`). The internal project folder within the repo uses the theme-specific project name from the curriculum (e.g., `deep-scan-signal-classifier` for Deep Orbit).
+**Repository naming:** `tensorcraft-{world-slug}` (e.g., `tensorcraft-deep-orbit`). The internal project folder within the repo uses the world-specific project name from the curriculum (e.g., `deep-scan-signal-classifier` for Deep Orbit).
 
 ---
 
@@ -626,7 +626,7 @@ These are the engineering deliverables required to unblock content. Each compone
 | `<InteractiveDemo>` framework | Weeks 3--4 | D3.js or Mafs.js integration | Mod 03 Lesson 7 onward |
 | `<Quiz>` component | Week 3 | UI package, state management | Mod 04 Lesson 14 |
 | `<RecallPrompt>` component | Week 4 | Supabase progress tracking, spaced repetition algo | Mod 02+ lessons |
-| Theme system (CSS `@theme` + manifest) | Weeks 2--3 | Tailwind CSS 4 setup, design tokens | Theme-specific content wrappers |
+| World system (CSS `@world` + manifest) | Weeks 2--3 | Tailwind CSS 4 setup, design tokens | World-specific content wrappers |
 | GitHub commit flow | Weeks 4--5 | GitHub App registration, GraphQL client | Mod 04 Lesson 15 (capstone) |
 | Progress tracking API | Weeks 2--3 | Supabase schema, Hono API routes | Lesson/exercise completion tracking |
 
@@ -642,7 +642,7 @@ The shared UI package ships three subpath entry points in addition to the root. 
 
 | Import | Purpose | Contents |
 | --- | --- | --- |
-| `@tensorcraft/ui` | Core primitives | `Button`, `Card`, `Modal`, `CodeBlock`, `ProgressBar`, and other theme-aware building blocks |
+| `@tensorcraft/ui` | Core primitives | `Button`, `Card`, `Modal`, `CodeBlock`, `ProgressBar`, and other world-aware building blocks |
 | `@tensorcraft/ui/visualizations` | SVG data visualizations | `SkillRadar`, `LossCurve` |
 | `@tensorcraft/ui/effects` | Background / ambient effects | `ParticleField`, `BridgeTicker` |
 | `@tensorcraft/ui/a11y` | Accessibility primitives | `FocusTrap` |
@@ -663,16 +663,16 @@ import { FocusTrap } from '@tensorcraft/ui/a11y'
 | `SkillRadar` | `@tensorcraft/ui/visualizations` | Reusable hexagonal skill radar SVG. Consumers pass an array of `{ label, value }` and palette colors. |
 | `SkillGenome` | `apps/web/app/dashboard/skill-genome.tsx` | Dashboard-specific wrapper around `SkillRadar` that renders the learner's live skill distribution. Shares a `hexCorners` helper with `SkillRadar` to keep geometry identical across surfaces. |
 | `LossCurve` | `@tensorcraft/ui/visualizations` | Animated SVG line chart for training-loss visualization on the dashboard and capstone pages. |
-| `ParticleField` | `@tensorcraft/ui/effects` | Canvas particle atmosphere used on the landing hero, auth pages, and per-theme selection cards. Respects `prefers-reduced-motion`. |
+| `ParticleField` | `@tensorcraft/ui/effects` | Canvas particle atmosphere used on the landing hero, auth pages, and per-world selection cards. Respects `prefers-reduced-motion`. |
 | `BridgeTicker` | `@tensorcraft/ui/effects` | Horizontal scrolling ticker of FE→ML bridge statements used as ambient marketing flavor. |
 | `SceneCanvas` | `@tensorcraft/ui/effects` | Shared chrome for time-parameterized scene renderers: own clock, eased 0..1 hover amount with an `intensity` resting floor (page backdrops have no hover, so they'd otherwise idle at their faintest), IntersectionObserver + reduced-motion gating (static frame when reduced). `OrbitCanvas` is `drawOrbit` on this chrome. |
-| Theme scenes (`drawNeonProtocol`, `drawSignalWard`, `drawNovaCanvas`, `drawTerraGrid`) | `@tensorcraft/ui/effects` | Signature per-world animations on the landing five-worlds strip and the `/themes` card grid, siblings of `drawOrbit`: city scanned by a vision HUD, token rows with attention arcs over an EKG, a diffusion loop condensing noise into a nova bloom, a perspective edge-mesh grid with node pings. Ambient-faint at rest; hover/focus ignites them. Geometry is a pure function of `t` (hover styles only) — enforced by `theme-scenes.test.ts`. |
+| World scenes (`drawNeonProtocol`, `drawSignalWard`, `drawNovaCanvas`, `drawTerraGrid`) | `@tensorcraft/ui/effects` | Signature per-world animations on the landing five-worlds strip and the `/worlds` card grid, siblings of `drawOrbit`: city scanned by a vision HUD, token rows with attention arcs over an EKG, a diffusion loop condensing noise into a nova bloom, a perspective edge-mesh grid with node pings. Ambient-faint at rest; hover/focus ignites them. Geometry is a pure function of `t` (hover styles only) — enforced by `world-scenes.test.ts`. |
 
 **Removed / deferred:**
 
 - `LossLandscape` — deferred after Phase 11 (complexity vs. pedagogical value). Replaced on auth pages by `ParticleField`.
 - `ActivityHeatmap` — deferred per §5b audit. Daily activity is now surfaced via the `GET /api/progress/activity/daily` endpoint and a simpler streak strip on the dashboard; full GitHub-style heatmap is post-V1.0.
-- ARIA dual-robot narrator — cut 2026-04-20. Narrative assistance now relies on inline theme-specific character copy (MEDI, NEON, MUSE, GRID, ARIA-as-in-lesson-character) rather than a persistent dual-robot narrator widget.
+- ARIA dual-robot narrator — cut 2026-04-20. Narrative assistance now relies on inline world-specific character copy (MEDI, NEON, MUSE, GRID, ARIA-as-in-lesson-character) rather than a persistent dual-robot narrator widget.
 
 ### 7.3 Accessibility Conventions
 
@@ -702,13 +702,13 @@ The Phase 11 redesign replaced the prior "Zensman DeFi Neon" direction (glows, g
 | Hover | `.brutalist-hover` — a combined translate + shadow shift on hover to preserve the offset-shadow effect. |
 | Comment labels | `.comment-label` — uppercase, tracking-wider, JetBrains Mono, muted color. Used for section headers like `# skill_genome`, `// loss.hints`, `— 12wk`. |
 | Focus | `focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2` (see §7.3). |
-| Glow effects | Removed. Tokens `--tc-glow`, `--tc-neon-glow`, `--tc-neon-line` were deleted from `themes.css` 2026-04-13 → 2026-04-20. |
+| Glow effects | Removed. Tokens `--tc-glow`, `--tc-neon-glow`, `--tc-neon-line` were deleted from `worlds.css` 2026-04-13 → 2026-04-20. |
 
 ### 7.5 Settings & Onboarding Routes
 
-- **Onboarding** (`/onboarding`) — 5 steps: Welcome → Background → Goal → Theme → Ready. Persisted via `PATCH /api/onboarding` with `experience_level` and `learning_goal` enum fields (see §1.3 API notes and the `profiles` schema).
-- **Paywall** (`/paywall`) — standalone locked-content route; complements the `/pricing?locked=<theme>` banner used for deep-links.
-- **Settings** (`/settings`) — 5-tab layout: Profile / Notifications / GitHub / Theme / Account.
+- **Onboarding** (`/onboarding`) — 5 steps: Welcome → Background → Goal → World → Ready. Persisted via `PATCH /api/onboarding` with `experience_level` and `learning_goal` enum fields (see §1.3 API notes and the `profiles` schema).
+- **Paywall** (`/paywall`) — standalone locked-content route; complements the `/pricing?locked=<world>` banner used for deep-links.
+- **Settings** (`/settings`) — 5-tab layout: Profile / Notifications / GitHub / World / Account.
 - **Capstone completion** — triggers `POST /api/certificates` to generate the learner's verifiable certificate; the returned id is rendered on the capstone page and is publicly retrievable via `GET /api/certificates/:id`.
 
 ---
@@ -724,7 +724,7 @@ Tensorcraft launches with English-only content. However, the architecture is des
 **Principles:**
 
 - **No hardcoded strings:** All UI strings (buttons, labels, error messages, tooltips) are externalized to locale files using `next-intl` (or a similar i18n library compatible with Next.js App Router).
-- **Locale-aware routing:** URL structure supports locale prefixes: `/{locale}/learn/{theme}/{module}/{lesson}`. English uses the default (no prefix) for SEO continuity.
+- **Locale-aware routing:** URL structure supports locale prefixes: `/{locale}/learn/{world}/{module}/{lesson}`. English uses the default (no prefix) for SEO continuity.
 - **Content separation:** Translated lesson content lives in locale-specific directories: `packages/content/core/{locale}/module-01/lesson-01.mdx`.
 - **Database:** The `lessons` and `modules` tables include a `locale` column. Progress tracking is locale-independent (a user's progress on `mod-01-les-01` applies regardless of the language they read it in).
 - **RTL Support:** The CSS architecture supports `dir="rtl"` for future Arabic/Hebrew support. Tailwind CSS 4's logical properties (`ms-`, `me-`, `ps-`, `pe-`) are used instead of `ml-`/`mr-`.
@@ -744,15 +744,15 @@ Languages are added incrementally, configured via a central language configurati
 | `enabled` | `boolean` | Yes | Whether this locale is publicly available. Disabled locales are accessible only in preview mode. |
 | `completionPercent` | `number` | Yes | Percentage of total content translated (auto-calculated). Displayed on the language selector. |
 
-### 7.3 Per-Theme, Per-Language Publishing
+### 7.3 Per-World, Per-Language Publishing
 
-Content availability is a matrix of `theme x locale`. Not all themes will be available in all languages simultaneously.
+Content availability is a matrix of `world x locale`. Not all worlds will be available in all languages simultaneously.
 
-- **Publishing matrix:** A configuration file (`packages/content/publishing-matrix.json`) defines which `(theme, locale)` pairs are published.
-- **Fallback chain:** If a lesson is not available in the user's selected `(theme, locale)` pair, the system falls back in this order:
-  1. Same theme, English locale.
-  2. Core (no theme), user's locale.
-  3. Core (no theme), English locale.
+- **Publishing matrix:** A configuration file (`packages/content/publishing-matrix.json`) defines which `(world, locale)` pairs are published.
+- **Fallback chain:** If a lesson is not available in the user's selected `(world, locale)` pair, the system falls back in this order:
+  1. Same world, English locale.
+  2. Core (no world), user's locale.
+  3. Core (no world), English locale.
 - **UI indicator:** When a fallback is active, a subtle banner informs the user: "This lesson is shown in English. Translation coming soon."
 - **Translation progress:** The language selector shows per-language completion percentage. Languages below 80% completion are labeled "(Beta)."
 

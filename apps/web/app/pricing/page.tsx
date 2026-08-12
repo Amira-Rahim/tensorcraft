@@ -14,37 +14,37 @@ import { AmbientBackground } from "@/app/components/ambient-background";
 import { FaqSection } from "@/app/components/faq-section";
 
 // 2026-08-09: the three descriptions below used to end "bundles up to $159".
-// With one theme launched, no bundle is purchasable at any price, so a search
+// With one world launched, no bundle is purchasable at any price, so a search
 // result promising them invited a click the page could not honour. The
 // descriptions now name only what is buyable. The TITLE keeps its "$0 to $159"
 // range on purpose: a range describes the ladder, which genuinely exists and is
 // stated on the page, rather than advertising an unbuyable SKU. Restore the
-// bundle clause when LAUNCHED_THEMES grows past one.
+// bundle clause when LAUNCHED_WORLDS grows past one.
 export const metadata: Metadata = {
   title: `ML Course Pricing: From $0 to $${PRICING.allFive.price} | Tensorcraft`,
-  description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per theme.`,
+  description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per world.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/pricing",
     siteName: "Tensorcraft",
-    title: "Buy a Theme. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme.`,
+    title: "Buy a World. Keep It Forever. | Tensorcraft",
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per world.`,
     images: [
       {
-        url: "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
+        url: "/api/og?title=Buy%20a%20World.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
         width: 1200,
         height: 630,
-        alt: "Tensorcraft: Buy a Theme. Keep It Forever.",
+        alt: "Tensorcraft: Buy a World. Keep It Forever.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buy a Theme. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme.`,
+    title: "Buy a World. Keep It Forever. | Tensorcraft",
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per world.`,
     images: [
-      "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
+      "/api/og?title=Buy%20a%20World.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
     ],
   },
 };
@@ -58,7 +58,7 @@ export default function PricingPage() {
     name: "Tensorcraft course pricing",
     url: "https://tensorcraft.app/pricing",
     description:
-      "One-payment lifetime-access tiers for the Tensorcraft browser-ML course. Per-theme single purchase, multi-theme bundles, and an all-five bundle.",
+      "One-payment lifetime-access tiers for the Tensorcraft browser-ML course. Per-world single purchase, multi-world bundles, and an all-five bundle.",
     itemListElement: buildPricingOffers(),
   };
 
@@ -95,12 +95,12 @@ export default function PricingPage() {
           >
             Buy once. Keep forever.
           </h1>
-          {/* 2026-08-09: was "Buy one, bundle a few, or all five themes",
-              which offered two actions no buyer can take while one theme is
+          {/* 2026-08-09: was "Buy one, bundle a few, or all five worlds",
+              which offered two actions no buyer can take while one world is
               launched. Same defect as the metadata above and the tier grid
               below; fixed in the same pass so the page tells one story. */}
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
-            Each theme is a separate ML specialization. Buy the one that fits,
+            Each world is a separate ML specialization. Buy the one that fits,
             one payment, lifetime access, no subscription.
           </p>
         </section>
@@ -182,10 +182,10 @@ export default function PricingPage() {
             Start with the free preview. Upgrade when you&rsquo;re ready.
           </p>
           <Link
-            href="/themes"
+            href="/worlds"
             className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
           >
-            See All 5 Themes &rarr;
+            See All 5 Worlds &rarr;
           </Link>
         </section>
       </div>

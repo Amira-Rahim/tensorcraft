@@ -1,5 +1,5 @@
 import {
-  getThemeLessons,
+  getWorldLessons,
   getModuleLessons,
   getLessonExercises,
 } from "@tensorcraft/content";
@@ -20,7 +20,7 @@ export function CommitTrail({ compact = false }: { compact?: boolean }) {
       file: `foundations/${ex.slug}.ts`,
     })),
   );
-  const totalExercises = getThemeLessons("deep-orbit").reduce(
+  const totalExercises = getWorldLessons("deep-orbit").reduce(
     (sum, l) => sum + getLessonExercises(l.slug).length,
     0,
   );

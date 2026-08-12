@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "fs";
 import path from "path";
-import { deepOrbit } from "@tensorcraft/themes";
+import { deepOrbit } from "@tensorcraft/worlds";
 
 const bible = fs.readFileSync(
   path.resolve(__dirname, "../../../docs/character-bible.md"),

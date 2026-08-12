@@ -39,10 +39,10 @@ describe("/api/og route", () => {
     expect(state.lastOptions).toMatchObject({ width: 1200, height: 630 });
   });
 
-  it("respects title, theme, and subtitle query params", async () => {
+  it("respects title, world, and subtitle query params", async () => {
     await GET(
       makeReq(
-        "https://tensorcraft.app/api/og?title=Deep%20Orbit&theme=deep-orbit&subtitle=Time-Series",
+        "https://tensorcraft.app/api/og?title=Deep%20Orbit&world=deep-orbit&subtitle=Time-Series",
       ),
     );
     const serialized = JSON.stringify(state.lastElement);
@@ -57,9 +57,9 @@ describe("/api/og route", () => {
     expect(headers["Cache-Control"]).toContain("max-age");
   });
 
-  it("falls back to default theme when unknown theme given", async () => {
+  it("falls back to default world when unknown world given", async () => {
     const res = await GET(
-      makeReq("https://tensorcraft.app/api/og?title=X&theme=not-a-real-theme"),
+      makeReq("https://tensorcraft.app/api/og?title=X&world=not-a-real-world"),
     );
     expect(res).toBeDefined();
     expect(state.lastOptions).toMatchObject({ width: 1200, height: 630 });

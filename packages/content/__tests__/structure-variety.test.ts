@@ -11,10 +11,10 @@ import {
   analyze,
   lessonFiles,
 } from "../../../scripts/audit-structure-variety.mjs";
-import { BUILT_STORY_THEMES } from "../src/built-themes";
-import { THEME_SHAPE, type ThemeSlug } from "@tensorcraft/shared";
+import { BUILT_STORY_WORLDS } from "../src/built-worlds";
+import { WORLD_SHAPE, type WorldSlug } from "@tensorcraft/shared";
 
-// Parent of every theme's content dir, derived from deep-orbit's dir.
+// Parent of every world's content dir, derived from deep-orbit's dir.
 const CONTENT_ROOT = dirname(CONTENT_DIR);
 
 /**
@@ -38,23 +38,23 @@ interface LessonFacts {
 
 const moduleOf = (f: LessonFacts) => f.lesson.split("/")[0]!;
 
-// One describe per BUILT story theme (scalability audit F3): the variety floor
-// now applies independently to every launched theme, not just Deep Orbit.
-// Adding a theme to BUILT_THEME_DIRS extends this gate automatically; each
-// theme must independently meet the same anti-lockstep floor. Thresholds are
-// per-theme (a theme's 56 lessons), so they carry over unchanged.
-for (const theme of BUILT_STORY_THEMES) {
-  const facts: LessonFacts[] = lessonFiles(join(CONTENT_ROOT, theme)).map(
+// One describe per BUILT story world (scalability audit F3): the variety floor
+// now applies independently to every launched world, not just Deep Orbit.
+// Adding a world to BUILT_WORLD_DIRS extends this gate automatically; each
+// world must independently meet the same anti-lockstep floor. Thresholds are
+// per-world (a world's 56 lessons), so they carry over unchanged.
+for (const world of BUILT_STORY_WORLDS) {
+  const facts: LessonFacts[] = lessonFiles(join(CONTENT_ROOT, world)).map(
     analyze,
   );
   const modules = [...new Set(facts.map(moduleOf))];
 
-  describe(`structure-variety floor (${theme})`, () => {
+  describe(`structure-variety floor (${world})`, () => {
     it("analyzes the full lesson corpus", () => {
-      // Per-theme shape (re-audit N2/F-A): each theme is held to ITS OWN
+      // Per-world shape (re-audit N2/F-A): each world is held to ITS OWN
       // lesson/module counts, not one Deep-Orbit scalar. deep-orbit 56, neon 54,
       // the rest 55; all 11 modules.
-      const shape = THEME_SHAPE[theme as ThemeSlug];
+      const shape = WORLD_SHAPE[world as WorldSlug];
       expect(facts.length).toBe(shape.totalLessons);
       expect(modules.length).toBe(shape.modules);
     });

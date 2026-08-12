@@ -106,7 +106,7 @@ export function BridgePreviewSection() {
       {/* Section exit CTA */}
       <div className="border-t border-border px-10 md:px-20 py-8 text-center">
         <Link
-          href="/themes/deep-orbit/foundations/introduction-to-tensors"
+          href="/worlds/deep-orbit/foundations/introduction-to-tensors"
           data-testid="bridge-section-cta"
           className="inline-flex items-center gap-2 font-mono text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
         >

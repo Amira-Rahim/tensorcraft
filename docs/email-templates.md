@@ -25,9 +25,9 @@ it as us and not a phishing attempt.
 | `--tc-primary` | `#ff4c1f` | CTA, active accent |
 | `--tc-primary-foreground` | `#171717` | Text on primary button |
 
-> Per-theme palettes (Deep Orbit teal, Synaptic Fog violet, etc.) appear in the
+> Per-world palettes (Deep Orbit teal, Synaptic Fog violet, etc.) appear in the
 > product UI, **not** in transactional email. Every email uses the primary
-> brutalist palette for consistency and deliverability (per-theme gradient
+> brutalist palette for consistency and deliverability (per-world gradient
 > backgrounds trip more spam filters).
 
 ## Typography
@@ -88,9 +88,9 @@ that reads naturally and includes the same CTA as a bare URL.
 | Tag | Subject | One-line body goal |
 |-----|---------|---------------------|
 | `signed_up` | `Welcome to Tensorcraft.` | Confirm account, link to `/onboarding` |
-| `onboarded` | `Your first lesson awaits.` | Link to the theme the user picked |
+| `onboarded` | `Your first lesson awaits.` | Link to the world the user picked |
 | `first_lesson` | `One down. 54 to go.` | Celebrate + link to next module |
-| `capstone_{theme}` | `You shipped {theme}.` | Congratulate + link to `/certificates/{id}` |
+| `capstone_{world}` | `You shipped {world}.` | Congratulate + link to `/certificates/{id}` |
 | `purchased` | `Your access is live.` | Receipt summary + link to `/dashboard` |
 | `email_alerts` | _(lesson-complete nudges — Kit sequence)_ | Short nudge copy, one link |
 | `weekly_digest` | `Your Tensorcraft week.` | Bridges learned, streak, next recommendation |
@@ -121,7 +121,7 @@ that reads naturally and includes the same CTA as a bare URL.
   `/certificates/{id}`. This URL is generated server-side with
   `CERT_SIGNING_SECRET`; do not generate a fresh URL in the template.
 - **Welcome email's CTA** is `/onboarding`, not `/dashboard`. The onboarding
-  flow gates the theme picker — dropping a user on `/dashboard` bypasses the
+  flow gates the world picker — dropping a user on `/dashboard` bypasses the
   `tc_visited` context gate documented in `project_auth_flow` memory.
 
 ## Footer (every template)
@@ -175,5 +175,5 @@ checklist in a staging Kit account (or a dry-run sequence with a
 - **Dark-mode CSS media queries** — Apple Mail's iOS dark-mode inverter can
   fight our palette; keep the template dark and do not branch on
   `prefers-color-scheme`.
-- **Per-theme palettes in email** — deferred post-V1; see `themes-and-bridges`
+- **Per-world palettes in email** — deferred post-V1; see `worlds-and-bridges`
   memory note.

@@ -45,7 +45,7 @@ test.describe("Visual: Responsive Breakpoints", () => {
         // `waitForFunction(() => document.fonts.ready)`, and waitForFunction
         // resolves on any truthy return: a Promise object is ALWAYS truthy,
         // so it waited for nothing and screenshots raced font swap. That is
-        // why nav and footer text ghosted, and why auth and themes-index
+        // why nav and footer text ghosted, and why auth and worlds-index
         // behaved as coin flips (2026-08-09: three consecutive runs each
         // passed a different subset with no code change between them).
         await page.evaluate(async () => {

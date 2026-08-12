@@ -47,8 +47,8 @@ function baseProps(overrides: Partial<DashboardProps> = {}): DashboardProps {
   return {
     displayName: "Ada",
     avatarUrl: null,
-    themeName: "Deep Orbit",
-    themeSlug: "deep-orbit",
+    worldName: "Deep Orbit",
+    worldSlug: "deep-orbit",
     modules: [
       {
         number: "M01",
@@ -60,8 +60,8 @@ function baseProps(overrides: Partial<DashboardProps> = {}): DashboardProps {
       },
     ],
     currentModule: null,
-    themeProgressPercent: 0,
-    themePoints: { current: 0, total: 100 },
+    worldProgressPercent: 0,
+    worldPoints: { current: 0, total: 100 },
     currentStreak: 0,
     bestStreak: 0,
     averageScore: 0,

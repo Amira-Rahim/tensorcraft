@@ -51,7 +51,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   "Essential only" salience; banner names only PostHog (add Plausible +
   Vercel Analytics); gate Sentry session replay behind consent
   (`replaysOnErrorSampleRate: 1.0` exceeds strictly-necessary); disclose
-  the `tc_theme` cookie; align the under-16s claim with reality or add an
+  the `tc_world` cookie; align the under-16s claim with reality or add an
   age gate.
 - [x] ~~14-day refund guarantee badge on pricing cards~~ — already shipped
   (Horizon 0 P3, 2026-07-21: badge exists and was moved above the tier
@@ -64,7 +64,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 - [ ] Weekly metrics review: completion rates, hint dependency, time-on-page,
   conversion.
-- [ ] Cohort analysis: performance by difficulty, theme, learner background.
+- [ ] Cohort analysis: performance by difficulty, world, learner background.
 - [ ] Content maintenance cycle: monthly review analytics + optimize 2-3
   lessons; quarterly character/narrative consistency audit; biannually full
   curriculum technical-accuracy + bridge-consistency audit.
@@ -87,19 +87,19 @@ memory was refuted by that audit: `pnpm audit` clean.)
 ## 3. Data-gated content work
 
 - [ ] **Re-test `PRICING.single` at $79** (gate: 200 paying users, the same
-  threshold as the theme-2 gate). Deliberately NOT raised on 2026-08-09 when
+  threshold as the world-2 gate). Deliberately NOT raised on 2026-08-09 when
   63 scene plates and 16 portraits shipped: art is a quality signal, not a
   scope signal, marginal cost was ~$5, and nobody had paid anything yet, so a
   raise would have stacked a second unvalidated guess on the 2026-06-20 raise
   from $49. Distribution is the binding constraint; a raise tightens it.
   Revisit only on real conversion data. Reasoning:
   `docs/superpowers/specs/2026-08-09-pricing-reevaluation-design.md`.
-- [ ] **Restore the bundle surfaces when theme 2 launches.** Three things
-  self-heal off `LAUNCHED_THEMES` with no edit (the tier cards, the JSON-LD
+- [ ] **Restore the bundle surfaces when world 2 launches.** Three things
+  self-heal off `LAUNCHED_WORLDS` with no edit (the tier cards, the JSON-LD
   `availabilityFor`, and `BundleRoadmap`, which returns `null` once nothing is
   gated). Two do NOT and must be done by hand: the `metadata` descriptions in
   `apps/web/app/pricing/page.tsx` dropped their "bundles up to $N" clause, and
-  the hero paragraph dropped "bundle a few, or all five themes".
+  the hero paragraph dropped "bundle a few, or all five worlds".
 - [ ] **BossBeat expansion** (6 ranked beats, one per dormant module).
   Gate: ~100 real lesson completions so placement follows observed drop-off.
   Detail spec + non-negotiable quality gates:
@@ -119,7 +119,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] #5 Branching quizzes (high authoring tax, ~14-20d full curriculum).
   - [ ] #12 Reputation currency (SP cosmetic only; re-evaluate when LATER
     opens).
-  - [ ] #17 Branching theme epilogues (~6-8d).
+  - [ ] #17 Branching world epilogues (~6-8d).
   - [ ] #16 Voice-actor character cards ($$$$ recurring; defer).
   - [ ] #18 Character-perspective re-render (3-4x MDX cost; defer).
 
@@ -143,7 +143,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] Optional: scope `transition-colors`/`transition-all` utilities to
     hover/focus states so the scheme flip is perfectly uniform (today ~186
     small chrome elements ease 150ms while surfaces snap — assessed fine).
-  - [ ] Optional: client-sync `meta[name=theme-color]` when the user's manual
+  - [ ] Optional: client-sync `meta[name=world-color]` when the user's manual
     override disagrees with the OS (browser chrome color mismatch, cosmetic).
 
 - [ ] **Story-voice Phase 4 spot-check editorial pass** (~3.5h): dump 702
@@ -151,13 +151,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
   edit ~20 outliers per character, re-run velite + build.
 - [ ] **Studio-one VAE real-data retraining** (~3h): tiny CelebA subset fixes
   posterior collapse; architecture unchanged.
-- [ ] **Capstone real-data retraining, all 5 themes** (~10h total): Deep
+- [ ] **Capstone real-data retraining, all 5 worlds** (~10h total): Deep
   Orbit DEEP SCAN (LIGO / Kaggle audio anomaly), Neon SENTINEL (CIFAR-10),
   Signal DIAGNOSTIC-ONE (MIMIC-III + ClinicalBERT), Nova STUDIO-ONE (CelebA),
   Terra METEOR (ERCOT).
 - **Slice C leftovers (game-theory spine):**
   - [ ] SHAP cross-link in `<StrategyThread>`: needs a public route for
-    `extras/*` content (cheaper) or moving SHAP into a launched theme.
+    `extras/*` content (cheaper) or moving SHAP into a launched world.
   - [ ] Auction lesson (Terra Grid, Vickrey; FE bridge: CSS specificity wars).
   - [ ] Stackelberg reframe of adversarial patches (Neon Protocol).
   - [ ] RLHF preference-learning reframe (Signal Ward).
@@ -167,7 +167,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] Capstone leaderboard (opt-in, Kaggle-style holdout; needs hosting +
     cheating mitigations).
   - [ ] Commitment device at checkout (finish-by date, opt-in nudges).
-  - [ ] Cohort starts (synchronized start dates, theme-mate pairing).
+  - [ ] Cohort starts (synchronized start dates, world-mate pairing).
   - [ ] Thompson-sampling scheduler upgrade (after a Bayesian intuition
     lesson exists; keeps self-reference parity).
 - [ ] **Tensorcraft Pulse** (content freshness via scraping): /pulse feed +
@@ -186,7 +186,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
     `expressions` field. Motion rules recorded in `docs/ui-ux-notes.md` 5.3.
     Also shipped art-agnostic **scene portrait slots** (`ScenePortrait`,
     Briefing establishing shot as a playback beat + the 7 epilogue variants;
-    paths `public/scenes/<theme>/<module>/<lesson>[-epilogue].webp`, alt from
+    paths `public/scenes/<world>/<module>/<lesson>[-epilogue].webp`, alt from
     `scene.portraitAlt` / `scene.epiloguePortraitAlt` frontmatter).
   - [x] **Real cel-shaded art, Deep Orbit** (SHIPPED 2026-08-09): all 20
     portraits (5 characters x neutral + 3 expressions, ARIA included as an
@@ -196,7 +196,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
     `scripts/art/ingest.mjs`; approved canons kept as regeneration anchors
     in `docs/art-refs/deep-orbit/`. Gates 0/A/B cleared; production log and
     the prompt rules the gates taught (age markers, framing, no-text) are in
-    `docs/character-bible.md`. Other themes remain gated on theme launch.
+    `docs/character-bible.md`. Other worlds remain gated on world launch.
   - [x] **Scene portrait art** (SHIPPED 2026-08-09): all 63 scenes (56
     briefings + 7 epilogues) live at `apps/web/public/scenes/deep-orbit/`,
     median 116 KB webp. Four approved location master plates at
@@ -208,7 +208,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
     blocks (the gate and all 16 assets are live, so annotations take effect
     the moment they are authored).
   - [ ] The other 20 character sheets (Neon / Signal / Nova / Terra) +
-    theme wiring + their scene art: gated on those themes launching (see §5).
+    world wiring + their scene art: gated on those worlds launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in
   `pre-launch-checklist.md` Rounds 11-12 but never filed until 2026-07-22;
   a third item, "HintPanel coverage 3/56", was dropped as stale — Run #7
@@ -257,28 +257,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] Bridge per-framework variants (Vue/Angular/Svelte, ~5h).
   - [ ] Quiz coverage expansion past current 24% (diminishing returns).
 
-## 5. Theme launch sprints (V1 = Deep Orbit only)
+## 5. World launch sprints (V1 = Deep Orbit only)
 
 - [ ] Neon Protocol, Signal Ward, Nova Canvas, Terra Grid: full curriculum
-  content per theme (each its own launch sprint; scope doc:
+  content per world (each its own launch sprint; scope doc:
   `docs/launch-scope.md`).
-- [ ] Per-theme GT narrative launch content (DISPATCH, boss beats, cameos)
-  for each new theme, outlined in the GT plan file.
-- [ ] Theme-specific glossary terms for unlaunched themes.
-- [ ] Per-theme Kit purchase sequences (5x `KIT_TAG_PURCHASED_{THEME}` + 5
-  sequences) if per-theme email marketing becomes worth it.
-- **Theme-2 launch prerequisites** (dormant until a second theme sells):
+- [ ] Per-world GT narrative launch content (DISPATCH, boss beats, cameos)
+  for each new world, outlined in the GT plan file.
+- [ ] World-specific glossary terms for unlaunched worlds.
+- [ ] Per-world Kit purchase sequences (5x `KIT_TAG_PURCHASED_{WORLD}` + 5
+  sequences) if per-world email marketing becomes worth it.
+- **World-2 launch prerequisites** (dormant until a second world sells):
   - [ ] Purchase credit survives refund/dispute: upgrade pricing sums
     `partially_refunded` rows, so a disputed purchase still funds the
-    bundle discount. Unreachable with one theme; live the day theme #2
+    bundle discount. Unreachable with one world; live the day world #2
     launches.
   - [ ] neon-protocol has 54 MDX files vs the 55 that
-    `THEME_CONTENT.comingSoonLessonsPerTheme` promises (`image-data` has
+    `WORLD_CONTENT.comingSoonLessonsPerWorld` promises (`image-data` has
     4); add a test pinning coming-soon counts.
   - [x] ~~PCA/SVD deep-dive~~ SHIPPED EARLY (2026-07-27) as shared
     `extras/math-deep-dive/08-eigenvectors-svd-compression` (companion to
     optimization-edge, drawer entry in 03-pruning), since extras are
-    cross-theme and Deep Orbit had its own hook. Remaining theme-2 slice:
+    cross-world and Deep Orbit had its own hook. Remaining world-2 slice:
     when neon-protocol's feature-extraction module launches, add a
     DerivationDrawer entry point from its embeddings lessons to the same
     deep-dive (no new authoring).
@@ -288,11 +288,11 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] **AI video scenes** (post-V1, one-time ~$540-1,140 via Runway Gen-3/4 +
   ElevenLabs). Full design spec: `docs/future-ai-video-scenes.md`. Key
   decisions made: stylized/animated, 5-15s clips, R2 CDN, `<VideoScene>`
-  swap, build-time generation. Revisit when theme sales can fund it or AI
+  swap, build-time generation. Revisit when world sales can fund it or AI
   video drops below ~$0.25/clip. Subsumes audio narration (video includes
   voice acting).
 - [ ] **Audio narration fallback** (only if video stays too expensive):
-  AI TTS, narrative steps only (Briefing + Consequence), one theme first,
+  AI TTS, narrative steps only (Briefing + Consequence), one world first,
   auto-regeneration from MDX. Standalone narration was rejected for V1:
   interactive-first lesson model conflicts with passive audio, ~1,650
   segments to maintain, re-record on every MDX edit, >40% story-skip risk.
@@ -314,7 +314,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   exclude download time from it.
 - [ ] Test-infra debt (2026-07-21 audit structural notes): e2e `webServer`
   allowance is 30s against measured 19-154s cold compiles, so the a11y
-  gate fails open and Themes / Pricing / all six lesson steps can skip
+  gate fails open and Worlds / Pricing / all six lesson steps can skip
   verification silently; Firefox has zero automated coverage; the three
   WebKit projects run the mobile smoke suite only; no `browserslist`
   (floors in `docs/browser-support.md` unenforced); `metadata.test.ts`
@@ -355,7 +355,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] `LossLandscape` component (atmospheric-only; revisit post-V1).
 - [ ] `ActivityHeatmap` component (post-V0.5).
 - [ ] Remove deprecated `<Quiz>` + `<KeyTakeaways>` MDX components once all
-  themes are migrated off them.
+  worlds are migrated off them.
 - **Audit-parked email + pipeline resilience** (pre-launch-checklist Rounds
   11-12, filed here 2026-07-22):
   - [ ] Refund-comms email (transactional template when a refund is issued).
@@ -374,7 +374,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 Strategy, arithmetic, and gating rationale live in `docs/roadmap.md` (detail
 doc); the work items are indexed here. Gate order is a hard precondition
-chain: Gate 1 denominator (widen ICP + more themes) → Gate 2 LTV (recurring
+chain: Gate 1 denominator (widen ICP + more worlds) → Gate 2 LTV (recurring
 revenue) → Gate 3 proof (funnel data, produced by Horizon 0) → Gate 4
 catalog breadth (enterprise procurement). Horizon 0 shipped 2026-07-21; its
 still-open defects are launch blockers (`docs/launch-blockers.md`), not
@@ -385,20 +385,20 @@ post-launch work.
 - [ ] Widen ICP to web/JS developers: reframe copy, relabel the
   React-specific bridge subset (bridge content already ~75% general JS;
   `Framework` union already typed for `variants`).
-- [ ] Launch more of the 4 built-but-gated themes (overlaps §5 theme
+- [ ] Launch more of the 4 built-but-gated worlds (overlaps §5 world
   sprints; this is the Gate 1 dependency).
 - [ ] Authoring scaffold `scripts/new-lesson.mjs` (no generator exists;
   authoring velocity is the volume bottleneck).
 - [ ] All-access subscription (~$15-25/mo) alongside one-time:
   `subscriptions` table + persisted `stripe_customer_id`, real
-  `entitlements` table replacing ad-hoc `purchases.theme_ids` derivation,
+  `entitlements` table replacing ad-hoc `purchases.world_ids` derivation,
   `mode:"subscription"` checkout, `customer.subscription.*` /
   `invoice.paid` / `invoice.payment_failed` webhooks + dunning, billing
   management UI. Money-touching: full TDD + Stripe test-mode e2e before any
   live charge.
 - [ ] Subscription content cadence: decide + publish the release rhythm
   before selling all-access — a static catalog churns a $15-25/mo sub
-  immediately; the cadence decision re-orders §5 theme sprints
+  immediately; the cadence decision re-orders §5 world sprints
   (added 2026-07-22).
 - [ ] Subscription grandfathering: define the migration story for existing
   one-time buyers (credit / discount / grandfather) before the plan page
@@ -420,7 +420,7 @@ post-launch work.
   `docs/roadmap.md` §4.
 - [ ] Growth instrumentation: activation metric, referral/virality events,
   cohort-LTV dashboards (current taxonomy has zero virality events).
-- Exit: LTV > 3x CAC provable; ads viable on warm traffic; ≥3 themes live.
+- Exit: LTV > 3x CAC provable; ads viable on warm traffic; ≥3 worlds live.
 
 ### Horizon 2: build reach (9-24 months)
 

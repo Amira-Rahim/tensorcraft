@@ -65,11 +65,11 @@ export function Nav() {
   }, [isAuthenticated, pathname]);
 
   // Focus mode: lesson viewer routes get no marketing nav. Lesson routes are
-  // exactly /themes/{slug}/{module}/{lesson}; the capstone page is 3 segments
-  // (/themes/{slug}/capstone) so it never matches; the endsWith guard is
+  // exactly /worlds/{slug}/{module}/{lesson}; the capstone page is 3 segments
+  // (/worlds/{slug}/capstone) so it never matches; the endsWith guard is
   // only defensive against a lesson slug literally named "capstone".
   const isLessonRoute =
-    /^\/themes\/[^/]+\/[^/]+\/[^/]+$/.test(pathname) &&
+    /^\/worlds\/[^/]+\/[^/]+\/[^/]+$/.test(pathname) &&
     !pathname.endsWith("/capstone");
   if (isLessonRoute) return null;
 
@@ -95,7 +95,7 @@ export function Nav() {
       <div className="hidden md:flex items-center gap-6 font-mono">
         {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
         {/* Restored 2026-07-13: the milestone producer
-            (apps/api/src/lib/dispatch.ts) now writes module/theme-clear
+            (apps/api/src/lib/dispatch.ts) now writes module/world-clear
             messages, so the inbox is no longer guaranteed-empty. */}
         {isAuthenticated && (
           <NavLink href="/inbox">
@@ -111,7 +111,7 @@ export function Nav() {
             )}
           </NavLink>
         )}
-        <NavLink href="/themes">Themes</NavLink>
+        <NavLink href="/worlds">Worlds</NavLink>
         <NavLink href="/journey">Journey</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>
         <NavLink href="/learn">Learn</NavLink>

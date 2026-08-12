@@ -43,7 +43,7 @@ describe("SiteFooter", () => {
   it("renders only legal links (nav links live in the header)", () => {
     render(<SiteFooter />);
     for (const name of [
-      /themes/i,
+      /worlds/i,
       /pricing/i,
       /^blog$/i,
       /learn/i,

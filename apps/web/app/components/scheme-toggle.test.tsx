@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ThemeProvider } from "./theme-provider";
+import { WorldProvider } from "./world-provider";
 import { SchemeToggle } from "./scheme-toggle";
 import { SCHEME_STORAGE_KEY } from "@tensorcraft/shared";
 import { mockMatchMedia } from "./test-utils/mock-match-media";
@@ -9,14 +9,14 @@ import { mockMatchMedia } from "./test-utils/mock-match-media";
  * Nav scheme toggle (light-mode rollout, Task 5). Cycle order: System ->
  * Light -> Dark -> System. Uses the shared mockMatchMedia helper (see
  * test-utils/mock-match-media.ts) so the toggle can be exercised inside a
- * real ThemeProvider rather than a hand-rolled context mock.
+ * real WorldProvider rather than a hand-rolled context mock.
  */
 
 function renderToggle() {
   return render(
-    <ThemeProvider>
+    <WorldProvider>
       <SchemeToggle />
-    </ThemeProvider>,
+    </WorldProvider>,
   );
 }
 

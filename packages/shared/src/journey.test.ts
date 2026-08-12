@@ -5,13 +5,13 @@ import {
   getArrivesFrom,
   getLeadsTo,
   getSpineStops,
-  recommendedNextTheme,
+  recommendedNextWorld,
 } from "./journey";
 
 /**
  * The journey model is the de-siloing skeleton (scalability audit F2): the
- * cross-theme arc modeled as data instead of hardcoded MDX props. These pin
- * the ring topology and the resolution helpers so reordering themes is a safe
+ * cross-world arc modeled as data instead of hardcoded MDX props. These pin
+ * the ring topology and the resolution helpers so reordering worlds is a safe
  * data edit.
  */
 describe("journey ring", () => {
@@ -26,7 +26,7 @@ describe("journey ring", () => {
     for (const slug of JOURNEY_ORDER) {
       const next = getLeadsTo(slug)!;
       const prev = getArrivesFrom(slug)!;
-      // The theme I lead to must arrive from me; the theme I arrive from must
+      // The world I lead to must arrive from me; the world I arrive from must
       // lead to me. This is what makes a reorder safe: the invariant is data.
       expect(getArrivesFrom(next)).toBe(slug);
       expect(getLeadsTo(prev)).toBe(slug);
@@ -40,8 +40,8 @@ describe("journey ring", () => {
   });
 
   it("returns undefined for an unknown slug", () => {
-    expect(getJourneyNode("not-a-theme")).toBeUndefined();
-    expect(getLeadsTo("not-a-theme")).toBeUndefined();
+    expect(getJourneyNode("not-a-world")).toBeUndefined();
+    expect(getLeadsTo("not-a-world")).toBeUndefined();
   });
 });
 
@@ -58,29 +58,29 @@ describe("spine resolution (de-silos StrategyThread)", () => {
   });
 });
 
-describe("recommendedNextTheme (free-play soft nudge)", () => {
-  it("suggests the next unowned theme walking forward from current", () => {
+describe("recommendedNextWorld (free-play soft nudge)", () => {
+  it("suggests the next unowned world walking forward from current", () => {
     const owned = new Set([JOURNEY_ORDER[0]]);
-    expect(recommendedNextTheme(owned, JOURNEY_ORDER[0])).toBe(
+    expect(recommendedNextWorld(owned, JOURNEY_ORDER[0])).toBe(
       JOURNEY_ORDER[1],
     );
   });
 
-  it("skips owned themes and wraps around the ring", () => {
+  it("skips owned worlds and wraps around the ring", () => {
     const owned = new Set([JOURNEY_ORDER[1], JOURNEY_ORDER[2]]);
     // From position 0, next unowned after skipping 1 and 2 is position 3.
-    expect(recommendedNextTheme(owned, JOURNEY_ORDER[0])).toBe(
+    expect(recommendedNextWorld(owned, JOURNEY_ORDER[0])).toBe(
       JOURNEY_ORDER[3],
     );
   });
 
   it("returns null when the whole ring is owned", () => {
     expect(
-      recommendedNextTheme(new Set(JOURNEY_ORDER), JOURNEY_ORDER[0]),
+      recommendedNextWorld(new Set(JOURNEY_ORDER), JOURNEY_ORDER[0]),
     ).toBeNull();
   });
 
-  it("works with no current theme (recommends from the start)", () => {
-    expect(recommendedNextTheme(new Set())).toBe(JOURNEY_ORDER[0]);
+  it("works with no current world (recommends from the start)", () => {
+    expect(recommendedNextWorld(new Set())).toBe(JOURNEY_ORDER[0]);
   });
 });

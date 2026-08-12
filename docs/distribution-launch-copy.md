@@ -5,7 +5,7 @@ Ready-to-paste copy for the two account-creation items in Tier 1-OPS
 @tensorcraft X account. Voice rules applied: brand speaks as a group of
 frontend engineers (no personal names, per the identity policy), checkable
 numbers only, no em dashes, no claims the audits removed (no
-"production-ready model" phrasing, no all-five-themes bundle talk while
+"production-ready model" phrasing, no all-five-worlds bundle talk while
 only Deep Orbit is live).
 
 ## Product Hunt "upcoming" page

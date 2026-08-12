@@ -69,7 +69,7 @@ export const EVENTS = {
 
   // Engagement
   CODE_PUSHED: "code_pushed",
-  THEME_SELECTED: "theme_selected",
+  WORLD_SELECTED: "world_selected",
   PROGRESS_SHARED: "progress_shared",
   SESSION_STARTED: "session_started",
   SESSION_ENDED: "session_ended",
@@ -88,12 +88,12 @@ export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
 
 export interface EventProperties {
   [EVENTS.LESSON_STARTED]: {
-    themeId: string;
+    worldId: string;
     moduleId: string;
     lessonId: string;
   };
   [EVENTS.LESSON_COMPLETED]: {
-    themeId: string;
+    worldId: string;
     moduleId: string;
     lessonId: string;
     /** Optional time-on-lesson (ms). Absent when not instrumented. */
@@ -102,7 +102,7 @@ export interface EventProperties {
     hintsUsed?: number;
   };
   [EVENTS.EXERCISE_ATTEMPTED]: {
-    themeId: string;
+    worldId: string;
     lessonId: string;
     exerciseSlug: string;
     passed: boolean;
@@ -110,7 +110,7 @@ export interface EventProperties {
     hintsUsed?: number;
   };
   [EVENTS.EXERCISE_COMPLETED]: {
-    themeId: string;
+    worldId: string;
     lessonId: string;
     exerciseSlug: string;
     score: number;
@@ -119,25 +119,25 @@ export interface EventProperties {
   [EVENTS.HINT_REQUESTED]: {
     exerciseSlug?: string;
     lessonId?: string;
-    themeId?: string;
+    worldId?: string;
     /** 1 = nudge, 2 = guidance, 3 = solution */
     hintLevel: 1 | 2 | 3;
   };
   [EVENTS.CHECKPOINT_SUBMITTED]: {
-    themeId?: string;
+    worldId?: string;
     lessonId?: string;
     checkpointId?: string;
     passed: boolean;
     attempts: number;
   };
   [EVENTS.RECALL_ANSWERED]: {
-    themeId?: string;
+    worldId?: string;
     lessonId?: string;
     /** What the user did with the prompt. */
     action: "revealed" | "hidden" | "got-it" | "review";
   };
   [EVENTS.MODULE_COMPLETED]: {
-    themeId: string;
+    worldId: string;
     moduleId: string;
     lessonsCount: number;
   };
@@ -145,22 +145,22 @@ export interface EventProperties {
   [EVENTS.PRICING_PAGE_VIEWED]: {
     /** How the user arrived at /pricing (direct, paywall redirect, etc.) */
     source?: "direct" | "paywall" | "dashboard" | "landing" | "upgrade_cta";
-    /** Populated when the user was redirected from a locked theme. */
-    lockedThemeId?: string;
+    /** Populated when the user was redirected from a locked world. */
+    lockedWorldId?: string;
   };
   [EVENTS.PLAN_SELECTED]: {
     planId: string;
-    themeIds: string[];
+    worldIds: string[];
     price: number;
   };
   [EVENTS.CHECKOUT_STARTED]: {
     planId: string;
-    themeIds?: string[];
+    worldIds?: string[];
     price?: number;
   };
   [EVENTS.PAYMENT_COMPLETED]: {
     planId: string;
-    themeIds: string[];
+    worldIds: string[];
     amount: number;
     /** Stripe checkout session id (cs_...). */
     sessionId?: string;
@@ -172,17 +172,17 @@ export interface EventProperties {
     sessionId?: string;
   };
   [EVENTS.PAYWALL_HIT]: {
-    themeId: string;
+    worldId: string;
     moduleId: string;
     lessonId?: string;
   };
   [EVENTS.UPGRADE_CTA_SHOWN]: {
     source: "paywall" | "pricing" | "dashboard" | "lesson_footer";
-    themeId?: string;
+    worldId?: string;
   };
   [EVENTS.UPGRADE_CTA_CLICKED]: {
     source: "paywall" | "pricing" | "dashboard" | "lesson_footer";
-    themeId?: string;
+    worldId?: string;
   };
 
   /**
@@ -225,7 +225,7 @@ export interface EventProperties {
     source: "journey_page";
   };
   [EVENTS.SCRIPT_SKIPPED]: {
-    themeId: string;
+    worldId: string;
     lessonId: string;
     /** 0-based lesson step the script was skipped on. */
     step: number;
@@ -234,19 +234,19 @@ export interface EventProperties {
   };
 
   [EVENTS.CODE_PUSHED]: {
-    themeId: string;
+    worldId: string;
     lessonId: string;
     exerciseSlug: string;
     /** Resulting commit SHA from GitHub. */
     commitSha: string;
   };
-  [EVENTS.THEME_SELECTED]: {
-    themeId: string;
-    source: "onboarding" | "themes_grid" | "dashboard" | "settings";
+  [EVENTS.WORLD_SELECTED]: {
+    worldId: string;
+    source: "onboarding" | "worlds_grid" | "dashboard" | "settings";
   };
   [EVENTS.PROGRESS_SHARED]: {
     platform: "twitter" | "linkedin" | "copy" | "other";
-    themeId?: string;
+    worldId?: string;
   };
   [EVENTS.SESSION_STARTED]: {
     /** Client-generated correlation id shared with the matching session_ended. */
@@ -277,7 +277,7 @@ export interface EventProperties {
     /** Lesson slug the user clicked through to. */
     lessonSlug: string;
     moduleId: string;
-    themeId: string;
+    worldId: string;
     /** ISO week label (used as utm_campaign). */
     weekIso?: string;
   };

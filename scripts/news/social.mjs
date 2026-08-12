@@ -42,7 +42,7 @@ function buildThreadPrompt(items, digestUrl) {
     .map((it, i) => {
       const m = it.matched_lessons?.[0];
       const lessonUrl = m
-        ? `${SITE}/learn/${m.themeId}/${m.moduleId}/${m.slug}?utm_source=x&utm_medium=thread&utm_campaign=${WEEK}&utm_content=${i + 1}`
+        ? `${SITE}/learn/${m.worldId}/${m.moduleId}/${m.slug}?utm_source=x&utm_medium=thread&utm_campaign=${WEEK}&utm_content=${i + 1}`
         : "";
       return `${i + 1}. ${it.title}
    source: ${it.url}
@@ -63,7 +63,7 @@ Voice rules:
 Structure:
 - Tweet 1: Hook. State the through-line of the week. Tease ${items.length} items. End with the digest URL.
 - Tweets 2..N: One per news item. Pattern: "[short take on news]. Teaches X. {lesson_url}"
-- Final tweet: One-line CTA pointing to ${SITE}/themes ("Built for FE devs moving into ML →")
+- Final tweet: One-line CTA pointing to ${SITE}/worlds ("Built for FE devs moving into ML →")
 
 Output: thread text only, no preamble. Each tweet on its own paragraph.`;
 

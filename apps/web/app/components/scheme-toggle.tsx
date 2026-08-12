@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { SchemePreference } from "@tensorcraft/shared";
-import { useTheme } from "./theme-provider";
+import { useWorld } from "./world-provider";
 
 // Brutalist icon button: monospace glyphs, no rounded pill switch.
 // System (follow OS) -> Light -> Dark -> System. `schemePreference` is the
@@ -34,7 +34,7 @@ function nextState(state: SchemeState): SchemeState {
 }
 
 export function SchemeToggle() {
-  const { schemePreference, setScheme } = useTheme();
+  const { schemePreference, setScheme } = useWorld();
   // Screen-reader backstop (post-launch review, 2026-07-22): the accessible
   // name doubles as the current state AND changes in place on activation, on
   // the element that stays focused. Some AT/browser combos don't reliably

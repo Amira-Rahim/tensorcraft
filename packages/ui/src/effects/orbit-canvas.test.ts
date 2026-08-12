@@ -13,7 +13,7 @@ import {
    styling (alpha/brightness); the caller speeds time up by advancing its
    accumulated clock faster.
 
-   recordingCtx (shared with theme-scenes.test.ts, see
+   recordingCtx (shared with world-scenes.test.ts, see
    ./test-utils/recording-canvas.ts) captures EVERY geometry-producing call,
    including fillRect args into `.rects` — drawOrbit today only calls
    fillRect once, with the constant full-canvas nebula wash (0, 0, w, h),

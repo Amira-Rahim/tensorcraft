@@ -4,7 +4,7 @@ import { getSupabaseBrowserClient } from "./supabase/client";
 import { trackStreakAchieved } from "@/lib/analytics";
 
 interface ProgressUpdate {
-  themeId: string;
+  worldId: string;
   moduleId: string;
   lessonId: string;
   status: "not_started" | "in_progress" | "completed";
@@ -15,7 +15,7 @@ interface ProgressUpdate {
 
 /** Mark a lesson as started (in_progress), only if not already started or completed */
 export async function markLessonStarted(
-  themeId: string,
+  worldId: string,
   moduleId: string,
   lessonId: string,
 ) {
@@ -30,11 +30,11 @@ export async function markLessonStarted(
   // is a no-op and .select().single() returns null. In that case, fall back
   // to a SELECT to fetch the existing record.
   const { data, error } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .upsert(
       {
         user_id: user.id,
-        theme_id: themeId,
+        world_id: worldId,
         module_id: moduleId,
         lesson_id: lessonId,
         status: "in_progress",
@@ -43,7 +43,7 @@ export async function markLessonStarted(
         attempts: 0,
         started_at: new Date().toISOString(),
       },
-      { onConflict: "user_id,theme_id,lesson_id", ignoreDuplicates: true },
+      { onConflict: "user_id,world_id,lesson_id", ignoreDuplicates: true },
     )
     .select()
     .single();
@@ -53,10 +53,10 @@ export async function markLessonStarted(
   // Record already existed (ignoreDuplicates skipped the insert), fetch it
   if (error) {
     const { data: existing } = await supabase
-      .from("theme_progress")
+      .from("world_progress")
       .select("*")
       .eq("user_id", user.id)
-      .eq("theme_id", themeId)
+      .eq("world_id", worldId)
       .eq("lesson_id", lessonId)
       .single();
 
@@ -68,7 +68,7 @@ export async function markLessonStarted(
 
 /** Mark a lesson as completed and update streak */
 export async function markLessonCompleted(
-  themeId: string,
+  worldId: string,
   moduleId: string,
   lessonId: string,
   score?: number | null,
@@ -82,19 +82,19 @@ export async function markLessonCompleted(
   // Preserve original started_at if the record already exists; status
   // tells us below whether this call is a genuine completion transition.
   const { data: existingProgress } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .select("started_at, hints_used, attempts, score, status")
     .eq("user_id", user.id)
-    .eq("theme_id", themeId)
+    .eq("world_id", worldId)
     .eq("lesson_id", lessonId)
     .single();
 
   const { data, error } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .upsert(
       {
         user_id: user.id,
-        theme_id: themeId,
+        world_id: worldId,
         module_id: moduleId,
         lesson_id: lessonId,
         status: "completed" as const,
@@ -104,7 +104,7 @@ export async function markLessonCompleted(
         started_at: existingProgress?.started_at ?? new Date().toISOString(),
         completed_at: new Date().toISOString(),
       },
-      { onConflict: "user_id,theme_id,lesson_id" },
+      { onConflict: "user_id,world_id,lesson_id" },
     )
     .select()
     .single();
@@ -113,7 +113,7 @@ export async function markLessonCompleted(
 
   // Streak update + genome recomputation + analytics (all fire-and-forget)
   Promise.resolve(
-    supabase.rpc("record_streak_activity", { p_theme_id: themeId }),
+    supabase.rpc("record_streak_activity", { p_world_id: worldId }),
   )
     .then(() => {
       trackStreakAchieved(1);
@@ -123,11 +123,11 @@ export async function markLessonCompleted(
   Promise.resolve(
     supabase.rpc("compute_user_skill_genome", {
       p_user_id: user.id,
-      p_theme_id: themeId,
+      p_world_id: worldId,
     }),
   ).catch(() => {});
 
-  // DISPATCH milestone check (module cleared / theme cleared), only on a
+  // DISPATCH milestone check (module cleared / world cleared), only on a
   // genuine not-completed → completed transition. The server re-reads
   // progress and dedups, so this is best-effort like the calls above.
   if (existingProgress?.status !== "completed") {
@@ -135,7 +135,7 @@ export async function markLessonCompleted(
       .then(({ apiFetch }) =>
         apiFetch("/api/dispatch/check", {
           method: "POST",
-          body: JSON.stringify({ themeId, moduleId }),
+          body: JSON.stringify({ worldId, moduleId }),
         }),
       )
       .catch(() => {});
@@ -154,19 +154,19 @@ export async function updateExerciseProgress(update: ProgressUpdate) {
 
   // Preserve original started_at if the record already exists
   const { data: existingProgress } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .select("started_at")
     .eq("user_id", user.id)
-    .eq("theme_id", update.themeId)
+    .eq("world_id", update.worldId)
     .eq("lesson_id", update.lessonId)
     .single();
 
   const { data, error } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .upsert(
       {
         user_id: user.id,
-        theme_id: update.themeId,
+        world_id: update.worldId,
         module_id: update.moduleId,
         lesson_id: update.lessonId,
         status: update.status,
@@ -178,7 +178,7 @@ export async function updateExerciseProgress(update: ProgressUpdate) {
           ? { completed_at: new Date().toISOString() }
           : {}),
       },
-      { onConflict: "user_id,theme_id,lesson_id" },
+      { onConflict: "user_id,world_id,lesson_id" },
     )
     .select()
     .single();
@@ -188,7 +188,7 @@ export async function updateExerciseProgress(update: ProgressUpdate) {
 }
 
 /** Get lesson completion status (client-side) */
-export async function getLessonStatus(themeId: string, lessonId: string) {
+export async function getLessonStatus(worldId: string, lessonId: string) {
   const supabase = getSupabaseBrowserClient();
   const {
     data: { user },
@@ -196,10 +196,10 @@ export async function getLessonStatus(themeId: string, lessonId: string) {
   if (!user) return null;
 
   const { data } = await supabase
-    .from("theme_progress")
+    .from("world_progress")
     .select("status, completed_at")
     .eq("user_id", user.id)
-    .eq("theme_id", themeId)
+    .eq("world_id", worldId)
     .eq("lesson_id", lessonId)
     .single();
 
@@ -209,7 +209,7 @@ export async function getLessonStatus(themeId: string, lessonId: string) {
 /** ── Skill Event Buffer ────────────────────────────── */
 
 interface BufferedEvent {
-  themeId: string;
+  worldId: string;
   eventType: string;
   skillAxis: string;
   metadata: Record<string, unknown>;
@@ -260,14 +260,14 @@ if (typeof document !== "undefined") {
 
 /** Emit a skill event, buffered, flushed every 5s or on page leave */
 export function emitSkillEvent(
-  themeId: string,
+  worldId: string,
   eventType: string,
   skillAxis: string | undefined,
   metadata: Record<string, unknown> = {},
 ) {
   if (!skillAxis) return;
 
-  eventBuffer.push({ themeId, eventType, skillAxis, metadata });
+  eventBuffer.push({ worldId, eventType, skillAxis, metadata });
 
   // Flush immediately if buffer is full
   if (eventBuffer.length >= MAX_BUFFER_SIZE) {
@@ -290,7 +290,7 @@ export function emitSkillEvent(
 
 /** Check how many exercises in a lesson have a passing attempt */
 export async function getLessonExerciseStatus(
-  themeId: string,
+  worldId: string,
   lessonId: string,
   exerciseCount: number,
 ): Promise<{ allComplete: boolean; completedCount: number }> {
@@ -309,7 +309,7 @@ export async function getLessonExerciseStatus(
     .from("exercise_attempts")
     .select("exercise_slug")
     .eq("user_id", user.id)
-    .eq("theme_id", themeId)
+    .eq("world_id", worldId)
     .eq("lesson_id", lessonId)
     .eq("passed", true);
 

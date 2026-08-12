@@ -17,7 +17,7 @@ import { metadata as homeMetadata } from "./page";
 import { metadata as termsMetadata } from "./terms/page";
 import { metadata as privacyMetadata } from "./privacy/page";
 import { metadata as pricingMetadata } from "./pricing/page";
-import { metadata as themesMetadata } from "./themes/page";
+import { metadata as worldsMetadata } from "./worlds/page";
 import { metadata as dashboardMetadata } from "./dashboard/page";
 import { metadata as settingsMetadata } from "./settings/page";
 import { metadata as purchaseSuccessMetadata } from "./dashboard/purchase-success/page";
@@ -130,7 +130,7 @@ describe("SEO metadata", () => {
   });
 
   describe("root layout structured data", () => {
-    it("has Course schema for all 5 themes via JSON-LD (implicit)", () => {
+    it("has Course schema for all 5 worlds via JSON-LD (implicit)", () => {
       // JSON-LD is rendered in layout.tsx head. Test ensures metadataBase set.
       expect(layoutMetadata.metadataBase?.toString()).toContain(
         "tensorcraft.app",
@@ -147,9 +147,9 @@ describe("SEO metadata", () => {
       );
     });
 
-    it("themes index has its own canonical URL", () => {
-      expect(themesMetadata.alternates?.canonical).toBe(
-        "https://tensorcraft.app/themes",
+    it("worlds index has its own canonical URL", () => {
+      expect(worldsMetadata.alternates?.canonical).toBe(
+        "https://tensorcraft.app/worlds",
       );
     });
   });

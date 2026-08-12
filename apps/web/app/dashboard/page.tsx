@@ -1,18 +1,18 @@
 import { redirect } from "next/navigation";
-import { themes } from "@tensorcraft/themes";
+import { worlds } from "@tensorcraft/worlds";
 import {
   getModules,
   getModule,
   getModuleLessons,
   getLesson,
   getLessonTotalMinutes,
-  getThemeLessons,
+  getWorldLessons,
   getLessonsWithBridges,
 } from "@tensorcraft/content";
-import { LAUNCHED_THEMES, isLaunched, isComingSoon } from "@tensorcraft/shared";
+import { LAUNCHED_WORLDS, isLaunched, isComingSoon } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { hasThemePurchase } from "@/lib/progress";
-import { getEntitledThemes } from "@/lib/entitlements";
+import { hasWorldPurchase } from "@/lib/progress";
+import { getEntitledWorlds } from "@/lib/entitlements";
 import type { Metadata } from "next";
 import {
   DashboardView,
@@ -20,12 +20,12 @@ import {
   type DashboardBridge,
   type ActivityRecord,
 } from "./dashboard-view";
-import { ThemeCards, type ThemeCardData } from "./theme-cards";
+import { WorldCards, type WorldCardData } from "./world-cards";
 import { computeWeeklyHints } from "./_lib/viz-data";
 
 export const metadata: Metadata = {
   title: "Dashboard | Tensorcraft",
-  description: "Track your ML learning progress across themes.",
+  description: "Track your ML learning progress across worlds.",
   robots: { index: false, follow: false },
 };
 
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
     { data: progressRecords },
     { data: streaksRaw },
     { data: exerciseAttempts },
-    ownedThemes,
+    ownedWorlds,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -56,8 +56,8 @@ export default async function DashboardPage() {
       .eq("id", user.id)
       .single(),
     supabase
-      .from("theme_progress")
-      .select("theme_id, module_id, lesson_id, status, updated_at")
+      .from("world_progress")
+      .select("world_id, module_id, lesson_id, status, updated_at")
       .eq("user_id", user.id)
       .order("updated_at", { ascending: false })
       .limit(300),
@@ -67,7 +67,7 @@ export default async function DashboardPage() {
       // doesn't need its own BLOCKING second query over the same table
       // (fresh-eyes rerun T2-26: the dashboard issued the streaks query
       // twice, the second serially).
-      .select("theme_id, current_streak, longest_streak, last_activity_date")
+      .select("world_id, current_streak, longest_streak, last_activity_date")
       .eq("user_id", user.id),
     // One query serves both averageScore/moduleScoreMap (whole-history) and
     // lossCurveData (client-side filtered to the last 12 weeks). Keeping the
@@ -75,16 +75,16 @@ export default async function DashboardPage() {
     // (overall per-user average across all attempts).
     supabase
       .from("exercise_attempts")
-      .select("score, attempted_at, lesson_id, theme_id, hints_used")
+      .select("score, attempted_at, lesson_id, world_id, hints_used")
       .eq("user_id", user.id)
       .order("attempted_at", { ascending: false })
       .limit(800),
-    // Entitled themes from the single source (Tier 1 F4) — was a hand-rolled
-    // purchases query + theme_ids loop duplicated across three files.
-    getEntitledThemes(user.id),
+    // Entitled worlds from the single source (Tier 1 F4) — was a hand-rolled
+    // purchases query + world_ids loop duplicated across three files.
+    getEntitledWorlds(user.id),
   ]);
 
-  // Streak nudge: any of the user's per-theme streaks where last_activity_date
+  // Streak nudge: any of the user's per-world streaks where last_activity_date
   // is exactly yesterday, meaning the streak survives if they act today, dies
   // tomorrow otherwise. Computed against the user's local-day boundary using
   // UTC date components (server uses UTC; the streak RPC also uses date math
@@ -111,49 +111,49 @@ export default async function DashboardPage() {
     ),
   };
 
-  // ownedThemes now comes from getEntitledThemes (above) — the single
+  // ownedWorlds now comes from getEntitledWorlds (above) — the single
   // entitlement source, which already validates slugs.
-  // "Full bundle" = all currently-launched themes owned. Coming-soon themes
-  // are excluded, they aren't purchasable. When a new theme launches and is
-  // added to LAUNCHED_THEMES, this check expands automatically.
-  const hasFullBundle = LAUNCHED_THEMES.every((slug) => ownedThemes.has(slug));
+  // "Full bundle" = all currently-launched worlds owned. Coming-soon worlds
+  // are excluded, they aren't purchasable. When a new world launches and is
+  // added to LAUNCHED_WORLDS, this check expands automatically.
+  const hasFullBundle = LAUNCHED_WORLDS.every((slug) => ownedWorlds.has(slug));
 
   const streaks = streaksRaw ?? [];
   const records = progressRecords ?? [];
   const attempts = exerciseAttempts ?? [];
 
-  // Active-theme picks come from the LAUNCHED set only, coming-soon themes
+  // Active-world picks come from the LAUNCHED set only, coming-soon worlds
   // have no compiled content (Velite excludes them) so getModules/etc. would
-  // return empty arrays. Coming-soon themes still render as cards below for
+  // return empty arrays. Coming-soon worlds still render as cards below for
   // discoverability + waitlist capture, but never become the active surface.
-  const allThemes = Object.values(themes);
-  const launchedThemes = allThemes.filter((t) => isLaunched(t.slug));
-  const activeTheme = launchedThemes[0];
+  const allWorlds = Object.values(worlds);
+  const launchedWorlds = allWorlds.filter((t) => isLaunched(t.slug));
+  const activeWorld = launchedWorlds[0];
 
-  if (!activeTheme) redirect("/themes");
+  if (!activeWorld) redirect("/worlds");
 
-  // Fetch skill genome data for the user's active theme
+  // Fetch skill genome data for the user's active world
   const { data: genomeData } = await supabase
     .from("skill_genome")
     .select("skill_axis, proficiency, velocity")
     .eq("user_id", user.id)
-    .eq("theme_id", activeTheme.slug);
+    .eq("world_id", activeWorld.slug);
 
   // Build module map
-  const contentModules = getModules(activeTheme.slug);
+  const contentModules = getModules(activeWorld.slug);
   const completedLessonKeys = new Set(
     records
       .filter((r) => r.status === "completed")
-      .map((r) => `${r.theme_id}/${r.module_id}/${r.lesson_id}`),
+      .map((r) => `${r.world_id}/${r.module_id}/${r.lesson_id}`),
   );
 
   // Build a map of module slug -> exercise scores for per-module averages
   const moduleScoreMap = new Map<string, number[]>();
   for (const attempt of attempts) {
-    if (attempt.theme_id !== activeTheme.slug) continue;
+    if (attempt.world_id !== activeWorld.slug) continue;
     // Find which module this lesson belongs to
     for (const mod of contentModules) {
-      const modLessons = getModuleLessons(activeTheme.slug, mod.slug);
+      const modLessons = getModuleLessons(activeWorld.slug, mod.slug);
       if (modLessons.some((l) => l.slug === attempt.lesson_id)) {
         const existing = moduleScoreMap.get(mod.slug) ?? [];
         existing.push(attempt.score ?? 0);
@@ -166,9 +166,9 @@ export default async function DashboardPage() {
   // Find current module (first non-complete module)
   let foundActive = false;
   const dashModules: DashboardModule[] = contentModules.map((mod, i) => {
-    const modLessons = getModuleLessons(activeTheme.slug, mod.slug);
+    const modLessons = getModuleLessons(activeWorld.slug, mod.slug);
     const completedInMod = modLessons.filter((l) =>
-      completedLessonKeys.has(`${activeTheme.slug}/${mod.slug}/${l.slug}`),
+      completedLessonKeys.has(`${activeWorld.slug}/${mod.slug}/${l.slug}`),
     ).length;
 
     let score: number | null = null;
@@ -235,13 +235,13 @@ export default async function DashboardPage() {
 
   if (activeModule) {
     const modIndex = dashModules.indexOf(activeModule);
-    const modLessons = getModuleLessons(activeTheme.slug, activeModule.slug);
+    const modLessons = getModuleLessons(activeWorld.slug, activeModule.slug);
 
     // Find first incomplete lesson in module
     const firstIncompleteLessonIndex = modLessons.findIndex(
       (l) =>
         !completedLessonKeys.has(
-          `${activeTheme.slug}/${activeModule.slug}/${l.slug}`,
+          `${activeWorld.slug}/${activeModule.slug}/${l.slug}`,
         ),
     );
     const lessonIndex =
@@ -258,14 +258,14 @@ export default async function DashboardPage() {
         topic: currentLesson.title ?? "",
       };
 
-      resumeUrl = `/themes/${activeTheme.slug}/${activeModule.slug}/${currentLesson.slug}`;
+      resumeUrl = `/worlds/${activeWorld.slug}/${activeModule.slug}/${currentLesson.slug}`;
 
       // Don't promise a lesson the paywall will intercept: modules past
       // the free first one need a purchase, and the old "Resume Lesson"
       // label teleported unpurchased users to /pricing mid-click
       // (2026-07-14 UX audit).
       if (modIndex > 0) {
-        const purchased = await hasThemePurchase(user.id, activeTheme.slug);
+        const purchased = await hasWorldPurchase(user.id, activeWorld.slug);
         if (!purchased) {
           resumeUrl = "/paywall";
           resumeLabel = `Unlock Module ${modIndex + 1} →`;
@@ -276,13 +276,13 @@ export default async function DashboardPage() {
 
   // Stats
   const totalLessons = contentModules.reduce(
-    (sum, mod) => sum + getModuleLessons(activeTheme.slug, mod.slug).length,
+    (sum, mod) => sum + getModuleLessons(activeWorld.slug, mod.slug).length,
     0,
   );
   const completedLessonsCount = records.filter(
-    (r) => r.theme_id === activeTheme.slug && r.status === "completed",
+    (r) => r.world_id === activeWorld.slug && r.status === "completed",
   ).length;
-  const themeProgressPercent =
+  const worldProgressPercent =
     totalLessons > 0
       ? Math.round((completedLessonsCount / totalLessons) * 100)
       : 0;
@@ -305,14 +305,14 @@ export default async function DashboardPage() {
   const completedLessonKeysSimple = new Set(
     records
       .filter((r) => r.status === "completed")
-      .map((r) => `${r.theme_id}/${r.lesson_id}`),
+      .map((r) => `${r.world_id}/${r.lesson_id}`),
   );
 
-  const allBridges: DashboardBridge[] = launchedThemes.flatMap((theme) => {
-    const bridgeLessons = getLessonsWithBridges(theme.slug);
+  const allBridges: DashboardBridge[] = launchedWorlds.flatMap((world) => {
+    const bridgeLessons = getLessonsWithBridges(world.slug);
     return bridgeLessons.map((b) => ({
       ...b,
-      collected: completedLessonKeysSimple.has(`${theme.slug}/${b.lessonSlug}`),
+      collected: completedLessonKeysSimple.has(`${world.slug}/${b.lessonSlug}`),
     }));
   });
 
@@ -343,8 +343,8 @@ export default async function DashboardPage() {
     const event =
       r.status === "completed" ? "lesson_completed" : "lesson_started";
 
-    const mod = getModule(r.theme_id, r.module_id);
-    const lesson = getLesson(r.theme_id, r.module_id, r.lesson_id);
+    const mod = getModule(r.world_id, r.module_id);
+    const lesson = getLesson(r.world_id, r.module_id, r.lesson_id);
     const moduleTitle = mod?.title ?? r.module_id;
     const lessonTitle = lesson?.title ?? r.lesson_id;
 
@@ -360,38 +360,38 @@ export default async function DashboardPage() {
     profile?.display_name || user.email?.split("@")[0] || "Explorer";
   const avatarUrl = profile?.avatar_url || null;
 
-  // Build per-theme card data:
-  //   - launched + owned: real per-theme progress
+  // Build per-world card data:
+  //   - launched + owned: real per-world progress
   //   - launched + locked: total lesson count + pricing link
-  //   - coming-soon: muted card linking to the per-theme stub w/ waitlist;
-  //                  totalLessons = 0 because Velite skipped that theme's content.
-  const themeCardsData: ThemeCardData[] = allThemes.map((theme) => {
-    const comingSoon = isComingSoon(theme.slug);
-    const themeLessons = comingSoon ? [] : getThemeLessons(theme.slug);
-    const totalLessonsForTheme = themeLessons.length;
-    const owned = ownedThemes.has(theme.slug);
-    const completedForTheme =
+  //   - coming-soon: muted card linking to the per-world stub w/ waitlist;
+  //                  totalLessons = 0 because Velite skipped that world's content.
+  const worldCardsData: WorldCardData[] = allWorlds.map((world) => {
+    const comingSoon = isComingSoon(world.slug);
+    const worldLessons = comingSoon ? [] : getWorldLessons(world.slug);
+    const totalLessonsForWorld = worldLessons.length;
+    const owned = ownedWorlds.has(world.slug);
+    const completedForWorld =
       owned && !comingSoon
         ? records.filter(
-            (r) => r.theme_id === theme.slug && r.status === "completed",
+            (r) => r.world_id === world.slug && r.status === "completed",
           ).length
         : 0;
     const progressPercent =
-      owned && totalLessonsForTheme > 0
-        ? Math.round((completedForTheme / totalLessonsForTheme) * 100)
+      owned && totalLessonsForWorld > 0
+        ? Math.round((completedForWorld / totalLessonsForWorld) * 100)
         : 0;
 
     return {
-      slug: theme.slug,
-      displayName: theme.displayName,
-      tagline: theme.tagline,
-      specialization: theme.specialization,
-      primary: theme.palette.primary,
-      primaryLight: theme.paletteLight.primary,
+      slug: world.slug,
+      displayName: world.displayName,
+      tagline: world.tagline,
+      specialization: world.specialization,
+      primary: world.palette.primary,
+      primaryLight: world.paletteLight.primary,
       owned,
-      isActive: theme.slug === activeTheme.slug && owned,
-      completedLessons: completedForTheme,
-      totalLessons: totalLessonsForTheme,
+      isActive: world.slug === activeWorld.slug && owned,
+      completedLessons: completedForWorld,
+      totalLessons: totalLessonsForWorld,
       progressPercent,
       comingSoon,
     };
@@ -401,12 +401,12 @@ export default async function DashboardPage() {
     <DashboardView
       displayName={displayName}
       avatarUrl={avatarUrl}
-      themeName={activeTheme.displayName}
-      themeSlug={activeTheme.slug}
+      worldName={activeWorld.displayName}
+      worldSlug={activeWorld.slug}
       modules={dashModules}
       currentModule={currentModuleInfo}
-      themeProgressPercent={themeProgressPercent}
-      themePoints={{
+      worldProgressPercent={worldProgressPercent}
+      worldPoints={{
         current: Math.round(
           (completedLessonsCount / Math.max(totalLessons, 1)) * 100,
         ),
@@ -424,8 +424,8 @@ export default async function DashboardPage() {
       completedModules={completedModules}
       genomeData={genomeData ?? []}
       lossCurveData={lossCurveData}
-      themeCards={
-        <ThemeCards cards={themeCardsData} hasFullBundle={hasFullBundle} />
+      worldCards={
+        <WorldCards cards={worldCardsData} hasFullBundle={hasFullBundle} />
       }
       streakAtRisk={streakAtRisk}
     />

@@ -74,7 +74,7 @@ beforeEach(() => {
 describe("signed-in user on /auth", () => {
   it("preserves a query-bearing redirectTo as a real query string", async () => {
     signedIn();
-    const dest = "/pricing?plan=single&themes=deep-orbit";
+    const dest = "/pricing?plan=single&worlds=deep-orbit";
     const res = await updateSession(
       request(`/auth?redirectTo=${encodeURIComponent(dest)}`),
     );
@@ -85,9 +85,9 @@ describe("signed-in user on /auth", () => {
   it("allows plain paths containing hyphens (guard must not over-reject)", async () => {
     signedIn();
     const res = await updateSession(
-      request(`/auth?redirectTo=${encodeURIComponent("/themes/deep-orbit")}`),
+      request(`/auth?redirectTo=${encodeURIComponent("/worlds/deep-orbit")}`),
     );
-    expect(res.headers.get("location")).toBe(`${ORIGIN}/themes/deep-orbit`);
+    expect(res.headers.get("location")).toBe(`${ORIGIN}/worlds/deep-orbit`);
   });
 
   it.each([
@@ -111,7 +111,7 @@ describe("auth sub-routes are not swallowed", () => {
   it("signed-in user on /auth/callback is not redirected by the middleware", async () => {
     signedIn();
     const res = await updateSession(
-      request("/auth/callback?next=%2Fthemes%2Fdeep-orbit"),
+      request("/auth/callback?next=%2Fworlds%2Fdeep-orbit"),
     );
     expect(res.headers.get("location")).toBeNull();
   });

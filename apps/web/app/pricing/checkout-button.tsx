@@ -9,7 +9,7 @@ import { errorMessageForCode, ERROR_MESSAGES } from "@/lib/error-messages";
 
 interface CheckoutButtonProps {
   planId: string;
-  themeIds: string[];
+  worldIds: string[];
   children: React.ReactNode;
   recommended?: boolean;
   disabled?: boolean;
@@ -19,7 +19,7 @@ interface CheckoutButtonProps {
 
 export function CheckoutButton({
   planId,
-  themeIds,
+  worldIds,
   children,
   recommended = false,
   disabled = false,
@@ -31,24 +31,24 @@ export function CheckoutButton({
   const router = useRouter();
   const [alreadyOwned, setAlreadyOwned] = useState(false);
 
-  // Check if user already owns all themes in this plan
+  // Check if user already owns all worlds in this plan
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
       supabase
         .from("purchases")
-        .select("theme_ids")
+        .select("world_ids")
         .eq("user_id", session.user.id)
         .in("status", ["completed", "partially_refunded"])
         .then(({ data }) => {
           if (!data) return;
-          const owned = new Set(data.flatMap((p) => p.theme_ids));
-          const allOwned = themeIds.every((t) => owned.has(t));
+          const owned = new Set(data.flatMap((p) => p.world_ids));
+          const allOwned = worldIds.every((t) => owned.has(t));
           setAlreadyOwned(allOwned);
         });
     });
-  }, [themeIds]);
+  }, [worldIds]);
 
   async function handleCheckout() {
     if (disabled || alreadyOwned) return;
@@ -86,7 +86,7 @@ export function CheckoutButton({
         // returns to the picker they left (audit run #7).
         const restore = new URLSearchParams({
           plan: planId,
-          themes: themeIds.join(","),
+          worlds: worldIds.join(","),
         });
         router.push(
           `/auth?redirectTo=${encodeURIComponent(`/pricing?${restore.toString()}`)}`,
@@ -103,7 +103,7 @@ export function CheckoutButton({
         // API host (api.tensorcraft.app) — a relative URL 404s on Vercel.
         response = await apiFetch("/api/payments/checkout", {
           method: "POST",
-          body: JSON.stringify({ planId, themeIds }),
+          body: JSON.stringify({ planId, worldIds }),
         });
       } catch {
         setError(ERROR_MESSAGES.network);
@@ -138,7 +138,7 @@ export function CheckoutButton({
       // created a second Checkout Session. Leaving it disabled until the page
       // unloads is the point.
       if (data.granted) {
-        // Auto-grant, themes were granted instantly, redirect to success
+        // Auto-grant, worlds were granted instantly, redirect to success
         window.location.href = "/dashboard/purchase-success";
         return;
       }

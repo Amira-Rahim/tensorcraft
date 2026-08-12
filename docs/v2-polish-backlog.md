@@ -12,29 +12,29 @@ Items grouped by leverage. Highest leverage first.
 
 Full design reference: `~/.claude/plans/do-you-think-game-reactive-hennessy.md`. Each entry below is implementation-ready (data model + UX + build estimate + ethics check) per that plan. Cohort split mirrors a launch-stage gate the user set: single-player ships now; multiplayer/teams gated to 1000-user milestone.
 
-**Status (2026-05-08):** all NOW-cohort slices shipped at infra + Deep Orbit content level — 6 slices in one session: #11 Operator log, #1+#13+#15 DISPATCH bundle, #6 Boss beats, #3 Counterfactual playthrough, #20 NPC cameos, #19 Lore artifacts. Migrations 028–032 added. Vitest 772/772. Polish checklist (axe/Lighthouse/Playwright auth flows) lives at `docs/gt-narrative-polish-checklist.md`. Per-theme launch content for Neon/Signal/Nova/Terra deferred to each theme's launch sprint — outline below under "Per-theme launch content sprint."
+**Status (2026-05-08):** all NOW-cohort slices shipped at infra + Deep Orbit content level — 6 slices in one session: #11 Operator log, #1+#13+#15 DISPATCH bundle, #6 Boss beats, #3 Counterfactual playthrough, #20 NPC cameos, #19 Lore artifacts. Migrations 028–032 added. Vitest 772/772. Polish checklist (axe/Lighthouse/Playwright auth flows) lives at `docs/gt-narrative-polish-checklist.md`. Per-world launch content for Neon/Signal/Nova/Terra deferred to each world's launch sprint — outline below under "Per-world launch content sprint."
 
 > **REMOVED 2026-06-01:** #11 Operator log (`/log`), the review queue / bandit spaced-recall (`/review`, `packages/shared/src/bandit.ts`, `<BanditState />`), and #19 Lore artifacts (`/library/lore`) were cut entirely. Migration `033_drop_review_and_lore.sql` drops their tables/RPCs (027/028/032). #3 Counterfactual playthrough lost its `/log/rewind` UI but **keeps its data layer** (migration 031 + `counterfactual-client.ts`). DISPATCH (#1/#13/#15), boss beats (#6), and NPC cameos (#20) are unaffected.
 
-> **UPDATE 2026-07-13:** the DISPATCH inbox got its missing producer (module/theme-clear milestones, `apps/api/src/lib/dispatch.ts` + `/api/dispatch/check`) and the nav link is restored. Boss-beat expansion has its own ranked plan now: `docs/v2-beat-expansion-plan.md` (6 candidate beats, post-launch gated). Retention email sequences: `docs/email-retention-sequences.md`.
+> **UPDATE 2026-07-13:** the DISPATCH inbox got its missing producer (module/world-clear milestones, `apps/api/src/lib/dispatch.ts` + `/api/dispatch/check`) and the nav link is restored. Boss-beat expansion has its own ranked plan now: `docs/v2-beat-expansion-plan.md` (6 candidate beats, post-launch gated). Retention email sequences: `docs/email-retention-sequences.md`.
 
 ### NOW (single-player, ship-now candidates)
 
 Suggested ship order: #11 → (#1 + #13 + #15 bundle) → #6 → #3. NOW spine (those four) totals ~36–50 days. Optional gap-fillers: #20, #19, #17. Defer in NOW: #5 (high authoring tax), #12 (weak SP without social), #16 ($$$$), #18 (3–4× MDX cost).
 
-- **#11 Operator log meta-screen** ⭐ — cross-theme regret summary, post-hoc strategy classification. Stands up DISPATCH narrator voice. Zero new tables. ~8–12d.
-- **#1 Free-reveal cliffhangers + cross-theme tease** — finale teases of next-theme characters; always reveals (soft gate per scoping). ~4–6d.
-- **#13 NPC DISPATCH inbox** — weekly intel push from DISPATCH; CTAs to /themes, /inbox, etc. ~3–5d.
+- **#11 Operator log meta-screen** ⭐ — cross-world regret summary, post-hoc strategy classification. Stands up DISPATCH narrator voice. Zero new tables. ~8–12d.
+- **#1 Free-reveal cliffhangers + cross-world tease** — finale teases of next-world characters; always reveals (soft gate per scoping). ~4–6d.
+- **#13 NPC DISPATCH inbox** — weekly intel push from DISPATCH; CTAs to /worlds, /inbox, etc. ~3–5d.
 - **#15 Recall-as-narrative** — rewrite RecallPrompts as in-canon micro-beats. Per-prompt rewrite, no infra.
 - **#6 Time-pressure boss beats** — 30s 4-option strategy choice (cooperate/defect/random/dominant) at capstone moments. ~8–10d.
-- **#3 Counterfactual playthrough** — 1 rewind per theme; alternate timeline shown. Regret minimization made literal. ~10–14d.
+- **#3 Counterfactual playthrough** — 1 rewind per world; alternate timeline shown. Regret minimization made literal. ~10–14d.
 - **#5 Branching quizzes** — answer alters next 30s narrative. High authoring tax (~14–20d full curriculum).
 - **#12 Reputation currency (SP cosmetic only)** — rep ledger + cosmetics shop, NO leaderboard surface. Re-evaluate when LATER cohort opens.
-- **#17 Branching theme epilogues** — 3 variants per theme by trajectory band. ~6–8d.
+- **#17 Branching world epilogues** — 3 variants per world by trajectory band. ~6–8d.
 - **#19 Lore artifacts** — random drop on completion, in-canon journal entries, /library/lore. ~3–4d.
-- **#16 Voice-actor character cards** — $$$$ recurring per theme; defer.
+- **#16 Voice-actor character cards** — $$$$ recurring per world; defer.
 - **#18 Character-perspective re-render** — 3–4× MDX authoring cost; defer.
-- **#20 Inter-theme NPC cameos** — 10–20 single-line cameos. ~1–2d. Ship in any gap.
+- **#20 Inter-world NPC cameos** — 10–20 single-line cameos. ~1–2d. Ship in any gap.
 
 ### LATER (1000-user gated, deferred)
 
@@ -56,7 +56,7 @@ Slice C shipped: bandit-driven `/review` queue, bandit lesson rewrite (regret/mi
 
 Deferred from that slice:
 
-- **SHAP cross-link in `<StrategyThread>`** — the SHAP lesson at `packages/content/content/extras/ethics-responsibility/03-model-interpretability.mdx` has no `/themes/extras/...` route, so linking from the bandit / GAN lessons would 404. Two paths forward: (a) add a public route for `extras/*` content; (b) move SHAP into a launched theme. (a) is cheaper.
+- **SHAP cross-link in `<StrategyThread>`** — the SHAP lesson at `packages/content/content/extras/ethics-responsibility/03-model-interpretability.mdx` has no `/worlds/extras/...` route, so linking from the bandit / GAN lessons would 404. Two paths forward: (a) add a public route for `extras/*` content; (b) move SHAP into a launched world. (a) is cheaper.
 - **Auction lesson (Terra Grid)** — second-price (Vickrey) auction; FE bridge `ad-bid auction = CSS specificity wars`. New lesson under `terra-grid/ab-testing/`.
 - **Stackelberg reframe of adversarial patches (Neon Protocol)** — currently framed as security; reframe as attacker→defender game w/ FE bridge `XSS sanitizer co-evolution`.
 - **RLHF preference-learning reframe (Signal Ward)** — Bradley–Terry pairwise / social choice; FE bridge `preference vote = thumbs-up A/B ranking`.
@@ -65,7 +65,7 @@ Deferred from that slice:
 - **PWA / push notifications** — currently web-only, no `manifest.json` / service worker. Push for review-due reminders is its own slice.
 - **Capstone leaderboard (opt-in)** — Kaggle-style scored holdout per capstone; top-N public. Needs hosting + cheating mitigations.
 - **Commitment device at checkout** — user picks finish-by date at purchase; opt-in nudges only.
-- **Cohort starts** — synchronized start dates, theme-mate pairing.
+- **Cohort starts** — synchronized start dates, world-mate pairing.
 - **Thompson-sampling scheduler upgrade** — current scheduler is ε-greedy (matches the lesson). Once a Bayesian intuition lesson exists, switch the production scheduler to Thompson sampling for tighter regret bounds and self-reference parity with the new lesson.
 
 ## ~~High leverage (~8h) — ship next post-launch sprint~~ → **Forced bridges + a11y polish DONE 2026-04-28**
@@ -76,7 +76,7 @@ Replaced all 3 forced analogies with stronger pairs in `packages/shared/src/brid
 
 - **#5 LR ↔ ~~Animation easing~~ Bisection / binary-search step halving** — same intuition (big steps far, small steps near). Breaks specify deterministic-vs-stochastic divergence. mlCode shows step-decay schedule.
 - **#17 Data augmentation ↔ ~~Media queries → fuzz testing~~ Programmatic test fixture factories (Faker / factory-bot / fast-check generators)** — fuzz testing analogy was inverted-goals (fuzz finds failures, augmentation prevents memorization). Replaced 2026-04-28 with fixture factories: same intent (population coverage, not failure-finding), same primitive (sample variations from distribution). Breaks specify ephemeral-fixtures vs gradient-baked-augmentations.
-- **#44 Style transfer ↔ ~~CSS theme switch → Photoshop filter stack~~ Auto-formatter pipeline (Prettier / eslint --fix)** — filter-stack analogy was vague "compose transforms" hiding the optimization chasm. Replaced 2026-04-28 with Prettier: same shape (iteratively rewrite target until it matches a reference style, preserve content semantics throughout). Breaks specify symbolic-deterministic AST rewrite vs numerical-stochastic gradient descent.
+- **#44 Style transfer ↔ ~~CSS world switch → Photoshop filter stack~~ Auto-formatter pipeline (Prettier / eslint --fix)** — filter-stack analogy was vague "compose transforms" hiding the optimization chasm. Replaced 2026-04-28 with Prettier: same shape (iteratively rewrite target until it matches a reference style, preserve content semantics throughout). Breaks specify symbolic-deterministic AST rewrite vs numerical-stochastic gradient descent.
 
 Bridge audit re-run after fix: 0 mismatches, 50 bridges with breaks coverage 100% on non-identity.
 
@@ -129,7 +129,7 @@ Glyph prefix renders before tier label with `aria-hidden="true"` so screen reade
 
 ### Capstone real-data training — V2 task
 
-Each theme's capstone currently uses synthetic-data-trained reference artifacts. Replacing with real-data versions requires:
+Each world's capstone currently uses synthetic-data-trained reference artifacts. Replacing with real-data versions requires:
 
 - Deep Orbit DEEP SCAN: synthetic signals → real signal datasets (e.g., LIGO public data, Kaggle audio anomaly)
 - Neon Protocol SENTINEL: synthetic 24×24 → CIFAR-10 fine-tuned
@@ -137,7 +137,7 @@ Each theme's capstone currently uses synthetic-data-trained reference artifacts.
 - Nova Canvas STUDIO-ONE: synthetic noise → tiny CelebA subset
 - Terra Grid METEOR: synthetic load → ERCOT public data
 
-Per-theme cost: ~2h training + dataset curation. Total ~10h. Defer until V2.
+Per-world cost: ~2h training + dataset curation. Total ~10h. Defer until V2.
 
 ## Low leverage (~1h) — nice-to-have
 

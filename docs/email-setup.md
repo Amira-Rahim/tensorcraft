@@ -151,5 +151,5 @@ canonical list. New vars introduced by §4e:
   `/settings` banner).
 - Provider-level feedback loops (FBL) beyond Kit's webhook — e.g. Gmail
   Postmaster Tools enrolment. Worth doing post-V1 once volume > 5k/day.
-- Per-theme palette in email templates (currently forced-monochrome for
+- Per-world palette in email templates (currently forced-monochrome for
   deliverability; see `email-templates.md`).

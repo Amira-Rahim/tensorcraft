@@ -77,7 +77,7 @@ describe("POST /api/waitlist", () => {
     expect(res.status).toBe(500);
   });
 
-  it("passes themeId and source to insert", async () => {
+  it("passes worldId and source to insert", async () => {
     mockInsert.mockResolvedValue({ error: null });
 
     await app.request("/api/waitlist", {
@@ -85,14 +85,14 @@ describe("POST /api/waitlist", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: "test@example.com",
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         source: "landing",
       }),
     });
 
     expect(mockInsert).toHaveBeenCalledWith({
       email: "test@example.com",
-      theme_id: "deep-orbit",
+      world_id: "deep-orbit",
       source: "landing",
     });
   });

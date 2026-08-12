@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Terms of Service | Tensorcraft",
   description:
-    "Read the Tensorcraft Terms of Service covering account use, one-time theme purchases, refunds, intellectual property, and acceptable use.",
+    "Read the Tensorcraft Terms of Service covering account use, one-time world purchases, refunds, intellectual property, and acceptable use.",
   alternates: { canonical: "https://tensorcraft.app/terms" },
   openGraph: {
     type: "article",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
       "Terms covering accounts, purchases, refunds, IP, and acceptable use.",
     images: [
       {
-        url: "/api/og?title=Terms%20of%20Service&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+        url: "/api/og?title=Terms%20of%20Service&subtitle=Tensorcraft%20legal&world=deep-orbit",
         width: 1200,
         height: 630,
         alt: "Tensorcraft Terms of Service",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     title: "Terms of Service | Tensorcraft",
     description: "Accounts, purchases, refunds, IP, and acceptable use.",
     images: [
-      "/api/og?title=Terms%20of%20Service&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+      "/api/og?title=Terms%20of%20Service&subtitle=Tensorcraft%20legal&world=deep-orbit",
     ],
   },
 };
@@ -88,8 +88,8 @@ export default function TermsPage() {
               4. Purchases & Refunds
             </h2>
             <p>
-              Theme purchases are one-time payments that grant lifetime access
-              to the purchased theme content. All prices are in USD. Refunds are
+              World purchases are one-time payments that grant lifetime access
+              to the purchased world content. All prices are in USD. Refunds are
               available within 14 days of purchase, no questions asked: email
               support@tensorcraft.app.
             </p>
@@ -113,7 +113,7 @@ export default function TermsPage() {
             </h2>
             <p>
               Connecting GitHub is optional. If you connect it, Tensorcraft
-              creates a repository on your GitHub account per theme and pushes
+              creates a repository on your GitHub account per world and pushes
               your passing exercise solutions to it. These repositories are
               created <strong className="text-text-primary">public</strong> on
               your account; you can make them private or delete them in GitHub

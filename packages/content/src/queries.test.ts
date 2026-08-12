@@ -4,56 +4,56 @@ vi.mock("../.velite", () => ({
   modules: [
     {
       slug: "foundations",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       title: "Foundations",
       order: 1,
     },
     {
       slug: "neural-networks",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       title: "Neural Networks",
       order: 2,
     },
     {
       slug: "training-loop",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       title: "Training Loop",
       order: 3,
     },
-    { slug: "basics", themeId: "neon-protocol", title: "Basics", order: 1 },
+    { slug: "basics", worldId: "neon-protocol", title: "Basics", order: 1 },
   ],
   lessons: [
     {
       slug: "intro-tensors",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "foundations",
       title: "Introduction to Tensors",
       order: 1,
     },
     {
       slug: "tensor-shapes",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "foundations",
       title: "Tensor Shapes",
       order: 2,
     },
     {
       slug: "tensor-ops",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "foundations",
       title: "Tensor Operations",
       order: 3,
     },
     {
       slug: "first-neuron",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "neural-networks",
       title: "First Neuron",
       order: 1,
     },
     {
       slug: "activation-functions",
-      themeId: "deep-orbit",
+      worldId: "deep-orbit",
       moduleId: "neural-networks",
       title: "Activation Functions",
       order: 2,
@@ -80,7 +80,7 @@ vi.mock("../.velite", () => ({
 import {
   getModules,
   getModule,
-  getThemeLessons,
+  getWorldLessons,
   getModuleLessons,
   getLesson,
   getExercise,
@@ -89,7 +89,7 @@ import {
 
 describe("Content Queries", () => {
   describe("getModules", () => {
-    it("returns modules for a given theme", () => {
+    it("returns modules for a given world", () => {
       const result = getModules("deep-orbit");
       expect(result).toHaveLength(3);
       expect(result.map((m) => m.slug)).toEqual([
@@ -106,11 +106,11 @@ describe("Content Queries", () => {
       expect(result[2].order).toBe(3);
     });
 
-    it("returns empty array for unknown theme", () => {
-      expect(getModules("unknown-theme")).toEqual([]);
+    it("returns empty array for unknown world", () => {
+      expect(getModules("unknown-world")).toEqual([]);
     });
 
-    it("filters by theme correctly", () => {
+    it("filters by world correctly", () => {
       const result = getModules("neon-protocol");
       expect(result).toHaveLength(1);
       expect(result[0].slug).toBe("basics");
@@ -128,26 +128,26 @@ describe("Content Queries", () => {
       expect(getModule("deep-orbit", "nonexistent")).toBeNull();
     });
 
-    it("returns null for wrong theme", () => {
+    it("returns null for wrong world", () => {
       expect(getModule("neon-protocol", "foundations")).toBeNull();
     });
   });
 
-  describe("getThemeLessons", () => {
-    it("returns all lessons for a theme", () => {
-      const result = getThemeLessons("deep-orbit");
+  describe("getWorldLessons", () => {
+    it("returns all lessons for a world", () => {
+      const result = getWorldLessons("deep-orbit");
       expect(result).toHaveLength(5);
     });
 
     it("returns lessons sorted by order", () => {
-      const result = getThemeLessons("deep-orbit");
+      const result = getWorldLessons("deep-orbit");
       for (let i = 1; i < result.length; i++) {
         expect(result[i].order).toBeGreaterThanOrEqual(result[i - 1].order);
       }
     });
 
-    it("returns empty for unknown theme", () => {
-      expect(getThemeLessons("unknown")).toEqual([]);
+    it("returns empty for unknown world", () => {
+      expect(getWorldLessons("unknown")).toEqual([]);
     });
   });
 
@@ -180,7 +180,7 @@ describe("Content Queries", () => {
       expect(getLesson("deep-orbit", "foundations", "nonexistent")).toBeNull();
     });
 
-    it("returns null when theme doesn't match", () => {
+    it("returns null when world doesn't match", () => {
       expect(
         getLesson("neon-protocol", "foundations", "intro-tensors"),
       ).toBeNull();
@@ -202,7 +202,7 @@ describe("Content Queries", () => {
   describe("getAdjacentLessons", () => {
     it("returns prev and next for middle lesson", () => {
       const result = getAdjacentLessons({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "foundations",
         order: 2,
       });
@@ -212,7 +212,7 @@ describe("Content Queries", () => {
 
     it("returns null prev for first lesson", () => {
       const result = getAdjacentLessons({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "foundations",
         order: 1,
       });
@@ -222,7 +222,7 @@ describe("Content Queries", () => {
 
     it("returns null next for last lesson", () => {
       const result = getAdjacentLessons({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "foundations",
         order: 3,
       });
@@ -232,7 +232,7 @@ describe("Content Queries", () => {
 
     it("returns both null for single-lesson module or unknown", () => {
       const result = getAdjacentLessons({
-        themeId: "deep-orbit",
+        worldId: "deep-orbit",
         moduleId: "unknown",
         order: 1,
       });

@@ -28,7 +28,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "apps/web"),
       "@tensorcraft/supabase": path.resolve(__dirname, "packages/supabase/src"),
       "@tensorcraft/shared": path.resolve(__dirname, "packages/shared/src"),
-      "@tensorcraft/themes": path.resolve(__dirname, "packages/themes/src"),
+      "@tensorcraft/worlds": path.resolve(__dirname, "packages/worlds/src"),
       "@tensorcraft/ui": path.resolve(__dirname, "packages/ui/src"),
       "@tensorcraft/content": path.resolve(__dirname, "packages/content/src"),
       // Hoist React to the root node_modules (resolved via packages/ui)

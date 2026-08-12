@@ -67,9 +67,9 @@ describe("Nav", () => {
     expect(brandLinks[0]).toHaveAttribute("href", "/");
   });
 
-  it("renders Themes and Pricing links", () => {
+  it("renders Worlds and Pricing links", () => {
     render(<Nav />);
-    expect(screen.getByText("Themes")).toBeInTheDocument();
+    expect(screen.getByText("Worlds")).toBeInTheDocument();
     expect(screen.getByText("Pricing")).toBeInTheDocument();
   });
 
@@ -134,19 +134,19 @@ describe("Nav", () => {
   });
 
   it("hides itself on lesson viewer routes (focus mode)", () => {
-    mockPathname = "/themes/deep-orbit/foundations/introduction-to-tensors";
+    mockPathname = "/worlds/deep-orbit/foundations/introduction-to-tensors";
     render(<Nav />);
     expect(screen.queryByTestId("site-nav")).toBeNull();
   });
 
-  it("stays visible on theme routes", () => {
-    mockPathname = "/themes/deep-orbit";
+  it("stays visible on world routes", () => {
+    mockPathname = "/worlds/deep-orbit";
     render(<Nav />);
     expect(screen.getByTestId("site-nav")).toBeInTheDocument();
   });
 
   it("stays visible on capstone routes", () => {
-    mockPathname = "/themes/deep-orbit/capstone";
+    mockPathname = "/worlds/deep-orbit/capstone";
     render(<Nav />);
     expect(screen.getByTestId("site-nav")).toBeInTheDocument();
   });

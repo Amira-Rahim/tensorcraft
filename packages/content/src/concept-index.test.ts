@@ -21,7 +21,7 @@ const lessonA: Lesson = {
   slug: "intro-tensors",
   title: "Introduction to Tensors",
   moduleId: "foundations",
-  themeId: "deep-orbit",
+  worldId: "deep-orbit",
   order: 1,
   concept: {
     explanation: "x",
@@ -42,7 +42,7 @@ const lessonB: Lesson = {
   slug: "webgpu-acceleration",
   title: "WebGPU Acceleration",
   moduleId: "browser-runtimes",
-  themeId: "neon-protocol",
+  worldId: "neon-protocol",
   order: 4,
   concept: { explanation: "x" },
   keywords: ["web-gpu", "GPU", "inference"],

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 /**
- * Waitlist route, originally designed for "coming soon" theme interest capture.
- * All 5 themes now launch simultaneously, so theme-specific waitlist signups
+ * Waitlist route, originally designed for "coming soon" world interest capture.
+ * All 5 worlds now launch simultaneously, so world-specific waitlist signups
  * are no longer needed. This route is kept for general newsletter signups
  * and may be repurposed in the future.
  */
@@ -13,7 +13,7 @@ const waitlist = new Hono();
  * POST /api/waitlist, Add email to waitlist (no auth required).
  */
 waitlist.post("/", async (c) => {
-  let body: { email: string; themeId?: string; source?: string };
+  let body: { email: string; worldId?: string; source?: string };
   try {
     body = await c.req.json();
   } catch {
@@ -29,7 +29,7 @@ waitlist.post("/", async (c) => {
 
   const { error } = await supabase.from("waitlist").insert({
     email: body.email,
-    theme_id: body.themeId ?? null,
+    world_id: body.worldId ?? null,
     source: body.source ?? null,
   });
 

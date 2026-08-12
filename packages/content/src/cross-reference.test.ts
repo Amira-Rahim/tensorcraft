@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { THEME_SLUGS } from "@tensorcraft/shared";
+import { WORLD_SLUGS } from "@tensorcraft/shared";
 import sampleModule from "./fixtures/sample-module.json";
 import sampleLessons from "./fixtures/sample-lessons.json";
 import sampleExercises from "./fixtures/sample-exercises.json";
@@ -54,9 +54,9 @@ describe("Cross-reference integrity", () => {
     });
   });
 
-  it("every lesson themeId is a valid THEME_SLUG", () => {
+  it("every lesson worldId is a valid WORLD_SLUG", () => {
     lessons.forEach((l) => {
-      expect(THEME_SLUGS as readonly string[]).toContain(l.themeId);
+      expect(WORLD_SLUGS as readonly string[]).toContain(l.worldId);
     });
   });
 

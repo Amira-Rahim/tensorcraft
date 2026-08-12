@@ -92,7 +92,7 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Destination to round-trip through /auth. Must include the query string:
-  // checkout builds /pricing?plan=...&themes=... and losing the query used
+  // checkout builds /pricing?plan=...&worlds=... and losing the query used
   // to strand buyers (2026-07-19 UX audit).
   const requestedPath = request.nextUrl.pathname + request.nextUrl.search;
 
@@ -184,7 +184,7 @@ export async function updateSession(request: NextRequest) {
 
     // Incomplete onboarding → force to /onboarding (unless already there).
     // Carry the requested destination along: the wizard used to exit every
-    // learner to /themes/deep-orbit regardless of what they asked for
+    // learner to /worlds/deep-orbit regardless of what they asked for
     // (2026-07-14 UX audit).
     if (onboardingCompleted === false && !isOnboarding) {
       const url = request.nextUrl.clone();

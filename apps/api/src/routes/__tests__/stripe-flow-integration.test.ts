@@ -13,7 +13,7 @@
  *   2. purchases row upserted via service-role client
  *   3. PostHog server event fired (`payment_completed`)
  *   4. Kit purchase tag fired via addSubscriber + tagSubscriber
- *   5. /api/purchases/access subsequently reports access for the theme
+ *   5. /api/purchases/access subsequently reports access for the world
  *
  * Live-service caveat: we do not hit the real Stripe /events API or Kit.
  */
@@ -233,7 +233,7 @@ function buildCheckoutCompletedEvent(): string {
         payment_intent: PAYMENT_INTENT_ID,
         metadata: {
           planId: "single",
-          themeIds: "deep-orbit",
+          worldIds: "deep-orbit",
           creditApplied: "0",
           originalPrice: "49",
         },
@@ -291,7 +291,7 @@ describe("Stripe webhook → purchase → access integration flow", () => {
     const purchase = db.purchases[0];
     expect(purchase.user_id).toBe(USER_ID);
     expect(purchase.status).toBe("completed");
-    expect(purchase.theme_ids).toEqual(["deep-orbit"]);
+    expect(purchase.world_ids).toEqual(["deep-orbit"]);
     expect(purchase.stripe_session_id).toBe(SESSION_ID);
 
     // 2) PostHog server event fired
@@ -299,7 +299,7 @@ describe("Stripe webhook → purchase → access integration flow", () => {
       "payment_completed",
       expect.objectContaining({
         planId: "single",
-        themeIds: ["deep-orbit"],
+        worldIds: ["deep-orbit"],
         sessionId: SESSION_ID,
       }),
       USER_ID,
@@ -312,7 +312,7 @@ describe("Stripe webhook → purchase → access integration flow", () => {
       "tag-purchase-123",
     );
 
-    // 4) Access check now returns the purchased theme.
+    // 4) Access check now returns the purchased world.
     mockAuthGetUser.mockResolvedValue({
       data: { user: { id: USER_ID } },
       error: null,
@@ -322,10 +322,10 @@ describe("Stripe webhook → purchase → access integration flow", () => {
     });
     expect(accessRes.status).toBe(200);
     const access = (await accessRes.json()) as {
-      themeIds: string[];
+      worldIds: string[];
       hasFullBundle: boolean;
     };
-    expect(access.themeIds).toContain("deep-orbit");
+    expect(access.worldIds).toContain("deep-orbit");
   });
 
   it("is idempotent: second delivery of same session does not duplicate", async () => {

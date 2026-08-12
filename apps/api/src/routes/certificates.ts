@@ -5,9 +5,9 @@ import {
   getSupabaseAdminClient,
 } from "@tensorcraft/supabase";
 import {
-  isValidThemeSlug,
+  isValidWorldSlug,
   isLaunched,
-  getThemeTotalLessons,
+  getWorldTotalLessons,
 } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
@@ -20,7 +20,7 @@ import type { AppEnv } from "../types";
  * GET  /api/certificates/:id, public, minimal fields for share page.
  *
  * The `cert_hash` is a deterministic SHA-256 of
- *   `${user_id}:${theme_id}:${issued_at_iso}:${CERT_SIGNING_SECRET}`
+ *   `${user_id}:${world_id}:${issued_at_iso}:${CERT_SIGNING_SECRET}`
  * so the share page can verify authenticity without exposing the user
  * UUID. `CERT_SIGNING_SECRET` acts as a server-side salt, rotating it
  * invalidates every previously-issued hash, so treat it like a secret.
@@ -29,12 +29,12 @@ const certificates = new Hono<AppEnv>();
 
 function computeCertHash(
   userId: string,
-  themeId: string,
+  worldId: string,
   issuedAt: string,
   secret: string,
 ): string {
   return createHash("sha256")
-    .update(`${userId}:${themeId}:${issuedAt}:${secret}`)
+    .update(`${userId}:${worldId}:${issuedAt}:${secret}`)
     .digest("hex");
 }
 
@@ -47,19 +47,19 @@ certificates.post("/", async (c) => {
   const userId = c.get("userId");
   const accessToken = c.get("accessToken");
 
-  let body: { themeId?: string };
+  let body: { worldId?: string };
   try {
     body = await c.req.json();
   } catch {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  const themeId = body.themeId;
-  if (!themeId || typeof themeId !== "string" || !isValidThemeSlug(themeId)) {
-    return c.json({ error: "themeId must be a valid theme slug" }, 400);
+  const worldId = body.worldId;
+  if (!worldId || typeof worldId !== "string" || !isValidWorldSlug(worldId)) {
+    return c.json({ error: "worldId must be a valid world slug" }, 400);
   }
-  if (!isLaunched(themeId)) {
-    return c.json({ error: "Theme is not yet launched" }, 400);
+  if (!isLaunched(worldId)) {
+    return c.json({ error: "World is not yet launched" }, 400);
   }
 
   const secret = process.env.CERT_SIGNING_SECRET;
@@ -76,19 +76,19 @@ certificates.post("/", async (c) => {
     );
   }
 
-  // Check user's progress for this theme via the user-scoped client so
+  // Check user's progress for this world via the user-scoped client so
   // RLS is exercised (service-role client is reserved for the INSERT).
   const userClient = getSupabaseServerClient(accessToken);
 
   // The certificate is a PAID deliverable: every marketing surface sells it
-  // behind the wall. Progress alone cannot gate it, because theme_progress
+  // behind the wall. Progress alone cannot gate it, because world_progress
   // is client-writable by design (the lesson page records completions
   // directly), so any authenticated user could write 56 "completed" rows
-  // and self-issue. Require a purchase whose theme_ids contain this theme
+  // and self-issue. Require a purchase whose world_ids contain this world
   // and whose status still grants access (audit run #7, 2026-07-16).
   const { data: entitlements, error: entitlementErr } = await userClient
     .from("purchases")
-    .select("theme_ids, status")
+    .select("world_ids, status")
     .eq("user_id", userId)
     .in("status", ["completed", "partially_refunded"]);
 
@@ -102,20 +102,20 @@ certificates.post("/", async (c) => {
     );
   }
 
-  const ownsTheme = (entitlements ?? []).some(
-    (p: { theme_ids: string[] | null }) =>
-      Array.isArray(p.theme_ids) && p.theme_ids.includes(themeId),
+  const ownsWorld = (entitlements ?? []).some(
+    (p: { world_ids: string[] | null }) =>
+      Array.isArray(p.world_ids) && p.world_ids.includes(worldId),
   );
 
-  if (!ownsTheme) {
-    return c.json({ error: "theme_not_purchased" }, 403);
+  if (!ownsWorld) {
+    return c.json({ error: "world_not_purchased" }, 403);
   }
 
   const { data: progressRows, error: progressErr } = await userClient
-    .from("theme_progress")
+    .from("world_progress")
     .select("status")
     .eq("user_id", userId)
-    .eq("theme_id", themeId);
+    .eq("world_id", worldId);
 
   if (progressErr) {
     return c.json(
@@ -129,15 +129,15 @@ certificates.post("/", async (c) => {
 
   const rows = (progressRows ?? []) as Array<{ status: string }>;
   const completed = rows.filter((r) => r.status === "completed").length;
-  const expected = getThemeTotalLessons(themeId);
+  const expected = getWorldTotalLessons(worldId);
 
-  // Theme must be fully completed. We check against the canonical
+  // World must be fully completed. We check against the canonical
   // expected lesson count rather than comparing `completed === total`
   // because a user might never have seeded "not_started" rows.
   if (completed < expected) {
     return c.json(
       {
-        error: "theme_not_complete",
+        error: "world_not_complete",
         completed,
         expected,
       },
@@ -145,13 +145,13 @@ certificates.post("/", async (c) => {
     );
   }
 
-  // Idempotent: if a row already exists for this (user, theme), return it.
+  // Idempotent: if a row already exists for this (user, world), return it.
   const admin = getSupabaseAdminClient();
   const { data: existing, error: existingErr } = await admin
     .from("certificates")
-    .select("id, theme_id, issued_at, cert_hash")
+    .select("id, world_id, issued_at, cert_hash")
     .eq("user_id", userId)
-    .eq("theme_id", themeId)
+    .eq("world_id", worldId)
     .maybeSingle();
 
   if (existingErr) {
@@ -167,24 +167,24 @@ certificates.post("/", async (c) => {
   if (existing) {
     return c.json({
       id: existing.id,
-      theme_id: existing.theme_id,
+      world_id: existing.world_id,
       issued_at: existing.issued_at,
       cert_hash: existing.cert_hash,
     });
   }
 
   const issuedAt = new Date().toISOString();
-  const certHash = computeCertHash(userId, themeId, issuedAt, secret);
+  const certHash = computeCertHash(userId, worldId, issuedAt, secret);
 
   const { data: inserted, error: insertErr } = await admin
     .from("certificates")
     .insert({
       user_id: userId,
-      theme_id: themeId,
+      world_id: worldId,
       issued_at: issuedAt,
       cert_hash: certHash,
     })
-    .select("id, theme_id, issued_at, cert_hash")
+    .select("id, world_id, issued_at, cert_hash")
     .single();
 
   if (insertErr || !inserted) {
@@ -199,7 +199,7 @@ certificates.post("/", async (c) => {
 
   return c.json({
     id: inserted.id,
-    theme_id: inserted.theme_id,
+    world_id: inserted.world_id,
     issued_at: inserted.issued_at,
     cert_hash: inserted.cert_hash,
   });
@@ -238,7 +238,7 @@ certificates.get("/:id", async (c) => {
 
   const rows = (data ?? []) as Array<{
     id: string;
-    theme_id: string;
+    world_id: string;
     issued_at: string;
     cert_hash: string;
     user_display_name: string | null;
@@ -252,7 +252,7 @@ certificates.get("/:id", async (c) => {
   const row = rows[0];
   return c.json({
     id: row.id,
-    theme_id: row.theme_id,
+    world_id: row.world_id,
     issued_at: row.issued_at,
     cert_hash: row.cert_hash,
     user_display_name: row.user_display_name,

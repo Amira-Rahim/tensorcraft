@@ -1,33 +1,33 @@
 import Link from "next/link";
-import { themes } from "@tensorcraft/themes";
-import { isLaunched, type ThemeSlug } from "@tensorcraft/shared";
-import type { JourneyThemeState } from "@/lib/journey-progress";
+import { worlds } from "@tensorcraft/worlds";
+import { isLaunched, type WorldSlug } from "@tensorcraft/shared";
+import type { JourneyWorldState } from "@/lib/journey-progress";
 
 interface JourneyRingProps {
-  themeStates: JourneyThemeState[];
-  recommendedNext: ThemeSlug | null;
-  /** Show per-theme progress bars (only meaningful for a signed-in learner). */
+  worldStates: JourneyWorldState[];
+  recommendedNext: WorldSlug | null;
+  /** Show per-world progress bars (only meaningful for a signed-in learner). */
   showProgress: boolean;
 }
 
 /**
- * The five themes rendered as one sequence — the modeled arc, not five silos.
+ * The five worlds rendered as one sequence — the modeled arc, not five silos.
  * Each node shows where it arrives from and leads to (the narrative ring), so
  * the collection reads as a journey. Purely presentational; state comes from
  * getJourneyState.
  */
 export function JourneyRing({
-  themeStates,
+  worldStates,
   recommendedNext,
   showProgress,
 }: JourneyRingProps) {
   return (
     <ol className="relative space-y-4">
-      {themeStates.map((t) => {
-        const manifest = themes[t.slug];
+      {worldStates.map((t) => {
+        const manifest = worlds[t.slug];
         const live = isLaunched(t.slug);
         const isNext = recommendedNext === t.slug;
-        // Clamp: theme_progress can carry rows for re-slugged/removed lessons
+        // Clamp: world_progress can carry rows for re-slugged/removed lessons
         // (tl/05 was rebuilt once already), so completedLessons can exceed
         // totalLessons. An unclamped value renders a bar wider than its track
         // and a false "Complete".
@@ -52,7 +52,7 @@ export function JourneyRing({
             key={t.slug}
             data-testid={`journey-node-${t.slug}`}
             data-recommended={isNext ? "true" : undefined}
-            className="brutalist-shadow border bg-surface-raised p-5 tc-theme-card"
+            className="brutalist-shadow border bg-surface-raised p-5 tc-world-card"
             style={
               {
                 borderColor: isNext ? "var(--tc-primary)" : "var(--tc-border)",
@@ -119,7 +119,7 @@ export function JourneyRing({
 
                 <div className="mt-3">
                   <Link
-                    href={`/themes/${t.slug}`}
+                    href={`/worlds/${t.slug}`}
                     className="text-xs font-mono font-semibold uppercase tracking-wider text-primary hover:underline underline-offset-4"
                   >
                     {t.completed

@@ -28,7 +28,7 @@ function renderBeat(beatId: string) {
   return render(
     <BossBeat
       beatId={beatId}
-      themeId="deep-orbit"
+      worldId="deep-orbit"
       lessonId="launch"
       prompt="Your call, operator?"
       options={[...OPTIONS] as never}

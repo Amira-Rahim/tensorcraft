@@ -1,13 +1,13 @@
 # Signal Ward — NLP & Medical Text
 
-> Signal Ward is the third theme in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
+> Signal Ward is the third world in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
 ---
 
 ## SCRIPT GUIDE
 
 **Tags:** `NLP` `transformers` `BERT` `medical-text` `RAG` `clinical-AI`
-**Theme:** AI-assisted clinical decision support in a hospital setting
+**World:** AI-assisted clinical decision support in a hospital setting
 **Setting:** Signal Ward is the advanced research wing of Caduceus Medical Center, a cutting-edge hospital and research facility. The ward processes millions of patient records, clinical notes, medical literature, and diagnostic reports. The healthcare system is drowning in unstructured text — doctors' handwritten notes digitized into messy transcripts, research papers piling up faster than anyone can read, and critical diagnostic information buried in paragraphs of clinical prose.
 **Model being built:** Diagnostic One — an AI text assistant for clinical NLP
 **GitHub repo deployed at end:** `diagnostic-one-clinical-nlp`
@@ -20,11 +20,11 @@
 | **Obi Nwosu** | Computational Linguist / Concept Explainer | NLP expert with a PhD in biomedical NLP. Warm, articulate, deeply enthusiastic about language. Speaks three languages fluently and sees beauty in how words carry meaning. Introduces NLP theory, explains architectures, builds linguistic intuition. |
 | **Santos** | Nurse & Data Curator / Implementation Lead | Handles data quality, labeling, and the messy reality of clinical text. Practical, meticulous, protective of patient data. Has labeled ten thousand records by hand. Bridges the gap between raw medical records and clean training data. |
 | **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled frontend developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI — a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there — drug interactions hiding across tabs, symptom patterns buried in months of notes — but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
-| **MEDI** | Clinical Decision Support AI | The ward's AI assistant. Precise, helpful, occasionally pedantic about medical terminology. Unlike other theme AIs, MEDI is designed to be cautious — it flags uncertainty rather than projecting confidence. Corrects gently but firmly. Tutorial guide and hint system. |
+| **MEDI** | Clinical Decision Support AI | The ward's AI assistant. Precise, helpful, occasionally pedantic about medical terminology. Unlike other world AIs, MEDI is designed to be cautious — it flags uncertainty rather than projecting confidence. Corrects gently but firmly. Tutorial guide and hint system. |
 
 ### DISCLAIMER
 
-> **IMPORTANT: Signal Ward is an educational simulation.** The clinical scenarios, patient data, and medical information presented in this theme are entirely fictional and created for teaching NLP concepts. Nothing in this course constitutes medical advice. The AI systems built in this course are educational demonstrations and must never be used for real clinical decisions. Real clinical NLP systems require extensive validation, regulatory approval (FDA/CE), and oversight by licensed medical professionals.
+> **IMPORTANT: Signal Ward is an educational simulation.** The clinical scenarios, patient data, and medical information presented in this world are entirely fictional and created for teaching NLP concepts. Nothing in this course constitutes medical advice. The AI systems built in this course are educational demonstrations and must never be used for real clinical decisions. Real clinical NLP systems require extensive validation, regulatory approval (FDA/CE), and oversight by licensed medical professionals.
 
 ### AI-Wrong Moments
 
@@ -50,11 +50,11 @@ Signal Ward deliberately includes moments where the AI system produces incorrect
 
 ---
 
-## THEME PREVIEW
+## WORLD PREVIEW
 
 ### Preview Art
 
-A hospital corridor at night. Fluorescent lights cast a blue-white glow on polished floors. In the foreground, Khalil sits at a workstation in the IT office, multiple monitors showing clinical text with highlighted entities — medications in blue, conditions in amber, procedures in green. On one monitor, MEDI's interface displays a clinical summary with confidence bars next to each extracted fact. Through the glass window behind Khalil, the ICU is visible — monitors blinking, nurses moving between beds. The contrast between the quiet code and the urgent care beyond the glass captures the theme's tension.
+A hospital corridor at night. Fluorescent lights cast a blue-white glow on polished floors. In the foreground, Khalil sits at a workstation in the IT office, multiple monitors showing clinical text with highlighted entities — medications in blue, conditions in amber, procedures in green. On one monitor, MEDI's interface displays a clinical summary with confidence bars next to each extracted fact. Through the glass window behind Khalil, the ICU is visible — monitors blinking, nurses moving between beds. The contrast between the quiet code and the urgent care beyond the glass captures the world's tension.
 
 ### Story Summary
 
@@ -203,7 +203,7 @@ Obi demonstrates word embeddings by showing that in the trained vector space, "a
 |---|---|---|---|
 | 1 | One-Hot Encoding | The naive approach and its limitations | Radio buttons — only one active at a time |
 | 2 | Word2Vec | Learning word relationships from context | Recommendation engines ("users also bought") |
-| 3 | Medical Embeddings | Domain-specific word vectors | Theme-specific design tokens |
+| 3 | Medical Embeddings | Domain-specific word vectors | World-specific design tokens |
 | 4 | Embedding Visualization | Exploring word relationships in vector space | 2D scatter plots with D3.js |
 | 5 | Transfer Embeddings | Using pre-trained word vectors | npm packages — reusing learned representations |
 
@@ -306,7 +306,7 @@ Obi introduces the transformer architecture:
 | 2 | Transformer Architecture | Encoder stack with attention and feedforward | React virtual DOM — diffing and reconciliation |
 | 3 | Positional Encoding | Injecting word order into attention | CSS `order` property and `z-index` stacking |
 | 4 | BERT | Bidirectional understanding of text | Doubly-linked list — forward and backward traversal |
-| 5 | Fine-Tuning BERT | Adapting pre-trained transformers to clinical text | Customizing a component library's theme |
+| 5 | Fine-Tuning BERT | Adapting pre-trained transformers to clinical text | Customizing a component library's world |
 
 **FE BRIDGES (Module-Level):**
 
@@ -539,7 +539,7 @@ Khalil's arc traces a principled developer who starts deeply skeptical of ML in 
 
 ---
 
-## Theme-Specific Terminology
+## World-Specific Terminology
 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|

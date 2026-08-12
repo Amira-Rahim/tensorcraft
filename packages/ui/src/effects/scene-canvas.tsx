@@ -2,9 +2,9 @@
 
 import { useRef, useEffect, useCallback } from "react";
 
-/* ── SceneCanvas: shared chrome for theme scene renderers ──────────
+/* ── SceneCanvas: shared chrome for world scene renderers ──────────
    All the plumbing OrbitCanvas pioneered, generalized over a draw
-   function so every themed scene (orbit, neon, ward, nova, terra)
+   function so every world scene (orbit, neon, ward, nova, terra)
    inherits the same guarantees from one place:
 
    - Own animation clock (tRef) advanced per frame with a clamped dt,
@@ -42,10 +42,10 @@ export type SceneDraw = (
 export interface SceneCanvasProps {
   /** Time-parameterized renderer for one frame of the scene. */
   draw: SceneDraw;
-  /** Theme colour as an [r,g,b] triple (0–255), used in dark scheme. */
+  /** World colour as an [r,g,b] triple (0–255), used in dark scheme. */
   rgb: [number, number, number];
   /**
-   * Theme colour for light scheme. Falls back to `rgb` when absent — the
+   * World colour for light scheme. Falls back to `rgb` when absent — the
    * canvas will keep drawing the dark hue under data-scheme="light" until a
    * caller supplies this (safe default: no visual change for consumers not
    * yet updated).
@@ -186,20 +186,20 @@ export function SceneCanvas({
 
     // The reduced-motion static frame is drawn once at mount/resize and
     // never refreshed by the rAF loop (there isn't one). A color-scheme or
-    // narrative-theme flip changes what that frame should look like (rgb vs
+    // narrative-world flip changes what that frame should look like (rgb vs
     // rgbLight now; the art itself once Tasks 9/10 land), so it would
     // otherwise go stale until the next resize. Re-render under the same
     // condition the resize handler already uses.
-    const onSchemeOrThemeChange = () => {
+    const onSchemeOrWorldChange = () => {
       if (mql?.matches && inView) render();
     };
     const attrObserver =
       typeof MutationObserver !== "undefined"
-        ? new MutationObserver(onSchemeOrThemeChange)
+        ? new MutationObserver(onSchemeOrWorldChange)
         : null;
     attrObserver?.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-scheme", "data-theme"],
+      attributeFilter: ["data-scheme", "data-world"],
     });
 
     return () => {

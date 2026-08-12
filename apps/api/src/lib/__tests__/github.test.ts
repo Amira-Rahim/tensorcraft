@@ -9,14 +9,14 @@ import {
 } from "../github";
 
 describe("buildRepoName", () => {
-  it("prefixes theme slug", () => {
+  it("prefixes world slug", () => {
     expect(buildRepoName("deep-orbit")).toBe("tensorcraft-deep-orbit");
   });
 });
 
 describe("buildReadmeTemplate", () => {
-  it("includes theme badge + Tensorcraft link", () => {
-    const md = buildReadmeTemplate({ themeSlug: "deep-orbit" });
+  it("includes world badge + Tensorcraft link", () => {
+    const md = buildReadmeTemplate({ worldSlug: "deep-orbit" });
     expect(md).toContain("# tensorcraft-deep-orbit");
     expect(md).toContain("img.shields.io/badge/Tensorcraft-");
     expect(md).toContain("https://tensorcraft.app");
@@ -25,7 +25,7 @@ describe("buildReadmeTemplate", () => {
 
   it("renders provided module list", () => {
     const md = buildReadmeTemplate({
-      themeSlug: "neon-protocol",
+      worldSlug: "neon-protocol",
       modules: [
         { slug: "mod-01", title: "Foundations" },
         { slug: "mod-02", title: "Classification" },
@@ -36,7 +36,7 @@ describe("buildReadmeTemplate", () => {
   });
 
   it("emits 11 placeholder modules when none provided", () => {
-    const md = buildReadmeTemplate({ themeSlug: "signal-ward" });
+    const md = buildReadmeTemplate({ worldSlug: "signal-ward" });
     expect(md).toContain("Module 01");
     expect(md).toContain("Module 11");
   });

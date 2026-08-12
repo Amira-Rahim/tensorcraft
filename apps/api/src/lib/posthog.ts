@@ -83,7 +83,7 @@ export type ServerEventName =
 export interface ServerEventProperties {
   [SERVER_EVENTS.PAYMENT_COMPLETED]: {
     planId: string;
-    themeIds: string[];
+    worldIds: string[];
     amount: number;
     sessionId: string;
     isUpgrade?: boolean;
@@ -101,7 +101,7 @@ export interface ServerEventProperties {
     paymentIntentId: string;
   };
   [SERVER_EVENTS.CODE_PUSHED]: {
-    themeId: string;
+    worldId: string;
     lessonId: string;
     exerciseSlug: string;
     commitSha: string;

@@ -6,7 +6,7 @@ import { purchases } from "./purchases";
  * Controls what `supabase.from("purchases").select(...).eq(...).eq(...)`
  * resolves to in the access endpoint.
  */
-let mockPurchaseRows: { theme_ids: (string | null)[] | null }[] | null = null;
+let mockPurchaseRows: { world_ids: (string | null)[] | null }[] | null = null;
 let mockAuthUserId: string | null = "user-test-123";
 
 vi.mock("@tensorcraft/supabase", () => ({
@@ -35,14 +35,14 @@ vi.mock("@tensorcraft/supabase", () => ({
 }));
 
 vi.mock("@tensorcraft/shared", () => ({
-  THEME_SLUGS: [
+  WORLD_SLUGS: [
     "deep-orbit",
     "neon-protocol",
     "signal-ward",
     "nova-canvas",
     "terra-grid",
   ] as const,
-  isValidThemeSlug: (slug: string) =>
+  isValidWorldSlug: (slug: string) =>
     [
       "deep-orbit",
       "neon-protocol",
@@ -72,32 +72,32 @@ describe("GET /api/purchases/access", () => {
     expect(res.status).toBe(401);
   });
 
-  it("returns empty themeIds for a user with no purchases", async () => {
+  it("returns empty worldIds for a user with no purchases", async () => {
     mockPurchaseRows = [];
     const res = await authed("/api/purchases/access");
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ themeIds: [], hasFullBundle: false });
+    expect(await res.json()).toEqual({ worldIds: [], hasFullBundle: false });
   });
 
-  it("returns deduplicated sorted theme IDs across purchases", async () => {
+  it("returns deduplicated sorted world IDs across purchases", async () => {
     // User bought deep-orbit alone, then upgraded to a two-bundle
     // that re-included deep-orbit + neon-protocol. Expect dedupe.
     mockPurchaseRows = [
-      { theme_ids: ["deep-orbit"] },
-      { theme_ids: ["deep-orbit", "neon-protocol"] },
+      { world_ids: ["deep-orbit"] },
+      { world_ids: ["deep-orbit", "neon-protocol"] },
     ];
     const res = await authed("/api/purchases/access");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
-      themeIds: ["deep-orbit", "neon-protocol"],
+      worldIds: ["deep-orbit", "neon-protocol"],
       hasFullBundle: false,
     });
   });
 
-  it("flags hasFullBundle when user owns all 5 canonical themes", async () => {
+  it("flags hasFullBundle when user owns all 5 canonical worlds", async () => {
     mockPurchaseRows = [
       {
-        theme_ids: [
+        world_ids: [
           "deep-orbit",
           "neon-protocol",
           "signal-ward",
@@ -110,29 +110,29 @@ describe("GET /api/purchases/access", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.hasFullBundle).toBe(true);
-    expect(body.themeIds).toHaveLength(5);
+    expect(body.worldIds).toHaveLength(5);
   });
 
   it("filters out unknown slugs defensively (§6h)", async () => {
     // Even if a DB anomaly smuggles in an unknown slug, the endpoint
-    // must not surface it, only canonical themes flow to the client.
+    // must not surface it, only canonical worlds flow to the client.
     mockPurchaseRows = [
-      { theme_ids: ["deep-orbit", "not-a-theme", "neon-protocol"] },
+      { world_ids: ["deep-orbit", "not-a-world", "neon-protocol"] },
     ];
     const res = await authed("/api/purchases/access");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
-      themeIds: ["deep-orbit", "neon-protocol"],
+      worldIds: ["deep-orbit", "neon-protocol"],
       hasFullBundle: false,
     });
   });
 
-  it("tolerates rows with null theme_ids", async () => {
-    mockPurchaseRows = [{ theme_ids: null }, { theme_ids: ["signal-ward"] }];
+  it("tolerates rows with null world_ids", async () => {
+    mockPurchaseRows = [{ world_ids: null }, { world_ids: ["signal-ward"] }];
     const res = await authed("/api/purchases/access");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
-      themeIds: ["signal-ward"],
+      worldIds: ["signal-ward"],
       hasFullBundle: false,
     });
   });

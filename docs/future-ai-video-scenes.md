@@ -14,12 +14,12 @@ This transforms the lesson experience from "reading a screenplay" to "watching a
 | Decision | Choice |
 |----------|--------|
 | **Scope** | All narrative moments across all 6 lesson steps |
-| **Video style** | Stylized/animated (per-theme art direction, not photorealistic) |
+| **Video style** | Stylized/animated (per-world art direction, not photorealistic) |
 | **Generation timing** | Pre-generated at build time, stored as static assets |
 | **Text handling** | Video primary, existing screenplay text becomes captions/subtitles |
 | **Clip length** | Short (5-15 seconds each), multiple clips per scene |
 | **Generation tool** | Runway Gen-3/4 |
-| **Audio** | AI voice acting (ElevenLabs) + ambient soundscapes per theme |
+| **Audio** | AI voice acting (ElevenLabs) + ambient soundscapes per world |
 
 ## Recommended Approach: Video Component Swap
 
@@ -52,7 +52,7 @@ Replace `<Dialogue>`, `<SceneHeading>`, and narrative prose with a single `<Vide
 Content author writes a `video-spec.yaml` alongside each MDX lesson:
 
 ```yaml
-theme_style_ref: neon-protocol/style-pack  # 3-5 reference images per theme
+world_style_ref: neon-protocol/style-pack  # 3-5 reference images per world
 beats:
   - id: beat-01
     visual: "Close-up of Dilan at holographic terminal, neon rain outside, cyberpunk"
@@ -72,10 +72,10 @@ beats:
 
 ### Stage 2: Generate
 CLI tool `tc-video generate` processes each beat:
-1. Compose Runway prompt from `visual` + theme style reference pack + character reference images
+1. Compose Runway prompt from `visual` + world style reference pack + character reference images
 2. Call **Runway Gen-3/4 API** -> raw video clip
 3. Call **ElevenLabs API** -> voice audio for dialogue line
-4. Mix ambient audio from theme soundscape library (loopable segments at -12dB under voice)
+4. Mix ambient audio from world soundscape library (loopable segments at -12dB under voice)
 5. **FFmpeg** merge: video + voice + ambient -> final clip (.mp4, H.264)
 
 ### Stage 3: QA & Upload
@@ -94,8 +94,8 @@ Integrated into Velite build step:
 
 ## Consistency Strategy
 
-### Per-Theme Style Reference Packs
-Each theme ships 3-5 AI-generated reference images defining its visual language (color palette, lighting, character art style). These are passed to Runway as style anchors for every clip in that theme:
+### Per-World Style Reference Packs
+Each world ships 3-5 AI-generated reference images defining its visual language (color palette, lighting, character art style). These are passed to Runway as style anchors for every clip in that world:
 - **Neon Protocol:** Cyberpunk noir, neon-lit rain, holographic interfaces
 - **Deep Orbit:** Space stations, starfields, orbital command centers
 - **Signal Ward:** Clinical environments, medical monitors, sterile lighting
@@ -108,8 +108,8 @@ Each recurring character gets AI-generated reference sheets (face, clothing, pro
 ### Voice Profiles
 Each character gets a designed voice ID on ElevenLabs. Mood tags (confident, worried, excited) modulate delivery. Consistent across all 275 lessons.
 
-### Theme Ambient Sound Packs
-5 ambient libraries (one per theme): space hum, neon rain, hospital beeps, creative studio buzz, factory floor. Loopable segments, crossfaded between clips.
+### World Ambient Sound Packs
+5 ambient libraries (one per world): space hum, neon rain, hospital beeps, creative studio buzz, factory floor. Loopable segments, crossfaded between clips.
 
 ## Cost Estimate
 
@@ -126,10 +126,10 @@ Each character gets a designed voice ID on ElevenLabs. Mood tags (confident, wor
 ## Rollout Strategy
 
 1. **Proof of concept:** Generate video for 1 lesson (Neon Protocol Module 1, Lesson 1 — "Seeing Like a Machine") to validate quality, consistency, and pipeline
-2. **Single theme:** If POC passes, generate all 55 Neon Protocol lessons (~160 clips)
-3. **Full rollout:** Remaining 4 themes (220 lessons, ~640 clips)
+2. **Single world:** If POC passes, generate all 55 Neon Protocol lessons (~160 clips)
+3. **Full rollout:** Remaining 4 worlds (220 lessons, ~640 clips)
 
-Ship one theme at a time. Text fallback ensures lessons without video still work identically to today.
+Ship one world at a time. Text fallback ensures lessons without video still work identically to today.
 
 ## Why Deferred
 
@@ -141,7 +141,7 @@ Ship one theme at a time. Text fallback ensures lessons without video still work
 
 ## When to Revisit
 
-- Post-V1 launch, once revenue from theme sales can fund generation costs
+- Post-V1 launch, once revenue from world sales can fund generation costs
 - If Runway or competitors drop pricing significantly (watch for sub-$0.25/clip)
 - If user feedback specifically requests richer narrative presentation
 - If narrative skip rates are high (>40%), video may not be the right investment — consider other engagement strategies first
@@ -152,7 +152,7 @@ Ship one theme at a time. Text fallback ensures lessons without video still work
 - `packages/ui/src/mdx/video-scene.tsx` — new component (replaces Dialogue + SceneHeading for video-enabled lessons)
 - `packages/ui/src/mdx/index.ts` — register VideoScene in MDX component map
 - `packages/content/velite.config.ts` — add video-manifest.json ingestion
-- `apps/web/app/themes/[slug]/[module]/[lesson]/lesson-content.tsx` — add VideoScene to visibleComponents for steps 0 and 5
+- `apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx` — add VideoScene to visibleComponents for steps 0 and 5
 - New: `tools/tc-video/` — CLI for generate, review, upload pipeline
-- New: `packages/content/content/<theme>/video-specs/` — per-lesson video-spec.yaml files
-- New: `packages/content/content/<theme>/video-manifests/` — generated manifest JSON files
+- New: `packages/content/content/<world>/video-specs/` — per-lesson video-spec.yaml files
+- New: `packages/content/content/<world>/video-manifests/` — generated manifest JSON files

@@ -5,7 +5,7 @@ import { useImgSettled } from "./use-img-settled";
 /* ── ScenePortrait: the establishing shot under a scene slugline ──────
    A framed illustration of the lesson's scene, produced externally per
    docs/scene-bible.md and dropped at
-   public/scenes/<theme>/<module>/<lesson>.webp. Art is optional by
+   public/scenes/<world>/<module>/<lesson>.webp. Art is optional by
    contract: on error the component renders NOTHING, so the figure and its
    data-script-beat leave the DOM and the playback timeline (collectBeats
    in lesson-steps) never holds on an absent image. A lesson with no art is

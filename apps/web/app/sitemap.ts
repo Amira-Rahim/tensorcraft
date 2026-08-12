@@ -1,14 +1,14 @@
 import type { MetadataRoute } from "next";
-import { themeSlugs } from "@tensorcraft/themes";
+import { worldSlugs } from "@tensorcraft/worlds";
 import { isLaunched } from "@tensorcraft/shared";
-import { getThemeLessons, getModules, getPosts } from "@tensorcraft/content";
+import { getWorldLessons, getModules, getPosts } from "@tensorcraft/content";
 
 const BASE_URL = "https://tensorcraft.app";
 
 // Phased sitemap to address "Discovered, currently not indexed" in Search
 // Console (414 URLs as of 2026-04-27). New domains have small crawl budgets;
 // listing 400+ URLs causes Google to defer most. Phase "core" lists ~22
-// high-value URLs so the budget concentrates on landing/theme/index pages.
+// high-value URLs so the budget concentrates on landing/world/index pages.
 // Flip to "full" after Search Console shows the core set indexed.
 // Lesson pages stay reachable via internal links -
 // only their sitemap inclusion is deferred.
@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/themes`,
+      url: `${BASE_URL}/worlds`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
@@ -90,11 +90,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Theme pages: launched themes carry a higher priority; coming-soon stubs
+  // World pages: launched worlds carry a higher priority; coming-soon stubs
   // (which render a teaser + waitlist form) get a lower priority so the
-  // launched theme outranks them in search budget allocation.
-  const themeRoutes: MetadataRoute.Sitemap = themeSlugs.map((slug) => ({
-    url: `${BASE_URL}/themes/${slug}`,
+  // launched world outranks them in search budget allocation.
+  const worldRoutes: MetadataRoute.Sitemap = worldSlugs.map((slug) => ({
+    url: `${BASE_URL}/worlds/${slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: isLaunched(slug) ? 0.9 : 0.4,
@@ -102,7 +102,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Capstone pages are deliberately NOT listed.
   //
-  // They exist only for launched themes, but capstone/page.tsx redirects any
+  // They exist only for launched worlds, but capstone/page.tsx redirects any
   // request without a session to /auth — which is itself `noindex` AND
   // Disallow'd in robots.ts. So every crawler hitting a sitemap-listed
   // capstone URL got a 307 into a blocked page, which Google records as "Page
@@ -116,17 +116,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // "treat the sitemap as the acquisition product"). They are the only
   // lesson pages fully readable signed-out, they are the pages organic
   // visitors can actually convert from, and there are only ~5 per launched
-  // theme — no crawl-budget cost worth deferring. Paid lessons stay in the
+  // world — no crawl-budget cost worth deferring. Paid lessons stay in the
   // "full" phase per the crawl-budget note above.
-  const freeModuleLessonRoutes: MetadataRoute.Sitemap = themeSlugs
+  const freeModuleLessonRoutes: MetadataRoute.Sitemap = worldSlugs
     .filter((slug) => isLaunched(slug))
     .flatMap((slug) => {
       const freeModule = getModules(slug).find((m) => m.order === 1);
       if (!freeModule) return [];
-      return getThemeLessons(slug)
+      return getWorldLessons(slug)
         .filter((lesson) => lesson.moduleId === freeModule.slug)
         .map((lesson) => ({
-          url: `${BASE_URL}/themes/${slug}/${lesson.moduleId}/${lesson.slug}`,
+          url: `${BASE_URL}/worlds/${slug}/${lesson.moduleId}/${lesson.slug}`,
           lastModified: new Date(),
           changeFrequency: "monthly" as const,
           priority: 0.7,
@@ -136,18 +136,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   if (SITEMAP_PHASE === "core") {
     return [
       ...staticRoutes,
-      ...themeRoutes,
+      ...worldRoutes,
       ...capstoneRoutes,
       ...freeModuleLessonRoutes,
     ];
   }
 
-  // Lesson pages exist only for launched themes, coming-soon routes 404.
-  const lessonRoutes: MetadataRoute.Sitemap = themeSlugs
+  // Lesson pages exist only for launched worlds, coming-soon routes 404.
+  const lessonRoutes: MetadataRoute.Sitemap = worldSlugs
     .filter((slug) => isLaunched(slug))
     .flatMap((slug) =>
-      getThemeLessons(slug).map((lesson) => ({
-        url: `${BASE_URL}/themes/${slug}/${lesson.moduleId}/${lesson.slug}`,
+      getWorldLessons(slug).map((lesson) => ({
+        url: `${BASE_URL}/worlds/${slug}/${lesson.moduleId}/${lesson.slug}`,
         lastModified: new Date(),
         changeFrequency: "monthly" as const,
         priority: 0.6,
@@ -155,7 +155,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     );
 
   // Extras lessons (math-deep-dive + classical-ml + ethics + python-bridge)
-  const extrasRoutes: MetadataRoute.Sitemap = getThemeLessons("shared").map(
+  const extrasRoutes: MetadataRoute.Sitemap = getWorldLessons("shared").map(
     (lesson) => ({
       url: `${BASE_URL}/extras/${lesson.moduleId}/${lesson.slug}`,
       lastModified: new Date(),
@@ -166,7 +166,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...staticRoutes,
-    ...themeRoutes,
+    ...worldRoutes,
     ...capstoneRoutes,
     ...lessonRoutes,
     ...extrasRoutes,

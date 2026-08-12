@@ -51,7 +51,7 @@ export const BRIDGE_TIER_LABELS: Record<BridgeTier, string> = {
 };
 
 export const BRIDGE_CATEGORY_LABELS: Record<BridgeCategory, string> = {
-  shared: "All Themes",
+  shared: "All Worlds",
   "deep-orbit": "Deep Orbit",
   "neon-protocol": "Neon Protocol",
   "signal-ward": "Signal Ward",
@@ -60,7 +60,7 @@ export const BRIDGE_CATEGORY_LABELS: Record<BridgeCategory, string> = {
 };
 
 export const BRIDGES: Bridge[] = [
-  // ── Shared Bridges (All Themes) ──────────────────────────────────────
+  // ── Shared Bridges (All Worlds) ──────────────────────────────────────
   {
     id: 1,
     mlConcept: "Training data",
@@ -284,7 +284,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// HOC composition: each layer transforms data\nconst Enhanced = withAuth(withTheme(withLogger(BaseComponent)));`,
+        feCode: `// HOC composition: each layer transforms data\nconst Enhanced = withAuth(withWorld(withLogger(BaseComponent)));`,
         feConcept: "HOC / Context provider chain",
       },
     },

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { tensorcraftTheme } from "./tensorcraft-theme";
 import { tensorcraftThemeLight } from "./tensorcraft-theme-light";
-import { contrastRatio } from "@tensorcraft/themes";
+import { contrastRatio } from "@tensorcraft/worlds";
 
 /**
  * Syntax-token contrast gate (audit run #6, 2026-07-15).
@@ -77,8 +77,8 @@ describe("tensorcraft shiki theme", () => {
  *
  * Mirrors the dark gate above exactly, on the light `--tc-code-bg`
  * (#F6F6F2) background instead. Uses the shared `contrastRatio` helper
- * from @tensorcraft/themes/wcag.ts rather than re-deriving the luminance
- * math a third time (packages/themes/src/theme-properties.test.ts is the
+ * from @tensorcraft/worlds/wcag.ts rather than re-deriving the luminance
+ * math a third time (packages/worlds/src/world-properties.test.ts is the
  * second consumer) - one implementation, three test suites.
  */
 describe("tensorcraft shiki theme (light)", () => {

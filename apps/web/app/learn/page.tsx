@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { themes } from "@tensorcraft/themes";
-import { THEME_SLUGS, THEME_CONTENT, isLaunched } from "@tensorcraft/shared";
+import { worlds } from "@tensorcraft/worlds";
+import { WORLD_SLUGS, WORLD_CONTENT, isLaunched } from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
   title: "Learn Machine Learning with JavaScript | Tensorcraft",
@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     url: "https://tensorcraft.app/learn",
     title: "Learn Machine Learning with JavaScript | Tensorcraft",
     images: [
-      "/api/og?title=Learn%20ML%20with%20JavaScript&theme=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
+      "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Learn Machine Learning with JavaScript | Tensorcraft",
     images: [
-      "/api/og?title=Learn%20ML%20with%20JavaScript&theme=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
+      "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
     ],
   },
 };
@@ -34,8 +34,8 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default function LearnPage() {
-  const liveThemes = THEME_SLUGS.filter((slug) => isLaunched(slug));
-  const comingThemes = THEME_SLUGS.filter((slug) => !isLaunched(slug));
+  const liveWorlds = WORLD_SLUGS.filter((slug) => isLaunched(slug));
+  const comingWorlds = WORLD_SLUGS.filter((slug) => !isLaunched(slug));
 
   return (
     <main className="min-h-screen bg-page px-6 py-20">
@@ -47,7 +47,7 @@ export default function LearnPage() {
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-8">
           You already think in arrays, state, and components. Machine learning
           uses the same patterns, just with different names. Tensorcraft bridges
-          the gap with {THEME_CONTENT.lessonBridges} analogies that map your
+          the gap with {WORLD_CONTENT.lessonBridges} analogies that map your
           frontend knowledge to ML concepts.
         </p>
 
@@ -72,14 +72,14 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">1.</span>
             <span>
-              Pick a theme: each teaches a different ML specialization through a
+              Pick a world: each teaches a different ML specialization through a
               unique story
             </span>
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">2.</span>
             <span>
-              Learn through bridges: {THEME_CONTENT.lessonBridges} analogies map
+              Learn through bridges: {WORLD_CONTENT.lessonBridges} analogies map
               ML concepts to frontend concepts you know, each labeled where it
               breaks
             </span>
@@ -94,7 +94,7 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">4.</span>
             <span>
-              Build a real project: each theme culminates in a capstone ML model
+              Build a real project: each world culminates in a capstone ML model
               running live in the browser
             </span>
           </li>
@@ -122,15 +122,15 @@ export default function LearnPage() {
           Available Now
         </h2>
         <ul className="space-y-2 mb-6 text-base text-text-muted font-sans">
-          {liveThemes.map((slug) => (
+          {liveWorlds.map((slug) => (
             <li key={slug}>
               <Link
-                href={`/themes/${slug}`}
+                href={`/worlds/${slug}`}
                 className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
               >
-                {themes[slug]?.displayName ?? slug}
+                {worlds[slug]?.displayName ?? slug}
               </Link>
-              : {themes[slug]?.specialization}
+              : {worlds[slug]?.specialization}
             </li>
           ))}
         </ul>
@@ -139,19 +139,19 @@ export default function LearnPage() {
           Coming Soon
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-3">
-          {comingThemes.length} more themes ship in waves. Each has a preview
+          {comingWorlds.length} more worlds ship in waves. Each has a preview
           page where you can join its waitlist:
         </p>
         <ul className="space-y-2 mb-8 text-base text-text-muted font-sans">
-          {comingThemes.map((slug) => (
+          {comingWorlds.map((slug) => (
             <li key={slug}>
               <Link
-                href={`/themes/${slug}`}
+                href={`/worlds/${slug}`}
                 className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
               >
-                {themes[slug]?.displayName ?? slug}
+                {worlds[slug]?.displayName ?? slug}
               </Link>
-              : {themes[slug]?.specialization} (coming soon)
+              : {worlds[slug]?.specialization} (coming soon)
             </li>
           ))}
         </ul>
@@ -168,10 +168,10 @@ export default function LearnPage() {
         </p>
 
         <Link
-          href="/themes"
+          href="/worlds"
           className="inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm uppercase tracking-wider transition-all hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
         >
-          See All 5 Themes →
+          See All 5 Worlds →
         </Link>
       </div>
     </main>

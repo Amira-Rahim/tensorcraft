@@ -8,11 +8,11 @@ describe("heroPlateSrc", () => {
     );
   });
 
-  it("returns undefined for a theme with no art, so consumers degrade", () => {
+  it("returns undefined for a world with no art, so consumers degrade", () => {
     expect(heroPlateSrc("neon-protocol")).toBeUndefined();
   });
 
   it("returns undefined for an unknown slug rather than minting a 404 URL", () => {
-    expect(heroPlateSrc("not-a-theme")).toBeUndefined();
+    expect(heroPlateSrc("not-a-world")).toBeUndefined();
   });
 });

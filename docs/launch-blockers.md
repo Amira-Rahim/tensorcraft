@@ -50,7 +50,7 @@ service role, plus an explicit `with check`. **Must be applied to production.**
   progress. **Materialized views cannot carry RLS in PostgreSQL**, and it sits
   in `public`, so PostgREST served it to anon. 040 revokes it (no app code
   queries it).
-- `theme_progress_summary` (`005:10`) carries a comment asserting it "inherits
+- `world_progress_summary` (`005:10`) carries a comment asserting it "inherits
   RLS from underlying table." That is false: views default to
   `security_invoker = false`, so policies evaluate as the view's *owner*,
   bypassing RLS entirely. 040 sets `security_invoker = true`.
@@ -100,7 +100,7 @@ sell to anyone in the EU/UK. I am flagging exposure, not giving legal advice.
 - **No postal address in the weekly digest** — CAN-SPAM requires one in every
   commercial message, and the digest is live.
 - **Waitlist consent escalation:** `subscribed` defaults to `true` and the
-  sender ignores `theme_id`, so someone who asked to be told when one theme
+  sender ignores `world_id`, so someone who asked to be told when one world
   ships is auto-enrolled into a newsletter carrying discounts.
 
 ### R2-5. HIGH OPERATIONAL — you would not know anything broke
@@ -147,7 +147,7 @@ sell to anyone in the EU/UK. I am flagging exposure, not giving legal advice.
   have rendered imageless — directly undercutting the distribution phase.
   Fixed with an explicit `Allow: /api/og`.
 - **Free signed-in users were shown modules 2-4 as unlocked, then bounced.**
-  The theme map gated on `isFoundationsModule` (`track === "foundations"`,
+  The world map gated on `isFoundationsModule` (`track === "foundations"`,
   which spans deep-orbit modules 1 *through 4*) while the lesson route gates
   on `mod.order > 1`. So immediately after the free-account CTA converted
   someone, they saw three more modules apparently available and hit a paywall
@@ -173,7 +173,7 @@ tests zero `generateMetadata` functions, and never imports 10 of the routes.
 ### R2-6c. Accessibility & compatibility — one outage-class bug, fixed
 
 - **White screen on every route for anyone blocking site data.**
-  `theme-provider.tsx` guarded `typeof window` but not the `localStorage` call
+  `world-provider.tsx` guarded `typeof window` but not the `localStorage` call
   itself. `localStorage` does not return null when site data is blocked — it
   **throws SecurityError** (Safari "Block All Cookies", Chrome site-data
   blocking, enterprise policy, any sandboxed iframe). That read is the
@@ -206,7 +206,7 @@ webServer timeout is 180s and the 28/28 axe matrix genuinely runs):
 2. **The e2e accessibility gate fails open.** `playwright.config.ts` allows
    30s for `webServer`, against measured cold compiles of 19-154s. When it
    times out the result reads as infra flake, not as "accessibility was never
-   checked" — and the ten specs that never ran cover Themes, Theme Detail,
+   checked" — and the ten specs that never ran cover Worlds, World Detail,
    Pricing and all six lesson steps, i.e. the entire paid surface. Only
    Landing, Auth, Terms and Privacy are actually verified.
 
@@ -367,7 +367,7 @@ supabase_auth_admin-only), every down migration exactly reverses its up (no
 
 ### R3-7. Runtime/SEO delta — **MOSTLY FIXED 2026-07-25**
 
-> Fixed: full openGraph+twitter blocks on theme detail / lesson / learn /
+> Fixed: full openGraph+twitter blocks on world detail / lesson / learn /
 > capstone; skill-genome refire closed (completion signals fire only on an
 > in-session transition into step 5, exercise_pass only on first pass);
 > session-toast timer cleared/reset; particle-field caches its resolved
@@ -382,7 +382,7 @@ supabase_auth_admin-only), every down migration exactly reverses its up (no
 > per-request `getUser()` crawl-cost nit. Original findings below as the
 > record.
 
-- **og:url shallow-merge drop on the 4 highest-share routes**: theme detail,
+- **og:url shallow-merge drop on the 4 highest-share routes**: world detail,
   every lesson, `/learn`, capstone declare images-only `openGraph`, which
   replaces (not merges) the parent — og:url/type/siteName vanish and the
   homepage Twitter card is inherited. The fix pattern exists in the repaired
@@ -400,9 +400,9 @@ supabase_auth_admin-only), every down migration exactly reverses its up (no
   toast, setState after unmount) · `particle-field.tsx` runs
   `getComputedStyle` every rAF frame on the landing hero and never re-checks
   reduced-motion (violates the contract in `effects/index.ts:9-12`) ·
-  duplicate `Course` JSON-LD on all five theme slugs (layout array + page,
+  duplicate `Course` JSON-LD on all five world slugs (layout array + page,
   different names/offers) · bundles still emit `PreOrder` on hard-disabled
-  2/3/5-theme buttons and coming-soon themes still assert `price: "59"` in two
+  2/3/5-world buttons and coming-soon worlds still assert `price: "59"` in two
   places · `pending-poller.tsx:54-58` mounts `role="status"` with its content
   (unreliable announcement, on the lost-webhook recovery moment) ·
   `deep-scan-demo.tsx:134-143` fires one `setRows` after unmount ·
@@ -461,16 +461,16 @@ match.
   (first run)..." button label — the 3G misattribution is mitigated (no
   prefetch yet; R2-6c structural note 1 downgraded, not gone).
 - **Tier 2 SEO bullet, 5 of 7 sub-items**: capstone excluded from sitemap;
-  `session_expired` only set when an `sb-` cookie existed; coming-soon themes
+  `session_expired` only set when an `sb-` cookie existed; coming-soon worlds
   emit `OutOfStock`; `numberOfCredits` removed; og:url fixed on
-  pricing/about/compare/themes/journey/certificates (remainder → R3-7).
+  pricing/about/compare/worlds/journey/certificates (remainder → R3-7).
 - **Tier 2 Mobile/a11y bullet, 6 of 7 sub-items**: step bar wraps at 320px
   (24×24 targets); waitlist input has a focus outline; hint/recall/magic-link
   reveals use the always-mounted live-region + focus-move pattern;
   `aria-pressed` on purchase toggles; sr-only `<h1>` per lesson step;
   `--tc-border-interactive` token (#808080 dark / #8a8a8a light) clears 3:1 on
   every genuine control in both schemes. Remaining: 13px editor type (now in
-  BOTH Sandpack themes) and no mobile-viewport axe run.
+  BOTH Sandpack worlds) and no mobile-viewport axe run.
 - **Opacity-dimmed text**: re-census at HEAD finds the 41-site figure
   obsolete — 22 sites remain, all ≥/65 alpha computing 4.96-11.4:1 in both
   schemes; the cited failures (landing "Notify me", ticker @40, bridge tiles)
@@ -555,7 +555,7 @@ existed — is corrected (the range is **037-051**).
   `engines.node >= 22` pinned in root package.json (F5).
 - Debris: root tsconfig's dead `@tensorcraft/github` path mapping removed
   (F6); dashboard loading skeleton's phantom ticker bar removed (F7);
-  admin digest lesson links fixed to `/themes/...` (was the 404ing
+  admin digest lesson links fixed to `/worlds/...` (was the 404ing
   `/learn/...` form).
 
 **Adversarial diff review of the remediation itself** found three defects in
@@ -604,7 +604,7 @@ that touch THIS document's lists):
   idempotency (#6; wired into both settle paths — closes the accepted
   TOCTOU from run 2) · 054 bounds `exercise_attempts.submitted_code`
   (register P2) · 055 skill-genome normalization (T1-21; asymptotic curve
-  replaces the clamp that pinned every finished theme's axes at 100).
+  replaces the clamp that pinned every finished world's axes at 100).
 - **New workflows:** `deploy-api.yml` (manual deploy gated on ZERO pending
   migrations — the §7 "breaks first on deploy day" ordering is now
   mechanical, needs `FLY_API_TOKEN` as a third secret) ·
@@ -648,12 +648,12 @@ group of frontend engineers…"); do not add a personal name without asking;
 ~~manual light-mode + 375px pass~~ — **DONE 2026-07-25, owner-verified
 clean** (8 core routes at phone width in light scheme; no defects
 reported); Tier 1-OPS accounts; Tier 1-LEGAL
-advisor items; ~~theme-2 build-or-reprice decision~~ — **DECIDED
-2026-07-25: theme 2 is DEFERRED until theme 1 is launched, distributed to
+advisor items; ~~world-2 build-or-reprice decision~~ — **DECIDED
+2026-07-25: world 2 is DEFERRED until world 1 is launched, distributed to
 at least 200 users, and the data is collected.** Until that gate: bundles
 stay `disabled` (already true in source), pricing keeps the honest
-OutOfStock markup, and no theme-2 authoring starts. Cost basis when the
-gate opens: `docs/theme-launch-checklist.md`.
+OutOfStock markup, and no world-2 authoring starts. Cost basis when the
+gate opens: `docs/world-launch-checklist.md`.
 
 ---
 
@@ -683,8 +683,8 @@ Details of each item, retained as the record of what was wrong and why.
 
 Migration `036` documents this exact vulnerability class in its own header, then fixes exactly one function — it is the only `revoke` in the entire schema. Postgres grants `EXECUTE` to `PUBLIC` by default, so PostgREST exposes these at `/rest/v1/rpc/<name>` to `anon`:
 
-- `refresh_dashboard_stats()` (`012_scalability_indexes.sql:48`) — no arguments, no guard, forces `REFRESH MATERIALIZED VIEW CONCURRENTLY` over all of `theme_progress`. One HTTP POST in a loop pegs the database. **Trivial denial of service.**
-- `compute_user_skill_genome(p_user_id uuid, p_theme_id text)` (`014_skill_genome_computation.sql:6`) — accepts an **arbitrary user id** with no `auth.uid()` check, ~19 scans per call.
+- `refresh_dashboard_stats()` (`012_scalability_indexes.sql:48`) — no arguments, no guard, forces `REFRESH MATERIALIZED VIEW CONCURRENTLY` over all of `world_progress`. One HTTP POST in a loop pegs the database. **Trivial denial of service.**
+- `compute_user_skill_genome(p_user_id uuid, p_world_id text)` (`014_skill_genome_computation.sql:6`) — accepts an **arbitrary user id** with no `auth.uid()` check, ~19 scans per call.
 - `ensure_skill_events_partitions()` (`013:84`) — executes DDL.
 
 The Hono rate limiter does not protect this. PostgREST is a separate public endpoint reached with the anon key that ships in `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
@@ -699,7 +699,7 @@ The Hono rate limiter does not protect this. PostgREST is a separate public endp
 
 ### 3. Paying customers get shown the paywall
 
-`apps/web/lib/progress.ts:55-69` destructures only `{ data }` and returns `!!data`. Any transient error — network blip, RLS hiccup, PostgREST 5xx — is indistinguishable from "never purchased", so `themes/[slug]/page.tsx:61` renders the theme **locked for someone who paid**. No error state, no retry, no way for them to tell. Same discard at `dashboard/page.tsx:50-56`.
+`apps/web/lib/progress.ts:55-69` destructures only `{ data }` and returns `!!data`. Any transient error — network blip, RLS hiccup, PostgREST 5xx — is indistinguishable from "never purchased", so `worlds/[slug]/page.tsx:61` renders the world **locked for someone who paid**. No error state, no retry, no way for them to tell. Same discard at `dashboard/page.tsx:50-56`.
 
 Direct refund and support driver, and the worst possible first impression for a new customer.
 
@@ -722,7 +722,7 @@ This is a launch blocker **specifically because the next phase is distribution**
 
 ### 6. Guest progress notice is false
 
-`themes/[slug]/[module]/[lesson]/page.tsx:293` tells learners "your progress is not saved." It **is** saved — `lib/guest-progress.ts` persists it and `components/guest-progress-bridge.tsx:20-69` replays it into `theme_progress` after signup. `GuestModuleBanner` even says the opposite. The false message is the more prominent of the two, and it discourages starting.
+`worlds/[slug]/[module]/[lesson]/page.tsx:293` tells learners "your progress is not saved." It **is** saved — `lib/guest-progress.ts` persists it and `components/guest-progress-bridge.tsx:20-69` replays it into `world_progress` after signup. `GuestModuleBanner` even says the opposite. The false message is the more prominent of the two, and it discourages starting.
 
 **Fix:** correct the copy to match actual behaviour.
 
@@ -749,6 +749,15 @@ measurement, email, and reach infrastructure whose value is multiplied by
 launch traffic. Launch-day data is unrepeatable, and historical funnel data
 has already been written off once (see above) — do not launch dark again.
 
+- [ ] **Apply migration 058 (`rename_theme_to_world`) before the next
+  deploy or local run against prod data.** The 2026-08-12 product rename
+  ("theme" → "world") renamed every `theme_*` database identifier; the app
+  code at HEAD queries `world_progress`/`world_id`/`p_world_id` and will
+  error against a pre-058 database. Apply via the same deploy-api.yml flow
+  as 037-057 (ledger will read 58/58). Afterward regenerate
+  `packages/supabase/src/types.ts` from the live DB to confirm parity with
+  the hand-renamed copy, and check any pg_cron/Inngest job SQL for
+  embedded `theme_*` identifiers (none known in-repo).
 - [ ] **PostHog:** create project, set `NEXT_PUBLIC_POSTHOG_KEY` (web
   `.env.local` + Vercel). Then verify each of the 10 events appears in the
   dashboard (checklist: `docs/analytics-verification.md`). Free tier = 1M
@@ -768,7 +777,7 @@ has already been written off once (see above) — do not launch dark again.
   register the bounce webhook per `docs/email-setup.md` §3, plus
   `KIT_TAG_PAYWALL_HIT` / `KIT_TAG_MODULE_1_COMPLETE` (R2-7 made
   missing-tag skips recoverable, but sequences cannot fire on tags that do
-  not exist). Purchase is a single theme-agnostic tag in V1 (per-theme
+  not exist). Purchase is a single world-agnostic tag in V1 (per-world
   sequences: `post-launch-backlog.md` §5). Without this, purchases succeed
   but subscribers are never tagged and no lifecycle email fires — including
   the purchase receipt flagged in R2-4. Templates must follow
@@ -963,9 +972,9 @@ Not launch blockers. Each one wastes acquisition spend if left.
 
 - **First lesson opens with a ~15.5s auto-playing scene** during which the page is functionally blank, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the entire product, and it is the destination of the landing page's primary CTA.
 - **No email capture for guests anywhere in the free module.** A guest who reads two lessons and leaves is permanently unreachable — no retention sequence can target them.
-- **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold, with no mobile affordance past the mandatory exercise gate — now duplicated in BOTH Sandpack themes (dark + light, `exercise.tsx`). No axe run exists at any mobile viewport (the 28/28 matrix is desktop-chromium only), and all non-axe e2e runs dark-only via the global `colorScheme: "dark"` pin.
+- **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold, with no mobile affordance past the mandatory exercise gate — now duplicated in BOTH Sandpack worlds (dark + light, `exercise.tsx`). No axe run exists at any mobile viewport (the 28/28 matrix is desktop-chromium only), and all non-axe e2e runs dark-only via the global `colorScheme: "dark"` pin.
 - **Lessons ship ~100 indexable words** (only the current step is in the DOM) and require JS to render at all, with no `<noscript>`. Large organic-acquisition loss for a content-led product.
-- **SEO/metadata + funnel polish** (folded from R2-6b, 2026-07-22; **re-baselined 2026-07-25 — 5 of 7 sub-items were already fixed in code, see R3-10**). Still open: a guest who finishes module 1 sees "Continue M1" pointing backwards; **og:url shallow-merge drop on theme detail / every lesson / `/learn` / capstone** (images-only `openGraph` wipes url/type/siteName and inherits the homepage Twitter card, R3-7); duplicate `Course` JSON-LD on all five theme slugs; bundles still emit `PreOrder` on hard-disabled buttons and coming-soon themes assert `price: "59"` in two places. Fixed and removed from this list: capstone sitemap 307, `session_expired` for first-timers, `PreOrder`→`OutOfStock` on coming-soon themes, `numberOfCredits`, og:url on pricing/about/compare/themes.
+- **SEO/metadata + funnel polish** (folded from R2-6b, 2026-07-22; **re-baselined 2026-07-25 — 5 of 7 sub-items were already fixed in code, see R3-10**). Still open: a guest who finishes module 1 sees "Continue M1" pointing backwards; **og:url shallow-merge drop on world detail / every lesson / `/learn` / capstone** (images-only `openGraph` wipes url/type/siteName and inherits the homepage Twitter card, R3-7); duplicate `Course` JSON-LD on all five world slugs; bundles still emit `PreOrder` on hard-disabled buttons and coming-soon worlds assert `price: "59"` in two places. Fixed and removed from this list: capstone sitemap 307, `session_expired` for first-timers, `PreOrder`→`OutOfStock` on coming-soon worlds, `numberOfCredits`, og:url on pricing/about/compare/worlds.
 - **Load test before ad spend** (gap found 2026-07-22 — no audit dimension
   covered it): nobody has ever pushed the payment path, the SSR lesson
   route, or the Stripe webhook handler under concurrency. Gates 2/3
@@ -975,7 +984,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
   chargeback-evidence workflow, and a response-time target before launch
   week fills the inbox.
 - ~~Story-skip instrumentation missing~~ — **DONE 2026-07-25:**
-  `script_skipped` (themeId, lessonId, step, elapsedMs) fires from the
+  `script_skipped` (worldId, lessonId, step, elapsedMs) fires from the
   Skip control; the ">40% skip triggers narrative redesign" rule is now
   computable from day 1.
 - **Uptime monitoring + status page** (gap found 2026-07-22): no external
@@ -991,7 +1000,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
 - ~~Rate limit is 60/min in code, 120/min in both docs~~ — **reconciled 2026-07-25**: all docs now state 60/min (the code truth). Raising the actual limit to 120 remains a product decision if multi-tab 429s show up.
 - ~~Opacity-dimmed text fails contrast at 41 sites~~ — **substantially remediated by 2026-07-25 re-census (R3-10):** 22 sites remain, all ≥/65 alpha at 4.96-11.4:1 in both schemes; cited failures (landing "Notify me", ticker @40, bridge tiles) gone or exempt-class. Residual tracked in the Mobile/a11y bullet above.
 - **Lesson body ships in HTML at `opacity:0`** until JS stamps the beat state — cloaking-adjacent on the primary organic surface (compounds the ~100-indexable-words item above).
-- **Small UX/cleanup — mostly DONE 2026-07-25:** ~~root 404 primary CTA → /dashboard~~ (now public `/themes`; theme 404 already had it); ~~`.gitignore` misses `.env.production`/`.env.development`~~ (added; `supabase/.temp/` was already untracked); ~~ci-cd.md "~210 allowlisted" claim~~ (corrected to empty-allowlist truth); ~~infrastructure.md query cache / tech-spec.md packages/github~~ (removed). Still open: counterfactual debris — table 031 + generated types survive a fully-deleted feature (drop in a future migration or document as dormant); broken admin link `admin/digest` → `/learn/...` (admin-only).
+- **Small UX/cleanup — mostly DONE 2026-07-25:** ~~root 404 primary CTA → /dashboard~~ (now public `/worlds`; world 404 already had it); ~~`.gitignore` misses `.env.production`/`.env.development`~~ (added; `supabase/.temp/` was already untracked); ~~ci-cd.md "~210 allowlisted" claim~~ (corrected to empty-allowlist truth); ~~infrastructure.md query cache / tech-spec.md packages/github~~ (removed). Still open: counterfactual debris — table 031 + generated types survive a fully-deleted feature (drop in a future migration or document as dormant); broken admin link `admin/digest` → `/learn/...` (admin-only).
 - **`github_token` stored plaintext and browser-readable.** R2-3 assigned this to Tier 2 but it was never listed here until 2026-07-22. `select("github_token")` works for your own row (row-level RLS, no column restriction). Encrypt at rest + block direct column reads.
 - ~~Money-path hardening (R3-4)~~ — **all six DONE 2026-07-25** (see R3-4 note; payments.test.ts 41/41).
 - **Journey/new-surface hardening (R3-6/R3-7):** **DONE 2026-07-25 through run 2** (completed_at writer + journey/learn axe cells landed in run 2). Still open: **single-mount the lesson editor for real** (CSS-only today — stale buffer on rotate across `lg`, doubled CPU on the graded path); `/journey` does a per-request `getUser()`, keeping an otherwise-static marketing page dynamic (crawl-cost nit).
@@ -1023,8 +1032,8 @@ Tier 1 makes the app **safe to release and possible to measure**. It does not ma
 | Teams / orgs / seats | no code | ~50–60k |
 | Leaderboard / arena | schema + contract only (048, `arena-scoring-contract.md`; zero UI/API) | ~10–15k |
 | Referral / invite | no code | the viral loop |
-| Themes purchasable | **1** (`LAUNCHED_THEMES`) | the TAM denominator |
+| Worlds purchasable | **1** (`LAUNCHED_WORLDS`) | the TAM denominator |
 
-With one theme at one-time pricing, the realistic ceiling is the **5–10k paying** band, however well distribution goes. Reaching 100k means building the above — quarters of work — as laid out in `docs/roadmap.md` Horizons 1–3.
+With one world at one-time pricing, the realistic ceiling is the **5–10k paying** band, however well distribution goes. Reaching 100k means building the above — quarters of work — as laid out in `docs/roadmap.md` Horizons 1–3.
 
 **So: launch tomorrow on Tier 1. Distribute. Measure. Then decide whether the 100k arc is the business you want to build.** Those are separate decisions and they do not have to be made together.

@@ -4,7 +4,7 @@
    max-w-[440px]) and must be scanned explicitly or their utilities are
    silently missing from the build. */
 @source "../../../packages/ui/src";
-@import "@tensorcraft/themes/css/themes.css";
+@import "@tensorcraft/worlds/css/worlds.css";
 
 ::selection {
   background-color: var(--tc-primary, #6baa8a);
@@ -16,7 +16,7 @@
   outline-offset: 2px;
 }
 
-@theme {
+@world {
   /* Background surfaces */
   --color-page: var(--tc-bg);
   --color-surface: var(--tc-bg);
@@ -28,14 +28,14 @@
   --color-text-primary: var(--tc-text);
   --color-text-muted: var(--tc-muted);
 
-  /* Theme colors */
+  /* World colors */
   --color-primary: var(--tc-primary);
   --color-accent: var(--tc-accent);
   /* Ink on primary-filled elements (`bg-primary text-on-primary`). Was
      `text-page` (the page bg doubling as ink) - correct in dark, but the
      light page bg #f5f5f2 is only 4.21:1 on the light primaries (axe fail);
-     light on-primary ink is pure white. Value pair lives in themes.css,
-     locked by theme-properties.test.ts. */
+     light on-primary ink is pure white. Value pair lives in worlds.css,
+     locked by world-properties.test.ts. */
   --color-on-primary: var(--tc-on-primary);
 
   /* Semantic */
@@ -235,7 +235,7 @@ body {
 
 /* Inline code in prose renders as a bordered chip, distinct from body text
    and from Shiki code blocks (which live inside <pre>). Token-driven so each
-   theme recolors automatically. */
+   world recolors automatically. */
 .lesson-prose :not(pre) > code {
   font-family: var(--font-mono);
   font-size: 0.85em;
@@ -424,7 +424,7 @@ body {
    background. The brass inner rule rides an outline rather than an inset
    box-shadow so the light-scheme offset shadow can be declared on its own
    without restating the ring. --tc-brass is constant across schemes on
-   purpose; see the note beside it in packages/themes/src/css/themes.css. */
+   purpose; see the note beside it in packages/worlds/src/css/worlds.css. */
 .tc-art-plate {
   display: block;
   width: 100%;
@@ -455,8 +455,8 @@ body {
    the page surface. In light scheme it opts back out to the dark palette,
    because the art underneath cannot lighten with the page: without this,
    --tc-text (#1f1f1f) lands on a near-black plate at roughly 1:1.
-   Values are Deep Orbit's dark tokens, the only theme with shipped art; a
-   second art theme needs its own block here. */
+   Values are Deep Orbit's dark tokens, the only world with shipped art; a
+   second art world needs its own block here. */
 [data-scheme="light"] .tc-on-art {
   --tc-bg: #181818;
   --tc-text: #e0e0e0;
@@ -464,7 +464,7 @@ body {
   --tc-primary: #6baa8a;
   --tc-border: #3d3d3d;
   /* The Tailwind layer has to be restated as literals, not left to inherit.
-     @theme emits --color-text-muted: var(--tc-muted) at :root, and a custom
+     @world emits --color-text-muted: var(--tc-muted) at :root, and a custom
      property's value is substituted where it is DECLARED, so it computed to
      the light #555555 up there and inherits down as that fixed colour.
      Redefining --tc-muted below it cannot reach `text-text-muted`. */
@@ -550,23 +550,23 @@ body {
     );
 }
 
-/* ===== Theme-card scheme-aware primary =====
-   Shared by dashboard/theme-cards.tsx (a server component — no useScheme()
-   hook available) AND themes/theme-cards-grid.tsx (a client component that
+/* ===== World-card scheme-aware primary =====
+   Shared by dashboard/world-cards.tsx (a server component — no useScheme()
+   hook available) AND worlds/world-cards-grid.tsx (a client component that
    could use the hook, but deliberately doesn't: re-rendering every card on
    scheme toggle just to recompute a style string mints fresh style-prop
    values and defeats memoization for no benefit — the CSS engine already
    re-resolves custom properties for free on a data-scheme attribute flip).
    Both set the same two local custom props per card (--card-primary /
-   --card-primary-light, from the theme's dark/light primary) on any element
+   --card-primary-light, from the world's dark/light primary) on any element
    carrying this class; this rule picks the active one into
    --card-active-primary, which every card.primary-driven style in both
    files reads instead of the raw hex. Dark stays the no-attribute default,
    same convention as every other --tc-* token. */
-.tc-theme-card {
+.tc-world-card {
   --card-active-primary: var(--card-primary);
 }
-[data-scheme="light"] .tc-theme-card {
+[data-scheme="light"] .tc-world-card {
   --card-active-primary: var(--card-primary-light, var(--card-primary));
 }
 

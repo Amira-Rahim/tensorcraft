@@ -2,7 +2,7 @@ import { apiFetch } from "./api-fetch";
 
 /**
  * Fire-and-forget: commit a passed exercise's code to the learner's
- * tensorcraft-<theme> repo (POST /api/github/commit).
+ * tensorcraft-<world> repo (POST /api/github/commit).
  *
  * Failures are deliberately silent: the server answers with a structured
  * error when GitHub is not connected (the common case), and the Settings
@@ -13,7 +13,7 @@ import { apiFetch } from "./api-fetch";
  * months with zero callers).
  */
 export function commitExerciseArtifact(input: {
-  themeId: string;
+  worldId: string;
   lessonId: string;
   moduleId?: string;
   /** Artifact filename key; without it two-exercise lessons overwrite. */

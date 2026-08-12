@@ -25,7 +25,7 @@ describe("SceneHeading", () => {
     expect(screen.getByText(/epilogue/i)).toBeInTheDocument();
   });
 
-  it("renders the prefix in the theme primary color", () => {
+  it("renders the prefix in the world primary color", () => {
     render(<SceneHeading location="Lab" prefix="Int." />);
     const prefix = screen.getByText(/INT\./);
     expect(prefix).toHaveAttribute(

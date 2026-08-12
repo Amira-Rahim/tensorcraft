@@ -7,7 +7,7 @@ import { FocusTrap } from "@tensorcraft/ui/a11y";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const NAV_LINKS = [
-  { href: "/themes", label: "THEMES" },
+  { href: "/worlds", label: "WORLDS" },
   { href: "/journey", label: "JOURNEY" },
   { href: "/pricing", label: "PRICING" },
   { href: "/learn", label: "LEARN" },

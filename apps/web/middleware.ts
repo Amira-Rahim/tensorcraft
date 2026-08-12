@@ -4,10 +4,10 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const response = await updateSession(request);
 
-  // Set tc_theme cookie when visiting a theme page
-  const themeMatch = request.nextUrl.pathname.match(/^\/themes\/([^/]+)/);
-  if (themeMatch) {
-    response.cookies.set("tc_theme", themeMatch[1], {
+  // Set tc_world cookie when visiting a world page
+  const worldMatch = request.nextUrl.pathname.match(/^\/worlds\/([^/]+)/);
+  if (worldMatch) {
+    response.cookies.set("tc_world", worldMatch[1], {
       path: "/",
       maxAge: 60 * 60 * 24 * 365,
       sameSite: "lax",
