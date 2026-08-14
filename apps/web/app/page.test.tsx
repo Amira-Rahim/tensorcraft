@@ -218,7 +218,9 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   describe("FAQ data (single source for visible FAQ + JSON-LD)", () => {
     it("covers the core objections incl. math level and refunds", async () => {
       const { FAQ_ITEMS } = await import("./faq-data");
-      expect(FAQ_ITEMS.length).toBeGreaterThanOrEqual(6);
+      // Trimmed 6 -> 4 on 2026-08-13: cut the bridge-mechanism and topics
+      // questions (both restate sections rendered directly above the FAQ).
+      expect(FAQ_ITEMS.length).toBeGreaterThanOrEqual(4);
       const all = FAQ_ITEMS.map((i) => `${i.q} ${i.a}`).join(" ");
       expect(all).toMatch(/math/i);
       expect(all).toMatch(/14-day money-back/i);
