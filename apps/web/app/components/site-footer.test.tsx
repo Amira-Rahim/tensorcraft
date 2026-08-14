@@ -40,15 +40,17 @@ describe("SiteFooter", () => {
     expect(screen.getByText(/2026 tensorcraft/i)).toBeInTheDocument();
   });
 
-  it("renders only legal links (nav links live in the header)", () => {
+  it("renders the Learn link (SEO doorway, dropped from the top nav 2026-08-14)", () => {
     render(<SiteFooter />);
-    for (const name of [
-      /worlds/i,
-      /pricing/i,
-      /^blog$/i,
-      /learn/i,
-      /glossary/i,
-    ]) {
+    expect(screen.getByRole("link", { name: /learn/i })).toHaveAttribute(
+      "href",
+      "/learn",
+    );
+  });
+
+  it("does not duplicate header nav links", () => {
+    render(<SiteFooter />);
+    for (const name of [/worlds/i, /pricing/i, /^blog$/i, /glossary/i]) {
       expect(screen.queryByRole("link", { name })).not.toBeInTheDocument();
     }
   });
