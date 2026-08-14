@@ -125,6 +125,18 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
+- [ ] **DISPATCH inbox, removed 2026-08-14 (owner call: not needed now).**
+  Deleted: `/inbox` route + `inbox-view`, `lib/dispatch-client.ts`, the
+  Inbox nav links + unread badge (both navs), the web and API milestone
+  producer hooks, and `apps/api` `routes/dispatch.ts` + `lib/dispatch.ts`.
+  Kept: the `DispatchTease` capstone story block (renders in-lesson, links
+  to the next world, never depended on the inbox) and the DB layer:
+  `dispatch_messages` plus its RPCs (migrations 029/036/039) stay applied
+  in prod with pre-removal rows, and the account-erasure table list still
+  covers the table. Restore path: revert the 2026-08-14 removal commit;
+  the producer dedups by subject, so missed milestones refire on the next
+  completion in the same module. If the removal becomes permanent, ship a
+  drop migration for the table + RPCs (operator step, destroys user rows).
 - [ ] **Em-dash sweep of developer code comments** (2026-08-12 slop audit):
   206 em dashes in `apps/web` + `packages/ui` + `packages/shared` source
   comments, all written after the 2026-06-10 repo-wide sweep. User-visible

@@ -34,7 +34,6 @@ function NavLink({
 
 export function Nav() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -49,20 +48,6 @@ export function Nav() {
     });
     return () => subscription.unsubscribe();
   }, []);
-
-  // DISPATCH messages arrive silently server-side; without a badge the
-  // narrative reward system depends on habitual checking (2026-07-14 UX
-  // audit). Refetch on route change so reading mail clears the dot.
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setUnreadCount(0);
-      return;
-    }
-    const supabase = getSupabaseBrowserClient();
-    supabase
-      .rpc("count_unread_dispatch")
-      .then(({ data }) => setUnreadCount(typeof data === "number" ? data : 0));
-  }, [isAuthenticated, pathname]);
 
   // Focus mode: lesson viewer routes get no marketing nav. Lesson routes are
   // exactly /worlds/{slug}/{module}/{lesson}; the capstone page is 3 segments
@@ -94,23 +79,6 @@ export function Nav() {
 
       <div className="hidden md:flex items-center gap-6 font-mono">
         {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
-        {/* Restored 2026-07-13: the milestone producer
-            (apps/api/src/lib/dispatch.ts) now writes module/world-clear
-            messages, so the inbox is no longer guaranteed-empty. */}
-        {isAuthenticated && (
-          <NavLink href="/inbox">
-            Inbox
-            {unreadCount > 0 && (
-              <span
-                data-testid="inbox-unread-badge"
-                className="ml-1.5 inline-flex items-center justify-center min-w-4 h-4 px-1 bg-primary text-on-primary text-[10px] font-bold rounded-none"
-                aria-label={`${unreadCount} unread`}
-              >
-                {unreadCount}
-              </span>
-            )}
-          </NavLink>
-        )}
         <NavLink href="/worlds">Worlds</NavLink>
         <NavLink href="/journey">Journey</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>

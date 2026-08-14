@@ -127,20 +127,6 @@ export async function markLessonCompleted(
     }),
   ).catch(() => {});
 
-  // DISPATCH milestone check (module cleared / world cleared), only on a
-  // genuine not-completed → completed transition. The server re-reads
-  // progress and dedups, so this is best-effort like the calls above.
-  if (existingProgress?.status !== "completed") {
-    import("./api-fetch")
-      .then(({ apiFetch }) =>
-        apiFetch("/api/dispatch/check", {
-          method: "POST",
-          body: JSON.stringify({ worldId, moduleId }),
-        }),
-      )
-      .catch(() => {});
-  }
-
   return data;
 }
 

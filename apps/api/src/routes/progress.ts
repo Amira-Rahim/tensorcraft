@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
 import { isValidWorldSlug, isValidSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
-import { fireMilestonesForCompletion } from "../lib/dispatch";
 import type { AppEnv } from "../types";
 
 const progress = new Hono<AppEnv>();
@@ -170,24 +169,6 @@ progress.post("/", async (c) => {
       },
       500,
     );
-  }
-
-  // DISPATCH milestone check on a genuine completion transition. The web
-  // frontend writes progress directly to Supabase and calls
-  // /api/dispatch/check itself; this covers future API consumers.
-  if (
-    status === "completed" &&
-    existing?.status !== "completed" &&
-    body.moduleId
-  ) {
-    fireMilestonesForCompletion({
-      userId,
-      worldId: body.worldId,
-      moduleId: body.moduleId,
-    }).catch(() => {
-      // Best-effort: the dedup-by-subject producer can be retried by any
-      // later completion in the same module.
-    });
   }
 
   return c.json({ progress: data });

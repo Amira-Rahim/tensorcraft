@@ -186,6 +186,8 @@ const USER_DATA_TABLES = [
   "achievements",
   "skill_genome",
   "skill_events",
+  // Inbox feature removed 2026-08-14 but the table survives in production
+  // with pre-removal rows; erasure and export must still cover it.
   "dispatch_messages",
   "boss_beat_choices",
   "journey_enrollment",

@@ -148,18 +148,6 @@ export function MobileNav() {
                   >
                     Dashboard
                   </Link>
-                  {/* Restored 2026-07-13: milestone producer live; see nav.tsx. */}
-                  <Link
-                    href="/inbox"
-                    onClick={() => setOpen(false)}
-                    className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${
-                      pathname === "/inbox"
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-text-muted hover:border-primary/30 hover:text-text-primary"
-                    }`}
-                  >
-                    Inbox
-                  </Link>
                   <Link
                     href="/settings"
                     onClick={() => setOpen(false)}
