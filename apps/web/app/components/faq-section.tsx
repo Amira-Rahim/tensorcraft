@@ -65,7 +65,7 @@ export function FaqSection({
         {FAQ_ITEMS.map((item) => (
           <details key={item.q} className="group">
             <summary
-              className={`${containerClassName} cursor-pointer list-none py-5 font-mono text-sm font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`}
+              className={`${containerClassName} cursor-pointer list-none py-6 font-mono text-base md:text-lg font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`}
             >
               {item.q}
               <span
@@ -75,8 +75,11 @@ export function FaqSection({
                 +
               </span>
             </summary>
+            {/* max-w is border-box, so the cap includes containerClassName's
+                horizontal padding: 840px - 160px (md:px-20) leaves a ~680px
+                text measure, ~75 characters at 16px Inter. */}
             <p
-              className={`${containerClassName} pb-6 text-sm text-text-muted leading-relaxed font-sans max-w-[760px]`}
+              className={`${containerClassName} pb-8 text-base text-text-muted leading-relaxed font-sans max-w-210`}
             >
               {item.a}
             </p>
