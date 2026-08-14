@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 /**
- * Blog draft generator.
+ * Blog idea-brief generator.
  *
- * For every shortlisted news_item in the given week, generates an MDX file
- * at packages/content/content/blog/YYYY-Www-<slug>.mdx and a weekly digest
- * post that aggregates the items. Marks each news_item as published with
- * the resulting blog slug.
+ * For every shortlisted news_item in the given week, generates an idea
+ * brief at dist/drafts/YYYY-Www-<slug>.md plus a weekly digest brief.
+ * Briefs are raw material for a human writer, not publishable posts
+ * (owner decision 2026-08-14: every published post is written by hand).
+ * Nothing is written to packages/content/content/blog/ and the
+ * news_item rows stay at status='shortlisted'; flip a row to
+ * 'published' with its published_blog_slug by hand once the
+ * hand-written post ships.
  *
  * Run:
- *   pnpm tsx scripts/news/draft.mjs --week=2026-W18           # write to disk + DB
+ *   pnpm tsx scripts/news/draft.mjs --week=2026-W18           # write briefs
  *   pnpm tsx scripts/news/draft.mjs --week=2026-W18 --dry-run # print to stdout
  *
  * Required env:
@@ -23,7 +27,7 @@ import { dirname, resolve } from "node:path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const repoRoot = resolve(__dirname, "..", "..");
-const blogDir = resolve(repoRoot, "packages/content/content/blog");
+const draftsDir = resolve(repoRoot, "dist", "drafts");
 
 const argv = parseArgs(process.argv.slice(2));
 const DRY_RUN = !!argv["dry-run"];
@@ -40,10 +44,12 @@ if (!WEEK) {
 /* ------------------------------------------------------------------ */
 
 function buildItemPrompt(item) {
+  // Lessons live at /worlds/<world>/<module>/<lesson>; the /learn/<nested>
+  // shape 404s (the blog-links gate exists because a shipped post used it).
   const lessons = (item.matched_lessons || [])
     .map(
       (m, i) =>
-        `${i + 1}. ${m.title}  →  /learn/${m.worldId}/${m.moduleId}/${m.slug}${m.rationale ? `\n   rationale: ${m.rationale}` : ""}`,
+        `${i + 1}. ${m.title}  →  /worlds/${m.worldId}/${m.moduleId}/${m.slug}${m.rationale ? `\n   rationale: ${m.rationale}` : ""}`,
     )
     .join("\n");
 
@@ -105,38 +111,30 @@ function slugifyTitle(title) {
     .slice(0, 80);
 }
 
-function frontmatter(item, slug, body) {
-  const worldSlug = item.matched_lessons?.[0]?.worldId;
-  const primaryLessonSlug = item.matched_lessons?.[0]?.slug;
+// Plain-markdown brief, deliberately without velite frontmatter so the
+// file cannot pass the posts schema if pasted into content/blog unedited.
+function ideaBrief(item, body) {
   const sourceLabel = item.source.replace(/^(rss|github):/, "").replace(/\/.*$/, "");
-  const summaryLine = body
-    .split("\n")
-    .find((l) => l.trim() && !l.startsWith("#"))
-    ?.slice(0, 240) ?? item.title;
-
-  const matchedYaml = (item.matched_lessons || [])
+  const lessons = (item.matched_lessons || [])
     .slice(0, 3)
     .map(
-      (m) => `  - worldId: ${m.worldId}
-    moduleId: ${m.moduleId}
-    slug: ${m.slug}
-    title: ${JSON.stringify(m.title)}${m.rationale ? `\n    rationale: ${JSON.stringify(m.rationale)}` : ""}`,
+      (m) =>
+        `- ${m.title}  →  /worlds/${m.worldId}/${m.moduleId}/${m.slug}${m.rationale ? `\n  rationale: ${m.rationale}` : ""}`,
     )
     .join("\n");
 
-  return `---
-slug: ${slug}
-title: ${JSON.stringify(item.title)}
-publishedAt: ${new Date().toISOString().slice(0, 10)}
-weekIso: ${WEEK}
-sourceUrl: ${item.url}
-sourceLabel: ${sourceLabel}
-${primaryLessonSlug ? `primaryLessonSlug: ${primaryLessonSlug}\n` : ""}${worldSlug ? `worldSlug: ${worldSlug}\n` : ""}summary: ${JSON.stringify(summaryLine.trim())}
-matchedLessons:
-${matchedYaml}
-tags:
-  - news
-${worldSlug ? `  - ${worldSlug}\n` : ""}---
+  return `# Idea brief (${WEEK}): ${item.title}
+
+> Raw LLM draft. Not publishable. A human writes the real post by hand in
+> packages/content/content/blog/ and only then flips the news_item row to
+> published.
+
+Source: ${sourceLabel} — ${item.url}
+
+Matched lessons:
+${lessons || "(none)"}
+
+## Suggested angle
 
 ${body}
 `;
@@ -189,16 +187,16 @@ async function loadShortlisted(week) {
     .eq("status", "shortlisted")
     .eq("week_iso", week);
   if (error) throw error;
-  return { supabase, items: data || [] };
+  return data || [];
 }
 
 async function main() {
-  if (!existsSync(blogDir)) mkdirSync(blogDir, { recursive: true });
-  const { supabase, items } = await loadShortlisted(WEEK);
+  if (!DRY_RUN && !existsSync(draftsDir)) mkdirSync(draftsDir, { recursive: true });
+  const items = await loadShortlisted(WEEK);
   console.log(`[draft] ${items.length} shortlisted items for ${WEEK}`);
   if (items.length === 0) return;
 
-  const generated = [];
+  let generated = 0;
 
   for (const item of items) {
     const { system, user } = buildItemPrompt(item);
@@ -211,26 +209,20 @@ async function main() {
     }
 
     const slug = `${WEEK.toLowerCase()}-${slugifyTitle(item.title)}`;
-    const mdx = frontmatter(item, slug, body.trim());
-    const filePath = resolve(blogDir, `${slug}.mdx`);
+    const brief = ideaBrief(item, body.trim());
+    const filePath = resolve(draftsDir, `${slug}.md`);
 
     if (DRY_RUN) {
-      console.log(`\n--- ${filePath} ---\n${mdx}\n`);
+      console.log(`\n--- ${filePath} ---\n${brief}\n`);
     } else {
-      writeFileSync(filePath, mdx);
+      writeFileSync(filePath, brief);
       console.log(`[draft] wrote ${filePath}`);
-      const { error } = await supabase
-        .from("news_items")
-        .update({ status: "published", published_blog_slug: slug })
-        .eq("id", item.id);
-      if (error) console.error(`[draft] mark-published failed: ${error.message}`);
     }
-    generated.push({ item, slug });
+    generated += 1;
   }
 
-  // Weekly digest
-  if (generated.length > 0) {
-    const digestSlug = `${WEEK.toLowerCase()}-digest`;
+  // Weekly digest brief
+  if (generated > 0) {
     const { system, user } = buildDigestPrompt(items);
     let digestBody;
     try {
@@ -239,38 +231,21 @@ async function main() {
       console.error(`[draft] digest LLM call failed: ${err.message}`);
       return;
     }
-    const summary = `Weekly browser-ML digest covering ${generated.length} items.`;
-    const matchedYaml = generated
-      .slice(0, 5)
-      .map(({ item }) => {
-        const m = item.matched_lessons?.[0];
-        if (!m) return "";
-        return `  - worldId: ${m.worldId}
-    moduleId: ${m.moduleId}
-    slug: ${m.slug}
-    title: ${JSON.stringify(m.title)}`;
-      })
-      .filter(Boolean)
-      .join("\n");
-    const digestMdx = `---
-slug: ${digestSlug}
-title: ${JSON.stringify(`The Bridge: ${WEEK}`)}
-publishedAt: ${new Date().toISOString().slice(0, 10)}
-weekIso: ${WEEK}
-summary: ${JSON.stringify(summary)}
-matchedLessons:
-${matchedYaml}
-tags:
-  - digest
----
+    const digestBrief = `# Idea brief (${WEEK}): weekly digest
+
+> Raw LLM draft. Not publishable. A human writes the real post by hand in
+> packages/content/content/blog/ and only then flips the news_item rows to
+> published.
+
+## Suggested angle
 
 ${digestBody.trim()}
 `;
-    const digestPath = resolve(blogDir, `${digestSlug}.mdx`);
+    const digestPath = resolve(draftsDir, `${WEEK.toLowerCase()}-digest.md`);
     if (DRY_RUN) {
-      console.log(`\n--- ${digestPath} ---\n${digestMdx}\n`);
+      console.log(`\n--- ${digestPath} ---\n${digestBrief}\n`);
     } else {
-      writeFileSync(digestPath, digestMdx);
+      writeFileSync(digestPath, digestBrief);
       console.log(`[draft] wrote ${digestPath}`);
     }
   }

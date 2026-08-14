@@ -1,7 +1,9 @@
 # Digest Pipeline — Runbook
 
-Browser-ML news → curated weekly digest → blog post + RSS + newsletter + social.
-Plan: [.claude/plans/we-need-to-make-precious-summit.md](../.claude/plans/we-need-to-make-precious-summit.md).
+Browser-ML news → curated weekly digest → LLM idea briefs → hand-written
+blog post + RSS + newsletter + social.
+Plan: `.claude/plans/we-need-to-make-precious-summit.md` (local Claude plan
+file in the owner's home directory; not tracked in this repo).
 
 ## Where state lives
 
@@ -10,7 +12,8 @@ Plan: [.claude/plans/we-need-to-make-precious-summit.md](../.claude/plans/we-nee
 - **`public.waitlist.{subscribed, unsubscribe_token}`** — newsletter recipients.
 - **`packages/content/.velite/concept-index.json`** — reverse index of 1599 concept tokens
   built from 296 lesson MDX files. Regenerate after content changes.
-- **`packages/content/content/blog/*.mdx`** — drafted posts, rendered on `/blog/[slug]`.
+- **`packages/content/content/blog/*.mdx`** — hand-written posts, rendered on `/blog/[slug]`.
+- **`dist/drafts/<weekIso>-*.md`** — LLM idea briefs, raw material for the hand-written posts.
 - **`dist/social/<weekIso>.md`** — manually-pasted X / LinkedIn copy.
 
 ## Components
@@ -21,7 +24,7 @@ Plan: [.claude/plans/we-need-to-make-precious-summit.md](../.claude/plans/we-nee
 | `.github/workflows/news-scrape.yml` | Runs scrape Mondays 09:00 UTC + manual dispatch. |
 | `scripts/news/match.mjs` | Two-stage retrieval: concept-index pass → Haiku 4.5 LLM rerank. Writes `matched_concepts` + `matched_lessons`. |
 | `apps/web/app/admin/digest/page.tsx` | Curator UI, gated by admin role. Shortlist / reject / reset. |
-| `scripts/news/draft.mjs` | LLM-drafts MDX per shortlisted item + weekly digest post. Flips items to `published`. |
+| `scripts/news/draft.mjs` | LLM-drafts an idea brief per shortlisted item + a weekly digest brief into `dist/drafts/`. Leaves rows at `shortlisted`; a human writes the post. |
 | `scripts/news/social.mjs` | LLM-drafts X thread + LinkedIn post. Manual paste (no API auth). |
 | `scripts/news/send-newsletter.mjs` | Calls admin API → `apps/api/src/lib/newsletter.ts` → Resend. |
 | `apps/web/app/blog/{page,[slug]/page,rss.xml/route}.{tsx,ts}` | Blog index, post detail (with click-tracker `LessonLink`), RSS feed. |
@@ -102,22 +105,37 @@ Drop:
 
 Shortlist 3–5 strong items. UI sets `week_iso = isoWeek(now)` + `status = shortlisted`.
 
-### 4. Draft (local)
+### 4. Draft idea briefs (local)
 
 ```bash
 set -a; source apps/api/.env; set +a
 export ANTHROPIC_API_KEY=<your-key>
-node scripts/news/draft.mjs --week=2026-W18              # writes MDX + flips status
+node scripts/news/draft.mjs --week=2026-W18              # writes briefs
 node scripts/news/draft.mjs --week=2026-W18 --dry-run    # print to stdout
 ```
 
-Writes to `packages/content/content/blog/<weekIso>-<slug>.mdx` per item, plus
-`<weekIso>-digest.mdx` aggregating the week. Sets `status='published'` and
-`published_blog_slug` on the matching news_item rows.
+Writes an idea brief per item to `dist/drafts/<weekIso>-<slug>.md`, plus
+`<weekIso>-digest.md` aggregating the week. Briefs are raw material only
+(owner decision 2026-08-14: every published post is written by hand).
+They carry no velite frontmatter, never land in
+`packages/content/content/blog/`, and leave the news_item rows at
+`shortlisted`.
 
-Voice spec: `packages/content/content/blog/2026-W18-webgpu-147-148.mdx` (canonical sample).
+Write the real post by hand at `packages/content/content/blog/<slug>.mdx`
+(frontmatter per the `posts` schema in `velite.config.ts`; internal lesson
+links use `/worlds/...`, enforced by `blog-links.test.ts`). Once the post
+is deployed, mark the source rows so the newsletter and social copy can
+link it: on `/admin/digest`, each shortlisted item has a "Mark published"
+form that takes the post slug (or its URL) and rejects slugs with no built
+post. SQL fallback:
 
-After drafting:
+```sql
+update news_items
+set status = 'published', published_blog_slug = '<slug>'
+where id in (/* item ids the post covers */);
+```
+
+After writing the post:
 ```bash
 pnpm turbo build:content   # picks up new posts
 pnpm dev                   # preview /blog and /blog/<slug>
@@ -126,8 +144,8 @@ pnpm dev                   # preview /blog and /blog/<slug>
 ### 5. Commit content
 
 ```bash
-git add packages/content/content/blog/<weekIso>-*.mdx
-git commit -m "blog: <weekIso> digest"
+git add packages/content/content/blog/<slug>.mdx
+git commit -m "blog: <slug>"
 git push   # triggers Vercel deploy
 ```
 

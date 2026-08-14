@@ -7,10 +7,12 @@ import { describe, it, expect } from "vitest";
  *
  * The only shipped blog post 404'd its own lesson CTA for two months
  * because it linked /learn/<world>/<module>/<lesson> while lessons live
- * at /worlds/... and nothing checked. The newsletter pipeline writes
- * matchedLessons and body links mechanically, so this class will recur
- * without a gate. Every internal link in every post must resolve to a
- * route that exists.
+ * at /worlds/... and nothing checked. Every internal link in every post
+ * must resolve to a route that exists.
+ *
+ * 2026-08-14: all drafted posts were removed; blog posts are written by
+ * hand from here on. The gate stays armed because hand-written links rot
+ * the same way, and it must pass while the directory is empty.
  */
 
 const BLOG_DIR = join(__dirname, "..", "content", "blog");
@@ -41,7 +43,9 @@ function lessonExists(world: string, moduleId: string, lesson: string) {
   );
 }
 
-const posts = readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
+const posts = existsSync(BLOG_DIR)
+  ? readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"))
+  : [];
 
 // Blog-to-blog links resolve against frontmatter slugs, not filenames
 // (they can differ in case, e.g. 2026-W18-… vs slug 2026-w18-…).
@@ -56,8 +60,11 @@ const postSlugs = new Set(
 );
 
 describe("blog internal links resolve", () => {
-  it("has at least the audit posts", () => {
-    expect(posts.length).toBeGreaterThanOrEqual(4);
+  // Anchor test: keeps the suite non-empty while the blog directory has no
+  // posts (it.each over [] registers nothing, and vitest rejects a file
+  // with zero tests).
+  it("blog directory is present for future posts", () => {
+    expect(existsSync(BLOG_DIR)).toBe(true);
   });
 
   it.each(posts)("%s: every internal href resolves", (file) => {

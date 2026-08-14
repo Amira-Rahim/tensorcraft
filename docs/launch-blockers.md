@@ -683,6 +683,71 @@ no findings; api vitest 252/252 against hono 4.13.2; full workspace vitest
 not gated on CI, so a green `main` does not by itself prevent the next
 deploy-before-CI incident.
 
+**Round 2, same day: the unblocked pipeline surfaced three latent
+failures.** Context that reframes this whole section: none of the last 40
+`ci` workflow runs ever succeeded, and the audit step sits before
+typecheck/build/tests/e2e, so a red audit had been silencing the entire
+battery. Found and fixed once the gates opened:
+
+- **`next build` required runtime env.** `getSupabaseServerClient`
+  (apps/web/lib/supabase/server.ts) checked the two NEXT_PUBLIC_SUPABASE
+  vars before calling `cookies()`. During prerender that plain Error fires
+  before the cookies() dynamic bailout, so an env-less CI box crashed the
+  build on the first page using the helper (`/admin/digest` in CI, the
+  lesson page locally; the page named is just whichever prerender worker
+  hit the helper first). Fix: `await cookies()` first, then the env guard.
+  This restores the contract assertWebEnv documents in lib/env.ts (build
+  works without secrets, runtime still fails loudly). Verified both ways:
+  fully env-blanked build exits 0, normal build exits 0.
+- **50 broken markdown links, now visible.** The lychee job had never
+  scanned anything (config was unparseable), so links rotted silently.
+  Living docs fixed for real: 18 links in pre-launch-checklist.md were
+  written repo-root-relative and needed `../`; digest-runbook.md linked a
+  local plan file that is not in the repo (de-linked). Dated records
+  (docs/audits, docs/superpowers) are excluded from scanning per the
+  frozen-history policy from the rename session; links pointing TO them
+  are still checked. Local lychee 0.24.2 (the CI-pinned version): 0
+  errors.
+- **E2E would be next to fail:** the playwright webServer is `next dev`,
+  and the boot assertion requires the NEXT_PUBLIC_SUPABASE vars in every
+  environment, which the env-less ci job never had. Placeholder values on
+  the e2e step only (all specs run as guests; unreachable Supabase
+  degrades to signed-out). Proven locally: landing + pricing specs 17/17
+  against a placeholder-env server. Deliberately step-level, not
+  job-level, so the build step keeps running env-less as a regression
+  test for the bullet above.
+
+Also verified locally for the steps CI has not reached in weeks: typecheck
+10/10, env-blanked unit battery green, validate-exercises 88/88. The full
+e2e suite on CI hardware is the one step still unproven.
+
+## VERCEL BUILD FAILURE (2026-08-14): lockfile not honored at install
+
+The 22:50 Vercel build failed on a type error in
+`apps/web/app/admin/digest/actions.ts` that does not reproduce locally.
+The error names `RejectExcessProperties`, a type helper that exists in
+recent `@supabase/postgrest-js` releases but not in 2.98.0, the version
+`pnpm-lock.yaml` pins. Vercel therefore resolved a newer supabase-js
+through the `^2.98.0` range at install time instead of installing what the
+lockfile pins. The newer client rejects `.update()` payloads typed
+`Record<string, unknown>` because their index signature defeats its
+excess-property check.
+
+Fixed in code (uncommitted): the digest action's update payload is now
+typed `Database["public"]["Tables"]["news_items"]["Update"]`, which
+compiles under both 2.98.0 and 2.112.3 (verified against each). A sweep of
+every `.update()`/`.insert()`/`.upsert()` call in apps/web and
+packages/supabase found no other widened payload; all other call sites
+pass inline literals.
+
+- [ ] **Operator: make Vercel installs honor the lockfile.** Set the
+  project's install command to `pnpm install --frozen-lockfile` in the
+  Vercel dashboard (Settings, Build and Development Settings). Until then
+  every deploy re-resolves caret ranges and can compile against
+  dependencies CI never tested. This is the same reproducibility gap as
+  the deploys-not-gated-on-CI item above, at the install step instead of
+  the trigger.
+
 ---
 
 ## Tier 1 — STATUS: ALL SIX FIXED IN CODE (2026-07-21)

@@ -91,8 +91,19 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium webkit
 
+      # Placeholder Supabase values, e2e only: the playwright webServer is
+      # `next dev`, whose boot assertion (apps/web/lib/env.ts) requires the
+      # two NEXT_PUBLIC_SUPABASE vars in every environment. Every spec runs
+      # as a guest, so an unreachable Supabase host degrades to signed-out
+      # and the suite passes without secrets (verified 2026-08-14; keeps
+      # fork PRs runnable). Deliberately NOT job-level: the build step runs
+      # env-less on purpose, as a regression test for building without
+      # runtime secrets.
       - name: Run E2E tests
         run: pnpm test:e2e
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_placeholder_anon_key
 
       - name: Upload Playwright artifacts
         if: failure()

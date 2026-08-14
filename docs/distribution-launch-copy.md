@@ -22,10 +22,9 @@ only Deep Orbit is live).
   written for Python people. So we built the course we wanted: every
   concept anchored to something a JS developer already knows (typed arrays
   to tensors, expect() to loss functions, static deploys to model
-  shipping). Every analogy is graded by how far it actually holds, and
-  the audits are published on our blog. The first module is free and runs a
-  real model in your browser. We would like to hear where the bridges
-  break for you.
+  shipping). Every analogy is graded by how far it actually holds. The
+  first module is free and runs a real model in your browser. We would
+  like to hear where the bridges break for you.
 
 ## X account @tensorcraft
 
@@ -54,7 +53,7 @@ only Deep Orbit is live).
   4. We grade every FE-to-ML analogy in our course into three tiers by
      how far it holds, and we published the audit, including what we got
      wrong. Analogies are load-bearing; a bad one costs you a debugging
-     week. (Link: audit-bridge-tiers)
+     week. (Link: the analogy-audit post)
   5. Rule-based systems fail on the case nobody wrote a rule for. That
      sentence is why you are debugging that if/else cascade, and it is
      the entire premise of our course's story. Module 1 is free: (link)
@@ -67,5 +66,7 @@ only Deep Orbit is live).
   2026-07-25). Brand avatar: the wordmark or ARIA glyph on #1C1C1C.
 - Do not schedule the launch-week email blast until domain warmup is done
   (see the email warmup item in Tier 1-OPS).
-- The three blog posts referenced above shipped 2026-08-11 in
-  `packages/content/content/blog/`; publish order matches post numbers.
+- The drafted blog posts this copy referenced were removed on 2026-08-14;
+  every blog post will be written by hand from here on. Hold posts 1
+  through 4 until the hand-written replacements are live, then paste
+  their URLs. Post 5 links only the site, so it can run any time.

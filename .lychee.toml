@@ -34,6 +34,12 @@ exclude_path = [
   "test-results",
   "coverage",
   "e2e",
+  # Dated point-in-time records (audit ledgers, design specs/plans). The
+  # repo policy is to leave them unedited as history, so their outbound
+  # links are allowed to rot. Links pointing TO them from living docs are
+  # still checked; exclude_path only stops scanning them as inputs.
+  "docs/audits",
+  "docs/superpowers",
 ]
 
 # Skip URL patterns that are either localhost, example, or well-known flaky

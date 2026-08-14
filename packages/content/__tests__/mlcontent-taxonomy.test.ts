@@ -9,13 +9,14 @@ import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
 /**
  * mlContent taxonomy gate (fresh-eyes rerun 2026-07-25, ledger §6).
  *
- * The audit blog post (blog/audit-exercise-mlcontent.mdx) promises "Zero
- * mismatches remain" and "The scandal would be labeling that [arithmetic]
- * 'advanced.' We do not." No gate pinned that rule, and by 2026-07-25 four
- * `advanced`+`arithmetic` entries had drifted back in. This test makes the
- * published claim mechanical: a live exercise whose solution is plain JS
- * math (mlContent: arithmetic, which is also the schema default when the
- * tag is omitted) must not carry an `advanced` difficulty badge.
+ * The 2026-07 exercise audit promised "Zero mismatches remain" between
+ * difficulty badges and mlContent tags (the blog post announcing it,
+ * blog/audit-exercise-mlcontent.mdx, was removed 2026-08-14). No gate
+ * pinned that rule, and by 2026-07-25 four `advanced`+`arithmetic`
+ * entries had drifted back in. This test makes the claim mechanical: a
+ * live exercise whose solution is plain JS math (mlContent: arithmetic,
+ * which is also the schema default when the tag is omitted) must not
+ * carry an `advanced` difficulty badge.
  */
 
 const CONTENT_ROOT = dirname(CONTENT_DIR);
@@ -59,8 +60,7 @@ describe("mlContent taxonomy: no advanced badge on arithmetic content", () => {
 
     expect(
       violations.map((f) => relative(CONTENT_ROOT, f)),
-      `blog/audit-exercise-mlcontent.mdx publishes "Zero mismatches remain": ` +
-        `an advanced badge must not sit on arithmetic (plain-JS-math) ` +
+      `an advanced badge must not sit on arithmetic (plain-JS-math) ` +
         `content. Either lower the difficulty or rebuild the exercise on ` +
         `real TFJS primitives and retag its mlContent.`,
     ).toEqual([]);

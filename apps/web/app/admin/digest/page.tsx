@@ -3,14 +3,20 @@ import type { Metadata } from "next";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseAdminClient, isAdmin } from "@tensorcraft/supabase";
 import { isoWeek } from "@/lib/iso-week";
-import { setNewsItemStatus } from "./actions";
+import { markNewsItemPublished, setNewsItemStatus } from "./actions";
 
 export const metadata: Metadata = {
   title: "Digest Curation | Admin",
   robots: { index: false, follow: false },
 };
 
-type StatusFilter = "pending" | "shortlisted" | "rejected" | "all" | "gap";
+type StatusFilter =
+  | "pending"
+  | "shortlisted"
+  | "published"
+  | "rejected"
+  | "all"
+  | "gap";
 
 interface MatchedLesson {
   worldId: string;
@@ -31,6 +37,7 @@ interface NewsItemRow {
   matched_concepts: string[];
   matched_lessons: MatchedLesson[];
   status: "pending" | "shortlisted" | "published" | "rejected";
+  published_blog_slug: string | null;
   week_iso: string | null;
   scraped_at: string;
   is_content_gap: boolean;
@@ -41,7 +48,7 @@ interface NewsItemRow {
 export default async function DigestAdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; publishError?: string }>;
 }) {
   // Auth gate.
   const supabase = await getSupabaseServerClient();
@@ -78,13 +85,27 @@ export default async function DigestAdminPage({
         <h1 className="text-3xl font-bold">Digest Curation</h1>
         <p className="mt-2 text-sm opacity-70">
           Pick news items for the {currentWeek} digest. Shortlisted items get
-          drafted by <code>scripts/news/draft.mjs</code>.
+          idea briefs from <code>scripts/news/draft.mjs</code>; the posts
+          themselves are written by hand.
         </p>
       </header>
 
+      {params.publishError && (
+        <div className="mb-6 rounded border border-error bg-error/10 p-3 text-sm text-error">
+          {params.publishError}
+        </div>
+      )}
+
       <nav className="mb-6 flex gap-2 text-sm">
         {(
-          ["pending", "shortlisted", "gap", "rejected", "all"] as StatusFilter[]
+          [
+            "pending",
+            "shortlisted",
+            "published",
+            "gap",
+            "rejected",
+            "all",
+          ] as StatusFilter[]
         ).map((s) => (
           <a
             key={s}
@@ -143,7 +164,11 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
             </p>
           )}
         </div>
-        <StatusActions id={item.id} status={item.status} />
+        <StatusActions
+          id={item.id}
+          status={item.status}
+          publishedSlug={item.published_blog_slug}
+        />
       </div>
 
       {item.is_content_gap ? (
@@ -201,9 +226,11 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
 function StatusActions({
   id,
   status,
+  publishedSlug,
 }: {
   id: string;
   status: NewsItemRow["status"];
+  publishedSlug: string | null;
 }) {
   return (
     <div className="flex shrink-0 flex-col gap-2">
@@ -225,6 +252,37 @@ function StatusActions({
           Reject
         </button>
       </form>
+      {status === "shortlisted" && (
+        <form
+          action={markPublishedAction.bind(null, id)}
+          className="flex flex-col gap-1"
+        >
+          <input
+            type="text"
+            name="slug"
+            required
+            placeholder="post slug"
+            aria-label="Published post slug"
+            className="w-36 rounded border border-border bg-transparent px-2 py-1 text-xs"
+          />
+          <button
+            type="submit"
+            className="w-full rounded border border-text-primary px-3 py-1 text-xs font-medium"
+          >
+            Mark published
+          </button>
+        </form>
+      )}
+      {status === "published" && publishedSlug && (
+        <a
+          href={`/blog/${publishedSlug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="max-w-36 truncate text-xs opacity-70 hover:underline"
+        >
+          /blog/{publishedSlug}
+        </a>
+      )}
       {status !== "pending" && (
         <form action={resetAction.bind(null, id)}>
           <button
@@ -251,9 +309,21 @@ async function resetAction(id: string) {
   "use server";
   await setNewsItemStatus(id, "pending");
 }
+async function markPublishedAction(id: string, formData: FormData) {
+  "use server";
+  const result = await markNewsItemPublished(
+    id,
+    String(formData.get("slug") ?? ""),
+  );
+  if (!result.ok) {
+    redirect(
+      `/admin/digest?status=shortlisted&publishError=${encodeURIComponent(result.reason)}`,
+    );
+  }
+}
 
 async function getCounts(admin: ReturnType<typeof getSupabaseAdminClient>) {
-  const statuses = ["pending", "shortlisted", "rejected"] as const;
+  const statuses = ["pending", "shortlisted", "published", "rejected"] as const;
   const counts: Record<string, number> = {};
   await Promise.all(
     statuses.map(async (s) => {

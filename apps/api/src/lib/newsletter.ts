@@ -6,7 +6,9 @@
 //
 // Run flow:
 //   1. Curator shortlists items at /admin/digest (status='shortlisted').
-//   2. scripts/news/draft.mjs writes blog MDX + flips items to 'published'.
+//   2. scripts/news/draft.mjs writes idea briefs to dist/drafts/; a human
+//      writes the actual blog post and flips the rows to 'published' with
+//      published_blog_slug set (posts are hand-written, owner 2026-08-14).
 //   3. POST /api/admin/newsletter/send (or scripts/news/send-newsletter.mjs)
 //      invokes sendDigestNewsletter(weekIso), this file.
 //
