@@ -24,7 +24,12 @@ export function SiteFooter() {
           </div>
           <div className="flex flex-wrap justify-center gap-6">
             {/* /compare and /extras were orphan pages: real content with
-                zero inbound links anywhere (2026-07-14 UX audit). */}
+                zero inbound links anywhere (2026-07-14 UX audit). /learn is
+                an SEO doorway; dropped from the top nav 2026-08-14 (label
+                overlapped Worlds/Journey) but must stay internally linked. */}
+            <Link href="/learn" className={FOOTER_LINK_CLASS}>
+              Learn
+            </Link>
             <Link href="/compare" className={FOOTER_LINK_CLASS}>
               Compare
             </Link>

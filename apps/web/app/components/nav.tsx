@@ -82,7 +82,6 @@ export function Nav() {
         <NavLink href="/worlds">Worlds</NavLink>
         <NavLink href="/journey">Journey</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>
-        <NavLink href="/learn">Learn</NavLink>
         <NavLink href="/blog">Blog</NavLink>
       </div>
 
