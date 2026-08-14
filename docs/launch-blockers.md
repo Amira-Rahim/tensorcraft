@@ -749,6 +749,27 @@ two findings, both environment-class, both fixed:**
 Battery after round 3: 1748 passed / 88 skipped, ui tsc clean, effects
 suite 43/43 under both node versions.
 
+**Round 4 (2026-08-15): the first run to reach E2E scored 125/127; the 2
+failures share one root cause, now fixed.** Both failing specs are the
+live DeepScanDemo (landing hero + lesson demo). The Playwright trace from
+the CI artifact shows zero requests to `/models/`: the failure happens
+before the model fetch. Console log in the trace: "Initialization of
+backend webgl failed ... WebGL is not supported on this device". Root
+cause: deep-scan-demo's canvas probe requested WebGL with no context
+attributes, so CI's software GL (SwiftShader) answered yes; tfjs then
+requests its context with `failIfMajorPerformanceCaveat`, which rejects
+software GL, so the webgl backend never initialized and the demo showed
+"model failed to load". Machines with bare WebGL but not tfjs-grade
+WebGL were the probe's blind spot. Fix in deep-scan-demo.tsx: the probe
+now passes the same `failIfMajorPerformanceCaveat` attribute tfjs uses
+(software-GL machines take the instant cpu path, as the probe always
+intended), plus a cpu fallback when `setBackend("webgl")` resolves false
+so probe/tfjs disagreement can never strand the demo on the error state.
+Verified: component unit test green, web tsc clean, both failing specs
+12/12 locally (real GPU exercises the unchanged webgl path). Also proven
+by this run: the linux golden hashes from round 3 passed, and the
+placeholder-env e2e server worked (125 specs ran against it).
+
 ## VERCEL BUILD FAILURE (2026-08-14): lockfile not honored at install
 
 The 22:50 Vercel build failed on a type error in

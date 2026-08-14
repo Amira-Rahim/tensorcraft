@@ -40,6 +40,16 @@ different "Worlds".
 4. **Historical records**: `supabase/migrations/001-057` (immutable, applied to
    prod), `docs/audits/**`, `docs/superpowers/**` dated ledgers/plans/specs.
    They describe past states; rewriting them would falsify the record.
+5. **Tailwind v4's `@theme` directive** in `apps/web/app/globals.css`
+   (erratum, 2026-08-15): the sweep renamed it to `@world`, which Tailwind
+   passes through as an inert unknown at-rule instead of erroring, so every
+   token-backed utility (`bg-surface`, `text-primary`, `border-border`, ...)
+   silently vanished from the built stylesheet. Prod shipped colorless for
+   three days; the 28 visual baselines regenerated on 2026-08-12 encoded the
+   broken page, which is why the battery stayed green. Same class of
+   casualty as the `themeColor` viewport key caught during the sweep.
+   Reverted 2026-08-15; compile-level gate added at
+   `apps/web/app/globals-css.test.ts`.
 
 ## Compatibility
 

@@ -16,7 +16,7 @@
   outline-offset: 2px;
 }
 
-@world {
+@theme {
   /* Background surfaces */
   --color-page: var(--tc-bg);
   --color-surface: var(--tc-bg);
@@ -464,7 +464,7 @@ body {
   --tc-primary: #6baa8a;
   --tc-border: #3d3d3d;
   /* The Tailwind layer has to be restated as literals, not left to inherit.
-     @world emits --color-text-muted: var(--tc-muted) at :root, and a custom
+     @theme emits --color-text-muted: var(--tc-muted) at :root, and a custom
      property's value is substituted where it is DECLARED, so it computed to
      the light #555555 up there and inherits down as that fixed colour.
      Redefining --tc-muted below it cannot reach `text-text-muted`. */

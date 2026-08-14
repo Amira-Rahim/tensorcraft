@@ -60,9 +60,15 @@ function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
       // backend machinery, on machines without WebGL the full bundle's
       // setBackend can stall instead of falling back. The model is
       // 3→16→8→1; cpu is instant when WebGL is unavailable.
+      // Probe with the SAME context attributes tfjs-backend-webgl will
+      // request: tfjs sets failIfMajorPerformanceCaveat, so a bare probe
+      // can say yes on software GL (SwiftShader on CI runners, some VMs)
+      // while tfjs's own context creation then fails and no backend ever
+      // comes up.
       const probe = document.createElement("canvas");
+      const attrs = { failIfMajorPerformanceCaveat: true };
       const hasWebGL = !!(
-        probe.getContext("webgl2") || probe.getContext("webgl")
+        probe.getContext("webgl2", attrs) || probe.getContext("webgl", attrs)
       );
       const [tf, , layers] = await Promise.all([
         import("@tensorflow/tfjs-core"),
@@ -71,7 +77,17 @@ function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
           : import("@tensorflow/tfjs-backend-cpu"),
         import("@tensorflow/tfjs-layers"),
       ]);
-      await tf.setBackend(hasWebGL ? "webgl" : "cpu");
+      let backendOk = await tf.setBackend(hasWebGL ? "webgl" : "cpu");
+      if (!backendOk && hasWebGL) {
+        // Probe and tfjs disagreed anyway (setBackend resolves false when
+        // the factory throws): fall back to cpu instead of stranding the
+        // demo on "model failed to load" with a working machine.
+        await import("@tensorflow/tfjs-backend-cpu");
+        backendOk = await tf.setBackend("cpu");
+      }
+      if (!backendOk) {
+        throw new Error("tfjs could not initialize any backend");
+      }
       await tf.ready();
       const model = await layers.loadLayersModel(
         "/models/deep-scan-preview/model.json",
