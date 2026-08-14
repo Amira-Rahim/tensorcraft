@@ -60,8 +60,10 @@ exclude = [
 require_https = false
 
 # Include fragment (#anchor) validation for local Markdown files so broken
-# internal TOC anchors fail the build.
-include_fragments = true
+# internal TOC anchors fail the build. As of lychee v0.24 (the version pinned
+# in ci.yml) this takes a mode string, not a boolean; "full" checks all
+# fragments (see lychee.example.toml for the pinned version).
+include_fragments = "full"
 
 # Do not cache across CI runs (ephemeral runner anyway).
 cache = false

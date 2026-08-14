@@ -657,6 +657,34 @@ gate opens: `docs/world-launch-checklist.md`.
 
 ---
 
+## CI RED CLEARED (2026-08-14): links job + audit gate
+
+Both jobs that had been red on `main` since 2026-08-12 are fixed in this
+working tree (uncommitted):
+
+- **`links` job:** lychee died parsing `.lychee.toml` before checking any
+  link, so the job gave zero link coverage the whole time it was red. Root
+  cause: the config set `include_fragments = true`, but the lychee version
+  pinned in ci.yml (v0.24.2) takes a mode string for that key. Now
+  `include_fragments = "full"`, the value the v0.24.2 example config uses.
+- **Audit gate:** `pnpm audit --prod` reported 9 advisories (3 high, 5
+  moderate, 1 low). This is the gate working as designed (see "Known-red by
+  design" in R3 wave 2). Fixes: apps/api `hono` floor raised to `^4.12.34`
+  (resolves 4.13.2; clears the CORS ReDoS, the `memo()` cross-user SSR
+  disclosure, and the language-middleware DoS); override floors raised for
+  `postcss@8` (^8.5.23) and `brace-expansion@5` (^5.0.9); override floors
+  added for `fast-uri@3` (^3.1.5), `nanoid@3` (^3.3.18), `dompurify@3`
+  (^3.4.13). All six transitive bumps are patch releases inside ranges the
+  parent packages already accept.
+
+Verified locally: `pnpm audit --prod --audit-level moderate` exits 0 with
+no findings; api vitest 252/252 against hono 4.13.2; full workspace vitest
+1757 passed / 88 skipped. Still open from 2026-08-12: Vercel deploys are
+not gated on CI, so a green `main` does not by itself prevent the next
+deploy-before-CI incident.
+
+---
+
 ## Tier 1 — STATUS: ALL SIX FIXED IN CODE (2026-07-21)
 
 Typecheck 11/11, 1367 unit tests passing. (Re-verified 2026-07-25 at HEAD
