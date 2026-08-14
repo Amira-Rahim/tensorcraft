@@ -39,12 +39,12 @@ test.describe("Landing Page", () => {
     );
   });
 
-  test("landing FAQ renders and answers expand", async ({ page }) => {
+  test("landing FAQ renders with answers visible", async ({ page }) => {
     await page.goto("/");
     const faq = page.getByTestId("landing-faq");
     await expect(faq).toBeVisible();
-    const first = faq.locator("summary").first();
-    await first.click();
+    // Static Q|A rows since 2026-08-14 (no accordion): answers render
+    // without any interaction.
     await expect(faq.getByText(/no python required/i).first()).toBeVisible();
   });
 

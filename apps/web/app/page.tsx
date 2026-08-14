@@ -111,10 +111,10 @@ export default function Home() {
             close: "is this me?" then "but what about…" then "start". */}
         <WhoThisIsFor testId="landing-who-for" />
 
-        {/* ===== FAQ (server-rendered, native <details>, zero JS) =====
-            Objection handling before the close. Full-width rows: every
-            question spans the page, so there's no dead half. Shared with
-            /pricing via <FaqSection>. */}
+        {/* ===== FAQ (server-rendered, static Q|A rows, zero JS) =====
+            Objection handling before the close. Each row is a question |
+            answer grid, so both halves of the page carry content. Shared
+            with /pricing via <FaqSection>. */}
         <FaqSection
           testId="landing-faq"
           eyebrow="Before you ask"

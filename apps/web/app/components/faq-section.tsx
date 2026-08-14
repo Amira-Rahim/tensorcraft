@@ -16,7 +16,7 @@ interface FaqSectionProps {
 }
 
 /**
- * Server-rendered FAQ, native <details>, zero JS.
+ * Server-rendered FAQ, static two-column rows, zero JS.
  *
  * Shared by the landing page and /pricing. Objections peak on the pricing
  * page, but the FAQ used to render only on the landing page, so the one
@@ -61,29 +61,25 @@ export function FaqSection({
           {heading}
         </h2>
       </div>
+      {/* Was a <details> accordion until 2026-08-14. An accordion answer can
+          only hang below its full-width question row in one capped column,
+          which left the right half of every open row empty on wide screens.
+          Four short answers don't earn a click to reveal, so each row is now
+          a static question | answer grid: the answer column doubles as the
+          reading measure, so no separate max-w cap is needed. */}
       <div className="border-t border-border divide-y divide-border">
         {FAQ_ITEMS.map((item) => (
-          <details key={item.q} className="group">
-            <summary
-              className={`${containerClassName} cursor-pointer list-none py-6 font-mono text-base md:text-lg font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`}
-            >
+          <div
+            key={item.q}
+            className={`${containerClassName} py-10 md:py-12 md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-16`}
+          >
+            <h3 className="font-mono text-xl md:text-2xl font-bold text-text-primary leading-snug mb-4 md:mb-0">
               {item.q}
-              <span
-                aria-hidden="true"
-                className="text-primary shrink-0 group-open:rotate-45 transition-transform font-black"
-              >
-                +
-              </span>
-            </summary>
-            {/* max-w is border-box, so the cap includes containerClassName's
-                horizontal padding: 840px - 160px (md:px-20) leaves a ~680px
-                text measure, ~75 characters at 16px Inter. */}
-            <p
-              className={`${containerClassName} pb-8 text-base text-text-muted leading-relaxed font-sans max-w-210`}
-            >
+            </h3>
+            <p className="text-base md:text-lg text-text-muted leading-relaxed font-sans">
               {item.a}
             </p>
-          </details>
+          </div>
         ))}
       </div>
     </section>
