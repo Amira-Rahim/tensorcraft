@@ -19,20 +19,20 @@ interface PricingOfferDef {
   description: string;
 }
 
-// Every tier is listed, including bundles no buyer can complete checkout on
-// yet. That is deliberate: `availabilityFor` marks them OutOfStock, which is
-// a truthful description of a product that exists in the catalog and is not
-// currently purchasable. A 2026-08-09 change briefly filtered them out on the
-// belief that they were still emitting PreOrder; they were not (R3-7 fixed
-// that on 2026-07-19), so the filter was reverted rather than override a
-// correct, documented decision.
+// The full ladder stays DEFINED here, but only buyable tiers are EMITTED
+// (owner directive, 2026-08-14): a search snippet quoting a bundle price
+// nobody can buy is exactly the future product plan the owner removed from
+// every user surface. This supersedes the 2026-08-09 decision to list gated
+// bundles as OutOfStock; OutOfStock was truthful, but truthful is no longer
+// the bar — the bar is "not published until buyable". Each bundle tier
+// reappears on its own the day enough worlds have launched to fill it.
 const OFFER_DEFS: PricingOfferDef[] = [
   {
     name: "Free preview",
     price: PRICING.free.price,
     worlds: PRICING.free.worlds,
     description:
-      "Module 1 of Deep Orbit free: lessons and exercises, no account required. The other four worlds ship in waves with per-world waitlists.",
+      "Module 1 of Deep Orbit free: lessons and exercises, no account required.",
   },
   {
     name: "Single world",
@@ -68,11 +68,15 @@ const OFFER_DEFS: PricingOfferDef[] = [
  * had no coverage at all, which is how a stale PreOrder value survived
  * several audits before R3-7 caught it by eye.
  *
- * Every tier is emitted. Availability, not membership, carries the "can you
- * buy this today" signal, and it flips on its own as worlds launch.
+ * Membership carries the "can you buy this today" signal: a tier is emitted
+ * only once enough worlds have launched to fill it (owner directive,
+ * 2026-08-14, see OFFER_DEFS comment). `availabilityFor` still runs on what
+ * is emitted so a mid-cycle launch flip cannot strand a stale value.
  */
 export function buildPricingOffers() {
-  return OFFER_DEFS.map((offer) => ({
+  return OFFER_DEFS.filter(
+    (offer) => LAUNCHED_WORLDS.length >= offer.worlds,
+  ).map((offer) => ({
     "@type": "Offer" as const,
     name: offer.name,
     price: String(offer.price),

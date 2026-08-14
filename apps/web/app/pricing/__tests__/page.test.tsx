@@ -120,17 +120,18 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     expect(h1).toHaveTextContent(/Buy once\. Keep forever\./i);
   });
 
-  it("renders the buyable tier grid plus the bundle roadmap below it", () => {
-    // 2026-08-09: the three bundle cards left the grid. With one world
-    // launched they could only render as dead CTAs, which anchored $59 as a
-    // stripped entry tier and implied a schedule the world-2 gate does not
-    // promise. Their prices moved to <BundleRoadmap />, stated not sold.
+  it("renders only the buyable tiers, with no future bundle pricing", () => {
+    // 2026-08-09: the three bundle cards left the grid (dead CTAs anchoring
+    // $59 as a stripped entry tier). 2026-08-14, owner directive: the
+    // "listed, not sold" BundleRoadmap strip left too. Future product plans
+    // render nowhere on the page.
     render(<PricingPage />);
     expect(screen.getByTestId("pricing-tiers")).toBeInTheDocument();
     expect(screen.getByTestId("tier-card-free")).toBeInTheDocument();
     expect(screen.getByTestId("tier-card-single")).toBeInTheDocument();
     expect(screen.queryByTestId("tier-card-all-five")).toBeNull();
-    expect(screen.getByTestId("bundle-roadmap")).toBeInTheDocument();
+    expect(screen.queryByTestId("bundle-roadmap")).toBeNull();
+    expect(screen.queryByText(/not for sale/i)).toBeNull();
   });
 
   it("does not render the removed comparison table", () => {

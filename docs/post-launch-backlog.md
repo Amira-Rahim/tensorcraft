@@ -94,12 +94,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
   from $49. Distribution is the binding constraint; a raise tightens it.
   Revisit only on real conversion data. Reasoning:
   `docs/superpowers/specs/2026-08-09-pricing-reevaluation-design.md`.
-- [ ] **Restore the bundle surfaces when world 2 launches.** Three things
-  self-heal off `LAUNCHED_WORLDS` with no edit (the tier cards, the JSON-LD
-  `availabilityFor`, and `BundleRoadmap`, which returns `null` once nothing is
-  gated). Two do NOT and must be done by hand: the `metadata` descriptions in
-  `apps/web/app/pricing/page.tsx` dropped their "bundles up to $N" clause, and
-  the hero paragraph dropped "bundle a few, or all five worlds".
+- [ ] **Restore the bundle surfaces when world 2 launches.** Scope grew on
+  2026-08-14 (owner directive, screenshot feedback on /pricing): future
+  product plans are not shown to users anywhere, so every user-visible trace
+  of the bundle ladder was removed, not just the dead CTAs. Self-healing off
+  `LAUNCHED_WORLDS` with no edit: the tier cards, and the JSON-LD offers in
+  `apps/web/app/pricing/pricing-jsonld.ts` (gated tiers are now filtered out
+  of the catalog entirely; each reappears once enough worlds have launched
+  to fill it — a pinned test in `pricing-jsonld.test.tsx` fails at that
+  moment as a reminder to walk this list). Manual steps:
+  - `BundleRoadmap` ("Listed, not sold." strip) was DELETED, component and
+    test; recover from git history before 2026-08-14 if wanted, or decide
+    the grown tier grid covers it.
+  - `metadata` in `apps/web/app/pricing/page.tsx`: title flattened from
+    "From $0 to $159" to "Free Preview, $59 per World"; descriptions dropped
+    their bundle clause on 2026-08-09.
+  - Pricing hero paragraph dropped "bundle a few, or all five worlds"
+    (2026-08-09).
+  - FAQ "Is Tensorcraft free?" (`apps/web/app/faq-data.ts`) dropped the
+    ship-in-waves and bundle-discount sentences; "Can I learn ML with
+    JavaScript?" dropped the CV/NLP-worlds-in-development clause.
+  - /compare cost row dropped the all-five price; capstone row dropped
+    "four in the pipeline".
 - [ ] **BossBeat expansion** (6 ranked beats, one per dormant module).
   Gate: ~100 real lesson completions so placement follows observed drop-off.
   Detail spec + non-negotiable quality gates:

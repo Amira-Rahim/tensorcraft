@@ -16,8 +16,9 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 // V1 scope-revert (2026-05-05): the picker shows only launched worlds, so the
 // cart can never produce a basket the API would reject (`validateWorldIds` →
 // `isLaunched`). The bundle tiers that used to sit alongside these two are
-// gone entirely (see <BundleRoadmap />); this grid renders only what a buyer
-// can actually put money on.
+// gone entirely (2026-08-14 owner directive: future product plans are not
+// shown to users); this grid renders only what a buyer can actually put
+// money on.
 const worldList = LAUNCHED_WORLDS.map((slug) => ({
   slug,
   name: worlds[slug].displayName,
@@ -96,10 +97,12 @@ function WorldPicker({
  * launch", which implies a schedule the world-2 gate (launch + a paying-user
  * threshold) does not promise.
  *
- * Now the grid holds Free and Single only. The bundle prices did not vanish,
- * they moved to <BundleRoadmap /> below, stated as information with no
- * purchase affordance at all. Prices themselves are unchanged; PRICING is
- * untouched and the server diff is zero.
+ * Now the grid holds Free and Single only. The bundle prices moved to a
+ * "listed, not sold" BundleRoadmap strip below the grid on 2026-08-09, then
+ * left the page entirely on 2026-08-14 (owner directive: future product
+ * plans are not shown to users). PRICING itself is untouched; the ladder
+ * returns as tiers become buyable (docs/post-launch-backlog.md, "Restore
+ * the bundle surfaces").
  *
  * Every card is square-edged (`rounded-none`), uses mono for price + tech
  * details, and applies a brutalist offset shadow on hover.

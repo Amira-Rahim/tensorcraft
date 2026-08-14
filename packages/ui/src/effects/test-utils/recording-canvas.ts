@@ -22,6 +22,37 @@
  * test can golden-lock the styled output of a scheme, not just its shapes.
  */
 
+import { createHash } from "node:crypto";
+
+/** Canonical rounding for style-capture assertions. Raw shortest-round-trip
+    float printing is architecture-sensitive at the ulp level: the same
+    trig-heavy draw math produced different last bits on macOS arm64 (where
+    the goldens were authored) and CI's linux x64, so a byte-for-byte hash
+    of a raw capture is only stable on the machine that authored it. Ten
+    significant digits sit far above ulp noise and far below any styling
+    change worth locking. */
+export const canonRound = (n: number): number => Number(n.toPrecision(10));
+
+const NUM_IN_STRING = /-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/g;
+
+/** sha256 of a style capture with every number canonicalized via
+    `canonRound`, including floats embedded inside paint strings (the
+    `rgba(...)` alpha channel is where the cross-platform bits actually
+    surfaced). Golden-lock tests must hash through this, never through a
+    raw JSON.stringify of the capture. */
+export const styleCaptureSha = (styles: RecordedStyles): string =>
+  createHash("sha256")
+    .update(
+      JSON.stringify(styles, (_key, value) =>
+        typeof value === "number"
+          ? canonRound(value)
+          : typeof value === "string"
+            ? value.replace(NUM_IN_STRING, (m) => String(canonRound(Number(m))))
+            : value,
+      ),
+    )
+    .digest("hex");
+
 export interface RecordedGeometry {
   arcs: [number, number, number][];
   ellipses: [number, number, number, number][];

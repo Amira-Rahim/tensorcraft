@@ -8,7 +8,7 @@ import { PRICING } from "@tensorcraft/shared";
 export const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Can I learn machine learning with JavaScript?",
-    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser, no Python required. The launched world covers neural networks, LSTMs, signal processing, and attention today; CNNs and full transformer architectures arrive with the Computer Vision and NLP worlds now in development.",
+    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser, no Python required. The launched world covers neural networks, LSTMs, signal processing, and attention. CNNs and full transformer architectures are not covered.",
   },
   {
     q: "How much math do I need?",
@@ -16,7 +16,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit, the live world, is free, no account or credit card required. The other four worlds ship in waves, each with a waitlist. Full worlds cost $${PRICING.single.price} each. Bundle discounts open once all five have launched, up to $${PRICING.allFive.price} for all 5 worlds.`,
+    a: `Module 1 of Deep Orbit, the live world, is free, no account or credit card required. The full world costs $${PRICING.single.price}: one payment, lifetime access.`,
   },
   {
     q: "What if it turns out not to be for me?",

@@ -109,7 +109,8 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     // The three bundle tiers left the grid: with one world launched they
     // could only ever render as dead CTAs, which anchored $59 as a stripped
     // entry tier and implied a delivery schedule the world-2 gate does not
-    // promise. Their prices now live in <BundleRoadmap /> as information.
+    // promise. Since 2026-08-14 (owner directive) the bundle prices render
+    // nowhere on the page at all.
     render(<PricingTiers extrasLessons={23} />);
     expect(screen.getByTestId("tier-card-free")).toBeInTheDocument();
     expect(screen.getByTestId("tier-card-single")).toBeInTheDocument();

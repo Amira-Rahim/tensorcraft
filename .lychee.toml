@@ -56,6 +56,10 @@ exclude = [
   "^tel:",
   # GitHub PR/commit permalinks tied to private branches — optional
   "^https?://github\\.com/.+/(pull|commit)/",
+  # Auth-walled dashboard URLs. Supabase answers 404 to anonymous visitors
+  # on project pages (deliberately, so project ids do not leak), so the
+  # status a logged-out CI bot sees carries no signal about link validity.
+  "^https://supabase\\.com/dashboard/",
 ]
 
 # Treat external 4xx (other than those in `accept`) as warnings, not errors.

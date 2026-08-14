@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { createHash } from "node:crypto";
 import {
   drawNeonProtocol,
   drawSignalWard,
@@ -9,6 +8,8 @@ import {
 import {
   recordingCtx,
   gradientStopAlphas,
+  styleCaptureSha,
+  canonRound,
 } from "./test-utils/recording-canvas";
 
 /* Same contract as drawOrbit (see orbit-canvas.test.ts): every scene is
@@ -111,7 +112,8 @@ describe("signature layers present at t=0", () => {
 /* ── Style locks ── inherited from orbit-canvas.test.ts's pattern (see
    there for the dark-regression that motivated them): the geometry locks
    above are blind to styling, so each scene's DARK styled output is pinned
-   byte-for-byte at hot=1, t=0 — t=0 is each scene's phase-shifted
+   as a canonicalized capture (floats rounded to 10 significant digits, see
+   recording-canvas.ts) at hot=1, t=0 — t=0 is each scene's phase-shifted
    signature frame, which keeps conditional styling branches (Nova's rose
    outline, Neon's locked brackets, Terra's pings) inside the capture —
    plus a light complement asserting ink mode's global invariants.
@@ -139,30 +141,30 @@ const GOLDEN: Record<
   drawNeonProtocol: {
     fills: 73,
     strokes: 24,
-    maxFillAlpha: 0.9318065009362558,
-    maxStrokeAlpha: 0.8531575523743931,
-    sha: "6b4cf867b6140c9aa75af70109ed24698343101e1d45d08b02ccc1cd6dd63de0",
+    maxFillAlpha: 0.9318065009,
+    maxStrokeAlpha: 0.8531575524,
+    sha: "7dc10c4544b91d57125f72be5db930fc7e0abec1f9497667d73a0c90c23b907f",
   },
   drawSignalWard: {
     fills: 33,
     strokes: 2,
-    maxFillAlpha: 0.654307859945664,
-    maxStrokeAlpha: 0.46736275710404573,
-    sha: "625814e0c45e3c0292069e223b4e927d9e5d929a12bcb626a581740a1aee8fdd",
+    maxFillAlpha: 0.6543078599,
+    maxStrokeAlpha: 0.4673627571,
+    sha: "e83a3c2598ec1a44a0eed71870d971b513d2912bd13f2df67008df1c67f06a6e",
   },
   drawNovaCanvas: {
     fills: 117,
     strokes: 1,
     maxFillAlpha: 1.53,
     maxStrokeAlpha: 0.5,
-    sha: "acc7f026339cb45c61b056822275916e53773243bb1568f5ca95a97855ecf9b6",
+    sha: "e9eecbc908dbf9daa5881fec43caf80713ada07f1f36d5acf8e47385f53fd74c",
   },
   drawTerraGrid: {
     fills: 24,
     strokes: 27,
     maxFillAlpha: 0.9,
-    maxStrokeAlpha: 0.27526103632932064,
-    sha: "9b859fb18bbfce4f47816ede055e22ddcc9d38422046a83ab69da2cd1d923156",
+    maxStrokeAlpha: 0.2752610363,
+    sha: "12716c6536afe16f02b0d73c69c7c317a44723edef57cbcf3b6f1be9e968c7a2",
   },
 };
 
@@ -186,11 +188,14 @@ describe.each(SCENES)("%s style lock", (name, draw) => {
     expect({
       fills: styles.fills.length,
       strokes: styles.strokes.length,
-      maxFillAlpha: Math.max(...plainFillAlphas),
+      // canonRound on the alphas and styleCaptureSha on the capture: raw
+      // float bits differ across CPU architectures, so exact-equality locks
+      // must compare canonicalized values (see recording-canvas.ts).
+      maxFillAlpha: canonRound(Math.max(...plainFillAlphas)),
       maxStrokeAlpha: plainStrokeAlphas.length
-        ? Math.max(...plainStrokeAlphas)
+        ? canonRound(Math.max(...plainStrokeAlphas))
         : null,
-      sha: createHash("sha256").update(JSON.stringify(styles)).digest("hex"),
+      sha: styleCaptureSha(styles),
     }).toEqual(GOLDEN[name]);
   });
 

@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { createHash } from "node:crypto";
 import { drawOrbit } from "./orbit-canvas";
 import {
   recordingCtx,
   gradientStopAlphas,
+  styleCaptureSha,
 } from "./test-utils/recording-canvas";
 
 /* drawOrbit is time-parameterized: every position is a pure function of t.
@@ -67,7 +67,9 @@ describe("drawOrbit scheme independence", () => {
    suite while visibly dimming the dark hover state. The golden lock below
    captures the styled output (fill/stroke paints incl. gradient stops,
    composite ops, line widths) of the dark scheme at a fixed t/hot and pins
-   it byte-for-byte, so Task 10-era refactors can't silently shift dark.
+   its canonicalized serialization (floats rounded to 10 significant digits
+   by styleCaptureSha; raw float printing differs across CPU architectures
+   at the last bit), so Task 10-era refactors can't silently shift dark.
 
    If this fails after an INTENTIONAL dark art change: verify the new look
    visually, then update the counts/hash below (the failure output shows the
@@ -101,12 +103,9 @@ describe("drawOrbit dark-scheme style lock", () => {
     expect(styles.fills.slice(1).every((f) => f.op === "lighter")).toBe(true);
     expect(styles.strokes.every((s) => s.op === "lighter")).toBe(true);
 
-    // Full identity lock on the serialized capture.
-    const sha = createHash("sha256")
-      .update(JSON.stringify(styles))
-      .digest("hex");
-    expect(sha).toBe(
-      "17fe58121dbfc7e50dab2c7095712e41df2d092da790bb811da6d60a1e1d28f0",
+    // Full identity lock on the canonicalized capture.
+    expect(styleCaptureSha(styles)).toBe(
+      "073ed18da638400b16ff5657de0ee3e27910f27d96fd2811c82c3d478dc32286",
     );
   });
 

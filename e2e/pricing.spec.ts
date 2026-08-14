@@ -2,8 +2,8 @@ import { test, expect } from "@playwright/test";
 
 /**
  * Pricing assertions pin to data-testids rather than marketing copy, the
- * copy iterates frequently; the structure (buyable tiers, bundle roadmap,
- * curriculum preview, refund badge) is the contract.
+ * copy iterates frequently; the structure (buyable tiers, curriculum
+ * preview, refund badge) is the contract.
  */
 test.describe("Pricing Page", () => {
   test("renders the pricing heading", async ({ page }) => {
@@ -25,15 +25,13 @@ test.describe("Pricing Page", () => {
     await expect(page.getByTestId("tier-card-all-five")).toHaveCount(0);
   });
 
-  test("states the bundle ladder without offering it for sale", async ({
-    page,
-  }) => {
+  test("shows no future bundle pricing anywhere", async ({ page }) => {
+    // 2026-08-14 owner directive: future product plans are not shown to
+    // users. The "listed, not sold" roadmap strip is gone along with the
+    // bundle cards it replaced.
     await page.goto("/pricing");
-    const roadmap = page.getByTestId("bundle-roadmap");
-    await expect(roadmap).toBeVisible();
-    // Information, not a cart. A disabled control is still a control: it
-    // invites a click and then refuses it.
-    await expect(roadmap.locator("button")).toHaveCount(0);
+    await expect(page.getByTestId("bundle-roadmap")).toHaveCount(0);
+    await expect(page.getByText(/not for sale/i)).toHaveCount(0);
   });
 
   test("shows the curriculum preview with Module 1 marked free", async ({

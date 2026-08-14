@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 import { EXTRAS_LESSON_COUNT } from "@tensorcraft/content";
-import { BundleRoadmap } from "./bundle-roadmap";
 import { CurriculumPreview } from "./curriculum-preview";
 import { PaymentError } from "./payment-error";
 import { PaywallNotice } from "./paywall-notice";
@@ -13,15 +12,14 @@ import { buildPricingOffers } from "./pricing-jsonld";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { FaqSection } from "@/app/components/faq-section";
 
-// 2026-08-09: the three descriptions below used to end "bundles up to $159".
-// With one world launched, no bundle is purchasable at any price, so a search
-// result promising them invited a click the page could not honour. The
-// descriptions now name only what is buyable. The TITLE keeps its "$0 to $159"
-// range on purpose: a range describes the ladder, which genuinely exists and is
-// stated on the page, rather than advertising an unbuyable SKU. Restore the
-// bundle clause when LAUNCHED_WORLDS grows past one.
+// 2026-08-14 (owner directive, screenshot feedback): future product plans are
+// not shown to users. The bundle ladder left this page entirely: the
+// BundleRoadmap section, the "$0 to $159" title range, and the bundle offers
+// in the JSON-LD. Title, descriptions, and structured data name only what is
+// buyable today. What to reinstate when more worlds launch is tracked in
+// docs/post-launch-backlog.md ("Restore the bundle surfaces").
 export const metadata: Metadata = {
-  title: `ML Course Pricing: From $0 to $${PRICING.allFive.price} | Tensorcraft`,
+  title: `ML Course Pricing: Free Preview, $${PRICING.single.price} per World | Tensorcraft`,
   description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per world.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
@@ -58,7 +56,7 @@ export default function PricingPage() {
     name: "Tensorcraft course pricing",
     url: "https://tensorcraft.app/pricing",
     description:
-      "One-payment lifetime-access tiers for the Tensorcraft browser-ML course. Per-world single purchase, multi-world bundles, and an all-five bundle.",
+      "One-payment lifetime-access pricing for the Tensorcraft browser-ML course: free preview and single-world purchase.",
     itemListElement: buildPricingOffers(),
   };
 
@@ -150,11 +148,6 @@ export default function PricingPage() {
         <Suspense fallback={null}>
           <PricingTiers extrasLessons={EXTRAS_LESSON_COUNT} />
         </Suspense>
-
-        {/* The bundle ladder, stated rather than sold. It sits BELOW the
-            grid on purpose: the buyable product leads, and the prices a
-            buyer cannot act on are context, not competition for the CTA. */}
-        <BundleRoadmap />
 
         {/* Curriculum preview, what a purchase unlocks */}
         <CurriculumPreview />

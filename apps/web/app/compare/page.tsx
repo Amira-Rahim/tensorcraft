@@ -78,14 +78,14 @@ const ROWS: Row[] = [
   {
     feature: "Capstone artifact you ship",
     tensorcraft:
-      "Every component of a browser-side ML system, built and graded piece by piece, pushed to your GitHub (one world live today, four in the pipeline)",
+      "Every component of a browser-side ML system, built and graded piece by piece, pushed to your GitHub (one world live today)",
     fastai: "fast.ai notebooks shareable as Hugging Face Spaces",
     karpathy: "Final notebook trained from scratch",
     coursera: "Certificates",
   },
   {
     feature: "Cost (full curriculum)",
-    tensorcraft: `$0 preview / $${PRICING.single.price} per world / $${PRICING.allFive.price} for all five (bundle opens once all five launch)`,
+    tensorcraft: `$0 preview / $${PRICING.single.price} per world, one payment, lifetime access`,
     fastai: "Free",
     karpathy: "Free",
     coursera: "$49-79/mo (specialization $200-500)",

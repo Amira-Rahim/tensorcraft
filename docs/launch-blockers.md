@@ -721,6 +721,34 @@ Also verified locally for the steps CI has not reached in weeks: typecheck
 10/10, env-blanked unit battery green, validate-exercises 88/88. The full
 e2e suite on CI hardware is the one step still unproven.
 
+**Round 3, same day: run #194 (first run with all round-2 fixes) failed on
+two findings, both environment-class, both fixed:**
+
+- **The orbit-canvas golden style hash is architecture-sensitive.** The
+  five style locks (orbit + four world scenes) hashed a raw
+  `JSON.stringify` of the capture. Raw float printing differs between CPU
+  architectures at the last bit: the same commit produced the golden hash
+  on macOS arm64 under BOTH node 20 and CI's exact node 22.23.2, and a
+  different hash on CI's linux x64. Every human-readable lock in the same
+  test (913 fills, 576 strokes, alpha counts, composite ops) passed on
+  CI, which is what isolated the failure to float serialization. Fix:
+  `styleCaptureSha` + `canonRound` in recording-canvas.ts round every
+  number (including alphas embedded in `rgba(...)` strings) to 10
+  significant digits before hashing; all five goldens regenerated, and
+  the two full-precision `maxFillAlpha`/`maxStrokeAlpha` fields in the
+  world-scenes GOLDEN table (the same latent class, passing on CI only by
+  luck) are canonicalized too. Verified identical under node 20 and node
+  22.23.2; the linux side is proven by the next CI run.
+- **lychee, now actually scanning, flagged an auth-walled external URL.**
+  `supabase.com/dashboard/project/...` answers 404 to anonymous visitors
+  by design (project ids must not leak), so a logged-out CI bot can never
+  validate those links. Both dashboard URLs in pre-launch-checklist.md
+  are excluded as a class in .lychee.toml. Full online scan: 88 links, 0
+  errors.
+
+Battery after round 3: 1748 passed / 88 skipped, ui tsc clean, effects
+suite 43/43 under both node versions.
+
 ## VERCEL BUILD FAILURE (2026-08-14): lockfile not honored at install
 
 The 22:50 Vercel build failed on a type error in
