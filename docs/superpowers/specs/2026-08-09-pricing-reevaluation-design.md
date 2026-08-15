@@ -3,6 +3,11 @@
 Date: 2026-08-09 · Status: approved (user picked "Hold $59, restructure" from
 three directions)
 
+> **2026-08-15:** /extras was removed (owner decision), taking
+> `EXTRAS_LESSON_COUNT` and the free tier's "bonus deep-dive lessons" bullet
+> with it. The extras count-pin chain described below is historical; see
+> `docs/post-launch-backlog.md` §"/extras removal".
+
 ## Problem
 
 Deep Orbit gained 16 character portraits and 63 scene plates on 2026-08-09

@@ -8,6 +8,8 @@
 
 **Tech Stack:** React 19 client components in Next.js app router, canvas 2D via the existing SceneCanvas chrome, vitest + @testing-library/react, Playwright e2e.
 
+**As-built deviations (2026-08-15, all review-driven and authorized during execution):** the recorder's `ellipse` capture was widened to the full 7-tuple in `test-utils/recording-canvas.ts` (supersedes the out-of-scope fence below; the uncommitted edits that fence protected had been committed by then); the sweep gained a 14% overshoot and ink-mode alpha caps; the contract suites sample t=2.6 (10 tests, not 8); `CurriculumScene` exposes `data-mode` and the wrapper suite grew a no-IntersectionObserver test (8 tests, not 7); `page.test.tsx` gained one test locking the row-class/`--tc-row-delay` contract (supersedes "zero modifications to existing test files"); the stagger got an anchor comment. Visual baselines needed no regeneration: the visual suites mask canvases, so the backdrop produced zero diffs.
+
 **Project rules that override defaults:**
 - NEVER run `git add` / `git commit` / `git push`. CLAUDE.md forbids commits on the user's behalf. Every task ends with a STOP checkpoint where the user reviews and commits.
 - The working tree already carries uncommitted edits to `packages/ui/src/effects/orbit-canvas.test.ts`, `world-scenes.test.ts`, and `test-utils/recording-canvas.ts`. Build on top of them. Do not revert or re-generate them.
@@ -36,7 +38,7 @@
 - Create: `packages/ui/src/effects/signal-lock.test.ts`
 - Modify: `packages/ui/src/effects/index.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `packages/ui/src/effects/signal-lock.test.ts`. This mirrors the structure of `world-scenes.test.ts` (same recorder, same contract) plus the settled-delegation lock that is unique to this scene:
 
@@ -112,12 +114,12 @@ describe("signal lock settled delegation", () => {
 
 Why these tests: the first two suites are the repo's SceneDraw contract (positions pure in `t`; `hot`/`scheme` style-only), enforced identically for every scene in `world-scenes.test.ts`. The delegation suite locks the spec's core promise: past the boot, this scene IS `drawOrbit`, so the pricing backdrop can never drift from the canonical Deep Orbit scene.
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run (from repo root): `pnpm vitest run packages/ui/src/effects/signal-lock.test.ts`
 Expected: FAIL, cannot resolve `./signal-lock`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `packages/ui/src/effects/signal-lock.ts`:
 
@@ -256,12 +258,12 @@ Notes for the implementer:
 - Every `if` gating geometry (`noise > 0.01`, `sweep > 0 && sweep < 1`, `p <= 0`, `rings > 0.3`, `bootOut <= 0`) depends on `t` alone. If you add a branch that consults `hot` or `scheme` before producing geometry, the contract tests fail, and they are right.
 - The recorder mock has no `globalAlpha` property; plain assignment on it is a harmless expando. Do not "fix" the mock.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm vitest run packages/ui/src/effects/signal-lock.test.ts`
 Expected: PASS (8 tests).
 
-- [ ] **Step 5: Barrel export**
+- [x] **Step 5: Barrel export**
 
 In `packages/ui/src/effects/index.ts`, after the SceneCanvas export block, add:
 
@@ -269,12 +271,12 @@ In `packages/ui/src/effects/index.ts`, after the SceneCanvas export block, add:
 export { drawSignalLock, BOOT_DURATION } from "./signal-lock";
 ```
 
-- [ ] **Step 6: Verify the effects suite and types**
+- [x] **Step 6: Verify the effects suite and types**
 
 Run: `pnpm vitest run packages/ui/src/effects` then `pnpm typecheck`
 Expected: all effects tests PASS (including the pre-existing, locally-modified orbit/world-scenes suites), typecheck clean.
 
-- [ ] **Step 7: STOP — checkpoint**
+- [x] **Step 7: STOP — checkpoint**
 
 Report results to the user and wait for them to review/commit. Do not commit.
 
@@ -287,7 +289,7 @@ Report results to the user and wait for them to review/commit. Do not commit.
 - Create: `apps/web/app/pricing/__tests__/curriculum-scene.test.tsx`
 - Modify: `apps/web/app/globals.css`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `apps/web/app/pricing/__tests__/curriculum-scene.test.tsx`. Before writing, open one neighboring test (`paywall-notice.test.tsx`) and mirror its imports/setup exactly (testing-library entry point, jsdom environment pragma if present). The IntersectionObserver mock follows `packages/ui/src/effects/particle-field.test.tsx` (instance list + captured callback):
 
@@ -417,12 +419,12 @@ describe("CurriculumScene", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm vitest run apps/web/app/pricing/__tests__/curriculum-scene.test.tsx`
 Expected: FAIL, cannot resolve `../curriculum-scene`.
 
-- [ ] **Step 3: Write the component**
+- [x] **Step 3: Write the component**
 
 Create `apps/web/app/pricing/curriculum-scene.tsx`:
 
@@ -564,7 +566,7 @@ Implementation notes:
 - `mode` starts `null` and resolves in an effect, deliberately: this client component still server-renders, and localStorage/matchMedia only exist on the client. Resolving pre-paint would either mismatch hydration or flash. The canvas appearing one frame late is invisible; it is decorative.
 - SceneCanvas runs its clock for a frame or two after mount before its own observer reports off-screen. For a below-the-fold load the boot may sit ~2 frames into the noise phase when the user arrives. The first 0.7s is noise; this is inside the spec's approximate-sync slack. Do not add plumbing to zero it.
 
-- [ ] **Step 4: Add the flicker CSS**
+- [x] **Step 4: Add the flicker CSS**
 
 The spec delegates the keyframes' file to this plan, offering "a keyframes
 entry next to the app's existing animation utilities" as one option; this
@@ -609,12 +611,12 @@ existing keyframes (around `@keyframes blink`), add:
 
 The `prefers-reduced-motion` media guard is belt-and-braces: the wrapper never sets `[data-boot]` for reduced-motion users, but the CSS must not rely on that.
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `pnpm vitest run apps/web/app/pricing/__tests__/curriculum-scene.test.tsx`
 Expected: PASS (7 tests).
 
-- [ ] **Step 6: STOP — checkpoint**
+- [x] **Step 6: STOP — checkpoint**
 
 Report results to the user and wait for them to review/commit. Do not commit.
 
@@ -625,7 +627,7 @@ Report results to the user and wait for them to review/commit. Do not commit.
 **Files:**
 - Modify: `apps/web/app/pricing/curriculum-preview.tsx`
 
-- [ ] **Step 1: Wrap the section content**
+- [x] **Step 1: Wrap the section content**
 
 In `curriculum-preview.tsx`:
 
@@ -660,19 +662,19 @@ style={
 }
 ```
 
-with `import type { CSSProperties } from "react";` at the top. Change NOTHING else: no copy edits, no testid changes, no structural reshuffling. `world.palette.primary` / `world.paletteLight.primary` are the same fields the world page passes to `WorldSceneBackdrop` (see `worlds/[slug]/page.tsx:320-323`).
+with `import type { CSSProperties } from "react";` at the top. Change NOTHING else: no copy edits, no testid changes, no structural reshuffling. `world.palette.primary` / `world.paletteLight?.primary` are the same fields the world page passes to `WorldSceneBackdrop` (see `worlds/[slug]/page.tsx:320-323`).
 
-- [ ] **Step 2: Run the pricing unit suites**
+- [x] **Step 2: Run the pricing unit suites**
 
 Run: `pnpm vitest run apps/web/app/pricing`
 Expected: PASS with zero modifications to the existing test files. `page.test.tsx` asserts on `curriculum-preview` and per-module testids; if it fails, the integration broke the pass-through contract; fix the integration, never the test.
 
-- [ ] **Step 3: Typecheck**
+- [x] **Step 3: Typecheck**
 
 Run: `pnpm typecheck`
 Expected: clean.
 
-- [ ] **Step 4: STOP — checkpoint**
+- [x] **Step 4: STOP — checkpoint**
 
 Report results to the user and wait for them to review/commit. Do not commit.
 
@@ -683,31 +685,31 @@ Report results to the user and wait for them to review/commit. Do not commit.
 **Files:**
 - Possibly regenerated: `e2e/visual/key-pages.spec.ts-snapshots/pricing-*.png`, `e2e/visual/responsive.spec.ts-snapshots/pricing-*.png`
 
-- [ ] **Step 1: Workspace unit suite**
+- [x] **Step 1: Workspace unit suite**
 
 Run: `pnpm test`
 Expected: green across the workspace.
 
-- [ ] **Step 2: Functional pricing e2e**
+- [x] **Step 2: Functional pricing e2e**
 
 Run: `pnpm test:e2e e2e/pricing.spec.ts` (needs the dev server per the repo's Playwright config; check `playwright.config.ts` `webServer` before assuming).
 Expected: PASS as-is. Playwright's `toBeVisible` does not consider opacity, and the flicker finishes ~3.1s in while default timeouts are longer. If the "Module 1 marked free" test flakes mid-flicker anyway, add an `addInitScript` seeding `localStorage.tc_curriculum_boot_seen = "1"` to THAT spec's `beforeEach` (deterministic settled mode) rather than loosening assertions.
 
-- [ ] **Step 3: Accessibility e2e**
+- [x] **Step 3: Accessibility e2e**
 
 Run: `pnpm test:e2e e2e/accessibility.spec.ts`
 Expected: PASS. The axe suite emulates reduced motion (`accessibility.spec.ts:46`), which mounts settled mode: full-opacity rows over the static backdrop. If a contrast violation appears on the curriculum section, the 0.45 intensity floor is too bright behind the muted row text; lower the floor (0.35, then 0.3) until clean and note the final value for the spec.
 
-- [ ] **Step 4: Visual baselines**
+- [x] **Step 4: Visual baselines**
 
 Run: `pnpm test:e2e e2e/visual/key-pages.spec.ts e2e/visual/responsive.spec.ts` (these suites are gated on `RUN_VISUAL`; check the spec files' skip condition and set the env var accordingly).
 Expected: pricing baselines diff, because the section legitimately gained a static backdrop under reduced motion. Inspect the diff images to confirm the change is exactly the faint orbit scene behind the curriculum section (and nothing else moved), then regenerate with `--update-snapshots` for the pricing baselines only. The working tree already contains regenerated baselines from the Tailwind fix; the new regeneration stacks on top, which is expected.
 
-- [ ] **Step 5: See it run**
+- [x] **Step 5: See it run**
 
 Use the run skill (or `pnpm dev`) to open /pricing in a real browser and verify by eye, in this order: (1) fresh profile or cleared localStorage, dark scheme: scroll to the section, boot plays once, rows flicker in, scene settles faint; (2) reload: no boot, settled immediately; (3) clear the key, switch light scheme: ink-mode boot reads as marks on paper, no grey storm cloud in the sweep; (4) OS reduced-motion on, cleared key: no boot, static frame, rows visible. Screenshot the settled section for the report.
 
-- [ ] **Step 6: STOP — final checkpoint**
+- [x] **Step 6: STOP — final checkpoint**
 
 Report the full battery results and the by-eye findings to the user. The user decides on committing. Do not commit.
 

@@ -10,18 +10,6 @@ interface DerivationDrawerProps {
    */
   summary: string;
   /**
-   * Slug of the companion deep-dive lesson. Renders a "Read full derivation"
-   * link that resolves to /worlds/<worldSlug>/<moduleSlug>/<companionSlug>
-   * when wrapped by a parent that knows the route. For now we surface the
-   * slug as a relative link the parent route can rewrite if needed.
-   */
-  companionSlug?: string;
-  /**
-   * Optional href override. If provided, used directly instead of building
-   * the URL from companionSlug. Lets MDX authors point at any lesson.
-   */
-  companionHref?: string;
-  /**
    * Math content. Authors typically pass a <MathBlock> or pre-rendered
    * derivation steps as children.
    */
@@ -37,19 +25,11 @@ interface DerivationDrawerProps {
  *
  * Pattern: {@link docs/patterns/analogy-breaks-pattern.md} (companion).
  */
-export function DerivationDrawer({
-  summary,
-  companionSlug,
-  companionHref,
-  children,
-}: DerivationDrawerProps) {
+export function DerivationDrawer({ summary, children }: DerivationDrawerProps) {
   const { expandDerivations } = useLessonPrefs();
   const [open, setOpen] = useState(expandDerivations);
   const panelId = useId();
   const buttonId = useId();
-  const href =
-    companionHref ||
-    (companionSlug ? `/extras/math-deep-dive/${companionSlug}` : null);
 
   return (
     <div
@@ -91,17 +71,6 @@ export function DerivationDrawer({
           className="p-5"
         >
           <div className="prose-invert">{children}</div>
-
-          {href && (
-            <div className="mt-5 pt-4 border-t border-border">
-              <a
-                href={href}
-                className="font-mono text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                Read the full companion deep dive →
-              </a>
-            </div>
-          )}
         </div>
       )}
     </div>

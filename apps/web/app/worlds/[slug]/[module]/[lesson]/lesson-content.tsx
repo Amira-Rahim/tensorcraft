@@ -282,8 +282,8 @@ export function LessonContent({
         // gate on shouldShow("Dialogue"). Then resolve the speaker to a world
         // character to build the avatar slot: ARIA renders as her live
         // procedural waveform (never raster art, per the bible), humans as
-        // the expression-crossfading portrait. Unknown speakers (extras'
-        // Instructor) stay avatar-less, exactly as before.
+        // the expression-crossfading portrait. Unknown speakers stay
+        // avatar-less, exactly as before.
         const insideEpilogue = useContext(EpilogueContext);
         if (!insideEpilogue && !shouldShow("Dialogue")) return null;
         const ch = worldId

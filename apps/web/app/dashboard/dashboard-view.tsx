@@ -5,6 +5,8 @@ import Link from "next/link";
 import { SkillGenome } from "./skill-genome";
 import { BridgeCollection } from "./bridge-collection";
 import { LossCurve, type WeeklyHints } from "@tensorcraft/ui/visualizations";
+import { ArtPlate } from "@tensorcraft/ui/art-plate";
+import { ModulePatch } from "@tensorcraft/ui/module-patch";
 import { UserAvatar } from "@/app/components/user-avatar";
 import { worlds } from "@tensorcraft/worlds";
 
@@ -27,6 +29,9 @@ export interface DashboardModule {
   score: number | null;
   formula: string;
   slug: string;
+  /** Mission-patch emblem, earned on completion (lib/patch-art.ts).
+   *  Rendered only when status is "done"; the status box is the fallback. */
+  patchSrc?: string;
 }
 
 export interface DashboardBridge {
@@ -86,6 +91,12 @@ export interface DashboardProps {
    * user has not yet completed a lesson today. Renders a gentle nudge toast.
    */
   streakAtRisk?: boolean;
+  /**
+   * Location plate for the module sidebar's station feed panel
+   * (lib/location-art.ts `surfacePlateSrc(world, "dashboard")`). Absent for
+   * worlds without art; the sidebar then renders exactly as before.
+   */
+  plateSrc?: string;
 }
 
 export function DashboardView(props: DashboardProps) {
@@ -112,6 +123,7 @@ export function DashboardView(props: DashboardProps) {
     lossCurveData,
     worldCards,
     streakAtRisk = false,
+    plateSrc,
   } = props;
 
   // Resolve the world's lesson word (re-audit N2/F-C): "Mission" is Deep
@@ -170,6 +182,20 @@ export function DashboardView(props: DashboardProps) {
             flexShrink: 0,
           }}
         >
+          {/* Station feed: the monitoring alcove the dashboard is named
+              for, framed as a ship monitor above the module map. Decorative;
+              ArtPlate renders nothing if the asset is missing. */}
+          {plateSrc && (
+            <div
+              aria-hidden="true"
+              style={{
+                padding: 16,
+                borderBottom: `1px solid ${BORDER_VAR}`,
+              }}
+            >
+              <ArtPlate src={plateSrc} />
+            </div>
+          )}
           <div
             style={{
               padding: "20px 24px",
@@ -229,24 +255,45 @@ export function DashboardView(props: DashboardProps) {
                 color: "inherit",
               }}
             >
-              <div
-                style={{
-                  width: 28,
-                  height: 28,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  fontFamily: MONO,
-                  fontSize: 11,
-                  fontWeight: 800,
-                  border: `1px solid ${m.status === "done" || m.status === "active" ? LIME : BORDER_VAR}`,
-                  color:
-                    m.status === "done" || m.status === "active" ? LIME : MUTED,
-                }}
-              >
-                {m.status === "done" ? "✓" : m.status === "locked" ? "·" : ">"}
-              </div>
+              {(() => {
+                const statusBox = (
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      fontFamily: MONO,
+                      fontSize: 11,
+                      fontWeight: 800,
+                      border: `1px solid ${m.status === "done" || m.status === "active" ? LIME : BORDER_VAR}`,
+                      color:
+                        m.status === "done" || m.status === "active"
+                          ? LIME
+                          : MUTED,
+                    }}
+                  >
+                    {m.status === "done"
+                      ? "✓"
+                      : m.status === "locked"
+                        ? "·"
+                        : ">"}
+                  </div>
+                );
+                // Patches are earned: only a done module trades its ✓ box
+                // for the emblem, and the box returns if the art fails.
+                return m.status === "done" && m.patchSrc ? (
+                  <ModulePatch
+                    src={m.patchSrc}
+                    size={28}
+                    fallback={statusBox}
+                  />
+                ) : (
+                  statusBox
+                );
+              })()}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{

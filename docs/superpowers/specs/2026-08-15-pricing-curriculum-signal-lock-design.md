@@ -55,8 +55,9 @@ into view.
 on `WorldSceneBackdrop`: subpath import from `@tensorcraft/ui/effects`,
 `aria-hidden`, `pointer-events-none`, absolutely positioned container
 capped to the section with a bottom fade mask, canvas colored from the
-Deep Orbit palette (dark and light hues). It resolves one of two modes at
-mount:
+Deep Orbit palette (dark hue required, light hue optional with fallback
+to the dark hue, the same contract as WorldSceneBackdrop's
+`primaryLight?`). It resolves one of two modes at mount:
 
 - **Boot mode**, when the localStorage flag is absent and the user allows
   motion: renders `SceneCanvas` with `drawSignalLock`, at the same 0.45
@@ -70,6 +71,10 @@ mount:
   while the section is still below the fold (only the canvas clock is
   visibility-gated by SceneCanvas), letting the rows finish flickering
   off-screen and burning the once-ever boot unseen.
+The wrapper also exposes the resolved mode as a `data-mode` attribute
+("boot" | "settled"): the draw-function choice is otherwise unobservable
+to automation, and the wrapper tests pin mode resolution through it.
+
 - **Settled mode**, otherwise: renders `SceneCanvas` with `drawOrbit` at
   an intensity floor of 0.45 (lower than WorldSceneBackdrop's 0.7: this
   scene sits directly behind dense text; value tunable during visual
@@ -119,9 +124,9 @@ delays spanning roughly 1.6 to 2.6 seconds, active only under
 first intersection, so a browser without JavaScript never hides the rows
 and a below-the-fold load never plays the reveal off-screen.
 Opacity-hidden rows stay readable to screen readers during the boot. The
-keyframes live in a stylesheet scoped to the pricing section (CSS module
-or a keyframes entry next to the app's existing animation utilities; the
-implementation plan pins the file), not in global CSS.
+keyframes live next to the app's existing animation utilities in
+`globals.css` (where every keyframe in the app lives); scoping comes
+from the `[data-boot] .tc-curriculum-row` selector, not the file.
 
 Two observers, one moment: the wrapper's IntersectionObserver arms
 `data-boot` and SceneCanvas's own observer releases the canvas clock,
@@ -158,9 +163,13 @@ accuracy.
 - Existing curriculum-preview tests keep passing untouched; the DOM they
   assert on is preserved.
 
-Note for implementation sequencing: the working tree already carries
-uncommitted edits to `orbit-canvas.test.ts`, `world-scenes.test.ts`, and
-`test-utils/recording-canvas.ts`. This work builds on top of those edits.
+Historical sequencing note (resolved): at spec time the working tree
+carried uncommitted edits to `orbit-canvas.test.ts`,
+`world-scenes.test.ts`, and `test-utils/recording-canvas.ts`; those were
+committed before implementation, which then landed on top. During
+implementation the recorder's `ellipse` capture was widened to all seven
+args (authorized amendment) so the contract tests cover the arc-progress
+ring channel.
 
 ## Out of scope
 

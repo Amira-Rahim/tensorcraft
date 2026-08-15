@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  BUILT_WORLD_DIRS,
-  BUILT_STORY_WORLDS,
-  EXTRAS_LESSON_COUNT,
-} from "./built-worlds";
+import { BUILT_WORLD_DIRS, BUILT_STORY_WORLDS } from "./built-worlds";
 import { WORLD_SHAPE, type WorldSlug } from "@tensorcraft/shared";
 import fs from "fs";
 import path from "path";
@@ -29,14 +25,13 @@ const files = [...BUILT_WORLD_DIRS].flatMap((d) =>
 );
 
 // Expected built-lesson total, summed per-world (re-audit N2/F-A) rather than a
-// hardcoded 77: each built story world contributes its own WORLD_SHAPE total
-// (deep-orbit 56, others 54/55), plus the cross-world extras dir. Adding a
-// world to BUILT_WORLD_DIRS updates this automatically.
-const EXPECTED_BUILT_LESSONS =
-  BUILT_STORY_WORLDS.reduce(
-    (sum, t) => sum + WORLD_SHAPE[t as WorldSlug].totalLessons,
-    0,
-  ) + EXTRAS_LESSON_COUNT;
+// hardcoded literal: each built story world contributes its own WORLD_SHAPE
+// total (deep-orbit 56, others 54/55). Adding a world to BUILT_WORLD_DIRS
+// updates this automatically.
+const EXPECTED_BUILT_LESSONS = BUILT_STORY_WORLDS.reduce(
+  (sum, t) => sum + WORLD_SHAPE[t as WorldSlug].totalLessons,
+  0,
+);
 
 describe("end-of-lesson migration completeness (built lessons)", () => {
   it("found the built lessons", () => {

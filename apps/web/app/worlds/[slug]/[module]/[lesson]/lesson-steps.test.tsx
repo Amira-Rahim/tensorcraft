@@ -429,8 +429,8 @@ describe("LessonSteps, SceneCard cast avatars", () => {
   // The Cast list is regex-extracted from the compiled body's
   // speaker: "..." attributes; three registers matter: a human character
   // (portrait via the art resolver), ARIA (procedural waveform, never
-  // raster) and an unregistered speaker (extras' Instructor), which must
-  // stay on the monogram path with no src.
+  // raster) and an unregistered speaker, which must stay on the monogram
+  // path with no src.
   const castLesson = {
     ...lesson,
     body: `jsx(Dialogue, {speaker: "Dr. Farah", children: "x"});

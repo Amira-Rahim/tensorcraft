@@ -18,7 +18,7 @@ Honest current state, verified against the codebase:
 | Account model | Individual only. No teams/orgs/seats. Flat `user \| admin` role |
 | Entitlement | Derived ad-hoc from `purchases.world_ids`; no entitlements table |
 | Cross-user features | **None.** All gamification is per-user RLS. No leaderboard |
-| Free tier | Module 1 (5 lessons) + 21 public `/extras` lessons |
+| Free tier | Module 1 (5 lessons). (`/extras` and its 23 public lessons removed 2026-08-15, owner decision) |
 | Product quality | High. Content, grading, and trust handling are genuinely strong |
 
 **The gap is not product quality. It is distribution and business model.**

@@ -56,7 +56,7 @@ Slice C shipped: bandit-driven `/review` queue, bandit lesson rewrite (regret/mi
 
 Deferred from that slice:
 
-- **SHAP cross-link in `<StrategyThread>`** — the SHAP lesson at `packages/content/content/extras/ethics-responsibility/03-model-interpretability.mdx` has no `/worlds/extras/...` route, so linking from the bandit / GAN lessons would 404. Two paths forward: (a) add a public route for `extras/*` content; (b) move SHAP into a launched world. (a) is cheaper.
+- **SHAP cross-link in `<StrategyThread>`** — superseded: the SHAP lesson was removed with /extras on 2026-08-15 (owner decision). Canonical version of this item lives in `docs/post-launch-backlog.md` §5 (restore from commit `0b5ec6d` into a launched world).
 - **Auction lesson (Terra Grid)** — second-price (Vickrey) auction; FE bridge `ad-bid auction = CSS specificity wars`. New lesson under `terra-grid/ab-testing/`.
 - **Stackelberg reframe of adversarial patches (Neon Protocol)** — currently framed as security; reframe as attacker→defender game w/ FE bridge `XSS sanitizer co-evolution`.
 - **RLHF preference-learning reframe (Signal Ward)** — Bradley–Terry pairwise / social choice; FE bridge `preference vote = thumbs-up A/B ranking`.

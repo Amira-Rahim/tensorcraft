@@ -107,7 +107,7 @@ function WorldPicker({
  * Every card is square-edged (`rounded-none`), uses mono for price + tech
  * details, and applies a brutalist offset shadow on hover.
  */
-export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
+export function PricingTiers() {
   // Preselect when exactly one world is launched: a one-option picker
   // that starts empty just disables the page's most important button
   // behind a pointless click (2026-07-14 UX audit).
@@ -255,19 +255,6 @@ export function PricingTiers({ extrasLessons }: { extrasLessons: number }) {
                   {f}
                 </li>
               ))}
-              {/* Advertised free content must be findable from the ad
-                  (2026-07-14 UX audit: /extras had zero inbound links). */}
-              <li className="flex items-center gap-2 text-xs text-text-muted font-mono">
-                <span className="text-primary font-bold" aria-hidden="true">
-                  &#10003;
-                </span>
-                <Link
-                  href="/extras"
-                  className="underline underline-offset-4 hover:text-text-primary transition-colors"
-                >
-                  {extrasLessons} bonus deep-dive lessons
-                </Link>
-              </li>
             </ul>
             <Link
               href="/worlds/deep-orbit"

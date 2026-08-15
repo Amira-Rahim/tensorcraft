@@ -3,7 +3,11 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { worlds } from "@tensorcraft/worlds";
 import { isValidWorldSlug } from "@tensorcraft/shared";
+import { getModules } from "@tensorcraft/content";
+import { CharacterAvatar } from "@tensorcraft/ui/character-avatar";
+import { ModulePatch } from "@tensorcraft/ui/module-patch";
 import { getApiUrl } from "@/lib/api-url";
+import { patchSrc, sealSrc } from "@/lib/patch-art";
 
 /**
  * Public certificate share page.
@@ -82,7 +86,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://tensorcraft.app/certificates/${cert.id}`,
       type: "profile",
       images: [
-        `/api/og?title=${encodeURIComponent(`${worldName}: ${world?.terminology.lesson ?? "Mission"} Complete`)}&world=${encodeURIComponent(cert.world_id)}&subtitle=${encodeURIComponent(learner)}`,
+        `/api/og?kind=cert&title=${encodeURIComponent(worldName)}&world=${encodeURIComponent(cert.world_id)}&learner=${encodeURIComponent(learner)}`,
       ],
     },
   };
@@ -128,15 +132,39 @@ export default async function CertificateSharePage({ params }: Props) {
       />
       <div className="max-w-2xl mx-auto">
         <div className="border border-border bg-surface rounded-none p-10 print:border-black">
-          <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">
-            Certificate of Completion
-          </p>
-          <h1 className="text-3xl md:text-4xl font-mono font-black tracking-[-0.03em] uppercase mb-6">
-            {worldName}
-          </h1>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">
+                Certificate of Completion
+              </p>
+              <h1 className="text-3xl md:text-4xl font-mono font-black tracking-[-0.03em] uppercase mb-6">
+                {worldName}
+              </h1>
+            </div>
+            {/* World-completion seal (docs/patch-bible.md). Decorative: the
+                heading names the achievement; a missing asset renders
+                nothing. */}
+            {sealSrc(cert.world_id) && (
+              <ModulePatch
+                src={sealSrc(cert.world_id)!}
+                size={72}
+                className="mt-1"
+              />
+            )}
+          </div>
 
           <p className="text-sm text-text-muted mb-1">Awarded to</p>
-          <p className="text-2xl font-mono font-semibold mb-8">{learner}</p>
+          <div className="flex items-center gap-3 mb-8">
+            {/* The share RPC exposes avatar_url for exactly this render; a
+                dead URL settles to the initials monogram, never a broken
+                image (CharacterAvatar owns the failure path). */}
+            <CharacterAvatar
+              name={learner}
+              src={cert.user_avatar_url ?? undefined}
+              size={44}
+            />
+            <p className="text-2xl font-mono font-semibold">{learner}</p>
+          </div>
 
           <dl className="grid grid-cols-2 gap-4 text-xs font-mono mb-8">
             <div>
@@ -163,6 +191,25 @@ export default async function CertificateSharePage({ params }: Props) {
               </dd>
             </div>
           </dl>
+
+          {/* Earned mission patches, one per module: a certificate exists
+              only when every module is complete, so the full strip is
+              truthful by construction. Decorative beside the sentence
+              below, which says the same thing in words. */}
+          {sealSrc(cert.world_id) && (
+            <div
+              className="flex flex-wrap gap-2 mb-6"
+              data-testid="cert-patch-strip"
+              aria-hidden="true"
+            >
+              {getModules(cert.world_id).map((mod) => {
+                const src = patchSrc(cert.world_id, mod.slug);
+                return src ? (
+                  <ModulePatch key={mod.slug} src={src} size={32} />
+                ) : null;
+              })}
+            </div>
+          )}
 
           <p className="text-xs text-text-muted leading-relaxed">
             This learner completed every module of the {worldName} world on{" "}

@@ -1154,9 +1154,9 @@ The module order follows a deliberate pedagogical arc:
 
 ---
 
-## Part 4.7: Curriculum Gap Modules (Post-Launch)
+## Part 4.7: Curriculum Gap Modules (REMOVED 2026-08-15)
 
-These cross-world modules address critical gaps identified in the content audit. They live in `packages/content/content/extras/` and are not part of any specific world. Module YAMLs with full lesson outlines exist; MDX content will be written after Deep Orbit launches and validates.
+These cross-world modules addressed gaps identified in the content audit. They were built out fully (4 modules, 23 lessons + exercises, served at /extras), then removed on 2026-08-15 by owner decision along with the /extras surface. Restore pointer and consequences: `docs/post-launch-backlog.md` §"/extras removal". The outlines below are kept as the design record.
 
 ### Classical ML: When Neural Networks Aren't the Answer
 

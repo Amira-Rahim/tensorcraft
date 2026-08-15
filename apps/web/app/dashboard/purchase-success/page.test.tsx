@@ -112,6 +112,12 @@ vi.mock("./purchase-analytics", () => ({
   PurchaseAnalytics: () => null,
 }));
 
+// The poller polls through useRouter, which the next/navigation mock above
+// deliberately omits; its own behavior is covered in pending-poller.test.tsx.
+vi.mock("./pending-poller", () => ({
+  PendingPoller: () => <div data-testid="pending-poller-stub" />,
+}));
+
 function resetState(): void {
   purchaseRows = [];
   getUserMock.mockReset();
@@ -165,6 +171,40 @@ describe("dashboard/purchase-success/page", () => {
     expect(html).toContain("You&#x27;re In");
     // Mono, uppercase, large hero, key brutalist treatment markers.
     expect(html).toMatch(/font-mono[^"]*uppercase/);
+  });
+
+  it("renders the engineering plate only on a confirmed purchase", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "u-1" } },
+      error: null,
+    });
+    purchaseRows.push({
+      user_id: "u-1",
+      plan_id: "single",
+      world_ids: ["deep-orbit"],
+      amount: 79,
+      created_at: "2026-04-21T10:30:00.000Z",
+      stripe_session_id: "cs_test_abcdefgh12345678",
+      status: "completed",
+    });
+
+    const { html } = await renderPage();
+
+    expect(html).toContain("/locations/deep-orbit/engineering.webp");
+  });
+
+  it("keeps the pending 'Almost There' state art-free", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "u-1" } },
+      error: null,
+    });
+
+    const { html } = await renderPage({
+      session_id: "cs_test_NOTLANDEDYET0000",
+    });
+
+    expect(html).toContain("Almost There");
+    expect(html).not.toContain("engineering.webp");
   });
 
   it("looks up the purchase by stripe session_id when provided", async () => {

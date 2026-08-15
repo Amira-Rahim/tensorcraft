@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
-import { EXTRAS_LESSON_COUNT } from "@tensorcraft/content";
 import { CurriculumPreview } from "./curriculum-preview";
 import { PaymentError } from "./payment-error";
 import { PaywallNotice } from "./paywall-notice";
@@ -146,7 +145,7 @@ export default function PricingPage() {
         {/* Suspense: PricingTiers reads useSearchParams to restore a
             selection carried through the auth roundtrip. */}
         <Suspense fallback={null}>
-          <PricingTiers extrasLessons={EXTRAS_LESSON_COUNT} />
+          <PricingTiers />
         </Suspense>
 
         {/* Curriculum preview, what a purchase unlocks */}

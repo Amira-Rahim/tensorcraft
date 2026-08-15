@@ -61,7 +61,7 @@ const LAUNCHED_WORLD_DIRS = BUILT_WORLD_GLOB;
 
 const lessons = defineCollection({
   name: "Lesson",
-  // Scoped to launched world dirs (extras included for shared cross-world content).
+  // Scoped to launched world dirs.
   pattern: `${LAUNCHED_WORLD_DIRS}/**/*.mdx`,
   schema: s
     .object({

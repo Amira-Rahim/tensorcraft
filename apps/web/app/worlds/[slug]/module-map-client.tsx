@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ModulePatch } from "@tensorcraft/ui/module-patch";
 
 interface LessonItem {
   slug: string;
@@ -26,6 +27,10 @@ interface ModuleMapItem {
   totalLessons: number;
   avgScore: number | null;
   lessons: LessonItem[];
+  /** Mission-patch emblem, earned on completion (lib/patch-art.ts).
+   *  Rendered only when status is "completed"; the node box is the
+   *  fallback. */
+  patchSrc?: string;
 }
 
 interface ModuleMapClientProps {
@@ -191,24 +196,37 @@ function ModuleRow({
           className={`flex cursor-pointer list-none items-start gap-4 rounded-none px-6 py-5 ${FOCUS_RING} ${isLocked ? "pointer-events-none" : ""}`}
           aria-label={`${terminology.module} ${mod.order}: ${mod.title}`}
         >
-          {/* Node indicator, simple numbered square at left edge (option a) */}
-          <div
-            className="flex shrink-0 items-center justify-center rounded-none border-2 font-mono text-xs font-bold"
-            style={{
-              width: 32,
-              height: 32,
-              borderColor: accentOn ? "var(--tc-primary)" : "var(--tc-muted)",
-              background: isDone ? "var(--tc-primary)" : "transparent",
-              color: isDone
-                ? "var(--tc-on-primary)"
-                : accentOn
-                  ? "var(--tc-primary)"
-                  : "var(--tc-muted)",
-            }}
-            aria-hidden="true"
-          >
-            {isDone ? "✓" : moduleLabel.replace("M", "")}
-          </div>
+          {/* Node indicator, simple numbered square at left edge (option a).
+              A completed module trades the ✓ box for its earned mission
+              patch; the box returns if the art fails (docs/patch-bible.md). */}
+          {(() => {
+            const nodeBox = (
+              <div
+                className="flex shrink-0 items-center justify-center rounded-none border-2 font-mono text-xs font-bold"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderColor: accentOn
+                    ? "var(--tc-primary)"
+                    : "var(--tc-muted)",
+                  background: isDone ? "var(--tc-primary)" : "transparent",
+                  color: isDone
+                    ? "var(--tc-on-primary)"
+                    : accentOn
+                      ? "var(--tc-primary)"
+                      : "var(--tc-muted)",
+                }}
+                aria-hidden="true"
+              >
+                {isDone ? "✓" : moduleLabel.replace("M", "")}
+              </div>
+            );
+            return isDone && mod.patchSrc ? (
+              <ModulePatch src={mod.patchSrc} size={32} fallback={nodeBox} />
+            ) : (
+              nodeBox
+            );
+          })()}
 
           {/* Module meta */}
           <div className="min-w-0 flex-1">

@@ -46,9 +46,6 @@ vi.mock("@/app/components/ambient-background", () => ({
 }));
 
 vi.mock("@tensorcraft/content", () => ({
-  // 2026-08-09: pricing-tiers free tier reads its "N bonus deep-dive
-  // lessons" copy from this constant (was a hardcoded, stale "21").
-  EXTRAS_LESSON_COUNT: 23,
   getModules: (slug: string) =>
     slug === "deep-orbit"
       ? [
@@ -155,5 +152,18 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     render(<PricingPage />);
     const section = screen.getByTestId("curriculum-preview");
     expect(section).toHaveTextContent(/free/i);
+  });
+
+  it("curriculum rows carry the signal-lock flicker hooks", () => {
+    // Locks the contract with globals.css ([data-boot] .tc-curriculum-row
+    // + --tc-row-delay): a rename on either side fails nothing at runtime,
+    // rows simply appear at full opacity and the boot cinematic silently
+    // dies. The e2e battery runs under reduced motion and cannot catch it.
+    render(<PricingPage />);
+    const first = screen.getByTestId("curriculum-module-foundations");
+    const last = screen.getByTestId("curriculum-module-neural-networks");
+    expect(first.className).toContain("tc-curriculum-row");
+    expect(first.style.getPropertyValue("--tc-row-delay")).toBe("1.60s");
+    expect(last.style.getPropertyValue("--tc-row-delay")).toBe("2.60s");
   });
 });

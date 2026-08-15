@@ -42,7 +42,7 @@ function countExerciseYamls(worldDir: string): number {
 }
 
 describe("EXERCISE_CONTENT matches the real corpus", () => {
-  it("liveExercises equals the shipped (deep-orbit + extras) YAML count", () => {
+  it("liveExercises equals the shipped (built world dirs) YAML count", () => {
     const live = SHIPPED_DIRS.reduce((n, d) => n + countExerciseYamls(d), 0);
     expect(
       EXERCISE_CONTENT.liveExercises,

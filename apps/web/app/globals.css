@@ -593,6 +593,39 @@ body {
   }
 }
 
+/* ===== Curriculum signal-lock row flicker ===== */
+/* Curriculum signal-lock boot (pricing): rows flicker in like telemetry
+   while the canvas boots. curriculum-scene.tsx sets [data-boot] at first
+   intersection; without it (no JS, replay visit, reduced motion) rows are
+   simply visible. Delays per row via --tc-row-delay span 1.6-2.6s of the
+   3s boot (BOOT_DURATION, @tensorcraft/ui effects/signal-lock.ts). */
+@media (prefers-reduced-motion: no-preference) {
+  [data-boot] .tc-curriculum-row {
+    animation: tc-curriculum-flicker 0.5s linear both;
+    animation-delay: var(--tc-row-delay, 1.6s);
+  }
+}
+@keyframes tc-curriculum-flicker {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+  65% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* ===== Pulse animation ===== */
 @keyframes pulse-soft {
   0%,

@@ -3,8 +3,8 @@
 Single source of truth for the per-lesson scene portrait art (the
 establishing shots rendered by `ScenePortrait` under each Briefing slugline
 and on the 7 distinct-location Epilogues). Companion to
-`docs/character-bible.md`, same contract: **the prompts here are the
-contract.** Art may be regenerated at any time, but it must keep matching
+`docs/character-bible.md` and `docs/patch-bible.md` (module mission patches
++ world seal), same contract: **the prompts here are the contract.** Art may be regenerated at any time, but it must keep matching
 each entry's location canon, moment and staging notes. Nothing here blocks a
 build; until an image ships, the lesson renders exactly as it does today.
 

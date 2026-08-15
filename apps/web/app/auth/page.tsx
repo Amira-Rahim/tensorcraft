@@ -1,8 +1,10 @@
 import { Suspense } from "react";
 import { AuthForm } from "../components/auth-form";
 import { OrbitCanvas } from "@tensorcraft/ui/effects";
+import { ArtPlate } from "@tensorcraft/ui/art-plate";
 import { worlds, worldSlugs } from "@tensorcraft/worlds";
 import { isLaunched } from "@tensorcraft/shared";
+import { surfacePlateSrc } from "@/lib/location-art";
 
 /**
  * Auth page: split-screen brutalist redesign (2026-06-16).
@@ -33,6 +35,7 @@ function hexToRgb(hex: string): [number, number, number] {
 const HERO_SLUG = worldSlugs.find((s) => isLaunched(s)) ?? worldSlugs[0];
 const HERO_RGB = hexToRgb(worlds[HERO_SLUG].palette.primary);
 const HERO_RGB_LIGHT = hexToRgb(worlds[HERO_SLUG].paletteLight.primary);
+const AUTH_PLATE_SRC = surfacePlateSrc(HERO_SLUG, "auth");
 
 export default function AuthPage() {
   return (
@@ -44,13 +47,36 @@ export default function AuthPage() {
         data-testid="auth-left-pane"
         className="hidden md:flex md:w-[55%] relative overflow-hidden border-r border-border rounded-none bg-page"
       >
-        {/* Live Deep Orbit canvas: same component as the landing page. Sizes
-            to this positioned parent; decorative (aria-hidden internally). */}
+        {/* The lab plate as the pane's ground, the live canvas above it as
+            the reflection on the glass: the Five Worlds band composite. Over
+            dark art the canvas keeps its dark hue in both schemes — the
+            light hue was minted for a paper background (WorldSceneBackdrop
+            precedent). Absent art, the pane renders exactly as before. */}
+        {AUTH_PLATE_SRC && (
+          <ArtPlate
+            src={AUTH_PLATE_SRC}
+            bleed
+            className="absolute inset-0 z-0"
+          />
+        )}
         <OrbitCanvas
           rgb={HERO_RGB}
-          rgbLight={HERO_RGB_LIGHT}
-          className="absolute inset-0 z-0 pointer-events-none"
+          rgbLight={AUTH_PLATE_SRC ? HERO_RGB : HERO_RGB_LIGHT}
+          className={`absolute inset-0 z-0 pointer-events-none${AUTH_PLATE_SRC ? " opacity-50" : ""}`}
         />
+        {/* Legibility scrim: the headline sits directly on the plate, and
+            the lab's whiteboard is the brightest region of any plate, so
+            the scrim dims the whole pane and hardest where the type is. */}
+        {AUTH_PLATE_SRC && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-0"
+            style={{
+              background:
+                "linear-gradient(90deg, color-mix(in srgb, var(--tc-bg) 92%, transparent) 0%, color-mix(in srgb, var(--tc-bg) 62%, transparent) 55%, color-mix(in srgb, var(--tc-bg) 34%, transparent) 100%)",
+            }}
+          />
+        )}
 
         {/* Foreground copy block */}
         <div className="relative z-10 flex h-full w-full flex-col justify-center p-10 lg:p-14">

@@ -111,7 +111,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     // entry tier and implied a delivery schedule the world-2 gate does not
     // promise. Since 2026-08-14 (owner directive) the bundle prices render
     // nowhere on the page at all.
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-free")).toBeInTheDocument();
     expect(screen.getByTestId("tier-card-single")).toBeInTheDocument();
     expect(screen.queryByTestId("tier-card-two")).toBeNull();
@@ -120,13 +120,13 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   });
 
   it("renders canonical dollar amounts on every buyable tier", () => {
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-free")).toHaveTextContent("$0");
     expect(screen.getByTestId("tier-card-single")).toHaveTextContent("$59");
   });
 
   it("maps plan ids to tier cards", () => {
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-free")).toHaveAttribute(
       "data-plan-id",
       "free",
@@ -138,14 +138,14 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   });
 
   it("recommends the buyable Single tier while only one world is launched (2026-07-14 UX audit: never ribbon an unbuyable tier)", () => {
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     const single = screen.getByTestId("tier-card-single");
     expect(single).toHaveAttribute("data-recommended", "true");
     expect(single).toHaveTextContent(/Available Now/i);
   });
 
   it("uses rounded-none (brutalist) on every tier card", () => {
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     for (const slug of ["free", "single"]) {
       const card = screen.getByTestId(`tier-card-${slug}`);
       expect(card.className).toMatch(/rounded-none/);
@@ -153,7 +153,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   });
 
   it("Single tier CTA sends planId=single with the preselected world (no extra click while one world is launched)", async () => {
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     const card = screen.getByTestId("tier-card-single");
     // 2026-07-14 UX audit: with exactly one launched world, the picker
     // preselects it — the CTA must be enabled immediately.
@@ -170,11 +170,17 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     expect(body.worldIds).toEqual(["deep-orbit"]);
   });
 
-  it("renders the extras lesson count from the prop, never a hardcoded literal", () => {
-    render(<PricingTiers extrasLessons={23} />);
-    expect(screen.getByTestId("tier-card-free")).toHaveTextContent(
-      /23 bonus deep-dive lessons/,
+  // /extras was removed 2026-08-15 (owner decision). The free tier must not
+  // advertise content that no longer exists.
+  it("free tier advertises no bonus deep-dive lessons and never links to /extras", () => {
+    render(<PricingTiers />);
+    expect(screen.getByTestId("tier-card-free")).not.toHaveTextContent(
+      /bonus deep-dive/i,
     );
+    const links = screen.queryAllByRole("link");
+    for (const link of links) {
+      expect(link.getAttribute("href")).not.toMatch(/^\/extras/);
+    }
   });
 
   // 63 scene plates shipped 2026-08-09 and no buying surface mentioned them.
@@ -184,7 +190,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   // packages/content/__tests__/scene-art-coverage.test.ts, which fails if any
   // built lesson is missing its plate.
   it("tells the buyer the course is illustrated", () => {
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-single")).toHaveTextContent(
       /every lesson illustrated/i,
     );
@@ -194,7 +200,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   });
 
   it("never prints a raw scene-plate count that could drift", () => {
-    render(<PricingTiers extrasLessons={23} />);
+    render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-single")).not.toHaveTextContent(
       /\b63\b/,
     );

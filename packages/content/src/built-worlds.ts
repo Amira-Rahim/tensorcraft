@@ -24,28 +24,26 @@
  * 12-20 focused weeks per world; the full measured punch list lives in
  * docs/world-launch-checklist.md — read it before flipping any world on.
  *
- * `extras` is cross-world companion content, always built alongside the
- * launched story worlds.
+ * The cross-world `extras` dir (23 companion lessons) was removed 2026-08-15
+ * by owner decision; restore pointer in docs/post-launch-backlog.md.
  */
-export const BUILT_WORLD_DIRS = ["deep-orbit", "extras"] as const;
+export const BUILT_WORLD_DIRS = ["deep-orbit"] as const;
 
 export type BuiltWorldDir = (typeof BUILT_WORLD_DIRS)[number];
 
-/** Velite glob form, e.g. `{deep-orbit,extras}`. Derived so it cannot drift. */
-export const BUILT_WORLD_GLOB = `{${BUILT_WORLD_DIRS.join(",")}}`;
-
-/** The launched STORY worlds among the built dirs (excludes `extras`). */
-export const BUILT_STORY_WORLDS = BUILT_WORLD_DIRS.filter(
-  (d) => d !== "extras",
-);
+/**
+ * Velite glob form. Derived so it cannot drift. Brace groups need 2+ members
+ * to expand in minimatch (`{deep-orbit}` alone matches the literal braces and
+ * builds zero lessons), so a single dir is emitted bare.
+ */
+export const BUILT_WORLD_GLOB =
+  BUILT_WORLD_DIRS.length > 1
+    ? `{${BUILT_WORLD_DIRS.join(",")}}`
+    : BUILT_WORLD_DIRS[0];
 
 /**
- * Lessons in the cross-world `extras` dir (classical-ml, math-deep-dive,
- * ethics-responsibility, python-bridge). Not a WorldSlug, so it has no
- * WORLD_SHAPE row; named here so gates summing built lessons across worlds
- * (e.g. end-of-lesson) can add it without hardcoding a corpus total. Pinned to
- * the filesystem by the same gates that count.
+ * The launched STORY worlds among the built dirs. Equal to BUILT_WORLD_DIRS
+ * since the non-story `extras` dir was removed (2026-08-15); kept as a
+ * separate export because gates that sum story lessons import it by name.
  */
-// 21 -> 23 (2026-07-27): math-deep-dive gained statistics-of-signals and
-// eigenvectors-svd-compression (viral-roadmap gap audit).
-export const EXTRAS_LESSON_COUNT = 23;
+export const BUILT_STORY_WORLDS = [...BUILT_WORLD_DIRS];

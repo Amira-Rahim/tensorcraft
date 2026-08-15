@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getApiUrl } from "@/lib/api-url";
 import { EVENTS, track } from "@/lib/analytics-events";
+import { ModulePatch } from "@tensorcraft/ui/module-patch";
 
 function DashboardButton({ primary, bg }: { primary: string; bg: string }) {
   const [hov, setHov] = useState(false);
@@ -120,6 +121,10 @@ interface CertificateCardProps {
   surface: string;
   bg: string;
   stats: Array<{ value: string; label: string }>;
+  /** Earned mission patches, one per module (lib/patch-art.ts). A
+   *  certificate exists only when every module is complete, so the full
+   *  strip is truthful by construction. Empty for worlds without art. */
+  patchSrcs?: string[];
 }
 
 function CertificateCard({
@@ -134,6 +139,7 @@ function CertificateCard({
   surface,
   bg,
   stats,
+  patchSrcs = [],
 }: CertificateCardProps) {
   const [cert, setCert] = useState(initialCertificate);
   const [status, setStatus] = useState<CertStatus>(
@@ -318,6 +324,21 @@ function CertificateCard({
           </span>
         </div>
       </div>
+
+      {/* Earned mission patches, one per module. Decorative: the stats
+          below already carry the numbers. A failed patch renders nothing
+          rather than a broken image (ModulePatch contract). */}
+      {patchSrcs.length > 0 && (
+        <div
+          className="flex flex-wrap gap-2 mb-8"
+          data-testid="cert-patch-strip"
+          aria-hidden="true"
+        >
+          {patchSrcs.map((src) => (
+            <ModulePatch key={src} src={src} size={32} />
+          ))}
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-8">
         {stats.map(({ value, label }) => (

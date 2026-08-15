@@ -25,6 +25,7 @@ export { OrbitCanvas, drawOrbit } from "./orbit-canvas";
 export type { OrbitCanvasProps } from "./orbit-canvas";
 export { SceneCanvas } from "./scene-canvas";
 export type { SceneCanvasProps, SceneDraw } from "./scene-canvas";
+export { drawSignalLock, BOOT_DURATION } from "./signal-lock";
 export {
   drawNeonProtocol,
   drawSignalWard,

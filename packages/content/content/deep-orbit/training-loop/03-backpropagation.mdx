@@ -66,7 +66,7 @@ const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 
 It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; a run the backward pass finishes in minutes stretches past thirty hours. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
 
-<Dialogue speaker="ARIA">
+<Dialogue speaker="ARIA" expression="deadpan">
 Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a cost of roughly two forward passes. It has a name.
 </Dialogue>
 
@@ -113,7 +113,7 @@ Run the marquee algorithm yourself: one call to `tf.variableGrads()`, and prove 
 
 <Exercise slug="backprop-chain" />
 
-<DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand" companionSlug="calculus-of-neurons">
+<DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand">
 **The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a 2-layer network:
 
 ```

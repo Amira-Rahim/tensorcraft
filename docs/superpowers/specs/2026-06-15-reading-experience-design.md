@@ -4,6 +4,10 @@
 **Status:** Approved design, pending implementation plan
 **Scope:** Lesson reading surface. Stream A of a larger lesson-overhaul effort (other streams: end-of-lesson summary/knowledge-check, bridge "breaks" reframe, character personas; each gets its own spec).
 
+> **2026-08-15:** the extras dir was removed with /extras (owner decision).
+> The live lesson surface is deep-orbit (56) only; "deep-orbit + extras
+> (~77)" figures below are historical.
+
 **Build-surface note:** the Velite build only compiles launched theme dirs (`deep-orbit` + `extras`, ~77 lesson MDX files) per `LAUNCHED_THEME_DIRS` in [velite.config.ts](packages/content/velite.config.ts). The other 4 themes' lesson MDX (bringing the on-disk total to ~297) is excluded until those themes launch. So: the layout shell and inline-code CSS are app-global and apply to whatever renders, but the only **live, testable** lesson surface today is deep-orbit + extras. Glossary auto-linking and content therefore target deep-orbit now; rolling glossary content to the other themes is gated on those themes launching (tracked in dev-plan, not a blocker here).
 
 ## Problem

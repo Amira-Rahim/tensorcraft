@@ -10,9 +10,11 @@ import {
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasWorldPurchase, getUserProgress } from "@/lib/progress";
 import { heroPlateSrc } from "@/lib/location-art";
+import { patchSrc, sealSrc } from "@/lib/patch-art";
 import { WorldSceneBackdrop } from "./world-scene-backdrop";
 import { WorldCast } from "./world-cast";
 import { ModuleMapClient } from "./module-map-client";
+import { ModulePatch } from "@tensorcraft/ui/module-patch";
 import { GuestModuleBanner } from "./guest-module-banner";
 import { ComingSoonStub } from "./coming-soon-stub";
 import type { Metadata } from "next";
@@ -206,6 +208,7 @@ export default async function WorldDetailPage({ params }: Props) {
       totalLessons,
       avgScore,
       lessons: lessonItems,
+      patchSrc: patchSrc(slug, mod.slug),
     };
   });
 
@@ -413,9 +416,21 @@ export default async function WorldDetailPage({ params }: Props) {
                 All modules completed; view your capstone &rarr;
               </p>
             </div>
-            <span style={{ color: "var(--tc-primary)", fontSize: 24 }}>
-              &#x25CE;
-            </span>
+            {(() => {
+              const glyph = (
+                <span style={{ color: "var(--tc-primary)", fontSize: 24 }}>
+                  &#x25CE;
+                </span>
+              );
+              const seal = sealSrc(slug);
+              // The world seal marks completion (docs/patch-bible.md); the
+              // ◎ glyph returns if the art is missing or fails.
+              return seal ? (
+                <ModulePatch src={seal} size={40} fallback={glyph} />
+              ) : (
+                glyph
+              );
+            })()}
           </Link>
         </div>
       )}

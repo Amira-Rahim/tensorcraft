@@ -10,7 +10,7 @@ describe("resolveCharacter", () => {
     expect(resolveCharacter("deep-orbit", "Dr. Farah")).toBe(farah);
   });
 
-  it("returns undefined for unregistered speakers (extras' Instructor)", () => {
+  it("returns undefined for unregistered speakers", () => {
     expect(resolveCharacter("deep-orbit", "Instructor")).toBeUndefined();
   });
 

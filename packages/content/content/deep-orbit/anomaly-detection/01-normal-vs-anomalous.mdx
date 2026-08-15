@@ -38,7 +38,7 @@ keywords:
 skillAxes: [model_arch, evaluation]
 ---
 
-<Dialogue speaker="Chief Nazari">
+<Dialogue speaker="Chief Nazari" expression="skeptical">
 Third alert this shift. The first was a loose cable, the second a cosmic ray. Before anyone wakes the Commander a fourth time, someone define "anomalous" in numbers I can put on a checklist.
 </Dialogue>
 
@@ -124,14 +124,14 @@ console.log(isAnomaly(0.55, baseline));  // false: normal
 console.log(isAnomaly(1.82, baseline));  // true: 8.7 sigmas away!`}
 </CodeBlock>
 
-<DerivationDrawer summary="What the 3-sigma rule assumes, and when it lies" companionSlug="statistics-of-signals">
+<DerivationDrawer summary="What the 3-sigma rule assumes, and when it lies">
 **The z-score recipe is a stack of probability claims.** Dividing by the standard deviation and comparing to 3 asserts: readings follow a distribution, that distribution is roughly Gaussian (the bell curve), and its tails put probability 0.0027 beyond 3 sigma. The recipe works exactly as far as those claims hold.
 
 **Why Gaussian is a reasonable default:** the Central Limit Theorem. A reading that sums many small independent physical effects gets pushed toward the bell curve no matter what shape the individual parts have. Sensor noise usually qualifies.
 
 **Two standard ways production data breaks it.** Heavy tails: when rare large effects dominate, 3-sigma events stop being rare and the detector cries wolf. Correlation: channels mounted on the same hull move together, so their noise does not average away and the effective spread is wider than any per-channel std reports.
 
-**Per-channel thresholds also compound.** If each of 64 channels independently trips 5% of the time on calm data, a fully dark board has probability 0.95⁶⁴ ≈ 0.0375: some channels lit is the calm state. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Judge the count of lit channels against that expectation, using the Binomial distribution the companion lesson builds, rather than treating each lit channel as its own alarm.
+**Per-channel thresholds also compound.** If each of 64 channels independently trips 5% of the time on calm data, a fully dark board has probability 0.95⁶⁴ ≈ 0.0375: some channels lit is the calm state. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Judge the count of lit channels against that expectation, rather than treating each lit channel as its own alarm.
 </DerivationDrawer>
 
 ## Precision vs Recall

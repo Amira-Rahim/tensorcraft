@@ -139,7 +139,7 @@ console.log('Pruned + Quantized:      42 MB, 91.8% accuracy');
 console.log('Fits in 512 MB dashboard: YES ✓');`}
 </CodeBlock>
 
-<DerivationDrawer summary="The third compression axis: low-rank structure and SVD" companionSlug="eigenvectors-svd-compression">
+<DerivationDrawer summary="The third compression axis: low-rank structure and SVD">
 **Pruning bets on sparsity; quantization bets on precision. The third bet is rank.** A weight matrix of shape [512, 512] holds 262,144 numbers, but if its rank is effectively 40, those numbers are redundant: the matrix is 40 independent directions dressed up as 512.
 
 **Singular Value Decomposition makes the bet precise.** Any matrix factors as `W = U · Σ · Vᵀ`: rotate, scale along principal directions, rotate again. The scale factors (singular values) come out sorted, and in trained networks they usually decay fast: a few large directions carry the transformation, a long tail contributes noise. Truncate to the top k and the factors `U[:, :k] · Σ[:k] · V[:, :k]ᵀ` store `k · (512 + 512 + 1)` numbers instead of 262,144. At k = 40 that is 41,000 numbers, a 6.4x cut on that layer, with reconstruction error bounded by the singular values you dropped.
@@ -169,7 +169,7 @@ Prune weights and measure the accuracy impact.
 
 42 MB. The combined build sits on the staging dashboard next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
 
-<Dialogue speaker="Dr. Farah">
+<Dialogue speaker="Dr. Farah" expression="absorbed">
 We bought 298 megabytes for 2.4 points of accuracy. Before I trust the trade, I want to know which signals live in those 2.4 points. Run every rejected classification back through the full model overnight.
 </Dialogue>
 

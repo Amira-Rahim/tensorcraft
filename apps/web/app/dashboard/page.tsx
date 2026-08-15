@@ -11,6 +11,8 @@ import {
 } from "@tensorcraft/content";
 import { LAUNCHED_WORLDS, isLaunched, isComingSoon } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { surfacePlateSrc } from "@/lib/location-art";
+import { patchSrc } from "@/lib/patch-art";
 import { hasWorldPurchase } from "@/lib/progress";
 import { getEntitledWorlds } from "@/lib/entitlements";
 import type { Metadata } from "next";
@@ -206,6 +208,7 @@ export default async function DashboardPage() {
       score,
       formula: mod.description?.slice(0, 20) ?? "",
       slug: mod.slug,
+      patchSrc: patchSrc(activeWorld.slug, mod.slug),
     };
   });
 
@@ -403,6 +406,7 @@ export default async function DashboardPage() {
       avatarUrl={avatarUrl}
       worldName={activeWorld.displayName}
       worldSlug={activeWorld.slug}
+      plateSrc={surfacePlateSrc(activeWorld.slug, "dashboard")}
       modules={dashModules}
       currentModule={currentModuleInfo}
       worldProgressPercent={worldProgressPercent}

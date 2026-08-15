@@ -9,7 +9,6 @@ export {
   BUILT_WORLD_DIRS,
   BUILT_WORLD_GLOB,
   BUILT_STORY_WORLDS,
-  EXTRAS_LESSON_COUNT,
 } from "./built-worlds";
 export type { BuiltWorldDir } from "./built-worlds";
 

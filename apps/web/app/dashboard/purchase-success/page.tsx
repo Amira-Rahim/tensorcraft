@@ -5,6 +5,8 @@ import { getModules } from "@tensorcraft/content";
 import { worlds } from "@tensorcraft/worlds";
 import { DEFAULT_WORLD, isLaunched } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
+import { ArtPlate } from "@tensorcraft/ui/art-plate";
+import { surfacePlateSrc } from "@/lib/location-art";
 import type { Metadata } from "next";
 import { PurchaseAnalytics } from "./purchase-analytics";
 import { PendingPoller } from "./pending-poller";
@@ -211,6 +213,18 @@ export default async function PurchaseSuccessPage({
             planId={purchase.plan_id}
             amount={purchase.amount}
           />
+        )}
+
+        {/* Engineering bay plate: systems online. Confirmed purchases only —
+            the pending and failed states keep their unadorned layout. The
+            plate is decorative and optional (ArtPlate renders nothing on a
+            missing asset). */}
+        {purchase && surfacePlateSrc(firstWorldSlug, "purchase-success") && (
+          <div className="mb-10" aria-hidden="true">
+            <ArtPlate
+              src={surfacePlateSrc(firstWorldSlug, "purchase-success")!}
+            />
+          </div>
         )}
 
         {/* ── Access Card ──────────────────────────── */}

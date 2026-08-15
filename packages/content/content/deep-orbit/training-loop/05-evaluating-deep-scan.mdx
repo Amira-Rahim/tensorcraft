@@ -39,7 +39,7 @@ keywords:
 skillAxes: [training, evaluation]
 ---
 
-<Dialogue speaker="Commander Mirza">
+<Dialogue speaker="Commander Mirza" expression="resolved">
 Run the evaluation suite. I want real numbers on signals the network has never seen.
 </Dialogue>
 
@@ -165,9 +165,9 @@ Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26
 **ROC and PR curves.** Sweep the threshold and plot the results: a precision-recall (PR) curve shows precision against recall, and an ROC (receiver operating characteristic) curve shows the true-positive rate (the recall you just computed) against the false-positive rate, the fraction of calm rows falsely flagged. One accuracy number from one threshold hides both curves.
 </DerivationDrawer>
 
-One number in that table deserves suspicion before anyone celebrates: precision 1.000 was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. An eval set built to be balanced instead of drawn from production is selection bias in miniature; the Dataset Bias lesson in the Ethics & Responsible AI extras covers where else that trap hides.
+One number in that table deserves suspicion before anyone celebrates: precision 1.000 was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. An eval set built to be balanced instead of drawn from production is selection bias in miniature.
 
-<DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates" companionSlug="probability-and-bayes">
+<DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates">
 **Precision belongs to the detector plus the world it runs in.** Sensitivity and false-positive rate are properties of the model alone. Precision also depends on how common anomalies are in the data you run it on, and the held-out slice (26 anomalous, 24 calm) was assembled to be near balanced. Live hull telemetry is overwhelmingly calm.
 
 **Bayes' theorem converts between the two.** The number the bridge actually needs is P(anomaly | alarm), read as: the probability an anomaly is really there, given that the alarm fired. The bar means "given that", not "or". An alarm can happen two ways, a caught anomaly or a false positive:

@@ -196,8 +196,11 @@ memory was refuted by that audit: `pnpm audit` clean.)
   Signal DIAGNOSTIC-ONE (MIMIC-III + ClinicalBERT), Nova STUDIO-ONE (CelebA),
   Terra METEOR (ERCOT).
 - **Slice C leftovers (game-theory spine):**
-  - [ ] SHAP cross-link in `<StrategyThread>`: needs a public route for
-    `extras/*` content (cheaper) or moving SHAP into a launched world.
+  - [ ] SHAP cross-link in `<StrategyThread>`: the SHAP lesson
+    (extras/ethics-responsibility/03-model-interpretability) was removed
+    with /extras on 2026-08-15 (see §"/extras removal" below). Doing this
+    now means restoring the lesson from commit `0b5ec6d` and placing it in
+    a launched world.
   - [ ] Auction lesson (Terra Grid, Vickrey; FE bridge: CSS specificity wars).
   - [ ] Stackelberg reframe of adversarial patches (Neon Protocol).
   - [ ] RLHF preference-learning reframe (Signal Ward).
@@ -244,9 +247,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
     each set stays itself across the corpus. Alt text is in lesson
     frontmatter. Gates C and D cleared; `docs/scene-bible.md` holds the
     entries, the production log and the prompt rules the gates taught.
-  - [ ] Content pass annotating `expression="..."` on high-value Dialogue
-    blocks (the gate and all 16 assets are live, so annotations take effect
-    the moment they are authored).
+  - [x] Content pass annotating `expression="..."` on high-value Dialogue
+    blocks (SHIPPED 2026-08-15): 45 annotations across the 176-tag corpus
+    (~1 in 4; sparse by rule), stage direction as the primary signal. The
+    gate now also pins that at least one annotation exists, so a stripping
+    sweep fails loudly.
+  - [x] **Art expansion spine** (SHIPPED 2026-08-15, spec
+    `docs/superpowers/specs/2026-08-15-art-expansion-spine-design.md`):
+    the three orphaned location plates wired (`surfacePlateSrc`: dashboard
+    sidebar station feed, auth left-pane ground + scrim, purchase-success
+    confirmed state); learner avatar on the certificate share page
+    (initials monogram fallback); OG cards composite the world's hero
+    plate (`ingest.mjs og` emits JPEG derivatives — satori does not decode
+    WebP dependably) with a `cert` kind for certificate shares; **11
+    mission patches + world seal** (`docs/patch-bible.md`, `ModulePatch`
+    earned-only on dashboard/module map/capstone/certificate, all-or-none
+    coverage gate in `packages/content`). Canons in
+    `docs/art-refs/deep-orbit/patches/`. Generation ~$1 FLUX.2 [pro].
+  - [ ] Module-complete award moment: an animation the instant the last
+    lesson of a module completes, revealing the mission patch (deferred
+    from the 2026-08-15 spine: needs module-completion state inside the
+    lesson page, which does not exist; patches currently appear on the
+    dashboard and maps on next visit).
   - [ ] The other 20 character sheets (Neon / Signal / Nova / Terra) +
     world wiring + their scene art: gated on those worlds launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in
@@ -315,13 +337,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] neon-protocol has 54 MDX files vs the 55 that
     `WORLD_CONTENT.comingSoonLessonsPerWorld` promises (`image-data` has
     4); add a test pinning coming-soon counts.
-  - [x] ~~PCA/SVD deep-dive~~ SHIPPED EARLY (2026-07-27) as shared
-    `extras/math-deep-dive/08-eigenvectors-svd-compression` (companion to
-    optimization-edge, drawer entry in 03-pruning), since extras are
-    cross-world and Deep Orbit had its own hook. Remaining world-2 slice:
-    when neon-protocol's feature-extraction module launches, add a
-    DerivationDrawer entry point from its embeddings lessons to the same
-    deep-dive (no new authoring).
+  - [ ] ~~PCA/SVD deep-dive~~ shipped early 2026-07-27 as shared
+    `extras/math-deep-dive/08-eigenvectors-svd-compression`, then removed
+    2026-08-15 with /extras (see §"/extras removal" below). The world-2
+    slice is back to real authoring: when neon-protocol's
+    feature-extraction module launches, restore the deep-dive from commit
+    `0b5ec6d` into that world (the DerivationDrawer companion-link feature
+    was also removed and would need rebuilding, or inline the derivation).
 
 ## 6. Big deferred bets
 
@@ -342,6 +364,19 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 7. Platform + infra deferrals
 
+- [ ] Effects test-infra hardening deferred from the 2026-08-15
+  signal-lock review (pricing curriculum cinematic): (a) capture
+  `globalAlpha` in the recording-canvas style snapshots; deferred because
+  it changes the `RecordedStyles` shape and invalidates every golden
+  style SHA (a deliberate re-goldening exercise, fresh off the
+  arch-sensitivity canonicalization). Until then the crossfade alpha
+  channel in `signal-lock.ts` is covered by geometry tests only. (b) Lock
+  `RING_RADII` (signal-lock.ts) against `ORBIT_RINGS` (orbit-canvas.tsx)
+  drift, which likely means exporting the radii or extracting a shared
+  scene-math module for the duplicated `hash()`/`wash()` helpers while
+  there. (c) `hexToRgb` now has eight copies across apps/web (a canonical
+  export exists in `packages/worlds/src/wcag.ts`); consolidate as one
+  sweep.
 - [ ] Real background job queue (Upstash QStash / Fly Machines cron) for
   large digest backlogs; deferred until job-queue infra is chosen.
 - [ ] Integration / visual-regression / perf test suites against real
@@ -536,3 +571,41 @@ with no checkbox anywhere until now.
 - [ ] `exercise_attempts` unbounded: 100KB `submitted_code`, no dedup, no
   retention policy; ~6MB/min achievable per user. Add retention + size
   caps.
+
+## /extras removal (2026-08-15)
+
+Owner decision, executed 2026-08-15: the /extras surface and its content were
+removed in full. Plan + execution ledger:
+`docs/superpowers/plans/2026-08-15-extras-removal.md`.
+
+**What was removed**
+
+- Routes: `/extras` index + `/extras/[module]/[lesson]` (24 indexed URLs, now
+  404; sitemap entries dropped, no redirects, matching the blog-post
+  precedent).
+- Content: `packages/content/content/extras/` — 23 lessons across 4 modules
+  (math-deep-dive 8, classical-ml 5, ethics-responsibility 5, python-bridge
+  5), their 4 module.yaml files and 23 exercise YAMLs (with hint ladders).
+- Links: site-footer "Extras" link, the /pricing free-tier "23 bonus
+  deep-dive lessons" bullet, and the 13 DerivationDrawer companion links in
+  deep-orbit lessons. The drawer `companionSlug`/`companionHref` props were
+  removed from `@tensorcraft/ui` (drawers keep their inline derivations).
+- Pins/constants: `EXTRAS_LESSON_COUNT` (deleted),
+  `EXERCISE_CONTENT.liveExercises` 88 → 65, Gate B hint-case pin 79 → 56,
+  `BUILT_WORLD_DIRS` back to `["deep-orbit"]`.
+
+**Consequences accepted**
+
+- Free tier is Module 1 (5 lessons) only.
+- The §4.10 roadmap-response marketing asset is BLOCKED (its topic map used
+  the deep-dive track as its spine; see `docs/marketing-plan.md`).
+- Curriculum no longer covers classical ML, ethics, math derivations, or the
+  Python bridge anywhere.
+
+**Restore pointer**
+
+Everything exists at commit `0b5ec6d` (last commit before removal):
+`git show 0b5ec6d:packages/content/content/extras/...` or
+`git checkout 0b5ec6d -- packages/content/content/extras`. Restoring content
+into a world also needs the count pins above walked forward and, for
+companion links, the drawer link feature rebuilt.

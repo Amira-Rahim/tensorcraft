@@ -27,7 +27,6 @@ const STATIC_ROUTES = new Set([
   "/blog",
   "/about",
   "/worlds",
-  "/extras",
   "/auth",
   "/terms",
   "/privacy",

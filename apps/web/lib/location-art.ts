@@ -21,3 +21,28 @@ export function heroPlateSrc(worldSlug: string): string | undefined {
   const location = HERO_PLATE[worldSlug];
   return location ? `/locations/${worldSlug}/${location}.webp` : undefined;
 }
+
+export type PlateSurface = "dashboard" | "auth" | "purchase-success";
+
+/**
+ * The location that stands for each app surface, matched to what the surface
+ * is: the dashboard gets the monitoring alcove it is named for, auth gets the
+ * lab, the purchase receipt gets engineering. Same typo defence as
+ * HERO_PLATE: an unknown world or surface resolves to undefined and the
+ * consumer keeps its art-less render.
+ */
+const SURFACE_PLATE: Record<string, Partial<Record<PlateSurface, string>>> = {
+  "deep-orbit": {
+    dashboard: "dashboard-station",
+    auth: "lab",
+    "purchase-success": "engineering",
+  },
+};
+
+export function surfacePlateSrc(
+  worldSlug: string,
+  surface: PlateSurface,
+): string | undefined {
+  const location = SURFACE_PLATE[worldSlug]?.[surface];
+  return location ? `/locations/${worldSlug}/${location}.webp` : undefined;
+}

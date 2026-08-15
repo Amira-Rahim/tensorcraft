@@ -168,12 +168,14 @@ export const WORLD_CONTENT = {
  * claiming "80 live / 315 authored" when the corpus held 84 / 298.
  */
 export const EXERCISE_CONTENT = {
-  /** Shipped exercises: deep-orbit + extras (the dirs velite compiles). */
+  /** Shipped exercises: the dirs velite compiles (deep-orbit only). */
   // 85 -> 86 (2026-07-25): T3-34 added capstone/export-model-artifact so the
   // "walk out with a deployable model" claim has a .save() exercise behind it.
   // 86 -> 88 (2026-07-27): math-deep-dive gained signal-statistics and
   // power-iteration alongside the two new deep-dive lessons.
-  liveExercises: 88,
+  // 88 -> 65 (2026-08-15): /extras removed (owner decision); its 23
+  // exercises went with it.
+  liveExercises: 65,
   /** Authored across the five world directories (extras excluded). */
   // 299 -> 300 (2026-07-25): same addition, counted in deep-orbit.
   authoredFiveWorlds: 300,

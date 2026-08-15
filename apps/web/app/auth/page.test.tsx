@@ -75,6 +75,18 @@ describe("AuthPage, Phase 11 §11d Wave 1 split layout", () => {
     expect(screen.getByTestId("orbit-canvas-stub")).toBeTruthy();
   });
 
+  it("left pane grounds on the lab plate with the canvas as its reflection", () => {
+    render(<AuthPage />);
+    const left = screen.getByTestId("auth-left-pane");
+    const plate = left.querySelector('img[data-testid="art-plate"]');
+    expect(plate?.getAttribute("src")).toBe("/locations/deep-orbit/lab.webp");
+    // Over dark art the canvas is the reflection on the glass, not the scene
+    // (WorldSceneBackdrop precedent).
+    expect(screen.getByTestId("orbit-canvas-stub").className).toContain(
+      "opacity-50",
+    );
+  });
+
   it("does NOT import or render any LossLandscape component (deferred §11b)", () => {
     const { container } = render(<AuthPage />);
     expect(container.innerHTML).not.toMatch(/LossLandscape/i);

@@ -57,7 +57,15 @@ for (let i = 0; i < argv.length; i++) {
 }
 
 const PROVIDERS = ["openai", "fal"];
-const PHASES = ["bakeoff", "neutrals", "expressions", "masters", "scenes"];
+const PHASES = [
+  "bakeoff",
+  "neutrals",
+  "expressions",
+  "masters",
+  "scenes",
+  "patches",
+  "seals",
+];
 if (!PROVIDERS.includes(args.provider)) die(`--provider must be one of ${PROVIDERS.join("|")}`);
 if (!PHASES.includes(args.phase)) die(`--phase must be one of ${PHASES.join("|")}`);
 if (!args.id) die("--id <slug> is required (output name stem)");

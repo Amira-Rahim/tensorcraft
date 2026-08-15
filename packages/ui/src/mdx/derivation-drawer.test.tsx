@@ -76,44 +76,4 @@ describe("DerivationDrawer", () => {
     fireEvent.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
   });
-
-  it("renders companion link from companionSlug when open", () => {
-    render(
-      <DerivationDrawer summary="x" companionSlug="calculus-of-neurons">
-        <p>body</p>
-      </DerivationDrawer>,
-    );
-    fireEvent.click(screen.getByRole("button"));
-    const link = screen.getByRole("link", { name: /companion deep dive/i });
-    expect(link.getAttribute("href")).toBe(
-      "/extras/math-deep-dive/calculus-of-neurons",
-    );
-  });
-
-  it("companionHref override takes precedence over companionSlug", () => {
-    render(
-      <DerivationDrawer
-        summary="x"
-        companionSlug="ignored"
-        companionHref="/custom/path"
-      >
-        <p>body</p>
-      </DerivationDrawer>,
-    );
-    fireEvent.click(screen.getByRole("button"));
-    const link = screen.getByRole("link", { name: /companion deep dive/i });
-    expect(link.getAttribute("href")).toBe("/custom/path");
-  });
-
-  it("omits companion link when neither slug nor href provided", () => {
-    render(
-      <DerivationDrawer summary="x">
-        <p>body</p>
-      </DerivationDrawer>,
-    );
-    fireEvent.click(screen.getByRole("button"));
-    expect(
-      screen.queryByRole("link", { name: /companion deep dive/i }),
-    ).toBeNull();
-  });
 });

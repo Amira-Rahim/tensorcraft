@@ -13,6 +13,7 @@ import { test, expect } from "@playwright/test";
 const SURFACES = [
   { name: "landing Five Worlds band", path: "/" },
   { name: "Deep Orbit world page", path: "/worlds/deep-orbit" },
+  { name: "auth left pane", path: "/auth/sign-in" },
 ];
 
 for (const surface of SURFACES) {
@@ -39,6 +40,23 @@ for (const surface of SURFACES) {
     await expect(page.getByTestId("art-plate").first()).toBeAttached();
   });
 }
+
+test("a dead patch route leaves no broken emblem on the world page", async ({
+  page,
+}) => {
+  // Same SSR-settles-before-hydration timing as the plates, through
+  // ModulePatch: with the patch route dead, every emblem yields to its
+  // fallback node and nothing broken stays in the DOM.
+  await page.route("**/patches/**", (route) => route.abort());
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+
+  await page.goto("/worlds/deep-orbit");
+  await page.waitForLoadState("networkidle");
+
+  await expect(page.getByTestId("module-patch")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
 
 test("the plate sits under the canvas, not over it", async ({ page }) => {
   await page.goto("/worlds/deep-orbit");

@@ -4,6 +4,10 @@
 **Status:** Approved design, pending implementation plan
 **Scope:** The lesson close (Takeaways step). Stream B of the lesson-overhaul effort. Builds on the reading-experience stream (the Takeaways step already renders a left column + a right rail with the glossary recap + progress).
 
+> **2026-08-15:** the extras dir (then 21, later 23 lessons) was removed with
+> /extras (owner decision). "Built lessons" is deep-orbit's 56 only; the
+> 77-lesson figures below are historical.
+
 ## Problem
 
 The lesson close has two weaknesses:

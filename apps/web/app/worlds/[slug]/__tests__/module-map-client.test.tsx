@@ -123,6 +123,28 @@ describe("ModuleMapClient", () => {
     expect(screen.getByTestId("lesson-icon-available")).toHaveTextContent("○");
   });
 
+  it("shows the mission patch on a completed module, never on others", () => {
+    const done = makeModule({
+      slug: "foundations",
+      status: "completed",
+      patchSrc: "/patches/deep-orbit/foundations.webp",
+    });
+    const active = makeModule({
+      slug: "neural-networks",
+      title: "Neural Networks",
+      order: 2,
+      status: "active",
+      patchSrc: "/patches/deep-orbit/neural-networks.webp",
+    });
+    render(<ModuleMapClient {...defaultProps} modules={[done, active]} />);
+
+    const patches = screen.getAllByTestId("module-patch");
+    expect(patches).toHaveLength(1);
+    expect(patches[0]!.getAttribute("src")).toBe(
+      "/patches/deep-orbit/foundations.webp",
+    );
+  });
+
   it("renders a locked icon for locked lessons in active modules", () => {
     render(<ModuleMapClient {...defaultProps} />);
     // makeModule default: l2 is locked, module is active

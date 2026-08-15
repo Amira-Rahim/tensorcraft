@@ -42,7 +42,7 @@ skillAxes: [model_arch]
 
 The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the post-mortem finds the reason inside the window: a warning ripple at step 4 that the LSTM had all but forgotten by step 80. The information was there. The architecture diluted it.
 
-<Dialogue speaker="Dr. Farah">
+<Dialogue speaker="Dr. Farah" expression="absorbed">
 That ripple entered the hidden state at step 4 and got averaged into seventy-six steps of noise before the pulse formed. Sequential is the problem: the LSTM cannot skip ahead, and it cannot hold step 4 at full strength while it walks to step 80. What we need is a direct connection between any two steps: attention. It looks at all steps simultaneously and spends its focus where the evidence is.
 </Dialogue>
 

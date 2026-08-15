@@ -32,12 +32,12 @@ import {
 
 /**
  * `CONTENT_DIR` from audit-structure-variety.mjs is hardcoded to deep-orbit,
- * so every gate built on it is blind to `extras/`. That blindness is not
- * theoretical: it is why 3 em dashes survived the app-wide sweep in extras,
- * and why run #6 was the first to notice that extras/math-deep-dive defines
- * cross-entropy as KL divergence.
+ * so every gate built on it was blind to the (since-removed) `extras/` dir.
+ * That blindness was not theoretical: it is why 3 em dashes survived the
+ * app-wide sweep in extras, and why run #6 was the first to notice that
+ * extras/math-deep-dive defined cross-entropy as KL divergence.
  *
- * Velite ships `{deep-orbit,extras}` (velite.config.ts LAUNCHED_WORLD_DIRS).
+ * Velite ships BUILT_WORLD_GLOB (velite.config.ts LAUNCHED_WORLD_DIRS).
  * Anything a customer can load, these gates check.
  */
 const CONTENT_ROOT = dirname(CONTENT_DIR);
@@ -332,7 +332,9 @@ function hintStatements(hint: string): string[] {
  */
 // 77 -> 79 (2026-07-27): math-deep-dive gained statistics-of-signals and
 // eigenvectors-svd-compression, each with a solution ladder.
-const EXPECTED_SOLUTION_HINTS = 79;
+// 79 -> 56 (2026-08-15): /extras removed (owner decision); its 23 exercise
+// ladders went with it.
+const EXPECTED_SOLUTION_HINTS = 56;
 
 /**
  * Flattening signatures the parser cannot rule on (see layer 2 above).

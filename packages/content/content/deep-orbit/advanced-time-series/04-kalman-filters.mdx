@@ -126,7 +126,7 @@ for (const m of measurements) {
 // SHRINKING by roughly a sixth of a second per day. Speeding up.`}
 </CodeBlock>
 
-<DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance" companionSlug="probability-and-bayes">
+<DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance">
 The update blends prediction and measurement: `estimate = prediction + K(z - prediction)`. Why THAT K and not a hand-picked alpha? Because K is the value that minimizes the variance of the blended estimate.
 
 ```
@@ -173,7 +173,7 @@ Implement a Kalman filter and track the anomaly timing.
 
 Eight days, one first-cycle measurement each; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4, shrinking roughly a sixth of a second per day. Farah brings the filter's output to the bridge before dawn, and the variance is small enough that nobody argues with it. The confidence band no longer includes "steady." Mirza holds the printout a long moment and does not ask what happens when the interval reaches zero; everyone on the bridge does that arithmetic on their own.
 
-<Dialogue speaker="Commander Mirza">
+<Dialogue speaker="Commander Mirza" expression="resolved">
 Wake Nazari. Transmission contingencies and a hard-burn plot on my console by 0800.
 </Dialogue>
 

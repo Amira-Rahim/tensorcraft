@@ -55,7 +55,7 @@ export const styleCaptureSha = (styles: RecordedStyles): string =>
 
 export interface RecordedGeometry {
   arcs: [number, number, number][];
-  ellipses: [number, number, number, number][];
+  ellipses: [number, number, number, number, number, number, number][];
   lines: [number, number][];
   curves: [number, number, number, number][];
   rects: [number, number, number, number][];
@@ -180,8 +180,16 @@ export function recordingCtx(): {
     arc: (x: number, y: number, r: number) => {
       rec.arcs.push([x, y, r]);
     },
-    ellipse: (x: number, y: number, rx: number, ry: number) => {
-      rec.ellipses.push([x, y, rx, ry]);
+    ellipse: (
+      x: number,
+      y: number,
+      rx: number,
+      ry: number,
+      rot: number,
+      a0: number,
+      a1: number,
+    ) => {
+      rec.ellipses.push([x, y, rx, ry, rot, a0, a1]);
     },
     moveTo: (x: number, y: number) => {
       rec.lines.push([x, y]);

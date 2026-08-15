@@ -71,12 +71,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${BASE_URL}/extras`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
       url: `${BASE_URL}/terms`,
       lastModified: new Date(),
       changeFrequency: "yearly",
@@ -154,21 +148,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       })),
     );
 
-  // Extras lessons (math-deep-dive + classical-ml + ethics + python-bridge)
-  const extrasRoutes: MetadataRoute.Sitemap = getWorldLessons("shared").map(
-    (lesson) => ({
-      url: `${BASE_URL}/extras/${lesson.moduleId}/${lesson.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.55,
-    }),
-  );
-
-  return [
-    ...staticRoutes,
-    ...worldRoutes,
-    ...capstoneRoutes,
-    ...lessonRoutes,
-    ...extrasRoutes,
-  ];
+  return [...staticRoutes, ...worldRoutes, ...capstoneRoutes, ...lessonRoutes];
 }

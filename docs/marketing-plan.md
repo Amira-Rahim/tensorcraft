@@ -422,7 +422,7 @@ Create a library of shareable visual assets that illustrate the FE-to-ML bridge 
 
 ## 4.10 Roadmap-Response Content (added 2026-07-27)
 
-> **Status: READY TO EXECUTE.** In scope for the V0.5 organic channels (blog + dev.to + email; X thread when the X push activates). The content prerequisite was closed on 2026-07-27: every topic in the reference roadmap now has a live lesson or deep-dive (see the map below), verified by a full coverage audit.
+> **Status: BLOCKED (2026-08-15).** The 2026-07-27 coverage prerequisite ("every topic has a live lesson or deep-dive") was closed by the extras track, and /extras was removed on 2026-08-15 (owner decision; restore pointer in `docs/post-launch-backlog.md` §"/extras removal"). Rows in the map below that cite "Deep dive N", "Classical ML extras", or "Ethics extras" no longer have destinations; main-lesson and drawer citations still hold (drawers keep their inline derivations). Executing this play now requires either restoring that content into a launched world or redesigning the asset around deep-orbit-only coverage.
 
 ### The signal
 
@@ -433,7 +433,7 @@ On 2026-01-16, a plain-text X article titled "The Math Needed for AI/ML (Complet
 
 ### The play
 
-Publish a standing **response asset**: "That viral ML math roadmap, except every topic is a running TypeScript lesson." It does not attack the roadmap format; it completes it. Roadmaps tell you *what* to learn and leave you alone with a textbook list. Our response hands the reader the same list where every line links to a lesson in which the concept is *used in code they can run in the browser*, with the math available on demand (derivation drawers + the math-deep-dive companion track).
+Publish a standing **response asset**: "That viral ML math roadmap, except every topic is a running TypeScript lesson." It does not attack the roadmap format; it completes it. Roadmaps tell you *what* to learn and leave you alone with a textbook list. Our response hands the reader the same list where every line links to a lesson in which the concept is *used in code they can run in the browser*, with the math available on demand (derivation drawers; the math-deep-dive companion track was removed 2026-08-15).
 
 - **Primary asset:** blog post at `packages/content/content/blog/` ("The ML math roadmap, as running code"), structured as the topic map below with 2-3 sentences per topic on where it shows up in a working model. Free-module and guest-funnel links throughout; guest capture is already live.
 - **Derivatives:** dev.to cross-post (canonical to blog), an X thread version pinned during roadmap-virality windows, and one bridge graphic per §4.9 spec ("roadmap says: eigenvalues / Tensorcraft says: here is why your training run diverges").
@@ -442,7 +442,7 @@ Publish a standing **response asset**: "That viral ML math roadmap, except every
 
 ### The topic map (the asset's spine)
 
-Verified complete on 2026-07-27. "Deep dive" = `extras/math-deep-dive`; every deep dive is linked from a main lesson via a derivation drawer, so each row has both a "use it" and an "understand it" destination.
+Coverage record as verified 2026-07-27, when "Deep dive" = `extras/math-deep-dive` and every deep dive was drawer-linked from a main lesson. Since the 2026-08-15 extras removal the extras/deep-dive destinations no longer exist; the map is kept as the coverage-gap ledger for any future rebuild.
 
 | Roadmap topic | Where Tensorcraft teaches it |
 |---|---|

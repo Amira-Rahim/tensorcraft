@@ -47,7 +47,6 @@ function dialogueTags(files: string[]): DialogueTag[] {
 }
 
 const deepOrbitTags = dialogueTags(lessonMdx(path.join(ROOT, "deep-orbit")));
-const extrasTags = dialogueTags(lessonMdx(path.join(ROOT, "extras")));
 
 function characterFor(speaker: string | undefined) {
   if (!speaker) return undefined;
@@ -59,6 +58,13 @@ function characterFor(speaker: string | undefined) {
 describe("dialogue expression annotations (deep-orbit)", () => {
   it("found the dialogue corpus (guards the tag regex)", () => {
     expect(deepOrbitTags.length).toBeGreaterThan(100);
+  });
+
+  it("the annotation pass is present in the corpus", () => {
+    // The 2026-08-15 pass activated the shipped expression variants. A
+    // sweep that strips the attributes would pass the per-annotation checks
+    // vacuously; this pins the feature as in-use.
+    expect(deepOrbitTags.some((t) => t.expression !== undefined)).toBe(true);
   });
 
   it("every annotated expression belongs to the speaker's manifest set", () => {
@@ -74,17 +80,5 @@ describe("dialogue expression annotations (deep-orbit)", () => {
         `${tag.file}: "${tag.expression}" is not a canonical expression of ${ch!.name}`,
       ).toContain(tag.expression);
     }
-  });
-});
-
-describe("dialogue expression annotations (extras)", () => {
-  it("extras dialogue carries no expression attributes", () => {
-    // Extras speak through the unregistered "Instructor" voice, which has no
-    // manifest character and therefore no expression set to validate against.
-    const annotated = extrasTags.filter((t) => t.expression !== undefined);
-    expect(
-      annotated.map((t) => t.file),
-      "extras lessons must not annotate expressions",
-    ).toEqual([]);
   });
 });

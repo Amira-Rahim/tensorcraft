@@ -166,10 +166,10 @@ function evaluateEnsemble(
 }`}
 </CodeBlock>
 
-<DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor" companionSlug="statistics-of-signals">
+<DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor">
 **The sqrt(N) claim above has fine print, and the fine print is one formula.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.
 
-**Variance of a sum runs through covariance.** For two variables, `Var(x + y) = Var(x) + Var(y) + 2·Cov(x, y)`; the covariance term measures how the two move together (the companion lesson builds it from paired samples). Write each pairwise covariance through the correlation `ρ = Cov(eᵢ, eⱼ) / σ²`. Summing the N member errors picks up one `σ²` per member plus one `ρσ²` per ordered pair, and there are `N(N-1)` ordered pairs:
+**Variance of a sum runs through covariance.** For two variables, `Var(x + y) = Var(x) + Var(y) + 2·Cov(x, y)`; the covariance term measures how the two move together. Write each pairwise covariance through the correlation `ρ = Cov(eᵢ, eⱼ) / σ²`. Summing the N member errors picks up one `σ²` per member plus one `ρσ²` per ordered pair, and there are `N(N-1)` ordered pairs:
 
 `Var(sum of the N errors) = Nσ² + N(N-1)·ρσ²`
 
@@ -204,7 +204,7 @@ Build a weighted ensemble from multiple model predictions.
 
 Farah leaves the ensemble extrapolating overnight: LSTM, attention, Kalman, all three projecting the interval forward from 72.4 seconds. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
 
-<Dialogue speaker="ARIA">
+<Dialogue speaker="ARIA" expression="deadpan">
 I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to four significant figures; I can supply eleven. You did not request this precision. I had it available.
 </Dialogue>
 

@@ -31,13 +31,7 @@ import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
 const CONTENT_ROOT = dirname(CONTENT_DIR);
 
 /** file (relative to content root) -> patterns allowed there, with reasons */
-const ALLOWLIST: Record<string, RegExp[]> = {
-  // "Math Deep Dive" is the established, user-visible extras module title
-  // (shipped 2026-07-27); the noun phrase names the product, not filler.
-  "extras/math-deep-dive/module.yaml": [
-    /\b(let['’]s dive|deep dive|dive deep)\b/i,
-  ],
-};
+const ALLOWLIST: Record<string, RegExp[]> = {};
 
 type Pattern = { name: string; re: RegExp };
 

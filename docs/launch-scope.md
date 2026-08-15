@@ -67,7 +67,7 @@ document is the source of truth.
 | Sitemap | All world/lesson/capstone routes | Launched-only for lesson/capstone; unlaunched only at `/worlds/{slug}` |
 | Layout JSON-LD | All 5 Course offers as InStock | Deep Orbit InStock; other 4 PreOrder |
 | Backend payment validators | Accept any valid world slug | Reject anything not in LAUNCHED_WORLDS |
-| Velite collections | All 5 world dirs | `{deep-orbit,extras}` only |
+| Velite collections | All 5 world dirs | `deep-orbit` only (was `{deep-orbit,extras}` until extras' removal 2026-08-15) |
 
 ## What is NOT in this revert (out of scope)
 

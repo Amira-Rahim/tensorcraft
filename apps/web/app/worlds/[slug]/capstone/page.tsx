@@ -10,6 +10,7 @@ import {
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserProgress } from "@/lib/progress";
+import { patchSrc } from "@/lib/patch-art";
 import { getEntitledWorlds } from "@/lib/entitlements";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { CapstoneClient } from "./capstone-client";
@@ -556,6 +557,9 @@ export default async function CapstonePage({ params }: Props) {
           surface={P.surface}
           bg={P.bg}
           stats={certificateStats}
+          patchSrcs={modules
+            .map((m) => patchSrc(slug, m.slug))
+            .filter((src): src is string => Boolean(src))}
         />
 
         {/* Next world teaser */}
