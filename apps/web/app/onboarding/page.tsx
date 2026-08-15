@@ -32,7 +32,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { WORLD_CONTENT } from "@tensorcraft/shared";
+import { WORLD_CONTENT, DEFAULT_WORLD } from "@tensorcraft/shared";
+import { ArtPlate } from "@tensorcraft/ui/art-plate";
+import { surfacePlateSrc } from "@/lib/location-art";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { trackWorldSelected } from "@/lib/analytics";
 import { EVENTS, track } from "@/lib/analytics-events";
@@ -82,6 +84,10 @@ const LEARNING_GOALS = [
 type LearningGoal = (typeof LEARNING_GOALS)[number]["id"];
 
 const STEPS = ["Welcome", "Background", "Goal", "Ready"] as const;
+
+// The Ready step's establishing shot (lib/location-art.ts). Onboarding is
+// world-agnostic today: it hands every learner to the default world.
+const READY_PLATE_SRC = surfacePlateSrc(DEFAULT_WORLD, "onboarding");
 type StepIndex = 0 | 1 | 2 | 3;
 
 // ---------------------------------------------------------------------------
@@ -770,7 +776,19 @@ function ReadyStep(props: {
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
         LAUNCH SEQUENCE
       </div>
-      <div className="font-mono text-5xl text-primary mb-4">◎</div>
+      {/* The launch moment lands on the Bridge, the room the learner is
+          being handed to. The ◎ glyph is both the art-less render and the
+          failure fallback (ArtPlate contract): never a hole. */}
+      {READY_PLATE_SRC ? (
+        <div className="w-full max-w-md mb-4" aria-hidden="true">
+          <ArtPlate
+            src={READY_PLATE_SRC}
+            fallback={<div className="font-mono text-5xl text-primary">◎</div>}
+          />
+        </div>
+      ) : (
+        <div className="font-mono text-5xl text-primary mb-4">◎</div>
+      )}
       <h2 className="font-mono text-[30px] font-bold text-text-primary tracking-tight mb-3.5">
         All Systems Go
       </h2>

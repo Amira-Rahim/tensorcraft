@@ -9,6 +9,7 @@ import {
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getEntitledWorlds } from "@/lib/entitlements";
+import { heroPlateSrc } from "@/lib/location-art";
 import { WorldCardsGrid, type WorldCardData } from "./world-cards-grid";
 import type { Metadata } from "next";
 
@@ -64,6 +65,7 @@ export default async function WorldsPage() {
     primary: world.palette.primary,
     primaryLight: world.paletteLight.primary,
     owned: ownedWorlds.has(world.slug),
+    plateSrc: isLaunched(world.slug) ? heroPlateSrc(world.slug) : undefined,
     modulesCount: WORLD_CONTENT.modulesPerWorld,
     lessonsCount: WORLD_CONTENT.totalLessonsPerWorld,
     price: PRICING.single.price,

@@ -212,6 +212,20 @@ describe("OnboardingPage", () => {
     expect(summary.textContent).toMatch(/deep orbit/i);
   });
 
+  it("Ready step grounds the launch moment on the bridge plate", async () => {
+    await renderPage();
+    clickNext();
+    fireEvent.click(screen.getByTestId("experience-beginner"));
+    clickNext();
+    fireEvent.click(screen.getByTestId("goal-hobby"));
+    clickNext(); // -> Ready
+    const ready = screen.getByTestId("step-ready");
+    const plate = ready.querySelector('img[data-testid="art-plate"]');
+    expect(plate?.getAttribute("src")).toBe(
+      "/locations/deep-orbit/bridge.webp",
+    );
+  });
+
   it("back button is absent on step 1, present on step 2", async () => {
     await renderPage();
     expect(screen.queryByTestId("onboarding-back")).toBeNull();

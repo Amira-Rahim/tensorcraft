@@ -4,6 +4,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { SkillGenome } from "./skill-genome";
 import { BridgeCollection } from "./bridge-collection";
+import { PatchCollection } from "./patch-collection";
 import { LossCurve, type WeeklyHints } from "@tensorcraft/ui/visualizations";
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
 import { ModulePatch } from "@tensorcraft/ui/module-patch";
@@ -757,6 +758,10 @@ export function DashboardView(props: DashboardProps) {
               shipped replacement for the removed /bridges route. Wired up
               2026-07-15 so the docs are true. */}
           <BridgeCollection bridges={bridges} />
+
+          {/* Mission patches, the same collection framing one panel down.
+              Renders nothing for worlds without patch art. */}
+          <PatchCollection modules={modules} />
 
           {/* Learning trend, rolling 7-day avg hints per exercise */}
           <section

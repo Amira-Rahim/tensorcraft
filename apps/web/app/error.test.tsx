@@ -35,6 +35,14 @@ describe("RootError", () => {
     expect(screen.getByText(ERROR_MESSAGES.network)).toBeInTheDocument();
   });
 
+  it("shows the adrift plate above the card", async () => {
+    const { default: ErrorBoundary } = await import("./error");
+    render(<ErrorBoundary error={new Error("boom")} reset={() => {}} />);
+    expect(screen.getByTestId("art-plate").getAttribute("src")).toBe(
+      "/locations/deep-orbit/adrift.webp",
+    );
+  });
+
   it("falls back to unknown message when no code is present", async () => {
     const { default: ErrorBoundary } = await import("./error");
     render(<ErrorBoundary error={new Error("boom")} reset={() => {}} />);

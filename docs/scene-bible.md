@@ -58,6 +58,20 @@ scenes (shipped at 99-130 KB). The Bridge plate is the ground of the landing
 page's Five Worlds band and of the Deep Orbit world page backdrop; see
 `docs/superpowers/specs/2026-08-09-art-marketing-surfaces-design.md`.
 
+### Auxiliary plates
+
+Page plates that are NOT scene references (no lesson generates against
+them), produced through the same masters pipeline and shipped to the same
+directory. One exists:
+
+**`adrift`** (shipped 2026-08-15): a single small survey probe alone in
+open space, slack tether floating loose, one faint green running light,
+vast empty starfield, no planet, no station. Rendered on the 404 and
+route-error pages (`surfacePlateSrc(world, "not-found" | "error")`); the
+copy says the route is lost, the art says how far. Prompt in
+`scripts/art/masters.mjs`; canon at
+`docs/art-refs/deep-orbit/masters/adrift.png`.
+
 Two things to know before regenerating them:
 
 - `newest()` in the ingest script picks by name sort, which means the latest

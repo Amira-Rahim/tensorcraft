@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import { useImgSettled } from "./use-img-settled";
 
 /* ── ArtPlate: a raster art plate on a marketing surface ──────────────
@@ -22,6 +22,10 @@ export interface ArtPlateProps {
   /** Full-bleed section ground: drops the frame, since the section's own
    *  borders are already doing that job. */
   bleed?: boolean;
+  /** Rendered instead of nothing when the image fails. For surfaces where
+   *  the plate REPLACES an element (the onboarding glyph), the replaced
+   *  element comes back rather than leaving a hole (ModulePatch contract). */
+  fallback?: ReactNode;
   className?: string;
 }
 
@@ -29,6 +33,7 @@ export function ArtPlate({
   src,
   alt,
   bleed = false,
+  fallback,
   className,
 }: ArtPlateProps) {
   const [failed, setFailed] = useState<string | null>(null);
@@ -42,7 +47,7 @@ export function ArtPlate({
     [src],
   );
   useImgSettled(imgRef, src, settle);
-  if (failed === src) return null;
+  if (failed === src) return <>{fallback ?? null}</>;
 
   return (
     <img

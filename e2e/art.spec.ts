@@ -14,6 +14,7 @@ const SURFACES = [
   { name: "landing Five Worlds band", path: "/" },
   { name: "Deep Orbit world page", path: "/worlds/deep-orbit" },
   { name: "auth left pane", path: "/auth/sign-in" },
+  { name: "worlds index hero card", path: "/worlds" },
 ];
 
 for (const surface of SURFACES) {

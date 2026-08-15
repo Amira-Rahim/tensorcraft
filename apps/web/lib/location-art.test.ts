@@ -40,4 +40,17 @@ describe("surfacePlateSrc", () => {
       surfacePlateSrc("deep-orbit", "landing" as PlateSurface),
     ).toBeUndefined();
   });
+
+  it("resolves the round-2 surfaces (onboarding, 404, error)", () => {
+    expect(surfacePlateSrc("deep-orbit", "onboarding")).toBe(
+      "/locations/deep-orbit/bridge.webp",
+    );
+    expect(surfacePlateSrc("deep-orbit", "not-found")).toBe(
+      "/locations/deep-orbit/adrift.webp",
+    );
+    expect(surfacePlateSrc("deep-orbit", "error")).toBe(
+      "/locations/deep-orbit/adrift.webp",
+    );
+    expect(surfacePlateSrc("terra-grid", "not-found")).toBeUndefined();
+  });
 });

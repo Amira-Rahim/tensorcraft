@@ -28,6 +28,13 @@ describe("ArtPlate", () => {
     expect(container.firstChild).toBeNull();
   });
 
+  it("renders the fallback node instead when one is given", () => {
+    render(<ArtPlate src={SRC} fallback={<span>◎</span>} />);
+    fireEvent.error(screen.getByTestId("art-plate"));
+    expect(screen.queryByTestId("art-plate")).toBeNull();
+    expect(screen.getByText("◎")).toBeTruthy();
+  });
+
   it("drops its frame when bleeding to the edge of a section", () => {
     render(<ArtPlate src={SRC} bleed />);
     expect(screen.getByTestId("art-plate").className).toContain(

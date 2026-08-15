@@ -82,9 +82,41 @@ describe("DashboardView mission patches", () => {
         })}
       />,
     );
-    expect(screen.getByTestId("module-patch").getAttribute("src")).toBe(
-      "/patches/deep-orbit/foundations.webp",
+    // Two renders of the same emblem: the sidebar row and the collection
+    // panel below the stats.
+    const patches = screen.getAllByTestId("module-patch");
+    expect(patches.length).toBeGreaterThanOrEqual(1);
+    for (const p of patches) {
+      expect(p.getAttribute("src")).toBe(
+        "/patches/deep-orbit/foundations.webp",
+      );
+    }
+  });
+
+  it("shows the patch collection panel when the world has patch art", () => {
+    render(
+      <DashboardView
+        {...baseProps({
+          modules: [
+            {
+              number: "M01",
+              name: "Foundations",
+              status: "done",
+              score: 98,
+              formula: "y = Wx + b",
+              slug: "foundations",
+              patchSrc: "/patches/deep-orbit/foundations.webp",
+            },
+          ],
+        })}
+      />,
     );
+    expect(screen.getByTestId("patch-collection")).toBeTruthy();
+  });
+
+  it("hides the patch collection panel when no module has patch art", () => {
+    render(<DashboardView {...baseProps()} />);
+    expect(screen.queryByTestId("patch-collection")).toBeNull();
   });
 
   it("never previews a patch on an unfinished module", () => {

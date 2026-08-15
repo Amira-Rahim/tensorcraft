@@ -11,6 +11,7 @@ import {
   drawTerraGrid,
   type SceneDraw,
 } from "@tensorcraft/ui/effects";
+import { ArtPlate } from "@tensorcraft/ui/art-plate";
 import { NewsletterModal } from "./newsletter-modal";
 
 // Signature scene per world — the same renderers as the homepage
@@ -50,6 +51,12 @@ export interface WorldCardData {
    * worlds link to the per-world stub (which hosts a waitlist form).
    */
   status: "live" | "coming-soon";
+  /**
+   * Location plate for the hero variant's ground (lib/location-art.ts
+   * `heroPlateSrc`). Muted cards never render it; absent, the card keeps
+   * its canvas-only render.
+   */
+  plateSrc?: string;
 }
 
 export interface WorldCardsGridProps {
@@ -164,12 +171,19 @@ function WorldCard({ card, variant }: WorldCardProps) {
         // churn the CSS mechanism avoids entirely (and it keeps this file
         // symmetric with the server-rendered dashboard grid, which has no
         // hook available at all).
-        className={`tc-world-card group relative flex flex-col h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${isComingSoon ? "opacity-80 hover:opacity-100 transition-opacity" : ""}`}
+        className={`tc-world-card group relative flex flex-col h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${isComingSoon ? "opacity-80 hover:opacity-100 transition-opacity" : ""}${isHero && card.plateSrc ? " tc-on-art" : ""}`}
         style={
           {
             "--card-primary": card.primary,
             "--card-primary-light": card.primaryLight ?? card.primary,
             "--tc-primary": "var(--card-active-primary)",
+            // Over the plate the card is a lit viewport (tc-on-art), so the
+            // accent pins to the dark-scheme hue in both schemes: the
+            // light-scheme hue was minted for a paper background and goes
+            // murky on near-black art.
+            ...(isHero && card.plateSrc
+              ? { "--card-active-primary": card.primary }
+              : {}),
           } as React.CSSProperties
         }
         onMouseEnter={() => setHovered(true)}
@@ -177,6 +191,16 @@ function WorldCard({ card, variant }: WorldCardProps) {
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
       >
+        {/* Hero ground: the world's location plate under the canvas, the
+            shipped plate-under-canvas composite (the canvas becomes the
+            reflection on the glass at 50%). Muted cards never ground. */}
+        {isHero && card.plateSrc && (
+          <ArtPlate
+            src={card.plateSrc}
+            bleed
+            className="absolute inset-0 pointer-events-none"
+          />
+        )}
         {/* Scene brightness rides SceneCanvas's eased hot amount, so no CSS
             opacity ramp here — a second ramp would mute the ignition. rgb/
             rgbLight stay as the STATIC per-world hues (not scheme-resolved
@@ -191,11 +215,27 @@ function WorldCard({ card, variant }: WorldCardProps) {
             rgb={rgb}
             rgbLight={rgbLight}
             hovered={hovered}
-            className="absolute inset-0"
+            className={`absolute inset-0${isHero && card.plateSrc ? " opacity-50" : ""}`}
           />
         </div>
+        {/* Legibility veil over the plate, under the copy: the fixed dark
+            tc-art-scrim, NOT a bg-colored gradient — the art underneath is
+            the same dark image in both schemes, so the veil must be too
+            (five-worlds band precedent). */}
+        {isHero && card.plateSrc && (
+          <div aria-hidden="true" className="tc-art-scrim" />
+        )}
 
-        <div className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-border bg-surface-raised/80 backdrop-blur-[1px]">
+        <div
+          className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-border bg-surface-raised/80 backdrop-blur-[1px]"
+          style={
+            // Over the plate the strip is glass on a lit viewport: fixed
+            // dark frost in both schemes, matching the tc-on-art tokens.
+            isHero && card.plateSrc
+              ? { background: "color-mix(in srgb, #181818 80%, transparent)" }
+              : undefined
+          }
+        >
           <span
             className="font-mono text-[11px] uppercase tracking-[0.15em] font-semibold"
             style={{ color: "var(--card-active-primary)" }}

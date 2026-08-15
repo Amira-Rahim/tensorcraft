@@ -69,6 +69,17 @@ const MASTERS = {
       "polished by use, nothing out of place, worn but not grimy, warm work " +
       "lighting with green display glow, no crew.",
   },
+  // Auxiliary plate, not a scene reference: the 404/error pages' "adrift"
+  // shot (docs/scene-bible.md, Auxiliary plates). No crew, no station: the
+  // page copy says the route is lost; the art says how far.
+  adrift: {
+    prompt:
+      "A single small survey probe adrift alone in open space, seen from a " +
+      "distance so it sits small in the frame, a slack tether line floating " +
+      "loose beside it, one faint green running light, vast empty starfield " +
+      "all around, no planet, no station, deep negative space, quiet and " +
+      "still.",
+  },
   "dashboard-station": {
     ref: "docs/art-refs/deep-orbit/masters/bridge.png",
     prompt:

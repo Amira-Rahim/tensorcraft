@@ -264,6 +264,15 @@ memory was refuted by that audit: `pnpm audit` clean.)
     earned-only on dashboard/module map/capstone/certificate, all-or-none
     coverage gate in `packages/content`). Canons in
     `docs/art-refs/deep-orbit/patches/`. Generation ~$1 FLUX.2 [pro].
+  - [x] **Art round 2** (SHIPPED 2026-08-15, spec
+    `docs/superpowers/specs/2026-08-15-art-round-2-design.md`): onboarding
+    Ready step grounds on the bridge plate (ArtPlate gained the `fallback`
+    prop so the ◎ glyph returns on failure); /worlds hero card takes the
+    plate-under-canvas composite with the five-worlds `tc-art-scrim` +
+    `tc-on-art` treatment (a bg-colored scrim failed light scheme at
+    review); dashboard `PatchCollection` panel (earned patches at 48px,
+    dashed slots for unearned launched modules); new auxiliary `adrift`
+    master on the 404 and route-error pages.
   - [ ] Module-complete award moment: an animation the instant the last
     lesson of a module completes, revealing the mission patch (deferred
     from the 2026-08-15 spine: needs module-completion state inside the

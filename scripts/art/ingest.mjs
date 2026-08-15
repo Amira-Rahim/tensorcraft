@@ -63,7 +63,14 @@ const PORTRAIT = { size: 512, quality: 82, budget: 40 * 1024 };
 // a two-scene lesson page comfortably inside a sane image budget.
 const SCENE = { width: 1536, height: 1024, quality: 72, budget: 200 * 1024 };
 
-const LOCATIONS = ["bridge", "lab", "engineering", "dashboard-station"];
+const LOCATIONS = [
+  "bridge",
+  "lab",
+  "engineering",
+  "dashboard-station",
+  // Auxiliary: the 404/error "adrift" shot; a plate, not a scene reference.
+  "adrift",
+];
 
 // Same frame as a scene: the masters ARE the reference plates every scene was
 // generated against (docs/scene-bible.md), so they share dimensions and
