@@ -276,7 +276,7 @@ export { drawSignalLock, BOOT_DURATION } from "./signal-lock";
 Run: `pnpm vitest run packages/ui/src/effects` then `pnpm typecheck`
 Expected: all effects tests PASS (including the pre-existing, locally-modified orbit/world-scenes suites), typecheck clean.
 
-- [x] **Step 7: STOP — checkpoint**
+- [x] **Step 7: STOP - checkpoint**
 
 Report results to the user and wait for them to review/commit. Do not commit.
 
@@ -616,7 +616,7 @@ The `prefers-reduced-motion` media guard is belt-and-braces: the wrapper never s
 Run: `pnpm vitest run apps/web/app/pricing/__tests__/curriculum-scene.test.tsx`
 Expected: PASS (7 tests).
 
-- [x] **Step 6: STOP — checkpoint**
+- [x] **Step 6: STOP - checkpoint**
 
 Report results to the user and wait for them to review/commit. Do not commit.
 
@@ -674,7 +674,7 @@ Expected: PASS with zero modifications to the existing test files. `page.test.ts
 Run: `pnpm typecheck`
 Expected: clean.
 
-- [x] **Step 4: STOP — checkpoint**
+- [x] **Step 4: STOP - checkpoint**
 
 Report results to the user and wait for them to review/commit. Do not commit.
 
@@ -709,7 +709,7 @@ Expected: pricing baselines diff, because the section legitimately gained a stat
 
 Use the run skill (or `pnpm dev`) to open /pricing in a real browser and verify by eye, in this order: (1) fresh profile or cleared localStorage, dark scheme: scroll to the section, boot plays once, rows flicker in, scene settles faint; (2) reload: no boot, settled immediately; (3) clear the key, switch light scheme: ink-mode boot reads as marks on paper, no grey storm cloud in the sweep; (4) OS reduced-motion on, cleared key: no boot, static frame, rows visible. Screenshot the settled section for the report.
 
-- [x] **Step 6: STOP — final checkpoint**
+- [x] **Step 6: STOP - final checkpoint**
 
 Report the full battery results and the by-eye findings to the user. The user decides on committing. Do not commit.
 

@@ -27,7 +27,7 @@ to production" on a prior deploy.
 ## CI pipeline overview
 
 Defined in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
-**Advisory only** — runs post-push, emails on fail. Not wired to branch
+**Advisory only** - runs post-push, emails on fail. Not wired to branch
 protection, so nothing blocks merge.
 
 | Job | What it does | Blocking? |
@@ -42,9 +42,9 @@ Invoked by CI **and** available locally via `pnpm test:exercises`.
 
 For each exercise in `packages/content/.velite/exercises.json`:
 
-1. **Starter compile check** — the starter code is syntax-checked through
+1. **Starter compile check** - the starter code is syntax-checked through
    Node's VM after a coarse TypeScript-annotation strip.
-2. **Solution runs green** — the solution code is executed against the
+2. **Solution runs green** - the solution code is executed against the
    exercise's `testCode` inside a sandboxed VM with the same TF.js mock and
    Jest-style harness used by `packages/ui/src/mdx/exercise.tsx`. A **10-second
    timeout** matches the in-browser limit so no exercise can ship with a
@@ -81,7 +81,7 @@ lychee --config .lychee.toml './**/*.md'
 Managed by [husky](https://typicode.github.io/husky). Auto-installed via
 `package.json` `prepare` script on `pnpm install`.
 
-### Pre-commit — [`.husky/pre-commit`](../.husky/pre-commit)
+### Pre-commit - [`.husky/pre-commit`](../.husky/pre-commit)
 
 Runs `pnpm exec lint-staged` on staged files only. Fast (<2s typical):
 
@@ -90,7 +90,7 @@ Runs `pnpm exec lint-staged` on staged files only. Fast (<2s typical):
 
 Catches 90% of formatting/obvious-typo mistakes before the commit lands.
 
-### Pre-push — [`.husky/pre-push`](../.husky/pre-push)
+### Pre-push - [`.husky/pre-push`](../.husky/pre-push)
 
 Runs workspace-wide checks before `git push`:
 
@@ -99,7 +99,7 @@ Runs workspace-wide checks before `git push`:
 
 ~30s cold, incremental-cached ~5s. Blocks push on failure.
 
-**Skip in emergencies** — `git push --no-verify`. Use sparingly; the hook is
+**Skip in emergencies** - `git push --no-verify`. Use sparingly; the hook is
 the only pre-production gate in the solo flow.
 
 ---
@@ -112,7 +112,7 @@ outright block merges (pure friction). The pre-push hook + CI advisory + Vercel
 preview is strictly more useful for one author.
 
 If a second maintainer joins later, revisit this section and re-enable
-protection — `.github/CODEOWNERS` is already in place as a no-op scaffold.
+protection - `.github/CODEOWNERS` is already in place as a no-op scaffold.
 
 ### Vercel preview workflow for risky work
 

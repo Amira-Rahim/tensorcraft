@@ -26,7 +26,7 @@ const plural = (word: string) => PLURALS[word] ?? `${word}s`;
  * the hero and the footer. JSON-LD ships `availability: OutOfStock` (changed
  * from PreOrder 2026-07-21: PreOrder implies the item can be ordered now for
  * later delivery, but checkout hard-rejects unlaunched worlds and only a
- * waitlist exists — OutOfStock is the truthful term) so search
+ * waitlist exists - OutOfStock is the truthful term) so search
  * engines surface the right rich snippet.
  *
  * Color is structural here: section borders and row hairlines mix the world
@@ -34,7 +34,7 @@ const plural = (word: string) => PLURALS[word] ?? `${word}s`;
  * `var(--tc-bg)`), and the free/capstone roster rows carry tinted washes.
  * bg/border/muted/text below read `var(--tc-*)` directly (they're identical
  * across every world's manifest in both schemes, so this stub never getting
- * its own `data-world` doesn't matter for them — see the paletteLight
+ * its own `data-world` doesn't matter for them - see the paletteLight
  * comment below for why primary/accent are handled differently).
  */
 export function ComingSoonStub({ world }: Props) {
@@ -52,7 +52,7 @@ export function ComingSoonStub({ world }: Props) {
   };
   // Light-scheme counterpart, forced to deep-orbit's light primary (the
   // light equivalent of the brand green above, for the same reason: this
-  // stub never gets its own `data-world` — only LAUNCHED worlds make
+  // stub never gets its own `data-world` - only LAUNCHED worlds make
   // WorldSync/world-provider.tsx's setWorld() succeed, so a per-world light
   // hue here would read the wrong world's value once a second world
   // launches). Feeds ComingSoonScene's rgbLight.

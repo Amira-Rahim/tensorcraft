@@ -1,14 +1,14 @@
 -- Tensorcraft: opt-in enrollment for the canonical cross-theme journey.
 --
 -- The cross-theme journey (docs/audits/scalability-architecture-2026-07-21.md
--- F2) runs in two modes. Free play needs no table — any theme is
+-- F2) runs in two modes. Free play needs no table - any theme is
 -- purchasable/playable and the journey only powers soft recommendations,
 -- resolved in code from the journey ring. This table backs the other mode: an
 -- opt-in CANONICAL TRACK where a learner commits to running the five themes as
 -- one sequenced storyline with its own acknowledgement.
 --
 -- Deliberately minimal: enrollment is just "this user opted into the canonical
--- track, when". Position is NOT stored here — it is derived from per-theme
+-- track, when". Position is NOT stored here - it is derived from per-theme
 -- completion (theme_progress) at read time, so there is no denormalized
 -- pointer that can drift (matches the no-denormalization guidance in the
 -- multi-tenancy audit). Additive and per-user: standard auth.uid() = user_id

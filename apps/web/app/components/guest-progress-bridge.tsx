@@ -66,7 +66,7 @@ export function GuestProgressBridge() {
       // unhandled rejection: nothing migrated, no router.refresh(), and
       // `ran.current` already latched so this mount would not try again. The
       // guest then hit the module-2 prerequisite gate holding a browser full
-      // of completed lessons — precisely the failure this component exists to
+      // of completed lessons - precisely the failure this component exists to
       // prevent. Swallowing is correct: the localStorage record is untouched,
       // so the next page load replays it.
     })().catch(() => {});

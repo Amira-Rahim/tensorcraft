@@ -68,7 +68,7 @@ export function SessionListener() {
         );
 
         // signup_completed closes the funnel opened by signup_started in
-        // auth-form. Without it the conversion rate is uncomputable — the
+        // auth-form. Without it the conversion rate is uncomputable - the
         // KPI formulas in docs/tech-spec.md divide by exactly this event,
         // and it is the step paid distribution spend is judged on. Fired
         // here rather than in /auth/callback because that is a server route

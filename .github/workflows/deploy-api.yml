@@ -1,7 +1,7 @@
 # API deploy with the migration gate the runbook used to rely on a human
 # for. The fresh-eyes rerun (§7 "Where it breaks FIRST") called the failure
 # mode precisely: payments.ts writes 047's tax columns unconditionally and
-# calls 051's restore RPC — deploy the API before applying 037-051 and every
+# calls 051's restore RPC - deploy the API before applying 037-051 and every
 # checkout webhook 500s AFTER the customer is charged. This workflow makes
 # that ordering mechanical: `pnpm migrate:status` must report ZERO pending
 # migrations (exit 0) before flyctl runs.
@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Fail-closed: pending migrations exit 1, missing secrets exit 2 —
+      # Fail-closed: pending migrations exit 1, missing secrets exit 2 -
       # either blocks the deploy. The API must never ship code that assumes
       # a schema production does not have yet (047/051 class).
       - name: Verify all migrations applied
@@ -54,7 +54,7 @@ jobs:
       # deploy was green yet crash-looped at boot on two Fly secrets the
       # image required but nobody had set (CERT_SIGNING_SECRET,
       # KIT_WEBHOOK_SECRET). This diffs env.ts's required lists against
-      # `flyctl secrets list` BEFORE flyctl deploys — names only, no values.
+      # `flyctl secrets list` BEFORE flyctl deploys - names only, no values.
       - name: Verify required runtime secrets exist on Fly
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

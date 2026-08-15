@@ -1,4 +1,4 @@
-# Retention Email Sequences (Kit) — Runbook + Copy
+# Retention Email Sequences (Kit) - Runbook + Copy
 
 **Status:** copy drafted 2026-07-13; Kit automations NOT yet created (Kit
 dashboard is operator-only). Code side is already live: the four lifecycle
@@ -14,12 +14,12 @@ post-launch index).
 
 - **Trigger:** tag `signed_up` added.
 - **Exit:** tag `first_lesson` added (Kit automation exit condition).
-- **A1, +1 day** — subject: `Module 1 is free. The pager is already on.`
+- **A1, +1 day** - subject: `Module 1 is free. The pager is already on.`
   Body: You made an account and then the real world happened, that is
   fine. Module 1 of Deep Orbit is free, no card, about an hour end to end.
   The first lesson takes fifteen minutes and ends with real TensorFlow.js
   running in your browser. Link: /worlds/deep-orbit.
-- **A2, +3 days** — subject: `One analogy, free: Array.reduce() is a neuron`
+- **A2, +3 days** - subject: `One analogy, free: Array.reduce() is a neuron`
   Body: The whole course works like this: 55 bridges from frontend
   concepts you already know to the ML concept they secretly are, each one
   labeled where the analogy breaks. Here is the first one in full
@@ -31,7 +31,7 @@ post-launch index).
 - **Trigger:** tag `first_lesson` added.
 - **Wait:** 7 days, THEN send only if the subscriber has not received
   sequence C (Kit condition: tag `capstone` absent).
-- **B1, +7 days** — subject: `DISPATCH logged your last transmission`
+- **B1, +7 days** - subject: `DISPATCH logged your last transmission`
   Body (DISPATCH register): Operator, your board still shows an open
   module. The detector you started building has not moved since your last
   session; the signal has. Fifteen minutes puts you one lesson further
@@ -40,7 +40,7 @@ post-launch index).
 ### C. Finisher (capstone reached)
 
 - **Trigger:** tag `capstone` added.
-- **C1, immediate** — subject: `Board clear. Certificate desk is open.`
+- **C1, immediate** - subject: `Board clear. Certificate desk is open.`
   Body: You shipped the capstone. Your certificate is ready, your solved
   exercises are in your GitHub repo, and the model you trained is yours.
   If the course earned it, a sentence about what clicked for you is the
@@ -58,7 +58,7 @@ post-launch index).
 | `capstone` | `KIT_TAG_CAPSTONE` | capstone reached |
 | `purchased` | `KIT_TAG_PURCHASED` | Stripe webhook (server-side) |
 
-~~Known gap: there is no `purchased` tag.~~ **Resolved** — `KIT_TAG_PURCHASED`
+~~Known gap: there is no `purchased` tag.~~ **Resolved** - `KIT_TAG_PURCHASED`
 is fired server-side from the Stripe webhook (`payments.ts:686`, `:887`), so
 sequence B *can* distinguish a free-tier stall from a paid stall. Suppress
 sequence B on `purchased`.

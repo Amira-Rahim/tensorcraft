@@ -99,7 +99,7 @@ pnpm test:e2e       # Run end-to-end tests (Playwright)
 Web: Vercel (auto-deploy from main), API: Fly.io
 
 ```bash
-# Web deploys to Vercel automatically on git push — no manual deploy needed
+# Web deploys to Vercel automatically on git push - no manual deploy needed
 # API deploys to Fly.io:
 fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
 ```

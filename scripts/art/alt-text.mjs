@@ -17,7 +17,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 const CONTENT = path.join(ROOT, "packages/content/content/deep-orbit");
 const DRY = process.argv.includes("--dry-run");
 
@@ -39,7 +42,9 @@ function lessonFile(id) {
   const [mod, slug] = id.split("/");
   const dir = path.join(CONTENT, mod);
   if (!fs.existsSync(dir)) return null;
-  const hit = fs.readdirSync(dir).find((f) => f.match(/^\d+-(.+)\.mdx$/)?.[1] === slug);
+  const hit = fs
+    .readdirSync(dir)
+    .find((f) => f.match(/^\d+-(.+)\.mdx$/)?.[1] === slug);
   return hit ? path.join(dir, hit) : null;
 }
 

@@ -122,7 +122,7 @@ export default function RootLayout({
       // against the live DOM at hydration time and flags the difference as
       // a mismatch; `data-world` never triggered this because
       // `LAUNCHED_WORLDS` only ever resolves to the same server default.
-      // Scoped one element deep (standard next-worlds-style fix) — it only
+      // Scoped one element deep (standard next-worlds-style fix) - it only
       // silences the warning for `<html>`'s own attributes, not its
       // subtree.
       suppressHydrationWarning
@@ -143,7 +143,7 @@ export default function RootLayout({
                 name: "Tensorcraft",
                 url: "https://tensorcraft.app",
                 // `logo` omitted deliberately. It previously asserted
-                // https://tensorcraft.app/logo.png, which 404s — there is no
+                // https://tensorcraft.app/logo.png, which 404s - there is no
                 // logo.png in public/, nor any PNG at all. A logo URL that
                 // does not resolve fails the Organization rich result and is
                 // a false claim in structured data. Restore this only when a

@@ -92,7 +92,7 @@ export default async function PurchaseSuccessPage({
 
   // A bounced delayed payment (async_payment_failed → status "failed") must
   // not render as "Almost There" with a poller promising "nothing is lost by
-  // waiting" — that reads as still-confirming forever. Track it so the hero
+  // waiting" - that reads as still-confirming forever. Track it so the hero
   // can say what actually happened and point back at checkout.
   let paymentFailed = false;
 
@@ -170,7 +170,7 @@ export default async function PurchaseSuccessPage({
               // exactly. NOTE for a future multi-world launch: if a second
               // world ships and someone's first purchase is that world, this
               // will render the *root* world's primary rather than the
-              // purchased world's brand color — same cross-world-identity
+              // purchased world's brand color - same cross-world-identity
               // caveat as the /worlds and dashboard grid cards (Task 8
               // territory), revisit then.
               color: "var(--tc-primary)",
@@ -215,7 +215,7 @@ export default async function PurchaseSuccessPage({
           />
         )}
 
-        {/* Engineering bay plate: systems online. Confirmed purchases only —
+        {/* Engineering bay plate: systems online. Confirmed purchases only -
             the pending and failed states keep their unadorned layout. The
             plate is decorative and optional (ArtPlate renders nothing on a
             missing asset). */}

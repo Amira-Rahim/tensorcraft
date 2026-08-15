@@ -15,7 +15,7 @@ const relu = BRIDGES.find((b) => b.mlConcept === "Activation functions (ReLU)");
 //   feConcept: 'Math.max(0, x)',
 //   mlConcept: 'Activation functions (ReLU)',
 //   tier: 'identity',
-//   connection: 'ReLU is literally Math.max(0, x) — same function, same math, different name.',
+//   connection: 'ReLU is literally Math.max(0, x) - same function, same math, different name.',
 //   ...
 // }
 ```
@@ -24,18 +24,18 @@ const relu = BRIDGES.find((b) => b.mlConcept === "Activation functions (ReLU)");
 
 Most ML analogies are right enough to start, wrong enough to mislead in
 production. This package ships the analogy-tier system from
-[tensorcraft.app](https://tensorcraft.app) — every structural and intuition
+[tensorcraft.app](https://tensorcraft.app) - every structural and intuition
 bridge includes a `breaks` field that names the concrete failure mode if you
 push the analogy too far. The full bridge registry lives in this package.
 
 ## Tiers
 
-- **`identity`** — the FE concept literally is the ML concept. Example:
+- **`identity`** - the FE concept literally is the ML concept. Example:
   `Math.max(0, x)` is ReLU. No failure mode.
-- **`structural`** — same shape, different domain. Example: `Promise.all`
+- **`structural`** - same shape, different domain. Example: `Promise.all`
   with chunk size shapes a batch. The `breaks` field names where the
   reasoning diverges (memory budget, gradient noise, etc).
-- **`intuition`** — same mental model, different math. Example: gradient
+- **`intuition`** - same mental model, different math. Example: gradient
   descent and reconciliation both incrementally reduce a measured gap. The
   `breaks` names what the rhyme leaves out.
 
@@ -112,6 +112,6 @@ not required.
 
 The canonical bridge registry lives at
 [github.com/tensorcraft/tensorcraft](https://github.com/tensorcraft/tensorcraft)
-in `packages/shared/src/bridges.ts`. PRs welcome — especially new entries
+in `packages/shared/src/bridges.ts`. PRs welcome - especially new entries
 with rigorously written `breaks` fields. See `docs/patterns/analogy-breaks-pattern.md`
 for the writing guide.

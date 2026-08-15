@@ -8,7 +8,7 @@ import { getSupabaseBrowserClient } from "./supabase/client";
  * (`world-waitlist-form.tsx`, `newsletter-modal.tsx`) do
  * `setStatus("submitting")` then `setStatus(await submitWaitlist(...))` with no
  * try/catch, so an exception here skipped the second setStatus and left the
- * form stuck on "submitting" forever — with a perfectly good error state
+ * form stuck on "submitting" forever - with a perfectly good error state
  * rendered just below that the throw made unreachable. Returning "error"
  * instead of throwing is what makes those call sites correct by construction.
  */
@@ -18,8 +18,8 @@ export async function submitWaitlist(
   source: string,
   opts?: {
     /**
-     * Explicit opt-in to the weekly digest. Only the newsletter modal — an
-     * actual newsletter signup — passes true. World waitlist forms leave it
+     * Explicit opt-in to the weekly digest. Only the newsletter modal - an
+     * actual newsletter signup - passes true. World waitlist forms leave it
      * false: "tell me when this world ships" is not newsletter consent
      * (GDPR Art. 4(11); Tier 1-LEGAL waitlist consent fix, migration 050
      * flipped the column default to false to match).

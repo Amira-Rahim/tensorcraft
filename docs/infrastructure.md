@@ -1,4 +1,4 @@
-# Tensorcraft — Infrastructure & Deployment
+# Tensorcraft - Infrastructure & Deployment
 
 > Last updated: 2026-04-22 (Vercel migration for web app; API remains on Fly.io)
 
@@ -56,7 +56,7 @@ This document covers the production deployment architecture, scaling configurati
 **API (Fly.io):** Must be deployed **from the monorepo root** so that the Docker build context includes all `packages/*` dependencies. The Dockerfile uses root-relative `COPY` paths (e.g., `COPY packages/shared/package.json packages/shared/`).
 
 ```bash
-# Deploy from monorepo root — always use --config and --dockerfile flags
+# Deploy from monorepo root - always use --config and --dockerfile flags
 fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
 
 # Set secrets (first deploy only)
@@ -92,13 +92,13 @@ Vercel handles CDN and edge caching for the web app (`tensorcraft.app`). Cloudfl
 | 100K-500K | Team ($599/mo) or Enterprise | 1M+ requests/month, read replicas, priority support |
 | 500K+ | Enterprise (custom) | Custom connection limits, dedicated compute, SLA |
 
-**Current bottleneck:** Supabase REST API requests are metered. Each Supabase query from the frontend or API counts as one request. The dashboard page makes 5 queries per load. At 100K monthly active users × 10 page loads/month × 5 queries = 5M requests/month — exceeds Pro tier limits.
+**Current bottleneck:** Supabase REST API requests are metered. Each Supabase query from the frontend or API counts as one request. The dashboard page makes 5 queries per load. At 100K monthly active users × 10 page loads/month × 5 queries = 5M requests/month - exceeds Pro tier limits.
 
 **Mitigation strategies (already implemented or planned):**
-- Dashboard query limits (300 rows max) — reduces data transfer
-- JWT caching (30s) — reduces auth validation calls by ~95%
-- Materialized view — replaces 4 queries with 1 (Phase 3)
-- Redis cache layer — intercepts hot reads before Supabase (Phase 4)
+- Dashboard query limits (300 rows max) - reduces data transfer
+- JWT caching (30s) - reduces auth validation calls by ~95%
+- Materialized view - replaces 4 queries with 1 (Phase 3)
+- Redis cache layer - intercepts hot reads before Supabase (Phase 4)
 
 ### Connection Pooling
 
@@ -125,7 +125,7 @@ Vercel handles CDN and edge caching for the web app (`tensorcraft.app`). Cloudfl
 
 ### Materialized View: `dashboard_stats`
 
-Pre-computed aggregation prepared to replace 4 parallel queries on dashboard load. The view is created and populated (migration 012) but the dashboard page has **not yet been migrated** to query it — it still makes 4 parallel Supabase queries with `.limit(300)` and `.limit(200)`. Migration to use the view is planned for Phase 4. Refreshes every 5 minutes via pg_cron (Supabase Pro) or Inngest worker (Phase 5).
+Pre-computed aggregation prepared to replace 4 parallel queries on dashboard load. The view is created and populated (migration 012) but the dashboard page has **not yet been migrated** to query it - it still makes 4 parallel Supabase queries with `.limit(300)` and `.limit(200)`. Migration to use the view is planned for Phase 4. Refreshes every 5 minutes via pg_cron (Supabase Pro) or Inngest worker (Phase 5).
 
 **First refresh** after creation must omit `CONCURRENTLY`. Subsequent refreshes use `REFRESH MATERIALIZED VIEW CONCURRENTLY dashboard_stats`.
 
@@ -133,7 +133,7 @@ Pre-computed aggregation prepared to replace 4 parallel queries on dashboard loa
 
 ## Upstash Redis
 
-**Effectively required in production** — but note the real failure mode: the API BOOTS AND SERVES without `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`; every call site catches the client's throw, so rate limiting, the JWT cache, and issue-flood control are all **silently disabled** (a security degradation, not an outage). Verified 2026-07-25 (R3-10).
+**Effectively required in production** - but note the real failure mode: the API BOOTS AND SERVES without `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`; every call site catches the client's throw, so rate limiting, the JWT cache, and issue-flood control are all **silently disabled** (a security degradation, not an outage). Verified 2026-07-25 (R3-10).
 
 ### Usage
 
@@ -146,7 +146,7 @@ Pre-computed aggregation prepared to replace 4 parallel queries on dashboard loa
 
 ### Rate Limiting
 
-Sliding-window algorithm using sorted sets. **60 requests/minute per IP** (code truth, `rate-limit.ts:5`; the old "120, increased from 60" note described an increase that was never shipped — reconciled 2026-07-25). Consistent across all API instances. Graceful degradation: if Redis is unavailable, requests are allowed through (logged for monitoring). Headers returned:
+Sliding-window algorithm using sorted sets. **60 requests/minute per IP** (code truth, `rate-limit.ts:5`; the old "120, increased from 60" note described an increase that was never shipped - reconciled 2026-07-25). Consistent across all API instances. Graceful degradation: if Redis is unavailable, requests are allowed through (logged for monitoring). Headers returned:
 
 - `X-RateLimit-Limit: 60`
 - `X-RateLimit-Remaining: N`
@@ -191,7 +191,7 @@ After `checkout.session.completed` in the Stripe webhook handler:
 3. `tagSubscriber(email, tagId)` tags them with a purchase tag (numeric ID from env var `KIT_TAG_PURCHASED_DEEP_ORBIT`)
 4. Kit automation triggers the confirmation email based on the tag
 
-Email delivery is fire-and-forget — Kit failures do not block the purchase flow. All email content and design is managed in the Kit dashboard, not in code.
+Email delivery is fire-and-forget - Kit failures do not block the purchase flow. All email content and design is managed in the Kit dashboard, not in code.
 
 ---
 
@@ -232,7 +232,7 @@ Email delivery is fire-and-forget — Kit failures do not block the purchase flo
 | Phase 3 (Frontend ISR + SWR) | 300K | DB read pressure |
 | Phase 4 (Edge Cache + Read Replica) | 500K | Background computation |
 | Phase 5 (Inngest Workers) | 800K–1M | Postgres write throughput |
-| Beyond 1M | Requires CQRS or sharding | — |
+| Beyond 1M | Requires CQRS or sharding | - |
 
 ---
 

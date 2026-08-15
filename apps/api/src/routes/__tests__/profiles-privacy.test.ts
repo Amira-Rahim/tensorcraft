@@ -4,7 +4,7 @@ import { Hono } from "hono";
 /**
  * GDPR self-serve endpoints (Tier 1-LEGAL, built 2026-07-25):
  * GET /api/profiles/export and POST /api/profiles/delete. The privacy page
- * promised both since April; these tests pin the contracts that matter —
+ * promised both since April; these tests pin the contracts that matter -
  * no live credential in the export, typed confirmation on delete, waitlist
  * cleanup by email, and a loud failure when the auth deletion fails.
  */

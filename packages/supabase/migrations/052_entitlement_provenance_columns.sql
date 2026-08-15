@@ -5,7 +5,7 @@
 -- seats ship (roadmap H1/H3), "who paid for whom" for all PRIOR periods is
 -- UNRECOVERABLE unless the columns exist from the first sale. Same for
 -- time-bounded entitlements: `grep valid_until|granted_by migrations` had
--- zero hits. All three columns are nullable and unread by V1 code — cost
+-- zero hits. All three columns are nullable and unread by V1 code - cost
 -- now is XS, retrofit cost is permanent data loss.
 --
 -- The org/entitlement TABLES are deliberately deferred; these are dangling

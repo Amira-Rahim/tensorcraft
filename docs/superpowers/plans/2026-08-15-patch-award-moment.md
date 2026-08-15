@@ -104,12 +104,12 @@ if (patch) {
 }
 ```
 
-(Verify `GuestCompletion`'s field names against `lib/guest-progress.ts` before writing — adjust the filter to its actual shape.) Render in the Consequence step directly under the mission-complete badge: `{awardSrc && <PatchAward src={awardSrc} moduleName={moduleName ?? moduleSlug} moduleTerm={terms(worldSlug).module} />}` — confirm the `terms()` helper exposes `module`; if not, pull from `worlds[worldSlug].terminology.module` the way the badge pulls `lesson`.
-- [ ] Run the lesson-steps test file — PASS.
+(Verify `GuestCompletion`'s field names against `lib/guest-progress.ts` before writing - adjust the filter to its actual shape.) Render in the Consequence step directly under the mission-complete badge: `{awardSrc && <PatchAward src={awardSrc} moduleName={moduleName ?? moduleSlug} moduleTerm={terms(worldSlug).module} />}` - confirm the `terms()` helper exposes `module`; if not, pull from `worlds[worldSlug].terminology.module` the way the badge pulls `lesson`.
+- [ ] Run the lesson-steps test file - PASS.
 
 ### Task 4: verification + docs
 
 - [ ] `npx vitest run apps/web` and full battery; `pnpm --filter @tensorcraft/web typecheck`; lint.
 - [ ] E2e `end-of-lesson.spec.ts` still green (it does not walk a full module; unit coverage carries the award).
-- [ ] Eye check: dev server, walk the last lesson of a nearly-complete module if a seeded state is practical; otherwise rely on the component render in tests plus a Storybook-less DOM screenshot of the Consequence step is NOT required — skip.
+- [ ] Eye check: dev server, walk the last lesson of a nearly-complete module if a seeded state is practical; otherwise rely on the component render in tests plus a Storybook-less DOM screenshot of the Consequence step is NOT required - skip.
 - [ ] Docs: backlog deferred entry → `[x]`; memory update.

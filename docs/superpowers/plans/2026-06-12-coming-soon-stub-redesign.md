@@ -80,7 +80,7 @@ describe("Coming-soon preview data", () => {
     "theme '%s' preview copy contains no em dashes",
     (slug) => {
       const json = JSON.stringify(themes[slug].preview);
-      expect(json).not.toContain("—");
+      expect(json).not.toContain(" - ");
     },
   );
 

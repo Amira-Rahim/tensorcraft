@@ -7,16 +7,16 @@
 -- /admin/digest dashboard before the draft + publish stages.
 --
 -- Identity model:
---   - No user_id — items belong to the digest pipeline, not individual users.
+--   - No user_id - items belong to the digest pipeline, not individual users.
 --   - The admin dashboard reads/writes via the service role only. RLS is
 --     enabled with zero user-facing policies; the service role bypasses RLS
 --     for INSERT, SELECT, and UPDATE.
 --
 -- Lifecycle:
---   pending      — fresh from scraper, not yet curated
---   shortlisted  — curator picked for current week's digest
---   published    — appeared in a published blog post
---   rejected     — curator dropped it (kept for dedup so we don't re-surface)
+--   pending - fresh from scraper, not yet curated
+--   shortlisted - curator picked for current week's digest
+--   published - appeared in a published blog post
+--   rejected - curator dropped it (kept for dedup so we don't re-surface)
 --
 -- Shape mirrors `Database["public"]["Tables"]["news_items"]` in
 -- packages/supabase/src/types.ts (Row + Insert + Update).
@@ -40,7 +40,7 @@ create table if not exists public.news_items (
   summary text not null default '',
   published_at timestamptz,
 
-  -- Raw response payload from the source — kept for forensics if a match
+  -- Raw response payload from the source - kept for forensics if a match
   -- looks wrong and we need to re-derive concepts later.
   raw_json jsonb not null default '{}'::jsonb,
 

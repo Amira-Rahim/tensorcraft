@@ -7,12 +7,12 @@ import { submitWaitlist } from "@/lib/waitlist";
 /**
  * Email capture at the point the free trial is actually being consumed
  * (fresh-eyes rerun T1-13 / §9): a guest who reads two lessons and leaves
- * was permanently unreachable — capture existed only on coming-soon pages
+ * was permanently unreachable - capture existed only on coming-soon pages
  * nobody can buy from. Renders on the Consequence (lesson-complete) step of
  * free-module lessons, for GUESTS only: signed-in learners are already
  * reachable via their account email and Kit tags.
  *
- * Consent posture: single-purpose capture — the button copy IS the ask
+ * Consent posture: single-purpose capture - the button copy IS the ask
  * (progress + what's next for this world). Stored via the waitlist table
  * with a distinct source; `subscribed` stays false (migration 050), so this
  * never auto-enrolls anyone into the weekly digest.
@@ -32,7 +32,7 @@ export function GuestEmailCapture({ worldSlug }: { worldSlug: string }) {
         if (!cancelled && !session) setIsGuest(true);
       })
       .catch(() => {
-        // Session lookup failed (blocked storage etc.) — treat as guest;
+        // Session lookup failed (blocked storage etc.) - treat as guest;
         // worst case a signed-in user sees an email box they can ignore.
         if (!cancelled) setIsGuest(true);
       });

@@ -47,8 +47,8 @@ export async function rateLimitMiddleware(
 /**
  * Rate-limit key: IDENTITY first, IP second (fresh-eyes rerun T2-28 /
  * irreversible list #5). This middleware runs before auth, so identity is
- * derived from the bearer token itself — a salted-free SHA-256 prefix, never
- * the token — which is stable per session and cannot be spoofed by rotating
+ * derived from the bearer token itself - a salted-free SHA-256 prefix, never
+ * the token - which is stable per session and cannot be spoofed by rotating
  * `cf-connecting-ip` (the recorded bypass: no Fly origin lock, so a direct
  * hit with a rotated header minted unlimited IP buckets). Anonymous traffic
  * still keys on IP; the naive "use c.get('userId')" fix is a no-op here

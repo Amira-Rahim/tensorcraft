@@ -21,7 +21,13 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const MIGRATIONS_DIR = join(__dirname, "..", "packages", "supabase", "migrations");
+const MIGRATIONS_DIR = join(
+  __dirname,
+  "..",
+  "packages",
+  "supabase",
+  "migrations",
+);
 
 /** Parse `NNN_name.sql` (ignoring `.down.sql`, templates, and non-SQL). */
 function readMigrationFiles() {
@@ -81,7 +87,7 @@ async function main() {
     );
     // Locally, offline is informational. Under CI it must FAIL: a gate job
     // with missing secrets otherwise reads as "ledger clean" when nothing
-    // was checked at all (R3-9) — the exact green-but-blind gate pattern
+    // was checked at all (R3-9) - the exact green-but-blind gate pattern
     // the 2026-07-21 audit closed elsewhere.
     process.exit(process.env.CI ? 2 : 0);
   }
@@ -98,17 +104,19 @@ async function main() {
   console.log(`  applied (ledger): ${ledger.length}`);
 
   if (pending.length === 0 && unknown.length === 0) {
-    console.log(`\n  IN SYNC — every file is applied, no orphan ledger rows.\n`);
+    console.log(
+      `\n  IN SYNC - every file is applied, no orphan ledger rows.\n`,
+    );
     process.exit(0);
   }
 
   if (pending.length > 0) {
-    console.log(`\n  PENDING (on disk, not applied) — apply these in order:`);
+    console.log(`\n  PENDING (on disk, not applied) - apply these in order:`);
     for (const m of pending) console.log(`    ${pad(m.version)}  ${m.file}`);
   }
   if (unknown.length > 0) {
     console.log(
-      `\n  UNKNOWN (in ledger, no file) — investigate; someone edited history:`,
+      `\n  UNKNOWN (in ledger, no file) - investigate; someone edited history:`,
     );
     for (const r of unknown) console.log(`    ${pad(r.version)}  ${r.name}`);
   }

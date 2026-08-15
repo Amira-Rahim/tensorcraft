@@ -29,7 +29,7 @@ describe("character bible", () => {
     expect(bible).toContain(slug);
   });
   it("has no em dashes", () => {
-    expect(bible).not.toContain("—");
+    expect(bible).not.toContain("\u2014");
   });
 });
 

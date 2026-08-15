@@ -1,9 +1,9 @@
-# Visualizations Design — SkillRadar + LossCurve
+# Visualizations Design - SkillRadar + LossCurve
 
 **Date:** 2026-04-20
 **Status:** Approved for implementation planning
-**Scope:** Phase 11 (Brutalist Terminal Redesign) §11b — new data-visualization components for the dashboard
-**Supersedes:** Parts of dev-plan §11b line 974 (original list included `LossLandscape` and `ActivityHeatmap`; both deferred — see §10 below)
+**Scope:** Phase 11 (Brutalist Terminal Redesign) §11b - new data-visualization components for the dashboard
+**Supersedes:** Parts of dev-plan §11b line 974 (original list included `LossLandscape` and `ActivityHeatmap`; both deferred - see §10 below)
 
 ---
 
@@ -16,19 +16,19 @@ The retained visualizations are data-driven widgets for the authenticated user D
 ## 2. Scope
 
 **In scope:**
-- `LossCurve` — new React component in `packages/ui/src/visualizations/`. Staircase line chart showing rolling 7-day average hints-used per exercise over the last 12 weeks.
-- Refactor of the existing [`apps/web/app/dashboard/skill-genome.tsx`](apps/web/app/dashboard/skill-genome.tsx) widget — apply the Option C "Code Comment" style (no concentric rings, no data-point dots, stroke-only polygon, monospace legend table) to the `RadarChart` subcomponent inside it. **Updated 2026-04-20:** this is a refactor-in-place, not a new `SkillRadar` file in `packages/ui` (the existing widget already ships — see §4).
+- `LossCurve` - new React component in `packages/ui/src/visualizations/`. Staircase line chart showing rolling 7-day average hints-used per exercise over the last 12 weeks.
+- Refactor of the existing [`apps/web/app/dashboard/skill-genome.tsx`](apps/web/app/dashboard/skill-genome.tsx) widget - apply the Option C "Code Comment" style (no concentric rings, no data-point dots, stroke-only polygon, monospace legend table) to the `RadarChart` subcomponent inside it. **Updated 2026-04-20:** this is a refactor-in-place, not a new `SkillRadar` file in `packages/ui` (the existing widget already ships - see §4).
 - Shared geometry helpers (`hexCorners`, `stepPath`, `SKILL_AXIS_ORDER`) extracted to `packages/ui/src/visualizations/helpers.ts` so both the refactored SkillGenome and the new LossCurve reuse them.
 - Data helpers in `apps/web/app/dashboard/_lib/` for weekly hint-bucketing and skill-axis padding.
 - Integration into the existing Dashboard server component.
 - Snapshot + unit tests.
 - Accessibility hooks (`role="img"`, `<title>`, `<desc>`).
 
-**Out of scope (deferred — see §10):** LossLandscape, ActivityHeatmap, hover/click interactivity, animations, theme switcher UI, SQL-side aggregation, server-streamed updates.
+**Out of scope (deferred - see §10):** LossLandscape, ActivityHeatmap, hover/click interactivity, animations, theme switcher UI, SQL-side aggregation, server-streamed updates.
 
 ## 3. Decisions log
 
-Seven decisions locked via brainstorming. Each records the chosen option, rejected alternatives, and rationale — so future contributors can understand *why* without re-litigating.
+Seven decisions locked via brainstorming. Each records the chosen option, rejected alternatives, and rationale - so future contributors can understand *why* without re-litigating.
 
 | # | Decision | Chosen | Rejected | Rationale |
 |---|---|---|---|---|
@@ -38,12 +38,12 @@ Seven decisions locked via brainstorming. Each records the chosen option, reject
 | 4 | Rendering | Hand-rolled SVG | `visx` (~15KB); `recharts` (~80KB); `d3` (~30KB) | Zero bundle cost; brutalist aesthetic wants sharp angular control; no library fights us on rounded defaults; geometrically simple (polygon + polyline) so implementation is ~100 lines per component |
 | 5 | SkillRadar data scope | Active theme only (single large widget) | Per-theme grid (5 radars); aggregate across themes | Matches existing "resume learning" flow; single large widget has clearer visual hierarchy; schema is keyed `(user_id, theme_id)` so aggregate loses info |
 | 6 | Interactivity | Fully static, all values as visible labels | Hover/focus tooltips; click-to-drill-down | Brutalist "information dense, no hidden state" aesthetic; avoids adding to the a11y audit's existing hidden-state debt (tooltips need keyboard + ARIA + touch paths); single implementation |
-| 7 | Visual style | Option C — Code Comment (spokes + dashed tick; mono table legend; staircase curve) | A (grid+outline); B (filled+inline) | Maximally differentiated — reads as Tensorcraft specifically, not a generic ML dashboard; mono-first aligns with brutalist direction; staircase renders clearer at small sizes |
+| 7 | Visual style | Option C - Code Comment (spokes + dashed tick; mono table legend; staircase curve) | A (grid+outline); B (filled+inline) | Maximally differentiated - reads as Tensorcraft specifically, not a generic ML dashboard; mono-first aligns with brutalist direction; staircase renders clearer at small sizes |
 
 ## 4. Architecture
 
 ```text
-packages/ui/src/visualizations/       # NEW subdir — shared primitives
+packages/ui/src/visualizations/       # NEW subdir - shared primitives
 ├── loss-curve.tsx                    # NEW ~120 lines
 ├── loss-curve.test.tsx               # snapshot + step-line tests
 ├── helpers.ts                        # NEW pure geometry (hexCorners, stepPath, SKILL_AXIS_ORDER)
@@ -51,10 +51,10 @@ packages/ui/src/visualizations/       # NEW subdir — shared primitives
 └── index.ts                          # re-exports (LossCurve + helpers)
 
 apps/web/app/dashboard/
-├── skill-genome.tsx                  # REFACTORED in place — Option C style applied to the existing RadarChart
-├── skill-genome.test.tsx             # NEW/updated — asserts Option C invariants
+├── skill-genome.tsx                  # REFACTORED in place - Option C style applied to the existing RadarChart
+├── skill-genome.test.tsx             # NEW/updated - asserts Option C invariants
 └── _lib/
-    ├── viz-data.ts                   # NEW — Supabase row → prop transforms
+    ├── viz-data.ts                   # NEW - Supabase row → prop transforms
     └── viz-data.test.ts              # NEW
 ```
 
@@ -98,10 +98,10 @@ export function LossCurve(props: LossCurveProps): JSX.Element;
 ```
 
 **Color strategy:** neither component takes a color prop. Colors are consumed via CSS custom properties already defined in `packages/themes/src/css/themes.css`:
-- `var(--tc-primary)` — radar polygon stroke, curve stroke, data values
-- `var(--tc-border)` — spokes, baseline, dashed tick
-- `var(--tc-muted)` — comment text ("# skill_genome", "// loss.hints — 12wk")
-- `var(--tc-text)` — axis names
+- `var(--tc-primary)` - radar polygon stroke, curve stroke, data values
+- `var(--tc-border)` - spokes, baseline, dashed tick
+- `var(--tc-muted)` - comment text ("# skill_genome", "// loss.hints - 12wk")
+- `var(--tc-text)` - axis names
 
 When the active theme changes, the same component re-renders with the new accent automatically.
 
@@ -152,7 +152,7 @@ export function computeWeeklyHints(
 
 ### 7.1 SkillRadar
 
-Layout: horizontal split — SVG on the left (55% width), mono legend table on the right (45% width).
+Layout: horizontal split - SVG on the left (55% width), mono legend table on the right (45% width).
 
 **SVG (viewBox 0 0 160 200, flexible width):**
 - Center at (80, 100), radius r=80 at 100% proficiency.
@@ -174,12 +174,12 @@ Rendered with `font-family: var(--font-mono)`, mono values right-aligned at a fi
 
 SVG (viewBox 0 0 260 130):
 - Baseline at y=115 from x=30 to x=250.
-- Staircase polyline generated by `stepPath(points)` helper — each data pair `(x_n, y_n)` contributes TWO segments: horizontal from previous `(x_{n-1}, y_n)` to current `(x_n, y_n)`, then vertical from `(x_n, y_n)` to next. Results in a classic staircase shape.
-- Y value domain: `[0, max(5, observedMax + 0.5)]` — keep 5 as a sensible floor for the top of the chart so an unusually high week doesn't compress the rest.
+- Staircase polyline generated by `stepPath(points)` helper - each data pair `(x_n, y_n)` contributes TWO segments: horizontal from previous `(x_{n-1}, y_n)` to current `(x_n, y_n)`, then vertical from `(x_n, y_n)` to next. Results in a classic staircase shape.
+- Y value domain: `[0, max(5, observedMax + 0.5)]` - keep 5 as a sensible floor for the top of the chart so an unusually high week doesn't compress the rest.
 - X positions: evenly spaced across available weeks.
 - Two text labels: start value at top-left (`<text x="30" y="14">5.0 W1</text>` in muted color); end value at line terminus in primary color.
-- Header label: `<text x="30" y="10" fill="var(--tc-muted)">// loss.hints — 12wk</text>` (rendered above the chart area).
-- Null-value weeks (no exercises) are **filtered out** of the polyline — the staircase connects only non-null points. **Updated 2026-04-20 (YAGNI):** an earlier draft specified a dashed placeholder bridge across null weeks; dropped to simplify the typical-user case. Revisit only if sparse-data rendering reads as confusing in the wild.
+- Header label: `<text x="30" y="10" fill="var(--tc-muted)">// loss.hints - 12wk</text>` (rendered above the chart area).
+- Null-value weeks (no exercises) are **filtered out** of the polyline - the staircase connects only non-null points. **Updated 2026-04-20 (YAGNI):** an earlier draft specified a dashed placeholder bridge across null weeks; dropped to simplify the typical-user case. Revisit only if sparse-data rendering reads as confusing in the wild.
 
 ### 7.3 Pure helpers
 
@@ -202,12 +202,12 @@ export const SKILL_AXIS_ORDER = [
 
 | Condition | SkillRadar | LossCurve |
 |---|---|---|
-| No `skill_genome` rows | Empty hexagon outline; center text "No activity yet" in muted color; legend shows all axes at 0.00 | — |
-| No `exercise_attempts` rows in 12 weeks | — | Empty axes; centered text "Complete 3+ exercises to see trend" |
-| Partial axes (< 6 rows) | Missing axes rendered at proficiency 0 → polygon shrinks on that spoke | — |
-| Partial weeks (< 12) | — | Render what exists; no extrapolation |
+| No `skill_genome` rows | Empty hexagon outline; center text "No activity yet" in muted color; legend shows all axes at 0.00 | - |
+| No `exercise_attempts` rows in 12 weeks | - | Empty axes; centered text "Complete 3+ exercises to see trend" |
+| Partial axes (< 6 rows) | Missing axes rendered at proficiency 0 → polygon shrinks on that spoke | - |
+| Partial weeks (< 12) | - | Render what exists; no extrapolation |
 | Single data point | Single-vertex polygon (renders as a dot) | Single circle at right edge; no line |
-| All-null weeks | — | Empty axes; "Complete 3+ exercises…" message |
+| All-null weeks | - | Empty axes; "Complete 3+ exercises…" message |
 
 ## 9. Accessibility
 
@@ -222,9 +222,9 @@ Content:
 - LossCurve `<title>`: `"Rolling 7-day average hints per exercise, last 12 weeks"`
 - LossCurve `<desc>`: `"Started at 5.0 hints in week 1, currently 2.1 hints in week 12. Trend: decreasing."` (dynamic)
 
-Because all numerical values are also visible as text in the SVG/legend per decision #6, screen-reader output mirrors visual output — no information asymmetry. No `aria-live` needed (static per page load).
+Because all numerical values are also visible as text in the SVG/legend per decision #6, screen-reader output mirrors visual output - no information asymmetry. No `aria-live` needed (static per page load).
 
-Addresses specific findings from `docs/audits/accessibility-audit-2026-04-20.md` (sub-12px text avoided — min 10px for comment labels, which is a mono-specific concession; we'll use 11px minimum for axis values).
+Addresses specific findings from `docs/audits/accessibility-audit-2026-04-20.md` (sub-12px text avoided - min 10px for comment labels, which is a mono-specific concession; we'll use 11px minimum for axis values).
 
 ## 10. Out of scope (deferred)
 
@@ -251,21 +251,21 @@ Addresses specific findings from `docs/audits/accessibility-audit-2026-04-20.md`
 
 ## 11. Implementation sequence (for the plan)
 
-1. **Phase 1 — Pure primitives (parallelizable):**
+1. **Phase 1 - Pure primitives (parallelizable):**
    - `packages/ui/src/visualizations/helpers.ts` + tests (hexCorners, stepPath, SKILL_AXIS_ORDER)
    - `apps/web/app/dashboard/_lib/viz-data.ts` + tests (padSkillAxes, computeWeeklyHints)
 
-2. **Phase 2 — Components (depend on Phase 1):**
+2. **Phase 2 - Components (depend on Phase 1):**
    - Refactor `apps/web/app/dashboard/skill-genome.tsx` RadarChart → Option C (no rings, no dots, stroke-only, mono legend) + tests asserting the new invariants
    - Create `packages/ui/src/visualizations/loss-curve.tsx` + snapshot tests
    - Wire `packages/ui/src/visualizations/index.ts` + top-level `packages/ui/src/index.ts` re-export for LossCurve
 
-3. **Phase 3 — Integration (sequential, depends on Phase 2):**
-   - Dashboard server component adds the `exercise_attempts` query for LossCurve (the `skill_genome` query already exists — just run its rows through `padSkillAxes` before passing to `<SkillGenome>`)
+3. **Phase 3 - Integration (sequential, depends on Phase 2):**
+   - Dashboard server component adds the `exercise_attempts` query for LossCurve (the `skill_genome` query already exists - just run its rows through `padSkillAxes` before passing to `<SkillGenome>`)
    - Dashboard view receives `lossCurveData` prop, renders `<LossCurve>` adjacent to `<SkillGenome>`
    - Update existing `dashboard/page.tsx` and `dashboard-view.tsx` tests
 
-4. **Phase 4 — Documentation (depends on Phase 3):**
+4. **Phase 4 - Documentation (depends on Phase 3):**
    - Update `docs/dev-plan.md` §11b marking the visualization entry `[x]` with completion date
    - Update §5b cross-reference
    - Append Session log entry
@@ -273,7 +273,7 @@ Addresses specific findings from `docs/audits/accessibility-audit-2026-04-20.md`
 ## 12. Open questions at implementation time
 
 - **Timezone for week bucketing:** UTC Monday-aligned is proposed. If user-local-time bucketing turns out to matter (e.g., a learner in UTC-8 submitting at 11pm local on Sunday would be bucketed into next week under UTC), we'd adjust. Ship UTC first, revisit only on evidence.
-- **Deep Orbit primary color verification:** The existing palette values are assumed correct against `#232323` surface. Nova Canvas primary (`#C06060`) is known to fail WCAG AA and is being addressed as part of Phase 11 §11a foundation work (see separate dev-plan decision). SkillRadar/LossCurve themselves don't pick colors — they inherit — so this is a palette concern, not a component concern.
+- **Deep Orbit primary color verification:** The existing palette values are assumed correct against `#232323` surface. Nova Canvas primary (`#C06060`) is known to fail WCAG AA and is being addressed as part of Phase 11 §11a foundation work (see separate dev-plan decision). SkillRadar/LossCurve themselves don't pick colors - they inherit - so this is a palette concern, not a component concern.
 - **SkillRadar legend layout at narrow widths:** The horizontal SVG + table split works at dashboard widths (≥768px). Below that, the legend might need to stack under the SVG. Mobile handling should be decided during Stage 3 integration based on where `SkillRadar` actually sits in the dashboard grid.
 
 ## 13. Related documents

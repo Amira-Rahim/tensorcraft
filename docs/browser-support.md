@@ -14,15 +14,15 @@ config, and manual QA runs are built against.
 We target **the latest two stable releases** of every engine. Anything
 older than that is best-effort and not blocking for release.
 
-> **Corrected 2026-07-21 — these are TARGETS, not verified coverage.** This
+> **Corrected 2026-07-21 - these are TARGETS, not verified coverage.** This
 > section previously implied a four-engine CI matrix. It does not exist. What
 > `playwright.config.ts` actually defines is one `chromium` project plus three
-> device projects (`iPhone SE`, `Pixel 7`, `iPad`) — and **all three device
+> device projects (`iPhone SE`, `Pixel 7`, `iPad`) - and **all three device
 > projects are `testMatch: /mobile\.spec\.ts/`**, so WebKit only ever runs the
 > mobile smoke file and never touches the exercise, auth, pricing or playback
 > specs. **Firefox has zero automated coverage of any kind.** There is also no
 > `browserslist` anywhere in the repo, so the version floors below are
-> unenforced by tooling — nothing fails a build for using a feature outside
+> unenforced by tooling - nothing fails a build for using a feature outside
 > them. Treat the "Verified by" column as the honest state.
 
 | Browser | Minimum version | Engine | Verified by |
@@ -37,9 +37,9 @@ restriction from at least one WebKit project so it runs the full suite.
 
 Out-of-scope:
 
-- Internet Explorer (any version) — not supported.
-- Opera Mini and other proxy browsers — not tested.
-- Chrome / Firefox / Edge versions older than N-1 — not tested.
+- Internet Explorer (any version) - not supported.
+- Opera Mini and other proxy browsers - not tested.
+- Chrome / Firefox / Edge versions older than N-1 - not tested.
 
 ## Device reference set
 
@@ -78,7 +78,7 @@ Primary acceptance widths per dev-plan §6b: **320, 768, 1024, 1440**.
 All interactive elements (buttons, links styled as buttons, form inputs,
 toggles, tab indicators, close buttons, CTAs, navigation items) must
 have a hit area of at least **44 × 44 CSS pixels** on mobile widths,
-matching WCAG 2.1 AA (Target Size — Minimum) and Apple HIG.
+matching WCAG 2.1 AA (Target Size - Minimum) and Apple HIG.
 
 In Tailwind this is `min-h-11 min-w-11` (2.75 rem). Elements that need to
 render smaller visually (e.g. dense filter chips) are allowed, but must

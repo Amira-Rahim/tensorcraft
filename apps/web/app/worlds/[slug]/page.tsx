@@ -124,7 +124,7 @@ export default async function WorldDetailPage({ params }: Props) {
     // `mod.order > 1`.
     //
     // This used to call isFoundationsModule(mod), i.e. `track === "foundations"`
-    // — and in deep-orbit that track spans modules 1 THROUGH 4. So the map
+    // - and in deep-orbit that track spans modules 1 THROUGH 4. So the map
     // advertised modules 2, 3 and 4 as available, and clicking any of them
     // bounced the learner to /pricing?locked=. It landed hardest right after
     // the free-account CTA converted someone: sign up, see three more modules
@@ -243,7 +243,7 @@ export default async function WorldDetailPage({ params }: Props) {
   // The free-module dead end (2026-07-14 UX audit): with module 1 done
   // and module 2 paywall-locked, activeModule is undefined and the CTA
   // used to render "Start Learning" pointing at a route that redirects
-  // straight back to this map — a self-loop at the exact moment the
+  // straight back to this map - a self-loop at the exact moment the
   // learner is most ready to buy. Route that state to the paywall.
   const nextLockedModule = moduleMapItems.find((m) => m.status === "locked");
   const paywallBlocked =
@@ -315,7 +315,7 @@ export default async function WorldDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
       {/* The world's signature scene (Deep Orbit's orbital system for the
-          live world) behind the module map — same renderer as the homepage
+          live world) behind the module map - same renderer as the homepage
           and /worlds cards, viewport-capped with a bottom fade. Worlds with
           shipped art also get their location master plate under the canvas;
           the four unlaunched worlds resolve to undefined and render exactly

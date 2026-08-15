@@ -11,7 +11,7 @@
 --
 -- The webhook's capture is guarded by `.is("stripe_customer_id", null)`, so a
 -- poisoned value permanently blocks the legitimate write and the poisoned
--- linkage sticks — cross-user billing confusion the moment recurring billing
+-- linkage sticks - cross-user billing confusion the moment recurring billing
 -- (roadmap H1/H3) trusts the column. Inert in V1 (nothing reads it yet), but
 -- the column must be server-owned from day one.
 --

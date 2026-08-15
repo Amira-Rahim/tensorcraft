@@ -6,11 +6,11 @@
 -- tables) and painful to add later against a live 100k-row DB:
 --
 --   1. dashboard/page.tsx filters theme_progress by user_id and
---      order("updated_at" desc) — the existing idx_progress_user_theme
+--      order("updated_at" desc) - the existing idx_progress_user_theme
 --      (user_id, theme_id) satisfies the FILTER but not the SORT, so Postgres
 --      index-scans the user's rows then sorts them on every dashboard load.
 --   2. dashboard/page.tsx filters exercise_attempts by user_id and
---      order("attempted_at" desc).limit(800) — idx_exercise_attempts_user
+--      order("attempted_at" desc).limit(800) - idx_exercise_attempts_user
 --      (user_id) has the same filter-not-sort gap; a heavy learner sorts 10k+
 --      rows per render.
 --   3. entitlements.getEntitledThemes + payments.ts + pricing use

@@ -3,7 +3,7 @@
 -- 014/039 scored proficiency as `clamp(raw_sum * 2, 0, 100)`. A finished
 -- theme produces raw sums of 60-180+ per touched axis (56 lessons x 2pts +
 -- exercise passes x 3pts), so FIVE OF SIX AXES PIN AT 100 for every
--- customer who simply completes the theme — the radar renders the same
+-- customer who simply completes the theme - the radar renders the same
 -- filled hexagon for everyone, which is the opposite of the feature's
 -- point (relative axis shape).
 --
@@ -16,7 +16,7 @@
 -- Body is otherwise byte-identical to 039's version (ownership guard
 -- included). Existing skill_genome rows recompute on the next
 -- compute_user_skill_genome call per user; no backfill needed (the table
--- is effectively empty pre-launch — emitSkillEvent gained its first call
+-- is effectively empty pre-launch - emitSkillEvent gained its first call
 -- sites on 2026-07-13).
 --
 -- Follows packages/supabase/migrations/CONVENTIONS.md:

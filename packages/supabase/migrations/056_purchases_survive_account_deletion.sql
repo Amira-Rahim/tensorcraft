@@ -2,7 +2,7 @@
 -- deletion endpoint prerequisite; R3-8 retention conflict).
 --
 -- 001 chained purchases → profiles → auth.users with ON DELETE CASCADE, so
--- deleting an auth user would erase their purchase rows — but VAT/OSS
+-- deleting an auth user would erase their purchase rows - but VAT/OSS
 -- record-keeping obligations (~10 years) REQUIRE retaining the financial
 -- records (amount, tax_country, customer_tax_id, dates). GDPR's right to
 -- erasure explicitly yields to legal retention obligations (Art. 17(3)(b));

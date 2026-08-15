@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { CheckoutButton } from "../checkout-button";
 
 // Regression guard for the launch-blocking bug where the buy button POSTed
-// to a RELATIVE /api/payments/checkout — which resolves to the web origin
+// to a RELATIVE /api/payments/checkout - which resolves to the web origin
 // (no such route on Vercel) instead of the API host. The checkout call MUST
 // go through getApiUrl().
 

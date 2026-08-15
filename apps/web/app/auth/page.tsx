@@ -49,7 +49,7 @@ export default function AuthPage() {
       >
         {/* The lab plate as the pane's ground, the live canvas above it as
             the reflection on the glass: the Five Worlds band composite. Over
-            dark art the canvas keeps its dark hue in both schemes — the
+            dark art the canvas keeps its dark hue in both schemes - the
             light hue was minted for a paper background (WorldSceneBackdrop
             precedent). Absent art, the pane renders exactly as before. */}
         {AUTH_PLATE_SRC && (

@@ -23,7 +23,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 
 /** Quoted from the scene bible's shared scene style token, plus the no-text
     rule the character gates taught. */
@@ -118,12 +121,18 @@ for (const name of targets) {
   for (let n = 1; n <= Number(count); n++) {
     const args = [
       "scripts/art/generate.mjs",
-      "--provider", "fal",
-      "--phase", "masters",
-      "--id", name,
-      "--count", "1",
-      "--size", "1536x1024",
-      "--prompt", spec.prompt + TOKEN,
+      "--provider",
+      "fal",
+      "--phase",
+      "masters",
+      "--id",
+      name,
+      "--count",
+      "1",
+      "--size",
+      "1536x1024",
+      "--prompt",
+      spec.prompt + TOKEN,
       ...(spec.ref ? ["--ref", spec.ref] : []),
     ];
     process.stdout.write(`${name} ${n}/${count}: `);
@@ -131,7 +140,9 @@ for (const name of targets) {
       const out = execFileSync("node", args, { cwd: ROOT, encoding: "utf8" });
       process.stdout.write(out.trim().split("\n").pop().trim() + "\n");
     } catch (err) {
-      process.stdout.write(`FAILED ${(err.stderr || "").trim().slice(0, 140)}\n`);
+      process.stdout.write(
+        `FAILED ${(err.stderr || "").trim().slice(0, 140)}\n`,
+      );
       process.exitCode = 1;
     }
   }

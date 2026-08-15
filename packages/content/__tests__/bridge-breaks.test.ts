@@ -19,7 +19,7 @@ import {
  * because they had neither an inline `breaks:` nor a registry match carrying
  * one. This gate replays the SAME resolution the component uses
  * (bridge-callout.tsx: inline breaks, else registry entry matched on
- * feTitle/mlTitle) over every lesson of EVERY built story world — adding a
+ * feTitle/mlTitle) over every lesson of EVERY built story world - adding a
  * world to BUILT_WORLD_DIRS extends the gate automatically instead of
  * silently exempting the new corpus (the old version hardcoded deep-orbit
  * and the literal 55).

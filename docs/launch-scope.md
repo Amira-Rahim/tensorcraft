@@ -35,12 +35,12 @@ document is the source of truth.
   unlaunched worlds only appear at the `/worlds/{slug}` stub level
   (priority 0.4). No module/lesson/capstone routes for them.
 - **Stripe checkout + webhook** reject any `world_ids` that aren't in
-  `LAUNCHED_WORLDS`. The pricing UI is owned by a parallel session — see
+  `LAUNCHED_WORLDS`. The pricing UI is owned by a parallel session - see
   "Out of scope" below.
 
 ## Source of truth in code
 
-- **`packages/shared/src/constants.ts`** —
+- **`packages/shared/src/constants.ts`** -
   - `LAUNCHED_WORLDS = ["deep-orbit"] as const`
   - `COMING_SOON_WORLDS` (derived)
   - `isLaunched(slug)`, `isComingSoon(slug)` helpers
@@ -101,7 +101,7 @@ When a coming-soon world is ready to ship:
 1. Add its slug to `LAUNCHED_WORLDS` in `packages/shared/src/constants.ts`.
 2. Add its dir to `LAUNCHED_WORLD_DIRS` in
    `packages/content/velite.config.ts`.
-3. Re-run `pnpm build:content` and `pnpm build` — sitemap, JSON-LD,
+3. Re-run `pnpm build:content` and `pnpm build` - sitemap, JSON-LD,
    onboarding flow, dashboard, and `/worlds/{slug}` route all flip
    automatically.
 4. Update marketing copy on `/worlds/page.tsx`, `/learn/page.tsx`, and

@@ -43,9 +43,9 @@ Introduce a two-column lesson shell at the `lg` breakpoint (>=1024px):
 
 Extract from the oversized `lesson-steps.tsx`:
 
-- `LessonShell` — owns the grid, top chrome (mission-map link, segmented progress, step label), footer nav (Continue/back), and the left/right slots. Pure layout.
-- `RightRail` — renders the informational right region per step.
-- `WorkPane` — renders the interactive right region (code/demo/exercise) for Code + Challenge.
+- `LessonShell` - owns the grid, top chrome (mission-map link, segmented progress, step label), footer nav (Continue/back), and the left/right slots. Pure layout.
+- `RightRail` - renders the informational right region per step.
+- `WorkPane` - renders the interactive right region (code/demo/exercise) for Code + Challenge.
 
 `lesson-steps.tsx` keeps the step state machine (current step, gating, persistence) and composes `LessonShell` with the correct left/right content per step. This is a refactor behind the existing step tests, not a rewrite of the state machine.
 

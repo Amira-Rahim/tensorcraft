@@ -4,7 +4,7 @@ Per dev-plan §6i, every event in `apps/web/lib/analytics-events.ts`
 (which mirrors PRD Appendix B) must land in the PostHog EU dashboard
 before launch. This doc is the verification protocol.
 
-**Scope:** 20 events total — 15 originally defined plus 5 newly wired in
+**Scope:** 20 events total - 15 originally defined plus 5 newly wired in
 2026-04 (`session_started`, `session_ended`, `progress_shared`,
 `code_pushed`, `upgrade_cta_shown`, `upgrade_cta_clicked`). All 20 are
 defined in the typed `track()` helper, covered by unit tests
@@ -14,7 +14,7 @@ gating or server-side for Stripe/GitHub flows.
 ## Verification approach
 
 Playwright network-intercept was considered and **deferred** in favor of
-manual dashboard confirmation — reasons:
+manual dashboard confirmation - reasons:
 
 1. PostHog's ingest URL varies by region and batching window; asserting
    on payload shape in e2e is brittle.
@@ -80,7 +80,7 @@ Confirm each event lands within ~30s under the originating user's
 ## GitHub server-side events
 
 `code_pushed` is emitted from the Hono API (`apps/api/src/routes/github.ts`)
-whenever `commitLessonArtifact` succeeds — same authoritative pattern as
+whenever `commitLessonArtifact` succeeds - same authoritative pattern as
 `payment_completed`. Verify in staging by:
 
 1. Connect GitHub from `/settings` (OAuth round-trip).
@@ -94,7 +94,7 @@ whenever `commitLessonArtifact` succeeds — same authoritative pattern as
 1. Browser console → look for "PostHog" warnings. If `capture` is being
    called but the event isn't arriving, verify `NEXT_PUBLIC_POSTHOG_HOST`
    is `https://eu.posthog.com` (US host = wrong project).
-2. `localStorage.ph_<key>_posthog` — PostHog persists user ids here; if
+2. `localStorage.ph_<key>_posthog` - PostHog persists user ids here; if
    missing, init never ran (check `posthog-provider.tsx` consent gate).
 3. Server events: check Fly.io logs for `Webhook: Failed to capture`
    or missing `POSTHOG_KEY` env var.
@@ -107,7 +107,7 @@ whenever `commitLessonArtifact` succeeds — same authoritative pattern as
 - [ ] EU host (`eu.posthog.com`) confirmed in network tab.
 
 > **Note (2026-04-21):** Final dashboard verification is pending first
-> production PostHog session — the checklist above requires a live
+> production PostHog session - the checklist above requires a live
 > PostHog project with real events. Current wiring status: all 20 events
 > defined, unit tests green, server-side emits wired for Stripe + GitHub,
 > consent gating in place. See `session_2026_04_21.md` in user memory

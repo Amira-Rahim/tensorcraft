@@ -55,7 +55,7 @@ describe("tagKitEventOnce", () => {
 
   /**
    * The regression that mattered most. `/api/email` answers
-   * 200 {ok:true, skipped:true} when the tag's env var is unconfigured —
+   * 200 {ok:true, skipped:true} when the tag's env var is unconfigured -
    * the DEFAULT on a fresh deploy, since KIT_TAG_PAYWALL_HIT and
    * KIT_TAG_MODULE_1_COMPLETE are absent from .env.example and the
    * deployment guide. Treating that 200 as success burned the flag for

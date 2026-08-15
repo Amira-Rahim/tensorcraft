@@ -3,9 +3,9 @@
 -- 038's terminal-status trigger is correct for its purpose (webhook retries
 -- must never regress refunded/disputed/failed back to completed), but it
 -- also blocks the two LEGITIMATE restoration paths:
---   1. charge.dispute.closed with status "won" — the buyer's access should
+--   1. charge.dispute.closed with status "won" - the buyer's access should
 --      come back, and no handler existed at all;
---   2. the operator's manual repair — `update purchases set
+--   2. the operator's manual repair - `update purchases set
 --      status='completed'` from the SQL editor "succeeds" (UPDATE 1) while
 --      the trigger silently keeps the old status.
 --

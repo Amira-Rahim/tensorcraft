@@ -35,8 +35,8 @@ export function RecallPrompt({
 
         The region announces the EVENT only, never the answer text. Focus
         lands on the answer itself, so repeating it here would make a screen
-        reader read it twice. (It also keeps the two answer APIs — `children`
-        JSX and the `answer` string — behaving identically.)
+        reader read it twice. (It also keeps the two answer APIs - `children`
+        JSX and the `answer` string - behaving identically.)
       */}
       <div
         role="status"

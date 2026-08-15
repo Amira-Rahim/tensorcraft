@@ -7,7 +7,7 @@
 --
 -- Migrations 029 (dispatch), 030 (boss beat), and 031 (counterfactual)
 -- are intentionally left intact. Historical skill_events rows with
--- event_type = 'review_recall' are left in place as harmless data —
+-- event_type = 'review_recall' are left in place as harmless data -
 -- nothing reads them once the operator log is gone.
 
 -- ── Review queue (027 + 028) ──────────────────────────────────────────

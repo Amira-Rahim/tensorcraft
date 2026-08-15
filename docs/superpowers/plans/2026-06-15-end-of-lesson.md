@@ -208,7 +208,7 @@ This task makes `<LessonRecap>` renderable so migration (Task 5) can add it. Do 
 
 ---
 
-### Task 5: Content migration (77 built lessons) — run as per-module batches
+### Task 5: Content migration (77 built lessons) - run as per-module batches
 
 **Files:** lesson MDX under `packages/content/content/deep-orbit/**/*.mdx` (56, incl. capstone) and `packages/content/content/extras/**/*.mdx` (21). Exercises dirs are NOT lessons; skip `**/exercises/*`.
 
@@ -230,7 +230,7 @@ This is the bulk. The controller runs this task once per module batch (deep-orbi
 **Per-batch procedure:**
 - [ ] Pick one module dir (e.g. `deep-orbit/foundations`). List its lesson MDX (exclude `exercises/`).
 - [ ] Migrate each lesson per the recipe above.
-- [ ] Rebuild content: `pnpm --filter @tensorcraft/content build:content` — must succeed (proves all `<LessonRecap>`/`<RecallPrompt>` usages compile).
+- [ ] Rebuild content: `pnpm --filter @tensorcraft/content build:content` - must succeed (proves all `<LessonRecap>`/`<RecallPrompt>` usages compile).
 - [ ] Quick grep check for the batch: each migrated file has exactly one `<RecallPrompt`, one `<LessonRecap`, zero `<Quiz`, zero `<KeyTakeaways`, and RecallPrompt appears before LessonRecap.
 - [ ] Leave uncommitted; report which lessons migrated.
 
@@ -299,9 +299,9 @@ describe("end-of-lesson migration completeness (built lessons)", () => {
 });
 ```
 
-Confirm the glob library available to `packages/content` (it depends on velite; `glob` may not be a direct dep — if missing, use `fs.readdirSync` recursion or add the dep used elsewhere in the repo). Verify the count 77 matches reality; if extras/deep-orbit counts differ, fix the expected number and note it.
+Confirm the glob library available to `packages/content` (it depends on velite; `glob` may not be a direct dep - if missing, use `fs.readdirSync` recursion or add the dep used elsewhere in the repo). Verify the count 77 matches reality; if extras/deep-orbit counts differ, fix the expected number and note it.
 
-- [ ] **Step 3: Run the guard test** (`npx vitest run packages/content/src/end-of-lesson.test.ts`) — PASS (proves migration complete). If it fails, a lesson was missed; fix the lesson, not the test.
+- [ ] **Step 3: Run the guard test** (`npx vitest run packages/content/src/end-of-lesson.test.ts`) - PASS (proves migration complete). If it fails, a lesson was missed; fix the lesson, not the test.
 
 - [ ] **Step 4: e2e.** In the lesson e2e spec, on the Takeaways step assert: a "Recall prompt" appears above the "Lesson recap"; clicking Reveal Answer shows the answer + the Got it / Review again buttons; the recap shows the three sub-labels (What you learned / The bridge / You can now); no MC quiz options render. Verify selectors live before finalizing.
 

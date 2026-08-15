@@ -16,7 +16,10 @@ import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 
 /**
  * Expression copy is quoted from each sheet's Expression set line.
@@ -129,20 +132,29 @@ for (const slug of slugs) {
   for (const [expression, description] of Object.entries(entry.states)) {
     const args = [
       "scripts/art/generate.mjs",
-      "--provider", "fal",
-      "--phase", "expressions",
-      "--id", `${slug}-${expression}`,
-      "--ref", `docs/art-refs/deep-orbit/${slug}.png`,
-      "--count", "1",
-      "--size", "1024x1024",
-      "--prompt", preserve + description + ". " + entry.hold + tail,
+      "--provider",
+      "fal",
+      "--phase",
+      "expressions",
+      "--id",
+      `${slug}-${expression}`,
+      "--ref",
+      `docs/art-refs/deep-orbit/${slug}.png`,
+      "--count",
+      "1",
+      "--size",
+      "1024x1024",
+      "--prompt",
+      preserve + description + ". " + entry.hold + tail,
     ];
     process.stdout.write(`${slug}-${expression}: `);
     try {
       const out = execFileSync("node", args, { cwd: ROOT, encoding: "utf8" });
       process.stdout.write(out.trim().split("\n").pop().trim() + "\n");
     } catch (err) {
-      process.stdout.write(`FAILED ${(err.stderr || "").trim().slice(0, 120)}\n`);
+      process.stdout.write(
+        `FAILED ${(err.stderr || "").trim().slice(0, 120)}\n`,
+      );
       process.exitCode = 1;
     }
   }

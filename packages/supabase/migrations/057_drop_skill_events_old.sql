@@ -3,7 +3,7 @@
 --
 -- Migration 013 rebuilt skill_events as a partitioned table and renamed the
 -- original to skill_events_old, with the DROP commented out "pending manual
--- verification" — which never happened, and the register warned production
+-- verification" - which never happened, and the register warned production
 -- may carry a full duplicate. Verified against production via PostgREST on
 -- 2026-07-25: the table EXISTS and holds ZERO rows (content-range */0).
 -- Nothing references it in code (grep clean). Dropping is a no-data-loss

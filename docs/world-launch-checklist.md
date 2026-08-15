@@ -14,12 +14,12 @@ signal-ward, nova-canvas, terra-grid.
 
 | # | Work item | Scale | Nature |
 |---|---|---|---|
-| 1 | Lesson-close conversion | **219/219 lessons** | Every unbuilt lesson closes on `<KeyTakeaways>` (and 51 carry `<Quiz>`) — neither is in any step visibility set, so **step 5 renders literally empty** in every one. Convert to `<LessonRecap>` / `<RecallPrompt>` / `<Epilogue>` closes. Net-new authoring, not mechanical. |
+| 1 | Lesson-close conversion | **219/219 lessons** | Every unbuilt lesson closes on `<KeyTakeaways>` (and 51 carry `<Quiz>`) - neither is in any step visibility set, so **step 5 renders literally empty** in every one. Convert to `<LessonRecap>` / `<RecallPrompt>` / `<Epilogue>` closes. Net-new authoring, not mechanical. |
 | 2 | Hint ladders | **195/195 fail Gate B** | Hints are prose, not solution-code excerpts. One verified example teaches `input * Wq` (elementwise in TFJS; throws). Every ladder needs the excerpt-convention rewrite Deep Orbit got in run #7. |
 | 3 | Hard-walled lessons | **16** | The Challenge continue-gate counts an exercise the page never embeds → learner sees "Exercise not found" and can never leave the step. |
 | 4 | First-ever fact-check | **all 219** | A 12-lesson sample produced 5 defects. Deep Orbit needed FOUR adversarial rounds to reach its first zero-error pass. Single-pass budgets are fantasy. |
 | 5 | Character registry | **520 of 626 speakers absent** | Only deep-orbit has avatar slugs in the manifest; every other world's Dialogue speakers render unresolved. |
-| 6 | Missing breaks panels | **28 bridges** | Falsifies the unqualified absolutes on `/learn` and `/compare` the day world 2 ships (the bridge-breaks gate now extends automatically and will catch these — red until fixed). |
+| 6 | Missing breaks panels | **28 bridges** | Falsifies the unqualified absolutes on `/learn` and `/compare` the day world 2 ships (the bridge-breaks gate now extends automatically and will catch these - red until fixed). |
 | 7 | Word density | **26-41% below Deep Orbit** | The prose is thinner than the shipped bar; parity is a writing pass, not a copyedit. |
 | 8 | Consequence-number sync (Gate A) | **~14 known lessons** | consequence.narrative numbers that never appear in the lesson body pass today only because Gate A scopes to launched worlds; they fire the day the dir joins `BUILT_WORLD_DIRS`. Known list in `docs/audits/ai-slop-audit-2026-08-12.md` §Report-only #4 (terra-grid scale-reliability/01-05 + monitoring-drift/02, nova-canvas clip-alignment/01+03 + capstone/03+05 + creative-deployment/04 + vae/03, signal-ward tc/05 + pp/04 + qa/04), plus whatever the gate finds beyond it. Also fix the two known consequence/body numeral contradictions: neon feature-extraction/04 (48ms vs 45ms) and nova vae/03 (epoch 50 vs 40-42). |
 
@@ -37,13 +37,13 @@ signal-ward, nova-canvas, terra-grid.
 
 ## Gates that will catch you (by design)
 
-- `world-shape-disk.test.ts` — WORLD_SHAPE vs disk for ALL worlds, built or
+- `world-shape-disk.test.ts` - WORLD_SHAPE vs disk for ALL worlds, built or
   not, plus `LAUNCHED ⊆ BUILT`.
-- `bridge-breaks.test.ts` — per built story world, every bridge must resolve
+- `bridge-breaks.test.ts` - per built story world, every bridge must resolve
   a breaks label.
-- `structure-variety.test.ts` — per built story world, the anti-lockstep
+- `structure-variety.test.ts` - per built story world, the anti-lockstep
   floors apply independently.
-- Gate B (`metadata-consistency.test.ts`) — hint excerpts must be parseable
+- Gate B (`metadata-consistency.test.ts`) - hint excerpts must be parseable
   subsets of solutionCode.
 
 If the plan is to sell bundles before world 2 meets this bar, re-price the

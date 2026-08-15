@@ -24,7 +24,7 @@ comment on column public.profiles.stripe_customer_id is
   'legacy one-time buyers have NULL until their next transaction.';
 
 -- Lookups by customer id happen on subscription webhooks (customer.subscription.*
--- events carry the customer, not our user id). Partial index keeps it small —
+-- events carry the customer, not our user id). Partial index keeps it small -
 -- only rows that actually have a customer are indexed.
 create index if not exists idx_profiles_stripe_customer_id
   on public.profiles (stripe_customer_id)

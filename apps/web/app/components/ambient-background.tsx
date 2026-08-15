@@ -17,7 +17,7 @@ interface Particle {
   col: [number, number, number];
 }
 
-// Dark deep-orbit values — used only when CSS custom properties are missing
+// Dark deep-orbit values - used only when CSS custom properties are missing
 // (SSR-adjacent edge cases, or the properties failing to parse). Real
 // rendering reads the live world/scheme palette via readPalettes() below.
 const FALLBACK_PALETTES: [number, number, number][] = [
@@ -45,7 +45,7 @@ function hexToRgb(hex: string): [number, number, number] | null {
 /**
  * Reads the current world + scheme's ambient palette straight off the live
  * CSS custom properties on `<html>` (`--tc-primary-rgb`, `--tc-tier-
- * structural`, `--tc-tier-intuition`) — the same three hues the old
+ * structural`, `--tc-tier-intuition`) - the same three hues the old
  * hardcoded PALETTES array approximated for deep-orbit-dark only, now
  * correct for every narrative world and both color schemes. Falls back to
  * the dark deep-orbit defaults if a property is missing or unparsable.
@@ -116,7 +116,7 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
     // Fully transparent clear, blends with page background
     ctx.clearRect(0, 0, w, h);
 
-    // Cheap attribute read every frame — never getComputedStyle in the loop
+    // Cheap attribute read every frame - never getComputedStyle in the loop
     // (that forces a style recalc per frame; readPalettes() only runs on
     // mount + attribute change, see the MutationObserver-driven handler
     // below).
@@ -168,7 +168,7 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
       ctx.fill();
 
-      // Soft glow halo on larger particles — dark-native (additive glow
+      // Soft glow halo on larger particles - dark-native (additive glow
       // dust). Light mode skips it entirely: a bloom halo reads as a smudge
       // on paper rather than atmosphere, so light gets clean ink motes only.
       if (scheme === "dark" && p.r > 1.2) {

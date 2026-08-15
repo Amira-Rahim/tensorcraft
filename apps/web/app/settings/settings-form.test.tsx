@@ -348,7 +348,7 @@ describe("SettingsForm", () => {
     // The old contact-support stub became a real self-serve erasure flow
     // (Tier 1-LEGAL, 2026-07-25): confirm notice + typed confirmation +
     // endpoint call. The submit must stay disabled until the exact literal
-    // is typed — a one-click irreversible delete would be the worse bug.
+    // is typed - a one-click irreversible delete would be the worse bug.
     await renderForm();
     fireEvent.click(screen.getByTestId("settings-tab-account"));
     expect(screen.queryByTestId("delete-confirm-notice")).toBeNull();

@@ -10,7 +10,7 @@ import {
 } from "../../../scripts/audit-structure-variety.mjs";
 
 /**
- * WORLD_SHAPE vs disk, for EVERY world dir — built or not (fresh-eyes rerun
+ * WORLD_SHAPE vs disk, for EVERY world dir - built or not (fresh-eyes rerun
  * §6: module-counts.test.ts iterates built worlds only, so the four unbuilt
  * WORLD_SHAPE rows were pinned by nothing and neon-protocol's 55-vs-54
  * survived three audits as "stale"). This gate reads raw .mdx counts off
@@ -26,7 +26,7 @@ describe("WORLD_SHAPE matches the corpus on disk (all worlds)", () => {
 });
 
 /**
- * LAUNCHED ⊆ BUILT — asserted nowhere until now (fresh-eyes rerun §6
+ * LAUNCHED ⊆ BUILT - asserted nowhere until now (fresh-eyes rerun §6
  * "unguarded entirely"). Launching a world whose content Velite never
  * compiles would 404 every lesson of a PAID product; this is the one-line
  * tripwire.
@@ -36,7 +36,7 @@ describe("launch/build coherence", () => {
     for (const slug of LAUNCHED_WORLDS) {
       expect(
         (BUILT_WORLD_DIRS as readonly string[]).includes(slug),
-        `LAUNCHED_WORLDS contains "${slug}" but BUILT_WORLD_DIRS does not — its lessons would 404`,
+        `LAUNCHED_WORLDS contains "${slug}" but BUILT_WORLD_DIRS does not - its lessons would 404`,
       ).toBe(true);
     }
   });

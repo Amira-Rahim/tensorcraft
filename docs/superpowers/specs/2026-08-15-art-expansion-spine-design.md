@@ -59,7 +59,7 @@ Unknown world or surface resolves to `undefined`; consumers fall back to
 today's render. Same typo defence as `HERO_PLATE`.
 
 - **/auth**: the left pane takes the `lab` plate as its ground with the
-  existing `OrbitCanvas` above it at 50% opacity — the exact Five Worlds
+  existing `OrbitCanvas` above it at 50% opacity - the exact Five Worlds
   band composite. Copy block stays at `z-10`. Desktop-only pane, off the
   form's critical path.
 - **/dashboard**: a framed `ArtPlate` panel at the top of the module-map
@@ -76,7 +76,7 @@ today's render. Same typo defence as `HERO_PLATE`.
 ## Wave 1b: expression annotation pass
 
 The `Dialogue` corpus has 176 tags, zero annotated. The pass adds
-`expression="<id>"` attributes only — no prose changes, no reflow.
+`expression="<id>"` attributes only - no prose changes, no reflow.
 
 Editorial rules:
 
@@ -97,7 +97,7 @@ Editorial rules:
 The share page already fetches `user_avatar_url` and drops it. Render it
 beside the "Awarded to" row via the existing `CharacterAvatar` (size 44):
 external URL as `src`, learner display name as `name`, so a dead URL
-degrades to the initials monogram instead of a broken image. `alt=""` — the
+degrades to the initials monogram instead of a broken image. `alt=""` - the
 name is the adjacent text.
 
 ## Wave 1d: plates on the OG cards
@@ -118,7 +118,7 @@ reliably; WebP is not a format we can bet an edge route on. So:
 
 ## Wave 2: mission patches
 
-Eleven module emblems in the style of embroidered mission patches — Deep
+Eleven module emblems in the style of embroidered mission patches - Deep
 Orbit canon, and the app's first collectible.
 
 **Assets.** `apps/web/public/patches/deep-orbit/<module-slug>.webp`,
@@ -146,7 +146,7 @@ moduleSlug)` with an explicit per-world allowlist, same shape as
   patch in place of the ✓ status box; every other state keeps today's box.
 - World page module map: same treatment for completed modules.
 - Capstone `CertificateCard`: a strip of the world's patches.
-- Certificate share page: the full strip — a certificate exists only when
+- Certificate share page: the full strip - a certificate exists only when
   every module is complete.
 
 Patches appear only when earned. No locked/empty slots, which would
@@ -197,7 +197,7 @@ before assets, so a rejected batch blocks nothing.
   slop-lexicon (attribute-only MDX edits add no prose).
 - **Axe:** dual-scheme run on touched pages, matching the existing matrix.
 - **Visual baselines:** re-mint whatever drifts; `auth-sign-in` (dark and
-  light) will. Verify each new baseline by eye before accepting — the
+  light) will. Verify each new baseline by eye before accepting - the
   2026-08-15 Tailwind incident showed a regenerated baseline can certify
   a broken page.
 - **Battery:** content, ui+web, typecheck, e2e per the repo's standard.

@@ -219,7 +219,7 @@ export default function OnboardingPage() {
         // profile with `onboarding_completed = false` back to /onboarding
         // (lib/supabase/middleware.ts), so a silently failed update meant the
         // learner finished the wizard, got routed onward, and was immediately
-        // bounced back into it — an infinite loop on first run, with no error
+        // bounced back into it - an infinite loop on first run, with no error
         // and no way out.
         const { error: completeError } = await supabase
           .from("profiles")
@@ -233,12 +233,12 @@ export default function OnboardingPage() {
         }
 
         // Mint a fresh JWT so it carries the updated onboarding_completed claim
-        // (custom access token hook, migration 046) immediately — otherwise the
+        // (custom access token hook, migration 046) immediately - otherwise the
         // learner's current token still reads false and middleware would bounce
         // the very next protected navigation back into onboarding until the
         // token refreshed on its own (middleware treats a PRESENT false claim
         // as authoritative; the profiles fallback only covers an ABSENT one).
-        // A failed refresh is therefore worth one retry — but never worth
+        // A failed refresh is therefore worth one retry - but never worth
         // blocking completion over: the DB row is already true, so the worst
         // case is a bounce that resolves at the next natural token refresh.
         const { error: refreshError } = await supabase.auth.refreshSession();
@@ -279,7 +279,7 @@ export default function OnboardingPage() {
       );
       // Open-redirect guard: accept only a real same-origin path. Must
       // start with a single "/" AND the next char must not be another
-      // "/" or a backslash — browsers normalize "/\evil.com" to
+      // "/" or a backslash - browsers normalize "/\evil.com" to
       // "//evil.com" (protocol-relative → offsite). Reject control chars
       // too, in case a crafted param slipped past URL decoding.
       const isSafePath =

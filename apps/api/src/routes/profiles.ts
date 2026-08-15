@@ -136,7 +136,7 @@ profiles.patch("/:userId", async (c) => {
   const supabase = getSupabaseServerClient(token);
 
   // Explicit column list, never a bare .select(). A bare select is
-  // `select("*")`, which includes profiles.github_token — the plaintext
+  // `select("*")`, which includes profiles.github_token - the plaintext
   // GitHub OAuth token. This endpoint returns its result straight to the
   // caller, so `PATCH /api/profiles/{self}` with a harmless
   // {"display_name":"x"} was answering with the caller's GitHub token in the
@@ -169,11 +169,11 @@ profiles.patch("/:userId", async (c) => {
 });
 
 // ──────────────────────────────────────────────
-// GET /api/profiles/export — GDPR Art. 15/20 data export
+// GET /api/profiles/export - GDPR Art. 15/20 data export
 // ──────────────────────────────────────────────
 // The privacy page has promised "Access and export your personal data"
 // since April; the endpoint never existed (Tier 1-LEGAL). Reads run with
-// the USER-scoped client so RLS is the authority on every row returned —
+// the USER-scoped client so RLS is the authority on every row returned -
 // the admin client appears only for waitlist rows, which are keyed by
 // email and carry no user-readable policy.
 
@@ -240,7 +240,7 @@ profiles.get(
     }
 
     // Waitlist rows are keyed by email, not user_id, and have no user
-    // SELECT policy — admin client, scoped hard to the account's email.
+    // SELECT policy - admin client, scoped hard to the account's email.
     const { data: waitlistRows } = await getSupabaseAdminClient()
       .from("waitlist")
       .select("email, world_id, source, subscribed, created_at")
@@ -272,13 +272,13 @@ profiles.get(
 );
 
 // ──────────────────────────────────────────────
-// POST /api/profiles/delete — GDPR Art. 17 self-serve erasure
+// POST /api/profiles/delete - GDPR Art. 17 self-serve erasure
 // ──────────────────────────────────────────────
 // The Settings "Delete Account" control was a contact-support stub
 // (Tier 1-LEGAL). Flow: best-effort ESP cleanup, waitlist rows removed by
-// email, then auth.admin.deleteUser — which cascades profiles and every
+// email, then auth.admin.deleteUser - which cascades profiles and every
 // user table. Purchases survive UNLINKED (user_id → NULL, migration 056:
-// VAT/OSS retention, Art. 17(3)(b)) — 056 MUST be applied before this
+// VAT/OSS retention, Art. 17(3)(b)) - 056 MUST be applied before this
 // endpoint ships or the cascade erases required tax records.
 
 profiles.post(

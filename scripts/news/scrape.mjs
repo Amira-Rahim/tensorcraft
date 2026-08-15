@@ -11,9 +11,9 @@
  *   pnpm tsx scripts/news/scrape.mjs --dry-run    # print to stdout, no DB writes
  *
  * Required env (set in .env or via shell):
- *   SUPABASE_URL                 — project URL
- *   SUPABASE_SERVICE_ROLE_KEY    — service-role key (bypasses RLS)
- *   GITHUB_TOKEN                 — optional; raises GitHub rate limit from 60 → 5000/hr
+ *   SUPABASE_URL - project URL
+ *   SUPABASE_SERVICE_ROLE_KEY - service-role key (bypasses RLS)
+ *   GITHUB_TOKEN - optional; raises GitHub rate limit from 60 → 5000/hr
  */
 const DRY_RUN = process.argv.includes("--dry-run");
 const RECENT_DAYS = 14; // discard items older than this
@@ -37,23 +37,29 @@ const RSS_FEEDS = [
     source: "rss:developer.chrome.com",
     url: "https://developer.chrome.com/static/blog/feed.xml",
   },
-  { source: "rss:blog.tensorflow.org", url: "https://blog.tensorflow.org/feeds/posts/default" },
-  { source: "rss:huggingface.co/blog", url: "https://huggingface.co/blog/feed.xml" },
+  {
+    source: "rss:blog.tensorflow.org",
+    url: "https://blog.tensorflow.org/feeds/posts/default",
+  },
+  {
+    source: "rss:huggingface.co/blog",
+    url: "https://huggingface.co/blog/feed.xml",
+  },
 ];
 
 const HN_QUERY =
-  "WebGPU OR transformers.js OR \"browser ML\" OR WebNN OR tfjs OR onnxruntime OR \"on-device\"";
+  'WebGPU OR transformers.js OR "browser ML" OR WebNN OR tfjs OR onnxruntime OR "on-device"';
 const ARXIV_QUERY = "cat:cs.LG"; // filter locally for browser/edge keywords
 
 /* ------------------------------------------------------------------ */
-/* Editorial filter — USER CONTRIBUTION                                 */
+/* Editorial filter - USER CONTRIBUTION                                 */
 /* ------------------------------------------------------------------ */
 
 /**
  * Decide whether a scraped item should be saved for curation.
  *
  * Called once per Item after normalization. Return false to drop the item.
- * This encodes editorial taste — what counts as a quality lead for the
+ * This encodes editorial taste - what counts as a quality lead for the
  * digest. Examples of decisions to encode:
  *   - HN items below N points: drop?
  *   - Items with title length < 15 chars: drop (likely tag-only releases)?
@@ -66,10 +72,12 @@ const ARXIV_QUERY = "cat:cs.LG"; // filter locally for browser/edge keywords
  */
 function shouldKeep(item) {
   // Drop tag-only release entries (no body, just "Patch release v5.6.1").
-  if (/patch release/i.test(item.title) && item.summary.length < 200) return false;
+  if (/patch release/i.test(item.title) && item.summary.length < 200)
+    return false;
 
   // GitHub releases need a meaningful body so the matcher has signal to work with.
-  if (item.source.startsWith("github:") && item.summary.length < 80) return false;
+  if (item.source.startsWith("github:") && item.summary.length < 80)
+    return false;
 
   // RSS / HN must mention something browser-ML adjacent in title or summary.
   const haystack = `${item.title} ${item.summary}`.toLowerCase();
@@ -91,15 +99,21 @@ function shouldKeep(item) {
 /* ------------------------------------------------------------------ */
 
 const headers = process.env.GITHUB_TOKEN
-  ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}`, "User-Agent": "tensorcraft-scraper" }
+  ? {
+      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+      "User-Agent": "tensorcraft-scraper",
+    }
   : { "User-Agent": "tensorcraft-scraper" };
 
 async function fetchGithubReleases(repo) {
-  const res = await fetch(`https://api.github.com/repos/${repo}/releases?per_page=10`, {
-    headers,
-  });
+  const res = await fetch(
+    `https://api.github.com/repos/${repo}/releases?per_page=10`,
+    {
+      headers,
+    },
+  );
   if (!res.ok) {
-    console.warn(`[github:${repo}] HTTP ${res.status} — skipping`);
+    console.warn(`[github:${repo}] HTTP ${res.status} - skipping`);
     return [];
   }
   const data = await res.json();
@@ -111,22 +125,32 @@ async function fetchGithubReleases(repo) {
       title: `${repo} ${r.tag_name}: ${r.name || r.tag_name}`.trim(),
       summary: (r.body || "").slice(0, 1500),
       published_at: r.published_at,
-      raw: { tag: r.tag_name, name: r.name, draft: r.draft, prerelease: r.prerelease },
+      raw: {
+        tag: r.tag_name,
+        name: r.name,
+        draft: r.draft,
+        prerelease: r.prerelease,
+      },
     }));
 }
 
 async function fetchRss({ source, url }) {
-  const res = await fetch(url, { headers: { "User-Agent": "tensorcraft-scraper" } });
+  const res = await fetch(url, {
+    headers: { "User-Agent": "tensorcraft-scraper" },
+  });
   if (!res.ok) {
-    console.warn(`[${source}] HTTP ${res.status} — skipping`);
+    console.warn(`[${source}] HTTP ${res.status} - skipping`);
     return [];
   }
   const xml = await res.text();
-  // Minimal RSS/Atom parser — extracts <item>/<entry> blocks.
-  const itemBlocks = xml.match(/<(item|entry)\b[\s\S]*?<\/(item|entry)>/g) || [];
+  // Minimal RSS/Atom parser - extracts <item>/<entry> blocks.
+  const itemBlocks =
+    xml.match(/<(item|entry)\b[\s\S]*?<\/(item|entry)>/g) || [];
   return itemBlocks.map((block) => {
     const pick = (tag) => {
-      const m = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"));
+      const m = block.match(
+        new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"),
+      );
       if (!m) return "";
       return m[1]
         .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
@@ -140,8 +164,13 @@ async function fetchRss({ source, url }) {
       source,
       url: linkMatch ? linkMatch[1] : "",
       title: pick("title"),
-      summary: (pick("description") || pick("summary") || pick("content")).slice(0, 1500),
-      published_at: pick("pubDate") || pick("published") || pick("updated") || null,
+      summary: (
+        pick("description") ||
+        pick("summary") ||
+        pick("content")
+      ).slice(0, 1500),
+      published_at:
+        pick("pubDate") || pick("published") || pick("updated") || null,
       raw: {},
     };
   });
@@ -186,7 +215,9 @@ async function fetchArxiv() {
   return entries
     .map((e) => {
       const pick = (tag) => {
-        const m = e.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"));
+        const m = e.match(
+          new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"),
+        );
         return m ? m[1].replace(/<[^>]+>/g, "").trim() : "";
       };
       const linkMatch = e.match(/<id>([^<]+)<\/id>/i);
@@ -227,7 +258,9 @@ function dedupe(items) {
 
 async function gatherAll() {
   const tasks = [
-    ...GITHUB_REPOS.map((r) => fetchGithubReleases(r).catch((e) => (console.warn(e), []))),
+    ...GITHUB_REPOS.map((r) =>
+      fetchGithubReleases(r).catch((e) => (console.warn(e), [])),
+    ),
     ...RSS_FEEDS.map((f) => fetchRss(f).catch((e) => (console.warn(e), []))),
     fetchHackerNews().catch((e) => (console.warn(e), [])),
     fetchArxiv().catch((e) => (console.warn(e), [])),
@@ -274,9 +307,11 @@ async function main() {
     raw_json: it.raw || {},
   }));
 
-  const { error, count } = await supabase
-    .from("news_items")
-    .upsert(rows, { onConflict: "url", ignoreDuplicates: true, count: "exact" });
+  const { error, count } = await supabase.from("news_items").upsert(rows, {
+    onConflict: "url",
+    ignoreDuplicates: true,
+    count: "exact",
+  });
 
   if (error) {
     console.error("[scrape] upsert failed:", error);

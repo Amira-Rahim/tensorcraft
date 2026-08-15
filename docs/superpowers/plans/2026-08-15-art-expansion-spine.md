@@ -4,17 +4,17 @@
 
 **Goal:** Ship the approved art-expansion spine: wire the three orphaned location plates, annotate dialogue expressions, put the learner's avatar on the certificate, composite plates into OG cards, add eleven mission-patch emblems, and crown the certificate with a world seal.
 
-**Architecture:** Every surface follows the shipped art contract — app-side resolvers mint asset paths (`location-art.ts` pattern), `packages/ui` components take srcs and render nothing on failure, budgets are enforced by `scripts/art/ingest.mjs`. New raster goes through the existing generate → stage → ingest pipeline with FLUX.2 [pro] on fal.ai.
+**Architecture:** Every surface follows the shipped art contract - app-side resolvers mint asset paths (`location-art.ts` pattern), `packages/ui` components take srcs and render nothing on failure, budgets are enforced by `scripts/art/ingest.mjs`. New raster goes through the existing generate → stage → ingest pipeline with FLUX.2 [pro] on fal.ai.
 
 **Tech Stack:** Next.js app router, `@tensorcraft/ui` client components, satori/`next/og` edge route, sharp at ingest, vitest, fal.ai generation scripts.
 
-**Repo rules that override the usual plan grammar:** No commit steps — CLAUDE.md forbids committing on the user's behalf; the whole spine ships uncommitted like every session before it. Wave boundaries below are the checkpoint boundaries (spec reviewer's instruction): finish and verify a wave before starting the next.
+**Repo rules that override the usual plan grammar:** No commit steps - CLAUDE.md forbids committing on the user's behalf; the whole spine ships uncommitted like every session before it. Wave boundaries below are the checkpoint boundaries (spec reviewer's instruction): finish and verify a wave before starting the next.
 
 Spec: `docs/superpowers/specs/2026-08-15-art-expansion-spine-design.md`
 
 ---
 
-## Wave 1a — the three orphaned plates
+## Wave 1a - the three orphaned plates
 
 ### Task 1: `surfacePlateSrc` resolver
 
@@ -47,7 +47,7 @@ describe("surfacePlateSrc", () => {
 });
 ```
 
-- [ ] **Step 2: Run** `pnpm --filter web test location-art` — expect FAIL (no export).
+- [ ] **Step 2: Run** `pnpm --filter web test location-art` - expect FAIL (no export).
 - [ ] **Step 3: Implement** in `location-art.ts`:
 
 ```ts
@@ -73,7 +73,7 @@ export function surfacePlateSrc(
 }
 ```
 
-- [ ] **Step 4: Run the test again** — expect PASS.
+- [ ] **Step 4: Run the test again** - expect PASS.
 
 ### Task 2: /auth left pane takes the lab plate
 
@@ -96,7 +96,7 @@ export function surfacePlateSrc(
 
 Keep the copy block `z-10`. The `rgbLight` switch copies `WorldSceneBackdrop`: over dark art the light-scheme hue vanishes, so the canvas keeps its dark hue.
 - [ ] **Step 3:** Add a scrim between plate and copy if the headline loses contrast against the plate (check in the browser during Wave-1 verification; the Five Worlds band precedent uses one). Implementation: `<div className="absolute inset-0 z-0" style={{ background: "linear-gradient(90deg, color-mix(in srgb, var(--tc-bg) 78%, transparent), transparent 70%)" }} aria-hidden />`.
-- [ ] **Step 4: Run** `pnpm --filter web test auth` — existing auth tests still pass.
+- [ ] **Step 4: Run** `pnpm --filter web test auth` - existing auth tests still pass.
 
 ### Task 3: /dashboard sidebar station feed
 
@@ -105,7 +105,7 @@ Keep the copy block `z-10`. The `rgbLight` switch copies `WorldSceneBackdrop`: o
 - Modify: `apps/web/app/dashboard/page.tsx` (pass `plateSrc`)
 - Test: `apps/web/app/dashboard/dashboard-view.test.tsx` (create if absent; check for an existing test file first and extend it if present)
 
-- [ ] **Step 1: Failing test** — render `DashboardView` with `plateSrc="/locations/deep-orbit/dashboard-station.webp"` plus minimal required props; assert an `img[data-testid="art-plate"]` with that src exists inside the module sidebar; render again without `plateSrc` and assert no `art-plate` testid.
+- [ ] **Step 1: Failing test** - render `DashboardView` with `plateSrc="/locations/deep-orbit/dashboard-station.webp"` plus minimal required props; assert an `img[data-testid="art-plate"]` with that src exists inside the module sidebar; render again without `plateSrc` and assert no `art-plate` testid.
 - [ ] **Step 2:** Add `plateSrc?: string` to `DashboardProps`. In the `<aside>` module sidebar, above the `MODULE MAP` header row:
 
 ```tsx
@@ -121,7 +121,7 @@ Keep the copy block `z-10`. The `rgbLight` switch copies `WorldSceneBackdrop`: o
 
 Import `ArtPlate` from `@tensorcraft/ui/art-plate`.
 - [ ] **Step 3:** In `dashboard/page.tsx`, pass `plateSrc={surfacePlateSrc(worldSlug, "dashboard")}` where `<DashboardView>` is instantiated (line ~401; use the same world slug variable the page already resolves).
-- [ ] **Step 4: Run** dashboard tests — PASS.
+- [ ] **Step 4: Run** dashboard tests - PASS.
 
 ### Task 4: /dashboard/purchase-success engineering plate
 
@@ -138,8 +138,8 @@ Import `ArtPlate` from `@tensorcraft/ui/art-plate`.
 )}
 ```
 
-with `const plateSrc = surfacePlateSrc(worldSlug ?? DEFAULT_WORLD, "purchase-success");` — the page already resolves the purchased world; fall back to `DEFAULT_WORLD` if it has none in scope.
-- [ ] **Step 2: Run** `pnpm --filter web test purchase-success` — existing tests pass.
+with `const plateSrc = surfacePlateSrc(worldSlug ?? DEFAULT_WORLD, "purchase-success");` - the page already resolves the purchased world; fall back to `DEFAULT_WORLD` if it has none in scope.
+- [ ] **Step 2: Run** `pnpm --filter web test purchase-success` - existing tests pass.
 
 ### Wave 1a checkpoint
 
@@ -147,14 +147,14 @@ with `const plateSrc = surfacePlateSrc(worldSlug ?? DEFAULT_WORLD, "purchase-suc
 
 ---
 
-## Wave 1b — expression annotation pass
+## Wave 1b - expression annotation pass
 
 ### Task 5: extend the gate
 
 **Files:**
 - Modify: `packages/content/src/expressions.test.ts`
 
-- [ ] **Step 1:** Add to the describe block (this fails until the pass lands — the corpus has zero annotations):
+- [ ] **Step 1:** Add to the describe block (this fails until the pass lands - the corpus has zero annotations):
 
 ```ts
 it("the annotation pass is present in the corpus", () => {
@@ -162,7 +162,7 @@ it("the annotation pass is present in the corpus", () => {
 });
 ```
 
-- [ ] **Step 2: Run** `pnpm --filter @tensorcraft/content test expressions` — expect exactly this new assertion to FAIL.
+- [ ] **Step 2: Run** `pnpm --filter @tensorcraft/content test expressions` - expect exactly this new assertion to FAIL.
 
 ### Task 6: annotate the corpus (subagent fan-out, one per module)
 
@@ -184,21 +184,21 @@ Expression vocabulary (from `packages/worlds/src/deep-orbit.ts`, the only legal 
   - Attribute-only edits. Do not touch prose, direction text, speaker names, spacing, or anything else. Do not add `expression="neutral"`.
   - Sparse beats saturated: ceiling of roughly one annotated tag in three per lesson; zero annotations in a lesson is a valid outcome. When torn between two expressions or between annotating and not, do not annotate.
   - Only speakers in the table above can carry the attribute (the gate rejects everyone else).
-- [ ] **Step 2:** Run the gate: `pnpm --filter @tensorcraft/content test expressions` — PASS (valid ids, at least one annotation).
+- [ ] **Step 2:** Run the gate: `pnpm --filter @tensorcraft/content test expressions` - PASS (valid ids, at least one annotation).
 - [ ] **Step 3:** Spot-review one annotated lesson per act (early/mid/late module) myself for editorial fit; strip any annotation that fights its stage direction.
-- [ ] **Step 4:** Run the full content battery: `pnpm --filter @tensorcraft/content test` — PASS (slop-lexicon and structure gates see no prose change).
+- [ ] **Step 4:** Run the full content battery: `pnpm --filter @tensorcraft/content test` - PASS (slop-lexicon and structure gates see no prose change).
 
 ---
 
-## Wave 1c — certificate avatar
+## Wave 1c - certificate avatar
 
 ### Task 7: render the learner's avatar
 
 **Files:**
 - Modify: `apps/web/app/certificates/[id]/page.tsx`
-- Test: `apps/web/app/certificates/[id]/page.test.tsx` (create; mock `fetch` the way the API tests do — check `apps/web/app/**/page.test.tsx` files for the established async-RSC test pattern before writing)
+- Test: `apps/web/app/certificates/[id]/page.test.tsx` (create; mock `fetch` the way the API tests do - check `apps/web/app/**/page.test.tsx` files for the established async-RSC test pattern before writing)
 
-- [ ] **Step 1: Failing test** — mock a certificate payload with `user_avatar_url`; render the page; assert the avatar `img` with that src renders beside the learner name. Second case: `user_avatar_url: null` renders the monogram tile (CharacterAvatar's initials fallback), not a broken img.
+- [ ] **Step 1: Failing test** - mock a certificate payload with `user_avatar_url`; render the page; assert the avatar `img` with that src renders beside the learner name. Second case: `user_avatar_url: null` renders the monogram tile (CharacterAvatar's initials fallback), not a broken img.
 - [ ] **Step 2:** In the card, replace the name block:
 
 ```tsx
@@ -214,11 +214,11 @@ Expression vocabulary (from `packages/worlds/src/deep-orbit.ts`, the only legal 
 ```
 
 Import from `@tensorcraft/ui/character-avatar`. CharacterAvatar owns the failure path: a dead URL settles to the initials monogram.
-- [ ] **Step 3: Run** the new test — PASS.
+- [ ] **Step 3: Run** the new test - PASS.
 
 ---
 
-## Wave 1d — plates on the OG cards
+## Wave 1d - plates on the OG cards
 
 ### Task 8: `og` ingest mode
 
@@ -276,8 +276,8 @@ async function og() {
 ```
 
 Register the mode and extend the usage string.
-- [ ] **Step 2: Run** `node scripts/art/ingest.mjs og --dry-run` — expect 4 plate lines shipped, seal reported missing (Wave 3 ships it).
-- [ ] **Step 3: Run for real:** `node scripts/art/ingest.mjs og` — 4 JPEGs land in `apps/web/public/og/deep-orbit/`.
+- [ ] **Step 2: Run** `node scripts/art/ingest.mjs og --dry-run` - expect 4 plate lines shipped, seal reported missing (Wave 3 ships it).
+- [ ] **Step 3: Run for real:** `node scripts/art/ingest.mjs og` - 4 JPEGs land in `apps/web/public/og/deep-orbit/`.
 
 ### Task 9: OG route composites the plate
 
@@ -311,7 +311,7 @@ describe("og asset resolution", () => {
 ```ts
 /** OG derivatives of the hero plates (ingest.mjs og mode). JPEG/PNG, not
  *  WebP: satori's raster decoding is the constraint. Mirrors HERO_PLATE in
- *  lib/location-art.ts — same one-world map, same typo defence. */
+ *  lib/location-art.ts - same one-world map, same typo defence. */
 const OG_PLATE: Record<string, string> = { "deep-orbit": "bridge" };
 
 export function ogPlatePath(worldSlug: string): string | undefined {
@@ -324,7 +324,7 @@ export function ogSealPath(worldSlug: string): string | undefined {
 }
 ```
 
-- [ ] **Step 3:** In `route.tsx` (`kind=default` branch only): resolve, fetch, tolerate failure —
+- [ ] **Step 3:** In `route.tsx` (`kind=default` branch only): resolve, fetch, tolerate failure -
 
 ```tsx
 let plate: ArrayBuffer | undefined;
@@ -355,7 +355,7 @@ Then in the JSX, under the root div (satori supports absolute stacking; later si
 ```
 
 Existing branding/title/accent-strip content renders above unchanged. `digest` kind untouched.
-- [ ] **Step 4: Run** unit tests — PASS. Manual check: `pnpm --filter web dev`, then `curl -s -o /tmp/og.png -w "%{http_code}" "http://localhost:3000/api/og?title=Test&world=deep-orbit"` → 200; open `/tmp/og.png` and confirm plate + legible title; repeat with `world=terra-grid` → text-only card still renders.
+- [ ] **Step 4: Run** unit tests - PASS. Manual check: `pnpm --filter web dev`, then `curl -s -o /tmp/og.png -w "%{http_code}" "http://localhost:3000/api/og?title=Test&world=deep-orbit"` → 200; open `/tmp/og.png` and confirm plate + legible title; repeat with `world=terra-grid` → text-only card still renders.
 
 ### Wave 1 checkpoint
 
@@ -363,7 +363,7 @@ Existing branding/title/accent-strip content renders above unchanged. `digest` k
 
 ---
 
-## Wave 2 — mission patches
+## Wave 2 - mission patches
 
 ### Task 10: patch bible + generation driver
 
@@ -447,7 +447,7 @@ async function seals() {
 }
 ```
 
-- [ ] **Step 3: Run** `node scripts/art/ingest.mjs patches --dry-run` — 11 modules reported missing (nothing staged yet), exit 0.
+- [ ] **Step 3: Run** `node scripts/art/ingest.mjs patches --dry-run` - 11 modules reported missing (nothing staged yet), exit 0.
 
 ### Task 12: `patch-art.ts` resolver + `ModulePatch` component
 
@@ -480,7 +480,7 @@ describe("patch art resolution", () => {
 
 - [ ] **Step 2: Implement** (`PATCH_WORLDS = new Set(["deep-orbit"])`, same shape as the other resolvers; module slugs come from callers that already hold validated module lists, so the resolver only guards the world).
 - [ ] **Step 3: Failing component tests:** renders an img with the given src/size; on error settles to the `fallback` node (pass a `<span>✓</span>`, fire `error` on the img, assert the span replaced it); with no fallback, settles to null; `alt=""` + `aria-hidden` when no `alt` given.
-- [ ] **Step 4: Implement `ModulePatch`** — same skeleton as `ArtPlate` (`useImgSettled`, render-nothing contract) plus:
+- [ ] **Step 4: Implement `ModulePatch`** - same skeleton as `ArtPlate` (`useImgSettled`, render-nothing contract) plus:
 
 ```tsx
 export interface ModulePatchProps {
@@ -492,8 +492,8 @@ export interface ModulePatchProps {
 }
 ```
 
-`select-none`, `loading="lazy"`, `decoding="async"`, square `width`/`height` from `size`. No brass frame — patches are emblems, not monitors.
-- [ ] **Step 5: Run** both new test files — PASS. `pnpm --filter @tensorcraft/ui test` green.
+`select-none`, `loading="lazy"`, `decoding="async"`, square `width`/`height` from `size`. No brass frame - patches are emblems, not monitors.
+- [ ] **Step 5: Run** both new test files - PASS. `pnpm --filter @tensorcraft/ui test` green.
 
 ### Task 13: patch surfaces (dashboard, world page, capstone)
 
@@ -515,9 +515,9 @@ export interface ModulePatchProps {
 ```
 
 where `statusBox` is the existing bordered glyph div extracted to a local variable. `dashboard/page.tsx` sets `patchSrc: patchSrc(worldSlug, m.slug)` when it builds the modules array.
-- [ ] **Step 3:** World page module map: same treatment on rows whose status enum is `"completed"` (this page's vocabulary differs from the dashboard's `"done"` — spec reviewer flag). Find the module-row status marker in `worlds/[slug]/page.tsx` and apply the identical earned-only rule.
-- [ ] **Step 4:** Capstone `CertificateCard`: a patch strip — all 11 modules at size 32, `flex flex-wrap gap-2`, above the stats block; each patch decorative, the card copy already says what was completed. Pass the srcs from the server side via existing props plumbing.
-- [ ] **Step 5: Run** the web suite — PASS.
+- [ ] **Step 3:** World page module map: same treatment on rows whose status enum is `"completed"` (this page's vocabulary differs from the dashboard's `"done"` - spec reviewer flag). Find the module-row status marker in `worlds/[slug]/page.tsx` and apply the identical earned-only rule.
+- [ ] **Step 4:** Capstone `CertificateCard`: a patch strip - all 11 modules at size 32, `flex flex-wrap gap-2`, above the stats block; each patch decorative, the card copy already says what was completed. Pass the srcs from the server side via existing props plumbing.
+- [ ] **Step 5: Run** the web suite - PASS.
 
 ### Task 14: all-or-none content gate
 
@@ -557,15 +557,15 @@ describe("patch art coverage", () => {
 });
 ```
 
-- [ ] **Step 2: Run it** — passes vacuously today (no patch dir yet); after Task 15's ingest it enforces the full set.
+- [ ] **Step 2: Run it** - passes vacuously today (no patch dir yet); after Task 15's ingest it enforces the full set.
 
 ### Task 15: generate, pick, ingest the patch art
 
 - [ ] **Step 1:** `node scripts/art/patches.mjs --count 3` (33 generations, ~$1). Transient 422s retry; a content-filter 422 means reword that emblem line and rerun that module only.
 - [ ] **Step 2:** Review candidates in `art-src/patches/` against the bible: series coherence (same ring weight, same palette), emblem readable at 28px, zero lettering. Rename the winner so name-sort picks it (the `newest()` contract), delete losers.
-- [ ] **Step 3:** Copy winners to `docs/art-refs/deep-orbit/patches/` as regeneration anchors (committed pattern — FLUX seeds are not captured).
-- [ ] **Step 4:** `node scripts/art/ingest.mjs patches` — 11 shipped, all ≤ 40 KB.
-- [ ] **Step 5:** `pnpm --filter @tensorcraft/content test patch-art-coverage` — PASS (now enforcing).
+- [ ] **Step 3:** Copy winners to `docs/art-refs/deep-orbit/patches/` as regeneration anchors (committed pattern - FLUX seeds are not captured).
+- [ ] **Step 4:** `node scripts/art/ingest.mjs patches` - 11 shipped, all ≤ 40 KB.
+- [ ] **Step 5:** `pnpm --filter @tensorcraft/content test patch-art-coverage` - PASS (now enforcing).
 - [ ] **Step 6:** Look at the dashboard and world page in the browser: patches render on done modules, ✓ boxes elsewhere.
 
 ### Wave 2 checkpoint
@@ -574,12 +574,12 @@ describe("patch art coverage", () => {
 
 ---
 
-## Wave 3 — certificate package
+## Wave 3 - certificate package
 
 ### Task 16: generate and ship the seal
 
 - [ ] **Step 1:** `node scripts/art/patches.mjs seal --count 3`; pick the winner (formal, radially symmetric, reads at 72px), anchor it in `docs/art-refs/deep-orbit/patches/`, `node scripts/art/ingest.mjs seals`.
-- [ ] **Step 2:** `node scripts/art/ingest.mjs og` — now also emits `og/deep-orbit/seal.png`.
+- [ ] **Step 2:** `node scripts/art/ingest.mjs og` - now also emits `og/deep-orbit/seal.png`.
 
 ### Task 17: certificate page (seal + patch strip) and world-complete banner
 
@@ -590,7 +590,7 @@ describe("patch art coverage", () => {
 - [ ] **Step 1: Failing tests:** cert page with a deep-orbit cert renders the seal img and an 11-patch strip; a cert for a world without art renders the text-only card (no seal, no strip, no empty space).
 - [ ] **Step 2:** Cert page: seal (72px, top-right of the card header, decorative) via `sealSrc(cert.world_id)`; patch strip above the footer paragraph via `getModules(cert.world_id)` (already available server-side in `@tensorcraft/content`) mapped through `patchSrc`. Both wrapped in the null-safe resolver checks. A certificate exists only when every module is complete, so the full strip is truthful by construction.
 - [ ] **Step 3:** World page: when the world-complete/capstone banner renders, add the seal beside the banner heading (32px, decorative), resolver-guarded.
-- [ ] **Step 4: Run** the tests — PASS.
+- [ ] **Step 4: Run** the tests - PASS.
 
 ### Task 18: `cert` OG kind
 
@@ -598,14 +598,14 @@ describe("patch art coverage", () => {
 - Modify: `apps/web/app/api/og/route.tsx`
 - Modify: `apps/web/app/certificates/[id]/page.tsx` (metadata images URL)
 
-- [ ] **Step 1:** Add `"cert"` to `VALID_KINDS`. Params: `world`, `learner` (clamped at 100 chars, defaults to "A Tensorcraft learner"), `title` (the world name line). Layout: plate background + scrim as in Task 9, seal PNG (fetched same-origin, same try/catch) at 120px centred above the title, learner name under the title, accent strip at the bottom. Every asset optional; the all-text card is the floor. The URL is public by design — it carries what the public share page already shows.
+- [ ] **Step 1:** Add `"cert"` to `VALID_KINDS`. Params: `world`, `learner` (clamped at 100 chars, defaults to "A Tensorcraft learner"), `title` (the world name line). Layout: plate background + scrim as in Task 9, seal PNG (fetched same-origin, same try/catch) at 120px centred above the title, learner name under the title, accent strip at the bottom. Every asset optional; the all-text card is the floor. The URL is public by design - it carries what the public share page already shows.
 - [ ] **Step 2:** Cert page metadata: `images: [\`/api/og?kind=cert&world=...&title=...&learner=...\`]`.
 - [ ] **Step 3:** Manual: curl the cert OG URL in dev, confirm seal + name + plate; confirm `kind=cert` with a no-art world still renders.
 
 ### Wave 3 checkpoint / finish line
 
 - [ ] Battery: `pnpm --filter @tensorcraft/content test`, `pnpm --filter @tensorcraft/ui test`, `pnpm --filter web test`, `pnpm typecheck`.
-- [ ] Visual baselines: `RUN_VISUAL=1 pnpm --filter web e2e -- key-pages` (or the repo's actual invocation — check `e2e/visual/key-pages.spec.ts` header) — expect `auth-sign-in` (dark+light) to drift; verify each re-minted baseline **by eye** against the intended design before accepting (2026-08-15 lesson: a regenerated baseline can certify a broken page).
+- [ ] Visual baselines: `RUN_VISUAL=1 pnpm --filter web e2e -- key-pages` (or the repo's actual invocation - check `e2e/visual/key-pages.spec.ts` header) - expect `auth-sign-in` (dark+light) to drift; verify each re-minted baseline **by eye** against the intended design before accepting (2026-08-15 lesson: a regenerated baseline can certify a broken page).
 - [ ] Dual-scheme axe suite on touched pages.
 - [ ] E2e no-art fixtures: if the repo's existing aborted-route fixtures (2026-08-05 pattern) cover shared components, confirm they exercise the new surfaces; add an aborted-route case for one new plate surface and one patch surface if not.
 - [ ] Docs: backlog `[x]` entries for the spine + deferred award-animation item; `docs/scene-bible.md` cross-reference to `docs/patch-bible.md`; character-bible untouched.

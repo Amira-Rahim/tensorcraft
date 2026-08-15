@@ -115,7 +115,7 @@ describe("BossBeat answer-key resistance", () => {
  * write. Combined with the `submittedIndex !== null` guard at the top of the
  * handler, that made a failed save indistinguishable from a successful one:
  * the beat rendered its consequence, retry was permanently blocked, and the
- * choice was never recorded. It looked saved and never was — the worst shape
+ * choice was never recorded. It looked saved and never was - the worst shape
  * of failure available, because the learner has no reason to suspect it.
  */
 describe("BossBeat failure paths", () => {

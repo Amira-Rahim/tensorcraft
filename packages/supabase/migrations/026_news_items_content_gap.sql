@@ -5,10 +5,10 @@
 -- the gap so the curator can use it as a curriculum backlog signal.
 --
 -- Three columns:
---   - is_content_gap   — flag set by matcher when picks is empty.
---   - gap_concept      — short description of what the news teaches that no
+--   - is_content_gap - flag set by matcher when picks is empty.
+--   - gap_concept - short description of what the news teaches that no
 --                        lesson covers (LLM-extracted, ≤ 120 chars).
---   - gap_rationale    — why this is a gap (LLM-extracted, ≤ 240 chars).
+--   - gap_rationale - why this is a gap (LLM-extracted, ≤ 240 chars).
 --                        Pattern: "Item teaches X; closest current lesson covers Y."
 --
 -- Backwards compatible: defaults keep all existing rows non-gap. Re-run the

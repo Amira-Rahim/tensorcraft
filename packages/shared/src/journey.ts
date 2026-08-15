@@ -1,5 +1,5 @@
 /**
- * The cross-world JOURNEY — the modeled arc that connects the five worlds so
+ * The cross-world JOURNEY - the modeled arc that connects the five worlds so
  * they are one collection, not five silos.
  *
  * Built for docs/audits/scalability-architecture-2026-07-21.md finding F2: a
@@ -73,7 +73,7 @@ export function getLeadsTo(slug: string): WorldSlug | undefined {
 }
 
 /**
- * A named narrative SPINE — a thread that recurs across worlds, teaching the
+ * A named narrative SPINE - a thread that recurs across worlds, teaching the
  * same primitive in different domains. Each spine is an ordered list of stops;
  * a lesson references a spine stop by id.
  *
@@ -146,7 +146,7 @@ export function getSpineStops(spineId: string, stopIds: string[]): SpineStop[] {
  *
  * Walks the ring forward from `currentSlug`, returning the first world not in
  * `owned`. Returns null if they own the whole ring (nothing to recommend).
- * This is a soft suggestion only — it never gates.
+ * This is a soft suggestion only - it never gates.
  */
 export function recommendedNextWorld(
   owned: ReadonlySet<string>,

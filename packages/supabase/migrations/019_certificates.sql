@@ -1,6 +1,6 @@
 -- Tensorcraft: Completion certificates
 --
--- Phase 11 §11e — issues a certificate when a user completes all lessons
+-- Phase 11 §11e - issues a certificate when a user completes all lessons
 -- of a theme. One certificate per user per theme. The `cert_hash` is a
 -- deterministic SHA-256 computed by the API so that a share URL can be
 -- verified without exposing the user's UUID.
@@ -8,7 +8,7 @@
 -- Sharing model:
 --   - Authenticated users SELECT their own rows (RLS: auth.uid() = user_id)
 --   - INSERTs happen only via the service role (the /api/certificates
---     POST endpoint — clients never INSERT directly)
+--     POST endpoint - clients never INSERT directly)
 --   - Public share pages fetch via a SECURITY DEFINER function
 --     `public.get_shared_certificate(p_id uuid)` which returns the minimal
 --     set of columns needed for rendering. This keeps RLS simple (no anon
@@ -26,7 +26,7 @@ create table if not exists public.certificates (
   cert_hash text not null,
   pdf_url text,
 
-  -- One certificate per user per theme — the POST endpoint is idempotent
+  -- One certificate per user per theme - the POST endpoint is idempotent
   -- and re-issues the same row instead of inserting a duplicate.
   constraint uq_certificates_user_theme unique (user_id, theme_id),
 
@@ -57,7 +57,7 @@ create policy "Users can view own certificates"
   on public.certificates for select
   using (auth.uid() = user_id);
 
--- No INSERT / UPDATE / DELETE policies for anon or authenticated — only
+-- No INSERT / UPDATE / DELETE policies for anon or authenticated - only
 -- the service role (the API) may write. The service role bypasses RLS.
 
 -- ============================================================
@@ -65,8 +65,8 @@ create policy "Users can view own certificates"
 --
 -- A SECURITY DEFINER function exposes exactly the columns a share page
 -- needs (id, theme_id, issued_at, cert_hash + display_name, avatar_url
--- via join on profiles). Anyone with a certificate `id` — which is
--- effectively the share URL — can read it; but the underlying table
+-- via join on profiles). Anyone with a certificate `id` - which is
+-- effectively the share URL - can read it; but the underlying table
 -- remains locked down under RLS.
 -- ============================================================
 create or replace function public.get_shared_certificate(p_id uuid)

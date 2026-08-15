@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (kind === "cert") {
-    // Certificate share card: what the public share page already shows —
+    // Certificate share card: what the public share page already shows -
     // seal, learner, world. Every asset is optional; all-text is the floor.
     const learner = clamp(
       searchParams.get("learner") || "A Tensorcraft learner",

@@ -1,5 +1,5 @@
 -- Down-migration for 052. Dropping these columns loses any provenance
--- recorded after the up ran — the exact loss 052 exists to prevent.
+-- recorded after the up ran - the exact loss 052 exists to prevent.
 
 begin;
 

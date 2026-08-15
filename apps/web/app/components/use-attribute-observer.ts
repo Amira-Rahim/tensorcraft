@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
 // light-mode.md, Task 11) after Task 8's quality review flagged that the
 // codebase was accumulating a 4th/5th bespoke `MutationObserver` doing this
 // exact thing (use-scheme.ts, SceneCanvas, ticker.tsx, ambient-background.tsx)
-// — one shared observer + per-consumer attribute filters replaces all the
+// - one shared observer + per-consumer attribute filters replaces all the
 // app-level (apps/web) copies going forward. `use-scheme.ts` stays as-is: it
 // lives in packages/ui, which can't import an apps/web hook.
 // ---------------------------------------------------------------------------
@@ -47,7 +47,7 @@ function handleMutations(mutations: MutationRecord[]) {
 let observedAttrsKey = "";
 
 function syncObserver() {
-  // Guarded for SSR/module-eval safety, same as use-scheme.ts — this only
+  // Guarded for SSR/module-eval safety, same as use-scheme.ts - this only
   // ever runs from subscribe/unsubscribe (client-side, post-mount), but
   // costs nothing to guard.
   if (typeof document === "undefined") return;
@@ -65,7 +65,7 @@ function syncObserver() {
   // The filter is DERIVED from the live consumers, never hardcoded: the old
   // version pinned ["data-world", "data-scheme"] while the hook accepted
   // arbitrary attribute names, so a consumer watching anything else silently
-  // never fired (R3-7). When the union widens, re-observe IN PLACE —
+  // never fired (R3-7). When the union widens, re-observe IN PLACE -
   // calling observe() again on the same node replaces the options per spec,
   // so the shared observer is never disconnected while consumers remain.
   // On shrink we keep the wider filter (handleMutations dispatches
@@ -87,7 +87,7 @@ function syncObserver() {
  * Calls `onChange` whenever any of the given `attributes` change on
  * `document.documentElement` (e.g. `["data-scheme"]` or
  * `["data-world", "data-scheme"]`). Backed by a single shared MutationObserver
- * module-wide, refcounted across every consumer — N components watching
+ * module-wide, refcounted across every consumer - N components watching
  * attributes cost one observer, not N.
  *
  * `onChange` does not need to be stable across renders (it's always read
@@ -117,7 +117,7 @@ export function useAttributeObserver(
       syncObserver();
     };
     // `attrsKey` is the stable, content-derived stand-in for `attributes`;
-    // `onChange` is read via `onChangeRef`, not a dependency — the deps
+    // `onChange` is read via `onChangeRef`, not a dependency - the deps
     // array below is deliberately just `[attrsKey]`.
   }, [attrsKey]);
 }

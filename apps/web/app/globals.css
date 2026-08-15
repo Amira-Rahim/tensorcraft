@@ -190,7 +190,7 @@ body {
    task brief must not precede the teaching. The h2 override in
    lesson-content.tsx stamps data-heading="challenge" on the one "## Challenge"
    heading every lesson carries; hide it and every following sibling on steps
-   that set the container flag. CSS-only on purpose — the full prose partition
+   that set the container flag. CSS-only on purpose - the full prose partition
    is deferred until real completion data exists (ledger §4). */
 [data-hide-challenge-onward="true"] [data-heading="challenge"],
 [data-hide-challenge-onward="true"] [data-heading="challenge"] ~ * {
@@ -551,11 +551,11 @@ body {
 }
 
 /* ===== World-card scheme-aware primary =====
-   Shared by dashboard/world-cards.tsx (a server component — no useScheme()
+   Shared by dashboard/world-cards.tsx (a server component - no useScheme()
    hook available) AND worlds/world-cards-grid.tsx (a client component that
    could use the hook, but deliberately doesn't: re-rendering every card on
    scheme toggle just to recompute a style string mints fresh style-prop
-   values and defeats memoization for no benefit — the CSS engine already
+   values and defeats memoization for no benefit - the CSS engine already
    re-resolves custom properties for free on a data-scheme attribute flip).
    Both set the same two local custom props per card (--card-primary /
    --card-primary-light, from the world's dark/light primary) on any element
@@ -568,6 +568,31 @@ body {
 }
 [data-scheme="light"] .tc-world-card {
   --card-active-primary: var(--card-primary-light, var(--card-primary));
+}
+
+/* ===== Journey ring connectors =====
+   A connector thread spans TWO worlds, so it can't ride the per-card
+   --card-active-primary pair above. Same convention though: the element
+   sets all four vars inline (dark + light hue per end), dark is the
+   no-attribute default, and a data-scheme flip re-resolves for free. */
+.tc-journey-conn {
+  background: linear-gradient(to bottom, var(--conn-from), var(--conn-to));
+}
+/* Slim-row scene wash. The light-scheme hues are darkened for AA text, so
+   the same canvas paints heavier marks on paper and crowds the row's
+   tagline; dim the wash there, keep the dark-scheme glow. */
+.tc-journey-row-scene {
+  opacity: 0.7;
+}
+[data-scheme="light"] .tc-journey-row-scene {
+  opacity: 0.4;
+}
+[data-scheme="light"] .tc-journey-conn {
+  background: linear-gradient(
+    to bottom,
+    var(--conn-from-light, var(--conn-from)),
+    var(--conn-to-light, var(--conn-to))
+  );
 }
 
 /* ===== Heatmap cell pop ===== */

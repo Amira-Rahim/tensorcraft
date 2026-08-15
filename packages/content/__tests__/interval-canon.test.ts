@@ -17,14 +17,14 @@ import { BUILT_STORY_WORLDS } from "../src/built-worlds";
  * PER-WORLD (scalability audit F3). The canon was a single deep-orbit table;
  * it now lives in WORLD_INTERVAL_CANON keyed by world, and the gate iterates
  * every BUILT story world that declares one. A second world with its own
- * numeric spine is covered by adding its table here — no gate rewrite. Worlds
+ * numeric spine is covered by adding its table here - no gate rewrite. Worlds
  * with no numeric-countdown spine simply declare no canon and are skipped.
  *
  * The content root is derived from deep-orbit's dir so each world resolves to
  * its own content directory.
  */
 
-// packages/content/content — parent of every world's content dir.
+// packages/content/content - parent of every world's content dir.
 const CONTENT_ROOT: string = dirname(CONTENT_DIR);
 
 /** Per-world module order + interval canon. Only worlds with a numeric
@@ -76,7 +76,7 @@ const DEEP_ORBIT_CANON: Record<string, number[]> = {
 /**
  * The per-world registry. Only worlds with a numeric countdown spine declare a
  * canon; the rest are simply absent and skipped. Add a world's table here and
- * the gate covers it — no rewrite.
+ * the gate covers it - no rewrite.
  */
 const WORLD_INTERVAL_CANON: Record<string, WorldCanon> = {
   "deep-orbit": {

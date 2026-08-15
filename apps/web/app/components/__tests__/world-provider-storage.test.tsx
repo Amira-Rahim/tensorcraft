@@ -5,7 +5,7 @@ import { WorldProvider } from "../world-provider";
 /**
  * Regression cover for a whole-site outage class.
  *
- * `localStorage` does not return null when a browser blocks site data — it
+ * `localStorage` does not return null when a browser blocks site data - it
  * THROWS SecurityError on access. That happens for Safari "Block All
  * Cookies", Chrome site-data blocking, enterprise policy, and any sandboxed
  * iframe.

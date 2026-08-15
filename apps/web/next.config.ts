@@ -88,7 +88,7 @@ const nextConfig: NextConfig = {
         ]),
     {
       // Version-pinned TFJS runtime. The filename carries the version, so the
-      // URL changes whenever the bytes do — the same immutability argument as
+      // URL changes whenever the bytes do - the same immutability argument as
       // /_next/static above.
       //
       // Without this Next serves public/ with `max-age=0, must-revalidate`,

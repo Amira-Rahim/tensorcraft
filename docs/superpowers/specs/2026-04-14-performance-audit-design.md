@@ -1,4 +1,4 @@
-# Performance Audit — Full Optimization Sweep — Design Spec
+# Performance Audit - Full Optimization Sweep - Design Spec
 
 **Date:** 2026-04-14
 **Status:** Draft
@@ -66,8 +66,8 @@ import Image from "next/image";
 
 ### 4. Install and configure @next/bundle-analyzer
 
-**Modify:** `apps/web/package.json` — add `@next/bundle-analyzer` as dev dependency
-**Modify:** `apps/web/next.config.ts` — wrap config with analyzer when `ANALYZE=true`
+**Modify:** `apps/web/package.json` - add `@next/bundle-analyzer` as dev dependency
+**Modify:** `apps/web/next.config.ts` - wrap config with analyzer when `ANALYZE=true`
 
 ```typescript
 import withBundleAnalyzer from "@next/bundle-analyzer";
@@ -79,20 +79,20 @@ Add npm script: `"analyze": "ANALYZE=true next build"`
 
 ### 5. Add ISR/revalidate to content pages
 
-**Modify:** Theme pages, module pages, lesson pages — add `revalidate` export:
+**Modify:** Theme pages, module pages, lesson pages - add `revalidate` export:
 
 ```typescript
 export const revalidate = 3600; // Revalidate every hour
 ```
 
-This enables Incremental Static Regeneration on Vercel — pages are cached and rebuilt in the background.
+This enables Incremental Static Regeneration on Vercel - pages are cached and rebuilt in the background.
 
 Pages to add revalidate:
-- `apps/web/app/themes/page.tsx` — 3600 (1 hour)
-- `apps/web/app/themes/[slug]/page.tsx` — 3600
-- `apps/web/app/themes/[slug]/[module]/page.tsx` — 3600
-- `apps/web/app/pricing/page.tsx` — 3600
-- `apps/web/app/page.tsx` (landing) — 3600
+- `apps/web/app/themes/page.tsx` - 3600 (1 hour)
+- `apps/web/app/themes/[slug]/page.tsx` - 3600
+- `apps/web/app/themes/[slug]/[module]/page.tsx` - 3600
+- `apps/web/app/pricing/page.tsx` - 3600
+- `apps/web/app/page.tsx` (landing) - 3600
 
 NOT on dynamic pages that need fresh auth data: lesson pages, dashboard, settings, onboarding, auth.
 
@@ -123,10 +123,10 @@ The particle animation runs at full 60fps with 200+ particles. Add:
 
 ## What Doesn't Change
 
-- Font loading — already optimized with next/font + swap
-- OG image generation — already edge-optimized
-- Middleware performance — already excludes static assets
-- Shiki lazy loading — already implemented in CodeBlock
+- Font loading - already optimized with next/font + swap
+- OG image generation - already edge-optimized
+- Middleware performance - already excludes static assets
+- Shiki lazy loading - already implemented in CodeBlock
 
 ## Verification
 

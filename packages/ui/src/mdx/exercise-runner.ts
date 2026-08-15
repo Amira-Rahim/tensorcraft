@@ -173,7 +173,7 @@ const HARNESS = `
         var diff = Math.abs(actual - expected);
         var limit = Math.pow(10, -precision) / 2;
         // NaN-safe: a non-numeric actual makes diff NaN, and 'NaN >= limit'
-        // is false — the negated form fails instead of silently passing.
+        // is false - the negated form fails instead of silently passing.
         if (!(diff < limit)) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
       },
       toHaveProperty: function(key, expected) {
@@ -764,7 +764,7 @@ export { stripTypeScript };
 
 function buildFullCode(userCode: string, testCode: string): string {
   const cleanCode = stripTypeScript(userCode);
-  // testCode is authored in TS too (annotations, `as` casts) — strip it with
+  // testCode is authored in TS too (annotations, `as` casts) - strip it with
   // the same tokenizer or the whole bundle SyntaxErrors at runtime.
   const cleanTestCode = stripTypeScript(testCode);
   // The worker injects real `tf` as a function param; no inline mock.
@@ -821,7 +821,7 @@ const WORKER_BODY = `
   // download time against the learner's execution budget: importScripts above
   // pulls a ~1.4 MB bundle, which on a slow connection alone exceeds the 10s
   // timeout and produced "Timed out after 10 seconds" for code that never ran.
-  // Resolution (not rejection) is what matters here — a failed load is
+  // Resolution (not rejection) is what matters here - a failed load is
   // reported through the normal error path when the run is attempted.
   try {
     Promise.resolve(tfReady).then(function () {
@@ -1090,7 +1090,7 @@ export async function parseAndRunTestsWith(
     // runtime. The worker `importScripts` a 1,469,843-byte TFJS bundle before
     // it can execute anything; on a slow connection that download alone
     // exceeds 10s, so the first "Run Tests" of every such learner failed with
-    // "Timed out after 10 seconds" — attributing a network problem to their
+    // "Timed out after 10 seconds" - attributing a network problem to their
     // code, at the exact moment they are deciding whether this product works.
     //
     // The worker now posts `{ ready: true }` once the runtime is loaded, and

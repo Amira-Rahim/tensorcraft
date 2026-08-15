@@ -69,7 +69,7 @@ export function CheckoutButton({
         // completed was broken in three ways that only surface after the card
         // is charged:
         //   1. Stripe returns to /dashboard/purchase-success, which redirects
-        //      a session-less visitor to /auth — pay, then hit a login wall,
+        //      a session-less visitor to /auth - pay, then hit a login wall,
         //      no receipt.
         //   2. A returning customer whose session merely expired reads as a
         //      guest here, and /guest-checkout carries neither the
@@ -77,7 +77,7 @@ export function CheckoutButton({
         //      full price a second time.
         //   3. checkout.session.async_payment_succeeded resolves identity from
         //      client_reference_id only, so a guest paying by bank debit stays
-        //      "pending" forever — money taken, access never granted.
+        //      "pending" forever - money taken, access never granted.
         // Do not re-point this at /guest-checkout until all three are fixed
         // and lib/guest-account.ts has real (unmocked) tests. See
         // docs/roadmap.md Horizon 0.
@@ -100,7 +100,7 @@ export function CheckoutButton({
         // `tc:api-timeout` for the global toast. With raw fetch a stalled API
         // left the button on "Redirecting…" forever with no error ever shown.
         // It also attaches the bearer token itself and routes to the separate
-        // API host (api.tensorcraft.app) — a relative URL 404s on Vercel.
+        // API host (api.tensorcraft.app) - a relative URL 404s on Vercel.
         response = await apiFetch("/api/payments/checkout", {
           method: "POST",
           body: JSON.stringify({ planId, worldIds }),

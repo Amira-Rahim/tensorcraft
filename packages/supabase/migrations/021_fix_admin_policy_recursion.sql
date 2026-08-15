@@ -8,7 +8,7 @@
 --
 -- Fix: replace the inline `exists (select 1 from public.profiles ...)`
 -- subqueries with the `public.is_admin()` helper. That function is declared
--- SECURITY DEFINER, so it runs as the table owner and bypasses RLS — no
+-- SECURITY DEFINER, so it runs as the table owner and bypasses RLS - no
 -- recursion.
 
 drop policy if exists "Admins can view all profiles" on public.profiles;

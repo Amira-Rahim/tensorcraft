@@ -1,10 +1,10 @@
-# Bridge-Tier Audit — 2026-04-25
+# Bridge-Tier Audit - 2026-04-25
 
 Total lessons: **296**
 
 Source data:
 - Lessons: `packages/content/content/**/*.mdx`
-- Canonical registry: `packages/shared/src/bridges.ts` — 50 bridges
+- Canonical registry: `packages/shared/src/bridges.ts` - 50 bridges
 
 ## Tier distribution (overall)
 
@@ -30,15 +30,15 @@ Source data:
 
 - [packages/content/content/deep-orbit/foundations/04-data-loading.mdx](../../packages/content/content/deep-orbit/foundations/04-data-loading.mdx)
 
-## Tier mismatches (lesson tier ≠ canonical registry) — 0
+## Tier mismatches (lesson tier ≠ canonical registry) - 0
 
 _None._
 
-## Orphan bridges (not in canonical 50-bridge registry) — 293
+## Orphan bridges (not in canonical 50-bridge registry) - 293
 
 Lesson-invented analogies. Each is a candidate to either (a) promote to the canonical registry if it's reusable across lessons, or (b) reword to align with an existing canonical entry.
 
-### deep-orbit — 54 orphans
+### deep-orbit - 54 orphans
 
 | Lesson | feTitle | mlTitle | tier |
 |---|---|---|---|
@@ -97,7 +97,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/deep-orbit/training-loop/04-training-loop.mdx](../../packages/content/content/deep-orbit/training-loop/04-training-loop.mdx) | requestAnimationFrame | Training Loop | structural |
 | [packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx](../../packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx) | E2E Tests | Model Evaluation | structural |
 
-### neon-protocol — 53 orphans
+### neon-protocol - 53 orphans
 
 | Lesson | feTitle | mlTitle | tier |
 |---|---|---|---|
@@ -152,10 +152,10 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx](../../packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx) | npm package | Pre-trained Model | intuition |
 | [packages/content/content/neon-protocol/transfer-learning/02-feature-reuse.mdx](../../packages/content/content/neon-protocol/transfer-learning/02-feature-reuse.mdx) | Component libraries | Transfer Learning | structural |
 | [packages/content/content/neon-protocol/transfer-learning/03-fine-tuning.mdx](../../packages/content/content/neon-protocol/transfer-learning/03-fine-tuning.mdx) | Object.freeze() | Layer Freezing | structural |
-| [packages/content/content/neon-protocol/transfer-learning/04-domain-adaptation.mdx](../../packages/content/content/neon-protocol/transfer-learning/04-domain-adaptation.mdx) | i18n — adapting across locales | Domain Adaptation | intuition |
+| [packages/content/content/neon-protocol/transfer-learning/04-domain-adaptation.mdx](../../packages/content/content/neon-protocol/transfer-learning/04-domain-adaptation.mdx) | i18n - adapting across locales | Domain Adaptation | intuition |
 | [packages/content/content/neon-protocol/transfer-learning/05-the-heist.mdx](../../packages/content/content/neon-protocol/transfer-learning/05-the-heist.mdx) | Forking an open-source project | Model Repurposing | intuition |
 
-### nova-canvas — 55 orphans
+### nova-canvas - 55 orphans
 
 | Lesson | feTitle | mlTitle | tier |
 |---|---|---|---|
@@ -171,8 +171,8 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/nova-canvas/capstone/05-opening-night.mdx](../../packages/content/content/nova-canvas/capstone/05-opening-night.mdx) | Production Launch Day | Installation Launch | structural |
 | [packages/content/content/nova-canvas/clip-alignment/01-contrastive-learning.mdx](../../packages/content/content/nova-canvas/clip-alignment/01-contrastive-learning.mdx) | A/B testing | Contrastive learning | intuition |
 | [packages/content/content/nova-canvas/clip-alignment/02-clip-architecture.mdx](../../packages/content/content/nova-canvas/clip-alignment/02-clip-architecture.mdx) | Algolia multi-index search | CLIP dual encoder | structural |
-| [packages/content/content/nova-canvas/clip-alignment/03-zero-shot-classification.mdx](../../packages/content/content/nova-canvas/clip-alignment/03-zero-shot-classification.mdx) | Dynamic routing — handling unknown paths | Zero-shot classification | structural |
-| [packages/content/content/nova-canvas/clip-alignment/04-clip-guided-generation.mdx](../../packages/content/content/nova-canvas/clip-alignment/04-clip-guided-generation.mdx) | ESLint — guiding toward patterns | CLIP guidance | structural |
+| [packages/content/content/nova-canvas/clip-alignment/03-zero-shot-classification.mdx](../../packages/content/content/nova-canvas/clip-alignment/03-zero-shot-classification.mdx) | Dynamic routing - handling unknown paths | Zero-shot classification | structural |
+| [packages/content/content/nova-canvas/clip-alignment/04-clip-guided-generation.mdx](../../packages/content/content/nova-canvas/clip-alignment/04-clip-guided-generation.mdx) | ESLint - guiding toward patterns | CLIP guidance | structural |
 | [packages/content/content/nova-canvas/clip-alignment/05-prompt-engineering-for-images.mdx](../../packages/content/content/nova-canvas/clip-alignment/05-prompt-engineering-for-images.mdx) | Writing effective CSS selectors | Prompt engineering | structural |
 | [packages/content/content/nova-canvas/creative-deployment/01-performance-profiling.mdx](../../packages/content/content/nova-canvas/creative-deployment/01-performance-profiling.mdx) | DevTools Performance Panel | Inference Profiling | structural |
 | [packages/content/content/nova-canvas/creative-deployment/02-model-optimization.mdx](../../packages/content/content/nova-canvas/creative-deployment/02-model-optimization.mdx) | Webpack Production Build | Model Optimization | structural |
@@ -199,14 +199,14 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/nova-canvas/latent-spaces/03-interpolation.mdx](../../packages/content/content/nova-canvas/latent-spaces/03-interpolation.mdx) | CSS Transitions | Latent Interpolation | structural |
 | [packages/content/content/nova-canvas/latent-spaces/04-disentanglement.mdx](../../packages/content/content/nova-canvas/latent-spaces/04-disentanglement.mdx) | Component Props | Disentangled Dimensions | structural |
 | [packages/content/content/nova-canvas/latent-spaces/05-latent-space-exploration.mdx](../../packages/content/content/nova-canvas/latent-spaces/05-latent-space-exploration.mdx) | Slider UI with Live Preview | Interactive Latent Explorer | identity |
-| [packages/content/content/nova-canvas/multimodal-learning/01-what-is-multimodal.mdx](../../packages/content/content/nova-canvas/multimodal-learning/01-what-is-multimodal.mdx) | Full-stack apps — frontend + backend + database | Multimodal pipeline | intuition |
-| [packages/content/content/nova-canvas/multimodal-learning/02-vision-language-models.mdx](../../packages/content/content/nova-canvas/multimodal-learning/02-vision-language-models.mdx) | img alt='...' — text describing images | Vision-language model | intuition |
+| [packages/content/content/nova-canvas/multimodal-learning/01-what-is-multimodal.mdx](../../packages/content/content/nova-canvas/multimodal-learning/01-what-is-multimodal.mdx) | Full-stack apps - frontend + backend + database | Multimodal pipeline | intuition |
+| [packages/content/content/nova-canvas/multimodal-learning/02-vision-language-models.mdx](../../packages/content/content/nova-canvas/multimodal-learning/02-vision-language-models.mdx) | img alt='...' - text describing images | Vision-language model | intuition |
 | [packages/content/content/nova-canvas/multimodal-learning/03-cross-modal-embeddings.mdx](../../packages/content/content/nova-canvas/multimodal-learning/03-cross-modal-embeddings.mdx) | Shared component props across platforms | Cross-modal embedding space | structural |
 | [packages/content/content/nova-canvas/multimodal-learning/04-image-captioning.mdx](../../packages/content/content/nova-canvas/multimodal-learning/04-image-captioning.mdx) | Alt-text generation for accessibility | Image captioning pipeline | structural |
-| [packages/content/content/nova-canvas/multimodal-learning/05-text-to-image.mdx](../../packages/content/content/nova-canvas/multimodal-learning/05-text-to-image.mdx) | Server-side rendering — text becomes visual | Text-to-image generation | structural |
+| [packages/content/content/nova-canvas/multimodal-learning/05-text-to-image.mdx](../../packages/content/content/nova-canvas/multimodal-learning/05-text-to-image.mdx) | Server-side rendering - text becomes visual | Text-to-image generation | structural |
 | [packages/content/content/nova-canvas/style-transfer/01-content-vs-style.mdx](../../packages/content/content/nova-canvas/style-transfer/01-content-vs-style.mdx) | Content vs presentation (HTML vs CSS) | Content vs style representations | intuition |
 | [packages/content/content/nova-canvas/style-transfer/02-neural-style-transfer.mdx](../../packages/content/content/nova-canvas/style-transfer/02-neural-style-transfer.mdx) | CSS theme switching | Neural style transfer | structural |
-| [packages/content/content/nova-canvas/style-transfer/03-style-representations.mdx](../../packages/content/content/nova-canvas/style-transfer/03-style-representations.mdx) | Design tokens — encoded visual identity | Gram matrix style encoding | structural |
+| [packages/content/content/nova-canvas/style-transfer/03-style-representations.mdx](../../packages/content/content/nova-canvas/style-transfer/03-style-representations.mdx) | Design tokens - encoded visual identity | Gram matrix style encoding | structural |
 | [packages/content/content/nova-canvas/style-transfer/04-realtime-style-transfer.mdx](../../packages/content/content/nova-canvas/style-transfer/04-realtime-style-transfer.mdx) | CSS filter chains | Feedforward style network | structural |
 | [packages/content/content/nova-canvas/style-transfer/05-artistic-control.mdx](../../packages/content/content/nova-canvas/style-transfer/05-artistic-control.mdx) | CSS mix-blend-mode | Style interpolation | structural |
 | [packages/content/content/nova-canvas/variational-autoencoders/01-autoencoders-recap.mdx](../../packages/content/content/nova-canvas/variational-autoencoders/01-autoencoders-recap.mdx) | gzip / Brotli Compression | Autoencoder | structural |
@@ -215,7 +215,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/nova-canvas/variational-autoencoders/04-kl-divergence.mdx](../../packages/content/content/nova-canvas/variational-autoencoders/04-kl-divergence.mdx) | CSS Specificity Balance | KL Divergence | intuition |
 | [packages/content/content/nova-canvas/variational-autoencoders/05-creative-vae.mdx](../../packages/content/content/nova-canvas/variational-autoencoders/05-creative-vae.mdx) | Design System Tokens | VAE Latent Controls | structural |
 
-### shared — 21 orphans
+### shared - 21 orphans
 
 | Lesson | feTitle | mlTitle | tier |
 |---|---|---|---|
@@ -241,7 +241,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/extras/python-bridge/04-pandas-data-wrangling.mdx](../../packages/content/content/extras/python-bridge/04-pandas-data-wrangling.mdx) | Array of objects + .map/.filter/.reduce | pandas DataFrame | structural |
 | [packages/content/content/extras/python-bridge/05-reading-ml-papers.mdx](../../packages/content/content/extras/python-bridge/05-reading-ml-papers.mdx) | Technical blog post with code | ML paper | structural |
 
-### signal-ward — 55 orphans
+### signal-ward - 55 orphans
 
 | Lesson | feTitle | mlTitle | tier |
 |---|---|---|---|
@@ -301,7 +301,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/signal-ward/word-embeddings/04-similarity-and-analogy.mdx](../../packages/content/content/signal-ward/word-embeddings/04-similarity-and-analogy.mdx) | String Similarity | Vector Similarity | intuition |
 | [packages/content/content/signal-ward/word-embeddings/05-embedding-layers.mdx](../../packages/content/content/signal-ward/word-embeddings/05-embedding-layers.mdx) | Lookup Table / Map | Embedding Layer | structural |
 
-### terra-grid — 55 orphans
+### terra-grid - 55 orphans
 
 | Lesson | feTitle | mlTitle | tier |
 |---|---|---|---|
@@ -362,7 +362,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/terra-grid/scale-reliability/05-global-operations.mdx](../../packages/content/content/terra-grid/scale-reliability/05-global-operations.mdx) | CDN Multi-Region | Model Multi-Region | structural |
 
 
-## Identity-tier sanity check — 15 bridges claim literal equivalence
+## Identity-tier sanity check - 15 bridges claim literal equivalence
 
 Identity tier means the FE concept **literally is** the ML concept (e.g. `Math.max(0,x) === ReLU`). Each entry below should pass: "swap the names and the code is identical". Manual review recommended for any where the codes are NOT trivially interchangeable.
 
@@ -480,7 +480,7 @@ _Showing first 80 of 189. Full list available by re-running audit script._
 ## Recommendations
 
 1. **Fix missing bridge** in lesson(s) listed above.
-2. **Reconcile tier mismatches** — single source of truth must be the canonical registry. Either update the lesson tier or update the registry tier — pick one and make them match.
-3. **Promote vs prune orphans** — for each orphan, decide: reusable bridge → add to registry, lesson-specific → leave inline but require `breaks:` field per pattern (Deliverable C).
-4. **Identity-tier audit pass** — manually verify every identity claim. Any that aren't literal code-level equivalence → demote to structural.
+2. **Reconcile tier mismatches** - single source of truth must be the canonical registry. Either update the lesson tier or update the registry tier - pick one and make them match.
+3. **Promote vs prune orphans** - for each orphan, decide: reusable bridge → add to registry, lesson-specific → leave inline but require `breaks:` field per pattern (Deliverable C).
+4. **Identity-tier audit pass** - manually verify every identity claim. Any that aren't literal code-level equivalence → demote to structural.
 5. **Prioritize `breaks:` retrofit** by suspect list above. These have the largest gap between FE word and ML word and are most likely to mislead.

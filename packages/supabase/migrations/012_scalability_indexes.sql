@@ -1,4 +1,4 @@
--- Tensorcraft: Scalability Phase 1 — Indexes, Materialized View, Streak Fix
+-- Tensorcraft: Scalability Phase 1 - Indexes, Materialized View, Streak Fix
 --
 -- Adds missing indexes for dashboard/exercise queries at scale.
 -- Creates materialized view for dashboard aggregation.

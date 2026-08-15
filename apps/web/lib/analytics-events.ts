@@ -185,7 +185,7 @@ export interface EventProperties {
   /**
    * Signup funnel. `method` distinguishes the OAuth paths from the magic
    * link, which matters because the magic link is the one that forces the
-   * buyer out to an inbox — its drop-off should be read separately.
+   * buyer out to an inbox - its drop-off should be read separately.
    */
   [EVENTS.SIGNUP_STARTED]: {
     method: "github" | "google" | "magic_link";

@@ -5,18 +5,18 @@
  * The migration gate (scripts/migration-status.mjs) cannot see runtime env,
  * so on 2026-07-25 a green deploy-api.yml run shipped an image that
  * crash-looped to Fly's max restart count on two missing secrets
- * (CERT_SIGNING_SECRET, KIT_WEBHOOK_SECRET) — a ~20 minute 502 outage a
+ * (CERT_SIGNING_SECRET, KIT_WEBHOOK_SECRET) - a ~20 minute 502 outage a
  * name-diff would have caught before flyctl ran. This script is that diff:
  *
  *   node scripts/deploy-preflight.mjs
  *
  * Required names come from apps/api/src/env.ts (ALWAYS_REQUIRED +
- * PROD_REQUIRED — the image bakes NODE_ENV=production, so both tiers
+ * PROD_REQUIRED - the image bakes NODE_ENV=production, so both tiers
  * apply). The lists are regex-parsed from source rather than imported to
  * keep this runnable with bare node in CI; the drift-guard test in
  * apps/api/src/__tests__/deploy-preflight.test.ts pins the parse against
  * the real exports. Available names come from `flyctl secrets list --json`
- * plus any fly.toml [env] keys and Dockerfile ENV keys (names only —
+ * plus any fly.toml [env] keys and Dockerfile ENV keys (names only -
  * secret VALUES are never read).
  *
  * Exit codes match migration-status.mjs: 0 = all present, 1 = missing
@@ -42,7 +42,7 @@ export function parseRequiredVars(source) {
     if (!m) throw new Error(`Could not find ${list} in apps/api/src/env.ts`);
     out[list] = [...m[1].matchAll(/"([A-Z][A-Z0-9_]*)"/g)].map((x) => x[1]);
     if (out[list].length === 0)
-      throw new Error(`${list} parsed to zero names — parser drift?`);
+      throw new Error(`${list} parsed to zero names - parser drift?`);
   }
   return out;
 }
@@ -59,7 +59,9 @@ export function parseFlyTomlEnvKeys(toml) {
 
 /** Keys baked into the image via Dockerfile ENV. */
 export function parseDockerfileEnvKeys(dockerfile) {
-  return [...dockerfile.matchAll(/^ENV\s+([A-Z][A-Z0-9_]*)=/gm)].map((x) => x[1]);
+  return [...dockerfile.matchAll(/^ENV\s+([A-Z][A-Z0-9_]*)=/gm)].map(
+    (x) => x[1],
+  );
 }
 
 /** Pure diff: required names not covered by any available source. */
@@ -85,7 +87,7 @@ function main() {
   } catch (err) {
     console.error(
       `\n  ERROR  could not list Fly secrets for '${APP}': ${err.message}\n` +
-        `  A gate that cannot check must not pass (R3-9) — failing closed.\n`,
+        `  A gate that cannot check must not pass (R3-9) - failing closed.\n`,
     );
     process.exit(2);
   }
@@ -100,14 +102,16 @@ function main() {
   console.log(`\n  Deploy preflight (${APP})`);
   console.log(`  ------------------------`);
   console.log(`  required (env.ts) : ${required.length}`);
-  console.log(`  available sources : ${available.length} names (secrets + fly.toml [env] + Dockerfile ENV)`);
+  console.log(
+    `  available sources : ${available.length} names (secrets + fly.toml [env] + Dockerfile ENV)`,
+  );
 
   if (missing.length === 0) {
-    console.log(`\n  OK — every required runtime var is provided.\n`);
+    console.log(`\n  OK - every required runtime var is provided.\n`);
     process.exit(0);
   }
 
-  console.log(`\n  MISSING — the API will crash-loop at boot without these:`);
+  console.log(`\n  MISSING - the API will crash-loop at boot without these:`);
   for (const name of missing) console.log(`    ${name}`);
   console.log(
     `\n  Set them before deploying:\n` +

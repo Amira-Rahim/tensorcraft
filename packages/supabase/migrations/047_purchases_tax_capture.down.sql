@@ -1,7 +1,7 @@
 -- Down-migration for 047. Reverses 047_purchases_tax_capture.sql.
 --
 -- Drops the tax-capture columns. NOTE: any tax jurisdiction already recorded on
--- real sales is LOST on rollback and cannot be reconstructed — only roll back
+-- real sales is LOST on rollback and cannot be reconstructed - only roll back
 -- before Stripe Tax has been used in production.
 
 begin;

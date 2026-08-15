@@ -4,7 +4,7 @@
 --
 -- Scalability re-audit 2026-07-24 (§RE-AUDIT / N3). middleware.ts ran a
 -- profiles SELECT on every /dashboard, /settings, /onboarding navigation, on
--- top of the mandatory getUser() GoTrue call — a DB round-trip in the hottest
+-- top of the mandatory getUser() GoTrue call - a DB round-trip in the hottest
 -- authed path. This hook injects `onboarding_completed` into the access token
 -- at mint time, reading profiles ONCE per token (not per request); the
 -- middleware then reads the claim from the already-validated JWT.
@@ -23,7 +23,7 @@
 --
 -- Pattern follows the official Supabase custom-access-token-hook docs: the hook
 -- runs as role `supabase_auth_admin`, which is granted the minimum needed to
--- read the flag (and ONLY that flag's table), via a scoped RLS policy — never
+-- read the flag (and ONLY that flag's table), via a scoped RLS policy - never
 -- a broad grant. Aligns with CONVENTIONS.md's "least privilege, scoped policy"
 -- rule.
 --
@@ -78,7 +78,7 @@ grant execute on function public.custom_access_token_hook(jsonb) to supabase_aut
 revoke execute on function public.custom_access_token_hook(jsonb) from authenticated, anon, public;
 
 -- The hook runs as supabase_auth_admin, which is subject to RLS on profiles.
--- Grant it SELECT and a narrow policy so it can read the flag — and only via
+-- Grant it SELECT and a narrow policy so it can read the flag - and only via
 -- this path. No other columns are needed by the hook, but column-scoping a
 -- SELECT policy is not possible, so the policy is table-scoped to the auth
 -- admin role only (never to app users).

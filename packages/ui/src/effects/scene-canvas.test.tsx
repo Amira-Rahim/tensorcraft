@@ -62,16 +62,16 @@ describe("SceneCanvas reduced-motion static frame", () => {
     // Order matters: `cleanup()` unmounts the rendered tree FIRST, which
     // disconnects each SceneCanvas's attribute MutationObserver via its
     // effect cleanup. Only then is it safe to clear the shared
-    // data-scheme/data-world attrs — doing that first (while a describe-
+    // data-scheme/data-world attrs - doing that first (while a describe-
     // scoped afterEach still races RTL's own module-level afterEach, which
     // runs its cleanup() *after* this one) would itself be an observed
     // mutation, queuing one more `render()` microtask against an
     // already-unmounted-but-not-yet-disconnected observer, right as
-    // `vi.restoreAllMocks()` below un-mocks getContext — producing a real
+    // `vi.restoreAllMocks()` below un-mocks getContext - producing a real
     // (if harmless) jsdom "Not implemented" console warning after the test
     // already finished. Caught via a debug repro during this task; not a
     // product bug (the "disconnects on unmount" test below confirms the
-    // real observer teardown is correct) — purely this file's hook order.
+    // real observer teardown is correct) - purely this file's hook order.
     cleanup();
     delete document.documentElement.dataset.scheme;
     delete document.documentElement.dataset.world;
@@ -116,11 +116,11 @@ describe("SceneCanvas reduced-motion static frame", () => {
     await waitFor(() => expect(draw).toHaveBeenCalled());
     draw.mockClear();
 
-    // MutationObserver callbacks fire as a microtask — how many ticks isn't
+    // MutationObserver callbacks fire as a microtask - how many ticks isn't
     // a contract this test controls. A synchronous `act(() => { mutate })`
     // wrap around this line is decorative (the observer hasn't fired yet
     // when act's callback returns) and a one-shot `await act(async () => {
-    // mutate; await Promise.resolve(); })` is a RACE, not a fix — it
+    // mutate; await Promise.resolve(); })` is a RACE, not a fix - it
     // intermittently threw a real "not wrapped in act" warning under this
     // same pattern for use-scheme.ts's own tests (see that file's history
     // and docs/superpowers/plans/2026-07-22-light-mode.md's Task 8 forward

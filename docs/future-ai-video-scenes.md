@@ -1,7 +1,7 @@
 # Future: AI-Generated Video Scenes
 
-> Status: **Deferred** (2026-04-15) — revisit when budget allows (~$540-1,140 one-time generation cost)
-> Supersedes: Audio narration deferral (2026-04-14) — video includes voice acting, making standalone audio redundant
+> Status: **Deferred** (2026-04-15) - revisit when budget allows (~$540-1,140 one-time generation cost)
+> Supersedes: Audio narration deferral (2026-04-14) - video includes voice acting, making standalone audio redundant
 
 ## Overview
 
@@ -42,8 +42,8 @@ Replace `<Dialogue>`, `<SceneHeading>`, and narrative prose with a single `<Vide
 
 ### Schema Changes (schemas.ts)
 
-- Add optional `videoClips` field to lesson schema — maps beat IDs to CDN URLs and metadata (duration, aspect ratio)
-- Add `captions` structure — derived from existing dialogue/narrative text with timing data
+- Add optional `videoClips` field to lesson schema - maps beat IDs to CDN URLs and metadata (duration, aspect ratio)
+- Add `captions` structure - derived from existing dialogue/narrative text with timing data
 - Existing `scene`, `context.narrative`, `consequence.narrative` fields remain as source material for prompt generation
 
 ## Generation Pipeline (4 Stages)
@@ -125,7 +125,7 @@ Each character gets a designed voice ID on ElevenLabs. Mood tags (confident, wor
 
 ## Rollout Strategy
 
-1. **Proof of concept:** Generate video for 1 lesson (Neon Protocol Module 1, Lesson 1 — "Seeing Like a Machine") to validate quality, consistency, and pipeline
+1. **Proof of concept:** Generate video for 1 lesson (Neon Protocol Module 1, Lesson 1 - "Seeing Like a Machine") to validate quality, consistency, and pipeline
 2. **Single world:** If POC passes, generate all 55 Neon Protocol lessons (~160 clips)
 3. **Full rollout:** Remaining 4 worlds (220 lessons, ~640 clips)
 
@@ -134,7 +134,7 @@ Ship one world at a time. Text fallback ensures lessons without video still work
 ## Why Deferred
 
 - One-time generation cost of $540-1,140 not in current budget
-- AI video tools (Runway, Kling, Pika) are improving rapidly — waiting reduces cost and increases quality
+- AI video tools (Runway, Kling, Pika) are improving rapidly - waiting reduces cost and increases quality
 - Current text-based screenplay format is functional and ships V1
 - This subsumes the previously deferred audio narration idea (video includes voice acting)
 - User engagement data from V1 (narrative skip rates, lesson completion, time-on-step) will validate whether the investment is worth it
@@ -144,15 +144,15 @@ Ship one world at a time. Text fallback ensures lessons without video still work
 - Post-V1 launch, once revenue from world sales can fund generation costs
 - If Runway or competitors drop pricing significantly (watch for sub-$0.25/clip)
 - If user feedback specifically requests richer narrative presentation
-- If narrative skip rates are high (>40%), video may not be the right investment — consider other engagement strategies first
+- If narrative skip rates are high (>40%), video may not be the right investment - consider other engagement strategies first
 
 ## Files That Will Change
 
-- `packages/content/src/schemas.ts` — add videoClips, captions to lesson schema
-- `packages/ui/src/mdx/video-scene.tsx` — new component (replaces Dialogue + SceneHeading for video-enabled lessons)
-- `packages/ui/src/mdx/index.ts` — register VideoScene in MDX component map
-- `packages/content/velite.config.ts` — add video-manifest.json ingestion
-- `apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx` — add VideoScene to visibleComponents for steps 0 and 5
-- New: `tools/tc-video/` — CLI for generate, review, upload pipeline
-- New: `packages/content/content/<world>/video-specs/` — per-lesson video-spec.yaml files
-- New: `packages/content/content/<world>/video-manifests/` — generated manifest JSON files
+- `packages/content/src/schemas.ts` - add videoClips, captions to lesson schema
+- `packages/ui/src/mdx/video-scene.tsx` - new component (replaces Dialogue + SceneHeading for video-enabled lessons)
+- `packages/ui/src/mdx/index.ts` - register VideoScene in MDX component map
+- `packages/content/velite.config.ts` - add video-manifest.json ingestion
+- `apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx` - add VideoScene to visibleComponents for steps 0 and 5
+- New: `tools/tc-video/` - CLI for generate, review, upload pipeline
+- New: `packages/content/content/<world>/video-specs/` - per-lesson video-spec.yaml files
+- New: `packages/content/content/<world>/video-manifests/` - generated manifest JSON files

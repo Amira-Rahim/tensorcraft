@@ -2,7 +2,7 @@
 
 Companion to `analogy-breaks-pattern.md`. Use this when working through the backlog of 244 structural+intuition bridges that pre-date the pattern.
 
-Source data: `docs/audits/bridge-tier-audit-2026-04-25.md` — full inventory.
+Source data: `docs/audits/bridge-tier-audit-2026-04-25.md` - full inventory.
 
 ## Scope
 
@@ -17,35 +17,35 @@ Source data: `docs/audits/bridge-tier-audit-2026-04-25.md` — full inventory.
 
 Work this order. Earlier batches are higher-leverage retrofits.
 
-### Batch 1 — Tier mismatches (13 lessons)
+### Batch 1 - Tier mismatches (13 lessons)
 
-From audit: 13 lessons claim a different tier than the canonical registry says for the same FE/ML pair. **Resolve the tier first** (update lesson OR update registry — pick one), then add `breaks:` per the resolved tier's requirement. List in the audit report.
+From audit: 13 lessons claim a different tier than the canonical registry says for the same FE/ML pair. **Resolve the tier first** (update lesson OR update registry - pick one), then add `breaks:` per the resolved tier's requirement. List in the audit report.
 
-### Batch 2 — Suspect structurals (168 lessons)
+### Batch 2 - Suspect structurals (168 lessons)
 
 Heuristic: `tier: structural` AND zero shared significant words between `feTitle` and `mlTitle`. These have the largest cognitive gap and are most likely to mislead. Examples from audit:
 
-- `Webpack Tree-Shaking ↔ Model Pruning` — shared word: none (after stopwords)
+- `Webpack Tree-Shaking ↔ Model Pruning` - shared word: none (after stopwords)
 - `Micro-Frontends ↔ Model Ensemble`
 - `scrollIntoView() ↔ Temporal Attention`
 - `Compression ↔ Autoencoder`
 
 Process per lesson:
 1. Read the lesson MDX to understand the actual analogy used in the body.
-2. Identify the most concrete failure mode — what wrong inference does the analogy invite?
+2. Identify the most concrete failure mode - what wrong inference does the analogy invite?
 3. Write 1–3 sentences per `analogy-breaks-pattern.md` rules.
 4. Add `breaks:` to lesson `concept.bridge` frontmatter.
 5. If the bridge is reused across 3+ lessons → also add `breaks:` to canonical registry entry; remove inline duplicates.
 
-### Batch 3 — Remaining structurals (47 lessons)
+### Batch 3 - Remaining structurals (47 lessons)
 
 Structurals that share words between FE and ML (e.g. `Performance Baseline ↔ Anomaly Threshold` shares "threshold"-adjacent terms after stem). Lower priority but still required.
 
-### Batch 4 — Intuitions (30 lessons)
+### Batch 4 - Intuitions (30 lessons)
 
-These by definition stretch farthest. Write `breaks:` carefully — for many of these, the honest break is "the mechanisms are completely unrelated; only the high-level shape rhymes." That's fine — say it.
+These by definition stretch farthest. Write `breaks:` carefully - for many of these, the honest break is "the mechanisms are completely unrelated; only the high-level shape rhymes." That's fine - say it.
 
-### Batch 5 — Identity audit pass (49 lessons)
+### Batch 5 - Identity audit pass (49 lessons)
 
 Manual pass. For each identity claim, verify the codes are literally interchangeable. If not → demote to structural, then write `breaks:` per Batch 2 process.
 
@@ -79,7 +79,7 @@ For Batches 2-3, faster to:
 
 ## Escape hatches
 
-- **Bridge too weak to fix:** if you can't write a meaningful `breaks:` because the analogy itself is bad, replace the bridge entirely. Find a stronger one — registry has 50 candidates, also see `worlds-and-bridges` memory note.
+- **Bridge too weak to fix:** if you can't write a meaningful `breaks:` because the analogy itself is bad, replace the bridge entirely. Find a stronger one - registry has 50 candidates, also see `worlds-and-bridges` memory note.
 - **Bridge truly identity:** if you find yourself with no `breaks:` because the FE concept literally is the ML concept, change tier to `identity`. Audit script will flag for review next pass.
 - **Bridge spans 3+ tiers depending on context:** split into separate bridges per lesson. Don't try to make one bridge serve "intuition for beginners, structural for advanced."
 
@@ -89,7 +89,7 @@ For Batches 2-3, faster to:
 - `pnpm --filter @tensorcraft/ui test bridge-callout` passes.
 - `pnpm --filter @tensorcraft/web build` succeeds.
 - `pnpm typecheck` passes.
-- Re-run `node /tmp/bridge-audit.mjs` (or the committed audit script if promoted) — batch's lessons no longer flagged as missing `breaks:`.
+- Re-run `node /tmp/bridge-audit.mjs` (or the committed audit script if promoted) - batch's lessons no longer flagged as missing `breaks:`.
 
 ## Definition of done (full retrofit)
 

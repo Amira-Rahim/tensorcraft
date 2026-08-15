@@ -1,4 +1,4 @@
-# Signal Ward — NLP & Medical Text
+# Signal Ward - NLP & Medical Text
 
 > Signal Ward is the third world in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
@@ -8,19 +8,19 @@
 
 **Tags:** `NLP` `transformers` `BERT` `medical-text` `RAG` `clinical-AI`
 **World:** AI-assisted clinical decision support in a hospital setting
-**Setting:** Signal Ward is the advanced research wing of Caduceus Medical Center, a cutting-edge hospital and research facility. The ward processes millions of patient records, clinical notes, medical literature, and diagnostic reports. The healthcare system is drowning in unstructured text — doctors' handwritten notes digitized into messy transcripts, research papers piling up faster than anyone can read, and critical diagnostic information buried in paragraphs of clinical prose.
-**Model being built:** Diagnostic One — an AI text assistant for clinical NLP
+**Setting:** Signal Ward is the advanced research wing of Caduceus Medical Center, a cutting-edge hospital and research facility. The ward processes millions of patient records, clinical notes, medical literature, and diagnostic reports. The healthcare system is drowning in unstructured text - doctors' handwritten notes digitized into messy transcripts, research papers piling up faster than anyone can read, and critical diagnostic information buried in paragraphs of clinical prose.
+**Model being built:** Diagnostic One - an AI text assistant for clinical NLP
 **GitHub repo deployed at end:** `diagnostic-one-clinical-nlp`
 
 ### Characters
 
 | Name | Role | Description |
 |---|---|---|
-| **Dr. Elena Vasquez** | Head Researcher / Mentor | Director of Signal Ward. Brilliant diagnostician, demanding but empathetic. Lost a patient early in her career due to a missed note in a chart — this drives her mission. Sets clinical context and explains *why* each NLP capability matters. Has no patience for sloppy work but infinite patience for genuine learning. |
+| **Dr. Elena Vasquez** | Head Researcher / Mentor | Director of Signal Ward. Brilliant diagnostician, demanding but empathetic. Lost a patient early in her career due to a missed note in a chart - this drives her mission. Sets clinical context and explains *why* each NLP capability matters. Has no patience for sloppy work but infinite patience for genuine learning. |
 | **Obi Nwosu** | Computational Linguist / Concept Explainer | NLP expert with a PhD in biomedical NLP. Warm, articulate, deeply enthusiastic about language. Speaks three languages fluently and sees beauty in how words carry meaning. Introduces NLP theory, explains architectures, builds linguistic intuition. |
 | **Santos** | Nurse & Data Curator / Implementation Lead | Handles data quality, labeling, and the messy reality of clinical text. Practical, meticulous, protective of patient data. Has labeled ten thousand records by hand. Bridges the gap between raw medical records and clean training data. |
-| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled frontend developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI — a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there — drug interactions hiding across tabs, symptom patterns buried in months of notes — but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
-| **MEDI** | Clinical Decision Support AI | The ward's AI assistant. Precise, helpful, occasionally pedantic about medical terminology. Unlike other world AIs, MEDI is designed to be cautious — it flags uncertainty rather than projecting confidence. Corrects gently but firmly. Tutorial guide and hint system. |
+| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled frontend developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI - a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there - drug interactions hiding across tabs, symptom patterns buried in months of notes - but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
+| **MEDI** | Clinical Decision Support AI | The ward's AI assistant. Precise, helpful, occasionally pedantic about medical terminology. Unlike other world AIs, MEDI is designed to be cautious - it flags uncertainty rather than projecting confidence. Corrects gently but firmly. Tutorial guide and hint system. |
 
 ### DISCLAIMER
 
@@ -30,13 +30,13 @@
 
 Signal Ward deliberately includes moments where the AI system produces incorrect or misleading outputs, teaching students to build systems that handle failure gracefully:
 
-- **Module 6 (Transformers & BERT):** MEDI misinterprets temporal context in a clinical note — confusing a patient's *history* of a condition with a *current* diagnosis. The sentence "History of Type 2 diabetes, resolved after bariatric surgery" gets classified as an active condition. Khalil learns to build temporal-aware models with negation detection.
-- **Module 8 (Text Classification):** MEDI generates a clinical summary that is linguistically fluent but factually wrong — it hallucinates a medication dosage that appears nowhere in the source notes. The summary reads convincingly, making the error harder to catch. The team learns about hallucination detection and grounding.
-- **Module 11 (Capstone):** MEDI flags a false positive — an urgent drug interaction alert for a patient who is actually stable. Dr. Vasquez uses this as a teaching moment: "This is why AI assists but never decides. The false positive costs us 3 minutes of review. A false negative could cost a life."
+- **Module 6 (Transformers & BERT):** MEDI misinterprets temporal context in a clinical note - confusing a patient's *history* of a condition with a *current* diagnosis. The sentence "History of Type 2 diabetes, resolved after bariatric surgery" gets classified as an active condition. Khalil learns to build temporal-aware models with negation detection.
+- **Module 8 (Text Classification):** MEDI generates a clinical summary that is linguistically fluent but factually wrong - it hallucinates a medication dosage that appears nowhere in the source notes. The summary reads convincingly, making the error harder to catch. The team learns about hallucination detection and grounding.
+- **Module 11 (Capstone):** MEDI flags a false positive - an urgent drug interaction alert for a patient who is actually stable. Dr. Vasquez uses this as a teaching moment: "This is why AI assists but never decides. The false positive costs us 3 minutes of review. A false negative could cost a life."
 
 ### Career Paths & Salaries
 
-> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics — Tensorcraft provides the conceptual foundation to pursue them.
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
 
 | Path | Description | Avg Salary (US) |
 |---|---|---|
@@ -54,15 +54,15 @@ Signal Ward deliberately includes moments where the AI system produces incorrect
 
 ### Preview Art
 
-A hospital corridor at night. Fluorescent lights cast a blue-white glow on polished floors. In the foreground, Khalil sits at a workstation in the IT office, multiple monitors showing clinical text with highlighted entities — medications in blue, conditions in amber, procedures in green. On one monitor, MEDI's interface displays a clinical summary with confidence bars next to each extracted fact. Through the glass window behind Khalil, the ICU is visible — monitors blinking, nurses moving between beds. The contrast between the quiet code and the urgent care beyond the glass captures the world's tension.
+A hospital corridor at night. Fluorescent lights cast a blue-white glow on polished floors. In the foreground, Khalil sits at a workstation in the IT office, multiple monitors showing clinical text with highlighted entities - medications in blue, conditions in amber, procedures in green. On one monitor, MEDI's interface displays a clinical summary with confidence bars next to each extracted fact. Through the glass window behind Khalil, the ICU is visible - monitors blinking, nurses moving between beds. The contrast between the quiet code and the urgent care beyond the glass captures the world's tension.
 
 ### Story Summary
 
-Signal Ward at Caduceus Medical Center is drowning in unstructured clinical text. Thousands of notes, reports, and discharge summaries flow through the EHR system daily, but critical information gets buried. After a vendor NLP solution fails spectacularly — misclassifying a drug allergy and triggering a near-miss adverse event — Dr. Vasquez cancels the vendor contract and decides to build an in-house system.
+Signal Ward at Caduceus Medical Center is drowning in unstructured clinical text. Thousands of notes, reports, and discharge summaries flow through the EHR system daily, but critical information gets buried. After a vendor NLP solution fails spectacularly - misclassifying a drug allergy and triggering a near-miss adverse event - Dr. Vasquez cancels the vendor contract and decides to build an in-house system.
 
-Khalil, a frontend developer in the IT department, is tasked with building the interface for Diagnostic One, a clinical NLP pipeline. Under the guidance of Dr. Vasquez (clinical context), Obi (NLP theory), and Santos (data quality), he learns to build text processing systems that can tokenize clinical language, extract medical entities, classify note types, summarize documents, and flag critical findings — all running in the browser for privacy and speed.
+Khalil, a frontend developer in the IT department, is tasked with building the interface for Diagnostic One, a clinical NLP pipeline. Under the guidance of Dr. Vasquez (clinical context), Obi (NLP theory), and Santos (data quality), he learns to build text processing systems that can tokenize clinical language, extract medical entities, classify note types, summarize documents, and flag critical findings - all running in the browser for privacy and speed.
 
-The journey is not just technical — it is ethical. Signal Ward confronts the reality that AI in healthcare must be held to a higher standard. Every module includes moments where the system fails, and the team learns to build safeguards, communicate uncertainty, and keep humans in the loop.
+The journey is not just technical - it is ethical. Signal Ward confronts the reality that AI in healthcare must be held to a higher standard. Every module includes moments where the system fails, and the team learns to build safeguards, communicate uncertainty, and keep humans in the loop.
 
 ### Model Preview
 
@@ -85,7 +85,7 @@ Diagnostic One evolves across 11 modules:
 
 > **This course teaches machine learning through interactive, narrative-driven lessons designed for frontend developers.**
 >
-> You will learn real ML — not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
+> You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
 > **Fundamentals you will master:**
 >
@@ -114,15 +114,15 @@ Diagnostic One evolves across 11 modules:
 
 ### Summary
 
-The hospital's vendor NLP system has failed — a misclassified drug allergy led to a near-miss adverse event. Dr. Vasquez cancels the vendor contract and tasks the IT team with building an in-house solution. Khalil, a frontend dev with strong TypeScript skills, is assigned to build the interface.
+The hospital's vendor NLP system has failed - a misclassified drug allergy led to a near-miss adverse event. Dr. Vasquez cancels the vendor contract and tasks the IT team with building an in-house solution. Khalil, a frontend dev with strong TypeScript skills, is assigned to build the interface.
 
-Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-based text processing, the three learning paradigms, neural network basics, and text-as-data. Each concept is grounded in clinical examples — classifying note types, extracting medication names, predicting diagnosis codes.
+Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-based text processing, the three learning paradigms, neural network basics, and text-as-data. Each concept is grounded in clinical examples - classifying note types, extracting medication names, predicting diagnosis codes.
 
 > **KHALIL:** "So instead of writing regex patterns for every possible drug name format, we train a model to recognize them from examples?"
 
-> **OBI:** "Exactly. And when a new drug name appears that we never wrote a rule for, the model can still recognize it — because it learned the *pattern* of what drug names look like, not a fixed list."
+> **OBI:** "Exactly. And when a new drug name appears that we never wrote a rule for, the model can still recognize it - because it learned the *pattern* of what drug names look like, not a fixed list."
 
-> **MEDI:** "I should note that my predecessor — the vendor system — used 2,847 hand-written rules. It achieved 73% accuracy on medication extraction. I believe we can improve upon that. Carefully."
+> **MEDI:** "I should note that my predecessor - the vendor system - used 2,847 hand-written rules. It achieved 73% accuracy on medication extraction. I believe we can improve upon that. Carefully."
 
 ### Lessons
 
@@ -136,12 +136,12 @@ Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-
 
 **Inter-Lesson Hooks:**
 
-- **L1.1 → L1.2:** Khalil's first text analysis returns gibberish — turns out the input encoding is wrong. The clinical notes are UTF-8 but his pipeline assumed ASCII, mangling every accented character and special symbol.
+- **L1.1 → L1.2:** Khalil's first text analysis returns gibberish - turns out the input encoding is wrong. The clinical notes are UTF-8 but his pipeline assumed ASCII, mangling every accented character and special symbol.
 - **L1.2 → L1.3:** The tokenizer works, but MEDI flags a problem: two patients with identical symptoms are being classified differently. One note says "chest pain," the other says "CP." Same meaning, different tokens.
-- **L1.3 → L1.4:** The model runs, but Santos notices it's ignoring abbreviations that nurses use constantly — "pt," "hx," "dx," "prn." The vocabulary is built from textbooks, not from the ward.
-- **L1.4 → L1.5:** The vocabulary now handles abbreviations, but the forward pass produces wildly different confidence scores for notes that say the same thing in different word orders. Sequence matters — and the model doesn't know that yet.
+- **L1.3 → L1.4:** The model runs, but Santos notices it's ignoring abbreviations that nurses use constantly - "pt," "hx," "dx," "prn." The vocabulary is built from textbooks, not from the ward.
+- **L1.4 → L1.5:** The vocabulary now handles abbreviations, but the forward pass produces wildly different confidence scores for notes that say the same thing in different word orders. Sequence matters - and the model doesn't know that yet.
 
-**FE BRIDGE (Module-Level):** Tokenization is URL parsing. When you call `new URL('https://caduceus.org/patient/12345?tab=notes&filter=active')`, the browser breaks the URL into structured parts — protocol, hostname, pathname, search params. Tokenization does the same to text: `"Patient presents with acute chest pain"` becomes `["Patient", "presents", "with", "acute", "chest", "pain"]` — structured, indexable, processable.
+**FE BRIDGE (Module-Level):** Tokenization is URL parsing. When you call `new URL('https://caduceus.org/patient/12345?tab=notes&filter=active')`, the browser breaks the URL into structured parts - protocol, hostname, pathname, search params. Tokenization does the same to text: `"Patient presents with acute chest pain"` becomes `["Patient", "presents", "with", "acute", "chest", "pain"]` - structured, indexable, processable.
 
 ### GITHUB
 
@@ -158,13 +158,13 @@ Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-
 
 ### Narrative
 
-Clinical text is uniquely messy — abbreviations (pt, hx, dx, rx), misspellings, inconsistent formatting, copy-pasted templates, and critical information buried in free-text narratives. Santos presents the messiest records she can find.
+Clinical text is uniquely messy - abbreviations (pt, hx, dx, rx), misspellings, inconsistent formatting, copy-pasted templates, and critical information buried in free-text narratives. Santos presents the messiest records she can find.
 
 > **SANTOS:** "This record has three different abbreviations for the same medication. 'MTX,' 'methotrex,' and 'methotrexate.' If your tokenizer treats these as different tokens, your model will miss critical drug interactions."
 
 > **OBI:** "Your router breaks `/patients/123/records` into meaningful segments. A tokenizer does the same for 'acetaminophen-induced hepatotoxicity.'"
 
-**Unique content:** Khalil builds a clinical text preprocessing pipeline — word tokenization, subword tokenization (BPE, WordPiece), medical vocabulary handling, text normalization for clinical abbreviations, encoding/decoding pipelines, and train/val/test splitting with stratification for rare clinical categories.
+**Unique content:** Khalil builds a clinical text preprocessing pipeline - word tokenization, subword tokenization (BPE, WordPiece), medical vocabulary handling, text normalization for clinical abbreviations, encoding/decoding pipelines, and train/val/test splitting with stratification for rare clinical categories.
 
 ### Lessons
 
@@ -193,7 +193,7 @@ Clinical text is uniquely messy — abbreviations (pt, hx, dx, rx), misspellings
 
 Obi demonstrates word embeddings by showing that in the trained vector space, "aspirin" is closer to "ibuprofen" than to "appendectomy."
 
-> **OBI:** "The model learned that these words live in similar contexts — because they do. Doctors use them in similar sentences. The embedding space captures this automatically."
+> **OBI:** "The model learned that these words live in similar contexts - because they do. Doctors use them in similar sentences. The embedding space captures this automatically."
 
 **Unique content:** Khalil implements one-hot encoding, Word2Vec (skip-gram and CBOW), and domain-specific medical embeddings. He visualizes word relationships in vector space and learns to use pre-trained embeddings as transfer learning for clinical text.
 
@@ -201,11 +201,11 @@ Obi demonstrates word embeddings by showing that in the trained vector space, "a
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | One-Hot Encoding | The naive approach and its limitations | Radio buttons — only one active at a time |
+| 1 | One-Hot Encoding | The naive approach and its limitations | Radio buttons - only one active at a time |
 | 2 | Word2Vec | Learning word relationships from context | Recommendation engines ("users also bought") |
 | 3 | Medical Embeddings | Domain-specific word vectors | World-specific design tokens |
 | 4 | Embedding Visualization | Exploring word relationships in vector space | 2D scatter plots with D3.js |
-| 5 | Transfer Embeddings | Using pre-trained word vectors | npm packages — reusing learned representations |
+| 5 | Transfer Embeddings | Using pre-trained word vectors | npm packages - reusing learned representations |
 
 ### GITHUB
 
@@ -234,8 +234,8 @@ Dr. Vasquez presents a case where word order is life-or-death: "Patient denied c
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | Why Sequences Matter | Word order changes meaning in clinical text | Array order matters — React list rendering |
-| 2 | RNNs for Text | Processing text word by word | `Array.reduce()` — accumulating state |
+| 1 | Why Sequences Matter | Word order changes meaning in clinical text | Array order matters - React list rendering |
+| 2 | RNNs for Text | Processing text word by word | `Array.reduce()` - accumulating state |
 | 3 | LSTMs for Documents | Handling long clinical narratives | Session storage with selective persistence |
 | 4 | Bidirectional Models | Reading text in both directions | Doubly-linked list traversal |
 | 5 | Clinical Narrative Parsing | Extracting structured info from narratives | Form parsing from unstructured input |
@@ -259,19 +259,19 @@ Obi draws the attention diagram on the whiteboard:
 
 > **OBI:** "When you read 'The patient was prescribed methotrexate for rheumatoid arthritis,' your brain automatically connects 'methotrexate' to 'arthritis.' Attention teaches the model to make that same connection."
 
-**Unique content:** Khalil implements self-attention, multi-head attention, and attention visualization. He builds a clinical attention system that highlights medically relevant terms — drug-condition pairs, dosage-frequency relationships, and temporal markers.
+**Unique content:** Khalil implements self-attention, multi-head attention, and attention visualization. He builds a clinical attention system that highlights medically relevant terms - drug-condition pairs, dosage-frequency relationships, and temporal markers.
 
 ### Lessons
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | The Attention Problem | Why not all words are equally important | CSS `:focus` and `tabIndex` — directing attention |
-| 2 | Self-Attention | Each word attending to every other word | `scrollIntoView()` — programmatic focus |
+| 1 | The Attention Problem | Why not all words are equally important | CSS `:focus` and `tabIndex` - directing attention |
+| 2 | Self-Attention | Each word attending to every other word | `scrollIntoView()` - programmatic focus |
 | 3 | Multi-Head Attention | Attending to multiple aspects simultaneously | Multiple event listeners on one element |
 | 4 | Attention Visualization | Seeing what the model focuses on | DevTools highlighting of selected elements |
 | 5 | Clinical Attention | Focusing on medically relevant terms | Search result highlighting |
 
-**FE BRIDGE (Module-Level):** Attention is CSS `:focus`. When reading a clinical note, certain words demand attention — drug names, dosages, negation cues ("no", "denies", "without"). The attention mechanism learns to dynamically "focus" on these critical tokens, just as CSS `:focus` highlights the currently active form element.
+**FE BRIDGE (Module-Level):** Attention is CSS `:focus`. When reading a clinical note, certain words demand attention - drug names, dosages, negation cues ("no", "denies", "without"). The attention mechanism learns to dynamically "focus" on these critical tokens, just as CSS `:focus` highlights the currently active form element.
 
 ### GITHUB
 
@@ -284,34 +284,34 @@ Obi draws the attention diagram on the whiteboard:
 
 ## MODULE 6: TRANSFORMERS & BERT
 
-*The architecture that changed NLP — bidirectional understanding of clinical text.*
+*The architecture that changed NLP - bidirectional understanding of clinical text.*
 
 ### Narrative
 
 Obi introduces the transformer architecture:
 
-> **OBI:** "Before transformers, language models read text like a scroll — left to right. BERT reads like a human — it looks at the whole sentence at once and understands each word in the context of all the others."
+> **OBI:** "Before transformers, language models read text like a scroll - left to right. BERT reads like a human - it looks at the whole sentence at once and understands each word in the context of all the others."
 
-**AI-Wrong Moment:** MEDI misinterprets temporal context — it flags "History of Type 2 diabetes, resolved after bariatric surgery" as an active condition. The model lacks explicit temporal reasoning.
+**AI-Wrong Moment:** MEDI misinterprets temporal context - it flags "History of Type 2 diabetes, resolved after bariatric surgery" as an active condition. The model lacks explicit temporal reasoning.
 
 > **VASQUEZ:** "Your system just flagged a resolved condition as active. In clinical terms, that could mean unnecessary treatment. Fix it."
 
-**Unique content:** Khalil implements the transformer architecture from first principles — scaled dot-product attention, multi-head attention, positional encoding, and the encoder stack. He fine-tunes a pre-trained BERT model for clinical text classification and learns negation detection and temporal reasoning to address the AI-wrong moment.
+**Unique content:** Khalil implements the transformer architecture from first principles - scaled dot-product attention, multi-head attention, positional encoding, and the encoder stack. He fine-tunes a pre-trained BERT model for clinical text classification and learns negation detection and temporal reasoning to address the AI-wrong moment.
 
 ### Lessons
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | From RNN to Transformer | Why self-attention replaced recurrence | React class components to hooks — paradigm shift |
-| 2 | Transformer Architecture | Encoder stack with attention and feedforward | React virtual DOM — diffing and reconciliation |
+| 1 | From RNN to Transformer | Why self-attention replaced recurrence | React class components to hooks - paradigm shift |
+| 2 | Transformer Architecture | Encoder stack with attention and feedforward | React virtual DOM - diffing and reconciliation |
 | 3 | Positional Encoding | Injecting word order into attention | CSS `order` property and `z-index` stacking |
-| 4 | BERT | Bidirectional understanding of text | Doubly-linked list — forward and backward traversal |
+| 4 | BERT | Bidirectional understanding of text | Doubly-linked list - forward and backward traversal |
 | 5 | Fine-Tuning BERT | Adapting pre-trained transformers to clinical text | Customizing a component library's world |
 
 **FE BRIDGES (Module-Level):**
 
 - **Transformer = React virtual DOM:** The transformer processes input, computes attention (which parts relate to which), and produces an output representation. React's vDOM processes the component tree, computes diffs (which parts changed), and produces an updated DOM. Both are reconciliation engines that compare current state to desired state.
-- **BERT = doubly-linked list:** A unidirectional model (like GPT) reads tokens left-to-right, like a singly-linked list — each node knows only what came before. BERT is bidirectional, like a doubly-linked list — each token has context from both directions. This bidirectional context is why BERT excels at understanding (classification, NER) rather than generation.
+- **BERT = doubly-linked list:** A unidirectional model (like GPT) reads tokens left-to-right, like a singly-linked list - each node knows only what came before. BERT is bidirectional, like a doubly-linked list - each token has context from both directions. This bidirectional context is why BERT excels at understanding (classification, NER) rather than generation.
 
 ### GITHUB
 
@@ -328,11 +328,11 @@ Obi introduces the transformer architecture:
 
 ### Narrative
 
-The midpoint breakthrough. Dr. Vasquez needs structured information extracted from unstructured notes — medication names, dosages, conditions, procedures, anatomical locations.
+The midpoint breakthrough. Dr. Vasquez needs structured information extracted from unstructured notes - medication names, dosages, conditions, procedures, anatomical locations.
 
 > **VASQUEZ:** "I need to know, from a 3-page discharge summary, what medications the patient is on, what conditions were diagnosed, and what procedures were performed. I need it in 10 seconds, not 10 minutes."
 
-Diagnostic One's NER system, running on a batch of previously reviewed records, flags a drug interaction between two medications in a patient's chart. Santos checks — three doctors reviewed this chart and none caught it.
+Diagnostic One's NER system, running on a batch of previously reviewed records, flags a drug interaction between two medications in a patient's chart. Santos checks - three doctors reviewed this chart and none caught it.
 
 > **VASQUEZ:** "This is why we are building this. Right here. This moment."
 
@@ -342,13 +342,13 @@ Diagnostic One's NER system, running on a batch of previously reviewed records, 
 
 > **SANTOS:** "Your new version is 3% more accurate overall, but it's worse on elderly patients. Medication extraction dropped 8% for patients over 75. My ward is 60% elderly. They're on more medications, with more complex interactions, and your 'improvement' makes them less safe. Roll it back."
 
-> **OBI:** "But the aggregate numbers —"
+> **OBI:** "But the aggregate numbers - "
 
 > **SANTOS:** "Aggregate numbers don't take the wrong pill, Obi."
 
-The team learns about subgroup performance analysis — evaluating model accuracy across patient demographics, not just in aggregate. It is a concept Santos understood before they had a name for it: the patients most at risk are often the ones the model serves worst.
+The team learns about subgroup performance analysis - evaluating model accuracy across patient demographics, not just in aggregate. It is a concept Santos understood before they had a name for it: the patients most at risk are often the ones the model serves worst.
 
-**Unique content:** Khalil implements BIO tagging (Beginning, Inside, Outside), builds a sequence labeling model for medical entity extraction, handles relationship extraction between entities, and addresses the unique challenges of medical NER — drug names that are common words, nested entities, discontinuous mentions.
+**Unique content:** Khalil implements BIO tagging (Beginning, Inside, Outside), builds a sequence labeling model for medical entity extraction, handles relationship extraction between entities, and addresses the unique challenges of medical NER - drug names that are common words, nested entities, discontinuous mentions.
 
 ### Lessons
 
@@ -377,7 +377,7 @@ The team learns about subgroup performance analysis — evaluating model accurac
 
 > **VASQUEZ:** "I need incoming records triaged automatically. Critical cases cannot wait in a queue behind routine checkups."
 
-**AI-Wrong Moment:** MEDI generates a clinical summary that is linguistically perfect but factually incorrect — it hallucinates a medication dosage that appears nowhere in the source notes. The summary reads fluently, making the error harder to catch.
+**AI-Wrong Moment:** MEDI generates a clinical summary that is linguistically perfect but factually incorrect - it hallucinates a medication dosage that appears nowhere in the source notes. The summary reads fluently, making the error harder to catch.
 
 > **SANTOS:** "This is the dangerous part. The output *sounds* right. If I were not checking against the source notes, I might have missed it. We need grounding."
 
@@ -408,27 +408,27 @@ The team learns about subgroup performance analysis — evaluating model accurac
 
 ### Narrative
 
-An unconscious patient arrives in the ER with no accessible medical history. Records exist — but in a different hospital system, in a different format, partially in another language. The attending needs one answer before making a treatment decision: "Has this patient ever had an allergic reaction to penicillin?" In the old system, someone would call Meridian General, wait on hold, get transferred, and pray the night-shift clerk could pull the right file. The attending does not have that time. Diagnostic One needs to reach across systems, normalize formats, handle Spanish-language clinical notes from a previous hospital stay, and return a grounded answer with citations — in seconds, not minutes.
+An unconscious patient arrives in the ER with no accessible medical history. Records exist - but in a different hospital system, in a different format, partially in another language. The attending needs one answer before making a treatment decision: "Has this patient ever had an allergic reaction to penicillin?" In the old system, someone would call Meridian General, wait on hold, get transferred, and pray the night-shift clerk could pull the right file. The attending does not have that time. Diagnostic One needs to reach across systems, normalize formats, handle Spanish-language clinical notes from a previous hospital stay, and return a grounded answer with citations - in seconds, not minutes.
 
-> **OBI:** "This is what it was all for. Natural language access to clinical knowledge — across systems, across formats, across languages."
+> **OBI:** "This is what it was all for. Natural language access to clinical knowledge - across systems, across formats, across languages."
 
 > **SANTOS:** "The Meridian records use a completely different coding system. And half the allergy notes are free-text in Spanish from when the patient lived in Puerto Rico. If we can't normalize this, we're guessing."
 
-> **KHALIL:** "I built Meridian's records UI. I know their data format. The allergy field is buried in a free-text 'notes' column — no one ever structured it."
+> **KHALIL:** "I built Meridian's records UI. I know their data format. The allergy field is buried in a free-text 'notes' column - no one ever structured it."
 
-**Unique content:** Khalil builds a RAG pipeline for clinical question answering — extractive QA (finding answers within documents), reading comprehension (understanding context), vector search for document retrieval, and knowledge grounding to ensure answers are supported by evidence. He implements citation linking so every generated answer points back to its source documents. The module's crisis scenario drives three additional technical challenges: cross-system retrieval (querying heterogeneous EHR formats), format normalization (mapping between coding systems), and multilingual handling (extracting medical facts from Spanish-language clinical notes).
+**Unique content:** Khalil builds a RAG pipeline for clinical question answering - extractive QA (finding answers within documents), reading comprehension (understanding context), vector search for document retrieval, and knowledge grounding to ensure answers are supported by evidence. He implements citation linking so every generated answer points back to its source documents. The module's crisis scenario drives three additional technical challenges: cross-system retrieval (querying heterogeneous EHR formats), format normalization (mapping between coding systems), and multilingual handling (extracting medical facts from Spanish-language clinical notes).
 
 ### Lessons
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | Extractive QA | Finding answers within documents | `Ctrl+F` — finding text in a page |
-| 2 | Reading Comprehension | Understanding context to answer questions | GraphQL resolvers — query-specific data fetching |
-| 3 | RAG Architecture | Retrieval-augmented generation pipeline | React Server Components — server-fetched data in client UI |
-| 4 | Knowledge Grounding | Ensuring answers are supported by evidence | Hyperlinks — every claim has a source URL |
+| 1 | Extractive QA | Finding answers within documents | `Ctrl+F` - finding text in a page |
+| 2 | Reading Comprehension | Understanding context to answer questions | GraphQL resolvers - query-specific data fetching |
+| 3 | RAG Architecture | Retrieval-augmented generation pipeline | React Server Components - server-fetched data in client UI |
+| 4 | Knowledge Grounding | Ensuring answers are supported by evidence | Hyperlinks - every claim has a source URL |
 | 5 | Clinical Queries | Doctors asking questions in natural language | Search bar with NLU |
 
-**FE BRIDGE (Module-Level):** RAG is React Server Components. In RSC, the server fetches data from databases and APIs, then renders components with that data — the client gets pre-hydrated content grounded in real data sources. RAG does the same: the retrieval step fetches relevant documents (like a DB query), and the LLM generates a response grounded in those retrieved documents (like server rendering). Both patterns connect a generation engine to authoritative data sources.
+**FE BRIDGE (Module-Level):** RAG is React Server Components. In RSC, the server fetches data from databases and APIs, then renders components with that data - the client gets pre-hydrated content grounded in real data sources. RAG does the same: the retrieval step fetches relevant documents (like a DB query), and the LLM generates a response grounded in those retrieved documents (like server rendering). Both patterns connect a generation engine to authoritative data sources.
 
 ### GITHUB
 
@@ -463,18 +463,18 @@ The team addresses each concern systematically. Santos builds a human-in-the-loo
 | 2 | Latency Optimization | Keeping response times clinical-grade | Core Web Vitals optimization |
 | 3 | Privacy & HIPAA | Handling sensitive medical data | Data encryption, secure storage, CSP headers |
 | 4 | Bias Auditing | Ensuring fair performance across demographics | Accessibility auditing (a11y testing) |
-| 5 | Human-in-the-Loop | Keeping clinicians in the decision loop | Confirmation dialogs — human approval gates |
+| 5 | Human-in-the-Loop | Keeping clinicians in the decision loop | Confirmation dialogs - human approval gates |
 
 ### GITHUB
 
 **Commit:** `feat(m10): production NLP with HIPAA compliance and bias auditing`
 **Branch:** `module-10/production-privacy`
 
-**Cliffhanger:** Dr. Vasquez deploys Diagnostic One to tablets across all wards. Within an hour, it flags a critical case — in the pediatric wing.
+**Cliffhanger:** Dr. Vasquez deploys Diagnostic One to tablets across all wards. Within an hour, it flags a critical case - in the pediatric wing.
 
 ---
 
-## MODULE 11: CAPSTONE — DIAGNOSTIC ONE
+## MODULE 11: CAPSTONE - DIAGNOSTIC ONE
 
 *Full deployment of the clinical text assistant with safety guardrails.*
 
@@ -496,19 +496,19 @@ Diagnostic One goes live across Signal Ward. Everything built across 10 modules 
 
 Diagnostic One goes live. The first week produces real results: note categorization accuracy at 94%, medication extraction at 91%, and a 40% reduction in time physicians spend searching through patient records.
 
-Then, on day 9, MEDI flags an urgent alert — a potential drug interaction between two medications prescribed by different specialists who did not know about each other's orders.
+Then, on day 9, MEDI flags an urgent alert - a potential drug interaction between two medications prescribed by different specialists who did not know about each other's orders.
 
 > **MEDI:** "Alert: potential interaction detected between methotrexate (prescribed by Rheumatology, 15mg weekly) and trimethoprim (prescribed by Primary Care, 160mg twice daily). Interaction severity: moderate to severe. Confidence: 87%. Recommend clinical review."
 
 Dr. Vasquez reviews it. She pulls up both prescribing notes, checks the patient's renal function panel, and reads the interaction literature.
 
-> **VASQUEZ:** "False positive. The medications interact in theory, but at these dosages and with this patient's renal function, the risk is negligible. Good catch, though — better a false alarm than a missed one."
+> **VASQUEZ:** "False positive. The medications interact in theory, but at these dosages and with this patient's renal function, the risk is negligible. Good catch, though - better a false alarm than a missed one."
 
 Khalil nods, relieved but thoughtful.
 
 > **KHALIL:** "So the system works, but it is not perfect."
 
-> **VASQUEZ:** "No system is perfect, Khalil. The question is not whether it makes mistakes. The question is whether it makes fewer mistakes than the alternative — and whether we can catch the mistakes it does make. Diagnostic One does both."
+> **VASQUEZ:** "No system is perfect, Khalil. The question is not whether it makes mistakes. The question is whether it makes fewer mistakes than the alternative - and whether we can catch the mistakes it does make. Diagnostic One does both."
 
 > **MEDI:** "I should note that my false positive rate on drug interactions is currently 12.3%. I am working to reduce this. I would rather flag 100 false positives than miss one true interaction. I hope that is acceptable."
 
@@ -520,7 +520,7 @@ The closing scene: a new patient record arrives. Diagnostic One processes it in 
 
 ### GITHUB
 
-**Commit:** `feat(m11): Diagnostic One v1.0 — full clinical NLP system with safety guardrails`
+**Commit:** `feat(m11): Diagnostic One v1.0 - full clinical NLP system with safety guardrails`
 **Branch:** `module-11/capstone`
 **Deploys to:** `https://<username>.github.io/diagnostic-one-clinical-nlp`
 
@@ -528,14 +528,14 @@ The closing scene: a new patient record arrives. Diagnostic One processes it in 
 
 ### Character Arcs
 
-**Khalil Mensah — From Skeptic to Champion**
+**Khalil Mensah - From Skeptic to Champion**
 
-Khalil's arc traces a principled developer who starts deeply skeptical of ML in healthcare and gradually becomes Diagnostic One's strongest advocate — without ever losing his ethical rigor.
+Khalil's arc traces a principled developer who starts deeply skeptical of ML in healthcare and gradually becomes Diagnostic One's strongest advocate - without ever losing his ethical rigor.
 
 - **M3 (Word Embeddings):** Khalil argues for keeping a rule-based backup system after watching the model struggle with edge cases in clinical abbreviations. "If this fails on 'MTX' versus 'methotrexate,' what else is it missing?"
 - **M5 (Attention Mechanisms):** Khalil quietly begins using the model's output to double-check his own manual review of patient records. He does not tell anyone, but Santos notices.
-- **M7 (Named Entity Recognition):** Khalil is vindicated when the model confidently misdiagnoses a patient and Santos catches the error. But he also recognizes the value of the data the model surfaced during its analysis — information no human had connected across three separate charts.
-- **M11 (Capstone):** Khalil stands before the hospital administration board and defends Diagnostic One. "This system is not perfect. No system is. But it catches things we miss, it never gets tired, and it always shows its work. The question is not whether to trust it — it is whether we can afford not to use it."
+- **M7 (Named Entity Recognition):** Khalil is vindicated when the model confidently misdiagnoses a patient and Santos catches the error. But he also recognizes the value of the data the model surfaced during its analysis - information no human had connected across three separate charts.
+- **M11 (Capstone):** Khalil stands before the hospital administration board and defends Diagnostic One. "This system is not perfect. No system is. But it catches things we miss, it never gets tired, and it always shows its work. The question is not whether to trust it - it is whether we can afford not to use it."
 
 ---
 
@@ -543,15 +543,15 @@ Khalil's arc traces a principled developer who starts deeply skeptical of ML in 
 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|
-| Chart Note | Patient medical record entry | A single training example — the model's input format, structured or unstructured |
+| Chart Note | Patient medical record entry | A single training example - the model's input format, structured or unstructured |
 | Intake | New record arriving in the system | Input data |
 | Triage Score | Urgency ranking determining treatment order | The model's confidence ranking, deciding which cases need human review vs. auto-processing |
 | Diagnosis | Identified condition or finding | Model prediction |
-| Differential | List of possible conditions ranked by likelihood | Both the diagnostic differential *and* the gradient/loss differential — the gap between prediction and truth that drives learning |
-| Rounds | Regular review of active cases across the ward | A training epoch — the model "makes rounds" through the entire dataset, reviewing every case once |
+| Differential | List of possible conditions ranked by likelihood | Both the diagnostic differential *and* the gradient/loss differential - the gap between prediction and truth that drives learning |
+| Rounds | Regular review of active cases across the ward | A training epoch - the model "makes rounds" through the entire dataset, reviewing every case once |
 | Consult | Requesting specialist input | Ensemble model query |
-| Vital Signs | Patient health metrics (heart rate, BP, O2 sat) | Model health metrics — loss, accuracy, latency, throughput. If the vitals crash, the model is dying |
-| Discharge Summary | Final patient record summarizing stay and outcome | Model output — the inference result, a structured summary of what the model concluded and why |
+| Vital Signs | Patient health metrics (heart rate, BP, O2 sat) | Model health metrics - loss, accuracy, latency, throughput. If the vitals crash, the model is dying |
+| Discharge Summary | Final patient record summarizing stay and outcome | Model output - the inference result, a structured summary of what the model concluded and why |
 | Adverse Event | Negative patient outcome | Misclassification with consequences |
 | Clinical Trial | Testing new treatment | A/B testing a model version |
 | Chart Review | Manual record examination | Manual data annotation |

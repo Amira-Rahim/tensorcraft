@@ -1,4 +1,4 @@
-# Email Flows — Event-Triggered Kit Tags — Design Spec
+# Email Flows - Event-Triggered Kit Tags - Design Spec
 
 **Date:** 2026-04-14
 **Status:** Draft
@@ -41,7 +41,7 @@ Implementation:
 2. Look up user email from profiles table
 3. Map event to env var: `KIT_TAG_${event.toUpperCase()}`
 4. Call `addSubscriber(email)` (ensure subscribed) + `tagSubscriber(email, tagId)`
-5. Fire-and-forget — return 200 immediately, don't block on Kit API
+5. Fire-and-forget - return 200 immediately, don't block on Kit API
 6. If Kit env vars aren't configured, return 200 silently (don't fail in dev)
 
 Mount in `apps/api/src/index.ts`.
@@ -127,10 +127,10 @@ KIT_TAG_CAPSTONE=
 
 ## What Doesn't Change
 
-- Kit API client (`apps/api/src/lib/kit.ts`) — already has `addSubscriber` and `tagSubscriber`
-- Purchase confirmation flow — stays in webhook handler
-- Resend integration — unchanged (issue reports only)
-- Email preference fields (`email_alerts`, `weekly_digest`) — unchanged (future use)
+- Kit API client (`apps/api/src/lib/kit.ts`) - already has `addSubscriber` and `tagSubscriber`
+- Purchase confirmation flow - stays in webhook handler
+- Resend integration - unchanged (issue reports only)
+- Email preference fields (`email_alerts`, `weekly_digest`) - unchanged (future use)
 
 ## Verification
 

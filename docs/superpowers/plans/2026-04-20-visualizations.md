@@ -2,15 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 >
-> **User's commit rule:** Per `CLAUDE.md`, NEVER run `git add`, `git commit`, or `git push` on behalf of the user. Each task ends with "Report completion and stop" — the user commits manually after review.
+> **User's commit rule:** Per `CLAUDE.md`, NEVER run `git add`, `git commit`, or `git push` on behalf of the user. Each task ends with "Report completion and stop" - the user commits manually after review.
 
 **Spec:** [docs/superpowers/specs/2026-04-20-visualizations-design.md](../specs/2026-04-20-visualizations-design.md)
 
-**Goal:** Build two static SVG dashboard visualizations — `SkillRadar` (6-axis hex radar for active theme's skill proficiency) and `LossCurve` (staircase line of rolling 7-day avg hints per exercise over 12 weeks) — with hand-rolled SVG, zero new deps, brutalist code-comment aesthetic.
+**Goal:** Build two static SVG dashboard visualizations - `SkillRadar` (6-axis hex radar for active theme's skill proficiency) and `LossCurve` (staircase line of rolling 7-day avg hints per exercise over 12 weeks) - with hand-rolled SVG, zero new deps, brutalist code-comment aesthetic.
 
 **Architecture:** New `LossCurve` component + shared geometry helpers live in `packages/ui/src/visualizations/`. Existing [`apps/web/app/dashboard/skill-genome.tsx`](../../../apps/web/app/dashboard/skill-genome.tsx) gets refactored in place to apply the Option C "Code Comment" style (no concentric rings, no data-point dots, stroke-only polygon, monospace legend table). Dashboard server component adds a single new query (`exercise_attempts`) for LossCurve; the existing `skill_genome` query stays. No state, no hover/click, all values rendered as visible labels.
 
-**Post-brainstorm updates (2026-04-20):** Plan reviewer flagged that `skill-genome.tsx` + `SkillGenome` component already ship. User confirmed "iterate in place" (Decision 1-B). Null-week dashed placeholder dropped per YAGNI (Decision 2-B). File layout simplified — no separate `skill-radar.tsx` file.
+**Post-brainstorm updates (2026-04-20):** Plan reviewer flagged that `skill-genome.tsx` + `SkillGenome` component already ship. User confirmed "iterate in place" (Decision 1-B). Null-week dashed placeholder dropped per YAGNI (Decision 2-B). File layout simplified - no separate `skill-radar.tsx` file.
 
 **Tech Stack:** TypeScript, React (server + client), Vitest + React Testing Library (colocated `.test.tsx`), Supabase JS client, CSS custom properties for theming (`var(--tc-primary)` etc.).
 
@@ -22,19 +22,19 @@ Before starting Phase 1, confirm in ~2 minutes:
 
 - [ ] **Check 1: Verify `@tensorcraft/ui` is wired to `apps/web`**
   - Run: `grep '@tensorcraft/ui' /Users/amira.salah/Desktop/tensorcraft/apps/web/package.json`
-  - Expected: `"@tensorcraft/ui": "workspace:*"` appears. If missing, STOP — the spec's package location assumption is broken; consult the user.
+  - Expected: `"@tensorcraft/ui": "workspace:*"` appears. If missing, STOP - the spec's package location assumption is broken; consult the user.
 
 - [ ] **Check 2: Verify test infrastructure**
   - Run from repo root: `pnpm --filter @tensorcraft/ui test -- --run 2>&1 | tail -5`
-  - Expected: tests run (exit 0 or pass count). If the command fails or hangs, STOP — fix test infra before writing new tests.
+  - Expected: tests run (exit 0 or pass count). If the command fails or hangs, STOP - fix test infra before writing new tests.
 
 - [ ] **Check 3: Confirm palette CSS vars exist**
   - Run: `grep -E "\-\-tc-(primary|border|muted|text)" /Users/amira.salah/Desktop/tensorcraft/packages/themes/src/css/themes.css`
-  - Expected: all four tokens appear. If `--tc-border` or `--tc-muted` is missing, Phase 11 §11a hasn't landed yet — STOP and flag. This plan assumes Stage 1 foundation is complete OR will land before Phase 3 integration.
+  - Expected: all four tokens appear. If `--tc-border` or `--tc-muted` is missing, Phase 11 §11a hasn't landed yet - STOP and flag. This plan assumes Stage 1 foundation is complete OR will land before Phase 3 integration.
 
 ---
 
-## Phase 1 — Pure primitives (parallelizable)
+## Phase 1 - Pure primitives (parallelizable)
 
 ### Task 1.1: Geometry helpers
 
@@ -106,7 +106,7 @@ describe("stepPath", () => {
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `pnpm --filter @tensorcraft/ui test -- --run helpers.test`
-Expected: FAIL — module `./helpers` does not export `hexCorners`, `stepPath`, or `SKILL_AXIS_ORDER`.
+Expected: FAIL - module `./helpers` does not export `hexCorners`, `stepPath`, or `SKILL_AXIS_ORDER`.
 
 - [ ] **Step 3: Implement the helpers**
 
@@ -168,7 +168,7 @@ export function stepPath(points: ReadonlyArray<readonly [number, number]>): stri
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm --filter @tensorcraft/ui test -- --run helpers.test`
-Expected: PASS — all 7 tests green.
+Expected: PASS - all 7 tests green.
 
 - [ ] **Step 5: Typecheck**
 
@@ -177,7 +177,7 @@ Expected: no errors.
 
 - [ ] **Step 6: Report completion and stop**
 
-Report to user: "Task 1.1 complete. Created `helpers.ts` + test (7 tests passing). Do not commit — user reviews."
+Report to user: "Task 1.1 complete. Created `helpers.ts` + test (7 tests passing). Do not commit - user reviews."
 
 ---
 
@@ -269,7 +269,7 @@ describe("computeWeeklyHints", () => {
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `pnpm --filter @tensorcraft/web test -- --run viz-data`
-Expected: FAIL — module does not exist.
+Expected: FAIL - module does not exist.
 
 - [ ] **Step 3: Implement the helpers**
 
@@ -356,7 +356,7 @@ export function computeWeeklyHints(
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm --filter @tensorcraft/web test -- --run viz-data`
-Expected: PASS — all 7 tests green.
+Expected: PASS - all 7 tests green.
 
 - [ ] **Step 5: Report completion and stop**
 
@@ -364,7 +364,7 @@ Report: "Task 1.2 complete. Created `viz-data.ts` + test (7 tests passing). Do n
 
 ---
 
-## Phase 2 — Components (depend on Phase 1)
+## Phase 2 - Components (depend on Phase 1)
 
 ### Task 2.1: Refactor skill-genome.tsx → Option C style
 
@@ -376,10 +376,10 @@ Report: "Task 1.2 complete. Created `viz-data.ts` + test (7 tests passing). Do n
 
 Read `apps/web/app/dashboard/skill-genome.tsx` in full. Note:
 - The `AXES` constant (6 axes with `shortLabel`s and per-axis CSS color vars). The short-label grid will be dropped in favor of a mono table legend, but keep the `label` / `key` fields.
-- `polarToCartesian` helper — will be replaced by `hexCorners` from `@tensorcraft/ui`.
-- `RadarChart` subcomponent — this is what changes.
-- The wrapping panel/empty-state code — this **stays** unless it conflicts with the new tests.
-- The `values` array scale — likely 0–100 in the component's internal state (`v / 100` appears in the original). Keep that internal; format display labels by dividing by 100 before `.toFixed(2)`.
+- `polarToCartesian` helper - will be replaced by `hexCorners` from `@tensorcraft/ui`.
+- `RadarChart` subcomponent - this is what changes.
+- The wrapping panel/empty-state code - this **stays** unless it conflicts with the new tests.
+- The `values` array scale - likely 0–100 in the component's internal state (`v / 100` appears in the original). Keep that internal; format display labels by dividing by 100 before `.toFixed(2)`.
 
 - [ ] **Step 2: Write failing tests asserting Option C invariants**
 
@@ -472,34 +472,34 @@ describe("SkillGenome (Option C)", () => {
 });
 ```
 
-If the existing component's data prop shape differs from the test's `{ skill_axis, proficiency }[]` form (it uses `genomeData` of some shape — check `dashboard-view.tsx:97` for the TypeScript interface), align the test input to match the actual prop contract rather than inventing one.
+If the existing component's data prop shape differs from the test's `{ skill_axis, proficiency }[]` form (it uses `genomeData` of some shape - check `dashboard-view.tsx:97` for the TypeScript interface), align the test input to match the actual prop contract rather than inventing one.
 
 - [ ] **Step 3: Run tests to verify they fail**
 
 Run: `pnpm --filter @tensorcraft/web test -- --run skill-genome`
-Expected: FAIL — current implementation has 3 ring polygons, data-point dots, filled polygon, 0–100 value display.
+Expected: FAIL - current implementation has 3 ring polygons, data-point dots, filled polygon, 0–100 value display.
 
 - [ ] **Step 4: Refactor the RadarChart subcomponent in `skill-genome.tsx`**
 
-Changes inside `skill-genome.tsx` (keep everything else — imports, wrapping panel, empty-state detection, consumer API):
+Changes inside `skill-genome.tsx` (keep everything else - imports, wrapping panel, empty-state detection, consumer API):
 
 1. Replace `polarToCartesian` with an import: `import { hexCorners, SKILL_AXIS_ORDER } from "@tensorcraft/ui";` Then use `hexCorners(cx, cy, maxR)` to generate the 6 outer vertices.
 2. **Delete** the `rings` constant and the `ringPolygons` rendering block (3 `<polygon>` elements at 0.33/0.66/1.0).
-3. **Add** a single `<circle cx={cx} cy={cy} r={maxR * 0.5} fill="none" stroke="var(--tc-border)" strokeDasharray="1 3"/>` — the 50% dashed tick.
+3. **Add** a single `<circle cx={cx} cy={cy} r={maxR * 0.5} fill="none" stroke="var(--tc-border)" strokeDasharray="1 3"/>` - the 50% dashed tick.
 4. **Change** the data polygon: `fill="none"` (was `fill="var(--tc-primary)" fillOpacity="0.15"`), keep `stroke="var(--tc-primary)" strokeWidth="1.5"` (down from 2).
 5. **Delete** the `dataPoints.map((p, i) => <circle ... r="4" />)` dot rendering block.
 6. **Delete** the `labelPositions.map((lp, i) => <text ... />)` short-label rendering block around the SVG edges.
-7. **Add** an adjacent HTML legend (outside the SVG) formatted as mono table — see the Option C reference in `docs/superpowers/specs/2026-04-20-visualizations-design.md` §7.1. Layout: horizontal flex, SVG on left (55%), legend on right (45%). Header: `<div style={{color: "var(--tc-muted)", fontFamily: MONO}}># skill_genome</div>`. Rows: one per axis, flex space-between, axis name in body color, value in primary color, values formatted as `(proficiency / 100).toFixed(2)`.
+7. **Add** an adjacent HTML legend (outside the SVG) formatted as mono table - see the Option C reference in `docs/superpowers/specs/2026-04-20-visualizations-design.md` §7.1. Layout: horizontal flex, SVG on left (55%), legend on right (45%). Header: `<div style={{color: "var(--tc-muted)", fontFamily: MONO}}># skill_genome</div>`. Rows: one per axis, flex space-between, axis name in body color, value in primary color, values formatted as `(proficiency / 100).toFixed(2)`.
 8. **Add** `role="img"`, a `<title>`, and a `<desc>` to the root SVG. Title: `"Skill profile"` (or include the theme name if available in props). Desc: `"Skill profile. " + axes.map(a => \`${a.name} ${(a.proficiency/100).toFixed(2)}\`).join(", ") + "."`.
-9. **Empty state:** if all proficiencies are 0, render the center-text `"No activity yet"` in the SVG (currently the widget may render a different empty state — match that behavior if it already exists, else add this).
-10. Remove any references to `color: axis.color` or `var(--tc-axis-*)` on the data polygon — Option C uses a single `var(--tc-primary)` for the whole polygon.
+9. **Empty state:** if all proficiencies are 0, render the center-text `"No activity yet"` in the SVG (currently the widget may render a different empty state - match that behavior if it already exists, else add this).
+10. Remove any references to `color: axis.color` or `var(--tc-axis-*)` on the data polygon - Option C uses a single `var(--tc-primary)` for the whole polygon.
 
-Keep the `AXES` constant's `key` + `label` fields (needed for the desc string). The `shortLabel` and per-axis `color` fields can be deleted OR kept as dead code — deletion is preferred.
+Keep the `AXES` constant's `key` + `label` fields (needed for the desc string). The `shortLabel` and per-axis `color` fields can be deleted OR kept as dead code - deletion is preferred.
 
 - [ ] **Step 5: Run tests to verify they pass**
 
 Run: `pnpm --filter @tensorcraft/web test -- --run skill-genome`
-Expected: PASS — all 9 tests green.
+Expected: PASS - all 9 tests green.
 
 - [ ] **Step 6: Run broader web test suite to catch regressions**
 
@@ -571,7 +571,7 @@ describe("LossCurve", () => {
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `pnpm --filter @tensorcraft/ui test -- --run loss-curve`
-Expected: FAIL — module missing.
+Expected: FAIL - module missing.
 
 - [ ] **Step 3: Implement the component**
 
@@ -647,7 +647,7 @@ export function LossCurve({ weekly, className }: LossCurveProps) {
 
       {/* Comment header */}
       <text x={LEFT} y={10} fontFamily={MONO} fontSize="9" fill="var(--tc-muted)">
-        // loss.hints — {weekly.length}wk
+        // loss.hints - {weekly.length}wk
       </text>
 
       {/* Baseline */}
@@ -720,7 +720,7 @@ export function LossCurve({ weekly, className }: LossCurveProps) {
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm --filter @tensorcraft/ui test -- --run loss-curve`
-Expected: PASS — 5 tests green.
+Expected: PASS - 5 tests green.
 
 - [ ] **Step 5: Report completion and stop**
 
@@ -777,9 +777,9 @@ Report: "Task 2.3 complete. Barrel files wired. Full @tensorcraft/ui test suite 
 
 ---
 
-## Phase 3 — Dashboard integration (depends on Phase 2)
+## Phase 3 - Dashboard integration (depends on Phase 2)
 
-### Task 3.1: Dashboard server component — add LossCurve query + apply padSkillAxes
+### Task 3.1: Dashboard server component - add LossCurve query + apply padSkillAxes
 
 **Files:**
 - Modify: `apps/web/app/dashboard/page.tsx`
@@ -788,15 +788,15 @@ Report: "Task 2.3 complete. Barrel files wired. Full @tensorcraft/ui test suite 
 - [ ] **Step 1: Read the existing dashboard page and its test**
 
 Read in full:
-- `apps/web/app/dashboard/page.tsx` — the `skill_genome` query already exists around line 100; `activeTheme` and `genomeData` derivation already in place.
-- `apps/web/app/dashboard/dashboard-view.tsx` — note the existing `genomeData` prop shape (~line 97).
-- `apps/web/app/dashboard/__tests__/page.test.tsx` — existing test patterns.
+- `apps/web/app/dashboard/page.tsx` - the `skill_genome` query already exists around line 100; `activeTheme` and `genomeData` derivation already in place.
+- `apps/web/app/dashboard/dashboard-view.tsx` - note the existing `genomeData` prop shape (~line 97).
+- `apps/web/app/dashboard/__tests__/page.test.tsx` - existing test patterns.
 
 **What changes in this task:**
 1. ADD a new `exercise_attempts` query into the existing `Promise.all`.
 2. ADD a call to `computeWeeklyHints` to transform those rows into `lossCurveData`.
 3. Pass `lossCurveData` as a new prop to `<DashboardView>`.
-4. (Optional) Run the existing `skillGenomeRows` through `padSkillAxes` for deterministic ordering before passing to DashboardView — if the current code already passes rows through as-is, this is a safe improvement but check for consumer assumptions.
+4. (Optional) Run the existing `skillGenomeRows` through `padSkillAxes` for deterministic ordering before passing to DashboardView - if the current code already passes rows through as-is, this is a safe improvement but check for consumer assumptions.
 
 **What does NOT change:**
 - The `skill_genome` query (already there).
@@ -816,7 +816,7 @@ Do NOT delete existing skill_genome assertions; the query stays.
 - [ ] **Step 3: Run tests to verify they fail**
 
 Run: `pnpm --filter @tensorcraft/web test -- --run dashboard/__tests__/page`
-Expected: FAIL — `lossCurveData` prop not present.
+Expected: FAIL - `lossCurveData` prop not present.
 
 - [ ] **Step 4: Modify `apps/web/app/dashboard/page.tsx`**
 
@@ -855,7 +855,7 @@ Report: "Task 3.1 complete. LossCurve query wired. Existing skill_genome flow un
 
 ---
 
-### Task 3.2: Dashboard view — render LossCurve
+### Task 3.2: Dashboard view - render LossCurve
 
 **Files:**
 - Modify: `apps/web/app/dashboard/dashboard-view.tsx`
@@ -867,12 +867,12 @@ Add a test that renders `<DashboardView>` with a sample `lossCurveData` prop and
 - The rendered output contains the LossCurve's `// loss.hints` comment header.
 - A heading like "# learning trend" (or whatever mono-style heading matches the theme-cards pattern) precedes the chart.
 
-SkillGenome rendering is already covered by Task 2.1's tests — don't duplicate those assertions here.
+SkillGenome rendering is already covered by Task 2.1's tests - don't duplicate those assertions here.
 
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `pnpm --filter @tensorcraft/web test -- --run dashboard-view`
-Expected: FAIL — `lossCurveData` prop not yet consumed in the view.
+Expected: FAIL - `lossCurveData` prop not yet consumed in the view.
 
 - [ ] **Step 3: Modify `apps/web/app/dashboard/dashboard-view.tsx`**
 
@@ -883,8 +883,8 @@ Expected: FAIL — `lossCurveData` prop not yet consumed in the view.
    lossCurveData: { weekly: WeeklyHints[] };
    ```
 2. Import: `import { LossCurve } from "@tensorcraft/ui";`
-3. Render the LossCurve block near the existing `<SkillGenome>` block — either adjacent (side-by-side in a grid on wider screens) or stacked below. Use a mono-style section heading consistent with the existing theme-cards heading (e.g., `# learning trend` or `// loss curve`). Wrap in a section with `aria-labelledby` referencing the heading id.
-4. The SkillGenome section continues to render the existing `<SkillGenome data={genomeData} />` with no changes required here — its redesign happened in Task 2.1.
+3. Render the LossCurve block near the existing `<SkillGenome>` block - either adjacent (side-by-side in a grid on wider screens) or stacked below. Use a mono-style section heading consistent with the existing theme-cards heading (e.g., `# learning trend` or `// loss curve`). Wrap in a section with `aria-labelledby` referencing the heading id.
+4. The SkillGenome section continues to render the existing `<SkillGenome data={genomeData} />` with no changes required here - its redesign happened in Task 2.1.
 
 - [ ] **Step 4: Run tests and build**
 
@@ -896,7 +896,7 @@ Expected: PASS + build succeeds. If a dashboard-view snapshot breaks, regenerate
 Start the dev server: `pnpm --filter @tensorcraft/web dev`. Visit `/dashboard` as a test user. Verify:
 - The refactored SkillGenome renders with spokes (no concentric rings), no data dots, stroke-only polygon, and a mono legend table listing all 6 axes with `0.XX` values.
 - LossCurve renders as a staircase line with start/end labels.
-- Both use `var(--tc-primary)` (the active theme's primary) — check by temporarily switching active theme or inspecting computed styles.
+- Both use `var(--tc-primary)` (the active theme's primary) - check by temporarily switching active theme or inspecting computed styles.
 - No layout overflow on dashboard widths ≥768px.
 
 If a visual issue is blocking, capture and STOP.
@@ -907,7 +907,7 @@ Report: "Task 3.2 complete. Dashboard view renders LossCurve adjacent to the ref
 
 ---
 
-## Phase 4 — Documentation (depends on Phase 3)
+## Phase 4 - Documentation (depends on Phase 3)
 
 ### Task 4.1: Update dev-plan.md
 
@@ -920,7 +920,7 @@ In `docs/dev-plan.md`:
 
 1. In Phase 11 §11b, change the visualization entry to `[x]` with completion date 2026-04-NN (use today's date when executing):
    ```
-   - [x] Build `SkillRadar` + `LossCurve` visualization components — **COMPLETED YYYY-MM-DD**
+   - [x] Build `SkillRadar` + `LossCurve` visualization components - **COMPLETED YYYY-MM-DD**
    ```
 
 2. In §11f "Test Updates", mark the viz-tests line `[x]` if both component test files exist and pass.
@@ -931,13 +931,13 @@ In `docs/dev-plan.md`:
 
 Under a new dated sub-heading inside `## Session log`, list:
 - Files created (`packages/ui/src/visualizations/helpers.ts` + test, `apps/web/app/dashboard/_lib/viz-data.ts` + test, `packages/ui/src/visualizations/loss-curve.tsx` + test, `packages/ui/src/visualizations/index.ts`)
-- Files modified (`apps/web/app/dashboard/skill-genome.tsx` — refactored in place to Option C style; `apps/web/app/dashboard/skill-genome.test.tsx` — new/updated; `apps/web/app/dashboard/page.tsx` — added exercise_attempts query; `apps/web/app/dashboard/dashboard-view.tsx` — renders LossCurve adjacent to SkillGenome; `packages/ui/src/index.ts` — added LossCurve + helpers re-exports)
+- Files modified (`apps/web/app/dashboard/skill-genome.tsx` - refactored in place to Option C style; `apps/web/app/dashboard/skill-genome.test.tsx` - new/updated; `apps/web/app/dashboard/page.tsx` - added exercise_attempts query; `apps/web/app/dashboard/dashboard-view.tsx` - renders LossCurve adjacent to SkillGenome; `packages/ui/src/index.ts` - added LossCurve + helpers re-exports)
 - Test counts (total + new)
-- Any deferred items encountered (note if the Nova Canvas contrast fix hasn't landed — visualizations inherit whatever primary colors are in the palette).
+- Any deferred items encountered (note if the Nova Canvas contrast fix hasn't landed - visualizations inherit whatever primary colors are in the palette).
 
 - [ ] **Step 3: Report completion and stop**
 
-Report: "Plan fully executed. Two visualizations shipped. Dev-plan and Session log updated. Do NOT commit — user reviews the full Batch 3 Stage 2b visualizations work before any git actions."
+Report: "Plan fully executed. Two visualizations shipped. Dev-plan and Session log updated. Do NOT commit - user reviews the full Batch 3 Stage 2b visualizations work before any git actions."
 
 ---
 
@@ -948,7 +948,7 @@ Report: "Plan fully executed. Two visualizations shipped. Dev-plan and Session l
 - **Phase 3:** revert the dashboard/page.tsx + dashboard-view.tsx changes (git diff should be scoped to the two new prop paths + import lines).
 - **Phase 4:** revert the dev-plan.md diff for the §11b/§11f/§5b entries and the new Session log sub-entry.
 
-Because each task ends without a commit, rollback is just a revert of the working tree — no branch gymnastics.
+Because each task ends without a commit, rollback is just a revert of the working tree - no branch gymnastics.
 
 ---
 

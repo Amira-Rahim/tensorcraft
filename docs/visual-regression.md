@@ -10,14 +10,14 @@ Three spec files under `e2e/visual/`:
 | File                  | Coverage                                                                 |
 | --------------------- | ------------------------------------------------------------------------ |
 | `key-pages.spec.ts`   | Landing, Pricing, Worlds index, Auth sign-in, Paywall (desktop 1280×800) |
-| `worlds.spec.ts`      | All 5 world landing pages — confirms CSS-var palette cascade per world   |
+| `worlds.spec.ts`      | All 5 world landing pages - confirms CSS-var palette cascade per world   |
 | `responsive.spec.ts`  | Landing + Pricing at 320 / 768 / 1024 / 1440 px widths                   |
 
 All tests use `expect(page).toHaveScreenshot(...)` with
 `maxDiffPixelRatio: 0.001` (0.1% tolerance).
 
 Auth-required pages (dashboard, lesson viewer, settings, etc.) are **not**
-covered in V0.5 — they would require a mocked auth session. Deferred to
+covered in V0.5 - they would require a mocked auth session. Deferred to
 launch polish.
 
 ## Current baseline set
@@ -25,16 +25,16 @@ launch polish.
 Baselines generated **2026-04-21** locally on macOS (darwin, Chromium via
 Playwright). 18 PNGs committed:
 
-- `e2e/visual/key-pages.spec.ts-snapshots/` — 5 files (landing, pricing,
+- `e2e/visual/key-pages.spec.ts-snapshots/` - 5 files (landing, pricing,
   worlds-index, auth-sign-in, paywall).
-- `e2e/visual/worlds.spec.ts-snapshots/` — 5 files (one per world slug).
-- `e2e/visual/responsive.spec.ts-snapshots/` — 8 files (landing + pricing
+- `e2e/visual/worlds.spec.ts-snapshots/` - 5 files (one per world slug).
+- `e2e/visual/responsive.spec.ts-snapshots/` - 8 files (landing + pricing
   × 320/768/1024/1440 widths).
 
 Note: Playwright writes snapshots to `<spec>.ts-snapshots/` by default
 (not the `__screenshots__/` path name used elsewhere in this doc). The
 filename suffix `-chromium-darwin` encodes the browser + platform, so
-Linux CI will not match these PNGs — see "CI integration" below.
+Linux CI will not match these PNGs - see "CI integration" below.
 
 **Platform caveat**: these baselines are darwin-only. Linux CI will need
 a separate baseline set because pixel-level font hinting, subpixel
@@ -86,19 +86,19 @@ Regenerate (and commit new PNGs) whenever:
 - A visual change is **intentional** (e.g. palette tweak, nav redesign,
   copy edit that changes line wrapping).
 - Font stack changes (e.g. new `@font-face` weights added).
-- A new world is added — add its slug to
+- A new world is added - add its slug to
   `e2e/visual/worlds.spec.ts::WORLD_SLUGS` then regenerate.
 - A new breakpoint or page is added to `responsive.spec.ts` or
   `key-pages.spec.ts`.
 
-Do **not** regenerate to "make the test pass" if the diff is unexpected —
+Do **not** regenerate to "make the test pass" if the diff is unexpected -
 that defeats the purpose. Investigate first.
 
 ## Flake mitigation
 
 All visual specs already:
 
-- Call `page.emulateMedia({ reducedMotion: "reduce" })` — `ParticleField`
+- Call `page.emulateMedia({ reducedMotion: "reduce" })` - `ParticleField`
   and `BridgeTicker` both honor this.
 - Await `document.fonts.ready` to avoid FOUT frames.
 - Await `networkidle` to let async components (e.g. Sandpack, charts)
@@ -108,7 +108,7 @@ If a test is still flaky, consider:
 
 - Masking a time-sensitive region:
   `toHaveScreenshot("x.png", { mask: [page.locator(".live-ticker")] })`.
-- Increasing `maxDiffPixelRatio` **locally** for debugging — do not commit
+- Increasing `maxDiffPixelRatio` **locally** for debugging - do not commit
   a loosened tolerance without discussion.
 
 ## CI integration (deferred)

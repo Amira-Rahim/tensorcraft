@@ -1,4 +1,4 @@
-# Lesson Code Block Audit — 2026-04-27
+# Lesson Code Block Audit - 2026-04-27
 
 Total `<CodeBlock>` instances containing `tf.*` calls: **310**
 Passed (no throw): **5** (1.6%)

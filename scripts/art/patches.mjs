@@ -17,7 +17,10 @@ import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 
 /** Shared patch style token (docs/patch-bible.md). No text: generated
     lettering artifacts, so the UI supplies module number and name. */
@@ -80,19 +83,27 @@ for (const name of targets) {
   for (let n = 1; n <= Number(count); n++) {
     const args = [
       "scripts/art/generate.mjs",
-      "--provider", "fal",
-      "--phase", isSeal ? "seals" : "patches",
-      "--id", isSeal ? "deep-orbit" : name,
-      "--count", "1",
-      "--size", "1024x1024",
-      "--prompt", prompt + TOKEN,
+      "--provider",
+      "fal",
+      "--phase",
+      isSeal ? "seals" : "patches",
+      "--id",
+      isSeal ? "deep-orbit" : name,
+      "--count",
+      "1",
+      "--size",
+      "1024x1024",
+      "--prompt",
+      prompt + TOKEN,
     ];
     process.stdout.write(`${name} ${n}/${count}: `);
     try {
       const out = execFileSync("node", args, { cwd: ROOT, encoding: "utf8" });
       process.stdout.write(out.trim().split("\n").pop().trim() + "\n");
     } catch (err) {
-      process.stdout.write(`FAILED ${(err.stderr || "").trim().slice(0, 140)}\n`);
+      process.stdout.write(
+        `FAILED ${(err.stderr || "").trim().slice(0, 140)}\n`,
+      );
       process.exitCode = 1;
     }
   }

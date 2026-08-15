@@ -6,7 +6,7 @@
 -- `scripts/migration-status.mjs` reports a truthful diff from day one.
 --
 -- SELF-REGISTERING: this is the first migration to follow the new conventions
--- (packages/supabase/migrations/CONVENTIONS.md) — transaction wrapped,
+-- (packages/supabase/migrations/CONVENTIONS.md) - transaction wrapped,
 -- idempotent, records its own version, and ships a paired .down.sql.
 
 begin;

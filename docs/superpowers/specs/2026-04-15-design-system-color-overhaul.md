@@ -1,7 +1,7 @@
 # Design System Color Overhaul
 
 **Date:** 2026-04-15
-**Scope:** Full design system overhaul — palette, header, ticker, surfaces, hardcoded color fixes
+**Scope:** Full design system overhaul - palette, header, ticker, surfaces, hardcoded color fixes
 **Aesthetic:** Dark brutalist (unchanged), shared neutral backgrounds, stronger accent system per theme
 
 ---
@@ -10,7 +10,7 @@
 
 The current color system has four interconnected issues:
 
-1. **No depth separation.** Nav (`#1C1C1C`), ticker (`#252525`), and page background (`#1C1C1C`) are within 9 hex steps of each other. Borders (`#2A2A2A`) are 14 steps from background — nearly invisible. The entire viewport reads as a flat dark surface with no visual hierarchy.
+1. **No depth separation.** Nav (`#1C1C1C`), ticker (`#252525`), and page background (`#1C1C1C`) are within 9 hex steps of each other. Borders (`#2A2A2A`) are 14 steps from background - nearly invisible. The entire viewport reads as a flat dark surface with no visual hierarchy.
 
 2. **Zero theme identity in chrome.** All 5 themes share identical background, surface, and border values. The header and ticker look the same regardless of active theme. Theme presence is limited to link text color.
 
@@ -22,10 +22,10 @@ The current color system has four interconnected issues:
 
 These decisions were made during brainstorming and are not open for re-evaluation:
 
-- **Shared neutral backgrounds** — all 5 themes use the same bg/surface/border values. Theme identity comes from the accent system, not tinted backgrounds. This simplifies WCAG compliance and maintenance.
-- **Theme-tinted border glow on header** — the nav's bottom border becomes primary-colored with a soft downward glow. No elevation change or shadow. Brutalist-compatible.
-- **Primary-tinted borders on active surfaces** — active cards and panels get `border: primary/25%`. Inactive surfaces get neutral borders. No left-bar or asymmetric accents.
-- **Bold contrast push** — base background drops from `#1C1C1C` to `#181818`. Borders push from `#2A2A2A` to `#3D3D3D`. A new "raised" surface tier is added at `#2C2C2C`. This creates a +21 step spread between background and border.
+- **Shared neutral backgrounds** - all 5 themes use the same bg/surface/border values. Theme identity comes from the accent system, not tinted backgrounds. This simplifies WCAG compliance and maintenance.
+- **Theme-tinted border glow on header** - the nav's bottom border becomes primary-colored with a soft downward glow. No elevation change or shadow. Brutalist-compatible.
+- **Primary-tinted borders on active surfaces** - active cards and panels get `border: primary/25%`. Inactive surfaces get neutral borders. No left-bar or asymmetric accents.
+- **Bold contrast push** - base background drops from `#1C1C1C` to `#181818`. Borders push from `#2A2A2A` to `#3D3D3D`. A new "raised" surface tier is added at `#2C2C2C`. This creates a +21 step spread between background and border.
 
 ---
 
@@ -39,8 +39,8 @@ All themes share these neutral values. Only the `--tc-primary` and `--tc-accent`
 |----------|-----------|-----------|------|
 | `--tc-bg` | `#1C1C1C` | `#181818` | Page background |
 | `--tc-surface` | `#252525` | `#232323` | Card/panel backgrounds |
-| `--tc-surface-overlay` | `#313131` | `#313131` | *(unchanged)* — modals, dropdowns, popovers |
-| `--tc-surface-raised` | *(none — mapped to `--tc-surface` in Tailwind)* | `#2C2C2C` | New tier: ticker, elevated non-modal content |
+| `--tc-surface-overlay` | `#313131` | `#313131` | *(unchanged)* - modals, dropdowns, popovers |
+| `--tc-surface-raised` | *(none - mapped to `--tc-surface` in Tailwind)* | `#2C2C2C` | New tier: ticker, elevated non-modal content |
 | `--tc-border` | `#2A2A2A` | `#3D3D3D` | Default neutral borders |
 | `--tc-code-bg` | `#161616` | `#141414` | Code block backgrounds |
 | `--tc-text` | `#E0E0E0` | `#E0E0E0` | *(unchanged)* |
@@ -82,7 +82,7 @@ All primary colors already pass AA 4.5:1+ on the current darker backgrounds, so 
   - `background: linear-gradient(to bottom, var(--tc-glow), transparent)`
   - `position: absolute; bottom: -8px; left: 0; right: 0`
   - `pointer-events: none; z-index: 49` (below nav, above ticker)
-- **Background:** Changes to `bg-surface` class mapped to `--tc-surface` (`#232323`), giving the nav a slightly lighter base than the page (`#181818`). Combined with the border glow, this creates clear chrome/content separation. **Note:** this requires updating the Tailwind mapping — currently `--color-surface` maps to `--tc-bg`. See Section 6.
+- **Background:** Changes to `bg-surface` class mapped to `--tc-surface` (`#232323`), giving the nav a slightly lighter base than the page (`#181818`). Combined with the border glow, this creates clear chrome/content separation. **Note:** this requires updating the Tailwind mapping - currently `--color-surface` maps to `--tc-bg`. See Section 6.
 
 ### Mobile Nav
 
@@ -93,7 +93,7 @@ All primary colors already pass AA 4.5:1+ on the current darker backgrounds, so 
 - Active nav items: use `border-border-active` and `text-primary`
 - Auth buttons active state: use `border-border-active bg-primary-muted`
 
-No structural changes to mobile nav — the palette update cascades.
+No structural changes to mobile nav - the palette update cascades.
 
 ---
 
@@ -104,7 +104,7 @@ No structural changes to mobile nav — the palette update cascades.
 ### Changes
 
 - **Canvas streaks:** Replace hardcoded `rgba(107,170,138,${s.alpha})` with a dynamic value read from `--tc-primary`. Extract the RGB components of the CSS custom property at render time (via `getComputedStyle` or a pre-computed RGB variable) and apply with per-streak alpha.
-- **Background:** `bg-surface-raised` remains but now maps to `#2C2C2C` (or keep as a distinct ticker surface — either works since the new raised value is close to the old `#252525`).
+- **Background:** `bg-surface-raised` remains but now maps to `#2C2C2C` (or keep as a distinct ticker surface - either works since the new raised value is close to the old `#252525`).
 - **Bottom border:** Already uses `border-border`, which updates automatically to `#3D3D3D`.
 
 ### Implementation Note
@@ -153,7 +153,7 @@ border: 1px solid var(--tc-border)     /* #3D3D3D */
 ### Overlay Surfaces (modals, dropdowns, popovers)
 
 ```
-background: var(--tc-surface-overlay)  /* #313131 — unchanged */
+background: var(--tc-surface-overlay)  /* #313131 - unchanged */
 border: 1px solid var(--tc-border)     /* #3D3D3D */
 ```
 
@@ -223,7 +223,7 @@ These files also contain hardcoded Deep Orbit teal that must be replaced with `r
 
 **File:** `packages/config/tailwind/base.css`
 
-**Remap existing utilities** (breaking changes — intentional):
+**Remap existing utilities** (breaking changes - intentional):
 
 ```css
 /* CHANGED: was var(--tc-bg), now var(--tc-surface) so bg-surface gives card/nav backgrounds */
@@ -232,7 +232,7 @@ These files also contain hardcoded Deep Orbit teal that must be replaced with `r
 --color-surface-raised:  var(--tc-surface-raised);
 ```
 
-**Rationale:** The current mapping `--color-surface: var(--tc-bg)` is confusing — `bg-surface` gives the page background, not a "surface." Remapping so `bg-surface` = card/nav surface (`#232323`) and the page background uses no explicit class (inherits from `body { background: var(--tc-bg) }`). Any component currently using `bg-surface` to mean "page background" must be updated to use no background class or a new `bg-page` utility.
+**Rationale:** The current mapping `--color-surface: var(--tc-bg)` is confusing - `bg-surface` gives the page background, not a "surface." Remapping so `bg-surface` = card/nav surface (`#232323`) and the page background uses no explicit class (inherits from `body { background: var(--tc-bg) }`). Any component currently using `bg-surface` to mean "page background" must be updated to use no background class or a new `bg-page` utility.
 
 **Add new utility** for page background (if explicit class is needed):
 
@@ -257,8 +257,8 @@ This enables classes like `border-border-active`, `bg-primary-muted`, `bg-surfac
 
 | File | Change Type | Risk |
 | ---- | ----------- | ---- |
-| `packages/themes/src/css/themes.css` | Palette values + new variables + `--tc-primary-rgb` | **High** — cascades everywhere |
-| `packages/config/tailwind/base.css` | Remap `bg-surface`/`bg-surface-raised` + new utilities | **High** — semantic change |
+| `packages/themes/src/css/themes.css` | Palette values + new variables + `--tc-primary-rgb` | **High** - cascades everywhere |
+| `packages/config/tailwind/base.css` | Remap `bg-surface`/`bg-surface-raised` + new utilities | **High** - semantic change |
 | `apps/web/app/components/nav.tsx` | Border glow effect + `bg-surface` semantics | Low |
 | `apps/web/app/components/mobile-nav.tsx` | Active state classes | Low |
 | `apps/web/app/components/ticker.tsx` | Canvas streak color fix → `--tc-primary-rgb` | Medium |
@@ -275,9 +275,9 @@ This enables classes like `border-border-active`, `bg-primary-muted`, `bg-surfac
 
 ## 8. What Does NOT Change
 
-- **Typography:** Inter + JetBrains Mono, minimum 12px — unchanged.
-- **Border radius:** All `0` (brutalist) — unchanged.
-- **Color scheme:** `dark` only — unchanged.
+- **Typography:** Inter + JetBrains Mono, minimum 12px - unchanged.
+- **Border radius:** All `0` (brutalist) - unchanged.
+- **Color scheme:** `dark` only - unchanged.
 - **Theme primary/accent colors:** All 5 theme primaries and accents stay the same.
 - **Layout/structure:** No component restructuring. Changes are purely color/border/glow.
 - **Text colors:** `--tc-text` (#E0E0E0) and `--tc-muted` (#A0A0A0) unchanged.

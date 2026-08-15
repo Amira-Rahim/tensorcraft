@@ -5,7 +5,7 @@ import { mockMatchMedia } from "./test-utils/mock-match-media";
 
 /* AmbientBackground's rAF/static-frame loop reads
    `document.documentElement.dataset.scheme` every frame (cheap attribute
-   read — never getComputedStyle, which would force a style recalc per
+   read - never getComputedStyle, which would force a style recalc per
    frame). The CSS-var *palette* itself is only read via getComputedStyle at
    mount and on data-world/data-scheme mutation (via the shared
    useAttributeObserver hook), never per frame. These tests cover: the

@@ -122,7 +122,7 @@ describe("GLOSSARY", () => {
     for (const e of GLOSSARY) {
       expect(e.term.length).toBeGreaterThan(0);
       expect(e.definition.length).toBeGreaterThan(0);
-      expect(e.definition).not.toContain("—");
+      expect(e.definition).not.toContain(" - ");
     }
   });
 

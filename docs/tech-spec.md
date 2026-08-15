@@ -163,7 +163,7 @@ Lessons are authored in MDX and use a library of custom React components. These 
 
 Each world is defined as a TypeScript `WorldManifest` object in `packages/worlds/src/<world>.ts`. The manifest drives the world selection UI, asset loading, and content resolution.
 
-All worlds are available. No status field — world manifests contain only content and visual identity.
+All worlds are available. No status field - world manifests contain only content and visual identity.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -207,8 +207,8 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | role | user_role enum | `'user'` or `'admin'`, default: `'user'` (added in migration 006) |
 | email_alerts | boolean | Default: `true` (added in migration 009) |
 | weekly_digest | boolean | Default: `true` (added in migration 009) |
-| experience_level | experience_level enum | `'beginner'` \| `'intermediate'` \| `'advanced'` \| `'expert'`, nullable (added in migration 018, captured in onboarding Step 2 — Background) |
-| learning_goal | learning_goal enum | `'hobby'` \| `'career'` \| `'research'` \| `'team'` \| `'curiosity'`, nullable (added in migration 018, captured in onboarding Step 3 — Goal) |
+| experience_level | experience_level enum | `'beginner'` \| `'intermediate'` \| `'advanced'` \| `'expert'`, nullable (added in migration 018, captured in onboarding Step 2 - Background) |
+| learning_goal | learning_goal enum | `'hobby'` \| `'career'` \| `'research'` \| `'team'` \| `'curiosity'`, nullable (added in migration 018, captured in onboarding Step 3 - Goal) |
 | created_at | timestamptz | Default: `now()` |
 | updated_at | timestamptz | Default: `now()` |
 
@@ -552,7 +552,7 @@ GitHub integration is entirely optional. Users who prefer not to connect GitHub 
 - **Visual Indicator:** Lessons show a subtle GitHub icon badge when integration is active. When not connected, the "Save to GitHub" button is replaced with "Save Progress" (Supabase-only).
 - **Data Cleanup:** When a user disconnects, the API revokes the installation token and removes the `github_installation_id` from their Supabase profile. No data is deleted from GitHub.
 
-**Retroactive push:** When a user connects GitHub after completing lessons, the system queues all completed lesson artifacts for push in chronological order. Each lesson is committed as a separate commit with the original completion timestamp in the commit message (e.g., "M1L3: Pattern Recognition — completed 2026-03-08"). The push runs as a background job, with a progress indicator shown in Settings. If the repository already contains conflicting files, the system creates a new branch `tensorcraft/retroactive-sync` and opens a PR.
+**Retroactive push:** When a user connects GitHub after completing lessons, the system queues all completed lesson artifacts for push in chronological order. Each lesson is committed as a separate commit with the original completion timestamp in the commit message (e.g., "M1L3: Pattern Recognition - completed 2026-03-08"). The push runs as a background job, with a progress indicator shown in Settings. If the repository already contains conflicting files, the system creates a new branch `tensorcraft/retroactive-sync` and opens a PR.
 
 ### 5.4 Repo Structure
 
@@ -638,7 +638,7 @@ This section documents the shared UI surface landed during the Phase 11 brutalis
 
 ### 7.1 `@tensorcraft/ui` Subpath Exports
 
-The shared UI package ships three subpath entry points in addition to the root. Import the narrowest path that serves the use case — tree-shaking works per-entry.
+The shared UI package ships three subpath entry points in addition to the root. Import the narrowest path that serves the use case - tree-shaking works per-entry.
 
 | Import | Purpose | Contents |
 | --- | --- | --- |
@@ -666,13 +666,13 @@ import { FocusTrap } from '@tensorcraft/ui/a11y'
 | `ParticleField` | `@tensorcraft/ui/effects` | Canvas particle atmosphere used on the landing hero, auth pages, and per-world selection cards. Respects `prefers-reduced-motion`. |
 | `BridgeTicker` | `@tensorcraft/ui/effects` | Horizontal scrolling ticker of FE→ML bridge statements used as ambient marketing flavor. |
 | `SceneCanvas` | `@tensorcraft/ui/effects` | Shared chrome for time-parameterized scene renderers: own clock, eased 0..1 hover amount with an `intensity` resting floor (page backdrops have no hover, so they'd otherwise idle at their faintest), IntersectionObserver + reduced-motion gating (static frame when reduced). `OrbitCanvas` is `drawOrbit` on this chrome. |
-| World scenes (`drawNeonProtocol`, `drawSignalWard`, `drawNovaCanvas`, `drawTerraGrid`) | `@tensorcraft/ui/effects` | Signature per-world animations on the landing five-worlds strip and the `/worlds` card grid, siblings of `drawOrbit`: city scanned by a vision HUD, token rows with attention arcs over an EKG, a diffusion loop condensing noise into a nova bloom, a perspective edge-mesh grid with node pings. Ambient-faint at rest; hover/focus ignites them. Geometry is a pure function of `t` (hover styles only) — enforced by `world-scenes.test.ts`. |
+| World scenes (`drawNeonProtocol`, `drawSignalWard`, `drawNovaCanvas`, `drawTerraGrid`) | `@tensorcraft/ui/effects` | Signature per-world animations on the landing five-worlds strip and the `/worlds` card grid, siblings of `drawOrbit`: city scanned by a vision HUD, token rows with attention arcs over an EKG, a diffusion loop condensing noise into a nova bloom, a perspective edge-mesh grid with node pings. Ambient-faint at rest; hover/focus ignites them. Geometry is a pure function of `t` (hover styles only) - enforced by `world-scenes.test.ts`. |
 
 **Removed / deferred:**
 
-- `LossLandscape` — deferred after Phase 11 (complexity vs. pedagogical value). Replaced on auth pages by `ParticleField`.
-- `ActivityHeatmap` — deferred per §5b audit. Daily activity is now surfaced via the `GET /api/progress/activity/daily` endpoint and a simpler streak strip on the dashboard; full GitHub-style heatmap is post-V1.0.
-- ARIA dual-robot narrator — cut 2026-04-20. Narrative assistance now relies on inline world-specific character copy (MEDI, NEON, MUSE, GRID, ARIA-as-in-lesson-character) rather than a persistent dual-robot narrator widget.
+- `LossLandscape` - deferred after Phase 11 (complexity vs. pedagogical value). Replaced on auth pages by `ParticleField`.
+- `ActivityHeatmap` - deferred per §5b audit. Daily activity is now surfaced via the `GET /api/progress/activity/daily` endpoint and a simpler streak strip on the dashboard; full GitHub-style heatmap is post-V1.0.
+- ARIA dual-robot narrator - cut 2026-04-20. Narrative assistance now relies on inline world-specific character copy (MEDI, NEON, MUSE, GRID, ARIA-as-in-lesson-character) rather than a persistent dual-robot narrator widget.
 
 ### 7.3 Accessibility Conventions
 
@@ -689,7 +689,7 @@ import { FocusTrap } from '@tensorcraft/ui/a11y'
 
 **Focus styling (universal):**
 
-- Every interactive element uses the pattern `focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2`. No `focus:ring-*` — brutalist outlines only.
+- Every interactive element uses the pattern `focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2`. No `focus:ring-*` - brutalist outlines only.
 
 ### 7.4 Brutalist CSS Conventions
 
@@ -699,23 +699,23 @@ The Phase 11 redesign replaced the prior "Zensman DeFi Neon" direction (glows, g
 | --- | --- |
 | Corners | `rounded-none` everywhere. No `rounded-md`, `rounded-lg`, etc. |
 | Shadows | Hard offset shadows only. Use utility `.brutalist-shadow` (e.g., `4px 4px 0 var(--tc-border)`), never `shadow-lg` / blurred shadows. |
-| Hover | `.brutalist-hover` — a combined translate + shadow shift on hover to preserve the offset-shadow effect. |
-| Comment labels | `.comment-label` — uppercase, tracking-wider, JetBrains Mono, muted color. Used for section headers like `# skill_genome`, `// loss.hints`, `— 12wk`. |
+| Hover | `.brutalist-hover` - a combined translate + shadow shift on hover to preserve the offset-shadow effect. |
+| Comment labels | `.comment-label` - uppercase, tracking-wider, JetBrains Mono, muted color. Used for section headers like `# skill_genome`, `// loss.hints`, ` - 12wk`. |
 | Focus | `focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2` (see §7.3). |
 | Glow effects | Removed. Tokens `--tc-glow`, `--tc-neon-glow`, `--tc-neon-line` were deleted from `worlds.css` 2026-04-13 → 2026-04-20. |
 
 ### 7.5 Settings & Onboarding Routes
 
-- **Onboarding** (`/onboarding`) — 5 steps: Welcome → Background → Goal → World → Ready. Persisted via `PATCH /api/onboarding` with `experience_level` and `learning_goal` enum fields (see §1.3 API notes and the `profiles` schema).
-- **Paywall** (`/paywall`) — standalone locked-content route; complements the `/pricing?locked=<world>` banner used for deep-links.
-- **Settings** (`/settings`) — 5-tab layout: Profile / Notifications / GitHub / World / Account.
-- **Capstone completion** — triggers `POST /api/certificates` to generate the learner's verifiable certificate; the returned id is rendered on the capstone page and is publicly retrievable via `GET /api/certificates/:id`.
+- **Onboarding** (`/onboarding`) - 5 steps: Welcome → Background → Goal → World → Ready. Persisted via `PATCH /api/onboarding` with `experience_level` and `learning_goal` enum fields (see §1.3 API notes and the `profiles` schema).
+- **Paywall** (`/paywall`) - standalone locked-content route; complements the `/pricing?locked=<world>` banner used for deep-links.
+- **Settings** (`/settings`) - 5-tab layout: Profile / Notifications / GitHub / World / Account.
+- **Capstone completion** - triggers `POST /api/certificates` to generate the learner's verifiable certificate; the returned id is rendered on the capstone page and is publicly retrievable via `GET /api/certificates/:id`.
 
 ---
 
 ## 8. Internationalization [DESCOPED TO POST-V1.0]
 
-> **Status: Descoped** — Internationalization is deferred to post-V1.0. The platform will launch as English-only. The architectural notes below are retained for future reference when i18n work begins.
+> **Status: Descoped** - Internationalization is deferred to post-V1.0. The platform will launch as English-only. The architectural notes below are retained for future reference when i18n work begins.
 
 ### 7.1 Architecture (English Only at Launch)
 

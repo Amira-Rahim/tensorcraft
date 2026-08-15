@@ -1,4 +1,4 @@
-# E2E Test Suite Fix + Expansion — Design Spec
+# E2E Test Suite Fix + Expansion - Design Spec
 
 **Date:** 2026-04-14
 **Status:** Draft
@@ -50,6 +50,6 @@ Note: Can't test full onboarding flow without auth. Test the UI rendering and st
 
 ## Verification
 
-1. `npx playwright test` — all tests pass
+1. `npx playwright test` - all tests pass
 2. No skipped or `.only` tests
 3. Tests run in CI (GitHub Actions)

@@ -1,4 +1,4 @@
-# Landing page — full-page honesty / duplication / conversion pass
+# Landing page - full-page honesty / duplication / conversion pass
 
 **Date:** 2026-06-10
 **Status:** Implemented
@@ -18,14 +18,14 @@ walk), lenses: honesty/trust, conversion flow, duplicate-purpose sections.
    opens the free intro-tensors lesson (consistent with hero / bridge / theme
    CTAs); account path survives as a secondary link ("Prefer to track progress
    across devices? Create a free account"). Body copy now does new work
-   instead of repeating the eyebrow: "If it clicks, the full theme is $49 once
-   — no subscription" (computed from `PRICING.single.price`) — price
+   instead of repeating the eyebrow: "If it clicks, the full theme is $49 once,
+   no subscription" (computed from `PRICING.single.price`) - price
    transparency at the decision point.
 
-2. **False "LIVE" badge.** What You'll Build had a pulsing dot + "LIVE — runs
+2. **False "LIVE" badge.** What You'll Build had a pulsing dot + "LIVE - runs
    entirely in your browser" under a **static code mockup**. Replaced with an
    honest cross-reference that also gives the section a distinct job vs the
-   hero demo: "// the hero demo up top is this system's 8 KB preview — it
+   hero demo: "// the hero demo up top is this system's 8 KB preview - it
    already ran in your tab." (hero = proof, WYB = destination).
 
 3. **Stale "50" counts.** Bridge catalog is 51; computed surfaces (ticker
@@ -36,20 +36,20 @@ walk), lenses: honesty/trust, conversion flow, duplicate-purpose sections.
 4. **"Module 1 free / no account" said 4×** (hero trust line, five-worlds
    footer strip, final-CTA eyebrow, final-CTA body). Five-worlds footer strip
    deleted (pure duplicate); final-CTA body repurposed (see #1). Remaining:
-   hero trust line + final-CTA eyebrow — one per conversion moment.
+   hero trust line + final-CTA eyebrow - one per conversion moment.
 
 5. **Invisible waitlist affordance.** Coming-soon "Notify me →" was
-   `opacity-0 group-hover:opacity-100` — invisible until mouse-over, never
+   `opacity-0 group-hover:opacity-100` - invisible until mouse-over, never
    visible on touch. Now `opacity-60` resting.
 
 ## Reviewed, left alone
 
-- Five-worlds hero card's empty right half — intentional atmosphere
+- Five-worlds hero card's empty right half - intentional atmosphere
   (per-theme particle canvas); brutalist negative space.
-- "// CHOOSE YOUR WORLD" eyebrow with 4 locked themes — subhead is honest
+- "// CHOOSE YOUR WORLD" eyebrow with 4 locked themes - subhead is honest
   ("the other four ship in waves").
 - Three CTAs to the same free lesson (hero / bridge exit / theme card /
-  final) — repetition of the *action* is funnel design, not duplication;
+  final) - repetition of the *action* is funnel design, not duplication;
   each sits at a distinct conviction moment.
 
 ## Tests
@@ -60,18 +60,18 @@ walk), lenses: honesty/trust, conversion flow, duplicate-purpose sections.
 
 ## Verification
 
-- `npx vitest run apps/web/app/page.test.tsx` — 16/16.
-- `npx tsc --noEmit` (apps/web) — zero new errors.
-- `npx playwright test e2e/landing.spec.ts --project=chromium` — 10/10.
+- `npx vitest run apps/web/app/page.test.tsx` - 16/16.
+- `npx tsc --noEmit` (apps/web) - zero new errors.
+- `npx playwright test e2e/landing.spec.ts --project=chromium` - 10/10.
 
-## Addendum — section order + spatial rhythm (same day)
+## Addendum - section order + spatial rhythm (same day)
 
 - **Reorder:** Hero → Stats → Ticker → Bridge System → What You'll Build →
   Five Worlds → Final CTA (was: ticker/stats swapped, Worlds before WYB).
-  Rationale: stats extend hero claims (incl. "8 KB — the model in the hero
+  Rationale: stats extend hero claims (incl. "8 KB - the model in the hero
   above", now adjacent); ticker is the bridge system's marquee intro instead
   of being orphaned by the stats bar; outcome (WYB) now precedes catalog
-  (Worlds) — motivation before selection.
+  (Worlds) - motivation before selection.
 - **h2 scale normalized** to `text-3xl md:text-4xl` (bridges was near-h1
   `4xl/5xl`; worlds/WYB were `3xl`). Final CTA stays display-scale as the
   intentional bookend.
@@ -83,7 +83,7 @@ walk), lenses: honesty/trust, conversion flow, duplicate-purpose sections.
 ## Deferred
 
 - Social proof slot (still gated on real numbers).
-- Five-worlds hero card right-half content (module map?) — only if data
+- Five-worlds hero card right-half content (module map?) - only if data
   shows scroll-past.
-- `id="how-it-works"` anchor on What You'll Build is unreferenced — harmless,
+- `id="how-it-works"` anchor on What You'll Build is unreferenced - harmless,
   candidate for /learn deep-link later.

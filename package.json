@@ -41,7 +41,7 @@
     "vitest-axe": "^0.1.0"
   },
   "lint-staged": {
-    "*.{ts,tsx,mts}": [
+    "*.{ts,tsx,mts,js,mjs}": [
       "prettier --write"
     ],
     "*.{json,md,css,html}": [

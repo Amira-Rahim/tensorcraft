@@ -6,7 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * call. getUser() (in updateSession) is what AUTHENTICATES the request; this
  * only decodes the payload of that same token to read a non-security-critical
  * flag (onboarding gating). Returns undefined if the token is absent/opaque or
- * the claim is missing — callers then fall back to a profiles read, so gating
+ * the claim is missing - callers then fall back to a profiles read, so gating
  * stays correct for tokens minted before the custom-access-token hook
  * (migration 046) was enabled.
  */
@@ -67,7 +67,7 @@ export async function updateSession(request: NextRequest) {
   //
   // Wrapped because `getUser()` is a NETWORK call to GoTrue and this runs on
   // essentially every request. Unwrapped, any Supabase Auth slowness or
-  // outage threw here and took down the whole site — including the fully
+  // outage threw here and took down the whole site - including the fully
   // static landing page, which needs no auth at all. A throw in middleware is
   // a 500 for the request, so an auth incident became a total outage.
   //
@@ -106,7 +106,7 @@ export async function updateSession(request: NextRequest) {
       // Only claim the session EXPIRED when there was a session to expire.
       // `authError && !user` also covers a cookieless first visit, so a
       // brand-new visitor clicking a /dashboard link was told their session
-      // had expired — confusing, and it frames a normal signup as a fault.
+      // had expired - confusing, and it frames a normal signup as a fault.
       // Presence of a Supabase auth cookie is the distinguishing signal.
       const hadSession = request.cookies
         .getAll()
@@ -159,7 +159,7 @@ export async function updateSession(request: NextRequest) {
     const isOnboarding = request.nextUrl.pathname.startsWith("/onboarding");
 
     // Prefer the `onboarding_completed` claim injected into the JWT by the
-    // custom access token hook (migration 046) — reading it off the already-
+    // custom access token hook (migration 046) - reading it off the already-
     // validated token costs no DB round-trip on this hot authed path.
     // getSession() reads the cookie (no network); we only decode the token for
     // this non-security-critical flag, identity still comes from getUser above.
@@ -168,7 +168,7 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getSession();
     const claim = readTokenClaim(session?.access_token, "onboarding_completed");
 
-    // Fall back to a profiles read only when the claim is absent — tokens
+    // Fall back to a profiles read only when the claim is absent - tokens
     // minted before the hook was enabled, or if the hook is not yet configured.
     // This keeps gating correct in every state; the read simply disappears once
     // tokens carry the claim.

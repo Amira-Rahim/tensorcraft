@@ -1,6 +1,6 @@
 # Tensorcraft Pulse Implementation Plan
 
-> **Status: DEFERRED — POST-V1 / FUTURE WORK**
+> **Status: DEFERRED - POST-V1 / FUTURE WORK**
 > Not scheduled. Captured here for activation after launch settles.
 > Spec lives at `~/.claude/plans/brainstorm-how-to-keep-giggly-lightning.md` (move to `docs/superpowers/specs/2026-05-01-pulse-content-freshness-design.md` when activated).
 
@@ -16,59 +16,59 @@
 
 ## File Structure
 
-**New package — `apps/pulse-worker/`:**
-- `src/cron.ts` — entrypoint, daily orchestrator
-- `src/db.ts` — Postgres pool, typed queries
-- `src/adapters/types.ts` — `SourceAdapter`, `RawItem` interfaces
-- `src/adapters/hn.ts`, `lobsters.ts`, `hf-papers.ts`, `hf-models.ts`, `gh-releases.ts`, `gh-trending.ts`, `blogs.ts`, `x.ts` — one file per source
-- `src/adapters/__fixtures__/` — canned API responses for unit tests
-- `src/pipeline/ingest.ts` — dedup + insert raw_items
-- `src/pipeline/summarize.ts` — Claude Haiku summarizer
-- `src/pipeline/embed.ts` — OpenAI embedding batcher
-- `src/pipeline/match.ts` — pgvector cosine top-K
-- `src/pipeline/score.ts` — quality_score formula
-- `src/pipeline/publish.ts` — auto-publish + queue split
-- `src/pipeline/sweep.ts` — TTL cleanup
-- `src/signals/keywords.ts` — `LIB_KEYWORDS` map + symbol regex
-- `src/signals/detect-keyword.ts` — Trigger A
-- `src/signals/detect-symbol.ts` — Trigger B
-- `src/signals/detect-llm.ts` — Trigger D
-- `src/lib/budget.ts` — daily cost tracker
-- `src/lib/rate-limit.ts` — per-host token bucket
-- `src/lib/report.ts` — Slack webhook + run summary
-- `src/scripts/embed-lessons.ts` — one-shot lesson backfill
+**New package - `apps/pulse-worker/`:**
+- `src/cron.ts` - entrypoint, daily orchestrator
+- `src/db.ts` - Postgres pool, typed queries
+- `src/adapters/types.ts` - `SourceAdapter`, `RawItem` interfaces
+- `src/adapters/hn.ts`, `lobsters.ts`, `hf-papers.ts`, `hf-models.ts`, `gh-releases.ts`, `gh-trending.ts`, `blogs.ts`, `x.ts` - one file per source
+- `src/adapters/__fixtures__/` - canned API responses for unit tests
+- `src/pipeline/ingest.ts` - dedup + insert raw_items
+- `src/pipeline/summarize.ts` - Claude Haiku summarizer
+- `src/pipeline/embed.ts` - OpenAI embedding batcher
+- `src/pipeline/match.ts` - pgvector cosine top-K
+- `src/pipeline/score.ts` - quality_score formula
+- `src/pipeline/publish.ts` - auto-publish + queue split
+- `src/pipeline/sweep.ts` - TTL cleanup
+- `src/signals/keywords.ts` - `LIB_KEYWORDS` map + symbol regex
+- `src/signals/detect-keyword.ts` - Trigger A
+- `src/signals/detect-symbol.ts` - Trigger B
+- `src/signals/detect-llm.ts` - Trigger D
+- `src/lib/budget.ts` - daily cost tracker
+- `src/lib/rate-limit.ts` - per-host token bucket
+- `src/lib/report.ts` - Slack webhook + run summary
+- `src/scripts/embed-lessons.ts` - one-shot lesson backfill
 - `Dockerfile`, `fly.toml`, `package.json`, `tsconfig.json`, `vitest.config.ts`
 
 **Modify in `packages/supabase/migrations/`:**
 - New: `024_pulse_schema.sql`
 
 **New in `apps/web/`:**
-- `app/pulse/page.tsx` — global feed
-- `app/pulse/[themeId]/page.tsx` — theme feed
-- `app/pulse/_lib/queries.ts` — `getPulseItems`, `getCurrentsForLesson`
-- `app/pulse/_components/pulse-card.tsx` — feed card
-- `app/admin/queue/page.tsx` — editor approval table
-- `app/admin/queue/_actions.ts` — approve/reject server actions
-- `app/admin/signals/page.tsx` — signals dashboard
-- `app/admin/signals/_actions.ts` — status mutations
+- `app/pulse/page.tsx` - global feed
+- `app/pulse/[themeId]/page.tsx` - theme feed
+- `app/pulse/_lib/queries.ts` - `getPulseItems`, `getCurrentsForLesson`
+- `app/pulse/_components/pulse-card.tsx` - feed card
+- `app/admin/queue/page.tsx` - editor approval table
+- `app/admin/queue/_actions.ts` - approve/reject server actions
+- `app/admin/signals/page.tsx` - signals dashboard
+- `app/admin/signals/_actions.ts` - status mutations
 
 **Modify in `packages/ui/`:**
-- New: `src/mdx/currents.tsx` — `<Currents>` lesson block
+- New: `src/mdx/currents.tsx` - `<Currents>` lesson block
 - New: `src/mdx/__tests__/currents.test.tsx`
 
 **Modify in `apps/web/`:**
-- Lesson page renderer (find via grep `\[lesson\]` route) — inject `<Currents>` between Concept and Code sections.
+- Lesson page renderer (find via grep `\[lesson\]` route) - inject `<Currents>` between Concept and Code sections.
 
 **Modify root:**
-- `pnpm-workspace.yaml` — add `apps/pulse-worker`
-- `turbo.json` — register pulse-worker tasks
-- `docs/dev-plan.md` — mark Pulse as deferred V2 item with link to this plan
+- `pnpm-workspace.yaml` - add `apps/pulse-worker`
+- `turbo.json` - register pulse-worker tasks
+- `docs/dev-plan.md` - mark Pulse as deferred V2 item with link to this plan
 
 ---
 
-## Phase 0 — Foundation (schema + scaffolding)
+## Phase 0 - Foundation (schema + scaffolding)
 
-### Task 0.1: Migration 024 — pulse schema + pgvector
+### Task 0.1: Migration 024 - pulse schema + pgvector
 
 **Files:**
 - Create: `packages/supabase/migrations/024_pulse_schema.sql`
@@ -189,7 +189,7 @@ Run in Supabase dashboard → SQL editor → paste migration → execute. Verify
 
 ```bash
 git add packages/supabase/migrations/024_pulse_schema.sql
-git commit -m "feat(pulse): migration 024 — pulse schema + pgvector"
+git commit -m "feat(pulse): migration 024 - pulse schema + pgvector"
 ```
 
 ---
@@ -325,7 +325,7 @@ describe('parseEnv', () => {
 pnpm --filter @tensorcraft/pulse-worker test
 ```
 
-Expected: FAIL — module './env' not found.
+Expected: FAIL - module './env' not found.
 
 - [ ] **Step 3: Implement env.ts**
 
@@ -393,9 +393,9 @@ git commit -m "feat(pulse): env validation + db pool"
 
 ---
 
-## Phase 1 — Lesson embedder
+## Phase 1 - Lesson embedder
 
-### Task 1.1: Lesson embed script — read .velite + compute body_hash
+### Task 1.1: Lesson embed script - read .velite + compute body_hash
 
 **Files:**
 - Create: `apps/pulse-worker/src/scripts/embed-lessons.ts`
@@ -456,7 +456,7 @@ git add . && git commit -m "feat(pulse): lesson body hash + reembed predicate"
 ### Task 1.2: Backfill all 275 lessons
 
 **Files:**
-- Modify: `apps/pulse-worker/src/scripts/embed-lessons.ts` — add `main()`
+- Modify: `apps/pulse-worker/src/scripts/embed-lessons.ts` - add `main()`
 
 - [ ] **Step 1: Add velite-data reader**
 
@@ -578,7 +578,7 @@ Add to `packages/content/package.json`:
 // scripts/embed-lessons-on-build.mjs
 import { spawnSync } from 'node:child_process';
 if (!process.env.SUPABASE_DB_URL || !process.env.OPENAI_API_KEY) {
-  console.warn('[pulse] skipping lesson re-embed — secrets not set');
+  console.warn('[pulse] skipping lesson re-embed - secrets not set');
   process.exit(0);
 }
 const r = spawnSync('pnpm', ['--filter', '@tensorcraft/pulse-worker', 'tsx',
@@ -597,7 +597,7 @@ git commit -m "feat(pulse): incremental lesson re-embed on content build"
 
 ---
 
-## Phase 2 — Source adapters
+## Phase 2 - Source adapters
 
 ### Task 2.1: Common adapter interface
 
@@ -757,9 +757,9 @@ const RELEASES_WATCHLIST = [
 
 ---
 
-## Phase 3 — Pipeline
+## Phase 3 - Pipeline
 
-### Task 3.1: Ingest — dedup + insert raw_items
+### Task 3.1: Ingest - dedup + insert raw_items
 
 **Files:**
 - Create: `apps/pulse-worker/src/pipeline/ingest.ts`
@@ -921,7 +921,7 @@ export async function embedNewItems(): Promise<number> {
 **Files:**
 - Create: `apps/pulse-worker/src/pipeline/match.ts`
 
-- [ ] **Step 1: SQL — match unmatched items**
+- [ ] **Step 1: SQL - match unmatched items**
 
 ```ts
 // src/pipeline/match.ts
@@ -1029,11 +1029,11 @@ export async function scoreAll(): Promise<void> {
 | 3.7 | `pipeline/queue.ts` | INSERT into `pulse_editor_queue (status='pending')` for items where top1 similarity >= `env.LESSON_THRESHOLD` |
 | 3.8 | `pipeline/sweep.ts` | `DELETE FROM pulse_items WHERE expires_at < now()` |
 
-Each: ~5 min — write SQL, test against staging, commit.
+Each: ~5 min - write SQL, test against staging, commit.
 
 ---
 
-## Phase 4 — Signal detector
+## Phase 4 - Signal detector
 
 ### Task 4.1: Lib keywords + symbol regex
 
@@ -1061,7 +1061,7 @@ Test extracts symbols from sample release note; commit.
 
 ---
 
-### Task 4.2: Trigger A — release-keyword
+### Task 4.2: Trigger A - release-keyword
 
 ```ts
 // src/signals/detect-keyword.ts
@@ -1103,13 +1103,13 @@ Test with fake release row; commit.
 
 ---
 
-### Task 4.3: Trigger B — API symbol grep
+### Task 4.3: Trigger B - API symbol grep
 
 Same pattern. Read lesson MDX from `.velite/lessons.json`, grep code blocks for each symbol, insert signal with `severity = 'high'` if symbol appears in BREAKING section else `'low'`.
 
 ---
 
-### Task 4.4: Trigger D — LLM diff (escalation)
+### Task 4.4: Trigger D - LLM diff (escalation)
 
 **Files:**
 - Create: `apps/pulse-worker/src/signals/detect-llm.ts`
@@ -1163,7 +1163,7 @@ for (const c of candidates) {
 
 ---
 
-## Phase 5 — Cron orchestration
+## Phase 5 - Cron orchestration
 
 ### Task 5.1: Pipeline orchestrator
 
@@ -1293,7 +1293,7 @@ Commit.
 
 ---
 
-## Phase 6 — Public surfaces
+## Phase 6 - Public surfaces
 
 ### Task 6.1: getPulseItems server fn
 
@@ -1350,11 +1350,11 @@ Commit.
 | 6.6 | `packages/ui/src/mdx/currents.tsx` | `<Currents>` component, accepts items prop, dim styling, max 3 cards |
 | 6.7 | Modify lesson page renderer | Inject `<Currents>` between Concept and Code; locate via grep `\[lesson\]` route file in `apps/web/app/` |
 
-Each: ~5–10 min — copy theme styling from existing dashboard cards, write minimal snapshot test, commit.
+Each: ~5–10 min - copy theme styling from existing dashboard cards, write minimal snapshot test, commit.
 
 ---
 
-## Phase 7 — Admin surfaces
+## Phase 7 - Admin surfaces
 
 ### Task 7.1: /admin/queue
 
@@ -1390,7 +1390,7 @@ export async function approveQueueItem(formData: FormData): Promise<void> {
 export async function rejectQueueItem(formData: FormData): Promise<void> { /* ... */ }
 ```
 
-- [ ] **Step 3: Page table — pending items sorted by similarity DESC, [Approve] [Reject] [Skip] forms**
+- [ ] **Step 3: Page table - pending items sorted by similarity DESC, [Approve] [Reject] [Skip] forms**
 
 - [ ] **Step 4: Commit**
 
@@ -1408,7 +1408,7 @@ Mirror 7.1 pattern. Detail drawer renders `evidence` jsonb. Actions: acknowledge
 
 ---
 
-## Phase 8 — Deploy
+## Phase 8 - Deploy
 
 ### Task 8.1: Dockerfile
 
@@ -1473,9 +1473,9 @@ Set secrets via `fly secrets set` for: `SUPABASE_DB_URL`, `OPENAI_API_KEY`, `ANT
 - [ ] Verify counts > 0 per source.
 - [ ] Real run: `fly ssh console -a tc-pulse -C 'node dist/cron.js'`
 - [ ] `SELECT count(*) FROM pulse_items WHERE published_at > now()-interval '1h'` ≥ 10
-- [ ] Visit `https://tensorcraft.app/pulse` — feed renders.
-- [ ] Visit `/pulse/deep-orbit` — theme filter works.
-- [ ] Visit `/admin/queue` — items pending.
+- [ ] Visit `https://tensorcraft.app/pulse` - feed renders.
+- [ ] Visit `/pulse/deep-orbit` - theme filter works.
+- [ ] Visit `/admin/queue` - items pending.
 - [ ] Approve 1 → visit linked lesson → Currents block renders.
 - [ ] Insert fake release w/ `BREAKING` body → `/admin/signals` row appears within 1 cron cycle.
 

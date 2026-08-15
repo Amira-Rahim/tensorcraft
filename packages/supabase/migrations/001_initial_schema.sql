@@ -131,7 +131,7 @@ create policy "Users can view own purchases"
   using (auth.uid() = user_id);
 
 -- Only server (service role) can insert/update purchases via webhooks
--- No insert/update policies for anon/authenticated — handled server-side
+-- No insert/update policies for anon/authenticated - handled server-side
 
 create index idx_purchases_user on public.purchases(user_id);
 create index idx_purchases_stripe on public.purchases(stripe_session_id);

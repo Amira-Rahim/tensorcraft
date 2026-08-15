@@ -2,7 +2,7 @@
 #
 # skill_events is month-partitioned and migration 013 pre-created partitions only
 # through 2027-04-01. `ensure_skill_events_partitions()` exists precisely to
-# extend them — and had ZERO callers, so inserts would start failing at the
+# extend them - and had ZERO callers, so inserts would start failing at the
 # partition cliff with nobody watching. Monthly is plenty: each run keeps a
 # rolling window of future partitions.
 #
@@ -28,7 +28,7 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
-            echo "Missing Supabase secrets — failing loud (never a silent green)."
+            echo "Missing Supabase secrets - failing loud (never a silent green)."
             exit 2
           fi
           code=$(curl -s -o /tmp/resp.txt -w "%{http_code}" \

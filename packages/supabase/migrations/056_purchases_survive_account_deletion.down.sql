@@ -1,7 +1,7 @@
 -- Down-migration for 056: restore the 001 cascade semantics.
 --
 -- WARNING: cannot restore NOT NULL if anonymized (user_id IS NULL) rows
--- exist — those are retained tax records; do not delete them to force this
+-- exist - those are retained tax records; do not delete them to force this
 -- down. The down fails loudly in that case, by design.
 
 begin;

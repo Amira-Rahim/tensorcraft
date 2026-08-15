@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://tensorcraft.app/worlds" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
-  // this page presented as the site root — wrong title, wrong image, wrong
+  // this page presented as the site root - wrong title, wrong image, wrong
   // destination preview. Matters most during a distribution push.
   openGraph: {
     type: "website",
@@ -115,7 +115,7 @@ async function loadOwnedWorlds(): Promise<Set<string>> {
     // so adding seat-based access later changes only getEntitledWorlds.
     return await getEntitledWorlds(user.id);
   } catch {
-    // This grid only paints "owned" badges — not an access gate — so a
+    // This grid only paints "owned" badges - not an access gate - so a
     // transient fault degrading to "nothing owned" is acceptable here (the
     // real paywall is the lesson route, which surfaces the error). Keeping the
     // swallow local and documented rather than in the shared helper.

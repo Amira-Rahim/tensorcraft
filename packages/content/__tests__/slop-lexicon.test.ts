@@ -36,7 +36,7 @@ const ALLOWLIST: Record<string, RegExp[]> = {};
 type Pattern = { name: string; re: RegExp };
 
 const PATTERNS: Pattern[] = [
-  { name: "em dash in prose (style bible rule 6)", re: /—/ },
+  { name: "em dash in prose (style bible rule 6)", re: /\u2014/ },
   { name: "delve", re: /\bdelv(e|es|ed|ing)\b/i },
   { name: "tapestry", re: /\btapestr(y|ies)\b/i },
   { name: "testament to", re: /\btestament to\b/i },

@@ -4,7 +4,7 @@ import { SPINES, getSpineStops } from "@tensorcraft/shared";
 interface StrategyThreadProps {
   /**
    * IDs of stops in the game-theory spine to surface (e.g. "gan-game",
-   * "bandit"). The stop DATA — href/title/gist/primitive — now lives in the
+   * "bandit"). The stop DATA - href/title/gist/primitive - now lives in the
    * shared journey model (packages/shared/src/journey.ts, SPINES), not inline
    * here. Adding a stop, or a new world to the spine, is a data edit; this
    * component just renders whatever the spine resolves to. That is the

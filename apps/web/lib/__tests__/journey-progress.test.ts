@@ -66,13 +66,13 @@ vi.mock("@tensorcraft/content", () => ({
   getWorldLessons: () => [{ slug: "a" }, { slug: "b" }],
 }));
 
-import { getJourneyState } from "../journey-progress";
+import { buildGuestJourneyStates, getJourneyState } from "../journey-progress";
 import { JOURNEY_ORDER } from "@tensorcraft/shared";
 
 /**
  * getJourneyState composes the three already-centralized sources (ring order,
  * entitlements, completion) into the canonical-track shape. These pin the
- * derivation — especially that position/completion are DERIVED, not stored.
+ * derivation - especially that position/completion are DERIVED, not stored.
  */
 describe("getJourneyState", () => {
   beforeEach(() => {
@@ -154,6 +154,18 @@ describe("getJourneyState", () => {
     const s = await getJourneyState("u1");
     expect(s.worlds[0].completedLessons).toBe(1);
     expect(s.worlds[0].completed).toBe(false);
+  });
+
+  it("builds guest states: five worlds in ring order, nothing owned or done", () => {
+    const s = buildGuestJourneyStates();
+    expect(s.map((t) => t.slug)).toEqual([...JOURNEY_ORDER]);
+    expect(s.map((t) => t.position)).toEqual([0, 1, 2, 3, 4]);
+    expect(
+      s.every((t) => !t.owned && !t.completed && t.completedLessons === 0),
+    ).toBe(true);
+    // Totals come from getWorldTotalLessons (pinned to 2 above), so the
+    // guest ring can still render real lesson counts.
+    expect(s.every((t) => t.totalLessons === 2)).toBe(true);
   });
 
   it("throws instead of misreporting when a lookup fails (R3-6)", async () => {

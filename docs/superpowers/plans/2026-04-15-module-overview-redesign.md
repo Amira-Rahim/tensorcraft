@@ -1,12 +1,12 @@
-> **Status: COMPLETED & MERGED** — Design was merged into `module-map-client.tsx`. Standalone page deleted 2026-04-15.
+> **Status: COMPLETED & MERGED** - Design was merged into `module-map-client.tsx`. Standalone page deleted 2026-04-15.
 
-# Module Overview Redesign — Implementation Plan
+# Module Overview Redesign - Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Redesign the module overview page with a narrative banner header, mission dossier lesson cards, and fix the hardcoded brutalist-hover shadow.
 
-**Architecture:** Single-page rewrite of `page.tsx` JSX (server component, no new client components needed). The data layer and imports stay the same — only the template changes. Plus a one-line CSS fix in `globals.css`.
+**Architecture:** Single-page rewrite of `page.tsx` JSX (server component, no new client components needed). The data layer and imports stay the same - only the template changes. Plus a one-line CSS fix in `globals.css`.
 
 **Tech Stack:** Next.js 15 (App Router), Tailwind CSS v4, CSS custom properties, server components
 
@@ -38,15 +38,15 @@ box-shadow: 6px 6px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent);
 - [ ] **Step 2: Verify in browser**
 
 Check hover shadows on:
-- Theme selection cards (`/themes`) — should show theme-appropriate color
-- Bridge cards (`/bridges`) — should show theme-appropriate color
-- Switch between themes — shadow color should change
+- Theme selection cards (`/themes`) - should show theme-appropriate color
+- Bridge cards (`/bridges`) - should show theme-appropriate color
+- Switch between themes - shadow color should change
 
 - [ ] **Step 3: Do NOT commit** (per CLAUDE.md rules)
 
 ---
 
-### Task 2: Rewrite Module Overview — Narrative Banner
+### Task 2: Rewrite Module Overview - Narrative Banner
 
 **Files:**
 - Modify: `apps/web/app/themes/[slug]/[module]/page.tsx:53-110`
@@ -194,7 +194,7 @@ Start dev server and navigate to any module page. Check:
 
 ---
 
-### Task 3: Rewrite Module Overview — Dossier Cards
+### Task 3: Rewrite Module Overview - Dossier Cards
 
 **Files:**
 - Modify: `apps/web/app/themes/[slug]/[module]/page.tsx:112-188`
@@ -320,7 +320,7 @@ Replace lines 112-188 (from `{/* Lesson list */}` through the end of the lessons
                     )}
                   </div>
 
-                  {/* Narrative excerpt — only on complete + active */}
+                  {/* Narrative excerpt - only on complete + active */}
                   {!isUpcoming && lesson.context?.narrative && (
                     <p className="text-[12px] text-text-muted italic leading-relaxed mt-2 line-clamp-2">
                       &ldquo;{lesson.context.narrative.slice(0, 150)}
@@ -329,7 +329,7 @@ Replace lines 112-188 (from `{/* Lesson list */}` through the end of the lessons
                     </p>
                   )}
 
-                  {/* Meta row — only on complete + active */}
+                  {/* Meta row - only on complete + active */}
                   {!isUpcoming && (
                     <div className="flex items-center gap-2.5 mt-2.5 flex-wrap">
                       {lesson.concept?.bridge && (
@@ -363,7 +363,7 @@ Replace lines 112-188 (from `{/* Lesson list */}` through the end of the lessons
 
 - [ ] **Step 2: Remove the now-unused `difficultyColors` constant if it was at the top**
 
-Actually — `difficultyColors` is still used in the meta row inside the cards. Keep it at lines 25-29.
+Actually - `difficultyColors` is still used in the meta row inside the cards. Keep it at lines 25-29.
 
 - [ ] **Step 3: Verify the dossier cards render**
 

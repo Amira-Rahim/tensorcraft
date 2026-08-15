@@ -7,7 +7,7 @@ export type { ColorScheme } from "@tensorcraft/shared";
 
 // ---------------------------------------------------------------------------
 // packages/ui components (CodeBlock, Exercise, SceneCanvas, ...) can't import
-// apps/web's WorldProvider — that would create a reverse dependency from the
+// apps/web's WorldProvider - that would create a reverse dependency from the
 // shared component library onto the app. Instead they observe the DOM: the
 // app-side provider (apps/web/app/components/world-provider.tsx) is the only
 // writer of `document.documentElement.dataset.scheme`, and this hook is a
@@ -28,7 +28,7 @@ function notifyListeners() {
 
 function ensureObserver() {
   // First subscriber creates the observer. Guarded for SSR/module-eval
-  // safety — this only ever runs from `subscribe`, which React only calls
+  // safety - this only ever runs from `subscribe`, which React only calls
   // client-side (after mount), but the guard costs nothing and keeps this
   // function safe to call from anywhere.
   if (observer || typeof document === "undefined") return;
@@ -55,7 +55,7 @@ function subscribe(listener: () => void): () => void {
   };
 }
 
-// Reads straight off the live DOM attribute — no allocation, primitive
+// Reads straight off the live DOM attribute - no allocation, primitive
 // return, safe to call every render (required for useSyncExternalStore:
 // a snapshot that allocates a new value each call looks like a change on
 // every render and loops).

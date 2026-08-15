@@ -6,7 +6,7 @@ import { highlight } from "./orbit-canvas";
 
    - Pure time parameterization: every position is a function of t only.
      `hot` (the eased 0..1 hover amount) may touch alpha, lineWidth and
-     gradient stops — never geometry — so hover flips can't teleport the
+     gradient stops - never geometry - so hover flips can't teleport the
      scene (enforced by world-scenes.test.ts, same as drawOrbit's test).
    - Deterministic hash() randomness, stable across frames, so the
      reduced-motion static frame matches the animated one.
@@ -15,14 +15,14 @@ import { highlight } from "./orbit-canvas";
      rather than an empty warm-up frame.
    - Two rendering languages, one geometry (scheme independence locked by
      world-scenes.test.ts, same shared recorder as drawOrbit's):
-     dark — additive blending over the dark card, world hue lifted toward
+     dark - additive blending over the dark card, world hue lifted toward
      white for highlights; the light-on-darkness language of Deep Orbit.
-     light ("ink") — marks laid on paper: multiply compositing pools
+     light ("ink") - marks laid on paper: multiply compositing pools
      overlaps darker like wet ink, highlight() deepens the hue toward
      near-black instead of lifting it, and literal alphas scale up ~1.8×
      (clamped ≤0.9) because tinted marks on paper need more body than
      glows on black. Large soft fields (the nebula washes, Neon's scan
-     beam, Nova's bloom) do NOT multiply the raw hue — they use
+     beam, Nova's bloom) do NOT multiply the raw hue - they use
      paper-lifted wash tints drawn source-over, per the empirical
      grey-storm-cloud lesson recorded in orbit-canvas.tsx.
 
@@ -30,7 +30,7 @@ import { highlight } from "./orbit-canvas";
    layer (detection boxes, attention arcs, formed figure, node pings) so
    the card visibly "comes alive" under the cursor. */
 
-// GLSL-style fract(sin·k) hash — see orbit-canvas.tsx for why not
+// GLSL-style fract(sin·k) hash - see orbit-canvas.tsx for why not
 // Math.random(): the static reduced-motion frame must match frame N.
 const hash = (n: number): number => {
   const s = Math.sin(n * 12.9898) * 43758.5453;
@@ -39,10 +39,10 @@ const hash = (n: number): number => {
 
 const fract = (x: number): number => x - Math.floor(x);
 
-/** Base hue lerped `k` toward white — the "thinned ink" wash tint ink mode
+/** Base hue lerped `k` toward white - the "thinned ink" wash tint ink mode
     uses for large soft fields. Multiplying a raw mid-value hue over a big
     area squares it toward a desaturated grey cloud (found empirically via
-    pixel probes in Task 9 — see orbit-canvas.tsx's wash-tint notes), so
+    pixel probes in Task 9 - see orbit-canvas.tsx's wash-tint notes), so
     soft fields start near paper value and glaze source-over instead. */
 const wash = (
   [r, g, b]: [number, number, number],
@@ -53,13 +53,13 @@ const wash = (
   Math.round(b + (255 - b) * k),
 ];
 
-/* ── Neon Protocol — Real-Time Computer Vision ──────────────────────
+/* ── Neon Protocol - Real-Time Computer Vision ──────────────────────
    "See the city through the eyes of AI." A night skyline watched by a
    vision HUD: a scan beam sweeps the card and corner-bracket detection
    boxes lock onto drifting objects in its wake, fading until the next
    pass. Hover turns the ghost-faint HUD fully on.
 
-   Ink mode: a blueprint city survey — skyline strips print as silhouette
+   Ink mode: a blueprint city survey - skyline strips print as silhouette
    blocks, window twinkles become dark specks, the beam becomes a
    deepening band glazed across the paper, and the brackets/confidence
    bars read as surveyor's annotations (crisper on paper than on night). */
@@ -77,7 +77,7 @@ export function drawNeonProtocol(
   const [hr, hg, hb] = highlight(rgb, scheme);
   const ink = scheme === "light";
   // Ink marks on paper need more body than glows on black; dark alphas
-  // pass through untouched (see orbit-canvas.tsx's scaleA note — a
+  // pass through untouched (see orbit-canvas.tsx's scaleA note - a
   // universal clamp regressed dark hover once already).
   const A = ink ? 1.8 : 1;
   const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
@@ -136,7 +136,7 @@ export function drawNeonProtocol(
   // ── Scan beam ── one sweep every 6s across an extended cycle so it
   // fully exits before re-entering. Phase-shifted (+0.7) so the t=0
   // static frame catches the beam mid-card with locks in its wake.
-  // Ink: the beam is a LARGE SOFT FIELD — multiplying it (raw or washed)
+  // Ink: the beam is a LARGE SOFT FIELD - multiplying it (raw or washed)
   // over the nebula + skyline pools to grey mush, so it flips to a
   // source-over glaze: a translucent deepening band (mid wash body, deep
   // ink leading edge) sweeping the paper like a scanner shadow.
@@ -189,7 +189,7 @@ export function drawNeonProtocol(
     // ghost-faint. Both reach 1.0 at full hover.
     const a = lock * flicker * (ink ? 0.3 + 0.7 * hot : 0.2 + 0.8 * hot);
 
-    // Corner brackets. Ink: deep-ink strokes — HUD → blueprint annotation.
+    // Corner brackets. Ink: deep-ink strokes - HUD → blueprint annotation.
     const arm = s * 0.32;
     ctx.strokeStyle = `rgba(${hr},${hg},${hb},${scaleA(a)})`;
     ctx.lineWidth = 1 + hot;
@@ -206,7 +206,7 @@ export function drawNeonProtocol(
       ctx.stroke();
     }
 
-    // Centroid dot + soft glow (glow damped in ink — a soft gradient at
+    // Centroid dot + soft glow (glow damped in ink - a soft gradient at
     // dark strength multiplies into a smudge, same as orbit's particle
     // glows; a whisper of ink bleed is all the mark needs).
     ctx.beginPath();
@@ -218,7 +218,7 @@ export function drawNeonProtocol(
     // construction (lock ≤1 × flicker ≤1 × a hover term ≤1), and the
     // 0.08/0.22 factor here is a per-scene damping ratio on that bounded
     // value (glow vs. dark), not a base alpha that needs the ink ×A scale
-    // to gain body — so scaleA(a) * (ink ? 0.08 : 0.22) would double-count
+    // to gain body - so scaleA(a) * (ink ? 0.08 : 0.22) would double-count
     // the ink boost this mark was screenshot-tuned without.
     glow.addColorStop(0, `rgba(${r},${g},${b},${a * (ink ? 0.08 : 0.22)})`);
     glow.addColorStop(1, "rgba(0,0,0,0)");
@@ -247,13 +247,13 @@ export function drawNeonProtocol(
   ctx.restore();
 }
 
-/* ── Signal Ward — NLP & Text Intelligence ──────────────────────────
+/* ── Signal Ward - NLP & Text Intelligence ──────────────────────────
    "Decode language. Save lives." Redacted-looking token rows stream
    past while attention arcs link a query token to its keys across rows,
    transformer-style; a faint EKG baseline keeps the ward on life
    support underneath. Hover lights the attention pattern up.
 
-   Ink mode: the redaction metaphor turns literal — a censored dossier.
+   Ink mode: the redaction metaphor turns literal - a censored dossier.
    Token rows become visible redaction bars on paper (extra alpha body
    beyond the generic ink scale), attention arcs and the EKG trace are
    ink annotations threaded between the bars. */
@@ -273,7 +273,7 @@ export function drawSignalWard(
   const A = ink ? 1.8 : 1;
   const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
   // Redaction bars want more body than ×A gives their faint dark-mode
-  // alphas — a censor's marker, not a watermark. Same clamp.
+  // alphas - a censor's marker, not a watermark. Same clamp.
   const scaleBar = (x: number): number =>
     ink ? Math.min(0.9, x * A * 1.4) : x;
   const [wr, wg, wb] = wash(rgb, 0.55);
@@ -380,14 +380,14 @@ export function drawSignalWard(
   ctx.restore();
 }
 
-/* ── Nova Canvas — Multimodal & Generative AI ───────────────────────
+/* ── Nova Canvas - Multimodal & Generative AI ───────────────────────
    "Where AI learns to imagine." A diffusion loop: scattered noise
    particles converge into a five-petal nova bloom, hold it, then
    dissolve back to noise, forever. Per-particle stagger makes the
    convergence read as denoising rather than a rigid tween. The cycle
    is phase-shifted so t=0 (the reduced-motion frame) is fully formed.
 
-   Ink mode: an engraving — the noise is a stipple field that condenses
+   Ink mode: an engraving - the noise is a stipple field that condenses
    into an inked rose (the e-lerp toward highlight() runs hue → deep ink
    with no extra branch), under a soft terracotta glaze where the bloom
    swells. */
@@ -417,7 +417,7 @@ export function drawNovaCanvas(
   const p = fract((t + P / 2) / P); // +P/2 → formed at t=0
   const m = 0.5 - 0.5 * Math.cos(2 * Math.PI * p); // 0 noise … 1 formed
 
-  // Bloom swells with formation. Ink: a LARGE SOFT FIELD — glazed with
+  // Bloom swells with formation. Ink: a LARGE SOFT FIELD - glazed with
   // wash tints (deeper centre, pale mid) source-over, never raw multiply.
   const neb = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * (1.1 + 0.5 * m));
   if (ink) {
@@ -467,7 +467,7 @@ export function drawNovaCanvas(
     const a =
       (0.12 + 0.3 * hash(i * 17 + 8)) * (0.55 + 0.45 * e) * (1 + 1.1 * hot);
     // Colour rides formation: noise in world hue, figure toward the scheme
-    // highlight — hot-white in dark, deep ink in light (highlight()
+    // highlight - hot-white in dark, deep ink in light (highlight()
     // already flipped the lerp target, no branch needed).
     const pr = Math.round(r + (hr - r) * e);
     const pg = Math.round(g + (hg - g) * e);
@@ -478,7 +478,7 @@ export function drawNovaCanvas(
     ctx.fill();
     if (size > 1.6) {
       // Halo disc: damped ×0.08 in ink (harder than orbit's ×0.16 gradient
-      // lesson — this halo is a FLAT disc, so on paper anything stronger
+      // lesson - this halo is a FLAT disc, so on paper anything stronger
       // prints a visible hard-edged ring instead of a soft ink bleed;
       // screenshot-tuned).
       ctx.beginPath();
@@ -489,7 +489,7 @@ export function drawNovaCanvas(
   }
 
   // Once mostly formed, trace the rose outline so the figure reads even
-  // between particles — the "finished render" emerging from the noise.
+  // between particles - the "finished render" emerging from the noise.
   if (m > 0.65) {
     const oa = ((m - 0.65) / 0.35) * (0.1 + 0.4 * hot);
     ctx.strokeStyle = `rgba(${hr},${hg},${hb},${scaleA(oa)})`;
@@ -517,13 +517,13 @@ export function drawNovaCanvas(
   ctx.restore();
 }
 
-/* ── Terra Grid — Edge AI & Production ML ───────────────────────────
+/* ── Terra Grid - Edge AI & Production ML ───────────────────────────
    "Where models meet the real world." A perspective ground grid rolls
    toward the viewer under a ridgeline horizon while edge nodes ping
-   expanding rings and packets shuttle between them — a deployment mesh
+   expanding rings and packets shuttle between them - a deployment mesh
    breathing in the field. Hover powers the whole grid up.
 
-   Ink mode: the natural blueprint — a drafting table. Grid and ridgeline
+   Ink mode: the natural blueprint - a drafting table. Grid and ridgeline
    become drafting lines, node pings surveyor's marks with ranging rings,
    packets ink dots walking the survey lines; a pale ochre wash grounds
    the sheet. */
@@ -543,7 +543,7 @@ export function drawTerraGrid(
   const A = ink ? 1.8 : 1;
   const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
   // Drafting lines want more body than the generic ink scale gives the
-  // grid's faint dark-mode alphas — a blueprint's linework is its whole
+  // grid's faint dark-mode alphas - a blueprint's linework is its whole
   // voice (screenshot-tuned: at ×A the sheet read washed-out). Same clamp.
   const scaleLine = (x: number): number =>
     ink ? Math.min(0.9, x * A * 1.4) : x;
@@ -607,7 +607,7 @@ export function drawTerraGrid(
 
   // ── Edge nodes ── fixed field positions; each pings an expanding ring
   // on its own hashed schedule. The mesh's heartbeat. Ink: surveyor's
-  // marks — deep-ink dots with ranging rings scribed around them.
+  // marks - deep-ink dots with ranging rings scribed around them.
   const NODES = 5;
   const nodeX = (i: number) => w * (0.12 + 0.76 * hash(i * 19 + 2));
   const nodeY = (i: number) => yH + (h - yH) * (0.2 + 0.62 * hash(i * 23 + 4));

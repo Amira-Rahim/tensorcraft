@@ -3,7 +3,7 @@
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
 > The other 4 worlds appear as "coming soon" cards with waitlist forms. The
 > bundled pricing tiers described below (2-world / 3-world / all-five) are
-> **unavailable at V1** — only the single-world $59 SKU is purchasable.
+> **unavailable at V1** - only the single-world $59 SKU is purchasable.
 > Activate the bundle tiers when additional worlds ship. Authoritative spec:
 > [`launch-scope.md`](./launch-scope.md). Treat any "five worlds," "275
 > lessons," or "Discord community" claims below as **post-V1 roadmap**, not
@@ -11,11 +11,11 @@
 
 ## Executive Summary
 
-Tensorcraft is an interactive machine learning education platform built specifically for frontend engineers. Unlike traditional ML courses that assume Python fluency and data science backgrounds, Tensorcraft meets developers where they are — in the browser, with JavaScript, using concepts they already understand from React, Vue, and Angular development.
+Tensorcraft is an interactive machine learning education platform built specifically for frontend engineers. Unlike traditional ML courses that assume Python fluency and data science backgrounds, Tensorcraft meets developers where they are - in the browser, with JavaScript, using concepts they already understand from React, Vue, and Angular development.
 
 The platform's core differentiator is its library of 50+ FE-to-ML concept bridges: structured explanations that map familiar frontend patterns (component state, reactive data flow, event propagation, virtual DOM diffing) directly onto ML concepts (model weights, gradient descent, backpropagation, optimization). This approach eliminates the "blank slate" problem that causes most frontend developers to abandon ML learning within the first week.
 
-Tensorcraft is delivered as five story-driven worlds, each with a distinct narrative, visual identity, and character cast. All courses run entirely in the browser — no Python environment, no Jupyter notebooks, no conda installs. Learners purchase individual worlds at $59 each (not a subscription), with Module 1 free across all worlds to reduce friction.
+Tensorcraft is delivered as five story-driven worlds, each with a distinct narrative, visual identity, and character cast. All courses run entirely in the browser - no Python environment, no Jupyter notebooks, no conda installs. Learners purchase individual worlds at $59 each (not a subscription), with Module 1 free across all worlds to reduce friction.
 
 This marketing plan outlines the strategy for taking Tensorcraft from launch through full scale, targeting a community of 10,000 active learners and $500K in revenue within the first 18 months.
 
@@ -63,7 +63,7 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 
 ## Unique Value Proposition
 
-**For frontend engineers who want to understand machine learning deeply enough to evaluate, debug, and architect ML-powered features, Tensorcraft is the only interactive education platform that translates ML concepts into frontend language — using 50+ concept bridges that map React state to model weights, component lifecycles to training loops, and middleware chains to neural network layers — starting from the tools and mental models you already know.**
+**For frontend engineers who want to understand machine learning deeply enough to evaluate, debug, and architect ML-powered features, Tensorcraft is the only interactive education platform that translates ML concepts into frontend language - using 50+ concept bridges that map React state to model weights, component lifecycles to training loops, and middleware chains to neural network layers - starting from the tools and mental models you already know.**
 
 ### Key Differentiators
 
@@ -71,7 +71,7 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 2. **Browser-native:** Zero setup. No Python, no Jupyter, no terminal. Open the URL and start learning. Exercises run in Sandpack.
 3. **Story-driven worlds:** Each course has characters, narrative arcs, and a distinct visual identity. Learning feels like playing a game, not watching a lecture.
 4. **Per-world pricing:** Pay once, own forever. No subscription fatigue. No "cancel before the trial ends" anxiety.
-5. **Dark brutalist aesthetic:** Tensorcraft looks like nothing else in the education space. The brutalist terminal visual identity — sharp edges, offset shadows, monospace-first — resonates with developers and is inherently shareable.
+5. **Dark brutalist aesthetic:** Tensorcraft looks like nothing else in the education space. The brutalist terminal visual identity - sharp edges, offset shadows, monospace-first - resonates with developers and is inherently shareable.
 6. **Free Module 1:** Every world offers its first module free. Learners can experience the full quality before paying.
 
 ---
@@ -105,7 +105,7 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 ### Pricing Psychology
 
 - The $59 single-world price anchors against $99 for two, making the bundle feel like a deal.
-- Free Module 1 eliminates purchase anxiety — learners already know what they're getting before paying $59.
+- Free Module 1 eliminates purchase anxiety - learners already know what they're getting before paying $59.
 - Team pricing (post-V1.0) will be positioned as "all worlds included" to increase perceived value.
 - No subscription means no churn problem. Revenue is transactional but predictable via launch cycles.
 
@@ -118,7 +118,7 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 - **Month 1-2:** Core platform development. Landing page live. Email capture begins.
 - **Month 3-4:** Content production for Deep Orbit Modules 1-3. Beta tester recruitment.
 - **Month 5:** Closed beta with 50-100 testers. Collect feedback, fix issues.
-- **Month 6 (V0.5):** Public launch — Deep Orbit at $59. Module 1 free preview.
+- **Month 6 (V0.5):** Public launch - Deep Orbit at $59. Module 1 free preview.
 
 ### Phase 2: Completion (Months 7-10)
 
@@ -153,7 +153,7 @@ Generate hundreds of indexable pages from structured data patterns. Each templat
 | World Previews | `/worlds/[world]/preview/[module]` | 150-500 | "[world] module [N] preview", "tensorcraft [world] walkthrough" |
 | **Total** | | **600-1,280+** | |
 
-**Critical success factor:** Every programmatic page must contain genuine, useful content — not thin keyword-stuffed templates. Google's helpful content update penalizes low-value programmatic pages. Each page should answer a real question a frontend developer would ask. Minimum 300 words of unique, hand-reviewed content per page. Pages are generated from a structured content database but individually quality-checked before indexing.
+**Critical success factor:** Every programmatic page must contain genuine, useful content - not thin keyword-stuffed templates. Google's helpful content update penalizes low-value programmatic pages. Each page should answer a real question a frontend developer would ask. Minimum 300 words of unique, hand-reviewed content per page. Pages are generated from a structured content database but individually quality-checked before indexing.
 
 ## 1.2 Topical Authority
 
@@ -161,7 +161,7 @@ Build complete topic clusters to establish Tensorcraft as the authoritative reso
 
 | Pillar | Cluster Pages | Target |
 |--------|--------------|--------|
-| ML Fundamentals for JS Devs | 15-20 articles covering neural networks, loss functions, optimizers, activation functions — all explained with JS analogies | Rank #1 for "machine learning JavaScript" cluster |
+| ML Fundamentals for JS Devs | 15-20 articles covering neural networks, loss functions, optimizers, activation functions - all explained with JS analogies | Rank #1 for "machine learning JavaScript" cluster |
 | TensorFlow.js Ecosystem | 12-18 tutorials on TF.js APIs, model loading, training in browser, WebGL backend, WASM backend | Rank top 3 for all "TensorFlow.js [topic]" queries |
 | FE-to-ML Bridges | 50+ individual bridge pages, each mapping one FE concept to one ML concept with code examples | Own the entire "ML for React/Vue/Angular developers" space |
 | Browser-Based ML | 10-15 articles on WebGPU, Web Workers for training, IndexedDB model caching, inference optimization | Rank for "machine learning in the browser" and related terms |
@@ -190,7 +190,7 @@ Implement structured data across all page types to enhance search appearance and
 
 | Concern | Strategy |
 |---------|----------|
-| Rendering | SSG for all public content pages (bridges, glossary, blog). ISR with 1-hour revalidation for dynamic pages (user counts, testimonials — **testimonials descoped until real testimonials are available**). SSR only for authenticated dashboard. |
+| Rendering | SSG for all public content pages (bridges, glossary, blog). ISR with 1-hour revalidation for dynamic pages (user counts, testimonials - **testimonials descoped until real testimonials are available**). SSR only for authenticated dashboard. |
 | Sitemap | Auto-generated `sitemap.xml` via `next-sitemap`. Separate sitemaps for blog, bridges, glossary, worlds. Submit to Google Search Console and Bing Webmaster Tools. |
 | Core Web Vitals | LCP < 2.5s (preload hero images, font-display: swap). CLS < 0.1 (explicit dimensions on all images, skeleton loaders). INP < 200ms (defer non-critical JS, use `React.lazy` for below-fold components). |
 | Crawl Budget | `robots.txt` blocks `/dashboard`, `/api`, `/admin`. Canonical tags on all pages. `noindex` on paginated archive pages beyond page 3. |
@@ -238,7 +238,7 @@ Roll out across platforms in a deliberate sequence to maximize compounding momen
 ## 2.2 ProductHunt Strategy
 
 - **Timing:** Launch on Tuesday at 12:01 AM PT. Tuesday/Wednesday have highest engagement. Avoid Mondays (high competition from funded startups) and Fridays (low traffic).
-- **Framing:** Position as "The ML course that speaks JavaScript" — not another education platform, but a new category. Tagline: "50+ concept bridges that translate machine learning into frontend language."
+- **Framing:** Position as "The ML course that speaks JavaScript" - not another education platform, but a new category. Tagline: "50+ concept bridges that translate machine learning into frontend language."
 - **Maker comment:** Post immediately after launch. Include: the personal story of why you built this (frontend dev frustrated by Python-first ML courses), a 2-minute demo GIF showing a bridge in action, a link to free Module 1, and a genuine ask for feedback.
 - **Expected results:** Top 5 Product of the Day = 1,000-3,000 website visits, 200-500 signups, 30-80 paid conversions. Top 3 = 2x those numbers.
 - **Preparation checklist:**
@@ -250,13 +250,13 @@ Roll out across platforms in a deliberate sequence to maximize compounding momen
 
 ## 2.3 Hacker News Strategy
 
-- **Format:** Use "Show HN: Tensorcraft — Interactive ML for Frontend Engineers (browser-based, no Python)" as the title. Keep the URL pointing to the product, not a blog post. HN values being able to see the thing immediately.
+- **Format:** Use "Show HN: Tensorcraft - Interactive ML for Frontend Engineers (browser-based, no Python)" as the title. Keep the URL pointing to the product, not a blog post. HN values being able to see the thing immediately.
 - **Timing:** Post between 8-9 AM ET on a weekday (Tuesday-Thursday). This catches the US East Coast morning crowd and gives European voters time to engage before it falls off.
 - **Rules of engagement:**
   - Do NOT ask for upvotes. HN detects and penalizes voting rings.
   - Be in the comments within 5 minutes of posting. Answer every question honestly and thoroughly.
   - If someone criticizes the approach, engage respectfully. HN rewards thoughtful debate.
-  - Share technical details freely — HN loves implementation details (how you built the Sandpack integration, how bridges are structured, performance optimizations).
+  - Share technical details freely - HN loves implementation details (how you built the Sandpack integration, how bridges are structured, performance optimizations).
   - Do NOT be defensive about the "no Python" angle. Acknowledge Python's role in ML, explain why browser-based JS serves a different audience.
 - **Expected results:** Front page (100+ points) = 5,000-15,000 visits over 48 hours, 500-1,500 signups. Top 10 = 2-3x those numbers. HN traffic converts at 2-4% to free signups.
 
@@ -323,8 +323,8 @@ All paid traffic flows through a single, optimized funnel:
 
 - **Visual consistency:** All ads use Tensorcraft's dark brutalist aesthetic. Ads should look like the product, not like ads.
 - **Lead with the bridge:** The highest-performing creative concept is the FE-to-ML bridge. "You already know 70% of ML. You just don't know it yet." Show a side-by-side of React code and neural network code with visual connections.
-- **Social proof variants:** > **Status: Descoped** — Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Once testimonials are collected, run ad variants featuring learner quotes. "I learned more about ML in 2 hours on Tensorcraft than in 2 weeks on Coursera" performs better than feature-based copy.~~
-- **Video ads (Twitter, YouTube):** 15-30 second clips showing the bridge animation. Dark background, brutalist terminal UI, code morphing from React to ML. No voiceover needed — text overlay + music.
+- **Social proof variants:** > **Status: Descoped** - Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Once testimonials are collected, run ad variants featuring learner quotes. "I learned more about ML in 2 hours on Tensorcraft than in 2 weeks on Coursera" performs better than feature-based copy.~~
+- **Video ads (Twitter, YouTube):** 15-30 second clips showing the bridge animation. Dark background, brutalist terminal UI, code morphing from React to ML. No voiceover needed - text overlay + music.
 - **A/B test relentlessly:** Test 3-5 headline variants per campaign. Kill underperformers within 48 hours. Scale winners to 2x budget before testing new variants.
 
 ---
@@ -348,35 +348,35 @@ Weekly newsletter sent every Tuesday at 10 AM ET. "The Bridge" newsletter covers
 
 - **Structure:** Bridge of the week (60%), community spotlight (15%), product update (10%), curated links (15%)
 - **Growth target:** 500 subscribers by month 3, 2,000 by month 6, 5,000 by month 12
-- **Monetization:** Free tier for all subscribers. No paid tier — the newsletter drives course sales, not subscription revenue. Sponsorship slots available after 2,000 subscribers.
+- **Monetization:** Free tier for all subscribers. No paid tier - the newsletter drives course sales, not subscription revenue. Sponsorship slots available after 2,000 subscribers.
 - **Tone:** Conversational, technical but approachable. Written in first person. Every issue should teach something useful even if the reader never buys a course.
 
 ## 4.3 Twitter/X
 
 5 posts per week, distributed as follows:
 
-- **Monday:** Bridge insight tweet — a single, punchy mapping between an FE concept and an ML concept. Optimized for bookmarks and quote-tweets.
-- **Tuesday:** Tutorial thread — 5-10 tweet thread walking through a concept or mini-build. Ends with soft CTA to free Module 1.
-- **Wednesday:** Community engagement — reply to trending FE/ML discussions, quote-tweet interesting projects, amplify learner wins.
-- **Thursday:** Behind-the-scenes — development update, design decision, content creation process. Build-in-public angle.
-- **Friday:** Curated content — share and comment on the best FE/ML article, tool, or resource you found that week. Give credit generously.
+- **Monday:** Bridge insight tweet - a single, punchy mapping between an FE concept and an ML concept. Optimized for bookmarks and quote-tweets.
+- **Tuesday:** Tutorial thread - 5-10 tweet thread walking through a concept or mini-build. Ends with soft CTA to free Module 1.
+- **Wednesday:** Community engagement - reply to trending FE/ML discussions, quote-tweet interesting projects, amplify learner wins.
+- **Thursday:** Behind-the-scenes - development update, design decision, content creation process. Build-in-public angle.
+- **Friday:** Curated content - share and comment on the best FE/ML article, tool, or resource you found that week. Give credit generously.
 
 ## 4.4 Interactive Demos
 
-Build 3-5 standalone interactive demos that showcase the bridge concept. These are not gated — they live at `tensorcraft.app/demos/[name]` and are freely accessible.
+Build 3-5 standalone interactive demos that showcase the bridge concept. These are not gated - they live at `tensorcraft.app/demos/[name]` and are freely accessible.
 
-- **Demo 1:** "React State vs Neural Network Weights" — side-by-side interactive showing how useState and model weights both store and update values
-- **Demo 2:** "Virtual DOM Diffing vs Gradient Descent" — animated visualization showing the parallel optimization strategies
-- **Demo 3:** "Event Propagation vs Backpropagation" — interactive diagram where clicking triggers either DOM event bubbling or neural network backpropagation
+- **Demo 1:** "React State vs Neural Network Weights" - side-by-side interactive showing how useState and model weights both store and update values
+- **Demo 2:** "Virtual DOM Diffing vs Gradient Descent" - animated visualization showing the parallel optimization strategies
+- **Demo 3:** "Event Propagation vs Backpropagation" - interactive diagram where clicking triggers either DOM event bubbling or neural network backpropagation
 - **Purpose:** These are the top-of-funnel viral assets. Shareable on social media, embeddable in blog posts, linkable from Hacker News. Each demo ends with a tasteful CTA to explore more bridges in Tensorcraft.
 
 ## 4.5 Conference Talks
 
 Target 4-6 conference talks in the first 12 months. Talk topics rotate between:
 
-- **"The Bridge Model: Teaching ML Through Frontend Analogies"** — pedagogical talk for education-focused conferences
-- **"Machine Learning in the Browser: A Practical Guide for Frontend Teams"** — technical talk for JS/frontend conferences
-- **"From React Developer to ML-Enhanced Engineer: A Bridge, Not a Leap"** — career-focused talk for general developer conferences
+- **"The Bridge Model: Teaching ML Through Frontend Analogies"** - pedagogical talk for education-focused conferences
+- **"Machine Learning in the Browser: A Practical Guide for Frontend Teams"** - technical talk for JS/frontend conferences
+- **"From React Developer to ML-Enhanced Engineer: A Bridge, Not a Leap"** - career-focused talk for general developer conferences
 
 Conference CFP submissions begin in month 3. Target conferences: React Summit, JSNation, CityJS, Frontend Love, All Things Open, THAT Conference, RenderATL, and local meetups.
 
@@ -385,21 +385,21 @@ Conference CFP submissions begin in month 3. Target conferences: React Summit, J
 Target 2 podcast appearances per month starting in month 4. Prepare a concise "Tensorcraft story" (3 minutes) and 5-6 talking points about the bridge concept, browser-based ML, and frontend-to-ML career paths.
 
 **Target shows:**
-- Syntax.fm (Wes Bos & Scott Tolinski — frontend audience, 50K+ listeners)
-- JS Party (Changelog — JavaScript community, 20K+ listeners)
-- PodRocket (LogRocket — frontend engineering, 15K+ listeners)
+- Syntax.fm (Wes Bos & Scott Tolinski - frontend audience, 50K+ listeners)
+- JS Party (Changelog - JavaScript community, 20K+ listeners)
+- PodRocket (LogRocket - frontend engineering, 15K+ listeners)
 - The Changelog (broad developer audience, 30K+ listeners)
 - Frontend Happy Hour (frontend engineers, 10K+ listeners)
 - Practical AI (ML audience, introduce the frontend angle, 15K+ listeners)
-- Learn with Jason (Jason Lengstorf — live coding + interview format, 10K+ listeners)
+- Learn with Jason (Jason Lengstorf - live coding + interview format, 10K+ listeners)
 
 ## 4.7 Open Source
 
 Release three open-source packages that serve as permanent marketing assets:
 
-- **@tensorcraft/bridges** — The complete bridge database as a JSON/MDX package. MIT licensed. Any educator or content creator can use the bridges in their own work, with attribution. This spreads the Tensorcraft vocabulary ("bridge model", "FE-to-ML mapping") across the ecosystem.
-- **@tensorcraft/brutalist-ui** — The dark brutalist React component library used in Tensorcraft. Developers who use these components in their own projects become familiar with the Tensorcraft aesthetic.
-- **@tensorcraft/sandbox** — The Sandpack-based ML exercise runner. Other educators can build interactive ML exercises. Every exercise built with this package is indirect marketing for Tensorcraft.
+- **@tensorcraft/bridges** - The complete bridge database as a JSON/MDX package. MIT licensed. Any educator or content creator can use the bridges in their own work, with attribution. This spreads the Tensorcraft vocabulary ("bridge model", "FE-to-ML mapping") across the ecosystem.
+- **@tensorcraft/brutalist-ui** - The dark brutalist React component library used in Tensorcraft. Developers who use these components in their own projects become familiar with the Tensorcraft aesthetic.
+- **@tensorcraft/sandbox** - The Sandpack-based ML exercise runner. Other educators can build interactive ML exercises. Every exercise built with this package is indirect marketing for Tensorcraft.
 
 ## 4.8 Newsletter Sponsorships
 
@@ -415,7 +415,7 @@ Sponsor developer newsletters to reach frontend engineers at scale. Allocate $2,
 
 Create a library of shareable visual assets that illustrate the FE-to-ML bridge concept. These are designed for social media virality and blog embedding.
 
-- **Shareable graphics specs:** 1200x675px (Twitter/LinkedIn optimal), dark background (#181818), sage green accent (`#6BAA8A`) or world-specific color, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout showing FE concept on left and ML concept on right with bridge connector in the center. Brutalist styling: zero border-radius, offset shadows. Include Tensorcraft watermark (bottom-right, subtle). Export as PNG and WebP. Each graphic is a self-contained explanation — useful even without clicking through to the site.
+- **Shareable graphics specs:** 1200x675px (Twitter/LinkedIn optimal), dark background (#181818), sage green accent (`#6BAA8A`) or world-specific color, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout showing FE concept on left and ML concept on right with bridge connector in the center. Brutalist styling: zero border-radius, offset shadows. Include Tensorcraft watermark (bottom-right, subtle). Export as PNG and WebP. Each graphic is a self-contained explanation - useful even without clicking through to the site.
 - **Bridge discovery surface:** Bridges live as collectible cards on the dashboard (`bridge-collection.tsx`), surfaced in context of learner progress rather than as a standalone reference page. The standalone `/bridges` route was removed.
 - **Social calendar:** Publish one bridge graphic every day for 50 days as the "50 Days of Bridges" campaign. Schedule across Twitter/X, LinkedIn, and Instagram simultaneously. Each post includes the graphic and a 2-3 sentence caption explaining the bridge. Target: 50 days of consistent, highly shareable visual content that establishes Tensorcraft as the definitive source for FE-to-ML bridges.
 - **Blog integration:** Every blog post that discusses a bridge concept includes the corresponding bridge graphic as the hero image. Open Graph meta tags use the bridge graphic, ensuring the visual appears in social media shares. This creates a consistent visual language across all channels.
@@ -482,7 +482,7 @@ The waitlist page is the primary conversion asset during pre-launch. It lives at
 - **What you'll build section:** Interactive carousel showing 3-4 real project outcomes from Tensorcraft lessons. Each slide shows a browser screenshot of the completed project (sentiment analyzer, image classifier, recommendation engine) with a "Built with JavaScript. No Python required." caption.
 - **World previews section:** Five cards, one per world, showing the world name, key art, narrative hook, and character illustrations. Deep Orbit and Neon Protocol are highlighted as "coming first." Other three show "Coming 2026" with faded styling.
 - **FAQ section:** Expandable accordion with 6-8 questions: "Do I need to know Python?", "How is this different from Coursera/fast.ai?", "Is this for beginners?", "What will I be able to build?", "How much does it cost?", "When does it launch?", "Can I try it for free?", "Do you offer team pricing?"
-- **Social proof section:** > **Status: Descoped** — Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Grid of testimonials from beta testers and early reviewers. If pre-launch (no testimonials yet), use: logos of companies where beta testers work, a quote from the creator explaining the mission, and an "As seen on" row with dev.to, Hacker News, and Twitter/X logos once coverage is earned.~~
+- **Social proof section:** > **Status: Descoped** - Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Grid of testimonials from beta testers and early reviewers. If pre-launch (no testimonials yet), use: logos of companies where beta testers work, a quote from the creator explaining the mission, and an "As seen on" row with dev.to, Hacker News, and Twitter/X logos once coverage is earned.~~
 
 ## 5.2 Promotion Playbook
 
@@ -507,7 +507,7 @@ Post-waitlist-signup email sequence to keep subscribers engaged until launch.
 | 6 | Day 30 | Behind the scenes: how we built Tensorcraft | Technical deep-dive on the platform (Next.js, Sandpack, TensorFlow.js, design system) | Build trust through transparency |
 | 7 | Day 45 | The bridge that surprised us most | Highlight an unexpected FE-to-ML bridge that beta testers loved, include their quotes. **Note: Testimonials/quotes descoped until real testimonials are available.** | Social proof + engagement |
 | 8 | Day 60 | Tensorcraft launch date announcement | Announce the launch date, full world pricing ($59), and what's included | Create anticipation |
-| 9 | Day 75 | 1 week until launch: here's your plan | Pre-launch checklist for the reader (block 2 hours, bookmark the URL, prepare your dev environment — just kidding, it's browser-based) | Build urgency with humor |
+| 9 | Day 75 | 1 week until launch: here's your plan | Pre-launch checklist for the reader (block 2 hours, bookmark the URL, prepare your dev environment - just kidding, it's browser-based) | Build urgency with humor |
 | 10 | Launch Day | Tensorcraft is LIVE. Your bridge awaits. | Launch announcement, launch pricing ($59), direct link to free Module 1, 48-hour launch discount | Convert to signup/purchase |
 | 11 | Launch +7 | How the first week went (honest numbers) | Transparent update on launch results, learner count, first testimonials, what's next. **Note: Testimonials descoped until real testimonials are available.** | Build community through transparency |
 
@@ -524,7 +524,7 @@ Conversion math:
 - 8-12% free-to-paid conversion over 30 days = 200-500 paid users in first month
 - At $59 per world: $11,800-$29,500 launch month revenue
 
-The waitlist is not just a launch asset — it's the foundation of the email nurture engine that drives long-term revenue. Every subscriber who doesn't convert at launch enters the ongoing newsletter funnel.
+The waitlist is not just a launch asset - it's the foundation of the email nurture engine that drives long-term revenue. Every subscriber who doesn't convert at launch enters the ongoing newsletter funnel.
 
 ---
 
@@ -567,7 +567,7 @@ After the first 30 days, settle into a sustainable weekly rhythm:
 
 # PART 7: BRAND GUIDELINES
 
-The Tensorcraft brand is **brutalist terminal** — sharp, technical, anti-hype. It deliberately looks nothing like the dominant ed-tech aesthetics (gradient-heavy SaaS landing pages, pastel bootcamp marketing, DeFi-neon product pages). These guidelines apply to every customer-facing surface: the product UI, marketing site, blog, social assets, ads, conference slides, and merch.
+The Tensorcraft brand is **brutalist terminal** - sharp, technical, anti-hype. It deliberately looks nothing like the dominant ed-tech aesthetics (gradient-heavy SaaS landing pages, pastel bootcamp marketing, DeFi-neon product pages). These guidelines apply to every customer-facing surface: the product UI, marketing site, blog, social assets, ads, conference slides, and merch.
 
 ## 7.1 Visual Identity
 
@@ -576,24 +576,24 @@ The Tensorcraft brand is **brutalist terminal** — sharp, technical, anti-hype.
 - **No gradients.** Backgrounds are solid. Cards are solid. Buttons are solid.
 - **No glow effects.** The prior "neon" direction (glow halos, `--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) has been removed from the product and must not appear in marketing assets.
 - **Monospace-first for code, data, numbers, and accents.** Body prose is Inter, but anything that represents technical content or serves as an accent label uses JetBrains Mono.
-- **Comment-style section labels.** Uppercase, tracking-wider, muted color. Examples: `# skill_genome`, `// loss.hints`, `— 12wk`, `// why it matters`. These replace decorative section icons and are the visual signature of the brand.
+- **Comment-style section labels.** Uppercase, tracking-wider, muted color. Examples: `# skill_genome`, `// loss.hints`, ` - 12wk`, `// why it matters`. These replace decorative section icons and are the visual signature of the brand.
 
 ## 7.2 Typography
 
 - **Body:** Inter, regular weight, generous line-height. Used for prose, descriptive copy, and longer-form reading.
 - **Code, data, numbers, accent labels:** JetBrains Mono. Always. This includes pricing numbers on the marketing site, waitlist counts, stats in ads, and section headers in the brutalist "comment" style.
 - **Section headers:** Uppercase + `tracking-wider` in JetBrains Mono when used as accent/structural labels; Inter when used as prose headings.
-- **Maximum two font families per world** — Inter + JetBrains Mono is the global default; worlds do not introduce additional display faces.
+- **Maximum two font families per world** - Inter + JetBrains Mono is the global default; worlds do not introduce additional display faces.
 
 ## 7.3 Color
 
 - **Shared dark surface:** `#232323` is the primary surface color across all worlds. Background is `#181818`. Text is `#E0E0E0`. Muted is `#A0A0A0`. These are the platform-wide neutrals and should appear in every marketing asset.
 - **Per-world primary accents:**
-  - Deep Orbit — `#6BAA8A`
-  - Neon Protocol — `#4A90D9`
-  - Signal Ward — `#65C07D`
-  - Nova Canvas — `#D07070` (bumped from `#C06060` on 2026-04-20 to meet WCAG AA against `#232323`)
-  - Terra Grid — `#C49535`
+  - Deep Orbit - `#6BAA8A`
+  - Neon Protocol - `#4A90D9`
+  - Signal Ward - `#65C07D`
+  - Nova Canvas - `#D07070` (bumped from `#C06060` on 2026-04-20 to meet WCAG AA against `#232323`)
+  - Terra Grid - `#C49535`
 - **Contrast floor:** 4.5:1 for body text, 3:1 for large text. The Nova Canvas primary bump is a reminder: never ship a world color that fails AA against the shared surface.
 - **No gradient fills anywhere**, including on social-media graphics. Color transitions are always solid blocks.
 
@@ -601,7 +601,7 @@ The Tensorcraft brand is **brutalist terminal** — sharp, technical, anti-hype.
 
 - **Technical, honest, anti-hype.** We assume the reader is an engineer. We don't oversell outcomes. When we defer or cut something, we say so.
 - **Anti-marketing-speak.** No "unlock your potential," "revolutionize your career," "AI-powered everything." Write the way a senior engineer would write a thoughtful README.
-- **Brutalist mono labels for flavor.** Copy accents like `# skill_genome`, `// loss.hints`, `— 12wk`, `// why it matters` live in code-comment voice and carry the brand's visual signature into language.
+- **Brutalist mono labels for flavor.** Copy accents like `# skill_genome`, `// loss.hints`, ` - 12wk`, `// why it matters` live in code-comment voice and carry the brand's visual signature into language.
 - **First person when relevant.** The newsletter, blog, and waitlist emails are written in first person. The product UI is second person ("your skill genome," "your loss curve"). Neither ever uses corporate "we are thrilled to announce."
 
 ## 7.5 What Tensorcraft Is NOT Like
@@ -642,6 +642,6 @@ When in doubt: does it look like it was rendered by a terminal with a hard shado
 
 Tensorcraft's marketing strategy is built on a simple insight: frontend developers are an underserved audience in ML education, and the FE-to-ML bridge concept is a genuinely novel approach that provides organic viral potential. By leading with free, high-value content (bridge posts, free Module 1, open source components), we build trust and audience before asking for money.
 
-The per-world pricing model eliminates subscription fatigue and aligns incentives — we only get paid when we deliver a complete, valuable learning experience. The dark brutalist aesthetic makes Tensorcraft visually distinctive and inherently shareable on social media.
+The per-world pricing model eliminates subscription fatigue and aligns incentives - we only get paid when we deliver a complete, valuable learning experience. The dark brutalist aesthetic makes Tensorcraft visually distinctive and inherently shareable on social media.
 
 Success depends on consistent content production, authentic community engagement, and relentless focus on the core value proposition: you already know more about ML than you think, and Tensorcraft will show you why.

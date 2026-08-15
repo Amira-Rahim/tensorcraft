@@ -9,7 +9,7 @@
 -- ============================================================
 -- Migration 013 recreated skill_events as a partitioned table but carried over
 -- only the SELECT policy (013:65-68). `POST /api/skill-events/batch` writes via
--- getSupabaseServerClient(token), which passes the caller's JWT — so PostgREST
+-- getSupabaseServerClient(token), which passes the caller's JWT - so PostgREST
 -- resolves the role from that JWT and the insert runs as `authenticated` with
 -- RLS enforced. With no INSERT policy, every write is denied.
 --
@@ -46,7 +46,7 @@ create policy "Users can insert own skill events"
 --
 -- NOTE FOR THE OPERATOR: these are plain ADD CONSTRAINT, so they will FAIL
 -- LOUDLY if any existing row violates them. That failure is information, not
--- an error to work around — it means junk data is already present. Inspect
+-- an error to work around - it means junk data is already present. Inspect
 -- before forcing:
 --   select distinct theme_id from public.theme_progress;
 --   select max(length(module_id)), max(length(lesson_id)) from public.theme_progress;
@@ -77,13 +77,13 @@ alter table public.theme_progress
 -- 001:157-159 declares `with check (true)` on waitlist INSERT, reachable
 -- unauthenticated over PostgREST because the frontend inserts directly
 -- (lib/waitlist.ts:11-14). newsletter.ts then sends to every subscribed row.
--- So the live mailing list accepts arbitrary attacker-supplied addresses —
+-- So the live mailing list accepts arbitrary attacker-supplied addresses -
 -- a spam, deliverability and CAN-SPAM exposure.
 --
 -- The signup itself must stay anonymous, so this cannot be closed with an
 -- auth check. What it can do is bound the shape: a plausible email, sane
 -- lengths, and a canonical theme_id. Volume control (rate limiting or a
--- captcha) belongs at the app layer and remains open — see the audit register.
+-- captcha) belongs at the app layer and remains open - see the audit register.
 
 alter table public.waitlist
   drop constraint if exists chk_waitlist_email_shape;

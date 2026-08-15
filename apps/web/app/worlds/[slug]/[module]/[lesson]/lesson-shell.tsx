@@ -22,11 +22,11 @@ interface LessonShellProps {
  * "pane" is SINGLE-MOUNT by contract (fresh-eyes rerun §6 / R3-7): this slot
  * is the ONLY place the pane renders, at every width. The first fix for the
  * mobile double-mount hid this slot below lg while the caller mounted its
- * own copy behind a toggle — which was CSS-only: two live Sandpack editors
+ * own copy behind a toggle - which was CSS-only: two live Sandpack editors
  * still mounted at every viewport, racing one `tc-code-{slug}` key, showing
  * a stale buffer after a rotate across lg, and doubling CPU on the graded
  * path. Now the caller passes `paneOpenOnMobile` and the same single
- * instance toggles visibility — React keeps it mounted through the toggle,
+ * instance toggles visibility - React keeps it mounted through the toggle,
  * so editor state survives open/close and orientation changes.
  *
  * The chrome slot (progress bar, nav) renders above the grid when provided.

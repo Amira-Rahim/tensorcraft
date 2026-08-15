@@ -10,15 +10,15 @@
 
 **Hard rules for the executor:**
 - **NO git commits.** CLAUDE.md forbids committing on the user's behalf. This overrides this plan template's usual commit steps. Leave everything uncommitted.
-- **Do not touch** `docs/superpowers/plans/2026-08-15-pricing-curriculum-signal-lock.md`, `docs/superpowers/specs/2026-08-15-pricing-curriculum-signal-lock-design.md`, `packages/ui/src/effects/*` — dirty in the working tree from a parallel session.
-- **Do not edit anything under `docs/audits/`** — those are historical ledgers.
+- **Do not touch** `docs/superpowers/plans/2026-08-15-pricing-curriculum-signal-lock.md`, `docs/superpowers/specs/2026-08-15-pricing-curriculum-signal-lock-design.md`, `packages/ui/src/effects/*` - dirty in the working tree from a parallel session.
+- **Do not edit anything under `docs/audits/`** - those are historical ledgers.
 - **docs/writing-quality-rubric.md** governs any user-visible sentence you *reword* (pure deletions exempt). Read it before rewording copy.
 - **Visual baselines:** verify the rendered page is actually correct BEFORE regenerating any baseline (2026-08-15 Tailwind incident: baselines regenerated against a broken page certified the breakage).
 - No 404 redirects for removed URLs: repo precedent (blog post deletion 2026-08-14) is sitemap removal + natural 404, no `next.config` redirects.
 
 **Decision log (already made, do not relitigate):**
 - `DerivationDrawer` loses both `companionSlug` and `companionHref` props (zero users after the sweep; YAGNI). Drawers keep their inline derivation content.
-- The unregistered-speaker fallback (avatar-less "Instructor") in lesson rendering STAYS — it is defensive behavior, only its extras-flavored comments change.
+- The unregistered-speaker fallback (avatar-less "Instructor") in lesson rendering STAYS - it is defensive behavior, only its extras-flavored comments change.
 - `apps/api/src/__tests__/deploy-preflight.test.ts:74` "extras beyond the required set" is about surplus migrations, not /extras. Verify by reading, then leave it alone.
 
 ---
@@ -40,11 +40,11 @@ Expected: 13 matches (12 `companionSlug`, 1 `companionHref`) across these files:
 
 - [x] **Step 2: Remove the attributes only**
 
-In each file, edit e.g. `<DerivationDrawer summary="..." companionSlug="statistics-of-signals">` to `<DerivationDrawer summary="...">`. Touch nothing else in the MDX — drawer bodies keep their inline derivations.
+In each file, edit e.g. `<DerivationDrawer summary="..." companionSlug="statistics-of-signals">` to `<DerivationDrawer summary="...">`. Touch nothing else in the MDX - drawer bodies keep their inline derivations.
 
 - [x] **Step 2b (discovered during execution): Fix dangling prose references**
 
-The attribute grep missed prose. Six lessons referenced extras in sentences: four "the companion lesson builds/covers ..." clauses (activation-functions drawer, tensor-operations drawer trailer paragraph, anomaly-detection Binomial clause, ensemble-methods parenthetical) plus two direct mentions ("Dataset Bias lesson in the Ethics & Responsible AI extras" in evaluating-deep-scan, "math extras' Calculus of Neurons" in training-loop/04). All six fixed as clause/paragraph deletions under docs/writing-quality-rubric.md; "Binomial" dropped with its clause (sole mention, no glossary entry — rubric rule 3).
+The attribute grep missed prose. Six lessons referenced extras in sentences: four "the companion lesson builds/covers ..." clauses (activation-functions drawer, tensor-operations drawer trailer paragraph, anomaly-detection Binomial clause, ensemble-methods parenthetical) plus two direct mentions ("Dataset Bias lesson in the Ethics & Responsible AI extras" in evaluating-deep-scan, "math extras' Calculus of Neurons" in training-loop/04). All six fixed as clause/paragraph deletions under docs/writing-quality-rubric.md; "Binomial" dropped with its clause (sole mention, no glossary entry - rubric rule 3).
 
 - [x] **Step 3: Remove the props from the component**
 
@@ -107,7 +107,7 @@ Expected: PASS; footer snapshot diff shows only the removed link.
 Run: `rm -rf packages/content/content/extras && find packages/content/content -maxdepth 1 -type d`
 Expected: only `deep-orbit` plus coming-soon world dirs remain.
 
-- [x] **Step 2: Flip built-worlds.ts — with the single-dir glob guard**
+- [x] **Step 2: Flip built-worlds.ts - with the single-dir glob guard**
 
 Keep the existing export names exactly: `BUILT_WORLD_DIRS`, `BUILT_WORLD_GLOB` (consumed by `velite.config.ts:60` and re-exported at `index.ts:10`), `BUILT_STORY_WORLDS` (consumed by 5 test files + `index.ts:11`). Do not rename anything.
 
@@ -122,7 +122,7 @@ export const BUILT_WORLD_GLOB =
     : BUILT_WORLD_DIRS[0];
 ```
 
-`{deep-orbit}` alone would be matched as a LITERAL path by minimatch (no comma → no brace expansion) and velite would silently build zero lessons — the guard is mandatory. Keep `BUILT_STORY_WORLDS` exported (now equal to `BUILT_WORLD_DIRS`; simplify its `!== "extras"` filter, keep the name — consumers import it). Delete `EXTRAS_LESSON_COUNT` and the extras commentary (lines ~27-29, 43-51); note the removal date in the header comment.
+`{deep-orbit}` alone would be matched as a LITERAL path by minimatch (no comma → no brace expansion) and velite would silently build zero lessons - the guard is mandatory. Keep `BUILT_STORY_WORLDS` exported (now equal to `BUILT_WORLD_DIRS`; simplify its `!== "extras"` filter, keep the name - consumers import it). Delete `EXTRAS_LESSON_COUNT` and the extras commentary (lines ~27-29, 43-51); note the removal date in the header comment.
 
 - [x] **Step 3: Sweep the dependents**
 
@@ -130,7 +130,7 @@ export const BUILT_WORLD_GLOB =
 
 - [x] **Step 4: True up the exercise count pin**
 
-In `packages/shared/src/constants.ts`: `liveExercises: 88` → `65`, with a dated comment line (`// 88 -> 65 (2026-08-15): /extras removed (23 exercises went with it).`). `authoredFiveWorlds: 300` is extras-exclusive of extras already — unchanged.
+In `packages/shared/src/constants.ts`: `liveExercises: 88` → `65`, with a dated comment line (`// 88 -> 65 (2026-08-15): /extras removed (23 exercises went with it).`). `authoredFiveWorlds: 300` is extras-exclusive of extras already - unchanged.
 
 - [x] **Step 4b (discovered during execution): Gate B hint-count pin**
 
@@ -139,8 +139,8 @@ In `packages/shared/src/constants.ts`: `liveExercises: 88` → `65`, with a date
 - [x] **Step 5: Verify the whole content layer**
 
 Run: `pnpm --filter @tensorcraft/content build:content && pnpm test packages/content packages/shared`
-(`build:content` is the velite build — the plain `build` script is only `tsc` and proves nothing about the glob.)
-Expected: velite builds deep-orbit lessons only (56); all suites PASS including exercise-counts (65) and end-of-lesson. If velite reports 0 lessons, the glob guard from Step 2 is wrong — stop and fix.
+(`build:content` is the velite build - the plain `build` script is only `tsc` and proves nothing about the glob.)
+Expected: velite builds deep-orbit lessons only (56); all suites PASS including exercise-counts (65) and end-of-lesson. If velite reports 0 lessons, the glob guard from Step 2 is wrong - stop and fix.
 
 ### Task 4: Reword extras-flavored comments (behavior unchanged)
 
@@ -161,14 +161,14 @@ Expected: PASS.
 ### Task 5: Docs sweep
 
 **Files:**
-- Modify: `docs/roadmap.md:21` — free tier becomes "Module 1 (5 lessons)"
-- Modify: `docs/marketing-plan.md:443-462` and any other extras rows — retract "Verified complete on 2026-07-27"; add a dated note that /extras was removed 2026-08-15 and mark each row whose destination was an extras lesson as a reopened gap
-- Modify: `docs/product-plan.md:1157+` (§4.7 Curriculum Gap Modules) — dated note: built, then removed 2026-08-15 by owner decision
-- Modify: `docs/launch-scope.md:70` — velite collections row `{deep-orbit,extras}` → `deep-orbit`
-- Modify: `docs/superpowers/specs/2026-08-09-pricing-reevaluation-design.md` — the extras count-pin checklist: dated obsolescence note, don't rewrite history
-- Modify: `docs/superpowers/specs/2026-06-15-end-of-lesson-design.md`, `docs/superpowers/specs/2026-06-15-reading-experience-design.md` — both state "the only live, testable lesson surface today is deep-orbit + extras (77 lessons)" as current fact; same dated-obsolescence-note treatment
-- Modify: `docs/pre-launch-checklist.md`, `docs/launch-blockers.md`, `docs/v2-polish-backlog.md` — grep for extras, fix stale claims (v2-polish-backlog is superseded; a one-line note suffices)
-- Modify: `docs/post-launch-backlog.md` — remove/annotate the "public route for extras/*" item (~199-200) AND add the removal entry
+- Modify: `docs/roadmap.md:21` - free tier becomes "Module 1 (5 lessons)"
+- Modify: `docs/marketing-plan.md:443-462` and any other extras rows - retract "Verified complete on 2026-07-27"; add a dated note that /extras was removed 2026-08-15 and mark each row whose destination was an extras lesson as a reopened gap
+- Modify: `docs/product-plan.md:1157+` (§4.7 Curriculum Gap Modules) - dated note: built, then removed 2026-08-15 by owner decision
+- Modify: `docs/launch-scope.md:70` - velite collections row `{deep-orbit,extras}` → `deep-orbit`
+- Modify: `docs/superpowers/specs/2026-08-09-pricing-reevaluation-design.md` - the extras count-pin checklist: dated obsolescence note, don't rewrite history
+- Modify: `docs/superpowers/specs/2026-06-15-end-of-lesson-design.md`, `docs/superpowers/specs/2026-06-15-reading-experience-design.md` - both state "the only live, testable lesson surface today is deep-orbit + extras (77 lessons)" as current fact; same dated-obsolescence-note treatment
+- Modify: `docs/pre-launch-checklist.md`, `docs/launch-blockers.md`, `docs/v2-polish-backlog.md` - grep for extras, fix stale claims (v2-polish-backlog is superseded; a one-line note suffices)
+- Modify: `docs/post-launch-backlog.md` - remove/annotate the "public route for extras/*" item (~199-200) AND add the removal entry
 
 - [x] **Step 1: Fix stale claims** (list above; grep `-i extras` each file to catch stragglers)
 
@@ -185,7 +185,7 @@ Expected: every remaining hit is a dated historical/removal note, not a live cla
 
 - [x] **Step 1: Static + unit**
 
-Run: `pnpm typecheck && pnpm test` (root scripts; root `test` is already `vitest run` — do NOT append `-- run`, it would be read as a filename filter)
+Run: `pnpm typecheck && pnpm test` (root scripts; root `test` is already `vitest run` - do NOT append `-- run`, it would be read as a filename filter)
 Expected: all green. Content suite drops from ~485 (extras-dependent cases removed).
 
 - [x] **Step 2: Build**
@@ -193,14 +193,14 @@ Expected: all green. Content suite drops from ~485 (extras-dependent cases remov
 Run: `pnpm --filter @tensorcraft/web build` (the package is `@tensorcraft/web`; a bare `--filter web` matches nothing and pnpm exits 0 silently)
 Expected: succeeds; page count drops by 24 (119 → ~95); zero references to `/extras` in build output.
 
-- [x] **Step 3: Visual baselines — verify THEN regenerate**
+- [x] **Step 3: Visual baselines - verify THEN regenerate**
 
-Footer (all pages) and the pricing free-tier card changed. Start the dev server, load `/` and `/pricing`, confirm both render correctly (colors present, footer intact minus the link, free card shows remaining bullets). Only then: `RUN_VISUAL=1 pnpm test:e2e` (root script) and review each changed baseline diff individually — every diff must be explainable by the removed link/bullet alone.
+Footer (all pages) and the pricing free-tier card changed. Start the dev server, load `/` and `/pricing`, confirm both render correctly (colors present, footer intact minus the link, free card shows remaining bullets). Only then: `RUN_VISUAL=1 pnpm test:e2e` (root script) and review each changed baseline diff individually - every diff must be explainable by the removed link/bullet alone.
 
 - [x] **Step 4: e2e**
 
 Run: `pnpm test:e2e`
-Expected: green; no spec references /extras (verified in discovery — zero e2e hits).
+Expected: green; no spec references /extras (verified in discovery - zero e2e hits).
 
 - [x] **Step 5: Leave uncommitted**
 

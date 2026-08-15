@@ -1,7 +1,7 @@
 -- Tensorcraft: Purchases ↔ themes referential integrity
 --
 -- Dev-plan §6h line 533:
---   "Purchase-to-theme referential integrity — validate `theme_ids[]`
+--   "Purchase-to-theme referential integrity - validate `theme_ids[]`
 --    against known themes"
 --
 -- The API layer already validates theme slugs on checkout and webhook
@@ -31,7 +31,7 @@ create unique index if not exists idx_purchases_stripe_unique
   where stripe_session_id is not null;
 
 -- ============================================================
--- FIX #2: CHECK constraint — every element of theme_ids must be
+-- FIX #2: CHECK constraint - every element of theme_ids must be
 -- a canonical theme slug. NULLs / empty arrays are allowed only
 -- for legacy rows; new rows written by the API will always include
 -- at least one valid slug (enforced in validateThemeIds()).

@@ -51,7 +51,7 @@ export function PendingPoller({ sessionId }: { sessionId?: string }) {
 
   // The live region must exist BEFORE it has content: mounting
   // role="status" together with its message announces unreliably across
-  // screen readers (same rule as exercise.tsx's TestResultsLiveRegion —
+  // screen readers (same rule as exercise.tsx's TestResultsLiveRegion -
   // the region is always in the tree, the message arrives later).
   if (!timedOut) return <div role="status" aria-live="polite" />;
 

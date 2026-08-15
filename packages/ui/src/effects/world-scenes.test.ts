@@ -13,14 +13,14 @@ import {
 } from "./test-utils/recording-canvas";
 
 /* Same contract as drawOrbit (see orbit-canvas.test.ts): every scene is
-   time-parameterized — positions are pure functions of t, and the eased
+   time-parameterized - positions are pure functions of t, and the eased
    hover amount may only change styling. If hot ever leaks into geometry,
    flipping hover teleports the scene mid-animation. These tests record
    every geometry call and require identical output at hot=0 and hot=1.
 
    recordingCtx (shared with orbit-canvas.test.ts, see
    ./test-utils/recording-canvas.ts) captures every geometry-producing call,
-   including fillRect args — so a light-art redesign (Task 10) can't sneak a
+   including fillRect args - so a light-art redesign (Task 10) can't sneak a
    positioned rect past this lock either.
 
    The second suite pins the reduced-motion promise: the static frame at
@@ -55,7 +55,7 @@ describe.each(SCENES)("%s hover continuity", (_name, draw) => {
 
 describe.each(SCENES)("%s scheme independence", (_name, draw) => {
   it("draws identical geometry under dark and light scheme at the same t", () => {
-    // The light art redesign (Task 10) may only change styling — never
+    // The light art redesign (Task 10) may only change styling - never
     // position. Recording every geometry call under both schemes and
     // diffing locks that contract before the art work lands.
     const t = 123.456;
@@ -113,16 +113,16 @@ describe("signature layers present at t=0", () => {
    there for the dark-regression that motivated them): the geometry locks
    above are blind to styling, so each scene's DARK styled output is pinned
    as a canonicalized capture (floats rounded to 10 significant digits, see
-   recording-canvas.ts) at hot=1, t=0 — t=0 is each scene's phase-shifted
+   recording-canvas.ts) at hot=1, t=0 - t=0 is each scene's phase-shifted
    signature frame, which keeps conditional styling branches (Nova's rose
-   outline, Neon's locked brackets, Terra's pings) inside the capture —
+   outline, Neon's locked brackets, Terra's pings) inside the capture -
    plus a light complement asserting ink mode's global invariants.
 
    Re-goldening after an INTENTIONAL dark art change: update EVERY field of
-   the changed scene's GOLDEN entry — `fills`, `strokes`, `maxFillAlpha`,
+   the changed scene's GOLDEN entry - `fills`, `strokes`, `maxFillAlpha`,
    `maxStrokeAlpha`, AND `sha` (all five; a partial update leaves the lock
    asserting a hybrid that can never pass). The summary is compared with a
-   single toEqual, so one failing run prints the complete fresh object —
+   single toEqual, so one failing run prints the complete fresh object -
    copy it verbatim. If you didn't mean to touch dark, you regressed it. */
 
 const alphaOf = (style: unknown): number =>
@@ -201,7 +201,7 @@ describe.each(SCENES)("%s style lock", (name, draw) => {
 
   it("light scheme clamps every plain-paint alpha at 0.9 and never composites additively", () => {
     // Ink mode's premise: bounded-body marks (scaleA clamp ≤ 0.9) pooled
-    // via multiply, soft fields glazed source-over — "lighter" is
+    // via multiply, soft fields glazed source-over - "lighter" is
     // dark-only. Swept at two (hot, t) points so both the signature frame
     // and a long-lived mid-cycle frame pass their paints through.
     for (const [hot, t] of [
@@ -223,7 +223,7 @@ describe.each(SCENES)("%s style lock", (name, draw) => {
       }
 
       // Gradient fills (nebula washes, Neon's scan beam, Nova's bloom,
-      // Terra's ground wash) are captured as a stop array, not a string —
+      // Terra's ground wash) are captured as a stop array, not a string -
       // alphaOf(...) is NaN for those and the plain-paint scans above
       // silently skip them. Parse every stop's own alpha so an unclamped
       // wash stop can't hide behind the plain-paint scan.

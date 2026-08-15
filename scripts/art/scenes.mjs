@@ -20,7 +20,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 const BIBLE = path.join(ROOT, "docs/scene-bible.md");
 const MASTERS = "docs/art-refs/deep-orbit/masters";
 
@@ -181,13 +184,20 @@ for (const entry of entries) {
   const stem = entry.id.replace("/", "__");
   const args = [
     "scripts/art/generate.mjs",
-    "--provider", "fal",
-    "--phase", "scenes",
-    "--id", stem,
-    "--ref", ref,
-    "--count", "1",
-    "--size", "1536x1024",
-    "--prompt", PRESERVE + entry.body + TOKEN + SILHOUETTE + NOTEXT,
+    "--provider",
+    "fal",
+    "--phase",
+    "scenes",
+    "--id",
+    stem,
+    "--ref",
+    ref,
+    "--count",
+    "1",
+    "--size",
+    "1536x1024",
+    "--prompt",
+    PRESERVE + entry.body + TOKEN + SILHOUETTE + NOTEXT,
   ];
   process.stdout.write(`${entry.id}: `);
   try {

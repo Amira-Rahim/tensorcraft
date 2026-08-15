@@ -2,7 +2,7 @@
 -- drop the restoration RPC.
 --
 -- NOTE: rolling back removes the ONLY path that can restore access after a
--- won dispute — disputed rows become terminally stuck again (gap sweep F2).
+-- won dispute - disputed rows become terminally stuck again (gap sweep F2).
 
 begin;
 

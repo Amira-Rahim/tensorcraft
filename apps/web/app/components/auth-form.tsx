@@ -34,7 +34,7 @@ export function AuthForm() {
   const [isReturning, setIsReturning] = useState(false);
   // Confirms a successful resend. Without visible feedback the button just
   // returned to its resting label, so the user could not tell whether it
-  // worked and had no reason to keep waiting for the mail — which is exactly
+  // worked and had no reason to keep waiting for the mail - which is exactly
   // the impatience that triggers Supabase's rate limiter.
   const [resent, setResent] = useState(false);
   // Focus target for the "check your inbox" panel that replaces the form.
@@ -87,7 +87,7 @@ export function AuthForm() {
 
   // Both handlers clear `loading` in a `finally`. Without it, any throw from
   // signInWithOtp (network drop, Supabase 5xx) skipped the reset and left the
-  // button spinning permanently with no error text and no way back — on the
+  // button spinning permanently with no error text and no way back - on the
   // sign-in screen, which is the front door. Resend, the natural recovery
   // action, died the same way, so the only escape was a hard refresh.
   async function handleMagicLink(e: React.FormEvent) {
@@ -187,7 +187,7 @@ export function AuthForm() {
         <div className="text-center py-6">
           {/*
             Submitting the form replaced it with this panel in the same
-            commit, so focus fell to <body> and nothing announced — on the
+            commit, so focus fell to <body> and nothing announced - on the
             sign-in screen, where the whole instruction ("go check your
             email") lives in the text that was never read out. tabIndex -1
             makes it programmatically focusable without entering the tab

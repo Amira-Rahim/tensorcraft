@@ -358,7 +358,7 @@ describe("character bible", () => {
     },
   );
   it("has no em dashes", () => {
-    expect(bible).not.toContain("—");
+    expect(bible).not.toContain(" - ");
   });
 });
 ```

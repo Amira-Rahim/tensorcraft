@@ -63,7 +63,7 @@ describe("parseAndRunTests", () => {
 
   it("fails toBeCloseTo for non-numeric actuals (NaN guard)", async () => {
     // Regression: `Math.abs({} - 0.3)` is NaN and `NaN >= limit` is false, so
-    // the old comparison silently passed any non-numeric actual — a constant
+    // the old comparison silently passed any non-numeric actual - a constant
     // `return {}` defeated every toBeCloseTo-only suite.
     const userCode = "var objResult = {}; var nanResult = NaN;";
     const testCode = `

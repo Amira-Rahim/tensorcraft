@@ -1,10 +1,10 @@
-# Deep Orbit Art on Marketing Surfaces — Implementation Plan
+# Deep Orbit Art on Marketing Surfaces - Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > **PROJECT RULE, OVERRIDES THE SKILL DEFAULT: never run `git add`, `git commit`, or `git push`.** `CLAUDE.md` forbids committing on the user's behalf. Every task below ends in a **Checkpoint** step (run the suite, leave the tree dirty) where the skill would normally say "Commit." The user commits.
 
-**Goal:** Put the Deep Orbit art on the marketing surfaces — location plates on the landing page and theme pages, a cast row on the Deep Orbit theme page, and a module filmstrip on pricing — without disturbing the landing hero or regressing light mode.
+**Goal:** Put the Deep Orbit art on the marketing surfaces - location plates on the landing page and theme pages, a cast row on the Deep Orbit theme page, and a module filmstrip on pricing - without disturbing the landing hero or regressing light mode.
 
 **Architecture:** One new leaf component, `ArtPlate`, owns the whole "dark raster on a light-capable page" problem: it renders a framed image, and it renders nothing when the image is absent or fails. Everything else composes it. Existing components are extended with optional props rather than replaced, because four of the five themes have no art and must render exactly as they do today.
 
@@ -647,7 +647,7 @@ The existing content wrapper is already `relative z-10`; leave it alone.
 
 Open `/` and scroll to Five Worlds.
 
-Expected: the plate is visible behind the type; the orbit canvas animates over it; hovering still ignites the canvas. **If you see no plate, check the z-index first** — the canvas painting over the plate is the most likely failure, and it looks identical to a missing image.
+Expected: the plate is visible behind the type; the orbit canvas animates over it; hovering still ignites the canvas. **If you see no plate, check the z-index first** - the canvas painting over the plate is the most likely failure, and it looks identical to a missing image.
 
 - [ ] **Step 3: Confirm the hero is untouched**
 

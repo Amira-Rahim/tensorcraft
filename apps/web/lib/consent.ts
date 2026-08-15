@@ -4,7 +4,7 @@
  * Consent used to be read straight from localStorage by each consumer inside
  * a mount-once effect. That silently broke the first session for every
  * visitor: on a first visit the key does not exist, the effect returned
- * early, and nothing ever re-ran it — accepting the banner only wrote
+ * early, and nothing ever re-ran it - accepting the banner only wrote
  * localStorage and hid the banner. So the session in which someone lands,
  * reads the free lesson, hits the paywall and decides whether to buy emitted
  * ZERO events. Tracking only began on a later hard page load.

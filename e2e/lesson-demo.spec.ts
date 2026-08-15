@@ -16,7 +16,7 @@ test.describe("DeepScanDemo: live inference on the free tier", () => {
     // Seed the step BEFORE the lesson page's first render reads it.
     await page.addInitScript(() => {
       // Key uses the frontmatter slug (normalization), not the slugified
-      // title (data-normalization) — see getStorageKey in lesson-steps.tsx.
+      // title (data-normalization) - see getStorageKey in lesson-steps.tsx.
       localStorage.setItem("tc_step_deep-orbit_normalization", "5");
       localStorage.setItem("tc_step_max_deep-orbit_normalization", "5");
     });

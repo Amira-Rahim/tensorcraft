@@ -97,7 +97,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Capstone pages are deliberately NOT listed.
   //
   // They exist only for launched worlds, but capstone/page.tsx redirects any
-  // request without a session to /auth — which is itself `noindex` AND
+  // request without a session to /auth - which is itself `noindex` AND
   // Disallow'd in robots.ts. So every crawler hitting a sitemap-listed
   // capstone URL got a 307 into a blocked page, which Google records as "Page
   // with redirect" and drops. Listing a URL that cannot be indexed spends
@@ -110,7 +110,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // "treat the sitemap as the acquisition product"). They are the only
   // lesson pages fully readable signed-out, they are the pages organic
   // visitors can actually convert from, and there are only ~5 per launched
-  // world — no crawl-budget cost worth deferring. Paid lessons stay in the
+  // world - no crawl-budget cost worth deferring. Paid lessons stay in the
   // "full" phase per the crawl-budget note above.
   const freeModuleLessonRoutes: MetadataRoute.Sitemap = worldSlugs
     .filter((slug) => isLaunched(slug))

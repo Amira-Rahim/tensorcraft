@@ -1,4 +1,4 @@
-# Mobile Lesson Navigation — Design Spec
+# Mobile Lesson Navigation - Design Spec
 
 **Date:** 2026-04-14
 **Status:** Draft
@@ -18,13 +18,13 @@ Two additions: swipe gestures for step navigation + a bottom drawer for the modu
 **Modify:** `apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.tsx`
 
 Add touch event handlers to the step viewport div:
-- `onTouchStart` — record X position
-- `onTouchEnd` — calculate delta X. If `|deltaX| > 50px`:
+- `onTouchStart` - record X position
+- `onTouchEnd` - calculate delta X. If `|deltaX| > 50px`:
   - Swipe left (negative delta) = `goNext()` (advance to next step)
   - Swipe right (positive delta) = `goBack()` (go to previous step)
-- Respect `canContinue` — swipe left won't work on the Challenge step if exercise isn't passed
-- Only horizontal swipes (ignore if `|deltaY| > |deltaX|` — user is scrolling)
-- No visual indicator needed — this is a natural mobile interaction users expect
+- Respect `canContinue` - swipe left won't work on the Challenge step if exercise isn't passed
+- Only horizontal swipes (ignore if `|deltaY| > |deltaX|` - user is scrolling)
+- No visual indicator needed - this is a natural mobile interaction users expect
 
 Implementation: ~15 lines in the existing component. Use `useRef` for touch start position. No external library needed.
 
@@ -42,7 +42,7 @@ A client component that renders:
     - ○ = available (muted)
     - 🔒 = locked (dimmed)
   - Tapping a lesson navigates to it (if not locked)
-  - Backdrop overlay — tap outside to close
+  - Backdrop overlay - tap outside to close
   - Slide-down animation on close
 
 **Props:**
@@ -71,7 +71,7 @@ The lesson data (including locked/completed status) is already available in the 
 
 The server component already has `moduleLessons` and `completedLessonSlugs`. Pass a `lessons` prop to `LessonSteps` with the computed list (slug, title, order, locked, completed).
 
-**Modify:** `lesson-steps.tsx` — accept the new `lessons` prop and render `<LessonDrawer>`.
+**Modify:** `lesson-steps.tsx` - accept the new `lessons` prop and render `<LessonDrawer>`.
 
 ### 4. Update loading skeleton
 
@@ -81,10 +81,10 @@ Remove the old sidebar skeleton layout (`hidden lg:block w-64`). Replace with a 
 
 ## What Doesn't Change
 
-- Step-based progression logic — unchanged
-- Desktop layout — unchanged (drawer only shows on mobile via `md:hidden`)
-- LessonContent / MDX rendering — unchanged
-- Progress tracking — unchanged
+- Step-based progression logic - unchanged
+- Desktop layout - unchanged (drawer only shows on mobile via `md:hidden`)
+- LessonContent / MDX rendering - unchanged
+- Progress tracking - unchanged
 
 ## Verification
 

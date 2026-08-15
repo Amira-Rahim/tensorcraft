@@ -37,7 +37,7 @@ jobs:
       - name: Wait for server
         run: npx wait-on http://localhost:3000 -t 60000
 
-      # Dashboard/settings require auth — skipped here. Add once a test-mode
+      # Dashboard/settings require auth - skipped here. Add once a test-mode
       # session is plumbed through the middleware (Phase 6c follow-up).
       - name: Run Lighthouse
         uses: treosh/lighthouse-ci-action@v12

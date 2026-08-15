@@ -34,7 +34,7 @@ import { GlossaryRail } from "./glossary-rail";
 /**
  * Per-world vocabulary. The reader used to hardcode Deep Orbit's words
  * (MISSION / SECTOR / "Mission Map" / "Mission Complete" / "Next Mission"),
- * so Neon Protocol — whose lesson word is "Protocol" — would still render
+ * so Neon Protocol - whose lesson word is "Protocol" - would still render
  * "MISSION 3", an immersion break on every lesson page of every non-orbit
  * world (scalability audit F1). The map surface already read from
  * world.terminology; the reader now does too. Falls back to neutral words for
@@ -56,7 +56,7 @@ function terms(worldSlug: string): {
 
 interface LessonStepsProps {
   lesson: {
-    /** Velite frontmatter slug — the canonical lesson id used by every
+    /** Velite frontmatter slug - the canonical lesson id used by every
      *  progress read (world map, dashboard, certificates). All writes MUST
      *  use this, never a slugified title (11 of 56 titles differ). */
     slug: string;
@@ -268,7 +268,7 @@ function LessonStepsInner({
           // effect's first run (currentStep still 0) stamps prev=0 before
           // this setCurrentStep lands, so its second run would read 0→5 and
           // fire the emit-once signals on every reload of a finished lesson
-          // — the exact refire the guard exists to stop (diff review D1;
+          // - the exact refire the guard exists to stop (diff review D1;
           // verified empirically). The flag suppresses exactly that first
           // restored arrival and is cleared once consumed.
           if (parsed === 5) restoredAtFinalStepRef.current = true;
@@ -349,7 +349,7 @@ function LessonStepsInner({
   // Tracks the previous step so the completion effect can distinguish an
   // in-session TRANSITION into step 5 from a mount that merely restored a
   // persisted step-5 position. Without this, every page load of a finished
-  // lesson re-fired the completion analytics and one skill event per axis —
+  // lesson re-fired the completion analytics and one skill event per axis -
   // reopening a lesson 10× added +40 proficiency for zero work, and
   // completion metrics inflated from day 1 (R3-7).
   const prevStepRef = useRef<number | null>(null);
@@ -419,14 +419,14 @@ function LessonStepsInner({
         // buffer, the 5s flush, the keepalive batch endpoint and
         // POST /api/skill-events were all built and all dead, so
         // `skill_events` was empty for every user and the dashboard radar
-        // chart was structurally always zero — a feature that appeared to
+        // chart was structurally always zero - a feature that appeared to
         // exist and did not. (It would also have failed silently even once
         // wired, because migration 013 carried over only a SELECT policy;
         // migration 041 adds the INSERT policy.)
         //
         // One event per axis: compute_user_skill_genome loops
         // `SELECT DISTINCT skill_axis`, so multi-axis lessons are expected.
-        // Fire-and-forget by design — a lost skill event must never affect
+        // Fire-and-forget by design - a lost skill event must never affect
         // lesson completion. Guarded by enteredThisSession: 014's SUM has no
         // dedupe, so these must fire only when the learner actually walked
         // to step 5 this session, never on a restored mount.
@@ -482,7 +482,7 @@ function LessonStepsInner({
       // Dedupe via ref, NOT the passedExercises state: putting the Set in
       // this callback's deps gave it a new identity on every pass, which
       // cascaded through the MDX components memo and REMOUNTED the whole
-      // subtree — wiping the exercise's just-shown results panel the
+      // subtree - wiping the exercise's just-shown results panel the
       // instant it appeared (diff review D2). The ref keeps the callback
       // identity stable; the state updater below also returns `prev`
       // unchanged for repeat passes so no render churn occurs.
@@ -837,7 +837,7 @@ function LessonStepsInner({
   // pane itself renders exactly once, in the shell's right slot, and
   // LessonShell shows/hides that single instance via paneOpenOnMobile.
   // The old version mounted a SECOND copy of shellRight here behind the
-  // toggle — two live Sandpack editors at every width, racing one
+  // toggle - two live Sandpack editors at every width, racing one
   // tc-code-{slug} key and showing a stale buffer after a rotate across lg
   // (fresh-eyes rerun §6 / R3-7; single-mount is now the shell's contract).
   const shellLeftWithToggle =
@@ -942,8 +942,8 @@ function ChromeBar({
     // This row previously did not wrap, and every child except the step bar
     // was `shrink-0`. At 320px the fixed children (drawer 44px + "Mission
     // Map" ~146px + counter ~60px + three 16px gaps) total ~298px against a
-    // ~272px content box, so the only flexible child — the entire progress
-    // indicator — absorbed the whole deficit and rendered at 0.0px wide.
+    // ~272px content box, so the only flexible child - the entire progress
+    // indicator - absorbed the whole deficit and rendered at 0.0px wide.
     // Measured 0.0px at 320px and 0.7px at 375px: invisible on every phone,
     // while remaining perfect on desktop, which is why desktop-only checks
     // never caught it. WCAG 1.4.10 (reflow).
@@ -989,7 +989,7 @@ function ChromeBar({
               title={visited ? name : `${name} (locked)`}
               // h-6 (24px), not h-4: these are documented navigation
               // affordances, so they must meet the WCAG 2.5.8 AA minimum
-              // target of 24x24. The visible bar stays 6px — only the hit
+              // target of 24x24. The visible bar stays 6px - only the hit
               // area grows, centred by `flex items-center`.
               className="flex-1 h-6 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
               style={{ cursor: visited ? "pointer" : "not-allowed" }}

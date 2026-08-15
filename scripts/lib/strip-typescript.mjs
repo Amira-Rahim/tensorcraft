@@ -15,7 +15,7 @@
  *   - `<T, U>` generics on calls/decls  → removed
  *   - `interface`, `type` declarations  → removed
  *
- * This is a coarse heuristic, not a real TS parser — good enough for the
+ * This is a coarse heuristic, not a real TS parser - good enough for the
  * handful of patterns exercise authors use in their starter/solution snippets.
  */
 function stripTypeScript(code) {
@@ -33,10 +33,13 @@ function stripTypeScript(code) {
   // Turn top-level `export` into nothing so declarations become visible in
   // the sandbox global scope. Handle `export default` too (rarely used).
   s = s.replace(/^\s*export\s+default\s+/gm, "");
-  s = s.replace(/^\s*export\s+(?=(async\s+)?(function|class|const|let|var|abstract\s+class|interface|type|enum)\b)/gm, "");
+  s = s.replace(
+    /^\s*export\s+(?=(async\s+)?(function|class|const|let|var|abstract\s+class|interface|type|enum)\b)/gm,
+    "",
+  );
   s = s.replace(/^\s*export\s*\{[^}]*\};?\s*$/gm, "");
 
-  // Drop `enum Foo { ... }` — treat like interface.
+  // Drop `enum Foo { ... }` - treat like interface.
   s = stripEnumDecls(s);
 
   // Drop generic type params on function/class declarations and call sites.
@@ -46,8 +49,14 @@ function stripTypeScript(code) {
   s = s.replace(/\b(function\s+\w+)\s*<[^<>]*(?:<[^<>]*>[^<>]*)*>/g, "$1");
   s = s.replace(/\b(class\s+\w+)\s*<[^<>]*(?:<[^<>]*>[^<>]*)*>/g, "$1");
   // Generics on `extends`/`implements` clauses: `class Foo extends Bar<T> {`.
-  s = s.replace(/(\bextends\s+[A-Za-z_$][\w$]*)<[^<>]*(?:<[^<>]*>[^<>]*)*>/g, "$1");
-  s = s.replace(/(\bimplements\s+[A-Za-z_$][\w$]*)<[^<>]*(?:<[^<>]*>[^<>]*)*>/g, "$1");
+  s = s.replace(
+    /(\bextends\s+[A-Za-z_$][\w$]*)<[^<>]*(?:<[^<>]*>[^<>]*)*>/g,
+    "$1",
+  );
+  s = s.replace(
+    /(\bimplements\s+[A-Za-z_$][\w$]*)<[^<>]*(?:<[^<>]*>[^<>]*)*>/g,
+    "$1",
+  );
   s = s.replace(/\b(\w+)<[A-Z][\w$]*(?:\s*,\s*[A-Z][\w$]*)*>(?=\s*\()/g, "$1");
 
   // Strip generic type arguments on `new Ident<...>(...)` and `Ident<...>(...)`
@@ -57,28 +66,25 @@ function stripTypeScript(code) {
 
   // Strip TS-only class member modifiers (`private`, `public`, `protected`,
   // `readonly`, `override`, `abstract`) so Node's parser sees plain class
-  // fields.  Applied within class bodies only — cheap heuristic keyed on
+  // fields.  Applied within class bodies only - cheap heuristic keyed on
   // start-of-line.
   s = s.replace(
     /^(\s*)(public|private|protected|readonly|override|abstract)\s+(?=(public|private|protected|readonly|override|abstract|static|async|\*|get|set|constructor|\w|\[))/gm,
     "$1",
   );
-  // Multiple modifiers in a row (e.g. `private readonly`) — run again.
+  // Multiple modifiers in a row (e.g. `private readonly`) - run again.
   s = s.replace(
     /^(\s*)(public|private|protected|readonly|override|abstract)\s+(?=(public|private|protected|readonly|override|abstract|static|async|\*|get|set|constructor|\w|\[))/gm,
     "$1",
   );
 
-  // Constructor-parameter modifiers: `constructor(private readonly foo: T)` —
+  // Constructor-parameter modifiers: `constructor(private readonly foo: T)` -
   // strip the modifier so the parameter name survives.
   s = s.replace(
     /(\(|,)\s*(public|private|protected|readonly)\s+(public|private|protected|readonly)\s+/g,
     "$1 ",
   );
-  s = s.replace(
-    /(\(|,)\s*(public|private|protected|readonly)\s+/g,
-    "$1 ",
-  );
+  s = s.replace(/(\(|,)\s*(public|private|protected|readonly)\s+/g, "$1 ");
 
   // Non-null `!` operator: remove in four contexts. We strip the `!` while
   // preserving whatever preceded it. Covers `foo!.bar`, `foo![x]`, `foo()!;`,
@@ -96,7 +102,7 @@ function stripTypeScript(code) {
   // `value as [T, U, ...]` tuple assertions: balance `[]` to consume.
   s = stripAsTupleAssertions(s);
 
-  // Optional property / parameter markers: `foo?: number` — the `?` must be
+  // Optional property / parameter markers: `foo?: number` - the `?` must be
   // removed before we strip the type annotation so the parser is happy.
   // Only targets `?:` to avoid optional chaining / ternary.
   s = s.replace(/([A-Za-z_$][\w$]*)\?:/g, "$1:");
@@ -105,7 +111,7 @@ function stripTypeScript(code) {
   s = stripTypeAnnotations(s);
 
   // Remove `<Type>value` TSX-style assertions that survived (rare).
-  // Skip — would collide with JSX; not needed for these exercises.
+  // Skip - would collide with JSX; not needed for these exercises.
 
   return s;
 }
@@ -139,15 +145,27 @@ function stripAsTupleAssertions(src) {
       out += c;
       i++;
       while (i < n) {
-        if (src[i] === "\\") { out += src[i] + src[i + 1]; i += 2; continue; }
+        if (src[i] === "\\") {
+          out += src[i] + src[i + 1];
+          i += 2;
+          continue;
+        }
         out += src[i];
-        if (src[i] === q) { i++; break; }
+        if (src[i] === q) {
+          i++;
+          break;
+        }
         i++;
       }
       continue;
     }
     // Look for `\s+as\s+[`.
-    if (c === "a" && src[i + 1] === "s" && /\s/.test(src[i - 1] || "") && /\s/.test(src[i + 2] || "")) {
+    if (
+      c === "a" &&
+      src[i + 1] === "s" &&
+      /\s/.test(src[i - 1] || "") &&
+      /\s/.test(src[i + 2] || "")
+    ) {
       // Confirm `as` is a standalone word (previous char already known non-word).
       let j = i + 2;
       while (j < n && /\s/.test(src[j])) j++;
@@ -215,9 +233,16 @@ function stripGenericCallArgs(src) {
       out += c;
       i++;
       while (i < n) {
-        if (src[i] === "\\") { out += src[i] + src[i + 1]; i += 2; continue; }
+        if (src[i] === "\\") {
+          out += src[i] + src[i + 1];
+          i += 2;
+          continue;
+        }
         out += src[i];
-        if (src[i] === q) { i++; break; }
+        if (src[i] === q) {
+          i++;
+          break;
+        }
         i++;
       }
       continue;
@@ -236,21 +261,33 @@ function stripGenericCallArgs(src) {
         while (j < n && depth > 0) {
           const ch = src[j];
           if (depthBrace === 0 && depthBracket === 0 && depthParen === 0) {
-            if (ch === ";" || ch === "\n") { ok = false; break; }
+            if (ch === ";" || ch === "\n") {
+              ok = false;
+              break;
+            }
           }
           if (ch === "<") depth++;
           else if (ch === ">") depth--;
           else if (ch === "{") depthBrace++;
           else if (ch === "}") {
-            if (depthBrace === 0) { ok = false; break; }
+            if (depthBrace === 0) {
+              ok = false;
+              break;
+            }
             depthBrace--;
           } else if (ch === "[") depthBracket++;
           else if (ch === "]") {
-            if (depthBracket === 0) { ok = false; break; }
+            if (depthBracket === 0) {
+              ok = false;
+              break;
+            }
             depthBracket--;
           } else if (ch === "(") depthParen++;
           else if (ch === ")") {
-            if (depthParen === 0) { ok = false; break; }
+            if (depthParen === 0) {
+              ok = false;
+              break;
+            }
             depthParen--;
           } else if (ch === '"' || ch === "'" || ch === "`") {
             const q = ch;
@@ -317,7 +354,7 @@ function stripInterfaceAndTypeDecls(src) {
         }
       }
       if (typeMatch) {
-        // `type Foo<...> = <type>;` — skip until top-level `;` or newline
+        // `type Foo<...> = <type>;` - skip until top-level `;` or newline
         // (whichever comes after the `=`), balancing brackets.
         let k = j + typeMatch[0].length;
         // Skip optional generic params `<…>`.
@@ -334,16 +371,31 @@ function stripInterfaceAndTypeDecls(src) {
         while (k < n && /\s/.test(src[k])) k++;
         if (src[k] === "=") {
           k++;
-          let depthAngle = 0, depthBrace = 0, depthBracket = 0, depthParen = 0;
+          let depthAngle = 0,
+            depthBrace = 0,
+            depthBracket = 0,
+            depthParen = 0;
           while (k < n) {
             const ch = src[k];
-            if (depthAngle === 0 && depthBrace === 0 && depthBracket === 0 && depthParen === 0) {
+            if (
+              depthAngle === 0 &&
+              depthBrace === 0 &&
+              depthBracket === 0 &&
+              depthParen === 0
+            ) {
               if (ch === ";" || ch === "\n") {
                 // Verify next non-space char isn't `|` or `&` (union continues).
                 let m = k + 1;
-                while (m < n && (src[m] === " " || src[m] === "\t" || src[m] === "\n")) m++;
+                while (
+                  m < n &&
+                  (src[m] === " " || src[m] === "\t" || src[m] === "\n")
+                )
+                  m++;
                 if (ch === ";" || src[m] === "|" || src[m] === "&") {
-                  if (ch === ";") { k++; break; }
+                  if (ch === ";") {
+                    k++;
+                    break;
+                  }
                   // Continue on the union / intersection.
                   k = m;
                   continue;
@@ -434,7 +486,7 @@ function stripTypeAnnotations(src) {
     if (prev === "}") return "block"; // else / after block
     if (prev === "{") return "block"; // block inside block
     if (prev === ";") return "block";
-    // `=>` arrow function body (bare brace body) — block. Note: `() => ({})`
+    // `=>` arrow function body (bare brace body) - block. Note: `() => ({})`
     // wraps the object literal in parens, so we never see `{` right after `>`
     // unless it's a function body.
     if (prev === ">" && last > 0 && out[last - 1] === "=") return "block";
@@ -447,8 +499,19 @@ function stripTypeAnnotations(src) {
       while (k >= 0 && /[\w$]/.test(out[k])) k--;
       const word = out.slice(k + 1, last + 1);
       const exprKeywords = new Set([
-        "return", "typeof", "in", "of", "throw", "yield", "await",
-        "instanceof", "void", "delete", "new", "case", "default",
+        "return",
+        "typeof",
+        "in",
+        "of",
+        "throw",
+        "yield",
+        "await",
+        "instanceof",
+        "void",
+        "delete",
+        "new",
+        "case",
+        "default",
       ]);
       if (exprKeywords.has(word)) return "obj";
       return "block";
@@ -512,8 +575,7 @@ function stripTypeAnnotations(src) {
       let last = out.length - 1;
       while (last >= 0 && /\s/.test(out[last])) last--;
       const prev = last >= 0 ? out[last] : null;
-      const divisionContext =
-        prev !== null && /[A-Za-z0-9_$)\]]/.test(prev);
+      const divisionContext = prev !== null && /[A-Za-z0-9_$)\]]/.test(prev);
       if (!divisionContext) {
         out += c;
         i++;
@@ -530,7 +592,10 @@ function stripTypeAnnotations(src) {
           else if (ch === "/" && !inClass) {
             out += ch;
             i++;
-            while (i < n && /[a-z]/.test(src[i])) { out += src[i]; i++; }
+            while (i < n && /[a-z]/.test(src[i])) {
+              out += src[i];
+              i++;
+            }
             break;
           } else if (ch === "\n") break;
           out += ch;
@@ -557,16 +622,48 @@ function stripTypeAnnotations(src) {
       i++;
       continue;
     }
-    if (c === "(") { parenDepth++; out += c; i++; continue; }
-    if (c === ")") { parenDepth = Math.max(0, parenDepth - 1); out += c; i++; continue; }
-    if (c === "[") { bracketDepth++; out += c; i++; continue; }
-    if (c === "]") { bracketDepth = Math.max(0, bracketDepth - 1); out += c; i++; continue; }
+    if (c === "(") {
+      parenDepth++;
+      out += c;
+      i++;
+      continue;
+    }
+    if (c === ")") {
+      parenDepth = Math.max(0, parenDepth - 1);
+      out += c;
+      i++;
+      continue;
+    }
+    if (c === "[") {
+      bracketDepth++;
+      out += c;
+      i++;
+      continue;
+    }
+    if (c === "]") {
+      bracketDepth = Math.max(0, bracketDepth - 1);
+      out += c;
+      i++;
+      continue;
+    }
 
     // Ternary `?`: increment unless it's `?.`, `??`, or `?:`.
     if (c === "?") {
-      if (src[i + 1] === ".") { out += c; i++; continue; }
-      if (src[i + 1] === "?") { out += "??"; i += 2; continue; }
-      if (src[i + 1] === ":") { out += c; i++; continue; }
+      if (src[i + 1] === ".") {
+        out += c;
+        i++;
+        continue;
+      }
+      if (src[i + 1] === "?") {
+        out += "??";
+        i += 2;
+        continue;
+      }
+      if (src[i + 1] === ":") {
+        out += c;
+        i++;
+        continue;
+      }
       ternaryDepth++;
       out += c;
       i++;
@@ -584,10 +681,13 @@ function stripTypeAnnotations(src) {
       }
       // Object-literal key: don't strip. Only true when the enclosing brace
       // is "obj" AND we're directly inside it (not in a nested paren / bracket
-      // that opened after the brace — e.g. the parens of `process: (n: T) =>`
+      // that opened after the brace - e.g. the parens of `process: (n: T) =>`
       // inside an object literal are a new syntactic context).
-      const topBrace = braceStack.length > 0 ? braceStack[braceStack.length - 1] : null;
-      const inObject = topBrace && topBrace.kind === "obj" &&
+      const topBrace =
+        braceStack.length > 0 ? braceStack[braceStack.length - 1] : null;
+      const inObject =
+        topBrace &&
+        topBrace.kind === "obj" &&
         parenDepth === topBrace.enterParen &&
         bracketDepth === topBrace.enterBracket;
       if (inObject) {
@@ -598,9 +698,7 @@ function stripTypeAnnotations(src) {
 
       const prev = lastNonSpace(out);
       const isAnnotationContext =
-        prev === ")" ||
-        prev === "]" ||
-        /[A-Za-z0-9_$?]/.test(prev ?? "");
+        prev === ")" || prev === "]" || /[A-Za-z0-9_$?]/.test(prev ?? "");
 
       let j = i + 1;
       while (j < n && /\s/.test(src[j])) j++;
@@ -610,10 +708,10 @@ function stripTypeAnnotations(src) {
           next,
         ) ||
         /^[a-z][\w$]*\.[A-Z]/.test(next) || // namespaced: tf.Tensor, React.FC (capital after dot)
-        /^\(/.test(next) ||                 // (a: number) => b  arrow type
-        /^\{/.test(next) ||                 // { x: number }  object type
-        /^\[/.test(next) ||                 // [number, number] tuple type
-        /^['"]/.test(next);                 // 'a' | 'b'  string-literal union
+        /^\(/.test(next) || // (a: number) => b  arrow type
+        /^\{/.test(next) || // { x: number }  object type
+        /^\[/.test(next) || // [number, number] tuple type
+        /^['"]/.test(next); // 'a' | 'b'  string-literal union
 
       if (isAnnotationContext && looksLikeType) {
         i = j;
@@ -624,9 +722,16 @@ function stripTypeAnnotations(src) {
         const startsWithObject = src[j] === "{";
         const startsWithParen = src[j] === "(";
         const startsWithBracket = src[j] === "[";
-        if (startsWithObject) { depthBrace++; i++; }
-        else if (startsWithParen) { depthParen++; i++; }
-        else if (startsWithBracket) { depthBracket++; i++; }
+        if (startsWithObject) {
+          depthBrace++;
+          i++;
+        } else if (startsWithParen) {
+          depthParen++;
+          i++;
+        } else if (startsWithBracket) {
+          depthBracket++;
+          i++;
+        }
 
         while (i < n) {
           const ch = src[i];
@@ -646,7 +751,10 @@ function stripTypeAnnotations(src) {
               if (startsWithParen) {
                 i += 2;
                 while (i < n && /\s/.test(src[i])) i++;
-                if (src[i] === "{") { depthBrace++; i++; }
+                if (src[i] === "{") {
+                  depthBrace++;
+                  i++;
+                }
                 continue;
               }
               break;

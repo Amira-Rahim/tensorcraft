@@ -5,7 +5,7 @@
  *
  * Signed-out learners can finish all of free module 1, but every
  * progress-client write is a no-op without a user, so the map showed
- * them zero progress and looped back to lesson 1 — the funnel's climax
+ * them zero progress and looped back to lesson 1 - the funnel's climax
  * didn't exist for the exact no-account audience the landing recruits.
  * This records completions locally so (a) the map can stage the
  * end-of-module moment for guests, and (b) GuestProgressBridge can

@@ -15,12 +15,12 @@
  *     `KIT_TAG_PAYWALL_HIT` and `KIT_TAG_MODULE_1_COMPLETE` are not in
  *     `.env.example` or the deployment guide. Launching without them set
  *     would have burned the flag for every affected browser, and configuring
- *     the secret afterwards would NOT recover them — the flag never clears.
+ *     the secret afterwards would NOT recover them - the flag never clears.
  *
  * The rule this encodes: only record "already tagged" when Kit actually
  * tagged someone. Anything else (no session, unconfigured tag, network
  * failure, server error) leaves the flag unset so a later attempt can still
- * succeed. Over-tagging is harmless — Kit tags are idempotent — while
+ * succeed. Over-tagging is harmless - Kit tags are idempotent - while
  * under-tagging is invisible and permanent.
  */
 

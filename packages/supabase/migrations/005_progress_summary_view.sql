@@ -3,7 +3,7 @@
 --
 -- NOTE: This view is NOT YET QUERIED by application code (as of V0.5).
 -- The dashboard currently aggregates theme_progress in application code.
--- This view is retained as an optimization candidate — when dashboard
+-- This view is retained as an optimization candidate - when dashboard
 -- load times increase, switch dashboard queries to use this view instead
 -- of the raw theme_progress table.
 

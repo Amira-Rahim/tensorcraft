@@ -10,11 +10,11 @@
 
 **Spec:** `docs/superpowers/specs/2026-06-11-lesson-screenplay-register-design.md`
 
-**Repo rule override:** Do NOT run `git add`/`git commit` — CLAUDE.md forbids commits on the user's behalf. Skip every "commit" step convention; the user commits after review.
+**Repo rule override:** Do NOT run `git add`/`git commit` - CLAUDE.md forbids commits on the user's behalf. Skip every "commit" step convention; the user commits after review.
 
 ---
 
-## Task 1: Focus mode — hide Nav on lesson routes
+## Task 1: Focus mode - hide Nav on lesson routes
 
 **Files:**
 - Modify: `apps/web/app/components/nav.tsx`
@@ -68,13 +68,13 @@ Expected: 2 new tests FAIL (nav renders on lesson route), existing tests PASS.
 
 - [ ] **Step 4: Implement in `nav.tsx`**
 
-In `Nav()` (line 34), after the existing `useEffect` block (after line 48) — NOT before the hooks, React hook order must stay stable:
+In `Nav()` (line 34), after the existing `useEffect` block (after line 48) - NOT before the hooks, React hook order must stay stable:
 
 ```tsx
 const pathname = usePathname();
 // Focus mode: lesson viewer routes get no marketing nav. Lesson routes are
 // exactly /themes/{slug}/{module}/{lesson}; the capstone page is 3 segments
-// (/themes/{slug}/capstone) so it never matches — the endsWith guard is
+// (/themes/{slug}/capstone) so it never matches - the endsWith guard is
 // only defensive against a lesson slug literally named "capstone".
 const isLessonRoute =
   /^\/themes\/[^/]+\/[^/]+\/[^/]+$/.test(pathname) &&
@@ -91,7 +91,7 @@ Expected: all PASS.
 
 ---
 
-## Task 2: Exit chip — quiet, honest label
+## Task 2: Exit chip - quiet, honest label
 
 **Files:**
 - Modify: `apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.tsx` (top-bar `Link`, currently labeled `← {moduleName}`)
@@ -113,7 +113,7 @@ describe("LessonSteps, exit chip", () => {
 
 Run: `npx vitest run "apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.test.tsx"`
 
-- [ ] **Step 3: Implement** — replace the exit `Link` block in the top bar:
+- [ ] **Step 3: Implement** - replace the exit `Link` block in the top bar:
 
 ```tsx
 <Link
@@ -125,9 +125,9 @@ Run: `npx vitest run "apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.
 </Link>
 ```
 
-(Drops the `background`/`border` inline styles — transparent at rest, border on hover.)
+(Drops the `background`/`border` inline styles - transparent at rest, border on hover.)
 
-- [ ] **Step 4: Run, verify pass.** Note: the e2e back-link test (`e2e/themes.spec.ts` "shows a link back to the module map") matches `/back|module|foundations/i` — "Mission Map" does NOT match. Update that matcher to `/mission map|module|foundations/i` in the same change.
+- [ ] **Step 4: Run, verify pass.** Note: the e2e back-link test (`e2e/themes.spec.ts` "shows a link back to the module map") matches `/back|module|foundations/i` - "Mission Map" does NOT match. Update that matcher to `/mission map|module|foundations/i` in the same change.
 
 ---
 
@@ -168,7 +168,7 @@ describe("LessonSteps, briefing meta line", () => {
 
 - [ ] **Step 2: Run, verify both fail** (pills render "10 min" inside a pill with `●`, "concept bridge" pill exists, no `·` join).
 
-- [ ] **Step 3: Implement in `StepBriefing`** — replace the pills `div` (the `flex flex-wrap gap-3` block) with:
+- [ ] **Step 3: Implement in `StepBriefing`** - replace the pills `div` (the `flex flex-wrap gap-3` block) with:
 
 ```tsx
 <div
@@ -190,7 +190,7 @@ Delete the now-unused `tierLabel` const and the `Pill` helper component (only co
 
 ---
 
-## Task 4: Dialogue — screenplay treatment + CUT-TO element
+## Task 4: Dialogue - screenplay treatment + CUT-TO element
 
 **Files:**
 - Modify: `packages/ui/src/mdx/dialogue.tsx`
@@ -280,7 +280,7 @@ export function Dialogue({ speaker, direction, children }: DialogueProps) {
 
 ---
 
-## Task 5: SceneHeading — primary-colored prefix
+## Task 5: SceneHeading - primary-colored prefix
 
 **Files:**
 - Modify: `packages/ui/src/mdx/scene-heading.tsx`
@@ -301,7 +301,7 @@ it("renders the prefix in the theme primary color", () => {
 
 - [ ] **Step 2: Run, verify it fails** (prefix is part of one flat text node today).
 
-- [ ] **Step 3: Implement** — text output must stay byte-identical for the three existing tests (`LAB`, `SERVER ROOM - MORNING`, no stray `" - "` without time/prefix):
+- [ ] **Step 3: Implement** - text output must stay byte-identical for the three existing tests (`LAB`, `SERVER ROOM - MORNING`, no stray `" - "` without time/prefix):
 
 ```tsx
 export function SceneHeading({ location, time, prefix }: SceneHeadingProps) {
@@ -326,7 +326,7 @@ export function SceneHeading({ location, time, prefix }: SceneHeadingProps) {
 }
 ```
 
-Heads-up: the existing test "omits time separator when no time" asserts `textContent` does NOT contain `" - "` — it renders `<SceneHeading location="Lab" />` with no prefix, so it still passes. Do not add a separator outside the `prefix &&` guard.
+Heads-up: the existing test "omits time separator when no time" asserts `textContent` does NOT contain `" - "` - it renders `<SceneHeading location="Lab" />` with no prefix, so it still passes. Do not add a separator outside the `prefix &&` guard.
 
 - [ ] **Step 4: Run scene-heading tests, verify all pass.**
 
@@ -430,7 +430,7 @@ describe("LessonSteps, story register", () => {
 **Files:**
 - Modify: `apps/web/app/globals.css` (lesson-prose section, after the `data-show-prose` rules around line 188)
 
-No unit test — jsdom doesn't apply `:has()` styling; the DOM contract (attributes, classes) is covered by Tasks 4 and 6. Verified visually in Step 2.
+No unit test - jsdom doesn't apply `:has()` styling; the DOM contract (attributes, classes) is covered by Tasks 4 and 6. Verified visually in Step 2.
 
 - [ ] **Step 1: Add the rules**
 
@@ -438,7 +438,7 @@ No unit test — jsdom doesn't apply `:has()` styling; the DOM contract (attribu
 /* Screenplay register (Briefing step). Story-zone prose = any paragraph
    that still has a Dialogue after it; the CUT-TO divider surfaces only on
    the final dialogue of the opening scene. Without :has() support these
-   rules no-op: no divider, prose stays plain — register shift still
+   rules no-op: no divider, prose stays plain - register shift still
    carried by Dialogue/SceneHeading styling. */
 .lesson-step-content[data-story-register="true"] > p:has(~ [data-dialogue]) {
   font-style: italic;
@@ -460,7 +460,7 @@ No unit test — jsdom doesn't apply `:has()` styling; the DOM contract (attribu
 
 Run: `npm run dev`, open `http://localhost:3000/themes/deep-orbit/foundations/introduction-to-tensors` (clear `tc_step_*` keys or use incognito to land on 1/6).
 Expected: no marketing nav; quiet `← Mission Map` chip; `10/12 min` meta line without pills; indented italic narration; primary-colored speakers; one `CUT TO: BRIEFING` rule after the last opening dialogue; plain full-width prose below it. Step 6 (Consequence): epilogue dialogues styled, NO cut-to divider.
-Check a second lesson whose opening starts with prose (e.g. `/themes/deep-orbit/browser-runtimes/tensorflow-js-setup`) — leading prose should read as stage direction.
+Check a second lesson whose opening starts with prose (e.g. `/themes/deep-orbit/browser-runtimes/tensorflow-js-setup`) - leading prose should read as stage direction.
 Contrast: verify `--tc-muted` (#b0b0b0 on Deep Orbit) italic stage directions against the page background meets WCAG AA 4.5:1 (DevTools color picker shows the ratio); bump the tone if it fails.
 
 ---
@@ -511,4 +511,4 @@ Expected: 9/9 tasks pass.
 - `lesson-steps.tsx` component row: mention meta line + story-register flag.
 - Accessibility section: note the CUT-TO divider is `aria-hidden` decorative.
 
-- [ ] **Step 4: Report** — list changed files, test counts, e2e status. Do NOT commit.
+- [ ] **Step 4: Report** - list changed files, test counts, e2e status. Do NOT commit.

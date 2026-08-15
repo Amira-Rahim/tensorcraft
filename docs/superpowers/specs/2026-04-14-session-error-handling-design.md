@@ -1,12 +1,12 @@
-# Session Error Handling — Design Spec
+# Session Error Handling - Design Spec
 
 **Date:** 2026-04-14
 **Status:** Draft
 
 ## Problem
 
-1. **Critical bug:** Exercise attempt POSTs have no `Authorization` header — always fail with 401
-2. **Silent failures:** API errors are swallowed with `.catch(() => {})` — users lose progress without knowing
+1. **Critical bug:** Exercise attempt POSTs have no `Authorization` header - always fail with 401
+2. **Silent failures:** API errors are swallowed with `.catch(() => {})` - users lose progress without knowing
 3. **No mid-lesson feedback:** When a session expires during a long lesson, the user gets no notification until they try to navigate to a protected page
 
 ## Solution
@@ -24,7 +24,7 @@ The `handleExerciseSubmit` function (line 95-114) POSTs to `/api/exercise-attemp
 ```typescript
 const supabase = getSupabaseBrowserClient();
 const { data: { session } } = await supabase.auth.getSession();
-if (!session) return; // not logged in — skip silently (free module users)
+if (!session) return; // not logged in - skip silently (free module users)
 
 fetch("/api/exercise-attempts", {
   method: "POST",
@@ -85,10 +85,10 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
 
 Replace raw `fetch` calls with `apiFetch` on these critical paths:
 
-- `lesson-content.tsx` — exercise attempt POST
-- `lesson-steps.tsx` — email tag POSTs (already fire-and-forget, but use apiFetch for auth header)
+- `lesson-content.tsx` - exercise attempt POST
+- `lesson-steps.tsx` - email tag POSTs (already fire-and-forget, but use apiFetch for auth header)
 
-Keep fire-and-forget `.catch(() => {})` for non-critical paths (analytics, email tags) — they should not block the UI.
+Keep fire-and-forget `.catch(() => {})` for non-critical paths (analytics, email tags) - they should not block the UI.
 
 ### 5. Mount SessionToast in layout
 
@@ -98,10 +98,10 @@ Add `<SessionToast />` component alongside existing `<SessionListener />`. It li
 
 ## What Doesn't Change
 
-- Middleware session handling — already works
-- Auth form error display — already shows session_expired
-- Error boundary pages — already exist
-- API auth middleware — already returns 401
+- Middleware session handling - already works
+- Auth form error display - already shows session_expired
+- Error boundary pages - already exist
+- API auth middleware - already returns 401
 
 ## Verification
 

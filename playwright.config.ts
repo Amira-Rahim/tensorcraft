@@ -25,7 +25,7 @@ export default defineConfig({
     // Playwright defaults to light OS emulation. The light-mode rollout's
     // FOUC script (apps/web/app/layout.tsx) now reads that and renders the
     // whole app in the light scheme, which would silently flip this entire
-    // existing suite — including the canonical axe contrast gate — to an
+    // existing suite - including the canonical axe contrast gate - to an
     // untested scheme. Pinning dark here preserves the historical meaning
     // of this suite; Task 14 (docs/superpowers/plans/2026-07-22-light-mode.md)
     // introduces the deliberate two-scheme matrix and removes/loops this pin.
@@ -62,11 +62,11 @@ export default defineConfig({
     // 30s was not enough and the failure mode was dangerous. `next dev`
     // compiles on demand; measured cold compiles here run 19-154s (the
     // comment above already records a 14.96s cold lesson hit). When this
-    // timeout fires, the whole run aborts before a single spec executes —
+    // timeout fires, the whole run aborts before a single spec executes -
     // and that reads as infra flake, not as "accessibility was never
     // checked". The a11y suite in particular was passing only 4 of 14 specs
     // for that reason, with the ten covering Worlds, World Detail, Pricing
-    // and every lesson step — the entire paid surface — simply never run.
+    // and every lesson step - the entire paid surface - simply never run.
     //
     // A gate whose absence is indistinguishable from its success is worse
     // than no gate: it manufactures confidence. Raise the ceiling so the

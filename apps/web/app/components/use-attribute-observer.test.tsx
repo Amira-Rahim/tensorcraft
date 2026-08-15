@@ -19,7 +19,7 @@ describe("useAttributeObserver", () => {
     render(<Probe attrs={["data-scheme"]} onChange={onChange} />);
     expect(onChange).not.toHaveBeenCalled();
 
-    // MutationObserver callbacks fire as a microtask — plain mutation +
+    // MutationObserver callbacks fire as a microtask - plain mutation +
     // waitFor (not a fixed-tick act() wrap), same rationale as
     // packages/ui/src/use-scheme.test.tsx and scene-canvas.test.tsx.
     document.documentElement.dataset.scheme = "light";

@@ -31,7 +31,7 @@ export type SceneDraw = (
    * Resolved color scheme for this frame, read cheaply off
    * `document.documentElement.dataset.scheme` (never getComputedStyle).
    * Like `hot`, this may only affect styling (composite mode, alpha,
-   * highlight color) — never geometry. Scenes currently draw the same dark
+   * highlight color) - never geometry. Scenes currently draw the same dark
    * art regardless of scheme (light art redesign lands in Tasks 9/10 of
    * docs/superpowers/plans/2026-07-22-light-mode.md); the param exists now
    * so every SceneDraw call site is already updated ahead of that work.
@@ -45,7 +45,7 @@ export interface SceneCanvasProps {
   /** World colour as an [r,g,b] triple (0–255), used in dark scheme. */
   rgb: [number, number, number];
   /**
-   * World colour for light scheme. Falls back to `rgb` when absent — the
+   * World colour for light scheme. Falls back to `rgb` when absent - the
    * canvas will keep drawing the dark hue under data-scheme="light" until a
    * caller supplies this (safe default: no visual change for consumers not
    * yet updated).
@@ -57,7 +57,7 @@ export interface SceneCanvasProps {
    * Resting floor (0..1) for the eased hover amount. Scenes are designed
    * rest-faint + hover-ignited for cards; a page backdrop has no hover, so
    * without a floor it idles at its faintest forever. The effective target
-   * is max(intensity, hovered ? 1 : 0) — hover can still push past the floor.
+   * is max(intensity, hovered ? 1 : 0) - hover can still push past the floor.
    */
   intensity?: number;
   className?: string;
@@ -66,7 +66,7 @@ export interface SceneCanvasProps {
 /**
  * Self-contained scene canvas. Sizes to its positioned parent, gates the
  * rAF loop on visibility + reduced-motion (static frame when reduced), and
- * cleans up on unmount. Decorative only — always `aria-hidden`.
+ * cleans up on unmount. Decorative only - always `aria-hidden`.
  */
 export function SceneCanvas({
   draw,
@@ -105,7 +105,7 @@ export function SceneCanvas({
         (target - hotAmtRef.current) * (1 - Math.exp(-dt / 160));
       tRef.current += (dt / 1000) * (1 + 0.6 * hotAmtRef.current);
       ctx.clearRect(0, 0, c.width, c.height);
-      // Cheap attr read every frame — never getComputedStyle (that forces a
+      // Cheap attr read every frame - never getComputedStyle (that forces a
       // style recalc per frame, per the effects performance contract).
       const scheme: "dark" | "light" =
         document.documentElement.dataset.scheme === "light" ? "light" : "dark";

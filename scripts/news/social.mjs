@@ -2,16 +2,16 @@
 /**
  * Social copy generator. Drafts an X thread and a LinkedIn post for the
  * weekly digest, writes both to dist/social/<weekIso>.md. Curator copies
- * + pastes manually — no API auth, no auto-post risk.
+ * + pastes manually - no API auth, no auto-post risk.
  *
  * Run:
  *   pnpm tsx scripts/news/social.mjs --week=2026-W18
  *   pnpm tsx scripts/news/social.mjs --week=2026-W18 --dry-run
  *
  * Required env:
- *   ANTHROPIC_API_KEY            — for the LLM draft call
- *   SUPABASE_URL                 — to load the week's items
- *   SUPABASE_SERVICE_ROLE_KEY    — same
+ *   ANTHROPIC_API_KEY - for the LLM draft call
+ *   SUPABASE_URL - to load the week's items
+ *   SUPABASE_SERVICE_ROLE_KEY - same
  */
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -34,7 +34,7 @@ if (!WEEK) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Prompts — same voice as draft.mjs                                    */
+/* Prompts - same voice as draft.mjs                                    */
 /* ------------------------------------------------------------------ */
 
 function buildThreadPrompt(items, digestUrl) {
@@ -51,14 +51,14 @@ function buildThreadPrompt(items, digestUrl) {
     })
     .join("\n\n");
 
-  const system = `You are writing an X (Twitter) thread for The Bridge — Tensorcraft's weekly browser-ML digest.
+  const system = `You are writing an X (Twitter) thread for The Bridge - Tensorcraft's weekly browser-ML digest.
 
 Voice rules:
 - Practitioner-honest, not hype. NEVER use "perfect", "amazing", "must-read", "game-changing", "breakthrough", emoji-stacks, or marketing superlatives.
 - Frontend-engineer perspective. Anchor concepts to FE primitives (DOM, typed arrays, requestAnimationFrame, fetch, web workers).
 - Each tweet <= 270 characters (leave room for retweet UI + auto-shortened links).
 - One blank line between tweets. Number them 1/, 2/, 3/, etc.
-- Plain text. Markdown link syntax becomes raw URLs after copy-paste — write URLs inline.
+- Plain text. Markdown link syntax becomes raw URLs after copy-paste - write URLs inline.
 
 Structure:
 - Tweet 1: Hook. State the through-line of the week. Tease ${items.length} items. End with the digest URL.
@@ -87,7 +87,7 @@ function buildLinkedInPrompt(items, digestUrl) {
     })
     .join("\n");
 
-  const system = `You are writing a LinkedIn post for The Bridge — Tensorcraft's weekly browser-ML digest.
+  const system = `You are writing a LinkedIn post for The Bridge - Tensorcraft's weekly browser-ML digest.
 
 Voice rules:
 - Practitioner-honest, not hype. NEVER use "perfect", "amazing", "must-read", "game-changing", "breakthrough", "thrilled", "humbled", emoji-stacks.
@@ -98,9 +98,9 @@ Voice rules:
 
 Structure:
 - Para 1 (hook, <= 200 chars): the through-line of the week.
-- Bulleted list: one bullet per item, "Title — 1 sentence on what shipped — Teaches: <Lesson Title>"
+- Bulleted list: one bullet per item, "Title - 1 sentence on what shipped - Teaches: <Lesson Title>"
 - Closing line: "Read the digest: ${digestUrl}"
-- Final line: 2-3 hashtags max (#WebGPU #BrowserML #FrontendEngineering or similar — match the actual content).
+- Final line: 2-3 hashtags max (#WebGPU #BrowserML #FrontendEngineering or similar - match the actual content).
 
 Output: post text only, no preamble.`;
 
@@ -170,7 +170,7 @@ async function main() {
     callAnthropic(liPrompt),
   ]);
 
-  const out = `# Social copy — The Bridge ${WEEK}
+  const out = `# Social copy - The Bridge ${WEEK}
 
 Generated: ${new Date().toISOString()}
 Items: ${items.length}

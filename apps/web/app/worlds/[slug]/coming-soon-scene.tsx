@@ -68,7 +68,7 @@ export function ComingSoonScene({ slug, palette, paletteLight }: Props) {
       />
       {/* These scrims overlay the PAGE (not a cross-world card), so they
           follow the page's own scheme via var(--tc-bg) instead of the TS
-          palette hex — same value in dark scheme, and correctly flips to
+          palette hex - same value in dark scheme, and correctly flips to
           the light neutral under data-scheme="light". */}
       <div
         className="absolute inset-0"

@@ -1,11 +1,11 @@
 # TensorCraft PRD v3.4
 
-> **Product Requirements Document — Version 3.4**
+> **Product Requirements Document - Version 3.4**
 > Last updated: 2026-04-22 (audit fixes: accessibility hardening, user menu, checkout button, admin API + rate limiting + error tracking, new DB tables, CI/CD pipeline additions)
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Where this document says
 > "all 5 worlds launch simultaneously," the actual V1 ships **Deep Orbit
-> only** — the other 4 worlds are "coming soon" with per-world waitlists.
+> only** - the other 4 worlds are "coming soon" with per-world waitlists.
 > See [`docs/launch-scope.md`](./launch-scope.md) for the canonical record
 > of what shipped, what's gated, and how to revive an unlaunched world.
 
@@ -37,7 +37,7 @@ Every front-end developer should be able to build, train, and deploy ML models w
 
 ### Mission
 
-Deliver a gamified, project-based curriculum that meets FE developers where they are — in the browser, in JavaScript, with visual feedback — and guides them from zero ML knowledge to production-ready skills across five thematic learning tracks.
+Deliver a gamified, project-based curriculum that meets FE developers where they are - in the browser, in JavaScript, with visual feedback - and guides them from zero ML knowledge to production-ready skills across five thematic learning tracks.
 
 ---
 
@@ -140,15 +140,15 @@ The bridge system is TensorCraft's core differentiator. Each ML concept is paire
 
 | # | ML Concept | FE Equivalent | Connection |
 |---|---|---|---|
-| 1 | Tensor | Multidimensional Array | "A tensor is just a nested array with shape metadata — like a typed array buffer you already use in WebGL." |
-| 2 | Forward pass | Event propagation (capture phase) | "Data flows through layers the same way an event propagates down the DOM — parent to child, transformed at each node." |
-| 3 | Backpropagation | Event bubbling | "Gradients flow backward through the network like an event bubbling up — each layer adjusts based on what it receives from below." |
+| 1 | Tensor | Multidimensional Array | "A tensor is just a nested array with shape metadata - like a typed array buffer you already use in WebGL." |
+| 2 | Forward pass | Event propagation (capture phase) | "Data flows through layers the same way an event propagates down the DOM - parent to child, transformed at each node." |
+| 3 | Backpropagation | Event bubbling | "Gradients flow backward through the network like an event bubbling up - each layer adjusts based on what it receives from below." |
 | 4 | Loss function | Diff algorithm | "The loss function computes how far off your prediction is, just like React's diffing algorithm computes the minimal set of DOM changes." |
-| 5 | Learning rate | CSS transition-duration | "Learning rate controls step size during optimization — too fast and you overshoot, too slow and you never converge. Same trade-off as tuning transition-duration." |
+| 5 | Learning rate | CSS transition-duration | "Learning rate controls step size during optimization - too fast and you overshoot, too slow and you never converge. Same trade-off as tuning transition-duration." |
 | 6 | Epoch | Re-render cycle | "One epoch is one full pass through the data, like one complete re-render cycle where every component updates." |
-| 7 | Overfitting | Over-engineering a component | "Overfitting is when your model memorizes training data instead of generalizing — like building a hyper-specific component that only works for one page." |
+| 7 | Overfitting | Over-engineering a component | "Overfitting is when your model memorizes training data instead of generalizing - like building a hyper-specific component that only works for one page." |
 | 8 | Regularization | Code linting / constraints | "Regularization penalizes complexity to prevent overfitting, just like lint rules constrain your code to prevent bad patterns." |
-| 9 | Convolutional layer | CSS grid / filter | "A conv layer slides a small kernel over input data — same mental model as a CSS blur or sharpen filter sliding over pixels." |
+| 9 | Convolutional layer | CSS grid / filter | "A conv layer slides a small kernel over input data - same mental model as a CSS blur or sharpen filter sliding over pixels." |
 | 10 | Activation function | CSS clamp() | "An activation function squashes values into a range, just like clamp() constrains a value between a min and max." |
 
 ---
@@ -201,9 +201,9 @@ Screens for user signup/login and the post-signup orientation flow.
 | 1 | Auth screen | P0 | Signup/login screen with three methods: GitHub OAuth, Google OAuth, and email magic link. Centered card layout with Tensorcraft branding. Toggle between signup and login modes. |
 | 2 | OAuth providers | P0 | GitHub OAuth (via Supabase Auth, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
 | 3 | Email magic link | P0 | Passwordless email login via Supabase Auth email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
-| 4 | Onboarding flow | P1 | 6-step post-signup flow: (1) Welcome screen with "Welcome Aboard the Archimedes" + 3 feature cards, (2) Your Background (5 options, saved to `fe_background`), (3) Your Goal (5 options, saved to `learning_goal`), (4) Your Framework — React/Vue/Angular/Svelte/Vanilla with live bridge preview (saved to `fe_framework`), (5) World selection with Deep Orbit pre-highlighted, (6) Ready — configuration summary + "Begin First Lesson" CTA. Stepper indicator shows progress through all 6 steps. |
+| 4 | Onboarding flow | P1 | 6-step post-signup flow: (1) Welcome screen with "Welcome Aboard the Archimedes" + 3 feature cards, (2) Your Background (5 options, saved to `fe_background`), (3) Your Goal (5 options, saved to `learning_goal`), (4) Your Framework - React/Vue/Angular/Svelte/Vanilla with live bridge preview (saved to `fe_framework`), (5) World selection with Deep Orbit pre-highlighted, (6) Ready - configuration summary + "Begin First Lesson" CTA. Stepper indicator shows progress through all 6 steps. |
 | 5 | Onboarding persistence | P1 | Onboarding completion stored in user profile; completed users skip directly to dashboard on future logins. |
-| 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible — user returns to accessible content. |
+| 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible - user returns to accessible content. |
 | 7 | Bridge collectibles | P2 | FE-to-ML bridges surfaced on the dashboard as collectible cards (`bridge-collection.tsx`), integrated with learner progress rather than a standalone reference page. The earlier `/bridges` standalone route was removed in favor of in-context discovery. |
 | 8 | Capstone completion screen | P1 | Celebratory screen shown after completing all 11 modules of a world. Displays: completion stats (modules, lessons, bridges mastered, time invested), simplified journey map showing all modules complete, narrative conclusion with character appearances, "Download Certificate" and "Share Progress" CTAs, "Push to GitHub" link, and "What's Next" suggestions (explore another world, browse bridges, view dashboard). |
 | 9 | User menu component | P0 | Authenticated header dropdown with auth-state detection. Shows avatar (Supabase user metadata or fallback initials), display name, and a dropdown menu with links to Dashboard, Settings, and Sign Out. Unauthenticated state shows "Sign In" button. Sign-out calls Supabase `signOut()` and redirects to landing page. |
@@ -226,7 +226,7 @@ Monetization layer supporting free and paid tiers.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Payment processor | P0 | Integrate Stripe for one-time payments; support credit card and Google Pay / Apple Pay |
-| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 — Module 1 of one world, 5 lessons), **Single World** ($59 — all 11 modules, lifetime access, GitHub integration), **Two Worlds** ($99), **Three Worlds** ($129), **All 5 Worlds** ($159) |
+| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 - Module 1 of one world, 5 lessons), **Single World** ($59 - all 11 modules, lifetime access, GitHub integration), **Two Worlds** ($99), **Three Worlds** ($129), **All 5 Worlds** ($159) |
 | 3 | Purchasing-power parity (PPP) | P1 | Apply automatic regional discounts (up to 60% off) based on IP geolocation using a PPP index table; display original and discounted price |
 | 4 | Upgrade prompts | P1 | When a free-tier user reaches the paywall (end of Module 2), show an in-context upgrade modal with benefit comparison, testimonial, and a 7-day free trial CTA |
 | 5 | Webhook handling | P0 | Listen for Stripe webhooks (`checkout.session.completed`, `charge.refunded`, `charge.failed`) to update user entitlements in real time |
@@ -301,8 +301,8 @@ Track learning behavior, engagement, and conversion events.
 
 | Package | Path | Description |
 |---|---|---|
-| `@tensorcraft/web` | `apps/web` | Next.js 15 application — all user-facing pages, server/client components, and Next.js API routes (OG image generation) |
-| `@tensorcraft/api` | `apps/api` | Hono REST API service — health, waitlist, progress, payments (Stripe), profiles, and exercise-attempts endpoints. Includes admin API endpoints (`GET /api/admin/stats`, `GET /api/admin/waitlist`) protected by API key authentication (`X-API-Key` header). All endpoints are rate-limited via Upstash Redis (`@upstash/ratelimit`) with automatic in-memory fallback when Redis is unavailable. Structured JSON error logging via error-tracking utility (Sentry-compatible `captureException` interface). |
+| `@tensorcraft/web` | `apps/web` | Next.js 15 application - all user-facing pages, server/client components, and Next.js API routes (OG image generation) |
+| `@tensorcraft/api` | `apps/api` | Hono REST API service - health, waitlist, progress, payments (Stripe), profiles, and exercise-attempts endpoints. Includes admin API endpoints (`GET /api/admin/stats`, `GET /api/admin/waitlist`) protected by API key authentication (`X-API-Key` header). All endpoints are rate-limited via Upstash Redis (`@upstash/ratelimit`) with automatic in-memory fallback when Redis is unavailable. Structured JSON error logging via error-tracking utility (Sentry-compatible `captureException` interface). |
 | `@tensorcraft/ui` | `packages/ui` | Shared React component library for MDX content rendering: CodeBlock (Shiki), Exercise (Sandpack), Dialogue, BridgeCallout, HintPanel, Quiz, LearningObjectives, KeyTakeaways |
 | `@tensorcraft/content` | `packages/content` | MDX lesson files, exercise YAML files, module metadata, Velite config, Zod schemas, and content query API |
 | `@tensorcraft/supabase` | `packages/supabase` | Supabase client/server instances, database type definitions, migrations (6 files), seed scripts, and admin operations |
@@ -314,9 +314,9 @@ Track learning behavior, engagement, and conversion events.
 
 Lesson content is authored in **MDX** files stored in the `@tensorcraft/content` package and compiled at build time by **Velite** with **Zod schema validation**. Three collections are defined:
 
-1. **Lessons** (`**/*.mdx`) — Front matter validated by Zod: `slug`, `title`, `moduleId`, `worldId`, `order`, `estimatedMinutes`, `difficulty` (beginner/intermediate/advanced), `context` (narrative + speaker), `concept` (explanation + optional bridge with tier), `consequence` (narrative + next-lesson teaser), `hints` (3-level: nudge/guidance/solution), `keywords`. Body is compiled MDX with embedded components.
-2. **Exercises** (`**/exercises/*.yaml`) — `slug`, `lessonSlug`, `title`, `instructions`, `starterCode`, `solutionCode`, `testCode`, `estimatedMinutes`, `difficulty`.
-3. **Modules** (`**/module.yaml`) — `slug`, `title`, `worldId`, `order`, `description`, `lessonCount` (always 5), `prerequisites`, `track` (foundations/specialization).
+1. **Lessons** (`**/*.mdx`) - Front matter validated by Zod: `slug`, `title`, `moduleId`, `worldId`, `order`, `estimatedMinutes`, `difficulty` (beginner/intermediate/advanced), `context` (narrative + speaker), `concept` (explanation + optional bridge with tier), `consequence` (narrative + next-lesson teaser), `hints` (3-level: nudge/guidance/solution), `keywords`. Body is compiled MDX with embedded components.
+2. **Exercises** (`**/exercises/*.yaml`) - `slug`, `lessonSlug`, `title`, `instructions`, `starterCode`, `solutionCode`, `testCode`, `estimatedMinutes`, `difficulty`.
+3. **Modules** (`**/module.yaml`) - `slug`, `title`, `worldId`, `order`, `description`, `lessonCount` (always 5), `prerequisites`, `track` (foundations/specialization).
 
 **Build step:** Velite compiles MDX to JavaScript and outputs to `.velite/` directory. Turbo task dependency ensures `build:content` runs before `build`. Strict mode fails the build on any invalid frontmatter. Content is queried at runtime via `packages/content/src/queries.ts` (getModules, getModuleLessons, getLesson, getExercise, getAdjacentLessons).
 
@@ -359,7 +359,7 @@ Lesson content is authored in **MDX** files stored in the `@tensorcraft/content`
 
 ## 6. Design System
 
-### 6.1 Design Aesthetic — Brutalist Terminal
+### 6.1 Design Aesthetic - Brutalist Terminal
 
 The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, monospace-first typography. No glow effects, no glassmorphism. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every world palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23 (implementation + verification ledger in `docs/dev-plan.md`).
 
@@ -443,7 +443,7 @@ Each world has a distinct color palette within the lesson content area. Colors a
 
 ## 8. Pricing
 
-### Pricing Model — Per-World (Lifetime Access)
+### Pricing Model - Per-World (Lifetime Access)
 
 Tensorcraft uses a **per-world, one-time purchase model**. Each world is a standalone product with lifetime access. No subscriptions.
 
@@ -482,7 +482,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | Year 3 | $1,000,000 | $1,400,000 | $1,900,000 |
 | 3-Year Cumulative | $1,500,000 | $2,100,000 | $2,870,000 |
 
-*Note: Projections assume all 5 worlds available from Y1 (simultaneous launch). Team pricing not included — will be added post-V1.0.*
+*Note: Projections assume all 5 worlds available from Y1 (simultaneous launch). Team pricing not included - will be added post-V1.0.*
 
 ---
 
@@ -529,7 +529,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | 6 | GitHub OAuth scope changes | Low | Low | GitHub may deprecate or modify OAuth scopes, breaking integration | Abstract GitHub API behind an adapter layer; monitor GitHub changelog; implement graceful degradation if repo access is revoked |
 | 7 | Curriculum staleness | Medium | Medium | ML ecosystem evolves rapidly; lessons may reference outdated APIs or deprecated model architectures | Schedule quarterly content reviews; version lessons with "last updated" date; community contribution pipeline for corrections |
 | 8 | Accessibility compliance | Medium | Medium | Complex interactive components (editor, progress diagram, canvas) may not meet WCAG 2.2 AA | Conduct accessibility audit before each release; use `aria-live` regions for dynamic content; provide text-only alternatives for visual components. **Audit fixes completed:** skip-to-content link on all pages; `sr-only` or visible labels on all form inputs; `aria-pressed` on filter toggle buttons; `aria-label` on OAuth buttons and SVG icons; focus trap and focus restore on modals; `role="progressbar"` with `aria-valuenow`/`aria-valuemin`/`aria-valuemax` on progress bars; color-only indicators supplemented with text labels. |
-| 9 | Competitor response | Medium | High | Established platforms (freeCodeCamp, Codecademy, Scrimba) launch similar FE-to-ML courses | Differentiate on bridge pedagogy and story worlds; build community moat; move fast on content — first-mover advantage in this niche is significant |
+| 9 | Competitor response | Medium | High | Established platforms (freeCodeCamp, Codecademy, Scrimba) launch similar FE-to-ML courses | Differentiate on bridge pedagogy and story worlds; build community moat; move fast on content - first-mover advantage in this niche is significant |
 
 ---
 
@@ -545,21 +545,21 @@ All 11 modules are fully authored with 55 lessons and 56 exercises.
 
 | Order | Slug | Title | Description |
 |---|---|---|---|
-| 1 | `foundations` | Tensors & Data | Board the Archimedes and master tensors, shapes, and operations — the building blocks of every ML model |
-| 2 | `neural-networks` | Neural Networks: Layers & Architecture | Build your first neural network from scratch — neurons, layers, and activations |
-| 3 | `training-loop` | Training: Loss, Gradients & Optimization | Train the DEEP SCAN classifier — loss functions, gradient descent, and the training loop |
+| 1 | `foundations` | Tensors & Data | Board the Archimedes and master tensors, shapes, and operations - the building blocks of every ML model |
+| 2 | `neural-networks` | Neural Networks: Layers & Architecture | Build your first neural network from scratch - neurons, layers, and activations |
+| 3 | `training-loop` | Training: Loss, Gradients & Optimization | Train the DEEP SCAN classifier - loss functions, gradient descent, and the training loop |
 | 6 | `browser-runtimes` | Browser ML Runtimes | Deploy models in the browser with TensorFlow.js, ONNX Runtime Web, and WebGPU |
 
 #### Specialization Track (Modules 4–5, 7–10)
 
 | Order | Slug | Title | Description |
 |---|---|---|---|
-| 4 | `signal-processing` | Signal Processing | FFT, spectrograms, and windowing — transforming raw time-series into rich features |
-| 5 | `recurrent-networks` | Recurrent Networks | RNNs, LSTMs, and GRUs — networks that remember past inputs and predict sequences |
-| 7 | `anomaly-detection` | Anomaly Detection | Autoencoders, reconstruction error, and anomaly scoring — flagging what deviates from normal |
+| 4 | `signal-processing` | Signal Processing | FFT, spectrograms, and windowing - transforming raw time-series into rich features |
+| 5 | `recurrent-networks` | Recurrent Networks | RNNs, LSTMs, and GRUs - networks that remember past inputs and predict sequences |
+| 7 | `anomaly-detection` | Anomaly Detection | Autoencoders, reconstruction error, and anomaly scoring - flagging what deviates from normal |
 | 8 | `advanced-time-series` | Advanced Time-Series | Attention mechanisms, temporal CNNs, Kalman filters, and model ensembles |
 | 9 | `llm-integration` | LLM Integration | Prompt engineering, RAG over signal logs, and multi-model orchestration |
-| 10 | `optimization-edge` | Optimization & Edge | Quantization, pruning, caching, and WebGPU acceleration — shrink and speed up models |
+| 10 | `optimization-edge` | Optimization & Edge | Quantization, pruning, caching, and WebGPU acceleration - shrink and speed up models |
 
 #### Capstone (Module 11)
 

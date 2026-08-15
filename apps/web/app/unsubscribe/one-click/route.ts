@@ -6,7 +6,7 @@ import { getSupabaseAdminClient } from "@tensorcraft/supabase";
  * header points here: mail providers POST (no body contract beyond the
  * List-Unsubscribe=One-Click form field) and expect a 2xx with no
  * confirmation step. The human-facing /unsubscribe PAGE cannot serve
- * this — app-router pages answer GET only, so provider POSTs were
+ * this - app-router pages answer GET only, so provider POSTs were
  * bouncing 405 while the header promised one-click support
  * (2026-07-13 P4 round-3 audit).
  */

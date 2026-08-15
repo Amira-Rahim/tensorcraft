@@ -142,7 +142,7 @@ function WorldCard({ card }: { card: WorldCardData }) {
           // globals.css) picks between them into --card-active-primary,
           // which every `card.primary`-driven style below reads instead.
           // world-cards-grid.tsx (a client component) uses useScheme()
-          // directly instead — see that file's WorldCard for the contrast.
+          // directly instead - see that file's WorldCard for the contrast.
           "--card-primary": card.primary,
           "--card-primary-light": card.primaryLight ?? card.primary,
         } as React.CSSProperties

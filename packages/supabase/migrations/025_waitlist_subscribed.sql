@@ -1,9 +1,9 @@
 -- Tensorcraft: extend the waitlist table for newsletter delivery.
 --
 -- Adds two columns to public.waitlist:
---   - subscribed       — opt-out flag, defaults to true. The newsletter sender
+--   - subscribed - opt-out flag, defaults to true. The newsletter sender
 --                        (apps/api/src/lib/newsletter.ts) filters on this.
---   - unsubscribe_token — opaque token used in the one-click unsubscribe link.
+--   - unsubscribe_token - opaque token used in the one-click unsubscribe link.
 --                        Generated server-side; never exposed in API responses
 --                        beyond the URL embedded in the email itself.
 --
@@ -18,7 +18,7 @@ alter table public.waitlist
 alter table public.waitlist
   add column if not exists unsubscribe_token uuid not null default gen_random_uuid();
 
--- Backfill is implicit via the column defaults — no UPDATE needed.
+-- Backfill is implicit via the column defaults - no UPDATE needed.
 
 -- Looking up a row by token in the unsubscribe handler is the hot path.
 create unique index if not exists uq_waitlist_unsubscribe_token

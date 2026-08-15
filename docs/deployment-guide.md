@@ -22,7 +22,7 @@ Set these in Vercel Environment Variables dashboard or `.env.local` for local de
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous (public) key |
 | `NEXT_PUBLIC_API_URL` | Yes | API service URL (e.g., `https://api.tensorcraft.app`) |
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | PostHog project API key for product analytics |
-| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog instance URL — **must be EU** (`https://eu.posthog.com`) for GDPR residency |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog instance URL - **must be EU** (`https://eu.posthog.com`) for GDPR residency |
 | `NEXT_PUBLIC_SENTRY_DSN` | No | Sentry DSN for client + server + edge error tracking (EU-region project) |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | No | Domain registered in Plausible (e.g., `tensorcraft.app`) |
 
@@ -37,7 +37,7 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `STRIPE_SECRET_KEY` | Yes | Stripe secret key |
 | `STRIPE_WEBHOOK_SECRET` | Yes | Stripe webhook signing secret |
 | `STRIPE_TAX_ENABLED` | Launch | "true" enables Stripe Tax + invoices on checkout. Requires dashboard Tax setup + migration 047 applied first. Unset = silently untaxed sales (legal exposure R2-4/R3-3) |
-| `CERT_SIGNING_SECRET` | Yes | Certificate signing secret — unset, certificate issuance 500s (fail-closed) |
+| `CERT_SIGNING_SECRET` | Yes | Certificate signing secret - unset, certificate issuance 500s (fail-closed) |
 | `PORT` | No | API server port (default: `3001`) |
 | `APP_URL` | No | Application URL used for Stripe checkout redirects (fallback: `NEXT_PUBLIC_APP_URL` or `http://localhost:3000`) |
 | `CORS_ORIGINS` | No | Comma-separated allowed origins (default: `http://localhost:3000`) |
@@ -46,7 +46,7 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `ADMIN_API_KEY` | Yes | API key for admin endpoints (used by CI/scripts as fallback to role-based auth) |
 | `SENTRY_DSN` | No | Sentry DSN for the API (EU-region project) |
 | `POSTHOG_KEY` | No | PostHog server-side key for webhook-triggered conversion events |
-| `POSTHOG_HOST` | No | PostHog host — **must be EU** (`https://eu.posthog.com`) |
+| `POSTHOG_HOST` | No | PostHog host - **must be EU** (`https://eu.posthog.com`) |
 
 ### Optional Integrations (`apps/api`)
 
@@ -144,12 +144,12 @@ from the local env file without values touching argv:
 `grep '^KEY=' apps/api/.env | fly secrets import -a tensorcraft-api`.
 
 **Secrets preflight:** `pnpm deploy:preflight` diffs the required lists in
-`apps/api/src/env.ts` (ALWAYS_REQUIRED + PROD_REQUIRED — the image bakes
+`apps/api/src/env.ts` (ALWAYS_REQUIRED + PROD_REQUIRED - the image bakes
 `NODE_ENV=production`, so both apply) against `fly secrets list` names.
 `deploy-api.yml` runs it before `flyctl deploy` and fails closed (exit 1 =
 missing vars, exit 2 = could not check). Added after the 2026-07-25 incident
 where a green deploy crash-looped at boot on two unset secrets
-(`CERT_SIGNING_SECRET`, `KIT_WEBHOOK_SECRET`) — the migration gate cannot see
+(`CERT_SIGNING_SECRET`, `KIT_WEBHOOK_SECRET`) - the migration gate cannot see
 runtime env, so this gate exists specifically for it. A drift-guard test
 (`apps/api/src/__tests__/deploy-preflight.test.ts`) pins the script's env.ts
 parse against the real exports.
@@ -172,18 +172,18 @@ Supabase is managed via their dashboard:
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every push and PR:
 
-1. **Install** — `pnpm install`
-2. **Lint** — `pnpm lint`
-3. **Typecheck** — `pnpm typecheck`
-4. **Build** — `pnpm build` (includes content compilation)
-5. **Unit Tests** — `pnpm test`
-6. **E2E Tests** — Install Playwright browsers, then `pnpm test:e2e`
+1. **Install** - `pnpm install`
+2. **Lint** - `pnpm lint`
+3. **Typecheck** - `pnpm typecheck`
+4. **Build** - `pnpm build` (includes content compilation)
+5. **Unit Tests** - `pnpm test`
+6. **E2E Tests** - Install Playwright browsers, then `pnpm test:e2e`
 
 ### Pre-commit Hooks
 
 Husky + lint-staged runs on every commit:
-- `*.{ts,tsx,mts}` — `prettier --write` + `eslint --fix`
-- `*.{json,md,css,html}` — `prettier --write`
+- `*.{ts,tsx,mts}` - `prettier --write` + `eslint --fix`
+- `*.{json,md,css,html}` - `prettier --write`
 
 ---
 
@@ -191,8 +191,8 @@ Husky + lint-staged runs on every commit:
 
 The API uses a two-tier rate limiting strategy:
 
-1. **Primary: Upstash Redis** — When `UPSTASH_REDIS_REST_URL` is set, rate limits are stored in Redis for distributed, production-ready limiting across multiple instances.
-2. **Fallback: In-memory Map** — When Redis is not configured, an in-memory Map tracks request counts per IP. Suitable for single-instance deployments and local development.
+1. **Primary: Upstash Redis** - When `UPSTASH_REDIS_REST_URL` is set, rate limits are stored in Redis for distributed, production-ready limiting across multiple instances.
+2. **Fallback: In-memory Map** - When Redis is not configured, an in-memory Map tracks request counts per IP. Suitable for single-instance deployments and local development.
 
 Limit: 60 requests per minute per IP (code truth; reconciled 2026-07-25). The Stripe webhook route is exempt.
 
@@ -200,13 +200,13 @@ Limit: 60 requests per minute per IP (code truth; reconciled 2026-07-25). The St
 
 ## Monitoring
 
-### Error Tracking — Sentry
+### Error Tracking - Sentry
 
 Both apps are wired to Sentry (Phase 6 §6g). Initialization is gated
 on the DSN env vars, so dev/preview without a DSN runs as a complete
 no-op.
 
-- **Web (`apps/web`)** — `@sentry/nextjs` initialized via
+- **Web (`apps/web`)** - `@sentry/nextjs` initialized via
   `sentry.client.config.ts`, `sentry.server.config.ts`, and
   `sentry.edge.config.ts`. Registered through `instrumentation.ts`.
   DSN: `NEXT_PUBLIC_SENTRY_DSN`.
@@ -217,7 +217,7 @@ no-op.
     via `ignoreErrors`.
   - `error.tsx` and `global-error.tsx` call `Sentry.captureException`
     so both route-level and app-level boundaries report.
-- **API (`apps/api`)** — `@sentry/node` initialized at the top of
+- **API (`apps/api`)** - `@sentry/node` initialized at the top of
   `src/index.ts` (before Hono). DSN: `SENTRY_DSN`.
   - A `sentryMiddleware` tags each request's Sentry scope with
     `requestId`, `route`, and `method` so every captured error is
@@ -234,17 +234,17 @@ Separate Sentry projects must be created for web and API, both in the
 EU region. Data Processing Agreement with Sentry must be signed before
 production launch (see `docs/privacy-compliance.md`).
 
-### Product Analytics — PostHog (EU instance)
+### Product Analytics - PostHog (EU instance)
 
-- **Web** — `apps/web/lib/posthog.ts` handles client-side init,
+- **Web** - `apps/web/lib/posthog.ts` handles client-side init,
   mounted via `apps/web/app/posthog-provider.tsx`. Consent-gated via
   the `tc-cookie-consent` localStorage flag.
-- **API** — `apps/api/src/lib/posthog.ts` exposes a `posthog-node`
+- **API** - `apps/api/src/lib/posthog.ts` exposes a `posthog-node`
   client for webhook-triggered conversion events. Only constructed
   when `POSTHOG_KEY` is set.
 
 Host **must** be `https://eu.posthog.com` (enforced by default in
-both init paths) for GDPR data residency. DPA required — see
+both init paths) for GDPR data residency. DPA required - see
 `docs/privacy-compliance.md`.
 
 ### Legacy stub
@@ -281,7 +281,7 @@ code should use `Sentry.captureException` or the per-request
 - CLS (Cumulative Layout Shift) < 0.1
 - INP (Interaction to Next Paint) < 200ms
 
-Enforced via Lighthouse CI on every pull request — see
+Enforced via Lighthouse CI on every pull request - see
 `.github/workflows/lighthouse.yml`, `.github/lighthouserc.json`, and
 `.github/lighthouse-budget.json`. Category thresholds:
 
@@ -298,7 +298,7 @@ the middleware.
 
 ### First-load JS budgets
 
-Measured from `next build` output (`apps/web/`). Budgets are ceilings — if a
+Measured from `next build` output (`apps/web/`). Budgets are ceilings - if a
 PR exceeds them, investigate before merging. Values below reflect
 2026-04-21 baseline.
 
@@ -314,7 +314,7 @@ PR exceeds them, investigate before merging. Values below reflect
 
 The lesson route is heaviest because it lazy-loads Sandpack
 (`@codesandbox/sandpack-react`, ~500 kB gzipped on first use) via
-`React.lazy` — it is code-split and not on the critical path. See
+`React.lazy` - it is code-split and not on the critical path. See
 `packages/ui/src/mdx/exercise.tsx`.
 
 ### Running bundle analysis locally

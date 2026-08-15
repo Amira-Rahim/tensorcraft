@@ -12,7 +12,7 @@ export const WORLD_SLUGS = [
 export type WorldSlug = (typeof WORLD_SLUGS)[number];
 
 /**
- * Per-world corpus SHAPE — the real lesson/module counts on disk, per world.
+ * Per-world corpus SHAPE - the real lesson/module counts on disk, per world.
  *
  * Scalability re-audit 2026-07-24 (§RE-AUDIT / N2, finding F-A). The corpus is
  * NOT uniform: deep-orbit has 56 lessons (browser-runtimes carries 6),
@@ -151,7 +151,7 @@ export const WORLD_CONTENT = {
   // world (deep-orbit) for marketing; a gate asserts they equal
   // WORLD_SHAPE["deep-orbit"] so the two cannot drift.
   // Lesson-embedded FE→ML bridges in the launched world. Single source for
-  // every marketing surface (/learn, FAQ, onboarding) — three surfaces
+  // every marketing surface (/learn, FAQ, onboarding) - three surfaces
   // carried three different counts (50+/51/55) until 2026-07-14. Pinned to
   // the real corpus by packages/content/__tests__/bridge-breaks.test.ts.
   lessonBridges: 55,

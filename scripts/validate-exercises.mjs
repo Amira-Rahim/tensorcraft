@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Exercise validator — CI-only harness.
+ * Exercise validator - CI-only harness.
  *
  * Reads the velite-compiled exercises.json and verifies for each exercise:
  *   1. Starter code parses as JavaScript (after TS/import stripping).
@@ -10,8 +10,8 @@
  * but is dependency-free so it runs on a fresh CI worker without building UI.
  *
  * Exit codes:
- *   0 — every exercise validated.
- *   1 — at least one exercise failed.
+ *   0 - every exercise validated.
+ *   1 - at least one exercise failed.
  *
  * Usage:
  *   node scripts/validate-exercises.mjs               # validates all
@@ -105,24 +105,42 @@ const TIMEOUT_MS = 10_000;
 
 import { stripTypeScript } from "./lib/strip-typescript.mjs";
 
-
 /**
  * Heuristic: does the top-level of `code` contain a bare `await`?
  * Tracks brace / paren depth so `await` inside function bodies doesn't count.
  */
 function hasBareTopLevelAwait(code) {
-  let brace = 0, paren = 0, bracket = 0;
+  let brace = 0,
+    paren = 0,
+    bracket = 0;
   let i = 0;
   const n = code.length;
   while (i < n) {
     const c = code[i];
-    if (c === "/" && code[i + 1] === "/") { i = code.indexOf("\n", i); if (i === -1) return false; i++; continue; }
-    if (c === "/" && code[i + 1] === "*") { i = code.indexOf("*/", i + 2); if (i === -1) return false; i += 2; continue; }
+    if (c === "/" && code[i + 1] === "/") {
+      i = code.indexOf("\n", i);
+      if (i === -1) return false;
+      i++;
+      continue;
+    }
+    if (c === "/" && code[i + 1] === "*") {
+      i = code.indexOf("*/", i + 2);
+      if (i === -1) return false;
+      i += 2;
+      continue;
+    }
     if (c === '"' || c === "'" || c === "`") {
-      const q = c; i++;
+      const q = c;
+      i++;
       while (i < n) {
-        if (code[i] === "\\") { i += 2; continue; }
-        if (code[i] === q) { i++; break; }
+        if (code[i] === "\\") {
+          i += 2;
+          continue;
+        }
+        if (code[i] === q) {
+          i++;
+          break;
+        }
         i++;
       }
       continue;
@@ -133,7 +151,14 @@ function hasBareTopLevelAwait(code) {
     else if (c === ")") paren--;
     else if (c === "[") bracket++;
     else if (c === "]") bracket--;
-    if (brace === 0 && paren === 0 && bracket === 0 && c === "a" && code.slice(i, i + 5) === "await" && !/[\w$]/.test(code[i + 5] || "")) {
+    if (
+      brace === 0 &&
+      paren === 0 &&
+      bracket === 0 &&
+      c === "a" &&
+      code.slice(i, i + 5) === "await" &&
+      !/[\w$]/.test(code[i + 5] || "")
+    ) {
       // Check previous non-space isn't a word char.
       let k = i - 1;
       while (k >= 0 && /\s/.test(code[k])) k--;
@@ -154,7 +179,7 @@ function syntaxCheck(code) {
   }
 }
 
-// Harness — mirrors packages/ui/src/mdx/exercise.tsx parseAndRunTests, with
+// Harness - mirrors packages/ui/src/mdx/exercise.tsx parseAndRunTests, with
 // one correctness fix: we collect every `it()` promise into `__pending` so
 // that `describe()` can await the whole batch before returning. The in-browser
 // harness lets these promises float; in CI we need deterministic results so
@@ -185,7 +210,7 @@ const HARNESS = `
       });
     }
     // beforeAll fires exactly once, at registration time (see beforeAll
-    // below) — matching the shipped runtime harness. Do NOT re-fire here:
+    // below) - matching the shipped runtime harness. Do NOT re-fire here:
     // a non-idempotent setup (counter, push) must behave identically in
     // CI grading and in the learner's browser.
     // Let registered test() promises settle for this describe.
@@ -321,7 +346,7 @@ const HARNESS = `
         var diff = Math.abs(actual - expected);
         var limit = Math.pow(10, -precision) / 2;
         // NaN-safe: a non-numeric actual makes diff NaN, and 'NaN >= limit'
-        // is false — the negated form fails instead of silently passing.
+        // is false - the negated form fails instead of silently passing.
         if (!(diff < limit)) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
       },
       toHaveProperty: function(key, value) {
@@ -944,7 +969,7 @@ const TF_MOCK = `
         hingeLoss: function() { return _tf.scalar(0.2); },
         logLoss: function() { return _tf.scalar(0.3); },
       },
-      // Metrics namespace — all return a scalar 0.5 (harness checks callability,
+      // Metrics namespace - all return a scalar 0.5 (harness checks callability,
       // not values).
       metrics: {
         accuracy: function() { return _tf.scalar(0.5); },
@@ -956,7 +981,7 @@ const TF_MOCK = `
         meanAbsoluteError: function() { return _tf.scalar(0.1); },
         meanSquaredError: function() { return _tf.scalar(0.1); },
       },
-      // Signal namespace — minimal STFT/RFFT returning reasonably-shaped tensors.
+      // Signal namespace - minimal STFT/RFFT returning reasonably-shaped tensors.
       // tf.spectral aliases the same operations in real TF.js.
       get spectral() { return _tf.signal; },
       signal: {
@@ -986,7 +1011,7 @@ const TF_MOCK = `
         fft: function(input) { return input.shape ? _tf.zeros(input.shape) : _tf.zeros([1]); },
         ifft: function(input) { return input.shape ? _tf.zeros(input.shape) : _tf.zeros([1]); },
       },
-      // Image namespace — resizing stubs return tensors at the requested size.
+      // Image namespace - resizing stubs return tensors at the requested size.
       image: {
         resizeBilinear: function(img, size) {
           // size = [height, width]
@@ -1415,7 +1440,7 @@ async function runSolutionTests(userCode, testCode) {
   const hasTopLevelAwait = hasBareTopLevelAwait(cleanCode);
 
   // Real `@tensorflow/tfjs` is injected as `tf` via the vm context, so the
-  // mock TF_MOCK template is no longer prepended — the inline mock had drifted
+  // mock TF_MOCK template is no longer prepended - the inline mock had drifted
   // behind the real API surface and produced spurious failures on axis-aware
   // ops, multi-dim shapes, and recently-added kernels (`maxPool`, `eye`,
   // `expandDims`, transpose flags on `matMul`, etc.). Mock retained in source
@@ -1473,7 +1498,9 @@ async function runSolutionTests(userCode, testCode) {
       const measures = new Map();
       return {
         now: () => Date.now() + Math.random(),
-        mark: (name) => { marks.set(name, Date.now() + Math.random()); },
+        mark: (name) => {
+          marks.set(name, Date.now() + Math.random());
+        },
         measure: (name, start, end) => {
           const s = marks.get(start) ?? 0;
           const e = marks.get(end) ?? s + 1;
@@ -1483,15 +1510,20 @@ async function runSolutionTests(userCode, testCode) {
         clearMeasures: () => measures.clear(),
         getEntriesByName: (name) => {
           const duration = measures.get(name);
-          if (duration !== undefined) return [{ name, duration, entryType: 'measure' }];
+          if (duration !== undefined)
+            return [{ name, duration, entryType: "measure" }];
           return [];
         },
         getEntriesByType: () => [],
       };
     })(),
-    navigator: { gpu: undefined, userAgent: 'validator', hardwareConcurrency: 4 },
+    navigator: {
+      gpu: undefined,
+      userAgent: "validator",
+      hardwareConcurrency: 4,
+    },
     process: { env: {}, hrtime: () => [0, 0] },
-    // Real `@tensorflow/tfjs` (v4.22) — replaces the inline mock so axis-aware
+    // Real `@tensorflow/tfjs` (v4.22) - replaces the inline mock so axis-aware
     // ops, multi-dim shapes, and the full kernel surface (`maxPool`, `eye`,
     // `expandDims`, transpose flags, etc.) work exactly as they do at runtime.
     // Wrapped via Proxy so `loadLayersModel` / `loadGraphModel` return a
@@ -1501,17 +1533,35 @@ async function runSolutionTests(userCode, testCode) {
     URLSearchParams,
     TextEncoder,
     TextDecoder,
-    atob: typeof atob !== 'undefined' ? atob : (s) => Buffer.from(s, 'base64').toString('binary'),
-    btoa: typeof btoa !== 'undefined' ? btoa : (s) => Buffer.from(s, 'binary').toString('base64'),
-    fetch: () => Promise.resolve({ ok: true, json: () => Promise.resolve({}), text: () => Promise.resolve(''), arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)) }),
+    atob:
+      typeof atob !== "undefined"
+        ? atob
+        : (s) => Buffer.from(s, "base64").toString("binary"),
+    btoa:
+      typeof btoa !== "undefined"
+        ? btoa
+        : (s) => Buffer.from(s, "binary").toString("base64"),
+    fetch: () =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({}),
+        text: () => Promise.resolve(""),
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+      }),
     // ONNX runtime-web shim.
     ort: {
       InferenceSession: {
-        create: () => Promise.resolve({
-          run: () => Promise.resolve({ output: { data: new Float32Array([0.5]) } }),
-        }),
+        create: () =>
+          Promise.resolve({
+            run: () =>
+              Promise.resolve({ output: { data: new Float32Array([0.5]) } }),
+          }),
       },
-      Tensor: function(type, data, dims) { this.type = type; this.data = data; this.dims = dims; },
+      Tensor: function (type, data, dims) {
+        this.type = type;
+        this.data = data;
+        this.dims = dims;
+      },
     },
   };
   vm.createContext(context);
@@ -1612,11 +1662,11 @@ async function main() {
     if (allowlist.has(ex.slug) && !strict) {
       warned++;
       warnings.push(entry);
-      console.log(`  WARN  ${ex.slug} (${ex.lessonSlug}) — ${phase}: ${error}`);
+      console.log(`  WARN  ${ex.slug} (${ex.lessonSlug}) - ${phase}: ${error}`);
     } else {
       failed++;
       failures.push(entry);
-      console.log(`  FAIL  ${ex.slug} (${ex.lessonSlug}) — ${phase}: ${error}`);
+      console.log(`  FAIL  ${ex.slug} (${ex.lessonSlug}) - ${phase}: ${error}`);
     }
   };
 
@@ -1652,7 +1702,7 @@ async function main() {
 
     // 3. Grader strength: a test suite whose every assertion is
     //    existence-only (toBeDefined/toBeTruthy) passes for ANY code that
-    //    declares the right variable names — it grades nothing. Fail loudly
+    //    declares the right variable names - it grades nothing. Fail loudly
     //    so weak suites can't ship.
     const strongAssertion =
       /toBeCloseTo|toEqual|toBe\(|toHaveLength|toMatch|toBeGreaterThan|toBeLessThan|toContain|toBeInstanceOf|arrayContaining/i;

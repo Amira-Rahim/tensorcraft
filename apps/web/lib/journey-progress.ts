@@ -35,8 +35,8 @@ export interface JourneyState {
  *
  * This is the READ foundation for the hybrid canonical track (scalability
  * audit F2, owner decision: canonical track + free play). It composes three
- * already-centralized sources — journey ring order (shared), entitlements
- * (getEntitledWorlds), and per-world completion (world_progress) — into one
+ * already-centralized sources - journey ring order (shared), entitlements
+ * (getEntitledWorlds), and per-world completion (world_progress) - into one
  * shape the canonical-track UI consumes.
  *
  * Position is DERIVED here from completion, never stored (migration 044
@@ -48,6 +48,22 @@ export interface JourneyState {
  * only as the durable completion record (completed_at), written by the
  * /journey page when it first observes the closed ring.
  */
+/**
+ * The ring for a signed-out visitor: five worlds in order, nothing owned,
+ * nothing completed. Lets the /journey page render the same JourneyRing
+ * markup for both auth states instead of keeping a parallel guest list.
+ */
+export function buildGuestJourneyStates(): JourneyWorldState[] {
+  return JOURNEY_ORDER.map((slug, position) => ({
+    slug,
+    position,
+    owned: false,
+    completed: false,
+    completedLessons: 0,
+    totalLessons: getWorldTotalLessons(slug),
+  }));
+}
+
 export async function getJourneyState(userId: string): Promise<JourneyState> {
   const supabase = await getSupabaseServerClient();
 
@@ -92,14 +108,14 @@ export async function getJourneyState(userId: string): Promise<JourneyState> {
   }
 
   // Per-world total: the corpus is NOT uniform (deep-orbit 56, neon 54, the
-  // rest 55 — re-audit N2/F-A), so each world's completion is measured against
+  // rest 55 - re-audit N2/F-A), so each world's completion is measured against
   // its OWN lesson count, not one shared constant.
   const worlds: JourneyWorldState[] = JOURNEY_ORDER.map((slug, position) => {
     const total = getWorldTotalLessons(slug);
     // Count only lessons that exist in the CURRENT corpus. world_progress
     // keeps rows for re-slugged/removed lessons (tl/05 was rebuilt once),
     // and counting orphans can mark a world "completed" while live lessons
-    // remain undone — and push done past total.
+    // remain undone - and push done past total.
     const validSlugs = new Set(getWorldLessons(slug).map((l) => l.slug));
     let done = 0;
     for (const lessonId of completedByWorld.get(slug) ?? []) {

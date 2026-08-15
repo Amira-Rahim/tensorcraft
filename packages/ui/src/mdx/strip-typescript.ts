@@ -16,7 +16,7 @@
  *   - `<T, U>` generics on calls/decls  → removed
  *   - `interface`, `type` declarations  → removed
  *
- * This is a coarse heuristic, not a real TS parser — good enough for the
+ * This is a coarse heuristic, not a real TS parser - good enough for the
  * handful of patterns exercise authors use in their starter/solution snippets.
  */
 function stripTypeScript(code) {
@@ -40,7 +40,7 @@ function stripTypeScript(code) {
   );
   s = s.replace(/^\s*export\s*\{[^}]*\};?\s*$/gm, "");
 
-  // Drop `enum Foo { ... }` — treat like interface.
+  // Drop `enum Foo { ... }` - treat like interface.
   s = stripEnumDecls(s);
 
   // Drop generic type params on function/class declarations and call sites.
@@ -67,19 +67,19 @@ function stripTypeScript(code) {
 
   // Strip TS-only class member modifiers (`private`, `public`, `protected`,
   // `readonly`, `override`, `abstract`) so Node's parser sees plain class
-  // fields.  Applied within class bodies only — cheap heuristic keyed on
+  // fields.  Applied within class bodies only - cheap heuristic keyed on
   // start-of-line.
   s = s.replace(
     /^(\s*)(public|private|protected|readonly|override|abstract)\s+(?=(public|private|protected|readonly|override|abstract|static|async|\*|get|set|constructor|\w|\[))/gm,
     "$1",
   );
-  // Multiple modifiers in a row (e.g. `private readonly`) — run again.
+  // Multiple modifiers in a row (e.g. `private readonly`) - run again.
   s = s.replace(
     /^(\s*)(public|private|protected|readonly|override|abstract)\s+(?=(public|private|protected|readonly|override|abstract|static|async|\*|get|set|constructor|\w|\[))/gm,
     "$1",
   );
 
-  // Constructor-parameter modifiers: `constructor(private readonly foo: T)` —
+  // Constructor-parameter modifiers: `constructor(private readonly foo: T)` -
   // strip the modifier so the parameter name survives.
   s = s.replace(
     /(\(|,)\s*(public|private|protected|readonly)\s+(public|private|protected|readonly)\s+/g,
@@ -103,7 +103,7 @@ function stripTypeScript(code) {
   // `value as [T, U, ...]` tuple assertions: balance `[]` to consume.
   s = stripAsTupleAssertions(s);
 
-  // Optional property / parameter markers: `foo?: number` — the `?` must be
+  // Optional property / parameter markers: `foo?: number` - the `?` must be
   // removed before we strip the type annotation so the parser is happy.
   // Only targets `?:` to avoid optional chaining / ternary.
   s = s.replace(/([A-Za-z_$][\w$]*)\?:/g, "$1:");
@@ -112,7 +112,7 @@ function stripTypeScript(code) {
   s = stripTypeAnnotations(s);
 
   // Remove `<Type>value` TSX-style assertions that survived (rare).
-  // Skip — would collide with JSX; not needed for these exercises.
+  // Skip - would collide with JSX; not needed for these exercises.
 
   return s;
 }
@@ -355,7 +355,7 @@ function stripInterfaceAndTypeDecls(src) {
         }
       }
       if (typeMatch) {
-        // `type Foo<...> = <type>;` — skip until top-level `;` or newline
+        // `type Foo<...> = <type>;` - skip until top-level `;` or newline
         // (whichever comes after the `=`), balancing brackets.
         let k = j + typeMatch[0].length;
         // Skip optional generic params `<…>`.
@@ -487,7 +487,7 @@ function stripTypeAnnotations(src) {
     if (prev === "}") return "block"; // else / after block
     if (prev === "{") return "block"; // block inside block
     if (prev === ";") return "block";
-    // `=>` arrow function body (bare brace body) — block. Note: `() => ({})`
+    // `=>` arrow function body (bare brace body) - block. Note: `() => ({})`
     // wraps the object literal in parens, so we never see `{` right after `>`
     // unless it's a function body.
     if (prev === ">" && last > 0 && out[last - 1] === "=") return "block";
@@ -682,7 +682,7 @@ function stripTypeAnnotations(src) {
       }
       // Object-literal key: don't strip. Only true when the enclosing brace
       // is "obj" AND we're directly inside it (not in a nested paren / bracket
-      // that opened after the brace — e.g. the parens of `process: (n: T) =>`
+      // that opened after the brace - e.g. the parens of `process: (n: T) =>`
       // inside an object literal are a new syntactic context).
       const topBrace =
         braceStack.length > 0 ? braceStack[braceStack.length - 1] : null;

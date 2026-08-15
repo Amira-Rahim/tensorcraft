@@ -8,7 +8,7 @@
  * Deep Orbit is the default (applied on :root).
  */
 
-/* ===== DEEP ORBIT (Space) — Default World ===== */
+/* ===== DEEP ORBIT (Space) - Default World ===== */
 :root,
 [data-world="deep-orbit"] {
   --tc-bg: #181818;
@@ -37,7 +37,7 @@
   /* New surface tier */
   --tc-surface-raised: #2c2c2c;
 
-  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  /* RGB triplet for canvas/inline rgba() usage - must stay in sync with --tc-primary */
   --tc-primary-rgb: 107, 170, 138;
 
   /* Derived accent variables */
@@ -58,7 +58,7 @@
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 
-  /* Semantic colors (global — only declared here, on :root). Success and
+  /* Semantic colors (global - only declared here, on :root). Success and
      error are the old green-400/red-300 pastels, not the mid-tone emeralds/
      reds: semantic text sits on its own 8-20% tints over RAISED surfaces
      (exercise result panels, toasts), and mid-tones fail 4.5:1 there.
@@ -74,7 +74,7 @@
      >=4.6:1 vs #ffffff). Locked by world-properties.test.ts. */
   --tc-on-primary: #181818;
 
-  /* Grid background overlay line color (global — only declared here, on :root) */
+  /* Grid background overlay line color (global - only declared here, on :root) */
   --tc-grid-line: rgba(255, 255, 255, 0.018);
 }
 
@@ -99,7 +99,7 @@
   /* New surface tier */
   --tc-surface-raised: #2c2c2c;
 
-  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  /* RGB triplet for canvas/inline rgba() usage - must stay in sync with --tc-primary */
   --tc-primary-rgb: 63, 196, 220;
 
   /* Derived accent variables */
@@ -141,7 +141,7 @@
   /* New surface tier */
   --tc-surface-raised: #2c2c2c;
 
-  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  /* RGB triplet for canvas/inline rgba() usage - must stay in sync with --tc-primary */
   --tc-primary-rgb: 101, 192, 125;
 
   /* Derived accent variables */
@@ -183,7 +183,7 @@
   /* New surface tier */
   --tc-surface-raised: #2c2c2c;
 
-  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  /* RGB triplet for canvas/inline rgba() usage - must stay in sync with --tc-primary */
   --tc-primary-rgb: 224, 128, 88;
 
   /* Derived accent variables */
@@ -225,7 +225,7 @@
   /* New surface tier */
   --tc-surface-raised: #2c2c2c;
 
-  /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+  /* RGB triplet for canvas/inline rgba() usage - must stay in sync with --tc-primary */
   --tc-primary-rgb: 196, 149, 53;
 
   /* Derived accent variables */
@@ -283,7 +283,7 @@
    There is NO ordering constraint between this block and the four
    per-world light blocks below: [data-world="X"][data-scheme="light"] is
    (0,2,0), which unconditionally outranks this block's bare (0,1,0)
-   selector on any element with a non-default data-world value — that's a
+   selector on any element with a non-default data-world value - that's a
    real specificity win, not a same-specificity tie broken by source
    order. And the five [data-world="X"][data-scheme="light"] compound
    selectors (this one's + the other four's) never compete with each
@@ -295,7 +295,7 @@
    above: the shared-neutral bare [data-scheme="light"] selector (0,1,0)
    really does tie with :root / [data-world="X"] (also (0,1,0)) on an
    element that has both a data-world and data-scheme="light" attribute,
-   and that tie is broken by source order — see the comment on the
+   and that tie is broken by source order - see the comment on the
    neutrals block above. */
 [data-scheme="light"],
 [data-world="deep-orbit"][data-scheme="light"] {

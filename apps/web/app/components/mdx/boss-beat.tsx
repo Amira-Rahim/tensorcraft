@@ -48,7 +48,7 @@ const TIMEOUT_LABEL: BossBeatChoiceLabel = "random";
 function displayOrder(beatId: string): number[] {
   // FNV-1a + xorshift mixing. The first draft used a plain LCG with
   // low-bit modulo, whose short low-bit cycles parked "dominant" at the
-  // same position for every beat — an answer key that had merely moved
+  // same position for every beat - an answer key that had merely moved
   // (caught by the 2026-07-13 P3 round-3 audit). Verified: the four
   // strong option is no longer parked at a single position across the
   // shipped beats (two of four share one; the unit test pins >1 distinct
@@ -98,7 +98,7 @@ export function BossBeat({
       // `setLoading(false)` used to live only inside `.then()`, so any
       // rejection left the component stuck on "Loading beat…" permanently.
       // Treat a failed lookup as "no prior choice" and let the learner play
-      // the beat — over-offering is recoverable, a dead component is not.
+      // the beat - over-offering is recoverable, a dead component is not.
       .catch(() => {
         if (active && !startedAtRef.current) {
           startedAtRef.current = Date.now();
@@ -138,7 +138,7 @@ export function BossBeat({
     // with the `submittedIndex !== null` guard above, that meant a failed
     // save was indistinguishable from a successful one: the beat rendered
     // its consequence, the guard permanently blocked retry, and the choice
-    // was never recorded. It looked saved and never was — the worst failure
+    // was never recorded. It looked saved and never was - the worst failure
     // shape available, because the learner has no reason to suspect it.
     //
     // The state now advances only after the write resolves. A rejection

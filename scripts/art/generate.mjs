@@ -27,7 +27,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 
 // ── env ──────────────────────────────────────────────────────────────
 // Repo root or inside the gitignored staging dir; both are ignored, so
@@ -66,8 +69,10 @@ const PHASES = [
   "patches",
   "seals",
 ];
-if (!PROVIDERS.includes(args.provider)) die(`--provider must be one of ${PROVIDERS.join("|")}`);
-if (!PHASES.includes(args.phase)) die(`--phase must be one of ${PHASES.join("|")}`);
+if (!PROVIDERS.includes(args.provider))
+  die(`--provider must be one of ${PROVIDERS.join("|")}`);
+if (!PHASES.includes(args.phase))
+  die(`--phase must be one of ${PHASES.join("|")}`);
 if (!args.id) die("--id <slug> is required (output name stem)");
 const count = Number(args.count ?? 3);
 const size = args.size ?? "1024x1024";
@@ -92,22 +97,30 @@ async function withRetry(attempt, { tries = 4 } = {}) {
     const result = await attempt();
     if (result.ok || i >= tries || !result.retryable) return result;
     const wait = 1500 * i;
-    console.error(`  transient ${result.status}, retry ${i}/${tries - 1} in ${wait}ms`);
+    console.error(
+      `  transient ${result.status}, retry ${i}/${tries - 1} in ${wait}ms`,
+    );
     await sleep(wait);
   }
 }
 
 // ── prompt ───────────────────────────────────────────────────────────
 function biblePrompt(slug) {
-  const bible = fs.readFileSync(path.join(ROOT, "docs/character-bible.md"), "utf8");
+  const bible = fs.readFileSync(
+    path.join(ROOT, "docs/character-bible.md"),
+    "utf8",
+  );
   const sheet = bible.split(/^### /m).find((s) => s.includes(`\`${slug}\``));
   if (!sheet) die(`no character-bible sheet for '${slug}'`);
-  const m = sheet.match(/\*\*Image-gen prompt\*\*\s*([\s\S]*?)(?:\n- \*\*|\n### |$)/);
+  const m = sheet.match(
+    /\*\*Image-gen prompt\*\*\s*([\s\S]*?)(?:\n- \*\*|\n### |$)/,
+  );
   if (!m) die(`no Image-gen prompt line on the '${slug}' sheet`);
   return m[1].replace(/\s+/g, " ").trim();
 }
 
-const prompt = args.prompt ?? (args.character ? biblePrompt(args.character) : null);
+const prompt =
+  args.prompt ?? (args.character ? biblePrompt(args.character) : null);
 if (!prompt) die("provide --prompt or --character");
 
 // ── providers ────────────────────────────────────────────────────────
@@ -126,7 +139,11 @@ async function openaiGenerate() {
     form.append("quality", quality);
     for (const ref of args.ref) {
       const buf = fs.readFileSync(ref);
-      form.append("image[]", new Blob([buf], { type: "image/png" }), path.basename(ref));
+      form.append(
+        "image[]",
+        new Blob([buf], { type: "image/png" }),
+        path.basename(ref),
+      );
     }
     const res = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
@@ -149,7 +166,8 @@ async function openaiGenerate() {
 
 async function openaiImages(res, model) {
   const body = await res.json();
-  if (!res.ok) die(`openai ${res.status}: ${JSON.stringify(body.error ?? body)}`);
+  if (!res.ok)
+    die(`openai ${res.status}: ${JSON.stringify(body.error ?? body)}`);
   return {
     model,
     buffers: body.data.map((d) => Buffer.from(d.b64_json, "base64")),
@@ -211,7 +229,8 @@ async function falGenerate() {
     const dl = await fetch(img.url);
     buffers.push(Buffer.from(await dl.arrayBuffer()));
   }
-  if (buffers.length === 0) die(`fal returned no images: ${JSON.stringify(body)}`);
+  if (buffers.length === 0)
+    die(`fal returned no images: ${JSON.stringify(body)}`);
   return { model, buffers };
 }
 

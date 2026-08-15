@@ -5,7 +5,7 @@
 -- from the FIRST sale, and you cannot reconstruct a past buyer's country or the
 -- VAT you should have charged from a flat USD charge row. Adding these columns
 -- now (nullable, additive) means the webhook can record jurisdiction the moment
--- Stripe Tax is enabled — before volume exists.
+-- Stripe Tax is enabled - before volume exists.
 --
 -- All three columns are nullable and stay NULL until the operator enables
 -- Stripe Tax (STRIPE_TAX_ENABLED=true) after configuring Tax + OSS/VAT
@@ -28,7 +28,7 @@ comment on column public.purchases.tax_amount is
   'Tax charged on this sale (major currency units), from Stripe total_details.'
   ' NULL until Stripe Tax is enabled (re-audit N0).';
 comment on column public.purchases.tax_country is
-  'Buyer billing country (ISO code) at time of sale — the VAT jurisdiction.'
+  'Buyer billing country (ISO code) at time of sale - the VAT jurisdiction.'
   ' NULL until address collection / Stripe Tax is enabled.';
 comment on column public.purchases.customer_tax_id is
   'Buyer VAT / tax id if provided at checkout (B2B). NULL otherwise.';

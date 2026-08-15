@@ -17,7 +17,7 @@ Everything in this file is V2 (post-launch). There is no V3 tier; former
 "V3+" items are folded into the sections below like everything else.
 
 Not tracked here (pre-launch, one document): ALL pre-launch work lives in
-`docs/launch-blockers.md` — code defects (Tier 1/2), pending operator
+`docs/launch-blockers.md` - code defects (Tier 1/2), pending operator
 migrations (037-040), and the operator + distribution setup moved there
 2026-07-22 (Tier 1-OPS). Full findings register:
 `docs/audits/full-audit-2026-07-21.md`. (The "91 Dependabot alerts" note in
@@ -53,11 +53,11 @@ memory was refuted by that audit: `pnpm audit` clean.)
   (`replaysOnErrorSampleRate: 1.0` exceeds strictly-necessary); disclose
   the `tc_world` cookie; align the under-16s claim with reality or add an
   age gate.
-- [x] ~~14-day refund guarantee badge on pricing cards~~ — already shipped
+- [x] ~~14-day refund guarantee badge on pricing cards~~ - already shipped
   (Horizon 0 P3, 2026-07-21: badge exists and was moved above the tier
   grid). Stale item caught 2026-07-22.
 - Note: a second stale item ("Sentry integration", claimed console-stub) was
-  dropped — Sentry capture is already wired (launch-blockers R2-5); the
+  dropped - Sentry capture is already wired (launch-blockers R2-5); the
   real remaining work is alert rules, tracked in Tier 1-OPS.
 
 ## 2. Ongoing operations cadence
@@ -101,7 +101,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   `LAUNCHED_WORLDS` with no edit: the tier cards, and the JSON-LD offers in
   `apps/web/app/pricing/pricing-jsonld.ts` (gated tiers are now filtered out
   of the catalog entirely; each reappears once enough worlds have launched
-  to fill it — a pinned test in `pricing-jsonld.test.tsx` fails at that
+  to fill it - a pinned test in `pricing-jsonld.test.tsx` fails at that
   moment as a reminder to walk this list). Manual steps:
   - `BundleRoadmap` ("Listed, not sold." strip) was DELETED, component and
     test; recover from git history before 2026-08-14 if wanted, or decide
@@ -153,12 +153,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
   the producer dedups by subject, so missed milestones refire on the next
   completion in the same module. If the removal becomes permanent, ship a
   drop migration for the table + RPCs (operator step, destroys user rows).
-- [ ] **Em-dash sweep of developer code comments** (2026-08-12 slop audit):
-  206 em dashes in `apps/web` + `packages/ui` + `packages/shared` source
-  comments, all written after the 2026-06-10 repo-wide sweep. User-visible
-  strings are clean (verified); this is a style-bible rule 6 regression in
-  dev-facing text only. Sweep them, then add a grep gate or lint rule so
-  comments can't regress again.
+- [x] **Em-dash sweep, repo-wide - DONE 2026-08-15** (same day the owner's
+  blanket U+2014 ban landed at the top of `CLAUDE.md`; this item was
+  originally the 2026-08-12 slop-audit sweep of dev-facing code comments
+  only). 3,692 literal em dashes removed across ~310 tracked files: internal
+  docs, code comments, SQL migration comments (version-tracked, not
+  content-hashed, so safe), scripts, config, and `llms.txt`.
+  Behavior-bearing detector code now uses escape forms instead of the glyph:
+  the slop-lexicon regex, quiz.tsx's "- correct" suffix stripper, three
+  `not.toContain` guards, and the signal-ward text-cleaning lesson (its
+  `&mdash;` example now normalizes to a plain hyphen, matching the lesson's
+  own smart-quotes-to-ASCII arc). Zero-hit state is CI-enforced by
+  `packages/content/__tests__/em-dash-ban.test.ts` (runs in the plain
+  `pnpm test` job). Verified: unit battery 190 files green, typecheck 10/10.
+  Follow-up RESOLVED same day: `pnpm format:check` had been failing on 484
+  files of pre-existing drift. Root cause was scope, not style: prettier was
+  scanning the authored content corpus (275 lesson MDX + 183 exercise
+  yamls, where its rewrap would reflow dialogue and defeat the line-based
+  slop gate), velite build output, and the vendored minified tfjs bundle.
+  `.prettierignore` now excludes those three (see its comments), the ~20
+  genuinely unformatted code files (scripts/, probe.mjs, supabase client.ts,
+  web tsconfig) were formatted, lint-staged gained `js,mjs` coverage, and CI
+  gained a "Format check" step in the test job.
 - [ ] **sequence-models/01 (signal-ward) order-vs-word coherence bug**: the
   lesson claims "same words, different order" for an example pair that
   differs by a word ("denied" vs "reported"); its own BoW vectors differ.
@@ -167,8 +183,8 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 - [ ] **Light-mode follow-ups** (deferred from the 2026-07-23 rollout; context
   in `docs/dev-plan.md` 2026-07-23 entry + `docs/superpowers/plans/2026-07-22-light-mode.md`):
-  - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless —
-    no site nav — so today learners flip scheme from other pages or the OS;
+  - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless -
+    no site nav - so today learners flip scheme from other pages or the OS;
     candidate spot: the lesson ChromeBar).
   - [ ] Scheme toggle inside the open mobile-nav drawer (overlay covers the
     top bar while open; duplicate the toggle next to the drawer's close button).
@@ -176,13 +192,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
     (◐ U+25D0 has no production precedent and sits outside the latin font
     subset; tofu risk on non-mac platforms).
   - [ ] `Ticker`/`TickerCanvas` appears to be dead code (no live importer,
-    only a stale layout.test mock) — confirm and delete or re-mount.
+    only a stale layout.test mock) - confirm and delete or re-mount.
   - [ ] Tighten `SceneCanvas`'s `rgbLight` from optional-with-fallback to a
     required dark/light tuple once all call sites are stable (a new consumer
     can currently omit it and silently render dark-only hues in light).
   - [ ] Optional: scope `transition-colors`/`transition-all` utilities to
     hover/focus states so the scheme flip is perfectly uniform (today ~186
-    small chrome elements ease 150ms while surfaces snap — assessed fine).
+    small chrome elements ease 150ms while surfaces snap - assessed fine).
   - [ ] Optional: client-sync `meta[name=world-color]` when the user's manual
     override disagrees with the OS (browser chrome color mismatch, cosmetic).
 
@@ -258,7 +274,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
     sidebar station feed, auth left-pane ground + scrim, purchase-success
     confirmed state); learner avatar on the certificate share page
     (initials monogram fallback); OG cards composite the world's hero
-    plate (`ingest.mjs og` emits JPEG derivatives — satori does not decode
+    plate (`ingest.mjs og` emits JPEG derivatives - satori does not decode
     WebP dependably) with a `cert` kind for certificate shares; **11
     mission patches + world seal** (`docs/patch-bible.md`, `ModulePatch`
     earned-only on dashboard/module map/capstone/certificate, all-or-none
@@ -287,12 +303,12 @@ memory was refuted by that audit: `pnpm audit` clean.)
     world wiring + their scene art: gated on those worlds launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in
   `pre-launch-checklist.md` Rounds 11-12 but never filed until 2026-07-22;
-  a third item, "HintPanel coverage 3/56", was dropped as stale — Run #7
+  a third item, "HintPanel coverage 3/56", was dropped as stale - Run #7
   regenerated 77 hint ladders on 2026-07-16):
   - [ ] Sandpack offline fallback for the exercise editor.
   - [ ] Arrow-key support in exercises.
   - [ ] Touch-target sweep to ≥44×44 (per `docs/audits/accessibility-audit-2026-04-20.md`;
-    verify current state first — the 2026-07-15 per-step axe gates do not
+    verify current state first - the 2026-07-15 per-step axe gates do not
     check target size).
   - [ ] User-menu focus trap + focus restoration.
   - [ ] A11y medium/low sweep (audit register §5, triaged 2026-07-22):
@@ -308,21 +324,21 @@ memory was refuted by that audit: `pnpm audit` clean.)
     `aria-hidden`; enlarge the 15.5s-scene Skip control; 15px/12px inputs
     to ≥16px (iOS zoom); report-issue panel clips at `left:-60px` @320px.
 - [ ] DISPATCH milestone producer uses strict `=== count` and silently
-  stops firing when orphan/renamed lesson rows overshoot the count —
+  stops firing when orphan/renamed lesson rows overshoot the count -
   the board-clear payoff never arrives. Use `>=` like
   `certificates.ts:137`.
 - [ ] DISPATCH weekly-intel cron: the milestone producer shipped 2026-07-13
-  but the *weekly* push (#13's premise) has no scheduler — pick pg_cron or
+  but the *weekly* push (#13's premise) has no scheduler - pick pg_cron or
   a Vercel Scheduled Function (explicitly deferred in
   `docs/gt-narrative-polish-checklist.md`, never filed until 2026-07-22).
   Same for the dispatch-messages email mirror via Resend.
 - [ ] Counterfactual data layer: migration 031 + `counterfactual-client.ts`
-  still collect choices but the `/log/rewind` surface was cut 2026-06-01 —
+  still collect choices but the `/log/rewind` surface was cut 2026-06-01 -
   data accrues that nothing reads. Build a surface (#3's payoff) or stop
   collecting; GDPR minimization argues against hoarding it
   (added 2026-07-22).
 - [ ] Reconcile `docs/gt-narrative-polish-checklist.md` open items against
-  Runs 6-8 — verify what's done, fold survivors here, mark the checklist
+  Runs 6-8 - verify what's done, fold survivors here, mark the checklist
   historical.
 - [ ] Verify R0-R4 structural-variety closure: the
   copy-humanization-reaudit plan (2026-06-10) was likely absorbed by Run 7
@@ -409,13 +425,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
   (floors in `docs/browser-support.md` unenforced); `metadata.test.ts`
   reads exported objects in isolation with zero `generateMetadata`
   coverage. Also fix e2e viewport truth: `mobile.spec.ts` claims iPhone SE
-  is 375×667 but Playwright's device is 320×568, leaving 375px — the most
-  common real iPhone width — covered by no project; `reflow.spec.ts`
+  is 375×667 but Playwright's device is 320×568, leaving 375px - the most
+  common real iPhone width - covered by no project; `reflow.spec.ts`
   passes while the report panel is clipped (its own `overflowX:hidden`
   masks it). Register's structural close: make gates fail **closed** and
   test resolved behaviour at real viewports.
 - [ ] CI/CD gating debt (audit §4): no branch protection or required
-  checks — Vercel deploys on push regardless of failing tests/e2e/lint
+  checks - Vercel deploys on push regardless of failing tests/e2e/lint
   (`eslint.ignoreDuringBuilds: true`); the only real gate is bypassable
   husky pre-push; `pnpm audit`, `format:check`, and migration drift absent
   from CI; no Dependabot/Renovate config to surface the next CVE; no API
@@ -486,25 +502,25 @@ post-launch work.
   management UI. Money-touching: full TDD + Stripe test-mode e2e before any
   live charge.
 - [ ] Subscription content cadence: decide + publish the release rhythm
-  before selling all-access — a static catalog churns a $15-25/mo sub
+  before selling all-access - a static catalog churns a $15-25/mo sub
   immediately; the cadence decision re-orders §5 world sprints
   (added 2026-07-22).
 - [ ] Subscription grandfathering: define the migration story for existing
   one-time buyers (credit / discount / grandfather) before the plan page
-  ships — getting this wrong publicly is a trust incident
+  ships - getting this wrong publicly is a trust incident
   (added 2026-07-22).
 - [ ] Re-enable guest checkout behind the full hardening list: guest-safe
   success page, ownership + upgrade-credit checks (email field, no inbox
   round-trip), guest fallback in both `async_payment_*` webhook handlers,
   unique index on `lower(profiles.email)`, anon (not service-role) client
   for the OTP send, real unmocked `guest-account.ts` tests. The endpoint
-  exists but nothing routes to it — disabled 2026-07-21 after review found
+  exists but nothing routes to it - disabled 2026-07-21 after review found
   3 post-charge defects (defect record: `roadmap.md` §2 P2). Money-touching:
   same TDD bar as the subscription work.
 - [ ] Re-evaluate merchant-of-record at subscription launch, or when EU /
   international mix makes OSS VAT filing a real operating cost: compare
   Paddle (5% + 50¢, B2B invoicing) and Polar (~4% + 40¢) against Stripe
-  Managed Payments (6.4% + 30¢) — not Lemon Squeezy (maintenance mode
+  Managed Payments (6.4% + 30¢) - not Lemon Squeezy (maintenance mode
   since the 2024 Stripe acquisition). Decision + fee analysis:
   `docs/roadmap.md` §4.
 - [ ] Growth instrumentation: activation metric, referral/virality events,
@@ -520,14 +536,14 @@ post-launch work.
   **Write-model bone LAID (2026-07-24, migration 048):** `arena_submissions`
   exists, **service-role-write-only** (self-read RLS, no client write policy),
   so scores cannot be forged. **Correction (scalability re-audit 2026-07-24):**
-  it is NOT true that "scoring infra already exists" — today's grading is
+  it is NOT true that "scoring infra already exists" - today's grading is
   CLIENT-authoritative and forgeable, and the cert stack proves payment not
   skill. The real remaining bones + the exact design are in
   `docs/arena-scoring-contract.md`: server-authoritative re-scoring against a
   hidden hold-out (A-F1), a hardened sandbox for the exec path (A-F2, do NOT
   reuse `WORKER_BODY_STRING`), an RNG-seeding/determinism convention (A-F3),
   plus the public top-N leaderboard `SECURITY DEFINER` RPC.
-  Ships WITH: moderation + report flow + anti-cheat + ToS update — public
+  Ships WITH: moderation + report flow + anti-cheat + ToS update - public
   no-auth UGC (usernames, code, leaderboards) griefs on day one without
   them; also update `product-plan.md`'s stale $29/yr arena pricing (free
   arena decided in roadmap) when this starts (added 2026-07-22).
@@ -597,7 +613,7 @@ removed in full. Plan + execution ledger:
 - Routes: `/extras` index + `/extras/[module]/[lesson]` (24 indexed URLs, now
   404; sitemap entries dropped, no redirects, matching the blog-post
   precedent).
-- Content: `packages/content/content/extras/` — 23 lessons across 4 modules
+- Content: `packages/content/content/extras/` - 23 lessons across 4 modules
   (math-deep-dive 8, classical-ml 5, ethics-responsibility 5, python-bridge
   5), their 4 module.yaml files and 23 exercise YAMLs (with hint ladders).
 - Links: site-footer "Extras" link, the /pricing free-tier "23 bonus

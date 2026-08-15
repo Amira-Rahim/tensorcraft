@@ -98,7 +98,7 @@ export async function sendIssueNotification(
   `;
 
   try {
-    // Resend's SDK reports failures in the result, it does not throw —
+    // Resend's SDK reports failures in the result, it does not throw -
     // ignoring `error` silently lost support notifications (gap sweep F1
     // class, 2026-07-25). The catch only covers unexpected throws.
     const { error: sendError } = await client.emails.send({

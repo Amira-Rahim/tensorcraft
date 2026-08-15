@@ -3,7 +3,7 @@ import { LAUNCHED_WORLDS, PRICING, WORLD_CONTENT } from "@tensorcraft/shared";
 // A bundle Offer is only InStock once enough worlds have launched to fill it
 // (mirrors the cart gating in pricing-tiers.tsx). Until then it is
 // OutOfStock, NOT PreOrder: schema.org PreOrder asserts an order can be
-// placed now for later delivery, and no pre-order mechanism exists — the
+// placed now for later delivery, and no pre-order mechanism exists - the
 // checkout buttons are hard-disabled (same overclaim the coming-soon stub
 // fixed on 2026-07-19; R3-7 caught these bundle offers still saying
 // PreOrder).
@@ -24,7 +24,7 @@ interface PricingOfferDef {
 // nobody can buy is exactly the future product plan the owner removed from
 // every user surface. This supersedes the 2026-08-09 decision to list gated
 // bundles as OutOfStock; OutOfStock was truthful, but truthful is no longer
-// the bar — the bar is "not published until buyable". Each bundle tier
+// the bar - the bar is "not published until buyable". Each bundle tier
 // reappears on its own the day enough worlds have launched to fill it.
 const OFFER_DEFS: PricingOfferDef[] = [
   {

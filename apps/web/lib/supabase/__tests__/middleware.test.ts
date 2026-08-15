@@ -166,7 +166,7 @@ describe("onboarding gate reads the JWT claim, not profiles (re-audit N3)", () =
     signedIn();
     sessionWithClaims(undefined); // no access token → claim absent
     // Fallback returns onboarding_completed=true (default `single` mock), so a
-    // request to /dashboard passes through — but only after reading profiles.
+    // request to /dashboard passes through - but only after reading profiles.
     const res = await updateSession(request("/dashboard"));
     expect(res.headers.get("location")).toBeNull();
     expect(single).toHaveBeenCalledTimes(1);

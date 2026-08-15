@@ -5,7 +5,7 @@ import { getLeadsTo } from "@tensorcraft/shared";
 interface DispatchTeaseProps {
   /**
    * The world this finale belongs to. When set, the tease TARGET is resolved
-   * from the journey ring (getLeadsTo) instead of being hardcoded — so the
+   * from the journey ring (getLeadsTo) instead of being hardcoded - so the
    * "leads to" relationship lives in the journey model
    * (packages/shared/src/journey.ts), and reordering the ring updates every
    * tease automatically. This is the de-siloing: the cross-world handoff is

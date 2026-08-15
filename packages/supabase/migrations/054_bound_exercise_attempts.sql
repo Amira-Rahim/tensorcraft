@@ -3,7 +3,7 @@
 --
 -- The column had no length limit and the table no retention, making it an
 -- unbounded storage vector for any authenticated user. 50,000 chars is ~25×
--- the longest legitimate solution in the corpus — generous for real code,
+-- the longest legitimate solution in the corpus - generous for real code,
 -- useless for abuse. NOT VALID so the constraint applies to new rows without
 -- scanning/failing on any existing oversized row; run
 --   alter table public.exercise_attempts validate constraint chk_submitted_code_bounded;

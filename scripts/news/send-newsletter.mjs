@@ -7,8 +7,8 @@
  *   pnpm tsx scripts/news/send-newsletter.mjs --week=2026-W18 --dry-run
  *
  * Required env:
- *   API_URL          — e.g. https://api.tensorcraft.app  (defaults to http://localhost:8787)
- *   ADMIN_API_KEY    — matches api server's ADMIN_API_KEY env
+ *   API_URL - e.g. https://api.tensorcraft.app  (defaults to http://localhost:8787)
+ *   ADMIN_API_KEY - matches api server's ADMIN_API_KEY env
  */
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {

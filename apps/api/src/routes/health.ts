@@ -4,7 +4,7 @@ import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 const health = new Hono();
 
 /**
- * LIVENESS — what Fly (fly.toml, 10s) and the Dockerfile HEALTHCHECK (15s)
+ * LIVENESS - what Fly (fly.toml, 10s) and the Dockerfile HEALTHCHECK (15s)
  * probe. Process-up only, NO dependency checks: gating liveness on a DB
  * query meant a Supabase blip made every machine report unhealthy at once
  * and Fly killed the whole API fleet during a hiccup it would have ridden
@@ -20,7 +20,7 @@ health.get("/", (c) => {
 });
 
 /**
- * READINESS — for humans, dashboards, and any orchestration that wants
+ * READINESS - for humans, dashboards, and any orchestration that wants
  * dependency truth. 503 when the DB is unreachable; never wired to
  * anything that kills machines. Cheap probe: head-only single-row select,
  * not a table count.

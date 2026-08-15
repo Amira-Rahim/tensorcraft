@@ -84,7 +84,7 @@ review of the sprint's own diff found and fixed the following:
   with untouched starter code. FIXED in both + `--starters` mode added to
   the validator (starter passing every test = hard fail) and wired into
   `pnpm test:exercises`.
-- **Runtime harness lacked beforeAll/beforeEach/afterEach/afterAll** — any
+- **Runtime harness lacked beforeAll/beforeEach/afterEach/afterAll** - any
   suite using them silently registered zero tests. Ported from the grader
   harness. `toThrow(message)` now actually checks the message in both.
 - **`exercise-corpus.test.ts`** (EXERCISE_CORPUS=1): every exercise runs
@@ -133,7 +133,7 @@ first-ever browser exercise e2e. Results:
 pass). Every round-2 number was re-derived from first principles
 independently of the solutions (Kalman gain sequence, attention softmax,
 FFT closed forms incl. the phase-invariance of on-bin magnitudes across
-STFT windows, F1 optima, z-scores, chain-rule gradients) — all correct.
+STFT windows, F1 optima, z-scores, chain-rule gradients) - all correct.
 Six latent (non-shipping-impact) suspects; the two real ones fixed:
 runtime describe now saves/restores hook stacks (describe-scoped
 beforeEach/afterEach, matching grader + vitest), and the grader's beforeAll
@@ -144,7 +144,7 @@ order sequencing of their own tests (deterministic in this harness).
 
 **THE LAUNCH BLOCKER: CSP killed every exercise run in the product.**
 The new `e2e/exercise-run.spec.ts` (the first test ever to click
-"Run Tests" in a real browser) timed out — root cause in
+"Run Tests" in a real browser) timed out - root cause in
 `apps/web/next.config.ts`: no `worker-src` directive, so worker creation
 from a Blob URL fell back to `script-src` (no `blob:`) and was silently
 blocked; the CDN importScripts host was not allowlisted either. Every
@@ -152,7 +152,7 @@ learner's Run Tests would have timed out in any CSP-enforced environment,
 and no test had ever caught it because none executed an exercise. FIXED:
 `worker-src 'self' blob:` added; TFJS 4.22 vendored same-origin at
 `apps/web/public/vendor/tfjs-4.22.0.min.js` (worker loads it first, CDN as
-fallback — also removes the jsdelivr single point of failure);
+fallback - also removes the jsdelivr single point of failure);
 `cdn.jsdelivr.net` allowlisted for the fallback; per-run timeout raised
 10s → 30s (cold TFJS load + training exercises). E2e now green: starter
 fails red, solution passes green, in real Chromium against the real app.
@@ -168,7 +168,7 @@ stripper is a second pass over near-clean JS (defense in depth).
 **Residual, documented:** the 80/80 corpus run exercises the CPU backend
 (node); browsers pick WebGL. All ops used have registered WebGL kernels
 and assertions use toBeCloseTo, so risk is precision-only; bulk WebGL
-verification needs seeded-auth e2e (paywalled lessons) — tracked with the
+verification needs seeded-auth e2e (paywalled lessons) - tracked with the
 existing seeded-auth gap in `docs/gt-narrative-polish-checklist.md`.
 
 ## Deliberately not in this slice

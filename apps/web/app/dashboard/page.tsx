@@ -81,7 +81,7 @@ export default async function DashboardPage() {
       .eq("user_id", user.id)
       .order("attempted_at", { ascending: false })
       .limit(800),
-    // Entitled worlds from the single source (Tier 1 F4) — was a hand-rolled
+    // Entitled worlds from the single source (Tier 1 F4) - was a hand-rolled
     // purchases query + world_ids loop duplicated across three files.
     getEntitledWorlds(user.id),
   ]);
@@ -113,7 +113,7 @@ export default async function DashboardPage() {
     ),
   };
 
-  // ownedWorlds now comes from getEntitledWorlds (above) — the single
+  // ownedWorlds now comes from getEntitledWorlds (above) - the single
   // entitlement source, which already validates slugs.
   // "Full bundle" = all currently-launched worlds owned. Coming-soon worlds
   // are excluded, they aren't purchasable. When a new world launches and is

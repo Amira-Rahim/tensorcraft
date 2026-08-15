@@ -194,7 +194,7 @@ export async function sendDigestNewsletter(
 
   // Cross-stream opt-out (2026-07-13 P4 email audit): the Settings
   // weekly-digest toggle writes profiles.weekly_digest, but this sender
-  // reads the WAITLIST table — a different population. A learner who
+  // reads the WAITLIST table - a different population. A learner who
   // joined the waitlist, then signed up and toggled the digest off,
   // must not keep receiving it. Exclude any waitlist email whose
   // account profile has opted out.
@@ -236,7 +236,7 @@ export async function sendDigestNewsletter(
   const subject = `The Bridge: ${weekIso}`;
 
   // Resend's default rate limit is 2 requests/second. An unthrottled loop
-  // over a launch-sized list (~500 recipients, §10b) gets the bulk 429'd —
+  // over a launch-sized list (~500 recipients, §10b) gets the bulk 429'd -
   // and because the SDK never throws (see below), it would previously have
   // reported them all as sent. 600ms spacing stays safely under the limit;
   // a weekly digest is not latency-sensitive. Zero under test so the suite
@@ -252,7 +252,7 @@ export async function sendDigestNewsletter(
     try {
       // The Resend SDK does NOT throw on failure: 4xx/5xx/429 and network
       // errors all resolve `{ data: null, error }`. Ignoring `error` made
-      // `result.failed` structurally unreachable — every failed send
+      // `result.failed` structurally unreachable - every failed send
       // counted as sent, with zero Sentry captures (gap sweep F1,
       // 2026-07-25; same defect class as the supabase-js R3-4e fix).
       const { error: sendError } = await client.emails.send({

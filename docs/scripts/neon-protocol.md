@@ -1,4 +1,4 @@
-# Neon Protocol — Computer Vision
+# Neon Protocol - Computer Vision
 
 > Neon Protocol is the second world in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
@@ -8,15 +8,15 @@
 
 **Tags:** `computer-vision` `CNN` `object-detection` `segmentation` `transfer-learning` `real-time`
 **World:** Cyberpunk surveillance resistance in Neon City, 2049
-**Setting:** NeuralCore HQ — the resistance's underground base beneath Neon City. Above ground, Meridian Systems operates 200 cameras per city block. The resistance repurposes decommissioned server rooms, rooftop antenna arrays, and hidden safe houses as their operational network.
-**Model being built:** Protocol Sentinel — an anomaly detection system for surveillance networks
+**Setting:** NeuralCore HQ - the resistance's underground base beneath Neon City. Above ground, Meridian Systems operates 200 cameras per city block. The resistance repurposes decommissioned server rooms, rooftop antenna arrays, and hidden safe houses as their operational network.
+**Model being built:** Protocol Sentinel - an anomaly detection system for surveillance networks
 **GitHub repo deployed at end:** `protocol-sentinel-vision`
 
 ### Characters
 
 | Name | Role | Description |
 |---|---|---|
-| **Kira** | Hacker / Player Character / Student Avatar | The learner's proxy. Skilled frontend dev who joined the resistance after Meridian flagged her as "non-compliant" for refusing their tracking SDK. Knows JS cold, no ML background. Built a real-time collaborative drawing app with Canvas API and WebRTC that served 50K users — her proudest project before everything changed. Resourceful, determined, occasionally reckless. Receives direction from Lin; learns from Zara, Ryo, and NEON. |
+| **Kira** | Hacker / Player Character / Student Avatar | The learner's proxy. Skilled frontend dev who joined the resistance after Meridian flagged her as "non-compliant" for refusing their tracking SDK. Knows JS cold, no ML background. Built a real-time collaborative drawing app with Canvas API and WebRTC that served 50K users - her proudest project before everything changed. Resourceful, determined, occasionally reckless. Receives direction from Lin; learns from Zara, Ryo, and NEON. |
 | **Zara** | Street Artist / Visual Expert | Resident expert on visual perception and image composition. Creative, observant, speaks in vivid imagery. Translates vision concepts into intuitive visual metaphors. |
 | **Ryo** | Former Corp Engineer | Ex-Meridian engineer who defected. Quiet, precise, carries guilt about his past work. Knows the enemy's systems inside out. Handles architecture and optimization. |
 | **Lin** | Resistance Leader | Strategic leader. Charismatic, intense, carries the weight of leadership. Sets mission objectives and provides the larger context. |
@@ -24,7 +24,7 @@
 
 ### Career Paths & Salaries
 
-> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics — Tensorcraft provides the conceptual foundation to pursue them.
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
 
 | Path | Description | Avg Salary (US) |
 |---|---|---|
@@ -42,15 +42,15 @@
 
 ### Preview Art
 
-A rain-slicked street in Neon City. Holographic advertisements flicker on every surface. In the foreground, Kira crouches behind a dumpster, her laptop open, its screen casting cyan light across her face. Above her, a Meridian surveillance drone hovers — its camera lens glowing hot pink. On Kira's screen: a bounding box around the drone, labeled `MERIDIAN-SCOUT-7 | conf: 0.94`. In the bottom corner of the screen, NEON's glitchy avatar pulses with interference patterns.
+A rain-slicked street in Neon City. Holographic advertisements flicker on every surface. In the foreground, Kira crouches behind a dumpster, her laptop open, its screen casting cyan light across her face. Above her, a Meridian surveillance drone hovers - its camera lens glowing hot pink. On Kira's screen: a bounding box around the drone, labeled `MERIDIAN-SCOUT-7 | conf: 0.94`. In the bottom corner of the screen, NEON's glitchy avatar pulses with interference patterns.
 
 ### Story Summary
 
-Five years ago, Neon City's centralized surveillance AI was built to protect citizens. Then Meridian Systems corrupted it. Now 200 cameras per city block track, profile, and control. An underground resistance has formed — and they need a frontend developer who can build vision systems that fight back.
+Five years ago, Neon City's centralized surveillance AI was built to protect citizens. Then Meridian Systems corrupted it. Now 200 cameras per city block track, profile, and control. An underground resistance has formed - and they need a frontend developer who can build vision systems that fight back.
 
-Kira, a skilled JavaScript developer, is recruited after Meridian's AI flags her as non-compliant. Under the guidance of Zara (visual intuition), Ryo (architecture expertise), and Lin (strategic leadership), she builds Protocol Sentinel — a browser-based vision system that detects surveillance anomalies, identifies drones, and ultimately captures proof of Meridian's illegal profiling.
+Kira, a skilled JavaScript developer, is recruited after Meridian's AI flags her as non-compliant. Under the guidance of Zara (visual intuition), Ryo (architecture expertise), and Lin (strategic leadership), she builds Protocol Sentinel - a browser-based vision system that detects surveillance anomalies, identifies drones, and ultimately captures proof of Meridian's illegal profiling.
 
-The journey takes Kira from basic image classification to real-time object detection, semantic segmentation, transfer learning, generative adversarial techniques, and edge deployment — all running in the browser, all mapped to frontend concepts she already knows.
+The journey takes Kira from basic image classification to real-time object detection, semantic segmentation, transfer learning, generative adversarial techniques, and edge deployment - all running in the browser, all mapped to frontend concepts she already knows.
 
 ### Model Preview
 
@@ -73,7 +73,7 @@ Protocol Sentinel evolves across 11 modules:
 
 > **This course teaches machine learning through interactive, narrative-driven lessons designed for frontend developers.**
 >
-> You will learn real ML — not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
+> You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
 > **Fundamentals you will master:**
 > - Linear algebra (vectors, matrices, tensors, broadcasting)
@@ -98,57 +98,57 @@ Protocol Sentinel evolves across 11 modules:
 
 *Kira joins the resistance and learns the fundamentals of computer vision through surveillance analysis.*
 
-### L1.1 — Seeing Like a Machine
+### L1.1 - Seeing Like a Machine
 
 **5C Variation:** Standard
 
-Kira meets the resistance crew. Lin briefs her on the mission. Zara shows her a wall of surveillance camera feeds: "This is what Meridian sees. Now let us teach a machine to see differently." NEON boots up — glitchy, disoriented, but functional.
+Kira meets the resistance crew. Lin briefs her on the mission. Zara shows her a wall of surveillance camera feeds: "This is what Meridian sees. Now let us teach a machine to see differently." NEON boots up - glitchy, disoriented, but functional.
 
 > **NEON:** "I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen."
 
-**FE BRIDGE:** Images in a computer are just `<canvas>` pixel data — a 2D grid of RGBA values stored in a `Uint8ClampedArray`. Every `getImageData()` call returns a tensor. Kira's collaborative drawing app streamed exactly this data over WebRTC — she was already working with image tensors without knowing it.
+**FE BRIDGE:** Images in a computer are just `<canvas>` pixel data - a 2D grid of RGBA values stored in a `Uint8ClampedArray`. Every `getImageData()` call returns a tensor. Kira's collaborative drawing app streamed exactly this data over WebRTC - she was already working with image tensors without knowing it.
 
-**Hook:** NEON's diagnostic scan reveals something unexpected in the image data — patterns that shouldn't be there.
+**Hook:** NEON's diagnostic scan reveals something unexpected in the image data - patterns that shouldn't be there.
 
-### L1.2 — Pixels & Tensors
+### L1.2 - Pixels & Tensors
 
 **5C Variation:** Discovery
 
 Images are multi-dimensional arrays. A grayscale image is a 2D tensor (height x width). A color image is a 3D tensor (height x width x channels). A batch of images is 4D.
 
-**FE BRIDGE:** `Uint8ClampedArray` from `canvas.getContext('2d').getImageData()` — you have already worked with image tensors in frontend code.
+**FE BRIDGE:** `Uint8ClampedArray` from `canvas.getContext('2d').getImageData()` - you have already worked with image tensors in frontend code.
 
-**Hook:** The pixel patterns are familiar — too familiar. NEON says: "I've seen this encoding before. At Meridian."
+**Hook:** The pixel patterns are familiar - too familiar. NEON says: "I've seen this encoding before. At Meridian."
 
-### L1.3 — Color Channels
+### L1.3 - Color Channels
 
 **5C Variation:** Broken Code First
 
-RGB, grayscale, alpha — understanding depth. Each pixel has 3 (or 4) values. Color spaces are just different coordinate systems for the same visual information.
+RGB, grayscale, alpha - understanding depth. Each pixel has 3 (or 4) values. Color spaces are just different coordinate systems for the same visual information.
 
-**FE BRIDGE:** CSS color functions: `rgb(255, 0, 0)`, `hsl(0, 100%, 50%)`, `oklch(0.63, 0.26, 29)` — different representations of the same color, just as RGB/HSV/LAB are different representations of the same image data.
+**FE BRIDGE:** CSS color functions: `rgb(255, 0, 0)`, `hsl(0, 100%, 50%)`, `oklch(0.63, 0.26, 29)` - different representations of the same color, just as RGB/HSV/LAB are different representations of the same image data.
 
-**Hook:** NEON isolates a hidden channel in Meridian's camera feeds — data encoded in color values the human eye can't distinguish.
+**Hook:** NEON isolates a hidden channel in Meridian's camera feeds - data encoded in color values the human eye can't distinguish.
 
-### L1.4 — Image Operations
+### L1.4 - Image Operations
 
 **5C Variation:** Standard
 
-Resize, crop, rotate, flip — basic transforms that prepare images for model input. Every model expects a fixed input size.
+Resize, crop, rotate, flip - basic transforms that prepare images for model input. Every model expects a fixed input size.
 
-**FE BRIDGE:** CSS `transform` and `object-fit` — you resize and crop images constantly in frontend work. `object-fit: cover` is center-crop. `object-fit: contain` is resize-with-padding.
+**FE BRIDGE:** CSS `transform` and `object-fit` - you resize and crop images constantly in frontend work. `object-fit: cover` is center-crop. `object-fit: contain` is resize-with-padding.
 
-**Hook:** The transforms reveal something: Meridian's cameras all output images at an unusual resolution — one optimized for a specific model architecture.
+**Hook:** The transforms reveal something: Meridian's cameras all output images at an unusual resolution - one optimized for a specific model architecture.
 
-### L1.5 — Your First Classifier
+### L1.5 - Your First Classifier
 
 **5C Variation:** Standard (with debrief elements)
 
 A simple threshold-based image classifier: is this image bright or dark? Is there a red region (indicating a camera LED)? Simple rules on pixel values.
 
-**FE BRIDGE:** `if/else` on pixel values — the simplest possible "model." This is where traditional programming ends and ML begins.
+**FE BRIDGE:** `if/else` on pixel values - the simplest possible "model." This is where traditional programming ends and ML begins.
 
-**Story beat:** NEON runs the simple classifier on a surveillance feed. It works — barely. 62% accuracy. Kira realizes she needs something more powerful.
+**Story beat:** NEON runs the simple classifier on a surveillance feed. It works - barely. 62% accuracy. Kira realizes she needs something more powerful.
 
 **Cliffhanger:** NEON's diagnostic scan reveals something unexpected: its own facial recognition model is still running inside Meridian's network.
 
@@ -160,9 +160,9 @@ A simple threshold-based image classifier: is this image bright or dark? Is ther
 
 ### Narrative
 
-The resistance needs training data. Zara leads a nighttime operation to photograph surveillance equipment across Neon City — every angle, every lighting condition, rain and dry, day and night.
+The resistance needs training data. Zara leads a nighttime operation to photograph surveillance equipment across Neon City - every angle, every lighting condition, rain and dry, day and night.
 
-> **ZARA:** "Data augmentation is like my art — same subject, different angles, different lighting, different moods. The more perspectives you show the model, the deeper it understands."
+> **ZARA:** "Data augmentation is like my art - same subject, different angles, different lighting, different moods. The more perspectives you show the model, the deeper it understands."
 
 **Unique content:** Kira builds a data pipeline that ingests images from the resistance's distributed camera network, applies augmentation (random crops, rotations, color jitter, horizontal flips), normalizes pixel values, balances class distributions, and creates efficient batched data loaders.
 
@@ -172,7 +172,7 @@ The resistance needs training data. Zara leads a nighttime operation to photogra
 |---|---|---|---|
 | 1 | Building Datasets | Collecting, labeling, organizing image data | Asset pipeline and folder structure |
 | 2 | Data Augmentation | Creating training variety through transforms | CSS transform variations (`rotate`, `scale`, `skew`) |
-| 3 | Normalization | Scaling pixel values for model consumption | CSS `normalize.css` — consistent baseline |
+| 3 | Normalization | Scaling pixel values for model consumption | CSS `normalize.css` - consistent baseline |
 | 4 | Class Balance | Handling imbalanced datasets | Load balancing across servers |
 | 5 | Data Loaders | Efficient batched data loading | Pagination and infinite scroll |
 
@@ -181,7 +181,7 @@ The resistance needs training data. Zara leads a nighttime operation to photogra
 **Commit:** `feat(m2): image data pipeline with augmentation and balanced loading`
 **Branch:** `module-02/image-data`
 
-**Cliffhanger:** While reviewing the augmented dataset, Zara notices something in the metadata: timestamps show that three of the resistance's own cameras have been repositioned — by someone outside the network.
+**Cliffhanger:** While reviewing the augmented dataset, Zara notices something in the metadata: timestamps show that three of the resistance's own cameras have been repositioned - by someone outside the network.
 
 ---
 
@@ -193,17 +193,17 @@ The resistance needs training data. Zara leads a nighttime operation to photogra
 
 Kira builds her first CNN. Zara walks her through feature visualization:
 
-> **ZARA:** "Look — the first layer learned edges. The second found shapes. The third recognizes camera housings. Each layer builds on the last, like seeing with increasing understanding."
+> **ZARA:** "Look - the first layer learned edges. The second found shapes. The third recognizes camera housings. Each layer builds on the last, like seeing with increasing understanding."
 
 The model hits 89% accuracy on camera type classification.
 
-**Unique content:** Kira implements convolution operations from scratch before using TensorFlow.js's built-in layers. She visualizes feature maps at each layer to understand what the network "sees" — edges in layer 1, textures in layer 2, object parts in layer 3, full objects in layer 4.
+**Unique content:** Kira implements convolution operations from scratch before using TensorFlow.js's built-in layers. She visualizes feature maps at each layer to understand what the network "sees" - edges in layer 1, textures in layer 2, object parts in layer 3, full objects in layer 4.
 
 ### Lessons
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | Convolution Operations | How kernels slide across images. Kira recognizes the pattern from her Canvas drawing app — she's applied blur filters to pixel buffers before. | CSS `filter: blur()` — a convolution kernel operation |
+| 1 | Convolution Operations | How kernels slide across images. Kira recognizes the pattern from her Canvas drawing app - she's applied blur filters to pixel buffers before. | CSS `filter: blur()` - a convolution kernel operation |
 | 2 | Pooling Layers | Downsampling feature maps | `srcset` responsive image downsampling |
 | 3 | CNN Architecture | Stacking conv, pool, and dense layers | Component composition patterns |
 | 4 | Training a CNN | End-to-end training on image data | Full build pipeline execution |
@@ -211,15 +211,15 @@ The model hits 89% accuracy on camera type classification.
 
 **FE BRIDGES (Module-Level):**
 
-- **Convolution = CSS `blur()`:** A CSS blur filter slides a Gaussian kernel across every pixel of an image. A convolutional layer does the same thing — slides a learned kernel across the image. The difference: CSS uses a fixed kernel (Gaussian); CNNs learn the kernel from data.
-- **Pooling = `srcset` downsampling:** `srcset` provides the browser with multiple image sizes and lets it choose the appropriate resolution. Max pooling does similar downsampling — taking the maximum value from each region to create a smaller, more manageable representation.
+- **Convolution = CSS `blur()`:** A CSS blur filter slides a Gaussian kernel across every pixel of an image. A convolutional layer does the same thing - slides a learned kernel across the image. The difference: CSS uses a fixed kernel (Gaussian); CNNs learn the kernel from data.
+- **Pooling = `srcset` downsampling:** `srcset` provides the browser with multiple image sizes and lets it choose the appropriate resolution. Max pooling does similar downsampling - taking the maximum value from each region to create a smaller, more manageable representation.
 
 ### GITHUB
 
 **Commit:** `feat(m3): CNN classifier with feature visualization`
 **Branch:** `module-03/cnn`
 
-**Cliffhanger:** The pooled features reveal a pattern — Meridian is not just tracking faces. They are predicting where people will go next.
+**Cliffhanger:** The pooled features reveal a pattern - Meridian is not just tracking faces. They are predicting where people will go next.
 
 ---
 
@@ -231,9 +231,9 @@ The model hits 89% accuracy on camera type classification.
 
 The resistance needs to detect Meridian's drones in real-time street-level camera feeds. Ryo shares insider knowledge:
 
-> **RYO:** "Meridian uses YOLOv5 for their drone detection. I know because I helped build it. Here is how we beat it: we build something faster and deploy it where they cannot reach — the browser."
+> **RYO:** "Meridian uses YOLOv5 for their drone detection. I know because I helped build it. Here is how we beat it: we build something faster and deploy it where they cannot reach - the browser."
 
-**Unique content:** Kira implements the full object detection pipeline — anchor box generation, bounding box regression, intersection over union (IoU) calculation, non-maximum suppression (NMS), and the YOLO single-shot architecture. She learns to handle multiple object scales and aspect ratios.
+**Unique content:** Kira implements the full object detection pipeline - anchor box generation, bounding box regression, intersection over union (IoU) calculation, non-maximum suppression (NMS), and the YOLO single-shot architecture. She learns to handle multiple object scales and aspect ratios.
 
 ### Lessons
 
@@ -242,23 +242,23 @@ The resistance needs to detect Meridian's drones in real-time street-level camer
 | 1 | Bounding Boxes | Representing object locations | `position: absolute` + `getBoundingClientRect()` |
 | 2 | Anchor Boxes | Pre-defined detection regions | CSS Grid template areas / `getBoundingClientRect()` |
 | 3 | IoU | Measuring detection overlap accuracy | Drag-and-drop hit testing / collision detection |
-| 4 | Non-Max Suppression | Eliminating duplicate detections | `debounce()` — suppress redundant firing events |
+| 4 | Non-Max Suppression | Eliminating duplicate detections | `debounce()` - suppress redundant firing events |
 | 5 | YOLO Architecture | Single-shot detection at speed | Single-pass rendering vs multi-pass layout |
 
 **FE BRIDGES (Module-Level):**
 
 - **Anchor boxes = `getBoundingClientRect()`:** Anchor boxes define pre-set regions where the model looks for objects. `getBoundingClientRect()` returns the exact bounding rectangle of a DOM element. Both describe rectangular regions in a 2D space using `{x, y, width, height}`.
-- **IoU = drag-and-drop collision detection:** Intersection over Union measures how much two boxes overlap. In frontend drag-and-drop, you calculate overlap between the dragged element and drop targets — same math, same purpose.
-- **NMS = `debounce()`:** When you scroll rapidly, a scroll handler fires many redundant events. `debounce()` keeps only the final (strongest) event and suppresses the rest. NMS does the same — multiple overlapping detections for the same object are suppressed, keeping only the highest-confidence one.
+- **IoU = drag-and-drop collision detection:** Intersection over Union measures how much two boxes overlap. In frontend drag-and-drop, you calculate overlap between the dragged element and drop targets - same math, same purpose.
+- **NMS = `debounce()`:** When you scroll rapidly, a scroll handler fires many redundant events. `debounce()` keeps only the final (strongest) event and suppresses the rest. NMS does the same - multiple overlapping detections for the same object are suppressed, keeping only the highest-confidence one.
 
 ### GITHUB
 
 **Commit:** `feat(m4): YOLO-based drone detection with NMS`
 **Branch:** `module-04/object-detection`
 
-**Story beat:** The detector works. For the first time, the resistance can see drones before drones see them. Zara brings synthetic coffee to the server room. NEON displays a drone count on the wall: "47 tracked, 0 spotted us." Lin raises her mug. Kira laughs — actually laughs — for the first time since joining the resistance. The moment is brief, but real.
+**Story beat:** The detector works. For the first time, the resistance can see drones before drones see them. Zara brings synthetic coffee to the server room. NEON displays a drone count on the wall: "47 tracked, 0 spotted us." Lin raises her mug. Kira laughs - actually laughs - for the first time since joining the resistance. The moment is brief, but real.
 
-**Cliffhanger:** The drone detector flags a new model of drone — one not in any of Ryo's intel files. Ryo's jaw tightens. "That's Yates's signature — new hardware, no announcement, just deployment. Director Yates doesn't iterate. She replaces." Meridian is deploying hardware the resistance has never seen.
+**Cliffhanger:** The drone detector flags a new model of drone - one not in any of Ryo's intel files. Ryo's jaw tightens. "That's Yates's signature - new hardware, no announcement, just deployment. Director Yates doesn't iterate. She replaces." Meridian is deploying hardware the resistance has never seen.
 
 ---
 
@@ -270,7 +270,7 @@ The resistance needs to detect Meridian's drones in real-time street-level camer
 
 The resistance needs to understand full street scenes, not just detect individual objects.
 
-> **ZARA:** "A drone detector tells you *what*. Segmentation tells you *where*. And *where* tells you *why* — why is that drone hovering over that specific intersection?"
+> **ZARA:** "A drone detector tells you *what*. Segmentation tells you *where*. And *where* tells you *why* - why is that drone hovering over that specific intersection?"
 
 **Unique content:** Kira implements semantic segmentation (classify every pixel), instance segmentation (distinguish individual objects), and the U-Net encoder-decoder architecture. She builds mask generation for pixel-precise boundaries around surveillance equipment.
 
@@ -278,11 +278,11 @@ The resistance needs to understand full street scenes, not just detect individua
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | Semantic Segmentation | Classifying every pixel | CSS `clip-path` — defining regions |
+| 1 | Semantic Segmentation | Classifying every pixel | CSS `clip-path` - defining regions |
 | 2 | Instance Segmentation | Distinguishing individual objects | DOM element identity vs class |
 | 3 | U-Net Architecture | Encoder-decoder for dense prediction | Layout flow: content down, styles up |
-| 4 | Mask Generation | Pixel-precise boundaries. Kira realizes this is the same concept as her drawing app's selection tool — isolating pixel regions with a binary mask. | SVG `<mask>` and `<clipPath>` elements |
-| 5 | Scene Understanding | Combining segmentation with context | Semantic HTML — structure implies meaning |
+| 4 | Mask Generation | Pixel-precise boundaries. Kira realizes this is the same concept as her drawing app's selection tool - isolating pixel regions with a binary mask. | SVG `<mask>` and `<clipPath>` elements |
+| 5 | Scene Understanding | Combining segmentation with context | Semantic HTML - structure implies meaning |
 
 ### GITHUB
 
@@ -301,7 +301,7 @@ The resistance needs to understand full street scenes, not just detect individua
 
 Ryo introduces features as the "DNA" of an image:
 
-> **RYO:** "Meridian's network does not store images — it stores features. Compact, searchable, and terrifyingly powerful. We will build the same capability, but use it to find their patterns instead of ours."
+> **RYO:** "Meridian's network does not store images - it stores features. Compact, searchable, and terrifyingly powerful. We will build the same capability, but use it to find their patterns instead of ours."
 
 **Unique content:** Kira builds feature extractors, embedding spaces, and similarity search. She learns to use pre-trained backbone networks as feature extractors and applies dimensionality reduction (t-SNE, PCA) to visualize how the model organizes surveillance imagery.
 
@@ -309,24 +309,24 @@ Ryo introduces features as the "DNA" of an image:
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | Feature Vectors | Compact image representations | Hash functions — compact data representation |
+| 1 | Feature Vectors | Compact image representations | Hash functions - compact data representation |
 | 2 | Embedding Spaces | Similar images cluster together | 2D scatter plots of related data |
 | 3 | Similarity Search | Finding visually similar images | Fuzzy text search / autocomplete |
 | 4 | Backbone Networks | Pre-trained feature extractors | Shared component libraries |
-| 5 | Dimensionality Reduction | t-SNE and PCA for visualization | Responsive design — same content, fewer dimensions |
+| 5 | Dimensionality Reduction | t-SNE and PCA for visualization | Responsive design - same content, fewer dimensions |
 
 ### GITHUB
 
 **Commit:** `feat(m6): feature extraction pipeline with embedding visualization`
 **Branch:** `module-06/feature-extraction`
 
-**Cliffhanger:** The embedding space reveals a cluster of images the resistance never uploaded. Someone else is using their feature extractor — and feeding data back to Meridian. NEON traces the metadata: "These images were ingested by a pipeline registered to Director Yates's personal project allocation. She knows about us."
+**Cliffhanger:** The embedding space reveals a cluster of images the resistance never uploaded. Someone else is using their feature extractor - and feeding data back to Meridian. NEON traces the metadata: "These images were ingested by a pipeline registered to Director Yates's personal project allocation. She knows about us."
 
 ---
 
 ## MODULE 7: TRANSFER LEARNING
 
-*Standing on the shoulders of giants — and enemies.*
+*Standing on the shoulders of giants - and enemies.*
 
 ### Narrative
 
@@ -336,11 +336,11 @@ The midpoint revelation. Ryo downloads weights from a Meridian model he helped b
 
 > **LIN:** "Poetic justice."
 
-**Story beat (Flashback):** While the fine-tuning job runs overnight, Ryo and Kira sit on the server room floor, watching progress bars crawl. Ryo talks — really talks — for the first time.
+**Story beat (Flashback):** While the fine-tuning job runs overnight, Ryo and Kira sit on the server room floor, watching progress bars crawl. Ryo talks - really talks - for the first time.
 
-> **RYO:** "I thought we were building safety. I told myself that every camera was protecting someone. It took two years to see what we'd actually built. By then my code was in 40,000 cameras across the city. You don't just quit something like that — you have to find the courage to actively undo it."
+> **RYO:** "I thought we were building safety. I told myself that every camera was protecting someone. It took two years to see what we'd actually built. By then my code was in 40,000 cameras across the city. You don't just quit something like that - you have to find the courage to actively undo it."
 
-Kira doesn't respond right away. She watches the loss curve descend on her screen — Meridian's own model learning to fight Meridian. Finally: "So that's what we're doing. Undoing it." Ryo nods. The progress bar hits 12%.
+Kira doesn't respond right away. She watches the loss curve descend on her screen - Meridian's own model learning to fight Meridian. Finally: "So that's what we're doing. Undoing it." Ryo nods. The progress bar hits 12%.
 
 **Unique content:** Kira learns to load pre-trained models, freeze early layers (which capture universal visual features like edges and textures), and fine-tune later layers on the resistance's specific task. She also implements domain adaptation to bridge the gap between Meridian's training distribution and the resistance's field data.
 
@@ -348,10 +348,10 @@ Kira doesn't respond right away. She watches the loss curve descend on her scree
 
 | # | Title | Description | FE Bridge |
 |---|---|---|---|
-| 1 | Pre-trained Models | Using models trained on massive datasets | npm packages — using others' work |
+| 1 | Pre-trained Models | Using models trained on massive datasets | npm packages - using others' work |
 | 2 | Fine-tuning | Adapting a model to your task | Customizing a UI framework's world |
-| 3 | Feature Freezing | Which layers to retrain | `Object.freeze()` — selective immutability |
-| 4 | Domain Adaptation | Bridging data distributions | i18n — adapting content across locales |
+| 3 | Feature Freezing | Which layers to retrain | `Object.freeze()` - selective immutability |
+| 4 | Domain Adaptation | Bridging data distributions | i18n - adapting content across locales |
 | 5 | Meridian's Models | Repurposing the enemy's weights | Forking an open-source project |
 
 ### GITHUB
@@ -359,7 +359,7 @@ Kira doesn't respond right away. She watches the loss curve descend on her scree
 **Commit:** `feat(m7): transfer learning from Meridian pre-trained weights`
 **Branch:** `module-07/transfer-learning`
 
-**Cliffhanger:** They successfully fine-tune Meridian's model against itself — but the accuracy numbers suggest Meridian anticipated this exact attack.
+**Cliffhanger:** They successfully fine-tune Meridian's model against itself - but the accuracy numbers suggest Meridian anticipated this exact attack.
 
 ---
 
@@ -375,15 +375,15 @@ Protocol Sentinel goes live on a test feed. Kira watches detections appear in re
 
 NEON warns: "Frame rate dropping. Optimize or lose real-time capability."
 
-**Story beat (Internal conflict):** The team fractures over architecture. Kira wants to run inference client-side — pure browser, no server dependency, impossible to shut down. Ryo insists on a hybrid approach — server-side for accuracy, client-side as fallback. The argument escalates.
+**Story beat (Internal conflict):** The team fractures over architecture. Kira wants to run inference client-side - pure browser, no server dependency, impossible to shut down. Ryo insists on a hybrid approach - server-side for accuracy, client-side as fallback. The argument escalates.
 
 > **KIRA:** "If we depend on servers, Meridian takes down one node and the whole district goes blind."
 >
 > **RYO:** "If we go pure browser, we lose 15% accuracy. That 15% is people, Kira. Misidentified people."
 
-Lin lets them argue. Then: "Build both. Test both. Let the data decide." It's the first time the team has disagreed this sharply — and the resolution makes the system stronger. They ship a hybrid architecture with graceful degradation: server-enhanced when available, browser-only when necessary.
+Lin lets them argue. Then: "Build both. Test both. Let the data decide." It's the first time the team has disagreed this sharply - and the resolution makes the system stronger. They ship a hybrid architecture with graceful degradation: server-enhanced when available, browser-only when necessary.
 
-**Unique content:** Kira implements a full video processing pipeline — accessing webcam/video streams via `getUserMedia()`, running frame-by-frame inference in a `requestAnimationFrame` loop, maintaining performance budgets for real-time frame rates, and leveraging WebGL for GPU-accelerated inference.
+**Unique content:** Kira implements a full video processing pipeline - accessing webcam/video streams via `getUserMedia()`, running frame-by-frame inference in a `requestAnimationFrame` loop, maintaining performance budgets for real-time frame rates, and leveraging WebGL for GPU-accelerated inference.
 
 ### Lessons
 
@@ -400,7 +400,7 @@ Lin lets them argue. Then: "Build both. Test both. Let the data decide." It's th
 **Commit:** `feat(m8): real-time video detection pipeline with WebGL acceleration`
 **Branch:** `module-08/real-time`
 
-**Cliffhanger:** NEON identifies a Meridian agent based on gait analysis. Kira is about to trigger an alert — then Ryo stops her. "That person is limping from an injury. The model is wrong." The cost of trusting vision without verification.
+**Cliffhanger:** NEON identifies a Meridian agent based on gait analysis. Kira is about to trigger an alert - then Ryo stops her. "That person is limping from an injury. The model is wrong." The cost of trusting vision without verification.
 
 ---
 
@@ -410,11 +410,11 @@ Lin lets them argue. Then: "Build both. Test both. Let the data decide." It's th
 
 ### Narrative
 
-Zara's module. She realizes that generative models can create adversarial patterns — visual patches that confuse Meridian's cameras.
+Zara's module. She realizes that generative models can create adversarial patterns - visual patches that confuse Meridian's cameras.
 
 > **ZARA:** "Art has always been resistance. Now the art literally fights back."
 
-**Story beat (Ethical tension):** The adversarial patches work — too well. Lin calls a halt before deployment.
+**Story beat (Ethical tension):** The adversarial patches work - too well. Lin calls a halt before deployment.
 
 > **LIN:** "If we teach an AI to create patches that fool cameras, what stops someone from using the same technique to fool medical imaging or autonomous vehicles? We deploy this responsibly or we don't deploy it at all."
 
@@ -422,9 +422,9 @@ Ryo backs her up, speaking from experience:
 
 > **RYO:** "At Meridian, Director Yates called this kind of capability 'dual-use upside.' Meaning: build it, ship it, let someone else worry about the consequences. That thinking is exactly what we're fighting against. We scope the patches to Meridian's specific model signatures. Narrow target. No collateral."
 
-The team agrees: the patches will be cryptographically bound to Meridian's architecture fingerprints — useless against any other system.
+The team agrees: the patches will be cryptographically bound to Meridian's architecture fingerprints - useless against any other system.
 
-**Unique content:** Kira learns GANs (generator vs discriminator in adversarial training), image generation for synthetic training data, adversarial patch creation that fools classifiers, and style transfer for visual camouflage. The counter-surveillance application ties it all together — using generative AI defensively.
+**Unique content:** Kira learns GANs (generator vs discriminator in adversarial training), image generation for synthetic training data, adversarial patch creation that fools classifiers, and style transfer for visual camouflage. The counter-surveillance application ties it all together - using generative AI defensively.
 
 ### Lessons
 
@@ -432,9 +432,9 @@ The team agrees: the patches will be cryptographically bound to Meridian's archi
 |---|---|---|---|
 | 1 | GANs Primer | Generator vs discriminator | Fuzzer vs validator in testing |
 | 2 | Image Generation | Creating synthetic training data | Procedural content generation |
-| 3 | Adversarial Patches | Patterns that fool classifiers | CSS `mix-blend-mode` — visual interference |
+| 3 | Adversarial Patches | Patterns that fool classifiers | CSS `mix-blend-mode` - visual interference |
 | 4 | Style Transfer | Applying visual styles across images | CSS world switching / CSS-in-JS |
-| 5 | Counter-Surveillance | Using generative AI defensively | Ad blockers — rewriting the visual stream |
+| 5 | Counter-Surveillance | Using generative AI defensively | Ad blockers - rewriting the visual stream |
 
 ### GITHUB
 
@@ -451,13 +451,13 @@ The team agrees: the patches will be cryptographically bound to Meridian's archi
 
 ### Narrative
 
-Ryo leads deployment. For the first time in weeks, Meridian is quiet — no new drones, no model updates, no probes against the resistance network. The silence is deliberate.
+Ryo leads deployment. For the first time in weeks, Meridian is quiet - no new drones, no model updates, no probes against the resistance network. The silence is deliberate.
 
 > **RYO:** "A model that only works on my laptop is a demo. A model that works on every resistance member's phone is a weapon."
 
-**Story beat (Calm before the storm):** The quiet unsettles everyone except Lin. "Yates is consolidating," she says. "She knows something is coming. So do we." The team uses the calm strategically — optimizing, stress-testing, hardening. Kira runs Protocol Sentinel through every failure scenario she can imagine. Zara designs visual guides so any resistance member can deploy the system without training. Ryo audits his own code one final time, looking for anything Meridian could exploit. There is no crisis this module — just the weight of knowing the next one will be the last.
+**Story beat (Calm before the storm):** The quiet unsettles everyone except Lin. "Yates is consolidating," she says. "She knows something is coming. So do we." The team uses the calm strategically - optimizing, stress-testing, hardening. Kira runs Protocol Sentinel through every failure scenario she can imagine. Zara designs visual guides so any resistance member can deploy the system without training. Ryo audits his own code one final time, looking for anything Meridian could exploit. There is no crisis this module - just the weight of knowing the next one will be the last.
 
-**Unique content:** Kira optimizes Protocol Sentinel for edge deployment — quantization to shrink the model, pruning to remove unnecessary weights, and distillation to train a lightweight student model. She builds API-based inference for the resistance's server infrastructure and implements A/B testing to compare model versions in the field.
+**Unique content:** Kira optimizes Protocol Sentinel for edge deployment - quantization to shrink the model, pruning to remove unnecessary weights, and distillation to train a lightweight student model. She builds API-based inference for the resistance's server infrastructure and implements A/B testing to compare model versions in the field.
 
 ### Lessons
 
@@ -478,13 +478,13 @@ Ryo leads deployment. For the first time in weeks, Meridian is quiet — no new 
 
 ---
 
-## MODULE 11: CAPSTONE — PROTOCOL SENTINEL
+## MODULE 11: CAPSTONE - PROTOCOL SENTINEL
 
 *Full system deployment and the final mission.*
 
 ### Narrative
 
-The final mission. Protocol Sentinel, deployed across hundreds of devices in the resistance network, captures evidence of Meridian's illegal profiling operations. The system runs in the browser on every resistance member's device — phones, laptops, even repurposed smart glasses.
+The final mission. Protocol Sentinel, deployed across hundreds of devices in the resistance network, captures evidence of Meridian's illegal profiling operations. The system runs in the browser on every resistance member's device - phones, laptops, even repurposed smart glasses.
 
 ### Lessons
 
@@ -498,7 +498,7 @@ The final mission. Protocol Sentinel, deployed across hundreds of devices in the
 
 ### CONSEQUENCE
 
-Kira watches from a rooftop as Protocol Sentinel's evidence broadcasts across every screen in Neon City. The surveillance footage, classified and annotated by the system, shows Meridian's AI conducting illegal profiling — tracking individuals based on ethnicity, political affiliation, and social connections.
+Kira watches from a rooftop as Protocol Sentinel's evidence broadcasts across every screen in Neon City. The surveillance footage, classified and annotated by the system, shows Meridian's AI conducting illegal profiling - tracking individuals based on ethnicity, political affiliation, and social connections.
 
 > **KIRA:** "NEON, status?"
 
@@ -516,7 +516,7 @@ Kira closes her laptop. The neon signs of the city reflect in the rain puddles a
 
 ### GITHUB
 
-**Commit:** `feat(m11): Protocol Sentinel v1.0 — full deployment with evidence broadcast system`
+**Commit:** `feat(m11): Protocol Sentinel v1.0 - full deployment with evidence broadcast system`
 **Branch:** `module-11/capstone`
 **Deploys to:** `https://<username>.github.io/protocol-sentinel-vision`
 
@@ -526,23 +526,23 @@ Kira closes her laptop. The neon signs of the city reflect in the rain puddles a
 
 These are specific narrative beats where Protocol Sentinel or NEON fails, teaching the crew (and the learner) that ML systems are fallible.
 
-1. **M5 — False Identification:** NEON identifies a suspected Meridian agent based on gait analysis. It is wrong — the person was limping from an injury, not matching a surveillance officer's walking pattern. Kira almost compromised a safe house based on the model's output. Ryo: "High confidence is not the same as high correctness. The model has never seen someone with a limp."
+1. **M5 - False Identification:** NEON identifies a suspected Meridian agent based on gait analysis. It is wrong - the person was limping from an injury, not matching a surveillance officer's walking pattern. Kira almost compromised a safe house based on the model's output. Ryo: "High confidence is not the same as high correctness. The model has never seen someone with a limp."
 
-2. **M9 — Adversarial Friendly Fire:** An adversarial patch designed to fool Meridian's cameras also fools the resistance's own security system. NEON: "In my defense, adversarial patches are model-agnostic. If it fools one CNN, it may fool any CNN — including ours." The team learns that adversarial attacks are a double-edged sword.
+2. **M9 - Adversarial Friendly Fire:** An adversarial patch designed to fool Meridian's cameras also fools the resistance's own security system. NEON: "In my defense, adversarial patches are model-agnostic. If it fools one CNN, it may fool any CNN - including ours." The team learns that adversarial attacks are a double-edged sword.
 
 ---
 
-## Character Arcs — Ryo (Nuanced Skeptic)
+## Character Arcs - Ryo (Nuanced Skeptic)
 
-Ryo's arc is not a simple conversion from skeptic to believer. He knows ML works — he built it for Meridian. His skepticism is about *who controls it* and *whether high accuracy means the model is right for the right reasons*.
+Ryo's arc is not a simple conversion from skeptic to believer. He knows ML works - he built it for Meridian. His skepticism is about *who controls it* and *whether high accuracy means the model is right for the right reasons*.
 
-1. **M3 — The Warning:** After the CNN hits 89% accuracy, Ryo warns: "High accuracy does not mean the model is right for the right reasons. Meridian's model was 97% accurate. It was also profiling people by ethnicity. Check what features the network is actually using." He insists on feature visualization before deployment.
+1. **M3 - The Warning:** After the CNN hits 89% accuracy, Ryo warns: "High accuracy does not mean the model is right for the right reasons. Meridian's model was 97% accurate. It was also profiling people by ethnicity. Check what features the network is actually using." He insists on feature visualization before deployment.
 
-2. **M5 — Confronting the Past:** When Ryo's old access credentials work inside Meridian's model registry, he finds code he wrote years ago. He goes quiet. Lin: "Ryo?" Ryo: "I built the segmentation pipeline they are using to map resistance safe houses. That is my code." He confronts his past directly and channels the guilt into the work.
+2. **M5 - Confronting the Past:** When Ryo's old access credentials work inside Meridian's model registry, he finds code he wrote years ago. He goes quiet. Lin: "Ryo?" Ryo: "I built the segmentation pipeline they are using to map resistance safe houses. That is my code." He confronts his past directly and channels the guilt into the work.
 
-3. **M7 — Leading the Attack:** Ryo leads the transfer learning effort, using Meridian's own pre-trained weights against them. "They spent $2 million training this. We fine-tune it on 500 images and turn it against them." This is his redemption — using his knowledge of the enemy's architecture to dismantle it.
+3. **M7 - Leading the Attack:** Ryo leads the transfer learning effort, using Meridian's own pre-trained weights against them. "They spent $2 million training this. We fine-tune it on 500 images and turn it against them." This is his redemption - using his knowledge of the enemy's architecture to dismantle it.
 
-4. **M11 — The Choice:** When it is time to broadcast, Ryo knows Meridian will trace the signal back to him. His code fingerprints are all over Protocol Sentinel. He chooses to broadcast anyway — personal risk be damned. "I helped build the cage. The least I can do is help open the door."
+4. **M11 - The Choice:** When it is time to broadcast, Ryo knows Meridian will trace the signal back to him. His code fingerprints are all over Protocol Sentinel. He chooses to broadcast anyway - personal risk be damned. "I helped build the cage. The least I can do is help open the door."
 
 ---
 

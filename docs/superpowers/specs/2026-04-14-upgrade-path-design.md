@@ -1,4 +1,4 @@
-# Upgrade Path (Pay the Difference) — Design Spec
+# Upgrade Path (Pay the Difference) - Design Spec
 
 **Date:** 2026-04-14
 **Status:** Draft
@@ -24,7 +24,7 @@ Calculate credit from prior purchases and charge only the difference. If credit 
 4. If SOME themes are already owned (upgrade case):
    - Calculate `credit = sum of amounts from completed purchases whose theme_ids overlap with the request`
    - Calculate `adjustedPrice = plan.price - credit`
-   - If `adjustedPrice <= 0`: **auto-grant** — insert purchase record directly, skip Stripe, return `{ granted: true, themes: themeIds }`
+   - If `adjustedPrice <= 0`: **auto-grant** - insert purchase record directly, skip Stripe, return `{ granted: true, themes: themeIds }`
    - If `adjustedPrice > 0`: create Stripe checkout with `adjustedPrice` as the line item amount. Store `creditApplied` and `originalPrice` in session metadata.
 5. If NO themes are already owned → existing behavior (full price checkout)
 
@@ -41,9 +41,9 @@ Credit is **capped at the target plan price** to prevent over-crediting. Example
 **Important:** Both the `ownedThemes` set and the credit query must filter by `status = 'completed'`. Pending, failed, or refunded purchases do not count as credit.
 
 **API response contract:**
-- Normal checkout: `{ url: string }` — Stripe checkout URL
-- Auto-grant: `{ granted: true, themes: string[] }` — themes granted instantly
-- Error: `{ error: string }` — validation failure
+- Normal checkout: `{ url: string }` - Stripe checkout URL
+- Auto-grant: `{ granted: true, themes: string[] }` - themes granted instantly
+- Error: `{ error: string }` - validation failure
 
 ### 2. Backend: Auto-grant endpoint
 
@@ -74,25 +74,25 @@ When a user is logged in and owns themes:
 
 ### 5. Frontend: CheckoutButton changes (`checkout-button.tsx`)
 
-- Handle the `{ granted: true }` response from auto-grant — redirect to `/dashboard/purchase-success` without going through Stripe
+- Handle the `{ granted: true }` response from auto-grant - redirect to `/dashboard/purchase-success` without going through Stripe
 - Update the "Already Owned" state: only show when user owns ALL themes of the tier (already works this way)
-- Show adjusted price on the button text when credit applies: "Upgrade — $30 →" instead of "Get Started →"
+- Show adjusted price on the button text when credit applies: "Upgrade - $30 →" instead of "Get Started →"
 
 ### 6. Frontend: ThemePicker changes (`pricing-tiers.tsx`)
 
 For multi-theme tiers (2, 3), when the user already owns some themes:
-- Pre-select owned themes in the picker (they're locked — can't be deselected)
+- Pre-select owned themes in the picker (they're locked - can't be deselected)
 - Show a small "Owned" badge on pre-selected themes
 - User picks remaining themes to fill the tier
 - If owned themes already fill the tier (e.g., user owns 2 themes and looks at "Two Themes" tier), show "Already Owned ✓" instead of the picker
 
 ## What Doesn't Change
 
-- PRICING constants — prices stay the same
-- Webhook handler for normal purchases — unchanged flow
-- Purchase success page — works for both normal and upgrade purchases
-- Single-theme tier — if user already owns that theme, "Already Owned" shows (no upgrade needed)
-- All 5 tier — always includes all themes, adjusted price calculated automatically
+- PRICING constants - prices stay the same
+- Webhook handler for normal purchases - unchanged flow
+- Purchase success page - works for both normal and upgrade purchases
+- Single-theme tier - if user already owns that theme, "Already Owned" shows (no upgrade needed)
+- All 5 tier - always includes all themes, adjusted price calculated automatically
 
 ## Verification
 

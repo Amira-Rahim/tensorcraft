@@ -105,7 +105,7 @@ authenticated, letting any client insert arbitrary "operator messages" with
 attacker-controlled `cta_href` into ANY user's DISPATCH inbox (stored
 phishing; javascript: href = XSS click vector). Proven reachable by the same
 grant path the legitimate sibling RPCs use. FIXED: **migration 036** revokes
-execute from public/anon/authenticated (service_role only) — MUST BE APPLIED
+execute from public/anon/authenticated (service_role only) - MUST BE APPLIED
 WITH 035; plus render-boundary defense: the inbox CTA now renders only
 internal (`/`-prefixed) hrefs.
 
@@ -127,13 +127,13 @@ first-compile flakes that pass serially.** Vitest 1026 exit 0.
 
 **PIPELINE GAP (found by cumulative-diff review, fixed): apps were never
 typechecked.** `pnpm typecheck` fanned out via turbo to the 9 packages that
-had a `typecheck` script — apps/web and apps/api had none, so no CI or local
+had a `typecheck` script - apps/web and apps/api had none, so no CI or local
 gate ever ran `tsc --noEmit` over ~200 app source files (Next.js `build`
 type-checks, but only when someone builds; vitest transpiles without
 checking). Added `"typecheck": "tsc --noEmit"` to both apps. First-ever run
 surfaced 1 real fixture bug (playback test missing required `lesson.slug`)
 plus 9 latent type errors in 3 test files (untyped `vi.fn().mock.calls`
-tuple indexing) — all fixed. Typecheck now 11/11 tasks.
+tuple indexing) - all fixed. Typecheck now 11/11 tasks.
 
 **Residue closed:** CI now runs the grader with `--starters` (the
 starter-must-fail invariant existed locally but CI omitted the flag);

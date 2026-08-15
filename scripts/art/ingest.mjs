@@ -24,7 +24,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 const require = createRequire(import.meta.url);
 
 // sharp is a root devDependency but pnpm does not hoist it to the top-level
@@ -34,9 +37,7 @@ function loadSharp() {
     return require("sharp");
   } catch {
     const store = path.join(ROOT, "node_modules/.pnpm");
-    const dir = fs
-      .readdirSync(store)
-      .find((d) => d.startsWith("sharp@"));
+    const dir = fs.readdirSync(store).find((d) => d.startsWith("sharp@"));
     if (!dir) throw new Error("sharp not found; run pnpm install");
     return require(path.join(store, dir, "node_modules/sharp"));
   }
@@ -90,7 +91,9 @@ function newest(dir, stem) {
   if (!fs.existsSync(full)) return null;
   const hit = fs
     .readdirSync(full)
-    .filter((n) => /\.png$/.test(n) && new RegExp(`^${stem}-(fal|openai)-`).test(n))
+    .filter(
+      (n) => /\.png$/.test(n) && new RegExp(`^${stem}-(fal|openai)-`).test(n),
+    )
     .sort()
     .pop();
   return hit ? path.join(full, hit) : null;
@@ -124,7 +127,12 @@ async function portraits() {
   for (const [slug, expressions] of Object.entries(CHARACTERS)) {
     const neutral = newest("art-src/neutrals", slug);
     if (!neutral) results.missing.push(`${slug} (neutral)`);
-    else await emit(neutral, `apps/web/public/characters/${WORLD}/${slug}.webp`, PORTRAIT);
+    else
+      await emit(
+        neutral,
+        `apps/web/public/characters/${WORLD}/${slug}.webp`,
+        PORTRAIT,
+      );
 
     for (const expression of expressions) {
       const src = newest("art-src/expressions", `${slug}-${expression}`);
@@ -167,7 +175,10 @@ async function scenes() {
     // Staged as <module>__<lesson>[-epilogue]-<provider>-<stamp>.png
     const stem = file.replace(/-(fal|openai)-.*$/, "");
     const isEpilogue = stem.endsWith("-epilogue");
-    const id = (isEpilogue ? stem.slice(0, -"-epilogue".length) : stem).replace("__", "/");
+    const id = (isEpilogue ? stem.slice(0, -"-epilogue".length) : stem).replace(
+      "__",
+      "/",
+    );
     if (!valid.has(id)) {
       results.missing.push(`${file}: '${id}' matches no lesson`);
       continue;

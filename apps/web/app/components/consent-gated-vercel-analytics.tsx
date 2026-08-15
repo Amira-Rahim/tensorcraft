@@ -12,7 +12,7 @@ function subscribe(onStoreChange: () => void): () => void {
  * Vercel Web Analytics behind the SAME consent gate as PostHog/Plausible.
  *
  * The bare `<Analytics />` used to render unconditionally in the root layout
- * — outside every consent gate — beaconing pageviews (URL + referrer, with a
+ * - outside every consent gate - beaconing pageviews (URL + referrer, with a
  * server-side visitor id derived from IP + UA) before consent and AFTER an
  * explicit reject, with the `beforeSend` escape hatch unused (Tier 1-LEGAL,
  * full-audit §2 P1).
@@ -28,7 +28,7 @@ export function ConsentGatedVercelAnalytics() {
   const consented = useSyncExternalStore(
     subscribe,
     hasAnalyticsConsent,
-    // SSR snapshot: no consent known on the server — render nothing.
+    // SSR snapshot: no consent known on the server - render nothing.
     () => false,
   );
 

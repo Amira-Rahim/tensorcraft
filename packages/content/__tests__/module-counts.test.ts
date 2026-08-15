@@ -30,7 +30,7 @@ import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
  * deep-orbit's dir.
  */
 
-// packages/content/content — parent of every world's content dir.
+// packages/content/content - parent of every world's content dir.
 const CONTENT_ROOT: string = dirname(CONTENT_DIR);
 
 function countLessons(moduleDir: string): number {

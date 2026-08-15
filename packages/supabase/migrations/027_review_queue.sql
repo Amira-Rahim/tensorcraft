@@ -53,7 +53,7 @@ $$;
 -- ENQUEUE: called from progress-client.markLessonCompleted
 -- ============================================================
 -- Idempotent on conflict: if user re-completes a lesson (e.g. after a
--- review attempt), we DO NOT overwrite next_review_at — that would cancel
+-- review attempt), we DO NOT overwrite next_review_at - that would cancel
 -- the spaced schedule. Only insert on first completion.
 create or replace function public.enqueue_review(
   p_theme_id text,

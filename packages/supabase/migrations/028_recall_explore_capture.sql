@@ -8,7 +8,7 @@
 --   1) Replaces record_recall_attempt with a version that takes
 --      p_was_explored and includes it in skill_events.metadata.
 --   2) Existing callers that omit p_was_explored continue to work
---      (default false) — backward-compatible for any cached client.
+--      (default false) - backward-compatible for any cached client.
 
 create or replace function public.record_recall_attempt(
   p_theme_id text,

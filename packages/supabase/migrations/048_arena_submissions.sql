@@ -1,4 +1,4 @@
--- Tensorcraft: arena submission table — the write-model bone for a competitive
+-- Tensorcraft: arena submission table - the write-model bone for a competitive
 -- leaderboard.
 --
 -- Scalability re-audit 2026-07-24 (§RE-AUDIT / N1, finding A-F1). Today ALL
@@ -6,13 +6,13 @@
 -- exercise_attempts / theme_progress / skill_events are written under the user's
 -- own JWT. A leaderboard built on any of those is trivially forgeable
 -- (POST {passed:true, score:100}). The irreversible decision that must be made
--- NOW — before any submission code exists — is the WRITE MODEL: an arena score
+-- NOW - before any submission code exists - is the WRITE MODEL: an arena score
 -- table must be SERVICE-ROLE-WRITE-ONLY, so the only way a row appears is the
 -- API re-scoring a submission server-side. Retrofitting client-writable →
 -- authoritative after launch invalidates every score already posted.
 --
 -- This migration lays that bone and nothing more (the scoring service, the
--- leaderboard read RPC, matchmaking are additive and deferred — see
+-- leaderboard read RPC, matchmaking are additive and deferred - see
 -- docs/arena-scoring-contract.md). Deliberately NO insert/update/delete policy:
 -- clients cannot write here at all. service_role bypasses RLS, so the Hono API
 -- (which alone holds the service key) is the only writer. Self-read is allowed
@@ -57,7 +57,7 @@ alter table public.arena_submissions enable row level security;
 
 -- Self-read ONLY. No insert/update/delete policy exists, so authenticated
 -- clients cannot write scores; the service-role API is the sole writer. This is
--- the whole point — the write model is authoritative by construction.
+-- the whole point - the write model is authoritative by construction.
 drop policy if exists "Users read own arena submissions" on public.arena_submissions;
 create policy "Users read own arena submissions"
   on public.arena_submissions

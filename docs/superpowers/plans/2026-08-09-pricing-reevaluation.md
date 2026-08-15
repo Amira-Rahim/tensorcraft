@@ -153,7 +153,7 @@ describe("deep-orbit scene art covers every built lesson", () => {
 pnpm vitest run packages/content/__tests__/scene-art-coverage.test.ts
 ```
 
-**This test is expected to PASS immediately** — the art already shipped. That is
+**This test is expected to PASS immediately** - the art already shipped. That is
 unusual for TDD, and it means the assertion itself must be proven honest before
 you trust it.
 
@@ -224,7 +224,7 @@ it("renders the extras lesson count from the prop, never a hardcoded literal", (
 ```bash
 pnpm vitest run apps/web/app/pricing/__tests__/pricing-tiers.test.tsx
 ```
-Expected: FAIL — the card still says `21`.
+Expected: FAIL - the card still says `21`.
 
 - [ ] **Step 3: Implement**
 
@@ -312,7 +312,7 @@ before writing the assertion.
 ```bash
 pnpm vitest run apps/web/app/pricing/__tests__/pricing-jsonld.test.tsx
 ```
-Expected: FAIL — five offers, three `PreOrder`.
+Expected: FAIL - five offers, three `PreOrder`.
 
 - [ ] **Step 3: Implement**
 
@@ -377,7 +377,7 @@ it("does not imply a delivery schedule", () => {
 ```bash
 pnpm vitest run apps/web/app/pricing/__tests__/bundle-roadmap.test.tsx
 ```
-Expected: FAIL — module does not exist.
+Expected: FAIL - module does not exist.
 
 - [ ] **Step 3: Build `BundleRoadmap`**
 
@@ -408,7 +408,7 @@ old assertion had no behavioral content:
 
 | Old test | Action |
 | --- | --- |
-| `renders exactly 5 tier cards` (108) | Replace: `renders exactly the buyable tiers` — Free + Single present, `tier-card-two/three/all-five` absent. |
+| `renders exactly 5 tier cards` (108) | Replace: `renders exactly the buyable tiers` - Free + Single present, `tier-card-two/three/all-five` absent. |
 | `renders canonical dollar amounts on every tier` (117) | Narrow to the two live cards. Bundle prices are now covered by the roadmap test. |
 | `maps plan ids to tier cards` (126) | Narrow to `free` and `single`. |
 | `recommends the buyable Single tier` (150) | Keep the intent, drop the `tier-card-all-five` lookup. Assert Single carries `data-recommended`. |
@@ -416,7 +416,7 @@ old assertion had no behavioral content:
 | `All 5 CTA is disabled at V1` (168) | **Delete.** There is no All-5 CTA any more. Its intent (never sell an unbuyable tier) is now enforced by the roadmap's no-button test. |
 | `Single tier CTA sends planId=single` (183) | **Leave untouched.** |
 
-Also rename the `describe` at line 90 — it says "brutalist 5-tier grid".
+Also rename the `describe` at line 90 - it says "brutalist 5-tier grid".
 
 - [ ] **Step 6: Restructure `PricingTiers`**
 
@@ -458,7 +458,7 @@ the touched files. Do not run `git add` or `git commit`.
 
 ## Task 5: "Every lesson illustrated" copy
 
-Depends on Task 1 passing. If that gate is red, **stop** — the claim is false.
+Depends on Task 1 passing. If that gate is red, **stop** - the claim is false.
 
 **Files:**
 - Modify: `apps/web/app/pricing/pricing-tiers.tsx`
@@ -521,8 +521,8 @@ weight on a page that matters for search.
 
 - [ ] **Step 1: Surface the decision to the user**
 
-Present the conservative option — drop "bundles up to $159" from the three
-descriptions, leave the `<title>` alone — and the aggressive option, which
+Present the conservative option - drop "bundles up to $159" from the three
+descriptions, leave the `<title>` alone - and the aggressive option, which
 rewrites the title too. Get an explicit answer.
 
 - [ ] **Step 2: Implement whichever was chosen**
@@ -580,8 +580,8 @@ pnpm test:e2e e2e/ --grep axe
 Expected: 32/32 (the count recorded in the 2026-08-09 art session).
 
 New images are the risk here. Every plate must carry non-empty alt from content,
-and the roadmap strip must not rely on colour alone to convey the locked state
-— the same WCAG 1.4.1 issue the `ThemePicker` `aria-pressed` fix addressed at
+and the roadmap strip must not rely on colour alone to convey the locked state:
+the same WCAG 1.4.1 issue the `ThemePicker` `aria-pressed` fix addressed at
 lines 50-56.
 
 - [ ] **Step 5: Full battery**
@@ -624,7 +624,7 @@ audit does not re-discover it as a defect.
 grep -rn "159\|bundles up to\|All 5 Themes" --include="*.tsx" --include="*.ts" --include="*.md" --include="*.txt" apps/web packages/shared/src docs | grep -v node_modules | grep -v __tests__
 ```
 
-Check `llms.txt` and `ai-plugin.json` in particular — the 2026-06-20 pricing
+Check `llms.txt` and `ai-plugin.json` in particular - the 2026-06-20 pricing
 change had to sweep both. Report what you find; do not necessarily change it.
 Those files describe the ladder, which still exists; only the *buyability*
 framing changed.

@@ -16,9 +16,9 @@
  *   pnpm tsx scripts/news/draft.mjs --week=2026-W18 --dry-run # print to stdout
  *
  * Required env:
- *   ANTHROPIC_API_KEY            — for the draft call
- *   SUPABASE_URL                 — to load shortlisted items
- *   SUPABASE_SERVICE_ROLE_KEY    — same
+ *   ANTHROPIC_API_KEY - for the draft call
+ *   SUPABASE_URL - to load shortlisted items
+ *   SUPABASE_SERVICE_ROLE_KEY - same
  */
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -53,7 +53,7 @@ function buildItemPrompt(item) {
     )
     .join("\n");
 
-  const system = `You are a writer for The Bridge — Tensorcraft's blog. Voice rules:
+  const system = `You are a writer for The Bridge - Tensorcraft's blog. Voice rules:
 
 - Practitioner-honest, not hype. Never use "perfect", "amazing", "must-read", "game-changing", "revolutionary", or marketing superlatives.
 - Frontend-engineer perspective. Anchor every concept to something FE devs already know (DOM, typed arrays, requestAnimationFrame, fetch, web workers).
@@ -114,7 +114,9 @@ function slugifyTitle(title) {
 // Plain-markdown brief, deliberately without velite frontmatter so the
 // file cannot pass the posts schema if pasted into content/blog unedited.
 function ideaBrief(item, body) {
-  const sourceLabel = item.source.replace(/^(rss|github):/, "").replace(/\/.*$/, "");
+  const sourceLabel = item.source
+    .replace(/^(rss|github):/, "")
+    .replace(/\/.*$/, "");
   const lessons = (item.matched_lessons || [])
     .slice(0, 3)
     .map(
@@ -129,7 +131,7 @@ function ideaBrief(item, body) {
 > packages/content/content/blog/ and only then flips the news_item row to
 > published.
 
-Source: ${sourceLabel} — ${item.url}
+Source: ${sourceLabel} - ${item.url}
 
 Matched lessons:
 ${lessons || "(none)"}
@@ -144,7 +146,7 @@ function buildDigestPrompt(items) {
   const lines = items
     .map(
       (it, i) =>
-        `${i + 1}. ${it.title}\n   source: ${it.source}\n   summary: ${(it.summary || "").slice(0, 300)}\n   teaches: ${(it.matched_lessons?.[0]?.title) || "(none)"}`,
+        `${i + 1}. ${it.title}\n   source: ${it.source}\n   summary: ${(it.summary || "").slice(0, 300)}\n   teaches: ${it.matched_lessons?.[0]?.title || "(none)"}`,
     )
     .join("\n\n");
 
@@ -153,11 +155,11 @@ function buildDigestPrompt(items) {
 Write the MDX body for a weekly digest covering ${items.length} items. Structure:
 
 ## This week
-1 short paragraph (2-3 sentences) on the through-line — what world connects these items (e.g. "WebGPU keeps shipping", "transformers.js is doing what tfjs once promised"). If there is no through-line, say so honestly.
+1 short paragraph (2-3 sentences) on the through-line - what world connects these items (e.g. "WebGPU keeps shipping", "transformers.js is doing what tfjs once promised"). If there is no through-line, say so honestly.
 
 ## Items
 For each item, one bullet:
-- **[Title]** — 1 sentence on what shipped, then "Teaches: [Lesson Title]" with no link.
+- **[Title]** - 1 sentence on what shipped, then "Teaches: [Lesson Title]" with no link.
 
 ## Where to start
 1-2 sentences pointing the reader at the top item to read first this week. Be specific about who it's for.
@@ -191,7 +193,8 @@ async function loadShortlisted(week) {
 }
 
 async function main() {
-  if (!DRY_RUN && !existsSync(draftsDir)) mkdirSync(draftsDir, { recursive: true });
+  if (!DRY_RUN && !existsSync(draftsDir))
+    mkdirSync(draftsDir, { recursive: true });
   const items = await loadShortlisted(WEEK);
   console.log(`[draft] ${items.length} shortlisted items for ${WEEK}`);
   if (items.length === 0) return;

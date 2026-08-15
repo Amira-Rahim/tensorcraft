@@ -39,7 +39,7 @@ export function SiteFooter() {
             <Link href="/privacy" className={FOOTER_LINK_CLASS}>
               Privacy
             </Link>
-            {/* Art. 7(3) withdrawal path — sitewide, same weight as the
+            {/* Art. 7(3) withdrawal path - sitewide, same weight as the
                 privacy link that promises it (Tier 1-LEGAL). */}
             <CookieSettingsButton className={FOOTER_LINK_CLASS} />
           </div>

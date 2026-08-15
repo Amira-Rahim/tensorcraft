@@ -2,7 +2,7 @@
 -- which guards `role` only. The trigger binding is unchanged (both versions
 -- attach the same function to the same BEFORE UPDATE trigger).
 --
--- NOTE: rolling back re-opens R3-5 — stripe_customer_id becomes client-
+-- NOTE: rolling back re-opens R3-5 - stripe_customer_id becomes client-
 -- writable again. Only do this if 049 itself breaks profile updates.
 
 begin;

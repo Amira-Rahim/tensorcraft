@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { worlds } from "@tensorcraft/worlds";
-import { JOURNEY_ORDER, getLeadsTo } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { getJourneyState } from "@/lib/journey-progress";
+import {
+  buildGuestJourneyStates,
+  getJourneyState,
+} from "@/lib/journey-progress";
 import { JourneyRing } from "./journey-ring";
 
 export const metadata: Metadata = {
@@ -105,7 +106,9 @@ export default async function JourneyPage() {
           </div>
         )}
 
-        {/* The ring */}
+        {/* The ring. Signed-out visitors get the same stack built from the
+            manifests: no progress, no recommendation, hero falls back to
+            the first launched world. */}
         {state ? (
           <JourneyRing
             worldStates={state.worlds}
@@ -113,50 +116,11 @@ export default async function JourneyPage() {
             showProgress
           />
         ) : (
-          <ol className="space-y-4">
-            {JOURNEY_ORDER.map((slug, i) => {
-              const manifest = worlds[slug];
-              const leadsTo = getLeadsTo(slug);
-              return (
-                <li
-                  key={slug}
-                  className="brutalist-shadow border border-border bg-surface-raised p-5 tc-world-card"
-                  style={
-                    {
-                      "--card-primary": manifest?.palette.primary,
-                      "--card-primary-light": manifest?.paletteLight.primary,
-                    } as React.CSSProperties
-                  }
-                >
-                  <div className="flex items-start gap-4">
-                    <span
-                      className="shrink-0 font-mono text-sm font-bold w-8 h-8 flex items-center justify-center border"
-                      style={{
-                        color: "var(--card-active-primary)",
-                        borderColor: "var(--card-active-primary)",
-                      }}
-                      aria-hidden="true"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <h2 className="font-mono font-bold text-text-primary">
-                        {manifest?.displayName}
-                      </h2>
-                      <p className="text-sm text-text-muted mt-1 leading-relaxed">
-                        {manifest?.tagline}
-                      </p>
-                      {leadsTo ? (
-                        <p className="text-[11px] font-mono uppercase tracking-wider text-text-muted mt-2">
-                          Leads to {worlds[leadsTo]?.displayName}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
+          <JourneyRing
+            worldStates={buildGuestJourneyStates()}
+            recommendedNext={null}
+            showProgress={false}
+          />
         )}
       </div>
     </main>

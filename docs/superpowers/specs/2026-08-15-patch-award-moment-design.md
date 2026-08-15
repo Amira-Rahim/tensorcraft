@@ -10,8 +10,8 @@ the earning moment itself showed nothing.
 
 ## Where the state comes from (the blocker, resolved)
 
-No new queries. `LessonSteps` already receives `lessons` — every lesson in
-the module with a server-truth `completed` flag — plus `moduleName`, and
+No new queries. `LessonSteps` already receives `lessons` - every lesson in
+the module with a server-truth `completed` flag - plus `moduleName`, and
 its completion effect already distinguishes a genuine in-session walk to
 the Consequence step from a restored mount (`enteredThisSession`, R3-7
 guard). The award computes at that moment, client-side:
@@ -31,7 +31,7 @@ guard). The award computes at that moment, client-side:
 Replays and worlds without patch art fall out of the predicate: no
 award. Out-of-order completion (reachable only in free modules, where
 every lesson is unlocked) awards on whichever lesson closes out the
-module — the predicate is "last remaining", not "last by order", and
+module - the predicate is "last remaining", not "last by order", and
 that is the intended behavior.
 
 ## The reveal
@@ -44,7 +44,7 @@ award state is armed:
   one patch render that IS the content, not decoration): the alt is
   "<module name> mission patch".
 - Mono eyebrow `{terms(worldSlug).module} Complete` (deep-orbit says
-  "SECTOR COMPLETE" — the world never uses the word "module" on-screen,
+  "SECTOR COMPLETE" - the world never uses the word "module" on-screen,
   and the badge above it already renders `{terms.lesson} Complete` the
   same way), then the module name, then one plain line: "Mission patch
   earned." (rubric-checked: concrete, no slogan).

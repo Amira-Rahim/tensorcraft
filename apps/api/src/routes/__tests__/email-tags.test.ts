@@ -104,7 +104,7 @@ describe("POST /api/email", () => {
   /**
    * Intent tags. The original vocabulary (signed_up / onboarded /
    * first_lesson / capstone) tracked progress but never captured the moment a
-   * learner ran out of free content — the highest-intent signal in the
+   * learner ran out of free content - the highest-intent signal in the
    * product. Without these, a user could finish module 1, hit the wall and
    * leave, and no retention sequence could ever address them.
    * See docs/email-retention-sequences.md.

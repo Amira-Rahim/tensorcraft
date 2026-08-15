@@ -13,7 +13,7 @@ const pages = [
   // against the navigation. Pricing is audited instead.
   { name: "Pricing", path: "/pricing" },
   // /journey and /learn shipped 2026-07-23/24 with zero axe coverage
-  // (R3-6) — the exact "gate does not look there" failure mode this suite
+  // (R3-6) - the exact "gate does not look there" failure mode this suite
   // exists to prevent. Anonymous views: journey renders its signed-out
   // band, learn is static.
   { name: "Journey", path: "/journey" },
@@ -64,7 +64,7 @@ async function settle(page: import("@playwright/test").Page, path: string) {
 /**
  * Scheme matrix (light-mode rollout, 2026-07-23). Every audit runs once per
  * color scheme. `test.use({ colorScheme })` drives `prefers-color-scheme`,
- * which the FOUC bootstrap in layout.tsx resolves into `data-scheme` — so the
+ * which the FOUC bootstrap in layout.tsx resolves into `data-scheme` - so the
  * light pass exercises the real system-follow path end to end, not a
  * localStorage shortcut. This suite is the contrast gate that certifies the
  * light palette; a light-only violation is a palette bug (darken the token in

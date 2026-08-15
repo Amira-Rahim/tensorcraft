@@ -34,6 +34,13 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # Formatting gate (2026-08-15). Scope is defined by .prettierignore:
+      # authored learner content, generated velite output, and vendored
+      # minified assets are deliberately outside prettier's reach; see the
+      # comments in that file before widening either side.
+      - name: Format check
+        run: pnpm format:check
+
       # Surfaces the NEXT CVE instead of relying on someone remembering to
       # run it (full-audit §4: "pnpm audit is not a CI step"). Prod deps
       # only; moderate floor keeps dev-chain noise out of the signal.
@@ -151,10 +158,10 @@ jobs:
     runs-on: ubuntu-latest
     # ALWAYS runs, and HARD-FAILS until SUPABASE_URL +
     # SUPABASE_SERVICE_ROLE_KEY exist as repo secrets (the script exits 2
-    # under CI when they are missing — fail-closed by design, never a
+    # under CI when they are missing - fail-closed by design, never a
     # silent green; R3-9). Fork PRs have no secrets and will always fail
     # this job. Pending migrations exit 1 and fail the job, surfacing
-    # "code assumes a schema production doesn't have yet" before deploy —
+    # "code assumes a schema production doesn't have yet" before deploy -
     # exactly the 047 class of failure (R3-2).
     steps:
       - name: Checkout

@@ -17,7 +17,7 @@ OUTER_FENCE_REGEX = re.compile(
 )
 
 # Filenames and paths that almost certainly hold secrets or PII. Compressing
-# them ships raw bytes to the Anthropic API — a third-party data boundary that
+# them ships raw bytes to the Anthropic API - a third-party data boundary that
 # developers on sensitive codebases cannot cross. detect.py already skips .env
 # by extension, but credentials.md / secrets.txt / ~/.aws/credentials would
 # slip through the natural-language filter. This is a hard refuse before read.
@@ -111,7 +111,7 @@ STRICT RULES:
 - Preserve ALL URLs exactly
 - Preserve ALL headings exactly
 - Preserve file paths and commands
-- Return ONLY the compressed markdown body — do NOT wrap the entire output in a ```markdown fence or any other fence. Inner code blocks from the original stay as-is; do not add a new outer fence around the whole file.
+- Return ONLY the compressed markdown body - do NOT wrap the entire output in a ```markdown fence or any other fence. Inner code blocks from the original stay as-is; do not add a new outer fence around the whole file.
 
 Only compress natural language.
 
@@ -126,7 +126,7 @@ def build_fix_prompt(original: str, compressed: str, errors: List[str]) -> str:
 
 CRITICAL RULES:
 - DO NOT recompress or rephrase the file
-- ONLY fix the listed errors — leave everything else exactly as-is
+- ONLY fix the listed errors - leave everything else exactly as-is
 - The ORIGINAL is provided as reference only (to restore missing content)
 - Preserve caveman style in all untouched sections
 
@@ -162,7 +162,7 @@ def compress_file(filepath: Path) -> bool:
         raise ValueError(f"File too large to compress safely (max 500KB): {filepath}")
 
     # Refuse files that look like they contain secrets or PII. Compressing ships
-    # the raw bytes to the Anthropic API — a third-party boundary — so we fail
+    # the raw bytes to the Anthropic API - a third-party boundary - so we fail
     # loudly rather than silently exfiltrate credentials or keys. Override is
     # intentional: the user must rename the file if the heuristic is wrong.
     if is_sensitive_path(filepath):
@@ -215,7 +215,7 @@ def compress_file(filepath: Path) -> bool:
             # Restore original on failure
             filepath.write_text(original_text)
             backup_path.unlink(missing_ok=True)
-            print("❌ Failed after retries — original restored")
+            print("❌ Failed after retries - original restored")
             return False
 
         print("Fixing with Claude...")

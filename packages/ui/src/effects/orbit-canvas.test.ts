@@ -15,7 +15,7 @@ import {
 
    recordingCtx (shared with world-scenes.test.ts, see
    ./test-utils/recording-canvas.ts) captures EVERY geometry-producing call,
-   including fillRect args into `.rects` — drawOrbit today only calls
+   including fillRect args into `.rects` - drawOrbit today only calls
    fillRect once, with the constant full-canvas nebula wash (0, 0, w, h),
    but capturing it (rather than discarding, as an earlier version of this
    recorder did) means a future positioned fillRect can't sneak scheme- or
@@ -44,7 +44,7 @@ describe("drawOrbit hover continuity", () => {
 describe("drawOrbit scheme independence", () => {
   it("draws identical geometry under dark and light scheme at the same t", () => {
     // The light art redesign (Task 9) may only change styling (colors,
-    // composite mode, alpha) — never position. Recording every geometry
+    // composite mode, alpha) - never position. Recording every geometry
     // call under both schemes and diffing locks that contract before the
     // art work lands.
     const t = 123.456;
@@ -87,10 +87,10 @@ describe("drawOrbit dark-scheme style lock", () => {
     expect(styles.strokes).toHaveLength(576);
 
     // Human-readable spot locks for the regression class that motivated this
-    // test. Dark alphas pass through UNclamped — the browser clamps >1 at
+    // test. Dark alphas pass through UNclamped - the browser clamps >1 at
     // raster time. At this t/hot, 42 fills exceed alpha 1: the core dot
     // (0.95 × boost 1.7 = 1.615, which bypasses the scale helper) plus 41
-    // near-side hover particles (~1.14, which go THROUGH it) — so a clamp
+    // near-side hover particles (~1.14, which go THROUGH it) - so a clamp
     // leaking into the dark path collapses this count to 1 even though the
     // max stays 1.615. Both are asserted for a readable failure.
     const plainFillAlphas = styles.fills
@@ -112,7 +112,7 @@ describe("drawOrbit dark-scheme style lock", () => {
   it("light scheme clamps every plain-paint alpha at 0.9 and never composites additively", () => {
     // Complement to the dark lock: ink mode's whole premise is bounded-body
     // marks (scaleA clamp ≤ 0.9; core dot capped 0.88) pooled via multiply,
-    // with the nebula/halo glazes on source-over — "lighter" is dark-only.
+    // with the nebula/halo glazes on source-over - "lighter" is dark-only.
     const { ctx, styles } = recordingCtx();
     drawOrbit(ctx, 1000, 600, [107, 170, 138], 1, 123.456, "light");
 
@@ -130,7 +130,7 @@ describe("drawOrbit dark-scheme style lock", () => {
     expect([...ops].sort()).toEqual(["multiply", "source-over"]);
 
     // The nebula/halo/particle-glow gradients fill as gradients, captured
-    // as their addColorStop stop list rather than a plain string —
+    // as their addColorStop stop list rather than a plain string -
     // alphaOf(...) is NaN for those and the plain-paint scan above
     // silently skips them. Parse every stop's own alpha so an unclamped
     // wash stop can't hide behind the plain-paint scan.

@@ -214,7 +214,7 @@ export function SettingsForm({
 
   // Wrapped in try/finally. `getUser()` and the profile update sat outside any
   // handler, so a throw from either skipped `setSaving(false)` and left the
-  // button spinning with no error and no retry — the user could not tell
+  // button spinning with no error and no retry - the user could not tell
   // whether their name had saved. The correct pattern already existed at
   // handleAvatarUpload in this same file.
   async function handleSave() {

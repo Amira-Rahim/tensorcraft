@@ -1,6 +1,6 @@
 -- Down-migration for 045. Reverses 045_dashboard_hotpath_indexes.sql.
 --
--- Pure index drops — safe and idempotent. Reverting only removes the
+-- Pure index drops - safe and idempotent. Reverting only removes the
 -- performance indexes; no data is touched.
 
 begin;

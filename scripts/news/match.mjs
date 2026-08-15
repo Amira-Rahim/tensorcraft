@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * News matcher — two-stage retrieval.
+ * News matcher - two-stage retrieval.
  *
  * Stage 1: cheap concept-index lookup. Tokenizes each news item's title +
  *          summary, normalizes via the same pipeline used at index build,
@@ -23,9 +23,9 @@
  *   node scripts/news/match.mjs --all-pending --no-llm    # skip LLM rerank
  *
  * Required env:
- *   ANTHROPIC_API_KEY            — for the rerank call
- *   SUPABASE_URL                 — only when not using --fixture
- *   SUPABASE_SERVICE_ROLE_KEY    — same
+ *   ANTHROPIC_API_KEY - for the rerank call
+ *   SUPABASE_URL - only when not using --fixture
+ *   SUPABASE_SERVICE_ROLE_KEY - same
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -47,12 +47,25 @@ const argv = parseArgs(process.argv.slice(2));
 const useLlm = !argv["no-llm"];
 
 /* ------------------------------------------------------------------ */
-/* Stage 1 — concept-index candidate retrieval                          */
+/* Stage 1 - concept-index candidate retrieval                          */
 /* ------------------------------------------------------------------ */
 
 const STOPWORDS = new Set([
-  "the", "a", "an", "and", "or", "of", "in", "to", "for",
-  "with", "is", "are", "this", "that", "it",
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "of",
+  "in",
+  "to",
+  "for",
+  "with",
+  "is",
+  "are",
+  "this",
+  "that",
+  "it",
 ]);
 
 function normalizeConcept(raw) {
@@ -123,13 +136,13 @@ function findCandidates(index, terms, limit = CANDIDATE_LIMIT) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Stage 2 — LLM rerank prompt — USER CONTRIBUTION                     */
+/* Stage 2 - LLM rerank prompt - USER CONTRIBUTION                     */
 /* ------------------------------------------------------------------ */
 
 /**
  * Build the rerank prompt for one news item + its candidate lessons.
  *
- * USER CONTRIBUTION POINT — see request below.
+ * USER CONTRIBUTION POINT - see request below.
  *
  * Returns { system, user } strings. Output spec: model returns JSON matching
  * `rerankSchema` (top 3 picks, each with lessonSlug + rationale ≤ 140 chars).
@@ -299,7 +312,7 @@ async function matchOne(item, conceptIndex) {
         gap_concept = gap.concept;
         gap_rationale = gap.rationale;
       } else {
-        // LLM returned empty picks without a gap object — degraded LLM
+        // LLM returned empty picks without a gap object - degraded LLM
         // response. Fall back to deterministic top-3.
         matched_lessons = fallbackTopK(candidates);
       }
@@ -357,7 +370,7 @@ async function main() {
       } else {
         for (const m of out.matched_lessons) {
           console.log(
-            `  → ${m.worldId}/${m.moduleId}/${m.slug}  (${m.score})${m.rationale ? `  — ${m.rationale}` : ""}`,
+            `  → ${m.worldId}/${m.moduleId}/${m.slug}  (${m.score})${m.rationale ? ` - ${m.rationale}` : ""}`,
           );
         }
       }
@@ -366,10 +379,12 @@ async function main() {
   }
 
   // --week filters by week_iso (only set on shortlist). Omit to match all
-  // pending items — typical post-scrape flow before any curation.
+  // pending items - typical post-scrape flow before any curation.
   const week = argv.week;
   if (!week && !argv["all-pending"]) {
-    console.error("[match] pass --week=YYYY-Www, --all-pending, or --fixture=path.json");
+    console.error(
+      "[match] pass --week=YYYY-Www, --all-pending, or --fixture=path.json",
+    );
     process.exit(1);
   }
   const { supabase, items } = await loadPending(week);

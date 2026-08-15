@@ -32,7 +32,7 @@ create policy "Users view own boss-beat choices"
   on public.boss_beat_choices for select
   using (auth.uid() = user_id);
 
--- Idempotent recorder. ON CONFLICT DO NOTHING — first choice wins, can't
+-- Idempotent recorder. ON CONFLICT DO NOTHING - first choice wins, can't
 -- be replayed for a different outcome (no farming of a more dominant pick).
 create or replace function public.record_boss_beat_choice(
   p_theme_id text,

@@ -8,7 +8,7 @@
  * metadata-consistency, end-of-lesson). The consequence, per the scalability
  * audit F3: when a second world launches, the automated consistency net that
  * keeps 5C variety, metadata truth and numeric canon coherent would NOT cover
- * it — it saw only the 77 shipped lessons out of ~275 authored.
+ * it - it saw only the 77 shipped lessons out of ~275 authored.
  *
  * Now there is one list. Adding a dir here (and to LAUNCHED_WORLDS in
  * @tensorcraft/shared) is the MECHANICAL half of launching a world: Velite
@@ -22,7 +22,7 @@
  * ladder fails Gate B's excerpt convention, and none of the 219 lessons has
  * had a fact-check pass (Deep Orbit needed four adversarial rounds). Budget
  * 12-20 focused weeks per world; the full measured punch list lives in
- * docs/world-launch-checklist.md — read it before flipping any world on.
+ * docs/world-launch-checklist.md - read it before flipping any world on.
  *
  * The cross-world `extras` dir (23 companion lessons) was removed 2026-08-15
  * by owner decision; restore pointer in docs/post-launch-backlog.md.

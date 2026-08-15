@@ -18,7 +18,7 @@ parked.
 
 The wizard's Ready step shows a `◎` glyph above "All Systems Go". When
 `surfacePlateSrc(DEFAULT_WORLD, "onboarding")` resolves (new surface key
-`"onboarding"` → `bridge` — the wizard hands the learner to the Bridge),
+`"onboarding"` → `bridge` - the wizard hands the learner to the Bridge),
 render a framed `ArtPlate` at the summary card's width in place of the
 glyph; the glyph stays as the art-less render. Because this is the first
 *replacement* use of ArtPlate, the component gains a `fallback` prop

@@ -103,7 +103,7 @@ export function ParticleField({
       });
     };
 
-    // Resolving the CSS variable is a getComputedStyle call — a style/layout
+    // Resolving the CSS variable is a getComputedStyle call - a style/layout
     // read that must NOT run every rAF frame on the landing hero (the rule
     // ticker.tsx and scene-canvas.tsx state explicitly; R3-7). Resolve once,
     // re-resolve only when the scheme/world attribute actually changes.
@@ -176,7 +176,7 @@ export function ParticleField({
 
     // Any frame (static or animated) bakes the resolved --tc-* color, so a
     // scheme or narrative-world flip would leave stale-colored dots until a
-    // resize. Re-resolve + repaint on the attribute change — the same fix
+    // resize. Re-resolve + repaint on the attribute change - the same fix
     // AmbientBackground and SceneCanvas carry (2026-07-23 transition audit).
     const mo = new MutationObserver(() => {
       refreshColor();

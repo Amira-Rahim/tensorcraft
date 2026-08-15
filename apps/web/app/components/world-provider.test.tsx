@@ -10,7 +10,7 @@ import { mockMatchMedia } from "./test-utils/mock-match-media";
  * provider: OS-default resolution, explicit persistence, `null` = follow OS,
  * live OS-change reactivity gated on "no stored override", and the
  * storage-blocked survival path (see the SecurityError comment at the top of
- * world-provider.tsx — every localStorage touch must be try/catch'd because
+ * world-provider.tsx - every localStorage touch must be try/catch'd because
  * getSnapshot runs during render).
  */
 
@@ -203,7 +203,7 @@ describe("WorldProvider scheme state", () => {
     // ...and, load-bearing: so does the React-visible state. Without the
     // in-memory fallback, the next snapshot read would hit the catch
     // branch, see nothing to read, and silently resolve back to the OS
-    // value (light here) — the app would show "light" copy/toggle state
+    // value (light here) - the app would show "light" copy/toggle state
     // while the DOM sat in dark, permanently disagreeing with itself for
     // the rest of the session.
     expect(screen.getByTestId("scheme").textContent).toBe("dark");

@@ -8,12 +8,12 @@
 -- affect the row lifecycle.
 --
 -- Identity model:
---   - `user_id` is nullable — anonymous reports are allowed. The API
+--   - `user_id` is nullable - anonymous reports are allowed. The API
 --     populates it when a valid Bearer token is present and null
 --     otherwise. `email` carries the anonymous contact address in that
 --     case (validated at the edge, not at the DB layer).
 --   - The admin dashboard reads this table via the service role only.
---     There is no user-facing SELECT policy by design — RLS is enabled
+--     There is no user-facing SELECT policy by design - RLS is enabled
 --     with zero policies so `anon` / `authenticated` cannot read anything,
 --     while the service role bypasses RLS to INSERT + SELECT.
 --
@@ -27,7 +27,7 @@ create table if not exists public.issues (
   id uuid primary key default gen_random_uuid(),
 
   -- Nullable so anonymous reports are supported. We do NOT foreign-key
-  -- to auth.users on delete cascade — a deleted user's reports remain
+  -- to auth.users on delete cascade - a deleted user's reports remain
   -- useful as admin artefacts. The application layer validates that a
   -- user_id, when present, corresponds to a real account (via the
   -- Bearer token path in issues.ts).

@@ -1,4 +1,4 @@
-# Tensorcraft Content Quality Audit — 2026-04-25
+# Tensorcraft Content Quality Audit - 2026-04-25
 
 Comprehensive quality audit covering all 296 lessons, 315 exercises, 50 canonical bridges, 80 derivation drawers, and 47 quizzes.
 
@@ -6,10 +6,10 @@ Rubric: see [docs/quality-rubric.md](../quality-rubric.md). Audit run via 12 par
 
 ## Headline result
 
-- **0 derivation drawer math errors** in 80 sampled. ELBO, reparameterization, Adam, attention scaling, LSTM gates, DDPM closed-form, KL Gaussian — all canonical.
+- **0 derivation drawer math errors** in 80 sampled. ELBO, reparameterization, Adam, attention scaling, LSTM gates, DDPM closed-form, KL Gaussian - all canonical.
 - **1 critical lesson math error**: diffusion-process lesson code used linear blend instead of DDPM √ᾱ scaling. **FIXED**.
 - **1 critical exercise bug**: build-transformer-block re-initialized weights every call. **FIXED** with closure pattern.
-- **1 critical UI bug**: all 47 quizzes leaked the "— correct" marker in option text. **FIXED** by stripping in Quiz component.
+- **1 critical UI bug**: all 47 quizzes leaked the " - correct" marker in option text. **FIXED** by stripping in Quiz component.
 - **3 bridges missing breaks** (#21, #45, #50). **FIXED**.
 - **3 lesson-side bridge tier issues**. **FIXED**.
 
@@ -44,26 +44,26 @@ Rubric: see [docs/quality-rubric.md](../quality-rubric.md). Audit run via 12 par
 
 ### Lessons (8 items)
 
-- [04-forward-pass.mdx:19](../../packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx#L19) — Bridge break "event handlers run independently" inaccurate; DOM events are sequential
-- [03-forecasting.mdx:79](../../packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx#L79) — Confidence-decay magic number 0.015 unjustified
-- [01-convolution-operations.mdx:165](../../packages/content/content/neon-protocol/convolutional-neural-networks/01-convolution-operations.mdx#L165) — Output-size formula assumes "valid" padding; "same" padding asymmetric case missing
-- [03-unet-architecture.mdx:152](../../packages/content/content/neon-protocol/segmentation/03-unet-architecture.mdx#L152) — NHWC vs NCHW concatenation axis note missing
-- [03-performance-budgets.mdx:51](../../packages/content/content/neon-protocol/real-time-detection/03-performance-budgets.mdx#L51) — Mobile-CPU budget gap not documented
-- [02-self-attention.mdx:102](../../packages/content/content/signal-ward/attention-mechanisms/02-self-attention.mdx#L102) — Clinical example (methotrexate causation) needs disclaimer tightening
-- [02-post-training-quantization.mdx:71](../../packages/content/content/terra-grid/quantization/02-post-training-quantization.mdx#L71) — INT8 formula labeling inconsistent with derivation
-- [03-bert-pretraining.mdx:206](../../packages/content/content/signal-ward/transformers-bert/03-bert-pretraining.mdx#L206) — MLM drawer placed after exercise instead of beside masked-token introduction
+- [04-forward-pass.mdx:19](../../packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx#L19) - Bridge break "event handlers run independently" inaccurate; DOM events are sequential
+- [03-forecasting.mdx:79](../../packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx#L79) - Confidence-decay magic number 0.015 unjustified
+- [01-convolution-operations.mdx:165](../../packages/content/content/neon-protocol/convolutional-neural-networks/01-convolution-operations.mdx#L165) - Output-size formula assumes "valid" padding; "same" padding asymmetric case missing
+- [03-unet-architecture.mdx:152](../../packages/content/content/neon-protocol/segmentation/03-unet-architecture.mdx#L152) - NHWC vs NCHW concatenation axis note missing
+- [03-performance-budgets.mdx:51](../../packages/content/content/neon-protocol/real-time-detection/03-performance-budgets.mdx#L51) - Mobile-CPU budget gap not documented
+- [02-self-attention.mdx:102](../../packages/content/content/signal-ward/attention-mechanisms/02-self-attention.mdx#L102) - Clinical example (methotrexate causation) needs disclaimer tightening
+- [02-post-training-quantization.mdx:71](../../packages/content/content/terra-grid/quantization/02-post-training-quantization.mdx#L71) - INT8 formula labeling inconsistent with derivation
+- [03-bert-pretraining.mdx:206](../../packages/content/content/signal-ward/transformers-bert/03-bert-pretraining.mdx#L206) - MLM drawer placed after exercise instead of beside masked-token introduction
 
 ### Exercises (10 items)
 
-- find-threshold.yaml, time-vs-frequency.yaml, visualize-features.yaml, apply-nms.yaml — instructions leak algorithm steps
-- temporal-attention.yaml — beginner rated, requires 3+ concepts
-- self-attention-scores.yaml — instructions assume Q·K^T/√d formula already known
-- bag-of-words.yaml — punctuation edge case untested
-- multiHeadAttention.yaml — tests verify shape only, no softmax-sums-to-1 assertion
-- reparameterize.yaml — no zero-variance edge case
-- build-lstm.yaml — "advanced" but only shape-tested; no train-step assertion
-- kl-loss.yaml — magnitude not asserted
-- build-decision-tree.yaml + compute-gradients.yaml — difficulty mis-rated
+- find-threshold.yaml, time-vs-frequency.yaml, visualize-features.yaml, apply-nms.yaml - instructions leak algorithm steps
+- temporal-attention.yaml - beginner rated, requires 3+ concepts
+- self-attention-scores.yaml - instructions assume Q·K^T/√d formula already known
+- bag-of-words.yaml - punctuation edge case untested
+- multiHeadAttention.yaml - tests verify shape only, no softmax-sums-to-1 assertion
+- reparameterize.yaml - no zero-variance edge case
+- build-lstm.yaml - "advanced" but only shape-tested; no train-step assertion
+- kl-loss.yaml - magnitude not asserted
+- build-decision-tree.yaml + compute-gradients.yaml - difficulty mis-rated
 
 ### Bridges (forced analogies, 4 items)
 
@@ -74,11 +74,11 @@ Rubric: see [docs/quality-rubric.md](../quality-rubric.md). Audit run via 12 par
 
 ### Bridges missing mlCode (11 items)
 
-Bridges #27, #28, #32, #33, #34, #35, #36, #37, #41, #42, #43 — all have feCode but lack matching mlCode example. Add concrete TFJS snippets.
+Bridges #27, #28, #32, #33, #34, #35, #36, #37, #41, #42, #43 - all have feCode but lack matching mlCode example. Add concrete TFJS snippets.
 
 ### Quizzes (~3 weak)
 
-- [01-introduction-to-tensors.mdx:88](../../packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx#L88) — Recall-only ("what is rank?")
+- [01-introduction-to-tensors.mdx:88](../../packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx#L88) - Recall-only ("what is rank?")
 - Theme gaps: object-detection, segmentation, quantization, federated-learning have only 1 quiz each (recommend +1-2 each)
 
 ## P2 stylistic (batch later)
@@ -119,11 +119,11 @@ The rubric ([docs/quality-rubric.md](../quality-rubric.md)) is the new floor. Fu
 ## Exemplar templates (use these as the bar)
 
 **Lessons:**
-- [Tensors as Linear Algebra](../../packages/content/content/extras/math-deep-dive/01-tensors-as-linear-algebra.mdx) — lean dialogue, executable code, strong bridge
-- [Deep Orbit System Architecture (capstone)](../../packages/content/content/deep-orbit/capstone/01-system-architecture.mdx) — honest bridges, clear pacing
-- [Neon Protocol Feature Vectors](../../packages/content/content/neon-protocol/feature-extraction/01-feature-vectors.mdx) — pseudocode + real code labeled
-- [Nova Canvas Reparameterization](../../packages/content/content/nova-canvas/variational-autoencoders/03-reparameterization-trick.mdx) — model-level lesson design
-- [Terra Grid Quantization](../../packages/content/content/terra-grid/quantization/02-post-training-quantization.mdx) — honest bridge, canonical math
+- [Tensors as Linear Algebra](../../packages/content/content/extras/math-deep-dive/01-tensors-as-linear-algebra.mdx) - lean dialogue, executable code, strong bridge
+- [Deep Orbit System Architecture (capstone)](../../packages/content/content/deep-orbit/capstone/01-system-architecture.mdx) - honest bridges, clear pacing
+- [Neon Protocol Feature Vectors](../../packages/content/content/neon-protocol/feature-extraction/01-feature-vectors.mdx) - pseudocode + real code labeled
+- [Nova Canvas Reparameterization](../../packages/content/content/nova-canvas/variational-autoencoders/03-reparameterization-trick.mdx) - model-level lesson design
+- [Terra Grid Quantization](../../packages/content/content/terra-grid/quantization/02-post-training-quantization.mdx) - honest bridge, canonical math
 
 **Exercises:**
 - [apply-convolution.yaml](../../packages/content/content/neon-protocol/convolutional-neural-networks/exercises/apply-convolution.yaml)
@@ -142,7 +142,7 @@ The rubric ([docs/quality-rubric.md](../quality-rubric.md)) is the new floor. Fu
 
 ## Next steps
 
-1. Apply P1 fixes (estimated 6h) — defer to next sprint
-2. Add missing mlCode to 11 bridges — ~1h
-3. Add 8-10 quizzes to underrepresented themes — ~2h
-4. Run audit re-check (12 parallel agents) after P1 — ~30 min
+1. Apply P1 fixes (estimated 6h) - defer to next sprint
+2. Add missing mlCode to 11 bridges - ~1h
+3. Add 8-10 quizzes to underrepresented themes - ~2h
+4. Run audit re-check (12 parallel agents) after P1 - ~30 min

@@ -27,7 +27,7 @@ The page reads as an undifferentiated wall. Secondary issues:
 `Nav` ([apps/web/app/components/nav.tsx](../../../apps/web/app/components/nav.tsx),
 already a client component using `usePathname`) returns `null` on lesson
 viewer routes: paths matching `/themes/{slug}/{module}/{lesson}` (exactly 4
-segments; the capstone route is 3 segments so it keeps the nav — the
+segments; the capstone route is 3 segments so it keeps the nav - the
 `capstone` check below is only defensive against a lesson slug literally
 named "capstone"). All other routes keep the global nav. The lesson top bar
 (drawer, exit chip, segmented step bar, counter) becomes the page's only
@@ -38,7 +38,7 @@ lesson pages; account access from a lesson goes through the exit chip.
 
 Same position (top-left), demoted: transparent background, border appears on
 hover only, label `← Mission Map`. Destination unchanged
-(`/themes/{slug}`), now honestly labeled — the module route is a redirect
+(`/themes/{slug}`), now honestly labeled - the module route is a redirect
 shim to the theme page, whose module map is the module overview.
 
 ### 3. Meta line
@@ -56,7 +56,7 @@ title:
 
 ### 4. Screenplay register for story content
 
-Story and instruction get distinct visual registers, typography only — no
+Story and instruction get distinct visual registers, typography only - no
 boxes. Applies to all story surfaces (Briefing, Consequence/Epilogue, inline
 Dialogue anywhere).
 
@@ -76,14 +76,14 @@ italic + muted, gains the same `pl-6` indent and a ~52ch measure.
 **CUT-TO divider + story-zone prose, mechanism.** Several lessons carry
 top-level narration prose before or between their opening dialogues (6 by
 accurate count: kalman-filters, monitoring, forward-pass, model-profiling,
-quantization, lstm-gates — an earlier scan reported 38/56 but was counting
+quantization, lstm-gates - an earlier scan reported 38/56 but was counting
 dialogue body lines as prose), so any "render dialogues, then prose" split
 would reorder content. Instead the MDX
 render order is untouched and CSS does positional work inside the Briefing
 step container (a `data-story-register` attribute set by `StepBriefing`'s
 `LessonContent`):
 
-- Story-zone prose — any `p` with a later `Dialogue` sibling — gets the
+- Story-zone prose - any `p` with a later `Dialogue` sibling - gets the
   stage-direction style:
   `[data-story-register] p:has(~ [data-dialogue]) { /* italic, muted, indented */ }`
 - Every `Dialogue` renders a divider (`CUT TO: BRIEFING`, thin rule + mono
@@ -115,7 +115,7 @@ without `:has()`: no divider, interleaved prose keeps normal style; dialogue
 and scene-heading styling (component-level) still carries the register
 shift.
 
-**Epilogue/Consequence:** inherits automatically — same `SceneHeading` +
+**Epilogue/Consequence:** inherits automatically - same `SceneHeading` +
 `Dialogue` components, existing FADE OUT marker kept. The epilogue container
 does not set `data-story-register`, so no CUT-TO divider appears there.
 
@@ -160,5 +160,5 @@ speakers) → `CUT TO: BRIEFING` rule → full-width plain instructional prose.
 
 - No change to step gating, persistence, or the segmented progress bar
   (shipped separately today).
-- No content/MDX edits — 297 lesson files untouched.
+- No content/MDX edits - 297 lesson files untouched.
 - No removal of `tier` from the content schema.

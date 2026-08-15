@@ -37,8 +37,8 @@ function getStripe(): Stripe {
  *
  * Gated behind STRIPE_TAX_ENABLED and OFF by default, so checkout behaves
  * exactly as today until the operator turns it on. Enabling requires work in
- * the Stripe dashboard FIRST — activate Stripe Tax, set the origin address and
- * a default product tax code/behaviour, and register for OSS/VAT — because
+ * the Stripe dashboard FIRST - activate Stripe Tax, set the origin address and
+ * a default product tax code/behaviour, and register for OSS/VAT - because
  * turning `automatic_tax` on before Tax is configured makes session creation
  * fail. Once on: Stripe collects the buyer's billing country + VAT id, computes
  * tax, and issues a real (VAT-grade) invoice; the webhook persists the country
@@ -74,7 +74,7 @@ function validateWorldIds(ids: string[]): boolean {
  * accepted TOCTOU; fresh-eyes rerun irreversible list #6).
  *
  * Returns true when this delivery won the insert (or when the ledger is
- * unavailable — 053 not yet applied — where blocking payments over a
+ * unavailable - 053 not yet applied - where blocking payments over a
  * missing observability table would be the worse failure; the sequential
  * guards still hold in that window).
  */
@@ -119,7 +119,7 @@ const TERMINAL_STATUSES = new Set([
  * methods (bank debits, some wallets) with `payment_status: "unpaid"`: the
  * CHECKOUT finished but the MONEY has not moved. This handler used to write
  * `status: "completed"` unconditionally, which granted lifetime access on an
- * unpaid session — and the later `async_payment_failed` event only logged,
+ * unpaid session - and the later `async_payment_failed` event only logged,
  * so the access was never revoked (audit run #7, 2026-07-16). Unpaid sessions
  * are recorded as `pending` (grants nothing: every access-granting read
  * filters to completed/partially_refunded); `async_payment_succeeded`
@@ -193,7 +193,7 @@ payments.post("/checkout", async (c) => {
     ]);
   const buyerEmail = (buyerProfile as { email?: string } | null)?.email;
   // Reuse the Stripe Customer captured by the webhook (migration 043) so a
-  // repeat buyer doesn't mint a fresh Customer per purchase — with
+  // repeat buyer doesn't mint a fresh Customer per purchase - with
   // invoice_creation enabled (STRIPE_TAX_ENABLED) every duplicate Customer
   // fragments billing history exactly where H1 subscriptions will need it.
   const buyerCustomerId =
@@ -231,7 +231,7 @@ payments.post("/checkout", async (c) => {
   //
   // This MUST use the admin client: purchases has no INSERT policy for
   // authenticated users (001: service-role only), so the user-scoped client
-  // is rejected by RLS — and `amount: 0` additionally violated the original
+  // is rejected by RLS - and `amount: 0` additionally violated the original
   // `chk_amount_positive CHECK (amount > 0)` until migration 037 relaxed it
   // to `>= 0`. Both failures were silent 500s that made a fully-credited
   // upgrade impossible to redeem (audit run #7; latent until world 2).
@@ -579,7 +579,7 @@ payments.post("/webhook", async (c) => {
           if (userId) {
             // Best-effort: the purchase is recorded regardless, and the buyer
             // can always sign in from the site with the same address.
-            // APP_URL falls back to the production domain, NOT "" — every
+            // APP_URL falls back to the production domain, NOT "" - every
             // other unset-APP_URL site fails loud, but this one silently
             // mailed a paying guest a relative (= broken) access link
             // (R3-9).
@@ -748,7 +748,7 @@ payments.post("/webhook", async (c) => {
 
       // Tax jurisdiction + amount, captured at the moment of sale (re-audit
       // N0). Unlike seats or subscriptions, this CANNOT be reconstructed from a
-      // flat USD row after 100k transactions — EU VAT is owed at the buyer's
+      // flat USD row after 100k transactions - EU VAT is owed at the buyer's
       // rate from the first sale. Persist whatever Stripe collected; the fields
       // are null/0 until the operator enables Stripe Tax (STRIPE_TAX_ENABLED),
       // at which point every new sale records its jurisdiction. `amount_tax` is
@@ -813,7 +813,7 @@ payments.post("/webhook", async (c) => {
       if (stripeCustomerId) {
         try {
           // supabase-js reports failures in the result object, it does not
-          // throw — the catch below only covers transport-level rejections.
+          // throw - the catch below only covers transport-level rejections.
           // Inspect the error explicitly or a failure (e.g. migration 043
           // not applied) is a silent no-op with no operator signal.
           const { error: custError } = await supabase
@@ -1020,7 +1020,7 @@ payments.post("/webhook", async (c) => {
 
     case "charge.dispute.closed": {
       // A WON dispute must restore access (gap sweep F2, 2026-07-25): the
-      // funds come back but the row sat terminally "disputed" forever — no
+      // funds come back but the row sat terminally "disputed" forever - no
       // handler existed, and 038's trigger silently blocked any manual
       // repair. Restoration goes through the migration-051 RPC, the single
       // sanctioned path through the trigger's transaction-local escape
@@ -1051,7 +1051,7 @@ payments.post("/webhook", async (c) => {
             },
             "Webhook: failed to restore purchase after won dispute",
           );
-          // 500 so Stripe retries — includes the migration-051-not-applied
+          // 500 so Stripe retries - includes the migration-051-not-applied
           // case (unknown function), which resolves once it is applied.
           return c.json({ error: "Database error" }, 500);
         }
@@ -1150,7 +1150,7 @@ payments.post("/webhook", async (c) => {
             if (asyncUpsertError) {
               // A failed settle upsert must be RETRIED, not ACKed: swallowing
               // it locked a delayed-method buyer (SEPA/bank transfer) out
-              // permanently and silently — the money moved, the row never
+              // permanently and silently - the money moved, the row never
               // promoted, and Stripe was told all was well (fresh-eyes rerun
               // T0-6).
               logger.error(
@@ -1241,7 +1241,7 @@ payments.post("/webhook", async (c) => {
       );
 
       // Settle the pending row as failed. This handler used to only log,
-      // which left the purchase in whatever state the sync handler wrote —
+      // which left the purchase in whatever state the sync handler wrote -
       // and before the payment_status fix that state was "completed", i.e.
       // lifetime access on a payment that bounced (audit run #7). "failed"
       // is terminal, so the guard below also protects a session that was

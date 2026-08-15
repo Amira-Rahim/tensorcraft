@@ -7,7 +7,7 @@ import { useWorld } from "./world-provider";
 // Brutalist icon button: monospace glyphs, no rounded pill switch.
 // System (follow OS) -> Light -> Dark -> System. `schemePreference` is the
 // stored value (null | "light" | "dark"); the resolved `scheme` is not used
-// here on purpose — the toggle reflects the user's PREFERENCE, not the
+// here on purpose - the toggle reflects the user's PREFERENCE, not the
 // OS-resolved color, so a "system" user on a dark OS still sees the system
 // glyph, not the dark one.
 type SchemeState = "system" | "light" | "dark";
@@ -38,7 +38,7 @@ export function SchemeToggle() {
   // Screen-reader backstop (post-launch review, 2026-07-22): the accessible
   // name doubles as the current state AND changes in place on activation, on
   // the element that stays focused. Some AT/browser combos don't reliably
-  // re-announce a name change on the currently-focused control — they watch
+  // re-announce a name change on the currently-focused control - they watch
   // for content/live-region changes, not name recomputation. This status
   // span is always mounted (required for live-region announcements to fire
   // at all) but starts empty so mount/navigation stays silent; it only gets
@@ -77,7 +77,7 @@ export function SchemeToggle() {
          * for React to warn about), then corrects to the real client value
          * in an ordinary post-mount render. That correction can still flip
          * this glyph a beat after first paint, so it's marked
-         * suppressHydrationWarning defensively — same convention as the
+         * suppressHydrationWarning defensively - same convention as the
          * <html> tag in layout.tsx, which has a genuine mismatch (the FOUC
          * script edits the DOM before React hydrates). A "mounted"
          * placeholder pass was the other option per the plan, but it would

@@ -22,7 +22,7 @@ describe("useScheme", () => {
     const { getByTestId } = render(<Probe />);
     expect(getByTestId("scheme").textContent).toBe("dark");
 
-    // MutationObserver callbacks fire as a microtask — how many ticks isn't
+    // MutationObserver callbacks fire as a microtask - how many ticks isn't
     // a contract we control (batching/scheduling can add more), so a
     // one-shot `await Promise.resolve()` is a race, not a fix. `waitFor`
     // polls (its asyncWrapper keeps an act() window open across however

@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://tensorcraft.app/worlds/${slug}/capstone`,
     },
-    // Full blocks — images-only openGraph shallow-replaces the root block,
+    // Full blocks - images-only openGraph shallow-replaces the root block,
     // dropping og:url and inheriting the homepage twitter card (R3-7).
     openGraph: {
       type: "website",

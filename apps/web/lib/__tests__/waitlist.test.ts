@@ -15,7 +15,7 @@ import { submitWaitlist } from "../waitlist";
  * Both callers (`world-waitlist-form.tsx`, `newsletter-modal.tsx`) do
  * `setStatus("submitting")` then `setStatus(await submitWaitlist(...))` with no
  * try/catch. An exception skipped the second setStatus and left the form stuck
- * on "submitting" forever — with a working error state rendered just below
+ * on "submitting" forever - with a working error state rendered just below
  * that the throw made unreachable. Returning "error" is what makes those call
  * sites correct by construction.
  */
@@ -31,7 +31,7 @@ describe("submitWaitlist", () => {
     );
   });
 
-  it("treats a duplicate as done — already on the list is success to the visitor", async () => {
+  it("treats a duplicate as done - already on the list is success to the visitor", async () => {
     mockInsert.mockResolvedValue({ error: { code: "23505" } });
     await expect(submitWaitlist("a@b.com", "deep-orbit", "form")).resolves.toBe(
       "done",

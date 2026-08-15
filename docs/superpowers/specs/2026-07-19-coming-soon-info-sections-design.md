@@ -19,13 +19,13 @@ memory / theme-provider behavior), inside the existing 1120px column and
 Shared section-header grammar (matches the roster header): title bold left,
 mono-xs muted meta right.
 
-### You'll master — counted prose
+### You'll master - counted prose
 
 Unchanged slash-separated prose line (green virgules). Header gains right
 meta: `{n} capabilities` from `preview.skills.length`. Smallest change; the
 prose form already reads well.
 
-### Where it leads — salary range bars
+### Where it leads - salary range bars
 
 `careerPaths` entries follow `"Name ($lowK-$highK)"` (verified across all 4
 manifests, 2-3 entries each). Parse low/high; render each role as a row:
@@ -39,7 +39,7 @@ manifests, 2-3 entries each). Parse low/high; render each role as a row:
 Unparseable entry falls back to a plain text row (defensive only; none today).
 Pure CSS, server-rendered.
 
-### The cast — personnel dossiers
+### The cast - personnel dossiers
 
 Reuse `CharacterAvatar` from `@tensorcraft/ui` (client island): 40px
 initial-block, `accentColor` = page green, `isAI` passed through (abstract

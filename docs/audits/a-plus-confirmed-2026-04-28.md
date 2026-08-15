@@ -1,4 +1,4 @@
-# A+ Confirmed — Final Re-audit 2026-04-28
+# A+ Confirmed - Final Re-audit 2026-04-28
 
 This is the **third re-audit** of content quality. Closes the A+ launch sprint. All P0 from prior re-audit fixed. P2 polish backlog moved to [docs/v2-polish-backlog.md](../v2-polish-backlog.md).
 
@@ -39,7 +39,7 @@ This is the **third re-audit** of content quality. Closes the A+ launch sprint. 
 | Real-TFJS grader | **315/315** exercises pass, **1286/1286** tests |
 | Typecheck | **9/9** packages clean |
 | Vitest | **732/732** tests, **101/101** files |
-| Web build | clean — `/compare` `/bridges` `/pricing` all `○ static` prerender |
+| Web build | clean - `/compare` `/bridges` `/pricing` all `○ static` prerender |
 | Bridge mismatches | **0** |
 | AI-slop in any audit dimension | **0** |
 
@@ -56,16 +56,16 @@ Math floor canonical. Real-TFJS exercises actually run. Bridges admit where they
 
 **Five items shipped 2026-04-28 (post-A+ confirmation):**
 
-- **3 forced bridges replaced (initial pass + 2 strict-A+ refinements)** — #5 LR↔bisection (was easing). #17 augmentation: first pass replaced with fuzz testing (still B1=3/5 due to inverted goals); second pass 2026-04-28 replaced with **programmatic test fixture factories (Faker / factory-bot)** — same intent (population coverage), B1=5/5. #44 style transfer: first pass replaced with Photoshop filter stack (still B1=3/5 due to vague "compose"); second pass 2026-04-28 replaced with **Prettier auto-formatter pipeline** — same shape (iteratively rewrite target until it matches reference style), B1=5/5.
-- **/compare table a11y** — `<caption className="sr-only">` + `scope="col"` on headers + `scope="row"` on feature column.
-- **/bridges colorblind-safe glyphs** — `≡` identity, `≅` structural, `≈` intuition prepended to tier labels with proper `aria-hidden` on glyph + `aria-label` on parent.
-- **/bridges JSON-LD extended** — `itemListElement` now covers all 50 bridges (was 25).
-- **Studio-one β-VAE shipped** — replaced deterministic dense AE artifact at `apps/web/public/models/studio-one-v1/` (and 3 alias dirs) with proper β-VAE: Conv2D(8) → Conv2D(16) → Flatten → μ-head + logVar-head → reparameterization sample → Dense → Reshape → Conv2DTranspose(8) → Conv2DTranspose(3 sigmoid). Custom training loop with reconstruction MSE + 0.5·KL term. Registered `ReparamLayer` class for save/load round-trip. Verified via `tf.loadLayersModel` — all lesson-mentioned layers present in artifact, no more AE/VAE deception.
+- **3 forced bridges replaced (initial pass + 2 strict-A+ refinements)** - #5 LR↔bisection (was easing). #17 augmentation: first pass replaced with fuzz testing (still B1=3/5 due to inverted goals); second pass 2026-04-28 replaced with **programmatic test fixture factories (Faker / factory-bot)** - same intent (population coverage), B1=5/5. #44 style transfer: first pass replaced with Photoshop filter stack (still B1=3/5 due to vague "compose"); second pass 2026-04-28 replaced with **Prettier auto-formatter pipeline** - same shape (iteratively rewrite target until it matches reference style), B1=5/5.
+- **/compare table a11y** - `<caption className="sr-only">` + `scope="col"` on headers + `scope="row"` on feature column.
+- **/bridges colorblind-safe glyphs** - `≡` identity, `≅` structural, `≈` intuition prepended to tier labels with proper `aria-hidden` on glyph + `aria-label` on parent.
+- **/bridges JSON-LD extended** - `itemListElement` now covers all 50 bridges (was 25).
+- **Studio-one β-VAE shipped** - replaced deterministic dense AE artifact at `apps/web/public/models/studio-one-v1/` (and 3 alias dirs) with proper β-VAE: Conv2D(8) → Conv2D(16) → Flatten → μ-head + logVar-head → reparameterization sample → Dense → Reshape → Conv2DTranspose(8) → Conv2DTranspose(3 sigmoid). Custom training loop with reconstruction MSE + 0.5·KL term. Registered `ReparamLayer` class for save/load round-trip. Verified via `tf.loadLayersModel` - all lesson-mentioned layers present in artifact, no more AE/VAE deception.
 
 **Still deferred to V2** (see [docs/v2-polish-backlog.md](../v2-polish-backlog.md)):
 
 - Story-voice Phase 4 spot-check editorial pass (~3.5h, taste call)
-- Studio-one real-data training — architecture is now correct β-VAE but synthetic uniform-noise inputs cause posterior collapse. Retrain on tiny CelebA subset for face-shaped reconstructions (~3h).
+- Studio-one real-data training - architecture is now correct β-VAE but synthetic uniform-noise inputs cause posterior collapse. Retrain on tiny CelebA subset for face-shaped reconstructions (~3h).
 - Capstone real-data training (replaces synthetic for all 5 themes)
 - npm-publishable bundling for `@tensorcraft/bridges` (workspace:* dep blocks publish)
 

@@ -15,7 +15,7 @@ export function SessionToast() {
       // Auto-hide after 15 seconds. Clear any pending timer first:
       // api-fetch dispatches this event on EVERY 401-with-session, so a
       // re-fire near an old deadline used to hide the fresh toast almost
-      // immediately — and an uncleared timer survived unmount, setting
+      // immediately - and an uncleared timer survived unmount, setting
       // state on a dead component (R3-7).
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
       hideTimerRef.current = setTimeout(() => setVisible(false), 15_000);

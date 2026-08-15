@@ -1,6 +1,6 @@
 -- Tensorcraft: Additional onboarding fields on profiles
 --
--- Phase 11 §11e — backend for the onboarding survey + dashboard.
+-- Phase 11 §11e - backend for the onboarding survey + dashboard.
 --
 -- Adds:
 --   - experience_level  (beginner | intermediate | advanced | expert)
@@ -11,7 +11,7 @@
 -- formalize the set of allowed values.
 
 -- ============================================================
--- experience_level — new column
+-- experience_level - new column
 -- ============================================================
 alter table public.profiles
   add column if not exists experience_level text;
@@ -29,7 +29,7 @@ alter table public.profiles
   );
 
 -- ============================================================
--- learning_goal — enforce allowed values
+-- learning_goal - enforce allowed values
 --
 -- NOTE: The existing onboarding page (apps/web/app/onboarding/page.tsx)
 -- writes free-text strings like "Switch to ML engineering". Stage 3 of

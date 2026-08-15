@@ -85,7 +85,7 @@ interface LessonContentProps {
   /**
    * XS renderer slice (fresh-eyes rerun §4/T1-16): prose visibility is a
    * single boolean, so all 56 lessons rendered the task brief ("## Challenge"
-   * onward — "Now it's your turn…") on Briefing/Concept/Code, BEFORE the
+   * onward - "Now it's your turn…") on Briefing/Concept/Code, BEFORE the
    * teaching. When true, a CSS rule hides the Challenge heading and every
    * following sibling. CSS-only by design: the full prose partition is
    * deliberately deferred until real completion data exists (ledger §4

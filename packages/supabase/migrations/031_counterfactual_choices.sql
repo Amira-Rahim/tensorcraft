@@ -2,7 +2,7 @@
 --
 -- One-shot per-theme rewind. Player picks a single decision node from
 -- their journey through a theme and sees the alternate timeline play out.
--- Hard cap at 1 rewind per (user_id, theme_id) — enforced in schema +
+-- Hard cap at 1 rewind per (user_id, theme_id) - enforced in schema +
 -- RPC. Once spent, the only way to "rewind again" is to revisit alternate
 -- paths in a fresh theme.
 --
@@ -32,7 +32,7 @@ create policy "Users view own counterfactuals"
   on public.counterfactual_choices for select
   using (auth.uid() = user_id);
 
--- Records the rewind. Server-enforced cap: ON CONFLICT DO NOTHING —
+-- Records the rewind. Server-enforced cap: ON CONFLICT DO NOTHING -
 -- if a row already exists for (user_id, theme_id) the rewind is rejected.
 create or replace function public.record_counterfactual(
   p_theme_id text,

@@ -33,7 +33,7 @@ decision.
    oe/03 pruning starts from whichever ledger the learner accepted.
 3. **tl/05 suspicious-metric call.** The 0.998-from-an-untrained-model
    print: trust it, re-run it, or tear down the fixture. Rhymes with f/05
-   ("a question mark is an instrument") — the strongest thematic pairing.
+   ("a question mark is an instrument") - the strongest thematic pairing.
 4. **br/03 backend fallback.** Ship the WebGL fast path only, or pay the
    WASM fallback complexity for the crew tablets. Real engineering
    tradeoff learners recognize from their own work.
@@ -51,7 +51,7 @@ beat-free by evidence: three blind evaluators liked its pacing as-is).
 ## Quality gates every new beat must pass (earned in P3, non-negotiable)
 
 - No stance label anywhere in the rendered component (P3 round 1 leak).
-- `displayOrder` via the FNV-1a + xorshift shuffle, EXECUTED across ids —
+- `displayOrder` via the FNV-1a + xorshift shuffle, EXECUTED across ids -
   a randomizer is a claim (P3 round 3: the LCG parked dominant at one
   position in all four beats).
 - The dominant stance pays a visible cost on-page, in that lesson (P3

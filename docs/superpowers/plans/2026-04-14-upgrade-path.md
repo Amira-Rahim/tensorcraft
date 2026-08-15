@@ -12,7 +12,7 @@
 
 ---
 
-### Task 1: Backend — Replace duplicate-purchase block with credit calculation
+### Task 1: Backend - Replace duplicate-purchase block with credit calculation
 
 **Files:**
 - Modify: `apps/api/src/routes/payments.ts:70-88`
@@ -96,11 +96,11 @@ const session = await stripe.checkout.sessions.create({
         currency: "usd",
         product_data: {
           name: isUpgrade
-            ? `Tensorcraft — Upgrade to ${plan.label}`
-            : `Tensorcraft — ${plan.label}`,
+            ? `Tensorcraft - Upgrade to ${plan.label}`
+            : `Tensorcraft - ${plan.label}`,
           description: `Access to ${body.themeIds.join(", ")}`,
         },
-        unit_amount: adjustedPrice * 100, // cents — adjusted for credit
+        unit_amount: adjustedPrice * 100, // cents - adjusted for credit
       },
       quantity: 1,
     },
@@ -122,7 +122,7 @@ Run: `pnpm build 2>&1 | tail -5`
 
 ---
 
-### Task 2: Backend — Update webhook validation for upgrades
+### Task 2: Backend - Update webhook validation for upgrades
 
 **Files:**
 - Modify: `apps/api/src/routes/payments.ts` (webhook handler, ~line 250)
@@ -135,7 +135,7 @@ In the webhook's `checkout.session.completed` handler, after reading metadata, u
 const creditApplied = Number(metadata.creditApplied || "0");
 const expectedAmount = plan.price - creditApplied;
 
-// Validate paid amount matches expected (exact — integer cents, no rounding)
+// Validate paid amount matches expected (exact - integer cents, no rounding)
 const paidAmount = amount ? amount / 100 : expectedAmount;
 if (Math.abs(paidAmount - expectedAmount) > 0.01) {
   console.error("Webhook: Amount mismatch", { paidAmount, expectedAmount, creditApplied });
@@ -155,7 +155,7 @@ Run: `pnpm build 2>&1 | tail -5`
 
 ---
 
-### Task 3: Frontend — Handle auto-grant response in CheckoutButton
+### Task 3: Frontend - Handle auto-grant response in CheckoutButton
 
 **Files:**
 - Modify: `apps/web/app/pricing/checkout-button.tsx:96-103`
@@ -168,7 +168,7 @@ After `const { url } = await response.json();` (line 98), change to:
 const data = await response.json();
 
 if (data.granted) {
-  // Auto-grant — redirect to success page without Stripe
+  // Auto-grant - redirect to success page without Stripe
   window.location.href = "/dashboard/purchase-success";
   return;
 }
@@ -186,7 +186,7 @@ Run: `pnpm build 2>&1 | tail -5`
 
 ---
 
-### Task 4: Frontend — Show adjusted prices in PricingTiers
+### Task 4: Frontend - Show adjusted prices in PricingTiers
 
 **Files:**
 - Modify: `apps/web/app/pricing/pricing-tiers.tsx`
@@ -317,8 +317,8 @@ Expected: 9 successful tasks
 
 | File | Action |
 |------|--------|
-| `apps/api/src/routes/payments.ts` | Modify — credit calculation, auto-grant, adjusted Stripe session |
-| `apps/web/app/pricing/checkout-button.tsx` | Modify — handle `{ granted: true }` response |
-| `apps/web/app/pricing/pricing-tiers.tsx` | Modify — show adjusted prices, lock owned themes |
-| `apps/api/src/routes/payments.test.ts` | Modify — add upgrade path tests |
+| `apps/api/src/routes/payments.ts` | Modify - credit calculation, auto-grant, adjusted Stripe session |
+| `apps/web/app/pricing/checkout-button.tsx` | Modify - handle `{ granted: true }` response |
+| `apps/web/app/pricing/pricing-tiers.tsx` | Modify - show adjusted prices, lock owned themes |
+| `apps/api/src/routes/payments.test.ts` | Modify - add upgrade path tests |
 | `docs/dev-plan.md`, `docs/api-reference.md`, `docs/product-plan.md` | Update |

@@ -119,7 +119,7 @@ export function Quiz({
                 {i === selected && <div className="w-2.5 h-2.5 bg-primary" />}
               </div>
               <span className="text-sm text-text-primary/80">
-                {option.text.replace(/\s*[—-]\s*correct\s*$/i, "")}
+                {option.text.replace(/\s*[\u2014-]\s*correct\s*$/i, "")}
               </span>
             </button>
           );

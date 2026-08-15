@@ -1,4 +1,4 @@
-# Email Flows — Event-Triggered Kit Tags Implementation Plan
+# Email Flows - Event-Triggered Kit Tags Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -53,7 +53,7 @@ emailTags.post("/", async (c) => {
 
   const tagId = EMAIL_TAG_MAP[body.event];
   if (!tagId) {
-    // Tag not configured — silently succeed (dev environment)
+    // Tag not configured - silently succeed (dev environment)
     return c.json({ ok: true, skipped: true });
   }
 
@@ -76,7 +76,7 @@ emailTags.post("/", async (c) => {
 
     return c.json({ ok: true, event: body.event });
   } catch {
-    // Non-blocking — email tagging should never break the app
+    // Non-blocking - email tagging should never break the app
     return c.json({ ok: true, skipped: true });
   }
 });
@@ -106,7 +106,7 @@ KIT_TAG_CAPSTONE=
 
 In `apps/api/.env.example`, add:
 ```
-# Kit lifecycle tags (numeric IDs from Kit dashboard — trigger automated email sequences)
+# Kit lifecycle tags (numeric IDs from Kit dashboard - trigger automated email sequences)
 KIT_TAG_SIGNED_UP=
 KIT_TAG_ONBOARDED=
 KIT_TAG_FIRST_LESSON=
@@ -198,7 +198,7 @@ try {
 }
 ```
 
-Note: This doesn't need an Authorization header if the user is not authenticated (free module). The API will return 401 silently — which is fine for fire-and-forget.
+Note: This doesn't need an Authorization header if the user is not authenticated (free module). The API will return 401 silently - which is fine for fire-and-forget.
 
 - [ ] **Step 3: Verify build**
 
@@ -290,13 +290,13 @@ Run: `pnpm build 2>&1 | tail -5`
 
 | File | Action |
 |------|--------|
-| `apps/api/src/routes/email-tags.ts` | Create — new route |
-| `apps/api/src/index.ts` | Modify — mount route |
-| `apps/web/lib/supabase/session-listener.tsx` | Modify — signup tag |
-| `apps/web/app/onboarding/page.tsx` | Modify — onboarding tag |
-| `apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.tsx` | Modify — first-lesson tag |
-| `apps/web/app/themes/[slug]/capstone/capstone-email-tag.tsx` | Create — capstone tag client component |
-| `apps/web/app/themes/[slug]/capstone/page.tsx` | Modify — render CapstoneEmailTag |
-| `apps/api/.env` + `.env.example` | Modify — add tag env vars |
-| `apps/api/src/routes/__tests__/email-tags.test.ts` | Create — tests |
+| `apps/api/src/routes/email-tags.ts` | Create - new route |
+| `apps/api/src/index.ts` | Modify - mount route |
+| `apps/web/lib/supabase/session-listener.tsx` | Modify - signup tag |
+| `apps/web/app/onboarding/page.tsx` | Modify - onboarding tag |
+| `apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.tsx` | Modify - first-lesson tag |
+| `apps/web/app/themes/[slug]/capstone/capstone-email-tag.tsx` | Create - capstone tag client component |
+| `apps/web/app/themes/[slug]/capstone/page.tsx` | Modify - render CapstoneEmailTag |
+| `apps/api/.env` + `.env.example` | Modify - add tag env vars |
+| `apps/api/src/routes/__tests__/email-tags.test.ts` | Create - tests |
 | `docs/dev-plan.md`, `docs/api-reference.md`, `docs/deployment-guide.md` | Update |

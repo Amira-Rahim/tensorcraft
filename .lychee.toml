@@ -1,10 +1,10 @@
-# Lychee broken-link checker config — used by .github/workflows/ci.yml.
+# Lychee broken-link checker config - used by .github/workflows/ci.yml.
 #
 # Policy:
 #   * Internal (relative path or same-origin) dead links FAIL the CI job.
 #   * External 4xx/5xx failures are surfaced as warnings, not failures, because
 #     third-party sites go down for reasons unrelated to this repo. Lychee
-#     supports this via `accept` — listing an external status as accepted means
+#     supports this via `accept` - listing an external status as accepted means
 #     it is not counted as a failure.
 
 # HTTP status codes treated as success for EXTERNAL URLs only.
@@ -14,7 +14,7 @@
 # - 500/503: transient upstream failures
 accept = ["200..=299", "301", "302", "307", "308", "403", "429", "500", "503"]
 
-# Max concurrency — keep modest so we don't get rate-limited.
+# Max concurrency - keep modest so we don't get rate-limited.
 max_concurrency = 8
 
 # Retry transient failures twice before flagging.
@@ -54,7 +54,7 @@ exclude = [
   # Mailto / tel links
   "^mailto:",
   "^tel:",
-  # GitHub PR/commit permalinks tied to private branches — optional
+  # GitHub PR/commit permalinks tied to private branches - optional
   "^https?://github\\.com/.+/(pull|commit)/",
   # Auth-walled dashboard URLs. Supabase answers 404 to anonymous visitors
   # on project pages (deliberately, so project ids do not leak), so the

@@ -2,7 +2,7 @@
 --
 -- Migration 036 documented this vulnerability class exactly ("no REVOKE was
 -- ever issued, and Postgres grants EXECUTE on functions to PUBLIC by default
--- — PostgREST therefore exposes it at /rest/v1/rpc/<name> to anon and
+-- - PostgREST therefore exposes it at /rest/v1/rpc/<name> to anon and
 -- authenticated alike") and then fixed precisely ONE function. Every other
 -- SECURITY DEFINER function in the schema stayed world-callable. This closes
 -- the rest.
@@ -21,7 +21,7 @@
 --   get_shared_certificate(uuid)   -- 019
 
 -- ============================================================
--- 1. refresh_dashboard_stats() — denial of service
+-- 1. refresh_dashboard_stats() - denial of service
 -- ============================================================
 -- No arguments, no auth guard, and it forces REFRESH MATERIALIZED VIEW
 -- CONCURRENTLY over the whole theme_progress table. A single anonymous POST
@@ -35,10 +35,10 @@ grant execute on function public.refresh_dashboard_stats()
   to service_role;
 
 -- ============================================================
--- 2. ensure_skill_events_partitions() — DDL execution
+-- 2. ensure_skill_events_partitions() - DDL execution
 -- ============================================================
 -- Executes DDL (CREATE TABLE ... PARTITION OF). Documented in 013 as
--- "Call monthly via pg_cron or Inngest" — a service-role job, never a client.
+-- "Call monthly via pg_cron or Inngest" - a service-role job, never a client.
 -- No application caller exists.
 
 revoke execute on function public.ensure_skill_events_partitions()
@@ -48,14 +48,14 @@ grant execute on function public.ensure_skill_events_partitions()
   to service_role;
 
 -- ============================================================
--- 3. compute_user_skill_genome(uuid, text) — IDOR
+-- 3. compute_user_skill_genome(uuid, text) - IDOR
 -- ============================================================
 -- This one CANNOT simply be revoked: it has a legitimate browser caller at
 -- apps/web/lib/progress-client.ts:124, fired after each lesson completion.
 --
 -- The defect is that p_user_id was a free parameter on a SECURITY DEFINER
 -- function reachable from the public PostgREST endpoint, with no ownership
--- check — so any caller could recompute, and thereby overwrite, ANY user's
+-- check - so any caller could recompute, and thereby overwrite, ANY user's
 -- skill genome, at ~19 table scans per call.
 --
 -- Body below is byte-identical to migration 014 apart from the guard block

@@ -25,11 +25,11 @@ different "Worlds".
   bodies/parameters reference the old names (param renames require
   drop+recreate; 039's security-definer grants re-applied). `.down.sql`
   mirrors it. **Operator must apply 058 before the next deploy or local run
-  against prod data** — same workflow as 037-057.
+  against prod data** - same workflow as 037-057.
 
 ## What deliberately keeps "theme"
 
-1. **Light/dark mode** — already named "scheme" (`data-scheme`, `setScheme`,
+1. **Light/dark mode** - already named "scheme" (`data-scheme`, `setScheme`,
    `prefers-color-scheme`); no overlap, nothing to do.
 2. **Shiki syntax-highlighting theme** (`packages/ui/src/mdx/tensorcraft-theme*.ts`,
    `code-block.tsx`): "theme" is the correct upstream term (a VS Code/Shiki

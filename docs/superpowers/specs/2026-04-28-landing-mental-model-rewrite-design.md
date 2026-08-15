@@ -1,6 +1,6 @@
-# Landing hero — mental-model rewrite
+# Landing hero - mental-model rewrite
 
-> **SUPERSEDED 2026-05-08** — replaced by [2026-05-08-landing-headline-audience-callout.md](2026-05-08-landing-headline-audience-callout.md). User feedback found the "Same Mental Model. New Domain." framing too cryptic and missing an audience callout. Kept here for historical rationale only.
+> **SUPERSEDED 2026-05-08** - replaced by [2026-05-08-landing-headline-audience-callout.md](2026-05-08-landing-headline-audience-callout.md). User feedback found the "Same Mental Model. New Domain." framing too cryptic and missing an audience callout. Kept here for historical rationale only.
 
 **Date:** 2026-04-28
 **Status:** Superseded 2026-05-08
@@ -8,7 +8,7 @@
 
 ## Goal
 
-Reposition the landing hero around the claim that a frontend engineer's existing mental model transfers directly to browser ML. The current hero treats the FE→ML bridge as a curriculum claim ("every concept maps to a frontend analogy"). The rewrite makes it an identity claim ("you already think this way — we just rename the primitives").
+Reposition the landing hero around the claim that a frontend engineer's existing mental model transfers directly to browser ML. The current hero treats the FE→ML bridge as a curriculum claim ("every concept maps to a frontend analogy"). The rewrite makes it an identity claim ("you already think this way - we just rename the primitives").
 
 ## Why
 
@@ -25,13 +25,13 @@ Reposition the landing hero around the claim that a frontend engineer's existing
 
 ## Copy changes
 
-### Eyebrow — unchanged
+### Eyebrow - unchanged
 
 ```
 Deep Orbit is live · Launch cohort open
 ```
 
-### Headline — replace
+### Headline - replace
 
 **Before** (4 lines):
 ```
@@ -51,16 +51,16 @@ NEW DOMAIN.
 - Same brutalist treatment: `font-mono font-black`, uppercase, tight tracking.
 - Cadence intentionally matches the existing final-CTA closer (`BRIDGE / the gap.`).
 
-### Subhead — replace
+### Subhead - replace
 
 **Before:**
 > Every ML concept maps to a frontend analogy you already know. Every analogy ships with a label that says **where it lies**, so you stop past the honest limit. Eleven modules, fifty-five lessons, one deployable model. Built in JavaScript.
 
 **After:**
-> You already debug state, optimize renders, reason about caches. That's the mental model that ships browser ML — `Math.max` becomes ReLU, `TypedArray` becomes Tensor, `Service Worker` becomes model cache. The bridge from frontend to ML is shorter than you think. Eleven modules, fifty-five lessons, one deployable model. Built in JavaScript.
+> You already debug state, optimize renders, reason about caches. That's the mental model that ships browser ML - `Math.max` becomes ReLU, `TypedArray` becomes Tensor, `Service Worker` becomes model cache. The bridge from frontend to ML is shorter than you think. Eleven modules, fifty-five lessons, one deployable model. Built in JavaScript.
 
 - `Math.max`, `TypedArray`, `Service Worker` rendered in `text-text-primary` (or inline `<code>`-styled span) for visual punch.
-- "The bridge from frontend to ML is shorter than you think" — preserved from prior iterated headline, demoted to subhead per Q2 decision.
+- "The bridge from frontend to ML is shorter than you think" - preserved from prior iterated headline, demoted to subhead per Q2 decision.
 
 ### Footers
 
@@ -79,11 +79,11 @@ Rationale: the new headline + subhead make the JS-native, ship-this-quarter posi
 
 ## Bridge selection (subhead inline examples)
 
-Three bridges are named inline. All three are tier **Identity** per [themes-and-bridges.md](../../packages/content/...). Identity tier means "FE concept IS the ML concept" — strongest possible bridge. Critical: weaker tiers (Structural, Intuition) would undercut the headline's identity claim.
+Three bridges are named inline. All three are tier **Identity** per [themes-and-bridges.md](../../packages/content/...). Identity tier means "FE concept IS the ML concept" - strongest possible bridge. Critical: weaker tiers (Structural, Intuition) would undercut the headline's identity claim.
 
-- `Math.max(0, x)` ≡ ReLU — Identity
-- `TypedArray` w/ `.shape` ≡ Tensor — Identity
-- `Service Worker` + Cache Storage ≡ model cache — Identity
+- `Math.max(0, x)` ≡ ReLU - Identity
+- `TypedArray` w/ `.shape` ≡ Tensor - Identity
+- `Service Worker` + Cache Storage ≡ model cache - Identity
 
 ## Risks
 

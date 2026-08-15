@@ -2,37 +2,13 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import {
-  SceneCanvas,
-  drawOrbit,
-  drawNeonProtocol,
-  drawSignalWard,
-  drawNovaCanvas,
-  drawTerraGrid,
-  type SceneDraw,
-} from "@tensorcraft/ui/effects";
+import { SceneCanvas, drawOrbit } from "@tensorcraft/ui/effects";
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
-import { NewsletterModal } from "./newsletter-modal";
-
-// Signature scene per world — the same renderers as the homepage
-// five-worlds strip, so a world's motion identity follows it across
+// Signature scene per world - shared with the journey ring and the
+// per-world backdrop, so a world's motion identity follows it across
 // surfaces. Hover/focus ignites the scene via SceneCanvas's eased hot.
-const SCENE_BY_SLUG: Record<string, SceneDraw> = {
-  "deep-orbit": drawOrbit,
-  "neon-protocol": drawNeonProtocol,
-  "signal-ward": drawSignalWard,
-  "nova-canvas": drawNovaCanvas,
-  "terra-grid": drawTerraGrid,
-};
-
-function hexToRgb(hex: string): [number, number, number] {
-  const h = hex.replace("#", "");
-  return [
-    parseInt(h.slice(0, 2), 16),
-    parseInt(h.slice(2, 4), 16),
-    parseInt(h.slice(4, 6), 16),
-  ];
-}
+import { SCENE_BY_SLUG, hexToRgb } from "@/lib/scene-by-slug";
+import { NewsletterModal } from "./newsletter-modal";
 
 export interface WorldCardData {
   slug: string;
@@ -143,7 +119,7 @@ function WorldCard({ card, variant }: WorldCardProps) {
   // fresh array literal every render: SceneCanvas's render() useCallback
   // depends on [draw, rgb, rgbLight] by reference, so a new array each
   // render would give it a new identity, which the containing useEffect
-  // (dep [render]) treats as "everything changed" — full teardown/rebuild
+  // (dep [render]) treats as "everything changed" - full teardown/rebuild
   // of the resize/IntersectionObserver/MutationObserver bundle on every
   // hover in/out. Pre-existing churn (hexToRgb was already inline before
   // this task); fixed here since this file was already being touched.
@@ -164,7 +140,7 @@ function WorldCard({ card, variant }: WorldCardProps) {
         href={`/worlds/${card.slug}`}
         aria-label={`${card.displayName}, ${card.tagline}${isComingSoon ? " (coming soon)" : ""}`}
         // `tc-world-card` opts into the scheme-aware --card-active-primary
-        // rule in globals.css (shared with dashboard/world-cards.tsx — see
+        // rule in globals.css (shared with dashboard/world-cards.tsx - see
         // that rule's doc comment). No useScheme() here: this is a client
         // component, so the hook WOULD work, but every card re-rendering on
         // scheme toggle just to recompute a style string is unnecessary
@@ -202,7 +178,7 @@ function WorldCard({ card, variant }: WorldCardProps) {
           />
         )}
         {/* Scene brightness rides SceneCanvas's eased hot amount, so no CSS
-            opacity ramp here — a second ramp would mute the ignition. rgb/
+            opacity ramp here - a second ramp would mute the ignition. rgb/
             rgbLight stay as the STATIC per-world hues (not scheme-resolved
             here): SceneCanvas reads document.documentElement's data-scheme
             itself every frame and picks between them independently. */}
@@ -219,7 +195,7 @@ function WorldCard({ card, variant }: WorldCardProps) {
           />
         </div>
         {/* Legibility veil over the plate, under the copy: the fixed dark
-            tc-art-scrim, NOT a bg-colored gradient — the art underneath is
+            tc-art-scrim, NOT a bg-colored gradient - the art underneath is
             the same dark image in both schemes, so the veil must be too
             (five-worlds band precedent). */}
         {isHero && card.plateSrc && (
@@ -247,7 +223,7 @@ function WorldCard({ card, variant }: WorldCardProps) {
             style={{
               // Drive-by fix: `--text-muted` doesn't exist (undefined custom
               // prop resolves to nothing); the correct token is `--tc-muted`
-              // (Tailwind's `--color-text-muted` maps to it — see globals.css).
+              // (Tailwind's `--color-text-muted` maps to it - see globals.css).
               color: isComingSoon
                 ? "var(--card-active-primary)"
                 : "var(--tc-muted)",

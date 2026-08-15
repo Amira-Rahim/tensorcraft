@@ -10,7 +10,7 @@ import { vi } from "vitest";
  *
  * This was previously copy-pasted verbatim into both files; extracted here
  * to keep them in lockstep. `packages/ui`'s own copies (particle-field.test
- * .tsx, bridge-ticker.test.tsx) are intentionally left alone — cross-package
+ * .tsx, bridge-ticker.test.tsx) are intentionally left alone - cross-package
  * test utilities aren't worth the dependency for a ~20 line mock.
  */
 type MediaQueryListener = (ev: { matches: boolean }) => void;

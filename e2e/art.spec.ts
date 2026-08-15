@@ -28,7 +28,7 @@ for (const surface of SURFACES) {
     await page.goto(surface.path);
     await page.waitForLoadState("networkidle");
 
-    // Not "hidden" — gone. A plate that fails must leave the DOM, not sit
+    // Not "hidden" - gone. A plate that fails must leave the DOM, not sit
     // there as a broken-image frame.
     await expect(page.getByTestId("art-plate")).toHaveCount(0);
     expect(errors).toEqual([]);

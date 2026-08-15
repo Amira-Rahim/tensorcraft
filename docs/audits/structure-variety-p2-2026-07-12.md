@@ -1,4 +1,4 @@
-# P2 Structure-Variety Sprint — 2026-07-12
+# P2 Structure-Variety Sprint - 2026-07-12
 
 Executes items 17–21 of the launch-quality plan (dead `pattern`/`scene`
 machinery, opener monoculture, ARIA tic, takeaway lockstep), applying every
@@ -10,7 +10,7 @@ claims verified in real TFJS, and a permanent regression gate left standing.
 
 1. **Render-path verification first** (round-4 class). Findings before any
    authoring: `pattern` had ZERO consumers (schema comment claimed it
-   "drives alternate 5C presentations" — false); `scene:` was fully wired
+   "drives alternate 5C presentations" - false); `scene:` was fully wired
    (SceneCard rail, briefing slugline, epilogue heading) and fed by 0/56
    lessons; mid-body Dialogues are a designed, CSS-styled case
    (globals.css:260), so restructured lessons could safely move dialogue
@@ -19,7 +19,7 @@ claims verified in real TFJS, and a permanent regression gate left standing.
    `scripts/audit-structure-variety.mjs` (opener class, pattern, scene,
    takeaway count, recalls, DISPATCH, boss beats, ARIA tic). Its own first
    run had two parser bugs (single-line recaps undercounted; DISPATCH prose
-   vs component conflated) — instrument verified before trusting output.
+   vs component conflated) - instrument verified before trusting output.
 3. **Runtime-true numbers** (rounds 1–3 class). Every new technical value
    verified: the two matMul error texts and the 404 loader text were
    captured from real TFJS 4.22 (node run + installed source); the EMA
@@ -35,7 +35,7 @@ claims verified in real TFJS, and a permanent regression gate left standing.
 | Metric | Before | After |
 | --- | --- | --- |
 | Dialogue openers | 49/56 | **38/56** (18 prose/cold opens) |
-| `pattern` non-standard | 0/56 | **11/56** — one per module |
+| `pattern` non-standard | 0/56 | **11/56** - one per module |
 | `scene:` sluglines | 0/56 | **56/56** (+9 epilogueLocation moves) |
 | Takeaway counts | 56× exactly 3 | 1×2 · 47×3 · 8×4 |
 | RecallPrompts | exactly 1 × 56 | 60 total (4 lessons carry 2) |
@@ -45,8 +45,8 @@ claims verified in real TFJS, and a permanent regression gate left standing.
 
 - `broken_code_first`: foundations/03 (real matMul inner-shapes error opens
   the lesson; mul-vs-matMul is the repair), neural-networks/04 (already
-  opened on the batch-dim ValueError — tagged, not forced),
-  recurrent-networks/03 (already opened on the 0.693 flatline — tagged),
+  opened on the batch-dim ValueError - tagged, not forced),
+  recurrent-networks/03 (already opened on the 0.693 flatline - tagged),
   browser-runtimes/03 (real loader 404 text; manifest layout is the fix).
 - `discovery`: training-loop/03 (learner runs numeric nudge-gradients
   first, counts the 673-forward-pass bill, THEN backprop is named),
@@ -75,7 +75,7 @@ distribution is uneven on purpose.
 
 ## Permanent gates left standing
 
-- `packages/content/__tests__/structure-variety.test.ts` — 56-lesson
+- `packages/content/__tests__/structure-variety.test.ts` - 56-lesson
   corpus floor: every lesson has a slugline; ≥1 skeleton-breaker per
   module; all four patterns in use; dialogue openers ≤44; takeaway counts
   not uniform; ≥2 double-recall lessons.
@@ -102,10 +102,10 @@ Full reread of all 11 conversions in final form + mechanical sweeps +
 canonical module-order check + a new e2e layer. Found and fixed:
 
 1. **f/03 invented a module number** ("will find you again around module
-   3" — neural-networks is module 2; original text made no module claim).
+   3" - neural-networks is module 2; original text made no module claim).
    Rewritten module-neutral. Module order pinned from module.yaml:
    foundations 1, nn 2, tl 3, br 4, sp 5, rn 6, ad 7, ats 8, llm 9,
-   oe 10, cap 11 — both flashback timelines verified against it.
+   oe 10, cap 11 - both flashback timelines verified against it.
 2. **ad/05 said "twelve times the amplitude"** in the new opener AND the
    new context narrative; canon quantity is twelve times baseline
    *reconstruction error*. Both fixed.
@@ -116,10 +116,10 @@ canonical module-order check + a new e2e layer. Found and fixed:
    br/04 "First live hour" before the hour happens; llm/03 countdown
    off by an hour vs the llm/02 epilogue clock). Fixed or dropped;
    scene.time renders at the BRIEFING, so it must date the opening scene.
-4. **ad/03 epilogueLocation placed the "shared display" on the Bridge** —
+4. **ad/03 epilogueLocation placed the "shared display" on the Bridge** -
    canon never locates it. Now ship-level ("Archimedes, Shared Display").
 5. **cap/02 promised "the sign-off decision at the bottom of this
-   lesson"** — no such element exists. Rewritten.
+   lesson"** - no such element exists. Rewritten.
 6. **The em-dash sweep instrument failed its positive control** (grep
    pattern silently matched nothing). Rebuilt with a verified instrument;
    true result: all P2 content clean, one pre-existing legitimate hit
@@ -153,7 +153,7 @@ single-sourcing the counter/gate parser (the P1 split-brain class:
 `structure-variety.test.ts` now imports the analyzer from
 `scripts/audit-structure-variety.mjs` instead of duplicating it).
 
-**BIGGEST FIND — pre-existing, not P2's:** the network's parameter count
+**BIGGEST FIND - pre-existing, not P2's:** the network's parameter count
 was split canon. nn/03 + nn/04 said **209** (arch 3→16→8→1, introduced by
 a 2026-06-10 audit commit) while nn/05's `model.summary()`, training-loop
 3/4, sp/04, and br/03's param table all said **673** (arch 3→32→16→1,
@@ -186,7 +186,7 @@ that the epilogue then "discovered" (motivation rewritten: he ships
 knowing the number, the replay reveals what the number contains) and the
 directive's "remove is not an operation" review target now gets an
 explicit payoff; cap/02's dialogues spoke assignment-time after the MR
-existed (rewritten to review-time) and — the sharpest catch — **the
+existed (rewritten to review-time) and - the sharpest catch - **the
 deploy.yml under review did not contain the flaw the review finds**
 (every job read the model from checkout; a stale cache was impossible).
 The workflow now has the actual bug: a `Restore model artifact` cache
@@ -195,14 +195,14 @@ Nazari's "nothing in this file pins weights" indicts.
 
 **Reviewer findings rejected after verification:** ARIA's "roughly two
 forward passes" (the backward sweep alone is 80 ms ≈ 2 forward passes;
-120 ms includes the forward pass — consistent); f/03 was fully clean.
+120 ms includes the forward pass - consistent); f/03 was fully clean.
 
 **Documented, deliberately not fixed at round 3 (needs a story
 decision):** tl/05's 94% vs sp/04's 78% baseline; Mirza's dangling
 "What am I looking at?" seam in ad/05 (pre-existing, LOW); the oe/02
 85 MB ↔ 673-weight scale wobble (pre-existing).
 
-## Round 4: all-P sweep — the never-run gates (same day)
+## Round 4: all-P sweep - the never-run gates (same day)
 
 Angle: run every gate that had NEVER actually executed this session, plus
 a fresh-eyes diff review of the entire uncommitted delta. Three
@@ -213,7 +213,7 @@ infrastructure holes found, all P0-tier, none content:
    green "Lint" for them was a stale turbo cache replay (turbo hashes
    inputs, not whether the binary exists). The freshly-installed eslint
    was ALSO corrupted in the pnpm virtual store (`token-store/cursors/`
-   missing — reinstalled). Rebuilt for real: per-package
+   missing - reinstalled). Rebuilt for real: per-package
    `eslint.config.mjs` re-exporting `@tensorcraft/config/eslint/base`,
    eslint devDeps, web config gains `eslint-plugin-react-hooks`
    (classic two rules; v7's compiler preset deferred post-V1) + ignores
@@ -226,7 +226,7 @@ infrastructure holes found, all P0-tier, none content:
    cause: segment-level `loading.tsx` streams a shell and locks the
    status at 200 before `notFound()` runs (Next.js #45801/#76474 class),
    and `next start` does NOT enforce `dynamicParams=false` at the router
-   the way dev does — which also let the module shim's unconditional
+   the way dev does - which also let the module shim's unconditional
    `redirect()` turn invalid modules into 307s. Fixes: removed the three
    segment-level `loading.tsx` boundaries (lesson page keeps its in-page
    Suspense skeleton; SSG pages render instantly on first hit anyway),
@@ -238,7 +238,7 @@ infrastructure holes found, all P0-tier, none content:
    SEO exposure predates this fix but was partially mitigated.
 3. **First fully-green FULL e2e run against a prod build:** 88 passed /
    19 auth-gated skips / 0 failed across desktop + mobile + tablet
-   projects (round 5's prod run was a 38-spec subset — the 404 specs
+   projects (round 5's prod run was a 38-spec subset - the 404 specs
    had never run against prod). One stale expectation fixed en route:
    script-playback expected 5 beats; P2's slugline is a 6th.
 
@@ -256,13 +256,13 @@ Round-4 exit battery (exit codes checked, all 0): velite · typecheck
 11/11 · **lint 15/15 (real)** · vitest 1036 · grader `--starters` 80/80
 · corpus 80/80 · **full e2e vs prod 88/88**. Promise-word sweep over the
 whole P2 diff: clean. CI status on GitHub could not be checked (gh
-credentials expired — re-auth and confirm the pushed commits are green).
+credentials expired - re-auth and confirm the pushed commits are green).
 
 ## 94-vs-78 resolution (same day, user-directed)
 
 Canon-true reconciliation, no retcon of either anchored number:
 **the labels changed, not the model.** tl/05's 94% was real, measured
-against the labels the crew had in module 3 — labels blind to
+against the labels the crew had in module 3 - labels blind to
 frequency. sp/03 hands the crew spectral ground truth (the anomaly
 resolves on the spectrogram); sp/04's evaluation is the archive
 re-annotated against it, where the raw-feature classifier's honest

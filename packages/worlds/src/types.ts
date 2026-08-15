@@ -111,7 +111,7 @@ export interface WorldManifest {
    * Light-scheme variant of `palette`, applied when data-scheme="light" is
    * set on <html>. Must mirror the CSS `[data-scheme="light"]` /
    * `[data-world="<slug>"][data-scheme="light"]` values in
-   * packages/worlds/src/css/worlds.css — locked by world-properties.test.ts.
+   * packages/worlds/src/css/worlds.css - locked by world-properties.test.ts.
    */
   paletteLight: WorldPalette;
   /** UI label overrides */

@@ -3,7 +3,7 @@
 -- 025_waitlist_subscribed.sql set `subscribed boolean not null default true`,
 -- and the digest sender mails every `subscribed = true` row. Net effect:
 -- someone who asked to be told when ONE theme ships was auto-enrolled into a
--- weekly newsletter carrying discounts — consent neither specific nor freely
+-- weekly newsletter carrying discounts - consent neither specific nor freely
 -- given (GDPR Art. 4(11), PECR reg. 22; Tier 1-LEGAL "waitlist consent fix").
 --
 -- After this migration, `subscribed = true` means the visitor explicitly

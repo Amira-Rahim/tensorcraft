@@ -1,4 +1,4 @@
-# Digest Pipeline — Runbook
+# Digest Pipeline - Runbook
 
 Browser-ML news → curated weekly digest → LLM idea briefs → hand-written
 blog post + RSS + newsletter + social.
@@ -7,14 +7,14 @@ file in the owner's home directory; not tracked in this repo).
 
 ## Where state lives
 
-- **`public.news_items`** (Supabase) — every scraped item. Status flow:
+- **`public.news_items`** (Supabase) - every scraped item. Status flow:
   `pending → shortlisted → published`, or `→ rejected`.
-- **`public.waitlist.{subscribed, unsubscribe_token}`** — newsletter recipients.
-- **`packages/content/.velite/concept-index.json`** — reverse index of 1599 concept tokens
+- **`public.waitlist.{subscribed, unsubscribe_token}`** - newsletter recipients.
+- **`packages/content/.velite/concept-index.json`** - reverse index of 1599 concept tokens
   built from 296 lesson MDX files. Regenerate after content changes.
-- **`packages/content/content/blog/*.mdx`** — hand-written posts, rendered on `/blog/[slug]`.
-- **`dist/drafts/<weekIso>-*.md`** — LLM idea briefs, raw material for the hand-written posts.
-- **`dist/social/<weekIso>.md`** — manually-pasted X / LinkedIn copy.
+- **`packages/content/content/blog/*.mdx`** - hand-written posts, rendered on `/blog/[slug]`.
+- **`dist/drafts/<weekIso>-*.md`** - LLM idea briefs, raw material for the hand-written posts.
+- **`dist/social/<weekIso>.md`** - manually-pasted X / LinkedIn copy.
 
 ## Components
 
@@ -49,7 +49,7 @@ Domain `tensorcraft.app` already verified in Resend (eu-west-1).
 
 ---
 
-## Weekly run — happy path
+## Weekly run - happy path
 
 ### 0. Pre-flight (only if content changed)
 
@@ -85,10 +85,10 @@ node scripts/news/match.mjs --all-pending
 ```
 
 Flags:
-- `--all-pending` — match every `pending` row regardless of week.
-- `--week=2026-W18` — filter by week_iso (rarely useful pre-shortlist).
-- `--no-llm` — skip LLM rerank, deterministic top-3 only. Fast, no API key needed.
-- `--fixture=path.json` — local-only dry-run with sample items.
+- `--all-pending` - match every `pending` row regardless of week.
+- `--week=2026-W18` - filter by week_iso (rarely useful pre-shortlist).
+- `--no-llm` - skip LLM rerank, deterministic top-3 only. Fast, no API key needed.
+- `--fixture=path.json` - local-only dry-run with sample items.
 
 Cost: Haiku 4.5 ≈ $0.0015 per item × ~16 ≈ **~$0.025/week**.
 
@@ -226,7 +226,7 @@ How to use it:
   view is V2.
 - **Curator workflow.** From the Gaps tab, "Reject" leaves the item out of
   the digest queue but keeps `is_content_gap=true` for future review. There
-  is no separate "acknowledge" action — the gap flag persists regardless of
+  is no separate "acknowledge" action - the gap flag persists regardless of
   status, so a rejected gap still appears under `?status=gap`.
 - **Detection requires LLM.** Running matcher with `--no-llm` never sets the
   gap flag (deterministic top-3 always populates `matched_lessons`). Re-run
@@ -234,11 +234,11 @@ How to use it:
 
 Example items expected to flag from the first scrape (post LLM rerank):
 
-- *Final Soft Navigations origin trial in Chrome 147* — no lesson teaches
+- *Final Soft Navigations origin trial in Chrome 147* - no lesson teaches
   navigation lifecycle as an ML primitive.
-- *Physical Foundation Models* (ArXiv) — paper concerns hardware FMs; we
+- *Physical Foundation Models* (ArXiv) - paper concerns hardware FMs; we
   teach browser ML, not silicon-level model architecture.
-- *ONNX Runtime v1.25* — closest lesson covers ONNX Runtime Web at a high
+- *ONNX Runtime v1.25* - closest lesson covers ONNX Runtime Web at a high
   level only.
 
 Costs nothing extra: gap detection rides on the existing rerank call.
@@ -250,8 +250,8 @@ Costs nothing extra: gap detection rides on the existing rerank call.
 | Item | Cost |
 |---|---|
 | GitHub Action runner (~1 min/run, 1 run/wk) | free tier |
-| Anthropic Haiku 4.5 — matcher (~16 items) | ~$0.025 |
-| Anthropic Sonnet 4.6 — drafts + social (~6 calls) | ~$0.50 |
+| Anthropic Haiku 4.5 - matcher (~16 items) | ~$0.025 |
+| Anthropic Sonnet 4.6 - drafts + social (~6 calls) | ~$0.50 |
 | Resend (per-recipient send) | $0.001/email free up to 3k/mo |
 | Supabase | already on free/pro tier |
 
@@ -261,12 +261,12 @@ Total: **< $1/week** for V1.
 
 ## Defer / V2
 
-- **Auto-publish without curator review** — revisit after 4 clean weeks.
-- **X / LinkedIn auto-post** — manual paste keeps platform risk zero. Switch when volume justifies.
-- **Per-item posts** (not just weekly digest) — only after baseline cadence is established.
-- **Resend Broadcasts** instead of per-recipient — switch when list > ~10k.
-- **Multilingual digests** — keep monolingual until user demand.
-- **HF blog title fallback** — re-scrape with HTML body fetch when summary is empty.
+- **Auto-publish without curator review** - revisit after 4 clean weeks.
+- **X / LinkedIn auto-post** - manual paste keeps platform risk zero. Switch when volume justifies.
+- **Per-item posts** (not just weekly digest) - only after baseline cadence is established.
+- **Resend Broadcasts** instead of per-recipient - switch when list > ~10k.
+- **Multilingual digests** - keep monolingual until user demand.
+- **HF blog title fallback** - re-scrape with HTML body fetch when summary is empty.
 
 ---
 

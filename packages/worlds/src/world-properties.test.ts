@@ -42,7 +42,7 @@ describe("World CSS custom properties", () => {
 
   it('dark default block (:root, [data-world="deep-orbit"]) defines --tc-grid-line', () => {
     // --tc-grid-line (the .grid-bg token, Task 3) is declared once, global-
-    // only, on the :root default block — not per non-default world, and not
+    // only, on the :root default block - not per non-default world, and not
     // part of REQUIRED_CSS_PROPS's fixed 9-key list (that list is the
     // WorldPalette shape; grid-line has no WorldPalette/manifest
     // counterpart to cross-check against). A prior gap-analysis noted this
@@ -62,7 +62,7 @@ describe("World CSS custom properties", () => {
   it.each([...worldSlugs])(
     "world '%s' defines all 9 required --tc-* properties",
     (slug) => {
-      // DRY: reuses extractDarkWorldBlock (defined below — hoisted function
+      // DRY: reuses extractDarkWorldBlock (defined below - hoisted function
       // declaration, safe to call from here) instead of re-deriving the same
       // block-extraction regex a second time in this file.
       const block = extractDarkWorldBlock(slug);
@@ -206,7 +206,7 @@ describe("Coming-soon preview data", () => {
     "world '%s' preview copy contains no em dashes",
     (slug) => {
       const json = JSON.stringify(worlds[slug].preview);
-      expect(json).not.toContain("—");
+      expect(json).not.toContain("\u2014");
     },
   );
 
@@ -235,7 +235,7 @@ describe("Deep Orbit character avatars", () => {
 });
 
 // ============================================================
-// Light scheme (data-scheme="light") — orthogonal to narrative world
+// Light scheme (data-scheme="light") - orthogonal to narrative world
 // ============================================================
 
 // 8 shared neutrals (bg/surface/surface-overlay/surface-raised/text/muted/
@@ -319,7 +319,7 @@ describe("Light scheme CSS custom properties", () => {
   });
 });
 
-describe("World TypeScript manifests — paletteLight", () => {
+describe("World TypeScript manifests - paletteLight", () => {
   it.each([...worldSlugs])(
     "world '%s' has paletteLight with all 9 required keys, hex-formatted",
     (slug) => {
@@ -344,8 +344,8 @@ describe("World manifest paletteLight/CSS light consistency (all 9 keys)", () =>
   // Extended from a 2-key (primary/accent) check to all 9 WorldPalette keys.
   // Unlike the dark side, the 7 shared neutrals (bg/surface/surfaceOverlay/
   // text/muted/border/codeBg) are NOT redeclared per-world in the light CSS
-  // — they live once in the bare [data-scheme="light"] block (see worlds.css
-  // Task 2 comment) — so those keys are read from extractLightSharedBlock()
+  // - they live once in the bare [data-scheme="light"] block (see worlds.css
+  // Task 2 comment) - so those keys are read from extractLightSharedBlock()
   // while primary/accent are read from this world's own
   // [data-world="<slug>"][data-scheme="light"] block.
   it.each([...worldSlugs])(
@@ -400,7 +400,7 @@ function extractLightWorldBlock(slug: string): string {
 
 /**
  * Extracts the shared (world-agnostic) declaration block for the bare
- * [data-scheme="light"] rule — the 7 neutral keys other than primary/accent
+ * [data-scheme="light"] rule - the 7 neutral keys other than primary/accent
  * live here once, not per-world (see the "Light scheme CSS custom
  * properties" describe block above, which pins this same shape).
  */
@@ -539,7 +539,7 @@ describe("WCAG contrast gate", () => {
   );
 
   // Existing dark values: verified (via scratch computation) that every
-  // dark primary/accent already clears 4.5:1 against its dark bg — the
+  // dark primary/accent already clears 4.5:1 against its dark bg - the
   // lowest margin is neon-protocol's accent at ~5.2:1. Locking that bar
   // here rather than raising it further, since the task requires the dark
   // palette values to stay untouched.
@@ -559,7 +559,7 @@ describe("WCAG contrast gate", () => {
   // --tc-on-primary: the ink for primary/accent-FILLED elements (buttons,
   // chips, ::selection). Found by the light axe matrix (2026-07-23): the
   // light page bg #f5f5f2 was reused as this ink and sat at 4.21:1 on the
-  // light primaries — every light page failed. Light ink is pure white
+  // light primaries - every light page failed. Light ink is pure white
   // (the light primaries/accents were minted >= 4.6:1 against #ffffff);
   // dark keeps the page bg (near-black on the bright dark hues).
   const darkRootBlockMatch = cssContent.match(
@@ -671,7 +671,7 @@ describe("WCAG contrast gate", () => {
   // --tc-border-interactive: the resting boundary of interactive controls
   // (form fields, radio/checkbox options, toggle tracks, outline buttons).
   // WCAG 1.4.11 requires a UI-component boundary to clear 3:1 against its
-  // ADJACENT colors — both the page bg behind it AND the (lighter) surface a
+  // ADJACENT colors - both the page bg behind it AND the (lighter) surface a
   // control sits on. The decorative --tc-border (#3d3d3d, 1.63:1) is fine for
   // dividers but fails here, which is why controls use this louder token.
   // Extracted from real CSS so a palette edit can't drift past the gate.

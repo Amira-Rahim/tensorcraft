@@ -31,13 +31,13 @@ function isValidWorld(value: string): value is WorldSlug {
 function getStoredWorld(): WorldSlug {
   if (typeof window === "undefined") return DEFAULT_WORLD;
   // The try/catch is load-bearing, not defensive habit. `localStorage` does
-  // not merely return null when site data is blocked — accessing it THROWS
+  // not merely return null when site data is blocked - accessing it THROWS
   // SecurityError (Safari "Block All Cookies", Chrome site-data blocking,
   // enterprise policy, any sandboxed iframe).
   //
   // This function is the `getSnapshot` of a useSyncExternalStore in a
   // provider that wraps the entire app, so it runs DURING RENDER. An
-  // unguarded throw here unwound all the way to global-error.tsx — a white
+  // unguarded throw here unwound all the way to global-error.tsx - a white
   // screen on every route, including /terms and /privacy, for every user in
   // that configuration. Falling back to the default world is completely
   // recoverable; crashing is not.
@@ -83,7 +83,7 @@ function getServerSnapshot(): WorldSlug {
 
 // ---------------------------------------------------------------------------
 // Color scheme (light/dark), orthogonal to the narrative world above. One
-// provider, two stores — the scheme axis gets its own listener array so a
+// provider, two stores - the scheme axis gets its own listener array so a
 // scheme change doesn't force world subscribers to re-render and vice versa.
 //
 // `SchemePreference` is what's stored: an explicit "light"/"dark" choice, or
@@ -92,14 +92,14 @@ function getServerSnapshot(): WorldSlug {
 //
 // Same SecurityError hazard as `getStoredWorld` above applies here: this
 // runs inside a useSyncExternalStore getSnapshot, i.e. during render. Every
-// localStorage touch is try/catch'd for the same reason — a blocked-storage
+// localStorage touch is try/catch'd for the same reason - a blocked-storage
 // browser must still render (just without persistence), not white-screen.
 //
 // `inMemorySchemeFallback` covers a narrower bug than the try/catch alone:
 // with storage blocked, `setScheme("light")` would still write the DOM
 // attribute, but the NEXT snapshot read (`getStoredScheme` inside the same
 // render pass, or on the next re-render) would hit the catch branch again,
-// see nothing to read, and silently fall back to `null` (no override) —
+// see nothing to read, and silently fall back to `null` (no override) -
 // React's state would then permanently disagree with the DOM the user is
 // actually looking at. `persistSchemePref` records the last explicit choice
 // here too, and `getStoredScheme` reads it back ONLY in the catch branch:
@@ -124,8 +124,8 @@ function systemScheme(): ColorScheme {
 }
 
 // Split in two (rather than one combined "apply everything" function) so
-// callers that only need to converge the DOM to an already-resolved value —
-// the mount sync and the declarative `[scheme]` effect below — don't also
+// callers that only need to converge the DOM to an already-resolved value -
+// the mount sync and the declarative `[scheme]` effect below - don't also
 // perform a redundant storage write on every render.
 function applySchemeAttr(resolved: ColorScheme) {
   // Dark stays the no-attribute default (existing dark rendering is
@@ -160,7 +160,7 @@ function notifySchemeListeners() {
   schemeListeners.forEach((l) => l());
 }
 
-// Two useSyncExternalStore calls read this pair — preference and resolved
+// Two useSyncExternalStore calls read this pair - preference and resolved
 // value both need to be stable PRIMITIVES (string | null), never a freshly
 // allocated object, or every render would look like a change and loop.
 function getSchemePreferenceSnapshot(): SchemePreference {
@@ -227,9 +227,9 @@ export function WorldProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Declarative sync: whenever the resolved snapshot changes for ANY
-  // reason — the `setScheme` call above, an OS "change" event while
+  // reason - the `setScheme` call above, an OS "change" event while
   // system-follow is active (below), or a future code path this file
-  // doesn't know about yet — the DOM attribute converges to match.
+  // doesn't know about yet - the DOM attribute converges to match.
   // Attribute-only, no storage write, so it's cheap to run on every
   // `scheme` change, including the very first render (this is also what
   // performs the initial mount sync; the inline FOUC script in layout.tsx
@@ -246,7 +246,7 @@ export function WorldProvider({ children }: { children: React.ReactNode }) {
     const onChange = () => {
       // Only the system-follow path reacts to OS changes. An explicit
       // override must survive a background OS change untouched. No direct
-      // DOM write here — notifying causes `scheme` to recompute, and the
+      // DOM write here - notifying causes `scheme` to recompute, and the
       // effect above converges the DOM once that lands.
       if (getStoredScheme() === null) {
         notifySchemeListeners();

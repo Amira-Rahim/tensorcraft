@@ -44,7 +44,7 @@ async function loadCertificate(id: string): Promise<ShareRecord | null> {
   // during any API blip, everyone who clicks sees a server error.
   //
   // Rethrowing a tagged error routes it to certificates/error.tsx, which
-  // offers a retry and says the certificate is temporarily unreachable —
+  // offers a retry and says the certificate is temporarily unreachable -
   // rather than `notFound()`, which would tell the sharer's audience the
   // credential does not exist.
   let res: Response;

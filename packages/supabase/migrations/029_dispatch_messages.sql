@@ -2,9 +2,9 @@
 --
 -- Server-curated narrator messages. DISPATCH is the cross-theme meta-narrator
 -- introduced in Slice #11 (operator log). Inbox surfaces:
---   - weekly_intel — automated weekly summary w/ CTA into /log or /review
---   - milestone   — fired on theme completion / capstone pass / streak ≥ 7d
---   - cliffhanger — fired by Slice #1 when player completes a theme finale
+--   - weekly_intel - automated weekly summary w/ CTA into /log or /review
+--   - milestone - fired on theme completion / capstone pass / streak ≥ 7d
+--   - cliffhanger - fired by Slice #1 when player completes a theme finale
 --
 -- Writes: server-only via SECURITY DEFINER RPCs OR scheduled functions.
 -- Reads: each user reads only their own inbox.
@@ -34,7 +34,7 @@ create policy "Users can view own dispatch messages"
   on public.dispatch_messages for select
   using (auth.uid() = user_id);
 
--- Mark as read — only the recipient can mark their own messages.
+-- Mark as read - only the recipient can mark their own messages.
 create or replace function public.mark_dispatch_read(p_message_id uuid)
 returns void
 language plpgsql
@@ -55,7 +55,7 @@ end;
 $$;
 
 -- Server-side helper that fires a milestone message. Called from triggers
--- or scheduled functions; not exposed to clients (no auth.uid() check —
+-- or scheduled functions; not exposed to clients (no auth.uid() check -
 -- callers must already be SECURITY DEFINER context OR service role).
 create or replace function public.dispatch_milestone(
   p_user_id uuid,

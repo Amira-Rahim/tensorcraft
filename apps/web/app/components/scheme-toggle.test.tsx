@@ -21,7 +21,7 @@ function renderToggle() {
 }
 
 // `title` is a deliberate duplicate of the accessible name (see the comment
-// at the `title` attr in scheme-toggle.tsx) — assert the two stay in lockstep
+// at the `title` attr in scheme-toggle.tsx) - assert the two stay in lockstep
 // at every cycle position rather than trusting that by inspection.
 function expectTitleMatchesAccessibleName(button: HTMLElement) {
   const title = button.getAttribute("title");
@@ -38,7 +38,7 @@ describe("SchemeToggle", () => {
 
   afterEach(() => {
     // No vi.stubGlobal in this file (mockMatchMedia uses
-    // Object.defineProperty, redefined fresh every beforeEach) — only
+    // Object.defineProperty, redefined fresh every beforeEach) - only
     // restoreAllMocks is relevant here, for the vi.fn() inside the helper.
     vi.restoreAllMocks();
     localStorage.clear();
@@ -100,7 +100,7 @@ describe("SchemeToggle", () => {
     const button = screen.getByRole("button");
     const status = container.querySelector('[role="status"]');
     expect(status).not.toBeNull();
-    // Quiet on initial render/mount — nothing has happened yet.
+    // Quiet on initial render/mount - nothing has happened yet.
     expect(status?.textContent).toBe("");
 
     fireEvent.click(button);

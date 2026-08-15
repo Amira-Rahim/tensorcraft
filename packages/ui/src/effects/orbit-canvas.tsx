@@ -4,16 +4,16 @@ import { SceneCanvas } from "./scene-canvas";
 
 /* ── Deep Orbit: 3D orbital system ─────────────────────────
    Six tilted orbital rings rendered with real 3D math (perspective
-   projection + slow Y-axis precession), drawn on a 2D canvas — no three.js.
+   projection + slow Y-axis precession), drawn on a 2D canvas - no three.js.
    Depth drives size/alpha so far-side particles dim and shrink behind the
    central body. Time-parameterized (no mutable particle state), so the
    reduced-motion static frame is just t=0.
 
    Two rendering languages, one geometry (scheme independence is locked by
-   orbit-canvas.test.ts — styling only may branch on scheme):
-   - dark: light emitted from darkness — additive "lighter" compositing so
+   orbit-canvas.test.ts - styling only may branch on scheme):
+   - dark: light emitted from darkness - additive "lighter" compositing so
      overlaps bloom, highlights lifted toward white, soft glow halos.
-   - light: ink laid on paper — "multiply" compositing so overlaps pool
+   - light: ink laid on paper - "multiply" compositing so overlaps pool
      darker like wet ink, highlights deepened toward near-black, alphas
      scaled up because tinted marks on paper need more body than glows on
      black. Target: an etched orbital diagram in world-ink on paper.
@@ -30,7 +30,7 @@ const ORBIT_RINGS = [
   { radius: 1.0, tilt: 1.12, speed: 0.15, precession: -0.022, count: 42 },
 ];
 
-// Deterministic 0..1 hash from an integer — GLSL-style fract(sin·k). Used for
+// Deterministic 0..1 hash from an integer - GLSL-style fract(sin·k). Used for
 // starfield positions/phases so the field is stable across frames (the static
 // reduced-motion frame at t=0 must match the animated one); a per-frame
 // Math.random() would make stars jitter.
@@ -74,7 +74,7 @@ export function drawOrbit(
   // Ink marks on paper need more body than glows on black: scale every
   // literal alpha up in light scheme, clamped so no mark becomes a blot.
   const A = ink ? 1.8 : 1;
-  // Ink-only: dark alphas pass through untouched — clamping them too would
+  // Ink-only: dark alphas pass through untouched - clamping them too would
   // cap values the original art let the browser clamp at 1.0 (near-side
   // hover particles compute 1.139), visibly dimming the dark hover state.
   const scaleA = (x: number): number => (ink ? Math.min(0.9, x * A) : x);
@@ -113,8 +113,8 @@ export function drawOrbit(
   ctx.fillStyle = neb;
   ctx.fillRect(0, 0, w, h);
 
-  // Dark: everything below is light on darkness — additive blending makes
-  // overlaps bloom instead of muddying. Light: ink on paper — multiply makes
+  // Dark: everything below is light on darkness - additive blending makes
+  // overlaps bloom instead of muddying. Light: ink on paper - multiply makes
   // overlaps pool darker, like wet ink. Scoped in save/restore.
   ctx.save();
   ctx.globalCompositeOperation = ink ? "multiply" : "lighter";
@@ -137,7 +137,7 @@ export function drawOrbit(
   }
 
   // ── Central body ── layered glow + a breathing core. Dark: a hot-white
-  // halo blooming out of the core. Light: a watercolour GLAZE — drawn
+  // halo blooming out of the core. Light: a watercolour GLAZE - drawn
   // source-over, not multiply, because a soft field multiplied against the
   // nebula wash squares the tint toward desaturated grey and the card gains
   // a storm cloud instead of a pooled green disc (found empirically via
@@ -161,7 +161,7 @@ export function drawOrbit(
   ctx.fill();
   ctx.beginPath();
   ctx.arc(cx, cy, R * 0.035 * pulse, 0, Math.PI * 2);
-  // Core dot: capped in ink mode — a fully opaque near-black disc (0.95, or
+  // Core dot: capped in ink mode - a fully opaque near-black disc (0.95, or
   // 0.85 × hover boost) reads as a hole punched in the page, not a body.
   ctx.fillStyle = `rgba(${hr},${hg},${hb},${ink ? Math.min(0.88, 0.85 * boost) : 0.95 * boost})`;
   ctx.fill();
@@ -212,7 +212,7 @@ export function drawOrbit(
       const radius = 0.7 + 1.8 * front;
       const alpha = scaleA((0.12 + 0.55 * front) * boost);
       // Colour shifts from world-hue (far) toward the scheme highlight
-      // (near): hot-white in dark, deep ink in light — highlight() already
+      // (near): hot-white in dark, deep ink in light - highlight() already
       // flipped the lerp target, so this needs no scheme branch.
       const pr = Math.round(r + (hr - r) * front);
       const pg = Math.round(g + (hg - g) * front);
@@ -230,7 +230,7 @@ export function drawOrbit(
 
       // Soft halo via gradient, then the solid core dot. Dark: the halo is
       // the glow that sells the particle as a light source. Light: damp it
-      // to a whisper of ink bleed — at full strength each near-black centre
+      // to a whisper of ink bleed - at full strength each near-black centre
       // becomes a bokeh smudge, and the field reads as printing mud instead
       // of stippled dots.
       const gr = radius * (front > 0.85 ? 5 : 3);
@@ -268,7 +268,7 @@ export interface OrbitCanvasProps {
 /**
  * Self-contained Deep Orbit canvas: drawOrbit mounted on the shared
  * SceneCanvas chrome (clock, hover easing, visibility + reduced-motion
- * gating). Decorative only — always `aria-hidden`.
+ * gating). Decorative only - always `aria-hidden`.
  */
 export function OrbitCanvas({
   rgb,

@@ -85,7 +85,7 @@ export function WorldWaitlistForm({
           // `focus:outline-none` was removed here. It suppressed the global
           // *:focus-visible outline, and because `borderColor` is set as an
           // INLINE style, no focus:border-* class could have substituted for
-          // it either — inline styles beat stylesheet rules regardless of
+          // it either - inline styles beat stylesheet rules regardless of
           // specificity. The result was a form field with NO focus indicator
           // at all, on the waitlist capture that appears on all four
           // coming-soon world pages. WCAG 2.4.7.
@@ -112,7 +112,7 @@ export function WorldWaitlistForm({
             // Ink paired to the fixed brand-green fill; must not follow
             // scheme. This label sits on `palette.primary` (the literal
             // brand-green hex, unaffected by light/dark), not on the page
-            // background — `var(--tc-bg)` flips to near-white in light
+            // background - `var(--tc-bg)` flips to near-white in light
             // scheme, which against the same green fill drops to ~2.5:1
             // (AA fail). The dark neutral is the correct fixed pairing in
             // both schemes.

@@ -49,7 +49,7 @@ export function PaywallNotice() {
 
     // Tag the buyer in Kit so retention sequence B can reach someone who ran
     // out of free content and didn't buy. Dedupe correctness (only record
-    // "tagged" when Kit actually tagged) lives in tagKitEventOnce — getting
+    // "tagged" when Kit actually tagged) lives in tagKitEventOnce - getting
     // it wrong here silently and permanently discards this exact audience.
     void import("@/lib/kit-tag").then(({ tagKitEventOnce }) =>
       tagKitEventOnce("paywall_hit", "tc_paywall_hit_tagged").catch(() => {}),

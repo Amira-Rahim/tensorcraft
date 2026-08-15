@@ -1,4 +1,4 @@
-# Tensorcraft — Architecture
+# Tensorcraft - Architecture
 
 > **⚠ V1 launch-scope revert (2026-05-05):** This document still describes
 > the "all 5 worlds simultaneously" model. The actual V1 ships **Deep Orbit
@@ -10,7 +10,7 @@
 
 ## Overview
 
-Tensorcraft is an interactive, story-driven ML education platform for frontend engineers. Users learn machine learning through **50+ deep structural mappings** between frontend concepts they already know and ML concepts they're learning — not casual analogies, but real architectural parallels.
+Tensorcraft is an interactive, story-driven ML education platform for frontend engineers. Users learn machine learning through **50+ deep structural mappings** between frontend concepts they already know and ML concepts they're learning - not casual analogies, but real architectural parallels.
 
 ## Monorepo Structure
 
@@ -72,8 +72,8 @@ Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box s
 
 1. **CSS Custom Properties** (`packages/worlds/src/css/worlds.css`): Each world defines `--tc-*` variables under a `[data-world="world-slug"]` selector.
 2. **Tailwind 4 `@world`** (`apps/web/app/globals.css`): Maps Tailwind utility classes to `--tc-*` variables so `bg-surface`, `text-primary`, `border-border` all resolve dynamically. (`packages/config/tailwind/base.css` was a dead duplicate and was deleted 2026-07-22.)
-3. **Runtime Switching**: Set `data-world` attribute on `<html>` to switch narrative worlds, and `data-scheme="light"` for the light color scheme (absent = dark). No JS bundle cost — pure CSS resolution.
-4. **Brutalist Utilities** (`apps/web/app/globals.css`): `.brutalist-shadow`, `.brutalist-hover`, `.comment-label` — offset box shadows and monospace section labels. All animations respect `prefers-reduced-motion`.
+3. **Runtime Switching**: Set `data-world` attribute on `<html>` to switch narrative worlds, and `data-scheme="light"` for the light color scheme (absent = dark). No JS bundle cost - pure CSS resolution.
+4. **Brutalist Utilities** (`apps/web/app/globals.css`): `.brutalist-shadow`, `.brutalist-hover`, `.comment-label` - offset box shadows and monospace section labels. All animations respect `prefers-reduced-motion`.
 
 ### World Manifests
 
@@ -87,15 +87,15 @@ Each world (`packages/worlds/src/<world>.ts`) exports a `WorldManifest` with:
 
 ### Tables
 
-- **`profiles`** — Extends `auth.users`. Auto-created via trigger on signup. Fields: display_name, avatar_url, github_username.
-- **`world_progress`** — Per-lesson tracking. Fields: world_id, module_id, lesson_id, status (not_started/in_progress/completed), score, hints_used, timestamps. Unique constraint on (user_id, world_id, module_id, lesson_id).
-- **`purchases`** — Payment records from Stripe webhooks. Fields: plan_id, world_ids (text[]), amount, currency, stripe_session_id, status.
-- **`waitlist`** — General newsletter signups (originally for coming-soon world capture; repurposed since all 5 worlds launch simultaneously). Public insert policy.
-- **`streaks`** — Per-world streak tracking. Fields: user_id, world_id, current_streak, longest_streak, last_activity_date, timestamps.
-- **`achievements`** — User achievements. Fields: user_id, achievement_type, world_id, metadata (JSONB), earned_at, timestamps.
-- **`exercise_attempts`** — Exercise submission history. Fields: user_id, exercise_slug, lesson_id, world_id, score, hints_used, duration_ms, submitted_code, attempted_at, timestamps.
-- **`skill_genome`** — Stores computed skill genome scores per user per world. Fields: user_id, world_id, axis scores. Created in migration 010.
-- **`skill_events`** — Partitioned table for tracking skill axis events. Fields: worldId, skillAxis, eventType, metadata, timestamp. Created in migration 013.
+- **`profiles`** - Extends `auth.users`. Auto-created via trigger on signup. Fields: display_name, avatar_url, github_username.
+- **`world_progress`** - Per-lesson tracking. Fields: world_id, module_id, lesson_id, status (not_started/in_progress/completed), score, hints_used, timestamps. Unique constraint on (user_id, world_id, module_id, lesson_id).
+- **`purchases`** - Payment records from Stripe webhooks. Fields: plan_id, world_ids (text[]), amount, currency, stripe_session_id, status.
+- **`waitlist`** - General newsletter signups (originally for coming-soon world capture; repurposed since all 5 worlds launch simultaneously). Public insert policy.
+- **`streaks`** - Per-world streak tracking. Fields: user_id, world_id, current_streak, longest_streak, last_activity_date, timestamps.
+- **`achievements`** - User achievements. Fields: user_id, achievement_type, world_id, metadata (JSONB), earned_at, timestamps.
+- **`exercise_attempts`** - Exercise submission history. Fields: user_id, exercise_slug, lesson_id, world_id, score, hints_used, duration_ms, submitted_code, attempted_at, timestamps.
+- **`skill_genome`** - Stores computed skill genome scores per user per world. Fields: user_id, world_id, axis scores. Created in migration 010.
+- **`skill_events`** - Partitioned table for tracking skill axis events. Fields: worldId, skillAxis, eventType, metadata, timestamp. Created in migration 013.
 
 ### Row-Level Security
 
@@ -110,7 +110,7 @@ All tables have RLS enabled:
 
 ### Views
 
-- **`world_progress_summary`** — Aggregated completion stats per user per world. Columns: user_id, world_id, total_lessons, completed_lessons, in_progress_lessons, first_started_at, last_completed_at, completion_percent. Inherits RLS from underlying `world_progress` table.
+- **`world_progress_summary`** - Aggregated completion stats per user per world. Columns: user_id, world_id, total_lessons, completed_lessons, in_progress_lessons, first_started_at, last_completed_at, completion_percent. Inherits RLS from underlying `world_progress` table.
 
 ### Auto-created Resources
 
@@ -123,21 +123,21 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 
 ### Current Routes
 
-- `GET /api/health` — Health check returning `{ status: "ok", service: "tensorcraft-api", timestamp }`
-- `POST /api/waitlist` — Add email to waitlist (no auth required, validates email, handles duplicates)
-- `GET /api/progress?worldId=` — Get user's progress for a world (authenticated)
-- `POST /api/progress` — Create or update lesson progress (authenticated, upserts on user_id+world_id+lesson_id)
-- `POST /api/payments/webhook` — Stripe webhook handler (checkout.session.completed, charge.refunded)
-- `POST /api/payments/checkout` — Create Stripe checkout session (authenticated)
-- `GET /api/progress/summary` — Aggregated progress across all worlds using `world_progress_summary` view (authenticated)
-- `GET /api/admin/stats` — Dashboard stats: waitlist count, user count, purchases, revenue (admin auth required)
-- `GET /api/admin/waitlist` — Paginated waitlist entries (admin auth required)
+- `GET /api/health` - Health check returning `{ status: "ok", service: "tensorcraft-api", timestamp }`
+- `POST /api/waitlist` - Add email to waitlist (no auth required, validates email, handles duplicates)
+- `GET /api/progress?worldId=` - Get user's progress for a world (authenticated)
+- `POST /api/progress` - Create or update lesson progress (authenticated, upserts on user_id+world_id+lesson_id)
+- `POST /api/payments/webhook` - Stripe webhook handler (checkout.session.completed, charge.refunded)
+- `POST /api/payments/checkout` - Create Stripe checkout session (authenticated)
+- `GET /api/progress/summary` - Aggregated progress across all worlds using `world_progress_summary` view (authenticated)
+- `GET /api/admin/stats` - Dashboard stats: waitlist count, user count, purchases, revenue (admin auth required)
+- `GET /api/admin/waitlist` - Paginated waitlist entries (admin auth required)
 
-> Admin routes support two auth methods: (1) Supabase role-based auth (user with admin role) — preferred, and (2) API key via `x-admin-key` header — fallback for CI/scripts.
-- `GET /api/exercise-attempts` — Get user's exercise attempts (authenticated)
-- `POST /api/exercise-attempts` — Submit exercise attempt (authenticated)
-- `GET /api/profiles/me` — Get current user profile (authenticated)
-- `PUT /api/profiles/me` — Update current user profile (authenticated)
+> Admin routes support two auth methods: (1) Supabase role-based auth (user with admin role) - preferred, and (2) API key via `x-admin-key` header - fallback for CI/scripts.
+- `GET /api/exercise-attempts` - Get user's exercise attempts (authenticated)
+- `POST /api/exercise-attempts` - Submit exercise attempt (authenticated)
+- `GET /api/profiles/me` - Get current user profile (authenticated)
+- `PUT /api/profiles/me` - Update current user profile (authenticated)
 
 ### Middleware
 
@@ -229,12 +229,12 @@ Client component with Framer Motion animations:
 
 ### How Content Works
 
-1. **MDX files** in `packages/content/content/deep-orbit/{module}/{lesson}.mdx` — YAML frontmatter (5C Loop fields) + MDX body (components)
-2. **Exercise YAML** in `packages/content/content/deep-orbit/{module}/exercises/{slug}.yaml` — starterCode, solutionCode, testCode
-3. **Module metadata** in `packages/content/content/deep-orbit/{module}/module.yaml` — slug, title, order, description
+1. **MDX files** in `packages/content/content/deep-orbit/{module}/{lesson}.mdx` - YAML frontmatter (5C Loop fields) + MDX body (components)
+2. **Exercise YAML** in `packages/content/content/deep-orbit/{module}/exercises/{slug}.yaml` - starterCode, solutionCode, testCode
+3. **Module metadata** in `packages/content/content/deep-orbit/{module}/module.yaml` - slug, title, order, description
 4. **Velite** (`velite.config.ts`) compiles MDX → `.velite/` output at build time via `pnpm --filter @tensorcraft/content build:content`
-5. **Content queries** (`src/queries.ts`) — pure functions over Velite output: `getModules`, `getModuleLessons`, `getLesson`, `getExercise`, `getAdjacentLessons`
-6. **Turbo dependency** — `build:content` runs before `build` via `dependsOn: ["^build:content"]`
+5. **Content queries** (`src/queries.ts`) - pure functions over Velite output: `getModules`, `getModuleLessons`, `getLesson`, `getExercise`, `getAdjacentLessons`
+6. **Turbo dependency** - `build:content` runs before `build` via `dependsOn: ["^build:content"]`
 
 ### MDX Rendering
 
@@ -345,9 +345,9 @@ Turborepo handles dependency ordering: `packages/*` build first, then `apps/*` c
 The core pedagogical innovation. Each ML concept is introduced through a frontend concept:
 
 Bridges are classified into three quality tiers:
-- **Identity** — FE concept *is* the ML concept (e.g., ReLU = `Math.max(0,x)`, Tensor = TypedArray)
-- **Structural** — Same pattern, different domain (e.g., Overfitting = CSS that only works on your screen)
-- **Intuition** — Useful starting point, refined in-lesson (e.g., Loss = Lighthouse score)
+- **Identity** - FE concept *is* the ML concept (e.g., ReLU = `Math.max(0,x)`, Tensor = TypedArray)
+- **Structural** - Same pattern, different domain (e.g., Overfitting = CSS that only works on your screen)
+- **Intuition** - Useful starting point, refined in-lesson (e.g., Loss = Lighthouse score)
 
 | Frontend Concept | ML Concept | Tier |
 |-----------------|------------|------|
@@ -372,12 +372,12 @@ Session errors: `apiFetch` utility (`apps/web/lib/api-fetch.ts`) auto-includes t
 
 ## Key Architectural Decisions
 
-1. **Hono as separate backend** — Not embedded in Next.js API routes. Allows independent scaling, deployment, and technology evolution.
-2. **Supabase from day 1** — Full schema with RLS, not deferred. Ensures auth and data patterns are established early.
-3. **CSS-native theming** — No JS runtime cost for world switching. Tailwind 4's `@world` directive resolves utilities to CSS custom properties.
-4. **Dark + brutalist aesthetic** — All worlds are dark with solid backgrounds. Brutalist Terminal style: zero border-radius, offset box shadows, monospace-first typography. No glow or neon effects.
-5. **Framer Motion over CSS animations** — Needed for scroll-triggered reveals, layout animations, and gesture-based interactions that CSS alone can't handle cleanly.
-6. **Document as we build** — This file is maintained alongside code, updated with each significant architectural change.
+1. **Hono as separate backend** - Not embedded in Next.js API routes. Allows independent scaling, deployment, and technology evolution.
+2. **Supabase from day 1** - Full schema with RLS, not deferred. Ensures auth and data patterns are established early.
+3. **CSS-native theming** - No JS runtime cost for world switching. Tailwind 4's `@world` directive resolves utilities to CSS custom properties.
+4. **Dark + brutalist aesthetic** - All worlds are dark with solid backgrounds. Brutalist Terminal style: zero border-radius, offset box shadows, monospace-first typography. No glow or neon effects.
+5. **Framer Motion over CSS animations** - Needed for scroll-triggered reveals, layout animations, and gesture-based interactions that CSS alone can't handle cleanly.
+6. **Document as we build** - This file is maintained alongside code, updated with each significant architectural change.
 
 ## Performance
 

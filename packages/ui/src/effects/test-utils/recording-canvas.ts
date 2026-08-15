@@ -4,18 +4,18 @@
  * contract: every position must be a pure function of t; `hot`/`scheme` may
  * only affect styling. Both test files record EVERY geometry-producing call
  * (arcs, ellipses, line segments, quadratic curves, filled rects) and diff
- * across hover states / color schemes — nothing here is discarded, because
+ * across hover states / color schemes - nothing here is discarded, because
  * a discarded call is exactly the gap a future draw function (Task 9/10's
  * light art redesign) could sneak scheme- or hover-dependent geometry
  * through undetected. (A prior version of this recorder discarded fillRect
  * args entirely; extracting it here also fixed that.)
  *
  * Extracted to one module (rather than duplicated per test file) so the two
- * scene families can't drift into checking different geometry — a real gap
+ * scene families can't drift into checking different geometry - a real gap
  * already bit once (fillRect wasn't captured until a review caught it).
  *
  * STYLE capture (added with Task 9's review): geometry-only recording left
- * alpha/color regressions invisible — a scheme-scaling helper that clamped
+ * alpha/color regressions invisible - a scheme-scaling helper that clamped
  * dark alphas passed the whole suite. Every fill()/fillRect()/stroke() now
  * also snapshots the active fillStyle/strokeStyle (gradients as their
  * recorded color-stop lists), globalCompositeOperation, and lineWidth, so a
@@ -98,11 +98,11 @@ const parseAlpha = (color: string): number =>
   parseFloat(color.split(",")[3] ?? "0");
 
 /** Every gradient color-stop's own alpha, flattened across a whole
-    fills/strokes capture array — contributes nothing for plain-string
+    fills/strokes capture array - contributes nothing for plain-string
     entries. A gradient's captured style serializes as its addColorStop()
     stop list (see `paintOf` above), not a string, so a plain
     `alphaOf(style)` scan (which only handles strings) returns NaN for it
-    and gets filtered out — silently exempting every gradient stop (nebula
+    and gets filtered out - silently exempting every gradient stop (nebula
     washes, scan beams, bloom glazes, ground washes) from an alpha-bound
     sweep built only on that scan. Callers that need EVERY alpha a scene
     paints, not just plain-paint ones, should combine both scans. */

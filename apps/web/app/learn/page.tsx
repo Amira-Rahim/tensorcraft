@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
   // An images-only openGraph REPLACES the root block (Next shallow-merges
   // metadata objects), silently dropping og:url/type/siteName and inheriting
-  // the homepage twitter card — every share of this page presented as the
+  // the homepage twitter card - every share of this page presented as the
   // site root (R3-7). Declare the full block.
   openGraph: {
     type: "website",

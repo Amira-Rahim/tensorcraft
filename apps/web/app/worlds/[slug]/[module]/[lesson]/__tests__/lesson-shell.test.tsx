@@ -36,7 +36,7 @@ describe("LessonShell", () => {
   /**
    * SINGLE-MOUNT contract (fresh-eyes rerun §6 / R3-7): this slot is the
    * ONLY place the pane exists. The earlier fix hid this slot below lg
-   * while the caller mounted its own second copy — CSS-only, so two live
+   * while the caller mounted its own second copy - CSS-only, so two live
    * Sandpack editors still raced one `tc-code-{slug}` key at every width
    * and a rotate across lg showed a stale buffer. Now the same single
    * instance toggles visibility via `paneOpenOnMobile`, so editor state

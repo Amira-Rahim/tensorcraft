@@ -15,7 +15,7 @@ import {
  * data edit.
  */
 describe("journey ring", () => {
-  it("is a closed ring — last leads back to first, first arrives from last", () => {
+  it("is a closed ring - last leads back to first, first arrives from last", () => {
     const first = JOURNEY_ORDER[0];
     const last = JOURNEY_ORDER[JOURNEY_ORDER.length - 1];
     expect(getLeadsTo(last)).toBe(first);

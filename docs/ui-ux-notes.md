@@ -1,7 +1,7 @@
 # Tensorcraft UI/UX Design Notes v3.2
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
-> Onboarding has **no world picker** — new users auto-route to Deep Orbit
+> Onboarding has **no world picker** - new users auto-route to Deep Orbit
 > (see Part 1 below for the pre-revert spec, kept as historical reference
 > for when additional worlds launch). The settings "active world" tab is
 > removed; the `preferred_world_id` column is retained as a tombstone.
@@ -198,7 +198,7 @@ All sizes use a 1.25 ratio (Major Third) scale anchored at 16px body text.
 - UI labels and buttons: `line-height: 1.4`
 - Captions (12px): `line-height: 1.5`
 
-### 5.2 Color System — Brutalist Terminal Aesthetic
+### 5.2 Color System - Brutalist Terminal Aesthetic
 
 Tensorcraft uses a unified "Brutalist Terminal" aesthetic across the entire application. All worlds share the same shell tokens; only `--tc-primary` and `--tc-accent` vary per world. World switching is done via `data-world="<slug>"` on `<html>`. Deep Orbit is the default (applied on `:root`).
 
@@ -244,9 +244,9 @@ Each world also defines three bridge-tier tokens derived from the palette: `--tc
 
 The Tailwind `@world` block in `apps/web/app/globals.css` maps CSS custom properties to utility classes:
 
-- `bg-surface` maps to `--tc-surface` (`#232323`) — used for card and panel backgrounds.
-- `bg-page` maps to `--tc-bg` (`#181818`) — used for page-level backgrounds.
-- `bg-surface-raised` maps to `--tc-surface-raised` (`#2C2C2C`) — used for ticker and elevated non-modal content.
+- `bg-surface` maps to `--tc-surface` (`#232323`) - used for card and panel backgrounds.
+- `bg-page` maps to `--tc-bg` (`#181818`) - used for page-level backgrounds.
+- `bg-surface-raised` maps to `--tc-surface-raised` (`#2C2C2C`) - used for ticker and elevated non-modal content.
 
 ### 5.3 Design Rules
 
@@ -304,9 +304,9 @@ The signup and login screen provides three authentication methods.
 
 A 3-step post-signup flow that orients the new user.
 
-- **Step 1 — Welcome:** Headline "You Already Think Like an ML Engineer" (matches the landing page hero). Brief value proposition paragraph. "Let's get started" CTA button.
-- **Step 2 — Choose World:** Displays available worlds as selectable cards (same card style as world-selection screen but simplified). User picks their starting world. Deep Orbit is pre-highlighted as the recommended first world.
-- **Step 3 — Start Learning:** Confirmation screen showing the selected world, estimated time commitment, and a "Begin Module 1" CTA. Also shows a skip option: "Explore other worlds first".
+- **Step 1 - Welcome:** Headline "You Already Think Like an ML Engineer" (matches the landing page hero). Brief value proposition paragraph. "Let's get started" CTA button.
+- **Step 2 - Choose World:** Displays available worlds as selectable cards (same card style as world-selection screen but simplified). User picks their starting world. Deep Orbit is pre-highlighted as the recommended first world.
+- **Step 3 - Start Learning:** Confirmation screen showing the selected world, estimated time commitment, and a "Begin Module 1" CTA. Also shows a skip option: "Explore other worlds first".
 - **Progress indicator:** A 3-dot stepper at the top of the card shows current position (filled dot = current, hollow = remaining).
 - **Persistence:** Onboarding completion is stored in the user profile. Users who have completed onboarding are never shown it again.
 
@@ -316,7 +316,7 @@ Appears after completing the Module 1 free preview when a free-tier user attempt
 
 - **Trigger:** Navigating to any lesson in Module 2 or beyond while on the free tier.
 - **Layout:** Centered modal overlay with backdrop blur. Modal card (max-width: 520px) on `#0F1320` surface.
-- **Content:** Headline "Unlock the full [World Name] journey". Feature comparison (free vs. paid). Per-model price displayed prominently: "$59 — lifetime access to this world". Pill-shaped CTA: "Unlock [World Name]". Secondary link: "View all worlds" (links to pricing page).
+- **Content:** Headline "Unlock the full [World Name] journey". Feature comparison (free vs. paid). Per-model price displayed prominently: "$59 - lifetime access to this world". Pill-shaped CTA: "Unlock [World Name]". Secondary link: "View all worlds" (links to pricing page).
 - **Dismiss:** Click outside the modal or X button. User is returned to the Module 1 content they can still access.
 
 > **PRICING DISCREPANCY:** The PRD (Section 8) defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan (Part 2) and the prototypes use per-model pricing ($59 per world, lifetime access). The paywall prototype implements per-model pricing. This discrepancy must be resolved before V1.0 launch. See also the flag in the PRD.
@@ -376,13 +376,13 @@ at roughly 1:1.
 
 Three separate overrides are required, and each fixes a different failure:
 
-1. **`--tc-*` tokens** — for anything reading `var(--tc-…)` directly.
-2. **`--color-*` tokens** — Tailwind's `@world` emits
+1. **`--tc-*` tokens** - for anything reading `var(--tc-…)` directly.
+2. **`--color-*` tokens** - Tailwind's `@world` emits
    `--color-text-muted: var(--tc-muted)` at `:root`, and a custom property is
    substituted where it is *declared*, so it already computed to the light
    value up there. Redefining `--tc-muted` deeper cannot reach
    `text-text-muted`.
-3. **`color`** — inherits as a computed value, so an element with no colour
+3. **`color`** - inherits as a computed value, so an element with no colour
    of its own already holds body's. Re-resolving it is what reaches headings
    that carry no colour class.
 

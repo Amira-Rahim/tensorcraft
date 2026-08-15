@@ -22,7 +22,7 @@
 //   ariaTic     ARIA "Observation..." / "I have no rule" epilogue-cadence hits
 
 // Exported for the regression gate (packages/content/__tests__/
-// structure-variety.test.ts) so counter and gate share ONE parser — the
+// structure-variety.test.ts) so counter and gate share ONE parser - the
 // P1 stripper split-brain taught us what duplicated corpus parsers do.
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
@@ -35,7 +35,7 @@ export const CONTENT_ROOT = join(ROOT, "packages", "content", "content");
 // Kept for back-compat with existing importers; prefer CONTENT_ROOT + a
 // world dir. The hardcoded deep-orbit anchor was a gate bug: analyze()
 // computed lesson ids relative to THIS dir, so every other world's lessons
-// resolved to "../<world>/..." and moduleOf() collapsed to ".." — the
+// resolved to "../<world>/..." and moduleOf() collapsed to ".." - the
 // per-module variety floor silently measured one giant bucket (fresh-eyes
 // rerun §6, T2-23).
 export const CONTENT_DIR = join(CONTENT_ROOT, "deep-orbit");
@@ -106,7 +106,7 @@ export function analyze(file) {
   const { fm, body } = splitFrontmatter(source);
   // Lesson id is "module/lesson" for EVERY world: resolve against the
   // content root and strip the world segment. (Previously relative to the
-  // deep-orbit dir, which turned other worlds' ids into "../..." — T2-23.)
+  // deep-orbit dir, which turned other worlds' ids into "../..." - T2-23.)
   const rel = relative(CONTENT_ROOT, file)
     .replace(/\.mdx$/, "")
     .split("/")
@@ -182,33 +182,33 @@ function main() {
 
 function report(rows, summary) {
   if (process.argv.includes("--json")) {
-  console.log(JSON.stringify({ summary, rows }, null, 2));
-} else {
-  const pad = (s, n) => String(s).padEnd(n);
-  console.log(
-    pad("lesson", 46) +
-      pad("opener", 22) +
-      pad("pattern", 18) +
-      pad("scn", 4) +
-      pad("tk", 3) +
-      pad("rc", 3) +
-      pad("dp", 3) +
-      pad("bb", 3) +
-      "tic",
-  );
-  for (const r of rows) {
+    console.log(JSON.stringify({ summary, rows }, null, 2));
+  } else {
+    const pad = (s, n) => String(s).padEnd(n);
     console.log(
-      pad(r.lesson, 46) +
-        pad(r.opener, 22) +
-        pad(r.pattern, 18) +
-        pad(r.scene ? "y" : "-", 4) +
-        pad(r.takeaways, 3) +
-        pad(r.recall, 3) +
-        pad(r.dispatch, 3) +
-        pad(r.boss, 3) +
-        r.ariaTic,
+      pad("lesson", 46) +
+        pad("opener", 22) +
+        pad("pattern", 18) +
+        pad("scn", 4) +
+        pad("tk", 3) +
+        pad("rc", 3) +
+        pad("dp", 3) +
+        pad("bb", 3) +
+        "tic",
     );
-  }
-  console.log("\nSummary: " + JSON.stringify(summary, null, 2));
+    for (const r of rows) {
+      console.log(
+        pad(r.lesson, 46) +
+          pad(r.opener, 22) +
+          pad(r.pattern, 18) +
+          pad(r.scene ? "y" : "-", 4) +
+          pad(r.takeaways, 3) +
+          pad(r.recall, 3) +
+          pad(r.dispatch, 3) +
+          pad(r.boss, 3) +
+          r.ariaTic,
+      );
+    }
+    console.log("\nSummary: " + JSON.stringify(summary, null, 2));
   }
 }

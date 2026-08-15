@@ -5,7 +5,7 @@
 --   trigger on `auth.users`. It bare-INSERTs into `public.profiles`. Any
 --   failure (e.g. transient or pre-existing row) bubbles up and aborts the
 --   auth signup. Worse, users who existed before migration 001 was applied
---   never get a profile at all — the trigger only fires on new auth rows.
+--   never get a profile at all - the trigger only fires on new auth rows.
 --
 -- Fix:
 --   1. Backfill profile rows for every `auth.users` entry that has none.

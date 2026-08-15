@@ -1,7 +1,7 @@
 -- Tensorcraft: close a privilege-escalation hole and two cross-user view leaks.
 --
 -- ============================================================
--- 1. CRITICAL — self-promotion to admin via profiles UPDATE
+-- 1. CRITICAL - self-promotion to admin via profiles UPDATE
 -- ============================================================
 -- 001_initial_schema.sql:30-32 declares:
 --
@@ -72,7 +72,7 @@ create policy "Users can update own profile"
   with check (auth.uid() = id);
 
 -- ============================================================
--- 2. HIGH — dashboard_stats materialized view leaks all users
+-- 2. HIGH - dashboard_stats materialized view leaks all users
 -- ============================================================
 -- 012_scalability_indexes.sql:25 creates public.dashboard_stats aggregating
 -- user_id + progress across the WHOLE theme_progress table. Materialized
@@ -89,7 +89,7 @@ revoke all on public.dashboard_stats from public, anon, authenticated;
 grant select on public.dashboard_stats to service_role;
 
 -- ============================================================
--- 3. HIGH — theme_progress_summary view bypasses RLS
+-- 3. HIGH - theme_progress_summary view bypasses RLS
 -- ============================================================
 -- 005_progress_summary_view.sql:26 asserts "view inherits RLS from
 -- underlying table." That is false as written: Postgres views default to

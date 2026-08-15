@@ -6,7 +6,7 @@ import { apiFetch } from "./api-fetch";
  *
  * Failures are deliberately silent: the server answers with a structured
  * error when GitHub is not connected (the common case), and the Settings
- * page's retroactive push backfills anything missed here — same
+ * page's retroactive push backfills anything missed here - same
  * best-effort contract as exercise-attempt recording. This call is what
  * makes the "solved exercises push to your GitHub" promise true in the
  * product, not just in the API (2026-07-13 audit: the backend existed for

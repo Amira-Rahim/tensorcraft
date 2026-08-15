@@ -1,4 +1,4 @@
--- Tensorcraft: Scalability Phase 1 — skill_events Partitioning
+-- Tensorcraft: Scalability Phase 1 - skill_events Partitioning
 --
 -- Converts skill_events to a monthly-partitioned table.
 -- Requires brief write pause during the atomic swap.

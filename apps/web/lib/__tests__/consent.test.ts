@@ -11,7 +11,7 @@ import {
  *
  * Every consent consumer used to read localStorage once inside a mount-only
  * effect. On a first visit the key does not exist, the effect returned early,
- * and nothing ever re-ran it — accepting the banner only wrote localStorage.
+ * and nothing ever re-ran it - accepting the banner only wrote localStorage.
  * So the session in which a visitor lands, reads the free lesson, hits the
  * paywall and decides whether to buy emitted no events at all. The `storage`
  * event is not a fix: browsers do not fire it in the tab that wrote the value,
@@ -44,7 +44,7 @@ describe("analytics consent", () => {
     off();
   });
 
-  it("notifies same-tab listeners when consent is granted — the actual bug", () => {
+  it("notifies same-tab listeners when consent is granted - the actual bug", () => {
     const handler = vi.fn();
     const off = onConsentChange(handler);
     handler.mockClear(); // drop the immediate call

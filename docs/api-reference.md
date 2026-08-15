@@ -47,9 +47,9 @@ Add an email to the waitlist. No authentication required.
 | `source` | string | No | Where the signup originated |
 
 **Responses:**
-- `201` — `{ "message": "Added to waitlist" }`
-- `200` — `{ "message": "Already on the waitlist" }` (duplicate email)
-- `400` — `{ "error": "Valid email is required" }`
+- `201` - `{ "message": "Added to waitlist" }`
+- `200` - `{ "message": "Already on the waitlist" }` (duplicate email)
+- `400` - `{ "error": "Valid email is required" }`
 
 ---
 
@@ -142,7 +142,7 @@ Create a Stripe Checkout session. **Authenticated.**
 | `three` | Any three worlds | $129 |
 | `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $159 |
 
-**Example — All 5 Worlds:**
+**Example - All 5 Worlds:**
 ```json
 {
   "planId": "allFive",
@@ -150,7 +150,7 @@ Create a Stripe Checkout session. **Authenticated.**
 }
 ```
 
-**Upgrade credit behavior:** If the user already owns worlds that overlap with the requested bundle, the amount paid for those worlds is credited toward the new plan price. The adjusted price is charged via Stripe. If the total credit covers the full plan price, no Stripe session is created — worlds are granted immediately.
+**Upgrade credit behavior:** If the user already owns worlds that overlap with the requested bundle, the amount paid for those worlds is credited toward the new plan price. The adjusted price is charged via Stripe. If the total credit covers the full plan price, no Stripe session is created - worlds are granted immediately.
 
 **Abandoned-cart recovery:** the session carries `customer_email` (read from `profiles`) and `after_expiration.recovery`, so Stripe can mail a buyer who drops out. `customer_email` is omitted rather than sent empty when the profile has no address, since Stripe rejects a blank string.
 
@@ -162,11 +162,11 @@ Same request body and plan IDs as `/checkout`. Exists because the authenticated 
 
 Differences from `/checkout`:
 
-- **No `client_reference_id`** — there is no user yet. The session is marked `metadata.guest = "true"` and Stripe collects the email.
-- **No upgrade credit and no auto-grant** — a guest has no prior purchases by definition, so the credit machinery is absent rather than returning zero.
-- **Tighter rate limit** — 10 req/min per IP on its own Redis key prefix, on top of the global 60/min limiter, because the route is unauthenticated.
+- **No `client_reference_id`** - there is no user yet. The session is marked `metadata.guest = "true"` and Stripe collects the email.
+- **No upgrade credit and no auto-grant** - a guest has no prior purchases by definition, so the credit machinery is absent rather than returning zero.
+- **Tighter rate limit** - 10 req/min per IP on its own Redis key prefix, on top of the global 60/min limiter, because the route is unauthenticated.
 
-**Identity resolution (webhook):** on `checkout.session.completed` with no `client_reference_id` and `metadata.guest === "true"`, the webhook reads `customer_details.email` and resolves it via `profiles.email` — attaching the purchase to an existing account, or provisioning a new Supabase user with `email_confirm: true` (payment already proves control of the address). It then emails a magic link. If resolution fails the webhook returns **500 so Stripe retries**: the money has already moved, and a silent 200 would mean a paid purchase that grants nothing.
+**Identity resolution (webhook):** on `checkout.session.completed` with no `client_reference_id` and `metadata.guest === "true"`, the webhook reads `customer_details.email` and resolves it via `profiles.email` - attaching the purchase to an existing account, or provisioning a new Supabase user with `email_confirm: true` (payment already proves control of the address). It then emails a magic link. If resolution fails the webhook returns **500 so Stripe retries**: the money has already moved, and a silent 200 would mean a paid purchase that grants nothing.
 
 **Response (normal checkout):**
 ```json
@@ -217,8 +217,8 @@ Get the authenticated user's purchase history. **Authenticated.**
 Stripe webhook handler. **Not authenticated** (uses Stripe signature verification). Exempt from rate limiting.
 
 **Events handled:**
-- `checkout.session.completed` — Creates purchase record, grants world access
-- `charge.refunded` — Updates purchase status, revokes access
+- `checkout.session.completed` - Creates purchase record, grants world access
+- `charge.refunded` - Updates purchase status, revokes access
 
 ---
 
@@ -281,8 +281,8 @@ Persist a GitHub OAuth provider token for the authenticated user. **Authenticate
 
 **Responses:**
 
-- `200` — `{ "message": "Token saved" }`
-- `401` — Unauthorized
+- `200` - `{ "message": "Token saved" }`
+- `401` - Unauthorized
 
 ---
 
@@ -306,8 +306,8 @@ Batch-submit skill tracking events. **Authenticated.**
 
 **Responses:**
 
-- `200` — `{ "processed": 3 }`
-- `400` — Bad request (invalid event shape)
+- `200` - `{ "processed": 3 }`
+- `400` - Bad request (invalid event shape)
 
 ---
 
@@ -327,8 +327,8 @@ Submit an issue report. No authentication required.
 
 **Responses:**
 
-- `201` — `{ "message": "Issue submitted" }`
-- `400` — Bad request (missing required fields)
+- `201` - `{ "message": "Issue submitted" }`
+- `400` - Bad request (missing required fields)
 
 ---
 
@@ -409,9 +409,9 @@ Paginated waitlist entries.
 
 All requests (except `/api/payments/webhook`) pass through:
 
-1. **Security Headers** — CSP, X-Frame-Options, etc.
-2. **CORS** — Allows `localhost:3000` (dev) and `tensorcraft.app` (prod)
-3. **Rate Limiting** — 60 req/min per IP (code truth; docs previously claimed 120 — reconciled 2026-07-25). Uses Upstash Redis; degrades open (limiter disabled) when Redis is unavailable. Stripe webhook exempt.
+1. **Security Headers** - CSP, X-Frame-Options, etc.
+2. **CORS** - Allows `localhost:3000` (dev) and `tensorcraft.app` (prod)
+3. **Rate Limiting** - 60 req/min per IP (code truth; docs previously claimed 120 - reconciled 2026-07-25). Uses Upstash Redis; degrades open (limiter disabled) when Redis is unavailable. Stripe webhook exempt.
 
 ---
 
@@ -434,10 +434,10 @@ For `500` errors, a `requestId` is included to aid debugging (matches the `X-Req
 
 Common status codes:
 
-- `400` — Bad request (missing/invalid fields)
-- `401` — Unauthorized (missing or invalid auth token)
-- `429` — Rate limited (includes `Retry-After` header)
-- `500` — Internal server error (includes `requestId`)
+- `400` - Bad request (missing/invalid fields)
+- `401` - Unauthorized (missing or invalid auth token)
+- `429` - Rate limited (includes `Retry-After` header)
+- `500` - Internal server error (includes `requestId`)
 
 ---
 
@@ -445,7 +445,7 @@ Common status codes:
 
 All endpoints (except `/api/payments/webhook`) are rate limited to **60 requests per minute per IP**.
 
-- **Primary store:** Upstash Redis for distributed limiting across multiple API instances (unset env = limiter silently disabled, see above — not a boot failure).
+- **Primary store:** Upstash Redis for distributed limiting across multiple API instances (unset env = limiter silently disabled, see above - not a boot failure).
 - **Fallback store:** In-memory Map when Redis is not configured. Suitable for single-instance deployments and local development.
 - Rate-limited responses return `429 Too Many Requests` with a `Retry-After` header.
 

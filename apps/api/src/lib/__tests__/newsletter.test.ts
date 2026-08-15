@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Regression gate for the cross-stream opt-out (2026-07-13 P4 email
 // audit): the digest sender reads the WAITLIST table, but the Settings
-// weekly-digest toggle writes profiles.weekly_digest — the sender must
+// weekly-digest toggle writes profiles.weekly_digest - the sender must
 // exclude waitlist emails whose account profile opted out, case-
 // insensitively.
 

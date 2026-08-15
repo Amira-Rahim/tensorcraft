@@ -8,7 +8,7 @@ export function PlausibleScript() {
   const domain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
   // Previously listened only for `storage`, which browsers do not fire in the
-  // tab that wrote the value — i.e. never in the tab where the visitor just
+  // tab that wrote the value - i.e. never in the tab where the visitor just
   // accepted. Plausible therefore never loaded in the session consent was
   // granted. `onConsentChange` covers both same-tab and cross-tab.
   useEffect(() => {

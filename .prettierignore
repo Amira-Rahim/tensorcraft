@@ -5,3 +5,18 @@ dist
 pnpm-lock.yaml
 prototypes
 docs
+
+# Generated build output (velite). Never hand-formatted.
+packages/content/.velite
+
+# Vendored minified assets. Prettier would explode them into readable form.
+apps/web/public/vendor
+
+# Authored learner content (lesson MDX + exercise/module yamls). Deliberately
+# NOT prettier-managed (2026-08-15): prettier's mdx rewrap reflows dialogue
+# prose and fenced code across all ~275 lessons (a content-wide edit that
+# CODEOWNERS routes through owner pedagogy review), and line-rewrapping
+# defeats the line-based slop-lexicon gate in
+# packages/content/__tests__/slop-lexicon.test.ts. Content style is governed
+# by its own gates and docs/writing-quality-rubric.md instead.
+packages/content/content

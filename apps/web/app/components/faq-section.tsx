@@ -26,7 +26,7 @@ interface FaqSectionProps {
  *
  * This component also EMITS the FAQPage JSON-LD (moved here from the root
  * layout 2026-07-25, Tier 1-OPS): schema markup belongs on the pages that
- * visibly render the FAQ, not on every route sitewide — and co-locating it
+ * visibly render the FAQ, not on every route sitewide - and co-locating it
  * with the render makes page-content/schema drift structurally impossible.
  */
 export function FaqSection({

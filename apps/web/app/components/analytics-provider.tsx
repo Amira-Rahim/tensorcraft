@@ -24,7 +24,7 @@ function AnalyticsInner() {
   //
   // Subscribed to consent rather than read once on mount. A first-time
   // visitor has no consent key when this mounts, and the old mount-once
-  // effect never re-ran — so accepting the banner did nothing until the next
+  // effect never re-ran - so accepting the banner did nothing until the next
   // hard page load, and the entire first session (land, read, hit paywall,
   // decide) emitted no events at all.
   useEffect(() => {

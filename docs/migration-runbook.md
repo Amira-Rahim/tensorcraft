@@ -1,7 +1,7 @@
 # Migration runbook
 
 How to evolve the Tensorcraft database safely. This is the process half of
-Tier 0 in `docs/audits/scalability-architecture-2026-07-21.md` — the half that
+Tier 0 in `docs/audits/scalability-architecture-2026-07-21.md` - the half that
 gates every schema change the scale roadmap (seats, arena, the cross-world
 journey) depends on.
 
@@ -25,8 +25,8 @@ The ledger did not exist before migration 042. To start it truthfully:
 
 1. Apply `042_schema_migrations_tracking.sql`. It creates the ledger and
    backfills 001–041 as applied.
-2. **If production is actually behind** — i.e. some of 001–041 were never
-   applied — delete the ledger rows for the versions you have NOT applied:
+2. **If production is actually behind** - i.e. some of 001–041 were never
+   applied - delete the ledger rows for the versions you have NOT applied:
    ```sql
    delete from public.schema_migrations where version in (NN, NN);
    ```
@@ -52,7 +52,7 @@ The ledger did not exist before migration 042. To start it truthfully:
 
 ## Applying to production
 
-Until CI owns this, application is manual through the Supabase SQL editor —
+Until CI owns this, application is manual through the Supabase SQL editor -
 but every file is now transaction-wrapped and self-recording, so a paste is
 all-or-nothing:
 
@@ -71,7 +71,7 @@ all-or-nothing:
 
 - **Migration 013** (the `skill_events` partition swap) can silently lose rows
   written during its unlocked `INSERT…SELECT`, and its `DROP TABLE
-  skill_events_old` is commented out — production may still hold a duplicate.
+  skill_events_old` is commented out - production may still hold a duplicate.
   Any future partition work must confirm the state first
   (`full-audit-2026-07-21.md §3`).
 - **The old incident runbook** (`pre-launch-checklist.md:670`) suggested a bulk

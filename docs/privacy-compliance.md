@@ -10,26 +10,26 @@ Processing Agreements (DPAs) required before production launch.
 
 | Processor | Purpose | Data residency | DPA required |
 |-----------|---------|----------------|--------------|
-| Supabase | Auth + Postgres database | EU (region of user's choosing; production uses EU-West) | Yes — standard Supabase DPA |
-| Stripe | Payments | US (SCCs in place) | Yes — standard Stripe DPA |
-| Vercel | Web hosting | Global edge | Yes — standard Vercel DPA |
-| Fly.io | API hosting | EU region (`fra`) | Yes — standard Fly.io DPA |
-| Upstash Redis | Rate limiting + JWT cache | EU region | Yes — standard Upstash DPA |
-| Resend | Transactional email | US (SCCs in place) | Yes — standard Resend DPA |
-| Kit (ConvertKit) | Marketing email | US (SCCs in place) | Yes — standard Kit DPA |
-| **PostHog** | Product analytics | **EU (`eu.posthog.com`)** | **Yes — standard PostHog DPA** |
-| **Sentry** | Error tracking | EU (DSN pointed at EU region project) | **Yes — standard Sentry DPA** |
-| Plausible | Privacy-friendly web analytics | EU | Yes — standard Plausible DPA (cookie-less, no personal data) |
+| Supabase | Auth + Postgres database | EU (region of user's choosing; production uses EU-West) | Yes - standard Supabase DPA |
+| Stripe | Payments | US (SCCs in place) | Yes - standard Stripe DPA |
+| Vercel | Web hosting | Global edge | Yes - standard Vercel DPA |
+| Fly.io | API hosting | EU region (`fra`) | Yes - standard Fly.io DPA |
+| Upstash Redis | Rate limiting + JWT cache | EU region | Yes - standard Upstash DPA |
+| Resend | Transactional email | US (SCCs in place) | Yes - standard Resend DPA |
+| Kit (ConvertKit) | Marketing email | US (SCCs in place) | Yes - standard Kit DPA |
+| **PostHog** | Product analytics | **EU (`eu.posthog.com`)** | **Yes - standard PostHog DPA** |
+| **Sentry** | Error tracking | EU (DSN pointed at EU region project) | **Yes - standard Sentry DPA** |
+| Plausible | Privacy-friendly web analytics | EU | Yes - standard Plausible DPA (cookie-less, no personal data) |
 
 ## Monitoring & analytics choices (Phase 6 §6g)
 
-### PostHog — EU instance
+### PostHog - EU instance
 
 We use PostHog on the EU cloud (`https://eu.posthog.com`) so product
 analytics data stays in the EU. The host is configured via
 `NEXT_PUBLIC_POSTHOG_HOST` and defaults to the EU endpoint in
 `apps/web/lib/posthog.ts`. **Do not override this to a US host in
-production** — doing so would require renegotiating transfer
+production** - doing so would require renegotiating transfer
 safeguards (SCCs + transfer impact assessment).
 
 Server-side conversion events (Stripe webhook `purchase_completed`,
@@ -41,7 +41,7 @@ analytics cookies (see `app/components/cookie-consent.tsx` + the
 `tc-cookie-consent` localStorage key consumed in `posthog-provider.tsx`).
 Without consent, no events are captured.
 
-### Sentry — EU project
+### Sentry - EU project
 
 Separate Sentry projects are used for the web and API apps. Each DSN
 is scoped to an EU-region Sentry project so error payloads never
@@ -56,10 +56,10 @@ Configuration:
 
 Sample rates (cost control):
 
-- `tracesSampleRate: 0.1` — 10% of requests get performance traces.
-- `replaysSessionSampleRate: 0` — no session replays during normal
+- `tracesSampleRate: 0.1` - 10% of requests get performance traces.
+- `replaysSessionSampleRate: 0` - no session replays during normal
   traffic.
-- `replaysOnErrorSampleRate: 1.0` — full replay on errors only.
+- `replaysOnErrorSampleRate: 1.0` - full replay on errors only.
 
 ### PII scrubbing (pseudonymization)
 
@@ -90,7 +90,7 @@ Before the first production deploy:
 - [ ] Add PostHog + Sentry to the privacy policy "Sub-processors"
       section with the EU residency note above.
 - [ ] Verify the Sentry project region is set to EU at project
-      creation — it cannot be changed afterwards.
+      creation - it cannot be changed afterwards.
 - [ ] Verify the PostHog project host is `https://eu.posthog.com` in
       all deployed environments (not `us.i.posthog.com`).
 
@@ -98,10 +98,10 @@ Before the first production deploy:
 
 Covered by the existing Supabase `profiles` + `purchases` schema:
 
-- **Right to access / portability** — user requests export via
+- **Right to access / portability** - user requests export via
   `/api/profiles/export` (planned §6h).
-- **Right to erasure** — `/api/profiles/delete` (planned §6h).
-- **Right to rectification** — `/settings` profile editor.
+- **Right to erasure** - `/api/profiles/delete` (planned §6h).
+- **Right to rectification** - `/settings` profile editor.
 
 Analytics data in PostHog is keyed by the user's Supabase UUID. When a
 user requests deletion, we also purge their PostHog events via the
@@ -121,7 +121,7 @@ before it is re-enabled.
 **Corrections to the original justification (it was wrong):**
 
 - ~~"The address is verified by the payment itself."~~ **False.** Stripe
-  Checkout verifies the *card*, not the email — the address is a free-text
+  Checkout verifies the *card*, not the email - the address is a free-text
   field the payer types. Any re-enabled design must therefore NOT set
   `email_confirm: true` on the strength of payment alone, and must not treat
   a payer-supplied address as proven. As written it would also have let a

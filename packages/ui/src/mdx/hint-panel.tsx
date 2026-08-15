@@ -41,7 +41,7 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
     <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
       {/*
         Revealing a hint replaced the button with its own result in the same
-        commit. Focus fell to <body>, and nothing announced — so a screen
+        commit. Focus fell to <body>, and nothing announced - so a screen
         reader user pressed "Reveal Nudge", heard silence, and had no way to
         find the text they had just asked for. Across all 56 lessons.
 
@@ -52,7 +52,7 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
 
         The region announces the EVENT only, never the hint text. Focus lands
         on the hint itself, so repeating the content here would make a screen
-        reader read it twice — once from the announcement, again on arrival.
+        reader read it twice - once from the announcement, again on arrival.
       */}
       <div
         role="status"

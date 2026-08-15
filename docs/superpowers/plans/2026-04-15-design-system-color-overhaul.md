@@ -1,10 +1,10 @@
-# Design System Color Overhaul — Implementation Plan
+# Design System Color Overhaul - Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Overhaul the Tensorcraft color palette, surface hierarchy, header, and hardcoded colors to create proper visual depth and theme identity.
 
-**Architecture:** Update CSS custom properties in `themes.css` (foundation), remap Tailwind utilities in `base.css`, then cascade changes through components. The `bg-surface` semantic shift (from page-background to card-surface) affects 42 files and is the highest-risk change — handled as a dedicated bulk migration task.
+**Architecture:** Update CSS custom properties in `themes.css` (foundation), remap Tailwind utilities in `base.css`, then cascade changes through components. The `bg-surface` semantic shift (from page-background to card-surface) affects 42 files and is the highest-risk change - handled as a dedicated bulk migration task.
 
 **Tech Stack:** CSS custom properties, `color-mix()`, Tailwind CSS v4 `@theme` block, Next.js React components
 
@@ -17,7 +17,7 @@
 **Files:**
 - Modify: `packages/themes/src/css/themes.css`
 
-This is the foundation — every subsequent task depends on these values being correct.
+This is the foundation - every subsequent task depends on these values being correct.
 
 - [ ] **Step 1: Update shared neutral values in Deep Orbit (`:root`) block**
 
@@ -26,7 +26,7 @@ In `packages/themes/src/css/themes.css`, update the `:root, [data-theme="deep-or
 ```css
 --tc-bg: #181818;
 --tc-surface: #232323;
-/* --tc-surface-overlay stays #313131 — unchanged */
+/* --tc-surface-overlay stays #313131 - unchanged */
 --tc-border: #3d3d3d;
 --tc-code-bg: #141414;
 ```
@@ -37,7 +37,7 @@ Add these new variables inside the same block, after `--tc-code-bg`:
 /* New surface tier */
 --tc-surface-raised: #2c2c2c;
 
-/* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
+/* RGB triplet for canvas/inline rgba() usage - must stay in sync with --tc-primary */
 --tc-primary-rgb: 107, 170, 138;
 
 /* Derived accent variables */
@@ -81,11 +81,11 @@ Same neutral changes. Terra Grid `--tc-primary-rgb`:
 --tc-primary-rgb: 196, 149, 53;
 ```
 
-- [ ] **Step 6: Verify — check the file compiles**
+- [ ] **Step 6: Verify - check the file compiles**
 
 Run: `cd /Users/amira.salah/Desktop/tensorcraft && pnpm build --filter=@tensorcraft/themes 2>&1 | head -20`
 
-Expected: Build succeeds (or no build step for CSS-only package — in that case, check the dev server loads without CSS errors).
+Expected: Build succeeds (or no build step for CSS-only package - in that case, check the dev server loads without CSS errors).
 
 - [ ] **Step 7: Commit**
 
@@ -120,12 +120,12 @@ In `packages/config/tailwind/base.css`, update the `@theme` block. Replace the c
 With:
 
 ```css
-/* Background surfaces — REMAPPED for clarity */
+/* Background surfaces - REMAPPED for clarity */
 /* bg-page: explicit page background (#181818) */
 --color-page: var(--tc-bg);
-/* bg-surface: card/panel/nav backgrounds (#232323) — was var(--tc-bg), now var(--tc-surface) */
+/* bg-surface: card/panel/nav backgrounds (#232323) - was var(--tc-bg), now var(--tc-surface) */
 --color-surface: var(--tc-surface);
-/* bg-surface-raised: ticker, elevated non-modal content (#2C2C2C) — was var(--tc-surface), now var(--tc-surface-raised) */
+/* bg-surface-raised: ticker, elevated non-modal content (#2C2C2C) - was var(--tc-surface), now var(--tc-surface-raised) */
 --color-surface-raised: var(--tc-surface-raised);
 --color-surface-overlay: var(--tc-surface-overlay);
 --color-code-bg: var(--tc-code-bg);
@@ -162,8 +162,8 @@ border-border-active, border-border-subtle, bg-glow, bg-primary-muted."
 The `bg-surface` class previously meant "page background" (`#1C1C1C` → now `#181818`). After the Tailwind remap, `bg-surface` means "card/panel surface" (`#232323`). Components using `bg-surface` as a page background must switch to `bg-page` or remove the class (body already has `background: var(--tc-bg)`).
 
 **Strategy:** Most `bg-surface` usages fall into two categories:
-1. **Page/section backgrounds** (e.g., `<main className="min-h-screen bg-surface">`) — change to `bg-page`
-2. **Card/component surfaces** (e.g., nav, hamburger button, overlays) — keep as `bg-surface` (the new meaning is correct)
+1. **Page/section backgrounds** (e.g., `<main className="min-h-screen bg-surface">`) - change to `bg-page`
+2. **Card/component surfaces** (e.g., nav, hamburger button, overlays) - keep as `bg-surface` (the new meaning is correct)
 
 - [ ] **Step 1: Bulk search-and-categorize**
 
@@ -172,22 +172,22 @@ Run: `grep -rn "bg-surface\b" apps/web/ --include="*.tsx" --include="*.ts" | gre
 Categorize each hit: does it describe a page/section background or a card/component surface?
 
 **Page backgrounds** (change to `bg-page`): These are typically `<main>`, `<div>` wrappers with `min-h-screen`, loading pages, error pages, and full-page sections. Examples:
-- `apps/web/app/themes/[slug]/[module]/page.tsx:54` — `<main className="min-h-screen px-6 py-20 bg-surface ...">` → `bg-page`
-- Loading pages (`loading.tsx` files) — typically full-page → `bg-page`
-- Error pages (`error.tsx` files) — typically full-page → `bg-page`
+- `apps/web/app/themes/[slug]/[module]/page.tsx:54` - `<main className="min-h-screen px-6 py-20 bg-surface ...">` → `bg-page`
+- Loading pages (`loading.tsx` files) - typically full-page → `bg-page`
+- Error pages (`error.tsx` files) - typically full-page → `bg-page`
 - Full-page routes like `pricing/page.tsx`, `learn/page.tsx`, etc. → `bg-page`
 
 **Card/component surfaces** (keep as `bg-surface`): These are navs, buttons, overlays, cards. Examples:
-- `apps/web/app/components/nav.tsx:52` — nav bar → keep `bg-surface`
-- `apps/web/app/components/mobile-nav.tsx:57` — hamburger button → keep `bg-surface`
-- `apps/web/app/components/mobile-nav.tsx:66` — overlay → keep `bg-surface`
-- `apps/web/app/components/ticker.tsx:121` — ticker label section → keep `bg-surface`
+- `apps/web/app/components/nav.tsx:52` - nav bar → keep `bg-surface`
+- `apps/web/app/components/mobile-nav.tsx:57` - hamburger button → keep `bg-surface`
+- `apps/web/app/components/mobile-nav.tsx:66` - overlay → keep `bg-surface`
+- `apps/web/app/components/ticker.tsx:121` - ticker label section → keep `bg-surface`
 
 - [ ] **Step 2: Replace page backgrounds with `bg-page`**
 
-For each file where `bg-surface` is used as a page/section background, replace `bg-surface` with `bg-page`. This is a mechanical replacement — no logic changes.
+For each file where `bg-surface` is used as a page/section background, replace `bg-surface` with `bg-page`. This is a mechanical replacement - no logic changes.
 
-Work through the 42 files systematically. Use the Edit tool for each file, replacing only `bg-surface` instances that represent page backgrounds (not `bg-surface-raised` or `bg-surface-overlay` — leave those alone).
+Work through the 42 files systematically. Use the Edit tool for each file, replacing only `bg-surface` instances that represent page backgrounds (not `bg-surface-raised` or `bg-surface-overlay` - leave those alone).
 
 - [ ] **Step 3: Verify the dev server renders correctly**
 
@@ -285,7 +285,7 @@ With:
 ctx.strokeStyle = `rgba(var(--tc-primary-rgb),${s.alpha})`;
 ```
 
-**Wait** — CSS variables don't work directly in canvas `strokeStyle`. The canvas API needs raw color strings. We need to read the CSS variable once and cache it.
+**Wait** - CSS variables don't work directly in canvas `strokeStyle`. The canvas API needs raw color strings. We need to read the CSS variable once and cache it.
 
 Instead, update the `draw` function to read the CSS variable. Replace the `draw` callback (lines 32-61) approach:
 
@@ -337,7 +337,7 @@ Was hardcoded to Deep Orbit teal rgba(107,170,138). Now reads
 
 ---
 
-### Task 6: Module Overview — Difficulty Badges + Active States
+### Task 6: Module Overview - Difficulty Badges + Active States
 
 **Files:**
 - Modify: `apps/web/app/themes/[slug]/[module]/page.tsx`
@@ -366,7 +366,7 @@ const difficultyColors = {
 
 - [ ] **Step 2: Update the main page background class**
 
-Line 54 — this should already be `bg-page` from Task 3. Verify it reads:
+Line 54 - this should already be `bg-page` from Task 3. Verify it reads:
 
 ```tsx
 <main className="min-h-screen px-6 py-20 bg-page relative overflow-hidden">
@@ -380,15 +380,15 @@ Line 120-121, the lesson `<Link>` currently has:
 className="p-5 flex items-center justify-between transition-colors brutalist-hover border border-border bg-surface-raised"
 ```
 
-This is fine as-is — `bg-surface-raised` now correctly maps to `#2C2C2C`, and `border-border` maps to `#3D3D3D`. No change needed for inactive cards.
+This is fine as-is - `bg-surface-raised` now correctly maps to `#2C2C2C`, and `border-border` maps to `#3D3D3D`. No change needed for inactive cards.
 
-For active module distinction (if the current module card needs the active treatment), this would be handled in a parent component. For now, all lesson cards use the same neutral border — the difficulty badges and progress nodes provide the active state signal.
+For active module distinction (if the current module card needs the active treatment), this would be handled in a parent component. For now, all lesson cards use the same neutral border - the difficulty badges and progress nodes provide the active state signal.
 
 - [ ] **Step 4: Verify in browser**
 
 Navigate to any module overview page. Check:
 - Difficulty badges show theme-appropriate colors (not always Deep Orbit teal)
-- Switch themes — badge colors should change
+- Switch themes - badge colors should change
 - Page background is `#181818`, cards are `#2C2C2C`
 
 - [ ] **Step 5: Commit**
@@ -428,7 +428,7 @@ Replace the inline style:
 Find: `"rgba(107,170,138,0.06)"`
 Replace with: `"color-mix(in srgb, var(--tc-primary) 6%, transparent)"`
 
-Also fix line ~406 if it has a hardcoded fallback `#6BAA8A` in a boxShadow — replace with `var(--tc-primary)`.
+Also fix line ~406 if it has a hardcoded fallback `#6BAA8A` in a boxShadow - replace with `var(--tc-primary)`.
 
 - [ ] **Step 3: Fix user-avatar.tsx (line 36)**
 
@@ -457,7 +457,7 @@ borderColor: domain === "ml"
 
 - [ ] **Step 5: Fix capstone-client.tsx (lines 21, 59)**
 
-Line 21 — replace:
+Line 21 - replace:
 ```tsx
 boxShadow: hov ? `4px 4px 0 rgba(107,170,138,0.3)` : "none",
 ```
@@ -466,7 +466,7 @@ With:
 boxShadow: hov ? `4px 4px 0 rgba(var(--tc-primary-rgb),0.3)` : "none",
 ```
 
-**Wait** — `rgba(var(...))` doesn't work in inline styles because the browser parses the style attribute as a raw string, not CSS. For inline styles in JSX, use `color-mix`:
+**Wait** - `rgba(var(...))` doesn't work in inline styles because the browser parses the style attribute as a raw string, not CSS. For inline styles in JSX, use `color-mix`:
 
 ```tsx
 boxShadow: hov ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 30%, transparent)` : "none",
@@ -509,11 +509,11 @@ and color-mix() for proper theme switching."
 
 The mobile nav active states currently use `border-border` and hardcoded `border-primary` / `bg-primary/10` patterns. These should use the new accent utilities where appropriate.
 
-Line 111 — active nav links already use `text-primary` (correct). The `border-b border-border` on nav links transitions automatically to `#3D3D3D` — more visible now. No change needed for nav links.
+Line 111 - active nav links already use `text-primary` (correct). The `border-b border-border` on nav links transitions automatically to `#3D3D3D` - more visible now. No change needed for nav links.
 
-Lines 129-133 — Dashboard active state currently uses `border-primary bg-primary/10 text-primary`. This is fine — `border-primary` gives full primary color for the active button, which is the correct design. Keep as-is.
+Lines 129-133 - Dashboard active state currently uses `border-primary bg-primary/10 text-primary`. This is fine - `border-primary` gives full primary color for the active button, which is the correct design. Keep as-is.
 
-Lines 140-144 — Settings button — same pattern, keep as-is.
+Lines 140-144 - Settings button - same pattern, keep as-is.
 
 The palette cascade from Task 1 (new `--tc-border` = `#3D3D3D`) automatically improves mobile nav border visibility. **No manual changes needed in this file.**
 
@@ -521,7 +521,7 @@ The palette cascade from Task 1 (new `--tc-border` = `#3D3D3D`) automatically im
 
 Open the site at mobile width (< 768px):
 - Hamburger button border should be clearly visible (`#3D3D3D`)
-- Open menu — overlay background should be `#232323` (card surface)
+- Open menu - overlay background should be `#232323` (card surface)
 - Nav link borders should be visible
 - Active states should show primary color
 
@@ -577,8 +577,8 @@ Run: `cd /Users/amira.salah/Desktop/tensorcraft && pnpm dev --filter=web`
 - [ ] **Step 2: Check Deep Orbit (default)**
 
 Navigate to:
-- `/` — landing page: header has teal glow, page bg `#181818`, nav bg `#232323`
-- `/themes/deep-orbit/edge-ai-basics` — module overview: difficulty badges use theme colors, cards have visible borders
+- `/` - landing page: header has teal glow, page bg `#181818`, nav bg `#232323`
+- `/themes/deep-orbit/edge-ai-basics` - module overview: difficulty badges use theme colors, cards have visible borders
 - Ticker: canvas streaks are teal, label section distinct from ticker body
 
 - [ ] **Step 3: Switch to each remaining theme and spot-check**
@@ -606,4 +606,4 @@ Use browser DevTools accessibility panel or axe extension:
 
 - [ ] **Step 6: Document any remaining issues**
 
-If any component looks wrong after the cascade, note it for a follow-up fix. The spec declares documentation files (`docs/prd.md`, `docs/ui-ux-notes.md`) out of scope — they can be updated in a separate pass.
+If any component looks wrong after the cascade, note it for a follow-up fix. The spec declares documentation files (`docs/prd.md`, `docs/ui-ux-notes.md`) out of scope - they can be updated in a separate pass.
