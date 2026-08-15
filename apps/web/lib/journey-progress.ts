@@ -20,9 +20,7 @@ export interface JourneyWorldState {
 }
 
 export interface JourneyState {
-  /** Whether the learner opted into the canonical track. */
-  enrolled: boolean;
-  enrolledAt: string | null;
+  /** When the learner closed the ring; null until then. */
   completedAt: string | null;
   /** The five worlds in ring order with per-world progress. */
   worlds: JourneyWorldState[];
@@ -44,9 +42,11 @@ export interface JourneyState {
  * Position is DERIVED here from completion, never stored (migration 044
  * deliberately keeps no denormalized pointer), so it cannot drift.
  *
- * Enrollment is opt-in: `enrolled=false` is the free-play default. The
- * per-world progress and `recommendedNext` are still returned in free-play
- * mode so soft recommendations work without enrollment.
+ * There is no enrollment concept: the explicit opt-in step was cut
+ * 2026-08-15. Every signed-in learner is on the journey; progressing through
+ * worlds in ring order IS the journey. The journey_enrollment table survives
+ * only as the durable completion record (completed_at), written by the
+ * /journey page when it first observes the closed ring.
  */
 export async function getJourneyState(userId: string): Promise<JourneyState> {
   const supabase = await getSupabaseServerClient();
@@ -58,7 +58,7 @@ export async function getJourneyState(userId: string): Promise<JourneyState> {
   ] = await Promise.all([
     supabase
       .from("journey_enrollment")
-      .select("enrolled_at, completed_at")
+      .select("completed_at")
       .eq("user_id", userId)
       .maybeSingle(),
     getEntitledWorlds(userId),
@@ -70,12 +70,12 @@ export async function getJourneyState(userId: string): Promise<JourneyState> {
   ]);
 
   // Fail loud, not blank (same contract as entitlements.ts): a transient
-  // PostgREST fault must not render an enrolled learner as un-enrolled with
+  // PostgREST fault must not render a finished learner as unfinished with
   // 0/56 progress. Throwing reaches the route's error boundary, which offers
   // a retry instead of confidently lying.
   if (enrollmentError) {
     throw new Error(
-      `Journey enrollment lookup failed: ${enrollmentError.message}`,
+      `Journey completion lookup failed: ${enrollmentError.message}`,
     );
   }
   if (progressError) {
@@ -121,8 +121,6 @@ export async function getJourneyState(userId: string): Promise<JourneyState> {
   const ringComplete = worlds.every((t) => t.completed);
 
   return {
-    enrolled: !!enrollment,
-    enrolledAt: enrollment?.enrolled_at ?? null,
     completedAt: enrollment?.completed_at ?? null,
     worlds,
     // Recommend the next world not yet COMPLETED (canonical journey is about

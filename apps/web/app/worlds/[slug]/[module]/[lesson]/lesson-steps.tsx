@@ -8,7 +8,13 @@ import {
   markLessonCompleted,
   emitSkillEvent,
 } from "@/lib/progress-client";
-import { recordGuestCompletion } from "@/lib/guest-progress";
+import {
+  recordGuestCompletion,
+  getGuestCompletions,
+} from "@/lib/guest-progress";
+import { patchSrc } from "@/lib/patch-art";
+import { completesModule } from "./completes-module";
+import { PatchAward } from "./patch-award";
 import {
   trackLessonStarted,
   trackLessonCompleted,
@@ -348,6 +354,11 @@ function LessonStepsInner({
   // completion metrics inflated from day 1 (R3-7).
   const prevStepRef = useRef<number | null>(null);
 
+  // Armed the session this lesson closes out its module: the Consequence
+  // step then reveals the module's mission patch (docs/patch-bible.md,
+  // "patch award moment" spec). Never armed on a restored mount.
+  const [awardSrc, setAwardSrc] = useState<string | null>(null);
+
   // Mark lesson complete when reaching final step (Consequence)
   useEffect(() => {
     const prevStep = prevStepRef.current;
@@ -384,6 +395,24 @@ function LessonStepsInner({
         });
 
       if (enteredThisSession) {
+        // Award check, synchronous and before the completion write settles:
+        // "done" merges server truth (the lessons prop) with local guest
+        // records, so free-module guests get the moment too. Restored
+        // mounts never reach here, so the award cannot re-fire on reload.
+        const patch = patchSrc(worldSlug, moduleSlug);
+        if (patch) {
+          const guestDone = new Set(
+            getGuestCompletions()
+              .filter(
+                (c) => c.worldId === worldSlug && c.moduleId === moduleSlug,
+              )
+              .map((c) => c.lessonId),
+          );
+          if (completesModule(lessons, lesson.slug, guestDone)) {
+            setAwardSrc(patch);
+          }
+        }
+
         trackLessonCompleted(worldSlug, moduleSlug, lesson.slug);
 
         // Skill genome. `emitSkillEvent` had ZERO call sites until now: the
@@ -768,6 +797,15 @@ function LessonStepsInner({
         {...sharedContentProps}
         nextLesson={nextLesson}
         isFreeModule={moduleOrder === 1}
+        award={
+          awardSrc
+            ? {
+                src: awardSrc,
+                moduleName: moduleName ?? moduleSlug,
+                moduleTerm: terms(worldSlug).module,
+              }
+            : null
+        }
       />
     );
   }
@@ -1610,6 +1648,7 @@ function StepConsequence({
   lessonSlug,
   nextLesson,
   isFreeModule,
+  award,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
@@ -1618,6 +1657,9 @@ function StepConsequence({
   lessonSlug: string;
   nextLesson: { slug: string; title: string } | null;
   isFreeModule?: boolean;
+  /** Armed by the completion effect the session this lesson closes out
+   *  its module; null otherwise (replay, mid-module, no patch art). */
+  award?: { src: string; moduleName: string; moduleTerm: string } | null;
 }) {
   return (
     <div className="text-center py-12">
@@ -1672,6 +1714,16 @@ function StepConsequence({
         />
         {terms(worldSlug).lesson} Complete
       </div>
+
+      {/* The award moment: the module's mission patch, only in the session
+          the module's last remaining lesson completed. */}
+      {award && (
+        <PatchAward
+          src={award.src}
+          moduleName={award.moduleName}
+          moduleTerm={award.moduleTerm}
+        />
+      )}
 
       <h2
         className="text-[26px] font-bold mb-5"

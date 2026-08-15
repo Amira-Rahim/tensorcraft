@@ -332,6 +332,75 @@ describe("LessonSteps, completion signal dedupe (R3-7 / diff review D1)", () => 
   });
 });
 
+describe("LessonSteps, patch award moment", () => {
+  const closingLessons = [
+    {
+      slug: "introduction-to-tensors",
+      title: "Introduction to Tensors",
+      order: 1,
+      locked: false,
+      completed: false,
+    },
+    {
+      slug: "tensor-shapes",
+      title: "Tensor Shapes",
+      order: 2,
+      locked: false,
+      completed: true,
+    },
+  ];
+
+  function renderWithLessons(lessons: typeof closingLessons) {
+    return render(
+      <LessonSteps
+        lesson={lesson}
+        exercises={[]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        prevLesson={null}
+        nextLesson={null}
+        lessons={lessons}
+      />,
+    );
+  }
+
+  it("reveals the patch when the module's last remaining lesson completes in-session", () => {
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
+    renderWithLessons(closingLessons);
+    fireEvent.click(screen.getByRole("button", { name: /continue|complete/i }));
+    expect(screen.getByTestId("patch-award")).toBeInTheDocument();
+    expect(screen.getByText("Sector Complete")).toBeInTheDocument();
+  });
+
+  it("does not award on a mount restored to the final step", () => {
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    renderWithLessons(closingLessons);
+    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.queryByTestId("patch-award")).not.toBeInTheDocument();
+  });
+
+  it("does not award while another lesson in the module is still open", () => {
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
+    renderWithLessons([
+      ...closingLessons,
+      {
+        slug: "tensor-operations",
+        title: "Tensor Operations",
+        order: 3,
+        locked: false,
+        completed: false,
+      },
+    ]);
+    fireEvent.click(screen.getByRole("button", { name: /continue|complete/i }));
+    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.queryByTestId("patch-award")).not.toBeInTheDocument();
+  });
+});
+
 describe("LessonSteps, focus management", () => {
   /**
    * The left column carries key={currentStep} to retrigger the step animation,

@@ -273,11 +273,16 @@ memory was refuted by that audit: `pnpm audit` clean.)
     review); dashboard `PatchCollection` panel (earned patches at 48px,
     dashed slots for unearned launched modules); new auxiliary `adrift`
     master on the 404 and route-error pages.
-  - [ ] Module-complete award moment: an animation the instant the last
-    lesson of a module completes, revealing the mission patch (deferred
-    from the 2026-08-15 spine: needs module-completion state inside the
-    lesson page, which does not exist; patches currently appear on the
-    dashboard and maps on next visit).
+  - [x] **Module-complete award moment** (SHIPPED 2026-08-15, spec
+    `docs/superpowers/specs/2026-08-15-patch-award-moment-design.md`): the
+    Consequence step reveals the module's mission patch the session its
+    last remaining lesson completes. No new queries: a pure
+    `completesModule` predicate merges the server-truth `lessons` prop
+    with local guest records inside the completion effect's
+    `enteredThisSession` guard (R3-7), so restored mounts never re-award
+    and free-module guests get the moment too. Eyebrow uses
+    `terms(world).module` ("SECTOR COMPLETE" on deep-orbit). E2e covers
+    the guest path end to end.
   - [ ] The other 20 character sheets (Neon / Signal / Nova / Terra) +
     world wiring + their scene art: gated on those worlds launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in

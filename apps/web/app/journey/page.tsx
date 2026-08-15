@@ -5,7 +5,6 @@ import { JOURNEY_ORDER, getLeadsTo } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getJourneyState } from "@/lib/journey-progress";
 import { JourneyRing } from "./journey-ring";
-import { EnrollButton } from "./enroll-button";
 
 export const metadata: Metadata = {
   title: "The Journey: five worlds, one arc | Tensorcraft",
@@ -38,18 +37,20 @@ export default async function JourneyPage() {
   const state = user ? await getJourneyState(user.id) : null;
 
   // Record the durable completion timestamp the moment the closed ring is
-  // observed. Migration 044's header promises "recording it once … gives a
-  // durable completion timestamp", but nothing ever wrote the column (R3-6)
-  // — completedAt was permanently null. Idempotent (fires only while null),
-  // self-scoped under the journey_enrollment RLS policy, and best-effort:
-  // the ring UI derives ringComplete independently, so a failed write only
-  // delays the timestamp until the next visit.
-  if (user && state?.enrolled && state.ringComplete && !state.completedAt) {
+  // observed. Since the explicit enroll step was cut (2026-08-15), the
+  // journey_enrollment table serves only as this completion record: most
+  // users have no row, so this must upsert, not update. Effectively
+  // idempotent (fires only while completedAt is null; a racing double-load
+  // writes near-identical timestamps), self-scoped under the RLS policy,
+  // and best-effort: the ring UI derives ringComplete independently, so a
+  // failed write only delays the timestamp until the next visit.
+  if (user && state?.ringComplete && !state.completedAt) {
     await supabase
       .from("journey_enrollment")
-      .update({ completed_at: new Date().toISOString() })
-      .eq("user_id", user.id)
-      .is("completed_at", null);
+      .upsert(
+        { user_id: user.id, completed_at: new Date().toISOString() },
+        { onConflict: "user_id" },
+      );
   }
 
   return (
@@ -64,11 +65,14 @@ export default async function JourneyPage() {
         </h1>
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-4 max-w-2xl">
           Each world is a complete machine learning specialization with its own
-          story. Play any world on its own, or follow the journey through all
+          story. Play any world by itself, or follow the journey through all
           five.
         </p>
 
-        {/* Enrollment / status band */}
+        {/* Status band. The explicit enroll step was cut 2026-08-15: everyone
+            signed-in is on the journey (progress in ring order IS the
+            journey), so the only states left are the sign-in prompt and the
+            closed-ring acknowledgement. */}
         {state ? (
           state.ringComplete ? (
             <div
@@ -83,48 +87,14 @@ export default async function JourneyPage() {
                 Orbit.
               </p>
             </div>
-          ) : state.enrolled ? (
-            <div
-              className="brutalist-shadow border border-border bg-surface-raised p-5 mb-8"
-              data-testid="journey-enrolled"
-            >
-              <p className="font-mono text-sm font-bold text-text-primary">
-                You&rsquo;re on the canonical journey.
-              </p>
-              {state.recommendedNext ? (
-                <p className="text-sm text-text-muted mt-1">
-                  Up next:{" "}
-                  <Link
-                    href={`/worlds/${state.recommendedNext}`}
-                    className="text-primary hover:underline underline-offset-4"
-                  >
-                    {worlds[state.recommendedNext]?.displayName}
-                  </Link>
-                  .
-                </p>
-              ) : null}
-            </div>
-          ) : (
-            <div
-              className="brutalist-shadow border border-border bg-surface-raised p-5 mb-8"
-              data-testid="journey-enroll"
-            >
-              <p className="text-sm text-text-muted mb-4 leading-relaxed">
-                Commit to the whole arc. The canonical journey tracks your run
-                through all five worlds as one storyline. It never blocks
-                anything, it just marks the path.
-              </p>
-              <EnrollButton />
-            </div>
-          )
+          ) : null
         ) : (
           <div
             className="brutalist-shadow border border-border bg-surface-raised p-5 mb-8"
             data-testid="journey-signin"
           >
             <p className="text-sm text-text-muted mb-4">
-              Sign in to follow the canonical journey and track your progress
-              across the ring.
+              Sign in to track your progress across the ring.
             </p>
             <Link
               href="/auth?redirectTo=/journey"

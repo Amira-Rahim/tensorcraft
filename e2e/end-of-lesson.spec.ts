@@ -64,3 +64,67 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
     ).toBeVisible();
   });
 });
+
+/**
+ * The patch award moment, end to end on the guest path: with every OTHER
+ * foundations lesson recorded as a guest completion, walking the last
+ * remaining lesson to the Consequence step reveals the module's mission
+ * patch. Guest records are the one completion state an unauthenticated
+ * e2e can seed, and they exercise the same predicate the authed path uses.
+ */
+test.describe("Patch award moment", () => {
+  test("closing out the module reveals the mission patch", async ({ page }) => {
+    await page.addInitScript(() => {
+      const done: Record<string, string> = {};
+      for (const lesson of [
+        "tensor-shapes",
+        "tensor-operations",
+        "data-loading",
+        "normalization",
+      ]) {
+        done[`deep-orbit/foundations/${lesson}`] = new Date().toISOString();
+      }
+      localStorage.setItem("tc_guest_completed_v1", JSON.stringify(done));
+      localStorage.setItem("tc_step_deep-orbit_introduction-to-tensors", "4");
+      localStorage.setItem(
+        "tc_step_max_deep-orbit_introduction-to-tensors",
+        "4",
+      );
+      localStorage.setItem("tc-cookie-consent", "declined");
+    });
+    await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+
+    await page
+      .getByRole("button", { name: /continue|complete/i })
+      .first()
+      .click();
+
+    const award = page.getByTestId("patch-award");
+    await expect(award).toBeVisible({ timeout: 15000 });
+    await expect(award.getByText("Sector Complete")).toBeVisible();
+    await expect(award.getByText("Mission patch earned.")).toBeVisible();
+    await expect(award.getByTestId("module-patch")).toBeVisible();
+  });
+
+  test("a mid-module completion shows no award", async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("tc_step_deep-orbit_introduction-to-tensors", "4");
+      localStorage.setItem(
+        "tc_step_max_deep-orbit_introduction-to-tensors",
+        "4",
+      );
+      localStorage.setItem("tc-cookie-consent", "declined");
+    });
+    await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+
+    await page
+      .getByRole("button", { name: /continue|complete/i })
+      .first()
+      .click();
+
+    await expect(
+      page.getByText("Mission Complete", { exact: false }).first(),
+    ).toBeVisible({ timeout: 15000 });
+    await expect(page.getByTestId("patch-award")).toHaveCount(0);
+  });
+});

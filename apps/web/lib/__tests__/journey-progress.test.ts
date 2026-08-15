@@ -110,11 +110,15 @@ describe("getJourneyState", () => {
     expect(s.worlds[0].completedLessons).toBe(1);
   });
 
-  it("reflects enrollment state", async () => {
-    mockEnrollment = { enrolled_at: "2026-01-01", completed_at: null };
+  it("surfaces the recorded completion timestamp, null when absent", async () => {
+    // No enrollment concept anymore (cut 2026-08-15): the journey_enrollment
+    // row is purely the durable completion record. Most users have no row.
+    const before = await getJourneyState("u1");
+    expect(before.completedAt).toBeNull();
+
+    mockEnrollment = { enrolled_at: "2026-01-01", completed_at: "2026-02-01" };
     const s = await getJourneyState("u1");
-    expect(s.enrolled).toBe(true);
-    expect(s.enrolledAt).toBe("2026-01-01");
+    expect(s.completedAt).toBe("2026-02-01");
   });
 
   it("recommends the next uncompleted world in ring order", async () => {

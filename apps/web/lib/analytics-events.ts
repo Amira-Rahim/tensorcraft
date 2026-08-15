@@ -59,9 +59,6 @@ export const EVENTS = {
   ONBOARDING_STEP_VIEWED: "onboarding_step_viewed",
   ONBOARDING_COMPLETED: "onboarding_completed",
 
-  // Canonical journey (R3-6: shipped dark 2026-07-24; instrumented 2026-07-25)
-  JOURNEY_ENROLLED: "journey_enrolled",
-
   // Story pacing. The content-QA rule ">40% skip triggers narrative redesign"
   // (post-launch-backlog §2, dev-plan §10c risk #1) was uncomputable until
   // this event existed.
@@ -220,10 +217,6 @@ export interface EventProperties {
     yearsExperience?: number;
   };
 
-  [EVENTS.JOURNEY_ENROLLED]: {
-    /** Where the enroll came from; only /journey exists today. */
-    source: "journey_page";
-  };
   [EVENTS.SCRIPT_SKIPPED]: {
     worldId: string;
     lessonId: string;
