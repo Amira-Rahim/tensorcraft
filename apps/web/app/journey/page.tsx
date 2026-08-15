@@ -63,11 +63,9 @@ export default async function JourneyPage() {
           Five worlds, one journey
         </h1>
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-4 max-w-2xl">
-          Each world is a complete ML specialization with its own story, and
-          each finale hands its problem to the next. Deep Orbit&rsquo;s anomaly
-          becomes Neon Protocol&rsquo;s heatmap; the signal answers back across
-          all five. Play any world on its own, or follow the canonical journey
-          through the whole ring.
+          Each world is a complete machine learning specialization with its own
+          story. Play any world on its own, or follow the journey through all
+          five.
         </p>
 
         {/* Enrollment / status band */}
