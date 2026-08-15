@@ -23,7 +23,7 @@ function makeCard(overrides: Partial<WorldCardData> = {}): WorldCardData {
   return {
     slug: "deep-orbit",
     displayName: "Deep Orbit",
-    tagline: "Navigate the unknown through signals",
+    tagline: "Where signals guide you through the unknown",
     specialization: "Time-Series & Signals",
     primary: "#6BAA8A",
     owned: false,
@@ -43,7 +43,7 @@ describe("WorldCards", () => {
       makeCard({
         slug: "neon-protocol",
         displayName: "Neon Protocol",
-        tagline: "See the city through the eyes of AI",
+        tagline: "Where AI watches the city",
       }),
     ];
     render(<WorldCards cards={cards} hasFullBundle={false} />);

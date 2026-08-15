@@ -4,7 +4,7 @@ export const neonProtocol: WorldManifest = {
   id: "cyberpunk",
   slug: "neon-protocol",
   displayName: "Neon Protocol",
-  tagline: "See the city through the eyes of AI",
+  tagline: "Where AI watches the city",
   description:
     "NeuralCore HQ. 200 surveillance cameras went dark overnight. Rebuild Protocol Sentinel, an urban anomaly detection system.",
   palette: {

@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { SceneCanvas, drawOrbit } from "@tensorcraft/ui/effects";
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
-// Signature scene per world - shared with the journey ring and the
-// per-world backdrop, so a world's motion identity follows it across
-// surfaces. Hover/focus ignites the scene via SceneCanvas's eased hot.
+// Signature scene per world - shared with the per-world backdrop, so a
+// world's motion identity follows it across surfaces. Hover/focus
+// ignites the scene via SceneCanvas's eased hot.
 import { SCENE_BY_SLUG, hexToRgb } from "@/lib/scene-by-slug";
 import { NewsletterModal } from "./newsletter-modal";
 

@@ -54,7 +54,7 @@ const wash = (
 ];
 
 /* ── Neon Protocol - Real-Time Computer Vision ──────────────────────
-   "See the city through the eyes of AI." A night skyline watched by a
+   "Where AI watches the city." A night skyline watched by a
    vision HUD: a scan beam sweeps the card and corner-bracket detection
    boxes lock onto drifting objects in its wake, fading until the next
    pass. Hover turns the ghost-faint HUD fully on.
@@ -248,7 +248,7 @@ export function drawNeonProtocol(
 }
 
 /* ── Signal Ward - NLP & Text Intelligence ──────────────────────────
-   "Decode language. Save lives." Redacted-looking token rows stream
+   "Where language saves lives." Redacted-looking token rows stream
    past while attention arcs link a query token to its keys across rows,
    transformer-style; a faint EKG baseline keeps the ward on life
    support underneath. Hover lights the attention pattern up.

@@ -65,6 +65,12 @@ const nextConfig: NextConfig = {
       destination: "/worlds/:path*",
       permanent: true,
     },
+    // /journey consolidated into /worlds while only one world is live
+    // (2026-08-15): with a single launched world the two pages rendered
+    // near-identical content. Deliberately temporary (307, not 308) so
+    // browsers and crawlers don't cache it: the route returns at world-2
+    // launch (restore checklist in docs/post-launch-backlog.md).
+    { source: "/journey", destination: "/worlds", permanent: false },
   ],
   headers: async () => [
     // Long-lived immutable cache for build-hashed chunks. Filenames carry

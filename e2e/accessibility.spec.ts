@@ -12,11 +12,11 @@ const pages = [
   // world page, auditing it just re-audits World Detail and races axe
   // against the navigation. Pricing is audited instead.
   { name: "Pricing", path: "/pricing" },
-  // /journey and /learn shipped 2026-07-23/24 with zero axe coverage
-  // (R3-6) - the exact "gate does not look there" failure mode this suite
-  // exists to prevent. Anonymous views: journey renders its signed-out
-  // band, learn is static.
-  { name: "Journey", path: "/journey" },
+  // /learn shipped 2026-07-24 with zero axe coverage (R3-6) - the exact
+  // "gate does not look there" failure mode this suite exists to prevent.
+  // Anonymous view: learn is static. /journey was audited here too until
+  // its consolidation into /worlds (2026-08-15); restore the entry with
+  // the route at world-2 launch (see docs/post-launch-backlog.md).
   { name: "Learn", path: "/learn" },
   {
     name: "Lesson Viewer",

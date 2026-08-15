@@ -4,7 +4,7 @@ export const signalWard: WorldManifest = {
   id: "medical",
   slug: "signal-ward",
   displayName: "Signal Ward",
-  tagline: "Decode language. Save lives.",
+  tagline: "Where language saves lives",
   description:
     "Meridian General Hospital's diagnostic AI crashed during a patient surge. Build Diagnostic One, a clinical text intelligence assistant.",
   palette: {

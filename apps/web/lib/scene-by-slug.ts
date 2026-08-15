@@ -10,7 +10,9 @@ import {
 /**
  * Signature scene renderer per world - the single map for surfaces that
  * give every world (deep-orbit included) its motion identity: the /worlds
- * cards, the per-world backdrop, the journey ring.
+ * cards and the per-world backdrop. (The journey ring consumed it too,
+ * until /journey was consolidated into /worlds on 2026-08-15; it picks
+ * this map back up when the route returns at world-2 launch.)
  *
  * Two surfaces keep their own deep-orbit-LESS maps on purpose and must not
  * switch to this one: the homepage five-worlds strip (deep-orbit renders

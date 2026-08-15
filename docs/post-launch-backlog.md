@@ -360,6 +360,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] Per-world Kit purchase sequences (5x `KIT_TAG_PURCHASED_{WORLD}` + 5
   sequences) if per-world email marketing becomes worth it.
 - **World-2 launch prerequisites** (dormant until a second world sells):
+  - [ ] **Restore /journey.** Removed 2026-08-15 (owner decision): with one
+    live world the page rendered near-identical content to /worlds, so the
+    catalog is the single five-worlds surface until the arc framing has two
+    live worlds to show. Restore from commit `152f2c8`:
+    - `apps/web/app/journey/` (page.tsx, journey-ring.tsx + test, error.tsx)
+      and `apps/web/lib/journey-progress.ts` + its test. The shared journey
+      model (`packages/shared/src/journey.ts`) was NOT removed; it still
+      feeds dispatch-tease and strategy-thread.
+    - Drop the temporary `/journey` → `/worlds` redirect in
+      `apps/web/next.config.ts` (deliberately 307, safe to remove).
+    - Re-add nav links (nav.tsx + mobile-nav.tsx), the sitemap entry, and
+      the "Journey" row in the `e2e/accessibility.spec.ts` axe matrix.
+    - Comments trimmed at removal (scene-by-slug.ts, world-cards-grid.tsx,
+      entitlements.ts) can regain their journey-ring mentions.
+    - Carried-over open item: the page metadata sold the finale-handoff arc
+      but the on-page copy never did; write that pitch into the page at
+      restore time or it converges with /worlds again. Design spec:
+      `docs/superpowers/specs/2026-08-15-journey-ring-redesign.md`.
+    - `journey_enrollment` stays in the schema; its `completed_at` writer
+      lived in journey/page.tsx, so nothing records ring completion while
+      the route is gone (harmless: the ring cannot close before all five
+      worlds are live).
   - [ ] Purchase credit survives refund/dispute: upgrade pricing sums
     `partially_refunded` rows, so a disputed purchase still funds the
     bundle discount. Unreachable with one world; live the day world #2

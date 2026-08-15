@@ -24,8 +24,8 @@ import { isValidWorldSlug } from "@tensorcraft/shared";
  * (the bug this codebase already fixed once in `hasWorldPurchase`). Callers
  * are server components, so a throw surfaces the nearest error boundary.
  *
- * React.cache: several server components on one page (dashboard, world map,
- * journey) each call this - per-request memoization collapses them into one
+ * React.cache: several server components on one page (dashboard, world
+ * map) each call this - per-request memoization collapses them into one
  * purchases query per render (fresh-eyes rerun T2-26). cache() is
  * per-request, so entitlement changes still take effect on the next request.
  */
