@@ -53,10 +53,11 @@ export function CommitTrail({ compact = false }: { compact?: boolean }) {
           </li>
         ))}
       </ul>
+      {/* The "generated" clause is the honesty line: this panel must never
+          read as a real user's activity. Keep it when editing this copy. */}
       <p className="px-4 py-2.5 border-t border-border text-[11px] text-text-muted">
         +{totalExercises - shown.length} more commits by the capstone, one per
-        solved exercise. Generated from the real module-1 exercises in the exact
-        format the push pipeline writes.
+        solved exercise, generated in the exact format the push pipeline writes.
       </p>
     </div>
   );

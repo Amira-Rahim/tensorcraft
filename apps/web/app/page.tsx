@@ -41,11 +41,13 @@ export default function Home() {
               <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
                 What You&apos;ll Build
               </h2>
+              {/* One sentence on purpose: browser, no-Python, and GitHub are
+                  each already stated by the hero, the FAQ, or the cards and
+                  commit log beside this. (Owner, 2026-08-16: this band was
+                  overcrowded; every card now carries one fact once.) */}
               <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] font-sans mb-5">
-                By Module 11 you have assembled and deploy-drilled every
-                component of a real-time anomaly detection system. All of it
-                runs in the browser, and your solutions are committed to your
-                GitHub.
+                Across 11 modules you assemble and deploy one real-time anomaly
+                detection system.
               </p>
               <Link
                 href="/pricing#curriculum"
@@ -62,19 +64,19 @@ export default function Home() {
             {[
               {
                 label: "Train",
-                desc: "Neural networks built layer by layer in TensorFlow.js, trained in your tab. The tab is the whole toolchain, Python never enters it.",
+                desc: "Neural networks built layer by layer in TensorFlow.js, trained in your tab.",
               },
               {
                 label: "Detect",
-                desc: "Real-time signals classified normal or anomalous by an autoencoder + LSTM ensemble you assemble yourself.",
+                desc: "Live signals classified normal or anomalous by an autoencoder + LSTM ensemble you build yourself.",
               },
               {
                 label: "Deploy",
-                desc: "A working model that runs entirely client-side: real-time inference on an ordinary laptop via WebGL.",
+                desc: "Real-time inference on an ordinary laptop via WebGL, entirely client-side.",
               },
               {
                 label: "Own",
-                desc: "Solved exercises push to your GitHub as commits, starting free in Module 1. Walk into interviews able to explain every layer.",
+                desc: "Solved exercises push to your GitHub, starting free in Module 1. Walk into interviews able to explain every layer.",
               },
             ].map((item, i) => (
               <div
