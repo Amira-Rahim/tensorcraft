@@ -416,7 +416,7 @@ profiles.post(
           .update({ user_id: null, email: null, screenshot_url: null })
           .in(
             "id",
-            rows.map((r) => r.id),
+            rows.map((r) => String(r.id)),
           );
         if (issuesError) throw issuesError;
       }
