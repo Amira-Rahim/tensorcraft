@@ -7,6 +7,12 @@
  * PII scrubbing: `beforeSend` strips `email`, `user_id`, `ip_address`,
  * and any `user` payload from events so nothing personal leaves the
  * browser.
+ *
+ * Session Replay stays OFF. Sentry runs outside the cookie-consent gate
+ * (error monitoring is a legitimate interest; product analytics are not),
+ * which is only defensible while events carry no screen content. Replay
+ * records the DOM the user is looking at, so enabling it means moving
+ * this init behind consent AND disclosing it in /privacy first.
  */
 
 import * as Sentry from "@sentry/nextjs";
@@ -18,7 +24,7 @@ if (dsn) {
     dsn,
     tracesSampleRate: 0.1,
     replaysSessionSampleRate: 0,
-    replaysOnErrorSampleRate: 1.0,
+    replaysOnErrorSampleRate: 0,
     maxBreadcrumbs: 50,
     maxValueLength: 500,
     ignoreErrors: [

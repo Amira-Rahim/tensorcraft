@@ -33,10 +33,9 @@ export async function resolveOrCreateUserByEmail(
     .maybeSingle();
 
   if (lookupError) {
-    logger.error(
-      { err: lookupError, email: normalized },
-      "Guest account: profile lookup failed",
-    );
+    // No address in the log line: the caller retries via Stripe, whose
+    // dashboard already ties this failure to the checkout session.
+    logger.error({ err: lookupError }, "Guest account: profile lookup failed");
     return null;
   }
   if (existing?.id) return existing.id as string;
@@ -51,10 +50,7 @@ export async function resolveOrCreateUserByEmail(
     });
 
   if (createError || !created?.user?.id) {
-    logger.error(
-      { err: createError, email: normalized },
-      "Guest account: createUser failed",
-    );
+    logger.error({ err: createError }, "Guest account: createUser failed");
     return null;
   }
 

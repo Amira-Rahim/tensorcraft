@@ -194,7 +194,56 @@ const USER_DATA_TABLES = [
   // Feature deleted 2026-07-24 but production may hold pre-deletion rows;
   // an export that omits data we still store is incomplete by definition.
   "counterfactual_choices",
+  // Holds submitted_code - the learner's own writing. Self-read RLS
+  // policy exists (048), so the user-scoped client can fetch it.
+  "arena_submissions",
 ] as const;
+
+// Bug reports are service-role-only (020: no user SELECT policy) and
+// deliberately un-FK'd from auth.users, so the RLS-driven loop above
+// cannot see them. Guests can file reports with only an email, so rows
+// are matched on user_id AND email, deduped by id.
+const ISSUE_EXPORT_COLUMNS =
+  "id, category, description, severity, email, page_url, user_agent, viewport, screenshot_url, created_at";
+
+async function fetchIssueRows(
+  userId: string,
+  email: string | null,
+  columns: string,
+) {
+  const admin = getSupabaseAdminClient();
+  const byUser = await admin
+    .from("issues")
+    .select(columns)
+    .eq("user_id", userId)
+    .limit(1000);
+  if (byUser.error) throw byUser.error;
+  let byEmail: unknown[] = [];
+  if (email) {
+    const res = await admin
+      .from("issues")
+      .select(columns)
+      .eq("email", email)
+      .limit(1000);
+    if (res.error) throw res.error;
+    byEmail = res.data ?? [];
+  }
+  const seen = new Set<string>();
+  return [...(byUser.data ?? []), ...byEmail].filter((row) => {
+    const id = String((row as { id: unknown }).id);
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  }) as Array<Record<string, unknown>>;
+}
+
+/** Object path inside the issue-screenshots bucket, from its public URL. */
+function screenshotStoragePath(url: unknown): string | null {
+  if (typeof url !== "string" || url.length === 0) return null;
+  const marker = "/issue-screenshots/";
+  const i = url.indexOf(marker);
+  return i === -1 ? null : decodeURIComponent(url.slice(i + marker.length));
+}
 
 profiles.get(
   "/export",
@@ -246,6 +295,23 @@ profiles.get(
       .select("email, world_id, source, subscribed, created_at")
       .eq("email", profile.email);
 
+    let issueRows: Array<Record<string, unknown>>;
+    try {
+      issueRows = await fetchIssueRows(
+        userId,
+        profile.email ?? null,
+        ISSUE_EXPORT_COLUMNS,
+      );
+    } catch (err) {
+      // Same fail-loud rule as the table loop: a partial export
+      // presented as complete is an Art. 15 violation in miniature.
+      logger.error(
+        { err, route: "profiles.export", userId, table: "issues" },
+        "Export: issues read failed",
+      );
+      return c.json({ error: "Failed to assemble export" }, 500);
+    }
+
     const exportPayload = {
       exportVersion: 1,
       generatedAt: new Date().toISOString(),
@@ -260,6 +326,7 @@ profiles.get(
       },
       tables,
       waitlist: waitlistRows ?? [],
+      issues: issueRows,
     };
 
     c.header("Content-Type", "application/json");
@@ -324,6 +391,40 @@ profiles.post(
           "Delete: waitlist cleanup failed (non-fatal)",
         );
       }
+    }
+
+    // Bug reports survive as operational records (020: deliberately
+    // un-FK'd so the cascade misses them), but the link to a person must
+    // not: clear identity columns and delete the screenshot, which shows
+    // the user's screen. Best-effort like the waitlist cleanup; a storage
+    // hiccup must not strand someone unable to delete their account.
+    try {
+      const rows = await fetchIssueRows(
+        userId,
+        profile?.email ?? null,
+        "id, screenshot_url",
+      );
+      if (rows.length > 0) {
+        const paths = rows
+          .map((r) => screenshotStoragePath(r.screenshot_url))
+          .filter((p): p is string => Boolean(p));
+        if (paths.length > 0) {
+          await admin.storage.from("issue-screenshots").remove(paths);
+        }
+        const { error: issuesError } = await admin
+          .from("issues")
+          .update({ user_id: null, email: null, screenshot_url: null })
+          .in(
+            "id",
+            rows.map((r) => r.id),
+          );
+        if (issuesError) throw issuesError;
+      }
+    } catch (err) {
+      logger.warn(
+        { err, route: "profiles.delete", userId },
+        "Delete: issue anonymization failed (non-fatal)",
+      );
     }
 
     const { error: deleteError } = await admin.auth.admin.deleteUser(userId);

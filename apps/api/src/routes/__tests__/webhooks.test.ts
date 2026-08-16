@@ -92,11 +92,16 @@ describe("POST /api/webhooks/kit-bounce", () => {
     expect(loggerWarnMock).toHaveBeenCalledWith(
       expect.objectContaining({
         route: "webhooks.kit-bounce",
-        email: "bouncy@example.com",
+        subscriberId: 42,
         event: "subscriber.bounced",
         reason: "mailbox_full",
       }),
       expect.any(String),
+    );
+    // The raw address must not reach Fly logs; Kit's dashboard is the
+    // system of record for bounces (privacy sweep 2026-08-16).
+    expect(JSON.stringify(loggerWarnMock.mock.calls)).not.toContain(
+      "bouncy@example.com",
     );
   });
 });

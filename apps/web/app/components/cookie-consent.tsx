@@ -62,8 +62,9 @@ export function CookieConsent() {
         className="max-w-160 mx-auto border border-border bg-surface-raised p-5 rounded-none brutalist-shadow"
       >
         <p className="text-sm text-text-muted leading-relaxed mb-4 font-mono">
-          We use essential cookies for authentication and optional analytics
-          cookies (PostHog) to improve the learning experience. See our{" "}
+          Essential cookies keep you signed in and remember your world choice.
+          Analytics (PostHog, Plausible, Vercel Analytics) runs only if you
+          accept. See our{" "}
           <Link
             href="/privacy"
             className="text-primary rounded-none underline underline-offset-2 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"

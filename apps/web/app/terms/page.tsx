@@ -78,8 +78,9 @@ export default function TermsPage() {
               You may browse Module 1 content without creating an account. To
               access full course content, track progress, and make purchases,
               you must create an account using GitHub, Google, or email
-              authentication. You are responsible for maintaining the security
-              of your account credentials.
+              authentication. You must be at least 16 years old to create an
+              account. You are responsible for maintaining the security of your
+              account credentials.
             </p>
           </section>
 

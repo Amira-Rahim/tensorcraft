@@ -68,16 +68,19 @@ webhooks.post("/kit-bounce", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  const email = payload.subscriber?.email_address ?? null;
   const eventName = payload.event?.name ?? "bounce";
   const state = payload.subscriber?.state ?? null;
   const reason = payload.reason ?? null;
 
+  // The raw address stays out of Fly logs (their retention is not ours
+  // to control, and the logger redacts `email` keys anyway). Kit's
+  // subscriber id is a stable correlator; the address itself lives in
+  // the Kit dashboard, which is the system of record for bounces.
   logger.warn(
     {
       route: "webhooks.kit-bounce",
       event: eventName,
-      email,
+      subscriberId: payload.subscriber?.id ?? null,
       state,
       reason,
       requestId: c.res.headers.get("X-Request-Id"),

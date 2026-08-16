@@ -416,6 +416,29 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 7. Platform + infra deferrals
 
+- [ ] Privacy deferrals from the 2026-08-16 policy audit
+  (`docs/audits/privacy-policy-audit-2026-08-16.md`; the shipped fixes
+  are listed there too):
+  - OWNER, blocks deploy of the rewritten /privacy: replace the
+    `[OPERATOR LEGAL NAME AND REGISTERED ADDRESS]` placeholder in
+    `apps/web/app/privacy/page.tsx` §1 (GDPR Art. 13 controller
+    identity), confirm the `privacy@tensorcraft.app` mailbox actually
+    receives mail, and confirm the Supabase project region so §7
+    (transfers) can name it.
+  - Encrypt `profiles.github_token` at rest (plaintext since migration
+    011; a DB leak leaks live GitHub tokens).
+  - Propagate account deletion to PostHog persons via their API, and
+    one-time-scrub existing person properties: `identify()` sent the
+    account email until 2026-08-16, so persons created before then
+    still carry it EU-side.
+  - Legacy waitlist rows auto-subscribed under the pre-050 default
+    (`subscribed = true` without an affirmative opt-in): re-consent
+    campaign or purge; owner decision.
+  - Certificate share pages: add `robots: noindex` (name + avatar are
+    public to anyone with the link; policy §2 now discloses this).
+  - `tc_world` personalization cookie is set by middleware before any
+    consent interaction; disclosed in policy §6 as functional, revisit
+    if counsel wants it consent-gated.
 - [ ] Effects test-infra hardening deferred from the 2026-08-15
   signal-lock review (pricing curriculum cinematic): (a) capture
   `globalAlpha` in the recording-canvas style snapshots; deferred because

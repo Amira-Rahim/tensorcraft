@@ -79,11 +79,13 @@ export function SessionListener() {
           }),
         );
 
-        // Identify user in PostHog for analytics
+        // Identify user in PostHog by opaque UUID only. The email must
+        // never ride along: the event taxonomy's own rule is "No PII"
+        // (analytics-events.ts) and /privacy describes analytics as
+        // pseudonymous. Cohorting by signup date only needs created_at.
         import("../analytics").then(({ identify }) => {
           if (session.user) {
             identify(session.user.id, {
-              email: session.user.email,
               created_at: session.user.created_at,
             });
           }

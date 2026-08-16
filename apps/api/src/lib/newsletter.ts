@@ -268,9 +268,17 @@ export async function sendDigestNewsletter(
       });
       if (sendError) {
         result.failed += 1;
+        // No recipient address in the capture: it lands in Fly logs
+        // (logger redacts `email` anyway). Resend's dashboard keys the
+        // failed send to the address; the token is enough to find the
+        // waitlist row from our side.
         captureException(new Error(sendError.message), {
           source: "newsletter.send",
-          extra: { email: r.email, weekIso, name: sendError.name },
+          extra: {
+            unsubscribeToken: r.unsubscribe_token,
+            weekIso,
+            name: sendError.name,
+          },
         });
       } else {
         result.sent += 1;
@@ -279,7 +287,7 @@ export async function sendDigestNewsletter(
       result.failed += 1;
       captureException(err, {
         source: "newsletter.send",
-        extra: { email: r.email, weekIso },
+        extra: { unsubscribeToken: r.unsubscribe_token, weekIso },
       });
     }
     await new Promise((resolve) => setTimeout(resolve, SEND_SPACING_MS));

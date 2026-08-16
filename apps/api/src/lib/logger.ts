@@ -42,10 +42,14 @@ export const logger = pino({
         },
       },
   // Redact common sensitive keys if they're ever passed in a log object.
+  // `email` is here because Fly log retention is outside our control;
+  // call sites needing send-failure context log a hash or an id instead.
   redact: {
     paths: [
       "password",
       "token",
+      "email",
+      "*.email",
       "accessToken",
       "refreshToken",
       "authorization",
