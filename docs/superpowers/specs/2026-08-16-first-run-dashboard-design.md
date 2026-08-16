@@ -115,6 +115,14 @@ No colored left accent bars.
   under-tolerance trap, 2026-08-15).
 - Full battery green before reporting done.
 
+## Iteration (2026-08-16, post-deploy)
+
+Owner report: over the live plate, the type fought the bright monitor
+screens; the 45% scrim alone was not enough. Fix: the briefing content
+sits in a glass panel (the /worlds hero strip frost: #181818 at 82% +
+2px backdrop blur + hairline border) inside the centered section. The
+art stays visible around the panel; the base scrim stays for the edges.
+
 ## Out of scope
 
 Per-panel progressive disclosure for accounts with partial data (the

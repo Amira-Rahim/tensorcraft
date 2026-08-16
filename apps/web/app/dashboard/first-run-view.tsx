@@ -125,130 +125,144 @@ export function FirstRunView({
             margin: "auto",
             width: "100%",
             maxWidth: 760,
-            padding: "72px 40px",
+            padding: "56px 24px",
           }}
         >
-          {/* Transmission header */}
+          {/* Briefing panel: the same glass frost the /worlds hero strip
+              lays over plates (fixed dark in both schemes, because the
+              art below is). The bare scrim alone left the type fighting
+              the bright monitor screens in the plate (owner report,
+              2026-08-16). */}
           <div
+            className="backdrop-blur-[2px]"
             style={{
-              fontFamily: MONO,
-              fontSize: 11,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              display: "flex",
-              flexDirection: "column",
-              gap: 6,
-              marginBottom: 28,
+              background: "color-mix(in srgb, #181818 82%, transparent)",
+              border: `1px solid ${BORDER_VAR}`,
+              padding: "40px",
             }}
           >
-            <span style={{ color: LIME, fontWeight: 700 }}>
-              {tx?.kicker ?? worldName.toUpperCase()}
-            </span>
-            {tx && <span style={{ color: MUTED }}>{tx.status}</span>}
-            <span style={{ color: MUTED }}>OPERATOR: {displayName}</span>
-          </div>
-
-          {/* Briefing */}
-          <h1
-            id="dispatch-heading"
-            style={{
-              fontSize: 34,
-              fontWeight: 900,
-              letterSpacing: "-0.03em",
-              textTransform: "uppercase",
-              lineHeight: 1.1,
-              marginBottom: 10,
-            }}
-          >
-            {briefing
-              ? `Module ${briefing.number}: ${briefing.name}`
-              : worldName}
-          </h1>
-          {briefing && (
-            <p
+            {/* Transmission header */}
+            <div
               style={{
                 fontFamily: MONO,
-                fontSize: 13,
-                color: MUTED,
-                marginBottom: 32,
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+                marginBottom: 28,
               }}
             >
-              Lesson {briefing.lessonNumber} of {briefing.totalLessons} · ~
-              {briefing.estimatedMinutes} min · {briefing.topic}
-            </p>
-          )}
+              <span style={{ color: LIME, fontWeight: 700 }}>
+                {tx?.kicker ?? worldName.toUpperCase()}
+              </span>
+              {tx && <span style={{ color: MUTED }}>{tx.status}</span>}
+              <span style={{ color: MUTED }}>OPERATOR: {displayName}</span>
+            </div>
 
-          {/* CTA. Static button on purpose: no arbitrary-value hover
+            {/* Briefing */}
+            <h1
+              id="dispatch-heading"
+              style={{
+                fontSize: 34,
+                fontWeight: 900,
+                letterSpacing: "-0.03em",
+                textTransform: "uppercase",
+                lineHeight: 1.1,
+                marginBottom: 10,
+              }}
+            >
+              {briefing
+                ? `Module ${briefing.number}: ${briefing.name}`
+                : worldName}
+            </h1>
+            {briefing && (
+              <p
+                style={{
+                  fontFamily: MONO,
+                  fontSize: 13,
+                  color: MUTED,
+                  marginBottom: 32,
+                }}
+              >
+                Lesson {briefing.lessonNumber} of {briefing.totalLessons} · ~
+                {briefing.estimatedMinutes} min · {briefing.topic}
+              </p>
+            )}
+
+            {/* CTA. Static button on purpose: no arbitrary-value hover
               class precedent exists in apps/web and a JS hover would
               force "use client"; the offset shadow carries the
               affordance. */}
-          <Link
-            href={resumeUrl ?? `/worlds/${worldSlug}`}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "16px 32px",
-              background: LIME,
-              color: ON_PRIMARY,
-              fontSize: 15,
-              fontWeight: 900,
-              textTransform: "uppercase",
-              letterSpacing: "0.03em",
-              border: `2px solid ${LIME}`,
-              boxShadow:
-                "3px 3px 0 color-mix(in srgb, var(--tc-primary) 20%, transparent)",
-              textDecoration: "none",
-              marginBottom: 40,
-            }}
-          >
-            {resumeUrl ? `Start First ${lessonTerm} →` : "Start Learning →"}
-          </Link>
+            <Link
+              href={resumeUrl ?? `/worlds/${worldSlug}`}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "16px 32px",
+                background: LIME,
+                color: ON_PRIMARY,
+                fontSize: 15,
+                fontWeight: 900,
+                textTransform: "uppercase",
+                letterSpacing: "0.03em",
+                border: `2px solid ${LIME}`,
+                boxShadow:
+                  "3px 3px 0 color-mix(in srgb, var(--tc-primary) 20%, transparent)",
+                textDecoration: "none",
+                marginBottom: 40,
+              }}
+            >
+              {resumeUrl ? `Start First ${lessonTerm} →` : "Start Learning →"}
+            </Link>
 
-          {/* Stat strip: neutral hairline dividers (structure, not
+            {/* Stat strip: neutral hairline dividers (structure, not
               accent bars). */}
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              border: `1px solid ${BORDER_VAR}`,
-              marginBottom: 20,
-            }}
-          >
-            {stats.map((s, i) => (
-              <div
-                key={s.label}
-                style={{
-                  flex: "1 1 140px",
-                  padding: "14px 18px",
-                  borderRight:
-                    i < stats.length - 1 ? `1px solid ${BORDER_VAR}` : "none",
-                }}
-              >
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                border: `1px solid ${BORDER_VAR}`,
+                marginBottom: 20,
+              }}
+            >
+              {stats.map((s, i) => (
                 <div
+                  key={s.label}
                   style={{
-                    fontFamily: MONO,
-                    fontSize: 10,
-                    color: MUTED,
-                    fontWeight: 700,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    marginBottom: 6,
+                    flex: "1 1 140px",
+                    padding: "14px 18px",
+                    borderRight:
+                      i < stats.length - 1 ? `1px solid ${BORDER_VAR}` : "none",
                   }}
                 >
-                  {s.label}
+                  <div
+                    style={{
+                      fontFamily: MONO,
+                      fontSize: 10,
+                      color: MUTED,
+                      fontWeight: 700,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {s.label}
+                  </div>
+                  <div style={{ fontFamily: MONO, fontSize: 13, color: WHITE }}>
+                    {s.value}
+                  </div>
                 </div>
-                <div style={{ fontFamily: MONO, fontSize: 13, color: WHITE }}>
-                  {s.value}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <p style={{ fontFamily: MONO, fontSize: 11, color: MUTED }}>
-            Activity, skill genome, bridges, and patches switch on after your
-            first completed lesson.
-          </p>
+            <p style={{ fontFamily: MONO, fontSize: 11, color: MUTED }}>
+              Activity, skill genome, bridges, and patches switch on after your
+              first completed lesson.
+            </p>
+          </div>
         </section>
       </main>
     </div>
