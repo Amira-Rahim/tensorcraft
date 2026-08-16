@@ -56,24 +56,20 @@ Contents, top to bottom:
   register). Canon constraint: cast members never address the learner
   directly (story bible, operator-of-record rule), so no character
   speaks here.
-  - Kicker: `ARCHIMEDES · MONITORING STATION`
-  - Status line: `SIGNAL: SECTOR 7-G · 64 CHANNELS · LIVE` (canon
-    facts; rendered only for deep-orbit, other worlds skip the line)
+  - Kicker: `LOCATION: ARCHIMEDES · MONITORING STATION`
+  - Signal line: `SIGNAL: INCOMING FROM SECTOR 7-G` (canon fact;
+    rendered only for deep-orbit, other worlds skip the line)
   - Operator line: `OPERATOR: {displayName}` in the same status block
     (system voice, so the operator-of-record canon rule is not
     violated; this is where the displayName prop is consumed)
-  - H1 from live content data: module 1 name, e.g.
-    `MODULE 1: FOUNDATIONS: TENSORS & DATA`
+  - H1 from live content data, middot separator because module titles
+    carry their own colon: `MODULE 1 · FOUNDATIONS: TENSORS & DATA`
   - Sub: `Lesson 1 of 5 · ~12 min · Introduction to Tensors` (computed,
     not hardcoded)
   - CTA: `Start First {terminology.lesson} →` linking to module 1
     lesson 1. Module 1 is free; the paywall cannot intercept this path.
-- Compact stat strip, one row, three mono cells, all computed:
-  streak starts today; first patch after {module 1 lesson count}
-  lessons; 0 / {total lessons} lessons. Patches are launched content,
-  so nothing unbuyable is promised.
-- Instruments line, one sentence: activity, skill genome, bridges, and
-  patches switch on after the first completed lesson.
+- Compact stat strip, one row, two mono cells: Streak `0`;
+  `{world display name}` `0 / {total lessons} lessons`.
 
 All copy passes docs/writing-quality-rubric.md. No em dashes anywhere.
 No colored left accent bars.
@@ -122,6 +118,25 @@ screens; the 45% scrim alone was not enough. Fix: the briefing content
 sits in a glass panel (the /worlds hero strip frost: #181818 at 82% +
 2px backdrop blur + hairline border) inside the centered section. The
 art stays visible around the panel; the base scrim stays for the edges.
+
+Copy round, owner directives on the live page:
+
+- Instruments line REMOVED entirely.
+- Streak cell value is a literal `0` (was "starts today").
+- First-patch cell CUT (was "after {n} lessons", then briefly "finish
+  Module 1"): an instruction under a stat label, teasing a reward the
+  reader has not met. Owner bar: every line must be human text a
+  first-time reader parses without product vocabulary. The patch
+  reveal stays at the module-completion award moment, where it is
+  already built.
+- Lessons cell is labeled with the world's display name (was the
+  internal term "World").
+- Transmission header restructured to key:value telemetry lines:
+  `LOCATION: ...` and `SIGNAL: INCOMING FROM SECTOR 7-G` (the earlier
+  "64 CHANNELS · LIVE" assumed lesson-2 knowledge).
+- H1 separator is a middot, both here and in DashboardView's header:
+  module titles carry their own colon, and "Module 1: Foundations:
+  Tensors & Data" stacked two.
 
 ## Out of scope
 

@@ -302,10 +302,6 @@ export default async function DashboardPage() {
     attempts.length === 0 && records.every((r) => r.status !== "completed");
 
   if (isFirstRun) {
-    const firstModule = contentModules[0];
-    const firstModuleLessons = firstModule
-      ? getModuleLessons(activeWorld.slug, firstModule.slug)
-      : [];
     return (
       <FirstRunView
         displayName={displayName}
@@ -314,11 +310,6 @@ export default async function DashboardPage() {
         plateSrc={surfacePlateSrc(activeWorld.slug, "dashboard")}
         briefing={currentModuleInfo}
         resumeUrl={resumeUrl}
-        firstPatchLessonCount={
-          firstModule && patchSrc(activeWorld.slug, firstModule.slug)
-            ? firstModuleLessons.length
-            : undefined
-        }
         totalWorldLessons={totalLessons}
       />
     );

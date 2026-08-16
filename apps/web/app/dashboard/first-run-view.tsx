@@ -11,15 +11,17 @@ const BORDER_VAR = "var(--tc-border)";
 const ON_PRIMARY = "var(--tc-on-primary)";
 const MONO = "var(--font-mono), 'JetBrains Mono', monospace";
 
-/* System-voice transmission header, per world. Canon facts from
-   docs/story-style-bible.md (the Archimedes, Sector 7-G, 64 channels).
+/* System-voice transmission header, per world: key:value telemetry
+   lines a first-time reader can parse (owner directive 2026-08-16; the
+   earlier "64 CHANNELS · LIVE" line assumed lesson-2 knowledge). Canon
+   facts from docs/story-style-bible.md (the Archimedes, Sector 7-G).
    A world without an entry keeps a plain world-name kicker and no
-   status line; the cast never addresses the learner here (operator-of-
+   signal line; the cast never addresses the learner here (operator-of-
    record rule), so the header is ship UI, not dialogue. */
 const TRANSMISSION: Record<string, { kicker: string; status: string }> = {
   "deep-orbit": {
-    kicker: "ARCHIMEDES · MONITORING STATION",
-    status: "SIGNAL: SECTOR 7-G · 64 CHANNELS · LIVE",
+    kicker: "LOCATION: ARCHIMEDES · MONITORING STATION",
+    status: "SIGNAL: INCOMING FROM SECTOR 7-G",
   },
 };
 
@@ -41,10 +43,6 @@ export interface FirstRunProps {
   plateSrc?: string;
   briefing: FirstRunBriefing | null;
   resumeUrl: string | null;
-  /** Module 1 lesson count, present only when module 1 resolves patch
-   *  art. Absent hides the first-patch stat rather than promising an
-   *  emblem that does not exist. */
-  firstPatchLessonCount?: number;
   totalWorldLessons: number;
 }
 
@@ -61,23 +59,18 @@ export function FirstRunView({
   plateSrc,
   briefing,
   resumeUrl,
-  firstPatchLessonCount,
   totalWorldLessons,
 }: FirstRunProps) {
   const lessonTerm = worlds[worldSlug]?.terminology.lesson ?? "Lesson";
   const tx = TRANSMISSION[worldSlug];
 
+  // Two plain stats, nothing that needs explaining before lesson 1
+  // (owner bar, 2026-08-16: human text only; the first-patch tease was
+  // cut because it required knowing what a patch is). The lessons cell
+  // is labeled with the world's name, not the internal term "world".
   const stats: Array<{ label: string; value: string }> = [
-    { label: "Streak", value: "starts today" },
-    ...(firstPatchLessonCount
-      ? [
-          {
-            label: "First patch",
-            value: `after ${firstPatchLessonCount} lessons`,
-          },
-        ]
-      : []),
-    { label: "World", value: `0 / ${totalWorldLessons} lessons` },
+    { label: "Streak", value: "0" },
+    { label: worldName, value: `0 / ${totalWorldLessons} lessons` },
   ];
 
   return (
@@ -173,8 +166,11 @@ export function FirstRunView({
                 marginBottom: 10,
               }}
             >
+              {/* Middot, not a colon: module titles carry their own
+                  colon ("Foundations: Tensors & Data"), and "Module 1:
+                  Foundations: ..." stacked two. */}
               {briefing
-                ? `Module ${briefing.number}: ${briefing.name}`
+                ? `Module ${briefing.number} · ${briefing.name}`
                 : worldName}
             </h1>
             {briefing && (
@@ -225,7 +221,6 @@ export function FirstRunView({
                 display: "flex",
                 flexWrap: "wrap",
                 border: `1px solid ${BORDER_VAR}`,
-                marginBottom: 20,
               }}
             >
               {stats.map((s, i) => (
@@ -257,11 +252,6 @@ export function FirstRunView({
                 </div>
               ))}
             </div>
-
-            <p style={{ fontFamily: MONO, fontSize: 11, color: MUTED }}>
-              Activity, skill genome, bridges, and patches switch on after your
-              first completed lesson.
-            </p>
           </div>
         </section>
       </main>

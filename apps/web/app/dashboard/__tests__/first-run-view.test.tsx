@@ -33,7 +33,6 @@ function baseProps(overrides: Partial<FirstRunProps> = {}): FirstRunProps {
       topic: "Introduction to Tensors",
     },
     resumeUrl: "/worlds/deep-orbit/foundations/introduction-to-tensors",
-    firstPatchLessonCount: 5,
     totalWorldLessons: 56,
     ...overrides,
   };
@@ -43,16 +42,17 @@ describe("FirstRunView", () => {
   it("renders the transmission header, operator line, and briefing", () => {
     render(<FirstRunView {...baseProps()} />);
     expect(
-      screen.getByText(/ARCHIMEDES · MONITORING STATION/i),
+      screen.getByText(/LOCATION: ARCHIMEDES · MONITORING STATION/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/SIGNAL: SECTOR 7-G · 64 CHANNELS · LIVE/i),
+      screen.getByText(/SIGNAL: INCOMING FROM SECTOR 7-G/i),
     ).toBeInTheDocument();
     expect(screen.getByText(/OPERATOR: Amira/i)).toBeInTheDocument();
+    // Middot separator, not a colon: the module title carries its own.
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /Module 1: Foundations: Tensors & Data/i,
+        name: /Module 1 · Foundations: Tensors & Data/i,
       }),
     ).toBeInTheDocument();
     expect(
@@ -69,26 +69,19 @@ describe("FirstRunView", () => {
     );
   });
 
-  it("renders the stat strip and instruments line", () => {
+  it("renders the stat strip", () => {
     render(<FirstRunView {...baseProps()} />);
-    expect(screen.getByText(/starts today/i)).toBeInTheDocument();
-    expect(screen.getByText(/after 5 lessons/i)).toBeInTheDocument();
+    // Streak reads a literal zero (owner directive 2026-08-16).
+    expect(screen.getByText("0")).toBeInTheDocument();
+    // The lessons cell is labeled with the world's name, not "World".
+    expect(screen.getByText("Deep Orbit")).toBeInTheDocument();
     expect(screen.getByText(/0 \/ 56 lessons/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /Activity, skill genome, bridges, and patches switch on after your first completed lesson\./i,
-      ),
-    ).toBeInTheDocument();
+    // The first-patch tease was cut (owner bar, 2026-08-16): nothing on
+    // this screen may need explaining before lesson 1.
+    expect(screen.queryByText(/patch/i)).not.toBeInTheDocument();
   });
 
-  it("omits the first-patch stat when no patch art exists", () => {
-    render(
-      <FirstRunView {...baseProps({ firstPatchLessonCount: undefined })} />,
-    );
-    expect(screen.queryByText(/after 5 lessons/i)).not.toBeInTheDocument();
-  });
-
-  it("renders no art and no status line for a world without them", () => {
+  it("renders no art and no signal line for a world without them", () => {
     render(
       <FirstRunView
         {...baseProps({
@@ -124,9 +117,8 @@ describe("FirstRunView", () => {
 
   it("renders none of the analytics panels", () => {
     render(<FirstRunView {...baseProps()} />);
-    // Case-sensitive exact panel headings: the instruments sentence
-    // mentions "skill genome" and "bridges" in lowercase prose, which a
-    // case-insensitive regex would false-match.
+    // Case-sensitive exact panel headings, so prose that mentions the
+    // same words in lowercase can never false-match.
     expect(screen.queryByText("SKILL GENOME")).not.toBeInTheDocument();
     expect(screen.queryByText("ACTIVITY · 30 DAYS")).not.toBeInTheDocument();
     expect(screen.queryByText("Bridges Collected")).not.toBeInTheDocument();

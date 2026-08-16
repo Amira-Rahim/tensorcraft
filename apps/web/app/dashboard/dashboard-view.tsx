@@ -457,7 +457,9 @@ export function DashboardView(props: DashboardProps) {
                       marginBottom: 6,
                     }}
                   >
-                    Module {currentModule.number}: {currentModule.name}
+                    {/* Middot, not a colon: module titles carry their
+                        own colon, and the prefix colon stacked two. */}
+                    Module {currentModule.number} · {currentModule.name}
                   </h1>
                   <p style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
                     Lesson {currentModule.lessonNumber} of{" "}

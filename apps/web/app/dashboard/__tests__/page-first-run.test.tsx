@@ -122,8 +122,6 @@ describe("dashboard/page first-run branch", () => {
       "/worlds/deep-orbit/foundations/introduction-to-tensors",
     );
     expect(props.totalWorldLessons).toBe(2);
-    // deep-orbit resolves patch art; the mocked module has 2 lessons.
-    expect(props.firstPatchLessonCount).toBe(2);
   });
 
   it("renders FirstRunView when lessons were started but never completed", async () => {
