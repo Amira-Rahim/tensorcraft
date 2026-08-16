@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 import { FaqSection } from "./components/faq-section";
-import { WhoThisIsFor } from "./components/who-this-is-for";
 import { LandingHero } from "./components/landing-hero";
 import { CommitTrail } from "./components/commit-trail";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
@@ -106,15 +105,13 @@ export default function Home() {
         {/* ===== FIVE WORLDS (client island, canvas animations) ===== */}
         <FiveWorldsSection />
 
-        {/* ===== WHO THIS IS FOR (server-rendered, zero JS) =====
-            Qualification immediately before objection handling and the
-            close: "is this me?" then "but what about…" then "start". */}
-        <WhoThisIsFor testId="landing-who-for" />
-
         {/* ===== FAQ (server-rendered, static Q|A rows, zero JS) =====
             Objection handling before the close. Each row is a question |
             answer grid, so both halves of the page carry content. Shared
-            with /pricing via <FaqSection>. */}
+            with /pricing via <FaqSection>. The Who This Is For section was
+            cut here 2026-08-16 (owner: overexplained the obvious); its
+            load-bearing objections moved into faq-data.ts. The component
+            survives on /paywall. */}
         <FaqSection
           testId="landing-faq"
           eyebrow="Before you ask"

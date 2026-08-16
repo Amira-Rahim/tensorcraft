@@ -272,5 +272,15 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(all).toMatch(/14-day money-back/i);
       expect(all).toMatch(/no python required/i);
     });
+
+    it("carries the objections absorbed from the removed Who This Is For section", async () => {
+      const { FAQ_ITEMS } = await import("./faq-data");
+      const all = FAQ_ITEMS.map((i) => `${i.q} ${i.a}`).join(" ");
+      // Python-stack mismatch, video expectations, time commitment
+      // (landing section cut 2026-08-16; /paywall keeps the component).
+      expect(all).toMatch(/pytorch/i);
+      expect(all).toMatch(/video/i);
+      expect(all).toMatch(/weekend/i);
+    });
   });
 });
