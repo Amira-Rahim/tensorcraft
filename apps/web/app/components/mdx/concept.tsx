@@ -35,10 +35,7 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
   const color = tierColors[bridge.tier];
 
   return (
-    <div
-      className="p-4 bg-surface border border-border"
-      style={{ borderLeftWidth: 3, borderLeftColor: color }}
-    >
+    <div className="p-4 bg-surface border border-border">
       <span
         className="text-xs font-mono font-semibold uppercase tracking-widest block mb-3"
         style={{ color }}
@@ -112,10 +109,7 @@ export function Concept({
   if (!explanation && resolvedBridge) {
     const color = tierColors[resolvedBridge.tier];
     return (
-      <div
-        className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border"
-        style={{ borderLeftWidth: 3, borderLeftColor: color }}
-      >
+      <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
         <BridgeSection bridge={resolvedBridge} />
       </div>
     );

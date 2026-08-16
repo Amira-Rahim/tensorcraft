@@ -426,7 +426,6 @@ function BridgeHint({ bridge }: { bridge: ExerciseBridge }) {
     <div
       data-testid="bridge-hint"
       className="p-4 mt-3 border border-border bg-surface-overlay rounded-none"
-      style={{ borderLeft: `3px solid ${color}` }}
     >
       <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-1.5">
         # bridge

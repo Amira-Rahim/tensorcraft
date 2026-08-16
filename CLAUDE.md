@@ -13,6 +13,17 @@
   `packages/content/__tests__/em-dash-ban.test.ts` (swept 2026-08-15,
   3,692 removed).
 
+## Left Accent Bar Ban (UI, repo-wide)
+
+- **Never put a colored left accent bar on any UI element** (owner
+  directive, 2026-08-16). The pattern (border-left / border-l-\* in an
+  accent color on callouts, blockquotes, stat lines, hint panels, or
+  active states) is a signature of AI-generated design. Banned on every
+  surface: components, MDX callouts, prose CSS, emails. Mark emphasis or
+  state with a background wash, text color, or weight instead. Neutral
+  full-height hairline dividers between layout panes (border-border) are
+  structure, not accent bars, and stay. Swept to zero 2026-08-16.
+
 ## Writing Rules
 
 - **All prose is held to `docs/writing-quality-rubric.md`** (owner

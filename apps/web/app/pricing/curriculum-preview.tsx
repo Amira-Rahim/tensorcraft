@@ -58,10 +58,8 @@ export function CurriculumPreview() {
                       <li
                         key={mod.slug}
                         data-testid={`curriculum-module-${mod.slug}`}
-                        className={`tc-curriculum-row group grid grid-cols-[2.75rem_1fr] sm:grid-cols-[4rem_1fr_auto] items-start gap-x-5 gap-y-3 px-5 py-6 border-l-2 transition-colors hover:bg-surface ${
-                          isFree
-                            ? "border-l-primary bg-primary/4"
-                            : "border-l-transparent hover:border-l-primary"
+                        className={`tc-curriculum-row group grid grid-cols-[2.75rem_1fr] sm:grid-cols-[4rem_1fr_auto] items-start gap-x-5 gap-y-3 px-5 py-6 transition-colors hover:bg-surface ${
+                          isFree ? "bg-primary/4" : ""
                         }`}
                         // Stagger across the 1.6-2.6s window of the 3s boot
                         // (BOOT_DURATION, signal-lock.ts); consumed by the

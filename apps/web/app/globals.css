@@ -208,12 +208,12 @@ body {
   line-height: 1.7;
 }
 
-/* Only style plain blockquotes (markdown >), not Dialogue components.
-   Dialogue blockquotes have inline borderLeft style set by the component. */
+/* Only style plain blockquotes (markdown >), not Dialogue components,
+   which carry their own inline styles. No left accent bar: the pattern is
+   banned repo-wide (owner directive, 2026-08-16, see CLAUDE.md). */
 .lesson-prose > blockquote:not([style]) {
   margin: 1.5em 0;
   padding: 1em 1.5em;
-  border-left: 3px solid var(--tc-primary);
   background: var(--tc-surface);
   color: var(--tc-muted);
 }

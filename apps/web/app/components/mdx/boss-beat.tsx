@@ -205,7 +205,6 @@ export function BossBeat({
         data-testid="boss-beat-resolved"
         data-beat-id={beatId}
         data-choice-label={resolvedChoice.choiceLabel}
-        style={{ borderLeft: "4px solid var(--tc-primary)" }}
       >
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-2">
           Boss beat · resolved
@@ -228,7 +227,6 @@ export function BossBeat({
       className="my-8 p-6 brutalist-shadow bg-surface-raised border border-border"
       data-testid="boss-beat-active"
       data-beat-id={beatId}
-      style={{ borderLeft: "4px solid var(--tc-primary)" }}
     >
       <div className="flex items-center justify-between mb-4">
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary">

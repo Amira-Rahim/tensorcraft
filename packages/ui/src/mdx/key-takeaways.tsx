@@ -5,7 +5,7 @@ interface KeyTakeawaysProps {
 
 export function KeyTakeaways({ takeaways }: KeyTakeawaysProps) {
   return (
-    <div className="p-5 my-8 brutalist-shadow bg-surface-raised border-l-[3px] border-l-primary">
+    <div className="p-5 my-8 brutalist-shadow bg-surface-raised border border-border">
       <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-3 text-primary">
         Key Takeaways
       </h4>

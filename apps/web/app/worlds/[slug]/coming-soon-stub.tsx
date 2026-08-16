@@ -212,13 +212,11 @@ export function ComingSoonStub({ world }: Props) {
             {preview.modules.map((m) => (
               <li
                 key={m.order}
-                className={`flex items-baseline gap-4 border-b px-3 py-2.5 font-mono text-sm${
-                  m.free ? " border-l-2" : ""
-                }`}
+                className="flex items-baseline gap-4 border-b px-3 py-2.5 font-mono text-sm"
                 style={{
                   borderBottomColor: hairline,
                   ...(m.free
-                    ? { background: wash, borderLeftColor: palette.primary }
+                    ? { background: wash }
                     : m.capstone
                       ? { background: accentWash }
                       : {}),

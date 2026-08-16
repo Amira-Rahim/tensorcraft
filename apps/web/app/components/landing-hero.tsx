@@ -67,7 +67,7 @@ export function LandingHero() {
 
           <p
             data-testid="hero-stat-line"
-            className="font-mono text-xs text-text-primary tracking-[0.14em] uppercase border-l-2 border-primary pl-4 mb-8"
+            className="font-mono text-xs text-text-primary tracking-[0.14em] uppercase mb-8"
           >
             {WORLD_CONTENT.modulesPerWorld} modules ·{" "}
             {WORLD_CONTENT.totalLessonsPerWorld} lessons · 1 deployable model

@@ -146,9 +146,6 @@ export function LessonDrawer({
                       background: isCurrent
                         ? "color-mix(in srgb, var(--tc-primary) 6%, transparent)"
                         : "transparent",
-                      borderLeft: isCurrent
-                        ? "2px solid var(--tc-primary)"
-                        : "2px solid transparent",
                     }}
                   >
                     <span

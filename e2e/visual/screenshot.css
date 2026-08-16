@@ -1,0 +1,9 @@
+/* Applied at capture time via toHaveScreenshot stylePath (all visual specs).
+   The Next.js dev overlay badge ("N · 1 Issue") appears at the bottom-left
+   of the first viewport whenever the dev server logs a transient issue, and
+   fullPage screenshots capture it: worlds-index-light flaked exactly this
+   way on 2026-08-16. The visual suite runs against `next dev`, so hide the
+   portal; production has no such element. */
+nextjs-portal {
+  display: none !important;
+}

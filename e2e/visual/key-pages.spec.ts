@@ -12,7 +12,11 @@
  * Tests are gated on `RUN_VISUAL` env var until baselines are committed.
  * First green run commits the baselines; subsequent runs can drop the gate.
  */
+import path from "node:path";
 import { test, expect } from "@playwright/test";
+
+// Hides the Next.js dev-overlay badge at capture time; see screenshot.css.
+const SCREENSHOT_STYLE = path.join(__dirname, "screenshot.css");
 
 // Until baselines are generated locally and committed, these tests are
 // `fixme`'d so CI stays green. Set `RUN_VISUAL=1` to execute them.
@@ -80,6 +84,7 @@ for (const scheme of ["dark", "light"] as const) {
         await expect(page).toHaveScreenshot(`${base}${suffix}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,
+          stylePath: SCREENSHOT_STYLE,
           // Canvas animations (five-worlds cards) don't all honor
           // reduced-motion; mask them so frame timing can't flake the diff.
           mask: maskCanvas ? [page.locator("canvas")] : undefined,

@@ -27,7 +27,7 @@ export default function Home() {
           Transformers.js guides.
         </h2>
 
-        {/* ===== BRIDGE SYSTEM (client island, framework picker) ===== */}
+        {/* ===== BRIDGE SYSTEM (client island) ===== */}
         <BridgePreviewSection />
 
         {/* ===== WHAT YOU'LL BUILD (server-rendered, zero JS) =====

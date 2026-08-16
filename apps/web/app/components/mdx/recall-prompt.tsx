@@ -78,7 +78,7 @@ export function RecallPrompt({
           <div
             ref={answerRef}
             tabIndex={-1}
-            className="p-4 bg-surface border-l-[3px] border-l-primary text-sm leading-relaxed text-text-primary/80 outline-none"
+            className="p-4 bg-surface text-sm leading-relaxed text-text-primary/80 outline-none"
           >
             {answerContent}
           </div>

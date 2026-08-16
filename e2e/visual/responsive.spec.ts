@@ -4,7 +4,11 @@
  * Per dev-plan §8k. 4 breakpoints × 2 high-impact pages (landing + pricing).
  * Widths: 320 (mobile S), 768 (tablet), 1024 (laptop), 1440 (desktop L).
  */
+import path from "node:path";
 import { test, expect } from "@playwright/test";
+
+// Hides the Next.js dev-overlay badge at capture time; see screenshot.css.
+const SCREENSHOT_STYLE = path.join(__dirname, "screenshot.css");
 
 const shouldRun = process.env.RUN_VISUAL === "1";
 
@@ -54,6 +58,7 @@ test.describe("Visual: Responsive Breakpoints", () => {
         await expect(page).toHaveScreenshot(`${pageDef.name}-${bp.label}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,
+          stylePath: SCREENSHOT_STYLE,
           // Canvas animations (five-worlds cards) don't all honor
           // reduced-motion; mask them so frame timing can't flake the diff.
           mask: pageDef.maskCanvas ? [page.locator("canvas")] : undefined,

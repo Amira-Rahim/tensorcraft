@@ -6,7 +6,11 @@
  *
  * Slugs are the single source of truth from `packages/worlds`.
  */
+import path from "node:path";
 import { test, expect } from "@playwright/test";
+
+// Hides the Next.js dev-overlay badge at capture time; see screenshot.css.
+const SCREENSHOT_STYLE = path.join(__dirname, "screenshot.css");
 
 const shouldRun = process.env.RUN_VISUAL === "1";
 
@@ -52,6 +56,7 @@ for (const scheme of ["dark", "light"] as const) {
         await expect(page).toHaveScreenshot(`world-${slug}${suffix}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,
+          stylePath: SCREENSHOT_STYLE,
         });
       });
     }

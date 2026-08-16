@@ -103,6 +103,12 @@ All visual specs already:
 - Await `document.fonts.ready` to avoid FOUT frames.
 - Await `networkidle` to let async components (e.g. Sandpack, charts)
   settle.
+- Pass `stylePath: e2e/visual/screenshot.css` to `toHaveScreenshot`. The
+  suite runs against `next dev`, and the Next.js dev-overlay badge
+  ("N · 1 Issue") appears at the bottom-left of the first viewport
+  whenever the dev server logs a transient issue; the stylesheet hides
+  `nextjs-portal` at capture time (worlds-index-light flaked exactly this
+  way, 2026-08-16).
 
 If a test is still flaky, consider:
 

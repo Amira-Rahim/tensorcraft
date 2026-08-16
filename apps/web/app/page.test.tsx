@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { BRIDGES } from "@tensorcraft/shared";
 import { LandingHero } from "./components/landing-hero";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { CommitTrail } from "./components/commit-trail";
@@ -201,6 +202,51 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       render(<BridgePreviewSection />);
       const h2 = screen.getByRole("heading", { level: 2 });
       expect(h2.textContent).not.toMatch(/you already/i);
+    });
+
+    // Anatomy redesign (2026-08-16), spec:
+    // docs/superpowers/specs/2026-08-16-bridge-section-anatomy-redesign.md
+    // The previewed bridge is whichever catalog entry the component's own
+    // filter picks, so derive expectations from data, not hardcoded strings.
+    const previewBridge =
+      BRIDGES.find((b) => b.mlCode && b.variants?.react?.feCode) ?? BRIDGES[0];
+
+    it("explains the mapping with the bridge's connection prose", () => {
+      const { container } = render(<BridgePreviewSection />);
+      const firstSentence = previewBridge.connection.split(". ")[0];
+      expect(container.textContent).toContain(firstSentence);
+    });
+
+    it("does not show the breaks note (owner decision: connection only)", () => {
+      const { container } = render(<BridgePreviewSection />);
+      if (previewBridge.breaks) {
+        const firstSentence = previewBridge.breaks.split(". ")[0];
+        expect(container.textContent).not.toContain(firstSentence);
+      }
+      expect(container.textContent).not.toMatch(/where it breaks/i);
+    });
+
+    it("contains no buttons (the connector is decoration, not a control)", () => {
+      const { container } = render(<BridgePreviewSection />);
+      expect(screen.queryAllByRole("button")).toHaveLength(0);
+      // The pre-redesign connector was a bordered, glowing tile that read
+      // as a toggle; pin the de-buttoning, not just the role.
+      const glyphs = Array.from(
+        container.querySelectorAll('[aria-hidden="true"]'),
+      ).filter((el) => el.textContent?.includes("⇄"));
+      expect(glyphs.length).toBeGreaterThan(0);
+      for (const glyph of glyphs) {
+        expect(glyph.className).not.toMatch(/border/);
+        expect((glyph as HTMLElement).style.boxShadow).toBe("");
+      }
+    });
+
+    it("renders the ML snippet one statement per line", () => {
+      render(<BridgePreviewSection />);
+      const mlCode = screen.getByTestId("bridge-ml-code");
+      // Two statements jammed on one line with "; " was the pre-redesign
+      // state; the render-time formatter breaks at statement boundaries.
+      expect(mlCode.textContent).not.toMatch(/;[ \t]+\S/);
     });
   });
 

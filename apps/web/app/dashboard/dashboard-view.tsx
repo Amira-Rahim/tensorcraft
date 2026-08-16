@@ -616,9 +616,6 @@ export function DashboardView(props: DashboardProps) {
                     : s.accent
                       ? "color-mix(in srgb, var(--tc-primary) 2.5%, transparent)"
                       : "transparent",
-                  borderLeft: s.onFire
-                    ? "2px solid var(--tc-streak)"
-                    : undefined,
                 }}
               >
                 <div

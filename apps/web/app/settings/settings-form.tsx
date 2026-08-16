@@ -489,7 +489,6 @@ export function SettingsForm({
                   letterSpacing: "0.08em",
                   color: active ? "var(--tc-text)" : "var(--tc-muted)",
                   background: active ? "var(--tc-surface)" : "transparent",
-                  borderLeft: `2px solid ${active ? "var(--tc-primary)" : "transparent"}`,
                   borderBottom: `2px solid ${active ? "var(--tc-primary)" : "transparent"}`,
                 }}
               >

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { BRIDGES } from "@tensorcraft/shared";
+import type { BridgeTier } from "@tensorcraft/shared";
 
 // ONE bridge on the landing page: the catalog is paid content, not for
 // public browsing (the prev/next cycler was removed 2026-06-10 for this
@@ -11,11 +12,27 @@ import { BRIDGES } from "@tensorcraft/shared";
 const PREVIEW_BRIDGE =
   BRIDGES.find((b) => b.mlCode && b.variants?.react?.feCode) ?? BRIDGES[0];
 
+// Theme-aware tier tokens (themes.css), same mapping as the exercise
+// bridge hint. One accent per band: both code blocks, the connector, and
+// the connection prefix all carry the previewed bridge's tier color.
+const TIER_VARS: Record<BridgeTier, string> = {
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
+};
+
+// bridges.ts stores mlCode single-line for the compact lesson callout; at
+// landing-panel width two statements on one line read as a run-on.
+function statementPerLine(code: string): string {
+  return code.replace(/;\s+/g, ";\n");
+}
+
 export function BridgePreviewSection() {
   const bridge = PREVIEW_BRIDGE;
   const variant = bridge.variants?.react;
   const feTitle = variant?.feConcept || bridge.feConcept;
   const feCode = variant?.feCode ?? "";
+  const tierColor = TIER_VARS[bridge.tier];
 
   return (
     <section className="border-b border-border">
@@ -29,7 +46,9 @@ export function BridgePreviewSection() {
         </h2>
       </div>
 
-      {/* Bridge display, full width, centered. */}
+      {/* Code band: the lesson BridgeCallout grammar scaled up, so the
+          landing previews the surface learners actually use. Labels are
+          symmetric and muted; the analogy's two sides get equal weight. */}
       <div className="border-t border-border overflow-hidden">
         <motion.div
           initial={{ opacity: 0 }}
@@ -39,68 +58,75 @@ export function BridgePreviewSection() {
           className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr]"
         >
           {/* FE side */}
-          <div className="px-10 md:px-16 py-10 md:py-12">
-            <div className="max-w-lg mx-auto md:mx-0 md:ml-auto">
-              <div className="font-mono text-xs text-primary uppercase tracking-[0.15em] mb-3">
+          <div className="px-10 md:px-16 py-10 md:py-12 flex">
+            <div className="max-w-lg w-full mx-auto md:mx-0 md:ml-auto flex flex-col">
+              <div className="font-mono text-xs text-text-muted uppercase tracking-[0.15em] mb-3">
                 YOUR REACT CODE
               </div>
               <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
                 {feTitle}
               </h3>
-              <div className="bg-code-bg border border-border p-5 font-mono text-[13px] text-primary leading-relaxed whitespace-pre-wrap">
+              <div
+                className="flex-1 bg-code-bg border border-border p-5 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
+                style={{ color: tierColor }}
+              >
                 {feCode}
               </div>
             </div>
           </div>
 
-          {/* Connector */}
-          <div className="hidden md:flex flex-col items-center justify-center px-2 relative">
+          {/* Connector: decoration sitting on the divider. Deliberately
+              button-free (no border, no glow, no raised surface); the old
+              boxed treatment read as a toggle and drew dead clicks. */}
+          <div className="hidden md:flex items-center justify-center px-2 relative">
             <div className="absolute top-0 bottom-0 w-px bg-border" />
-            <div
+            <span
               aria-hidden="true"
-              className="relative z-10 w-10 h-10 flex items-center justify-center bg-surface-raised border-2 font-mono text-sm"
-              style={{
-                borderColor: "var(--tc-tier-structural)",
-                color: "var(--tc-tier-structural)",
-                boxShadow:
-                  "0 0 20px color-mix(in srgb, var(--tc-tier-structural) 30%, transparent)",
-              }}
+              className="relative z-10 bg-page py-2 font-mono text-lg"
+              style={{ color: tierColor }}
             >
               ⇄
-            </div>
+            </span>
           </div>
           {/* Mobile connector */}
           <div className="md:hidden flex items-center justify-center py-3">
-            <div
+            <span
               aria-hidden="true"
-              className="w-8 h-8 flex items-center justify-center bg-surface-raised border-2 font-mono text-xs"
-              style={{
-                borderColor: "var(--tc-tier-structural)",
-                color: "var(--tc-tier-structural)",
-              }}
+              className="font-mono text-base"
+              style={{ color: tierColor }}
             >
               ⇄
-            </div>
+            </span>
           </div>
 
           {/* ML side */}
-          <div className="px-10 md:px-16 py-10 md:py-12">
-            <div className="max-w-lg mx-auto md:mx-0">
-              <div className="font-mono text-xs uppercase tracking-[0.15em] mb-3 text-text-muted">
+          <div className="px-10 md:px-16 py-10 md:py-12 flex">
+            <div className="max-w-lg w-full mx-auto md:mx-0 flex flex-col">
+              <div className="font-mono text-xs text-text-muted uppercase tracking-[0.15em] mb-3">
                 ML EQUIVALENT
               </div>
               <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
                 {bridge.mlConcept}
               </h3>
               <div
-                className="bg-code-bg border border-border p-5 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
-                style={{ color: "var(--tc-tier-intuition)" }}
+                data-testid="bridge-ml-code"
+                className="flex-1 bg-code-bg border border-border p-5 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
+                style={{ color: tierColor }}
               >
-                {bridge.mlCode}
+                {statementPerLine(bridge.mlCode ?? "")}
               </div>
             </div>
           </div>
         </motion.div>
+      </div>
+
+      {/* Connection band: why the two sides map. Same "bridge:" grammar as
+          the lesson callout footer; the headline's claim gets its evidence
+          instead of standing alone. */}
+      <div className="border-t border-border px-10 md:px-20 py-8">
+        <p className="max-w-[65ch] mx-auto font-mono text-sm leading-relaxed text-text-muted">
+          <span style={{ color: tierColor }}>bridge:</span> {bridge.connection}
+        </p>
       </div>
 
       {/* Section exit CTA */}

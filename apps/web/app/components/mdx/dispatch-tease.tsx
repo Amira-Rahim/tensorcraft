@@ -47,7 +47,6 @@ export function DispatchTease({
     <aside
       className="my-10 p-6 brutalist-shadow bg-surface-raised border border-border"
       data-testid="dispatch-tease"
-      style={{ borderLeft: "4px solid var(--tc-primary)" }}
     >
       <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-3">
         DISPATCH · cross-world intel

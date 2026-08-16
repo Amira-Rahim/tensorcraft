@@ -26,9 +26,6 @@ export function GlossaryRail({ terms, activeTerm }: GlossaryRailProps) {
               data-active={isActive ? "true" : "false"}
               className="flex flex-col gap-1 pl-3"
               style={{
-                borderLeft: isActive
-                  ? "2px solid var(--tc-primary)"
-                  : "2px solid transparent",
                 background: isActive
                   ? "color-mix(in srgb, var(--tc-primary) 10%, transparent)"
                   : "transparent",

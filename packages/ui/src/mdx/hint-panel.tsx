@@ -85,9 +85,6 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                   ref={index === revealedLevel ? revealedRef : undefined}
                   tabIndex={index === revealedLevel ? -1 : undefined}
                   className="p-3 bg-surface outline-none"
-                  style={{
-                    borderLeft: `3px solid ${config.color}`,
-                  }}
                 >
                   <span
                     className="text-xs font-mono font-semibold uppercase tracking-widest block mb-1"

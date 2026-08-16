@@ -105,10 +105,6 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
               aria-expanded={isExpanded}
               aria-controls={isExpanded ? DETAIL_ID : undefined}
               className="relative aspect-square bg-surface-raised border border-border flex items-center justify-center transition-all hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-              style={{
-                borderLeftColor: color,
-                borderLeftWidth: 3,
-              }}
               title={`${TIER_LABEL[bridge.tier]} bridge: ${bridge.feTitle} → ${bridge.mlTitle}`}
             >
               {/* text-xs is 12px, the design system's floor. This badge was

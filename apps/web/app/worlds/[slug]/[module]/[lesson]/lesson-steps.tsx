@@ -1078,11 +1078,7 @@ function SceneCard({
         </div>
       )}
       {patternLabel && (
-        <div
-          data-testid="pattern-format-tag"
-          className="flex flex-col gap-1 border-l-2 pl-3"
-          style={{ borderColor: "var(--tc-primary)" }}
-        >
+        <div data-testid="pattern-format-tag" className="flex flex-col gap-1">
           <span
             className="font-mono text-[10px] uppercase tracking-[2px]"
             style={{ color: "var(--tc-muted)" }}
