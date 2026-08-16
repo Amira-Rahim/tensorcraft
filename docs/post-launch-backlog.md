@@ -419,12 +419,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] Privacy deferrals from the 2026-08-16 policy audit
   (`docs/audits/privacy-policy-audit-2026-08-16.md`; the shipped fixes
   are listed there too):
-  - OWNER, blocks deploy of the rewritten /privacy: replace the
-    `[OPERATOR LEGAL NAME AND REGISTERED ADDRESS]` placeholder in
-    `apps/web/app/privacy/page.tsx` §1 (GDPR Art. 13 controller
-    identity), confirm the `privacy@tensorcraft.app` mailbox actually
-    receives mail, and confirm the Supabase project region so §7
-    (transfers) can name it.
+  - OWNER: /privacy §1 names "Tensorcraft" as controller with no legal
+    identity behind it (owner removed the placeholder 2026-08-16,
+    entity/name decision pending; GDPR Art. 13(1)(a) gap stands until
+    a legal entity or sole-trader name plus registered address is
+    added; JSX comment in §1 marks the spot). Also confirm the
+    `privacy@tensorcraft.app` mailbox actually receives mail, and
+    confirm the Supabase project region so §7 (transfers) can name it.
   - Encrypt `profiles.github_token` at rest (plaintext since migration
     011; a DB leak leaks live GitHub tokens).
   - Propagate account deletion to PostHog persons via their API, and
@@ -439,6 +440,14 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - `tc_world` personalization cookie is set by middleware before any
     consent interaction; disclosed in policy §6 as functional, revisit
     if counsel wants it consent-gated.
+  - Terms lawyer pass (factual fixes shipped 2026-08-16, these need
+    counsel): governing-law/jurisdiction clause; termination/suspension
+    clause so §7 Acceptable Use has a consequence; statutory-rights
+    carve-out on the §8 liability exclusion (EU/UK consumers); §5 IP
+    claim should except vendored open-source (tfjs, Apache-2.0);
+    cross-link the privacy policy; add an explicit terms-acceptance
+    step for guest checkout (guest buyers currently never click
+    through acceptance).
 - [ ] Effects test-infra hardening deferred from the 2026-08-15
   signal-lock review (pricing curriculum cinematic): (a) capture
   `globalAlpha` in the recording-canvas style snapshots; deferred because

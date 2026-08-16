@@ -44,7 +44,7 @@ export default function TermsPage() {
         </Link>
 
         <h1 className="text-4xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-text-muted mb-12">Last updated: March 10, 2026</p>
+        <p className="text-text-muted mb-12">Last updated: August 16, 2026</p>
 
         <div className="prose-custom space-y-8 text-[15px] leading-relaxed text-text-muted">
           <section>
@@ -76,11 +76,13 @@ export default function TermsPage() {
             </h2>
             <p>
               You may browse Module 1 content without creating an account. To
-              access full course content, track progress, and make purchases,
-              you must create an account using GitHub, Google, or email
-              authentication. You must be at least 16 years old to create an
-              account. You are responsible for maintaining the security of your
-              account credentials.
+              access full course content and track progress, you need an
+              account, created with GitHub, Google, or email authentication. You
+              can also buy as a guest: we then create an account for you from
+              the email you used at checkout and send it a sign-in link. You
+              must be at least 16 years old to hold an account. You are
+              responsible for maintaining the security of your account
+              credentials.
             </p>
           </section>
 
@@ -155,9 +157,8 @@ export default function TermsPage() {
             </h2>
             <p>
               We may update these terms from time to time. We will notify you of
-              significant changes via email or in-app notification. Continued
-              use of the Service after changes constitutes acceptance of the new
-              terms.
+              significant changes via email. Continued use of the Service after
+              changes constitutes acceptance of the new terms.
             </p>
           </section>
 

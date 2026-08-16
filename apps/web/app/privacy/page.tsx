@@ -52,14 +52,14 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-text-primary mb-3">
               1. Who We Are
             </h2>
-            {/* OWNER ACTION REQUIRED before deploy: GDPR Art. 13(1)(a)
-                requires the controller's legal identity. Replace the
-                bracketed placeholder with the legal entity (or sole
-                trader) name and a registered address. */}
+            {/* OPEN (owner decision, 2026-08-16): GDPR Art. 13(1)(a)
+                requires the controller's legal identity here. The owner
+                removed the placeholder pending that decision; add the
+                legal entity (or sole trader) name and a registered
+                address when settled. Tracked in post-launch-backlog §7. */}
             <p>
               Tensorcraft is a browser-based machine learning course for
-              frontend engineers, operated by [OPERATOR LEGAL NAME AND
-              REGISTERED ADDRESS]. That operator is the data controller for
+              frontend engineers. Tensorcraft is the data controller for
               everything this policy describes. For any question about this
               policy, or to exercise any right in section 8, email{" "}
               <a

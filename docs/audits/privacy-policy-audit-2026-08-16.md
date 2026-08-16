@@ -1,6 +1,6 @@
 # Privacy policy audit + remediation (2026-08-16)
 
-Trigger: owner asked whether https://www.tensorcraft.app/privacy is
+Trigger: owner asked whether <https://www.tensorcraft.app/privacy> is
 accurate and whether it creates legal exposure. Method: full codebase
 inventory of actual data practices (cookies, storage keys, analytics,
 database tables, processors, email flows, rights plumbing), diffed
@@ -89,12 +89,37 @@ Prose:
 - `apps/web/app/terms/page.tsx`: §3 Accounts gains the 16+ eligibility
   sentence (backs privacy §10; e2e heading numbering unchanged).
 
-## Deploy blocker
+## Controller identity (open)
 
-`/privacy` §1 ships with `[OPERATOR LEGAL NAME AND REGISTERED ADDRESS]`
-as a visible placeholder. Only the owner can fill this (identity stays
-private per standing rule, so the entity/name choice is theirs). Do not
-deploy the page until it is replaced.
+§1 initially shipped with a visible `[OPERATOR LEGAL NAME AND
+REGISTERED ADDRESS]` placeholder; the owner removed it the same day,
+pending the entity/name decision (identity stays private per standing
+rule, so the choice is theirs). §1 now names "Tensorcraft" as the
+controller with no legal identity behind it. The page is deployable,
+but the Art. 13(1)(a) gap stands until the owner adds the legal entity
+(or sole trader) name and a registered address. A JSX comment in §1 and
+the backlog §7 block both track it.
+
+## Terms of Service addendum (same day)
+
+Owner asked the same question of /terms. Verified true against code:
+Module 1 free without account, USD-only checkout, 14-day refund copy
+matches /pricing badge, repos created public (github.ts default), token
+revoked at GitHub AND nulled in DB on disconnect (stronger than the §6
+claim), lifetime access (valid_until schema-only, unused by the API).
+
+Fixed on "go": §3 rewritten for guest checkout (the old text claimed an
+account is required to purchase; guest-account.ts auto-creates one from
+the checkout email after payment), §9 dropped "in-app notification"
+(inbox feature removed 2026-08-14; email is the only channel), date
+bumped March 10 to August 16, 2026. Section numbering unchanged so
+e2e legal.spec heading assertions hold.
+
+Lawyer-tier gaps left for counsel (backlog §7): no governing-law or
+termination clause, §8 liability exclusion needs a statutory-rights
+carve-out for EU/UK consumers, §5 IP claim overreaches vendored
+open-source (tfjs is Apache-2.0), no privacy-policy cross-link, and
+guest buyers never pass an explicit terms-acceptance step.
 
 ## Deferred
 
