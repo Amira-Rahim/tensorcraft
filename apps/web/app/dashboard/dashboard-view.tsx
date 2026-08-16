@@ -674,7 +674,10 @@ export function DashboardView(props: DashboardProps) {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(10, 1fr)",
+                  // Fixed cells: `1fr` scaled with the viewport, so on a
+                  // wide monitor the heatmap became three rows of giant
+                  // squares (owner report, 2026-08-16).
+                  gridTemplateColumns: "repeat(10, 18px)",
                   gap: 6,
                   marginBottom: 16,
                 }}
@@ -743,22 +746,27 @@ export function DashboardView(props: DashboardProps) {
             </div>
           </div>
 
-          {/* Skill Genome */}
-          <SkillGenome data={genomeData} />
+          {/* The three collection panels share the main column's 40px
+              gutter; they previously sat flush against the sidebar edge,
+              alone among the dashboard's panels. */}
+          <div style={{ padding: "0 40px" }}>
+            {/* Skill Genome */}
+            <SkillGenome data={genomeData} />
 
-          {/* Bridge collectibles.
-              The data for this was being fetched (page.tsx: getLessonsWithBridges
-              + a `collected` flag per lesson), threaded through as a prop, and
-              dropped on the floor: the component existed, the pipeline existed,
-              and nothing rendered it. Meanwhile prd.md, marketing-plan.md, and
-              dev-plan.md all describe dashboard bridge collectibles as the
-              shipped replacement for the removed /bridges route. Wired up
-              2026-07-15 so the docs are true. */}
-          <BridgeCollection bridges={bridges} />
+            {/* Bridge collectibles.
+                The data for this was being fetched (page.tsx: getLessonsWithBridges
+                + a `collected` flag per lesson), threaded through as a prop, and
+                dropped on the floor: the component existed, the pipeline existed,
+                and nothing rendered it. Meanwhile prd.md, marketing-plan.md, and
+                dev-plan.md all describe dashboard bridge collectibles as the
+                shipped replacement for the removed /bridges route. Wired up
+                2026-07-15 so the docs are true. */}
+            <BridgeCollection bridges={bridges} />
 
-          {/* Mission patches, the same collection framing one panel down.
-              Renders nothing for worlds without patch art. */}
-          <PatchCollection modules={modules} />
+            {/* Mission patches, the same collection framing one panel down.
+                Renders nothing for worlds without patch art. */}
+            <PatchCollection modules={modules} />
+          </div>
 
           {/* Learning trend, rolling 7-day avg hints per exercise */}
           <section

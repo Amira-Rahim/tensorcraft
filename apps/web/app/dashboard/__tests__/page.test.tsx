@@ -82,6 +82,15 @@ vi.mock("../dashboard-view", () => ({
   },
 }));
 
+// The page branches to FirstRunView for zero-activity accounts
+// (first-run tests live in page-first-run.test.tsx); stub it so this
+// file's tests don't pull in its imports.
+vi.mock("../first-run-view", () => ({
+  FirstRunView: function FirstRunViewMock() {
+    return null;
+  },
+}));
+
 // `world-cards` is rendered as JSX inside the page; stub it out so tests
 // don't need its full props surface.
 vi.mock("../world-cards", () => ({
@@ -178,6 +187,17 @@ describe("dashboard/page (server component)", () => {
     });
 
     tableData.exercise_attempts = [];
+    // A completed lesson keeps this zero-attempts account out of the
+    // first-run branch, so the page still returns DashboardView.
+    tableData.world_progress = [
+      {
+        world_id: "deep-orbit",
+        module_id: "m",
+        lesson_id: "l",
+        status: "completed",
+        updated_at: "2026-08-01T00:00:00Z",
+      },
+    ];
 
     const { default: DashboardPage } = await import("../page");
 

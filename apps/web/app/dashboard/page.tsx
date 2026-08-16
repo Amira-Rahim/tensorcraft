@@ -22,6 +22,7 @@ import {
   type DashboardBridge,
   type ActivityRecord,
 } from "./dashboard-view";
+import { FirstRunView } from "./first-run-view";
 import { WorldCards, type WorldCardData } from "./world-cards";
 import { computeWeeklyHints } from "./_lib/viz-data";
 
@@ -123,6 +124,10 @@ export default async function DashboardPage() {
   const streaks = streaksRaw ?? [];
   const records = progressRecords ?? [];
   const attempts = exerciseAttempts ?? [];
+
+  const displayName =
+    profile?.display_name || user.email?.split("@")[0] || "Explorer";
+  const avatarUrl = profile?.avatar_url || null;
 
   // Active-world picks come from the LAUNCHED set only, coming-soon worlds
   // have no compiled content (Velite excludes them) so getModules/etc. would
@@ -290,6 +295,35 @@ export default async function DashboardPage() {
       ? Math.round((completedLessonsCount / totalLessons) * 100)
       : 0;
 
+  // First-run: no completed lesson and no recorded attempt anywhere.
+  // One completed lesson or one attempt exits this branch permanently
+  // (spec: docs/superpowers/specs/2026-08-16-first-run-dashboard-design.md).
+  const isFirstRun =
+    attempts.length === 0 && records.every((r) => r.status !== "completed");
+
+  if (isFirstRun) {
+    const firstModule = contentModules[0];
+    const firstModuleLessons = firstModule
+      ? getModuleLessons(activeWorld.slug, firstModule.slug)
+      : [];
+    return (
+      <FirstRunView
+        displayName={displayName}
+        worldName={activeWorld.displayName}
+        worldSlug={activeWorld.slug}
+        plateSrc={surfacePlateSrc(activeWorld.slug, "dashboard")}
+        briefing={currentModuleInfo}
+        resumeUrl={resumeUrl}
+        firstPatchLessonCount={
+          firstModule && patchSrc(activeWorld.slug, firstModule.slug)
+            ? firstModuleLessons.length
+            : undefined
+        }
+        totalWorldLessons={totalLessons}
+      />
+    );
+  }
+
   const currentStreak = streaks.reduce(
     (max, s) => Math.max(max, s.current_streak ?? 0),
     0,
@@ -358,10 +392,6 @@ export default async function DashboardPage() {
       score: r.status === "completed" ? null : null,
     };
   });
-
-  const displayName =
-    profile?.display_name || user.email?.split("@")[0] || "Explorer";
-  const avatarUrl = profile?.avatar_url || null;
 
   // Build per-world card data:
   //   - launched + owned: real per-world progress

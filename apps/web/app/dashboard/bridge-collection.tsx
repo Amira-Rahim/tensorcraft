@@ -73,8 +73,10 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
         />
       </div>
 
-      {/* Token grid */}
-      <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-0.5">
+      {/* Token grid. Fixed 44px tiles: fractional columns scaled with
+          the viewport, so ~50 uncollected tiles rendered as a wall of
+          giant "?" squares on wide monitors (owner report, 2026-08-16). */}
+      <div className="grid grid-cols-[repeat(auto-fill,2.75rem)] gap-0.5">
         {sorted.map((bridge) => {
           const color = TIER_COLORS[bridge.tier];
           const isExpanded = expanded === bridge.lessonSlug;

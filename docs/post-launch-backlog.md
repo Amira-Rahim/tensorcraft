@@ -141,6 +141,16 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
+- [ ] **Dashboard per-panel progressive disclosure (considered, not built,
+  2026-08-16).** The first-run mission dispatch covers zero-activity
+  accounts only; an account with one completed lesson gets the full
+  dashboard back, zeroed panels included (heatmap with one cell, 0/N
+  bridges, empty patch slots). Per-panel gating (each instrument hidden
+  until it has data) was the alternative the owner passed on; the
+  boundary is recorded in
+  `docs/superpowers/specs/2026-08-16-first-run-dashboard-design.md`.
+  Revisit if early-account retention data shows the near-empty full
+  dashboard hurts.
 - [ ] **DISPATCH inbox, removed 2026-08-14 (owner call: not needed now).**
   Deleted: `/inbox` route + `inbox-view`, `lib/dispatch-client.ts`, the
   Inbox nav links + unread badge (both navs), the web and API milestone
