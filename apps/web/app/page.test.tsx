@@ -153,7 +153,8 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   // Artifact-proof panel (2026-07-14): the commit trail must render REAL
   // module-1 corpus data in the exact format the push pipeline writes
   // (apps/api/src/lib/github.ts). If either side changes format, this
-  // assertion is where the drift surfaces.
+  // assertion is where the drift surfaces. Renders on /paywall only since
+  // 2026-08-16 (cut from the landing build band).
   describe("CommitTrail", () => {
     it("renders real module-1 commits in the pipeline's commit format", () => {
       render(<CommitTrail compact />);

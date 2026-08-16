@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 import { FaqSection } from "./components/faq-section";
 import { LandingHero } from "./components/landing-hero";
-import { CommitTrail } from "./components/commit-trail";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
 
@@ -55,11 +54,10 @@ export default function Home() {
               >
                 Learn more →
               </Link>
-              {/* The most interview-legible artifact the product makes,
-                  previously invisible until Settings: show it at the fold. */}
-              <div className="mt-6 max-w-[440px]">
-                <CommitTrail compact />
-              </div>
+              {/* CommitTrail was cut here 2026-08-16 (owner: unreadable
+                  without framing, and it crowded the band). It stays on
+                  /paywall, where "The proof is the artifact" prose supplies
+                  the frame this cell never had. */}
             </div>
             {[
               {
