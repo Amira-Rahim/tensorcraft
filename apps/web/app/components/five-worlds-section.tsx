@@ -191,8 +191,6 @@ export function FiveWorldsSection() {
             }
             onMouseEnter={() => setHovered(t.slug)}
             onMouseLeave={() => setHovered(null)}
-            onFocus={() => setHovered(t.slug)}
-            onBlur={() => setHovered(null)}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -205,9 +203,12 @@ export function FiveWorldsSection() {
               hovered={hovered === t.slug}
               className="absolute inset-0 z-0 pointer-events-none"
             />
-            <Link
-              href={`/worlds/${t.slug}`}
-              className="flex flex-col gap-1.5 relative z-10 px-8 py-8 h-full"
+            {/* Inert until launch: no link, no tab stop, not-allowed
+                cursor (matches worlds/world-cards-grid.tsx). The hover
+                handlers on the wrapping motion.div keep the scene
+                ignition and hover treatment completing unchanged. */}
+            <div
+              className="flex flex-col gap-1.5 relative z-10 px-8 py-8 h-full cursor-not-allowed"
               data-testid={`coming-soon-card-${t.slug}`}
             >
               <div className="flex items-center justify-between gap-3">
@@ -237,7 +238,7 @@ export function FiveWorldsSection() {
               >
                 Notify me &rarr;
               </span>
-            </Link>
+            </div>
           </motion.div>
         ))}
       </div>

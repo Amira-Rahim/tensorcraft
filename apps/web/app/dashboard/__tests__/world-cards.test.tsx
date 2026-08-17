@@ -76,7 +76,7 @@ describe("WorldCards", () => {
     expect(screen.getByText(/1 coming soon/i)).toBeInTheDocument();
   });
 
-  it("renders coming-soon card with waitlist CTA + world stub link", () => {
+  it("renders coming-soon card inert: no link, not-allowed cursor", () => {
     const cards = [
       makeCard({
         slug: "neon-protocol",
@@ -86,12 +86,16 @@ describe("WorldCards", () => {
         comingSoon: true,
       }),
     ];
-    render(<WorldCards cards={cards} hasFullBundle={false} />);
-    const link = screen.getByRole("link", {
-      name: /Neon Protocol coming soon, join waitlist/i,
-    });
-    expect(link).toHaveAttribute("href", "/worlds/neon-protocol");
-    expect(within(link).getByText(/Notify me/i)).toBeInTheDocument();
+    const { container } = render(
+      <WorldCards cards={cards} hasFullBundle={false} />,
+    );
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    const shell = container.querySelector(".tc-world-card");
+    expect(shell).toBeInstanceOf(HTMLDivElement);
+    expect((shell as HTMLElement).style.cursor).toBe("not-allowed");
+    expect(
+      within(shell as HTMLElement).getByText(/Notify me/i),
+    ).toBeInTheDocument();
   });
 
   it("owned card links into the world landing page with progress info", () => {

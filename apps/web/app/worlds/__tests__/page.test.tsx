@@ -165,7 +165,7 @@ describe("WorldsPage (Deep Orbit launch + 4 coming-soon)", () => {
     expect(scenes).toHaveLength(5);
   });
 
-  it("applies rounded-none (brutalist) to each card link", async () => {
+  it("applies rounded-none (brutalist) to each card shell", async () => {
     render(await WorldsPage());
     for (const slug of [
       "deep-orbit",
@@ -175,9 +175,29 @@ describe("WorldsPage (Deep Orbit launch + 4 coming-soon)", () => {
       "terra-grid",
     ]) {
       const card = screen.getByTestId(`world-card-${slug}`);
-      const link = card.querySelector("a");
-      expect(link).not.toBeNull();
-      expect(link!.className).toContain("rounded-none");
+      const shell = card.querySelector(".tc-world-card");
+      expect(shell).not.toBeNull();
+      expect(shell!.className).toContain("rounded-none");
+    }
+  });
+
+  it("links the live world only; coming-soon cards are inert", async () => {
+    render(await WorldsPage());
+    const heroLink = screen
+      .getByTestId("world-card-deep-orbit")
+      .querySelector("a");
+    expect(heroLink).toHaveAttribute("href", "/worlds/deep-orbit");
+    for (const slug of [
+      "neon-protocol",
+      "signal-ward",
+      "nova-canvas",
+      "terra-grid",
+    ]) {
+      const card = screen.getByTestId(`world-card-${slug}`);
+      expect(card.querySelector("a")).toBeNull();
+      expect(card.querySelector(".tc-world-card")?.className).toContain(
+        "cursor-not-allowed",
+      );
     }
   });
 

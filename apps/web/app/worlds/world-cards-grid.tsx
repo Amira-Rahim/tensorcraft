@@ -24,7 +24,9 @@ export interface WorldCardData {
   price: number;
   /**
    * Launch status. `live` worlds link to their module map; `coming-soon`
-   * worlds link to the per-world stub (which hosts a waitlist form).
+   * cards render inert (no link, not-allowed cursor) until launch. The
+   * per-world stub at /worlds/{slug} still exists for direct URLs; the
+   * notify path on this page is the newsletter modal below the grid.
    */
   status: "live" | "coming-soon";
   /**
@@ -129,6 +131,144 @@ function WorldCard({ card, variant }: WorldCardProps) {
     [card.primaryLight],
   );
 
+  // `tc-world-card` opts into the scheme-aware --card-active-primary
+  // rule in globals.css (shared with dashboard/world-cards.tsx - see
+  // that rule's doc comment). No useScheme() here: this is a client
+  // component, so the hook WOULD work, but every card re-rendering on
+  // scheme toggle just to recompute a style string is unnecessary
+  // churn the CSS mechanism avoids entirely (and it keeps this file
+  // symmetric with the server-rendered dashboard grid, which has no
+  // hook available at all).
+  const shellClassName = `tc-world-card group relative flex flex-col h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover${isHero && card.plateSrc ? " tc-on-art" : ""}`;
+
+  const shellStyle = {
+    "--card-primary": card.primary,
+    "--card-primary-light": card.primaryLight ?? card.primary,
+    "--tc-primary": "var(--card-active-primary)",
+    // Over the plate the card is a lit viewport (tc-on-art), so the
+    // accent pins to the dark-scheme hue in both schemes: the
+    // light-scheme hue was minted for a paper background and goes
+    // murky on near-black art.
+    ...(isHero && card.plateSrc
+      ? { "--card-active-primary": card.primary }
+      : {}),
+  } as React.CSSProperties;
+
+  const body = (
+    <>
+      {/* Hero ground: the world's location plate under the canvas, the
+            shipped plate-under-canvas composite (the canvas becomes the
+            reflection on the glass at 50%). Muted cards never ground. */}
+      {isHero && card.plateSrc && (
+        <ArtPlate
+          src={card.plateSrc}
+          bleed
+          className="absolute inset-0 pointer-events-none"
+        />
+      )}
+      {/* Scene brightness rides SceneCanvas's eased hot amount, so no CSS
+            opacity ramp here - a second ramp would mute the ignition. rgb/
+            rgbLight stay as the STATIC per-world hues (not scheme-resolved
+            here): SceneCanvas reads document.documentElement's data-scheme
+            itself every frame and picks between them independently. */}
+      <div
+        className={`absolute inset-0 pointer-events-none ${isHero ? "" : "opacity-80"}`}
+        aria-hidden="true"
+      >
+        <SceneCanvas
+          draw={SCENE_BY_SLUG[card.slug] ?? drawOrbit}
+          rgb={rgb}
+          rgbLight={rgbLight}
+          hovered={hovered}
+          className={`absolute inset-0${isHero && card.plateSrc ? " opacity-50" : ""}`}
+        />
+      </div>
+      {/* Legibility veil over the plate, under the copy: the fixed dark
+            tc-art-scrim, NOT a bg-colored gradient - the art underneath is
+            the same dark image in both schemes, so the veil must be too
+            (five-worlds band precedent). */}
+      {isHero && card.plateSrc && (
+        <div aria-hidden="true" className="tc-art-scrim" />
+      )}
+
+      <div
+        className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-border bg-surface-raised/80 backdrop-blur-[1px]"
+        style={
+          // Over the plate the strip is glass on a lit viewport: fixed
+          // dark frost in both schemes, matching the tc-on-art tokens.
+          isHero && card.plateSrc
+            ? { background: "color-mix(in srgb, #181818 80%, transparent)" }
+            : undefined
+        }
+      >
+        <span
+          className="font-mono text-[11px] uppercase tracking-[0.15em] font-semibold"
+          style={{ color: "var(--card-active-primary)" }}
+        >
+          {card.specialization}
+        </span>
+        <span
+          className="font-mono text-[11px] uppercase tracking-[0.15em]"
+          style={{
+            // Drive-by fix: `--text-muted` doesn't exist (undefined custom
+            // prop resolves to nothing); the correct token is `--tc-muted`
+            // (Tailwind's `--color-text-muted` maps to it - see globals.css).
+            color: isComingSoon
+              ? "var(--card-active-primary)"
+              : "var(--tc-muted)",
+          }}
+          data-testid={`world-status-${card.slug}`}
+        >
+          {isComingSoon ? "Coming soon" : "Live"}
+        </span>
+      </div>
+
+      <div
+        className={`relative z-10 flex flex-col flex-1 ${isHero ? "px-6 py-7 md:px-10 md:py-10" : "px-4 py-5"}`}
+      >
+        <h2
+          className={`font-mono font-bold mb-2 tracking-tight ${isHero ? "text-3xl md:text-4xl" : "text-xl"}`}
+          style={{ color: "var(--card-active-primary)" }}
+        >
+          {card.displayName}
+        </h2>
+        <p
+          className={`text-text-muted mb-4 leading-relaxed font-sans ${isHero ? "text-base md:text-lg max-w-[640px]" : "text-sm"}`}
+        >
+          {card.tagline}
+        </p>
+
+        <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/60">
+          <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
+            {isComingSoon ? null : (
+              <>
+                <span className="text-text-primary font-bold">
+                  {card.modulesCount}
+                </span>{" "}
+                mod ·{" "}
+                <span className="text-text-primary font-bold">
+                  {card.lessonsCount}
+                </span>{" "}
+                lessons
+              </>
+            )}
+          </span>
+          <span
+            data-testid={`world-cta-${card.slug}`}
+            className="font-mono text-xs uppercase tracking-[0.15em] font-semibold"
+            style={{ color: "var(--card-active-primary)" }}
+          >
+            {isComingSoon
+              ? "Notify me →"
+              : card.owned
+                ? "Continue →"
+                : "Start →"}
+          </span>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div
       data-world={card.slug}
@@ -136,148 +276,32 @@ function WorldCard({ card, variant }: WorldCardProps) {
       data-status={card.status}
       className="world-card-wrapper"
     >
-      <Link
-        href={`/worlds/${card.slug}`}
-        aria-label={`${card.displayName}, ${card.tagline}${isComingSoon ? " (coming soon)" : ""}`}
-        // `tc-world-card` opts into the scheme-aware --card-active-primary
-        // rule in globals.css (shared with dashboard/world-cards.tsx - see
-        // that rule's doc comment). No useScheme() here: this is a client
-        // component, so the hook WOULD work, but every card re-rendering on
-        // scheme toggle just to recompute a style string is unnecessary
-        // churn the CSS mechanism avoids entirely (and it keeps this file
-        // symmetric with the server-rendered dashboard grid, which has no
-        // hook available at all).
-        className={`tc-world-card group relative flex flex-col h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${isComingSoon ? "opacity-80 hover:opacity-100 transition-opacity" : ""}${isHero && card.plateSrc ? " tc-on-art" : ""}`}
-        style={
-          {
-            "--card-primary": card.primary,
-            "--card-primary-light": card.primaryLight ?? card.primary,
-            "--tc-primary": "var(--card-active-primary)",
-            // Over the plate the card is a lit viewport (tc-on-art), so the
-            // accent pins to the dark-scheme hue in both schemes: the
-            // light-scheme hue was minted for a paper background and goes
-            // murky on near-black art.
-            ...(isHero && card.plateSrc
-              ? { "--card-active-primary": card.primary }
-              : {}),
-          } as React.CSSProperties
-        }
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
-      >
-        {/* Hero ground: the world's location plate under the canvas, the
-            shipped plate-under-canvas composite (the canvas becomes the
-            reflection on the glass at 50%). Muted cards never ground. */}
-        {isHero && card.plateSrc && (
-          <ArtPlate
-            src={card.plateSrc}
-            bleed
-            className="absolute inset-0 pointer-events-none"
-          />
-        )}
-        {/* Scene brightness rides SceneCanvas's eased hot amount, so no CSS
-            opacity ramp here - a second ramp would mute the ignition. rgb/
-            rgbLight stay as the STATIC per-world hues (not scheme-resolved
-            here): SceneCanvas reads document.documentElement's data-scheme
-            itself every frame and picks between them independently. */}
+      {isComingSoon ? (
+        // Inert until launch: no link, no tab stop, not-allowed cursor.
+        // The mouse handlers stay so hover still ignites the scene and the
+        // brutalist-hover pose still completes; only navigation is gone.
         <div
-          className={`absolute inset-0 pointer-events-none ${isHero ? "" : "opacity-80"}`}
-          aria-hidden="true"
+          className={`${shellClassName} cursor-not-allowed opacity-80 hover:opacity-100 transition-opacity`}
+          style={shellStyle}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
         >
-          <SceneCanvas
-            draw={SCENE_BY_SLUG[card.slug] ?? drawOrbit}
-            rgb={rgb}
-            rgbLight={rgbLight}
-            hovered={hovered}
-            className={`absolute inset-0${isHero && card.plateSrc ? " opacity-50" : ""}`}
-          />
+          {body}
         </div>
-        {/* Legibility veil over the plate, under the copy: the fixed dark
-            tc-art-scrim, NOT a bg-colored gradient - the art underneath is
-            the same dark image in both schemes, so the veil must be too
-            (five-worlds band precedent). */}
-        {isHero && card.plateSrc && (
-          <div aria-hidden="true" className="tc-art-scrim" />
-        )}
-
-        <div
-          className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-border bg-surface-raised/80 backdrop-blur-[1px]"
-          style={
-            // Over the plate the strip is glass on a lit viewport: fixed
-            // dark frost in both schemes, matching the tc-on-art tokens.
-            isHero && card.plateSrc
-              ? { background: "color-mix(in srgb, #181818 80%, transparent)" }
-              : undefined
-          }
+      ) : (
+        <Link
+          href={`/worlds/${card.slug}`}
+          aria-label={`${card.displayName}, ${card.tagline}`}
+          className={`${shellClassName} focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2`}
+          style={shellStyle}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onFocus={() => setHovered(true)}
+          onBlur={() => setHovered(false)}
         >
-          <span
-            className="font-mono text-[11px] uppercase tracking-[0.15em] font-semibold"
-            style={{ color: "var(--card-active-primary)" }}
-          >
-            {card.specialization}
-          </span>
-          <span
-            className="font-mono text-[11px] uppercase tracking-[0.15em]"
-            style={{
-              // Drive-by fix: `--text-muted` doesn't exist (undefined custom
-              // prop resolves to nothing); the correct token is `--tc-muted`
-              // (Tailwind's `--color-text-muted` maps to it - see globals.css).
-              color: isComingSoon
-                ? "var(--card-active-primary)"
-                : "var(--tc-muted)",
-            }}
-            data-testid={`world-status-${card.slug}`}
-          >
-            {isComingSoon ? "Coming soon" : "Live"}
-          </span>
-        </div>
-
-        <div
-          className={`relative z-10 flex flex-col flex-1 ${isHero ? "px-6 py-7 md:px-10 md:py-10" : "px-4 py-5"}`}
-        >
-          <h2
-            className={`font-mono font-bold mb-2 tracking-tight ${isHero ? "text-3xl md:text-4xl" : "text-xl"}`}
-            style={{ color: "var(--card-active-primary)" }}
-          >
-            {card.displayName}
-          </h2>
-          <p
-            className={`text-text-muted mb-4 leading-relaxed font-sans ${isHero ? "text-base md:text-lg max-w-[640px]" : "text-sm"}`}
-          >
-            {card.tagline}
-          </p>
-
-          <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/60">
-            <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
-              {isComingSoon ? null : (
-                <>
-                  <span className="text-text-primary font-bold">
-                    {card.modulesCount}
-                  </span>{" "}
-                  mod ·{" "}
-                  <span className="text-text-primary font-bold">
-                    {card.lessonsCount}
-                  </span>{" "}
-                  lessons
-                </>
-              )}
-            </span>
-            <span
-              data-testid={`world-cta-${card.slug}`}
-              className="font-mono text-xs uppercase tracking-[0.15em] font-semibold"
-              style={{ color: "var(--card-active-primary)" }}
-            >
-              {isComingSoon
-                ? "Notify me →"
-                : card.owned
-                  ? "Continue →"
-                  : "Start →"}
-            </span>
-          </div>
-        </div>
-      </Link>
+          {body}
+        </Link>
+      )}
     </div>
   );
 }

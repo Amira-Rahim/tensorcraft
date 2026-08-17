@@ -15,7 +15,10 @@ export interface WorldCardData {
   completedLessons: number;
   totalLessons: number;
   progressPercent: number;
-  /** When true, render as "Coming soon", link routes to the per-world stub. */
+  /**
+   * When true, render as an inert "Coming soon" card: no link, not-allowed
+   * cursor (matches worlds/world-cards-grid.tsx and the landing strip).
+   */
   comingSoon: boolean;
 }
 
@@ -28,7 +31,8 @@ export interface WorldCardsProps {
  * World grid shown on the dashboard. One card per world, rendered in the same
  * order the worlds object exposes them. Owned worlds link into the world
  * landing page; locked worlds link to pricing with the locked world
- * pre-selected so the paywall flow has context.
+ * pre-selected so the paywall flow has context; coming-soon worlds render
+ * inert until launch.
  */
 export function WorldCards({ cards, hasFullBundle }: WorldCardsProps) {
   return (
@@ -106,48 +110,30 @@ export function WorldCards({ cards, hasFullBundle }: WorldCardsProps) {
 }
 
 function WorldCard({ card }: { card: WorldCardData }) {
-  const href = card.comingSoon
-    ? `/worlds/${card.slug}`
-    : card.owned
-      ? `/worlds/${card.slug}`
-      : `/pricing?locked=${card.slug}`;
+  const shellStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: 14,
+    padding: "24px 28px",
+    minHeight: 176,
+    textDecoration: "none",
+    color: "inherit",
+    background: card.isActive
+      ? "color-mix(in srgb, var(--tc-primary) 3%, transparent)"
+      : "transparent",
+    position: "relative",
+    // Server component: no useScheme() hook available here, so both
+    // schemes' hues ride along as local custom props and a CSS rule
+    // (`.tc-world-card` / `[data-scheme="light"] .tc-world-card` in
+    // globals.css) picks between them into --card-active-primary,
+    // which every `card.primary`-driven style below reads instead.
+    // worlds/world-cards-grid.tsx rides the same CSS mechanism.
+    "--card-primary": card.primary,
+    "--card-primary-light": card.primaryLight ?? card.primary,
+  } as React.CSSProperties;
 
-  const label = card.comingSoon
-    ? `${card.displayName} coming soon, join waitlist`
-    : card.owned
-      ? `${card.displayName}, ${card.progressPercent}% complete, open world`
-      : `${card.displayName} locked, view pricing`;
-
-  return (
-    <Link
-      href={href}
-      aria-label={label}
-      className="tc-world-card"
-      style={
-        {
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
-          padding: "24px 28px",
-          minHeight: 176,
-          textDecoration: "none",
-          color: "inherit",
-          background: card.isActive
-            ? "color-mix(in srgb, var(--tc-primary) 3%, transparent)"
-            : "transparent",
-          position: "relative",
-          // Server component: no useScheme() hook available here, so both
-          // schemes' hues ride along as local custom props and a CSS rule
-          // (`.tc-world-card` / `[data-scheme="light"] .tc-world-card` in
-          // globals.css) picks between them into --card-active-primary,
-          // which every `card.primary`-driven style below reads instead.
-          // world-cards-grid.tsx (a client component) uses useScheme()
-          // directly instead - see that file's WorldCard for the contrast.
-          "--card-primary": card.primary,
-          "--card-primary-light": card.primaryLight ?? card.primary,
-        } as React.CSSProperties
-      }
-    >
+  const body = (
+    <>
       <div
         style={{
           display: "flex",
@@ -292,6 +278,38 @@ function WorldCard({ card }: { card: WorldCardData }) {
           </div>
         )}
       </div>
+    </>
+  );
+
+  // Inert until launch: no link, no tab stop, not-allowed cursor
+  // (matches worlds/world-cards-grid.tsx and the landing strip).
+  if (card.comingSoon) {
+    return (
+      <div
+        className="tc-world-card"
+        style={{ ...shellStyle, cursor: "not-allowed" }}
+      >
+        {body}
+      </div>
+    );
+  }
+
+  const href = card.owned
+    ? `/worlds/${card.slug}`
+    : `/pricing?locked=${card.slug}`;
+
+  const label = card.owned
+    ? `${card.displayName}, ${card.progressPercent}% complete, open world`
+    : `${card.displayName} locked, view pricing`;
+
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      className="tc-world-card"
+      style={shellStyle}
+    >
+      {body}
     </Link>
   );
 }
