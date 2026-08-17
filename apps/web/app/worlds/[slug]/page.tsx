@@ -17,6 +17,7 @@ import { ModuleMapClient } from "./module-map-client";
 import { ModulePatch } from "@tensorcraft/ui/module-patch";
 import { GuestModuleBanner } from "./guest-module-banner";
 import { ComingSoonStub } from "./coming-soon-stub";
+import { buildCourseJsonLd } from "./course-jsonld";
 import type { Metadata } from "next";
 
 interface Props {
@@ -269,41 +270,7 @@ export default async function WorldDetailPage({ params }: Props) {
         ? "View Capstone"
         : "Start Learning";
 
-  const courseJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    name: `${world.displayName}: ${world.specialization}`,
-    description: world.description,
-    provider: {
-      "@type": "Organization",
-      name: "Tensorcraft",
-      url: "https://tensorcraft.app",
-    },
-    url: `https://tensorcraft.app/worlds/${slug}`,
-    educationalLevel: "Intermediate",
-    programmingLanguage: ["JavaScript", "TypeScript"],
-    // `numberOfCredits: worldModules.length` was removed here. In schema.org
-    // that property denotes ACADEMIC credits, so publishing 11 asserted an
-    // accreditation this product explicitly disclaims elsewhere ("a completion
-    // record, not an accreditation", compare/page.tsx:219-221). Module count
-    // is already conveyed by the on-page content and courseWorkload.
-    teaches: world.specialization,
-    offers: {
-      "@type": "Offer",
-      price: String(PRICING.single.price),
-      priceCurrency: "USD",
-      availability: "https://schema.org/InStock",
-      url: "https://tensorcraft.app/pricing",
-    },
-    hasCourseInstance: {
-      "@type": "CourseInstance",
-      courseMode: "online",
-      // Sum of lesson + exercise estimatedMinutes frontmatter (1,729 min
-      // as of 2026-07-19: 975 lesson + 754 exercise). Recompute when
-      // minutes change: sum lesson+exercise estimatedMinutes / 60, round.
-      courseWorkload: "PT29H",
-    },
-  };
+  const courseJsonLd = buildCourseJsonLd(world);
 
   return (
     <main
