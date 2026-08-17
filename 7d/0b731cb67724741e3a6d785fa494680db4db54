@@ -1,0 +1,54 @@
+docs/privacy-compliance.md
+  s_7e689fa07d6423::t_3bd8ed125416a6 44-49
+apps/web/package.json
+  s_7e689fa07d6423::t_20749af4b1de6a 24,31
+apps/web/app/privacy/page.tsx
+  s_7e689fa07d6423::t_e2f6f56881a3e0 159-161
+  s_7e689fa07d6423::t_fd3277da9696e4 208-209
+apps/web/app/components/consent-gated-speed-insights.tsx
+  s_7e689fa07d6423::t_32bc6f10f31f88 1-36
+apps/web/app/layout.tsx
+  s_7e689fa07d6423::t_58f96a061d9f4b 21
+  s_7e689fa07d6423::t_fc970a90e6f4e5 184
+apps/web/app/worlds/newsletter-modal.tsx
+  s_f46a4385a76535::t_7a6e7492f013c6 88
+  s_f46a4385a76535::t_211eeb6146002f 100,103-104
+  s_f46a4385a76535::t_751cbe0beb5d53 13-19
+  s_f46a4385a76535::t_0d41728ccc8080 47-50
+  s_f46a4385a76535::t_f3cc9a6087a3d7 150
+apps/web/lib/waitlist.ts
+  s_f46a4385a76535::t_eeed27c185df7b 21-27
+apps/web/app/components/__tests__/consent-gated-speed-insights.test.tsx
+  s_7e689fa07d6423::t_8787ecbf68a8be 1-56
+apps/web/app/worlds/__tests__/page.test.tsx
+  s_f46a4385a76535::t_299a396d6e38c6 281-284
+  s_f46a4385a76535::t_d02d677cb3c70b 246-249
+apps/web/app/privacy/__snapshots__/page.snapshot.test.tsx.snap
+  s_f46a4385a76535::t_404aa36a522a1f 167,247
+pnpm-lock.yaml
+  s_7e689fa07d6423::t_d5c39e7fb24119 184-186,2047-2072,6138-6142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7d0b731cb67724741e3a6d785fa494680db4db54",
+  "prompts": {},
+  "sessions": {
+    "s_7e689fa07d6423": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af29ecb5-8b7d-4bbf-a9d2-71008e282166",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_f46a4385a76535": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "94a71756-0185-4ff9-ad31-f6273cdab158",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
