@@ -139,18 +139,17 @@ export default function LearnPage() {
           Coming Soon
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-3">
-          {comingWorlds.length} more worlds ship in waves. Each has a preview
-          page where you can join its waitlist:
+          {comingWorlds.length} more worlds ship in waves:
         </p>
+        {/* Names only, no links: coming-soon worlds are inert everywhere
+            (worlds/world-cards-grid.tsx precedent). The stubs stay in the
+            sitemap for crawlers; the notify path is /worlds. */}
         <ul className="space-y-2 mb-8 text-base text-text-muted font-sans">
           {comingWorlds.map((slug) => (
             <li key={slug}>
-              <Link
-                href={`/worlds/${slug}`}
-                className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-              >
+              <span className="text-text-primary">
                 {worlds[slug]?.displayName ?? slug}
-              </Link>
+              </span>
               : {worlds[slug]?.specialization} (coming soon)
             </li>
           ))}
