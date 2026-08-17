@@ -10,9 +10,13 @@ export interface NewsletterModalProps {
 }
 
 /**
- * Newsletter signup modal, brutalist dialog, trapped focus, escape-to-close,
- * click-outside-to-close. Submits to the shared waitlist helper
- * (`submitWaitlist`) which writes to Supabase.
+ * Launch-updates signup modal, brutalist dialog, trapped focus,
+ * escape-to-close, click-outside-to-close. Submits to the shared waitlist
+ * helper (`submitWaitlist`) which writes to Supabase as an all-worlds
+ * launch-notice entry. NOT a newsletter signup: the copy promises launch
+ * emails only, so the digest opt-in stays false (2026-08-17; before that
+ * this modal was the weekly "The Bridge" signup and passed
+ * subscribeToDigest: true).
  */
 export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
   const [email, setEmail] = useState("");
@@ -40,11 +44,10 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
         return;
       }
       setStatus("submitting");
-      // This modal IS the newsletter signup, so digest consent is explicit
-      // here - the only call site that passes it (see submitWaitlist docs).
-      const result = await submitWaitlist(trimmed, "all", "world-selection", {
-        subscribeToDigest: true,
-      });
+      // No digest opt-in: the copy above promises launch emails only, so
+      // subscribing to the weekly digest would exceed the consent given
+      // (GDPR Art. 4(11); see submitWaitlist docs).
+      const result = await submitWaitlist(trimmed, "all", "world-selection");
       setStatus(result);
     },
     [email, status],
@@ -82,7 +85,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close newsletter signup"
+              aria-label="Close signup"
               className="font-mono text-sm text-text-muted hover:text-text-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 rounded-none px-2"
             >
               ×
@@ -94,11 +97,11 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
               id="newsletter-modal-title"
               className="text-2xl font-mono font-bold text-text-primary mb-2 tracking-tight"
             >
-              The Bridge, weekly
+              Launch updates
             </h2>
             <p className="text-sm text-text-muted mb-5 leading-relaxed">
-              One email a week: browser-ML news mapped to the lessons that teach
-              it, plus world launches and discounts. Unsubscribe anytime.
+              Get an email when a new world launches, with its launch discount.
+              Unsubscribe anytime.
             </p>
 
             {status === "done" ? (
@@ -144,7 +147,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
                   data-testid="newsletter-submit"
                   className="mt-5 w-full inline-flex items-center justify-center font-mono px-6 py-3 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border-2 border-primary rounded-none brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-60"
                 >
-                  {status === "submitting" ? "Submitting..." : "Subscribe →"}
+                  {status === "submitting" ? "Submitting..." : "Notify me →"}
                 </button>
               </form>
             )}

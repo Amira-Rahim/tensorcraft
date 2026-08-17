@@ -243,6 +243,10 @@ describe("WorldsPage (Deep Orbit launch + 4 coming-soon)", () => {
     expect(dialog).toBeInTheDocument();
     expect(dialog).toHaveAttribute("role", "dialog");
     expect(dialog).toHaveAttribute("aria-modal", "true");
+    // Launch-updates framing, not the retired weekly-newsletter promise:
+    // the modal must only promise what actually ships.
+    expect(dialog.textContent).toContain("Launch updates");
+    expect(dialog.textContent).not.toMatch(/weekly|one email a week/i);
   });
 
   it("newsletter modal sits inside an active FocusTrap", async () => {
@@ -274,14 +278,14 @@ describe("NewsletterModal, interactions", () => {
     fireEvent.click(screen.getByTestId("newsletter-submit"));
 
     await waitFor(() => {
-      // The 4th arg is the explicit digest opt-in: this modal IS the
-      // newsletter signup, the only call site allowed to pass it
-      // (Tier 1-LEGAL waitlist consent fix, migration 050).
+      // No 4th arg: the modal is a launch-updates signup, not a newsletter
+      // signup, so it must NOT pass the digest opt-in. Its copy promises
+      // launch emails only; subscribing to the digest would exceed that
+      // consent (GDPR Art. 4(11), Tier 1-LEGAL waitlist consent fix).
       expect(submitWaitlistMock).toHaveBeenCalledWith(
         "jane@example.com",
         "all",
         "world-selection",
-        { subscribeToDigest: true },
       );
     });
 

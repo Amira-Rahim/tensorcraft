@@ -18,6 +18,7 @@ import { GithubNudgeToast } from "./components/github-nudge-toast";
 import { GuestProgressBridge } from "./components/guest-progress-bridge";
 import "./globals.css";
 import { ConsentGatedVercelAnalytics } from "./components/consent-gated-vercel-analytics";
+import { ConsentGatedSpeedInsights } from "./components/consent-gated-speed-insights";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -180,6 +181,7 @@ export default function RootLayout({
             <Analytics /> that sat here beaconed before consent and after
             an explicit reject. */}
         <ConsentGatedVercelAnalytics />
+        <ConsentGatedSpeedInsights />
         <WorldProvider>
           {/* <PostHogProvider> was mounted here too. It duplicated
               AnalyticsProvider's init and $pageview capture exactly, so every

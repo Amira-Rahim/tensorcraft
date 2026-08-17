@@ -156,8 +156,9 @@ export default function PrivacyPage() {
               cookie banner. With your consent: PostHog (EU servers) records
               pageviews and product events keyed to a random account ID, never
               your name or email; Plausible and Vercel Analytics count pageviews
-              without cookies. Declining the banner, or ignoring it, keeps all
-              three off. You can change your answer any time via &quot;Cookie
+              without cookies; Vercel Speed Insights measures page load times,
+              also without cookies. Declining the banner, or ignoring it, keeps
+              all four off. You can change your answer any time via &quot;Cookie
               settings&quot; in the footer.
             </p>
             <p>
@@ -204,7 +205,8 @@ export default function PrivacyPage() {
               </li>
               <li>
                 <strong className="text-text-primary">Vercel</strong>: web
-                hosting, plus consent-gated pageview analytics
+                hosting, plus consent-gated pageview analytics and page speed
+                metrics
               </li>
               <li>
                 <strong className="text-text-primary">Fly.io</strong>: API

@@ -18,11 +18,13 @@ export async function submitWaitlist(
   source: string,
   opts?: {
     /**
-     * Explicit opt-in to the weekly digest. Only the newsletter modal - an
-     * actual newsletter signup - passes true. World waitlist forms leave it
-     * false: "tell me when this world ships" is not newsletter consent
-     * (GDPR Art. 4(11); Tier 1-LEGAL waitlist consent fix, migration 050
-     * flipped the column default to false to match).
+     * Explicit opt-in to the weekly digest. As of 2026-08-17 NO call site
+     * passes true: the newsletter modal became a launch-updates signup
+     * (its copy promises launch emails only), and world waitlist forms
+     * were always false. "Tell me when this ships" is not newsletter
+     * consent (GDPR Art. 4(11); Tier 1-LEGAL waitlist consent fix,
+     * migration 050 flipped the column default to false to match). Pass
+     * true only from a surface whose copy explicitly offers the digest.
      */
     subscribeToDigest?: boolean;
   },

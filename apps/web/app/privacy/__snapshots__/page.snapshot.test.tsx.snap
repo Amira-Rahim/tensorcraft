@@ -164,7 +164,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
         <p
           class="mb-3"
         >
-          No analytics run until you choose "Accept all" on the cookie banner. With your consent: PostHog (EU servers) records pageviews and product events keyed to a random account ID, never your name or email; Plausible and Vercel Analytics count pageviews without cookies. Declining the banner, or ignoring it, keeps all three off. You can change your answer any time via "Cookie settings" in the footer.
+          No analytics run until you choose "Accept all" on the cookie banner. With your consent: PostHog (EU servers) records pageviews and product events keyed to a random account ID, never your name or email; Plausible and Vercel Analytics count pageviews without cookies; Vercel Speed Insights measures page load times, also without cookies. Declining the banner, or ignoring it, keeps all four off. You can change your answer any time via "Cookie settings" in the footer.
         </p>
         <p>
           Sentry, our error monitor, runs without consent so we can see crashes: our legitimate interest in a working product. Before an error report leaves your browser, Sentry strips emails, user IDs, IP addresses, and auth headers. Session recording is off.
@@ -244,7 +244,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
             >
               Vercel
             </strong>
-            : web hosting, plus consent-gated pageview analytics
+            : web hosting, plus consent-gated pageview analytics and page speed metrics
           </li>
           <li>
             <strong

@@ -41,6 +41,12 @@ analytics cookies (see `app/components/cookie-consent.tsx` + the
 `tc-cookie-consent` localStorage key consumed in `posthog-provider.tsx`).
 Without consent, no events are captured.
 
+Vercel Web Analytics and Vercel Speed Insights sit behind the same
+gate (`consent-gated-vercel-analytics.tsx` and
+`consent-gated-speed-insights.tsx`): each renders nothing before
+consent and drops queued events via `beforeSend` if consent is
+withdrawn while the script is already loaded.
+
 ### Sentry - EU project
 
 Separate Sentry projects are used for the web and API apps. Each DSN
