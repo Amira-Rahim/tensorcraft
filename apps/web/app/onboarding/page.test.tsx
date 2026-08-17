@@ -298,6 +298,68 @@ describe("OnboardingPage", () => {
     });
   });
 
+  it("final submit hard-navigates so middleware re-evaluates the fresh JWT", async () => {
+    // Regression guard for the 2026-08-17 frozen-LAUNCHING bug: the client
+    // router cache had a pre-completion prefetch of /dashboard (a middleware
+    // redirect BACK to /onboarding, minted while onboarding_completed was
+    // still false). router.push replayed that stale entry, so the learner
+    // never left the wizard. Completion must escape the soft-nav cache with
+    // a full page load: window.location.assign, never router.push.
+    const assignMock = vi.fn();
+    vi.stubGlobal("location", {
+      ...window.location,
+      assign: assignMock,
+      search: "?redirectTo=%2Fdashboard",
+    });
+    const fetchMock = vi.fn(
+      async () => ({ ok: true, json: async () => ({}) }) as unknown as Response,
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await renderPage();
+    clickNext(); // -> Background
+    fireEvent.click(screen.getByTestId("experience-intermediate"));
+    clickNext(); // -> Goal
+    fireEvent.click(screen.getByTestId("goal-career"));
+    clickNext(); // -> Ready
+    fireEvent.click(screen.getByTestId("onboarding-submit"));
+
+    await waitFor(() => {
+      expect(assignMock).toHaveBeenCalledWith("/dashboard");
+    });
+    expect(pushMock).not.toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
+  });
+
+  it("final submit falls back to the launch world without a redirectTo", async () => {
+    const assignMock = vi.fn();
+    vi.stubGlobal("location", {
+      ...window.location,
+      assign: assignMock,
+      search: "",
+    });
+    const fetchMock = vi.fn(
+      async () => ({ ok: true, json: async () => ({}) }) as unknown as Response,
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await renderPage();
+    clickNext(); // -> Background
+    fireEvent.click(screen.getByTestId("experience-beginner"));
+    clickNext(); // -> Goal
+    fireEvent.click(screen.getByTestId("goal-hobby"));
+    clickNext(); // -> Ready
+    fireEvent.click(screen.getByTestId("onboarding-submit"));
+
+    await waitFor(() => {
+      expect(assignMock).toHaveBeenCalledWith("/worlds/deep-orbit");
+    });
+    expect(pushMock).not.toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
+  });
+
   it("fires onboarding_step_viewed for each step as the user advances", async () => {
     await renderPage();
     // Step 1 (Welcome) fires on mount.

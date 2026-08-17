@@ -30,7 +30,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
-import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { WORLD_CONTENT, DEFAULT_WORLD } from "@tensorcraft/shared";
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
@@ -95,7 +94,6 @@ type StepIndex = 0 | 1 | 2 | 3;
 // ---------------------------------------------------------------------------
 
 export default function OnboardingPage() {
-  const router = useRouter();
   const [step, setStep] = useState<StepIndex>(0);
 
   // Background step
@@ -293,12 +291,19 @@ export default function OnboardingPage() {
       const safeTarget = isSafePath
         ? (requested as string)
         : `/worlds/${LAUNCH_WORLD_SLUG}`;
-      router.push(safeTarget);
+      // HARD navigation, never router.push. The client router cache holds
+      // pre-completion prefetches of protected routes, and those entries are
+      // middleware redirects BACK to /onboarding (minted while the JWT still
+      // said onboarding_completed=false). A soft push replays that stale
+      // redirect: the wizard stays mounted and the learner is frozen on
+      // "LAUNCHING..." forever. A full page load re-runs middleware with the
+      // fresh token minted above.
+      window.location.assign(safeTarget);
     } catch (e) {
       setError(e instanceof Error ? e.message : ERROR_MESSAGES.unknown);
       setSaving(false);
     }
-  }, [experienceLevel, learningGoal, feBackground, yearsAsNumber, router]);
+  }, [experienceLevel, learningGoal, feBackground, yearsAsNumber]);
 
   // Global Enter-to-advance (outside textarea / button / select).
   const wizardRef = useRef<HTMLDivElement>(null);
