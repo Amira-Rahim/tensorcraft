@@ -144,7 +144,7 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 - **Security Headers**: Sets CSP, HSTS, X-Content-Type-Options, X-Frame-Options, and generates a unique `X-Request-ID` per request (`security-headers.ts`)
 - **CORS**: Allows `localhost:3000` (dev) and `tensorcraft.app` (prod). Configurable via `CORS_ORIGINS` env var.
 - **Auth**: Validates Supabase JWT from Authorization header, sets `userId` and `accessToken` on context
-- **Rate Limiting**: Upstash Redis (mandatory, distributed). 60 req/min per IP. Exempt: Stripe/Kit webhook routes and `/api/health` (liveness; Fly + Docker probes were burning the Upstash command quota). `/api/health/ready` is not exempt.
+- **Rate Limiting**: `@upstash/ratelimit` fixed window over Upstash Redis (distributed). 60 req/min per subject (bearer-token hash first, IP fallback). Fixed window costs 2 Redis commands/request vs sliding's 4 (Upstash bills commands inside EVAL scripts), and already-blocked subjects are 429'd from an in-process cache at zero Redis cost. Exempt: Stripe/Kit webhook routes and `/api/health` (liveness; Fly + Docker probes were burning the Upstash command quota). `/api/health/ready` is not exempt.
 
 ## Next.js Frontend (`apps/web`)
 

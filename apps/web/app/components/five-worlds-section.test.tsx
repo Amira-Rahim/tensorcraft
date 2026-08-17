@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { FiveWorldsSection } from "./five-worlds-section";
 
 // Stub next/link so render works without the Next router.
@@ -64,6 +64,13 @@ vi.mock("@/lib/location-art", () => ({
   heroPlateSrc: () => undefined,
 }));
 
+// The modal's own behavior (form, focus trap, submit) has its own
+// coverage; here only the open wiring matters.
+vi.mock("@/app/worlds/newsletter-modal", () => ({
+  NewsletterModal: ({ open }: { open: boolean }) =>
+    open ? <div data-testid="newsletter-modal-stub" /> : null,
+}));
+
 const COMING_SOON_SLUGS = [
   "neon-protocol",
   "signal-ward",
@@ -87,5 +94,12 @@ describe("FiveWorldsSection coming-soon interactivity", () => {
     const links = screen.getAllByRole("link");
     expect(links).toHaveLength(1);
     expect(links[0].getAttribute("href")).toBe("/worlds/deep-orbit");
+  });
+
+  it("opens the newsletter modal from a coming-soon Notify me CTA", () => {
+    render(<FiveWorldsSection />);
+    expect(screen.queryByTestId("newsletter-modal-stub")).toBeNull();
+    fireEvent.click(screen.getAllByRole("button", { name: /notify me/i })[0]);
+    expect(screen.getByTestId("newsletter-modal-stub")).toBeInTheDocument();
   });
 });

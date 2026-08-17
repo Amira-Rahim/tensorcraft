@@ -411,7 +411,7 @@ All requests (except `/api/payments/webhook`) pass through:
 
 1. **Security Headers** - CSP, X-Frame-Options, etc.
 2. **CORS** - Allows `localhost:3000` (dev) and `tensorcraft.app` (prod)
-3. **Rate Limiting** - 60 req/min per IP (code truth; docs previously claimed 120 - reconciled 2026-07-25). Uses Upstash Redis; degrades open (limiter disabled) when Redis is unavailable. Exempt: Stripe/Kit webhooks and `/api/health` (liveness probes hit it every 10-15s per machine; routing them through the limiter burned the Upstash free-tier command quota, found 2026-08-17). `/api/health/ready` stays limited.
+3. **Rate Limiting** - 60 req/min per subject (code truth; docs previously claimed 120 - reconciled 2026-07-25). Uses `@upstash/ratelimit` fixed window (2 Redis commands/request; a subject straddling a window boundary can briefly reach 2x the limit); blocked subjects are rejected from an in-process cache without touching Redis. Degrades open (limiter disabled) when Redis is unavailable. Exempt: Stripe/Kit webhooks and `/api/health` (liveness probes hit it every 10-15s per machine; routing them through the limiter burned the Upstash free-tier command quota, found 2026-08-17). `/api/health/ready` stays limited.
 
 ---
 

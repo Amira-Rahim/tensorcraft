@@ -132,4 +132,11 @@ describe("WorldCardsGrid coming-soon interactivity", () => {
     const link = screen.getByTestId("world-card-deep-orbit").querySelector("a");
     expect(link?.getAttribute("href")).toBe("/worlds/deep-orbit");
   });
+
+  it("opens the newsletter modal from the Notify me CTA", () => {
+    renderComingSoon();
+    expect(screen.queryByTestId("newsletter-modal")).toBeNull();
+    fireEvent.click(screen.getByTestId("world-cta-neon-protocol"));
+    expect(screen.getByTestId("newsletter-modal")).toBeInTheDocument();
+  });
 });

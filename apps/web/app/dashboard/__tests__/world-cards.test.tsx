@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within, fireEvent } from "@testing-library/react";
 import { WorldCards, type WorldCardData } from "../world-cards";
 
 // Render Next's <Link> as a plain <a> so we can assert hrefs without the
@@ -17,6 +17,13 @@ vi.mock("next/link", () => ({
       {children}
     </a>
   ),
+}));
+
+// The modal's own behavior (form, focus trap, submit) has its own
+// coverage; here only the NotifyMeButton open wiring matters.
+vi.mock("@/app/worlds/newsletter-modal", () => ({
+  NewsletterModal: ({ open }: { open: boolean }) =>
+    open ? <div data-testid="newsletter-modal-stub" /> : null,
 }));
 
 function makeCard(overrides: Partial<WorldCardData> = {}): WorldCardData {
@@ -96,6 +103,22 @@ describe("WorldCards", () => {
     expect(
       within(shell as HTMLElement).getByText(/Notify me/i),
     ).toBeInTheDocument();
+  });
+
+  it("opens the newsletter modal from the coming-soon Notify me CTA", () => {
+    const cards = [
+      makeCard({
+        slug: "neon-protocol",
+        displayName: "Neon Protocol",
+        owned: false,
+        totalLessons: 0,
+        comingSoon: true,
+      }),
+    ];
+    render(<WorldCards cards={cards} hasFullBundle={false} />);
+    expect(screen.queryByTestId("newsletter-modal-stub")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /notify me/i }));
+    expect(screen.getByTestId("newsletter-modal-stub")).toBeInTheDocument();
   });
 
   it("owned card links into the world landing page with progress info", () => {

@@ -2,88 +2,79 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { Hono } from "hono";
 
 /**
- * Hand-rolled in-memory mock of the Upstash Redis client surface the
- * rate-limit middleware uses. Backed by a plain `Map<string, Array<{score,member}>>`
- * so we can exercise the sliding-window limit without external deps.
- *
- * Supported operations (enough for rate-limit.ts' pipeline):
- *   - pipeline()
- *       .zremrangebyscore(key, min, max)
- *       .zadd(key, { score, member })
- *       .zcard(key)
- *       .expire(key, seconds)
- *       .exec()  -> returns [null, null, count, null]
+ * Fake of @upstash/ratelimit's documented contract (constructor + limit()),
+ * backed by an in-memory count per `${prefix}:${identifier}`. The middleware's
+ * real logic (subject derivation, exemptions, headers, fail-open) is under
+ * test; the windowing algorithm itself is Upstash's and is tested upstream.
+ * `store` doubles as a probe: exemption tests assert it stays empty, proving
+ * zero Redis-bound calls for exempt paths.
  */
-type ZMember = { score: number; member: string };
-const store = new Map<string, ZMember[]>();
-
-function makePipeline() {
-  const ops: Array<() => unknown> = [];
-  const api = {
-    zremrangebyscore(key: string, min: number, max: number) {
-      ops.push(() => {
-        const arr = store.get(key) ?? [];
-        const kept = arr.filter((e) => e.score < min || e.score > max);
-        store.set(key, kept);
-        return null;
-      });
-      return api;
-    },
-    zadd(key: string, entry: { score: number; member: string }) {
-      ops.push(() => {
-        const arr = store.get(key) ?? [];
-        arr.push(entry);
-        store.set(key, arr);
-        return null;
-      });
-      return api;
-    },
-    zcard(key: string) {
-      ops.push(() => (store.get(key) ?? []).length);
-      return api;
-    },
-    expire(_key: string, _seconds: number) {
-      ops.push(() => null);
-      return api;
-    },
-    async exec() {
-      return ops.map((op) => op());
-    },
-  };
-  return api;
-}
-
-vi.mock("../lib/redis", () => ({
-  getRedis: () => ({
-    pipeline: () => makePipeline(),
-  }),
+const state = vi.hoisted(() => ({
+  store: new Map<string, number>(),
+  failMode: false,
 }));
 
-// Import AFTER vi.mock so the middleware picks up the mocked getRedis.
-const { rateLimitMiddleware, globalRateLimitMiddleware } =
+vi.mock("@upstash/ratelimit", () => {
+  class Ratelimit {
+    private readonly tokens: number;
+    private readonly prefix: string;
+
+    constructor(cfg: { limiter: { tokens: number }; prefix: string }) {
+      this.tokens = cfg.limiter.tokens;
+      this.prefix = cfg.prefix;
+    }
+
+    static fixedWindow(tokens: number, window: string) {
+      return { tokens, window };
+    }
+
+    async limit(identifier: string) {
+      if (state.failMode) throw new Error("redis unavailable");
+      const key = `${this.prefix}:${identifier}`;
+      const count = (state.store.get(key) ?? 0) + 1;
+      state.store.set(key, count);
+      return {
+        success: count <= this.tokens,
+        limit: this.tokens,
+        remaining: Math.max(0, this.tokens - count),
+        reset: Date.now() + 60_000,
+        pending: Promise.resolve(),
+      };
+    }
+  }
+  return { Ratelimit };
+});
+
+// The middleware hands getRedis() to the Ratelimit constructor; with the SDK
+// faked the client is never used, but the call must not throw.
+vi.mock("../lib/redis", () => ({ getRedis: () => ({}) }));
+
+// Import AFTER vi.mock so the middleware picks up the mocks.
+const { rateLimitMiddleware, globalRateLimitMiddleware, createRateLimiter } =
   await import("./rate-limit");
 
 describe("rateLimitMiddleware", () => {
   let app: Hono;
 
   beforeEach(() => {
-    store.clear();
+    state.store.clear();
+    state.failMode = false;
     app = new Hono();
     app.use("*", rateLimitMiddleware);
     app.get("/test", (c) => c.json({ ok: true }));
   });
 
-  it("allows requests under the limit", async () => {
+  it("allows requests under the limit and reports headers", async () => {
     const res = await app.request("/test", {
       headers: { "x-forwarded-for": "192.168.1.100" },
     });
     expect(res.status).toBe(200);
+    expect(res.headers.get("X-RateLimit-Limit")).toBe("60");
+    expect(res.headers.get("X-RateLimit-Remaining")).toBe("59");
   });
 
   it("returns 429 when rate limit exceeded", async () => {
-    // Use a unique IP for this test
-    const ip = `rate-limit-test-${Date.now()}`;
-    const headers = { "x-forwarded-for": ip };
+    const headers = { "x-forwarded-for": "192.168.1.101" };
 
     // Send 61 requests (limit is 60)
     for (let i = 0; i < 60; i++) {
@@ -96,13 +87,62 @@ describe("rateLimitMiddleware", () => {
     expect(body.error).toMatch(/too many/i);
     expect(res.headers.get("Retry-After")).toBeDefined();
   });
+
+  it("buckets by bearer-token identity, not IP, when a token is present", async () => {
+    const auth = `Bearer ${"a".repeat(32)}`;
+
+    // Rotating the IP must not mint fresh buckets (the recorded
+    // cf-connecting-ip bypass): same token = same budget.
+    for (let i = 0; i < 60; i++) {
+      await app.request("/test", {
+        headers: { authorization: auth, "x-forwarded-for": `10.9.${i}.1` },
+      });
+    }
+
+    const res = await app.request("/test", {
+      headers: { authorization: auth, "x-forwarded-for": "10.9.255.1" },
+    });
+    expect(res.status).toBe(429);
+  });
+
+  it("fails open when the limiter errors", async () => {
+    state.failMode = true;
+    const res = await app.request("/test", {
+      headers: { "x-forwarded-for": "192.168.1.102" },
+    });
+    expect(res.status).toBe(200);
+    expect(res.headers.get("X-RateLimit-Limit")).toBeNull();
+  });
+});
+
+describe("createRateLimiter", () => {
+  it("enforces a route-scoped budget", async () => {
+    state.store.clear();
+    state.failMode = false;
+    const app = new Hono();
+    app.post(
+      "/scoped",
+      createRateLimiter({ max: 2, keyPrefix: "rl:test-scope" }),
+      (c) => c.json({ ok: true }),
+    );
+
+    const headers = { "x-forwarded-for": "192.168.2.1" };
+    for (let i = 0; i < 2; i++) {
+      const res = await app.request("/scoped", { method: "POST", headers });
+      expect(res.status).toBe(200);
+    }
+
+    const res = await app.request("/scoped", { method: "POST", headers });
+    expect(res.status).toBe(429);
+  });
 });
 
 describe("globalRateLimitMiddleware", () => {
   let app: Hono;
 
   beforeEach(() => {
-    store.clear();
+    state.store.clear();
+    state.failMode = false;
     app = new Hono();
     app.use("*", globalRateLimitMiddleware);
     app.get("/api/health", (c) => c.json({ status: "ok" }));
@@ -118,7 +158,7 @@ describe("globalRateLimitMiddleware", () => {
     expect(res.status).toBe(200);
     // Limiter never ran: no headers set, no Redis commands issued.
     expect(res.headers.get("X-RateLimit-Limit")).toBeNull();
-    expect(store.size).toBe(0);
+    expect(state.store.size).toBe(0);
   });
 
   it("still rate limits /api/health/ready (it queries the DB)", async () => {
@@ -127,7 +167,7 @@ describe("globalRateLimitMiddleware", () => {
     });
     expect(res.status).toBe(200);
     expect(res.headers.get("X-RateLimit-Limit")).toBe("60");
-    expect(store.size).toBe(1);
+    expect(state.store.size).toBe(1);
   });
 
   it("exempts webhook paths without touching Redis", async () => {
@@ -137,7 +177,7 @@ describe("globalRateLimitMiddleware", () => {
     });
     expect(res.status).toBe(200);
     expect(res.headers.get("X-RateLimit-Limit")).toBeNull();
-    expect(store.size).toBe(0);
+    expect(state.store.size).toBe(0);
   });
 
   it("rate limits ordinary routes", async () => {

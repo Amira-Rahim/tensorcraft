@@ -24,9 +24,10 @@ export interface WorldCardData {
   price: number;
   /**
    * Launch status. `live` worlds link to their module map; `coming-soon`
-   * cards render inert (no link, not-allowed cursor) until launch. The
-   * per-world stub at /worlds/{slug} still exists for direct URLs; the
-   * notify path on this page is the newsletter modal below the grid.
+   * cards render inert (no link, not-allowed cursor) until launch, with
+   * one interactive element: the Notify me CTA, which opens the shared
+   * newsletter modal. The per-world stub at /worlds/{slug} still exists
+   * for direct URLs.
    */
   status: "live" | "coming-soon";
   /**
@@ -76,7 +77,12 @@ export function WorldCardsGrid({ cards }: WorldCardsGridProps) {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {comingSoonCards.map((card) => (
-                <WorldCard key={card.slug} card={card} variant="muted" />
+                <WorldCard
+                  key={card.slug}
+                  card={card}
+                  variant="muted"
+                  onNotify={() => setModalOpen(true)}
+                />
               ))}
             </div>
           </div>
@@ -109,9 +115,14 @@ export function WorldCardsGrid({ cards }: WorldCardsGridProps) {
 interface WorldCardProps {
   card: WorldCardData;
   variant: "hero" | "muted";
+  /**
+   * Opens the grid's shared newsletter modal. Only the coming-soon CTA
+   * uses it; live cards navigate instead.
+   */
+  onNotify?: () => void;
 }
 
-function WorldCard({ card, variant }: WorldCardProps) {
+function WorldCard({ card, variant, onNotify }: WorldCardProps) {
   const isHero = variant === "hero";
   const isComingSoon = card.status === "coming-soon";
   // Ignites the card's scene (SceneCanvas eases its own 0..1 hot amount);
@@ -253,17 +264,31 @@ function WorldCard({ card, variant }: WorldCardProps) {
               </>
             )}
           </span>
-          <span
-            data-testid={`world-cta-${card.slug}`}
-            className="font-mono text-xs uppercase tracking-[0.15em] font-semibold"
-            style={{ color: "var(--card-active-primary)" }}
-          >
-            {isComingSoon
-              ? "Notify me →"
-              : card.owned
-                ? "Continue →"
-                : "Start →"}
-          </span>
+          {isComingSoon ? (
+            // The one interactive element on an otherwise inert card:
+            // opens the grid's shared newsletter modal. Focus mirrors
+            // hover so keyboard users get the same scene ignition the
+            // card link used to provide.
+            <button
+              type="button"
+              data-testid={`world-cta-${card.slug}`}
+              onClick={onNotify}
+              onFocus={() => setHovered(true)}
+              onBlur={() => setHovered(false)}
+              className="font-mono text-xs uppercase tracking-[0.15em] font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              style={{ color: "var(--card-active-primary)" }}
+            >
+              Notify me →
+            </button>
+          ) : (
+            <span
+              data-testid={`world-cta-${card.slug}`}
+              className="font-mono text-xs uppercase tracking-[0.15em] font-semibold"
+              style={{ color: "var(--card-active-primary)" }}
+            >
+              {card.owned ? "Continue →" : "Start →"}
+            </span>
+          )}
         </div>
       </div>
     </>
@@ -277,9 +302,10 @@ function WorldCard({ card, variant }: WorldCardProps) {
       className="world-card-wrapper"
     >
       {isComingSoon ? (
-        // Inert until launch: no link, no tab stop, not-allowed cursor.
-        // The mouse handlers stay so hover still ignites the scene and the
-        // brutalist-hover pose still completes; only navigation is gone.
+        // Inert until launch: no link, not-allowed cursor. The mouse
+        // handlers stay so hover still ignites the scene and the
+        // brutalist-hover pose still completes. The card's one tab stop
+        // is the Notify me CTA button inside the body.
         <div
           className={`${shellClassName} cursor-not-allowed opacity-80 hover:opacity-100 transition-opacity`}
           style={shellStyle}

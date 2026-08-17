@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NotifyMeButton } from "./notify-me-button";
 
 const MONO = "var(--font-mono), 'JetBrains Mono', monospace";
 
@@ -18,6 +19,7 @@ export interface WorldCardData {
   /**
    * When true, render as an inert "Coming soon" card: no link, not-allowed
    * cursor (matches worlds/world-cards-grid.tsx and the landing strip).
+   * The Notify me CTA opens the shared newsletter modal.
    */
   comingSoon: boolean;
 }
@@ -202,16 +204,21 @@ function WorldCard({ card }: { card: WorldCardData }) {
               color: "var(--tc-muted)",
             }}
           >
-            <span>Waitlist open</span>
-            <span
+            <span>Updates by email</span>
+            <NotifyMeButton
               style={{
+                fontFamily: MONO,
+                fontSize: 12,
                 color: "var(--card-active-primary)",
                 fontWeight: 700,
                 letterSpacing: "0.05em",
+                background: "none",
+                border: "none",
+                padding: 0,
               }}
             >
               Notify me &rarr;
-            </span>
+            </NotifyMeButton>
           </div>
         ) : card.owned ? (
           <>
@@ -281,8 +288,9 @@ function WorldCard({ card }: { card: WorldCardData }) {
     </>
   );
 
-  // Inert until launch: no link, no tab stop, not-allowed cursor
-  // (matches worlds/world-cards-grid.tsx and the landing strip).
+  // Inert until launch: no link, not-allowed cursor (matches
+  // worlds/world-cards-grid.tsx and the landing strip). The card's one
+  // tab stop is the NotifyMeButton client island inside the body.
   if (card.comingSoon) {
     return (
       <div

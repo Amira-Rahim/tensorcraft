@@ -1,13 +1,14 @@
 import { createHash } from "node:crypto";
 import type { Context, Next } from "hono";
+import { Ratelimit } from "@upstash/ratelimit";
 import { getRedis } from "../lib/redis";
 import { logger } from "../lib/logger";
 
-const WINDOW_MS = 60_000; // 1 minute
-const MAX_REQUESTS = 60; // 60 req/min per IP
+const WINDOW = "60 s";
+const MAX_REQUESTS = 60; // 60 req/min per subject
 
 interface RateLimiterOptions {
-  /** Requests allowed per IP per window. */
+  /** Requests allowed per subject per window. */
   max?: number;
   /**
    * Redis key namespace. Distinct prefixes give a route its own budget, so a
@@ -18,7 +19,39 @@ interface RateLimiterOptions {
 }
 
 /**
- * Build a sliding-window rate limiter backed by Upstash Redis.
+ * Limiters backed by @upstash/ratelimit's FIXED window, not sliding: Upstash
+ * bills the commands inside an EVAL script, so the SDK's sliding window costs
+ * 4 commands per request (same as the old hand-rolled pipeline) while fixed
+ * window costs 2 (EVAL+INCR; 3 on a window's first hit). That halves quota
+ * burn, the constraint that matters on the free tier's 500K commands/month
+ * (2026-08-17 near-exhaustion). Trade-off: a subject straddling a window
+ * boundary can briefly reach 2x the limit, acceptable for abuse control.
+ * The ephemeral cache serves 429s for already-blocked subjects from process
+ * memory at zero Redis cost, so abuse can't burn quota either.
+ *
+ * One instance per (prefix, max): the SDK binds limit config at construction.
+ */
+const limiters = new Map<string, Ratelimit>();
+
+function getLimiter(max: number, keyPrefix: string): Ratelimit {
+  const cacheKey = `${keyPrefix}:${max}`;
+  let limiter = limiters.get(cacheKey);
+  if (!limiter) {
+    limiter = new Ratelimit({
+      redis: getRedis(),
+      limiter: Ratelimit.fixedWindow(max, WINDOW),
+      prefix: keyPrefix,
+      ephemeralCache: new Map(),
+      // Resolve as allowed if Redis stalls; hard errors fail open below.
+      timeout: 2000,
+    });
+    limiters.set(cacheKey, limiter);
+  }
+  return limiter;
+}
+
+/**
+ * Build a rate limiter middleware for a route-scoped budget.
  * Consistent across all API instances.
  *
  * On Redis failure: allows the request through (graceful degradation).
@@ -36,7 +69,7 @@ export function createRateLimiter({
   };
 }
 
-/** Default limiter: 60 req/min per IP. */
+/** Default limiter: 60 req/min per subject. */
 export async function rateLimitMiddleware(
   c: Context,
   next: Next,
@@ -49,11 +82,11 @@ export async function rateLimitMiddleware(
  * - Third-party webhooks: Stripe and Kit retry aggressively; a 429 risks
  *   dropping a retry and desyncing our DB from the provider's state.
  * - /api/health (exact match, liveness only): probed every 10s per machine
- *   by Fly plus every 15s by the Dockerfile HEALTHCHECK. Each pass through
- *   the limiter costs a 4-command Redis pipeline, which burned ~98% of the
- *   Upstash free tier's 500K monthly commands on health checks alone
- *   (2026-08-17). The endpoint is static JSON, so skipping is safe.
- *   /api/health/ready is NOT exempt: it queries Supabase per hit.
+ *   by Fly plus every 15s by the Dockerfile HEALTHCHECK. Routing probes
+ *   through the limiter burned ~98% of the Upstash free tier's 500K monthly
+ *   commands on health checks alone (2026-08-17). The endpoint is static
+ *   JSON, so skipping is safe. /api/health/ready is NOT exempt: it queries
+ *   Supabase per hit.
  */
 function isRateLimitExempt(path: string): boolean {
   return (
@@ -103,29 +136,20 @@ async function applyRateLimit(
   const subject = rateLimitSubject(c);
 
   try {
-    const redis = getRedis();
-    const key = `${keyPrefix}:${subject}`;
-    const now = Date.now();
-    const windowStart = now - WINDOW_MS;
-
-    // Sliding window: remove old entries, add current, count
-    const pipeline = redis.pipeline();
-    pipeline.zremrangebyscore(key, 0, windowStart);
-    pipeline.zadd(key, { score: now, member: `${now}:${Math.random()}` });
-    pipeline.zcard(key);
-    pipeline.expire(key, 120); // 2-minute TTL (covers the window + buffer)
-
-    const results = await pipeline.exec();
-    const requestCount = results[2] as number;
+    const { success, remaining, reset } = await getLimiter(
+      maxRequests,
+      keyPrefix,
+    ).limit(subject);
 
     c.header("X-RateLimit-Limit", String(maxRequests));
-    c.header(
-      "X-RateLimit-Remaining",
-      String(Math.max(0, maxRequests - requestCount)),
-    );
+    c.header("X-RateLimit-Remaining", String(Math.max(0, remaining)));
 
-    if (requestCount > maxRequests) {
-      c.header("Retry-After", "60");
+    if (!success) {
+      const retryAfterSeconds = Math.max(
+        1,
+        Math.ceil((reset - Date.now()) / 1000),
+      );
+      c.header("Retry-After", String(retryAfterSeconds));
       return c.json(
         { error: "Too many requests. Please try again later." },
         429,

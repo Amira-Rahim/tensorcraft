@@ -18,6 +18,10 @@ import {
 // components and with them sandpack, which the landing page must not ship.
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
 import { heroPlateSrc } from "@/lib/location-art";
+// Notify path for the inert coming-soon cards. Cheap for this bundle: the
+// modal renders null until opened, and its one heavy dependency (the
+// Supabase browser client, via lib/waitlist) already ships with the nav.
+import { NewsletterModal } from "@/app/worlds/newsletter-modal";
 
 /* ── World card data derived from manifests ──────────────── */
 
@@ -72,6 +76,7 @@ function hexToRgb(hex: string): [number, number, number] {
 
 export function FiveWorldsSection() {
   const [hovered, setHovered] = useState<string | null>(null);
+  const [notifyOpen, setNotifyOpen] = useState(false);
 
   return (
     <section className="border-b border-border">
@@ -203,10 +208,11 @@ export function FiveWorldsSection() {
               hovered={hovered === t.slug}
               className="absolute inset-0 z-0 pointer-events-none"
             />
-            {/* Inert until launch: no link, no tab stop, not-allowed
-                cursor (matches worlds/world-cards-grid.tsx). The hover
-                handlers on the wrapping motion.div keep the scene
-                ignition and hover treatment completing unchanged. */}
+            {/* Inert until launch: no link, not-allowed cursor (matches
+                worlds/world-cards-grid.tsx). The hover handlers on the
+                wrapping motion.div keep the scene ignition and hover
+                treatment completing unchanged; the card's one tab stop
+                is the Notify me CTA button below. */}
             <div
               className="flex flex-col gap-1.5 relative z-10 px-8 py-8 h-full cursor-not-allowed"
               data-testid={`coming-soon-card-${t.slug}`}
@@ -232,16 +238,25 @@ export function FiveWorldsSection() {
                 </span>
               </div>
               <div className="font-mono text-xs text-text-muted">{t.spec}</div>
-              <span
-                className="font-mono text-xs tracking-wider group-hover:opacity-100 transition-opacity mt-1"
+              {/* The one interactive element on the inert card: opens the
+                  newsletter modal. Focus mirrors hover so keyboard users
+                  get the same scene ignition. */}
+              <button
+                type="button"
+                onClick={() => setNotifyOpen(true)}
+                onFocus={() => setHovered(t.slug)}
+                onBlur={() => setHovered(null)}
+                className="font-mono text-xs tracking-wider group-hover:opacity-100 transition-opacity mt-1 self-start text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                 style={{ color: "var(--card-active-primary)" }}
               >
                 Notify me &rarr;
-              </span>
+              </button>
             </div>
           </motion.div>
         ))}
       </div>
+
+      <NewsletterModal open={notifyOpen} onClose={() => setNotifyOpen(false)} />
     </section>
   );
 }
