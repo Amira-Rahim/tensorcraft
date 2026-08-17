@@ -36,11 +36,39 @@ export function createRateLimiter({
   };
 }
 
-/** Default limiter: 60 req/min per IP, applied globally except to webhooks. */
+/** Default limiter: 60 req/min per IP. */
 export async function rateLimitMiddleware(
   c: Context,
   next: Next,
 ): Promise<Response | void> {
+  return applyRateLimit(c, next, MAX_REQUESTS, "rl");
+}
+
+/**
+ * Paths the global limiter skips entirely:
+ * - Third-party webhooks: Stripe and Kit retry aggressively; a 429 risks
+ *   dropping a retry and desyncing our DB from the provider's state.
+ * - /api/health (exact match, liveness only): probed every 10s per machine
+ *   by Fly plus every 15s by the Dockerfile HEALTHCHECK. Each pass through
+ *   the limiter costs a 4-command Redis pipeline, which burned ~98% of the
+ *   Upstash free tier's 500K monthly commands on health checks alone
+ *   (2026-08-17). The endpoint is static JSON, so skipping is safe.
+ *   /api/health/ready is NOT exempt: it queries Supabase per hit.
+ */
+function isRateLimitExempt(path: string): boolean {
+  return (
+    path === "/api/payments/webhook" ||
+    path.startsWith("/api/webhooks/") ||
+    path === "/api/health"
+  );
+}
+
+/** Global limiter for index.ts: default limits minus the exempt paths. */
+export async function globalRateLimitMiddleware(
+  c: Context,
+  next: Next,
+): Promise<Response | void> {
+  if (isRateLimitExempt(c.req.path)) return next();
   return applyRateLimit(c, next, MAX_REQUESTS, "rl");
 }
 

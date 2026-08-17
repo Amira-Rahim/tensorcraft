@@ -60,7 +60,8 @@ vi.mock("../lib/redis", () => ({
 }));
 
 // Import AFTER vi.mock so the middleware picks up the mocked getRedis.
-const { rateLimitMiddleware } = await import("./rate-limit");
+const { rateLimitMiddleware, globalRateLimitMiddleware } =
+  await import("./rate-limit");
 
 describe("rateLimitMiddleware", () => {
   let app: Hono;
@@ -94,5 +95,57 @@ describe("rateLimitMiddleware", () => {
     const body = await res.json();
     expect(body.error).toMatch(/too many/i);
     expect(res.headers.get("Retry-After")).toBeDefined();
+  });
+});
+
+describe("globalRateLimitMiddleware", () => {
+  let app: Hono;
+
+  beforeEach(() => {
+    store.clear();
+    app = new Hono();
+    app.use("*", globalRateLimitMiddleware);
+    app.get("/api/health", (c) => c.json({ status: "ok" }));
+    app.get("/api/health/ready", (c) => c.json({ status: "ok" }));
+    app.post("/api/payments/webhook", (c) => c.json({ received: true }));
+    app.get("/test", (c) => c.json({ ok: true }));
+  });
+
+  it("exempts /api/health without touching Redis", async () => {
+    const res = await app.request("/api/health", {
+      headers: { "x-forwarded-for": "10.0.0.1" },
+    });
+    expect(res.status).toBe(200);
+    // Limiter never ran: no headers set, no Redis commands issued.
+    expect(res.headers.get("X-RateLimit-Limit")).toBeNull();
+    expect(store.size).toBe(0);
+  });
+
+  it("still rate limits /api/health/ready (it queries the DB)", async () => {
+    const res = await app.request("/api/health/ready", {
+      headers: { "x-forwarded-for": "10.0.0.2" },
+    });
+    expect(res.status).toBe(200);
+    expect(res.headers.get("X-RateLimit-Limit")).toBe("60");
+    expect(store.size).toBe(1);
+  });
+
+  it("exempts webhook paths without touching Redis", async () => {
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: { "x-forwarded-for": "10.0.0.3" },
+    });
+    expect(res.status).toBe(200);
+    expect(res.headers.get("X-RateLimit-Limit")).toBeNull();
+    expect(store.size).toBe(0);
+  });
+
+  it("rate limits ordinary routes", async () => {
+    const headers = { "x-forwarded-for": "10.0.0.4" };
+    for (let i = 0; i < 60; i++) {
+      await app.request("/test", { headers });
+    }
+    const res = await app.request("/test", { headers });
+    expect(res.status).toBe(429);
   });
 });

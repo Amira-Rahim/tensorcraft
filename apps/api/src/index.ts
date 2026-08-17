@@ -8,7 +8,7 @@ import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { serve } from "@hono/node-server";
 import { corsMiddleware } from "./middleware/cors";
-import { rateLimitMiddleware } from "./middleware/rate-limit";
+import { globalRateLimitMiddleware } from "./middleware/rate-limit";
 import { securityHeadersMiddleware } from "./middleware/security-headers";
 import { versionMiddleware } from "./middleware/version";
 import { requestIdMiddleware } from "./middleware/request-id";
@@ -52,18 +52,9 @@ app.use("*", async (c, next) => {
   return bodyLimit({ maxSize: 1024 * 1024 })(c, next);
 });
 
-// Rate limit all routes EXCEPT third-party webhooks (which retry on failure).
-// Both Stripe and Kit webhooks retry aggressively, rate-limiting them risks
-// dropping retry attempts and desyncing our DB from the provider's state.
-app.use("*", async (c, next) => {
-  if (
-    c.req.path === "/api/payments/webhook" ||
-    c.req.path.startsWith("/api/webhooks/")
-  ) {
-    return next();
-  }
-  return rateLimitMiddleware(c, next);
-});
+// Rate limit all routes except webhooks and the liveness probe; the exempt
+// list and its rationale live next to the limiter in middleware/rate-limit.ts.
+app.use("*", globalRateLimitMiddleware);
 
 // Global error handler, sanitize errors, never leak internals
 app.onError((err, c) => {
