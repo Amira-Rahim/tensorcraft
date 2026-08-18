@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "High-resolution generation runs as a cascade: a base diffusion model generates small, where denoising is fast, then a separate super-resolution model upscales the result. The high-res image is generated, not selected, and each stage adds real compute."
   bridge:
-    feTitle: "srcset and responsive images"
-    feCode: "<img srcset='small.jpg 256w, large.jpg 1024w' sizes='100vw' />"
+    jsTitle: "srcset and responsive images"
+    jsCode: "<img srcset='small.jpg 256w, large.jpg 1024w' sizes='100vw' />"
     mlTitle: "Cascaded diffusion (low-res + super-res)"
     mlCode: "const lowRes = generate(64); const highRes = upscale(lowRes, 256);"
     tier: structural

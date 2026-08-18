@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Medical NER requires domain-specific entity types: drugs, conditions, procedures, dosages. Each type has its own detection patterns, and a token misfiled across types is a clinical error, not a cosmetic one."
   bridge:
-    feTitle: "TypeScript Union Types"
-    feCode: "type Entity = Drug | Condition | Procedure; // each variant has its own shape"
+    jsTitle: "TypeScript Union Types"
+    jsCode: "type Entity = Drug | Condition | Procedure; // each variant has its own shape"
     mlTitle: "Medical Entity Types"
     mlCode: "type MedEntity = 'DRUG' | 'CONDITION' | 'PROCEDURE'; // each type has distinct patterns"
     tier: structural

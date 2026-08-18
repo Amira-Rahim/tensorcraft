@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Zero-shot classification labels images with categories the model never trained on: embed the image, embed each candidate description as text, pick the closest. A new category costs one typed sentence instead of a labeled dataset and a training run."
   bridge:
-    feTitle: "Dynamic routing: handling unknown paths"
-    feCode: "app.get('/:category/:item', (req, res) => matchRoute(req.params));"
+    jsTitle: "Dynamic routing: handling unknown paths"
+    jsCode: "app.get('/:category/:item', (req, res) => matchRoute(req.params));"
     mlTitle: "Zero-shot classification"
     mlCode: "const label = categories[argmax(similarity(image, categoryTexts))];"
     tier: structural

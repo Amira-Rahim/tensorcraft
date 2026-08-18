@@ -66,7 +66,7 @@ export interface ExerciseSubmitResult {
 }
 
 export interface ExerciseBridge {
-  feTitle: string;
+  jsTitle: string;
   mlTitle: string;
   tier: "identity" | "structural" | "intuition";
 }
@@ -431,7 +431,7 @@ function BridgeHint({ bridge }: { bridge: ExerciseBridge }) {
         # bridge
       </div>
       <p className="text-xs font-mono leading-relaxed text-text-primary/80">
-        <span className="text-text-primary">{bridge.feTitle}</span>
+        <span className="text-text-primary">{bridge.jsTitle}</span>
         <span className="mx-2" style={{ color }} aria-hidden="true">
           ↔
         </span>

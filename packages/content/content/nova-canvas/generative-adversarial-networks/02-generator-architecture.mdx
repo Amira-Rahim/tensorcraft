@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "The generator takes a low-dimensional noise vector and progressively upscales it through dense and reshape layers to produce full-resolution output."
   bridge:
-    feTitle: "Template Engine"
-    feCode: "const html = template.render({ title, items, world })"
+    jsTitle: "Template Engine"
+    jsCode: "const html = template.render({ title, items, world })"
     mlTitle: "Generator Network"
     mlCode: "const image = generator.predict(tf.randomNormal([1, 100]))"
     tier: structural

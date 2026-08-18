@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Weight pruning removes near-zero connections from a neural network; most trained models carry far more weights than their predictions actually use."
   bridge:
-    feTitle: "Tree-Shaking"
-    feCode: "// Webpack removes unused exports\nimport { used } from './utils';\n// unused exports are eliminated"
+    jsTitle: "Tree-Shaking"
+    jsCode: "// Webpack removes unused exports\nimport { used } from './utils';\n// unused exports are eliminated"
     mlTitle: "Weight Pruning"
     mlCode: "// Remove weights close to zero\n// if (Math.abs(weight) < threshold)\n//   weight = 0; // pruned"
     tier: structural

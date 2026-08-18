@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Mixed precision assigns each layer the cheapest number format it can tolerate: full precision where accuracy is fragile, Int8 everywhere else."
   bridge:
-    feTitle: "Responsive Images"
-    feCode: "<img srcset=\"small.webp 480w, large.png 1200w\"\n  sizes=\"(max-width: 600px) 480px, 1200px\" />"
+    jsTitle: "Responsive Images"
+    jsCode: "<img srcset=\"small.webp 480w, large.png 1200w\"\n  sizes=\"(max-width: 600px) 480px, 1200px\" />"
     mlTitle: "Mixed Precision"
     mlCode: "// First layer: Float16 (sensitive)\n// Middle layers: Int8 (robust)\n// Last layer: Float16 (sensitive)"
     tier: structural

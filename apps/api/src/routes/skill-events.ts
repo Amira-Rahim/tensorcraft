@@ -20,7 +20,7 @@ const VALID_SKILL_AXES = [
   "training",
   "evaluation",
   "deployment",
-  "fe_integration",
+  "js_integration",
 ] as const;
 
 type EventType = (typeof VALID_EVENT_TYPES)[number];
@@ -56,6 +56,12 @@ skillEvents.post("/", async (c) => {
       { error: "worldId, eventType, and skillAxis are required" },
       400,
     );
+  }
+
+  // One-release shim (migration 059 rebrand): stale clients still send the
+  // pre-rename axis value. Remove at the next scheduled API deploy.
+  if (body.skillAxis === "fe_integration") {
+    body.skillAxis = "js_integration";
   }
 
   if (!isValidWorldSlug(body.worldId)) {
@@ -124,6 +130,10 @@ skillEvents.post("/batch", async (c) => {
   }
 
   for (const e of events) {
+    // Same one-release shim as the single-event route above.
+    if (e.skillAxis === "fe_integration") {
+      e.skillAxis = "js_integration";
+    }
     if (!e.worldId || !isValidWorldSlug(e.worldId)) {
       return c.json({ error: `Invalid worldId: ${e.worldId}` }, 400);
     }

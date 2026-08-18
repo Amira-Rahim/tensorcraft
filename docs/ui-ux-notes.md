@@ -61,7 +61,7 @@ The progress diagram visualizes the learner's journey through a world's modules 
 The stats panel provides an at-a-glance summary of the learner's progress within the current world.
 
 - **Position:** Fixed to the right edge of the progress diagram viewport on desktop (320px wide, full height of diagram area). Slides up from bottom on mobile (full width, max-height 60vh, draggable to dismiss). Overlays the diagram with a semi-transparent backdrop (`rgba(0,0,0,0.3)`).
-- **Content:** World completion percentage (large, centered, circular progress ring using SVG). Lessons completed / total lessons. Current streak (consecutive days with at least one lesson completed). Estimated time remaining (based on average lesson duration and remaining lessons). FE bridges encountered / total bridges in world. A mini-heatmap showing activity over the last 30 days (similar to GitHub contribution graph, using world accent color at varying opacities).
+- **Content:** World completion percentage (large, centered, circular progress ring using SVG). Lessons completed / total lessons. Current streak (consecutive days with at least one lesson completed). Estimated time remaining (based on average lesson duration and remaining lessons). JS bridges encountered / total bridges in world. A mini-heatmap showing activity over the last 30 days (similar to GitHub contribution graph, using world accent color at varying opacities).
 - **Style:** Background: `--world-bg` with 1px border in `--world-muted` at 30% opacity. All text in `--world-text`. Numbers and percentages in `--world-accent`. The circular progress ring stroke uses `--world-accent` for the filled portion and `--world-muted` at 20% for the remaining portion. Stroke-width: 8px. Ring diameter: 120px.
 - **Dismiss:** Click the X button, press Escape, click outside the panel, or swipe right (desktop) / swipe down (mobile). The panel remembers its open/closed state in localStorage.
 
@@ -71,7 +71,7 @@ Learners can capture and share their progress diagram as an image.
 
 - **Capture method:** Use `html2canvas` to render the progress diagram (excluding the stats panel and UI chrome) to a canvas element. Scale factor: 2x for retina-quality output. Output format: PNG.
 - **Watermark:** Bottom-right corner of the captured image includes a subtle Tensorcraft watermark: the Tensorcraft logo (24px height) + "tensorcraft.app" text in `--world-muted` at 50% opacity. The watermark is added programmatically after canvas capture, not rendered in the DOM.
-- **Share:** After capture, display a share modal with options: "Download PNG" (primary), "Copy to Clipboard" (using the Clipboard API), and "Share" (using the Web Share API where supported, falling back to Twitter/X and LinkedIn share URLs with pre-filled text). The pre-filled share text: "I've completed [X]% of [World Name] on Tensorcraft! Learning ML through frontend concepts." Include the captured image as the share attachment when the Web Share API supports files.
+- **Share:** After capture, display a share modal with options: "Download PNG" (primary), "Copy to Clipboard" (using the Clipboard API), and "Share" (using the Web Share API where supported, falling back to Twitter/X and LinkedIn share URLs with pre-filled text). The pre-filled share text: "I've completed [X]% of [World Name] on Tensorcraft! Learning ML through JavaScript concepts." Include the captured image as the share attachment when the Web Share API supports files.
 - **Output:** 2x PNG at the diagram's rendered dimensions. Typical output: 2400x1600px for a desktop-width diagram. File name: `tensorcraft-[world]-progress.png`.
 
 ---
@@ -103,12 +103,12 @@ Single-column layout with careful space management.
 - **Code editor:** Embedded inline within the narrative flow at the points where exercises appear. The editor has a minimum height of 300px and a maximum height of 60vh. The preview renders below the editor (not side-by-side). A "Run" button (44px tall, full width) triggers code execution and scrolls to the preview output.
 - **Tab navigation:** Dropdown tabs replace the sticky tabs from tablet layout. A dropdown selector at the top allows switching between "Story", "Code", and "Bridges" views. The dropdown is 44px tall with a chevron indicator.
 
-### 3.4 FE Bridge Moments
+### 3.4 JS Bridge Moments
 
-Bridge moments are the core pedagogical feature -- the point where a frontend concept is explicitly mapped to an ML concept. These require special UI treatment.
+Bridge moments are the core pedagogical feature -- the point where a JavaScript concept is explicitly mapped to an ML concept. These require special UI treatment.
 
-- **Split-panel view:** When a bridge moment occurs in the narrative, the layout temporarily shifts to a side-by-side comparison. On desktop: the narrative panel splits into two equal columns -- left shows the FE concept (with code example), right shows the ML concept (with code example). A glowing bridge connector (animated SVG line with `--world-accent` color) visually links the two sides. On tablet/mobile: the bridge is presented as a stacked comparison (FE on top, ML below) with the bridge connector rotated to vertical.
-- **Sidebar indicator:** In the desktop sidebar, bridge moments are indicated with a small bridge icon (16px) next to the lesson title. Hovering the icon shows a tooltip: "This lesson contains [N] FE-to-ML bridges."
+- **Split-panel view:** When a bridge moment occurs in the narrative, the layout temporarily shifts to a side-by-side comparison. On desktop: the narrative panel splits into two equal columns -- left shows the JS concept (with code example), right shows the ML concept (with code example). A glowing bridge connector (animated SVG line with `--world-accent` color) visually links the two sides. On tablet/mobile: the bridge is presented as a stacked comparison (JS on top, ML below) with the bridge connector rotated to vertical.
+- **Sidebar indicator:** In the desktop sidebar, bridge moments are indicated with a small bridge icon (16px) next to the lesson title. Hovering the icon shows a tooltip: "This lesson contains [N] JS-to-ML bridges."
 - **Code Hike scrollytelling:** For complex bridges that require step-by-step explanation, use Code Hike's scrollytelling component. The narrative scrolls on the left while the code panel on the right highlights and transitions between code states in sync with the scroll position. Each scroll step corresponds to one mapping point in the bridge. Code Hike annotations highlight the specific lines being discussed with a `--world-accent` background at 15% opacity.
 
 ### 3.5 Checkpoint Quiz Component
@@ -153,7 +153,7 @@ Some UI elements that provide value on desktop create clutter on mobile. These a
 |---------|---------|--------|
 | Sidebar lesson list | Visible (fixed 240px column) | Hidden (accessible via hamburger menu overlay) |
 | Stats panel toggle | Visible (icon button in top-right of progress diagram) | Hidden (accessible via "Progress" option in hamburger menu) |
-| Bridge connector SVG | Animated glowing line between FE and ML code panels | Hidden (replaced by a static "Bridge" label between stacked panels) |
+| Bridge connector SVG | Animated glowing line between JS and ML code panels | Hidden (replaced by a static "Bridge" label between stacked panels) |
 | Code editor line numbers | Visible | Hidden (saves horizontal space in the 300px editor) |
 | Hint level indicators | Visible (3 dots showing current hint level) | Hidden (replaced by swipe gesture with chevron affordance) |
 | Breadcrumb navigation | Visible (World > Module > Lesson) | Hidden (replaced by back arrow + lesson title in top bar) |
@@ -323,12 +323,12 @@ Appears after completing the Module 1 free preview when a free-tier user attempt
 
 ### 6.4 Bridge Explorer (`bridge-explorer.html`)
 
-A V1.0 feature for browsing all FE-to-ML bridges across worlds.
+A V1.0 feature for browsing all JS-to-ML bridges across worlds.
 
-- **Purpose:** A standalone browsable directory of all 50+ FE-to-ML bridges, not tied to a specific lesson. Allows learners to search and explore bridges by FE concept or ML concept.
-- **Layout:** Full-page layout with search bar at top (pill-shaped input). Below: filterable grid of bridge cards. Each card shows: FE concept (left), arrow connector, ML concept (right), one-line summary, and the world it belongs to.
-- **Filters:** Filter by world (checkboxes), by ML category (e.g., "Training", "Architecture", "Data Prep"), or by FE category (e.g., "React", "CSS", "DOM").
-- **Card interaction:** Clicking a bridge card expands it inline to show the full analogy text, code examples for both FE and ML sides, and a "Go to lesson" link.
+- **Purpose:** A standalone browsable directory of all 50+ JS-to-ML bridges, not tied to a specific lesson. Allows learners to search and explore bridges by JS concept or ML concept.
+- **Layout:** Full-page layout with search bar at top (pill-shaped input). Below: filterable grid of bridge cards. Each card shows: JS concept (left), arrow connector, ML concept (right), one-line summary, and the world it belongs to.
+- **Filters:** Filter by world (checkboxes), by ML category (e.g., "Training", "Architecture", "Data Prep"), or by JS category (e.g., "React", "CSS", "DOM").
+- **Card interaction:** Clicking a bridge card expands it inline to show the full analogy text, code examples for both JS and ML sides, and a "Go to lesson" link.
 - **Responsive:** On mobile, bridge cards stack vertically. The filter panel collapses into a slide-out drawer accessible via a filter icon button.
 
 ---

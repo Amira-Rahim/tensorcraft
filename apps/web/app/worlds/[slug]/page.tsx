@@ -194,7 +194,7 @@ export default async function WorldDetailPage({ params }: Props) {
         status: lessonStatus,
         sceneLocation: lesson.scene?.location,
         narrative: lesson.context?.narrative,
-        bridgeFe: lesson.concept?.bridge?.feTitle,
+        bridgeJs: lesson.concept?.bridge?.jsTitle,
         bridgeMl: lesson.concept?.bridge?.mlTitle,
       };
     });
@@ -322,7 +322,7 @@ export default async function WorldDetailPage({ params }: Props) {
           MODULE MAP
         </h1>
         <p className="text-sm" style={{ color: "var(--tc-muted)" }}>
-          {worldModules.length} modules between your frontend and a deployed
+          {worldModules.length} modules between your JavaScript and a deployed
           model. Pick up where you left off.
         </p>
 

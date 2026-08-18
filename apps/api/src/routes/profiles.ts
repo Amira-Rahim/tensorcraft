@@ -256,7 +256,7 @@ profiles.get(
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select(
-        "id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, experience_level, learning_goal, fe_background, fe_experience_years, email_alerts, weekly_digest, stripe_customer_id, created_at, updated_at",
+        "id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, experience_level, learning_goal, js_background, js_experience_years, email_alerts, weekly_digest, stripe_customer_id, created_at, updated_at",
       )
       .eq("id", userId)
       .single();

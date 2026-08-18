@@ -3,7 +3,7 @@
 Ready-to-paste copy for the two account-creation items in Tier 1-OPS
 (`docs/launch-blockers.md`): the Product Hunt "upcoming" page and the
 @tensorcraft X account. Voice rules applied: brand speaks as a group of
-frontend engineers (no personal names, per the identity policy), checkable
+JavaScript engineers (no personal names, per the identity policy), checkable
 numbers only, no em dashes, no claims the audits removed (no
 "production-ready model" phrasing, no all-five-worlds bundle talk while
 only Deep Orbit is live).
@@ -12,13 +12,13 @@ only Deep Orbit is live).
 
 - **Name:** Tensorcraft
 - **Tagline (54 chars):** Learn ML in the browser, using the JS you already know
-- **Description (~250 chars):** A story-driven ML course for frontend
+- **Description (~250 chars):** A story-driven ML course for JavaScript
   engineers. 55 lessons aboard a deep-space research vessel, every concept
-  bridged to a frontend primitive you already use, every exercise graded
+  bridged to a JavaScript primitive you already use, every exercise graded
   against real TensorFlow.js in your browser. Module 1 is free.
 - **Topics:** Education, Developer Tools, Artificial Intelligence, Web App
 - **First comment (post on launch day, from the brand account):**
-  We are a group of frontend engineers who kept bouncing off ML courses
+  We are a group of JavaScript engineers who kept bouncing off ML courses
   written for Python people. So we built the course we wanted: every
   concept anchored to something a JS developer already knows (typed arrays
   to tensors, expect() to loss functions, static deploys to model
@@ -28,9 +28,9 @@ only Deep Orbit is live).
 
 ## X account @tensorcraft
 
-- **Bio (156 chars):** ML for frontend engineers. Story-driven course, real
-  TensorFlow.js in your browser, every FE-to-ML analogy graded by how far
-  it holds. Module 1 free.
+- **Bio (151 chars):** ML for JavaScript engineers. Story-driven course,
+  real TensorFlow.js in your browser, every JS-to-ML analogy graded by how
+  far it holds. Module 1 free.
 - **Location:** The Archimedes, Proxima Centauri
 - **Link:** tensorcraft.app
 - **Pinned post:** You have spent years building mental models: components,
@@ -50,7 +50,7 @@ only Deep Orbit is live).
   3. A model file is a static asset. It ships in dist/ next to your
      fonts. Until the day you roll back, and learn that reverting weights
      does not revert the world they were trained on. (Link: fonts post)
-  4. We grade every FE-to-ML analogy in our course into three tiers by
+  4. We grade every JS-to-ML analogy in our course into three tiers by
      how far it holds, and we published the audit, including what we got
      wrong. Analogies are load-bearing; a bad one costs you a debugging
      week. (Link: the analogy-audit post)

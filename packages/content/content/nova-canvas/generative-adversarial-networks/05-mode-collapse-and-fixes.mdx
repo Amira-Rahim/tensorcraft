@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Mode collapse occurs when the generator finds one output that fools the discriminator and produces only that output, ignoring the diversity of the training data."
   bridge:
-    feTitle: "Non-Random Random"
-    feCode: "Math.floor(Math.random() * 3) // always 0, 1, or 2; never 3+"
+    jsTitle: "Non-Random Random"
+    jsCode: "Math.floor(Math.random() * 3) // always 0, 1, or 2; never 3+"
     mlTitle: "Mode Collapse"
     mlCode: "generator.predict(noise1) ≈ generator.predict(noise2) // same output!"
     tier: intuition
@@ -58,7 +58,7 @@ Mode collapse is the most infamous GAN failure mode. The generator discovers one
 <CodeBlock language="typescript" title="detect-collapse.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend analogy: testing randomness
+// JS analogy: testing randomness
 // If Math.random() always returned values in [0.49, 0.51],
 // it would TECHNICALLY be random but practically useless.
 // Mode collapse is the same: technically different outputs,

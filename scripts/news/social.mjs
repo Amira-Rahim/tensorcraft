@@ -55,7 +55,7 @@ function buildThreadPrompt(items, digestUrl) {
 
 Voice rules:
 - Practitioner-honest, not hype. NEVER use "perfect", "amazing", "must-read", "game-changing", "breakthrough", emoji-stacks, or marketing superlatives.
-- Frontend-engineer perspective. Anchor concepts to FE primitives (DOM, typed arrays, requestAnimationFrame, fetch, web workers).
+- JavaScript-engineer perspective. Anchor concepts to JS primitives (typed arrays, fetch, promises, streams, requestAnimationFrame, worker threads).
 - Each tweet <= 270 characters (leave room for retweet UI + auto-shortened links).
 - One blank line between tweets. Number them 1/, 2/, 3/, etc.
 - Plain text. Markdown link syntax becomes raw URLs after copy-paste - write URLs inline.
@@ -63,7 +63,7 @@ Voice rules:
 Structure:
 - Tweet 1: Hook. State the through-line of the week. Tease ${items.length} items. End with the digest URL.
 - Tweets 2..N: One per news item. Pattern: "[short take on news]. Teaches X. {lesson_url}"
-- Final tweet: One-line CTA pointing to ${SITE}/worlds ("Built for FE devs moving into ML →")
+- Final tweet: One-line CTA pointing to ${SITE}/worlds ("Built for JS devs moving into ML →")
 
 Output: thread text only, no preamble. Each tweet on its own paragraph.`;
 
@@ -91,7 +91,7 @@ function buildLinkedInPrompt(items, digestUrl) {
 
 Voice rules:
 - Practitioner-honest, not hype. NEVER use "perfect", "amazing", "must-read", "game-changing", "breakthrough", "thrilled", "humbled", emoji-stacks.
-- Frontend-engineer perspective. Anchor concepts to FE primitives.
+- JavaScript-engineer perspective. Anchor concepts to JS primitives.
 - ~1000-1200 characters total. LinkedIn truncates beyond ~210 chars on first view, so the first 1-2 sentences matter most.
 - Plain text. No hashtag walls. At most 3 hashtags at the very end.
 - One short paragraph for the through-line, then a bulleted list of items, then one CTA line.
@@ -100,7 +100,7 @@ Structure:
 - Para 1 (hook, <= 200 chars): the through-line of the week.
 - Bulleted list: one bullet per item, "Title - 1 sentence on what shipped - Teaches: <Lesson Title>"
 - Closing line: "Read the digest: ${digestUrl}"
-- Final line: 2-3 hashtags max (#WebGPU #BrowserML #FrontendEngineering or similar - match the actual content).
+- Final line: 2-3 hashtags max (#WebGPU #BrowserML #JavaScript or similar - match the actual content).
 
 Output: post text only, no preamble.`;
 

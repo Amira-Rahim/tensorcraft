@@ -29,7 +29,7 @@ const TIER_LABEL: Record<string, string> = {
 interface BridgeItem {
   lessonSlug: string;
   moduleSlug: string;
-  feTitle: string;
+  jsTitle: string;
   mlTitle: string;
   tier: "identity" | "structural" | "intuition";
   collected: boolean;
@@ -107,7 +107,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
               aria-expanded={isExpanded}
               aria-controls={isExpanded ? DETAIL_ID : undefined}
               className="relative aspect-square bg-surface-raised border border-border flex items-center justify-center transition-all hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-              title={`${TIER_LABEL[bridge.tier]} bridge: ${bridge.feTitle} → ${bridge.mlTitle}`}
+              title={`${TIER_LABEL[bridge.tier]} bridge: ${bridge.jsTitle} → ${bridge.mlTitle}`}
             >
               {/* text-xs is 12px, the design system's floor. This badge was
                   text-[10px] and the detail caption below was text-[8px]; the
@@ -124,7 +124,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
                   neither of which a screen reader reads. Only collected bridges
                   reach this branch, so there is no locked state to announce. */}
               <span className="sr-only">
-                {TIER_LABEL[bridge.tier]} bridge: {bridge.feTitle} to{" "}
+                {TIER_LABEL[bridge.tier]} bridge: {bridge.jsTitle} to{" "}
                 {bridge.mlTitle}
               </span>
             </button>
@@ -149,7 +149,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
           }}
         >
           <div className="font-mono text-xs text-text-primary font-bold">
-            {expandedBridge.feTitle}
+            {expandedBridge.jsTitle}
           </div>
           <div
             className="font-mono text-xs my-1"

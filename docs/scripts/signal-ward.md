@@ -19,7 +19,7 @@
 | **Dr. Elena Vasquez** | Head Researcher / Mentor | Director of Signal Ward. Brilliant diagnostician, demanding but empathetic. Lost a patient early in her career due to a missed note in a chart - this drives her mission. Sets clinical context and explains *why* each NLP capability matters. Has no patience for sloppy work but infinite patience for genuine learning. |
 | **Obi Nwosu** | Computational Linguist / Concept Explainer | NLP expert with a PhD in biomedical NLP. Warm, articulate, deeply enthusiastic about language. Speaks three languages fluently and sees beauty in how words carry meaning. Introduces NLP theory, explains architectures, builds linguistic intuition. |
 | **Santos** | Nurse & Data Curator / Implementation Lead | Handles data quality, labeling, and the messy reality of clinical text. Practical, meticulous, protective of patient data. Has labeled ten thousand records by hand. Bridges the gap between raw medical records and clean training data. |
-| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled frontend developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI - a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there - drug interactions hiding across tabs, symptom patterns buried in months of notes - but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
+| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled JavaScript developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI - a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there - drug interactions hiding across tabs, symptom patterns buried in months of notes - but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
 | **MEDI** | Clinical Decision Support AI | The ward's AI assistant. Precise, helpful, occasionally pedantic about medical terminology. Unlike other world AIs, MEDI is designed to be cautious - it flags uncertainty rather than projecting confidence. Corrects gently but firmly. Tutorial guide and hint system. |
 
 ### DISCLAIMER
@@ -36,11 +36,11 @@ Signal Ward deliberately includes moments where the AI system produces incorrect
 
 ### Career Paths & Salaries
 
-> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" JavaScript roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
 
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| ML-Enhanced Frontend Engineer | Build NLP-powered features in the browser (search, text analysis, chatbot UIs) | $120,000 - $160,000 |
+| ML-Enhanced JavaScript Engineer | Build NLP-powered features in the browser (search, text analysis, chatbot UIs) | $120,000 - $160,000 |
 | Frontend Engineer (NLP Products) | Frontend for NLP-heavy products (text annotation, clinical dashboards, AI safety UIs) | $125,000 - $165,000 |
 | NLP Engineer* | Build text understanding and generation systems | $145,000 - $195,000 |
 | ML Engineer (NLP)* | Train and deploy language models at scale | $150,000 - $200,000 |
@@ -60,7 +60,7 @@ A hospital corridor at night. Fluorescent lights cast a blue-white glow on polis
 
 Signal Ward at Caduceus Medical Center is drowning in unstructured clinical text. Thousands of notes, reports, and discharge summaries flow through the EHR system daily, but critical information gets buried. After a vendor NLP solution fails spectacularly - misclassifying a drug allergy and triggering a near-miss adverse event - Dr. Vasquez cancels the vendor contract and decides to build an in-house system.
 
-Khalil, a frontend developer in the IT department, is tasked with building the interface for Diagnostic One, a clinical NLP pipeline. Under the guidance of Dr. Vasquez (clinical context), Obi (NLP theory), and Santos (data quality), he learns to build text processing systems that can tokenize clinical language, extract medical entities, classify note types, summarize documents, and flag critical findings - all running in the browser for privacy and speed.
+Khalil, a JavaScript developer in the IT department, is tasked with building the interface for Diagnostic One, a clinical NLP pipeline. Under the guidance of Dr. Vasquez (clinical context), Obi (NLP theory), and Santos (data quality), he learns to build text processing systems that can tokenize clinical language, extract medical entities, classify note types, summarize documents, and flag critical findings - all running in the browser for privacy and speed.
 
 The journey is not just technical - it is ethical. Signal Ward confronts the reality that AI in healthcare must be held to a higher standard. Every module includes moments where the system fails, and the team learns to build safeguards, communicate uncertainty, and keep humans in the loop.
 
@@ -83,7 +83,7 @@ Diagnostic One evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for frontend developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -114,7 +114,7 @@ Diagnostic One evolves across 11 modules:
 
 ### Summary
 
-The hospital's vendor NLP system has failed - a misclassified drug allergy led to a near-miss adverse event. Dr. Vasquez cancels the vendor contract and tasks the IT team with building an in-house solution. Khalil, a frontend dev with strong TypeScript skills, is assigned to build the interface.
+The hospital's vendor NLP system has failed - a misclassified drug allergy led to a near-miss adverse event. Dr. Vasquez cancels the vendor contract and tasks the IT team with building an in-house solution. Khalil, a JavaScript dev with strong TypeScript skills, is assigned to build the interface.
 
 Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-based text processing, the three learning paradigms, neural network basics, and text-as-data. Each concept is grounded in clinical examples - classifying note types, extracting medication names, predicting diagnosis codes.
 
@@ -141,7 +141,7 @@ Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-
 - **L1.3 → L1.4:** The model runs, but Santos notices it's ignoring abbreviations that nurses use constantly - "pt," "hx," "dx," "prn." The vocabulary is built from textbooks, not from the ward.
 - **L1.4 → L1.5:** The vocabulary now handles abbreviations, but the forward pass produces wildly different confidence scores for notes that say the same thing in different word orders. Sequence matters - and the model doesn't know that yet.
 
-**FE BRIDGE (Module-Level):** Tokenization is URL parsing. When you call `new URL('https://caduceus.org/patient/12345?tab=notes&filter=active')`, the browser breaks the URL into structured parts - protocol, hostname, pathname, search params. Tokenization does the same to text: `"Patient presents with acute chest pain"` becomes `["Patient", "presents", "with", "acute", "chest", "pain"]` - structured, indexable, processable.
+**JS BRIDGE (Module-Level):** Tokenization is URL parsing. When you call `new URL('https://caduceus.org/patient/12345?tab=notes&filter=active')`, the browser breaks the URL into structured parts - protocol, hostname, pathname, search params. Tokenization does the same to text: `"Patient presents with acute chest pain"` becomes `["Patient", "presents", "with", "acute", "chest", "pain"]` - structured, indexable, processable.
 
 ### GITHUB
 
@@ -271,7 +271,7 @@ Obi draws the attention diagram on the whiteboard:
 | 4 | Attention Visualization | Seeing what the model focuses on | DevTools highlighting of selected elements |
 | 5 | Clinical Attention | Focusing on medically relevant terms | Search result highlighting |
 
-**FE BRIDGE (Module-Level):** Attention is CSS `:focus`. When reading a clinical note, certain words demand attention - drug names, dosages, negation cues ("no", "denies", "without"). The attention mechanism learns to dynamically "focus" on these critical tokens, just as CSS `:focus` highlights the currently active form element.
+**JS BRIDGE (Module-Level):** Attention is CSS `:focus`. When reading a clinical note, certain words demand attention - drug names, dosages, negation cues ("no", "denies", "without"). The attention mechanism learns to dynamically "focus" on these critical tokens, just as CSS `:focus` highlights the currently active form element.
 
 ### GITHUB
 
@@ -308,7 +308,7 @@ Obi introduces the transformer architecture:
 | 4 | BERT | Bidirectional understanding of text | Doubly-linked list - forward and backward traversal |
 | 5 | Fine-Tuning BERT | Adapting pre-trained transformers to clinical text | Customizing a component library's world |
 
-**FE BRIDGES (Module-Level):**
+**JS BRIDGES (Module-Level):**
 
 - **Transformer = React virtual DOM:** The transformer processes input, computes attention (which parts relate to which), and produces an output representation. React's vDOM processes the component tree, computes diffs (which parts changed), and produces an updated DOM. Both are reconciliation engines that compare current state to desired state.
 - **BERT = doubly-linked list:** A unidirectional model (like GPT) reads tokens left-to-right, like a singly-linked list - each node knows only what came before. BERT is bidirectional, like a doubly-linked list - each token has context from both directions. This bidirectional context is why BERT excels at understanding (classification, NER) rather than generation.
@@ -428,7 +428,7 @@ An unconscious patient arrives in the ER with no accessible medical history. Rec
 | 4 | Knowledge Grounding | Ensuring answers are supported by evidence | Hyperlinks - every claim has a source URL |
 | 5 | Clinical Queries | Doctors asking questions in natural language | Search bar with NLU |
 
-**FE BRIDGE (Module-Level):** RAG is React Server Components. In RSC, the server fetches data from databases and APIs, then renders components with that data - the client gets pre-hydrated content grounded in real data sources. RAG does the same: the retrieval step fetches relevant documents (like a DB query), and the LLM generates a response grounded in those retrieved documents (like server rendering). Both patterns connect a generation engine to authoritative data sources.
+**JS BRIDGE (Module-Level):** RAG is React Server Components. In RSC, the server fetches data from databases and APIs, then renders components with that data - the client gets pre-hydrated content grounded in real data sources. RAG does the same: the retrieval step fetches relevant documents (like a DB query), and the LLM generates a response grounded in those retrieved documents (like server rendering). Both patterns connect a generation engine to authoritative data sources.
 
 ### GITHUB
 

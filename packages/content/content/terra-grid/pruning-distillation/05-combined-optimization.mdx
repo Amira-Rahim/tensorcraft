@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Combining all optimization techniques is like configuring a full Webpack production build: tree-shaking, minification, compression, code splitting, all working together."
   bridge:
-    feTitle: "Full Webpack Production Config"
-    feCode: "// mode: 'production'\n// Tree-shaking + minification + compression\n// + code splitting + lazy loading"
+    jsTitle: "Full Webpack Production Config"
+    jsCode: "// mode: 'production'\n// Tree-shaking + minification + compression\n// + code splitting + lazy loading"
     mlTitle: "Full Model Optimization"
     mlCode: "// Distill + prune + quantize\n// Student model, structured pruning, Int8\n// Combined: 40x smaller"
     tier: structural
@@ -42,7 +42,7 @@ You now have three tools: pruning removes unnecessary connections, quantization 
 If this works, I can deploy to every gateway in the fleet. 47 sites, updated overnight. Let's see the numbers.
 </Dialogue>
 
-In frontend, your production build combines every optimization: tree-shaking removes dead code, minification shrinks what remains, compression reduces transfer size, and code splitting loads only what is needed. Each technique is independent, but together they achieve reductions that no single technique could.
+In JavaScript, your production build combines every optimization: tree-shaking removes dead code, minification shrinks what remains, compression reduces transfer size, and code splitting loads only what is needed. Each technique is independent, but together they achieve reductions that no single technique could.
 
 <LearningObjectives objectives={["Combine distillation, pruning, and quantization in a single pipeline", "Calculate compound size reduction from combined techniques", "Determine the optimal order of optimization techniques", "Map the full Webpack production config to a full model optimization pipeline"]} />
 

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Load testing for ML installations simulates concurrent users making generation requests: the same methodology as load testing web APIs, but with heavier compute per request."
   bridge:
-    feTitle: "Artillery / k6 Load Testing"
-    feCode: "// k6: export default function() { http.post('/api/generate', payload); }"
+    jsTitle: "Artillery / k6 Load Testing"
+    jsCode: "// k6: export default function() { http.post('/api/generate', payload); }"
     mlTitle: "Generation Load Test"
     mlCode: "// Simulate 300 concurrent visitors generating simultaneously"
     tier: structural

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "The U-Net is an encoder-decoder for denoising: the encoder compresses the noisy image to understand global context, the decoder expands back to predict noise at every pixel, and skip connections carry the fine detail the bottleneck would otherwise destroy."
   bridge:
-    feTitle: "Encoder-decoder layout patterns"
-    feCode: "<Layout><Sidebar /><Content>{children}</Content></Layout>"
+    jsTitle: "Encoder-decoder layout patterns"
+    jsCode: "<Layout><Sidebar /><Content>{children}</Content></Layout>"
     mlTitle: "U-Net architecture"
     mlCode: "skip = encoder(x); output = decoder(bottleneck, skip);"
     tier: structural

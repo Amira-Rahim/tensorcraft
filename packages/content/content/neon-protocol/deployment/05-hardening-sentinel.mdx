@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Hardening a deployed ML system means finding its failure modes before the field does: flood it with concurrent requests, feed it corrupted inputs, starve it of memory, and verify it degrades gracefully instead of crashing."
   bridge:
-    feTitle: "Load Testing APIs (k6, Artillery)"
-    feCode: "// k6 script\nexport default function() {\n  http.get('http://api.example.com/health');\n  check(res, { 'status is 200': (r) => r.status === 200 });\n}"
+    jsTitle: "Load Testing APIs (k6, Artillery)"
+    jsCode: "// k6 script\nexport default function() {\n  http.get('http://api.example.com/health');\n  check(res, { 'status is 200': (r) => r.status === 200 });\n}"
     mlTitle: "Load Testing Models"
     mlCode: "// Stress test: concurrent predictions\nconst results = await Promise.all(\n  Array(50).fill(null).map(() => sentinel.predict(randomInput))\n);\nassert(results.every(r => r.confidence >= 0));"
     tier: structural

@@ -36,7 +36,7 @@ export interface DashboardModule {
 }
 
 export interface DashboardBridge {
-  feTitle: string;
+  jsTitle: string;
   mlTitle: string;
   tier: "identity" | "structural" | "intuition";
   collected: boolean;

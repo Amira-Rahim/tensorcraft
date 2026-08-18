@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A forward pass runs input data through every layer of the model to produce a prediction. Each layer transforms the data and hands the result to the next, so a raw clinical note leaves the far end as a probability."
   bridge:
-    feTitle: "Promise Chain"
-    feCode: "fetch(url).then(parse).then(validate).then(render)"
+    jsTitle: "Promise Chain"
+    jsCode: "fetch(url).then(parse).then(validate).then(render)"
     mlTitle: "Forward Pass"
     mlCode: "tokenize(text).then(embed).then(model).then(classify)"
     tier: structural
@@ -104,7 +104,7 @@ console.log('Allergy probability:', probability.toFixed(3)); // ~0.83`}
 ## Comparing to a Promise Chain
 
 <CodeBlock language="typescript" title="promise-parallel.ts">
-{`// Frontend pipeline (you know this)
+{`// JS pipeline (you know this)
 const result = await fetch('/api/notes/42')
   .then(res => res.json())           // parse
   .then(data => validate(data))       // validate

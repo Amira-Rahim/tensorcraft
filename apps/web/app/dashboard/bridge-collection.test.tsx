@@ -17,7 +17,7 @@ const bridges = [
   {
     lessonSlug: "introduction-to-tensors",
     moduleSlug: "foundations",
-    feTitle: "Array",
+    jsTitle: "Array",
     mlTitle: "Tensor",
     tier: "identity" as const,
     collected: true,
@@ -25,7 +25,7 @@ const bridges = [
   {
     lessonSlug: "activation-functions",
     moduleSlug: "neural-networks",
-    feTitle: "Guard clause",
+    jsTitle: "Guard clause",
     mlTitle: "ReLU",
     tier: "intuition" as const,
     collected: false,
@@ -33,7 +33,7 @@ const bridges = [
   {
     lessonSlug: "loss-functions",
     moduleSlug: "training-loop",
-    feTitle: "expect().toBe()",
+    jsTitle: "expect().toBe()",
     mlTitle: "Loss function",
     tier: "structural" as const,
     collected: true,

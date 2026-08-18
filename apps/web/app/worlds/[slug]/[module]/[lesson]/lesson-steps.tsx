@@ -68,8 +68,8 @@ interface LessonStepsProps {
     concept: {
       explanation: string;
       bridge?: {
-        feTitle: string;
-        feCode: string;
+        jsTitle: string;
+        jsCode: string;
         mlTitle: string;
         mlCode: string;
         tier: "identity" | "structural" | "intuition";

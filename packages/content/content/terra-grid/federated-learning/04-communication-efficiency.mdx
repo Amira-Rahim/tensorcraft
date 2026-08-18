@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Efficient federated communication sends only the gradient values that matter this round and lets the rest accumulate locally until they do."
   bridge:
-    feTitle: "GraphQL Selective Queries"
-    feCode: "query { user { name, email } } // request only needed fields"
+    jsTitle: "GraphQL Selective Queries"
+    jsCode: "query { user { name, email } } // request only needed fields"
     mlTitle: "Gradient Compression"
     mlCode: "sendTopKGradients(k=0.01) // send only significant updates"
     tier: structural

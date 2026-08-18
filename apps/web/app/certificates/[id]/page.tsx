@@ -216,8 +216,8 @@ export default async function CertificateSharePage({ params }: Props) {
             <Link href="/" className="text-primary underline">
               Tensorcraft
             </Link>
-            , an interactive, story-driven machine-learning course for frontend
-            engineers.
+            , an interactive, story-driven machine-learning course for
+            JavaScript engineers.
           </p>
         </div>
 

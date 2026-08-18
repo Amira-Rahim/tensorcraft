@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Text cleaning removes noise (HTML tags, special characters, extra whitespace) and normalization standardizes format through lowercasing, stemming, and Unicode handling. It's the same process as sanitizing user input in a web form before storing it in a database."
   bridge:
-    feTitle: "Input Sanitization"
-    feCode: "const clean = input.replace(/<[^>]*>/g, '').trim().toLowerCase()"
+    jsTitle: "Input Sanitization"
+    jsCode: "const clean = input.replace(/<[^>]*>/g, '').trim().toLowerCase()"
     mlTitle: "Text Normalization"
     mlCode: "const normalize = (text) => stripHtml(text).replace(/[^a-z0-9\\s]/g, '').trim()"
     tier: structural

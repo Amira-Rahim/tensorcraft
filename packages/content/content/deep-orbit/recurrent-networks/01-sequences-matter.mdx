@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "In sequences, order is part of the meaning: shuffle the readings and the values survive but the signal dies."
   bridge:
-    feTitle: "React List Keys"
-    feCode: "items.map(item => <Item key={item.id} />)"
+    jsTitle: "React List Keys"
+    jsCode: "items.map(item => <Item key={item.id} />)"
     mlTitle: "Sequence Order"
     mlCode: "model.predict(tf.tensor3d([[[t1], [t2], [t3], [t4], [t5]]])) // [batch, steps, features]"
     tier: structural

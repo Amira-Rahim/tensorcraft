@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "An inference API is a clean interface that wraps your model and exposes prediction functionality through a standard contract. It is the same pattern as building a REST API endpoint. Callers send data in a known format, receive results in a known format, and never touch the implementation details."
   bridge:
-    feTitle: "REST API Endpoint"
-    feCode: "const response = await fetch('/api/users', {\n  method: 'POST',\n  body: JSON.stringify({ name: 'Amir' })\n});\nconst user = await response.json();"
+    jsTitle: "REST API Endpoint"
+    jsCode: "const response = await fetch('/api/users', {\n  method: 'POST',\n  body: JSON.stringify({ name: 'Amir' })\n});\nconst user = await response.json();"
     mlTitle: "Inference Endpoint"
     mlCode: "const response = await fetch('/api/predict', {\n  method: 'POST',\n  body: JSON.stringify({ imageData: pixels })\n});\nconst prediction = await response.json();"
     tier: identity

@@ -644,7 +644,9 @@ flip; Kit dashboard emails (T0-2, the "highest ratio of customer-facing
 words to reviewed words"); buy the product twice (T0-3); ~~real name on
 /about~~ - **RESOLVED 2026-07-25 by owner decision: identity stays
 private.** /about now opens with the collective origin story ("built by a
-group of frontend engineers…"); do not add a personal name without asking;
+group of JavaScript engineers…", wording updated 2026-08-18 with the
+audience rebrand; the identity stays collective and private); do not add a
+personal name without asking;
 ~~manual light-mode + 375px pass~~ - **DONE 2026-07-25, owner-verified
 clean** (8 core routes at phone width in light scheme; no defects
 reported); Tier 1-OPS accounts; Tier 1-LEGAL

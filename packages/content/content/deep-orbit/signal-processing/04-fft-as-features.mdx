@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "Feature engineering hands the model a better view of the same data: FFT magnitudes join the raw values as inputs, and accuracy follows."
   bridge:
-    feTitle: "Derived State"
-    feCode: "const sortedItems = useMemo(() => items.sort(compare), [items])"
+    jsTitle: "Derived State"
+    jsCode: "const sortedItems = useMemo(() => items.sort(compare), [items])"
     mlTitle: "Feature Engineering"
     mlCode: "const features = tf.concat([rawSignal, fftMagnitudes], 1)"
     tier: structural

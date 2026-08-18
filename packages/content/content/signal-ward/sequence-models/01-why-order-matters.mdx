@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Word order changes meaning, and bag-of-words throws order away. Sequence models process tokens in order, preserving the positional context that separates 'denied chest pain' from 'reported chest pain'."
   bridge:
-    feTitle: "Execution Order in Async Code"
-    feCode: "await validate(data); await save(data); // order changes outcome"
+    jsTitle: "Execution Order in Async Code"
+    jsCode: "await validate(data); await save(data); // order changes outcome"
     mlTitle: "Token Order in Sequences"
     mlCode: "tokens.forEach((token, pos) => hidden = rnnStep(hidden, token));"
     tier: structural

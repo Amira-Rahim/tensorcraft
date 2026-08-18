@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Neural audio synthesis decodes a latent vector into a waveform: thousands of amplitude samples generated rather than recorded, with timbre controlled by where in the latent space you sample."
   bridge:
-    feTitle: "OscillatorNode"
-    feCode: "const osc = ctx.createOscillator(); osc.frequency.value = 440; osc.start();"
+    jsTitle: "OscillatorNode"
+    jsCode: "const osc = ctx.createOscillator(); osc.frequency.value = 440; osc.start();"
     mlTitle: "Neural Oscillator"
     mlCode: "const latent = tf.randomNormal([1, 64]); const waveform = decoder.predict(latent);"
     tier: structural

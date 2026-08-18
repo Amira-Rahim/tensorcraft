@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Edge hardware diversity mirrors browser diversity: you must test and optimize for the weakest target in your fleet, just like supporting IE11 alongside Chrome."
   bridge:
-    feTitle: "Cross-Browser Testing"
-    feCode: "if (!('IntersectionObserver' in window)) { loadPolyfill(); }"
+    jsTitle: "Cross-Browser Testing"
+    jsCode: "if (!('IntersectionObserver' in window)) { loadPolyfill(); }"
     mlTitle: "Edge Hardware Detection"
     mlCode: "if (device.ram < 256) { loadLiteModel(); }"
     tier: structural
@@ -50,7 +50,7 @@ The first fleet-wide model push at Terra Systems went out before anyone profiled
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend development, you use feature detection to serve the right experience. Edge deployment uses the same pattern, but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
+In the browser, you use feature detection to serve the right experience. Edge deployment uses the same pattern, but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
 
 <CodeBlock language="typescript" title="device-profiling.ts">
 {`import * as tf from '@tensorflow/tfjs';

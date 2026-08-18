@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "OTA model updates follow the Service Worker lifecycle: install new version in background, verify integrity, activate on next inference cycle, keep the old version as fallback."
   bridge:
-    feTitle: "Service Worker Update"
-    feCode: "navigator.serviceWorker.register('/sw.js') // install → waiting → active"
+    jsTitle: "Service Worker Update"
+    jsCode: "navigator.serviceWorker.register('/sw.js') // install → waiting → active"
     mlTitle: "OTA Model Update"
     mlCode: "otaUpdate({ download, verify, stage, activate }) // same lifecycle"
     tier: structural

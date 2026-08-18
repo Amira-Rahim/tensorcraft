@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "Caching inference results means the model never computes the same answer twice. The hard part is deciding when two inputs count as the same."
   bridge:
-    feTitle: "Service Worker Cache"
-    feCode: "(await caches.match(request)) ?? fetch(request) // cache-first"
+    jsTitle: "Service Worker Cache"
+    jsCode: "(await caches.match(request)) ?? fetch(request) // cache-first"
     mlTitle: "Inference Cache"
     mlCode: "cache.get(inputHash) ?? model.predict(input) // cache-first, predict is sync"
     tier: structural

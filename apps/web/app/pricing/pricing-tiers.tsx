@@ -239,7 +239,7 @@ export function PricingTiers() {
               {[
                 `${lessonsPerModule} lessons`,
                 "Code editor",
-                "FE-to-ML bridges",
+                "JS-to-ML bridges",
                 "Graded exercises",
                 // The free module carries its own scene plates, so the funnel
                 // shows the production value rather than only describing it.

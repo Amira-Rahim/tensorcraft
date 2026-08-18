@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Medical embeddings are word vectors trained on clinical text (PubMed, MIMIC-III, clinical notes). They capture domain-specific relationships that generic embeddings miss: 'stat' means 'immediately' in clinical context, not 'statistics'. Like scoped CSS variables, domain embeddings provide context-specific values."
   bridge:
-    feTitle: "Scoped CSS Variables"
-    feCode: ".clinical { --color-alert: #dc3545; } /* context-specific */"
+    jsTitle: "Scoped CSS Variables"
+    jsCode: ".clinical { --color-alert: #dc3545; } /* context-specific */"
     mlTitle: "Domain Embeddings"
     mlCode: "// 'stat' near 'urgent', not 'statistics'; context-specific"
     tier: structural

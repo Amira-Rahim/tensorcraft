@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Choosing between edge and cloud inference is like choosing between CSR and SSR: each has tradeoffs in latency, capability, and resource usage."
   bridge:
-    feTitle: "CSR vs SSR"
-    feCode: "// CSR: runs in browser, fast interaction\n// SSR: runs on server, more capable"
+    jsTitle: "CSR vs SSR"
+    jsCode: "// CSR: runs in browser, fast interaction\n// SSR: runs on server, more capable"
     mlTitle: "Edge vs Cloud"
     mlCode: "// Edge: runs on device, low latency\n// Cloud: runs on GPU, more capable"
     tier: structural
@@ -42,7 +42,7 @@ Recommendation: hybrid architecture. Real-time anomaly detection on edge devices
 GRID is right. Not everything needs to run on the edge, and not everything should run in the cloud. The architecture should match the requirements.
 </Dialogue>
 
-This is a decision you make every day as a frontend engineer. Client-side rendering or server-side rendering? The answer is always: it depends. Edge vs cloud inference follows the same decision framework.
+If you've shipped a browser app, you've made this call: client-side rendering or server-side rendering? The answer is always: it depends. Edge vs cloud inference follows the same decision framework.
 
 <LearningObjectives objectives={["Evaluate when to use edge vs cloud inference", "Understand the tradeoffs: latency, model size, accuracy, connectivity, cost", "Design a hybrid edge-cloud architecture", "Map CSR/SSR decision frameworks to edge/cloud decisions"]} />
 

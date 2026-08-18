@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Style representations are Gram matrices taken across multiple CNN layers, each capturing which textures co-occur at one scale. Stacked together they form a numeric fingerprint of an artistic identity, derived rather than authored."
   bridge:
-    feTitle: "Design tokens: encoded visual identity"
-    feCode: "const tokens = { color: '#1e3a5f', radius: '8px', font: 'Inter' };"
+    jsTitle: "Design tokens: encoded visual identity"
+    jsCode: "const tokens = { color: '#1e3a5f', radius: '8px', font: 'Inter' };"
     mlTitle: "Gram matrix style encoding"
     mlCode: "const style = layers.map(l => gramMatrix(getActivation(l)));"
     tier: structural

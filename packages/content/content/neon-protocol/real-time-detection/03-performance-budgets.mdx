@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Real-time inference runs on a time budget per frame: preprocessing, inference, and postprocessing must all fit inside it, or you drop frames. At 30fps the entire budget is 33 milliseconds."
   bridge:
-    feTitle: "Lighthouse Performance Budgets"
-    feCode: "// Budget: FCP < 1.8s, LCP < 2.5s, TBT < 200ms"
+    jsTitle: "Lighthouse Performance Budgets"
+    jsCode: "// Budget: FCP < 1.8s, LCP < 2.5s, TBT < 200ms"
     mlTitle: "Inference Performance Budget"
     mlCode: "// Budget per frame at 30fps: preprocess < 5ms, inference < 20ms, postprocess < 5ms"
     tier: structural

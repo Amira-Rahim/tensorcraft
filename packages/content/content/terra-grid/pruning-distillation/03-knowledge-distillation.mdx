@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Knowledge distillation trains a small 'student' model to reproduce a large 'teacher' model's judgment, capturing the essential knowledge in a fraction of the parameters."
   bridge:
-    feTitle: "Code Splitting"
-    feCode: "// Full bundle: 2MB, everything\n// Route chunk: 50KB, just what's needed\nconst Page = lazy(() => import('./page'));"
+    jsTitle: "Code Splitting"
+    jsCode: "// Full bundle: 2MB, everything\n// Route chunk: 50KB, just what's needed\nconst Page = lazy(() => import('./page'));"
     mlTitle: "Knowledge Distillation"
     mlCode: "// Teacher: 200MB, full knowledge\n// Student: 5MB, distilled knowledge\nstudent.fitWith(teacherOutputs);"
     tier: structural

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Dimensionality is the number of independent axes in the latent space. Too few dimensions lose information; too many fail to compress meaningfully."
   bridge:
-    feTitle: "CSS Custom Properties"
-    feCode: "--color-primary: #00D4FF; --spacing-unit: 8px; --radius: 4px;"
+    jsTitle: "CSS Custom Properties"
+    jsCode: "--color-primary: #00D4FF; --spacing-unit: 8px; --radius: 4px;"
     mlTitle: "Latent Dimensions"
     mlCode: "encoder.add(tf.layers.dense({ units: 16 }))  // 16 dimensions"
     tier: structural
@@ -63,7 +63,7 @@ The latent dimension is a bottleneck. A 28x28 image has 784 values. Compressing 
 <CodeBlock language="typescript" title="dimensionality-tradeoff.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: design system with different numbers of tokens
+// Browser: design system with different numbers of tokens
 // Minimal: 3 properties control everything
 // --hue, --scale, --density
 // Expressive but constrained

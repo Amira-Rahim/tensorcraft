@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A feature pipeline chains together preprocessing, feature extraction, normalization, and indexing into a single end-to-end system. Each stage transforms data for the next, like middleware in an Express server. The pipeline pattern decouples stages so you can swap backbones, change normalization, or upgrade indexing without rewriting the entire system."
   bridge:
-    feTitle: "Express middleware pipeline"
-    feCode: "app.use(cors()).use(auth()).use(validate()).use(handler);"
+    jsTitle: "Express middleware pipeline"
+    jsCode: "app.use(cors()).use(auth()).use(validate()).use(handler);"
     mlTitle: "Feature Pipeline"
     mlCode: "pipe(preprocess).pipe(extract).pipe(normalize).pipe(index);"
     tier: structural

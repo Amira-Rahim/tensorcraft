@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "CLIP-guided generation puts a critic inside the loop: at each diffusion step, score the image against the prompt and nudge the pixels toward higher similarity. CLIP never paints anything. It only steers, and the strength of its steering is a knob with failure modes at both ends."
   bridge:
-    feTitle: "ESLint: guiding toward patterns"
-    feCode: "// eslint: prefer-const, no-unused-vars; nudge toward better code"
+    jsTitle: "ESLint: guiding toward patterns"
+    jsCode: "// eslint: prefer-const, no-unused-vars; nudge toward better code"
     mlTitle: "CLIP guidance"
     mlCode: "gradient = clipScore(image, prompt); image += lr * gradient;"
     tier: structural

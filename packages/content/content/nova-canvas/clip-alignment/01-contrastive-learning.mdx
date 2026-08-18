@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Contrastive learning trains a model by comparison instead of instruction: pull matched image-text pairs together in embedding space, push the mismatched ones apart. Nobody tells the model what a sunset is; it learns what survives the comparisons."
   bridge:
-    feTitle: "A/B testing"
-    feCode: "if (variant === 'A') showOldDesign(); else showNewDesign();"
+    jsTitle: "A/B testing"
+    jsCode: "if (variant === 'A') showOldDesign(); else showNewDesign();"
     mlTitle: "Contrastive learning"
     mlCode: "loss = -log(sim(pos) / sum(sim(pos) + sim(negatives)));"
     tier: intuition

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Music generation is sequence prediction: given a series of notes, predict the next one. The same pattern as autocomplete, but with pitch and duration instead of characters."
   bridge:
-    feTitle: "setTimeout Sequences"
-    feCode: "notes.forEach((note, i) => setTimeout(() => play(note), i * 500));"
+    jsTitle: "setTimeout Sequences"
+    jsCode: "notes.forEach((note, i) => setTimeout(() => play(note), i * 500));"
     mlTitle: "Sequence Prediction"
     mlCode: "const nextNote = model.predict(tf.tensor2d([noteSequence]));"
     tier: structural

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Real-time style transfer replaces per-image optimization with a feedforward network trained once per style. The expensive loop moves to training time; inference collapses to a single forward pass."
   bridge:
-    feTitle: "CSS filter chains"
-    feCode: "img { filter: saturate(1.5) contrast(1.2) blur(1px); }"
+    jsTitle: "CSS filter chains"
+    jsCode: "img { filter: saturate(1.5) contrast(1.2) blur(1px); }"
     mlTitle: "Feedforward style network"
     mlCode: "const stylized = styleNet.predict(contentImage);"
     tier: structural

@@ -539,9 +539,8 @@ describe("Supabase integration, per-table CRUD + RLS simulation", () => {
         body: JSON.stringify({
           experience_level: "intermediate",
           learning_goal: "career",
-          fe_background: "5 years React",
-          fe_framework: "react",
-          fe_experience_years: 5,
+          js_background: "5 years React",
+          js_experience_years: 5,
         }),
       });
 

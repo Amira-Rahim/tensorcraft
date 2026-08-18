@@ -94,10 +94,9 @@ export interface Database {
           weekly_digest: boolean;
           preferred_world_id: string | null;
           role: UserRole;
-          fe_background: string | null;
+          js_background: string | null;
           learning_goal: string | null;
-          fe_framework: "react" | null;
-          fe_experience_years: number | null;
+          js_experience_years: number | null;
           experience_level:
             | "beginner"
             | "intermediate"
@@ -121,10 +120,9 @@ export interface Database {
           weekly_digest?: boolean;
           preferred_world_id?: string | null;
           role?: UserRole;
-          fe_background?: string | null;
+          js_background?: string | null;
           learning_goal?: string | null;
-          fe_framework?: "react" | null;
-          fe_experience_years?: number | null;
+          js_experience_years?: number | null;
           experience_level?:
             | "beginner"
             | "intermediate"
@@ -144,10 +142,9 @@ export interface Database {
           weekly_digest?: boolean;
           preferred_world_id?: string | null;
           role?: UserRole;
-          fe_background?: string | null;
+          js_background?: string | null;
           learning_goal?: string | null;
-          fe_framework?: "react" | null;
-          fe_experience_years?: number | null;
+          js_experience_years?: number | null;
           experience_level?:
             | "beginner"
             | "intermediate"
@@ -531,7 +528,7 @@ export interface Database {
             | "training"
             | "evaluation"
             | "deployment"
-            | "fe_integration";
+            | "js_integration";
           proficiency: number;
           confidence: number;
           velocity: number;
@@ -547,7 +544,7 @@ export interface Database {
             | "training"
             | "evaluation"
             | "deployment"
-            | "fe_integration";
+            | "js_integration";
           proficiency?: number;
           confidence?: number;
           velocity?: number;
@@ -690,7 +687,7 @@ export interface Database {
             | "training"
             | "evaluation"
             | "deployment"
-            | "fe_integration";
+            | "js_integration";
           metadata: Record<string, unknown>;
           created_at: string;
         };
@@ -711,7 +708,7 @@ export interface Database {
             | "training"
             | "evaluation"
             | "deployment"
-            | "fe_integration";
+            | "js_integration";
           metadata?: Record<string, unknown>;
         };
         Update: Record<string, never>;

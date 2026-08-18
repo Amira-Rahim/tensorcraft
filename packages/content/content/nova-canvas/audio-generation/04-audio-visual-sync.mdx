@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Audio-visual synchronization aligns two generation loops, the visual render loop (requestAnimationFrame) and the audio scheduling loop (AudioContext), using a shared clock."
   bridge:
-    feTitle: "rAF + AudioContext Timing"
-    feCode: "requestAnimationFrame(t => { const audioTime = ctx.currentTime; render(audioTime); });"
+    jsTitle: "rAF + AudioContext Timing"
+    jsCode: "requestAnimationFrame(t => { const audioTime = ctx.currentTime; render(audioTime); });"
     mlTitle: "Synchronized Generation"
     mlCode: "const frame = visualModel.predict(latent); const audio = audioModel.predict(latent);"
     tier: structural

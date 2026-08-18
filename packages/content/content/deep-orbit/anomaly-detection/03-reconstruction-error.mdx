@@ -17,8 +17,8 @@ context:
 concept:
   explanation: "Reconstruction error scores each sample by how badly the autoencoder rebuilds it: one number, high when the input doesn't fit the learned patterns."
   bridge:
-    feTitle: "git diff"
-    feCode: "git diff HEAD -- file.ts  // what changed from baseline?"
+    jsTitle: "git diff"
+    jsCode: "git diff HEAD -- file.ts  // what changed from baseline?"
     mlTitle: "Reconstruction Error"
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition

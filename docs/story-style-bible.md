@@ -65,9 +65,9 @@ wasted investigation time. Warms over the season by exactly one degree.
 Demir's analogies with precision, not validation. Her tic: she cares about
 *trust* in methods, not just correctness. Never says "Exactly!"
 
-**Ensign Demir** - the learner's mirror, a frontend dev gunning for
+**Ensign Demir** - the learner's mirror, a JavaScript dev gunning for
 mission-specialist certification and quietly afraid his analogies are a
-crutch. His FE analogy may be blessed at most 1 time in 3. At least once
+crutch. His JS analogy may be blessed at most 1 time in 3. At least once
 per module it must be WRONG in a way that costs something on-page, and the
 cost is shown, not narrated.
 
@@ -169,8 +169,9 @@ on the Takeaways step (the story belongs to the Epilogue, never here):
 2. `<LessonRecap>` second.
    - `whatYouLearned`: the transferable points, story-stripped. No character
      names, no scene references, no "Aria discovered" framing.
-   - `bridge`: one FE to ML sentence (the same kind of bridge the lesson
-     teaches), e.g. "X in React is Y in TensorFlow".
+   - `bridge`: one JS to ML sentence (the same kind of bridge the lesson
+     teaches), e.g. "X in React is Y in TensorFlow" or "X in Node is Y in
+     TensorFlow".
    - `youCanNow`: a single capability line describing what the learner can do.
 
 Do NOT use a `## Knowledge check` heading or any `<Quiz>` / `<KeyTakeaways>`

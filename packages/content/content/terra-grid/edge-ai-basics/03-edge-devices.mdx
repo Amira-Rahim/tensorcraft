@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Edge devices have strict hardware constraints. Understanding them is like understanding your device testing matrix for responsive web development."
   bridge:
-    feTitle: "Device Testing Matrix"
-    feCode: "// Low-end: 2GB RAM, slow CPU\n// Must test on real constraints"
+    jsTitle: "Device Testing Matrix"
+    jsCode: "// Low-end: 2GB RAM, slow CPU\n// Must test on real constraints"
     mlTitle: "Edge Device Specs"
     mlCode: "// Gateway: 512MB RAM, ARM Cortex-A53\n// Must profile on real hardware"
     tier: structural
@@ -38,7 +38,7 @@ keywords:
 Here's what we're deploying to Site 12. Quad-core ARM Cortex-A53, 512MB RAM, 4GB eMMC storage, powered by a solar panel. It needs to run 24/7 on about 5 watts. Your model has to fit in this.
 </Dialogue>
 
-A React app that runs beautifully on an M2 MacBook and crawls on a budget Android phone: every frontend dev ships that lesson exactly once. Edge ML teaches the same lesson, amplified, except the budget device is bolted to a tower in Patagonia and nobody is around to clear its cache.
+A React app that runs beautifully on an M2 MacBook and crawls on a budget Android phone: every JavaScript engineer ships that lesson exactly once. Edge ML teaches the same lesson, amplified, except the budget device is bolted to a tower in Patagonia and nobody is around to clear its cache.
 
 <LearningObjectives objectives={["Identify common edge device hardware specifications", "Understand memory, compute, and power constraints", "Calculate whether a model fits within device constraints"]} />
 
@@ -46,7 +46,7 @@ A React app that runs beautifully on an M2 MacBook and crawls on a budget Androi
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend development, you maintain a device testing matrix: the range of devices your application must support. Edge ML requires the same discipline. You need to know your target hardware intimately.
+If you've shipped a browser app, you've maintained a device testing matrix: the range of devices your application must support. Edge ML requires the same discipline. You need to know your target hardware intimately.
 
 <CodeBlock language="typescript" title="device-constraints.ts">
 {`interface EdgeDevice {

@@ -59,7 +59,7 @@ export default function PrivacyPage() {
                 address when settled. Tracked in post-launch-backlog §7. */}
             <p>
               Tensorcraft is a browser-based machine learning course for
-              frontend engineers. Tensorcraft is the data controller for
+              JavaScript engineers. Tensorcraft is the data controller for
               everything this policy describes. For any question about this
               policy, or to exercise any right in section 8, email{" "}
               <a
@@ -80,10 +80,10 @@ export default function PrivacyPage() {
               <strong className="text-text-primary">Account data:</strong> your
               email address, display name, and avatar, from GitHub, Google, or
               the email address you sign up with. Onboarding also records your
-              frontend background, experience level, learning goal, and
-              framework. If you buy without an account, we create one from the
-              email you used at checkout so the purchase has an owner, and we
-              email you a sign-in link.
+              JavaScript background, experience level, and learning goal. If you
+              buy without an account, we create one from the email you used at
+              checkout so the purchase has an owner, and we email you a sign-in
+              link.
             </p>
             <p className="mb-3">
               <strong className="text-text-primary">Learning data:</strong>{" "}

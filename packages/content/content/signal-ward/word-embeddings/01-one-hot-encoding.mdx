@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "One-hot encoding represents each word as a vector where exactly one position is 1 and all others are 0. It assigns a unique identity but captures zero semantic relationships: 'aspirin' is equally distant from 'ibuprofen' and 'appendectomy'."
   bridge:
-    feTitle: "Enum Values"
-    feCode: "enum Drug { Aspirin = 0, Ibuprofen = 1, Appendectomy = 2 }"
+    jsTitle: "Enum Values"
+    jsCode: "enum Drug { Aspirin = 0, Ibuprofen = 1, Appendectomy = 2 }"
     mlTitle: "One-Hot Vector"
     mlCode: "aspirin = [1, 0, 0]  // unique ID, no relationships"
     tier: structural
@@ -126,7 +126,7 @@ const vocabSize = 50_000;
 // A batch of 128 words = 128 x 50,000 = 6.4 million values
 // Most of them are zeros: wasted memory
 
-// In frontend terms: imagine a CSS file where every class name
+// Browser analogy: imagine a CSS file where every class name
 // is a unique 50,000-character string of 0s and 1s.
 // It works, but it is absurdly wasteful.
 

@@ -26,8 +26,8 @@ const lessonA: Lesson = {
   concept: {
     explanation: "x",
     bridge: {
-      feTitle: "TypedArray",
-      feCode: "new Float32Array([1])",
+      jsTitle: "TypedArray",
+      jsCode: "new Float32Array([1])",
       mlTitle: "Tensor",
       mlCode: "tf.tensor([1])",
       tier: "structural",
@@ -46,7 +46,7 @@ const lessonB: Lesson = {
   order: 4,
   concept: { explanation: "x" },
   keywords: ["web-gpu", "GPU", "inference"],
-  skillAxes: ["deployment", "fe_integration"],
+  skillAxes: ["deployment", "js_integration"],
 };
 
 describe("normalizeConcept", () => {
@@ -99,7 +99,7 @@ describe("extractLessonConcepts", () => {
     const sources = new Set(concepts.map((c) => c.source));
     expect(sources.has("keyword")).toBe(true);
     expect(sources.has("bridge_ml")).toBe(true);
-    expect(sources.has("bridge_fe")).toBe(true);
+    expect(sources.has("bridge_js")).toBe(true);
     expect(sources.has("skill_axis")).toBe(true);
     expect(sources.has("module_id")).toBe(true);
   });

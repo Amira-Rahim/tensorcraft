@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Interpolation in latent space means blending between two encoded points. Because the space is structured, intermediate points produce meaningful, smooth transitions."
   bridge:
-    feTitle: "CSS Transitions"
-    feCode: "transition: transform 0.3s ease-in-out"
+    jsTitle: "CSS Transitions"
+    jsCode: "transition: transform 0.3s ease-in-out"
     mlTitle: "Latent Interpolation"
     mlCode: "const mid = z1.mul(1 - t).add(z2.mul(t))"
     tier: structural
@@ -56,7 +56,7 @@ The simplest interpolation is linear: blend two vectors with a parameter `t` tha
 <CodeBlock language="typescript" title="latent-interpolation.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: CSS-like interpolation between two states
+// Browser: CSS-like interpolation between two states
 function lerpColor(colorA: number[], colorB: number[], t: number): number[] {
   return colorA.map((a, i) => a * (1 - t) + colorB[i] * t);
 }

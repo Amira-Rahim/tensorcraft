@@ -551,9 +551,15 @@ post-launch work.
 
 ### Horizon 1: fix the economics (0-9 months)
 
-- [ ] Widen ICP to web/JS developers: reframe copy, relabel the
-  React-specific bridge subset (bridge content already ~75% general JS;
-  `Framework` union already typed for `variants`).
+- [x] Widen ICP to JavaScript developers: copy, SEO metadata, schema
+  identifiers (migration 059: js_background / js_experience_years /
+  js_integration; fe_framework dropped), docs, and the content noun pass
+  all shipped 2026-08-18.
+- [ ] Remaining from the ICP widening: triage the ~72 browser-anchored
+  bridges (keep-browser vs swap-to-Node vs dual-frame; decision table at
+  docs/audits/bridge-triage-2026-08.md) and the ~24 in-dialogue frontend
+  mentions held for the same editorial pass (`Framework` union still typed
+  for `variants` when multi-framework returns).
 - [ ] Launch more of the 4 built-but-gated worlds (overlaps §5 world
   sprints; this is the Gate 1 dependency).
 - [ ] Authoring scaffold `scripts/new-lesson.mjs` (no generator exists;

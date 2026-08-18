@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "Temporal attention scores each time step's importance and concentrates processing on the few that carry the information. The weights double as a map of where the model looked."
   bridge:
-    feTitle: "scrollIntoView()"
-    feCode: "element.scrollIntoView({ behavior: 'smooth' }) // jump to what matters"
+    jsTitle: "scrollIntoView()"
+    jsCode: "element.scrollIntoView({ behavior: 'smooth' }) // jump to what matters"
     mlTitle: "Temporal Attention"
     mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
     tier: intuition
@@ -120,7 +120,7 @@ function topAttentionSteps(
 
 ## Applied: Attention Over a Live Ring Buffer
 
-The heatmaps above assume the model gets the whole window. On the bridge array it gets whatever the capture buffer kept, and storage is tight enough that the tempting move is the frontend one: virtualize. Keep the steps around the predicted event, drop the rest, let a viewport stand in for the sequence.
+The heatmaps above assume the model gets the whole window. On the bridge array it gets whatever the capture buffer kept, and storage is tight enough that the tempting move is the browser one: virtualize. Keep the steps around the predicted event, drop the rest, let a viewport stand in for the sequence.
 
 Attention has a failure mode built exactly for that trick, and four tensor shapes are enough to see it:
 

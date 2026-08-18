@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Clinical attention biases the model to prioritize medically significant tokens like drug names, conditions, and dosages."
   bridge:
-    feTitle: "Search Result Highlighting"
-    feCode: "text.replace(regex, '<mark>$1</mark>'); // highlight matches"
+    jsTitle: "Search Result Highlighting"
+    jsCode: "text.replace(regex, '<mark>$1</mark>'); // highlight matches"
     mlTitle: "Clinical Attention Bias"
     mlCode: "scores.add(clinicalBias); // boost medical term weights"
     tier: structural

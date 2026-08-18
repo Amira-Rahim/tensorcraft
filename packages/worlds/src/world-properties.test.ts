@@ -270,7 +270,7 @@ const REQUIRED_LIGHT_PER_WORLD_PROPS = [
   "--tc-tier-intuition",
   "--tc-axis-evaluation",
   "--tc-axis-deployment",
-  "--tc-axis-fe-integration",
+  "--tc-axis-js-integration",
 ];
 
 describe("Light scheme CSS custom properties", () => {

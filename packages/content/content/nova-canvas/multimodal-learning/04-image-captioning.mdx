@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Image captioning runs generation in the text direction: an image encoder extracts visual features, and a text decoder writes a description one word at a time, each word conditioned on the image and on every word already written."
   bridge:
-    feTitle: "Alt-text generation for accessibility"
-    feCode: "// Automated: <img alt={generateCaption(src)} />"
+    jsTitle: "Alt-text generation for accessibility"
+    jsCode: "// Automated: <img alt={generateCaption(src)} />"
     mlTitle: "Image captioning pipeline"
     mlCode: "const features = encodeImage(img); const caption = decodeText(features);"
     tier: structural

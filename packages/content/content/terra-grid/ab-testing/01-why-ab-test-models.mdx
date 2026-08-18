@@ -10,10 +10,10 @@ context:
   narrative: "Hassan pulls up the incident report from March 2024. 'Model v2.3 went to all 12,400 devices at once. Power grid predictions drifted 15% within 48 hours. Three weeks before anyone noticed. That cost us $4.2 million. Never again.'"
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "A/B testing ML models validates improvements before full rollout, the same principle as feature flags in frontend development, but applied to model versions instead of UI changes."
+  explanation: "A/B testing ML models validates improvements before full rollout, the same principle as feature flags in JavaScript apps, but applied to model versions instead of UI changes."
   bridge:
-    feTitle: "Feature Flags"
-    feCode: "if (featureFlags.newCheckout) { renderNewCheckout(); } else { renderOldCheckout(); }"
+    jsTitle: "Feature Flags"
+    jsCode: "if (featureFlags.newCheckout) { renderNewCheckout(); } else { renderOldCheckout(); }"
     mlTitle: "Model Flags"
     mlCode: "if (modelFlags.v2) { predict(modelV2, input); } else { predict(modelV1, input); }"
     tier: identity

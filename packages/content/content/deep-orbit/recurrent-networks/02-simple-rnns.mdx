@@ -16,8 +16,8 @@ context:
 concept:
   explanation: "An RNN carries hidden state from step to step: previous state in, new input in, updated state out. The transition function is learned, not written."
   bridge:
-    feTitle: "useReducer"
-    feCode: "const [state, dispatch] = useReducer(reducer, initialState)"
+    jsTitle: "useReducer"
+    jsCode: "const [state, dispatch] = useReducer(reducer, initialState)"
     mlTitle: "RNN Cell"
     mlCode: "newHidden = tanh(W_h * prevHidden + W_x * input + bias)"
     tier: structural

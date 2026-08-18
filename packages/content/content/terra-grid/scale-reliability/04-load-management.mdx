@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Load management for ML inference uses the same techniques as handling web traffic spikes: rate limiting, request queuing, and priority-based processing."
   bridge:
-    feTitle: "Rate Limiting"
-    feCode: "// Express: rateLimit({ windowMs: 60000, max: 100 }) per client"
+    jsTitle: "Rate Limiting"
+    jsCode: "// Express: rateLimit({ windowMs: 60000, max: 100 }) per client"
     mlTitle: "Inference Throttling"
     mlCode: "// Edge: inferenceLimit({ windowMs: 1000, max: 50 }) per device"
     tier: identity

@@ -23,7 +23,7 @@ From audit: 13 lessons claim a different tier than the canonical registry says f
 
 ### Batch 2 - Suspect structurals (168 lessons)
 
-Heuristic: `tier: structural` AND zero shared significant words between `feTitle` and `mlTitle`. These have the largest cognitive gap and are most likely to mislead. Examples from audit:
+Heuristic: `tier: structural` AND zero shared significant words between `jsTitle` and `mlTitle`. These have the largest cognitive gap and are most likely to mislead. Examples from audit:
 
 - `Webpack Tree-Shaking ↔ Model Pruning` - shared word: none (after stopwords)
 - `Micro-Frontends ↔ Model Ensemble`

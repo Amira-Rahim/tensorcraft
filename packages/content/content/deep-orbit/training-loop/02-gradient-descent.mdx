@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "Gradient descent repeatedly steps weights in the direction that reduces loss, the same update rule as the lerp smoothing you've written for animations."
   bridge:
-    feTitle: "Lerp smoothing"
-    feCode: "pos += (target - pos) * 0.1  // ease toward target"
+    jsTitle: "Lerp smoothing"
+    jsCode: "pos += (target - pos) * 0.1  // ease toward target"
     mlTitle: "Gradient descent step"
     mlCode: "weights = weights.sub(grad.mul(0.1))  // ease toward minimum"
     tier: structural

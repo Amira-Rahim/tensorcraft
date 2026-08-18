@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Processing continuous data streams is the same pattern as WebSockets and Server-Sent Events. You receive data in chunks, process each chunk, and push results downstream. The only difference: each chunk is a video frame, and processing means inference."
   bridge:
-    feTitle: "WebSocket / Server-Sent Events"
-    feCode: "const ws = new WebSocket(url); ws.onmessage = (e) => processChunk(e.data);"
+    jsTitle: "WebSocket / Server-Sent Events"
+    jsCode: "const ws = new WebSocket(url); ws.onmessage = (e) => processChunk(e.data);"
     mlTitle: "Inference Stream"
     mlCode: "feedStream.onFrame((frame) => { const result = model.predict(preprocess(frame)); emit(result); });"
     tier: structural

@@ -14,8 +14,8 @@ context:
 concept:
   explanation: "Shape describes the size of each dimension in a tensor."
   bridge:
-    feTitle: "Array.length"
-    feCode: "const shape = [arr.length, arr[0].length]"
+    jsTitle: "Array.length"
+    jsCode: "const shape = [arr.length, arr[0].length]"
     mlTitle: "Tensor.shape"
     mlCode: "tensor.shape // [3, 4]"
     tier: structural
@@ -51,7 +51,7 @@ Every tensor has a **shape**: a tuple of numbers describing how many elements ex
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend development, you work with shapes constantly. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`.
+In the browser, you work with shapes constantly. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`.
 
 ## Where Does Each Value Land?
 

@@ -16,8 +16,8 @@ context:
 concept:
   explanation: "Windowing tapers a slice's edges to zero before the FFT, so the transform never mistakes your cut for a cliff in the signal."
   bridge:
-    feTitle: "Virtual Scrolling"
-    feCode: "// Render only items in viewport, fade edges smoothly"
+    jsTitle: "Virtual Scrolling"
+    jsCode: "// Render only items in viewport, fade edges smoothly"
     mlTitle: "Windowing"
     mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
     tier: structural
@@ -52,7 +52,7 @@ Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges 
 Before you fix it: the dashboard filed two anomaly reports overnight against frequencies that do not exist. I spent eighty minutes standing down phantom contacts. Fix the edges before the next archive replay.
 </Dialogue>
 
-The smear has already cost the mission something countable. Demir's instinct wasn't wrong by frontend rules: virtual scrolling hard-cuts the viewport constantly and nothing breaks. But pixels you cut just stay off-screen; samples you cut have mathematical consequences. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is (false) frequency content. The part of his analogy that survives is the fix: taper the boundary smoothly, the way you'd fade items at the edge of a scroll viewport, so the transform never sees a cliff.
+The smear has already cost the mission something countable. Demir's instinct wasn't wrong by browser rules: virtual scrolling hard-cuts the viewport constantly and nothing breaks. But pixels you cut just stay off-screen; samples you cut have mathematical consequences. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is (false) frequency content. The part of his analogy that survives is the fix: taper the boundary smoothly, the way you'd fade items at the edge of a scroll viewport, so the transform never sees a cliff.
 
 <LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 

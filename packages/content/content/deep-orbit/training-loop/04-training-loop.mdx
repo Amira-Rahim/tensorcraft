@@ -16,8 +16,8 @@ context:
 concept:
   explanation: "Feed data, compute loss, update weights, repeat. The training loop is the engine that turns thousands of examples into learned behavior."
   bridge:
-    feTitle: "requestAnimationFrame"
-    feCode: "function animate() { update(); render(); requestAnimationFrame(animate); }"
+    jsTitle: "requestAnimationFrame"
+    jsCode: "function animate() { update(); render(); requestAnimationFrame(animate); }"
     mlTitle: "Training Loop"
     mlCode: "await model.fit(trainX, trainY, { epochs: 50 })"
     tier: structural
@@ -51,7 +51,7 @@ Training sequence initiated. I have run this loop by hand twice this week: forwa
 
 ## The Learning Loop
 
-In frontend animation, `requestAnimationFrame` creates a loop that updates state and re-renders until the target is reached. Training is the same pattern: update weights and re-evaluate until the loss is minimized.
+In browser animation, `requestAnimationFrame` creates a loop that updates state and re-renders until the target is reached. Training is the same pattern: update weights and re-evaluate until the loss is minimized.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

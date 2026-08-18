@@ -116,9 +116,8 @@ describe("PATCH /api/onboarding", () => {
       body: JSON.stringify({
         experience_level: "intermediate",
         learning_goal: "career",
-        fe_framework: "react",
-        fe_experience_years: 4,
-        fe_background: "Built apps in prod",
+        js_experience_years: 4,
+        js_background: "Built apps in prod",
       }),
     });
     expect(res.status).toBe(200);
@@ -131,10 +130,42 @@ describe("PATCH /api/onboarding", () => {
       expect.objectContaining({
         experience_level: "intermediate",
         learning_goal: "career",
-        fe_framework: "react",
-        fe_experience_years: 4,
+        js_experience_years: 4,
       }),
     );
+  });
+
+  it("shims the pre-059 keys from stale clients onto the js_* columns", async () => {
+    // One-release shim: a client deployed before the rebrand still sends
+    // fe_background / fe_experience_years / fe_framework. The first two map
+    // to the renamed columns; fe_framework is ignored (column dropped).
+    authedUser();
+    const res = await createApp().request("/api/onboarding", {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fe_background: "Legacy client",
+        fe_experience_years: 3,
+        fe_framework: "react",
+      }),
+    });
+    expect(res.status).toBe(200);
+    expect(mockAdminUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        js_background: "Legacy client",
+        js_experience_years: 3,
+      }),
+    );
+    const updateArg = mockAdminUpdate.mock.calls.at(-1)?.[0] as Record<
+      string,
+      unknown
+    >;
+    expect(updateArg).not.toHaveProperty("fe_framework");
+    expect(updateArg).not.toHaveProperty("fe_background");
+    expect(updateArg).not.toHaveProperty("fe_experience_years");
   });
 
   it("rejects invalid experience_level", async () => {
@@ -180,7 +211,7 @@ describe("PATCH /api/onboarding", () => {
     expect(res.status).toBe(400);
   });
 
-  it("rejects fe_experience_years out of range", async () => {
+  it("rejects js_experience_years out of range", async () => {
     authedUser();
     const res = await createApp().request("/api/onboarding", {
       method: "PATCH",
@@ -188,7 +219,7 @@ describe("PATCH /api/onboarding", () => {
         Authorization: "Bearer valid",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ fe_experience_years: 99 }),
+      body: JSON.stringify({ js_experience_years: 99 }),
     });
     expect(res.status).toBe(400);
   });

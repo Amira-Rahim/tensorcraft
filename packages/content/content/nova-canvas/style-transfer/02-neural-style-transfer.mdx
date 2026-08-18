@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Neural style transfer generates a new image by optimizing its pixels directly: keep one image's structure, match another image's texture statistics. Two losses, minimized simultaneously, with the balance between them as the main creative dial."
   bridge:
-    feTitle: "CSS theme switching"
-    feCode: "document.body.dataset.theme = 'monet'; // swap visual identity"
+    jsTitle: "CSS theme switching"
+    jsCode: "document.body.dataset.theme = 'monet'; // swap visual identity"
     mlTitle: "Neural style transfer"
     mlCode: "loss = contentLoss(target, content) + styleLoss(target, style);"
     tier: structural

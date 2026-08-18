@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A backbone network is a pre-trained CNN that serves as a reusable feature extractor. You strip off its classification head, keep the layers that turn pixels into features, and build your specific application on that foundation."
   bridge:
-    feTitle: "Shared component libraries"
-    feCode: "import { Button, Card } from '@company/ui-library';"
+    jsTitle: "Shared component libraries"
+    jsCode: "import { Button, Card } from '@company/ui-library';"
     mlTitle: "Backbone Network"
     mlCode: "const backbone = await tf.loadLayersModel('mobilenet_v2');"
     tier: structural

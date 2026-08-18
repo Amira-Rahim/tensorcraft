@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A GAN is two networks competing: a generator creates fake data, a discriminator judges whether data is real or fake. They improve each other through adversarial training, like a fuzzer finding bugs that a validator misses."
   bridge:
-    feTitle: "Fuzzer vs Validator in Testing"
-    feCode: "const fuzzInput = fuzzer.generate(); const isValid = validator.check(fuzzInput);"
+    jsTitle: "Fuzzer vs Validator in Testing"
+    jsCode: "const fuzzInput = fuzzer.generate(); const isValid = validator.check(fuzzInput);"
     mlTitle: "Generator vs Discriminator"
     mlCode: "const fakeImage = generator.predict(noise); const isReal = discriminator.predict(fakeImage);"
     tier: structural
@@ -42,7 +42,7 @@ Art has always been resistance. Graffiti over billboards. Murals over propaganda
 A Generative Adversarial Network is two neural networks playing an infinite game. The generator is a counterfeiter. The discriminator is a detective. They make each other better. It is elegant, unstable, and occasionally terrifying.
 </Dialogue>
 
-A GAN pits two networks against each other. The generator creates fake data; the discriminator judges whether data is real or fake. As the discriminator improves, the generator must produce better fakes. As the generator improves, the discriminator must become more discerning. The pattern has a frontend name: fuzz testing.
+A GAN pits two networks against each other. The generator creates fake data; the discriminator judges whether data is real or fake. As the discriminator improves, the generator must produce better fakes. As the generator improves, the discriminator must become more discerning. The pattern has a JavaScript name: fuzz testing.
 
 <LearningObjectives objectives={["Understand the adversarial relationship between generator and discriminator", "Build a simple generator that produces images from random noise", "Build a discriminator that classifies images as real or fake", "Implement the alternating training loop that makes GANs work"]} />
 

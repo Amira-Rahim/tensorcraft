@@ -16,8 +16,8 @@ context:
 concept:
   explanation: "Threshold tuning decides what the detector is allowed to wake a human for: set it too low and you buy alert fatigue, too high and you buy missed anomalies."
   bridge:
-    feTitle: "Alert Thresholds"
-    feCode: "if (errorRate > 0.05) page('oncall') // too low = alert fatigue"
+    jsTitle: "Alert Thresholds"
+    jsCode: "if (errorRate > 0.05) page('oncall') // too low = alert fatigue"
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
@@ -48,7 +48,7 @@ Last week, DEEP SCAN flagged 14 signals. I checked every one. Twelve were cosmic
 But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Nazari.
 </Dialogue>
 
-Alert fatigue is real, in frontend monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore it; Nazari just described the bridge-crew version. The threshold must balance sensitivity against specificity.
+Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore it; Nazari just described the bridge-crew version. The threshold must balance sensitivity against specificity.
 
 <LearningObjectives objectives={["Set detection thresholds using percentiles of normal error distribution", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the optimal balance point"]} />
 
@@ -159,7 +159,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
     "Using the normal error distribution (for example the 99th percentile) gives a principled starting point that ties the threshold to observed behavior on known-good data.",
     "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system."
   ]}
-  bridge="Just as a frontend alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff rather than a fixed number in config."
+  bridge="Just as a JS alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff rather than a fixed number in config."
   youCanNow="Set anomaly detection thresholds from the normal error distribution and evaluate them using precision, recall, and F1 score."
 />
 

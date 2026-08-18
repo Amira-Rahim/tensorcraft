@@ -17,8 +17,8 @@ describe("lessonSchema", () => {
     concept: {
       explanation: "Tensors are multi-dimensional arrays",
       bridge: {
-        feTitle: "Array",
-        feCode: "const arr = [1, 2, 3]",
+        jsTitle: "Array",
+        jsCode: "const arr = [1, 2, 3]",
         mlTitle: "Tensor",
         mlCode: "const t = tf.tensor([1, 2, 3])",
         tier: "identity" as const,

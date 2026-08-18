@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Data drift means the statistical distribution of the model's inputs has moved away from the training baseline while the model itself stood still."
   bridge:
-    feTitle: "Lighthouse CI Regression"
-    feCode: "assert(LCP < 2500) // input metric shifted; investigate"
+    jsTitle: "Lighthouse CI Regression"
+    jsCode: "assert(LCP < 2500) // input metric shifted; investigate"
     mlTitle: "Data Drift Detection"
     mlCode: "assert(featureDist.klDivergence < 0.3) // input distribution shifted"
     tier: structural

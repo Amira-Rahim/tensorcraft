@@ -19,8 +19,6 @@
  */
 export { ParticleField } from "./particle-field";
 export type { ParticleFieldProps } from "./particle-field";
-export { BridgeTicker } from "./bridge-ticker";
-export type { BridgeTickerProps, BridgeItem } from "./bridge-ticker";
 export { OrbitCanvas, drawOrbit } from "./orbit-canvas";
 export type { OrbitCanvasProps } from "./orbit-canvas";
 export { SceneCanvas } from "./scene-canvas";

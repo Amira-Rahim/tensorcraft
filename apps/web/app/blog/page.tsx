@@ -3,11 +3,11 @@ import Link from "next/link";
 import { getPosts } from "@tensorcraft/content";
 
 export const metadata: Metadata = {
-  title: "The Bridge: Frontend-to-ML Insights | Tensorcraft",
+  title: "The Bridge: JavaScript-to-ML Insights | Tensorcraft",
   description:
     "Weekly browser-ML news, mapped to the lessons that teach the underlying concepts.",
   openGraph: {
-    title: "The Bridge: Frontend-to-ML Insights | Tensorcraft",
+    title: "The Bridge: JavaScript-to-ML Insights | Tensorcraft",
     description:
       "Weekly browser-ML news, mapped to the lessons that teach the underlying concepts.",
     url: "https://tensorcraft.app/blog",

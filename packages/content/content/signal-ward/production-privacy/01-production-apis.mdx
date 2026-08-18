@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "An ML serving API follows the exact same pattern as a REST API with SLA guarantees: validate the request, process it, format the response. The difference is the processing step, which runs neural network inference instead of a database query. The SLA covers latency budgets, error handling, and graceful degradation."
   bridge:
-    feTitle: "REST API with SLA"
-    feCode: "app.post('/api/data', validate, async (req, res) => { const result = await db.query(req.body); res.json(result); })"
+    jsTitle: "REST API with SLA"
+    jsCode: "app.post('/api/data', validate, async (req, res) => { const result = await db.query(req.body); res.json(result); })"
     mlTitle: "ML API with SLA"
     mlCode: "app.post('/api/predict', validate, async (req, res) => { const result = await model.predict(req.body.text); res.json(result); })"
     tier: identity

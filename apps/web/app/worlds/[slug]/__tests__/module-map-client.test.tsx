@@ -33,7 +33,7 @@ function makeLesson(overrides: Partial<LessonItem> = {}): LessonItem {
     status: "available",
     sceneLocation: "Deep Orbit Bay",
     narrative: "The station hums as you boot the console.",
-    bridgeFe: "Array.prototype.map",
+    bridgeJs: "Array.prototype.map",
     bridgeMl: "torch.Tensor.map",
     ...overrides,
   };

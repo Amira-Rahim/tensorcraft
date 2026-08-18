@@ -10,7 +10,7 @@
 
 ## Overview
 
-Tensorcraft is an interactive, story-driven ML education platform for frontend engineers. Users learn machine learning through **50+ deep structural mappings** between frontend concepts they already know and ML concepts they're learning - not casual analogies, but real architectural parallels.
+Tensorcraft is an interactive, story-driven ML education platform for JavaScript engineers. Users learn machine learning through **50+ deep structural mappings** between JavaScript concepts they already know and ML concepts they're learning - not casual analogies, but real architectural parallels.
 
 ## Monorepo Structure
 
@@ -173,7 +173,7 @@ Client component with Framer Motion animations:
 
 - ParticleField canvas background
 - Letter-by-letter title reveal with stagger
-- FE→ML bridge showcase (6 featured bridges with animated connectors)
+- JS→ML bridge showcase (6 featured bridges with animated connectors)
 - World preview cards with brutalist offset shadow hover effects
 - Stats section and CTA with brutalist styling
 - Scroll-triggered animations throughout
@@ -340,16 +340,16 @@ Pre-commit hooks run `prettier --write` and `eslint --fix` on staged `.ts/.tsx/.
 
 Turborepo handles dependency ordering: `packages/*` build first, then `apps/*` consume them.
 
-## FE→ML Bridge System
+## JS→ML Bridge System
 
-The core pedagogical innovation. Each ML concept is introduced through a frontend concept:
+The core pedagogical innovation. Each ML concept is introduced through a JavaScript concept:
 
 Bridges are classified into three quality tiers:
-- **Identity** - FE concept *is* the ML concept (e.g., ReLU = `Math.max(0,x)`, Tensor = TypedArray)
+- **Identity** - JS concept *is* the ML concept (e.g., ReLU = `Math.max(0,x)`, Tensor = TypedArray)
 - **Structural** - Same pattern, different domain (e.g., Overfitting = CSS that only works on your screen)
 - **Intuition** - Useful starting point, refined in-lesson (e.g., Loss = Lighthouse score)
 
-| Frontend Concept | ML Concept | Tier |
+| JavaScript Concept | ML Concept | Tier |
 |-----------------|------------|------|
 | `Math.max(0, x)` | ReLU Activation | Identity |
 | TypedArray + `.shape` | Tensor | Identity |

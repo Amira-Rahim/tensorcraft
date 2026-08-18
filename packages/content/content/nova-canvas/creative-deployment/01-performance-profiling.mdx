@@ -10,10 +10,10 @@ context:
   narrative: "Erdem pulls up the metrics dashboard. 'Current generation time: 3.2 seconds per image. The Biennale expects instant response. We need to find every bottleneck.'"
   speaker: "Erdem"
 concept:
-  explanation: "Performance profiling for ML generation uses the same Chrome DevTools you use for frontend optimization: the Performance panel, memory snapshots, and flame charts reveal where inference time is spent."
+  explanation: "Performance profiling for ML generation uses the same Chrome DevTools you use for JavaScript optimization: the Performance panel, memory snapshots, and flame charts reveal where inference time is spent."
   bridge:
-    feTitle: "DevTools Performance Panel"
-    feCode: "performance.mark('start'); doWork(); performance.mark('end'); performance.measure('work', 'start', 'end');"
+    jsTitle: "DevTools Performance Panel"
+    jsCode: "performance.mark('start'); doWork(); performance.mark('end'); performance.measure('work', 'start', 'end');"
     mlTitle: "Inference Profiling"
     mlCode: "performance.mark('inference-start'); model.predict(input); performance.mark('inference-end');"
     tier: structural

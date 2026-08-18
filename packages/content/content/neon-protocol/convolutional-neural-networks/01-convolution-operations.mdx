@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A convolution slides a small kernel (matrix) across an image, computing weighted sums at each position, identical to how CSS filter: blur() applies a Gaussian kernel to every pixel."
   bridge:
-    feTitle: "CSS filter: blur()"
-    feCode: "element.style.filter = 'blur(4px)'; // applies a Gaussian convolution kernel"
+    jsTitle: "CSS filter: blur()"
+    jsCode: "element.style.filter = 'blur(4px)'; // applies a Gaussian convolution kernel"
     mlTitle: "Convolution Operation"
     mlCode: "const output = tf.conv2d(image, kernel, strides, 'same'); // slides kernel across image"
     tier: structural

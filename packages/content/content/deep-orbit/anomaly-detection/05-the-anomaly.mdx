@@ -17,8 +17,8 @@ context:
 concept:
   explanation: "When an error boundary catches an unexpected throw, it means something genuinely new happened: the system encountered a case it was never designed for."
   bridge:
-    feTitle: "Error Boundary"
-    feCode: "componentDidCatch(error) { // unexpected error: show fallback UI }"
+    jsTitle: "Error Boundary"
+    jsCode: "componentDidCatch(error) { // unexpected error: show fallback UI }"
     mlTitle: "Anomaly Alert"
     mlCode: "if (error > 12 * baseline) { alert('UNKNOWN SIGNAL DETECTED') }"
     tier: intuition
@@ -62,7 +62,7 @@ What am I looking at, Dr. Farah?
 Something the training data has never contained, Commander. That is the one claim three agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
 </Dialogue>
 
-In frontend terms, the bridge just watched an error boundary fire: the application hit a case no developer anticipated. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on.
+In browser terms, the bridge just watched an error boundary fire: the application hit a case no developer anticipated. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on.
 
 <LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Assemble the full detection ensemble and wire its verdicts into the DEEP SCAN dashboard feed"]} />
 

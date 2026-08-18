@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Structured pruning removes entire neurons or channels, producing a physically smaller dense model instead of a same-sized sparse one."
   bridge:
-    feTitle: "Dead Code Elimination"
-    feCode: "// Bundler removes entire unused functions\n// function unused() { ... } → deleted\n// Not just individual lines"
+    jsTitle: "Dead Code Elimination"
+    jsCode: "// Bundler removes entire unused functions\n// function unused() { ... } → deleted\n// Not just individual lines"
     mlTitle: "Structured Pruning"
     mlCode: "// Remove entire neurons/filters\n// Not just individual weights\n// Layer shrinks: 512 units → 256 units"
     tier: structural

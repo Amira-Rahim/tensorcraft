@@ -20,9 +20,9 @@ export default function Home() {
         <LandingHero />
 
         <h2 className="sr-only">
-          Learn machine learning for frontend developers with JavaScript and
-          TensorFlow.js, browser-based ML tutorials, TensorFlow JS courses, and
-          Transformers.js guides.
+          Learn machine learning for JavaScript developers with TensorFlow.js,
+          browser-based ML tutorials, TensorFlow JS courses, and Transformers.js
+          guides.
         </h2>
 
         {/* ===== BRIDGE SYSTEM (client island) ===== */}

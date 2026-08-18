@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "Anomaly detection models normality and flags deviation from it. You can't catalog every possible anomaly, but you can know normal cold."
   bridge:
-    feTitle: "Performance Baseline"
-    feCode: "if (LCP > baseline * 1.5) alert('performance regression')"
+    jsTitle: "Performance Baseline"
+    jsCode: "if (LCP > baseline * 1.5) alert('performance regression')"
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
@@ -50,7 +50,7 @@ That is the whole problem, Chief. We trained it to recognize what things are. No
 How do we know which? How do we tell a genuine anomaly from a false alarm?
 </Dialogue>
 
-You've dealt with this in frontend monitoring. You set baseline metrics (LCP under 2.5s, CLS under 0.1) and alert when values drift past them. Anomaly detection is the same move: define what "normal" looks like, then flag whatever lands outside it.
+If you've monitored browser performance, you've set baseline metrics (LCP under 2.5s, CLS under 0.1) and alerted when values drift past them. Anomaly detection is the same move: define what "normal" looks like, then flag whatever lands outside it.
 
 <LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute baseline statistics (mean, std, percentiles) from normal signal data", "Set detection thresholds using statistical methods (z-score, percentile cutoffs)", "Evaluate detection quality with precision and recall tradeoffs"]} />
 
@@ -187,7 +187,7 @@ PAGER, two weeks after go-live: yesterday's 95th percentile is today's median (t
     "Z-score thresholding is the simplest approach: flag values that fall more than N standard deviations from the mean of normal data.",
     "Precision and recall trade off against each other as you move the threshold; the right balance depends on the relative cost of false alarms versus missed detections."
   ]}
-  bridge="Just as a frontend performance baseline (`if (LCP > baseline * 1.5) alert(...)`) defines acceptable behavior and fires on deviation, an `anomaly threshold` (`if (reconstructionError > threshold) flag(...)`) defines learned normality and fires when a new sample strays outside it."
+  bridge="Just as a performance baseline in the browser (`if (LCP > baseline * 1.5) alert(...)`) defines acceptable behavior and fires on deviation, an `anomaly threshold` (`if (reconstructionError > threshold) flag(...)`) defines learned normality and fires when a new sample strays outside it."
   youCanNow="Compute baseline statistics from normal data and apply z-score thresholding to flag anomalous signals."
 />
 

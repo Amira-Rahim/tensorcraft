@@ -210,7 +210,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     // The previewed bridge is whichever catalog entry the component's own
     // filter picks, so derive expectations from data, not hardcoded strings.
     const previewBridge =
-      BRIDGES.find((b) => b.mlCode && b.variants?.react?.feCode) ?? BRIDGES[0];
+      BRIDGES.find((b) => b.mlCode && b.variants?.react?.jsCode) ?? BRIDGES[0];
 
     it("explains the mapping with the bridge's connection prose", () => {
       const { container } = render(<BridgePreviewSection />);

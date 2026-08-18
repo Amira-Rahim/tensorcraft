@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A triage pipeline chains multiple classifiers together (urgency detection, department routing, and multi-label tagging) with confidence-gated human review at each stage."
   bridge:
-    feTitle: "Priority Queue (urgent items first)"
-    feCode: "// queue.enqueue(task, priority)\n// High-priority items processed first\n// Unknown priority → manual review"
+    jsTitle: "Priority Queue (urgent items first)"
+    jsCode: "// queue.enqueue(task, priority)\n// High-priority items processed first\n// Unknown priority → manual review"
     mlTitle: "Triage Pipeline"
     mlCode: "// pipeline.classify(doc) → urgency, dept, tags\n// High urgency → fast-tracked\n// Low confidence → human review"
     tier: structural

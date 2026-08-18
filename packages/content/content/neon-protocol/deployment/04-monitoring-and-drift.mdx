@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Model monitoring is error tracking for ML, with one catch: drift throws no exceptions. You track confidence scores, latency, and input distributions against a baseline, because predictions stay confident while they get steadily worse."
   bridge:
-    feTitle: "Error Tracking (Sentry/DataDog)"
-    feCode: "Sentry.captureException(error);\nSentry.setTag('page', '/dashboard');\ntrackMetric('api_latency_ms', 230);"
+    jsTitle: "Error Tracking (Sentry/DataDog)"
+    jsCode: "Sentry.captureException(error);\nSentry.setTag('page', '/dashboard');\ntrackMetric('api_latency_ms', 230);"
     mlTitle: "Model Monitoring"
     mlCode: "trackMetric('prediction_confidence', 0.72);\ntrackMetric('inference_latency_ms', 45);\ndetectDrift(currentDistribution, baselineDistribution);"
     tier: structural

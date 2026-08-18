@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Knowledge grounding ensures every generated answer is supported by retrieved evidence. A claim the system cannot trace to a source document is treated as a hallucination and withheld."
   bridge:
-    feTitle: "Hyperlinks"
-    feCode: "<a href='/studies/12345'>Reduces risk by 40%</a> // every claim has a source"
+    jsTitle: "Hyperlinks"
+    jsCode: "<a href='/studies/12345'>Reduces risk by 40%</a> // every claim has a source"
     mlTitle: "Grounded Answer"
     mlCode: "{ answer: 'Reduces risk by 40%', evidence: [{ docId: 12345, span: '...', score: 0.95 }] }"
     tier: structural

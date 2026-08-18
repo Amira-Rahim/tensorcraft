@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Validating Diagnostic One against expert annotations is the same discipline as end-to-end testing: running automated checks against known-good outputs. Precision, recall, and F1 score are the clinical equivalents of test pass rates, measuring how well your system matches expert-verified ground truth."
   bridge:
-    feTitle: "End-to-End Testing"
-    feCode: "expect(render(<App />)).toMatchSnapshot(); // compare against known-good output"
+    jsTitle: "End-to-End Testing"
+    jsCode: "expect(render(<App />)).toMatchSnapshot(); // compare against known-good output"
     mlTitle: "Clinical Validation"
     mlCode: "expect(model.predict(note)).toMatchAnnotations(expertLabels); // compare against expert ground truth"
     tier: structural

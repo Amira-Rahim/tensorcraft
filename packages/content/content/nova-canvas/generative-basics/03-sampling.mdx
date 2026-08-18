@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Sampling is the process of drawing concrete values from a probability distribution. Every generative model produces output by sampling."
   bridge:
-    feTitle: "Seeded Random"
-    feCode: "function seededRandom(seed: number) { /* deterministic */ }"
+    jsTitle: "Seeded Random"
+    jsCode: "function seededRandom(seed: number) { /* deterministic */ }"
     mlTitle: "Sampling Strategy"
     mlCode: "const sample = tf.randomNormal([1, 100], 0, 1)"
     tier: structural
@@ -40,7 +40,7 @@ Listen to this. Every note in this soundscape was sampled from a probability dis
 Run me twice on the same distribution and you'll hear two different soundscapes. At temperature 0.1 the softmax puts 0.9999 on a single note and they'd be nearly identical. We could sweep from 0.1 up to 5.0 and listen for where it stops sounding like music.
 </Dialogue>
 
-In frontend development, you call `Math.random()` and get a number. That is sampling from a uniform distribution. But generative AI needs more control: sampling from specific distributions, at specific temperatures, with reproducible seeds.
+In JavaScript, you call `Math.random()` and get a number. That is sampling from a uniform distribution. But generative AI needs more control: sampling from specific distributions, at specific temperatures, with reproducible seeds.
 
 <LearningObjectives objectives={["Understand sampling as drawing values from distributions", "Implement different sampling strategies in TensorFlow.js", "Control randomness with temperature scaling", "Use seeded randomness for reproducible generation"]} />
 
@@ -64,7 +64,7 @@ const stdDev = 15;
 const iqSamples = tf.randomNormal([1000]).mul(stdDev).add(mean);
 // Now samples cluster around 100 with spread of 15
 
-// Frontend parallel: weighted random selection
+// JS parallel: weighted random selection
 function weightedChoice<T>(items: T[], weights: number[]): T {
   const total = weights.reduce((a, b) => a + b, 0);
   let r = Math.random() * total;

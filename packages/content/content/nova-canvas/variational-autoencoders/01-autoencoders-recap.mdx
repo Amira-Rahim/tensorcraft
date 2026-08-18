@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "An autoencoder compresses input through a bottleneck and reconstructs it, learning efficient representations. It is the foundation for VAEs."
   bridge:
-    feTitle: "gzip / Brotli Compression"
-    feCode: "const compressed = brotli.compress(data); const original = brotli.decompress(compressed);"
+    jsTitle: "gzip / Brotli Compression"
+    jsCode: "const compressed = brotli.compress(data); const original = brotli.decompress(compressed);"
     mlTitle: "Autoencoder"
     mlCode: "const z = encoder.predict(image); const reconstruction = decoder.predict(z);"
     tier: structural
@@ -53,7 +53,7 @@ You use compression every day. Brotli compresses your JavaScript bundles. JPEG c
 <CodeBlock language="typescript" title="autoencoder.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: Brotli compression pipeline
+// JS: Brotli compression pipeline
 // Original JS (1 MB) → compress → Brotli (200 KB) → decompress → JS (1 MB)
 // The 200 KB version IS the data, just in a compact representation
 

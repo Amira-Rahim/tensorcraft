@@ -16,25 +16,25 @@
 | **Commander Mirza** | Mentor / Mission Commander | Ship captain. Calm, authoritative, three prior deep-space missions. Sets context - she explains *why* the crew needs each capability but never dives into technical detail. Speaks in clear, deliberate sentences. |
 | **Dr. Farah** | Astrophysicist / Concept Explainer | Lead scientist. Puzzle-lover, deeply curious, sometimes lost in abstractions. Uses analogies liberally, lights up when a student grasps a concept. Introduces ML theory via holographic whiteboard diagrams. |
 | **Chief Nazari** | Ship Engineer / Implementation Lead | Maintains all systems. Pragmatic skeptic - trusts things that work, distrusts "clever." Dry humor, no-nonsense. Handles TensorFlow.js, ONNX, quantization, performance. Backstory: 18 years in fleet engineering, refused two promotions to stay hands-on. On the ISS Vanguard, Nazari trusted a rule-based navigation system through an asteroid field. It froze on an edge case - a tumbling fragment with irregular spin. Two crew members didn't make it to the escape pods. She carries that loss as armor against any system that promises more than it can deliver. Warms up once she sees results. |
-| **Ensign Demir** | Comms Officer / Student Avatar | The player character. Skilled frontend engineer reassigned to the Archimedes to maintain comms. No ML background but strong JS/TS skills. Eager, occasionally overwhelmed, grows in confidence across 11 modules. Asks clarifying questions and makes FE analogies. |
+| **Ensign Demir** | Comms Officer / Student Avatar | The player character. Skilled JavaScript engineer reassigned to the Archimedes to maintain comms. No ML background but strong JS/TS skills. Eager, occasionally overwhelmed, grows in confidence across 11 modules. Asks clarifying questions and makes JS analogies. |
 | **ARIA** | Ship AI / Tutorial Guide | Onboard AI. Dry-witted, precise, occasionally sardonic. Voice of the code editor and terminal. Provides tutorials, documentation, hints, and commentary. |
 
 #### Demir - Dialogue Evolution
 
 Demir's voice changes across the course as his ML fluency grows. His dialogue should reflect this progression:
 
-- **Early (M1–M3):** *"Wait, so training a neural network is basically like running a build step?"* - Analogy-seeking, uncertain. Every ML concept gets filtered through frontend metaphors because that is all he has.
+- **Early (M1–M3):** *"Wait, so training a neural network is basically like running a build step?"* - Analogy-seeking, uncertain. Every ML concept gets filtered through JS metaphors because that is all he has.
 - **Mid (M4–M6):** *"The sliding window approach reminds me of IntersectionObserver - we only process what's in view."* - Making connections independently. The analogies are sharper, more specific, and he volunteers them rather than needing Farah to supply them.
-- **Late (M7–M9):** *"We need to check for data leakage in the validation set before we trust these anomaly scores."* - Using ML terminology natively. The frontend analogies drop away. He thinks in the domain now.
+- **Late (M7–M9):** *"We need to check for data leakage in the validation set before we trust these anomaly scores."* - Using ML terminology natively. The JS analogies drop away. He thinks in the domain now.
 - **Capstone (M10–M11):** *"Int8 quantization on the signal processor - the inference budget is too tight for float32 on this band."* - ML practitioner. He no longer needs FE analogies. He speaks Nazari's optimization language fluently.
 
 ### Career Paths & Salaries
 
-> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" JavaScript roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
 
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| ML-Enhanced Frontend Engineer | Build ML-powered features in the browser, deploy pre-trained models, collaborate with ML teams | $120,000 - $160,000 |
+| ML-Enhanced JavaScript Engineer | Build ML-powered features in the browser, deploy pre-trained models, collaborate with ML teams | $120,000 - $160,000 |
 | Frontend Engineer (ML Products) | Frontend for ML-heavy products (dashboards, model monitoring, data annotation UIs) | $125,000 - $165,000 |
 | ML Engineer (Time-Series)* | Build and deploy temporal models for IoT, finance, health monitoring | $145,000 - $195,000 |
 | Signal Processing Engineer* | DSP + ML hybrid roles in telecom, audio, defense | $130,000 - $180,000 |
@@ -46,7 +46,7 @@ Demir's voice changes across the course as his ML fluency grows. His dialogue sh
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for frontend developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -82,13 +82,13 @@ Demir's voice changes across the course as his ML fluency grows. His dialogue sh
 
 The Archimedes drops out of FTL transit in the Proxima Centauri system. Commander Mirza convenes the crew on the bridge. Long-range sensor arrays have detected structured electromagnetic signals that do not match any known natural phenomenon - not pulsars, not magnetars, not stellar noise. The signals are organized into frequency bands and repeat at irregular intervals.
 
-Demir is the newest crew member. He was assigned as comms officer based on his frontend engineering background - the ship's communication systems run on a browser-based dashboard built in TypeScript. He has no ML background. Mirza explains the mission: build a signal classification system (DEEP SCAN) that can categorize incoming signals in real time, so Dr. Farah can focus on analysis instead of manual sorting.
+Demir is the newest crew member. He was assigned as comms officer based on his JavaScript engineering background - the ship's communication systems run on a browser-based dashboard built in TypeScript. He has no ML background. Mirza explains the mission: build a signal classification system (DEEP SCAN) that can categorize incoming signals in real time, so Dr. Farah can focus on analysis instead of manual sorting.
 
 > **OKAFOR:** "Every signal is a question the universe is asking. Our job is to build a system that can hear the question clearly - and suggest an answer."
 
 Nazari, in the back of the bridge, mutters:
 
-> **TORRES:** "Another frontend dev touching the compute cluster. Wonderful."
+> **TORRES:** "Another JavaScript dev touching the compute cluster. Wonderful."
 
 ARIA boots up Demir's workstation.
 
@@ -107,7 +107,7 @@ Three components of every ML system:
 2. **Model** - the function that maps inputs to outputs
 3. **Objective** - the measure of how well the model is performing
 
-**FE BRIDGE:** Think of it like this. In traditional frontend dev, you write a function: `function classify(signal) { if (signal.amplitude > 50) return 'strong'; ... }`. You encode every rule by hand. In ML, you write a function that *learns* the rules from data: `const model = train(signals, labels)`. The model is like an app that writes its own business logic based on usage patterns.
+**JS BRIDGE:** Think of it like this. In traditional JavaScript, you write a function: `function classify(signal) { if (signal.amplitude > 50) return 'strong'; ... }`. You encode every rule by hand. In ML, you write a function that *learns* the rules from data: `const model = train(signals, labels)`. The model is like an app that writes its own business logic based on usage patterns.
 
 #### CHECKPOINT
 
@@ -202,7 +202,7 @@ Dr. Farah pulls Demir into the science lab. On the holographic display, she show
 
 > **SATO:** "Ah, you already know these patterns! Think about how you learn as a developer. Supervised is like following a tutorial - someone shows you the right answer. Unsupervised is like exploring a new codebase - you find the structure yourself. Reinforcement is like debugging in production - you try something, see if it works, and adjust."
 
-**FE BRIDGE:**
+**JS BRIDGE:**
 - **Supervised** = unit tests. You know the expected output for each input.
 - **Unsupervised** = clustering your component library. No predefined categories - you group by similarity.
 - **Reinforcement** = A/B testing. Deploy, measure, adjust based on user behavior.
@@ -273,9 +273,9 @@ A **neural network** is a function composed of layers. Each layer applies a line
 **Layer:** Apply the neuron function to every input (or a subset)
 **Network:** Stack multiple layers end to end
 
-**FE BRIDGES:**
+**JS BRIDGES:**
 
-| Neural Network Concept | Frontend Equivalent |
+| Neural Network Concept | JavaScript Equivalent |
 |---|---|
 | Layer applies function to all inputs | `Array.map()` - apply a transform to every element |
 | Weights are tunable parameters | CSS custom properties (`--var`) - configurable values that change behavior |
@@ -377,9 +377,9 @@ Dr. Farah explains that real signal data is not a flat array of numbers - it has
 
 **Broadcasting:** When tensors of different shapes interact, the smaller tensor is "broadcast" to match the larger one. Scalar `+ [1, 2, 3]` becomes `[scalar, scalar, scalar] + [1, 2, 3]`.
 
-**FE BRIDGES:**
+**JS BRIDGES:**
 
-| Tensor Concept | Frontend Equivalent |
+| Tensor Concept | JavaScript Equivalent |
 |---|---|
 | Tensor | `TypedArray` (e.g., `Float32Array`) - fixed-type, fixed-size, GPU-friendly |
 | Broadcasting | `flex-grow` - a single value expands to fill available space |
@@ -569,7 +569,7 @@ The first batch of raw sensor data arrives from the long-range arrays - and it i
 | 4 | Train/Val/Test Splits | Partitioning data responsibly | Environment configs (dev/staging/prod) |
 | 5 | Data Pipelines | Reproducible preprocessing workflows | Build pipelines (Webpack/Vite config) |
 
-**FE BRIDGE (Module-Level):** A Web Audio API node graph is the perfect analogy for a data preprocessing pipeline. Each `AudioNode` transforms the signal - gain, filter, analyser - just like Express middleware transforms a request. Data flows through a chain of transforms, each one modifying the signal before passing it to the next node.
+**JS BRIDGE (Module-Level):** A Web Audio API node graph is the perfect analogy for a data preprocessing pipeline. Each `AudioNode` transforms the signal - gain, filter, analyser - just like Express middleware transforms a request. Data flows through a chain of transforms, each one modifying the signal before passing it to the next node.
 
 **Inter-Lesson Hook:** Demir's preprocessing pipeline works - until Nazari feeds it raw data from an uncharted frequency band.
 
@@ -611,7 +611,7 @@ The model reaches 78% accuracy. Mirza says: "Good enough to trust? Not yet. Keep
 | 4 | Training Loop | Epochs, batches, convergence | `npm run build` - iterative compilation |
 | 5 | Evaluation Metrics | Accuracy, precision, recall, F1 | Lighthouse performance scores |
 
-**FE BRIDGE (Module-Level):** CSS animation keyframes are decomposition - breaking complex motion into discrete steps at specific percentages. A training loop does the same: at each epoch, the model evaluates its position, computes the error, and adjusts. The `@keyframes` analogy extends further - `ease-in-out` is like a learning rate schedule that starts slow, accelerates, then decelerates.
+**JS BRIDGE (Module-Level):** CSS animation keyframes are decomposition - breaking complex motion into discrete steps at specific percentages. A training loop does the same: at each epoch, the model evaluates its position, computes the error, and adjusts. The `@keyframes` analogy extends further - `ease-in-out` is like a learning rate schedule that starts slow, accelerates, then decelerates.
 
 **Inter-Lesson Hook:** The network trains successfully, but ARIA notices the loss curve has an unusual plateau at epoch 47.
 
@@ -660,7 +660,7 @@ Demir discovers the joy and pain of browser ML - the freedom of client-side infe
 | 4 | Inference Pipeline | Running predictions in real time | Event handler → process → render cycle |
 | 5 | ONNX Runtime Web | Alternative runtime, model interop | Polyfills and cross-browser compat |
 
-**FE BRIDGE (Module-Level):** Browser ML runtimes are like frontend frameworks - React vs Vue vs Svelte. Each provides the same core capability (rendering UI / running inference) with different APIs, different performance profiles, and different ecosystems. TF.js is React (largest ecosystem, most resources). ONNX is Vue (pragmatic, great interop). Raw WASM is Svelte (most control, least abstraction).
+**JS BRIDGE (Module-Level):** Browser ML runtimes are like JS frameworks - React vs Vue vs Svelte. Each provides the same core capability (rendering UI / running inference) with different APIs, different performance profiles, and different ecosystems. TF.js is React (largest ecosystem, most resources). ONNX is Vue (pragmatic, great interop). Raw WASM is Svelte (most control, least abstraction).
 
 **Inter-Lesson Hook:** The browser runtime handles real-time inference - then three signals arrive simultaneously.
 
@@ -704,7 +704,7 @@ Demir builds a spectrogram visualizer and feeds FFT features into the classifier
 | 4 | FFT as Features | Using frequency bins as model input | Computing derived state for components |
 | 5 | Windowing & Overlap | Handling signal chunks | Virtual scrolling / windowed rendering |
 
-**FE BRIDGES (Module-Level):**
+**JS BRIDGES (Module-Level):**
 - **CSS animation decomposition:** A `@keyframes` rule decomposes motion into discrete steps. FFT decomposes a waveform into discrete frequency components. Both take something continuous and express it as a sum of simpler parts.
 - **DevTools waterfall:** The Chrome DevTools performance waterfall shows events distributed across time - exactly what a spectrogram shows for frequency content. Time on the x-axis, frequency (or event type) on the y-axis, intensity as color.
 
@@ -754,7 +754,7 @@ Demir builds an LSTM (Long Short-Term Memory) network to predict the next signal
 | 4 | Sliding Windows | Preparing sequential input batches | `IntersectionObserver` viewport sliding |
 | 5 | Sequence Prediction | Predicting next signal values | Autocomplete / typeahead suggestions |
 
-**FE BRIDGES (Module-Level):**
+**JS BRIDGES (Module-Level):**
 - **Redux state management:** A Redux reducer is a recurrent function - it takes previous state and a new action, and produces updated state. RNNs do exactly this: `newState = f(prevState, newInput)`. The hidden state of an RNN is the Redux store.
 - **localStorage with TTL:** LSTMs have a forget gate that decides what to keep and what to discard - like a cache with time-to-live. Some memories are worth keeping (long-term patterns); others should expire (short-term noise).
 
@@ -805,7 +805,7 @@ Mirza convenes the crew. The unknown signal has a structure that is unlike anyth
 | 4 | Threshold Tuning | Setting sensitivity for alerts | Alert thresholds in monitoring dashboards |
 | 5 | The Anomaly | DEEP SCAN flags an unclassifiable signal | Error boundary catching an unexpected throw |
 
-**FE BRIDGE (Module-Level):** `git diff` is the perfect analogy for reconstruction error. An autoencoder learns to encode and decode "normal" data. When it encounters something anomalous, the decode (reconstruction) does not match the original - just like `git diff` shows you what changed from the expected baseline. Large diffs = large reconstruction error = anomaly.
+**JS BRIDGE (Module-Level):** `git diff` is the perfect analogy for reconstruction error. An autoencoder learns to encode and decode "normal" data. When it encounters something anomalous, the decode (reconstruction) does not match the original - just like `git diff` shows you what changed from the expected baseline. Large diffs = large reconstruction error = anomaly.
 
 ### Shared Core
 
@@ -851,7 +851,7 @@ The crew attempts to predict the anomalous signal's next occurrence. Demir build
 | 4 | Kalman Filters | State estimation under noise | Exponential moving average in analytics |
 | 5 | Ensemble Methods | Combining multiple models | Micro-frontends - multiple apps, one view |
 
-**FE BRIDGES (Module-Level):**
+**JS BRIDGES (Module-Level):**
 - **CSS `:focus`:** Attention mechanisms in neural networks work like CSS `:focus` - they dynamically highlight the most relevant elements based on context. When you tab through a form, `:focus` moves to the active element. When a temporal attention model processes a sequence, it assigns "focus" to the most relevant time steps.
 - **Exponential moving average:** Kalman filters maintain a running estimate of the true state, smoothing out noise. This is exactly what an exponential moving average does in analytics - `smoothed = alpha * newValue + (1 - alpha) * smoothed`. Both are recursive estimators that balance responsiveness against stability.
 
@@ -933,7 +933,7 @@ Demir learns to quantize (reduce numerical precision from 32-bit to 8-bit), prun
 
 The optimization work is no longer academic. Remaining fuel reserves limit compute time - the ship's reactor powers both the engines and the compute cluster, and every unnecessary training epoch is fuel the crew needs to get home. Mirza has posted the fuel gauge on the bridge dashboard next to the DEEP SCAN metrics. The two numbers move in opposite directions.
 
-> **TORRES:** (grudgingly) "Not bad, for a frontend dev."
+> **TORRES:** (grudgingly) "Not bad, for a JavaScript dev."
 
 **Unique content:** Demir implements post-training quantization (PTQ) and quantization-aware training (QAT). He builds a pruning pipeline that removes 60% of weights while maintaining 94% of accuracy. He distills the full DEEP SCAN model into a lightweight "student" model that runs inference in under 5ms.
 

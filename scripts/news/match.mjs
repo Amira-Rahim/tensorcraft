@@ -89,7 +89,7 @@ function tokenize(input) {
 const SOURCE_WEIGHT = {
   keyword: 4,
   bridge_ml: 3,
-  bridge_fe: 2,
+  bridge_js: 2,
   module_id: 2,
   skill_axis: 1,
 };
@@ -151,11 +151,11 @@ function findCandidates(index, terms, limit = CANDIDATE_LIMIT) {
  *   - How strict is "must teach this exact concept" vs "tangentially related"?
  *   - Should the model favor specialization lessons over foundations?
  *   - Voice for the rationale: factual ("teaches WebGPU acceleration") vs
- *     editorial ("perfect entry-point for FE devs hitting WebGPU news")?
+ *     editorial ("perfect entry-point for JS devs hitting WebGPU news")?
  *   - When to return empty (no good match) vs always pick 3?
  */
 function buildRerankPrompt(item, candidates) {
-  const system = `You are a curator for Tensorcraft, a frontend-engineer-to-machine-learning course.
+  const system = `You are a curator for Tensorcraft, a course that takes JavaScript engineers into machine learning.
 Your job: given a browser-ML news item and candidate lessons from our curriculum, pick the 1-3 lessons that DIRECTLY TEACH the underlying concept the news is about.
 
 Rules:

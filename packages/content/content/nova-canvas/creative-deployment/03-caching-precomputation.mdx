@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Caching generated outputs trades storage for computation time, the same tradeoff as Service Worker caches, CDN edge caching, and React.memo."
   bridge:
-    feTitle: "Service Worker Cache"
-    feCode: "caches.open('v1').then(cache => cache.put(request, response));"
+    jsTitle: "Service Worker Cache"
+    jsCode: "caches.open('v1').then(cache => cache.put(request, response));"
     mlTitle: "Generation Cache"
     mlCode: "const cache = new Map(); cache.set(promptHash, generatedOutput);"
     tier: structural

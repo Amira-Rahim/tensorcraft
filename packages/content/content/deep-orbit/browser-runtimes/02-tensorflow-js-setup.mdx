@@ -16,8 +16,8 @@ context:
 concept:
   explanation: "Install, import, configure: TensorFlow.js enters a project like any npm dependency. The backend check is the one step that isn't routine."
   bridge:
-    feTitle: "npm install"
-    feCode: "npm install react react-dom"
+    jsTitle: "npm install"
+    jsCode: "npm install react react-dom"
     mlTitle: "TF.js Install"
     mlCode: "npm install @tensorflow/tfjs"
     tier: identity
@@ -36,7 +36,7 @@ keywords:
   - setup
   - webgl
   - backend
-skillAxes: [deployment, fe_integration]
+skillAxes: [deployment, js_integration]
 ---
 
 > **BRIDGE CONSOLE · BENCHMARK** · same matMul, same browser tab: webgl 0.5 ms · wasm 3.0 ms · cpu 15.0 ms
@@ -58,7 +58,7 @@ A 30× spread on identical code, and the only variable is which engine TF.js lan
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="setup.ts">
-{`// Step 1: Install (exactly like any frontend dependency)
+{`// Step 1: Install (exactly like any JS dependency)
 // npm install @tensorflow/tfjs
 
 // Step 2: Import

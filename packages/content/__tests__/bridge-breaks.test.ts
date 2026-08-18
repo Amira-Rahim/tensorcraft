@@ -19,7 +19,7 @@ import {
  * because they had neither an inline `breaks:` nor a registry match carrying
  * one. This gate replays the SAME resolution the component uses
  * (bridge-callout.tsx: inline breaks, else registry entry matched on
- * feTitle/mlTitle) over every lesson of EVERY built story world - adding a
+ * jsTitle/mlTitle) over every lesson of EVERY built story world - adding a
  * world to BUILT_WORLD_DIRS extends the gate automatically instead of
  * silently exempting the new corpus (the old version hardcoded deep-orbit
  * and the literal 55).
@@ -27,7 +27,7 @@ import {
 
 interface LessonBridge {
   lesson: string;
-  feTitle: string;
+  jsTitle: string;
   mlTitle: string;
   inlineBreaks: boolean;
 }
@@ -41,7 +41,7 @@ function parseBridge(worldDir: string, file: string): LessonBridge | null {
     block.match(new RegExp(`^ {4}${key}: "(.*)"$`, "m"))?.[1];
   return {
     lesson: relative(worldDir, file).replace(/\.mdx$/, ""),
-    feTitle: field("feTitle") ?? "",
+    jsTitle: field("jsTitle") ?? "",
     mlTitle: field("mlTitle") ?? "",
     inlineBreaks: /^ {4}breaks: /m.test(block),
   };
@@ -71,7 +71,7 @@ for (const world of BUILT_STORY_WORLDS) {
           if (b.inlineBreaks) return false;
           const shared = BRIDGES.find(
             (s) =>
-              s.feConcept.toLowerCase() === b.feTitle.toLowerCase() ||
+              s.jsConcept.toLowerCase() === b.jsTitle.toLowerCase() ||
               s.mlConcept.toLowerCase() === b.mlTitle.toLowerCase(),
           );
           return !shared?.breaks;

@@ -64,7 +64,7 @@ export default function TermsPage() {
             </h2>
             <p>
               Tensorcraft is an interactive, browser-based machine learning
-              education platform designed for frontend engineers. The Service
+              education platform designed for JavaScript engineers. The Service
               provides story-driven courses, code exercises, and learning
               materials accessible through a web browser.
             </p>

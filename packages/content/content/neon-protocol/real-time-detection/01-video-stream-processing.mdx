@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Video streams are just sequences of image frames. The browser's getUserMedia() API provides direct access to camera feeds, the same API you've used for video chat features. Each frame is a canvas image you can feed to a model."
   bridge:
-    feTitle: "getUserMedia() API"
-    feCode: "const stream = await navigator.mediaDevices.getUserMedia({ video: true });"
+    jsTitle: "getUserMedia() API"
+    jsCode: "const stream = await navigator.mediaDevices.getUserMedia({ video: true });"
     mlTitle: "Video Frame Pipeline"
     mlCode: "const frame = tf.browser.fromPixels(video); const prediction = model.predict(frame.expandDims(0));"
     tier: structural

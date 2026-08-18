@@ -10,14 +10,14 @@ context:
   narrative: "At 0300 a Sector 9 camera sends an empty frame and the classifier dies in front of everyone. Two days of flawless pipeline runs, ended by a frame with nothing in it. Dilan's verdict is short: 'If Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a drone, we are exposed. Nothing deploys without a test suite.'"
   speaker: "Zara"
 concept:
-  explanation: "ML testing follows the same testing pyramid as frontend development: unit tests for individual functions, integration tests for connected components, and end-to-end tests for the complete system. Add data validation as a fourth layer unique to ML."
+  explanation: "ML testing follows the same testing pyramid as JavaScript development: unit tests for individual functions, integration tests for connected components, and end-to-end tests for the complete system. Add data validation as a fourth layer unique to ML."
   bridge:
-    feTitle: "Frontend Testing Pyramid"
-    feCode: "// Unit: expect(format(date)).toBe('Jan 1')  Integration: render(<Form />) → submit  E2E: cy.visit('/') → click → assert"
+    jsTitle: "JS Testing Pyramid"
+    jsCode: "// Unit: expect(format(date)).toBe('Jan 1')  Integration: render(<Form />) → submit  E2E: cy.visit('/') → click → assert"
     mlTitle: "ML Testing Pyramid"
     mlCode: "// Unit: expect(preprocess(frame).shape).toEqual([1,224,224,3])  Integration: pipeline.run(frame) → detections  E2E: camera → pipeline → broadcast → verify"
     tier: structural
-    breaks: "Frontend testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing pyramid adds data validation, model evaluation, fairness audits, and shadow deployments. Many tests return continuous metrics, not pass/fail."
+    breaks: "JS testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing pyramid adds data validation, model evaluation, fairness audits, and shadow deployments. Many tests return continuous metrics, not pass/fail."
 consequence:
   narrative: "Two hundred tests pass. Six fail. The 0300 zero-detection crash is in there, reproduced in four lines of fixture code, along with five edge cases Noor never imagined: a grayscale camera feed breaks the preprocessor, an adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Each of those would have fired on broadcast night.'"
 hints:
@@ -52,7 +52,7 @@ Jest for units, React Testing Library for integration, Cypress for E2E. I know t
 
 The testing pyramid is identical. Unit tests at the base: fast, isolated, covering individual functions. Integration tests in the middle verify that connected stages pass data correctly. End-to-end tests at the top run the complete pipeline against realistic scenarios. ML adds data validation: checking that inputs match expected distributions and outputs fall within acceptable ranges.
 
-<LearningObjectives objectives={["Apply the frontend testing pyramid (unit, integration, e2e) to ML pipeline testing", "Write unit tests for individual pipeline stages using deterministic test tensors", "Build integration tests that verify data contracts between connected stages", "Implement data validation checks for tensor shapes, value ranges, and distribution drift"]} />
+<LearningObjectives objectives={["Apply the JS testing pyramid (unit, integration, e2e) to ML pipeline testing", "Write unit tests for individual pipeline stages using deterministic test tensors", "Build integration tests that verify data contracts between connected stages", "Implement data validation checks for tensor shapes, value ranges, and distribution drift"]} />
 
 ## The ML Testing Pyramid
 
@@ -209,7 +209,7 @@ This is the layer frontend testing doesn't have. We validate the data itself. Is
 </Dialogue>
 
 <CodeBlock language="typescript" title="data-validation.ts">
-{`// DATA VALIDATION: unique to ML, no frontend equivalent
+{`// DATA VALIDATION: unique to ML, no JS equivalent
 // Catches data issues before they become prediction errors
 
 interface ValidationReport {

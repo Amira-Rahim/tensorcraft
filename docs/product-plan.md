@@ -16,9 +16,9 @@
 
 ### 1.1 What Tensorcraft Is
 
-Tensorcraft is an **interactive, story-driven machine learning education platform** designed specifically for frontend developers transitioning into ML/AI roles. Rather than offering a single monolithic course, Tensorcraft delivers focused learning through **per-model purchases at $59 each**, organized around five immersive worlds.
+Tensorcraft is an **interactive, story-driven machine learning education platform** designed specifically for JavaScript developers transitioning into ML/AI roles. Rather than offering a single monolithic course, Tensorcraft delivers focused learning through **per-model purchases at $59 each**, organized around five immersive worlds.
 
-Each world places the learner inside a narrative world where they build a real ML model from scratch - not by copying tutorials, but by making decisions that shape both the story and the model. The platform combines cinematic storytelling, hands-on coding, and conceptual bridges from frontend development to make ML deeply intuitive for web developers.
+Each world places the learner inside a narrative world where they build a real ML model from scratch - not by copying tutorials, but by making decisions that shape both the story and the model. The platform combines cinematic storytelling, hands-on coding, and conceptual bridges from JavaScript to make ML deeply intuitive for JavaScript developers.
 
 **Core Principles:**
 
@@ -31,11 +31,11 @@ Each world places the learner inside a narrative world where they build a real M
 
 | World | World | Specialization | Model Built | Relevant Career Paths | Salary Range |
 |-------|-------|---------------|-------------|----------------------|--------------|
-| **Deep Orbit** | Space exploration & celestial navigation | Time-series & signals | Multi-stage signal classifier for anomaly detection | ML-Enhanced Frontend Engineer, Time-Series Specialist | $120K–$160K |
-| **Neon Protocol** | Cyberpunk city & digital underworld | Real-Time Computer Vision | Real-time surveillance detection system | ML-Enhanced Frontend Engineer, Computer Vision Specialist | $120K–$160K |
-| **Signal Ward** | Medical research station & clinical NLP | NLP & Text Intelligence | Clinical text analysis and decision support system | ML-Enhanced Frontend Engineer, NLP Specialist | $120K–$160K |
-| **Nova Canvas** | Art colony & generative design studio | Multimodal & Generative AI | Real-time multimodal creative installation | ML-Enhanced Frontend Engineer, Creative Technologist | $120K–$160K |
-| **Terra Grid** | Industrial infrastructure & edge computing | Edge AI & production ML | Distributed edge anomaly detection system | ML-Enhanced Frontend Engineer, Edge ML Specialist | $120K–$160K |
+| **Deep Orbit** | Space exploration & celestial navigation | Time-series & signals | Multi-stage signal classifier for anomaly detection | ML-Enhanced JavaScript Engineer, Time-Series Specialist | $120K–$160K |
+| **Neon Protocol** | Cyberpunk city & digital underworld | Real-Time Computer Vision | Real-time surveillance detection system | ML-Enhanced JavaScript Engineer, Computer Vision Specialist | $120K–$160K |
+| **Signal Ward** | Medical research station & clinical NLP | NLP & Text Intelligence | Clinical text analysis and decision support system | ML-Enhanced JavaScript Engineer, NLP Specialist | $120K–$160K |
+| **Nova Canvas** | Art colony & generative design studio | Multimodal & Generative AI | Real-time multimodal creative installation | ML-Enhanced JavaScript Engineer, Creative Technologist | $120K–$160K |
+| **Terra Grid** | Industrial infrastructure & edge computing | Edge AI & production ML | Distributed edge anomaly detection system | ML-Enhanced JavaScript Engineer, Edge ML Specialist | $120K–$160K |
 
 **Every world teaches ALL ML fundamentals.** Regardless of which world a learner starts with, they will cover:
 
@@ -245,15 +245,14 @@ Each world teaches all ML fundamentals plus its own specialization. Below is the
 
 ### 1.5 Career Outcomes
 
-Tensorcraft produces **ML-Enhanced Frontend Engineers** - developers who can build ML-powered features, deploy pre-trained models in the browser, evaluate ML solutions, and collaborate fluently with data science teams.
+Tensorcraft produces **ML-Enhanced JavaScript Engineers** - developers who can build ML-powered features, deploy pre-trained models in the browser, evaluate ML solutions, and collaborate fluently with data science teams.
 
 **Realistic career positioning:**
 
-- **Target role:** ML-Enhanced Frontend Engineer / Frontend Engineer with ML Specialization ($120K-$160K)
-- **57.7%** of frontend developers who complete a structured ML transition program report receiving a job offer or promotion within 6 months of completion.
-- **23.9%** average salary increase reported by career-switchers who move from frontend-only roles to ML-integrated positions.
+- **Target role:** ML-Enhanced JavaScript Engineer / JavaScript Engineer with ML Specialization ($120K-$160K)
+- **TODO (owner, 2026-08 rebrand):** re-source outcome statistics for the widened JavaScript audience. The figures previously cited here (57.7% offer-or-promotion within 6 months; 23.9% average salary increase) were sourced for frontend-specific transition programs and cannot honestly be restated for all JavaScript engineers. Do not quote outcome numbers on any user surface until re-sourced.
 
-**Honest scope:** This course gives you the foundation to understand, build, and deploy ML models in the browser. For production ML engineering roles requiring Python fluency and deeper mathematics, Tensorcraft provides the conceptual foundation - and we bridge you toward those next steps (see Python Bridge module). We do not claim to replace a full ML engineering education, but we give frontend engineers a genuine, deep understanding of ML that no other resource provides in their own language and tools.
+**Honest scope:** This course gives you the foundation to understand, build, and deploy ML models in the browser. For production ML engineering roles requiring Python fluency and deeper mathematics, Tensorcraft provides the conceptual foundation - and we bridge you toward those next steps (see Python Bridge module). We do not claim to replace a full ML engineering education, but we give JavaScript engineers a genuine, deep understanding of ML that no other resource provides in their own language and tools.
 
 These statistics inform our marketing, pricing, and curriculum design - the $59 per-model price point is calibrated to feel trivially affordable relative to even a modest salary increase.
 
@@ -321,7 +320,7 @@ Arena is designed as a retention and engagement mechanism, not a primary revenue
 Every lesson in Tensorcraft follows the **5C Loop** - a repeating pedagogical structure that interleaves narrative and technical learning. The loop is:
 
 1. **Context** - Set the narrative scene. What's happening in the story? What problem does the character face?
-2. **Concept** - Introduce the ML concept. Use the FE-to-ML bridge to connect it to something the learner already knows.
+2. **Concept** - Introduce the ML concept. Use the JS-to-ML bridge to connect it to something the learner already knows.
 3. **Code** - Hands-on coding exercise. The learner writes real code to implement the concept.
 4. **Challenge** - A stretch problem that tests deeper understanding. Often involves a decision point in the story.
 5. **Consequence** - Show the result of the learner's code/decisions in the narrative. The story progresses based on their work.
@@ -378,17 +377,17 @@ Upon completing all 11 modules in a world, learners receive a verifiable complet
 - A unique verification URL
 - GitHub repository link (if integrated)
 
-### 3.3 The FE-to-ML Concept Bridge
+### 3.3 The JS-to-ML Concept Bridge
 
-The FE-to-ML Concept Bridge is Tensorcraft's signature pedagogical tool. It maps every core ML concept to a frontend development concept that the learner already deeply understands. This is not a loose analogy - each bridge identifies a **deep structural connection** between the two domains.
+The JS-to-ML Concept Bridge is Tensorcraft's signature pedagogical tool. It maps every core ML concept to a JavaScript concept that the learner already deeply understands. This is not a loose analogy - each bridge identifies a **deep structural connection** between the two domains.
 
 #### Bridge Quality Tiers
 
-Every FE-to-ML bridge is classified into one of three quality tiers based on the depth of the structural mapping:
+Every JS-to-ML bridge is classified into one of three quality tiers based on the depth of the structural mapping:
 
 | Tier | Description | Example |
 |---|---|---|
-| **Identity** | Direct 1:1 mapping. The FE concept and ML concept are essentially the same operation. A developer who understands one already understands the other. | `Array.map()` → Tensor Operations, `CSS Grid` → Matrix Layout, `TypeScript Types` → Tensor Shapes |
+| **Identity** | Direct 1:1 mapping. The JS concept and ML concept are essentially the same operation. A developer who understands one already understands the other. | `Array.map()` → Tensor Operations, `CSS Grid` → Matrix Layout, `TypeScript Types` → Tensor Shapes |
 | **Structural** | Same underlying pattern applied in a different domain. The shape of the problem is identical, but the context differs. Requires a small conceptual leap. | `useState()` → Model Parameters, `React Components` → Neural Network Layers, `useEffect()` → Training Loop, `fetch() API` → Data Pipeline |
 | **Intuition** | Conceptual parallel that builds intuition rather than direct code equivalence. Helps learners develop mental models, but the code differs significantly. | `Event Listeners` → Loss Functions, `Redux State` → Gradient Descent, `CSS Transitions` → Learning Rate |
 
@@ -396,11 +395,11 @@ Bridge tiers are displayed as color-coded badges in the Bridge Explorer: Identit
 
 #### Bridge Quality Tiers
 
-Each bridge is classified into one of three quality tiers that indicate the strength of the FE→ML mapping:
+Each bridge is classified into one of three quality tiers that indicate the strength of the JS→ML mapping:
 
 | Tier | Description | Example |
 |------|-------------|---------|
-| **Identity** | The FE concept *is* the ML concept - same function, same math, different name | `Math.max(0, x)` = ReLU Activation |
+| **Identity** | The JS concept *is* the ML concept - same function, same math, different name | `Math.max(0, x)` = ReLU Activation |
 | **Structural** | Same architectural pattern, different domain - deep parallel that holds under scrutiny | Overfitting = CSS that only works on your screen |
 | **Intuition** | Useful starting mental model that gets refined during the lesson - accurate enough to build on | Lighthouse score → Loss Function |
 
@@ -410,7 +409,7 @@ The Bridge Explorer UI should display these tiers as badges on each bridge card,
 
 These 20 bridges appear across all five worlds:
 
-| # | ML Concept | Frontend Equivalent | Deep Structural Connection |
+| # | ML Concept | JavaScript Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
 | 1 | Training data | Component props | Both are external inputs that shape behavior. Props configure a component; training data configures a model. Change the props, the component renders differently. Change the data, the model learns differently. |
 | 2 | Model parameters (weights) | Component state | Both are internal values that change over time based on inputs. State updates in response to user events; weights update in response to training data. Both persist across render/training cycles. |
@@ -429,13 +428,13 @@ These 20 bridges appear across all five worlds:
 | 15 | Backpropagation | React reconciliation (tracing diffs backward) | Both propagate information backward through a structure to determine what needs updating. React traces from changed leaves back to root; backprop traces from loss back to input weights via the chain rule. *Tier: Intuition. Caveat: The "backward flow" visual is analogous, but backprop is a mathematical operation (chain rule, partial derivatives) with no direct DOM equivalent. Use this bridge as a starting point, then teach the real math.* |
 | 16 | Model inference | Server-side rendering | Both take an input and produce an output in a single forward pass, without iterative updating. SSR renders HTML from data; inference produces predictions from features. Both are "one-shot." |
 | 17 | Data augmentation | Responsive design/media queries | Both create variations of the input to handle diverse conditions. Media queries adapt layouts to screen sizes; data augmentation creates training variations for robustness. Both prevent brittleness. |
-| 18 | Dropout | Randomly hiding team members during practice | Both temporarily remove participants to prevent over-reliance on any single one. If one team member is always present, others depend on them; if one neuron always fires, others co-adapt. Random removal forces resilience. *Tier: Intuition. Note: This is a non-code analogy. The FE equivalent is not perfect - feature flags are deliberate, dropout is random - but the "force independence through random removal" principle transfers.* |
+| 18 | Dropout | Randomly hiding team members during practice | Both temporarily remove participants to prevent over-reliance on any single one. If one team member is always present, others depend on them; if one neuron always fires, others co-adapt. Random removal forces resilience. *Tier: Intuition. Note: This is a non-code analogy. The JS equivalent is not perfect - feature flags are deliberate, dropout is random - but the "force independence through random removal" principle transfers.* |
 | 19 | Confusion matrix | Error boundary report | Both provide structured breakdowns of what went right and wrong. An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Both guide debugging. |
 | 20 | Model deployment | CI/CD pipeline | Both are the process of taking something from development to production. CI/CD deploys code; model deployment serves a model. Both involve versioning, testing, and monitoring. |
 
 #### Deep Orbit Bridges
 
-| # | ML Concept | Frontend Equivalent | Deep Structural Connection |
+| # | ML Concept | JavaScript Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
 | 1 | Weight initialization | CSS initial values | Both set the starting point before any updates occur. Poor initial values lead to slow convergence or broken layouts. Both require deliberate defaults. |
 | 2 | Batch normalization | CSS normalize/reset | Both standardize inputs to a layer/component to prevent compounding inconsistencies. CSS resets remove browser defaults; batch norm removes distribution shift between layers. |
@@ -446,7 +445,7 @@ These 20 bridges appear across all five worlds:
 
 #### Neon Protocol Bridges
 
-| # | ML Concept | Frontend Equivalent | Deep Structural Connection |
+| # | ML Concept | JavaScript Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
 | 1 | Image tensors | `canvas.getImageData()` | Both represent images as flat arrays of pixel values (RGBA channels). `Uint8ClampedArray` from `getImageData()` is literally an image tensor. Identity bridge. |
 | 2 | Convolution kernels | CSS `blur()` / SVG filters | Both apply a small sliding window that transforms local regions of an image. CSS blur applies a convolution kernel to pixels; CNNs apply learned kernels to feature maps. |
@@ -457,7 +456,7 @@ These 20 bridges appear across all five worlds:
 
 #### Signal Ward Bridges
 
-| # | ML Concept | Frontend Equivalent | Deep Structural Connection |
+| # | ML Concept | JavaScript Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
 | 1 | Tokenization | URL parsing / route splitting | Both break continuous input into discrete structured parts. A URL parser splits `/path/:param/` into segments; a tokenizer splits text into tokens. Same operation, different input. |
 | 2 | Word embeddings | i18n translation dictionaries | Both map symbolic identifiers to meaningful representations. i18n maps keys to localized strings; embeddings map tokens to dense vectors in semantic space. Both enable meaning-aware processing. |
@@ -468,7 +467,7 @@ These 20 bridges appear across all five worlds:
 
 #### Nova Canvas Bridges
 
-| # | ML Concept | Frontend Equivalent | Deep Structural Connection |
+| # | ML Concept | JavaScript Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
 | 1 | Sampling from distributions | `Math.random()` | Both generate values from probability distributions. `Math.random()` samples uniformly; generative models sample from learned distributions. Same operation with learned parameters. |
 | 2 | Latent space interpolation | CSS transitions between states | Both create smooth intermediate values between two defined points. CSS transitions interpolate between start and end styles; latent interpolation generates smooth blends between generated outputs. |
@@ -479,7 +478,7 @@ These 20 bridges appear across all five worlds:
 
 #### Terra Grid Bridges
 
-| # | ML Concept | Frontend Equivalent | Deep Structural Connection |
+| # | ML Concept | JavaScript Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
 | 1 | Edge inference | CDN edge locations | Both move computation closer to the user/data source for lower latency. CDNs serve static assets from edge PoPs; edge ML runs inference on local devices. Same architecture, different payloads. |
 | 2 | Model quantization | Image format tradeoffs (PNG vs. WebP) | Both trade precision for size/speed. PNG is lossless but large; WebP is lossy but small. Float32 is precise but heavy; Int8 is approximate but fast. Same optimization decision. |
@@ -490,7 +489,7 @@ These 20 bridges appear across all five worlds:
 
 #### Teaching Principle
 
-> Every FE-to-ML bridge follows the same principle: **find the structural isomorphism, not the surface similarity.** A good bridge isn't "this is kinda like that" - it's "these two things solve the same problem in the same way, in different domains." When a learner sees the bridge, they should feel recognition, not metaphor.
+> Every JS-to-ML bridge follows the same principle: **find the structural isomorphism, not the surface similarity.** A good bridge isn't "this is kinda like that" - it's "these two things solve the same problem in the same way, in different domains." When a learner sees the bridge, they should feel recognition, not metaphor.
 
 ### 3.4 Interactive Animations - Progress Diagram
 
@@ -548,7 +547,7 @@ Tensorcraft integrates with GitHub to give learners a real portfolio artifact fr
 
 Each module contains **5 lessons**, following a consistent structure:
 
-- **Lesson 1 - Orientation**: Introduces the module's narrative arc and core ML concept. Heavy on story, lighter on code. Establishes the "why" before the "how." Includes the FE-to-ML bridge for the module's central concept.
+- **Lesson 1 - Orientation**: Introduces the module's narrative arc and core ML concept. Heavy on story, lighter on code. Establishes the "why" before the "how." Includes the JS-to-ML bridge for the module's central concept.
 
 - **Lesson 2 - Foundation**: Teaches the concept's theory and math (where applicable). Interactive visualizations demonstrate the concept. First hands-on code exercise - typically implementing a simplified version of the concept.
 
@@ -566,16 +565,16 @@ All 5 worlds launch simultaneously. There are no "Coming Soon" cards - every wor
 
 On the main worlds page, all 5 world cards are arranged in a responsive grid: 3 columns on desktop, 2 on tablet, 1 on mobile. All cards are the same size with full color, interactive hover effects, "Start Learning" CTA button, and price displayed prominently.
 
-### 3.8 UI/UX Design Notes: FE Bridge Visual Pedagogy
+### 3.8 UI/UX Design Notes: JS Bridge Visual Pedagogy
 
 #### In-Lesson Bridge Display
 
-When an FE-to-ML bridge is introduced in a lesson:
+When an JS-to-ML bridge is introduced in a lesson:
 
-1. A split-screen animation appears: left side shows the frontend concept (with a small code snippet or visual), right side shows the ML concept (with a diagram or formula).
+1. A split-screen animation appears: left side shows the JavaScript concept (with a small code snippet or visual), right side shows the ML concept (with a diagram or formula).
 2. Animated connection lines draw between structurally equivalent parts.
 3. A "Deep Connection" callout box appears below with the written explanation.
-4. The learner can toggle between "Frontend View" and "ML View" to see the concept from each perspective.
+4. The learner can toggle between "JavaScript View" and "ML View" to see the concept from each perspective.
 5. An optional "I already know this" button lets experienced learners collapse the bridge and move on.
 
 #### Bridge Explorer
@@ -584,7 +583,7 @@ A dedicated "Bridge Explorer" page (accessible from the main navigation) lets le
 
 - Browse all bridges they've unlocked across all owned worlds
 - Filter by category (shared, world-specific)
-- Search by ML concept or FE concept
+- Search by ML concept or JS concept
 - Mark bridges as "mastered" or "need review"
 - See which bridges are used in which modules
 
@@ -592,7 +591,7 @@ A dedicated "Bridge Explorer" page (accessible from the main navigation) lets le
 
 Each bridge has a shareable graphic (Open Graph-optimized) that learners can share on social media or embed in blog posts. The graphic shows:
 
-- The ML concept and FE concept side by side
+- The ML concept and JS concept side by side
 - The one-sentence deep structural connection
 - Tensorcraft branding and world color
 - A URL to the full bridge explanation (public, no login required - serves as marketing)
@@ -672,7 +671,7 @@ This structure eliminates redundancy across multi-world purchases and makes pric
 
 ### 4.2 Module Map - Deep Orbit
 
-> **Source of truth:** `docs/scripts/deep-orbit.md` contains the full narrative script with detailed lesson breakdowns, character dialogue, FE bridges, and exercises for every module. This section provides the structural overview.
+> **Source of truth:** `docs/scripts/deep-orbit.md` contains the full narrative script with detailed lesson breakdowns, character dialogue, JS bridges, and exercises for every module. This section provides the structural overview.
 
 #### Module 1: Foundations - Tensors & Data
 
@@ -923,7 +922,7 @@ The module order follows a deliberate pedagogical arc:
 
 **Specialization:** NLP & Text (Clinical) | **Model Built:** Diagnostic One (clinical NLP assistant) | **GitHub repo:** `diagnostic-one-clinical-nlp`
 
-**Characters:** Khalil (player/bioethicist & frontend dev), Dr. Vasquez (head researcher/mentor), Obi (computational linguist), Santos (nurse/data curator), MEDI (clinical decision support AI guide)
+**Characters:** Khalil (player/bioethicist & JavaScript dev), Dr. Vasquez (head researcher/mentor), Obi (computational linguist), Santos (nurse/data curator), MEDI (clinical decision support AI guide)
 
 #### Foundations (Modules 1-6)
 
@@ -1260,7 +1259,7 @@ All five worlds share these visual design constraints to maintain platform coher
 - All 5 worlds - Modules 1–3 (15 lessons each, 75 lessons total)
 - Full 5C Loop for all lessons
 - Interactive animations for core ML concepts (at least 10)
-- FE-to-ML bridges: all 20 shared bridges + per-world bridges
+- JS-to-ML bridges: all 20 shared bridges + per-world bridges
 - Progress diagram (all worlds, modules 1–3)
 - GitHub integration (auto-repo, auto-commit)
 - Module capstone projects (modules 1–3 per world)
@@ -1294,10 +1293,10 @@ All five worlds share these visual design constraints to maintain platform coher
 
 **Beta timeline:** 4 weeks before V0.5 public launch.
 
-**Beta cohort:** 50–100 frontend developers recruited from:
+**Beta cohort:** 50–100 JavaScript developers recruited from:
 
 - Twitter/X ML learning communities
-- Frontend-focused Discord servers
+- JavaScript-focused Discord servers
 - Dev.to and Hashnode communities
 - Personal network referrals
 
@@ -1327,7 +1326,7 @@ All five worlds share these visual design constraints to maintain platform coher
 | # | Risk | Likelihood | Impact | Mitigation |
 |---|------|-----------|--------|------------|
 | 1 | **Story fatigue**: Learners skip narrative to get to code, rendering the 5C Loop's Context and Consequence phases wasted effort. | Medium | High | Make narrative optional but defaulted to "on." Track skip rates in analytics. If >40% skip, redesign narrative to be shorter and more decision-driven. |
-| 2 | **Bridge confusion**: FE-to-ML bridges feel forced or inaccurate, undermining trust in the teaching method. | Low | High | Extensive beta testing of bridges specifically. Each bridge reviewed by at least 2 frontend developers and 1 ML engineer. Remove or rewrite any bridge that beta testers rate below 3/5 clarity. |
+| 2 | **Bridge confusion**: JS-to-ML bridges feel forced or inaccurate, undermining trust in the teaching method. | Low | High | Extensive beta testing of bridges specifically. Each bridge reviewed by at least 2 JavaScript developers and 1 ML engineer. Remove or rewrite any bridge that beta testers rate below 3/5 clarity. |
 | 3 | **Pricing resistance**: $59 per model feels too high for the perceived value, especially with All 5 worlds available at launch. | Medium | High | Validate willingness-to-pay in beta. If resistance is high, consider $49 launch promo with planned return to $59 once social proof accumulates. PPP pricing helps for international markets. |
 | 4 | **Scope creep on V0.5**: The MVP takes longer than planned because of feature additions or quality bar escalation. | High | Medium | Strict scope document (Section 6.1). Weekly scope review meetings. Any addition to V0.5 must remove something of equal effort. "Not in scope" list is a commitment. |
 | 5 | **Technical complexity of interactive animations**: Building high-quality interactive ML concept visualizations takes longer and costs more than estimated. | Medium | Medium | Prototype the 3 most complex animations first (neural network forward pass, backpropagation, gradient descent). If any takes more than 2x estimated time, simplify or use pre-rendered alternatives. |
@@ -1344,7 +1343,7 @@ The product is currently called **Tensorcraft**. The following alternative names
 
 | # | Name | Notes |
 |---|------|-------|
-| 1 | **Tensorcraft** | Current working name. Evokes craftsmanship and tensor operations. Clear ML association. Available as a domain. Risk: may sound too technical for frontend developers approaching ML for the first time. |
+| 1 | **Tensorcraft** | Current working name. Evokes craftsmanship and tensor operations. Clear ML association. Available as a domain. Risk: may sound too technical for JavaScript developers approaching ML for the first time. |
 | 2 | **Neuralpath** | Evokes neural networks and a learning journey/path. Friendly and approachable. Risk: "neural" may narrow the perception to only neural network content (we also cover trees, linear models, etc.). |
 | 3 | **Gradient** | Clean, minimal, one-word. Core ML concept. Risk: very common word, SEO difficulty. Multiple existing products use variations. |
 | 4 | **Modelforge** | Evokes building/crafting models. Strong, active verb. Risk: sounds more like a deployment tool than a learning platform. |

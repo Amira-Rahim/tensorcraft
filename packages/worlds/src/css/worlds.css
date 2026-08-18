@@ -56,7 +56,7 @@
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
-  --tc-axis-fe-integration: #4a90d9;
+  --tc-axis-js-integration: #4a90d9;
 
   /* Semantic colors (global - only declared here, on :root). Success and
      error are the old green-400/red-300 pastels, not the mid-tone emeralds/
@@ -117,7 +117,7 @@
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
-  --tc-axis-fe-integration: #4a90d9;
+  --tc-axis-js-integration: #4a90d9;
 }
 
 /* ===== SIGNAL WARD (Medical) ===== */
@@ -159,7 +159,7 @@
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
-  --tc-axis-fe-integration: #4a90d9;
+  --tc-axis-js-integration: #4a90d9;
 }
 
 /* ===== NOVA CANVAS (Creative AI) ===== */
@@ -201,7 +201,7 @@
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
-  --tc-axis-fe-integration: #4a90d9;
+  --tc-axis-js-integration: #4a90d9;
 }
 
 /* ===== TERRA GRID (Industrial) ===== */
@@ -243,7 +243,7 @@
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
-  --tc-axis-fe-integration: #4a90d9;
+  --tc-axis-js-integration: #4a90d9;
 }
 
 /* ===== LIGHT SCHEME ==========================================
@@ -310,7 +310,7 @@
   --tc-tier-intuition: #6b5a3b;
   --tc-axis-evaluation: #a13434;
   --tc-axis-deployment: #755820;
-  --tc-axis-fe-integration: #215e9d;
+  --tc-axis-js-integration: #215e9d;
 }
 
 [data-world="neon-protocol"][data-scheme="light"] {
@@ -322,7 +322,7 @@
   --tc-tier-intuition: #6b5a3b;
   --tc-axis-evaluation: #a13434;
   --tc-axis-deployment: #755820;
-  --tc-axis-fe-integration: #215e9d;
+  --tc-axis-js-integration: #215e9d;
 }
 
 [data-world="signal-ward"][data-scheme="light"] {
@@ -334,7 +334,7 @@
   --tc-tier-intuition: #6b5a3b;
   --tc-axis-evaluation: #a13434;
   --tc-axis-deployment: #755820;
-  --tc-axis-fe-integration: #215e9d;
+  --tc-axis-js-integration: #215e9d;
 }
 
 [data-world="nova-canvas"][data-scheme="light"] {
@@ -346,7 +346,7 @@
   --tc-tier-intuition: #6b5a3b;
   --tc-axis-evaluation: #a13434;
   --tc-axis-deployment: #755820;
-  --tc-axis-fe-integration: #215e9d;
+  --tc-axis-js-integration: #215e9d;
 }
 
 [data-world="terra-grid"][data-scheme="light"] {
@@ -358,5 +358,5 @@
   --tc-tier-intuition: #6b5a3b;
   --tc-axis-evaluation: #a13434;
   --tc-axis-deployment: #755820;
-  --tc-axis-fe-integration: #215e9d;
+  --tc-axis-js-integration: #215e9d;
 }

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "GAN training alternates between updating the discriminator and the generator. The key challenge is keeping both networks in balance. Neither should dominate."
   bridge:
-    feTitle: "Load Balancing"
-    feCode: "if (server1.load > server2.load) route(server2)"
+    jsTitle: "Load Balancing"
+    jsCode: "if (server1.load > server2.load) route(server2)"
     mlTitle: "GAN Training Balance"
     mlCode: "if (dLoss < 0.1) skipDStep(); // D is too strong"
     tier: intuition

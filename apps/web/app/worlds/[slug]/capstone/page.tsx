@@ -196,7 +196,7 @@ export default async function CapstonePage({ params }: Props) {
   const bridgesByModule = new Map<string, Array<{ fe: string; ml: string }>>();
   for (const b of bridges) {
     const existing = bridgesByModule.get(b.moduleSlug) ?? [];
-    existing.push({ fe: b.feTitle, ml: b.mlTitle });
+    existing.push({ fe: b.jsTitle, ml: b.mlTitle });
     bridgesByModule.set(b.moduleSlug, existing);
   }
 
@@ -215,7 +215,7 @@ export default async function CapstonePage({ params }: Props) {
       name: mod.title.replace(/^Capstone:\s*/, ""),
       slug: mod.slug,
       completedOn: formatted,
-      keyBridgeFe: keyBridge?.fe ?? null,
+      keyBridgeJs: keyBridge?.fe ?? null,
       keyBridgeMl: keyBridge?.ml ?? null,
     };
   });
@@ -259,7 +259,7 @@ export default async function CapstonePage({ params }: Props) {
     },
     {
       value: String(bridgesExplored),
-      label: "FE Bridges Mastered",
+      label: "JS Bridges Mastered",
     },
     ...(avgScore ? [{ value: avgScore, label: "Average Score" }] : []),
   ];
@@ -367,7 +367,7 @@ export default async function CapstonePage({ params }: Props) {
         >
           You&apos;ve completed every module of {world.displayName}. You built
           the {world.modelBuilt.split(/\u2014|\u2013|:|;|\s-\s/)[0].trim()}. You
-          explored {bridgesExplored} frontend bridges to ML.
+          explored {bridgesExplored} JavaScript bridges to ML.
         </p>
         {/* Share the PUBLIC certificate page (or the public world page
             pre-claim), never this auth-gated capstone URL. */}
@@ -523,7 +523,7 @@ export default async function CapstonePage({ params }: Props) {
                 {m.completedOn ? `Completed ${m.completedOn}` : "Completed"}
               </div>
               {/* Key bridge */}
-              {m.keyBridgeFe && m.keyBridgeMl && (
+              {m.keyBridgeJs && m.keyBridgeMl && (
                 <div
                   className="font-mono mt-1"
                   style={{
@@ -532,7 +532,7 @@ export default async function CapstonePage({ params }: Props) {
                     letterSpacing: "0.03em",
                   }}
                 >
-                  {m.keyBridgeFe} &rarr; {m.keyBridgeMl}
+                  {m.keyBridgeJs} &rarr; {m.keyBridgeMl}
                 </div>
               )}
             </li>

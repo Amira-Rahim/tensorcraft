@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "The reparameterization trick moves randomness outside the gradient computation path. Instead of sampling z directly, compute z = mu + sigma * epsilon where epsilon is fixed random noise."
   bridge:
-    feTitle: "Seeded Random"
-    feCode: "function seeded(seed: number) { return (seed * 9301 + 49297) % 233280 / 233280; }"
+    jsTitle: "Seeded Random"
+    jsCode: "function seeded(seed: number) { return (seed * 9301 + 49297) % 233280 / 233280; }"
     mlTitle: "Reparameterization"
     mlCode: "z = mu + exp(logVar * 0.5) * epsilon  // epsilon is external noise"
     tier: structural

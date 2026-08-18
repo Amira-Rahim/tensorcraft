@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Running ML inference on live video is structurally identical to a game render loop. requestAnimationFrame() calls your function every frame. Instead of drawing pixels, you classify them."
   bridge:
-    feTitle: "requestAnimationFrame() Render Loop"
-    feCode: "function loop() { render(); requestAnimationFrame(loop); }"
+    jsTitle: "requestAnimationFrame() Render Loop"
+    jsCode: "function loop() { render(); requestAnimationFrame(loop); }"
     mlTitle: "Inference Loop"
     mlCode: "function loop() { const pred = model.predict(frame); drawDetections(pred); requestAnimationFrame(loop); }"
     tier: identity

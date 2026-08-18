@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Offline-first ML mirrors offline-first web apps: cache models in IndexedDB, queue predictions locally, sync when connectivity returns."
   bridge:
-    feTitle: "IndexedDB + Service Worker"
-    feCode: "const db = await idb.open('app-cache'); // offline-first storage"
+    jsTitle: "IndexedDB + Service Worker"
+    jsCode: "const db = await idb.open('app-cache'); // offline-first storage"
     mlTitle: "Offline Model Cache"
     mlCode: "const model = await tf.loadLayersModel('indexeddb://cached-model');"
     tier: structural

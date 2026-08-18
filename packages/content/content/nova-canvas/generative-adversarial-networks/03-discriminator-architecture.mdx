@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "The discriminator is a binary classifier that takes an image and outputs a probability of it being real. It progressively compresses the input down to a single decision."
   bridge:
-    feTitle: "Form Validation"
-    feCode: "function validate(input: FormData): { valid: boolean, score: number }"
+    jsTitle: "Form Validation"
+    jsCode: "function validate(input: FormData): { valid: boolean, score: number }"
     mlTitle: "Discriminator Network"
     mlCode: "const realness = discriminator.predict(image)  // → 0.0 to 1.0"
     tier: structural
@@ -95,7 +95,7 @@ Dropout randomly deactivates neurons during training. For discriminators, this i
 <CodeBlock language="typescript" title="dropout-balance.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend analogy: progressive form validation
+// JS analogy: progressive form validation
 // Simple check first, detailed check later
 function validateForm(data: FormData): { valid: boolean; confidence: number } {
   // Level 1: Quick format check (like first dense layer)

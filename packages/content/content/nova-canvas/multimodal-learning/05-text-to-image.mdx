@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Text-to-image generation runs captioning in reverse: a text encoder turns the prompt into conditioning, and a diffusion model decodes it into pixels. One sentence in, one image out, with every visual decision the sentence left unspecified made by the model."
   bridge:
-    feTitle: "Server-side rendering: text becomes visual"
-    feCode: "const html = renderToString(<App data={textData} />);"
+    jsTitle: "Server-side rendering: text becomes visual"
+    jsCode: "const html = renderToString(<App data={textData} />);"
     mlTitle: "Text-to-image generation"
     mlCode: "const image = diffusionModel.generate(encodeText(prompt));"
     tier: structural

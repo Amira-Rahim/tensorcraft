@@ -29,38 +29,38 @@
 
 ## 1. Executive Summary
 
-TensorCraft is an interactive, browser-based learning platform that teaches machine learning concepts to front-end developers through world-based, hands-on coding lessons. By mapping ML concepts to familiar front-end paradigms (the "FE-to-ML bridge"), TensorCraft lowers the barrier to entry and accelerates comprehension for a population of developers who already possess strong JavaScript, CSS, and DOM-manipulation skills but lack exposure to data science, linear algebra, and model training.
+TensorCraft is an interactive, browser-based learning platform that teaches machine learning concepts to JavaScript developers through world-based, hands-on coding lessons. By mapping ML concepts to familiar JavaScript paradigms (the "JS-to-ML bridge"), TensorCraft lowers the barrier to entry and accelerates comprehension for a population of developers who already possess strong JavaScript, CSS, and DOM-manipulation skills but lack exposure to data science, linear algebra, and model training.
 
 ### Vision
 
-Every front-end developer should be able to build, train, and deploy ML models with the same confidence they ship React components.
+Every JavaScript developer should be able to build, train, and deploy ML models with the same confidence they ship React components.
 
 ### Mission
 
-Deliver a gamified, project-based curriculum that meets FE developers where they are - in the browser, in JavaScript, with visual feedback - and guides them from zero ML knowledge to production-ready skills across five thematic learning tracks.
+Deliver a gamified, project-based curriculum that meets JS developers where they are - in the browser, in JavaScript, with visual feedback - and guides them from zero ML knowledge to production-ready skills across five thematic learning tracks.
 
 ---
 
 ## 2. User Personas
 
-### Primary: The Curious Frontend Engineer
+### Primary: The Curious JavaScript Engineer
 
-- **Demographics:** 3–10 years frontend experience. React/Vue/Angular daily. JS/TS fluent. No ML experience. Age 25–40.
-- **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning their frontend identity. Wants a portfolio project that proves ML skills to employers.
+- **Demographics:** 3–10 years JavaScript experience. React/Vue/Angular daily. JS/TS fluent. No ML experience. Age 25–40.
+- **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning JavaScript. Wants a portfolio project that proves ML skills to employers.
 - **Job to be done:** "Help me learn ML using the tools and mental models I already have, so I can build ML-powered features and expand my career options."
 - **Pain points:** Existing ML courses assume Python + math background. Academic courses are dry and theoretical. No courses teach browser-based ML. No interactive courses for Transformers.js/WebGPU/ONNX Runtime Web.
 - **Willingness to pay:** $59 one-time for a complete world. $99–$159 for bundles (2, 3, or all 5 worlds).
 
 ### Secondary: The Career Transitioner
 
-- **Demographics:** 5–15 years software engineering. Wants to add ML skills to expand into ML-enhanced frontend roles or ML-integrated product teams. May have some Python but prefers JavaScript.
+- **Demographics:** 5–15 years software engineering. Wants to add ML skills to expand into ML-enhanced JavaScript roles or ML-integrated product teams. May have some Python but prefers JavaScript.
 - **Job to be done:** "Give me a structured path with a portfolio project that proves I understand ML, so I can build ML-powered features and collaborate with data science teams."
-- **Realistic outcome:** ML-Enhanced Frontend Engineer / Frontend Engineer with ML Specialization ($120K-$160K). For full ML engineering roles, Tensorcraft provides the conceptual foundation; graduates will also need Python fluency and deeper mathematics.
+- **Realistic outcome:** ML-Enhanced JavaScript Engineer / JavaScript Engineer with ML Specialization ($120K-$160K). For full ML engineering roles, Tensorcraft provides the conceptual foundation; graduates will also need Python fluency and deeper mathematics.
 - **Willingness to pay:** $59–$159. Expense-able through employer.
 
 ### Tertiary: The Team Lead
 
-- **Demographics:** Engineering manager at a company exploring browser ML. Needs to upskill 5–10 frontend engineers.
+- **Demographics:** Engineering manager at a company exploring browser ML. Needs to upskill 5–10 JavaScript engineers.
 - **Job to be done:** "Give my team a structured curriculum with measurable progress and consistent quality."
 - **Willingness to pay:** Team pricing (planned for future release).
 
@@ -88,11 +88,11 @@ Each world contains **11 modules** with **5 lessons per module**, totaling **55 
 
 | Segment | Duration | Description |
 |---|---|---|
-| Concept introduction | 3–5 min | Illustrated explainer with FE-to-ML bridge analogy |
+| Concept introduction | 3–5 min | Illustrated explainer with JS-to-ML bridge analogy |
 | Guided coding | 8–12 min | Step-by-step editor exercise with inline hints |
 | Free exploration | 5–8 min | Open sandbox to modify parameters and observe results |
 | Checkpoint quiz | 2–3 min | 3–5 questions validating understanding |
-| Debrief & bridge | 2–3 min | Recap + explicit link back to FE equivalent concept |
+| Debrief & bridge | 2–3 min | Recap + explicit link back to JS equivalent concept |
 
 **Estimated total time per lesson:** 20–30 minutes
 **Estimated total time per module:** 100–150 minutes
@@ -105,11 +105,11 @@ Every lesson follows the **5C pedagogical loop**, implemented as a **6-step Duol
 | Step | Name | 5C Phase | Description | Variations by Position |
 |---|---|---|---|---|
 | 1 | **Briefing** | Context | Set the scene within the world narrative (Context + Dialogue merged); state the learning objective; character dialogue frames the problem | Lesson 1 of module: extended world-building intro + dialogue; Lessons 2–4: brief recap + new objective + dialogue; Lesson 5 (capstone): project brief |
-| 2 | **Concept** | Concept | Teach the ML idea using the FE-to-ML bridge | Odd lessons: analogy-first; Even lessons: code-first |
+| 2 | **Concept** | Concept | Teach the ML idea using the JS-to-ML bridge | Odd lessons: analogy-first; Even lessons: code-first |
 | 3 | **Code** | Code | Hands-on editor exercise | Lessons 1–3: scaffolded (fill-in-the-blank); Lesson 4: guided (fewer hints); Lesson 5: open (build from scratch) |
 | 4 | **Challenge** | Code/Check | Interactive exercise with automated tests | Lessons 1–4: inline exercise; Lesson 5: open project |
 | 5 | **Takeaways** | Check | Summary card recapping core concepts and bridge connections | All lessons: 3–5 bullet takeaways |
-| 6 | **Consequence** | Connect | Narrative consequence; tie ML concept back to FE world; preview next lesson | All lessons: story beat + "What's next" teaser |
+| 6 | **Consequence** | Connect | Narrative consequence; tie ML concept back to its JS equivalent; preview next lesson | All lessons: story beat + "What's next" teaser |
 
 #### Variation Frequency
 
@@ -132,13 +132,13 @@ Every lesson follows the **5C pedagogical loop**, implemented as a **6-step Duol
 | 3 | **Capstone rubric** | Multi-criteria rubric (correctness, code quality, creativity) scored 0–3 per criterion | End of every module (Lesson 5) |
 | 4 | **Progress diagram** | Visual map of all modules and lessons showing completion state (locked, available, in-progress, complete, capstone-complete) | Always visible on dashboard |
 | 5 | **Streak tracker** | Consecutive-day and consecutive-week counters with badge rewards | Updated on each lesson completion |
-| 6 | **Skill radar** | Radar chart showing proficiency across 6 axes: Data Prep, Model Architecture, Training, Evaluation, Deployment, FE Integration | Updated after each module completion |
+| 6 | **Skill radar** | Radar chart showing proficiency across 6 axes: Data Prep, Model Architecture, Training, Evaluation, Deployment, JS Integration | Updated after each module completion |
 
-### 3.5 FE-to-ML Bridges
+### 3.5 JS-to-ML Bridges
 
-The bridge system is TensorCraft's core differentiator. Each ML concept is paired with a familiar FE concept to accelerate understanding.
+The bridge system is TensorCraft's core differentiator. Each ML concept is paired with a familiar JS concept to accelerate understanding.
 
-| # | ML Concept | FE Equivalent | Connection |
+| # | ML Concept | JS Equivalent | Connection |
 |---|---|---|---|
 | 1 | Tensor | Multidimensional Array | "A tensor is just a nested array with shape metadata - like a typed array buffer you already use in WebGL." |
 | 2 | Forward pass | Event propagation (capture phase) | "Data flows through layers the same way an event propagates down the DOM - parent to child, transformed at each node." |
@@ -174,7 +174,7 @@ The core learning interface where users read, code, and interact.
 | 1 | Desktop three-column layout | P0 | Left panel: lesson narrative (scrollable); Center panel: code editor; Right panel: live preview / model output canvas |
 | 2 | Mobile tabbed layout | P0 | On viewports < 768px, collapse three columns into a tabbed interface: "Learn" / "Code" / "Preview" tabs |
 | 3 | Code editor | P0 | Embedded Monaco-based editor with syntax highlighting, autocompletion, and world-aware color scheme; supports JavaScript and TypeScript |
-| 4 | FE bridge sidebar | P1 | Collapsible sidebar (or drawer on mobile) showing the current lesson's FE-to-ML bridge card with analogy, visual diagram, and link to the related FE concept |
+| 4 | JS bridge sidebar | P1 | Collapsible sidebar (or drawer on mobile) showing the current lesson's JS-to-ML bridge card with analogy, visual diagram, and link to the related JS concept |
 | 5 | Checkpoint integration | P0 | At designated points in the lesson, the editor locks and a checkpoint panel slides in from the right, presenting the quiz or code test; learner must pass to proceed |
 | 6 | Hint system | P1 | Progressive hints (up to 3 per exercise) revealed on demand; each hint reduces the maximum score for that exercise by 10% |
 | 7 | Automated tests | P0 | Each coding exercise includes a test suite (Jest-compatible) that runs in a sandboxed iframe; results displayed inline with pass/fail indicators |
@@ -201,10 +201,10 @@ Screens for user signup/login and the post-signup orientation flow.
 | 1 | Auth screen | P0 | Signup/login screen with three methods: GitHub OAuth, Google OAuth, and email magic link. Centered card layout with Tensorcraft branding. Toggle between signup and login modes. |
 | 2 | OAuth providers | P0 | GitHub OAuth (via Supabase Auth, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
 | 3 | Email magic link | P0 | Passwordless email login via Supabase Auth email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
-| 4 | Onboarding flow | P1 | 6-step post-signup flow: (1) Welcome screen with "Welcome Aboard the Archimedes" + 3 feature cards, (2) Your Background (5 options, saved to `fe_background`), (3) Your Goal (5 options, saved to `learning_goal`), (4) Your Framework - React/Vue/Angular/Svelte/Vanilla with live bridge preview (saved to `fe_framework`), (5) World selection with Deep Orbit pre-highlighted, (6) Ready - configuration summary + "Begin First Lesson" CTA. Stepper indicator shows progress through all 6 steps. |
+| 4 | Onboarding flow | P1 | 4-step post-signup flow: (1) Welcome screen with "Welcome Aboard the Archimedes" + 3 feature cards, (2) Your Background (experience level plus optional years and notes, saved to `js_background` / `js_experience_years`), (3) Your Goal (5 options, saved to `learning_goal`), (4) Ready - configuration summary + "Begin First Lesson" CTA. The framework-selection step was removed with React-only V1, and the `fe_framework` column was dropped in migration 059. |
 | 5 | Onboarding persistence | P1 | Onboarding completion stored in user profile; completed users skip directly to dashboard on future logins. |
 | 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible - user returns to accessible content. |
-| 7 | Bridge collectibles | P2 | FE-to-ML bridges surfaced on the dashboard as collectible cards (`bridge-collection.tsx`), integrated with learner progress rather than a standalone reference page. The earlier `/bridges` standalone route was removed in favor of in-context discovery. |
+| 7 | Bridge collectibles | P2 | JS-to-ML bridges surfaced on the dashboard as collectible cards (`bridge-collection.tsx`), integrated with learner progress rather than a standalone reference page. The earlier `/bridges` standalone route was removed in favor of in-context discovery. |
 | 8 | Capstone completion screen | P1 | Celebratory screen shown after completing all 11 modules of a world. Displays: completion stats (modules, lessons, bridges mastered, time invested), simplified journey map showing all modules complete, narrative conclusion with character appearances, "Download Certificate" and "Share Progress" CTAs, "Push to GitHub" link, and "What's Next" suggestions (explore another world, browse bridges, view dashboard). |
 | 9 | User menu component | P0 | Authenticated header dropdown with auth-state detection. Shows avatar (Supabase user metadata or fallback initials), display name, and a dropdown menu with links to Dashboard, Settings, and Sign Out. Unauthenticated state shows "Sign In" button. Sign-out calls Supabase `signOut()` and redirects to landing page. |
 
@@ -307,7 +307,7 @@ Track learning behavior, engagement, and conversion events.
 | `@tensorcraft/content` | `packages/content` | MDX lesson files, exercise YAML files, module metadata, Velite config, Zod schemas, and content query API |
 | `@tensorcraft/supabase` | `packages/supabase` | Supabase client/server instances, database type definitions, migrations (6 files), seed scripts, and admin operations |
 | `@tensorcraft/worlds` | `packages/worlds` | 5 world manifests (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) with TypeScript configs and CSS custom properties |
-| `@tensorcraft/shared` | `packages/shared` | Shared constants (WORLD_SLUGS, PRICING, ROUTES, V05_SCOPE, WORLD_CONTENT), 50+ FE-to-ML bridge definitions, and shared TypeScript types |
+| `@tensorcraft/shared` | `packages/shared` | Shared constants (WORLD_SLUGS, PRICING, ROUTES, V05_SCOPE, WORLD_CONTENT), 50+ JS-to-ML bridge definitions, and shared TypeScript types |
 | `@tensorcraft/config` | `packages/config` | Shared ESLint, TypeScript, and Tailwind configurations |
 
 ### 5.3 Content Pipeline
@@ -490,8 +490,8 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 
 ### 9.1 SEO Strategy
 
-- **Primary keywords:** "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers", "machine learning for web developers"
-- **Content marketing:** Publish 2 blog posts per week on `tensorcraft.app/blog` covering FE-to-ML bridge concepts, beginner ML guides, and project showcases
+- **Primary keywords:** "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for JavaScript developers", "machine learning for web developers"
+- **Content marketing:** Publish 2 blog posts per week on `tensorcraft.app/blog` covering JS-to-ML bridge concepts, beginner ML guides, and project showcases
 - **Technical SEO:** SSG landing pages with structured data (Course schema); optimized Core Web Vitals targeting LCP < 2.5s, CLS < 0.1, INP < 200ms
 - **Backlink strategy:** Guest posts on Smashing Magazine, CSS-Tricks, Dev.to; open-source bridge card library on GitHub
 
@@ -529,7 +529,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | 6 | GitHub OAuth scope changes | Low | Low | GitHub may deprecate or modify OAuth scopes, breaking integration | Abstract GitHub API behind an adapter layer; monitor GitHub changelog; implement graceful degradation if repo access is revoked |
 | 7 | Curriculum staleness | Medium | Medium | ML ecosystem evolves rapidly; lessons may reference outdated APIs or deprecated model architectures | Schedule quarterly content reviews; version lessons with "last updated" date; community contribution pipeline for corrections |
 | 8 | Accessibility compliance | Medium | Medium | Complex interactive components (editor, progress diagram, canvas) may not meet WCAG 2.2 AA | Conduct accessibility audit before each release; use `aria-live` regions for dynamic content; provide text-only alternatives for visual components. **Audit fixes completed:** skip-to-content link on all pages; `sr-only` or visible labels on all form inputs; `aria-pressed` on filter toggle buttons; `aria-label` on OAuth buttons and SVG icons; focus trap and focus restore on modals; `role="progressbar"` with `aria-valuenow`/`aria-valuemin`/`aria-valuemax` on progress bars; color-only indicators supplemented with text labels. |
-| 9 | Competitor response | Medium | High | Established platforms (freeCodeCamp, Codecademy, Scrimba) launch similar FE-to-ML courses | Differentiate on bridge pedagogy and story worlds; build community moat; move fast on content - first-mover advantage in this niche is significant |
+| 9 | Competitor response | Medium | High | Established platforms (freeCodeCamp, Codecademy, Scrimba) launch similar JS-to-ML courses | Differentiate on bridge pedagogy and story worlds; build community moat; move fast on content - first-mover advantage in this niche is significant |
 
 ---
 

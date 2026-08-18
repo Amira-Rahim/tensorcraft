@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Fine-tuning adapts a pre-trained model to a specific task by adding a task-specific head and continuing training with a small learning rate on domain data."
   bridge:
-    feTitle: "Extending a Base Class"
-    feCode: "class ClinicalModel extends BertBase {\n  classify() { /* new capability */ }\n}"
+    jsTitle: "Extending a Base Class"
+    jsCode: "class ClinicalModel extends BertBase {\n  classify() { /* new capability */ }\n}"
     mlTitle: "Fine-Tuning BERT"
     mlCode: "// Inherit pre-trained weights, add classification head\nconst model = addHead(bertBase, numLabels);"
     tier: structural

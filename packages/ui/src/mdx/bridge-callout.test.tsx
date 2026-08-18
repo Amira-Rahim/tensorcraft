@@ -3,8 +3,8 @@ import { render, screen } from "@testing-library/react";
 import { BridgeCallout } from "./bridge-callout";
 
 const bridgeWithVariants = {
-  feTitle: "Component Props",
-  feCode: "function Card(props) { return props.title; }",
+  jsTitle: "Component Props",
+  jsCode: "function Card(props) { return props.title; }",
   mlTitle: "Training Data",
   mlCode: "model.fit(trainingData, labels)",
   tier: "structural" as const,
@@ -13,8 +13,8 @@ const bridgeWithVariants = {
 // Fictional pair not present in the canonical registry, keeps "no breaks"
 // fallback assertion meaningful as we add breaks to real registry entries.
 const bridgeWithoutVariants = {
-  feTitle: "Fixture FE Concept",
-  feCode: "// fixture fe code",
+  jsTitle: "Fixture FE Concept",
+  jsCode: "// fixture fe code",
   mlTitle: "Fixture ML Concept",
   mlCode: "// fixture ml code",
   tier: "structural" as const,
@@ -42,7 +42,7 @@ describe("BridgeCallout", () => {
     render(<BridgeCallout bridge={bridgeWithVariants} />);
     // The "React" framework label is shown in place of the old tab bar.
     expect(screen.getByText("React")).toBeInTheDocument();
-    // bridge #1's react variant feCode (Component props ↔ Training data).
+    // bridge #1's react variant jsCode (Component props ↔ Training data).
     expect(screen.getByText(/function Card/)).toBeInTheDocument();
   });
 
@@ -97,8 +97,8 @@ describe("BridgeCallout", () => {
     it("falls back to canonical registry breaks when inline absent", () => {
       // Bridge #4 in registry: Gradient descent ↔ Reconciliation, has breaks
       const bridge = {
-        feTitle: "Reconciliation",
-        feCode: "// react reconciles",
+        jsTitle: "Reconciliation",
+        jsCode: "// react reconciles",
         mlTitle: "Gradient descent",
         mlCode: "optimizer.step()",
         tier: "intuition" as const,
@@ -113,8 +113,8 @@ describe("BridgeCallout", () => {
 
     it("inline breaks overrides canonical registry breaks", () => {
       const bridge = {
-        feTitle: "Reconciliation",
-        feCode: "// react reconciles",
+        jsTitle: "Reconciliation",
+        jsCode: "// react reconciles",
         mlTitle: "Gradient descent",
         mlCode: "optimizer.step()",
         tier: "intuition" as const,

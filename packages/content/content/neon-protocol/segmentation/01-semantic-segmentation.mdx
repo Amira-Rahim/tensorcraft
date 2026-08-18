@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Semantic segmentation assigns a class label to every pixel in an image, producing a dense prediction map the same size as the input. Instead of one label per image or one box per object, you get one label per pixel."
   bridge:
-    feTitle: "CSS clip-path"
-    feCode: "clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"
+    jsTitle: "CSS clip-path"
+    jsCode: "clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"
     mlTitle: "Segmentation Mask"
     mlCode: "const mask = model.predict(image); // [H, W, numClasses]"
     tier: structural

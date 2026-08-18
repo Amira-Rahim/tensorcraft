@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline. The cost moves to the download: heavy upfront, free after."
   bridge:
-    feTitle: "Client-Side Rendering"
-    feCode: "createRoot(container).render(<App data={data} />)"
+    jsTitle: "Client-Side Rendering"
+    jsCode: "createRoot(container).render(<App data={data} />)"
     mlTitle: "Client-Side Inference"
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: structural
@@ -35,7 +35,7 @@ keywords:
   - client-side
   - inference
   - privacy
-skillAxes: [deployment, fe_integration]
+skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Chief Nazari">
@@ -46,7 +46,7 @@ The bridge crew needs real-time classification in their dashboard. I'm not routi
 But we trained it on the engineering rig, with the rig's GPU behind it. Can a bridge dashboard tab really carry the same model?
 </Dialogue>
 
-You've faced this exact decision before as a frontend engineer. Server-side rendering vs client-side rendering. The tradeoffs are the same: where does the computation happen, and what do you gain or lose by moving it to the client?
+If you've shipped a web app, you've faced this exact decision: server-side rendering vs client-side rendering. The tradeoffs are the same: where does the computation happen, and what do you gain or lose by moving it to the client?
 
 <LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Decide between browser and server inference using the CSR-vs-SSR mental model"]} />
 
@@ -105,7 +105,7 @@ const modelSizeMB = (parameterCount * 4) / 1e6;
 console.log(\`Model size: \${modelSizeMB}MB\`);
 
 // Cold start: model must be downloaded and initialized
-// This is like the "time to interactive" metric in frontend
+// This is like the "time to interactive" metric in the browser
 const t0 = performance.now();
 const model = await tf.loadLayersModel('/models/deep-scan/model.json');
 const coldStartMs = performance.now() - t0;
@@ -130,7 +130,7 @@ Analyze the tradeoffs for a browser ML deployment scenario.
 
 <RecallPrompt question="What is the main tradeoff when moving ML inference from server to browser?" answer="You eliminate per-request network latency (50-500ms down to 5-50ms) and keep data on-device, but pay an upfront cost: the model weights must download once and device CPU/GPU is all you get." />
 
-<LessonRecap whatYouLearned={["In-browser inference replaces a network round-trip on every request with a one-time model download; after that each prediction runs locally at 5-50ms", "Browser constraints (memory cap, cold start time, device compute) map directly onto frontend performance concerns like bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, and model size"]} bridge="Just as `createRoot().render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
+<LessonRecap whatYouLearned={["In-browser inference replaces a network round-trip on every request with a one-time model download; after that each prediction runs locally at 5-50ms", "Browser constraints (memory cap, cold start time, device compute) map directly onto browser performance concerns like bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, and model size"]} bridge="Just as `createRoot().render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
 
 <Epilogue>
 

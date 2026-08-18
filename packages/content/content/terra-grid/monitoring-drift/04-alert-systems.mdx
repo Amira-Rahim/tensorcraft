@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Alert thresholds must balance sensitivity and noise: too sensitive and you get alert fatigue, too lax and you miss incidents. Same as monitoring tool configuration."
   bridge:
-    feTitle: "Monitoring Thresholds"
-    feCode: "alert({ metric: 'error_rate', threshold: 0.05, window: '5m' })"
+    jsTitle: "Monitoring Thresholds"
+    jsCode: "alert({ metric: 'error_rate', threshold: 0.05, window: '5m' })"
     mlTitle: "Drift Alert Thresholds"
     mlCode: "alert({ metric: 'kl_divergence', threshold: 0.3, window: '1h' })"
     tier: identity

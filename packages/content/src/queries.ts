@@ -116,7 +116,7 @@ export function getLessonTotalMinutes(lesson: {
 export interface CollectibleBridge {
   lessonSlug: string;
   moduleSlug: string;
-  feTitle: string;
+  jsTitle: string;
   mlTitle: string;
   tier: "identity" | "structural" | "intuition";
 }
@@ -128,7 +128,7 @@ export function getLessonsWithBridges(worldSlug: string): CollectibleBridge[] {
     .map((l) => ({
       lessonSlug: l.slug,
       moduleSlug: l.moduleId,
-      feTitle: l.concept.bridge!.feTitle,
+      jsTitle: l.concept.bridge!.jsTitle,
       mlTitle: l.concept.bridge!.mlTitle,
       tier: l.concept.bridge!.tier,
     }));

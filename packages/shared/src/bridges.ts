@@ -11,14 +11,14 @@ export type BridgeCategory =
 export type Framework = "react";
 
 export interface BridgeVariant {
-  feCode: string;
-  feConcept?: string;
+  jsCode: string;
+  jsConcept?: string;
 }
 
 export interface Bridge {
   id: number;
   mlConcept: string;
-  feConcept: string;
+  jsConcept: string;
   tier: BridgeTier;
   connection: string;
   category: BridgeCategory;
@@ -64,7 +64,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 1,
     mlConcept: "Training data",
-    feConcept: "Component props",
+    jsConcept: "Component props",
     tier: "structural",
     connection:
       "Props configure a component from the outside; training data configures a model the same way. Swap the props and you get a different render. Swap the data and you get a different model, but only after retraining.",
@@ -73,7 +73,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `function Card({ title, image }) {\n  return <div>{title}</div>;\n}`,
+        jsCode: `function Card({ title, image }) {\n  return <div>{title}</div>;\n}`,
       },
     },
     mlCode:
@@ -82,7 +82,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 2,
     mlConcept: "Model parameters (weights)",
-    feConcept: "Component state",
+    jsConcept: "Component state",
     tier: "structural",
     connection:
       "Component state and model weights are the internal values the system owns and mutates in response to inputs. State updates from user events; weights update from training data. Distinct from props (external config, see bridge #1) and from overfitting (generalization failure, see bridge #8); this bridge is about where the mutable internal values live.",
@@ -91,7 +91,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `const [count, setCount] = useState(0);`,
+        jsCode: `const [count, setCount] = useState(0);`,
       },
     },
     mlCode: "model.getWeights().forEach(w => console.log(w.shape))",
@@ -99,7 +99,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 3,
     mlConcept: "Loss function",
-    feConcept: "expect().toBe() assertions",
+    jsConcept: "expect().toBe() assertions",
     tier: "structural",
     connection:
       "A test assertion checks actual === expected; a loss function computes the distance between predictions and labels. Each one measures the gap between actual and expected output, quantifies \u201chow wrong,\u201d and drives corrections.",
@@ -108,8 +108,8 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
-        feConcept: "Jest assertion",
+        jsCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
+        jsConcept: "Jest assertion",
       },
     },
     mlCode: "const loss = tf.losses.meanSquaredError(yTrue, yPred)",
@@ -117,7 +117,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 4,
     mlConcept: "Gradient descent",
-    feConcept: "Reconciliation",
+    jsConcept: "Reconciliation",
     tier: "intuition",
     connection:
       "Call setState and React patches the DOM a little closer to the desired tree. Call fit and gradient descent nudges weights a little closer to minimum loss. One measured gap, shrunk one step at a time.",
@@ -126,7 +126,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// React reconciles: diffing old vDOM vs new vDOM\nconst [value, setValue] = useState(initial);\n// Each setState triggers reconciliation toward target`,
+        jsCode: `// React reconciles: diffing old vDOM vs new vDOM\nconst [value, setValue] = useState(initial);\n// Each setState triggers reconciliation toward target`,
       },
     },
     mlCode:
@@ -135,7 +135,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 5,
     mlConcept: "Learning rate",
-    feConcept: "Bisection / binary-search step halving",
+    jsConcept: "Bisection / binary-search step halving",
     tier: "intuition",
     connection:
       "Binary search halves the search interval each iteration; learning-rate decay shrinks the gradient step as training approaches a minimum. Take big steps while you are far from the target, small ones once you are close.",
@@ -144,7 +144,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// Binary search converges by halving each step\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
+        jsCode: `// Binary search converges by halving each step\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
     },
     mlCode:
@@ -153,7 +153,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 6,
     mlConcept: "Epochs",
-    feConcept: "requestAnimationFrame loop",
+    jsConcept: "requestAnimationFrame loop",
     tier: "structural",
     connection:
       "requestAnimationFrame(loop) reruns the render logic as soon as the last frame finishes, and the animation creeps toward its target. Training does this with the whole dataset: one epoch ends, the next begins, and the loss creeps down.",
@@ -162,7 +162,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `useEffect(() => {\n  let id = requestAnimationFrame(function loop() {\n    processEpoch(data);\n    if (!converged) id = requestAnimationFrame(loop);\n  });\n  return () => cancelAnimationFrame(id);\n}, []);`,
+        jsCode: `useEffect(() => {\n  let id = requestAnimationFrame(function loop() {\n    processEpoch(data);\n    if (!converged) id = requestAnimationFrame(loop);\n  });\n  return () => cancelAnimationFrame(id);\n}, []);`,
       },
     },
     mlCode:
@@ -171,7 +171,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 7,
     mlConcept: "Batch size",
-    feConcept: "Chunk / page size",
+    jsConcept: "Chunk / page size",
     tier: "structural",
     connection:
       "How much do you process at once? Pagination answers that for UX: whatever fits on a screen. Batch size answers it for training: however many samples per gradient update the memory budget and the throughput target allow.",
@@ -180,7 +180,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `const page = data.slice(offset, offset + PAGE_SIZE);`,
+        jsCode: `const page = data.slice(offset, offset + PAGE_SIZE);`,
       },
     },
     mlCode: "model.fit(x, y, { batchSize: 32 })",
@@ -188,7 +188,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 8,
     mlConcept: "Overfitting",
-    feConcept: "Overspecialized component",
+    jsConcept: "Overspecialized component",
     tier: "intuition",
     connection:
       "An overspecialized component breaks with new data; an overfit model fails on new examples. The disease is the same (too tailored to the specific inputs it grew up with) and the cure is generalization.",
@@ -197,7 +197,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// Too specific: breaks with new data shapes\nfunction UserCard({ user }) {\n  return <div>{user.name.first} {user.name.last}</div>;\n  // Crashes if user.name is a string\n}`,
+        jsCode: `// Too specific: breaks with new data shapes\nfunction UserCard({ user }) {\n  return <div>{user.name.first} {user.name.last}</div>;\n  // Crashes if user.name is a string\n}`,
       },
     },
     mlCode: "model.evaluate(testX, testY) // val loss diverges from train loss",
@@ -205,7 +205,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 9,
     mlConcept: "Regularization",
-    feConcept: "Code linting / constraints",
+    jsConcept: "Code linting / constraints",
     tier: "intuition",
     connection:
       "Why does a model need a complexity penalty at all? For the reason a codebase needs a linter: left alone, each drifts toward solutions that are too specific and too convoluted. Linting constrains style, regularization constrains model complexity, and the payoff in either case is something that generalizes.",
@@ -214,7 +214,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// eslint: no-unused-vars, max-depth: 3\n// Like L2 regularization: penalize complexity`,
+        jsCode: `// eslint: no-unused-vars, max-depth: 3\n// Like L2 regularization: penalize complexity`,
       },
     },
     mlCode: "tf.layers.dropout({ rate: 0.2 })",
@@ -222,7 +222,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 10,
     mlConcept: "Feature engineering",
-    feConcept: "Data transformation / mapping",
+    jsConcept: "Data transformation / mapping",
     tier: "structural",
     connection:
       "Array.map transforms data for rendering; feature engineering transforms data for modeling. The shared move is shaping raw inputs into more useful representations before anything consumes them.",
@@ -231,7 +231,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `const features = rawData.map(d => ({\n  normalized: (d.value - min) / (max - min),\n  category: d.type === 'A' ? 1 : 0,\n}));`,
+        jsCode: `const features = rawData.map(d => ({\n  normalized: (d.value - min) / (max - min),\n  category: d.type === 'A' ? 1 : 0,\n}));`,
       },
     },
     mlCode: "const x = rawTensor.div(255).sub(0.5) // normalize",
@@ -239,7 +239,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 11,
     mlConcept: "Train/test split",
-    feConcept: "Dev/prod environments",
+    jsConcept: "Dev/prod environments",
     tier: "structural",
     connection:
       "Both separate the context for building from the context for evaluation. You develop in dev, test in prod; you train on training data, evaluate on test data. Mixing them gives false confidence.",
@@ -248,7 +248,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `const apiUrl = process.env.NODE_ENV === 'production'\n  ? 'https://api.prod.com'\n  : 'http://localhost:3001';`,
+        jsCode: `const apiUrl = process.env.NODE_ENV === 'production'\n  ? 'https://api.prod.com'\n  : 'http://localhost:3001';`,
       },
     },
     mlCode:
@@ -257,7 +257,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 12,
     mlConcept: "Hyperparameters",
-    feConcept: "Config / environment variables",
+    jsConcept: "Config / environment variables",
     tier: "structural",
     connection:
       "Nobody learns NODE_ENV from data; you set it. Hyperparameters are that kind of value for training: learning rate, batch size, and layer width all steer the run from outside, and none of them are ever learned by the model itself.",
@@ -266,7 +266,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// next.config.js: not learned, just configured\nmodule.exports = {\n  images: { domains: ['cdn.example.com'] },\n};`,
+        jsCode: `// next.config.js: not learned, just configured\nmodule.exports = {\n  images: { domains: ['cdn.example.com'] },\n};`,
       },
     },
     mlCode:
@@ -275,7 +275,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 13,
     mlConcept: "Neural network layers",
-    feConcept: "Express-style middleware chain",
+    jsConcept: "Express-style middleware chain",
     tier: "structural",
     connection:
       "Sequential processing steps, each transforming its input and passing the result forward: input \u2192 transform \u2192 output \u2192 next. Express middleware is the canonical anchor (the variants below show the shape in other frameworks), and neural network layers fold over activations the way middleware folds over requests.",
@@ -284,8 +284,8 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// HOC composition: each layer transforms data\nconst Enhanced = withAuth(withWorld(withLogger(BaseComponent)));`,
-        feConcept: "HOC / Context provider chain",
+        jsCode: `// HOC composition: each layer transforms data\nconst Enhanced = withAuth(withWorld(withLogger(BaseComponent)));`,
+        jsConcept: "HOC / Context provider chain",
       },
     },
     mlCode:
@@ -294,14 +294,14 @@ export const BRIDGES: Bridge[] = [
   {
     id: 14,
     mlConcept: "Activation functions (ReLU)",
-    feConcept: "Math.max(0, x)",
+    jsConcept: "Math.max(0, x)",
     tier: "identity",
     connection:
       "ReLU is literally Math.max(0, x) \u2014 the same function, same math, different name. The strongest bridge in the system. Clip negative values to zero, pass positives through unchanged.",
     category: "shared",
     variants: {
       react: {
-        feCode: `const relu = (x) => Math.max(0, x);`,
+        jsCode: `const relu = (x) => Math.max(0, x);`,
       },
     },
     mlCode: "tf.relu(x) // identical to Math.max(0, x), elementwise",
@@ -309,7 +309,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 15,
     mlConcept: "Backpropagation",
-    feConcept: "Reconciliation (tracing diffs backward)",
+    jsConcept: "Reconciliation (tracing diffs backward)",
     tier: "intuition",
     connection:
       "Backprop traces from loss back to input weights via the chain rule; React traces from changed leaves back to root. In each case, information propagates backward through a structure to determine what needs updating.",
@@ -318,7 +318,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `class ErrorBoundary extends React.Component {\n  componentDidCatch(error, info) {\n    // Error flows backward up the tree\n  }\n}`,
+        jsCode: `class ErrorBoundary extends React.Component {\n  componentDidCatch(error, info) {\n    // Error flows backward up the tree\n  }\n}`,
       },
     },
     mlCode:
@@ -327,7 +327,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 16,
     mlConcept: "Model inference",
-    feConcept: "Server-side rendering",
+    jsConcept: "Server-side rendering",
     tier: "structural",
     connection:
       "model.predict(x) is getServerSideProps for tensors: data in, one forward pass, output out, nothing updated along the way. SSR renders HTML from data with exactly that contract. No loop, no learning, one shot.",
@@ -336,7 +336,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// Next.js SSR: one forward pass, no iteration\nexport async function getServerSideProps() {\n  const data = await fetchData();\n  return { props: { data } };\n}`,
+        jsCode: `// Next.js SSR: one forward pass, no iteration\nexport async function getServerSideProps() {\n  const data = await fetchData();\n  return { props: { data } };\n}`,
       },
     },
     mlCode:
@@ -345,7 +345,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 17,
     mlConcept: "Data augmentation",
-    feConcept:
+    jsConcept:
       "Programmatic test fixture factories (Faker, factory-bot, fast-check generators)",
     tier: "intuition",
     connection:
@@ -355,7 +355,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// Faker generates a population of users from a distribution\nimport { faker } from '@faker-js/faker';\nconst users = Array.from({ length: 100 }, () => ({\n  name: faker.person.fullName(),\n  email: faker.internet.email(),\n  age: faker.number.int({ min: 18, max: 80 }),\n}));`,
+        jsCode: `// Faker generates a population of users from a distribution\nimport { faker } from '@faker-js/faker';\nconst users = Array.from({ length: 100 }, () => ({\n  name: faker.person.fullName(),\n  email: faker.internet.email(),\n  age: faker.number.int({ min: 18, max: 80 }),\n}));`,
       },
     },
     mlCode:
@@ -364,7 +364,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 18,
     mlConcept: "Dropout",
-    feConcept: "Randomly hiding team members during practice",
+    jsConcept: "Randomly hiding team members during practice",
     tier: "intuition",
     connection:
       "If one neuron always fires, others co-adapt, so dropout benches neurons at random, the way a coach hides team members during practice. Forced to perform without any single participant, the rest learn resilience and independence.",
@@ -373,7 +373,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// Randomly disable 20% of features during training\nconst dropout = (arr, rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
+        jsCode: `// Randomly disable 20% of features during training\nconst dropout = (arr, rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
       },
     },
     mlCode:
@@ -382,7 +382,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 19,
     mlConcept: "Confusion matrix",
-    feConcept: "Error boundary report",
+    jsConcept: "Error boundary report",
     tier: "structural",
     connection:
       "An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Structured breakdowns of what went right and what went wrong, and either one tells you where to start debugging.",
@@ -391,7 +391,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// Categorize render errors by type\nclass ErrorBoundary extends React.Component {\n  state = { errors: { render: 0, network: 0, auth: 0 } };\n}`,
+        jsCode: `// Categorize render errors by type\nclass ErrorBoundary extends React.Component {\n  state = { errors: { render: 0, network: 0, auth: 0 } };\n}`,
       },
     },
     mlCode:
@@ -400,7 +400,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 20,
     mlConcept: "Model deployment",
-    feConcept: "CI/CD pipeline",
+    jsConcept: "CI/CD pipeline",
     tier: "structural",
     connection:
       "CI/CD deploys code; model deployment serves a model. The road from development to production runs through the same stations either way: versioning, testing, and monitoring.",
@@ -409,7 +409,7 @@ export const BRIDGES: Bridge[] = [
     category: "shared",
     variants: {
       react: {
-        feCode: `// GitHub Actions: test → build → deploy\n// Same as: data → train → evaluate → deploy`,
+        jsCode: `// GitHub Actions: test → build → deploy\n// Same as: data → train → evaluate → deploy`,
       },
     },
     mlCode:
@@ -420,7 +420,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 21,
     mlConcept: "Weight initialization",
-    feConcept: "CSS initial values",
+    jsConcept: "CSS initial values",
     tier: "structural",
     connection:
       "Before any updates occur, something has to set the starting point: CSS initial values for layout, weight initialization for training. Poor initial values lead to broken layouts or slow convergence; deliberate defaults matter in each world.",
@@ -432,7 +432,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 22,
     mlConcept: "Batch normalization",
-    feConcept: "CSS normalize / reset",
+    jsConcept: "CSS normalize / reset",
     tier: "structural",
     connection:
       "Why does every stylesheet start with a reset? Because downstream rules are easier to write when inputs are predictable. Batch norm applies that logic between layers: standardize what each layer receives, and distribution shift stops compounding through the network.",
@@ -445,7 +445,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 23,
     mlConcept: "Residual connections",
-    feConcept: "Component composition via children",
+    jsConcept: "Component composition via children",
     tier: "structural",
     connection:
       "React children pass content through wrapper components; residual connections pass activations around layers. Each gives information a direct path that skips the intermediate processing.",
@@ -458,7 +458,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 24,
     mlConcept: "Vanishing gradients",
-    feConcept: "Deeply nested callback hell",
+    jsConcept: "Deeply nested callback hell",
     tier: "intuition",
     connection:
       "Both are problems caused by excessive depth. Deep callback nesting loses context; deep networks lose gradient signal. Both are solved by architectural shortcuts (async/await, skip connections).",
@@ -470,7 +470,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 25,
     mlConcept: "Learning rate scheduling",
-    feConcept: "Animation easing functions",
+    jsConcept: "Animation easing functions",
     tier: "structural",
     connection:
       "ease-out exists because slamming into the endpoint at full speed looks wrong. Training has the same instinct: LR schedulers shrink the learning rate as the model closes in on a minimum, so it settles instead of overshooting.",
@@ -483,7 +483,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 26,
     mlConcept: "Multi-class classification",
-    feConcept: "Router with multiple routes",
+    jsConcept: "Router with multiple routes",
     tier: "structural",
     connection:
       "A classifier maps inputs to classes the way a router maps URLs to views: one input goes in, one of many categories comes out.",
@@ -498,7 +498,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 27,
     mlConcept: "Image tensors",
-    feConcept: "canvas.getImageData()",
+    jsConcept: "canvas.getImageData()",
     tier: "structural",
     connection:
       "An image is a numeric array of pixel values in either world. getImageData returns a flat Uint8ClampedArray (0-255 RGBA); an image tensor returns a shaped float32 tensor (often [h, w, 3]).",
@@ -510,7 +510,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 28,
     mlConcept: "Convolution kernels",
-    feConcept: "CSS blur() / SVG filters",
+    jsConcept: "CSS blur() / SVG filters",
     tier: "structural",
     connection:
       "filter: blur(4px) already runs a convolution: a small kernel slides over the pixels and transforms each local region. A CNN layer is that operation with one twist that changes everything: its kernels are learned from data rather than fixed by the browser.",
@@ -523,7 +523,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 29,
     mlConcept: "Bounding boxes",
-    feConcept: "getBoundingClientRect()",
+    jsConcept: "getBoundingClientRect()",
     tier: "identity",
     connection:
       "DOM element bounds and object detection boxes use the same data structure: a rectangular region defined by x, y, width, height coordinates.",
@@ -533,7 +533,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 30,
     mlConcept: "Non-Max Suppression",
-    feConcept: "Toast dedupe (suppressing overlapping notifications)",
+    jsConcept: "Toast dedupe (suppressing overlapping notifications)",
     tier: "intuition",
     connection:
       "Both apply a 'one winner per region' rule to a redundant feed. A toast system suppresses a new alert if a similar one is already onscreen; NMS suppresses a detection if it overlaps a higher-confidence one above an IoU threshold. Same intuition: pick the strongest, hide the rest.",
@@ -545,7 +545,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 31,
     mlConcept: "Segmentation masks",
-    feConcept: "SVG clip-path / CSS masks",
+    jsConcept: "SVG clip-path / CSS masks",
     tier: "structural",
     connection:
       "Pixel-level boundaries, twice over: a clip-path\u2019s are drawn by an author to decide which pixels show, while a segmentation mask\u2019s are predicted by a model deciding which class each pixel belongs to.",
@@ -558,7 +558,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 32,
     mlConcept: "Backbone networks",
-    feConcept: "Shared component libraries",
+    jsConcept: "Shared component libraries",
     tier: "structural",
     connection:
       "A shared UI library serves multiple apps; a backbone CNN serves multiple vision tasks. Reusable feature extraction that downstream consumers build on instead of starting from scratch.",
@@ -572,7 +572,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 33,
     mlConcept: "Tokenization",
-    feConcept: "URL parsing / route splitting",
+    jsConcept: "URL parsing / route splitting",
     tier: "structural",
     connection:
       "URL parsing splits at known delimiters with deterministic regex; subword tokenizers split text using learned merge rules. Either way, continuous input becomes discrete structured parts.",
@@ -585,7 +585,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 34,
     mlConcept: "Word embeddings",
-    feConcept: "i18n translation dictionaries",
+    jsConcept: "i18n translation dictionaries",
     tier: "structural",
     connection:
       "What if a translation dictionary knew that 'king' and 'queen' were related? i18n maps keys to strings with no such structure. Embeddings map tokens to vectors in a space where distance is meaning, and that structure is what makes meaning-aware processing possible.",
@@ -598,7 +598,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 35,
     mlConcept: "RNN state accumulation",
-    feConcept: "Array.reduce()",
+    jsConcept: "Array.reduce()",
     tier: "structural",
     connection:
       "reduce() folds a sequence element-by-element with a function YOU define, carrying forward accumulated state; an RNN does the same fold with a learned cell. Same walk over the sequence, same running accumulator.",
@@ -610,7 +610,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 36,
     mlConcept: "LSTM cell memory",
-    feConcept: "Session storage",
+    jsConcept: "Session storage",
     tier: "structural",
     connection:
       "State that has to survive navigation goes in session storage. An LSTM threads the same need through time: its cell state persists across timesteps, selectively read and updated at each one.",
@@ -622,7 +622,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 37,
     mlConcept: "Attention mechanism",
-    feConcept: "Search engine ranking",
+    jsConcept: "Search engine ranking",
     tier: "structural",
     connection:
       "Search ranks documents by relevance to a query; attention weights tokens by relevance to each other. Learned relevance scoring in each case: inputs get dynamically reweighted by how much they matter to the question being asked.",
@@ -635,7 +635,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 38,
     mlConcept: "Transformer architecture",
-    feConcept: "React virtual DOM reconciliation",
+    jsConcept: "React virtual DOM reconciliation",
     tier: "intuition",
     connection:
       "React\u2019s vDOM processes the component tree and computes diffs; transformers process input tokens and compute attention-weighted representations. Each is a reconciliation engine comparing current state to desired state.",
@@ -650,7 +650,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 39,
     mlConcept: "Sampling from distributions",
-    feConcept: "Math.random()",
+    jsConcept: "Math.random()",
     tier: "structural",
     connection:
       "Every call to Math.random() is a draw from the one distribution the browser hands you. A generative model spends its entire training learning a distribution of its own to draw from.",
@@ -662,7 +662,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 40,
     mlConcept: "Latent space interpolation",
-    feConcept: "CSS transitions between states",
+    jsConcept: "CSS transitions between states",
     tier: "structural",
     connection:
       "CSS transitions interpolate between start and end styles; latent interpolation generates smooth blends between generated outputs. Smooth intermediate values between two defined points, in stylesheets or in latent space.",
@@ -675,7 +675,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 41,
     mlConcept: "GAN (generator vs. discriminator)",
-    feConcept: "Fuzzer vs. validator",
+    jsConcept: "Fuzzer vs. validator",
     tier: "structural",
     connection:
       "Both are adversarial systems where one component generates and another judges. A fuzzer creates random inputs; a validator rejects bad ones. GANs formalize this into a training loop.",
@@ -688,7 +688,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 42,
     mlConcept: "VAE (encode/decode)",
-    feConcept: "URL shortener",
+    jsConcept: "URL shortener",
     tier: "structural",
     connection:
       "Encode, store small, decode back. A URL shortener does that round trip with links; a VAE does it with data, compressing into a latent vector and reconstructing the original from it.",
@@ -701,7 +701,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 43,
     mlConcept: "Diffusion (noise \u2192 detail)",
-    feConcept: "Progressive image loading",
+    jsConcept: "Progressive image loading",
     tier: "structural",
     connection:
       "Progressive JPEG loads blurry-to-sharp; diffusion denoises random noise into a coherent image. Start degraded, refine step by step toward full quality.",
@@ -714,7 +714,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 44,
     mlConcept: "Style transfer",
-    feConcept:
+    jsConcept:
       "Auto-formatter pipeline (Prettier / eslint --fix rewriting code until it matches a style config)",
     tier: "intuition",
     connection:
@@ -730,7 +730,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 45,
     mlConcept: "Edge inference",
-    feConcept: "CDN edge locations",
+    jsConcept: "CDN edge locations",
     tier: "structural",
     connection:
       "CDNs answered 'the server is too far away' by moving assets to edge PoPs. Edge ML answers the same complaint for inference: run the model on the device, next to the data, and the round trip disappears.",
@@ -743,7 +743,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 46,
     mlConcept: "Model quantization",
-    feConcept: "Image format tradeoffs (PNG vs. WebP)",
+    jsConcept: "Image format tradeoffs (PNG vs. WebP)",
     tier: "structural",
     connection:
       "Both trade precision for size/speed. PNG is lossless but large; WebP is lossy but small. Float32 is precise but heavy; Int8 is approximate but fast. Same optimization decision.",
@@ -756,7 +756,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 47,
     mlConcept: "Weight pruning",
-    feConcept: "Tree-shaking",
+    jsConcept: "Tree-shaking",
     tier: "structural",
     connection:
       "Tree-shaking eliminates statically unreferenced code via exact analysis; pruning removes weights below a numeric threshold. Each shrinks the artifact by cutting out components.",
@@ -769,7 +769,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 48,
     mlConcept: "Knowledge distillation",
-    feConcept: "Code splitting",
+    jsConcept: "Code splitting",
     tier: "structural",
     connection:
       "Your bundle got too big, so you split it. Your model got too big, so you distill it: train a small student to mimic the large teacher's outputs, then ship only the student.",
@@ -782,7 +782,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 49,
     mlConcept: "ML pipeline (data \u2192 train \u2192 deploy)",
-    feConcept: "CI/CD pipeline",
+    jsConcept: "CI/CD pipeline",
     tier: "structural",
     connection:
       "CI/CD: code \u2192 build \u2192 test \u2192 deploy. ML: data \u2192 train \u2192 evaluate \u2192 deploy. Same workflow pattern \u2014 an automated multi-stage pipeline that transforms inputs into production artifacts.",
@@ -794,7 +794,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 50,
     mlConcept: "Drift detection",
-    feConcept: "Lighthouse CI",
+    jsConcept: "Lighthouse CI",
     tier: "structural",
     connection:
       "A Lighthouse CI gate asks every PR: did performance regress against the baseline? Drift detection asks production the same question about your model: has the incoming data wandered away from what it was trained on?",
@@ -806,7 +806,7 @@ export const BRIDGES: Bridge[] = [
   {
     id: 51,
     mlConcept: "Multi-armed bandit (ε-greedy / UCB1)",
-    feConcept: "Dynamic ad rotation",
+    jsConcept: "Dynamic ad rotation",
     tier: "structural",
     connection:
       "An ad server splits traffic the way a careful gambler splits bets: most impressions go to the best-known creative, and a small share goes to the others in case one of them is secretly better. That is the bandit loop. Exploit the strongest arm, keep exploring the rest, and let the reward estimates update as the clicks come in.",

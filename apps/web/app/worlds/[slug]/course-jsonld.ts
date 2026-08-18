@@ -24,6 +24,10 @@ export function buildCourseJsonLd(world: WorldManifest) {
     url: `https://tensorcraft.app/worlds/${world.slug}`,
     educationalLevel: "Intermediate",
     programmingLanguage: ["JavaScript", "TypeScript"],
+    audience: {
+      "@type": "EducationalAudience",
+      audienceType: "JavaScript developers",
+    },
     // `numberOfCredits: worldModules.length` was removed here. In schema.org
     // that property denotes ACADEMIC credits, so publishing 11 asserted an
     // accreditation this product explicitly disclaims elsewhere ("a completion

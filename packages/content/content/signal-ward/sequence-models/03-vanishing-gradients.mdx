@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "In long sequences, gradients shrink exponentially as they backpropagate through time. Early tokens lose their influence on learning: by the time the error signal reaches them, almost nothing is left to update with."
   bridge:
-    feTitle: "Event Bubbling Fades in Deep DOM"
-    feCode: "div > div > div > div > button.click() // event may never reach root"
+    jsTitle: "Event Bubbling Fades in Deep DOM"
+    jsCode: "div > div > div > div > button.click() // event may never reach root"
     mlTitle: "Gradient Vanishes Over Time"
     mlCode: "grad_t0 = grad_tN * W^N // shrinks exponentially with depth"
     tier: structural

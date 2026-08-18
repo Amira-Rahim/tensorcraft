@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Differential privacy adds calibrated noise to model updates, so no individual training example can be reconstructed from anything that leaves the silo."
   bridge:
-    feTitle: "Cookie Isolation"
-    feCode: "SameSite=Strict // prevent cross-site data leakage"
+    jsTitle: "Cookie Isolation"
+    jsCode: "SameSite=Strict // prevent cross-site data leakage"
     mlTitle: "Differential Privacy"
     mlCode: "addNoise(gradients, epsilon) // prevent data leakage from updates"
     tier: structural

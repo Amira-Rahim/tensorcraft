@@ -12,9 +12,9 @@ import type { AppEnv } from "../types";
  * onboarding fields and writes them via the service-role client.
  *
  * Validation enforces the same enum lists that the DB CHECK constraints
- * on `profiles.experience_level`, `profiles.learning_goal`, and
- * `profiles.fe_framework` enforce, a malformed request is rejected
- * before the DB sees it so we can return a friendly 400.
+ * on `profiles.experience_level` and `profiles.learning_goal` enforce, a
+ * malformed request is rejected before the DB sees it so we can return a
+ * friendly 400.
  */
 const onboarding = new Hono<AppEnv>();
 
@@ -37,9 +37,6 @@ const LEARNING_GOALS = [
 ] as const;
 type LearningGoal = (typeof LEARNING_GOALS)[number];
 
-const FE_FRAMEWORKS = ["react"] as const;
-type FeFramework = (typeof FE_FRAMEWORKS)[number];
-
 function isExperienceLevel(v: unknown): v is ExperienceLevel {
   return (
     typeof v === "string" &&
@@ -53,18 +50,11 @@ function isLearningGoal(v: unknown): v is LearningGoal {
   );
 }
 
-function isFeFramework(v: unknown): v is FeFramework {
-  return (
-    typeof v === "string" && (FE_FRAMEWORKS as readonly string[]).includes(v)
-  );
-}
-
 type OnboardingUpdate = {
   experience_level?: ExperienceLevel;
   learning_goal?: LearningGoal;
-  fe_background?: string;
-  fe_framework?: FeFramework;
-  fe_experience_years?: number;
+  js_background?: string;
+  js_experience_years?: number;
   onboarding_completed?: boolean;
   updated_at: string;
 };
@@ -77,6 +67,17 @@ onboarding.patch("/", async (c) => {
     body = (await c.req.json()) as Record<string, unknown>;
   } catch {
     return c.json({ error: "Invalid JSON body" }, 400);
+  }
+
+  // One-release shim (migration 059 rebrand): stale clients still send the
+  // pre-rename keys. Map them, then ignore `fe_framework` entirely, the
+  // column was dropped and the value was always the constant "react".
+  // Remove this shim at the next scheduled API deploy.
+  if (!("js_background" in body) && "fe_background" in body) {
+    body.js_background = body.fe_background;
+  }
+  if (!("js_experience_years" in body) && "fe_experience_years" in body) {
+    body.js_experience_years = body.fe_experience_years;
   }
 
   const updates: OnboardingUpdate = {
@@ -109,39 +110,28 @@ onboarding.patch("/", async (c) => {
     updates.learning_goal = v;
   }
 
-  if ("fe_background" in body) {
-    const v = body.fe_background;
+  if ("js_background" in body) {
+    const v = body.js_background;
     if (typeof v !== "string" || v.length === 0 || v.length > 200) {
       return c.json(
-        { error: "fe_background must be a string of 1-200 characters" },
+        { error: "js_background must be a string of 1-200 characters" },
         400,
       );
     }
-    updates.fe_background = v;
+    updates.js_background = v;
   }
 
-  if ("fe_framework" in body) {
-    const v = body.fe_framework;
-    if (!isFeFramework(v)) {
-      return c.json(
-        { error: `fe_framework must be one of: ${FE_FRAMEWORKS.join(", ")}` },
-        400,
-      );
-    }
-    updates.fe_framework = v;
-  }
-
-  if ("fe_experience_years" in body) {
-    const v = body.fe_experience_years;
+  if ("js_experience_years" in body) {
+    const v = body.js_experience_years;
     if (typeof v !== "number" || !Number.isInteger(v) || v < 0 || v > 50) {
       return c.json(
         {
-          error: "fe_experience_years must be an integer between 0 and 50",
+          error: "js_experience_years must be an integer between 0 and 50",
         },
         400,
       );
     }
-    updates.fe_experience_years = v;
+    updates.js_experience_years = v;
   }
 
   if ("onboarding_completed" in body) {
@@ -157,7 +147,7 @@ onboarding.patch("/", async (c) => {
     return c.json(
       {
         error:
-          "No valid fields to update. Allowed: experience_level, learning_goal, fe_background, fe_framework, fe_experience_years, onboarding_completed",
+          "No valid fields to update. Allowed: experience_level, learning_goal, js_background, js_experience_years, onboarding_completed",
       },
       400,
     );

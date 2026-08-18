@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Object detection models locate objects by predicting bounding boxes, rectangular regions defined by coordinates. This is identical to how CSS position: absolute and getBoundingClientRect() define element locations on a page."
   bridge:
-    feTitle: "getBoundingClientRect()"
-    feCode: "const rect = element.getBoundingClientRect(); // { x, y, width, height }"
+    jsTitle: "getBoundingClientRect()"
+    jsCode: "const rect = element.getBoundingClientRect(); // { x, y, width, height }"
     mlTitle: "Bounding Box"
     mlCode: "const bbox = [x, y, width, height]; // normalized 0-1 coordinates"
     tier: identity
@@ -56,7 +56,7 @@ Call `getBoundingClientRect()` on a tooltip and you get `{ x: 120, y: 80, width:
 A detection model outputs one rectangle per object it finds, plus a label and a confidence score for each.
 
 <CodeBlock language="typescript" title="bounding-box-basics.ts">
-{`// Frontend: element.getBoundingClientRect() returns:
+{`// Browser: element.getBoundingClientRect() returns:
 // { x: 120, y: 45, width: 200, height: 150, top, right, bottom, left }
 
 // ML: a bounding box is the same idea

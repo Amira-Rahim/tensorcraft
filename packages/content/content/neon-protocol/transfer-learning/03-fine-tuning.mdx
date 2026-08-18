@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Fine-tuning takes a pre-trained model and adapts it to your specific task. You freeze the early layers (universal features), replace the final classification layer, and train only the new head on your data. A few hundred images can be enough, because the frozen backbone already does the hard part."
   bridge:
-    feTitle: "Object.freeze()"
-    feCode: "Object.freeze(baseConfig); // locked. const myConfig = { ...baseConfig, theme: 'dark' };"
+    jsTitle: "Object.freeze()"
+    jsCode: "Object.freeze(baseConfig); // locked. const myConfig = { ...baseConfig, theme: 'dark' };"
     mlTitle: "Layer Freezing"
     mlCode: "layer.trainable = false; // frozen. newHead.trainable = true; // adapts"
     tier: structural

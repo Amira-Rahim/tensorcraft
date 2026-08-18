@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Normalization scales pixel values to a consistent range so every image enters training at the same volume. Without it, bright images dominate the gradient updates simply because their numbers are bigger."
   bridge:
-    feTitle: "CSS Normalize"
-    feCode: "* { margin: 0; padding: 0; box-sizing: border-box; }"
+    jsTitle: "CSS Normalize"
+    jsCode: "* { margin: 0; padding: 0; box-sizing: border-box; }"
     mlTitle: "Pixel Normalization"
     mlCode: "normalized = (pixel - mean) / std"
     tier: structural
@@ -38,7 +38,7 @@ keywords:
 Analysis complete. Your pixel values span from 3 to 251 across the dataset. Some images dominate the learning signal simply because they are brighter. This is equivalent to one CSS module overriding all others because its specificity is unconstrained. We must normalize.
 </Dialogue>
 
-Every frontend developer has experienced the chaos of unstyled HTML across browsers. One browser adds 8px body margin, another adds 16px paragraph spacing, a third applies its own font sizes. CSS normalize.css solves this by establishing a consistent baseline. ML normalization solves the exact same problem for pixel data, bringing every image to a common scale so no single image dominates the learning process.
+If you've written browser code, you've experienced the chaos of unstyled HTML across browsers. One browser adds 8px body margin, another adds 16px paragraph spacing, a third applies its own font sizes. CSS normalize.css solves this by establishing a consistent baseline. ML normalization solves the exact same problem for pixel data, bringing every image to a common scale so no single image dominates the learning process.
 
 <LearningObjectives objectives={[
   "Understand why raw pixel values create training instability",
@@ -53,7 +53,7 @@ Before normalize.css, building cross-browser UIs was unpredictable. Each browser
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="css-vs-ml-normalization.ts">
-{`// Frontend: CSS reset normalizes browser defaults
+{`// Browser: CSS reset normalizes browser defaults
 // Before: h1 { margin: 0.67em } in Chrome, different in Firefox
 // After:  h1 { margin: 0 } everywhere: consistent baseline
 

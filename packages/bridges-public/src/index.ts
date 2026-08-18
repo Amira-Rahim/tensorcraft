@@ -10,7 +10,7 @@
  *   import { BRIDGES, BRIDGE_TIER_LABELS } from '@tensorcraft/bridges';
  *
  *   const reluBridge = BRIDGES.find(b => b.mlConcept === 'Activation functions (ReLU)');
- *   console.log(reluBridge.feConcept); // 'Math.max(0, x)'
+ *   console.log(reluBridge.jsConcept); // 'Math.max(0, x)'
  *   console.log(reluBridge.tier);      // 'identity'
  *
  * Filter by tier:

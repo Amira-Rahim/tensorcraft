@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Model monitoring tracks prediction health in production, just as Sentry and DataDog track application health: latency, error rates, and throughput."
   bridge:
-    feTitle: "App Monitoring (Sentry)"
-    feCode: "Sentry.captureException(err) // track errors, latency, throughput"
+    jsTitle: "App Monitoring (Sentry)"
+    jsCode: "Sentry.captureException(err) // track errors, latency, throughput"
     mlTitle: "Model Monitoring"
     mlCode: "monitor.logPrediction({ latency, confidence, distribution })"
     tier: structural

@@ -17,8 +17,8 @@ context:
 concept:
   explanation: "Sequence prediction forecasts the next values in a series. If the model can call the next reading, the series has structure worth interrogating."
   bridge:
-    feTitle: "Autocomplete"
-    feCode: "suggestions = model.predict(inputText) // predict next word"
+    jsTitle: "Autocomplete"
+    jsCode: "suggestions = model.predict(inputText) // predict next word"
     mlTitle: "Sequence Forecast"
     mlCode: "nextValue = model.predict(recentWindow) // predict next signal"
     tier: structural
@@ -48,7 +48,7 @@ The LSTM just predicted the next signal reading within 3% accuracy. It knows the
 If it can predict the timing, the signal has structure. And if it has structure... it isn't random noise.
 </Dialogue>
 
-Autocomplete is everywhere in frontend work: search suggestions, code completion, the email composer finishing your sentence. Each predicts the next token from the sequence so far. Our LSTM does the same: given the last 80 signal readings, predict the next one.
+Autocomplete is everywhere in JavaScript work: search suggestions, code completion, the email composer finishing your sentence. Each predicts the next token from the sequence so far. Our LSTM does the same: given the last 80 signal readings, predict the next one.
 
 <LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and visual comparison", "Generate multi-step forecasts by feeding predictions back as input", "Sanity-check a forecast's horizon, units, and step size before it reaches the DEEP SCAN dashboard"]} />
 

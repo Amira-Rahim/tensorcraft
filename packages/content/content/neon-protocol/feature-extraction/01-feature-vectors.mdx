@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A feature vector is a compact numerical representation of an image. A neural network compresses a 224x224x3 image (150,528 values) into a vector of 512 or 2048 numbers that encode its visual content. Similar images land on nearby vectors, which is what makes comparison and search possible at scale."
   bridge:
-    feTitle: "Hash functions"
-    feCode: "const hash = crypto.subtle.digest('SHA-256', data); // fixed-size output"
+    jsTitle: "Hash functions"
+    jsCode: "const hash = crypto.subtle.digest('SHA-256', data); // fixed-size output"
     mlTitle: "Feature Vector"
     mlCode: "const features = model.predict(image); // [1, 512], fixed-size embedding"
     tier: structural

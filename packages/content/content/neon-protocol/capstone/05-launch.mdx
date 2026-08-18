@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Launching an ML system follows the same deployment strategy as a production web app: feature flags for gradual rollout, canary deployments for risk mitigation, monitoring dashboards for real-time health, and rollback procedures when things go wrong."
   bridge:
-    feTitle: "Production Deployment with Feature Flags"
-    feCode: "if (featureFlag('new-checkout')) { render(<NewCheckout />); } // gradual rollout, instant rollback"
+    jsTitle: "Production Deployment with Feature Flags"
+    jsCode: "if (featureFlag('new-checkout')) { render(<NewCheckout />); } // gradual rollout, instant rollback"
     mlTitle: "Model Launch with Feature Flags"
     mlCode: "if (featureFlag('sentinel-v1')) { pipeline.run(frame); } // canary deployment, instant rollback"
     tier: structural
@@ -57,7 +57,7 @@ Two hundred browsers across twelve districts, and one hour to prove an error rat
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="feature-flags.ts">
-{`// Feature flags for ML pipeline, same pattern as frontend feature flags
+{`// Feature flags for ML pipeline, same pattern as JS feature flags
 
 interface FeatureFlag {
   name: string;
@@ -251,7 +251,7 @@ Numbers on a screen mean nothing without context. Show me per-stage, per-feed, p
 </Dialogue>
 
 <CodeBlock language="typescript" title="monitoring.ts">
-{`// Real-time monitoring dashboard, same as frontend performance monitoring
+{`// Real-time monitoring dashboard, same as browser performance monitoring
 interface PipelineHealth {
   stage: string;
   status: 'healthy' | 'degraded' | 'critical';

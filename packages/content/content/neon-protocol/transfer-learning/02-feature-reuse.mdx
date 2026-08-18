@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Pre-trained models learn hierarchical features that transfer across domains. Early layers detect universal visual primitives: edges, gradients, textures. Later layers combine them into domain-specific patterns. The early layers transfer almost anywhere; the deep ones belong to the task they were trained for."
   bridge:
-    feTitle: "Component libraries"
-    feCode: "import { Button, Input, Card } from '@ui/components'; // reusable building blocks"
+    jsTitle: "Component libraries"
+    jsCode: "import { Button, Input, Card } from '@ui/components'; // reusable building blocks"
     mlTitle: "Transfer Learning"
     mlCode: "// Early layers = universal components. Later layers = domain-specific pages."
     tier: structural
@@ -49,7 +49,7 @@ For the first few layers, yes. The analogy decays with depth. A layer-2 edge det
 
 Take NEON's decay curve seriously; it is the entire economics of transfer learning. A model's internal features (edges, textures, shapes) recombine to recognize objects it was never trained on. `Button`, `Input`, and `Card` do the same when they compose into an app their authors never imagined. You import the components without caring how they were built. The catch is depth: the deeper the layer, the more it belongs to someone else's app.
 
-<LearningObjectives objectives={["Understand the feature hierarchy: edges, textures, shapes, objects", "Explain why features learned on one dataset transfer to different domains", "Extract intermediate features from a pre-trained model", "Connect feature reuse to component library patterns in frontend development"]} />
+<LearningObjectives objectives={["Understand the feature hierarchy: edges, textures, shapes, objects", "Explain why features learned on one dataset transfer to different domains", "Extract intermediate features from a pre-trained model", "Connect feature reuse to component library patterns in JavaScript development"]} />
 
 ## The Feature Hierarchy
 

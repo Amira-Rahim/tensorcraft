@@ -19,7 +19,7 @@ import { FaqSection } from "@/app/components/faq-section";
 // docs/post-launch-backlog.md ("Restore the bundle surfaces").
 export const metadata: Metadata = {
   title: `ML Course Pricing: Free Preview, $${PRICING.single.price} per World | Tensorcraft`,
-  description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per world.`,
+  description: `One payment. Lifetime access. Learn browser-based ML through JavaScript concepts you already know. Free preview, $${PRICING.single.price} per world.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
     type: "website",
@@ -165,7 +165,7 @@ export default function PricingPage() {
         {/* CTA Footer */}
         <section className="py-24 px-6 text-center border-t border-border">
           <p className="text-[13px] uppercase tracking-[0.15em] mb-4 text-text-muted font-mono">
-            your frontend is the foundation
+            your javascript is the foundation
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
             Add ML to your engineering toolkit.

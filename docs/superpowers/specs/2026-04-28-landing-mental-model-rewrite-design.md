@@ -1,6 +1,6 @@
 # Landing hero - mental-model rewrite
 
-> **SUPERSEDED 2026-05-08** - replaced by [2026-05-08-landing-headline-audience-callout.md](2026-05-08-landing-headline-audience-callout.md). User feedback found the "Same Mental Model. New Domain." framing too cryptic and missing an audience callout. Kept here for historical rationale only.
+> **SUPERSEDED 2026-05-08** - replaced by [2026-05-08-landing-headline-audience-callout.md](2026-05-08-landing-headline-audience-callout.md). User feedback found the "Same Mental Model. New Domain." framing too cryptic and missing an audience callout. Kept here for historical rationale only. The audience label used throughout this document ("frontend engineer") also predates the 2026-08-18 rebrand: the audience is JavaScript engineers now.
 
 **Date:** 2026-04-28
 **Status:** Superseded 2026-05-08

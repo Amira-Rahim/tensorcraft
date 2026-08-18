@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Similarity search finds the closest feature vectors in a database to a query vector. Given a drone image, find all similar drone images. This is the same pattern as fuzzy text search or autocomplete, but in visual embedding space instead of string space."
   bridge:
-    feTitle: "Fuzzy text search / autocomplete"
-    feCode: "const matches = fuse.search('drne'); // fuzzy match → 'drone'"
+    jsTitle: "Fuzzy text search / autocomplete"
+    jsCode: "const matches = fuse.search('drne'); // fuzzy match → 'drone'"
     mlTitle: "Similarity Search"
     mlCode: "const nearest = findKNearest(queryVector, database, k); // k most similar images"
     tier: structural

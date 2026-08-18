@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Diffusion models generate by reversing destruction: start from pure noise and remove a little of it at every step, over many steps, until an image condenses out of the static. The model's whole job is learning what to subtract."
   bridge:
-    feTitle: "Progressive image loading (blur-up)"
-    feCode: "img { filter: blur(20px); transition: filter 0.3s; }"
+    jsTitle: "Progressive image loading (blur-up)"
+    jsCode: "img { filter: blur(20px); transition: filter 0.3s; }"
     mlTitle: "Diffusion denoising steps"
     mlCode: "for (let t = T; t > 0; t--) image = denoise(image, t);"
     tier: intuition

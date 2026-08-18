@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Traffic splitting routes prediction requests to different model versions, the same technique as canary deployments with a load balancer, but applied to ML inference endpoints."
   bridge:
-    feTitle: "Canary Deployments"
-    feCode: "// nginx: upstream { server v1 weight=95; server v2 weight=5; }"
+    jsTitle: "Canary Deployments"
+    jsCode: "// nginx: upstream { server v1 weight=95; server v2 weight=5; }"
     mlTitle: "Model Traffic Split"
     mlCode: "// router: modelV1 weight=95, modelV2 weight=5; gradual rollout"
     tier: structural

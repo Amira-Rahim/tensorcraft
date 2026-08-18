@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A simple generator is a neural network that takes a noise vector and outputs structured data. Training it means teaching it to produce outputs that look like real data."
   bridge:
-    feTitle: "Procedural Canvas Drawing"
-    feCode: "function draw(params: number[]) { ctx.beginPath(); /* ... */ }"
+    jsTitle: "Procedural Canvas Drawing"
+    jsCode: "function draw(params: number[]) { ctx.beginPath(); /* ... */ }"
     mlTitle: "Generator Network"
     mlCode: "const output = generator.predict(tf.randomNormal([1, 64]))"
     tier: structural
@@ -59,7 +59,7 @@ A generator is a neural network that maps a low-dimensional noise vector to a hi
 <CodeBlock language="typescript" title="first-generator.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: procedural drawing with explicit parameters
+// Browser: procedural drawing with explicit parameters
 function proceduralDraw(ctx: CanvasRenderingContext2D, params: number[]) {
   params.forEach((p, i) => {
     ctx.fillStyle = \`hsl(\${p * 360}, 70%, 50%)\`;

@@ -109,10 +109,10 @@ These are the canonical voices. When editing dialogue, match the card.
 - **Verboten:** never impressed without a metric attached. Never accepts an analogy whole - he's the one who names where it breaks ("Webpack hands you back the identical program. Quantization hands you back a slightly different artist."). Never says a deadline is flexible.
 - **Example:** *"The gallery opens in nine days and each kiosk takes forty-three seconds to produce a single image. We will have a queue around the block, and not the good kind."*
 
-### Samir (Nova Canvas - frontend engineer, ~25 blocks)
-- **Background:** Senior frontend developer, newest member of the collective. The learner's mirror in this world: maps every ML mechanism onto a web-dev pattern, and is usually 80% right.
+### Samir (Nova Canvas - JavaScript engineer, ~25 blocks)
+- **Background:** Senior JavaScript developer, newest member of the collective. The learner's mirror in this world: maps every ML mechanism onto a web-dev pattern, and is usually 80% right.
 - **Tone:** eager-systematic, confident in his own domain, openly curious outside it. Likes architectures and clean pipelines.
-- **Speech:** medium, structured ("Two encoders. One for images, one for text."), heavy on web vocabulary (monorepo, SSR, progressive disclosure, state machines). Proposes the FE analogy as a question or claim that someone else then corrects or sharpens.
+- **Speech:** medium, structured ("Two encoders. One for images, one for text."), heavy on web vocabulary (monorepo, SSR, progressive disclosure, state machines). Proposes the JS analogy as a question or claim that someone else then corrects or sharpens.
 - **Verboten:** never the one who delivers the correction - his role is the plausible first draft. Never bluffs about the math; when he doesn't know, he asks.
 - **Example:** *"This is the same challenge as integrating a monorepo before a major release. Each package works in isolation. The hard part is making them work together: shared types, consistent interfaces, and a clear data flow."*
 

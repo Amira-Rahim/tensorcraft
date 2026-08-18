@@ -19,16 +19,16 @@
 | **Yara** | Lead Artist / Creative Director | Visionary, passionate, occasionally impatient with purely technical thinking. Background in kinetic sculpture and physical installations, transitioned to digital. She cares about *meaning*, not just output quality. Sees AI as the next tool in her workshop - after welding torches, CNC routers, and projection mapping. Defines the artistic vision and pushes beyond technical capability toward genuine creative expression. |
 | **Kai** | Creative Coder & Audio Engineer | Audio specialist and creative coder who thinks in math and signal processing. Explains ML concepts through precise technical analogies - Fourier transforms, sampling rates, signal-to-noise ratios. Laid-back but surgically exact. Bridges the gap between Yara's artistic vision and Ren's implementation by translating ideas into mathematical operations. |
 | **Petrov** | Gallery Curator / Deployment Lead | Business, presentation, and technical constraints. Handles exhibitions, audience experience, practical deployment realities. Sophisticated, pragmatic, anxious about deadlines - but also the voice of infrastructure reality. Knows the exact specs of every device in the gallery. Cares about audience experience above all, and knows that experience dies if the frame rate drops below 30fps. |
-| **Ren** | Creative Coder / Student Avatar | The player character. A frontend developer who joined the collective to explore creative coding. Strong JS skills, no ML background, deep curiosity. Approaches ML through play and iteration. Comfortable with ambiguity. |
+| **Ren** | Creative Coder / Student Avatar | The player character. A JavaScript developer who joined the collective to explore creative coding. Strong JS skills, no ML background, deep curiosity. Approaches ML through play and iteration. Comfortable with ambiguity. |
 | **MUSE** | Creative AI Assistant | The collective's AI. Poetic, referential, occasionally pretentious. Quotes artists and philosophers alongside documentation. Genuinely tries to inspire. Tutorial guide, code assistant, creative suggestion engine. |
 
 ### Career Paths & Salaries
 
-> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" JavaScript roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
 
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| ML-Enhanced Frontend Engineer | Build generative AI features in the browser (image generation, style transfer, interactive AI art) | $120,000 - $160,000 |
+| ML-Enhanced JavaScript Engineer | Build generative AI features in the browser (image generation, style transfer, interactive AI art) | $120,000 - $160,000 |
 | Creative Technologist | Bridge art and technology in interactive AI-powered experiences | $120,000 - $170,000 |
 | AI Product Designer | Design user experiences for generative AI products | $130,000 - $180,000 |
 | Generative AI Engineer* | Build image, audio, and text generation systems | $155,000 - $210,000 |
@@ -48,7 +48,7 @@ The interior of The Grid at night. Exposed brick walls covered in projected gene
 
 The Nova Collective has received the most prestigious commission in digital art: the centerpiece installation for the Global Digital Arts Biennale. Yara's vision is ambitious - an AI system that generates art across visual, audio, and text modalities, responding to audience interaction in real time. Every visitor becomes a collaborator.
 
-Ren, a frontend developer turned creative coder, joins the team as the engineer who will make it all work in the browser. Under the guidance of Yara (artistic vision), Kai (audio and cross-modal thinking), and Petrov (deployment and audience experience), Ren builds Nova Canvas - from simple generative patterns to GANs, VAEs, diffusion models, style transfer, CLIP-guided generation, and audio synthesis.
+Ren, a JavaScript developer turned creative coder, joins the team as the engineer who will make it all work in the browser. Under the guidance of Yara (artistic vision), Kai (audio and cross-modal thinking), and Petrov (deployment and audience experience), Ren builds Nova Canvas - from simple generative patterns to GANs, VAEs, diffusion models, style transfer, CLIP-guided generation, and audio synthesis.
 
 The journey explores not just how to generate art with machines, but what it means to create. Is a GAN output art? Who is the artist - the human who designed the system, or the model that produced the image? These questions run through every module, making Nova Canvas as philosophical as it is technical.
 
@@ -71,7 +71,7 @@ Nova Canvas evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for frontend developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -202,7 +202,7 @@ Kai observes: "The discriminator is computing a binary cross-entropy loss agains
 | 4 | Training Dynamics | Balancing the adversarial dance | Load balancing - keeping two systems in sync |
 | 5 | Mode Collapse & Fixes | When the generator gets lazy | When a random function is not random enough |
 
-**FE BRIDGE (Module-Level):** A GAN is a fuzzer versus a validator. In testing, a fuzzer generates random inputs trying to break the system, while a validator checks whether the output is acceptable. A GAN's generator creates samples trying to fool the discriminator, while the discriminator judges whether samples are real or fake. Both are adversarial feedback loops that improve through competition.
+**JS BRIDGE (Module-Level):** A GAN is a fuzzer versus a validator. In testing, a fuzzer generates random inputs trying to break the system, while a validator checks whether the output is acceptable. A GAN's generator creates samples trying to fool the discriminator, while the discriminator judges whether samples are real or fake. Both are adversarial feedback loops that improve through competition.
 
 ### GITHUB
 
@@ -237,7 +237,7 @@ Ren builds a VAE and discovers controllable generation:
 | 4 | KL Divergence | Balancing reconstruction and regularity | CSS specificity balance - structure vs flexibility |
 | 5 | Creative VAE | Using VAEs for controllable generation | Design system tokens - controlled variation |
 
-**FE BRIDGE (Module-Level):** A VAE is a URL shortener. A URL shortener takes a long URL, encodes it into a compact form (the latent code), and can decode it back to the original. A VAE takes an image, encodes it into a compact latent vector, and can decode it back. The key insight: nearby short codes produce similar URLs, just as nearby latent vectors produce similar images.
+**JS BRIDGE (Module-Level):** A VAE is a URL shortener. A URL shortener takes a long URL, encodes it into a compact form (the latent code), and can decode it back to the original. A VAE takes an image, encodes it into a compact latent vector, and can decode it back. The key insight: nearby short codes produce similar URLs, just as nearby latent vectors produce similar images.
 
 ### GITHUB
 
@@ -286,7 +286,7 @@ Ren implements the distilled 4-step model. Generation drops to 3.4 seconds. The 
 | 4 | Classifier-Free Guidance | Steering generation with text | CSS custom property overrides |
 | 5 | High-Resolution Generation | Scaling up to detailed images | `srcset` and responsive images |
 
-**FE BRIDGE (Module-Level):** Diffusion is progressive image loading. The blur-up technique shows a tiny, blurry placeholder that progressively sharpens into the full image. Diffusion models do the same thing in reverse - start with pure noise (maximum blur) and progressively denoise (sharpen) into a detailed image. Each denoising step is like loading a higher-resolution version. The user watches structure emerge from chaos.
+**JS BRIDGE (Module-Level):** Diffusion is progressive image loading. The blur-up technique shows a tiny, blurry placeholder that progressively sharpens into the full image. Diffusion models do the same thing in reverse - start with pure noise (maximum blur) and progressively denoise (sharpen) into a detailed image. Each denoising step is like loading a higher-resolution version. The user watches structure emerge from chaos.
 
 ### GITHUB
 
@@ -323,7 +323,7 @@ Ren builds a real-time style transfer system. The team experiments with blending
 | 4 | Real-time Style Transfer | Fast style transfer in the browser | CSS `filter` chains - real-time visual transforms |
 | 5 | Artistic Control | Blending multiple styles | CSS `mix-blend-mode` - combining visual layers |
 
-**FE BRIDGE (Module-Level):** Style transfer is CSS world switching. When you switch a website's world from light to dark mode, the content stays the same but the visual presentation changes completely - colors, backgrounds, shadows all transform. Neural style transfer does the same: the content (shapes, objects, composition) stays the same, but the style (brushstrokes, color palette, texture) transforms to match a different artist.
+**JS BRIDGE (Module-Level):** Style transfer is CSS world switching. When you switch a website's world from light to dark mode, the content stays the same but the visual presentation changes completely - colors, backgrounds, shadows all transform. Neural style transfer does the same: the content (shapes, objects, composition) stays the same, but the style (brushstrokes, color palette, texture) transforms to match a different artist.
 
 ### GITHUB
 
@@ -393,7 +393,7 @@ Ren integrates CLIP, and suddenly the system understands nuance. "A melancholy c
 | 4 | CLIP-Guided Generation | Using CLIP to steer image generation | ESLint - guiding code toward desired patterns |
 | 5 | Prompt Engineering for Images | Crafting text that produces desired visuals | Writing effective CSS selectors |
 
-**FE BRIDGE (Module-Level):** CLIP is Algolia multi-index search. Algolia lets you search across different content types (products, blog posts, documentation) in a single query - it maintains aligned indexes where semantically related items across types are connected. CLIP does the same: it maintains aligned embeddings where images and text descriptions that match are close together. Search "sunset" and you find both text about sunsets and images of sunsets - because they live in the same aligned space.
+**JS BRIDGE (Module-Level):** CLIP is Algolia multi-index search. Algolia lets you search across different content types (products, blog posts, documentation) in a single query - it maintains aligned indexes where semantically related items across types are connected. CLIP does the same: it maintains aligned embeddings where images and text descriptions that match are close together. Search "sunset" and you find both text about sunsets and images of sunsets - because they live in the same aligned space.
 
 ### GITHUB
 

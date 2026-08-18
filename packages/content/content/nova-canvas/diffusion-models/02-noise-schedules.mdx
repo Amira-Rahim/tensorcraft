@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A noise schedule sets how much noise enters or leaves at each timestep. The shape of that curve decides where the model spends its denoising effort, and the obvious choice, linear, is rarely the right one."
   bridge:
-    feTitle: "Animation easing curves"
-    feCode: "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);"
+    jsTitle: "Animation easing curves"
+    jsCode: "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);"
     mlTitle: "Noise schedule (beta schedule)"
     mlCode: "const betas = cosineSchedule(timesteps);"
     tier: structural

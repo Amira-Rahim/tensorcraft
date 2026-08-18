@@ -14,8 +14,8 @@
     "concept": {
       "explanation": "Tensors are multi-dimensional arrays: the fundamental data structure of machine learning.",
       "bridge": {
-        "feTitle": "TypedArray",
-        "feCode": "const arr = new Float32Array([1, 2, 3])",
+        "jsTitle": "TypedArray",
+        "jsCode": "const arr = new Float32Array([1, 2, 3])",
         "mlTitle": "Tensor",
         "mlCode": "const t = tf.tensor([1, 2, 3])",
         "tier": "identity"
@@ -51,8 +51,8 @@
     "concept": {
       "explanation": "Shape describes the size of each dimension in a tensor.",
       "bridge": {
-        "feTitle": "Array.length",
-        "feCode": "const shape = [arr.length, arr[0].length]",
+        "jsTitle": "Array.length",
+        "jsCode": "const shape = [arr.length, arr[0].length]",
         "mlTitle": "Tensor.shape",
         "mlCode": "tensor.shape // [3, 4]",
         "tier": "identity"
@@ -89,8 +89,8 @@
     "concept": {
       "explanation": "Tensors support element-wise and matrix operations like add, multiply, and matmul.",
       "bridge": {
-        "feTitle": "Array.map()",
-        "feCode": "arr.map((x, i) => x + arr2[i])",
+        "jsTitle": "Array.map()",
+        "jsCode": "arr.map((x, i) => x + arr2[i])",
         "mlTitle": "tf.add()",
         "mlCode": "tf.add(tensor1, tensor2)",
         "tier": "structural"
@@ -157,8 +157,8 @@
     "concept": {
       "explanation": "Normalization scales data to a consistent range, improving model training stability.",
       "bridge": {
-        "feTitle": "CSS normalize/reset",
-        "feCode": "* { margin: 0; padding: 0; box-sizing: border-box; }",
+        "jsTitle": "CSS normalize/reset",
+        "jsCode": "* { margin: 0; padding: 0; box-sizing: border-box; }",
         "mlTitle": "Feature Normalization",
         "mlCode": "const normalized = data.sub(mean).div(std)",
         "tier": "intuition"

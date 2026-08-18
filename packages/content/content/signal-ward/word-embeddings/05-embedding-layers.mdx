@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "An embedding layer is a trainable lookup table that maps integer token IDs to dense vectors. During training, backpropagation adjusts these vectors so that words useful for the task develop meaningful representations. You can initialize with pre-trained weights or train from scratch."
   bridge:
-    feTitle: "Lookup Table / Map"
-    feCode: "const lookup = new Map<string, Vector>(); lookup.get('aspirin');"
+    jsTitle: "Lookup Table / Map"
+    jsCode: "const lookup = new Map<string, Vector>(); lookup.get('aspirin');"
     mlTitle: "Embedding Layer"
     mlCode: "tf.layers.embedding({ inputDim: vocabSize, outputDim: 64 });"
     tier: structural

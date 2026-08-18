@@ -82,8 +82,8 @@ const lessons = defineCollection({
         explanation: s.string().min(1),
         bridge: s
           .object({
-            feTitle: s.string(),
-            feCode: s.string(),
+            jsTitle: s.string(),
+            jsCode: s.string(),
             mlTitle: s.string(),
             mlCode: s.string(),
             tier: s.enum(["identity", "structural", "intuition"]),
@@ -151,7 +151,7 @@ const lessons = defineCollection({
             "training",
             "evaluation",
             "deployment",
-            "fe_integration",
+            "js_integration",
           ]),
         )
         .optional()
@@ -212,7 +212,7 @@ const exercises = defineCollection({
         "training",
         "evaluation",
         "deployment",
-        "fe_integration",
+        "js_integration",
       ])
       .optional(),
   }),

@@ -56,12 +56,12 @@ One method call decides whether this pipeline survives contact with real sensor 
 
 ## From Fetch to Feed
 
-In frontend development, you fetch data from APIs and render it. In ML, you fetch data and feed it to a model. The pattern is similar, and the key promise of a generator is the same as paginated fetching: **nothing is loaded until it's asked for.**
+In JavaScript, you fetch data from APIs and render it. In ML, you fetch data and feed it to a model. The pattern is similar, and the key promise of a generator is the same as paginated fetching: **nothing is loaded until it's asked for.**
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: paginated API fetch
+// JS: paginated API fetch
 // const page = await fetch('/api/data?page=1&limit=32');
 
 // ML: a generator that READS LAZILY, one record per yield.
@@ -96,7 +96,7 @@ await dataset.forEachAsync((batch) => {
 });`}
 </CodeBlock>
 
-The key difference from frontend pagination: ML shuffles the data before batching. The `shuffle(100)` buffer holds 100 items and yields them in random order. This prevents the model from learning the *order* the data arrived in instead of the patterns inside it.
+The key difference from paginated fetching: ML shuffles the data before batching. The `shuffle(100)` buffer holds 100 items and yields them in random order. This prevents the model from learning the *order* the data arrived in instead of the patterns inside it.
 
 ## Why Batching Matters
 

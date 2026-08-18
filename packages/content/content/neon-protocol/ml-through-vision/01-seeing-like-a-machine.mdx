@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Images in a computer are just canvas pixel data: a 2D grid of RGBA values stored in a Uint8ClampedArray. Every getImageData() call returns a tensor."
   bridge:
-    feTitle: "Canvas getImageData()"
-    feCode: "const pixels = ctx.getImageData(0, 0, w, h).data; // Uint8ClampedArray"
+    jsTitle: "Canvas getImageData()"
+    jsCode: "const pixels = ctx.getImageData(0, 0, w, h).data; // Uint8ClampedArray"
     mlTitle: "Image Tensor"
     mlCode: "const tensor = tf.browser.fromPixels(canvas); // [height, width, channels]"
     tier: structural
@@ -46,9 +46,9 @@ Meridian Systems operates 200 cameras per city block. Their AI tracks every face
 So when I was streaming pixel buffers over WebRTC in my drawing app, I was already working with image tensors? I just didn't call them that?
 </Dialogue>
 
-Every time you call `getImageData()` on a canvas context, you get back a `Uint8ClampedArray`, a flat buffer of RGBA pixel values. That array *is* a tensor: a multi-dimensional grid of numbers. Computer vision starts with exactly the data structures frontend developers already use.
+Every time you call `getImageData()` on a canvas context, you get back a `Uint8ClampedArray`, a flat buffer of RGBA pixel values. That array *is* a tensor: a multi-dimensional grid of numbers. Computer vision starts with exactly the data structures JavaScript engineers already use.
 
-<LearningObjectives objectives={["Understand that images are multi-dimensional arrays (tensors) of pixel values", "Convert between canvas pixel data and TensorFlow.js tensors", "Identify the shape of image data: [height, width, channels]", "Recognize that frontend canvas work is already image tensor manipulation"]} />
+<LearningObjectives objectives={["Understand that images are multi-dimensional arrays (tensors) of pixel values", "Convert between canvas pixel data and TensorFlow.js tensors", "Identify the shape of image data: [height, width, channels]", "Recognize that browser canvas work is already image tensor manipulation"]} />
 
 <Section name="code-tensors">
 ## Images Are Tensors
@@ -58,7 +58,7 @@ Every time you call `getImageData()` on a canvas context, you get back a `Uint8C
 <CodeBlock language="typescript" title="image-to-tensor.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: you've done this before
+// Browser: you've done this before
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d')!;
 canvas.width = 224;

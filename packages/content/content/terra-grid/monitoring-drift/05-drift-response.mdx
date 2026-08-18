@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Drift incident response follows the same playbook as production incident response: detect, triage, mitigate, fix, and run a post-mortem."
   bridge:
-    feTitle: "Incident Response"
-    feCode: "rollback(deployment, 'v2.1.3') // mitigate first, investigate second"
+    jsTitle: "Incident Response"
+    jsCode: "rollback(deployment, 'v2.1.3') // mitigate first, investigate second"
     mlTitle: "Drift Response"
     mlCode: "rollback(model, 'v2.1.0') // revert to last known good model"
     tier: structural

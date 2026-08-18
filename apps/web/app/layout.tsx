@@ -33,12 +33,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title:
-    "Tensorcraft: Learn Machine Learning for Frontend Developers in JavaScript",
+  title: "Tensorcraft: Machine Learning for JavaScript Developers",
   description:
-    "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for frontend developers: train real models in the browser, no Python required. Covers TensorFlow JS, Transformers.js, LSTMs, CNNs, and transformer tutorials.",
+    "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for JavaScript developers: train real models in the browser, no Python required. Covers TensorFlow JS, Transformers.js, LSTMs, CNNs, and transformer tutorials.",
   keywords: [
-    "machine learning for frontend developers",
+    "machine learning for javascript developers",
     "machine learning javascript",
     "learn machine learning javascript",
     "tensorflow js",
@@ -50,7 +49,7 @@ export const metadata: Metadata = {
     "browser ml",
     "ml tutorial javascript",
     "javascript ml course",
-    "learn ml frontend",
+    "node machine learning",
     "lstm javascript",
     "cnn javascript",
     "neural network javascript",
@@ -63,23 +62,21 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://tensorcraft.app",
     siteName: "Tensorcraft",
-    title:
-      "Tensorcraft: Learn Machine Learning for Frontend Developers in JavaScript",
+    title: "Tensorcraft: Machine Learning for JavaScript Developers",
     description:
-      "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for frontend developers: train real models in the browser, no Python required.",
+      "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for JavaScript developers: train real models in the browser, no Python required.",
     images: [
       {
         url: "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&world=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
         width: 1200,
         height: 630,
-        alt: "Tensorcraft: ML for Frontend Engineers",
+        alt: "Tensorcraft: ML for JavaScript Engineers",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "Tensorcraft: Learn Machine Learning for Frontend Developers in JavaScript",
+    title: "Tensorcraft: Machine Learning for JavaScript Developers",
     description:
       "Learn machine learning with JavaScript and TensorFlow.js. Train real models in the browser, no Python required.",
     images: [
@@ -150,7 +147,7 @@ export default function RootLayout({
                 // a false claim in structured data. Restore this only when a
                 // real asset exists at the path.
                 description:
-                  "Interactive, story-driven ML education for frontend engineers.",
+                  "Interactive, story-driven ML education for JavaScript engineers.",
                 sameAs: [],
               },
               // The five per-world Course objects that used to live here were

@@ -10,10 +10,10 @@ context:
   narrative: "Noor's first detection model is producing boxes, but she has no idea if they are any good. Zara pulls up two overlapping rectangles on the holotable. 'How do you measure whether your predicted box matches the ground truth? The same way you check if two draggable elements overlap.'"
   speaker: "Zara"
 concept:
-  explanation: "Intersection over Union (IoU) measures how much two boxes overlap. It is the area of their intersection divided by the area of their union. Frontend developers use the same math for drag-and-drop hit testing and collision detection."
+  explanation: "Intersection over Union (IoU) measures how much two boxes overlap. It is the area of their intersection divided by the area of their union. The same math drives drag-and-drop hit testing and collision detection in the browser."
   bridge:
-    feTitle: "Drag-and-Drop Hit Testing"
-    feCode: "const overlap = getOverlapArea(dragRect, dropZone) / getTotalArea(dragRect, dropZone);"
+    jsTitle: "Drag-and-Drop Hit Testing"
+    jsCode: "const overlap = getOverlapArea(dragRect, dropZone) / getTotalArea(dragRect, dropZone);"
     mlTitle: "IoU Score"
     mlCode: "const iou = intersectionArea / unionArea; // 0 = no overlap, 1 = perfect match"
     tier: structural
@@ -58,7 +58,7 @@ When a detection model predicts a bounding box, you need to measure how accurate
 IoU is simple: divide the area where two boxes overlap (intersection) by the total area they cover together (union).
 
 <CodeBlock language="typescript" title="iou-basics.ts">
-{`// Frontend collision detection:
+{`// Browser collision detection:
 // "Does this dragged element overlap the drop zone?"
 // You compute the overlap rectangle and check its area.
 

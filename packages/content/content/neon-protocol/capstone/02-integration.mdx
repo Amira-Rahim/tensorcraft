@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Integrating ML pipeline stages follows the same pattern as Express/Next.js middleware. Each stage receives input, transforms it, and calls next() to pass output downstream. Errors short-circuit the chain."
   bridge:
-    feTitle: "Middleware Chain"
-    feCode: "app.use(cors()).use(auth()).use(validate()).use(handler); // req flows through each"
+    jsTitle: "Middleware Chain"
+    jsCode: "app.use(cors()).use(auth()).use(validate()).use(handler); // req flows through each"
     mlTitle: "Model Pipeline"
     mlCode: "pipeline.use(preprocess).use(detect).use(classify).use(guard); // tensor flows through each"
     tier: structural

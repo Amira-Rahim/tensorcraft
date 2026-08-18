@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A preprocessing pipeline chains text cleaning, tokenization, normalization, and encoding into a single composable flow. Each step transforms the data for the next, and the whole chain must run identically at training time and at inference time."
   bridge:
-    feTitle: "Express Middleware"
-    feCode: "app.use(cors()).use(auth()).use(validate()).use(handler)"
+    jsTitle: "Express Middleware"
+    jsCode: "app.use(cors()).use(auth()).use(validate()).use(handler)"
     mlTitle: "Text Pipeline"
     mlCode: "pipe(clean, tokenize, normalize, encode)(text)"
     tier: structural

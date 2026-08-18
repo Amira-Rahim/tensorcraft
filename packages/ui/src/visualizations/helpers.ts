@@ -8,7 +8,7 @@ export const SKILL_AXIS_ORDER = [
   "training",
   "evaluation",
   "deployment",
-  "fe_integration",
+  "js_integration",
 ] as const;
 
 export type SkillAxisName = (typeof SKILL_AXIS_ORDER)[number];

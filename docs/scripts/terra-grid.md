@@ -24,11 +24,11 @@
 
 ### Career Paths & Salaries
 
-> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" JavaScript roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
 
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| ML-Enhanced Frontend Engineer | Build edge-optimized ML features, model monitoring dashboards, deployment UIs | $120,000 - $160,000 |
+| ML-Enhanced JavaScript Engineer | Build edge-optimized ML features, model monitoring dashboards, deployment UIs | $120,000 - $160,000 |
 | Frontend Engineer (ML Platform) | Frontend for MLOps platforms (experiment tracking, model registries, pipeline builders) | $125,000 - $165,000 |
 | MLOps Engineer* | Build and maintain ML pipelines, deployment, monitoring | $145,000 - $195,000 |
 | ML Infrastructure Engineer* | Build the platforms that ML teams depend on | $150,000 - $200,000 |
@@ -71,7 +71,7 @@ Terra Grid Intelligence evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for frontend developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -192,7 +192,7 @@ The student quantizes from Float32 to Int8, reducing the model size by 4x with o
 | 4 | Mixed Precision | Different precision for different layers | Responsive images - different res for different contexts |
 | 5 | Accuracy vs Size | Managing the quality-efficiency tradeoff | Lossy compression - acceptable quality loss for size |
 
-**FE BRIDGE (Module-Level):** Quantization is Webpack minification. Webpack takes your source code (verbose, readable, Float32-equivalent) and minifies it (compact, optimized, Int8-equivalent). The logic is preserved but the representation is smaller. Variable names shrink from `userAuthenticationToken` to `a`. Whitespace disappears. The output does the same thing in less space - just like a quantized model.
+**JS BRIDGE (Module-Level):** Quantization is Webpack minification. Webpack takes your source code (verbose, readable, Float32-equivalent) and minifies it (compact, optimized, Int8-equivalent). The logic is preserved but the representation is smaller. Variable names shrink from `userAuthenticationToken` to `a`. Whitespace disappears. The output does the same thing in less space - just like a quantized model.
 
 ### GITHUB
 
@@ -227,7 +227,7 @@ The student builds a distilled model that is 10x smaller and 95% as accurate.
 | 4 | Teacher-Student Training | The distillation training process | Mentor pair programming - transferring knowledge |
 | 5 | Combined Optimization | Pruning + quantization + distillation together | Full Webpack production config - all optimizations |
 
-**FE BRIDGES (Module-Level):**
+**JS BRIDGES (Module-Level):**
 
 - **Pruning = tree-shaking:** Webpack's tree-shaking removes unused exports from your bundle. Pruning removes unused weights from your model. Both analyze what is actually needed and eliminate the rest. A typical JavaScript bundle has 30-60% unused code. A typical neural network has 40-90% prunable weights. The principle is identical.
 - **Distillation = code splitting:** Code splitting breaks a large bundle into smaller chunks that load on demand, delivering the essential experience first. Knowledge distillation breaks a large model's knowledge into a smaller model that delivers the essential predictions. Both reduce size while preserving the critical functionality.
@@ -267,7 +267,7 @@ Park builds the deployment pipeline. The first edge deployment succeeds on 847 d
 | 4 | Over-the-Air Updates | Updating models on remote devices | Service Worker update lifecycle |
 | 5 | Offline Operation | Models that work without connectivity | Offline-first architecture with IndexedDB |
 
-**FE BRIDGE (Module-Level):** Model sharding is dynamic `import()`. In frontend code, `dynamic import()` splits your application into chunks that load on demand - the user gets the critical path first, and additional chunks load as needed. Model sharding does the same: a large model is split across devices or loaded in parts, with the critical inference path available first and additional capabilities loading as resources permit.
+**JS BRIDGE (Module-Level):** Model sharding is dynamic `import()`. In JavaScript code, `dynamic import()` splits your application into chunks that load on demand - the user gets the critical path first, and additional chunks load as needed. Model sharding does the same: a large model is split across devices or loaded in parts, with the critical inference path available first and additional capabilities loading as resources permit.
 
 ### GITHUB
 
@@ -339,7 +339,7 @@ The team retrains and redeploys within hours.
 | 4 | Alert Systems | Configuring meaningful alerts | Alerting thresholds in monitoring tools |
 | 5 | Drift Response | Diagnosing and fixing drift incidents | Incident response and rollback procedures |
 
-**FE BRIDGE (Module-Level):** Drift detection is Lighthouse CI. Lighthouse CI runs on every commit and compares performance metrics against a baseline - if Time to Interactive regresses by more than 10%, the build fails. Drift detection does the same for ML models: it continuously compares model performance against a baseline, and if accuracy degrades beyond a threshold, it triggers an alert. Both are automated regression detection systems that catch silent degradation before users notice.
+**JS BRIDGE (Module-Level):** Drift detection is Lighthouse CI. Lighthouse CI runs on every commit and compares performance metrics against a baseline - if Time to Interactive regresses by more than 10%, the build fails. Drift detection does the same for ML models: it continuously compares model performance against a baseline, and if accuracy degrades beyond a threshold, it triggers an alert. Both are automated regression detection systems that catch silent degradation before users notice.
 
 ### GITHUB
 
@@ -408,10 +408,10 @@ The student builds an A/B testing framework. A new model version shows 2.3% impr
 | 1 | Why A/B Test Models? | Validating improvements before full rollout | Feature flags - toggling for subsets of users |
 | 2 | Traffic Splitting | Routing requests to different model versions | Canary deployments with load balancer routing |
 | 3 | Statistical Significance | Knowing when results are meaningful | Analytics confidence intervals |
-| 4 | Canary Deployments | Gradual rollout with automatic rollback | Canary releases for frontend apps |
+| 4 | Canary Deployments | Gradual rollout with automatic rollback | Canary releases for JS apps |
 | 5 | Multi-Armed Bandits | Adaptive traffic allocation | Dynamic ad rotation - allocating to best performers |
 
-**FE BRIDGE (Module-Level):** A/B testing models is feature flags. In frontend development, feature flags let you deploy new code but only enable it for a subset of users - you measure the impact, and if the new version is better, you roll it out to everyone. If it is worse, you kill the flag and no one notices. A/B testing models works identically: deploy a new model version to a subset of edge devices, measure performance, and only promote to full rollout after statistical validation.
+**JS BRIDGE (Module-Level):** A/B testing models is feature flags. In JavaScript development, feature flags let you deploy new code but only enable it for a subset of users - you measure the impact, and if the new version is better, you roll it out to everyone. If it is worse, you kill the flag and no one notices. A/B testing models works identically: deploy a new model version to a subset of edge devices, measure performance, and only promote to full rollout after statistical validation.
 
 ### GITHUB
 

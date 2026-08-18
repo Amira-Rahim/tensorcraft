@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "Attention scores every time step for relevance at once, then spends the model's capacity where the scores are high."
   bridge:
-    feTitle: "CSS :focus"
-    feCode: ":focus { outline: 2px solid blue; } // highlight the active element"
+    jsTitle: "CSS :focus"
+    jsCode: ":focus { outline: 2px solid blue; } // highlight the active element"
     mlTitle: "Attention"
     mlCode: "weights = softmax(Q * K^T); output = weights * V // focus on relevant steps"
     tier: intuition

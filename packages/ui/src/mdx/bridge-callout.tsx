@@ -3,8 +3,8 @@
 import { BRIDGES, type BridgeVariant } from "@tensorcraft/shared";
 
 interface Bridge {
-  feTitle: string;
-  feCode: string;
+  jsTitle: string;
+  jsCode: string;
   mlTitle: string;
   mlCode: string;
   tier: "identity" | "structural" | "intuition";
@@ -32,7 +32,7 @@ export function BridgeCallout({ bridge }: BridgeCalloutProps) {
 
   const sharedBridge = BRIDGES.find(
     (b) =>
-      b.feConcept.toLowerCase() === bridge.feTitle.toLowerCase() ||
+      b.jsConcept.toLowerCase() === bridge.jsTitle.toLowerCase() ||
       b.mlConcept.toLowerCase() === bridge.mlTitle.toLowerCase(),
   );
 
@@ -92,16 +92,16 @@ function GenericBridgeLayout({
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] divide-y sm:divide-y-0 sm:divide-x divide-border">
         <div className="p-5">
           <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
-            Frontend
+            JavaScript
           </h4>
           <h5 className="text-base font-semibold mb-2 text-text-primary">
-            {bridge.feTitle}
+            {bridge.jsTitle}
           </h5>
           <code
             className="block p-3 text-[13px] leading-relaxed bg-code-bg border border-border whitespace-pre-wrap"
             style={{ color }}
           >
-            {bridge.feCode}
+            {bridge.jsCode}
           </code>
         </div>
         <div className="p-5">
@@ -144,8 +144,8 @@ function ReactBridgeLayout({
   breaks?: string;
 }) {
   const color = tierColors[bridge.tier];
-  const feTitle = reactVariant.feConcept || bridge.feTitle;
-  const feCode = reactVariant.feCode || bridge.feCode;
+  const jsTitle = reactVariant.jsConcept || bridge.jsTitle;
+  const jsCode = reactVariant.jsCode || bridge.jsCode;
 
   return (
     <div className="my-8 brutalist-shadow bg-surface-raised border border-border overflow-hidden">
@@ -176,13 +176,13 @@ function ReactBridgeLayout({
             Your Framework
           </h4>
           <h5 className="text-sm font-semibold mb-2 text-text-primary">
-            {feTitle}
+            {jsTitle}
           </h5>
           <code
             className="block p-3 text-[12px] leading-relaxed bg-code-bg border border-border whitespace-pre-wrap font-mono"
             style={{ color }}
           >
-            {feCode}
+            {jsCode}
           </code>
         </div>
         <div className="p-5">

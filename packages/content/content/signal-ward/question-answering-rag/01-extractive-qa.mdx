@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Extractive QA finds the exact span of text in a document that answers a question, matching on meaning rather than characters, so 'hypersensitivity to penicillin-class agents' answers a question about penicillin allergy."
   bridge:
-    feTitle: "Ctrl+F (text search)"
-    feCode: "document.querySelector('article').textContent.indexOf('penicillin')"
+    jsTitle: "Ctrl+F (text search)"
+    jsCode: "document.querySelector('article').textContent.indexOf('penicillin')"
     mlTitle: "Extractive QA"
     mlCode: "model.predict({ question, context }) // → { answer: 'allergic to penicillin', start: 142, end: 163 }"
     tier: structural

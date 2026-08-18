@@ -65,8 +65,8 @@ const SAMPLE_FRONTMATTER = {
   concept: {
     explanation: "Tensors are multi-dimensional arrays.",
     bridge: {
-      feTitle: "Float32Array",
-      feCode: "const arr = new Float32Array([1,2,3])",
+      jsTitle: "Float32Array",
+      jsCode: "const arr = new Float32Array([1,2,3])",
       mlTitle: "Tensor",
       mlCode: "const t = tf.tensor([1,2,3])",
       tier: "identity" as const,
@@ -176,8 +176,8 @@ describe("Content pipeline: frontmatter → Zod → components", () => {
       render(
         <BridgeCallout
           bridge={{
-            feTitle: "Float32Array",
-            feCode: "new Float32Array([1,2,3])",
+            jsTitle: "Float32Array",
+            jsCode: "new Float32Array([1,2,3])",
             mlTitle: "Tensor",
             mlCode: "tf.tensor([1,2,3])",
             tier: "identity",

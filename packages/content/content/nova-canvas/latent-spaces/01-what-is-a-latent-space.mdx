@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A latent space is a compressed, lower-dimensional representation of data where similar items are near each other. Encoding maps data into this space; decoding maps it back out."
   bridge:
-    feTitle: "URL Shortener"
-    feCode: "const short = encode('https://example.com/very/long/path') // → 'abc123'"
+    jsTitle: "URL Shortener"
+    jsCode: "const short = encode('https://example.com/very/long/path') // → 'abc123'"
     mlTitle: "Latent Encoding"
     mlCode: "const z = encoder.predict(image) // [784] → [16]"
     tier: structural
@@ -54,7 +54,7 @@ Every latent space has two operations: **encode** (compress data into the space)
 <CodeBlock language="typescript" title="latent-space-concept.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: URL shortener, encode/decode
+// JS: URL shortener, encode/decode
 const urlMap = new Map<string, string>();
 function encode(url: string): string {
   const code = btoa(url).slice(0, 6);

@@ -11,13 +11,13 @@ scene:
   location: "Archimedes, Lab"
   portraitAlt: "On a lab display a descending scatter of interval marks carries two imperfect smoothing curves as two silhouettes confer."
 context:
-  narrative: "The signal's timing is drifting. Demir reaches for the smoothing trick every frontend developer owns, and rides it straight into the dilemma this lesson exists to solve."
+  narrative: "The signal's timing is drifting. Demir reaches for the smoothing trick every JavaScript developer owns, and rides it straight into the dilemma this lesson exists to solve."
   speaker: "Dr. Farah"
 concept:
   explanation: "A Kalman filter tracks a moving value under noise by predicting where it should be, then correcting with each new measurement, trusting whichever is currently less uncertain."
   bridge:
-    feTitle: "Exponential Moving Average"
-    feCode: "smoothed = alpha * newValue + (1 - alpha) * smoothed"
+    jsTitle: "Exponential Moving Average"
+    jsCode: "smoothed = alpha * newValue + (1 - alpha) * smoothed"
     mlTitle: "Kalman Update"
     mlCode: "estimate = gain * measurement + (1 - gain) * prediction"
     tier: structural
@@ -43,7 +43,7 @@ skillAxes: [model_arch]
 
 Read the column both ways. The noise says the numbers wander; the trend says they only wander downhill. Before this lesson names its subject, try to track that drift with a tool you already own.
 
-Demir's first move is the one every frontend developer makes when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
+Demir's first move is the one every JavaScript developer makes when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
 
 <CodeBlock language="typescript" title="ema-two-alphas.ts">
 {`const log = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];

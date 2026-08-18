@@ -10,7 +10,7 @@ import type { BridgeTier } from "@tensorcraft/shared";
 // reason; do not reintroduce). V1 ships React only, so the preview just
 // needs a real ML snippet and a React code variant.
 const PREVIEW_BRIDGE =
-  BRIDGES.find((b) => b.mlCode && b.variants?.react?.feCode) ?? BRIDGES[0];
+  BRIDGES.find((b) => b.mlCode && b.variants?.react?.jsCode) ?? BRIDGES[0];
 
 // Theme-aware tier tokens (themes.css), same mapping as the exercise
 // bridge hint. One accent per band: both code blocks, the connector, and
@@ -30,8 +30,8 @@ function statementPerLine(code: string): string {
 export function BridgePreviewSection() {
   const bridge = PREVIEW_BRIDGE;
   const variant = bridge.variants?.react;
-  const feTitle = variant?.feConcept || bridge.feConcept;
-  const feCode = variant?.feCode ?? "";
+  const jsTitle = variant?.jsConcept || bridge.jsConcept;
+  const jsCode = variant?.jsCode ?? "";
   const tierColor = TIER_VARS[bridge.tier];
 
   return (
@@ -42,7 +42,7 @@ export function BridgePreviewSection() {
           THE BRIDGE SYSTEM
         </div>
         <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-          Every ML Concept Has a Frontend Name
+          Every ML Concept Has a JavaScript Name
         </h2>
       </div>
 
@@ -57,20 +57,20 @@ export function BridgePreviewSection() {
           transition={{ duration: 0.3 }}
           className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr]"
         >
-          {/* FE side */}
+          {/* JS side */}
           <div className="px-10 md:px-16 py-10 md:py-12 flex">
             <div className="max-w-lg w-full mx-auto md:mx-0 md:ml-auto flex flex-col">
               <div className="font-mono text-xs text-text-muted uppercase tracking-[0.15em] mb-3">
                 YOUR REACT CODE
               </div>
               <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
-                {feTitle}
+                {jsTitle}
               </h3>
               <div
                 className="flex-1 bg-code-bg border border-border p-5 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
                 style={{ color: tierColor }}
               >
-                {feCode}
+                {jsCode}
               </div>
             </div>
           </div>

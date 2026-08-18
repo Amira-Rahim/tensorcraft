@@ -38,7 +38,7 @@ Sets the bar every artifact must meet. Derived from exemplar templates already s
 | B1 | Tier honesty | Identity is literal (`Math.max(0, x) === ReLU`). Structural is same shape. Intuition is same mental model. | `tree-shaking ↔ pruning` claimed identity |
 | B2 | Breaks present (non-identity) | Every structural/intuition has `breaks:` field | Missing breaks on structural bridge |
 | B3 | Breaks specific | Names a concrete failure mode, ideally with a code example | "They differ in implementation" |
-| B4 | FE side real | `feCode` is idiomatic, current JS/React | Strawman code no FE dev would write |
+| B4 | JS side real | `jsCode` is idiomatic, current JS/React | Strawman code no JS dev would write |
 | B5 | ML side real | `mlCode` is current TFJS, runs as written | Pseudo-TFJS, deprecated APIs |
 
 ## Derivation drawer rubric (4 criteria)

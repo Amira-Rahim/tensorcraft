@@ -12,7 +12,7 @@
  * State is local-first; all selections are held in React state and committed
  * together on the final "Start Deep Orbit" CTA. The final submit:
  *   1. PATCH `/api/onboarding` with the canonical enum payload (experience_level,
- *      learning_goal, fe_background, fe_framework, fe_experience_years) so the
+ *      learning_goal, js_background, js_experience_years) so the
  *      server-side validator in `apps/api/src/routes/onboarding.ts` enforces the
  *      same CHECK constraints as the DB.
  *   2. Marks `profiles.onboarding_completed = true` via the browser Supabase
@@ -51,7 +51,7 @@ const EXPERIENCE_LEVELS = [
   {
     id: "beginner" as const,
     label: "Beginner",
-    desc: "New to frontend or still learning the basics",
+    desc: "New to JavaScript or still learning the basics",
   },
   {
     id: "intermediate" as const,
@@ -99,7 +99,7 @@ export default function OnboardingPage() {
   // Background step
   const [experienceLevel, setExperienceLevel] =
     useState<ExperienceLevel | null>(null);
-  const [feBackground, setFeBackground] = useState<string>("");
+  const [jsBackground, setJsBackground] = useState<string>("");
   const [years, setYears] = useState<string>("");
 
   // Goal step
@@ -174,19 +174,17 @@ export default function OnboardingPage() {
       }
 
       // 1. PATCH /api/onboarding, writes experience_level, learning_goal,
-      //    fe_background, fe_framework, fe_experience_years via the
-      //    service-role endpoint.
-      // V1 is React-only. fe_framework is always submitted as "react" so the
-      // profile column is populated (no framework-selection step exists).
+      //    js_background, js_experience_years via the service-role endpoint.
+      // V1 is React-only; that lives in course content, not the profile
+      // (the fe_framework column was dropped in migration 059).
       const payload: Record<string, unknown> = {
         experience_level: experienceLevel,
         learning_goal: learningGoal,
-        fe_framework: "react",
       };
-      if (feBackground.trim().length > 0) {
-        payload.fe_background = feBackground.trim().slice(0, 200);
+      if (jsBackground.trim().length > 0) {
+        payload.js_background = jsBackground.trim().slice(0, 200);
       }
-      if (yearsAsNumber !== null) payload.fe_experience_years = yearsAsNumber;
+      if (yearsAsNumber !== null) payload.js_experience_years = yearsAsNumber;
 
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/onboarding`, {
@@ -303,7 +301,7 @@ export default function OnboardingPage() {
       setError(e instanceof Error ? e.message : ERROR_MESSAGES.unknown);
       setSaving(false);
     }
-  }, [experienceLevel, learningGoal, feBackground, yearsAsNumber]);
+  }, [experienceLevel, learningGoal, jsBackground, yearsAsNumber]);
 
   // Global Enter-to-advance (outside textarea / button / select).
   const wizardRef = useRef<HTMLDivElement>(null);
@@ -381,8 +379,8 @@ export default function OnboardingPage() {
           <BackgroundStep
             experienceLevel={experienceLevel}
             setExperienceLevel={setExperienceLevel}
-            feBackground={feBackground}
-            setFeBackground={setFeBackground}
+            jsBackground={jsBackground}
+            setJsBackground={setJsBackground}
             years={years}
             setYears={setYears}
             yearsValid={yearsValid}
@@ -395,7 +393,7 @@ export default function OnboardingPage() {
           <ReadyStep
             experienceLevel={experienceLevel}
             learningGoal={learningGoal}
-            feBackground={feBackground}
+            jsBackground={jsBackground}
             years={yearsAsNumber}
           />
         )}
@@ -468,8 +466,8 @@ function WelcomeStep() {
     {
       icon: "◎",
       // Lesson-embedded bridge count, single-sourced with /learn and the FAQ.
-      name: `${WORLD_CONTENT.lessonBridges} FE Bridges`,
-      desc: "Every concept mapped to React/JS",
+      name: `${WORLD_CONTENT.lessonBridges} JS Bridges`,
+      desc: "Every concept mapped to JS you already write",
     },
     {
       icon: "◉",
@@ -492,7 +490,7 @@ function WelcomeStep() {
         the <span className="text-primary">Archimedes</span>
       </h1>
       <p className="text-base text-text-muted leading-relaxed max-w-[500px] mb-10 font-sans">
-        You&apos;re a frontend engineer. You&apos;re about to learn ML, not by
+        You&apos;re a JavaScript engineer. You&apos;re about to learn ML, not by
         re-learning math, but by mapping it to what you already know.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 w-full mb-4">
@@ -520,8 +518,8 @@ function WelcomeStep() {
 function BackgroundStep(props: {
   experienceLevel: ExperienceLevel | null;
   setExperienceLevel: (v: ExperienceLevel) => void;
-  feBackground: string;
-  setFeBackground: (v: string) => void;
+  jsBackground: string;
+  setJsBackground: (v: string) => void;
   years: string;
   setYears: (v: string) => void;
   yearsValid: boolean;
@@ -529,8 +527,8 @@ function BackgroundStep(props: {
   const {
     experienceLevel,
     setExperienceLevel,
-    feBackground,
-    setFeBackground,
+    jsBackground,
+    setJsBackground,
     years,
     setYears,
     yearsValid,
@@ -544,7 +542,7 @@ function BackgroundStep(props: {
         CREW ASSESSMENT
       </div>
       <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
-        Tell us about your FE background
+        Tell us about your JavaScript background
       </h2>
       <p className="text-sm text-text-muted mb-8 font-sans max-w-[480px]">
         Advanced and expert crew get the math derivations opened by default
@@ -614,17 +612,17 @@ function BackgroundStep(props: {
         </div>
       </fieldset>
 
-      {/* fe_experience_years, optional number */}
+      {/* js_experience_years, optional number */}
       <div className="w-full text-left mb-8">
         <label
-          htmlFor="fe-experience-years"
+          htmlFor="js-experience-years"
           className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted mb-3 block"
         >
-          Years of FE experience
+          Years of JS experience
         </label>
         <input
-          id="fe-experience-years"
-          data-testid="fe-experience-years"
+          id="js-experience-years"
+          data-testid="js-experience-years"
           type="number"
           min={0}
           max={50}
@@ -638,7 +636,7 @@ function BackgroundStep(props: {
         {!yearsValid && (
           <p
             role="alert"
-            data-testid="fe-years-error"
+            data-testid="js-years-error"
             className="mt-2 font-mono text-xs text-primary"
           >
             Experience years must be a whole number 0-50.
@@ -646,26 +644,26 @@ function BackgroundStep(props: {
         )}
       </div>
 
-      {/* fe_background, optional free-text */}
+      {/* js_background, optional free-text */}
       <div className="w-full text-left">
         <label
-          htmlFor="fe-background"
+          htmlFor="js-background"
           className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted mb-3 block"
         >
           Anything else about your background?
         </label>
         <textarea
-          id="fe-background"
-          data-testid="fe-background"
-          value={feBackground}
-          onChange={(e) => setFeBackground(e.target.value.slice(0, 200))}
+          id="js-background"
+          data-testid="js-background"
+          value={jsBackground}
+          onChange={(e) => setJsBackground(e.target.value.slice(0, 200))}
           rows={3}
           maxLength={200}
           placeholder="Shipped a Next.js dashboard, tinkered with WebGL, etc."
           className="w-full font-mono text-xs bg-surface border-2 border-interactive rounded-none px-4 py-3 text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary resize-none"
         />
         <div className="font-mono text-[11px] text-text-muted mt-1">
-          {feBackground.length}/200
+          {jsBackground.length}/200
         </div>
       </div>
     </div>
@@ -747,10 +745,10 @@ function GoalStep(props: {
 function ReadyStep(props: {
   experienceLevel: ExperienceLevel | null;
   learningGoal: LearningGoal | null;
-  feBackground: string;
+  jsBackground: string;
   years: number | null;
 }) {
-  const { experienceLevel, learningGoal, feBackground, years } = props;
+  const { experienceLevel, learningGoal, jsBackground, years } = props;
 
   const rows: Array<[string, string]> = [
     ["World", `${LAUNCH_WORLD_NAME} (live now)`],
@@ -770,7 +768,7 @@ function ReadyStep(props: {
     ],
     ["Framework", "React"],
     ["Years", years === null ? "Skipped" : `${years}`],
-    ["Notes", feBackground.trim().length > 0 ? feBackground.trim() : "Skipped"],
+    ["Notes", jsBackground.trim().length > 0 ? jsBackground.trim() : "Skipped"],
   ];
 
   return (
@@ -798,7 +796,7 @@ function ReadyStep(props: {
         All Systems Go
       </h2>
       <p className="text-[15px] text-text-muted leading-relaxed max-w-[460px] mb-10 font-sans">
-        Your first mission: understand what tensors are and why frontend
+        Your first mission: understand what tensors are and why JavaScript
         engineers have already been thinking about them.
       </p>
       <div

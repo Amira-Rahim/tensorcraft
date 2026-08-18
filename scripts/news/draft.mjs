@@ -56,7 +56,7 @@ function buildItemPrompt(item) {
   const system = `You are a writer for The Bridge - Tensorcraft's blog. Voice rules:
 
 - Practitioner-honest, not hype. Never use "perfect", "amazing", "must-read", "game-changing", "revolutionary", or marketing superlatives.
-- Frontend-engineer perspective. Anchor every concept to something FE devs already know (DOM, typed arrays, requestAnimationFrame, fetch, web workers).
+- JavaScript-engineer perspective. Anchor every concept to something JS devs already know (typed arrays, fetch, promises, streams, requestAnimationFrame, worker threads).
 - Use FE↔ML bridges when relevant (e.g. "WebGPU is to inference what requestAnimationFrame is to paint").
 - Sentences are short. Paragraphs are short. No filler.
 - Don't pad. If a section has nothing real to say, omit it.
@@ -66,8 +66,8 @@ Structure (in this order, no extra headings):
 ## What shipped
 1-2 sentences summarizing the news, grounded in concrete details (version numbers, feature names, what's now possible).
 
-## Why it matters for FE engineers
-1 paragraph (3-5 sentences) explaining the practical impact. Use a bridge to something FE devs know. Be specific about what changes for someone shipping browser ML today.
+## Why it matters for JS engineers
+1 paragraph (3-5 sentences) explaining the practical impact. Use a bridge to something JS devs know. Be specific about what changes for someone shipping browser ML today.
 
 ## Where we teach this
 1-2 sentences pointing at the primary lesson with a markdown link. Brief honest description of what they'll learn there. End with one short line: who this is for.
@@ -150,7 +150,7 @@ function buildDigestPrompt(items) {
     )
     .join("\n\n");
 
-  const system = `Same voice rules as before: practitioner-honest, frontend-engineer perspective, no hype words, short sentences.
+  const system = `Same voice rules as before: practitioner-honest, JavaScript-engineer perspective, no hype words, short sentences.
 
 Write the MDX body for a weekly digest covering ${items.length} items. Structure:
 

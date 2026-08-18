@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "WebGL is the browser's GPU interface. You already use it indirectly: CSS 3D transforms, canvas compositing, WebGL-based games. TensorFlow.js can route tensor operations through WebGL shaders, turning matrix multiplications into parallel GPU operations."
   bridge:
-    feTitle: "WebGL Rendering Pipeline"
-    feCode: "const gl = canvas.getContext('webgl2'); // GPU access for rendering"
+    jsTitle: "WebGL Rendering Pipeline"
+    jsCode: "const gl = canvas.getContext('webgl2'); // GPU access for rendering"
     mlTitle: "WebGL Compute Backend"
     mlCode: "await tf.setBackend('webgl'); // GPU access for tensor math"
     tier: structural

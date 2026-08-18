@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "RAG splits question answering into two stages: retrieve the documents most relevant to the question, then comprehend only those. The answer is grounded in what was actually retrieved, not in whatever the model happens to remember."
   bridge:
-    feTitle: "React Server Components"
-    feCode: "async function PatientCard({ id }) { const data = await db.query(id); return <Card data={data} />; }"
+    jsTitle: "React Server Components"
+    jsCode: "async function PatientCard({ id }) { const data = await db.query(id); return <Card data={data} />; }"
     mlTitle: "RAG Pipeline"
     mlCode: "async function answer(q) { const docs = await retrieve(q); return generate(q, docs); }"
     tier: structural

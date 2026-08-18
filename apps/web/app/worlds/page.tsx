@@ -87,7 +87,7 @@ export default async function WorldsPage() {
         </p>
         <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
           Pick the world that maps to the ML problem you actually want to solve.
-          Each one teaches a complete specialization through React and
+          Each one teaches a complete specialization through JavaScript and
           TensorFlow.js. No Python.
         </p>
 

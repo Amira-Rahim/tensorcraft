@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "YOLO (You Only Look Once) performs object detection in a single forward pass through the network. Instead of scanning regions one at a time, it processes the entire image at once and predicts every box, label, and confidence score simultaneously."
   bridge:
-    feTitle: "Single-Pass Rendering"
-    feCode: "requestAnimationFrame(() => updateAllElements()); // one pass, all updates"
+    jsTitle: "Single-Pass Rendering"
+    jsCode: "requestAnimationFrame(() => updateAllElements()); // one pass, all updates"
     mlTitle: "YOLO Single-Shot Detection"
     mlCode: "const allDetections = model.predict(image); // one pass, all objects"
     tier: structural
@@ -53,7 +53,7 @@ If it runs in the browser, there is no server to trace. No API to intercept. Jus
 
 YOLO does object detection in a **single forward pass**: one network reads the whole image and predicts all the boxes, labels, and confidence scores at once, with no separate region-proposal stage.
 
-<LearningObjectives objectives={["Understand the YOLO single-shot detection architecture and why it is fast", "Decode YOLO output tensors into bounding boxes with class predictions", "Compare single-pass vs multi-pass approaches in both ML and frontend rendering", "Build the detection pipeline: predict, decode, threshold, NMS"]} />
+<LearningObjectives objectives={["Understand the YOLO single-shot detection architecture and why it is fast", "Decode YOLO output tensors into bounding boxes with class predictions", "Compare single-pass vs multi-pass approaches in both ML and browser rendering", "Build the detection pipeline: predict, decode, threshold, NMS"]} />
 
 ## Two-Stage vs Single-Shot
 
@@ -69,7 +69,7 @@ YOLO does object detection in a **single forward pass**: one network reads the w
 // Step 1: One forward pass -> all detections at once
 // Like: batching all reads, then all writes, in one rAF callback
 
-// Frontend analogy:
+// Browser analogy:
 // BAD (multi-pass):
 // elements.forEach(el => {
 //   const height = el.offsetHeight;    // read -> triggers layout
@@ -253,4 +253,4 @@ An adversarial patch on a stop sign caused the detector to classify it as a yiel
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["YOLO trades the two-stage pipeline for one forward pass, paying with anchor-grid design choices and a harder training problem", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS; each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU, fast enough for the resistance to see drones first"]} />
+<KeyTakeaways takeaways={["YOLO trades the two-stage pipeline for one forward pass, paying with anchor-grid design choices and a harder training problem", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS; each step maps to a familiar JavaScript pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU, fast enough for the resistance to see drones first"]} />

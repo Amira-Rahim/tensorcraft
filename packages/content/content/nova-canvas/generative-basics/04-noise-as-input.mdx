@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Generative models take random noise as input and transform it into structured output. The noise provides the raw variation; the model provides the structure."
   bridge:
-    feTitle: "Perlin Noise"
-    feCode: "const val = noise.perlin2(x * 0.01, y * 0.01)"
+    jsTitle: "Perlin Noise"
+    jsCode: "const val = noise.perlin2(x * 0.01, y * 0.01)"
     mlTitle: "Latent Noise Vector"
     mlCode: "const z = tf.randomNormal([1, 100])"
     tier: structural
@@ -55,7 +55,7 @@ A generative model needs a source of variation. If you gave it the same input ev
 <CodeBlock language="typescript" title="noise-to-structure.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Frontend: Perlin noise → terrain heightmap
+// Browser: Perlin noise → terrain heightmap
 // Each (x, y) coordinate gets a smooth random value
 function generateTerrain(width: number, height: number) {
   const canvas = document.createElement('canvas');

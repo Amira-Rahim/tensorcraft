@@ -5,7 +5,7 @@ import { PRICING } from "@tensorcraft/shared";
 export const metadata: Metadata = {
   title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera | Course comparison",
   description:
-    "Honest comparison: where Tensorcraft wins (FE-developer onboarding, browser-runtime focus, analogies labeled where they break), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
+    "Honest comparison: where Tensorcraft wins (JS-developer onboarding, browser-runtime focus, analogies labeled where they break), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
   alternates: { canonical: "https://tensorcraft.app/compare" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -48,7 +48,7 @@ const ROWS: Row[] = [
   },
   {
     feature: "Audience starting point",
-    tensorcraft: "FE devs: useState, Array.reduce, Math.max",
+    tensorcraft: "JS devs: Array.reduce, async/await, useState",
     fastai: "Anyone with Python comfort",
     karpathy: "Anyone willing to read math",
     coursera: "Anyone with college calculus",
@@ -116,7 +116,7 @@ export default function ComparePage() {
     // "Prices checked" line below renders this same date.
     dateModified: "2026-07-14",
     description:
-      "Honest comparison of Tensorcraft against fast.ai, Karpathy zero-to-hero, and Coursera for frontend developers learning ML.",
+      "Honest comparison of Tensorcraft against fast.ai, Karpathy zero-to-hero, and Coursera for JavaScript developers learning ML.",
     url: "https://tensorcraft.app/compare",
   };
 

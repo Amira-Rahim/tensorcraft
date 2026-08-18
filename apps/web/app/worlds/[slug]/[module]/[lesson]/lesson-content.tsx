@@ -66,8 +66,8 @@ interface LessonContentProps {
     concept: {
       explanation: string;
       bridge?: {
-        feTitle: string;
-        feCode: string;
+        jsTitle: string;
+        jsCode: string;
         mlTitle: string;
         mlCode: string;
         tier: "identity" | "structural" | "intuition";
@@ -374,7 +374,7 @@ export function LessonContent({
     // frontmatter itself.
     const bridgeHint = lesson.concept.bridge
       ? {
-          feTitle: lesson.concept.bridge.feTitle,
+          jsTitle: lesson.concept.bridge.jsTitle,
           mlTitle: lesson.concept.bridge.mlTitle,
           tier: lesson.concept.bridge.tier,
         }

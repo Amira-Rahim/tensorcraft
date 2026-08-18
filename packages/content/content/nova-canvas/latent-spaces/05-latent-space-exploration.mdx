@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A latent space explorer is an interactive tool that lets users navigate the latent space using sliders, 2D maps, or other controls, generating output in real time."
   bridge:
-    feTitle: "Slider UI with Live Preview"
-    feCode: "<input type='range' onChange={e => updatePreview(e.target.value)} />"
+    jsTitle: "Slider UI with Live Preview"
+    jsCode: "<input type='range' onChange={e => updatePreview(e.target.value)} />"
     mlTitle: "Interactive Latent Explorer"
     mlCode: "const output = decoder.predict(tf.tensor2d([sliderValues]))"
     tier: identity
@@ -43,13 +43,13 @@ The kiosks arrive in four weeks. I need a working prototype that runs at 30 fram
 Make it intuitive. A child should be able to walk up, drag a slider, and feel like an artist.
 </Dialogue>
 
-This is where everything converges (latent spaces, encoding, dimensionality, interpolation, disentanglement) into an interactive tool that runs in the browser. You are building exactly what frontend developers do best: a responsive, real-time UI. The difference is that the data source is a neural network decoder.
+This is where everything converges (latent spaces, encoding, dimensionality, interpolation, disentanglement) into an interactive tool that runs in the browser. If you've built browser interfaces, this is familiar ground: a responsive, real-time UI. The difference is that the data source is a neural network decoder.
 
 <LearningObjectives objectives={["Build a complete latent space explorer with slider controls", "Render decoded output to canvas in real time", "Handle performance with debouncing and tensor disposal", "Create a 2D navigation map for latent space exploration"]} />
 
 ## Architecture
 
-The explorer follows a familiar frontend pattern: user input drives state, state drives rendering.
+The explorer follows a familiar UI pattern: user input drives state, state drives rendering.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A VAE encodes data not as a single point but as a distribution (mean + variance) in latent space. This forces the space to be smooth and continuous, enabling generation."
   bridge:
-    feTitle: "URL Encoding"
-    feCode: "encodeURIComponent('hello world') // structured, decodable"
+    jsTitle: "URL Encoding"
+    jsCode: "encodeURIComponent('hello world') // structured, decodable"
     mlTitle: "Variational Encoding"
     mlCode: "const [mu, logVar] = encoder.predict(image) // distribution, not point"
     tier: structural
@@ -91,7 +91,7 @@ We output `log(variance)` instead of `variance` directly because variance must b
 // exp(logVar) is always positive: 0.08, 1.0, 40.4
 // This is the actual variance
 
-// Frontend parallel: CSS uses log-like scales for font sizes
+// Browser parallel: CSS uses log-like scales for font sizes
 // font-size: 0.75rem, 1rem, 1.25rem, 1.5rem, 2rem
 // The scale is exponential, not linear: small changes at small sizes,
 // big changes at large sizes. Same idea as exp(logVar).

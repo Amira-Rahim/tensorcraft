@@ -16,8 +16,8 @@ context:
 concept:
   explanation: "Input arrives, logic runs, the UI updates. Inference slots into that familiar cycle with one new obligation: every tensor you create must be freed."
   bridge:
-    feTitle: "Event → Process → Render"
-    feCode: "input.addEventListener('change', e => { const result = process(e); render(result); })"
+    jsTitle: "Event → Process → Render"
+    jsCode: "input.addEventListener('change', e => { const result = process(e); render(result); })"
     mlTitle: "Input → Predict → Display"
     mlCode: "const prediction = model.predict(tensor); updateUI(prediction);"
     tier: structural
@@ -37,7 +37,7 @@ keywords:
   - real-time
   - memory-management
   - tidy
-skillAxes: [deployment, fe_integration]
+skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Ensign Demir">
@@ -112,7 +112,7 @@ function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequen
 
 ## Memory Management with tf.tidy()
 
-Module 1 told you `tf.tidy()` is the same contract as a `useEffect` cleanup, and that still holds: you acquired a resource the runtime will not reclaim for you. What has no frontend parallel is the *stakes*. A leaked event listener costs you a closure; a leaked GPU tensor is invisible to the garbage collector and stays allocated until the tab dies, and there is no devtools panel that will point at it.
+Module 1 told you `tf.tidy()` is the same contract as a `useEffect` cleanup, and that still holds: you acquired a resource the runtime will not reclaim for you. What has no JS parallel is the *stakes*. A leaked event listener costs you a closure; a leaked GPU tensor is invisible to the garbage collector and stays allocated until the tab dies, and there is no devtools panel that will point at it.
 
 <CodeBlock language="typescript" title="memory-management.ts">
 {`import * as tf from '@tensorflow/tfjs';

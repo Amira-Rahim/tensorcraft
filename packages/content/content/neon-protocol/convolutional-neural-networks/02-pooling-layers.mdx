@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions: each 2x2 window collapses to a single value, so the map shrinks by 75% while the strongest activations survive."
   bridge:
-    feTitle: "srcset Responsive Images"
-    feCode: "<img srcset='photo-800w.jpg 800w, photo-400w.jpg 400w' sizes='(max-width: 600px) 400px, 800px' />"
+    jsTitle: "srcset Responsive Images"
+    jsCode: "<img srcset='photo-800w.jpg 800w, photo-400w.jpg 400w' sizes='(max-width: 600px) 400px, 800px' />"
     mlTitle: "Max Pooling"
     mlCode: "const pooled = tf.maxPool(featureMap, poolSize, strides, 'valid'); // halves spatial dims"
     tier: structural

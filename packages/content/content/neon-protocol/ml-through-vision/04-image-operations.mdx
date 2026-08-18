@@ -10,10 +10,10 @@ context:
   narrative: "Every model expects a fixed input size. Noor must resize, crop, and transform surveillance feeds to match Protocol Sentinel's requirements."
   speaker: "NEON"
 concept:
-  explanation: "Image transforms for ML (resize, crop, rotate, flip) are the same operations as CSS transform and object-fit that frontend developers use daily."
+  explanation: "Image transforms for ML (resize, crop, rotate, flip) are the same operations as CSS transform and object-fit in the browser."
   bridge:
-    feTitle: "CSS object-fit"
-    feCode: "object-fit: cover // center-crop to fill container"
+    jsTitle: "CSS object-fit"
+    jsCode: "object-fit: cover // center-crop to fill container"
     mlTitle: "Image Preprocessing"
     mlCode: "tf.image.cropAndResize(image, boxes, [224, 224]) // crop and resize to model input"
     tier: structural

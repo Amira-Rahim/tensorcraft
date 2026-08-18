@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Model serialization is saving a trained model's architecture and weights so it can be loaded elsewhere. If you have ever used JSON.stringify to save application state and JSON.parse to restore it later, you already understand the concept. A model's weights are its learned state; serialization freezes that state into a portable format."
   bridge:
-    feTitle: "JSON.stringify/parse"
-    feCode: "const saved = JSON.stringify(appState); localStorage.setItem('state', saved); const restored = JSON.parse(localStorage.getItem('state'));"
+    jsTitle: "JSON.stringify/parse"
+    jsCode: "const saved = JSON.stringify(appState); localStorage.setItem('state', saved); const restored = JSON.parse(localStorage.getItem('state'));"
     mlTitle: "Model Serialization"
     mlCode: "await model.save('localstorage://sentinel'); const loaded = await tf.loadLayersModel('localstorage://sentinel');"
     tier: structural
@@ -49,7 +49,7 @@ Last month a cell in District 11 burned their safehouse ahead of a Meridian swee
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-As a frontend engineer, you save application state constantly: to localStorage, to IndexedDB, to a server. Model export is the same pattern. The model's "state" is its architecture (layers, shapes, activations) plus its weights (the learned numbers). TensorFlow.js splits these into a JSON topology file and one or more binary weight shards.
+If you've built browser apps, you've saved application state constantly: to localStorage, to IndexedDB, to a server. Model export is the same pattern. The model's "state" is its architecture (layers, shapes, activations) plus its weights (the learned numbers). TensorFlow.js splits these into a JSON topology file and one or more binary weight shards.
 
 <CodeBlock language="typescript" title="model-export.ts">
 {`import * as tf from '@tensorflow/tfjs';

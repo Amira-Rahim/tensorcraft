@@ -10,7 +10,7 @@ const sampleData = [
   { skill_axis: "training", proficiency: 45, velocity: 0 },
   { skill_axis: "evaluation", proficiency: 20, velocity: 0 },
   { skill_axis: "deployment", proficiency: 15, velocity: 0 },
-  { skill_axis: "fe_integration", proficiency: 85, velocity: 0 },
+  { skill_axis: "js_integration", proficiency: 85, velocity: 0 },
 ];
 
 describe("SkillGenome (Option C)", () => {
@@ -58,7 +58,7 @@ describe("SkillGenome (Option C)", () => {
       "training",
       "evaluation",
       "deployment",
-      "fe_integration",
+      "js_integration",
     ]) {
       expect(container.textContent).toContain(axis);
     }

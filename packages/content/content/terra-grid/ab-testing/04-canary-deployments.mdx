@@ -10,10 +10,10 @@ context:
   narrative: "Tariq manages the canary rollout from the field. 'Region 3 gets the new model first. If it holds for 48 hours with no degradation, we expand to Regions 1 and 7. If anything looks off, one command rolls everything back.'"
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Canary deployments gradually roll out a new model version to a subset of devices with automatic rollback, identical to canary releases for frontend applications."
+  explanation: "Canary deployments gradually roll out a new model version to a subset of devices with automatic rollback, identical to canary releases for JavaScript applications."
   bridge:
-    feTitle: "Canary Releases"
-    feCode: "// Deploy v2 to 5% of servers, monitor error rate, promote or rollback"
+    jsTitle: "Canary Releases"
+    jsCode: "// Deploy v2 to 5% of servers, monitor error rate, promote or rollback"
     mlTitle: "Model Canary"
     mlCode: "// Deploy modelV2 to Region 3, monitor accuracy, promote or rollback"
     tier: identity
@@ -148,7 +148,7 @@ const manager = new CanaryManager([
 ]);`}
 </CodeBlock>
 
-Read the rollout plan against the two fears. Tariq's lives in the health gates: accuracy floors, latency ceilings, a hard zero on missed anomalies. Elif's lives in `evaluate()`: one failed check and the stage flips to `rolled-back` with no human in the loop. A frontend canary only ever watched HTTP error rates; this one has to know what a missed bearing failure costs, which is why "healthy" is four ML metrics instead of one status code.
+Read the rollout plan against the two fears. Tariq's lives in the health gates: accuracy floors, latency ceilings, a hard zero on missed anomalies. Elif's lives in `evaluate()`: one failed check and the stage flips to `rolled-back` with no human in the loop. A canary for a JavaScript service only ever watched HTTP error rates; this one has to know what a missed bearing failure costs, which is why "healthy" is four ML metrics instead of one status code.
 
 ## Challenge
 

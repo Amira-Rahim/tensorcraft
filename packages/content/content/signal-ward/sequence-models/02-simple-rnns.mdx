@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "An RNN processes a sequence one element at a time, maintaining a hidden state that accumulates context. Each step takes the current element and the state so far, and produces a new state that carries everything read up to that point."
   bridge:
-    feTitle: "Array.reduce()"
-    feCode: "words.reduce((state, word) => updateState(state, word), initialState)"
+    jsTitle: "Array.reduce()"
+    jsCode: "words.reduce((state, word) => updateState(state, word), initialState)"
     mlTitle: "RNN Step"
     mlCode: "tokens.reduce((hidden, token) => rnnCell(hidden, embed(token)), h0)"
     tier: structural

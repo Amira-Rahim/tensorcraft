@@ -12,7 +12,7 @@ export interface LessonRef {
 export type ConceptSource =
   | "keyword"
   | "bridge_ml"
-  | "bridge_fe"
+  | "bridge_js"
   | "skill_axis"
   | "module_id";
 
@@ -103,7 +103,7 @@ export function extractLessonConcepts(
   const bridge = lesson.concept?.bridge;
   if (bridge) {
     for (const tok of tokenize(bridge.mlTitle)) push(tok, "bridge_ml");
-    for (const tok of tokenize(bridge.feTitle)) push(tok, "bridge_fe");
+    for (const tok of tokenize(bridge.jsTitle)) push(tok, "bridge_js");
   }
 
   for (const axis of lesson.skillAxes ?? []) push(axis, "skill_axis");
@@ -165,7 +165,7 @@ export function findLessonsByConcepts(
   const sourceWeight: Record<ConceptSource, number> = {
     keyword: 4,
     bridge_ml: 3,
-    bridge_fe: 2,
+    bridge_js: 2,
     module_id: 2,
     skill_axis: 1,
   };

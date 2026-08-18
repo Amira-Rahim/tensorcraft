@@ -15,8 +15,8 @@ context:
 concept:
   explanation: "WebGPU gives inference direct GPU compute access with no graphics pipeline in the way. Most of inference is matrix math, and now it runs as exactly that."
   bridge:
-    feTitle: "Canvas WebGL"
-    feCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
+    jsTitle: "Canvas WebGL"
+    jsCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
     mlTitle: "WebGPU Compute"
     mlCode: "const adapter = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
     tier: structural
@@ -171,7 +171,7 @@ Set up the best available GPU backend and benchmark inference speed.
 <LessonRecap
   whatYouLearned={[
     "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders; on DEEP SCAN's matmul-heavy inference workload that measured 2-3x faster.",
-    "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in frontend feature detection.",
+    "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in browser feature detection.",
     "The full optimization stack (quantization, pruning, caching, and WebGPU) compounds: each step multiplies the gains of the previous ones."
   ]}
   bridge="Switching `canvas.getContext('webgl2')` for `navigator.gpu.requestAdapter()` moves GPU access from a graphics-oriented API to a compute-oriented one, the same shift as moving rendering logic off the main thread into a dedicated Worker."

@@ -1,6 +1,10 @@
 # @tensorcraft/bridges
 
-50 canonical analogies from frontend to ML, with explicit failure-mode labels.
+50 canonical analogies from JavaScript to ML, with explicit failure-mode labels.
+
+> **0.2.0 breaking change:** the bridge fields `feConcept` and `feCode` are now
+> `jsConcept` and `jsCode` (2026-08 rebrand). Pin `0.1.0` if you depend on the
+> old field names.
 
 ```bash
 npm install @tensorcraft/bridges
@@ -12,7 +16,7 @@ import { BRIDGES } from "@tensorcraft/bridges";
 const relu = BRIDGES.find((b) => b.mlConcept === "Activation functions (ReLU)");
 // {
 //   id: 14,
-//   feConcept: 'Math.max(0, x)',
+//   jsConcept: 'Math.max(0, x)',
 //   mlConcept: 'Activation functions (ReLU)',
 //   tier: 'identity',
 //   connection: 'ReLU is literally Math.max(0, x) - same function, same math, different name.',
@@ -30,7 +34,7 @@ push the analogy too far. The full bridge registry lives in this package.
 
 ## Tiers
 
-- **`identity`** - the FE concept literally is the ML concept. Example:
+- **`identity`** - the JS concept literally is the ML concept. Example:
   `Math.max(0, x)` is ReLU. No failure mode.
 - **`structural`** - same shape, different domain. Example: `Promise.all`
   with chunk size shapes a batch. The `breaks` field names where the
@@ -60,7 +64,7 @@ import {
 interface Bridge {
   id: number;
   mlConcept: string;
-  feConcept: string;
+  jsConcept: string;
   tier: "identity" | "structural" | "intuition";
   connection: string;
   category:
@@ -99,7 +103,7 @@ Render a per-framework code variant (React, Vue, Angular, Svelte, vanilla):
 
 ```typescript
 const propsToTraining = BRIDGES.find((b) => b.id === 1);
-const reactCode = propsToTraining?.variants?.react?.feCode;
+const reactCode = propsToTraining?.variants?.react?.jsCode;
 ```
 
 ## License

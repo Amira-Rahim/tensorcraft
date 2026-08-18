@@ -18,8 +18,8 @@ context:
 concept:
   explanation: "RAG retrieves the relevant records first and hands them to the model, so answers can cite your data instead of the model's memory."
   bridge:
-    feTitle: "Server Components"
-    feCode: "async function Page() { const data = await db.query(...); return <View data={data} />; }"
+    jsTitle: "Server Components"
+    jsCode: "async function Page() { const data = await db.query(...); return <View data={data} />; }"
     mlTitle: "RAG Pipeline"
     mlCode: "const context = await db.search(query); const answer = await llm.complete(prompt + context);"
     tier: structural
@@ -38,7 +38,7 @@ keywords:
   - retrieval-augmented-generation
   - grounding
   - server-components
-skillAxes: [deployment, fe_integration]
+skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">

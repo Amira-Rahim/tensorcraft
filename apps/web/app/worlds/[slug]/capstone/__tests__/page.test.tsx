@@ -104,14 +104,14 @@ vi.mock("@tensorcraft/content", () => {
       {
         lessonSlug: "intro-tensors",
         moduleSlug: "foundations",
-        feTitle: "Array.map",
+        jsTitle: "Array.map",
         mlTitle: "torch.Tensor.map",
         tier: "identity",
       },
       {
         lessonSlug: "signal-basics",
         moduleSlug: "sector-one",
-        feTitle: "FFT-JS",
+        jsTitle: "FFT-JS",
         mlTitle: "torch.fft",
         tier: "structural",
       },

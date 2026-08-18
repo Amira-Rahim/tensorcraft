@@ -22,8 +22,8 @@ export const lessonSchema = z.object({
     explanation: z.string().min(1),
     bridge: z
       .object({
-        feTitle: z.string(),
-        feCode: z.string(),
+        jsTitle: z.string(),
+        jsCode: z.string(),
         mlTitle: z.string(),
         mlCode: z.string(),
         tier: z.enum(["identity", "structural", "intuition"]),
@@ -88,7 +88,7 @@ export const lessonSchema = z.object({
         "training",
         "evaluation",
         "deployment",
-        "fe_integration",
+        "js_integration",
       ]),
     )
     .optional()
@@ -128,7 +128,7 @@ export const exerciseSchema = z.object({
       "training",
       "evaluation",
       "deployment",
-      "fe_integration",
+      "js_integration",
     ])
     .optional(),
 });

@@ -117,7 +117,7 @@ Tracked canonically in `docs/launch-blockers.md`; not duplicated here. Status ha
 
 Preconditions, not preferences. Violating the order wastes capital.
 
-- **Gate 1 - Denominator.** Only 1 world is purchasable and the ICP is "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies - impossible arithmetic. Widen to web/JS devs (10M+) and launch more worlds. *Nothing downstream matters until this opens.*
+- **Gate 1 - Denominator.** Only 1 world is purchasable and the ICP was "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies - impossible arithmetic. Widen to JS devs (10M+) and launch more worlds. *Nothing downstream matters until this opens.* Status 2026-08-18: the JavaScript rebrand shipped (copy, SEO metadata, schema identifiers, docs, content noun pass); still open for Gate 1: the browser-anchored bridge triage and launching more worlds.
 - **Gate 2 - LTV.** No recurring revenue exists. Until LTV > 3×CAC, paid acquisition is a furnace, not an engine.
 - **Gate 3 - Proof.** Do not hire sales or buy traffic against an unproven funnel. Activation/retention curves must exist and flatten - and enterprise buyers will demand completion data. (Horizon 0 produces it.)
 - **Gate 4 - Catalog.** Enterprises buy *broad* upskilling. One narrow path does not clear procurement. Catalog breadth is a hard dependency for enterprise being sellable.
@@ -128,7 +128,7 @@ Preconditions, not preferences. Violating the order wastes capital.
 
 _Work items: `docs/post-launch-backlog.md` §8, Horizon 1. This section carries rationale and decisions only._
 
-**Widen the market (Gate 1).** Cheap to open, and the codebase proves it: ICP coupling is thin and well-isolated - the ML lessons are framework-agnostic, "frontend dev" lives in one optional `concept.bridge` frontmatter field plus a `Framework = "react"` union (`packages/shared/src/bridges.ts:11`) that is **already typed for `variants`**, and bridge content is already ~75% general JS. The volume bottleneck is authoring velocity (no lesson generator exists), which is what puts the authoring scaffold on the critical path.
+**Widen the market (Gate 1).** Executed 2026-08-18: the audience is JavaScript engineers across copy, metadata, schema (migration 059), docs, and content; the bridge frontmatter fields are now `jsTitle`/`jsCode` and the `Framework = "react"` union (`packages/shared/src/bridges.ts:11`) remains typed for `variants`. What remains is editorial: ~72 of 274 bridges still anchor on browser-only concepts (triage tracked in `docs/post-launch-backlog.md` Horizon 1). The volume bottleneck is authoring velocity (no lesson generator exists), which is what puts the authoring scaffold on the critical path.
 
 **Add recurring revenue (Gate 2).** An all-access subscription (~$15–25/mo) alongside one-time purchases, replacing ad-hoc entitlement derivation with a real entitlements model. Money-touching - full TDD and Stripe test-mode e2e before any live charge.
 

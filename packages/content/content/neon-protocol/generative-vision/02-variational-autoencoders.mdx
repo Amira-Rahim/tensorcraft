@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A Variational Autoencoder compresses images into a structured latent space and reconstructs them. The encoder maps high-dimensional data to a compact code; the decoder maps it back. Because the code is a distribution rather than a point, nearby codes decode to similar images, and the space between two faces still looks like a face."
   bridge:
-    feTitle: "URL Query Parameters"
-    feCode: "const state = new URLSearchParams({ theme: 'dark', zoom: '2', filter: 'blur' }); // Compressed state"
+    jsTitle: "URL Query Parameters"
+    jsCode: "const state = new URLSearchParams({ theme: 'dark', zoom: '2', filter: 'blur' }); // Compressed state"
     mlTitle: "Latent Space Encoding"
     mlCode: "const [mean, logVar] = encoder.predict(image); // Compressed representation of image"
     tier: structural

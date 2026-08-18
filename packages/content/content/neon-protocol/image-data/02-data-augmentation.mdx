@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Data augmentation multiplies a small dataset by transforming each image (flip, rotate, brighten, crop) while keeping its label the same. The model learns that meaning survives presentation."
   bridge:
-    feTitle: "CSS Transforms"
-    feCode: "transform: rotate(15deg) scale(0.9) skewX(5deg)"
+    jsTitle: "CSS Transforms"
+    jsCode: "transform: rotate(15deg) scale(0.9) skewX(5deg)"
     mlTitle: "Image Augmentation"
     mlCode: "augment(image, { rotate: 15, scale: 0.9, shear: 5 })"
     tier: structural
@@ -39,7 +39,7 @@ keywords:
 Two thousand images might sound like a lot, but a neural network will memorize them in minutes and learn nothing generalizable. We need to show it the same cameras from every angle, in every lighting condition. Two thousand originals, sixteen thousand training samples. The transforms do the photography for us.
 </Dialogue>
 
-Every frontend developer has written `transform: rotate(45deg) scale(1.2)` to manipulate how an element appears on screen. The element itself doesn't change; its DOM structure, content, and semantics remain identical. You're just presenting it differently. Data augmentation applies the exact same principle to training images: transform the presentation without changing the meaning.
+If you've written browser code, you've typed `transform: rotate(45deg) scale(1.2)` to change how an element appears on screen. The element itself doesn't change; its DOM structure, content, and semantics remain identical. You're just presenting it differently. Data augmentation applies the exact same principle to training images: transform the presentation without changing the meaning.
 
 <LearningObjectives objectives={[
   "Understand why data augmentation prevents overfitting",
@@ -75,14 +75,14 @@ Imagine you only ever saw cars from the front. You'd recognize a grille and head
 Without augmentation, neural networks overfit: they memorize the training images pixel-for-pixel instead of learning general features. It's the ML equivalent of a component that only works at exactly 1440px width because you hardcoded every measurement instead of using flexible layouts.
 
 <CodeBlock language="typescript" title="overfitting-analogy.ts">
-{`// Frontend: brittle component (overfitting)
+{`// JS: brittle component (overfitting)
 const BrittleCard = () => (
   <div style={{ width: "342px", height: "218px", left: "89px" }}>
     {/* Only works at one exact viewport */}
   </div>
 );
 
-// Frontend: flexible component (generalization)
+// JS: flexible component (generalization)
 const FlexibleCard = () => (
   <div style={{ width: "100%", maxWidth: "400px", padding: "1rem" }}>
     {/* Works across viewports; learned the pattern, not the pixels */}

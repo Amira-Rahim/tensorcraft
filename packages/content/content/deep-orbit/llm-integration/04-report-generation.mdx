@@ -16,8 +16,8 @@ context:
 concept:
   explanation: "Report generation pipes computed results through fixed sections. The data does the arguing; the template only does the formatting."
   bridge:
-    feTitle: "Template Rendering"
-    feCode: "const html = template.render({ title, sections, data })"
+    jsTitle: "Template Rendering"
+    jsCode: "const html = template.render({ title, sections, data })"
     mlTitle: "Report Generation"
     mlCode: "const report = await llm.generate({ sections, signalData, format })"
     tier: structural
@@ -36,7 +36,7 @@ keywords:
   - template
   - structured-output
   - scientific-writing
-skillAxes: [deployment, fe_integration]
+skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">

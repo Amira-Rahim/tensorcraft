@@ -1,7 +1,7 @@
 interface BridgeMapping {
-  feTitle: string;
+  jsTitle: string;
   mlTitle: string;
-  feCode?: string;
+  jsCode?: string;
   mlCode?: string;
   tier: "identity" | "structural" | "intuition";
 }
@@ -12,8 +12,8 @@ interface ConceptProps {
   /** Package-level API: nested bridge object */
   bridge?: BridgeMapping;
   /** App-level API: flat bridge props */
-  feTitle?: string;
-  feCode?: string;
+  jsTitle?: string;
+  jsCode?: string;
   mlTitle?: string;
   mlCode?: string;
   tier?: "identity" | "structural" | "intuition";
@@ -44,20 +44,20 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
       </span>
 
       <div className="grid grid-cols-[1fr_24px_1fr] items-center gap-2">
-        {/* FE side */}
+        {/* JS side */}
         <div>
           <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-1">
-            Frontend
+            JavaScript
           </span>
           <span className="text-sm font-semibold text-text-primary block">
-            {bridge.feTitle}
+            {bridge.jsTitle}
           </span>
-          {bridge.feCode && (
+          {bridge.jsCode && (
             <pre
               className="block mt-2 p-2 text-[13px] leading-relaxed font-mono bg-surface border border-border overflow-x-auto"
               style={{ color }}
             >
-              <code>{bridge.feCode}</code>
+              <code>{bridge.jsCode}</code>
             </pre>
           )}
         </div>
@@ -92,8 +92,8 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
 export function Concept({
   explanation,
   bridge,
-  feTitle,
-  feCode,
+  jsTitle,
+  jsCode,
   mlTitle,
   mlCode,
   tier,
@@ -101,8 +101,8 @@ export function Concept({
   // Normalize: if flat bridge props are provided, build a BridgeMapping
   const resolvedBridge: BridgeMapping | undefined =
     bridge ??
-    (feTitle && mlTitle && tier
-      ? { feTitle, feCode, mlTitle, mlCode, tier }
+    (jsTitle && mlTitle && tier
+      ? { jsTitle, jsCode, mlTitle, mlCode, tier }
       : undefined);
 
   // App-level flat API (no explanation): render bridge directly at top level

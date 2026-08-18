@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Benchmarking model performance is like using performance.mark() and performance.measure() in the browser: standardized, repeatable measurements."
   bridge:
-    feTitle: "Performance API"
-    feCode: "performance.mark('start');\nprocessData();\nperformance.mark('end');\nperformance.measure('process', 'start', 'end');"
+    jsTitle: "Performance API"
+    jsCode: "performance.mark('start');\nprocessData();\nperformance.mark('end');\nperformance.measure('process', 'start', 'end');"
     mlTitle: "Model Benchmark"
     mlCode: "const start = performance.now();\nmodel.predict(input);\nconst elapsed = performance.now() - start;"
     tier: identity

@@ -455,7 +455,7 @@ export function buildReadmeTemplate(params: {
     "## About",
     "",
     "This repository is automatically maintained by [Tensorcraft](https://tensorcraft.app),",
-    "an interactive, story-driven platform teaching frontend engineers browser-based ML.",
+    "an interactive, story-driven platform teaching JavaScript engineers ML with TensorFlow.js.",
     "Each commit corresponds to a completed lesson exercise.",
     "",
     "> Learn more at https://tensorcraft.app",

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "LSTM cells use three gates (forget, input, output) to control information flow, deciding what to keep, add, and expose. This is analogous to React's useMemo and useCallback, hooks that control what persists across renders."
   bridge:
-    feTitle: "React useMemo / useCallback"
-    feCode: "const cached = useMemo(() => expensiveCalc(data), [data]); // controls what persists"
+    jsTitle: "React useMemo / useCallback"
+    jsCode: "const cached = useMemo(() => expensiveCalc(data), [data]); // controls what persists"
     mlTitle: "LSTM Gates"
     mlCode: "cellState = forgetGate * cellState + inputGate * candidate; // controls what persists"
     tier: structural

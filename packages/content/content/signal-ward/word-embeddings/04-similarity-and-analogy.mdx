@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Cosine similarity measures the angle between two vectors, revealing semantic relatedness. Word vectors also support analogies through vector arithmetic: king - man + woman = queen. In clinical NLP, this enables reasoning like aspirin - pain + infection = antibiotic."
   bridge:
-    feTitle: "String Similarity"
-    feCode: "levenshtein('aspirin', 'asprin') // edit distance = 1"
+    jsTitle: "String Similarity"
+    jsCode: "levenshtein('aspirin', 'asprin') // edit distance = 1"
     mlTitle: "Vector Similarity"
     mlCode: "cosineSim(vec('aspirin'), vec('ibuprofen')) // semantic similarity = 0.95"
     tier: intuition

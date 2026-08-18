@@ -10,10 +10,10 @@ context:
   narrative: "Zara leads Noor through the rain-soaked streets of Sector 7, photographing surveillance cameras from every angle. Each image must be labeled and cataloged; the Protocol Sentinel needs thousands of examples to learn what corporate surveillance hardware looks like."
   speaker: "Zara"
 concept:
-  explanation: "Building an ML dataset is like organizing a frontend asset pipeline: every image needs a clear path, consistent naming, and structured metadata."
+  explanation: "Building an ML dataset is like organizing a JavaScript asset pipeline: every image needs a clear path, consistent naming, and structured metadata."
   bridge:
-    feTitle: "Asset Pipeline"
-    feCode: "assets/icons/{category}/{name}-{size}.svg"
+    jsTitle: "Asset Pipeline"
+    jsCode: "assets/icons/{category}/{name}-{size}.svg"
     mlTitle: "Dataset Structure"
     mlCode: "dataset/{class_label}/{image_id}.png"
     tier: structural
@@ -43,14 +43,14 @@ Every great model starts with great data, Noor. You wouldn't ship a frontend app
 
 <LearningObjectives objectives={[
   "Understand the structure of an image classification dataset",
-  "Map frontend asset pipeline patterns to ML dataset organization",
+  "Map JavaScript asset pipeline patterns to ML dataset organization",
   "Implement labeled sample collection with metadata tracking",
   "Build summary statistics to verify dataset integrity"
 ]} />
 
 ## From Asset Folders to Dataset Directories
 
-In frontend projects, you organize assets by type and purpose. A well-structured icon library might look like:
+In JavaScript projects, you organize assets by type and purpose. A well-structured icon library might look like:
 
 ```
 assets/
@@ -84,7 +84,7 @@ The folder name *is* the label. This convention, called "image folder" format, i
 Every image in a dataset carries metadata alongside its pixels: fields that let you track quality, provenance, and distribution.
 
 <CodeBlock language="typescript" title="dataset-types.ts">
-{`// Frontend: asset manifest entry
+{`// JS: asset manifest entry
 interface AssetEntry {
   path: string;
   name: string;

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Subword tokenization (BPE, WordPiece) breaks rare words into known sub-units. 'Cardiology' becomes ['cardio', '##logy'], so a medical term the model has never seen still decomposes into pieces it already knows."
   bridge:
-    feTitle: "Route Parsing"
-    feCode: "'/patients/:id/records'.match(/:([a-z]+)/g)"
+    jsTitle: "Route Parsing"
+    jsCode: "'/patients/:id/records'.match(/:([a-z]+)/g)"
     mlTitle: "Subword Tokenizer"
     mlCode: "'cardiology' → ['cardio', '##logy']"
     tier: structural

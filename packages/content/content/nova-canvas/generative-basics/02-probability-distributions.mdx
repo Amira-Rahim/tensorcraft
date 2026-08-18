@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A probability distribution describes how likely each possible value is. Generative models learn these distributions from data and then sample from them."
   bridge:
-    feTitle: "Random Color Generator"
-    feCode: "const hue = Math.floor(Math.random() * 360)"
+    jsTitle: "Random Color Generator"
+    jsCode: "const hue = Math.floor(Math.random() * 360)"
     mlTitle: "Probability Distribution"
     mlCode: "const sample = tf.randomNormal([1], mean, std)"
     tier: structural
@@ -45,11 +45,11 @@ What if I sampled from the valley between your two favorite hues? I ran a histog
 
 When you write `Math.random()`, you get a uniform distribution: every value between 0 and 1 is equally likely. But real-world data almost never looks like that. Heights cluster around an average. Colors in a sunset concentrate in warm hues. Brushstroke widths follow patterns. Understanding these distributions is the foundation of generation.
 
-<LearningObjectives objectives={["Understand what a probability distribution represents", "Distinguish between uniform and normal distributions", "Create and visualize distributions using TensorFlow.js", "Recognize how frontend random generators map to statistical distributions"]} />
+<LearningObjectives objectives={["Understand what a probability distribution represents", "Distinguish between uniform and normal distributions", "Create and visualize distributions using TensorFlow.js", "Recognize how JavaScript random generators map to statistical distributions"]} />
 
 ## Distributions Are Everywhere
 
-A probability distribution is a function that tells you how likely each value is. You use them in frontend code constantly. You just may not call them that.
+A probability distribution is a function that tells you how likely each value is. You use them in JavaScript code constantly. You just may not call them that.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -64,7 +64,7 @@ const uniform = tf.randomUniform([1000], 0, 360);
 const normal = tf.randomNormal([1000], 180, 30);
 // Histogram: bell curve; most values near 180, fewer at extremes
 
-// Frontend parallel: weighted random for "natural" color palettes
+// JS parallel: weighted random for "natural" color palettes
 function warmHue(): number {
   // Not uniform! Cluster around warm tones (0-60)
   // This is a crude normal distribution

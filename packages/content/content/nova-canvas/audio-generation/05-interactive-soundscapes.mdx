@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Interactive soundscapes map user input (pointer position, gestures, movement) to audio generation parameters: the same event-driven pattern as drag-and-drop or interactive charts."
   bridge:
-    feTitle: "Pointer Events"
-    feCode: "canvas.addEventListener('pointermove', e => { updateParam(e.clientX, e.clientY); });"
+    jsTitle: "Pointer Events"
+    jsCode: "canvas.addEventListener('pointermove', e => { updateParam(e.clientX, e.clientY); });"
     mlTitle: "Input-Driven Generation"
     mlCode: "const z = tf.tensor2d([[x / width, y / height, ...params]]); model.predict(z);"
     tier: structural

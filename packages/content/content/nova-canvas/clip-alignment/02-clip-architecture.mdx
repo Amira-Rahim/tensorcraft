@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "CLIP (Contrastive Language-Image Pretraining) trains an image encoder and a text encoder together on 400 million pairs until both emit vectors in one shared space, where a sentence and a photo can be compared with a dot product."
   bridge:
-    feTitle: "Algolia multi-index search"
-    feCode: "algolia.search('sunset city', { indices: ['images', 'articles'] });"
+    jsTitle: "Algolia multi-index search"
+    jsCode: "algolia.search('sunset city', { indices: ['images', 'articles'] });"
     mlTitle: "CLIP dual encoder"
     mlCode: "const results = clip.search(textQuery, imageDatabase);"
     tier: structural

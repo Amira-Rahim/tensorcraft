@@ -14,7 +14,7 @@ import { surfacePlateSrc } from "@/lib/location-art";
  * and duplicated the brand + tagline):
  *  - Left pane (desktop only, ~55%): the live Deep Orbit canvas backdrop
  *    (shared `OrbitCanvas`, identical to the landing page) behind the brand
- *    mark, headline, and an "FE → ML · bridge online" status line.
+ *    mark and headline. (An earlier "bridge online" status line was cut.)
  *  - Right pane (full-width mobile, ~45% desktop): the form-only <AuthForm/>.
  *
  * Brutalist rules: `rounded-none`, world color tokens only, mono accents.

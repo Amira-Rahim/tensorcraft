@@ -6,7 +6,7 @@ import { WORLD_SLUGS, WORLD_CONTENT, isLaunched } from "@tensorcraft/shared";
 export const metadata: Metadata = {
   title: "Learn Machine Learning with JavaScript | Tensorcraft",
   description:
-    "A frontend developer's guide to machine learning. Learn ML through code you already know: useState becomes model weights, Array.map becomes tensor ops. No Python required.",
+    "A JavaScript developer's guide to machine learning. Learn ML through code you already know: useState becomes model weights, Array.map becomes tensor ops. No Python required.",
   alternates: {
     canonical: "https://tensorcraft.app/learn",
   },
@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     url: "https://tensorcraft.app/learn",
     title: "Learn Machine Learning with JavaScript | Tensorcraft",
     images: [
-      "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
+      "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20JavaScript%20developer%27s%20guide",
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Learn Machine Learning with JavaScript | Tensorcraft",
     images: [
-      "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
+      "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20JavaScript%20developer%27s%20guide",
     ],
   },
 };
@@ -47,8 +47,8 @@ export default function LearnPage() {
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-8">
           You already think in arrays, state, and components. Machine learning
           uses the same patterns, just with different names. Tensorcraft bridges
-          the gap with {WORLD_CONTENT.lessonBridges} analogies that map your
-          frontend knowledge to ML concepts.
+          the gap with {WORLD_CONTENT.lessonBridges} analogies that map the
+          JavaScript you know to ML concepts.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
@@ -61,8 +61,8 @@ export default function LearnPage() {
           <code className="text-primary font-mono">array.map()</code>, you can
           do tensor operations. If you&apos;ve used{" "}
           <code className="text-primary font-mono">fetch()</code>, you already
-          know how inference APIs work. The leap from frontend to ML is smaller
-          than you think.
+          know how inference APIs work. The leap from JavaScript to ML is
+          smaller than you think.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
@@ -80,7 +80,7 @@ export default function LearnPage() {
             <span className="text-primary shrink-0">2.</span>
             <span>
               Learn through bridges: {WORLD_CONTENT.lessonBridges} analogies map
-              ML concepts to frontend concepts you know, each labeled where it
+              ML concepts to JavaScript concepts you know, each labeled where it
               breaks
             </span>
           </li>

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Model optimization shrinks a network for delivery: quantization reduces the precision of every weight, and pruning removes connections that barely contribute. Together they can cut a 45MB model to a quarter of its size with accuracy loss measured in fractions of a point."
   bridge:
-    feTitle: "Webpack Tree-Shaking"
-    feCode: "// webpack removes unused exports\nexport function used() { ... }\nexport function unused() { ... } // stripped in production"
+    jsTitle: "Webpack Tree-Shaking"
+    jsCode: "// webpack removes unused exports\nexport function used() { ... }\nexport function unused() { ... } // stripped in production"
     mlTitle: "Model Pruning"
     mlCode: "// Pruning removes low-impact weights\nconst pruned = await pruneModel(model, { sparsity: 0.5 }); // 50% of weights zeroed"
     tier: structural
@@ -50,7 +50,7 @@ In the field, a model that takes twelve seconds to load does not get used. Brows
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend builds, tree-shaking analyzes your dependency graph and strips code that is never called. Model optimization applies the same logic to neural networks: quantization reduces the precision of every weight (like minification), and pruning removes weights that contribute almost nothing to the output (like dead code elimination).
+In JavaScript builds, tree-shaking analyzes your dependency graph and strips code that is never called. Model optimization applies the same logic to neural networks: quantization reduces the precision of every weight (like minification), and pruning removes weights that contribute almost nothing to the output (like dead code elimination).
 
 <CodeBlock language="typescript" title="quantization.ts">
 {`import * as tf from '@tensorflow/tfjs';

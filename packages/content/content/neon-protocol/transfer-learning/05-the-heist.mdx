@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Repurposing an existing model for a new task is like forking an open-source project. You take the codebase (pre-trained weights), strip out what you do not need (classification head), add your own features (new task-specific layers), and deploy it for a completely different purpose. The original authors' work becomes your foundation."
   bridge:
-    feTitle: "Forking an open-source project"
-    feCode: "git clone meridian/sentinel && rm -rf src/surveillance && git commit -m 'repurposed'"
+    jsTitle: "Forking an open-source project"
+    jsCode: "git clone meridian/sentinel && rm -rf src/surveillance && git commit -m 'repurposed'"
     mlTitle: "Model Repurposing"
     mlCode: "// Load Meridian's model, remove surveillance head, add resistance classifier"
     tier: intuition
@@ -155,7 +155,7 @@ async function trainProtocolSentinel(
   console.log(\`Protocol Sentinel trained. Final accuracy: \${(finalAcc * 100).toFixed(1)}%\`);
 
   // Meridian: $2M, 3 years, 200 engineers, 14B images
-  // Resistance: $0, 20 minutes, 1 frontend dev, 500 images
+  // Resistance: $0, 20 minutes, 1 JS dev, 500 images
 }`}
 </CodeBlock>
 

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Image tensors have specific shapes depending on their type: grayscale (2D), color (3D), or batched (4D). This maps directly to the Uint8ClampedArray layout from canvas."
   bridge:
-    feTitle: "Uint8ClampedArray"
-    feCode: "imageData.data[i * 4 + 0] // Red channel of pixel i (flat array)"
+    jsTitle: "Uint8ClampedArray"
+    jsCode: "imageData.data[i * 4 + 0] // Red channel of pixel i (flat array)"
     mlTitle: "Tensor Indexing"
     mlCode: "tensor.slice([y, x, 0], [1, 1, 1]) // Red channel of pixel (y, x)"
     tier: structural

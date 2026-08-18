@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Sequence labeling assigns a class to every token using a model that reads the surrounding context, not the token alone. The same word earns different labels depending on its neighbors."
   bridge:
-    feTitle: "CSS Class Assignment Per Element"
-    feCode: "elements.forEach(el => el.className = getClass(el, siblings)); // context-aware styling"
+    jsTitle: "CSS Class Assignment Per Element"
+    jsCode: "elements.forEach(el => el.className = getClass(el, siblings)); // context-aware styling"
     mlTitle: "Token Classification"
     mlCode: "tokens.forEach(t => t.label = classify(t, context)); // context-aware labeling"
     tier: structural

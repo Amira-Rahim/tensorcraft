@@ -51,7 +51,7 @@ export default function AboutPage() {
               "@type": "EducationalOrganization",
               name: "Tensorcraft",
               url: "https://tensorcraft.app",
-              description: `Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. ${WORLD_CONTENT.totalLessonsPerWorld} lessons live in the first of ${WORLD_SLUGS.length} planned worlds.`,
+              description: `Browser-based machine learning course for JavaScript developers. TensorFlow.js. ${WORLD_CONTENT.totalLessonsPerWorld} lessons live in the first of ${WORLD_SLUGS.length} planned worlds.`,
             },
           }),
         }}
@@ -70,15 +70,15 @@ export default function AboutPage() {
               as a named individual. Do not add a personal name or byline
               here without asking. */}
           <p>
-            Tensorcraft was built by a group of frontend engineers who wanted an
-            easy way into machine learning. We looked for a course that spoke
+            Tensorcraft was built by a group of JavaScript engineers who wanted
+            an easy way into machine learning. We looked for a course that spoke
             our language and did not find one, so we took matters into our own
             hands.
           </p>
 
           <p>
             Most ML courses teach you ML. Tensorcraft teaches you ML by mapping
-            it to the frontend code you already write:{" "}
+            it to the JavaScript you already write:{" "}
             <code className="font-mono text-text-primary text-sm">
               useState
             </code>{" "}
@@ -187,10 +187,10 @@ export default function AboutPage() {
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">
-            Built by FE devs who shipped ML
+            Built by JS devs who shipped ML
           </h2>
           <p>
-            Tensorcraft is authored by frontend engineers who shipped ML in
+            Tensorcraft is authored by JavaScript engineers who shipped ML in
             production web apps before writing the curriculum. We built the
             course we wanted when we started. Every analogy was tested against
             our own missed-it-the-first-time mistakes.

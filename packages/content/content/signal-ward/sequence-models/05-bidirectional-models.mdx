@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Bidirectional models process sequences in both directions and concatenate the results, capturing both left and right context for each token. This is like combining Array.reduce() (left-to-right) with Array.reduceRight() (right-to-left) to get full context at every position."
   bridge:
-    feTitle: "reduce() + reduceRight()"
-    feCode: "const left = arr.reduce(foldL, init); const right = arr.reduceRight(foldR, init);"
+    jsTitle: "reduce() + reduceRight()"
+    jsCode: "const left = arr.reduce(foldL, init); const right = arr.reduceRight(foldR, init);"
     mlTitle: "Bidirectional RNN"
     mlCode: "const [fwd, bwd] = biLSTM(tokens); const full = tf.concat([fwd, bwd]);"
     tier: structural

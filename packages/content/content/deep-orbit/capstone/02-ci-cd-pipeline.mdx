@@ -17,8 +17,8 @@ context:
 concept:
   explanation: "CI/CD for ML extends the test-build-deploy workflow with model gates: accuracy thresholds, speed benchmarks, and a memory budget that blocks the merge."
   bridge:
-    feTitle: "GitHub Actions CI"
-    feCode: "on: push → npm test → npm build → deploy // automated web app pipeline"
+    jsTitle: "GitHub Actions CI"
+    jsCode: "on: push → npm test → npm build → deploy // automated web app pipeline"
     mlTitle: "ML CI/CD"
     mlCode: "on: push → test → validate-model → benchmark → deploy // + model checks"
     tier: structural

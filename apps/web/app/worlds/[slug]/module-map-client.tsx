@@ -13,7 +13,7 @@ interface LessonItem {
   status: "completed" | "in_progress" | "available" | "locked";
   sceneLocation?: string;
   narrative?: string;
-  bridgeFe?: string;
+  bridgeJs?: string;
   bridgeMl?: string;
 }
 
@@ -421,7 +421,7 @@ function LessonCard({
   const locationLabel = lesson.sceneLocation
     ? `${lesson.sceneLocation} · ${lesson.estimatedMinutes} min`
     : `${terminology.lesson} ${String(lesson.order).padStart(2, "0")} · ${lesson.estimatedMinutes} min`;
-  const bridgeCount = lesson.bridgeFe && lesson.bridgeMl ? 1 : 0;
+  const bridgeCount = lesson.bridgeJs && lesson.bridgeMl ? 1 : 0;
 
   const card = (
     <div
@@ -542,7 +542,7 @@ function LessonCard({
 
         {!locked && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            {lesson.bridgeFe && lesson.bridgeMl && (
+            {lesson.bridgeJs && lesson.bridgeMl && (
               <span
                 className="rounded-none px-1.5 py-0.5 font-mono text-[9px]"
                 style={{
@@ -551,7 +551,7 @@ function LessonCard({
                 }}
                 data-testid="bridge-count"
               >
-                {lesson.bridgeFe} &rarr; {lesson.bridgeMl}
+                {lesson.bridgeJs} &rarr; {lesson.bridgeMl}
               </span>
             )}
             <span

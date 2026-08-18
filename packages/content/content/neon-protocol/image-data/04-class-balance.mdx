@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Class imbalance means one label dominates the dataset, so a model can score high accuracy while ignoring the rare classes entirely. Balancing techniques (resampling, class weights) force the rare classes back into the loss."
   bridge:
-    feTitle: "Load Balancing"
-    feCode: "servers.distribute(requests, { strategy: 'round-robin' })"
+    jsTitle: "Load Balancing"
+    jsCode: "servers.distribute(requests, { strategy: 'round-robin' })"
     mlTitle: "Class Balancing"
     mlCode: "sampler.balance(dataset, { strategy: 'oversample-minority' })"
     tier: structural

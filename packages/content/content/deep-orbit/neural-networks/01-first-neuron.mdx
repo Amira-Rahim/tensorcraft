@@ -17,8 +17,8 @@ context:
 concept:
   explanation: "A neuron is a weighted sum of inputs plus a bias: arithmetic small enough to write by hand, and the unit every network is built from. The activation function that usually gets named in the same breath is deliberately absent here; you meet it in lesson 2, once this lesson has shown you what it is for."
   bridge:
-    feTitle: "Array.reduce()"
-    feCode: "inputs.reduce((sum, x, i) => sum + x * weights[i], bias)"
+    jsTitle: "Array.reduce()"
+    jsCode: "inputs.reduce((sum, x, i) => sum + x * weights[i], bias)"
     mlTitle: "Neuron"
     mlCode: "const output = tf.dot(inputs, weights).add(bias)"
     tier: structural
@@ -100,7 +100,7 @@ Build your first neuron to classify signal readings.
     "Weights encode how much each input matters; bias shifts the output threshold.",
     "Array.reduce() over inputs is the JavaScript equivalent of tf.dot(), making the operation intuitive to read and reason about."
   ]}
-  bridge="The FE pattern `inputs.reduce((sum, x, i) => sum + x * weights[i], bias)` maps directly to the ML operation `tf.dot(inputs, weights).add(bias)`, so every neuron is just a reduce you've written before."
+  bridge="The JS pattern `inputs.reduce((sum, x, i) => sum + x * weights[i], bias)` maps directly to the ML operation `tf.dot(inputs, weights).add(bias)`, so every neuron is just a reduce you've written before."
   youCanNow="Implement a single neuron as a weighted dot product plus bias using tf.dot() and add()."
 />
 

@@ -13,7 +13,7 @@ const AXES: GenomeAxis[] = [
   { key: "training", label: "Training" },
   { key: "evaluation", label: "Evaluation" },
   { key: "deployment", label: "Deployment" },
-  { key: "fe_integration", label: "FE Integration" },
+  { key: "js_integration", label: "JS Integration" },
 ];
 
 interface SkillGenomeProps {

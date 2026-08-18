@@ -147,7 +147,7 @@ Could add an `AggregateRating` once the course has reviews. Currently no users s
 
 ### Bridge variants extension
 
-Some bridges have only `feCode` for vanilla; could add per-framework variants for Vue, Angular, Svelte where applicable. Cost: ~30 min per bridge × ~10 bridges = ~5h. Skip unless growth metrics show framework-specific traffic.
+Some bridges have only `jsCode` for vanilla; could add per-framework variants for Vue, Angular, Svelte where applicable. Cost: ~30 min per bridge × ~10 bridges = ~5h. Skip unless growth metrics show framework-specific traffic.
 
 ### Quiz coverage expansion
 

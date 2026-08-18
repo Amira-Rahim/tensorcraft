@@ -39,7 +39,7 @@ canned emotional phrase, or strained metaphor instead of clear analysis.
 - Vague authorities and synthetic consensus: "Experts note", "observers
   say", "research consistently shows" with no named source. Name the source
   or state what you can actually observe.
-- AI-associated vocabulary. Words a working frontend dev would not say out
+- AI-associated vocabulary. Words a working JavaScript dev would not say out
   loud, in their non-literal senses: delve, tapestry, testament, pivotal,
   foster, underscore (verb), showcase, intricate, vibrant, realm, beacon,
   embark, elevate, empower, harness, unleash, paradigm, synergy, holistic,
@@ -87,8 +87,10 @@ a real qualification.
   room-capacity percentage."
 - Unexplained jargon: every term of art is explained at first use in the
   lesson, lives in the glossary (`packages/content/src/glossary.ts`), or is
-  replaced. FE terms the audience knows need no gloss; ML terms being
-  taught are defined by the lesson.
+  replaced. Core JavaScript the audience knows needs no gloss; a
+  browser-only or Node-only API used as an analogy gets a one-clause gloss,
+  since the audience spans both runtimes; ML terms being taught are defined
+  by the lesson.
 
 Accurate technical terms, legal conditions, and explained uncertainty are
 not flagged.
@@ -124,8 +126,8 @@ reference material is fine.
 ## The relatability bar
 
 House voice: a peer explaining something at a whiteboard. Second person,
-active voice, concrete FE anchors, one idea per sentence. If a senior
-frontend dev would not say the sentence out loud, rewrite it. Do not fake
+active voice, concrete JS anchors, one idea per sentence. If a senior
+JavaScript dev would not say the sentence out loud, rewrite it. Do not fake
 chattiness ("Let's dive in!", "Great question!"); that is its own slop.
 
 ## Enforcement
@@ -137,3 +139,32 @@ chattiness ("Let's dive in!", "Great question!"); that is its own slop.
   sentences) are caught in review against this document.
 - `CLAUDE.md` binds agent sessions to this rubric for all future content.
 - Audit precedent and worked examples: `docs/audits/ai-slop-audit-2026-08-12.md`.
+
+## House vocabulary (2026-08 rebrand, binding)
+
+The audience is JavaScript engineers, not frontend engineers. Apply these
+exact terms; do not coin variants.
+
+- Brand register (all human-read prose, legal, emails, lessons, story,
+  certificates): "JavaScript engineer(s)". Second person: "You're a
+  JavaScript engineer."
+- Query register (title tags, meta descriptions, keywords, schema.org
+  audience fields): "JavaScript developers". This is the search-side noun;
+  the GSC winning cluster is "javascript machine learning".
+- Tight UI labels and code comments: "JS" ("JS devs", "55 JS Bridges",
+  "// JS:", "// Browser:", "// Node:").
+- Never "web developers", "full-stack", or "coders". Never mix "engineer"
+  and "developer" in one sentence.
+- Bridge feature name: "JS-to-ML bridges" in tight copy,
+  "JavaScript-to-ML bridges" in formal copy. The bridge callout column
+  label is "JavaScript" (opposite "Machine Learning").
+- Skill-genome axis display label: "JS Integration".
+- Maker identity (owner decision 2026-08-18): "a group of JavaScript
+  engineers". Collective voice, no personal names, unchanged otherwise.
+- What "frontend" survives: uses that answer "which layer of this system"
+  (litmus: substitute "client layer"; if the sentence still works it is
+  architectural and stays, e.g. "Next.js frontend", frontend/backend
+  split). Uses that answer "who is the reader" change.
+- Analogy anchors may be browser or Node, whichever carries the mechanism
+  better; a browser-only or Node-only API used as an anchor gets a
+  one-clause gloss (see rule 3).

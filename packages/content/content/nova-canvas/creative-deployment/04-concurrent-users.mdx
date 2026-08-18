@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Handling concurrent generators is connection management: pooling WebSocket connections, queuing generation requests, and shedding load gracefully when demand exceeds capacity."
   bridge:
-    feTitle: "WebSocket Connection Pooling"
-    feCode: "const pool = new ConnectionPool(maxConnections: 50); pool.acquire().then(ws => ws.send(data));"
+    jsTitle: "WebSocket Connection Pooling"
+    jsCode: "const pool = new ConnectionPool(maxConnections: 50); pool.acquire().then(ws => ws.send(data));"
     mlTitle: "Generation Queue"
     mlCode: "const queue = new GenerationQueue(maxConcurrent: 4); queue.enqueue(generateRequest);"
     tier: structural

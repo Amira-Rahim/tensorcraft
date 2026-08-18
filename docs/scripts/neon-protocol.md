@@ -16,7 +16,7 @@
 
 | Name | Role | Description |
 |---|---|---|
-| **Kira** | Hacker / Player Character / Student Avatar | The learner's proxy. Skilled frontend dev who joined the resistance after Meridian flagged her as "non-compliant" for refusing their tracking SDK. Knows JS cold, no ML background. Built a real-time collaborative drawing app with Canvas API and WebRTC that served 50K users - her proudest project before everything changed. Resourceful, determined, occasionally reckless. Receives direction from Lin; learns from Zara, Ryo, and NEON. |
+| **Kira** | Hacker / Player Character / Student Avatar | The learner's proxy. Skilled JavaScript dev who joined the resistance after Meridian flagged her as "non-compliant" for refusing their tracking SDK. Knows JS cold, no ML background. Built a real-time collaborative drawing app with Canvas API and WebRTC that served 50K users - her proudest project before everything changed. Resourceful, determined, occasionally reckless. Receives direction from Lin; learns from Zara, Ryo, and NEON. |
 | **Zara** | Street Artist / Visual Expert | Resident expert on visual perception and image composition. Creative, observant, speaks in vivid imagery. Translates vision concepts into intuitive visual metaphors. |
 | **Ryo** | Former Corp Engineer | Ex-Meridian engineer who defected. Quiet, precise, carries guilt about his past work. Knows the enemy's systems inside out. Handles architecture and optimization. |
 | **Lin** | Resistance Leader | Strategic leader. Charismatic, intense, carries the weight of leadership. Sets mission objectives and provides the larger context. |
@@ -24,11 +24,11 @@
 
 ### Career Paths & Salaries
 
-> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" JavaScript roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics - Tensorcraft provides the conceptual foundation to pursue them.
 
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| ML-Enhanced Frontend Engineer | Build ML-powered visual features in the browser (canvas, WebGL, image processing) | $120,000 - $160,000 |
+| ML-Enhanced JavaScript Engineer | Build ML-powered visual features in the browser (canvas, WebGL, image processing) | $120,000 - $160,000 |
 | Frontend Engineer (Vision Products) | Frontend for CV-heavy products (annotation tools, dashboards, AR/VR interfaces) | $125,000 - $165,000 |
 | Computer Vision Engineer* | Build detection, segmentation, and tracking systems | $150,000 - $200,000 |
 | ML Engineer (Vision)* | Train and deploy image/video models at scale | $145,000 - $195,000 |
@@ -46,11 +46,11 @@ A rain-slicked street in Neon City. Holographic advertisements flicker on every 
 
 ### Story Summary
 
-Five years ago, Neon City's centralized surveillance AI was built to protect citizens. Then Meridian Systems corrupted it. Now 200 cameras per city block track, profile, and control. An underground resistance has formed - and they need a frontend developer who can build vision systems that fight back.
+Five years ago, Neon City's centralized surveillance AI was built to protect citizens. Then Meridian Systems corrupted it. Now 200 cameras per city block track, profile, and control. An underground resistance has formed - and they need a JavaScript developer who can build vision systems that fight back.
 
 Kira, a skilled JavaScript developer, is recruited after Meridian's AI flags her as non-compliant. Under the guidance of Zara (visual intuition), Ryo (architecture expertise), and Lin (strategic leadership), she builds Protocol Sentinel - a browser-based vision system that detects surveillance anomalies, identifies drones, and ultimately captures proof of Meridian's illegal profiling.
 
-The journey takes Kira from basic image classification to real-time object detection, semantic segmentation, transfer learning, generative adversarial techniques, and edge deployment - all running in the browser, all mapped to frontend concepts she already knows.
+The journey takes Kira from basic image classification to real-time object detection, semantic segmentation, transfer learning, generative adversarial techniques, and edge deployment - all running in the browser, all mapped to JavaScript concepts she already knows.
 
 ### Model Preview
 
@@ -71,7 +71,7 @@ Protocol Sentinel evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for frontend developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -106,7 +106,7 @@ Kira meets the resistance crew. Lin briefs her on the mission. Zara shows her a 
 
 > **NEON:** "I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen."
 
-**FE BRIDGE:** Images in a computer are just `<canvas>` pixel data - a 2D grid of RGBA values stored in a `Uint8ClampedArray`. Every `getImageData()` call returns a tensor. Kira's collaborative drawing app streamed exactly this data over WebRTC - she was already working with image tensors without knowing it.
+**JS BRIDGE:** Images in a computer are just `<canvas>` pixel data - a 2D grid of RGBA values stored in a `Uint8ClampedArray`. Every `getImageData()` call returns a tensor. Kira's collaborative drawing app streamed exactly this data over WebRTC - she was already working with image tensors without knowing it.
 
 **Hook:** NEON's diagnostic scan reveals something unexpected in the image data - patterns that shouldn't be there.
 
@@ -116,7 +116,7 @@ Kira meets the resistance crew. Lin briefs her on the mission. Zara shows her a 
 
 Images are multi-dimensional arrays. A grayscale image is a 2D tensor (height x width). A color image is a 3D tensor (height x width x channels). A batch of images is 4D.
 
-**FE BRIDGE:** `Uint8ClampedArray` from `canvas.getContext('2d').getImageData()` - you have already worked with image tensors in frontend code.
+**JS BRIDGE:** `Uint8ClampedArray` from `canvas.getContext('2d').getImageData()` - you have already worked with image tensors in browser code.
 
 **Hook:** The pixel patterns are familiar - too familiar. NEON says: "I've seen this encoding before. At Meridian."
 
@@ -126,7 +126,7 @@ Images are multi-dimensional arrays. A grayscale image is a 2D tensor (height x 
 
 RGB, grayscale, alpha - understanding depth. Each pixel has 3 (or 4) values. Color spaces are just different coordinate systems for the same visual information.
 
-**FE BRIDGE:** CSS color functions: `rgb(255, 0, 0)`, `hsl(0, 100%, 50%)`, `oklch(0.63, 0.26, 29)` - different representations of the same color, just as RGB/HSV/LAB are different representations of the same image data.
+**JS BRIDGE:** CSS color functions: `rgb(255, 0, 0)`, `hsl(0, 100%, 50%)`, `oklch(0.63, 0.26, 29)` - different representations of the same color, just as RGB/HSV/LAB are different representations of the same image data.
 
 **Hook:** NEON isolates a hidden channel in Meridian's camera feeds - data encoded in color values the human eye can't distinguish.
 
@@ -136,7 +136,7 @@ RGB, grayscale, alpha - understanding depth. Each pixel has 3 (or 4) values. Col
 
 Resize, crop, rotate, flip - basic transforms that prepare images for model input. Every model expects a fixed input size.
 
-**FE BRIDGE:** CSS `transform` and `object-fit` - you resize and crop images constantly in frontend work. `object-fit: cover` is center-crop. `object-fit: contain` is resize-with-padding.
+**JS BRIDGE:** CSS `transform` and `object-fit` - you resize and crop images constantly in browser work. `object-fit: cover` is center-crop. `object-fit: contain` is resize-with-padding.
 
 **Hook:** The transforms reveal something: Meridian's cameras all output images at an unusual resolution - one optimized for a specific model architecture.
 
@@ -146,7 +146,7 @@ Resize, crop, rotate, flip - basic transforms that prepare images for model inpu
 
 A simple threshold-based image classifier: is this image bright or dark? Is there a red region (indicating a camera LED)? Simple rules on pixel values.
 
-**FE BRIDGE:** `if/else` on pixel values - the simplest possible "model." This is where traditional programming ends and ML begins.
+**JS BRIDGE:** `if/else` on pixel values - the simplest possible "model." This is where traditional programming ends and ML begins.
 
 **Story beat:** NEON runs the simple classifier on a surveillance feed. It works - barely. 62% accuracy. Kira realizes she needs something more powerful.
 
@@ -209,7 +209,7 @@ The model hits 89% accuracy on camera type classification.
 | 4 | Training a CNN | End-to-end training on image data | Full build pipeline execution |
 | 5 | Visualizing Features | Understanding what the network learned | DevTools element inspection |
 
-**FE BRIDGES (Module-Level):**
+**JS BRIDGES (Module-Level):**
 
 - **Convolution = CSS `blur()`:** A CSS blur filter slides a Gaussian kernel across every pixel of an image. A convolutional layer does the same thing - slides a learned kernel across the image. The difference: CSS uses a fixed kernel (Gaussian); CNNs learn the kernel from data.
 - **Pooling = `srcset` downsampling:** `srcset` provides the browser with multiple image sizes and lets it choose the appropriate resolution. Max pooling does similar downsampling - taking the maximum value from each region to create a smaller, more manageable representation.
@@ -245,10 +245,10 @@ The resistance needs to detect Meridian's drones in real-time street-level camer
 | 4 | Non-Max Suppression | Eliminating duplicate detections | `debounce()` - suppress redundant firing events |
 | 5 | YOLO Architecture | Single-shot detection at speed | Single-pass rendering vs multi-pass layout |
 
-**FE BRIDGES (Module-Level):**
+**JS BRIDGES (Module-Level):**
 
 - **Anchor boxes = `getBoundingClientRect()`:** Anchor boxes define pre-set regions where the model looks for objects. `getBoundingClientRect()` returns the exact bounding rectangle of a DOM element. Both describe rectangular regions in a 2D space using `{x, y, width, height}`.
-- **IoU = drag-and-drop collision detection:** Intersection over Union measures how much two boxes overlap. In frontend drag-and-drop, you calculate overlap between the dragged element and drop targets - same math, same purpose.
+- **IoU = drag-and-drop collision detection:** Intersection over Union measures how much two boxes overlap. In browser drag-and-drop, you calculate overlap between the dragged element and drop targets - same math, same purpose.
 - **NMS = `debounce()`:** When you scroll rapidly, a scroll handler fires many redundant events. `debounce()` keeps only the final (strongest) event and suppresses the rest. NMS does the same - multiple overlapping detections for the same object are suppressed, keeping only the highest-confidence one.
 
 ### GITHUB

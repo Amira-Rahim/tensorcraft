@@ -10,10 +10,10 @@ context:
   narrative: "Priya encounters the size problem. 'The ensemble model is 18MB. Our edge devices have 512MB RAM total, with only 64MB available for ML. We need to split this across multiple devices and coordinate inference.'"
   speaker: "Priya Sharma"
 concept:
-  explanation: "Model sharding splits a large model across multiple devices for parallel inference, the same concept as dynamic import() code splitting in frontend apps."
+  explanation: "Model sharding splits a large model across multiple devices for parallel inference, the same concept as dynamic import() code splitting in JavaScript apps."
   bridge:
-    feTitle: "Dynamic Imports"
-    feCode: "const Chart = lazy(() => import('./Chart')); // load chunk on demand"
+    jsTitle: "Dynamic Imports"
+    jsCode: "const Chart = lazy(() => import('./Chart')); // load chunk on demand"
     mlTitle: "Model Sharding"
     mlCode: "const shard = await loadShard('./model-part-2.bin'); // load model chunk on demand"
     tier: structural
@@ -42,7 +42,7 @@ The ensemble model is 18MB. Each edge device has 512MB total, but after the OS, 
 Same idea as code splitting in a big React app. You don't ship the entire bundle to every page. You split at logical boundaries and load chunks on demand.
 </Dialogue>
 
-You use `import()` to split your frontend bundle into chunks loaded on demand. Model sharding applies the same principle: split a large model at layer boundaries, distribute shards across devices, and coordinate inference by piping intermediate tensors between them. Each device only holds a fraction of the model in memory.
+You use `import()` to split your JavaScript bundle into chunks loaded on demand. Model sharding applies the same principle: split a large model at layer boundaries, distribute shards across devices, and coordinate inference by piping intermediate tensors between them. Each device only holds a fraction of the model in memory.
 
 <LearningObjectives objectives={["Split a TensorFlow.js model into shards at layer boundaries", "Implement a shard coordinator that distributes inference across devices", "Manage intermediate tensor communication between shards", "Calculate memory budgets and determine optimal shard sizes"]} />
 

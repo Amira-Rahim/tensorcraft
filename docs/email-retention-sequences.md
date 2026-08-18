@@ -20,7 +20,7 @@ post-launch index).
   The first lesson takes fifteen minutes and ends with real TensorFlow.js
   running in your browser. Link: /worlds/deep-orbit.
 - **A2, +3 days** - subject: `One analogy, free: Array.reduce() is a neuron`
-  Body: The whole course works like this: 55 bridges from frontend
+  Body: The whole course works like this: 55 bridges from JavaScript
   concepts you already know to the ML concept they secretly are, each one
   labeled where the analogy breaks. Here is the first one in full
   [short reduce/neuron bridge inline]. If that clicked, lesson one is

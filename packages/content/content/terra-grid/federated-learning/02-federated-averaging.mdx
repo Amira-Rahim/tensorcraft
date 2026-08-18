@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Federated averaging merges weight updates from distributed trainers into one global model, with each contribution weighted by how much data stood behind it."
   bridge:
-    feTitle: "State Sync Across Tabs"
-    feCode: "channel.postMessage(localState) // merge states from multiple tabs"
+    jsTitle: "State Sync Across Tabs"
+    jsCode: "channel.postMessage(localState) // merge states from multiple tabs"
     mlTitle: "Federated Averaging"
     mlCode: "aggregate(localUpdates) // merge weights from multiple trainers"
     tier: structural

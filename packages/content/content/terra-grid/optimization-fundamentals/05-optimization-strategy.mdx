@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Creating an optimization plan is like a build optimization checklist: a systematic approach covering every technique in priority order."
   bridge:
-    feTitle: "Build Optimization Checklist"
-    feCode: "// 1. Tree-shake → 2. Minify → 3. Compress\n// 4. Code-split → 5. Lazy-load → 6. CDN"
+    jsTitle: "Build Optimization Checklist"
+    jsCode: "// 1. Tree-shake → 2. Minify → 3. Compress\n// 4. Code-split → 5. Lazy-load → 6. CDN"
     mlTitle: "Model Optimization Checklist"
     mlCode: "// 1. Architecture → 2. Prune → 3. Quantize\n// 4. Distill → 5. Benchmark → 6. Deploy"
     tier: structural
@@ -38,9 +38,9 @@ keywords:
 Never optimize without a plan. I have watched engineers spend three weeks quantizing a model that needed an architecture change. Profile first. Set your budget. Then execute in order of impact.
 </Dialogue>
 
-In frontend, your build optimization follows a systematic order: tree-shake unused code, minify what remains, compress the output, code-split for lazy loading. You do not skip steps or do them out of order. Model optimization follows the same discipline.
+In JavaScript, your build optimization follows a systematic order: tree-shake unused code, minify what remains, compress the output, code-split for lazy loading. You do not skip steps or do them out of order. Model optimization follows the same discipline.
 
-<LearningObjectives objectives={["Create a systematic model optimization plan", "Prioritize techniques by impact and risk", "Map frontend build optimization stages to ML model compression", "Define success criteria before starting optimization"]} />
+<LearningObjectives objectives={["Create a systematic model optimization plan", "Prioritize techniques by impact and risk", "Map JavaScript build optimization stages to ML model compression", "Define success criteria before starting optimization"]} />
 
 ## The Optimization Pipeline
 
@@ -87,7 +87,7 @@ const optimizationPipeline: OptimizationStep[] = [
   }
 ];
 
-// Frontend parallel:
+// JS parallel:
 // 1. Architecture → Component refactoring
 // 2. Pruning → Tree-shaking
 // 3. Quantization → Minification

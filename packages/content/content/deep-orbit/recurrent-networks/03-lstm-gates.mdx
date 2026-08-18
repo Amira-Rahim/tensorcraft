@@ -17,8 +17,8 @@ context:
 concept:
   explanation: "LSTMs route memory through learned gates that decide, dimension by dimension, what to keep and what to discard."
   bridge:
-    feTitle: "localStorage with TTL"
-    feCode: "if (Date.now() > expiry) localStorage.removeItem(key) // forget stale data"
+    jsTitle: "localStorage with TTL"
+    jsCode: "if (Date.now() > expiry) localStorage.removeItem(key) // forget stale data"
     mlTitle: "LSTM Forget Gate"
     mlCode: "forgetGate = sigmoid(W_f * [hidden, input]) // learn what to discard"
     tier: structural

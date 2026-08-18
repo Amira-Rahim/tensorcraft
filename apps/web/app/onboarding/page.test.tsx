@@ -255,12 +255,10 @@ describe("OnboardingPage", () => {
     await renderPage();
     clickNext(); // -> Background
     fireEvent.click(screen.getByTestId("experience-intermediate"));
-    // fe_framework is no longer a UI step (V1 is React-only); it is always
-    // submitted as "react" by the page on final PATCH.
-    fireEvent.change(screen.getByTestId("fe-experience-years"), {
+    fireEvent.change(screen.getByTestId("js-experience-years"), {
       target: { value: "4" },
     });
-    fireEvent.change(screen.getByTestId("fe-background"), {
+    fireEvent.change(screen.getByTestId("js-background"), {
       target: { value: "Shipped a Next.js dashboard" },
     });
     clickNext(); // -> Goal
@@ -287,10 +285,12 @@ describe("OnboardingPage", () => {
     expect(body).toMatchObject({
       experience_level: "intermediate",
       learning_goal: "career",
-      fe_background: "Shipped a Next.js dashboard",
-      fe_framework: "react",
-      fe_experience_years: 4,
+      js_background: "Shipped a Next.js dashboard",
+      js_experience_years: 4,
     });
+    // The fe_framework key was retired with migration 059; the page must
+    // not send it.
+    expect(body).not.toHaveProperty("fe_framework");
 
     // Also writes onboarding_completed via supabase client.
     await waitFor(() => {
@@ -395,7 +395,7 @@ describe("OnboardingPage", () => {
     await renderPage();
     clickNext(); // -> Background
     fireEvent.click(screen.getByTestId("experience-intermediate"));
-    fireEvent.change(screen.getByTestId("fe-experience-years"), {
+    fireEvent.change(screen.getByTestId("js-experience-years"), {
       target: { value: "4" },
     });
     clickNext(); // -> Goal
@@ -457,10 +457,10 @@ describe("OnboardingPage", () => {
     await renderPage();
     clickNext();
     fireEvent.click(screen.getByTestId("experience-beginner"));
-    fireEvent.change(screen.getByTestId("fe-experience-years"), {
+    fireEvent.change(screen.getByTestId("js-experience-years"), {
       target: { value: "99" },
     });
-    expect(screen.getByTestId("fe-years-error")).toBeTruthy();
+    expect(screen.getByTestId("js-years-error")).toBeTruthy();
     clickNext();
     // still on Background
     expect(screen.getByTestId("step-background")).toBeTruthy();

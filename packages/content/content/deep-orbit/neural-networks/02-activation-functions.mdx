@@ -14,8 +14,8 @@ context:
 concept:
   explanation: "Activation functions bend a network's straight lines: they transform raw neuron output into bounded, useful ranges that downstream layers can build on."
   bridge:
-    feTitle: "Math.max(0, x)"
-    feCode: "const clamped = Math.max(0, rawValue)"
+    jsTitle: "Math.max(0, x)"
+    jsCode: "const clamped = Math.max(0, rawValue)"
     mlTitle: "ReLU Activation"
     mlCode: "const activated = tf.relu(rawOutput)"
     tier: identity
@@ -63,7 +63,7 @@ const sigmoid = tf.sigmoid(raw);   // [0.12, 0.27, 0.5, 0.73, 0.88]
 // Tanh: squash to (-1, 1), centered version of sigmoid
 const tanh = tf.tanh(raw);         // [-0.96, -0.76, 0, 0.76, 0.96]
 
-// Frontend equivalent of ReLU:
+// JS equivalent of ReLU:
 const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
 // [0, 0, 0, 1, 2]: identical!`}
 </CodeBlock>
@@ -115,7 +115,7 @@ Apply ReLU activation to neuron outputs.
     "ReLU (Math.max(0, x)) is the default choice for hidden layers: fast, simple, and effective.",
     "Sigmoid squashes output to (0, 1) for probabilities; tanh squashes to (-1, 1) for centered outputs."
   ]}
-  bridge="The FE pattern `Math.max(0, rawValue)` is exactly ReLU: `tf.relu(rawOutput)` applies the same clamp element-wise across an entire tensor."
+  bridge="The JS pattern `Math.max(0, rawValue)` is exactly ReLU: `tf.relu(rawOutput)` applies the same clamp element-wise across an entire tensor."
   youCanNow="Choose and apply the right activation function (ReLU, sigmoid, or tanh) depending on where a layer sits in the network."
 />
 

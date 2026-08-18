@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Reading comprehension models don't just locate text; they model the relationship between question and context, so 'allergy ruled out' and 'mother's allergy' stop counting as answers about the patient."
   bridge:
-    feTitle: "GraphQL Resolver"
-    feCode: "resolver: (parent, { patientId }) => db.allergies.find({ patientId, active: true })"
+    jsTitle: "GraphQL Resolver"
+    jsCode: "resolver: (parent, { patientId }) => db.allergies.find({ patientId, active: true })"
     mlTitle: "Reading Comprehension"
     mlCode: "model.comprehend({ question: 'active allergies?', context: record }) // understands scope"
     tier: structural

@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Non-Max Suppression (NMS) eliminates duplicate detections by keeping only the highest-confidence box when multiple boxes overlap significantly. It is the ML equivalent of debounce(), suppressing redundant outputs to keep only the meaningful ones."
   bridge:
-    feTitle: "debounce()"
-    feCode: "const debouncedSearch = debounce(search, 300); // suppress redundant calls"
+    jsTitle: "debounce()"
+    jsCode: "const debouncedSearch = debounce(search, 300); // suppress redundant calls"
     mlTitle: "Non-Max Suppression"
     mlCode: "const kept = nms(boxes, scores, iouThreshold: 0.5); // suppress redundant boxes"
     tier: structural
@@ -48,14 +48,14 @@ That's the whole algorithm. Sort by confidence, keep the winner, throw away anyt
 
 A detection model with 441 anchors will fire many overlapping boxes on the same object. **Non-Max Suppression (NMS)** filters these down to one box per object.
 
-<LearningObjectives objectives={["Understand why detection models produce redundant overlapping boxes", "Implement the NMS algorithm: sort by confidence, suppress high-IoU duplicates", "Choose appropriate IoU thresholds for suppression", "Connect NMS to the debounce pattern used in frontend event handling"]} />
+<LearningObjectives objectives={["Understand why detection models produce redundant overlapping boxes", "Implement the NMS algorithm: sort by confidence, suppress high-IoU duplicates", "Choose appropriate IoU thresholds for suppression", "Connect NMS to the debounce pattern used in JavaScript event handling"]} />
 
 ## The Debounce Analogy
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="debounce-vs-nms.ts">
-{`// Frontend: debounce suppresses redundant events
+{`// JS: debounce suppresses redundant events
 function debounce(fn: Function, delay: number) {
   let timer: number;
   return (...args: any[]) => {

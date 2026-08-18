@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "A CNN stacks conv, pool, and dense layers into a pipeline where each layer's output feeds the next, the same composition pattern as React components wrapping children."
   bridge:
-    feTitle: "Component Composition"
-    feCode: "<Layout><Sidebar><NavList items={data} /></Sidebar></Layout>"
+    jsTitle: "Component Composition"
+    jsCode: "<Layout><Sidebar><NavList items={data} /></Sidebar></Layout>"
     mlTitle: "CNN Layer Stack"
     mlCode: "model.add(tf.layers.conv2d()); model.add(tf.layers.maxPooling2d()); model.add(tf.layers.dense());"
     tier: structural

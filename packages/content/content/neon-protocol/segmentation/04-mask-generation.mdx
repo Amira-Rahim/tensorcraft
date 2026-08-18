@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Mask generation converts raw model probabilities into clean binary masks with precise boundaries. You threshold the probabilities, clean the result with morphological operations, then extract contours: the same refine-the-edges workflow as SVG mask and clipPath."
   bridge:
-    feTitle: "SVG mask and clipPath"
-    feCode: "<mask id='m'><rect fill='white'/><circle fill='black' r='50'/></mask>"
+    jsTitle: "SVG mask and clipPath"
+    jsCode: "<mask id='m'><rect fill='white'/><circle fill='black' r='50'/></mask>"
     mlTitle: "Binary Mask Generation"
     mlCode: "const mask = prediction.greater(threshold); // binary: 0 or 1"
     tier: structural

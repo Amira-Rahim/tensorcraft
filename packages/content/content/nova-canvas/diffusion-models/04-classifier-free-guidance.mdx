@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Classifier-free guidance runs the model twice per step, once with the prompt and once without, then exaggerates the difference. The guidance scale controls how hard the prompt's contribution is amplified over the model's own habits."
   bridge:
-    feTitle: "CSS custom property overrides"
-    feCode: "element.style.setProperty('--color', 'blue', 'important');"
+    jsTitle: "CSS custom property overrides"
+    jsCode: "element.style.setProperty('--color', 'blue', 'important');"
     mlTitle: "Classifier-free guidance"
     mlCode: "guided = uncond + scale * (cond - uncond);"
     tier: structural

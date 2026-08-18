@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Generative AI creates new data that resembles training data, rather than classifying or labeling existing data. It learns the underlying distribution and samples from it."
   bridge:
-    feTitle: "Math.random()"
-    feCode: "const color = `hsl(${Math.random() * 360}, 70%, 50%)`"
+    jsTitle: "Math.random()"
+    jsCode: "const color = `hsl(${Math.random() * 360}, 70%, 50%)`"
     mlTitle: "Generative Model"
     mlCode: "const sample = model.predict(tf.randomNormal([1, 100]))"
     tier: intuition
@@ -55,7 +55,7 @@ Every ML model you have heard about falls into one of two camps. A **discriminat
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-You already use controlled randomness in frontend code. Every time you call `Math.random()` to generate a procedural color, a particle effect, or a placeholder avatar, you are doing the conceptual equivalent of what a generative model does: producing something new from a source of randomness. The difference is that a generative model has *learned* what "good" output looks like.
+You already use controlled randomness in JavaScript. Every time you call `Math.random()` to generate a procedural color, a particle effect, or a placeholder avatar, you are doing the conceptual equivalent of what a generative model does: producing something new from a source of randomness. The difference is that a generative model has *learned* what "good" output looks like.
 
 <CodeBlock language="typescript" title="generative-vs-discriminative.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -69,7 +69,7 @@ You already use controlled randomness in frontend code. Every time you call `Mat
 const noise = tf.randomNormal([1, 100]);
 // const newImage = generator.predict(noise);
 
-// Frontend parallel: you already generate new things from randomness
+// JS parallel: you already generate new things from randomness
 function generateParticle() {
   return {
     x: Math.random() * canvas.width,

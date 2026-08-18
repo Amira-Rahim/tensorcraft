@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Clinical query understanding maps natural language questions to structured retrieval intents. A doctor's clipped jargon and a nurse's plain phrasing should normalize to the same query against the same records."
   bridge:
-    feTitle: "Search Bar with NLU"
-    feCode: "parseQuery('red shoes under $50') → { color: 'red', type: 'shoes', maxPrice: 50 }"
+    jsTitle: "Search Bar with NLU"
+    jsCode: "parseQuery('red shoes under $50') → { color: 'red', type: 'shoes', maxPrice: 50 }"
     mlTitle: "Clinical Query Parser"
     mlCode: "parseQuery('patients on warfarin with INR > 3') → { medication: 'warfarin', lab: 'INR', condition: '> 3' }"
     tier: structural

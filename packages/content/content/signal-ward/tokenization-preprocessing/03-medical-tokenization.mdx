@@ -12,8 +12,8 @@ context:
 concept:
   explanation: "Medical text uses abbreviations (pt, hx, dx, rx), shorthand, and non-standard spelling. Domain-specific tokenization rules normalize these variations before the model ever sees them, so three spellings of one medication become one token."
   bridge:
-    feTitle: "Domain Parsing Rules"
-    feCode: "const parsePhone = (s) => s.replace(/[^0-9]/g, '').match(/(\\d{3})(\\d{3})(\\d{4})/)"
+    jsTitle: "Domain Parsing Rules"
+    jsCode: "const parsePhone = (s) => s.replace(/[^0-9]/g, '').match(/(\\d{3})(\\d{3})(\\d{4})/)"
     mlTitle: "Medical Normalization"
     mlCode: "const normalize = (s) => abbrevMap.get(s) ?? s"
     tier: structural

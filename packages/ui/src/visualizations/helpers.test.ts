@@ -9,7 +9,7 @@ describe("SKILL_AXIS_ORDER", () => {
       "training",
       "evaluation",
       "deployment",
-      "fe_integration",
+      "js_integration",
     ]);
   });
 });

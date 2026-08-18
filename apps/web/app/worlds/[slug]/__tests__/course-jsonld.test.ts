@@ -42,6 +42,16 @@ describe("buildCourseJsonLd", () => {
     expect(jsonLd.hasCourseInstance.courseWorkload).toMatch(/^PT\d+H$/);
   });
 
+  it("states the audience for the 2026-08 rebrand: JavaScript developers", () => {
+    // Query-register noun ("developers", not "engineers") per the house
+    // vocabulary in docs/writing-quality-rubric.md: schema.org audience
+    // fields match search phrasing.
+    expect(jsonLd.audience).toEqual({
+      "@type": "EducationalAudience",
+      audienceType: "JavaScript developers",
+    });
+  });
+
   it("never reasserts academic credits", () => {
     // numberOfCredits was deliberately removed: schema.org defines it as
     // ACADEMIC credits, and the product disclaims accreditation
