@@ -150,7 +150,7 @@ export const WORLD_CONTENT = {
   // WORLD_CONTENT.modulesPerWorld / totalLessonsPerWorld describe the LAUNCHED
   // world (deep-orbit) for marketing; a gate asserts they equal
   // WORLD_SHAPE["deep-orbit"] so the two cannot drift.
-  // Lesson-embedded FE→ML bridges in the launched world. Single source for
+  // Lesson-embedded JS-to-ML bridges in the launched world. Single source for
   // every marketing surface (/learn, FAQ, onboarding) - three surfaces
   // carried three different counts (50+/51/55) until 2026-07-14. Pinned to
   // the real corpus by packages/content/__tests__/bridge-breaks.test.ts.

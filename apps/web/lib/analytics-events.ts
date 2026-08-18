@@ -213,7 +213,6 @@ export interface EventProperties {
   [EVENTS.ONBOARDING_COMPLETED]: {
     experienceLevel: string;
     learningGoal: string;
-    framework?: string;
     yearsExperience?: number;
   };
 

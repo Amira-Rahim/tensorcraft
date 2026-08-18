@@ -17,7 +17,7 @@ concept:
     mlTitle: "ML Testing Pyramid"
     mlCode: "// Unit: expect(preprocess(frame).shape).toEqual([1,224,224,3])  Integration: pipeline.run(frame) → detections  E2E: camera → pipeline → broadcast → verify"
     tier: structural
-    breaks: "JS testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing pyramid adds data validation, model evaluation, fairness audits, and shadow deployments. Many tests return continuous metrics, not pass/fail."
+    breaks: "The testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing adds data validation, model evaluation, fairness audits, and shadow deployments. Many tests return continuous metrics, not pass/fail."
 consequence:
   narrative: "Two hundred tests pass. Six fail. The 0300 zero-detection crash is in there, reproduced in four lines of fixture code, along with five edge cases Noor never imagined: a grayscale camera feed breaks the preprocessor, an adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Each of those would have fired on broadcast night.'"
 hints:
@@ -52,7 +52,7 @@ Jest for units, React Testing Library for integration, Cypress for E2E. I know t
 
 The testing pyramid is identical. Unit tests at the base: fast, isolated, covering individual functions. Integration tests in the middle verify that connected stages pass data correctly. End-to-end tests at the top run the complete pipeline against realistic scenarios. ML adds data validation: checking that inputs match expected distributions and outputs fall within acceptable ranges.
 
-<LearningObjectives objectives={["Apply the JS testing pyramid (unit, integration, e2e) to ML pipeline testing", "Write unit tests for individual pipeline stages using deterministic test tensors", "Build integration tests that verify data contracts between connected stages", "Implement data validation checks for tensor shapes, value ranges, and distribution drift"]} />
+<LearningObjectives objectives={["Apply the testing pyramid you already use (unit, integration, e2e) to ML pipeline testing", "Write unit tests for individual pipeline stages using deterministic test tensors", "Build integration tests that verify data contracts between connected stages", "Implement data validation checks for tensor shapes, value ranges, and distribution drift"]} />
 
 ## The ML Testing Pyramid
 

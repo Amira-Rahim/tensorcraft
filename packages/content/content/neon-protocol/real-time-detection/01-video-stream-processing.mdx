@@ -10,7 +10,7 @@ context:
   narrative: "Protocol Sentinel goes live on a test feed. Noor watches the first detections appear in real-time on the browser dashboard. NEON warns: 'Frame rate dropping. Optimize or lose real-time capability.'"
   speaker: "Noor"
 concept:
-  explanation: "Video streams are just sequences of image frames. The browser's getUserMedia() API provides direct access to camera feeds, the same API you've used for video chat features. Each frame is a canvas image you can feed to a model."
+  explanation: "Video streams are just sequences of image frames. The browser's getUserMedia() API provides direct access to camera feeds, the same API behind video chat features. Each frame is a canvas image you can feed to a model."
   bridge:
     jsTitle: "getUserMedia() API"
     jsCode: "const stream = await navigator.mediaDevices.getUserMedia({ video: true });"
@@ -43,7 +43,7 @@ It is working. It is actually seeing them. Three drones over District 7, tagged 
 Impressive. Your frame rate is 4fps. At that speed, a drone could fly from District 7 to District 12 before you process the next frame. Perhaps we should discuss optimization before you celebrate.
 </Dialogue>
 
-Every video stream is a sequence of images. The browser gives you direct access through `getUserMedia()`, the same API behind video chat, screen recording, and webcam filters. You have already used it. Now you will feed those frames to a model.
+Every video stream is a sequence of images. The browser gives you direct access through `getUserMedia()`, the same API behind video chat, screen recording, and webcam filters. Now you will feed those frames to a model.
 
 <LearningObjectives objectives={["Access webcam and video feeds using the getUserMedia() API", "Convert live video frames to TensorFlow.js tensors", "Build a basic video-to-tensor pipeline for real-time inference", "Understand the relationship between frame rate and detection latency"]} />
 
@@ -134,4 +134,4 @@ Capture a video stream and convert frames to tensors for model input.
 
 <Exercise slug="capture-video" />
 
-<KeyTakeaways takeaways={["getUserMedia() gives direct browser access to camera feeds, the same API you use for video chat", "tf.browser.fromPixels() converts a video element frame to a tensor on every call", "Always use tf.tidy() or manual dispose() to prevent GPU memory leaks in frame loops", "Video inference is just image inference repeated; the challenge is doing it fast enough"]} />
+<KeyTakeaways takeaways={["getUserMedia() gives direct browser access to camera feeds, the same API behind video chat", "tf.browser.fromPixels() converts a video element frame to a tensor on every call", "Always use tf.tidy() or manual dispose() to prevent GPU memory leaks in frame loops", "Video inference is just image inference repeated; the challenge is doing it fast enough"]} />

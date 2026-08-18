@@ -65,7 +65,7 @@ wasted investigation time. Warms over the season by exactly one degree.
 Demir's analogies with precision, not validation. Her tic: she cares about
 *trust* in methods, not just correctness. Never says "Exactly!"
 
-**Ensign Demir** - the learner's mirror, a JavaScript dev gunning for
+**Ensign Demir** - the learner's mirror, a JavaScript engineer gunning for
 mission-specialist certification and quietly afraid his analogies are a
 crutch. His JS analogy may be blessed at most 1 time in 3. At least once
 per module it must be WRONG in a way that costs something on-page, and the

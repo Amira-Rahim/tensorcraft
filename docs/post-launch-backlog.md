@@ -227,7 +227,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
     with /extras on 2026-08-15 (see §"/extras removal" below). Doing this
     now means restoring the lesson from commit `0b5ec6d` and placing it in
     a launched world.
-  - [ ] Auction lesson (Terra Grid, Vickrey; FE bridge: CSS specificity wars).
+  - [ ] Auction lesson (Terra Grid, Vickrey; JS-to-ML bridge: CSS specificity wars).
   - [ ] Stackelberg reframe of adversarial patches (Neon Protocol).
   - [ ] RLHF preference-learning reframe (Signal Ward).
   - [ ] Email nudge for streak-at-risk (Resend template + cron at

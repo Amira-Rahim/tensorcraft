@@ -32,7 +32,7 @@ export interface Bridge {
   breaks?: string;
   /**
    * Concrete TFJS snippet illustrating the ML side of the bridge. Rendered on
-   * the /bridges page next to the per-framework FE variants so readers see
+   * the /bridges page next to the per-framework JS variants so readers see
    * both sides in real code, not prose. Optional but strongly preferred.
    */
   mlCode?: string;
@@ -653,7 +653,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Math.random()",
     tier: "structural",
     connection:
-      "Every call to Math.random() is a draw from the one distribution the browser hands you. A generative model spends its entire training learning a distribution of its own to draw from.",
+      "Every call to Math.random() is a draw from the one distribution the JS runtime hands you. A generative model spends its entire training learning a distribution of its own to draw from.",
     breaks:
       "Math.random() samples uniformly from [0,1) with no parameters to learn. Generative models sample from a high-dimensional learned distribution that may have multiple modes, an unrepresentable tail, or unsafe regions. Sampling temperature, top-k, top-p: all knobs Math.random() does not have.",
     category: "nova-canvas",
@@ -772,7 +772,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Code splitting",
     tier: "structural",
     connection:
-      "Your bundle got too big, so you split it. Your model got too big, so you distill it: train a small student to mimic the large teacher's outputs, then ship only the student.",
+      "When a bundle gets too big, you split it. When a model gets too big, you distill it: train a small student to mimic the large teacher's outputs, then ship only the student.",
     breaks:
       "Code splitting decomposes one bundle into chunks of the same code. Distillation creates a different, smaller model that approximates the teacher: the student is not the teacher carved up; it is a separate model trained to mimic the teacher's outputs.",
     category: "terra-grid",

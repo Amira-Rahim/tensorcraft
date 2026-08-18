@@ -74,7 +74,7 @@ export interface ExerciseBridge {
 interface ExerciseProps {
   slug: string;
   onSubmit?: (result: ExerciseSubmitResult) => void;
-  /** Optional FE↔ML bridge hint shown below the editor. */
+  /** Optional JS-to-ML bridge hint shown below the editor. */
   bridge?: ExerciseBridge;
 }
 
@@ -406,7 +406,7 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  BridgeHint - FE↔ML bridge reminder below the editor                */
+/*  BridgeHint - JS-to-ML bridge reminder below the editor                */
 /* ------------------------------------------------------------------ */
 
 // Module-level: the worker's TFJS CDN pull happens once per page load;

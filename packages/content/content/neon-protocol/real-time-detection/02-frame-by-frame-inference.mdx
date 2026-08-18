@@ -21,7 +21,7 @@ consequence:
   narrative: "Protocol Sentinel hits 24fps on Noor's laptop. Drones are tracked frame by frame. Amir nods. Then points at the memory graph. 'You are leaking 50MB per second. Fix the tensor lifecycle or the browser crashes in two minutes.'"
 hints:
   - level: nudge
-    content: "Same skeleton as your render loop: requestAnimationFrame calls detect(), and detect() schedules itself. The new part is tf.tidy() around everything tensor-shaped"
+    content: "Same skeleton as a canvas render loop: requestAnimationFrame calls detect(), and detect() schedules itself. The new part is tf.tidy() around everything tensor-shaped"
   - level: guidance
     content: "Use requestAnimationFrame for timing, tf.tidy() for memory management, and track frame times for FPS"
   - level: solution

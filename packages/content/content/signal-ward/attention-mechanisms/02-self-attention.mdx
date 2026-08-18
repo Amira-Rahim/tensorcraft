@@ -103,7 +103,7 @@ And that's where scrollIntoView stops being your model. It jumps to one element,
 
 Without scaling, dot products grow large as dimensionality increases. Large values push softmax into regions with extremely small gradients, and the model stops learning. Dividing by `sqrt(d_k)` keeps values in a reasonable range.
 
-It's the same reason you normalize CSS values. A `z-index: 999999` works, but it makes the system brittle and hard to reason about.
+It's the same reason a `z-index: 999999` is a code smell: it works, but it makes the system brittle and hard to reason about.
 
 <Dialogue speaker="Vikram">
 In the note "Patient denied chest pain but reported nausea after starting methotrexate," self-attention lets "nausea" attend strongly to "methotrexate", capturing that causal relationship even though four words separate them.

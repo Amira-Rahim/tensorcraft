@@ -44,7 +44,7 @@ The visuals and the audio are two strangers in the same room. They need to becom
 requestAnimationFrame gives us the visual heartbeat. AudioContext.currentTime gives us the audio heartbeat. We just need to make them share a pulse.
 </Dialogue>
 
-Two clocks run in every browser tab. `requestAnimationFrame` ticks roughly every 16.67ms for the eyes; `AudioContext.currentTime` advances with sample-level precision for the ears. Sync means electing one as the source of truth and making the other follow. You've solved this shape of problem with scroll positions, mouse coordinates, API timestamps. The clocks are new; the discipline isn't.
+Two clocks run in every browser tab. `requestAnimationFrame` ticks roughly every 16.67ms for the eyes; `AudioContext.currentTime` advances with sample-level precision for the ears. Sync means electing one as the source of truth and making the other follow. This shape of problem is old ground: scroll positions, mouse coordinates, API timestamps. The clocks are new; the discipline isn't.
 
 <LearningObjectives objectives={["Synchronize visual rendering with audio playback using shared timing", "Extract real-time audio features with AnalyserNode for visual reactivity", "Drive generative visual parameters from audio frequency and amplitude data", "Build a unified generation loop that produces coherent audio-visual output"]} />
 
@@ -53,7 +53,7 @@ Two clocks run in every browser tab. `requestAnimationFrame` ticks roughly every
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="sync-clocks.ts">
-{`// The browser has two timing systems. You already use both.
+{`// The browser has two timing systems.
 // Visual: requestAnimationFrame, ~16.67ms intervals (60fps)
 // Audio: AudioContext.currentTime, microsecond precision
 

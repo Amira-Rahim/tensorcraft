@@ -102,7 +102,7 @@ console.log(iou.toFixed(3)); // 0.670, decent but not great`}
 
 ## IoU Thresholds
 
-Different IoU thresholds define what counts as a "correct" detection. COCO reports metrics at both 0.5 and 0.75 because the two thresholds tell different stories about the same model. This is where the drop-zone instinct stops helping: a drop zone is a binary gate you feel out by hand, while a detection threshold is a tunable knob with consequences. Move it from 0.75 to 0.5 and the same model suddenly looks much better on paper. The knob matters as much as the math.
+Different IoU thresholds define what counts as a "correct" detection. COCO reports metrics at both 0.5 and 0.75 because the two thresholds tell different stories about the same model. This is where the drop-zone analogy stops helping: a drop zone is a binary gate, tuned by hand until it feels right, while a detection threshold is a tunable knob with consequences. Move it from 0.75 to 0.5 and the same model suddenly looks much better on paper. The knob matters as much as the math.
 
 <CodeBlock language="typescript" title="iou-thresholds.ts">
 {`// In drag-and-drop: you might snap when overlap > 30%

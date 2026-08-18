@@ -1,6 +1,6 @@
 # Tensorcraft
 
-An interactive, story-driven web application that teaches JavaScript engineers browser-based machine learning. It bridges familiar JavaScript concepts to ML through 50+ concept mappings.
+An interactive, story-driven web application that teaches JavaScript engineers machine learning with TensorFlow.js. It bridges familiar JavaScript concepts to ML through 50+ JavaScript-to-ML bridges.
 
 ## Worlds
 

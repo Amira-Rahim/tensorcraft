@@ -87,7 +87,7 @@ async function playGenerated(samples: Float32Array, sampleRate = 44100) {
   const source = ctx.createBufferSource();
   source.buffer = buffer;
 
-  // Add some processing; you already know this API
+  // Add some processing with a GainNode
   const gainNode = ctx.createGain();
   gainNode.gain.value = 0.5;
 

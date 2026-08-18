@@ -407,7 +407,6 @@ describe("OnboardingPage", () => {
       expect(trackMock).toHaveBeenCalledWith("onboarding_completed", {
         experienceLevel: "intermediate",
         learningGoal: "career",
-        framework: "react",
         yearsExperience: 4,
       });
     });

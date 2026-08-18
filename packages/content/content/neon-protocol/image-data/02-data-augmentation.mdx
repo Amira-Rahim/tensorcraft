@@ -50,7 +50,7 @@ If you've written browser code, you've typed `transform: rotate(45deg) scale(1.2
 
 ## CSS Transforms Meet Image Transforms
 
-One source image, seven transforms, fourteen training samples. Flip it, rotate it, brighten it, crop it, and the dataset multiplies without a single new photograph. The vocabulary is one you use every time you write a CSS animation or hover effect: spatial transformations applied to visual elements.
+One source image, seven transforms, fourteen training samples. Flip it, rotate it, brighten it, crop it, and the dataset multiplies without a single new photograph. The vocabulary is the one CSS animations and hover effects use: spatial transformations applied to visual elements.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -213,6 +213,6 @@ Implement an augmentation pipeline that transforms surveillance camera images us
 <KeyTakeaways takeaways={[
   "Augmentation turned 2,000 labeled images into an effective training set of 16,000 without collecting a single new photo",
   "Augmentation prevents overfitting by forcing the model to learn general features rather than memorizing exact pixel patterns",
-  "Common augmentations (flip, rotate, brightness, crop) map directly to CSS operations you already use",
+  "Common augmentations (flip, rotate, brightness, crop) map directly to CSS transform operations",
   "Not all transforms preserve label meaning; choose augmentations that create realistic variations"
 ]} />

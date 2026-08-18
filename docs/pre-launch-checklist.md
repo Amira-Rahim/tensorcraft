@@ -591,7 +591,7 @@ Any inconsistency = stop, fix, redeploy.
 `apps/web/app/paywall/page.tsx` currently shows `"// SOCIAL PROOF PENDING - real beta quotes arrive post-launch"` placeholder. Before paywall actually converts traffic:
 
 Option a: skip beta → remove the entire testimonial `<section>` before launch.
-Option b: run informal beta with 5–10 FE devs for 1 week → collect 3 real quotes → paste into `apps/web/app/paywall/page.tsx`.
+Option b: run informal beta with 5–10 JS devs for 1 week → collect 3 real quotes → paste into `apps/web/app/paywall/page.tsx`.
 
 Option (a) ships faster. Option (b) improves conversion 10–30% per industry benchmarks - decide based on marketing strategy.
 
@@ -613,7 +613,7 @@ All should exit 0. Any new failures since last clean state → fix before launch
 
 ### C1. Beta program
 
-Plan §F1 prescribes 50–100 FE devs for 4-week beta cycle. Solo dev alternative: skip beta, soft-launch direct to waitlist, adjust pricing if conversion <70% willingness at $59.
+Plan §F1 prescribes 50–100 JS devs for 4-week beta cycle. Solo dev alternative: skip beta, soft-launch direct to waitlist, adjust pricing if conversion <70% willingness at $59.
 
 **Recommend skip formal beta** - solo dev, small batch size beta adds 4 weeks for marginal signal vs launching + monitoring live analytics.
 

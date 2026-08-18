@@ -252,9 +252,9 @@ Tensorcraft produces **ML-Enhanced JavaScript Engineers** - developers who can b
 - **Target role:** ML-Enhanced JavaScript Engineer / JavaScript Engineer with ML Specialization ($120K-$160K)
 - **TODO (owner, 2026-08 rebrand):** re-source outcome statistics for the widened JavaScript audience. The figures previously cited here (57.7% offer-or-promotion within 6 months; 23.9% average salary increase) were sourced for frontend-specific transition programs and cannot honestly be restated for all JavaScript engineers. Do not quote outcome numbers on any user surface until re-sourced.
 
-**Honest scope:** This course gives you the foundation to understand, build, and deploy ML models in the browser. For production ML engineering roles requiring Python fluency and deeper mathematics, Tensorcraft provides the conceptual foundation - and we bridge you toward those next steps (see Python Bridge module). We do not claim to replace a full ML engineering education, but we give JavaScript engineers a genuine, deep understanding of ML that no other resource provides in their own language and tools.
+**Honest scope:** This course gives you the foundation to understand, build, and deploy ML models in JavaScript. The lessons run in the browser because it needs no setup; the tensors, training loops, and evaluation are runtime-agnostic, and the same TensorFlow.js code runs under Node. For production ML engineering roles requiring Python fluency and deeper mathematics, Tensorcraft provides the conceptual foundation - and we bridge you toward those next steps (see Python Bridge module). We do not claim to replace a full ML engineering education, but we give JavaScript engineers a genuine, deep understanding of ML that no other resource provides in their own language and tools.
 
-These statistics inform our marketing, pricing, and curriculum design - the $59 per-model price point is calibrated to feel trivially affordable relative to even a modest salary increase.
+The $59 per-model price point is calibrated against the cost of a single conference ticket; re-anchor it to salary data once the outcome statistics above are re-sourced.
 
 ---
 
@@ -569,7 +569,7 @@ On the main worlds page, all 5 world cards are arranged in a responsive grid: 3 
 
 #### In-Lesson Bridge Display
 
-When an JS-to-ML bridge is introduced in a lesson:
+When a JS-to-ML bridge is introduced in a lesson:
 
 1. A split-screen animation appears: left side shows the JavaScript concept (with a small code snippet or visual), right side shows the ML concept (with a diagram or formula).
 2. Animated connection lines draw between structurally equivalent parts.
@@ -1326,7 +1326,7 @@ All five worlds share these visual design constraints to maintain platform coher
 | # | Risk | Likelihood | Impact | Mitigation |
 |---|------|-----------|--------|------------|
 | 1 | **Story fatigue**: Learners skip narrative to get to code, rendering the 5C Loop's Context and Consequence phases wasted effort. | Medium | High | Make narrative optional but defaulted to "on." Track skip rates in analytics. If >40% skip, redesign narrative to be shorter and more decision-driven. |
-| 2 | **Bridge confusion**: JS-to-ML bridges feel forced or inaccurate, undermining trust in the teaching method. | Low | High | Extensive beta testing of bridges specifically. Each bridge reviewed by at least 2 JavaScript developers and 1 ML engineer. Remove or rewrite any bridge that beta testers rate below 3/5 clarity. |
+| 2 | **Bridge confusion**: JS-to-ML bridges feel forced or inaccurate, undermining trust in the teaching method. | Low | High | Extensive beta testing of bridges specifically. Each bridge reviewed by at least 2 JavaScript engineers and 1 ML engineer. Remove or rewrite any bridge that beta testers rate below 3/5 clarity. |
 | 3 | **Pricing resistance**: $59 per model feels too high for the perceived value, especially with All 5 worlds available at launch. | Medium | High | Validate willingness-to-pay in beta. If resistance is high, consider $49 launch promo with planned return to $59 once social proof accumulates. PPP pricing helps for international markets. |
 | 4 | **Scope creep on V0.5**: The MVP takes longer than planned because of feature additions or quality bar escalation. | High | Medium | Strict scope document (Section 6.1). Weekly scope review meetings. Any addition to V0.5 must remove something of equal effort. "Not in scope" list is a commitment. |
 | 5 | **Technical complexity of interactive animations**: Building high-quality interactive ML concept visualizations takes longer and costs more than estimated. | Medium | Medium | Prototype the 3 most complex animations first (neural network forward pass, backpropagation, gradient descent). If any takes more than 2x estimated time, simplify or use pre-rendered alternatives. |

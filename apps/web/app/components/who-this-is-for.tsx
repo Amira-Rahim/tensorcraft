@@ -42,7 +42,7 @@ export function WhoThisIsFor({
               "Write JavaScript or TypeScript and want ML to stop being a black box you call through an API.",
               "Learn by building. Every lesson ends in code you run, graded against real TensorFlow.js, not a quiz.",
               "Want models training in your own browser, with no Python toolchain to install first.",
-              "Already know the web platform. Array methods, canvas, and render loops are the ramp into tensors, not an obstacle.",
+              "Already know the language. Array methods, async, and loops over data are the ramp into tensors, not an obstacle.",
             ].map((item) => (
               <li
                 key={item}

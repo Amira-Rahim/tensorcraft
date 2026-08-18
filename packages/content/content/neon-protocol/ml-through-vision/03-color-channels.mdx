@@ -43,7 +43,7 @@ I am detecting anomalous patterns in the least significant bits of the blue chan
 So each color channel is like a separate data layer? Like how CSS lets you express the same color in different coordinate systems (rgb(), hsl(), oklch()), each one revealing different properties?
 </Dialogue>
 
-You switch between `rgb()`, `hsl()`, and `oklch()` in CSS depending on what you need: `rgb` for exact values, `hsl` for adjusting lightness, `oklch` for perceptual uniformity. Color spaces in computer vision work the same way: RGB for raw data, HSV for separating color from brightness, LAB for perceptual difference.
+CSS expresses the same color three ways, each chosen for what it makes easy: `rgb` for exact values, `hsl` for adjusting lightness, `oklch` for perceptual uniformity. Color spaces in computer vision work the same way: RGB for raw data, HSV for separating color from brightness, LAB for perceptual difference.
 
 <LearningObjectives objectives={["Understand RGB, HSV, and grayscale color spaces and when to use each", "Split image tensors into individual channels", "Convert between color spaces for different vision tasks", "Recognize that color channels are independent data dimensions"]} />
 

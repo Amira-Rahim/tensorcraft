@@ -70,7 +70,7 @@ export const metadata: Metadata = {
         url: "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&world=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
         width: 1200,
         height: 630,
-        alt: "Tensorcraft: ML for JavaScript Engineers",
+        alt: "Tensorcraft: ML for JavaScript Developers",
       },
     ],
   },
@@ -147,7 +147,7 @@ export default function RootLayout({
                 // a false claim in structured data. Restore this only when a
                 // real asset exists at the path.
                 description:
-                  "Interactive, story-driven ML education for JavaScript engineers.",
+                  "Interactive, story-driven ML education for JavaScript developers.",
                 sameAs: [],
               },
               // The five per-world Course objects that used to live here were

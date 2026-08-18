@@ -22,7 +22,7 @@ consequence:
   narrative: "NEON boots up: glitchy, disoriented, but functional. 'I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen.'"
 hints:
   - level: nudge
-    content: "You've already worked with image tensors; every canvas getImageData() returns one"
+    content: "Every canvas getImageData() call already returns an image tensor: a flat grid of pixel numbers"
   - level: guidance
     content: "Use tf.browser.fromPixels() to convert a canvas element to a tensor"
   - level: solution
@@ -58,7 +58,7 @@ Every time you call `getImageData()` on a canvas context, you get back a `Uint8C
 <CodeBlock language="typescript" title="image-to-tensor.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Browser: you've done this before
+// Browser: the canvas route
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d')!;
 canvas.width = 224;
@@ -67,7 +67,7 @@ canvas.height = 224;
 // Draw an image onto the canvas
 ctx.drawImage(img, 0, 0, 224, 224);
 
-// Method 1: Raw pixel access (what you already know)
+// Method 1: Raw pixel access (the canvas API)
 const imageData = ctx.getImageData(0, 0, 224, 224);
 const pixels = imageData.data; // Uint8ClampedArray, length = 224 * 224 * 4
 // Each pixel: [R, G, B, A], values 0-255
@@ -127,4 +127,4 @@ Convert canvas pixel data to a tensor and inspect its shape.
 <Exercise slug="canvas-to-tensor" />
 </Section>
 
-<KeyTakeaways takeaways={["Images are multi-dimensional arrays: [height, width, channels], the same data as canvas getImageData()", "tf.browser.fromPixels() converts a canvas element to a TensorFlow.js tensor", "Models expect batched input: [batch, height, width, channels]; use expandDims() for single images", "You've been working with image tensors every time you used the Canvas API"]} />
+<KeyTakeaways takeaways={["Images are multi-dimensional arrays: [height, width, channels], the same data as canvas getImageData()", "tf.browser.fromPixels() converts a canvas element to a TensorFlow.js tensor", "Models expect batched input: [batch, height, width, channels]; use expandDims() for single images", "Every canvas getImageData() call returns an image tensor; the Canvas API has been handing them out all along"]} />

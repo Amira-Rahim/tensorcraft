@@ -49,7 +49,7 @@ Installing TensorFlow.js feels exactly like adding any other dependency. npm ins
 Then explain the benchmark on your screen. The hard part isn't installation; it's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
 </Dialogue>
 
-A 30× spread on identical code, and the only variable is which engine TF.js lands on. Installation is the part you already know; the new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
+A 30× spread on identical code, and the only variable is which engine TF.js lands on. Installation is the part you already know; the new concept is **backends**: in the browser TF.js runs on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow). On Node it binds to native TensorFlow instead (`@tensorflow/tfjs-node`); this module stays in the browser because that is where the dashboard lives.
 
 <LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
 

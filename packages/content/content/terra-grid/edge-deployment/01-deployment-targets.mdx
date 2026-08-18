@@ -42,7 +42,7 @@ Once I deploy a model here, I can't just SSH in and fix it. The update has to wo
 Sector 7 hardware manifest loaded. 847 devices across 3 tiers. ARM Cortex-A53 (412 units), ARM Cortex-A72 (298 units), x86 edge servers (137 units). RAM ranges from 256MB to 4GB.
 </Dialogue>
 
-The first fleet-wide model push at Terra Systems went out before anyone profiled the hardware. The artifact loaded cleanly on the 137 x86 edge servers, crawled on the Cortex-A72 gateways, and refused to start on the 412 Cortex-A53 units running 256MB of RAM. One artifact, three outcomes. You have lived this problem before, shipping to Safari, Firefox, Chrome, and that one customer still on IE11, and the solution carries over intact: detect, adapt, degrade gracefully.
+The first fleet-wide model push at Terra Systems went out before anyone profiled the hardware. The artifact loaded cleanly on the 137 x86 edge servers, crawled on the Cortex-A72 gateways, and refused to start on the 412 Cortex-A53 units running 256MB of RAM. One artifact, three outcomes. If you have shipped to Safari, Firefox, Chrome, and that one customer still on IE11, you have lived this problem before; either way the solution carries over intact: detect, adapt, degrade gracefully.
 
 <LearningObjectives objectives={["Map edge hardware diversity to browser compatibility testing concepts", "Profile deployment targets by CPU, RAM, and connectivity constraints", "Design tiered model deployment strategies for heterogeneous device fleets", "Implement capability detection to select the right model variant per device"]} />
 
@@ -50,7 +50,7 @@ The first fleet-wide model push at Terra Systems went out before anyone profiled
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In the browser, you use feature detection to serve the right experience. Edge deployment uses the same pattern, but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
+In the browser, feature detection serves the right experience per client. Edge deployment uses the same pattern, but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
 
 <CodeBlock language="typescript" title="device-profiling.ts">
 {`import * as tf from '@tensorflow/tfjs';

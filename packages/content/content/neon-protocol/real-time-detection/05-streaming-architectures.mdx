@@ -47,7 +47,7 @@ So do not try. Process the high-priority feeds locally. Relay the rest through o
 The hybrid architecture we agreed on. Both of you were right. Build it.
 </Dialogue>
 
-Forty-seven feeds, one `model.predict()`. Run them naively and the inference queue backs up in under a second; by minute two you are tagging drones that left the district while their frames sat in the queue. The architecture that prevents this is one you have built before, for chat apps, real-time dashboards, and collaborative editors. Receive data, process it, emit results. The data happens to be video frames and the processing happens to be neural network inference.
+Forty-seven feeds, one `model.predict()`. Run them naively and the inference queue backs up in under a second; by minute two you are tagging drones that left the district while their frames sat in the queue. The architecture that prevents this is the one behind chat apps, real-time dashboards, and collaborative editors: receive data, process it, emit results. The data happens to be video frames and the processing happens to be neural network inference.
 
 <LearningObjectives objectives={["Design a streaming architecture for processing multiple video feeds", "Implement a frame queue that prioritizes high-value feeds", "Build graceful degradation between local and server-side inference", "Handle backpressure when inference cannot keep up with incoming frames"]} />
 

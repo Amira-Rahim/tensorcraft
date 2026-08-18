@@ -9,7 +9,7 @@ import { createContext, useContext } from "react";
  * 2026-07-13 value audit found experience_level was collected, stored, and
  * consumed by nothing. `expandDerivations` is the first real consumer:
  * advanced/expert learners get <DerivationDrawer> math opened by default,
- * everyone else keeps the closed-by-default FE-bridge pedagogy.
+ * everyone else keeps the closed-by-default JS-bridge pedagogy.
  *
  * Default (no provider) preserves historic behavior: everything closed.
  */

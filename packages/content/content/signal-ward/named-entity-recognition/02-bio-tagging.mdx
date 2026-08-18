@@ -46,7 +46,7 @@ In HTML, I'd wrap them in a single tag: `<span class="condition">rheumatoid arth
 Same shape, one difference you'll have to engineer around. Your span tags are ground truth because you wrote them. BIO tags are predictions, made one token at a time, and the model will happily emit a sequence no author could: an I-DRUG right after a B-CONDITION. Post-processing has to repair invalid sequences before you trust a span. B begins an entity, I continues it, O is outside; the entity ends at the next O or B.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the BIO (Beginning, Inside, Outside) tagging scheme", "Map BIO tags to the familiar concept of HTML opening and closing tags", "Convert entity annotations into BIO tag sequences", "Decode BIO sequences back into entity spans", "Repair invalid predicted tag sequences before extracting spans"]} />
+<LearningObjectives objectives={["Understand the BIO (Beginning, Inside, Outside) tagging scheme", "Map BIO tags to HTML opening and closing tags", "Convert entity annotations into BIO tag sequences", "Decode BIO sequences back into entity spans", "Repair invalid predicted tag sequences before extracting spans"]} />
 
 ## Opening and Closing Tags for NLP
 

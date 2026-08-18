@@ -5,7 +5,7 @@ import { PRICING } from "@tensorcraft/shared";
 export const metadata: Metadata = {
   title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera | Course comparison",
   description:
-    "Honest comparison: where Tensorcraft wins (JS-developer onboarding, browser-runtime focus, analogies labeled where they break), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
+    "Honest comparison: where Tensorcraft wins (JavaScript-developer onboarding, browser-runtime focus, analogies labeled where they break), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
   alternates: { canonical: "https://tensorcraft.app/compare" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -143,11 +143,11 @@ export default function ComparePage() {
             credential for your CV, Coursera does that and we don&apos;t.
           </p>
           <p>
-            Tensorcraft is the right course if you ship in the browser, you
-            already know JavaScript, and you want a course that respects what
-            you already know without watering down the ML. Every analogy ships
-            with a label naming where it stops being literal: the bridge-tier
-            system is built directly into each lesson.
+            Tensorcraft is the right course if you already ship JavaScript, in
+            the browser or on Node, and you want a course that respects what you
+            already know without watering down the ML. Every analogy ships with
+            a label naming where it stops being literal: the bridge-tier system
+            is built directly into each lesson.
           </p>
         </section>
 

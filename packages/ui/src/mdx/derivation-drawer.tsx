@@ -18,7 +18,7 @@ interface DerivationDrawerProps {
 
 /**
  * <DerivationDrawer /> - disclosure that surfaces the underlying math for
- * an FE-bridge concept. Sits below the bridge callout on training-loop
+ * a JS-bridge concept. Sits below the bridge callout on training-loop
  * main lessons. Closed by default (you don't need calculus to ship);
  * advanced/expert learners get it opened by default via LessonPrefs, the
  * calibration onboarding promises. The toggle always wins after that.

@@ -10,7 +10,7 @@ context:
   narrative: "Noor's inference loop runs at 22fps on CPU. Not enough. Amir suggests switching TensorFlow.js to the WebGL backend. 'The GPU is already there. Your browser uses it for CSS transforms and canvas compositing. Now use it for matrix multiplication.'"
   speaker: "Amir"
 concept:
-  explanation: "WebGL is the browser's GPU interface. You already use it indirectly: CSS 3D transforms, canvas compositing, WebGL-based games. TensorFlow.js can route tensor operations through WebGL shaders, turning matrix multiplications into parallel GPU operations."
+  explanation: "WebGL is the browser's GPU interface. Every CSS 3D transform, canvas composite, and WebGL game already routes through it. TensorFlow.js can route tensor operations through WebGL shaders, turning matrix multiplications into parallel GPU operations."
   bridge:
     jsTitle: "WebGL Rendering Pipeline"
     jsCode: "const gl = canvas.getContext('webgl2'); // GPU access for rendering"
@@ -47,7 +47,7 @@ So instead of the CPU doing millions of multiplications sequentially, the GPU do
 In parallel. A modern GPU has thousands of cores. A matrix multiplication that takes 20ms on CPU can take 3ms on GPU. That is the difference between 22fps and real-time.
 </Dialogue>
 
-The GPU is already running in your browser. WebGL gives TensorFlow.js access to it for tensor operations; the same hardware that renders your CSS transforms now accelerates neural network inference.
+The GPU is already running in the browser. WebGL gives TensorFlow.js access to it for tensor operations; the same hardware that renders CSS transforms now accelerates neural network inference.
 
 <LearningObjectives objectives={["Switch TensorFlow.js to the WebGL backend for GPU-accelerated inference", "Understand why GPU parallelism accelerates matrix operations", "Benchmark CPU vs WebGL performance for the same model", "Handle GPU memory constraints and texture size limits"]} />
 
@@ -137,4 +137,4 @@ Configure the WebGL backend and compare inference performance across backends.
 
 <Exercise slug="webgl-backend" />
 
-<KeyTakeaways takeaways={["tf.setBackend('webgl') routes tensor operations through the GPU, the same hardware running your CSS transforms", "GPU parallelism can accelerate inference 5-10x over CPU for matrix-heavy operations", "Always do a warm-up run; the GPU compiles shaders on the first inference call", "GPU memory is more limited than system RAM, so tensor disposal is even more critical on WebGL"]} />
+<KeyTakeaways takeaways={["tf.setBackend('webgl') routes tensor operations through the GPU, the same hardware that runs CSS transforms and canvas compositing", "GPU parallelism can accelerate inference 5-10x over CPU for matrix-heavy operations", "Always do a warm-up run; the GPU compiles shaders on the first inference call", "GPU memory is more limited than system RAM, so tensor disposal is even more critical on WebGL"]} />

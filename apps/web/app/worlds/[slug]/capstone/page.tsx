@@ -193,10 +193,10 @@ export default async function CapstonePage({ params }: Props) {
 
   // Timeline data, numbered nodes with titles, completion dates, and
   // per-module bridge titles pulled from content.
-  const bridgesByModule = new Map<string, Array<{ fe: string; ml: string }>>();
+  const bridgesByModule = new Map<string, Array<{ js: string; ml: string }>>();
   for (const b of bridges) {
     const existing = bridgesByModule.get(b.moduleSlug) ?? [];
-    existing.push({ fe: b.jsTitle, ml: b.mlTitle });
+    existing.push({ js: b.jsTitle, ml: b.mlTitle });
     bridgesByModule.set(b.moduleSlug, existing);
   }
 
@@ -215,7 +215,7 @@ export default async function CapstonePage({ params }: Props) {
       name: mod.title.replace(/^Capstone:\s*/, ""),
       slug: mod.slug,
       completedOn: formatted,
-      keyBridgeJs: keyBridge?.fe ?? null,
+      keyBridgeJs: keyBridge?.js ?? null,
       keyBridgeMl: keyBridge?.ml ?? null,
     };
   });

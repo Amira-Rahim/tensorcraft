@@ -1,7 +1,7 @@
 /**
  * @tensorcraft/bridges
  *
- * 50 canonical FE↔ML bridges with explicit failure-mode statements ("breaks").
+ * 50 canonical JS-to-ML bridges with explicit failure-mode statements ("breaks").
  * Re-exports from the Tensorcraft monorepo's `@tensorcraft/shared` package
  * with no UI dependency. MIT-licensed.
  *

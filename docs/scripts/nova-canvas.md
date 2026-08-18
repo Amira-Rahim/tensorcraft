@@ -19,7 +19,7 @@
 | **Yara** | Lead Artist / Creative Director | Visionary, passionate, occasionally impatient with purely technical thinking. Background in kinetic sculpture and physical installations, transitioned to digital. She cares about *meaning*, not just output quality. Sees AI as the next tool in her workshop - after welding torches, CNC routers, and projection mapping. Defines the artistic vision and pushes beyond technical capability toward genuine creative expression. |
 | **Kai** | Creative Coder & Audio Engineer | Audio specialist and creative coder who thinks in math and signal processing. Explains ML concepts through precise technical analogies - Fourier transforms, sampling rates, signal-to-noise ratios. Laid-back but surgically exact. Bridges the gap between Yara's artistic vision and Ren's implementation by translating ideas into mathematical operations. |
 | **Petrov** | Gallery Curator / Deployment Lead | Business, presentation, and technical constraints. Handles exhibitions, audience experience, practical deployment realities. Sophisticated, pragmatic, anxious about deadlines - but also the voice of infrastructure reality. Knows the exact specs of every device in the gallery. Cares about audience experience above all, and knows that experience dies if the frame rate drops below 30fps. |
-| **Ren** | Creative Coder / Student Avatar | The player character. A JavaScript developer who joined the collective to explore creative coding. Strong JS skills, no ML background, deep curiosity. Approaches ML through play and iteration. Comfortable with ambiguity. |
+| **Ren** | Creative Coder / Student Avatar | The player character. A JavaScript engineer who joined the collective to explore creative coding. Strong JS skills, no ML background, deep curiosity. Approaches ML through play and iteration. Comfortable with ambiguity. |
 | **MUSE** | Creative AI Assistant | The collective's AI. Poetic, referential, occasionally pretentious. Quotes artists and philosophers alongside documentation. Genuinely tries to inspire. Tutorial guide, code assistant, creative suggestion engine. |
 
 ### Career Paths & Salaries
@@ -48,7 +48,7 @@ The interior of The Grid at night. Exposed brick walls covered in projected gene
 
 The Nova Collective has received the most prestigious commission in digital art: the centerpiece installation for the Global Digital Arts Biennale. Yara's vision is ambitious - an AI system that generates art across visual, audio, and text modalities, responding to audience interaction in real time. Every visitor becomes a collaborator.
 
-Ren, a JavaScript developer turned creative coder, joins the team as the engineer who will make it all work in the browser. Under the guidance of Yara (artistic vision), Kai (audio and cross-modal thinking), and Petrov (deployment and audience experience), Ren builds Nova Canvas - from simple generative patterns to GANs, VAEs, diffusion models, style transfer, CLIP-guided generation, and audio synthesis.
+Ren, a JavaScript engineer drawn to creative coding, joins the team as the engineer who will make it all work in the browser. Under the guidance of Yara (artistic vision), Kai (audio and cross-modal thinking), and Petrov (deployment and audience experience), Ren builds Nova Canvas - from simple generative patterns to GANs, VAEs, diffusion models, style transfer, CLIP-guided generation, and audio synthesis.
 
 The journey explores not just how to generate art with machines, but what it means to create. Is a GAN output art? Who is the artist - the human who designed the system, or the model that produced the image? These questions run through every module, making Nova Canvas as philosophical as it is technical.
 
@@ -71,7 +71,7 @@ Nova Canvas evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript engineers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -124,7 +124,7 @@ Yara introduces the core idea: generative AI creates new data rather than classi
 
 ### Lessons
 
-| # | Title | Description | FE Bridge | 5C Variation |
+| # | Title | Description | JS Bridge | 5C Variation |
 |---|---|---|---|---|
 | 1 | What Is Generative AI? | Creating new data vs classifying existing data | `Math.random()` - controlled randomness | Standard |
 | | | *Hook: Echo's first output is pure noise. But Ren notices something - the noise is not random.* | | |
@@ -161,7 +161,7 @@ Ren builds an interactive latent space explorer - dragging sliders and watching 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | What Is a Latent Space? | Compressed representation of data | URL shorteners - encoding full content in compact form |
 | 2 | Dimensionality | How many dimensions define the space | CSS custom properties - each is a dimension |
@@ -194,7 +194,7 @@ Kai observes: "The discriminator is computing a binary cross-entropy loss agains
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | The GAN Game | Generator vs discriminator - a creative duel | Fuzzer vs validator in testing |
 | 2 | Generator Architecture | Building the creative network | Template engine - producing structured output |
@@ -229,7 +229,7 @@ Ren builds a VAE and discovers controllable generation:
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Autoencoders Recap | Compress and reconstruct | `gzip` / Brotli compression pipeline |
 | 2 | The Variational Part | Adding structure to the latent space | URL encoding - structured, decodable compression |
@@ -278,7 +278,7 @@ Ren implements the distilled 4-step model. Generation drops to 3.4 seconds. The 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | The Diffusion Process | Adding and removing noise systematically | Progressive image loading (blur-up technique) |
 | 2 | Noise Schedules | Controlling the denoising trajectory | Animation easing curves (`ease-in-out`) |
@@ -315,7 +315,7 @@ Ren builds a real-time style transfer system. The team experiments with blending
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Content vs Style | Separating what from how | Content vs presentation (HTML vs CSS) |
 | 2 | Neural Style Transfer | Applying artistic styles to images | CSS world switching - same content, different appearance |
@@ -323,7 +323,7 @@ Ren builds a real-time style transfer system. The team experiments with blending
 | 4 | Real-time Style Transfer | Fast style transfer in the browser | CSS `filter` chains - real-time visual transforms |
 | 5 | Artistic Control | Blending multiple styles | CSS `mix-blend-mode` - combining visual layers |
 
-**JS BRIDGE (Module-Level):** Style transfer is CSS world switching. When you switch a website's world from light to dark mode, the content stays the same but the visual presentation changes completely - colors, backgrounds, shadows all transform. Neural style transfer does the same: the content (shapes, objects, composition) stays the same, but the style (brushstrokes, color palette, texture) transforms to match a different artist.
+**JS BRIDGE (Module-Level):** Style transfer is CSS theme switching. When you switch a website's theme from light to dark mode, the content stays the same but the visual presentation changes completely - colors, backgrounds, shadows all transform. Neural style transfer does the same: the content (shapes, objects, composition) stays the same, but the style (brushstrokes, color palette, texture) transforms to match a different artist.
 
 ### GITHUB
 
@@ -352,7 +352,7 @@ The midpoint. Ren connects the vision and language models. The system generates 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | What Is Multimodal? | Models that understand multiple data types | Full-stack apps - frontend + backend + database |
 | 2 | Vision-Language Models | Connecting images and text | `<img alt="...">` - text describing images |
@@ -385,7 +385,7 @@ Ren integrates CLIP, and suddenly the system understands nuance. "A melancholy c
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Contrastive Learning | Learning by comparison | A/B testing - comparing alternatives |
 | 2 | CLIP Architecture | Joint text-image understanding | Algolia multi-index search - querying across types |
@@ -430,7 +430,7 @@ This is Kai's moment. Where Yara thinks in visual composition and spatial design
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Audio as Data | Waveforms, spectrograms, and audio tensors | Web Audio API basics |
 | 2 | Audio Synthesis | Generating sound with neural networks | `OscillatorNode` and `AudioContext` |
@@ -465,7 +465,7 @@ Ren optimizes aggressively. Kai suggests precomputing base audio loops and layer
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Performance Profiling | Identifying generation bottlenecks | Chrome DevTools Performance panel |
 | 2 | Model Optimization | Distillation and quantization for real-time | Webpack production build optimization |
@@ -492,7 +492,7 @@ Opening night. Visitors stream into The Grid. They speak prompts, touch surfaces
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Final Integration | Connecting all modalities into one system | Monorepo integration - all packages working together |
 | 2 | User Experience Design | Designing the visitor interaction flow | UX design for interactive installations |

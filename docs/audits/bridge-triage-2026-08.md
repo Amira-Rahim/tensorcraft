@@ -7,8 +7,12 @@ reviewed.
 
 Context: the audience widened from frontend engineers to JavaScript
 engineers (owner decision 2026-08-18). Of the 274 lesson bridges, the rows
-below anchor on a browser, CSS, DOM, or React concept. Each needs one of
-three decisions:
+below are the first triage batch of those anchored on a browser, CSS, DOM,
+or React concept; the pattern list that generated them missed some anchors
+(Canvas getImageData, getUserMedia, Client-Side Rendering, Cross-Browser
+Compat, Component Props, img alt, Browser Engines, and the nova-canvas
+audio-generation trio), so sweep for a second batch before declaring the
+triage done. Each row needs one of three decisions:
 
 - **keep-browser**: the anchor is near-universal JS literacy (DOM events,
   fetch, canvas pixels), the ML concept is perceptual, or the bridge is
@@ -137,6 +141,10 @@ client-layer litmus). Revisit each while triaging its world:
   "Every frontend application I have built")
 - signal-ward/tokenization-preprocessing/01-word-tokenization.mdx:42
   (dialogue: "every frontend developer's nightmare with user input")
+- signal-ward/tokenization-preprocessing/03-medical-tokenization.mdx:42
+  (dialogue, Vikram: "In web dev, you parse phone numbers...": "web dev"
+  is a banned-family noun but sits in character speech; fix with this
+  world's dialogue pass)
 - signal-ward/capstone/02-hospital-integration.mdx:39 (dialogue: "I've
   integrated frontend apps with Stripe": biography, likely keep)
 - nova-canvas/style-transfer/01-content-vs-style.mdx:43 (narrative:

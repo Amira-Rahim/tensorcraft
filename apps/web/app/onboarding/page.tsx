@@ -263,7 +263,6 @@ export default function OnboardingPage() {
       track(EVENTS.ONBOARDING_COMPLETED, {
         experienceLevel,
         learningGoal,
-        framework: "react",
         ...(yearsAsNumber !== null ? { yearsExperience: yearsAsNumber } : {}),
       });
       trackWorldSelected(LAUNCH_WORLD_SLUG);
@@ -659,7 +658,7 @@ function BackgroundStep(props: {
           onChange={(e) => setJsBackground(e.target.value.slice(0, 200))}
           rows={3}
           maxLength={200}
-          placeholder="Shipped a Next.js dashboard, tinkered with WebGL, etc."
+          placeholder="Shipped a Next.js dashboard, built a Node service, tinkered with WebGL, etc."
           className="w-full font-mono text-xs bg-surface border-2 border-interactive rounded-none px-4 py-3 text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary resize-none"
         />
         <div className="font-mono text-[11px] text-text-muted mt-1">
@@ -766,7 +765,6 @@ function ReadyStep(props: {
           learningGoal)
         : "Not set",
     ],
-    ["Framework", "React"],
     ["Years", years === null ? "Skipped" : `${years}`],
     ["Notes", jsBackground.trim().length > 0 ? jsBackground.trim() : "Skipped"],
   ];

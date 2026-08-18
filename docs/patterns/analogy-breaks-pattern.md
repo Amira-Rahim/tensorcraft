@@ -6,7 +6,7 @@ Date: 2026-04-25.
 
 ## Problem
 
-73% of Tensorcraft lesson bridges are tier `structural`, 10% are `intuition`. These tiers describe **partial mappings** between an FE concept and an ML concept - same shape, different mechanism. Without an explicit limit statement, a learner who internalizes the analogy will **carry the FE concept's full mental model into ML and predict wrong**.
+73% of Tensorcraft lesson bridges are tier `structural`, 10% are `intuition`. These tiers describe **partial mappings** between a JS concept and an ML concept - same shape, different mechanism. Without an explicit limit statement, a learner who internalizes the analogy will **carry the JS concept's full mental model into ML and predict wrong**.
 
 Concrete failure mode (from sampled CNN architecture lesson):
 - Bridge says "CNN layer stack ↔ React component composition" (tier `structural`).
@@ -21,7 +21,7 @@ Every `structural` and `intuition` bridge MUST include a `breaks:` field that an
 
 > **If a learner pushes this analogy too far, what specific mistake will they make?**
 
-`identity` bridges MAY include `breaks:` but it is rarely needed - by definition the FE concept literally is the ML concept (e.g. `Math.max(0, x) === ReLU`).
+`identity` bridges MAY include `breaks:` but it is rarely needed - by definition the JS concept literally is the ML concept (e.g. `Math.max(0, x) === ReLU`).
 
 ## Where it lives
 

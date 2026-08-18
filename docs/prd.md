@@ -29,11 +29,11 @@
 
 ## 1. Executive Summary
 
-TensorCraft is an interactive, browser-based learning platform that teaches machine learning concepts to JavaScript developers through world-based, hands-on coding lessons. By mapping ML concepts to familiar JavaScript paradigms (the "JS-to-ML bridge"), TensorCraft lowers the barrier to entry and accelerates comprehension for a population of developers who already possess strong JavaScript, CSS, and DOM-manipulation skills but lack exposure to data science, linear algebra, and model training.
+TensorCraft is an interactive, browser-based learning platform that teaches machine learning concepts to JavaScript developers through world-based, hands-on coding lessons. By mapping ML concepts to familiar JavaScript paradigms (the "JS-to-ML bridge"), TensorCraft lowers the barrier to entry and accelerates comprehension for a population of engineers who already possess strong JavaScript and TypeScript skills but lack exposure to data science, linear algebra, and model training.
 
 ### Vision
 
-Every JavaScript developer should be able to build, train, and deploy ML models with the same confidence they ship React components.
+Every JavaScript engineer should be able to build, train, and deploy ML models with the same confidence they ship the code they write today.
 
 ### Mission
 
@@ -45,7 +45,7 @@ Deliver a gamified, project-based curriculum that meets JS developers where they
 
 ### Primary: The Curious JavaScript Engineer
 
-- **Demographics:** 3–10 years JavaScript experience. React/Vue/Angular daily. JS/TS fluent. No ML experience. Age 25–40.
+- **Demographics:** 3–10 years JavaScript experience. Ships production JS/TS daily (React, Node, or both). No ML experience. Age 25–40.
 - **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning JavaScript. Wants a portfolio project that proves ML skills to employers.
 - **Job to be done:** "Help me learn ML using the tools and mental models I already have, so I can build ML-powered features and expand my career options."
 - **Pain points:** Existing ML courses assume Python + math background. Academic courses are dry and theoretical. No courses teach browser-based ML. No interactive courses for Transformers.js/WebGPU/ONNX Runtime Web.
@@ -490,7 +490,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 
 ### 9.1 SEO Strategy
 
-- **Primary keywords:** "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for JavaScript developers", "machine learning for web developers"
+- **Primary keywords:** "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for JavaScript developers", "machine learning javascript"
 - **Content marketing:** Publish 2 blog posts per week on `tensorcraft.app/blog` covering JS-to-ML bridge concepts, beginner ML guides, and project showcases
 - **Technical SEO:** SSG landing pages with structured data (Course schema); optimized Core Web Vitals targeting LCP < 2.5s, CLS < 0.1, INP < 200ms
 - **Backlink strategy:** Guest posts on Smashing Magazine, CSS-Tricks, Dev.to; open-source bridge card library on GitHub

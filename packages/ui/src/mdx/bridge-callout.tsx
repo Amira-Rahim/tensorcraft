@@ -173,7 +173,7 @@ function ReactBridgeLayout({
       >
         <div className="p-5">
           <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
-            Your Framework
+            JavaScript
           </h4>
           <h5 className="text-sm font-semibold mb-2 text-text-primary">
             {jsTitle}
@@ -187,7 +187,7 @@ function ReactBridgeLayout({
         </div>
         <div className="p-5">
           <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
-            ML Equivalent
+            Machine Learning
           </h4>
           <h5 className="text-sm font-semibold mb-2 text-text-primary">
             {bridge.mlTitle}

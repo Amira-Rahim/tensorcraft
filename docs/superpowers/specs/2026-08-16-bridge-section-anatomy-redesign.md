@@ -13,7 +13,7 @@ The section is a fossil of removed features (framework picker, cycler,
 ticker, caption). What remains: two top-aligned code boxes of different
 heights in a tall empty band, a glowing bordered `⇄` tile that looks like
 a button but is `aria-hidden` decoration, three unrelated accent colors
-(green FE label and FE code, gold ML code, purple connector; the bridge is
+(green JS label and JS code, gold ML code, purple connector; the bridge is
 structural tier, so the gold is wrong), and a headline ("Every ML Concept
 Has a Frontend Name") the section asserts but never explains. The
 `connection` prose that does the explaining sits unused in
@@ -29,7 +29,9 @@ preview becomes a scaled-up version of the surface learners actually use.
    - Labels symmetric and muted (`text-text-muted`), matching the callout's
      muted-label grammar. Styling changes only: the label text stays
      "YOUR REACT CODE" / "ML EQUIVALENT" (the first is pinned by an
-     existing test). Concept titles stay `text-text-primary`.
+     existing test). *(Amended 2026-08-18: with the JavaScript rebrand the
+     label is now "YOUR JAVASCRIPT" and the test pins /your javascript/i.)*
+     Concept titles stay `text-text-primary`.
    - Both code blocks colored by the bridge's tier token
      (`--tc-tier-identity|structural|intuition` via a record map, as in
      `exercise.tsx`). One accent per band instead of three.

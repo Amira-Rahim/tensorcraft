@@ -189,7 +189,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [x] Set up Supabase project (Postgres + Auth)
 - [x] Create database tables (9 tables, 1 view, across 11 migrations):
-  - `profiles` (id, email, display_name, avatar_url, github_username, github_connected, github_token, onboarding_completed, role, fe_background, fe_framework, learning_goal, fe_experience_years, email_alerts, weekly_digest, preferred_world_id, timestamps)
+  - `profiles` (id, email, display_name, avatar_url, github_username, github_connected, github_token, onboarding_completed, role, js_background, learning_goal, js_experience_years, email_alerts, weekly_digest, preferred_world_id, timestamps) *(fe_background/fe_experience_years renamed and fe_framework dropped in migration 059, 2026-08-18)*
   - `purchases` (id, user_id, plan_id, world_ids[], amount, currency, stripe_session_id, stripe_payment_intent, status [pending/completed/failed/refunded/partially_refunded/disputed], timestamps)
   - `world_progress` (id, user_id, world_id, module_id, lesson_id, status, score, hints_used, attempts, timestamps)
   - `waitlist` (id, email, world_id, source, created_at)
@@ -236,9 +236,9 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [x] 6-step post-signup flow (`/onboarding`) - from `prototypes/onboarding.html`:
   1. Welcome screen - headline "Welcome Aboard the Archimedes" + 3 feature cards
-  2. Your Background - 5 options (beginner to ML-adjacent), saved to `profiles.fe_background`
+  2. Your Background - 5 options (beginner to ML-adjacent), saved to `profiles.js_background` *(column renamed in migration 059)*
   3. Your Goal - 5 options (understand concepts to just curious), saved to `profiles.learning_goal`
-  4. Your Framework - React/Vue/Angular/Svelte/Vanilla with live bridge preview, saved to `profiles.fe_framework`
+  4. Your Framework - React/Vue/Angular/Svelte/Vanilla with live bridge preview *(REMOVED: the framework step went away with React-only V1, and `fe_framework` was dropped in migration 059 with the 2026-08-18 JavaScript rebrand)*
   5. Choose World - Deep Orbit available, 4 others disabled (Coming Soon), saved to `profiles.preferred_world_id` *(OBSOLETE: all worlds launch simultaneously as of 2026-04-13)*
   6. Ready - configuration summary + "Begin First Lesson" CTA
 - [x] Onboarding completion persistence - sets `onboarding_completed` flag + all preferences in `profiles` table
@@ -258,7 +258,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Hero with breathing color washes (`breathe-left`/`breathe-right` keyframes) + dot grid overlay
 - [x] Headline: "The Bridge from Frontend to ML Is Shorter Than You Think"
 - [x] Product preview mockup (2-col: narrative + code editor with syntax highlighting)
-- [x] 6 FE→ML bridge cards in 3-column grid (Math.max→ReLU, Array.map→NN, etc.)
+- [x] 6 JS-to-ML bridge cards in 3-column grid (Math.max→ReLU, Array.map→NN, etc.)
 - [x] World showcase: Deep Orbit featured hero card (2-col + code mockup) + 4 coming-soon cards in 2x2 grid
 - [x] Stats section (50+ bridges, 275 lessons, 5 worlds, $59/world) - price rebased 2026-05-05, raised 2026-06-20
 - [x] CTA footer with gradient background
@@ -280,7 +280,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Turbo task dependency: `build:content` runs before `build` via `dependsOn: ["^build:content"]`
 - [x] MDX component library (8 components in `packages/ui/src/mdx/`):
   - `<Dialogue>` - speaker label + styled blockquote with accent border
-  - `<BridgeCallout>` - 3-column FE↔ML grid with tier colors (Identity=#00D4FF, Structural=#7B68EE, Intuition=#F0C75E)
+  - `<BridgeCallout>` - 3-column JS-to-ML grid with tier colors (Identity=#00D4FF, Structural=#7B68EE, Intuition=#F0C75E)
   - `<CodeBlock>` - syntax highlighting, copy button, language badge (client component)
   - `<HintPanel>` - 3-level progressive disclosure (nudge → guidance → solution, client component)
   - `<LearningObjectives>` - checklist with accent-colored markers
@@ -598,7 +598,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] robots.txt with crawl directives
 - [x] Canonical URLs on all pages
 - [x] Canonical URLs added to root layout, world, lesson, and capstone pages. COMPLETED 2026-04-14.
-- [x] Target keywords: "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers". H1 updated, title tags optimized, internal linking added. COMPLETED 2026-04-14.
+- [x] Target keywords: "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers". H1 updated, title tags optimized, internal linking added. COMPLETED 2026-04-14. *(keyword set superseded by the 2026-08-18 JavaScript rebrand; see docs/writing-quality-rubric.md House vocabulary)*
 - [x] LearningResource + BreadcrumbList structured data on lesson pages (JSON-LD). COMPLETED 2026-04-14.
 - [x] WebSite schema with SearchAction in root layout JSON-LD. COMPLETED 2026-04-15.
 - [x] Module overview pages (55) + capstone pages (5) added to sitemap. COMPLETED 2026-04-15.
@@ -724,7 +724,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 7c. Advanced Content Components
 
-- [ ] Code Hike (Shiki-based) - scrollytelling for FE↔ML side-by-side code comparisons (replace basic CodeBlock)
+- [ ] Code Hike (Shiki-based) - scrollytelling for JS-to-ML side-by-side code comparisons (replace basic CodeBlock)
 - [ ] MathBlock (KaTeX) - math equation rendering for loss functions, gradients, etc.
 - [ ] InteractiveDemo - live visualizations (e.g., gradient descent animation, neural network playground)
 - [ ] RecallPrompt - spaced repetition prompts referencing earlier lessons
@@ -1225,7 +1225,7 @@ Historical placeholder-link inventory (prototypes deleted; links now embedded in
 | # | Risk | Likelihood | Impact | Mitigation |
 | --- | --- | --- | --- | --- |
 | 1 | Story fatigue - learners skip narrative | Medium | High | Make narrative optional (default on). Track skip rates. If >40% skip, redesign to be shorter/more decision-driven |
-| 2 | Bridge confusion - bridges feel forced | Low | High | 2 FE devs + 1 ML engineer review each bridge. Remove/rewrite if <3/5 clarity |
+| 2 | Bridge confusion - bridges feel forced | Low | High | 2 JS devs + 1 ML engineer review each bridge. Remove/rewrite if <3/5 clarity |
 | 3 | Pricing resistance - $59 feels too high | Medium | High | Validate willingness-to-pay in beta. Consider $49 launch promo |
 | 4 | Scope creep on V0.5 | High | Medium | Strict scope doc. Weekly review. Addition = removal of equal effort |
 | 5 | Interactive animation complexity | Medium | Medium | Prototype 3 most complex first. If >2x time, simplify or pre-render |

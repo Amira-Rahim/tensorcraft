@@ -57,7 +57,7 @@ function buildItemPrompt(item) {
 
 - Practitioner-honest, not hype. Never use "perfect", "amazing", "must-read", "game-changing", "revolutionary", or marketing superlatives.
 - JavaScript-engineer perspective. Anchor every concept to something JS devs already know (typed arrays, fetch, promises, streams, requestAnimationFrame, worker threads).
-- Use FE↔ML bridges when relevant (e.g. "WebGPU is to inference what requestAnimationFrame is to paint").
+- Use JS-to-ML bridges when relevant (e.g. "WebGPU is to inference what requestAnimationFrame is to paint").
 - Sentences are short. Paragraphs are short. No filler.
 - Don't pad. If a section has nothing real to say, omit it.
 
@@ -66,7 +66,7 @@ Structure (in this order, no extra headings):
 ## What shipped
 1-2 sentences summarizing the news, grounded in concrete details (version numbers, feature names, what's now possible).
 
-## Why it matters for JS engineers
+## Why it matters for JavaScript engineers
 1 paragraph (3-5 sentences) explaining the practical impact. Use a bridge to something JS devs know. Be specific about what changes for someone shipping browser ML today.
 
 ## Where we teach this

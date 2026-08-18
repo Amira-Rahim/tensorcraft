@@ -71,7 +71,7 @@ Terra Grid Intelligence evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript engineers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -116,7 +116,7 @@ The 500MB model from the lab must be compressed to run on edge devices. The 8-se
 
 ### Lessons
 
-| # | Title | Description | FE Bridge | 5C Variation |
+| # | Title | Description | JS Bridge | 5C Variation |
 |---|---|---|---|---|
 | 1 | Welcome to the Grid | Introduction to Terra Grid and edge computing | CDN edge locations - serving closer to users | Standard |
 | 2 | Why the Edge? | Latency, privacy, connectivity constraints | Offline-first PWAs - working without a server | Discovery |
@@ -149,7 +149,7 @@ The student learns to profile and benchmark, discovering that model size and spe
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Model Profiling | Measuring size, speed, and memory usage | Bundle analysis with `webpack-bundle-analyzer` |
 | 2 | Architecture Efficiency | Choosing efficient model designs | Component optimization - avoiding re-renders |
@@ -184,7 +184,7 @@ The student quantizes from Float32 to Int8, reducing the model size by 4x with o
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Number Formats | Float32, Float16, Int8 - precision tradeoffs | Image formats (PNG vs WebP vs AVIF) - quality vs size |
 | 2 | Post-Training Quantization | Converting a trained model to lower precision | Webpack minification - same logic, smaller size |
@@ -219,7 +219,7 @@ The student builds a distilled model that is 10x smaller and 95% as accurate.
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Weight Pruning | Removing unnecessary connections | Tree-shaking - removing unused code |
 | 2 | Structured Pruning | Removing entire neurons or channels | Dead code elimination in bundlers |
@@ -259,7 +259,7 @@ Park builds the deployment pipeline. The first edge deployment succeeds on 847 d
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Deployment Targets | Understanding edge hardware diversity | Cross-browser compatibility testing |
 | 2 | Model Packaging | Bundling models for deployment | npm package publishing |
@@ -294,7 +294,7 @@ Park builds the full pipeline:
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | ML Pipeline Anatomy | The stages of an ML pipeline | CI/CD pipeline stages (build, test, deploy) |
 | 2 | Data Versioning | Tracking dataset changes over time | Git version control for data |
@@ -331,7 +331,7 @@ The team retrains and redeploys within hours.
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Production Monitoring | Tracking model health in real time | Application monitoring (Sentry, DataDog) |
 | 2 | Data Drift | When input data changes over time | Lighthouse CI regression - detecting performance changes |
@@ -368,7 +368,7 @@ The student builds a federated learning system that improves models across regio
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | The Data Silo Problem | When data cannot be centralized | CORS - data boundaries between origins |
 | 2 | Federated Averaging | Combining model updates from distributed training | State sync across browser tabs |
@@ -403,7 +403,7 @@ The student builds an A/B testing framework. A new model version shows 2.3% impr
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Why A/B Test Models? | Validating improvements before full rollout | Feature flags - toggling for subsets of users |
 | 2 | Traffic Splitting | Routing requests to different model versions | Canary deployments with load balancer routing |
@@ -440,7 +440,7 @@ The student watches the system scale, route, and respond. Some edge devices lose
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Scaling Strategies | Horizontal and vertical scaling for ML | Auto-scaling web servers |
 | 2 | Model Sharding | Splitting models across devices | Dynamic `import()` chunks - code splitting for models |
@@ -467,7 +467,7 @@ The final deployment. Terra Grid Intelligence goes live across all 47 sites, all
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | System Architecture Review | Reviewing the complete design | Architecture decision records |
 | 2 | Security Hardening | Final security review and hardening | Security audit checklist (OWASP) |

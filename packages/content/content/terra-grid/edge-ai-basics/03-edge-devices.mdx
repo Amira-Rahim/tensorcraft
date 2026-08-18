@@ -10,7 +10,7 @@ context:
   narrative: "Tariq opens a shipping crate of new gateway devices destined for Site 12."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Edge devices have strict hardware constraints. Understanding them is like understanding your device testing matrix for responsive web development."
+  explanation: "Edge devices have strict hardware constraints. Understanding them is like the device testing matrix a browser app maintains: you have to know exactly what the code must run on."
   bridge:
     jsTitle: "Device Testing Matrix"
     jsCode: "// Low-end: 2GB RAM, slow CPU\n// Must test on real constraints"
@@ -38,7 +38,7 @@ keywords:
 Here's what we're deploying to Site 12. Quad-core ARM Cortex-A53, 512MB RAM, 4GB eMMC storage, powered by a solar panel. It needs to run 24/7 on about 5 watts. Your model has to fit in this.
 </Dialogue>
 
-A React app that runs beautifully on an M2 MacBook and crawls on a budget Android phone: every JavaScript engineer ships that lesson exactly once. Edge ML teaches the same lesson, amplified, except the budget device is bolted to a tower in Patagonia and nobody is around to clear its cache.
+A React app that runs beautifully on an M2 MacBook and crawls on a budget Android phone teaches that lesson exactly once. Edge ML teaches the same lesson, amplified, except the budget device is bolted to a tower in Patagonia and nobody is around to clear its cache.
 
 <LearningObjectives objectives={["Identify common edge device hardware specifications", "Understand memory, compute, and power constraints", "Calculate whether a model fits within device constraints"]} />
 
@@ -86,7 +86,7 @@ console.log(canDeployModel(terraGateway, 200, 400));
 // { fits: false, reason: "Model needs 400MB RAM, device budget is 307MB..." }`}
 </CodeBlock>
 
-The 60% rule: never allocate more than 60% of device RAM to your model. The OS, sensor drivers, and communication stack need the rest. Sound familiar? It is the same principle as keeping your JavaScript bundle under your performance budget: leave headroom for the browser.
+The 60% rule: never allocate more than 60% of device RAM to your model. The OS, sensor drivers, and communication stack need the rest. Sound familiar? It is the same principle as a JavaScript bundle-size budget: leave headroom for the browser.
 
 ## Challenge
 

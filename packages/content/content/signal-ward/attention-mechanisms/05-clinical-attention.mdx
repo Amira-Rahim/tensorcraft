@@ -48,7 +48,7 @@ That's like search result highlighting. When a user searches for "arthritis," I 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In search UIs, you highlight matching terms to draw the user's eye. Clinical attention does the same for the model. We add a bias to the attention scores for tokens that belong to a medical vocabulary, gently steering the model toward clinically meaningful relationships.
+In search UIs, matching terms are highlighted to draw the user's eye. Clinical attention does the same for the model. We add a bias to the attention scores for tokens that belong to a medical vocabulary, gently steering the model toward clinically meaningful relationships.
 
 <CodeBlock language="typescript" title="clinical-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';

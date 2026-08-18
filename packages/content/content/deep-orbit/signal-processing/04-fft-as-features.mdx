@@ -55,7 +55,7 @@ Feature engineering: deriving new inputs from raw data. I used it to rebuild the
 Access is not free either. Eleven inputs instead of three means a wider first layer, more parameters, and a longer training run on my hardware. You are quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute.
 </Dialogue>
 
-He writes 85 on the board and signs it. He's wrong, but in the direction nobody minds. The move itself you do in React all the time: raw props come in, and you compute the sorted list, the filtered array, the aggregated count, because the derived form is what rendering actually needs. Feature engineering is the same move, aimed at a model instead of a render.
+He writes 85 on the board and signs it. He's wrong, but in the direction nobody minds. The move itself is the one behind every `useMemo`: raw props come in, and the sorted list, the filtered array, the aggregated count get computed, because the derived form is what rendering actually needs. Feature engineering is the same move, aimed at a model instead of a render.
 
 <LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Extract FFT magnitudes and use them as model features", "Normalize and combine raw features with frequency-domain features", "Measure the impact of better features on model accuracy"]} />
 

@@ -19,7 +19,7 @@ Work this order. Earlier batches are higher-leverage retrofits.
 
 ### Batch 1 - Tier mismatches (13 lessons)
 
-From audit: 13 lessons claim a different tier than the canonical registry says for the same FE/ML pair. **Resolve the tier first** (update lesson OR update registry - pick one), then add `breaks:` per the resolved tier's requirement. List in the audit report.
+From audit: 13 lessons claim a different tier than the canonical registry says for the same JS/ML pair. **Resolve the tier first** (update lesson OR update registry - pick one), then add `breaks:` per the resolved tier's requirement. List in the audit report.
 
 ### Batch 2 - Suspect structurals (168 lessons)
 
@@ -39,7 +39,7 @@ Process per lesson:
 
 ### Batch 3 - Remaining structurals (47 lessons)
 
-Structurals that share words between FE and ML (e.g. `Performance Baseline ↔ Anomaly Threshold` shares "threshold"-adjacent terms after stem). Lower priority but still required.
+Structurals that share words between JS and ML (e.g. `Performance Baseline ↔ Anomaly Threshold` shares "threshold"-adjacent terms after stem). Lower priority but still required.
 
 ### Batch 4 - Intuitions (30 lessons)
 
@@ -72,7 +72,7 @@ For Batches 2-3, faster to:
 
 - [ ] Lead with concrete failure mode, not "the analogy is imperfect".
 - [ ] 1–3 sentences. Under ~280 chars.
-- [ ] States both sides of the gap (FE does X; ML does Y).
+- [ ] States both sides of the gap (JS does X; ML does Y).
 - [ ] Technical terms exact.
 - [ ] No hedging ("may", "could", "in some cases").
 - [ ] No story voice / character names.
@@ -80,7 +80,7 @@ For Batches 2-3, faster to:
 ## Escape hatches
 
 - **Bridge too weak to fix:** if you can't write a meaningful `breaks:` because the analogy itself is bad, replace the bridge entirely. Find a stronger one - registry has 50 candidates, also see `worlds-and-bridges` memory note.
-- **Bridge truly identity:** if you find yourself with no `breaks:` because the FE concept literally is the ML concept, change tier to `identity`. Audit script will flag for review next pass.
+- **Bridge truly identity:** if you find yourself with no `breaks:` because the JS concept literally is the ML concept, change tier to `identity`. Audit script will flag for review next pass.
 - **Bridge spans 3+ tiers depending on context:** split into separate bridges per lesson. Don't try to make one bridge serve "intuition for beginners, structural for advanced."
 
 ## Definition of done (per batch)

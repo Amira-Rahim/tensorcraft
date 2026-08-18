@@ -13,8 +13,8 @@ const bridgeWithVariants = {
 // Fictional pair not present in the canonical registry, keeps "no breaks"
 // fallback assertion meaningful as we add breaks to real registry entries.
 const bridgeWithoutVariants = {
-  jsTitle: "Fixture FE Concept",
-  jsCode: "// fixture fe code",
+  jsTitle: "Fixture JS Concept",
+  jsCode: "// fixture js code",
   mlTitle: "Fixture ML Concept",
   mlCode: "// fixture ml code",
   tier: "structural" as const,
@@ -38,7 +38,7 @@ describe("BridgeCallout", () => {
     expect(screen.queryAllByRole("tab")).toHaveLength(0);
   });
 
-  it("renders the React label and the React FE variant code", () => {
+  it("renders the React label and the React JS variant code", () => {
     render(<BridgeCallout bridge={bridgeWithVariants} />);
     // The "React" framework label is shown in place of the old tab bar.
     expect(screen.getByText("React")).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe("BridgeCallout", () => {
   it("falls back to generic layout when bridge has no react variant", () => {
     render(<BridgeCallout bridge={bridgeWithoutVariants} />);
     expect(screen.queryByRole("tablist")).toBeNull();
-    expect(screen.getByText("Fixture FE Concept")).toBeInTheDocument();
+    expect(screen.getByText("Fixture JS Concept")).toBeInTheDocument();
     expect(screen.getByText("Fixture ML Concept")).toBeInTheDocument();
   });
 

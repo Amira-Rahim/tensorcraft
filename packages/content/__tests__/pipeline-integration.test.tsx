@@ -172,7 +172,7 @@ describe("Content pipeline: frontmatter → Zod → components", () => {
       expect(screen.getByText(/day 47/i)).toBeInTheDocument();
     });
 
-    it("BridgeCallout: renders both FE + ML sides for an identity tier", () => {
+    it("BridgeCallout: renders both JS + ML sides for an identity tier", () => {
       render(
         <BridgeCallout
           bridge={{

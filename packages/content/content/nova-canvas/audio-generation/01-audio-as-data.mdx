@@ -42,7 +42,7 @@ Look at this room. Every surface alive with generated visuals, and it's complete
 You know what a spectrogram is? It is an image. Pixel intensity mapped to frequency over time. We already know how to work with images. Audio is the same math, different domain.
 </Dialogue>
 
-Call `audioBuffer.getChannelData(0)` and inspect the return value: a `Float32Array`, every sample between -1 and 1. Now check what `tf.tensor1d()` accepts. A `Float32Array`. The audio you've been routing through `AudioContext` for years was tensor-shaped the whole time. The handoff loses only the metadata: sample rate, channel layout, timing.
+Call `audioBuffer.getChannelData(0)` and inspect the return value: a `Float32Array`, every sample between -1 and 1. Now check what `tf.tensor1d()` accepts. A `Float32Array`. Audio routed through `AudioContext` was tensor-shaped the whole time. The handoff loses only the metadata: sample rate, channel layout, timing.
 
 <LearningObjectives objectives={["Convert raw audio waveforms into TensorFlow.js tensors", "Understand the relationship between sample rate, duration, and tensor shape", "Build a spectrogram by applying Short-Time Fourier Transform (STFT) to audio tensors", "Visualize audio data as both waveforms and spectrograms in the browser"]} />
 
@@ -55,7 +55,7 @@ Every sound you have ever heard through a browser was a `Float32Array`. The Web 
 <CodeBlock language="typescript" title="audio-to-tensor.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Load audio using the Web Audio API you already know
+// Load audio using the Web Audio API
 const audioCtx = new AudioContext();
 const response = await fetch('/audio/ambient.wav');
 const arrayBuffer = await response.arrayBuffer();

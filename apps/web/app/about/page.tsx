@@ -187,13 +187,13 @@ export default function AboutPage() {
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">
-            Built by JS devs who shipped ML
+            Built by JavaScript engineers who shipped ML
           </h2>
           <p>
-            Tensorcraft is authored by JavaScript engineers who shipped ML in
-            production web apps before writing the curriculum. We built the
-            course we wanted when we started. Every analogy was tested against
-            our own missed-it-the-first-time mistakes.
+            Tensorcraft is authored by people who shipped ML in production web
+            apps before writing the curriculum. We built the course we wanted
+            when we started. Every analogy was tested against our own
+            missed-it-the-first-time mistakes.
           </p>
         </section>
 

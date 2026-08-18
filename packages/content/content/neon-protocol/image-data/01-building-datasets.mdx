@@ -39,7 +39,7 @@ keywords:
 Every great model starts with great data, Noor. You wouldn't ship a frontend app with broken image paths and missing alt tags. Same principle here. Our dataset needs structure, consistency, and clear labels. Tonight, we build the foundation.
 </Dialogue>
 
-`dome-camera/cam_0047.jpg`. That path is doing two jobs: storing the image and labeling it. The same discipline runs through every asset pipeline you have organized (`icons/navigation/arrow-left-24.svg`, where each path segment carries meaning). ML datasets follow the same logic: every image lives in a folder named after its class label, with consistent naming and metadata.
+`dome-camera/cam_0047.jpg`. That path is doing two jobs: storing the image and labeling it. The same discipline runs through any well-organized asset pipeline (`icons/navigation/arrow-left-24.svg`, where each path segment carries meaning). ML datasets follow the same logic: every image lives in a folder named after its class label, with consistent naming and metadata.
 
 <LearningObjectives objectives={[
   "Understand the structure of an image classification dataset",
@@ -112,7 +112,7 @@ Notice how similar these structures are. Both track dimensions, categorization, 
 
 ## Building the Collection
 
-Zara's process for building the surveillance camera dataset mirrors how you'd build a design system asset library: methodical collection, consistent formatting, and quality checks at every step.
+Zara's process for building the surveillance camera dataset mirrors the way a design system asset library gets built: methodical collection, consistent formatting, and quality checks at every step.
 
 <CodeBlock language="typescript" title="dataset-builder.ts">
 {`interface ImageSample {

@@ -175,7 +175,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(
         screen.queryByRole("button", { name: /show bridges in/i }),
       ).toBeNull();
-      expect(screen.getByText(/your react code/i)).toBeInTheDocument();
+      expect(screen.getByText(/your javascript/i)).toBeInTheDocument();
     });
 
     it("exposes exactly one bridge, no cycler (catalog is paid content)", () => {

@@ -16,7 +16,7 @@
 
 | Name | Role | Description |
 |---|---|---|
-| **Kira** | Hacker / Player Character / Student Avatar | The learner's proxy. Skilled JavaScript dev who joined the resistance after Meridian flagged her as "non-compliant" for refusing their tracking SDK. Knows JS cold, no ML background. Built a real-time collaborative drawing app with Canvas API and WebRTC that served 50K users - her proudest project before everything changed. Resourceful, determined, occasionally reckless. Receives direction from Lin; learns from Zara, Ryo, and NEON. |
+| **Kira** | Hacker / Player Character / Student Avatar | The learner's proxy. Skilled JavaScript engineer who joined the resistance after Meridian flagged her as "non-compliant" for refusing their tracking SDK. Knows JS cold, no ML background. Built a real-time collaborative drawing app with Canvas API and WebRTC that served 50K users - her proudest project before everything changed. Resourceful, determined, occasionally reckless. Receives direction from Lin; learns from Zara, Ryo, and NEON. |
 | **Zara** | Street Artist / Visual Expert | Resident expert on visual perception and image composition. Creative, observant, speaks in vivid imagery. Translates vision concepts into intuitive visual metaphors. |
 | **Ryo** | Former Corp Engineer | Ex-Meridian engineer who defected. Quiet, precise, carries guilt about his past work. Knows the enemy's systems inside out. Handles architecture and optimization. |
 | **Lin** | Resistance Leader | Strategic leader. Charismatic, intense, carries the weight of leadership. Sets mission objectives and provides the larger context. |
@@ -46,9 +46,9 @@ A rain-slicked street in Neon City. Holographic advertisements flicker on every 
 
 ### Story Summary
 
-Five years ago, Neon City's centralized surveillance AI was built to protect citizens. Then Meridian Systems corrupted it. Now 200 cameras per city block track, profile, and control. An underground resistance has formed - and they need a JavaScript developer who can build vision systems that fight back.
+Five years ago, Neon City's centralized surveillance AI was built to protect citizens. Then Meridian Systems corrupted it. Now 200 cameras per city block track, profile, and control. An underground resistance has formed - and they need a JavaScript engineer who can build vision systems that fight back.
 
-Kira, a skilled JavaScript developer, is recruited after Meridian's AI flags her as non-compliant. Under the guidance of Zara (visual intuition), Ryo (architecture expertise), and Lin (strategic leadership), she builds Protocol Sentinel - a browser-based vision system that detects surveillance anomalies, identifies drones, and ultimately captures proof of Meridian's illegal profiling.
+Kira, a skilled JavaScript engineer, is recruited after Meridian's AI flags her as non-compliant. Under the guidance of Zara (visual intuition), Ryo (architecture expertise), and Lin (strategic leadership), she builds Protocol Sentinel - a browser-based vision system that detects surveillance anomalies, identifies drones, and ultimately captures proof of Meridian's illegal profiling.
 
 The journey takes Kira from basic image classification to real-time object detection, semantic segmentation, transfer learning, generative adversarial techniques, and edge deployment - all running in the browser, all mapped to JavaScript concepts she already knows.
 
@@ -71,7 +71,7 @@ Protocol Sentinel evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript engineers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -116,7 +116,7 @@ Kira meets the resistance crew. Lin briefs her on the mission. Zara shows her a 
 
 Images are multi-dimensional arrays. A grayscale image is a 2D tensor (height x width). A color image is a 3D tensor (height x width x channels). A batch of images is 4D.
 
-**JS BRIDGE:** `Uint8ClampedArray` from `canvas.getContext('2d').getImageData()` - you have already worked with image tensors in browser code.
+**JS BRIDGE:** `Uint8ClampedArray` from `canvas.getContext('2d').getImageData()` - a canvas image is already a tensor, just flattened.
 
 **Hook:** The pixel patterns are familiar - too familiar. NEON says: "I've seen this encoding before. At Meridian."
 
@@ -136,7 +136,7 @@ RGB, grayscale, alpha - understanding depth. Each pixel has 3 (or 4) values. Col
 
 Resize, crop, rotate, flip - basic transforms that prepare images for model input. Every model expects a fixed input size.
 
-**JS BRIDGE:** CSS `transform` and `object-fit` - you resize and crop images constantly in browser work. `object-fit: cover` is center-crop. `object-fit: contain` is resize-with-padding.
+**JS BRIDGE:** CSS `transform` and `object-fit` are the same two operations image pipelines run constantly: `object-fit: cover` is center-crop, `object-fit: contain` is resize-with-padding.
 
 **Hook:** The transforms reveal something: Meridian's cameras all output images at an unusual resolution - one optimized for a specific model architecture.
 
@@ -168,7 +168,7 @@ The resistance needs training data. Zara leads a nighttime operation to photogra
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Building Datasets | Collecting, labeling, organizing image data | Asset pipeline and folder structure |
 | 2 | Data Augmentation | Creating training variety through transforms | CSS transform variations (`rotate`, `scale`, `skew`) |
@@ -201,7 +201,7 @@ The model hits 89% accuracy on camera type classification.
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Convolution Operations | How kernels slide across images. Kira recognizes the pattern from her Canvas drawing app - she's applied blur filters to pixel buffers before. | CSS `filter: blur()` - a convolution kernel operation |
 | 2 | Pooling Layers | Downsampling feature maps | `srcset` responsive image downsampling |
@@ -237,7 +237,7 @@ The resistance needs to detect Meridian's drones in real-time street-level camer
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Bounding Boxes | Representing object locations | `position: absolute` + `getBoundingClientRect()` |
 | 2 | Anchor Boxes | Pre-defined detection regions | CSS Grid template areas / `getBoundingClientRect()` |
@@ -276,7 +276,7 @@ The resistance needs to understand full street scenes, not just detect individua
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Semantic Segmentation | Classifying every pixel | CSS `clip-path` - defining regions |
 | 2 | Instance Segmentation | Distinguishing individual objects | DOM element identity vs class |
@@ -307,7 +307,7 @@ Ryo introduces features as the "DNA" of an image:
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Feature Vectors | Compact image representations | Hash functions - compact data representation |
 | 2 | Embedding Spaces | Similar images cluster together | 2D scatter plots of related data |
@@ -346,7 +346,7 @@ Kira doesn't respond right away. She watches the loss curve descend on her scree
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Pre-trained Models | Using models trained on massive datasets | npm packages - using others' work |
 | 2 | Fine-tuning | Adapting a model to your task | Customizing a UI framework's world |
@@ -387,7 +387,7 @@ Lin lets them argue. Then: "Build both. Test both. Let the data decide." It's th
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Video Stream Processing | Accessing and processing video feeds | `getUserMedia()` API |
 | 2 | Frame-by-Frame Inference | Running models on live video | `requestAnimationFrame()` render loop |
@@ -428,7 +428,7 @@ The team agrees: the patches will be cryptographically bound to Meridian's archi
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | GANs Primer | Generator vs discriminator | Fuzzer vs validator in testing |
 | 2 | Image Generation | Creating synthetic training data | Procedural content generation |
@@ -461,7 +461,7 @@ Ryo leads deployment. For the first time in weeks, Meridian is quiet - no new dr
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Model Optimization | Quantization, pruning, distillation | Webpack optimization and minification |
 | 2 | Edge Deployment | Running on constrained devices | Progressive Web App (offline-first) |
@@ -488,7 +488,7 @@ The final mission. Protocol Sentinel, deployed across hundreds of devices in the
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | System Design | Architecting the complete Sentinel system | Full-stack architecture planning |
 | 2 | Integration Testing | End-to-end system validation | Cypress/Playwright E2E testing |

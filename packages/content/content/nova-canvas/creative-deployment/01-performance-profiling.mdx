@@ -42,7 +42,7 @@ Three-point-two seconds per generation. Unacceptable. The gallery visitors will 
 The same place it always goes in frontend apps: where you least expect it. We need to profile before we optimize. Chrome DevTools does not care whether you are rendering DOM or running inference.
 </Dialogue>
 
-3,200 milliseconds. Somewhere inside that number live tensor prep, inference, post-processing, data transfer, and at least one bottleneck nobody has met yet. The tools that find it are the ones you already point at React re-renders and layout thrashing: `performance.mark()`, `performance.measure()`, the DevTools Performance panel, memory snapshots. All of it applies directly to inference.
+3,200 milliseconds. Somewhere inside that number live tensor prep, inference, post-processing, data transfer, and at least one bottleneck nobody has met yet. The tools that find it are the ones used to chase React re-renders and layout thrashing: `performance.mark()`, `performance.measure()`, the DevTools Performance panel, memory snapshots. All of it applies directly to inference.
 
 <LearningObjectives objectives={["Profile TensorFlow.js inference using Chrome DevTools Performance panel", "Identify bottlenecks in tensor allocation, computation, and data transfer", "Measure memory usage patterns during generation loops", "Build a profiling harness that instruments each pipeline stage"]} />
 
@@ -52,7 +52,7 @@ The same place it always goes in frontend apps: where you least expect it. We ne
 
 <CodeBlock language="typescript" title="profiling-harness.ts">
 {`// Profile each stage of the generation pipeline
-// Same API you use for profiling React renders
+// Same API used for profiling React renders
 
 async function profileGeneration(model: tf.LayersModel, input: tf.Tensor) {
   const metrics: Record<string, number> = {};

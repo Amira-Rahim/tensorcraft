@@ -41,7 +41,7 @@ production release.
 | `session_started` | Log in (any auth flow) | `userId` |
 | `world_selected` | Complete onboarding with a world picked | `worldId`, `source="onboarding"` |
 | `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
-| `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `framework?`, `yearsExperience?` |
+| `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `yearsExperience?` |
 | `lesson_started` | Open any lesson (step 1 auto-fires) | `worldId`, `moduleId`, `lessonId` |
 | `hint_requested` | On a lesson step with hints: click "Reveal Nudge" | `hintLevel=1`, plus context ids |
 | `exercise_attempted` | Submit an exercise (any outcome) | `passed`, `score`, `exerciseSlug` |

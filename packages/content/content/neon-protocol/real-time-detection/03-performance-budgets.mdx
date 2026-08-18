@@ -22,7 +22,7 @@ consequence:
   narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms. Over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game.'"
 hints:
   - level: nudge
-    content: "Break down the total frame time into stages, just like you break down a Lighthouse audit"
+    content: "Break down the total frame time into stages the way a Lighthouse audit breaks down page load"
   - level: guidance
     content: "Use performance.now() to measure each stage: preprocessing, inference, and postprocessing"
   - level: solution
@@ -47,7 +47,7 @@ If we go pure browser, we lose 15% accuracy. That 15% is people, Noor. Misidenti
 Build both. Test both. Let the data decide. But first, profile what you have. I want stage times, not opinions.
 </Dialogue>
 
-33.3 milliseconds. That is the entire budget for one frame at 30fps, and preprocessing, inference, and postprocessing all eat from it. The discipline is Lighthouse with the stakes raised: instead of First Contentful Paint under 1.8 seconds and Total Blocking Time under 200ms, you are policing a single frame's budget, thirty times a second.
+33.3 milliseconds. That is the entire budget for one frame at 30fps, and preprocessing, inference, and postprocessing all eat from it. The discipline is the one Lighthouse enforces, with the stakes raised: instead of First Contentful Paint under 1.8 seconds and Total Blocking Time under 200ms, the budget being policed is a single frame's, thirty times a second.
 
 <LearningObjectives objectives={["Define performance budgets for real-time ML inference", "Profile each stage of the inference pipeline using performance.now()", "Identify bottlenecks through systematic measurement", "Apply frame-skipping and resolution reduction strategies when over budget"]} />
 

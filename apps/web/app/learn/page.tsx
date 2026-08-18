@@ -45,9 +45,9 @@ export default function LearnPage() {
         </h1>
 
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-8">
-          You already think in arrays, state, and components. Machine learning
-          uses the same patterns, just with different names. Tensorcraft bridges
-          the gap with {WORLD_CONTENT.lessonBridges} analogies that map the
+          You already think in arrays, state, and async. Machine learning uses
+          the same patterns, just with different names. Tensorcraft bridges the
+          gap with {WORLD_CONTENT.lessonBridges} analogies that map the
           JavaScript you know to ML concepts.
         </p>
 
@@ -104,10 +104,11 @@ export default function LearnPage() {
           No Python Required
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-8">
-          Everything runs in the browser using TensorFlow.js. You write
-          TypeScript, test in real-time, and deploy models that work on any
-          device with a web browser. You skip the Jupyter notebooks, pip
-          installs, and GPU setup entirely.
+          Everything in the course runs in the browser using TensorFlow.js. You
+          write TypeScript, test in real time, and ship models that run on any
+          device with a web browser, or under Node: the same TensorFlow.js code
+          runs server-side. You skip the Jupyter notebooks, pip installs, and
+          GPU setup entirely.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">

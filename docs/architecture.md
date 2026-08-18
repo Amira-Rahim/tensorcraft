@@ -245,7 +245,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 | Component | Type | Purpose |
 |-----------|------|---------|
 | `Dialogue` | Server | Speaker label + styled blockquote |
-| `BridgeCallout` | Server | FE↔ML 3-column grid with tier colors |
+| `BridgeCallout` | Server | JS-to-ML 3-column grid with tier colors |
 | `CodeBlock` | Client | Code with copy button + language badge |
 | `HintPanel` | Client | 3-level progressive disclosure |
 | `LearningObjectives` | Server | Checklist at lesson top |

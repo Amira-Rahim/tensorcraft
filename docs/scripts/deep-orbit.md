@@ -26,7 +26,7 @@ Demir's voice changes across the course as his ML fluency grows. His dialogue sh
 - **Early (M1–M3):** *"Wait, so training a neural network is basically like running a build step?"* - Analogy-seeking, uncertain. Every ML concept gets filtered through JS metaphors because that is all he has.
 - **Mid (M4–M6):** *"The sliding window approach reminds me of IntersectionObserver - we only process what's in view."* - Making connections independently. The analogies are sharper, more specific, and he volunteers them rather than needing Farah to supply them.
 - **Late (M7–M9):** *"We need to check for data leakage in the validation set before we trust these anomaly scores."* - Using ML terminology natively. The JS analogies drop away. He thinks in the domain now.
-- **Capstone (M10–M11):** *"Int8 quantization on the signal processor - the inference budget is too tight for float32 on this band."* - ML practitioner. He no longer needs FE analogies. He speaks Nazari's optimization language fluently.
+- **Capstone (M10–M11):** *"Int8 quantization on the signal processor - the inference budget is too tight for float32 on this band."* - ML practitioner. He no longer needs JS analogies. He speaks Nazari's optimization language fluently.
 
 ### Career Paths & Salaries
 
@@ -46,7 +46,7 @@ Demir's voice changes across the course as his ML fluency grows. His dialogue sh
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript engineers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -561,7 +561,7 @@ The first batch of raw sensor data arrives from the long-range arrays - and it i
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Raw Data Reality | Missing values, noise, outliers in sensor feeds | Form validation and sanitization |
 | 2 | Normalization | Scaling features to consistent ranges | CSS `normalize.css` / reset stylesheets |
@@ -603,7 +603,7 @@ The model reaches 78% accuracy. Mirza says: "Good enough to trust? Not yet. Keep
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Network Architecture | Layers, widths, depths - designing a network | Component hierarchy in React |
 | 2 | Loss Functions | Measuring how wrong the model is | Unit test assertions (`expect().toBe()`) |
@@ -652,7 +652,7 @@ Demir discovers the joy and pain of browser ML - the freedom of client-side infe
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Why the Browser? | Advantages of client-side inference | Client-side rendering vs SSR tradeoffs |
 | 2 | TensorFlow.js Setup | Loading and configuring TF.js | Adding a dependency with `npm install` |
@@ -696,7 +696,7 @@ Demir builds a spectrogram visualizer and feeds FFT features into the classifier
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Time vs Frequency | Two views of the same signal | DOM vs CSSOM - two views of the page |
 | 2 | Fourier Transform | Decomposing signals into frequencies | CSS animation decomposition (`@keyframes`) |
@@ -746,7 +746,7 @@ Demir builds an LSTM (Long Short-Term Memory) network to predict the next signal
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Sequences Matter | Why order matters in signal data | Array order in rendering lists (React keys) |
 | 2 | Simple RNNs | Recurrent connections and hidden state | `useReducer` - state depending on previous state |
@@ -797,7 +797,7 @@ Mirza convenes the crew. The unknown signal has a structure that is unlike anyth
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Normal vs Anomalous | Defining what "normal" looks like | Baseline performance metrics |
 | 2 | Autoencoders | Learning to compress and reconstruct | `gzip` compression - lossy reconstruction |
@@ -843,7 +843,7 @@ The crew attempts to predict the anomalous signal's next occurrence. Demir build
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Beyond LSTM | Attention mechanisms for sequences | CSS `:focus` - context-aware highlighting |
 | 2 | Temporal Attention | Attending to relevant time steps | `scrollIntoView()` - focusing on what matters |
@@ -891,7 +891,7 @@ Demir integrates LLM capabilities into DEEP SCAN: prompt engineering for signal 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | LLMs for Science | Using language models as reasoning tools | AI-assisted code completion (Copilot) |
 | 2 | Prompt Engineering | Crafting effective prompts for analysis | Writing effective search queries |
@@ -939,7 +939,7 @@ The optimization work is no longer academic. Remaining fuel reserves limit compu
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Model Profiling | Measuring inference speed and memory | Chrome DevTools Performance tab |
 | 2 | Quantization | Reducing model precision for speed | Image compression (PNG to WebP) |
@@ -979,7 +979,7 @@ DEEP SCAN classifies the anomalous signal definitively. The crew stares at the o
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | System Architecture | Designing the full deployment | Production architecture diagram |
 | 2 | CI/CD Pipeline | Automated testing and deployment | GitHub Actions workflow |

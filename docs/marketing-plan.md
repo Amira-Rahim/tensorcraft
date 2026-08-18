@@ -11,9 +11,9 @@
 
 ## Executive Summary
 
-Tensorcraft is an interactive machine learning education platform built specifically for JavaScript engineers. Unlike traditional ML courses that assume Python fluency and data science backgrounds, Tensorcraft meets developers where they are - in the browser, with JavaScript, using concepts they already understand from React, Vue, and Angular development.
+Tensorcraft is an interactive machine learning education platform built specifically for JavaScript engineers. Unlike traditional ML courses that assume Python fluency and data science backgrounds, Tensorcraft meets JavaScript engineers where they are - in JavaScript, using concepts they already understand from the code they ship, whether it runs in a browser or on Node.
 
-The platform's core differentiator is its library of 50+ JS-to-ML concept bridges: structured explanations that map familiar JavaScript patterns (component state, reactive data flow, event propagation, virtual DOM diffing) directly onto ML concepts (model weights, gradient descent, backpropagation, optimization). This approach eliminates the "blank slate" problem that causes most JavaScript developers to abandon ML learning within the first week.
+The platform's core differentiator is its library of 50+ JS-to-ML concept bridges: structured explanations that map familiar JavaScript patterns (component state, reactive data flow, middleware chains, event propagation) directly onto ML concepts (model weights, gradient descent, backpropagation, optimization). This approach eliminates the "blank slate" problem that causes most JavaScript developers to abandon ML learning within the first week.
 
 Tensorcraft is delivered as five story-driven worlds, each with a distinct narrative, visual identity, and character cast. All courses run entirely in the browser - no Python environment, no Jupyter notebooks, no conda installs. Learners purchase individual worlds at $59 each (not a subscription), with Module 1 free across all worlds to reduce friction.
 
@@ -285,7 +285,7 @@ Roll out across platforms in a deliberate sequence to maximize compounding momen
 | # | Platform | Relevance | Audience | Action |
 |---|----------|-----------|----------|--------|
 | 1 | Twitter/X | Primary | JS devs, indie hackers, tech leads | Daily presence. Bridge threads weekly. Launch day blitz. Pin launch tweet. |
-| 2 | Dev.to | Primary | Web developers, career changers | Weekly bridge posts. Launch day "Introducing" post. Cross-post all blog content. |
+| 2 | Dev.to | Primary | JS devs, career changers | Weekly bridge posts. Launch day "Introducing" post. Cross-post all blog content. |
 | 3 | Hacker News | High | Engineers, technical founders, senior devs | Show HN on launch. Technical deep-dives monthly. Engage in ML/JS discussions. |
 | 4 | Reddit | High | Broad dev community, career changers | Value-first posts in r/webdev, r/javascript, r/reactjs, r/learnmachinelearning. Follow 90/10 rule. |
 | 5 | Product Hunt | High (launch) | Early adopters, tool enthusiasts, indie hackers | One-time launch. Prepare thoroughly. Follow up with milestone launches (V1.0, new worlds). |
@@ -297,7 +297,7 @@ Roll out across platforms in a deliberate sequence to maximize compounding momen
 | 11 | Indie Hackers | Medium | Solopreneurs, bootstrappers | Build-in-public updates. Revenue milestones. Product journey posts. |
 | 12 | Lobsters | Low-Medium | Senior engineers, niche technical crowd | Technical deep-dives only. Requires invite. No marketing fluff. |
 | 13 | Mastodon | Low-Medium | Open-source community, privacy-conscious devs | Mirror Twitter content. Engage with #WebDev and #MachineLearning hashtags. |
-| 14 | TikTok | Low-Medium | Junior devs, career changers, visual learners | 60-second bridge explainers. "POV: you're a React dev learning ML." Experimental. |
+| 14 | TikTok | Low-Medium | Junior devs, career changers, visual learners | 60-second bridge explainers. "POV: you're a JS dev learning ML." Experimental. |
 | 15 | Instagram | Low | Design-oriented devs, visual learners | Carousel posts showing bridge diagrams. World aesthetic shots. Low priority. |
 | 16 | Stack Overflow | Low | Developers seeking answers | Answer TensorFlow.js and browser-ML questions. Link to relevant Tensorcraft content only when genuinely helpful. |
 | 17 | Medium | Low | General tech readers | Republish top-performing dev.to posts after 2-week delay. Medium's algo favors established publications. |
@@ -375,7 +375,7 @@ Weekly newsletter sent every Tuesday at 10 AM ET. "The Bridge" newsletter covers
 
 5 posts per week, distributed as follows:
 
-- **Monday:** Bridge insight tweet - a single, punchy mapping between an JS concept and an ML concept. Optimized for bookmarks and quote-tweets.
+- **Monday:** Bridge insight tweet - a single, punchy mapping between a JS concept and an ML concept. Optimized for bookmarks and quote-tweets.
 - **Tuesday:** Tutorial thread - 5-10 tweet thread walking through a concept or mini-build. Ends with soft CTA to free Module 1.
 - **Wednesday:** Community engagement - reply to trending JS/ML discussions, quote-tweet interesting projects, amplify learner wins.
 - **Thursday:** Behind-the-scenes - development update, design decision, content creation process. Build-in-public angle.
@@ -497,8 +497,8 @@ Coverage record as verified 2026-07-27, when "Deep dive" = `extras/math-deep-div
 
 The waitlist page is the primary conversion asset during pre-launch. It lives at `tensorcraft.app` and follows this structure:
 
-- **Hero section:** Full-width dark background (#181818) with ParticleField canvas animation. Headline: "Machine Learning for JavaScript Devs, Finally." Subheadline: "50+ concept bridges that translate ML into the language you already speak." Single email input with "Join the Waitlist" CTA button (brutalist offset shadow on hover). Waitlist count displayed below input ("Join 2,847 JavaScript developers").
-- **Problem section:** Three-column layout. Column 1: "Every ML course starts with Python" (crossed-out Python logo). Column 2: "You've tried. You've quit." (abandoned Jupyter notebook illustration). Column 3: "It's not you. It's the teaching." (bridge metaphor illustration). Copy: "Machine learning courses weren't built for you. They assume you think in NumPy, not in components. Tensorcraft fixes that."
+- **Hero section:** Full-width dark background (#181818) with ParticleField canvas animation. Headline: "Machine Learning for JavaScript Devs, Finally." Subheadline: "50+ concept bridges that translate ML into the language you already speak." Single email input with "Join the Waitlist" CTA button (brutalist offset shadow on hover). Waitlist count displayed below input ("Join 2,847 JavaScript engineers").
+- **Problem section:** Three-column layout. Column 1: "Every ML course starts with Python" (crossed-out Python logo). Column 2: "You've tried. You've quit." (abandoned Jupyter notebook illustration). Column 3: "It's not you. It's the teaching." (bridge metaphor illustration). Copy: "Machine learning courses weren't built for you. They assume you think in NumPy, not in JavaScript. Tensorcraft fixes that."
 - **What you'll build section:** Interactive carousel showing 3-4 real project outcomes from Tensorcraft lessons. Each slide shows a browser screenshot of the completed project (sentiment analyzer, image classifier, recommendation engine) with a "Built with JavaScript. No Python required." caption.
 - **World previews section:** Five cards, one per world, showing the world name, key art, narrative hook, and character illustrations. Deep Orbit and Neon Protocol are highlighted as "coming first." Other three show "Coming 2026" with faded styling.
 - **FAQ section:** Expandable accordion with 6-8 questions: "Do I need to know Python?", "How is this different from Coursera/fast.ai?", "Is this for beginners?", "What will I be able to build?", "How much does it cost?", "When does it launch?", "Can I try it for free?", "Do you offer team pricing?"
@@ -557,7 +557,7 @@ The waitlist is not just a launch asset - it's the foundation of the email nurtu
 | 1 | Bridge Post | React State and Neural Network Weights: The Same Mental Model | dev.to, Hashnode, blog |
 | 3 | Tutorial | Build a Color Classifier with Vanilla JS and TensorFlow.js | dev.to, blog |
 | 5 | Bridge Graphic | useState = model.weights (visual) | Twitter/X, LinkedIn |
-| 7 | Thread | "React developers already understand 70% of ML. Here's why." (10-tweet thread) | Twitter/X |
+| 7 | Thread | "JavaScript developers already understand 70% of ML. Here's why." (10-tweet thread) | Twitter/X |
 | 9 | Bridge Post | Component Lifecycles Are Training Loops in Disguise | dev.to, Hashnode, blog |
 | 11 | Video | Bridge Demo: Virtual DOM Diffing vs Gradient Descent (animated, 3 min) | YouTube, Twitter/X |
 | 13 | Behind-the-Scenes | Why We Are Building an ML Course for JavaScript Devs | blog, Hashnode, Indie Hackers |

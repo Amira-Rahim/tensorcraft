@@ -19,7 +19,7 @@
 | **Dr. Elena Vasquez** | Head Researcher / Mentor | Director of Signal Ward. Brilliant diagnostician, demanding but empathetic. Lost a patient early in her career due to a missed note in a chart - this drives her mission. Sets clinical context and explains *why* each NLP capability matters. Has no patience for sloppy work but infinite patience for genuine learning. |
 | **Obi Nwosu** | Computational Linguist / Concept Explainer | NLP expert with a PhD in biomedical NLP. Warm, articulate, deeply enthusiastic about language. Speaks three languages fluently and sees beauty in how words carry meaning. Introduces NLP theory, explains architectures, builds linguistic intuition. |
 | **Santos** | Nurse & Data Curator / Implementation Lead | Handles data quality, labeling, and the messy reality of clinical text. Practical, meticulous, protective of patient data. Has labeled ten thousand records by hand. Bridges the gap between raw medical records and clean training data. |
-| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled JavaScript developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI - a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there - drug interactions hiding across tabs, symptom patterns buried in months of notes - but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
+| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled JavaScript engineer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI - a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there - drug interactions hiding across tabs, symptom patterns buried in months of notes - but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
 | **MEDI** | Clinical Decision Support AI | The ward's AI assistant. Precise, helpful, occasionally pedantic about medical terminology. Unlike other world AIs, MEDI is designed to be cautious - it flags uncertainty rather than projecting confidence. Corrects gently but firmly. Tutorial guide and hint system. |
 
 ### DISCLAIMER
@@ -60,7 +60,7 @@ A hospital corridor at night. Fluorescent lights cast a blue-white glow on polis
 
 Signal Ward at Caduceus Medical Center is drowning in unstructured clinical text. Thousands of notes, reports, and discharge summaries flow through the EHR system daily, but critical information gets buried. After a vendor NLP solution fails spectacularly - misclassifying a drug allergy and triggering a near-miss adverse event - Dr. Vasquez cancels the vendor contract and decides to build an in-house system.
 
-Khalil, a JavaScript developer in the IT department, is tasked with building the interface for Diagnostic One, a clinical NLP pipeline. Under the guidance of Dr. Vasquez (clinical context), Obi (NLP theory), and Santos (data quality), he learns to build text processing systems that can tokenize clinical language, extract medical entities, classify note types, summarize documents, and flag critical findings - all running in the browser for privacy and speed.
+Khalil, a JavaScript engineer in the IT department, is tasked with building the interface for Diagnostic One, a clinical NLP pipeline. Under the guidance of Dr. Vasquez (clinical context), Obi (NLP theory), and Santos (data quality), he learns to build text processing systems that can tokenize clinical language, extract medical entities, classify note types, summarize documents, and flag critical findings - all running in the browser for privacy and speed.
 
 The journey is not just technical - it is ethical. Signal Ward confronts the reality that AI in healthcare must be held to a higher standard. Every module includes moments where the system fails, and the team learns to build safeguards, communicate uncertainty, and keep humans in the loop.
 
@@ -83,7 +83,7 @@ Diagnostic One evolves across 11 modules:
 
 ## CONCEPT DISCLAIMER
 
-> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript developers.**
+> **This course teaches machine learning through interactive, narrative-driven lessons designed for JavaScript engineers.**
 >
 > You will learn real ML - not metaphors, not hand-waving, not "AI magic." Every concept is grounded in mathematics and implemented in working code.
 >
@@ -114,7 +114,7 @@ Diagnostic One evolves across 11 modules:
 
 ### Summary
 
-The hospital's vendor NLP system has failed - a misclassified drug allergy led to a near-miss adverse event. Dr. Vasquez cancels the vendor contract and tasks the IT team with building an in-house solution. Khalil, a JavaScript dev with strong TypeScript skills, is assigned to build the interface.
+The hospital's vendor NLP system has failed - a misclassified drug allergy led to a near-miss adverse event. Dr. Vasquez cancels the vendor contract and tasks the IT team with building an in-house solution. Khalil, a JavaScript engineer with strong TypeScript skills, is assigned to build the interface.
 
 Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-based text processing, the three learning paradigms, neural network basics, and text-as-data. Each concept is grounded in clinical examples - classifying note types, extracting medication names, predicting diagnosis codes.
 
@@ -126,7 +126,7 @@ Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-
 
 ### Lessons
 
-| # | Title | Description | FE Bridge | 5C Variation |
+| # | Title | Description | JS Bridge | 5C Variation |
 |---|---|---|---|---|
 | 1 | The Crisis | What ML is and why it matters for clinical text | App architecture overview | Standard |
 | 2 | Text as Data | Converting clinical notes to numerical representations | `JSON.parse()` on API responses | Discovery |
@@ -168,7 +168,7 @@ Clinical text is uniquely messy - abbreviations (pt, hx, dx, rx), misspellings, 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Word Tokenization | Splitting text on boundaries | `String.split()` and regex patterns |
 | 2 | Subword Tokenization | BPE and WordPiece algorithms | URL route parsing (`/path/:param/segment`) |
@@ -199,7 +199,7 @@ Obi demonstrates word embeddings by showing that in the trained vector space, "a
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | One-Hot Encoding | The naive approach and its limitations | Radio buttons - only one active at a time |
 | 2 | Word2Vec | Learning word relationships from context | Recommendation engines ("users also bought") |
@@ -232,7 +232,7 @@ Dr. Vasquez presents a case where word order is life-or-death: "Patient denied c
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Why Sequences Matter | Word order changes meaning in clinical text | Array order matters - React list rendering |
 | 2 | RNNs for Text | Processing text word by word | `Array.reduce()` - accumulating state |
@@ -263,7 +263,7 @@ Obi draws the attention diagram on the whiteboard:
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | The Attention Problem | Why not all words are equally important | CSS `:focus` and `tabIndex` - directing attention |
 | 2 | Self-Attention | Each word attending to every other word | `scrollIntoView()` - programmatic focus |
@@ -300,7 +300,7 @@ Obi introduces the transformer architecture:
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | From RNN to Transformer | Why self-attention replaced recurrence | React class components to hooks - paradigm shift |
 | 2 | Transformer Architecture | Encoder stack with attention and feedforward | React virtual DOM - diffing and reconciliation |
@@ -352,7 +352,7 @@ The team learns about subgroup performance analysis - evaluating model accuracy 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | NER Fundamentals | What entities are and why they matter | DOM element type identification |
 | 2 | BIO Tagging | Labeling entity boundaries | HTML tag open/close matching |
@@ -385,7 +385,7 @@ The team learns about subgroup performance analysis - evaluating model accuracy 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Classification Basics | Assigning labels to documents | Email filtering (spam vs inbox) |
 | 2 | Multi-Label Classification | Documents with multiple categories | Tag system with multiple selections |
@@ -420,7 +420,7 @@ An unconscious patient arrives in the ER with no accessible medical history. Rec
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Extractive QA | Finding answers within documents | `Ctrl+F` - finding text in a page |
 | 2 | Reading Comprehension | Understanding context to answer questions | GraphQL resolvers - query-specific data fetching |
@@ -457,7 +457,7 @@ The team addresses each concern systematically. Santos builds a human-in-the-loo
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Model Serving | APIs for real-time NLP inference | REST API design with Express/Fastify |
 | 2 | Latency Optimization | Keeping response times clinical-grade | Core Web Vitals optimization |
@@ -484,7 +484,7 @@ Diagnostic One goes live across Signal Ward. Everything built across 10 modules 
 
 ### Lessons
 
-| # | Title | Description | FE Bridge |
+| # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | System Architecture | Designing the complete Diagnostic One system | Full-stack architecture review |
 | 2 | Integration | Connecting to hospital information systems | Third-party API integration |

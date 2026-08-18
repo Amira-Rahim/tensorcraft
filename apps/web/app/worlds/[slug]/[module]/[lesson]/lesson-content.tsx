@@ -370,7 +370,7 @@ export function LessonContent({
     };
 
     // Derive the optional bridge-hint payload from lesson.concept.bridge
-    // so the Exercise can surface the FE↔ML reminder without reading
+    // so the Exercise can surface the JS-to-ML reminder without reading
     // frontmatter itself.
     const bridgeHint = lesson.concept.bridge
       ? {

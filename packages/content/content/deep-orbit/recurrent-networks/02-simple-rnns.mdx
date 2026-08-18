@@ -91,7 +91,7 @@ function signalReducer(state: { count: number; trend: string }, action: { value:
 // Build a simple RNN in TF.js
 const model = tf.sequential();
 model.add(tf.layers.simpleRNN({
-  units: 32,           // hidden state size (like the shape of your Redux store)
+  units: 32,           // hidden state size (like the shape of a Redux store)
   inputShape: [5, 3],  // 5 time steps, 3 features each
 }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));

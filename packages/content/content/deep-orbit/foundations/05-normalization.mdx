@@ -86,7 +86,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-You've computed min-max normalization before, probably this month: scroll progress. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so a progress bar can use it. That's the entire min-max formula: subtract the minimum, divide by the range.
+If you've ever built a scroll progress bar, you've already computed min-max normalization. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so a progress bar can use it. That's the entire min-max formula: subtract the minimum, divide by the range.
 
 Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both in raw and temperature's numbers land roughly forty times larger, so the louder feature dominates what the model learns while the quiet one barely registers, even if the quiet one carries the signal you actually care about.
 

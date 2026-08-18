@@ -31,7 +31,7 @@
 | Language | TypeScript 5.4 | End-to-end type safety across monorepo packages |
 | Styling | Tailwind CSS 4 | Utility-first CSS with `@world` directive for CSS-native theming; no CSS Modules needed |
 | Content | MDX 3 + Velite (Zod schemas) | Type-safe lesson content with build-time frontmatter validation. Missing fields cause build errors, not runtime errors. |
-| Code Highlighting | Code Hike (Shiki-based) | Scrollytelling code walkthroughs, annotations, step-based tutorials, FE Bridge side-by-side code comparisons |
+| Code Highlighting | Code Hike (Shiki-based) | Scrollytelling code walkthroughs, annotations, step-based tutorials, JS-to-ML bridge side-by-side code comparisons |
 | Code Exercises | Sandpack (CodeSandbox) | In-browser code editor and runtime for hands-on ML exercises |
 | Email | Kit (ConvertKit) | Waitlist capture, per-world segmented lists, 11-email nurture sequence, launch emails |
 | Database | Supabase (PostgreSQL) | User data, progress tracking, authentication, row-level security |
@@ -664,7 +664,7 @@ import { FocusTrap } from '@tensorcraft/ui/a11y'
 | `SkillGenome` | `apps/web/app/dashboard/skill-genome.tsx` | Dashboard-specific wrapper around `SkillRadar` that renders the learner's live skill distribution. Shares a `hexCorners` helper with `SkillRadar` to keep geometry identical across surfaces. |
 | `LossCurve` | `@tensorcraft/ui/visualizations` | Animated SVG line chart for training-loss visualization on the dashboard and capstone pages. |
 | `ParticleField` | `@tensorcraft/ui/effects` | Canvas particle atmosphere used on the landing hero, auth pages, and per-world selection cards. Respects `prefers-reduced-motion`. |
-| `BridgeTicker` | `@tensorcraft/ui/effects` | Horizontal scrolling ticker of FE→ML bridge statements used as ambient marketing flavor. |
+| `BridgeTicker` | `@tensorcraft/ui/effects` | Horizontal scrolling ticker of JS-to-ML bridge statements used as ambient marketing flavor. |
 | `SceneCanvas` | `@tensorcraft/ui/effects` | Shared chrome for time-parameterized scene renderers: own clock, eased 0..1 hover amount with an `intensity` resting floor (page backdrops have no hover, so they'd otherwise idle at their faintest), IntersectionObserver + reduced-motion gating (static frame when reduced). `OrbitCanvas` is `drawOrbit` on this chrome. |
 | World scenes (`drawNeonProtocol`, `drawSignalWard`, `drawNovaCanvas`, `drawTerraGrid`) | `@tensorcraft/ui/effects` | Signature per-world animations on the landing five-worlds strip and the `/worlds` card grid, siblings of `drawOrbit`: city scanned by a vision HUD, token rows with attention arcs over an EKG, a diffusion loop condensing noise into a nova bloom, a perspective edge-mesh grid with node pings. Ambient-faint at rest; hover/focus ignites them. Geometry is a pure function of `t` (hover styles only) - enforced by `world-scenes.test.ts`. |
 

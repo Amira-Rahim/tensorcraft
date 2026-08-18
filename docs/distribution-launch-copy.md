@@ -20,7 +20,7 @@ only Deep Orbit is live).
 - **First comment (post on launch day, from the brand account):**
   We are a group of JavaScript engineers who kept bouncing off ML courses
   written for Python people. So we built the course we wanted: every
-  concept anchored to something a JS developer already knows (typed arrays
+  concept anchored to something a JavaScript engineer already knows (typed arrays
   to tensors, expect() to loss functions, static deploys to model
   shipping). Every analogy is graded by how far it actually holds. The
   first module is free and runs a real model in your browser. We would
@@ -33,7 +33,7 @@ only Deep Orbit is live).
   far it holds. Module 1 free.
 - **Location:** The Archimedes, Proxima Centauri
 - **Link:** tensorcraft.app
-- **Pinned post:** You have spent years building mental models: components,
+- **Pinned post:** You have spent years building mental models: modules,
   memoization, build pipelines. Most of them transfer to ML if someone
   tells you exactly where each one stops holding. That is the whole
   product. Module 1 is free, in your browser, no Python.
