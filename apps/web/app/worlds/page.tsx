@@ -14,9 +14,9 @@ import { WorldCardsGrid, type WorldCardData } from "./world-cards-grid";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Tensorcraft: Deep Orbit is live, ${WORLD_SLUGS.length - LAUNCHED_WORLDS.length} more coming`,
+  title: `ML Courses in JavaScript: ${LAUNCHED_WORLDS.length} live, ${WORLD_SLUGS.length - LAUNCHED_WORLDS.length} coming | Tensorcraft`,
   description:
-    "Deep Orbit (time-series & signals) is live. Neon Protocol, Signal Ward, Nova Canvas, and Terra Grid follow in waves; join each waitlist.",
+    "Deep Orbit, a time-series and signals course in JavaScript, is live. Four more story worlds (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) are coming; join the waitlists.",
   alternates: { canonical: "https://tensorcraft.app/worlds" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -25,16 +25,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/worlds",
-    title: "Five worlds, one live | Tensorcraft",
+    title: "Five story courses, one live | Tensorcraft",
     images: [
-      "/api/og?title=Five%20worlds%2C%20one%20live&world=deep-orbit&subtitle=Deep%20Orbit%20is%20shipping%20now",
+      "/api/og?title=Five%20story%20courses%2C%20one%20live&world=deep-orbit&subtitle=Deep%20Orbit%20is%20live%20now",
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Five worlds, one live | Tensorcraft",
+    title: "Five story courses, one live | Tensorcraft",
     images: [
-      "/api/og?title=Five%20worlds%2C%20one%20live&world=deep-orbit&subtitle=Deep%20Orbit%20is%20shipping%20now",
+      "/api/og?title=Five%20story%20courses%2C%20one%20live&world=deep-orbit&subtitle=Deep%20Orbit%20is%20live%20now",
     ],
   },
 };

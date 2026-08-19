@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Yara wants to blend styles. 'Half Monet, half Basquiat. Soft light with raw energy.' Rohan grins: 'That is just interpolating between style representations. Like CSS mix-blend-mode: layer one visual effect over another.'"
+  narrative: "Yara wants to blend styles. 'Half Monet, half Basquiat. Soft light with raw energy.' Samir grins: 'That is just interpolating between style representations. Like CSS mix-blend-mode: compositing one layer over another.'"
   speaker: "Yara"
 concept:
   explanation: "Style blending interpolates between the Gram matrices of multiple styles, producing hybrids no single artist represents. The blend ratio is a creative control, and not every point along it decodes to a coherent style."
@@ -39,11 +39,13 @@ keywords:
 I don't want pure Monet or pure Basquiat. I want something in between: Monet's light with Basquiat's line work. A style that doesn't exist in any museum.
 </Dialogue>
 
-<Dialogue speaker="Rohan">
-In CSS, `mix-blend-mode` layers visual effects: multiply, screen, overlay. Style blending does the same thing. We interpolate between two Gram matrices and use the blend as our target. You get a style that is half Monet, half Basquiat, or any ratio you choose.
+<Dialogue speaker="Samir">
+In CSS, `mix-blend-mode` composites two layers: multiply, screen, overlay. Same move here. Interpolate between two Gram matrices, use the blend as the target, and you get a style that is half Monet, half Basquiat, or any ratio you name.
 </Dialogue>
 
-Blending works because Gram matrices live in a continuous space: any weighted average of two style fingerprints is a perfectly valid loss target. Whether it is a coherent style is a separate question. Some blends read as a third artist who never existed; others pass through visually broken territory on the way. The dial is continuous. Taste is not.
+Blending works because Gram matrices live in a continuous space: any weighted average of two style fingerprints is a valid loss target. Whether it is a coherent style is a separate question. Some blends read as a third artist who never existed; others pass through visually broken territory on the way. The dial is continuous. Taste is not.
+
+There is a bill attached. A blended Gram matrix is a target, and targets get paid for with the optimization loop from lesson 2: three minutes per dial position. Nobody turns a dial that slow. To hand the dial to a visitor you move the blend inside the feedforward network from lesson 4 and interpolate its normalization statistics instead, so the ratio becomes an argument at inference time rather than a new training run. The derivation below sets that up.
 
 <LearningObjectives objectives={["Interpolate between Gram matrices to blend artistic styles", "Control blend ratios to create hybrid styles at any point between two artists", "Apply spatial style masks to use different styles in different image regions", "Connect style blending to CSS mix-blend-mode compositing"]} />
 
@@ -87,18 +89,18 @@ function styleGradient(
   // [steps] = pure Basquiat
 }
 
-// Spatial style blending: different styles in different regions
+// Spatial style blending: two stylized renders, one mask
 function spatialBlend(
-  gramA: tf.Tensor2D[],
-  gramB: tf.Tensor2D[],
-  mask: tf.Tensor2D // 0-1 mask, same spatial dims as features
-): { foreground: tf.Tensor2D[]; background: tf.Tensor2D[] } {
-  // Where mask = 1, use style A; where mask = 0, use style B
-  // This allows Monet sky + Basquiat buildings
-  return {
-    foreground: gramA,
-    background: gramB
-  };
+  stylizedA: tf.Tensor4D, // content rendered in style A
+  stylizedB: tf.Tensor4D, // content rendered in style B
+  mask: tf.Tensor4D // 0 to 1, broadcast across channels
+): tf.Tensor4D {
+  // Where mask = 1 take style A, where mask = 0 take style B.
+  // Monet sky, Basquiat buildings, one soft edge between them.
+  return tf.add(
+    tf.mul(stylizedA, mask),
+    tf.mul(stylizedB, tf.sub(tf.scalar(1), mask))
+  ) as tf.Tensor4D;
 }
 
 // Yara's dial: visitors control the blend in real time
@@ -127,7 +129,7 @@ stylized = M ⊙ stylize(content, styleA) + (1 − M) ⊙ stylize(content, style
 
 Works but seams are visible. Better: blend Gram matrices instead of pixels.
 
-**AdaIN-based blending:** in a feedforward network with AdaIN layers (per lesson 04):
+**AdaIN-based blending:** lesson 4's network hard-codes one style into its weights. Add AdaIN layers, whose per-channel scale and shift come from the style image instead of from training, and the blend ratio becomes an inference-time argument:
 
 ```
 stats_blend = α · stats(styleA) + (1 − α) · stats(styleB)

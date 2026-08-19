@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="NEON">
-When I was Meridian's surveillance AI, I processed features in a 512-dimensional space. Every image had a coordinate. Images of the same object clustered together, and not because anyone told them to; the network learned that similar visual patterns map to nearby points. Meridian used that property to track fourteen million people. You are about to use it to find drones. Same geometry, better manners.
+Five hundred and twelve numbers per frame, and I never once looked at a picture. Coordinates were enough. Images of the same object landed near each other, and not because anyone told them to; the network learned that similar visual patterns map to nearby points. Meridian aimed that property at a city. You are about to aim it at their drones. Same geometry, better manners.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So it is like a scatter plot, but with 512 axes instead of 2. Points that are close together represent images that look alike.
 </Dialogue>
 
-On a 2D scatter plot, position encodes meaning: points near each other share similar data values. An embedding space works the same way, but in hundreds of dimensions. Each feature vector is a coordinate. Distance between coordinates equals semantic distance between images. That is literal geometry, not a metaphor.
+The difference is who picks the axes. On a scatter plot you choose two, and you know what each one means. Here the network chooses 512 of them during training and names none of them; no single axis maps to anything a human would recognize. What survives is the relation between points: distance between coordinates equals semantic distance between images. That is literal geometry, not a metaphor.
 
 <LearningObjectives objectives={["Understand embedding spaces as high-dimensional coordinate systems for visual data", "Calculate cosine similarity between feature vectors", "Interpret distance in embedding space as visual similarity", "Visualize how similar images naturally cluster in feature space"]} />
 
@@ -73,7 +73,7 @@ function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): number {
   return dotProduct.div(normA.mul(normB)).dataSync()[0];
 }
 
-console.log(cosineSimilarity(droneA, droneB)); // ~0.95 (very similar)
+console.log(cosineSimilarity(droneA, droneB)); // ~0.995 (very similar)
 console.log(cosineSimilarity(droneA, car));    // ~0.02 (very different)`}
 </CodeBlock>
 
@@ -95,16 +95,19 @@ function euclideanDistance(a: tf.Tensor1D, b: tf.Tensor1D): number {
 // because feature extractors can produce vectors of varying magnitude,
 // and we care about *what* is in the image, not *how bright* it is
 
-// Think of it like CSS units:
-// Cosine = percentage-based (relative)
-// Euclidean = pixel-based (absolute)`}
+// Rule of thumb: if two vectors point the same way but one is twice as long,
+// cosine calls them identical and Euclidean calls them far apart`}
 </CodeBlock>
 
 ## Challenge
 
-Implement cosine similarity to compare feature vectors.
+Rank a whole database against one query vector by cosine distance.
 
-<Exercise slug="compute-embeddings" />
+<Exercise slug="embedding-distance" />
+
+Then project the result down to two dimensions so you can look at it.
+
+<Exercise slug="plot-embeddings" />
 
 <DerivationDrawer summary="Cosine vs Euclidean: when each makes sense">
 **Cosine similarity:** `cos(a, b) = (a · b) / (||a|| · ||b||)`. Range [-1, 1]. Sensitive to direction, ignores magnitude.

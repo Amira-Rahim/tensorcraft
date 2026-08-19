@@ -24,9 +24,9 @@ hints:
   - level: nudge
     content: "tf.softmax turns your raw scores into weights that sum to 1; compute the scores first"
   - level: guidance
-    content: "Compute a dot product between a query and each key, then apply softmax"
+    content: "Multiply Q by K transposed, divide by the square root of K's last dimension, softmax that, then multiply by V"
   - level: solution
-    content: "const scores = tf.dot(query, keys.transpose()); const weights = tf.softmax(scores);"
+    content: "const dK = K.shape[K.shape.length - 1]; const scores = tf.matMul(Q, K, false, true); const scaled = scores.div(tf.scalar(Math.sqrt(dK))); const weights = tf.softmax(scaled); return tf.matMul(weights, V);"
 keywords:
   - attention
   - softmax
@@ -46,7 +46,7 @@ Khalil, read this clinical note: "The patient was prescribed methotrexate for rh
 And you did that without reading every word with equal care. Our sequence models can't do that yet. They treat every word with roughly equal importance, like tabbing through every element on a page instead of jumping to the one that matters.
 </Dialogue>
 
-CSS `:focus` moves focus to one element at a time, all or nothing. An attention mechanism is softer: it spreads continuous weight across every token at once and learns where the weight should go.
+So the question is not which word to focus on. It is how much of each word to carry forward, one number per word.
 
 <LearningObjectives objectives={["Understand why uniform weighting fails for clinical text", "Compute attention scores using dot products", "Apply softmax to normalize scores into attention weights", "Use attention weights to create a weighted representation"]} />
 
@@ -54,9 +54,9 @@ CSS `:focus` moves focus to one element at a time, all or nothing. An attention 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Our LSTM from Module 4 processes each word sequentially, compressing the entire sentence into a single hidden state. That's like trying to summarize a patient's entire medical history in one sentence. You inevitably lose critical details.
+Our LSTM from Module 4 is a `reduce`: it folds the note word by word into one accumulator, and the accumulator is all that survives. Summarize a patient's whole history in one sentence and you lose the line that mattered.
 
-Consider: "Patient denied chest pain but reported shortness of breath." If the model treats "denied" and "reported" with equal weight, it might confuse which symptom is present and which is absent.
+Consider: "Patient denied chest pain but reported shortness of breath." If every word carries the same weight, nothing ties "denied" to "chest pain" rather than to "shortness of breath". The note reads as though both symptoms were reported.
 
 <CodeBlock language="typescript" title="attention-scores.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -73,8 +73,11 @@ const scores = tf.matMul(
   query.reshape([64, 1])
 ).squeeze(); // shape: [5]
 
-// Normalize with softmax: scores now sum to 1
-const weights = tf.softmax(scores);
+// Scale by sqrt(d) so large dot products don't saturate the softmax
+const scaled = scores.div(tf.scalar(Math.sqrt(64)));
+
+// Normalize with softmax: the weights now sum to 1
+const weights = tf.softmax(scaled);
 console.log('Attention weights:', await weights.array());
 
 // Create weighted combination: the "attended" representation

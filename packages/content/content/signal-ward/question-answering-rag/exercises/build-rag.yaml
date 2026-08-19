@@ -1,7 +1,7 @@
 slug: build-rag
 lessonSlug: rag-architecture
 title: "Build a RAG Pipeline for Medical Documents"
-instructions: "Implement a basic Retrieval-Augmented Generation pipeline. Build three functions. embedQuery converts a query string into a vector using TensorFlow.js. retrieveChunks finds the top-k most similar document chunks by cosine similarity. generateAnswer combines the retrieved context with the query into a prompt and calls a generation function."
+instructions: "Implement a basic Retrieval-Augmented Generation pipeline over document chunks, the pieces a long record is split into before indexing. Build three functions. retrieveChunks ranks the chunks against the query embedding by cosine similarity and returns the top k. buildPrompt joins the retrieved chunk texts into a Context block above the question. ragPipeline runs those two in order and returns the answer along with the ids of the chunks it came from."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

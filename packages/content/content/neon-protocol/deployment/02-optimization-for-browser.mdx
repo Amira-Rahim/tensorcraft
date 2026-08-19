@@ -10,22 +10,23 @@ context:
   narrative: "Dilan reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Amir runs the numbers: 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Most of that weight is precision nobody can see. Cut it.'"
   speaker: "Amir"
 concept:
-  explanation: "Model optimization shrinks a network for delivery: quantization reduces the precision of every weight, and pruning removes connections that barely contribute. Together they can cut a 45MB model to a quarter of its size with accuracy loss measured in fractions of a point."
+  explanation: "Model optimization shrinks a network for delivery: quantization stores each weight in fewer bits, and pruning zeroes connections that barely contribute. Together they can cut a 45MB model to a quarter of its size. float16 usually costs about a tenth of a point of accuracy. uint8 costs one to two points unless you fine-tune after pruning, which is why the number gets measured instead of assumed."
   bridge:
     jsTitle: "Webpack Tree-Shaking"
     jsCode: "// webpack removes unused exports\nexport function used() { ... }\nexport function unused() { ... } // stripped in production"
     mlTitle: "Model Pruning"
     mlCode: "// Pruning removes low-impact weights\nconst pruned = await pruneModel(model, { sparsity: 0.5 }); // 50% of weights zeroed"
     tier: structural
+    breaks: "Strip an unused export and every remaining code path returns exactly what it returned before. Prune and quantize a network and it returns different confidences on the same frame. The accuracy delta is part of the deliverable, not a rounding detail."
 consequence:
-  narrative: "45MB becomes 11MB. Load time on Dilan's device: 2.8 seconds. Accuracy loss: 0.3%. Amir exhales. NEON: 'Acceptable trade-off. Now every resistance node in Neon City can run Sentinel.'"
+  narrative: "45MB becomes 11MB: uint8 weights, half the connections pruned, three epochs of fine-tuning to claw the accuracy back. Load time on Dilan's device: 2.8 seconds. Accuracy 93.7%, down from 94%. Amir exhales. NEON: 'Acceptable trade-off. Every resistance node in Neon City can now run Sentinel.'"
 hints:
   - level: nudge
     content: "Quantization reduces float32 weights to float16 or uint8, halving or quartering the model size"
   - level: guidance
-    content: "Use tf.io.withSaveHandler to apply quantization during export. For pruning, zero out weights below a threshold and retrain briefly."
+    content: "Quantization is a conversion-time step: run tensorflowjs_converter with --quantize_float16 or --quantize_uint8 to write a smaller copy of the model. For pruning, zero out weights below a threshold and retrain briefly."
   - level: solution
-    content: "await model.save('downloads://sentinel', { weightDataQuantizationBits: 16 }); // float16 quantization halves the file size"
+    content: "tensorflowjs_converter --input_format=tfjs_layers_model --quantize_uint8='*' models/sentinel/model.json models/sentinel-q8 // one byte per weight instead of four"
 keywords:
   - quantization
   - pruning
@@ -50,7 +51,7 @@ In the field, a model that takes twelve seconds to load does not get used. Brows
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In JavaScript builds, tree-shaking analyzes your dependency graph and strips code that is never called. Model optimization applies the same logic to neural networks: quantization reduces the precision of every weight (like minification), and pruning removes weights that contribute almost nothing to the output (like dead code elimination).
+In JavaScript builds, tree-shaking analyzes your dependency graph and strips code that is never called. Model optimization applies the same logic to neural networks: pruning removes weights that contribute almost nothing to the output, and quantization stores every surviving weight in fewer bits. The analogy stops at one point. Tree-shaking and minification are semantics preserving, so the bundle behaves identically afterwards. Quantization is lossy by construction. The model returns different numbers on the same frame, and how different is something you measure, not something you assume.
 
 <CodeBlock language="typescript" title="quantization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -58,24 +59,41 @@ In JavaScript builds, tree-shaking analyzes your dependency graph and strips cod
 // Load the full-precision model (float32, 4 bytes per weight)
 const model = await tf.loadLayersModel('/models/sentinel/model.json');
 
-// Check original size
+// Size in memory once loaded, where every weight is float32
 const originalWeights = model.getWeights();
 const originalBytes = originalWeights.reduce(
   (sum, w) => sum + w.size * 4, 0  // float32 = 4 bytes
 );
-console.log('Original size:', (originalBytes / 1024 / 1024).toFixed(1), 'MB');
+console.log('In memory:', (originalBytes / 1024 / 1024).toFixed(1), 'MB');
 
-// Save with float16 quantization (2 bytes per weight, 50% reduction)
-await model.save('downloads://sentinel-q16', {
-  weightDataQuantizationBits: 16
-});
+// TensorFlow.js quantizes when the artifacts are written, not through
+// model.save. SaveConfig takes trainableOnly and includeOptimizer, nothing
+// else. The converter writes the quantized copies:
+//
+//   tensorflowjs_converter --input_format=tfjs_layers_model \\
+//     --quantize_float16='*' models/sentinel/model.json models/sentinel-q16
+//
+//   tensorflowjs_converter --input_format=tfjs_layers_model \\
+//     --quantize_uint8='*' models/sentinel/model.json models/sentinel-q8
 
-// Save with uint8 quantization (1 byte per weight, 75% reduction)
-await model.save('downloads://sentinel-q8', {
-  weightDataQuantizationBits: 8
-});
+// What each copy costs to ship, read off the served weight shards
+async function shippedBytes(modelJsonUrl: string): Promise<number> {
+  const dir = modelJsonUrl.slice(0, modelJsonUrl.lastIndexOf('/'));
+  const manifest = await (await fetch(modelJsonUrl)).json();
+  const paths: string[] = manifest.weightsManifest.flatMap(
+    (group: { paths: string[] }) => group.paths
+  );
+  const buffers = await Promise.all(
+    paths.map(p => fetch(dir + '/' + p).then(r => r.arrayBuffer()))
+  );
+  return buffers.reduce((sum, buf) => sum + buf.byteLength, 0);
+}
 
-// Compare: 45MB → 22.5MB (float16) → 11.25MB (uint8)`}
+const mb = (b: number) => (b / 1024 / 1024).toFixed(1);
+console.log('float32:', mb(await shippedBytes('/models/sentinel/model.json')), 'MB');
+console.log('float16:', mb(await shippedBytes('/models/sentinel-q16/model.json')), 'MB');
+console.log('uint8:  ', mb(await shippedBytes('/models/sentinel-q8/model.json')), 'MB');
+// 45.0 MB, 22.5 MB, 11.3 MB`}
 </CodeBlock>
 
 ## Weight Pruning
@@ -150,9 +168,10 @@ async function benchmarkModel(
   const model = await tf.loadLayersModel(modelPath);
   const loadTimeMs = performance.now() - loadStart;
 
-  // Measure size
-  const weights = model.getWeights();
-  const sizeBytes = weights.reduce((sum, w) => sum + w.size * 4, 0);
+  // Measure shipping size from the served weight shards. Reading it off the
+  // loaded tensors would give 4 bytes per weight for all three copies:
+  // TensorFlow.js dequantizes back to float32 the moment it loads.
+  const sizeBytes = await shippedBytes(modelPath);
 
   // Measure accuracy
   const predictions = model.predict(testData) as tf.Tensor;
@@ -199,4 +218,4 @@ Apply quantization to reduce a model's size and measure the accuracy impact.
 
 <Exercise slug="optimize-for-browser" />
 
-<KeyTakeaways takeaways={["Quantization reduces weight precision from float32 to float16 or uint8, cutting model size by 2-4x", "Pruning zeros out low-magnitude weights, the neural network equivalent of tree-shaking", "Every optimization involves an accuracy-size trade-off that must be measured", "For browser deployment, the right optimization strategy depends on your device constraints and accuracy requirements"]} />
+<KeyTakeaways takeaways={["Quantization reduces weight precision from float32 to float16 or uint8, cutting model size by 2-4x", "Pruning zeros out low-magnitude weights, the neural network equivalent of tree-shaking", "Every optimization involves an accuracy-size trade-off that must be measured", "Pick the precision from the download budget: float16 when a point of accuracy costs more than a second of load time, uint8 when it does not, and prune first so the fine-tuning pass can recover what quantization takes"]} />

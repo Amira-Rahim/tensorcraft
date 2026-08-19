@@ -31,10 +31,6 @@ function makeLesson(overrides: Partial<LessonItem> = {}): LessonItem {
     estimatedMinutes: 12,
     difficulty: "beginner",
     status: "available",
-    sceneLocation: "Deep Orbit Bay",
-    narrative: "The station hums as you boot the console.",
-    bridgeJs: "Array.prototype.map",
-    bridgeMl: "torch.Tensor.map",
     ...overrides,
   };
 }
@@ -65,7 +61,6 @@ function makeModule(overrides: Partial<ModuleItem> = {}): ModuleItem {
 const defaultProps: ModuleProps = {
   modules: [makeModule()],
   worldSlug: "deep-orbit",
-  terminology: { lesson: "Mission", module: "Sector" },
   continueHref: "/worlds/deep-orbit/foundations/l1",
   continueLabel: "Continue M1",
 };

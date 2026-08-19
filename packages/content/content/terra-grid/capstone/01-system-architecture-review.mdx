@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Hassan assembles the full team for the final phase. 'Ten modules of work. Edge deployment, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling. All separate pieces. Now we put them together and deploy Terra Grid Intelligence across 47 sites.'"
+  narrative: "Hassan clears the operations display and puts up an empty diagram. 'Everything we built is running somewhere. Nothing is connected to anything. Before this touches 47 sites I want one drawing of the whole path, sensor to dispatch, including what happens when each box stops answering.'"
   speaker: "Hassan Al-Rashid"
 concept:
   explanation: "System architecture review documents the complete design, like creating Architecture Decision Records (ADRs) that capture why each component exists and how they connect."
@@ -35,14 +35,14 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-Ten modules. Edge basics, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling. Each one solved a specific problem. Now we assemble them into one production system. Priya, lay out the complete architecture: every component, with its connections and failure modes.
+Ten modules. Edge basics, optimization, quantization, pruning, edge deployment, MLOps pipelines, monitoring, federated learning, A/B testing, scaling. Each one solved a specific problem. Now we assemble them into one production system. Priya, lay out the complete architecture: every component, with its connections and failure modes.
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
 It is a dependency graph, same as a monorepo. Each module is a package with typed inputs and outputs. I connect them into a pipeline: sensor data flows in, predictions flow out, and every component in between has a clear interface and a fallback strategy.
 </Dialogue>
 
-47 sites. 12,400 devices. 2 million sensors. One pipeline from raw vibration reading to maintenance dispatch, with a fallback behind every component. On the whiteboard, Terra Grid Intelligence is a monorepo dependency graph, and it gets the monorepo discipline you know from Turborepo: every ML component a self-contained package with typed interfaces, every design choice captured in an architecture decision record.
+47 sites. 12,400 devices. 2 million sensors. One pipeline from raw vibration reading to maintenance dispatch, with a fallback behind every component. Priya's framing gives you the shape, and it is the shape you already read in a Turborepo graph: typed inputs, typed outputs, one package per concern. A Turborepo graph never has to answer the question this one does: what does each component do when the thing it depends on stops answering, and does the whole set still fit inside the 64MB these devices leave for ML?
 
 <LearningObjectives objectives={["Map the complete Terra Grid Intelligence architecture from sensor to prediction", "Document component interfaces, dependencies, and failure modes", "Create architecture decision records for key design choices", "Validate the dependency graph for completeness and circular reference detection"]} />
 
@@ -145,6 +145,8 @@ const result = validateArchitecture(terraGridArchitecture);
 console.log('Architecture valid:', result.valid);
 if (!result.valid) console.log('Issues:', result.issues);`}
 </CodeBlock>
+
+The validator above catches two of the three ways this graph can be wrong: a dependency that names a component nobody built, and a total footprint over the 64MB budget. The third is the one your bundler already warns you about, a cycle: A imports B, B imports A, and neither can finish initializing first. Walk the graph depth first, keep the current path in a `Set`, and if you reach a name that is already on the path, that is your cycle.
 
 ## Challenge
 

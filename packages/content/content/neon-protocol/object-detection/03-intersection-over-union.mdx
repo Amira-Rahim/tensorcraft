@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-You built drag-and-drop interfaces before, yes? When a user drags a card over a drop zone, how do you know if it "counts" as being inside?
+Your box and the ground truth, both on the table. Anyone can see they nearly line up. Nobody can tell me by how much. When a card is dragged over a drop zone, what makes it count as inside?
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -102,7 +102,7 @@ console.log(iou.toFixed(3)); // 0.670, decent but not great`}
 
 ## IoU Thresholds
 
-Different IoU thresholds define what counts as a "correct" detection. COCO reports metrics at both 0.5 and 0.75 because the two thresholds tell different stories about the same model. This is where the drop-zone analogy stops helping: a drop zone is a binary gate, tuned by hand until it feels right, while a detection threshold is a tunable knob with consequences. Move it from 0.75 to 0.5 and the same model suddenly looks much better on paper. The knob matters as much as the math.
+Different IoU thresholds define what counts as a "correct" detection. COCO, the benchmark dataset detection papers report against, publishes scores at both 0.5 and 0.75 because the two thresholds tell different stories about the same model. This is where the drop-zone analogy stops helping. A drop zone answers yes or no and forgets the answer the moment the user lets go. An IoU score is kept: it decides which prediction gets matched to which object, and it is the number the benchmark prints. Move the threshold from 0.75 to 0.5 and the same model suddenly looks much better on paper.
 
 <CodeBlock language="typescript" title="iou-thresholds.ts">
 {`// In drag-and-drop: you might snap when overlap > 30%
@@ -191,7 +191,7 @@ const matrix = computeIoUMatrix(dets, gts);
 
 Implement IoU computation between two bounding boxes.
 
-<Exercise slug="calculate-iou" />
+<Exercise slug="compute-iou" />
 
 ## Knowledge check
 
@@ -199,10 +199,10 @@ Implement IoU computation between two bounding boxes.
   question="Two predicted boxes both perfectly contain the same target. Box A is exactly the target's size; box B is 4× larger and centered on the target. What IoU does each have with the ground-truth box?"
   options={[{"text":"A: 1.0, B: 1.0; both contain the target so they're equally good"},{"text":"A: 1.0, B: 0.25; IoU penalizes oversized boxes through the union term"},{"text":"A: 0.5, B: 0.25; IoU is always less than 1 for non-identical boxes"},{"text":"A: 1.0, B: 4.0; IoU scales with box area ratio"}]}
   correct={1}
-  explanation="IoU = intersection / union. Box A is identical to the target, so intersection = union = target area, giving IoU = 1.0. Box B contains the target but extends to 4× the area, so intersection = target area but union = 4 × target area, giving IoU = 1/4 = 0.25. This is precisely why detectors need IoU rather than just 'does the box contain the target': IoU penalizes loose boxes. Option D conflates IoU with raw area; option C invents a falsehood; option A misses that a too-large box wastes precision."
+  explanation="IoU = intersection / union. Box A is identical to the target, so intersection = union = target area, giving IoU = 1.0. Box B contains the target but covers 4 times the area, so intersection = target area while union = 4 times target area, giving IoU = 1/4 = 0.25. That is exactly why detection scores overlap instead of asking 'does the box contain the target': a box that swallows the whole street corner contains the drone and still scores 0.25."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["IoU measures bounding box overlap: intersection area divided by union area, producing a 0-1 score", "Standard detection threshold is IoU >= 0.5 (a correct detection), IoU >= 0.75 is a strict match", "The intersection rectangle is found by taking max of left edges and min of right edges, with width and height clamped to zero when boxes don't overlap", "IoU also acts as the matching rule inside training and NMS, so the threshold you pick propagates through the whole pipeline"]} />
 
-> **DISPATCH archive · field intercept #21-V:** Operator Demir on the Deep Orbit vessel runs the same overlap math on time-series windows; they call it 'window IoU'. The metric travels well; only the dimension changes.
+> **DISPATCH archive · field intercept #21-V:** Ensign Demir, aboard the Archimedes, runs this same overlap math on time-series windows and calls it window IoU. Same metric, one dimension instead of two.

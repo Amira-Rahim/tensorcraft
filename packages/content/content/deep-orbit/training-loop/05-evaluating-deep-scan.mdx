@@ -26,7 +26,7 @@ consequence:
   narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment, but one archived sample refuses to pick a side."
 hints:
   - level: nudge
-    content: "Two separate calls: score the trained model on held-out test data, then run it forward on one brand-new signal it has never seen."
+    content: "Two separate calls: score the compiled model on held-out test data, then run it forward on one brand-new signal it has never seen."
   - level: guidance
     content: "First set evalResult = model.evaluate(testX, testY); because the model was compiled with an accuracy metric, that returns an array of two scalar tensors, [loss, accuracy]. Then set prediction = model.predict(newSignal); that returns the sigmoid output tensor of shape [1, 1], a probability between 0 and 1. Neither call needs await."
   - level: solution
@@ -47,7 +47,7 @@ Run the evaluation suite. I want real numbers on signals the network has never s
 
 ## The Final Test
 
-Ninety-five percent training accuracy, sixty percent on signals the network has never seen. Nothing in the training logs warns you about that gap: the model memorized its homework instead of learning the subject. Evaluation on held-out data exists to catch exactly this, the way E2E tests catch what unit tests can't: code that passes against fixtures and fails against reality.
+A model can post ninety-five percent training accuracy and sixty percent on signals it has never seen, and nothing in the training logs will warn you. That gap is the failure Mirza is ordering you to rule out: the model memorized its homework instead of learning the subject. Evaluation on held-out data exists to catch exactly this, the way E2E tests catch what unit tests can't: code that passes against fixtures and fails against reality.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -115,7 +115,7 @@ console.log('Test Accuracy:', (testAccuracy.dataSync()[0] * 100).toFixed(1) + '%
 const newSignals = tf.tensor2d([
   [0.9, 0.1, 0.8],   // possibly anomalous
   [0.1, 0.9, 0.2],   // probably normal
-  [0.5, 0.5, 0.5],   // an unlabeled archive sample nobody has bet on
+  [0.5, 0.5, 0.5],   // sample 7741: the only reading in eleven days mid-scale on all three features at once
 ]);
 
 const predictions = model.predict(newSignals) as tf.Tensor;
@@ -130,7 +130,9 @@ results.forEach((prob, i) => {
 // Same tolerance rule as the evaluate above: across 400 reruns, signals
 // 1 and 2 stay decisive in nearly every run (medians 92 and 12), while
 // signal 3 never settles, landing anywhere from the high 20s to the mid
-// 70s and centering on the fence. That refusal to commit is the finding.`}
+// 70s and centering on the fence. A reading that lands mid-scale on
+// every feature gives the boundary nothing to resolve. In eleven days
+// of archive, exactly one reading does that.`}
 </CodeBlock>
 
 One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Nobody explained it then and nobody explains it now. But notice what training did: the certain machine became an uncertain one. Untrained, it had an opinion; trained, it refuses to commit at 51.8 on the one reading the crew cannot label.
@@ -138,7 +140,7 @@ One entry for the strangest page in the ship's records: back before this network
 **Interpreting results:**
 - **Training accuracy > Test accuracy** → The model is memorizing (overfitting). You need more data, less complexity, or regularization: a training-time penalty that discourages memorizing.
 - **Both accuracies low** → The model can't learn the pattern (underfitting). You need more layers, more units, or more training.
-- **Both accuracies high** → Ship it.
+- **Both accuracies high** → You have ruled out these two failures and nothing else. Slice the eval by class and by cohort before anyone signs a deployment.
 
 <DerivationDrawer summary="Why accuracy alone is not enough: precision, recall, F1">
 **Every prediction lands in one of four buckets:** true positive (TP: real anomaly, flagged), false positive (FP: calm reading, flagged anyway), true negative (TN: calm reading, left alone), false negative (FN: real anomaly, missed). Every metric below is a ratio of these four counts.

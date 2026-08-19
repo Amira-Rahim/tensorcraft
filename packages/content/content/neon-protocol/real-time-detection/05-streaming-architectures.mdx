@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "WebSocket/SSE streams discrete messages over an open connection. Inference streams must additionally manage frame skipping under load, batched-vs-streaming tradeoffs, and backpressure. Every dropped frame is a missed detection, not a missed UI update."
 consequence:
-  narrative: "Protocol Sentinel processes 12 feeds simultaneously: 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Noor reaches for the alert button. Amir stops her. 'That person is limping from an injury. The model is wrong.'"
+  narrative: "Protocol Sentinel holds all forty-seven feeds: 8 processed locally, 12 relayed, 27 sampled at one frame in four. NEON identifies a Meridian agent by gait analysis. Noor reaches for the alert button. Amir stops her. 'That person is limping from an injury. The model is wrong.'"
 hints:
   - level: nudge
     content: "Treat each feed like a WebSocket connection: frames arrive as events, and your FeedProcessor decides which ones the GPU actually sees"
@@ -47,7 +47,7 @@ So do not try. Process the high-priority feeds locally. Relay the rest through o
 The hybrid architecture we agreed on. Both of you were right. Build it.
 </Dialogue>
 
-Forty-seven feeds, one `model.predict()`. Run them naively and the inference queue backs up in under a second; by minute two you are tagging drones that left the district while their frames sat in the queue. The architecture that prevents this is the one behind chat apps, real-time dashboards, and collaborative editors: receive data, process it, emit results. The data happens to be video frames and the processing happens to be neural network inference.
+Run all forty-seven into one `model.predict()` and the queue backs up in under a second; by minute two you are tagging drones that left the district while their frames sat in line. The shape of the fix is the one behind every chat app and live dashboard: receive, process, emit. What is new is backpressure, the case where the producer writes faster than the consumer can read. A Node stream answers it by pausing the producer. You cannot pause a camera, so your only lever is choosing which frames to throw away.
 
 <LearningObjectives objectives={["Design a streaming architecture for processing multiple video feeds", "Implement a frame queue that prioritizes high-value feeds", "Build graceful degradation between local and server-side inference", "Handle backpressure when inference cannot keep up with incoming frames"]} />
 
@@ -140,11 +140,19 @@ class ServerRelay {
     };
   }
 
-  // Send a frame to the server for inference
+  // Send a frame to the server for inference. WebSocket carries binary, so send the
+  // pixel buffer directly: JSON.stringify on 640x480x3 pixels is about 3MB of text
+  // per frame, which blows the frame budget before anything hits the wire.
   sendFrame(feedId: string, imageData: Uint8Array) {
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ feedId, frame: Array.from(imageData) }));
-    }
+    if (this.ws.readyState !== WebSocket.OPEN) return;
+    // ws.bufferedAmount is the browser's backpressure signal: bytes queued but not
+    // yet sent. Drop the frame rather than let the queue grow.
+    if (this.ws.bufferedAmount > 1_000_000) return;
+    const header = new TextEncoder().encode(JSON.stringify({ feedId }) + '\\n');
+    const payload = new Uint8Array(header.length + imageData.length);
+    payload.set(header, 0);
+    payload.set(imageData, header.length);
+    this.ws.send(payload);
   }
 }
 

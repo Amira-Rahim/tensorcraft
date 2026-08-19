@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Imran, think about CSS colors. Red is rgb(255, 0, 0) and orange is rgb(255, 165, 0). They are nearby in RGB space because they share similar values. Now imagine words working the same way: "aspirin" and "ibuprofen" as nearby points in a learned space.
+Every pair of one-hot vectors we built last lesson scored zero against each other, at 50,000 dimensions apiece. Here is what we want instead: "aspirin" and "ibuprofen" a few degrees apart in a learned space, the way red and orange sit near each other in RGB.
 </Dialogue>
 
 <Dialogue speaker="Imran">
@@ -43,7 +43,7 @@ So instead of one-hot vectors where every word is equally far apart, you compres
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That's the move. Word2Vec reads millions of sentences and notices that "aspirin" and "ibuprofen" appear in the same kinds of contexts: "prescribed ___ for pain," "patient takes ___ daily." So it gives them similar vectors. One warning before you get attached to the color analogy: RGB has three axes you can name. An embedding space has a hundred or more, and no single axis means anything a human can label.
+Word2Vec reads millions of sentences and notices that "aspirin" and "ibuprofen" show up in the same slots: "prescribed ___ for pain," "patient takes ___ daily." Same neighbors, so it hands them similar vectors. Where the color analogy quits on you: RGB has three axes you can name. An embedding space has a hundred or more, and no single axis means anything a human can label.
 </Dialogue>
 
 Word2Vec learns a numerical space where words with similar meanings have similar coordinates. This is the distributional hypothesis: a word's meaning is defined by the company it keeps.
@@ -56,7 +56,7 @@ Word2Vec learns a numerical space where words with similar meanings have similar
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-One-hot encoding gave each word a 10,000-dimensional sparse vector. Word2Vec compresses this into a dense 64 or 128-dimensional vector where every dimension carries learned signal.
+One-hot encoding gave each word a 50,000-dimensional sparse vector, one dimension per clinical term. Word2Vec compresses that into a dense 64 or 128-dimensional vector where every dimension carries learned signal.
 
 <CodeBlock language="typescript" title="embedding-layer.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -148,18 +148,20 @@ console.log('penicillin ~ amoxicillin:',
 </CodeBlock>
 
 <Dialogue speaker="Dr. Karimi">
-So if a patient record mentions ibuprofen and the model was trained mostly on aspirin cases, it can still generalize?
+Aspirin and ibuprofen score 0.99. For a patient with a GI bleed those two drugs are not interchangeable, and the vectors cannot tell you that.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Yes. Because their vectors are nearly identical, the model treats them as near-equivalents. Proximity in the space is doing the generalizing.
+They can't. The space encodes how the words get used, not what the drugs do. Proximity buys you generalization when the training data is thin. It does not buy you a contraindication check.
 </Dialogue>
 
 ## Challenge
 
-Create an embedding layer and compute cosine similarity between word vectors.
+Two exercises. Create the embedding layer, then score two word vectors against each other.
 
 <Exercise slug="train-word2vec" />
+
+<Exercise slug="dense-vector-similarity" />
 
 <DerivationDrawer summary="Dense vector geometry: cosine similarity + dot product">
 Word embeddings are dense vectors of dimension d (typically 100-1000). Two operations dominate:
@@ -175,4 +177,4 @@ Cosine returns values in [-1, 1]. Most embedding similarity comparisons use cosi
 **Why dimension matters:** in a d-dimensional space, random vectors have expected cosine ~0. Two vectors are 'similar' when their cosine is meaningfully above this baseline. Higher d gives more room to encode distinctions but also more noise in the baseline.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["A 64-dimensional dense vector replaces a 10,000-dimensional one-hot vector, and distance starts to mean something", "The distributional hypothesis: words appearing in similar contexts develop similar vectors", "An embedding layer is a trainable lookup table mapping integer IDs to dense float vectors", "Cosine similarity measures semantic relatedness: 1.0 = same meaning, 0.0 = unrelated"]} />
+<KeyTakeaways takeaways={["A 64-dimensional dense vector replaces a 50,000-dimensional one-hot vector, and distance starts to mean something", "The distributional hypothesis: words appearing in similar contexts develop similar vectors", "An embedding layer is a trainable lookup table mapping integer IDs to dense float vectors", "Cosine similarity measures semantic relatedness: 1.0 = same meaning, 0.0 = unrelated"]} />

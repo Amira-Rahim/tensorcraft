@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "An npm component renders deterministic markup once you pass props. A pretrained model returns probabilistic output that varies with input distribution: the 'API' looks identical, but you cannot unit-test the output value, only its shape and confidence range. The model file (50MB+) is also user-side bandwidth, not server-side. Caching strategy matters far more than for a typical npm import."
 consequence:
-  narrative: "The feedback classifier runs in twelve lines, and Demir spends a full minute being quietly insulted by that. Across the lab, the signal they actually came out here for refuses to be a commodity problem."
+  narrative: "Twelve lines of dependency close the bridge's request. In the lab, the Sector 7-G feed is already back on Farah's screen."
 hints:
   - level: nudge
     content: "In the exercise the harness hands you pipelineFactory (a stand-in for the real pipeline() loader): await it to get the classifier, then call the classifier with the whole reports array."
@@ -47,7 +47,7 @@ We spent three modules learning to train models from scratch. But all the bridge
 No. I spent last night reading the Transformers.js docs so you don't spend three weeks not reading them. Pretrained model, same ONNX runtime we already ship. Cost of training your own: three modules, and we both lived them. Cost of this: one dependency and a download I will be auditing. Install it and call it.
 </Dialogue>
 
-The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads every one the night shift files. She wants the ones that need her attention surfaced first. Triage, not surveillance.
+The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads all of them before her watch starts. She wants the ones that need her attention surfaced first. Triage, not surveillance.
 
 <LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Use `pipeline()` to run pretrained models in the browser", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, ASR)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
 
@@ -72,13 +72,13 @@ The right answer depends on whether the task is **custom** (TFJS) or **commodity
 // '@huggingface/transformers' at v3; old tutorials cite the former.
 import { pipeline } from '@huggingface/transformers';
 
-// First call: downloads the model + tokenizer (tens of MB; v3 defaults
-// to a quantized dtype in the browser. Forcing fp32 means 4 bytes per
-// weight: ~268MB for this ~67M-parameter sentiment model)
-// into the browser's
-// Cache Storage (the Cache API). Note the contrast with two lessons
-// ago: TFJS saves models to IndexedDB via the indexeddb:// scheme;
-// Transformers.js uses a different browser store entirely.
+// First call: downloads the model + tokenizer into the browser's Cache
+// Storage (the Cache API). Size depends on dtype: v3 defaults to a
+// quantized model in the browser (tens of MB), and forcing fp32 means 4
+// bytes per weight, about 268MB for this ~67M-parameter sentiment model.
+// Note the contrast with two lessons ago: TFJS saves models to IndexedDB
+// via the indexeddb:// scheme; Transformers.js uses a different browser
+// store entirely.
 // Subsequent calls: instant from cache.
 const classifier = await pipeline('sentiment-analysis');
 

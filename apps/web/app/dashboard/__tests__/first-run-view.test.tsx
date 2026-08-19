@@ -60,9 +60,11 @@ describe("FirstRunView", () => {
     ).toBeInTheDocument();
   });
 
-  it("links the CTA to the first lesson using world terminology", () => {
+  it("links the CTA to the first lesson with the literal word Lesson", () => {
+    // Story terminology ("Mission") is banned before lesson 1 (owner bar,
+    // 2026-08-16; pre-lesson copy audit 2026-08-19).
     render(<FirstRunView {...baseProps()} />);
-    const cta = screen.getByRole("link", { name: /Start First Mission/i });
+    const cta = screen.getByRole("link", { name: /Start First Lesson/i });
     expect(cta).toHaveAttribute(
       "href",
       "/worlds/deep-orbit/foundations/introduction-to-tensors",
@@ -95,11 +97,10 @@ describe("FirstRunView", () => {
     expect(screen.queryByText(/SECTOR 7-G/i)).not.toBeInTheDocument();
     // Kicker falls back to the world name.
     expect(screen.getByText("NEON PROTOCOL")).toBeInTheDocument();
-    // CTA consumes the world's own terminology (neon-protocol's lesson
-    // term is "Protocol"; the "Lesson" fallback only fires for slugs
-    // absent from the worlds record).
+    // The CTA uses the literal word "Lesson" for every world; story
+    // terminology is banned on pre-lesson surfaces.
     expect(
-      screen.getByRole("link", { name: /Start First Protocol/i }),
+      screen.getByRole("link", { name: /Start First Lesson/i }),
     ).toBeInTheDocument();
   });
 

@@ -7,10 +7,10 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Vikram shows the team that word vectors support arithmetic. 'doctor' - 'adult' + 'child' = 'pediatrician'. The team applies this to find clinical relationships and drug analogies."
+  narrative: "Vikram shows the team that word vectors support arithmetic: aspirin is to headache as penicillin is to infection, and the vectors get there by subtraction. The same move that ranks neighbors also produces confident nonsense when the vocabulary is thin."
   speaker: "Vikram"
 concept:
-  explanation: "Cosine similarity measures the angle between two vectors, revealing semantic relatedness. Word vectors also support analogies through vector arithmetic: king - man + woman = queen. In clinical NLP, this enables reasoning like aspirin - pain + infection = antibiotic."
+  explanation: "Cosine similarity measures the angle between two vectors, revealing semantic relatedness. Word vectors also support analogies through vector arithmetic: king - man + woman lands near queen. On clinical vocabulary the same arithmetic takes aspirin - headache + penicillin to infection, and the result is a ranked guess, not pharmacological knowledge."
   bridge:
     jsTitle: "String Similarity"
     jsCode: "levenshtein('aspirin', 'asprin') // edit distance = 1"
@@ -19,14 +19,14 @@ concept:
     tier: intuition
     breaks: "String similarity (Levenshtein) compares character edits, surface-level only. Vector similarity (cosine) compares learned semantic representations: 'doctor' and 'physician' score high; 'doctor' and 'doctored' score low despite shared letters. Embedding choice determines what 'similar' means; one model's similarity is another's irrelevance."
 consequence:
-  narrative: "Diagnostic One can now find related medications, detect analogy-based relationships, and flag when a patient's medication list contains semantically conflicting terms."
+  narrative: "Diagnostic One can rank the whole clinical vocabulary against any term and solve analogies over it. What comes back is a ranked guess, not a pharmacological fact, and Karimi's allergy question is still open."
 hints:
   - level: nudge
-    content: "For analogies, subtract one vector and add another, then find the closest match."
+    content: "Each word's vector is one row of the embedding tensor. Slice the two rows out, then compare their directions."
   - level: guidance
-    content: "Compute a - b + c for each dimension, then find the word whose vector has the highest cosine similarity to the result."
+    content: "embedding.slice([id, 0], [1, -1]) takes a single row; squeeze() drops the leading 1 so you get a 1D tensor. Cosine is tf.dot(a, b) divided by tf.norm(a) times tf.norm(b)."
   - level: solution
-    content: "const result = a.map((v, i) => v - b[i] + c[i]); then iterate all words, compute cosineSim with result, return the best match."
+    content: "Slice row idA and row idB, squeeze both, divide tf.dot(a, b) by tf.norm(a).mul(tf.norm(b)), and read the number out with dataSync()[0]."
 keywords:
   - cosine-similarity
   - word-analogies
@@ -34,21 +34,25 @@ keywords:
   - semantic-similarity
 ---
 
+<Dialogue speaker="Imran">
+Edit distance puts "aspirin" and "asprin" 1 apart. It puts "aspirin" and "ibuprofen" 7 apart. Which of those two pairs should a clinical model be treating as close?
+</Dialogue>
+
 <Dialogue speaker="Vikram">
-Imran, you know Levenshtein distance. It measures how many character edits separate two strings. "aspirin" and "asprin" are 1 edit apart. Cosine similarity does something similar, but for meaning instead of spelling.
+Levenshtein counts character edits, so that is the only answer it can give you. Cosine similarity compares direction in a learned space instead, and there the two painkillers sit close together.
 </Dialogue>
 
 <Dialogue speaker="Imran">
-So Levenshtein says "aspirin" and "asprin" are close because they look similar, and cosine similarity says "aspirin" and "ibuprofen" are close because they mean similar things?
+So spelling distance and meaning distance rank the same words differently.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Half the picture. They can also flatly disagree. "Doctor" and "doctored" share nine letters and score near zero, because they show up in different contexts. And "similar" depends on which embeddings you loaded. One model's close neighbor is another model's stranger, so check the neighbors before you trust the score. Now the part worth the detour: you can do arithmetic with these vectors. Subtract one concept, add another.
+And they can flatly disagree. "Doctor" and "doctored" share their first six characters and still land in different neighborhoods, because they show up in different sentences. "Similar" also depends on which embeddings you loaded. One model's close neighbor is another model's stranger, so check the neighbors before you trust the score. Now the part worth the detour: you can do arithmetic with these vectors. Subtract one concept, add another.
 </Dialogue>
 
-Cosine similarity measures the angle between two word vectors. Two drugs that never share a letter can sit a few degrees apart in embedding space. And vector arithmetic lets you reason about relationships, not just distances.
+You have used cosine similarity in both of the last two lessons. What is new here is running it across a whole vocabulary at once, and doing arithmetic with the vectors themselves.
 
-<LearningObjectives objectives={["Implement cosine similarity to measure semantic relatedness between word vectors", "Perform word analogy tasks using vector arithmetic (a - b + c = ?)", "Find the most similar words to a query vector", "Apply analogy reasoning to clinical vocabulary"]} />
+<LearningObjectives objectives={["Rank a whole vocabulary by cosine similarity to a query word", "Perform word analogy tasks using vector arithmetic (a - b + c = ?)", "Exclude the input words when reading an analogy result, and know why", "Apply analogy reasoning to clinical vocabulary, including where it fails"]} />
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
@@ -76,19 +80,19 @@ const embeddings: Record<string, number[]> = {
   'amoxicillin':  [-0.19, 0.73, 0.68, -0.15, 0.18, 0.65],
   'headache':     [0.55, -0.31, 0.22, 0.78, -0.15, 0.08],
   'infection':    [-0.08, 0.69, 0.55, -0.18, 0.42, 0.58],
-  'appendectomy': [0.08, -0.31, 0.14, 0.91, 0.61, -0.33],
-  'surgeon':      [0.12, -0.25, 0.19, 0.85, 0.55, -0.28],
+  'appendectomy': [0.08, -0.31, 0.14, -0.72, 0.61, -0.33],
+  'surgeon':      [0.12, -0.25, 0.19, -0.68, 0.55, -0.28],
 };
 
 // Similar medications score high
 console.log('aspirin ~ ibuprofen:',
   cosineSimilarity(embeddings['aspirin'], embeddings['ibuprofen']).toFixed(3)
-); // ~0.98
+); // ~0.99
 
 // Different categories score low
 console.log('aspirin ~ appendectomy:',
   cosineSimilarity(embeddings['aspirin'], embeddings['appendectomy']).toFixed(3)
-); // ~0.22`}
+); // ~-0.14`}
 </CodeBlock>
 
 ## Finding Nearest Neighbors
@@ -116,10 +120,10 @@ console.log('aspirin ~ appendectomy:',
 }
 
 console.log('Most similar to aspirin:', findMostSimilar('aspirin', embeddings));
-// [{word: 'ibuprofen', similarity: 0.98}, ...]
+// [{word: 'ibuprofen', similarity: 0.99}, ...]
 
 console.log('Most similar to penicillin:', findMostSimilar('penicillin', embeddings));
-// [{word: 'amoxicillin', similarity: 0.97}, {word: 'infection', similarity: 0.89}, ...]`}
+// [{word: 'amoxicillin', similarity: 0.99}, {word: 'infection', similarity: 0.97}, ...]`}
 </CodeBlock>
 
 ## Word Analogies: Vector Arithmetic
@@ -166,8 +170,10 @@ const result = solveAnalogy('aspirin', 'headache', 'penicillin', embeddings);
 console.log('aspirin : headache :: penicillin :', result);
 // Expected: "infection"; aspirin treats headaches, penicillin treats infections
 
-// appendectomy is to surgeon as ??? is to ???
-// Vector arithmetic discovers occupational relationships`}
+// Analogies are only as good as the vocabulary you loaded.
+// With eight words in the table, solveAnalogy always returns
+// one of the remaining five, ranked by cosine. It has no way
+// to answer "none of these".`}
 </CodeBlock>
 
 <Dialogue speaker="Dr. Karimi">
@@ -180,7 +186,7 @@ Similarity scan: amoxicillin is the nearest alternative. Caution flag raised: bo
 
 ## Challenge
 
-Implement cosine similarity and a word analogy solver for clinical vocabulary.
+Pull two word vectors out of an embedding tensor and score how close they are.
 
 <Exercise slug="compute-word-similarity" />
 
@@ -200,4 +206,4 @@ result = argmax over vocab v of cosine(embed(v), target_vector)
 **Why this often fails:** the math is approximate. Modern contextual embeddings (BERT, GPT) don't use single vectors per word (meaning depends on context), so static-vector analogies are a property of older Word2Vec/GloVe-style embeddings, not modern LLMs.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Cosine similarity measures the angle between vectors: 1.0 = same meaning, 0.0 = unrelated", "Nearest-neighbor search finds semantically related words by ranking cosine similarities", "Vector arithmetic enables analogies: king - man + woman = queen works for clinical terms too", "Static-vector analogies are a Word2Vec/GloVe property; contextual models (BERT, GPT) have no single vector per word"]} />
+<KeyTakeaways takeaways={["Nearest-neighbor search is a loop over the vocabulary: score every word against the query, sort by cosine, take the top k", "Cosine ignores vector length, so a rare term and a frequent one can still score as near-identical", "Vector arithmetic ranks analogy candidates: aspirin - headache + penicillin lands nearest infection, and the answer is only as good as the vocabulary you loaded", "Static-vector analogies are a Word2Vec/GloVe property; contextual models (BERT, GPT) have no single vector per word"]} />

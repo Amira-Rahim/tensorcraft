@@ -46,7 +46,7 @@ I can roll back to the previous model in 12 minutes. That buys us time to invest
 Rolling back the model only helps if the old model handles the new data distribution. If the firmware changed the sensor scale, neither model works correctly until we fix the preprocessing.
 </Dialogue>
 
-Paged at 2 AM for a production outage, you know the drill: mitigate, investigate, fix, prevent. Three of those four steps transfer to drift intact. The fix step does not, because an outage has one fix (ship the patch) and drift offers four, each with a different bill:
+Outage response runs on four steps: mitigate, investigate, fix, prevent. Drift bends two of them. Mitigation is conditional, because a rollback buys time only when the older model can still read the inputs that changed. And the fix is not one move but four, each with a different bill:
 
 - **Rollback**: fast, but the old model faces the same drifted world.
 - **Retrain**: thorough and expensive, and it needs fresh labels that may not exist yet.
@@ -110,7 +110,7 @@ async function respondToDrift(incident: DriftIncident): Promise<void> {
 
   // Phase 3: Diagnose, what caused the drift?
   incident.phase = 'diagnosis';
-  const driftReport = await analyzeDrift(incident.region);
+  const driftReport = await diagnoseRegionDrift(incident.region);
   const externalEvents = await getExternalEvents(incident.region, incident.detectedAt);
 
   incident.timeline.push({

@@ -11,10 +11,6 @@ interface LessonItem {
   estimatedMinutes: number;
   difficulty: "beginner" | "intermediate" | "advanced";
   status: "completed" | "in_progress" | "available" | "locked";
-  sceneLocation?: string;
-  narrative?: string;
-  bridgeJs?: string;
-  bridgeMl?: string;
 }
 
 interface ModuleMapItem {
@@ -36,10 +32,6 @@ interface ModuleMapItem {
 interface ModuleMapClientProps {
   modules: ModuleMapItem[];
   worldSlug: string;
-  terminology: {
-    lesson: string;
-    module: string;
-  };
   continueHref: string;
   continueLabel: string;
   /**
@@ -74,7 +66,6 @@ const FOCUS_RING =
 export function ModuleMapClient({
   modules,
   worldSlug,
-  terminology,
   continueHref,
   continueLabel,
   unlockHref,
@@ -84,7 +75,7 @@ export function ModuleMapClient({
     <div
       className="flex flex-col gap-2"
       data-testid="module-map"
-      aria-label={`${terminology.module} list`}
+      aria-label="Module list"
     >
       {modules.map((mod, i) => {
         const isDone = mod.status === "completed";
@@ -105,7 +96,6 @@ export function ModuleMapClient({
             shouldOpen={shouldOpen}
             accentOn={accentOn}
             worldSlug={worldSlug}
-            terminology={terminology}
             unlockHref={unlockHref}
             lockedTeaser={lockedTeaser}
           />
@@ -140,7 +130,6 @@ interface ModuleRowProps {
   shouldOpen: boolean;
   accentOn: boolean;
   worldSlug: string;
-  terminology: { lesson: string; module: string };
   unlockHref?: string;
   lockedTeaser?: { href: string; label: string };
 }
@@ -155,7 +144,6 @@ function ModuleRow({
   shouldOpen,
   accentOn,
   worldSlug,
-  terminology,
   unlockHref,
   lockedTeaser,
 }: ModuleRowProps) {
@@ -194,7 +182,7 @@ function ModuleRow({
       >
         <summary
           className={`flex cursor-pointer list-none items-start gap-4 rounded-none px-6 py-5 ${FOCUS_RING} ${isLocked ? "pointer-events-none" : ""}`}
-          aria-label={`${terminology.module} ${mod.order}: ${mod.title}`}
+          aria-label={`Module ${mod.order}: ${mod.title}`}
         >
           {/* Node indicator, simple numbered square at left edge (option a).
               A completed module trades the ✓ box for its earned mission
@@ -290,7 +278,7 @@ function ModuleRow({
               aria-valuenow={pct}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label={`${mod.completedLessons} of ${mod.totalLessons} ${terminology.lesson}s complete`}
+              aria-label={`${mod.completedLessons} of ${mod.totalLessons} lessons complete`}
             >
               {mod.lessons.map((l) => {
                 const filled =
@@ -334,7 +322,6 @@ function ModuleRow({
                     moduleDone={isDone}
                     worldSlug={worldSlug}
                     moduleSlug={mod.slug}
-                    terminology={terminology}
                   />
                 </li>
               ))}
@@ -355,7 +342,7 @@ function ModuleRow({
             borderColor: "var(--tc-primary)",
             background: "var(--tc-bg)",
           }}
-          aria-label={`Unlock ${terminology.module} ${mod.order}: ${mod.title}`}
+          aria-label={`Unlock module ${mod.order}: ${mod.title}`}
         >
           Unlock →
         </Link>
@@ -369,7 +356,7 @@ function ModuleRow({
             borderColor: "var(--tc-primary)",
             background: "var(--tc-bg)",
           }}
-          aria-label={`${terminology.module} ${mod.order} is paid content: ${lockedTeaser.label}`}
+          aria-label={`Module ${mod.order} is paid content: ${lockedTeaser.label}`}
           data-testid="locked-teaser"
         >
           {lockedTeaser.label}
@@ -384,7 +371,6 @@ interface LessonCardProps {
   moduleDone: boolean;
   worldSlug: string;
   moduleSlug: string;
-  terminology: { lesson: string; module: string };
 }
 
 /**
@@ -396,7 +382,6 @@ function LessonCard({
   moduleDone,
   worldSlug,
   moduleSlug,
-  terminology,
 }: LessonCardProps) {
   const done = lesson.status === "completed" || moduleDone;
   const current = lesson.status === "in_progress";
@@ -418,10 +403,7 @@ function LessonCard({
     iconLabel = "Locked";
   }
 
-  const locationLabel = lesson.sceneLocation
-    ? `${lesson.sceneLocation} · ${lesson.estimatedMinutes} min`
-    : `${terminology.lesson} ${String(lesson.order).padStart(2, "0")} · ${lesson.estimatedMinutes} min`;
-  const bridgeCount = lesson.bridgeJs && lesson.bridgeMl ? 1 : 0;
+  const locationLabel = `Lesson ${String(lesson.order).padStart(2, "0")} · ${lesson.estimatedMinutes} min`;
 
   const card = (
     <div
@@ -528,32 +510,8 @@ function LessonCard({
           )}
         </div>
 
-        {!locked && lesson.narrative && (
-          <p
-            className="mt-1.5 line-clamp-2 font-sans text-xs italic leading-relaxed"
-            style={{ color: "var(--tc-muted)" }}
-          >
-            &ldquo;
-            {lesson.narrative.slice(0, 120)}
-            {lesson.narrative.length > 120 ? "…" : ""}
-            &rdquo;
-          </p>
-        )}
-
         {!locked && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            {lesson.bridgeJs && lesson.bridgeMl && (
-              <span
-                className="rounded-none px-1.5 py-0.5 font-mono text-[9px]"
-                style={{
-                  color: "var(--tc-primary)",
-                  background: "var(--tc-primary-muted)",
-                }}
-                data-testid="bridge-count"
-              >
-                {lesson.bridgeJs} &rarr; {lesson.bridgeMl}
-              </span>
-            )}
             <span
               className="rounded-none px-1.5 py-0.5 font-mono text-[9px] uppercase"
               style={{
@@ -564,14 +522,6 @@ function LessonCard({
             >
               {lesson.difficulty}
             </span>
-            {bridgeCount > 0 && (
-              <span
-                className="font-mono text-[9px]"
-                style={{ color: "var(--tc-muted)" }}
-              >
-                {bridgeCount} bridge
-              </span>
-            )}
           </div>
         )}
       </div>

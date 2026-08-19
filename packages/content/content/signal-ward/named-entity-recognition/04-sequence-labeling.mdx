@@ -42,7 +42,7 @@ Our dictionary-based classifier labels every instance of "cold" as a CONDITION. 
 That's like CSS specificity. A bare `.highlight` selector might style the wrong elements. But `.medical-note > .symptom-list > .highlight` uses context (parent elements) to target precisely. Each element's class depends on where it sits in the DOM.
 </Dialogue>
 
-<Dialogue speaker="Imran">
+<Dialogue speaker="Vikram">
 With one twist your selectors don't have. A specificity rule is deterministic, you wrote it, it fires or it doesn't. Here the label at each position is a learned softmax, and neighboring decisions lean on each other, which is why CRF layers exist: they score the whole tag sequence jointly instead of each token alone. But yes, context before commitment. That's the move.
 </Dialogue>
 

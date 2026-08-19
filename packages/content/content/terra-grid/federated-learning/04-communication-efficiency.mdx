@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "GraphQL selective queries fetch only requested fields. Gradient compression in federated learning trades communication cost for convergence speed. Too aggressive compression slows training; too little blows the network budget. The tradeoff is empirical per setting."
 consequence:
-  narrative: "Communication cost drops from 180MB to 22MB per training cycle. The satellite budget holds."
+  narrative: "Communication cost drops from 180MB to 3.6MB per training cycle, ninety dollars down to one dollar eighty. The satellite budget holds."
 hints:
   - level: nudge
     content: "A GraphQL query names only the fields it needs instead of fetching the whole resource. Sparsification names only the gradient values worth sending"
@@ -39,12 +39,12 @@ Each weight update is 4MB. Fifteen rounds, three companies, that is 180MB of sat
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-Most gradient values are near zero anyway. We can send only the top 1% and accumulate the rest for the next round. Ninety percent bandwidth savings.
+Most gradient values are near zero anyway. Send the top one percent, accumulate the rest for the next round, and remember every value we send carries its index with it. That is 4MB down to 80KB per update.
 </Dialogue>
 
-A REST API returns the entire user object when you only need their name and email. GraphQL solves this by requesting only the fields you need, reducing payload by 80-90%. Federated learning has the same problem: most gradient values in an update are near zero and contribute almost nothing to learning. Gradient compression sends only the significant values.
+When you render a name, you request the name, not the entire user object. Gradient updates have the same shape of waste: most values in a million-parameter update are near zero and move the global model by nothing, and satellite time is charged on all of them. Compression picks the fields worth sending.
 
-<LearningObjectives objectives={["Understand the communication bottleneck in federated learning", "Implement top-K gradient sparsification to reduce update size by 90%+", "Use gradient quantization to reduce per-value precision", "Accumulate residuals to preserve information lost during compression"]} />
+<LearningObjectives objectives={["Understand the communication bottleneck in federated learning", "Implement top-K gradient sparsification to reduce update size by 90%+", "Size a compressed update honestly, counting index bytes as well as per-value precision", "Accumulate residuals to preserve information lost during compression"]} />
 
 ## The Bandwidth Problem
 
@@ -92,6 +92,8 @@ function topKSparsify(
 // Bandwidth savings: 98%`}
 </CodeBlock>
 
+Half of those 80KB are indices. Quantizing each surviving value from float32 to int8 takes an entry from 8 bytes to 5, another 1.6x, and that is where this line of attack runs out: past it you are spending more bytes saying where a value lives than saying what it is.
+
 ## Residual Accumulation
 
 The remaining 99% of gradients are not thrown away. They accumulate locally and get sent in the next round when they become significant:
@@ -136,4 +138,4 @@ Implement communication-efficient federated updates with gradient compression.
 
 <Exercise slug="efficient-updates" />
 
-<KeyTakeaways takeaways={["Most gradient values are near zero; sending only the top 1% cuts update size by 98% before index overhead", "Residual accumulation preserves the 99% that was not sent; it gets included in future rounds when it becomes significant", "Gradient quantization (float32 to int8) provides an additional 4x compression on top of sparsification", "Communication efficiency makes federated learning practical on bandwidth-constrained links like satellite"]} />
+<KeyTakeaways takeaways={["Most gradient values are near zero; sending only the top 1% takes a 4MB update to 80KB, a 50x cut with the index bytes already counted", "Residual accumulation preserves the 99% that was not sent; it gets included in future rounds when it becomes significant", "Quantizing surviving values from float32 to int8 takes an entry from 8 bytes to 5; once updates are sparse, the index is what caps further compression", "Communication efficiency makes federated learning practical on bandwidth-constrained links like satellite"]} />

@@ -7,19 +7,19 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Tariq surveys the hardware manifest for Sector 7. ARM Cortex-A53 processors, 512MB RAM, intermittent satellite connectivity. Every device is different."
+  narrative: "Tariq surveys the hardware manifest for Sector 7. ARM Cortex-A53 units at 256MB, x86 edge servers at 4GB, and a satellite link that comes and goes. Three tiers, one model, no way to walk over and reboot any of them."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Edge hardware diversity mirrors browser diversity: you must test and optimize for the weakest target in your fleet, just like supporting IE11 alongside Chrome."
+  explanation: "Edge hardware diversity mirrors the support matrix you already keep: the weakest target sets the bar, whether that is IE11 next to Chrome or an Alpine container next to an ARM CI runner."
   bridge:
-    jsTitle: "Cross-Browser Testing"
-    jsCode: "if (!('IntersectionObserver' in window)) { loadPolyfill(); }"
+    jsTitle: "Support Matrix"
+    jsCode: "if (!('IntersectionObserver' in window)) loadPolyfill(); // Browser\nif (process.arch === 'arm64') useArmBuild(); // Node"
     mlTitle: "Edge Hardware Detection"
-    mlCode: "if (device.ram < 256) { loadLiteModel(); }"
+    mlCode: "if (device.ram < 512) { loadLiteModel(); }"
     tier: structural
-    breaks: "Cross-browser testing checks against documented compatibility tables. Edge hardware detection must determine NPU presence, supported ops, available memory, and thermal headroom. Many capabilities require running probes, not reading a user-agent string."
+    breaks: "Browser compatibility tables and platform build matrices are both published up front, so you check a target by reading. Edge hardware detection must determine NPU presence, supported ops, available memory, and thermal headroom. Many capabilities require running probes, not reading a user-agent string or a platform triple."
 consequence:
-  narrative: "Tariq maps the hardware landscape. Three tiers: high-power substations, mid-range sensors, low-power remote monitors."
+  narrative: "Tariq finishes the tier map. High-power substations, mid-range sensors, low-power remote monitors, and a different artifact for each."
 hints:
   - level: nudge
     content: "profileDevice() plays the role of feature detection: read RAM, CPU, and connectivity off the DeviceProfile before picking a model tier"
@@ -42,20 +42,18 @@ Once I deploy a model here, I can't just SSH in and fix it. The update has to wo
 Sector 7 hardware manifest loaded. 847 devices across 3 tiers. ARM Cortex-A53 (412 units), ARM Cortex-A72 (298 units), x86 edge servers (137 units). RAM ranges from 256MB to 4GB.
 </Dialogue>
 
-The first fleet-wide model push at Terra Systems went out before anyone profiled the hardware. The artifact loaded cleanly on the 137 x86 edge servers, crawled on the Cortex-A72 gateways, and refused to start on the 412 Cortex-A53 units running 256MB of RAM. One artifact, three outcomes. If you have shipped to Safari, Firefox, Chrome, and that one customer still on IE11, you have lived this problem before; either way the solution carries over intact: detect, adapt, degrade gracefully.
+The first fleet-wide model push at Terra Systems went out before anyone profiled the hardware. The artifact loaded cleanly on the 137 x86 edge servers, crawled on the Cortex-A72 gateways, and refused to start on the 412 Cortex-A53 units running 256MB of RAM. One artifact, three outcomes. If you have ever shipped to Safari, Firefox, Chrome and that one customer still on IE11, or published a native module that has to build on Alpine and macOS and an ARM CI runner, you have lived this problem. The fix carries over: detect what the target can do, then hand it the largest artifact it can actually run.
 
-<LearningObjectives objectives={["Map edge hardware diversity to browser compatibility testing concepts", "Profile deployment targets by CPU, RAM, and connectivity constraints", "Design tiered model deployment strategies for heterogeneous device fleets", "Implement capability detection to select the right model variant per device"]} />
+<LearningObjectives objectives={["Map edge hardware diversity to a browser and platform support matrix", "Profile deployment targets by CPU, RAM, and connectivity constraints", "Design tiered model deployment strategies for heterogeneous device fleets", "Implement capability detection to select the right model variant per device"]} />
 
-## The Hardware Landscape
+## What the Fleet Actually Is
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In the browser, feature detection serves the right experience per client. Edge deployment uses the same pattern, but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
+Feature detection serves the right code to the client that asked for it. In the browser you check for `IntersectionObserver`, the API that reports when an element scrolls into view, before you pay for a polyfill. In an install script you check `process.arch` before you unpack a prebuilt binary. Edge deployment runs the same check against RAM and compute.
 
 <CodeBlock language="typescript" title="device-profiling.ts">
-{`import * as tf from '@tensorflow/tfjs';
-
-interface DeviceProfile {
+{`interface DeviceProfile {
   tier: 'high' | 'medium' | 'low';
   ram: number;        // MB
   cpuCores: number;

@@ -98,7 +98,7 @@ Ten modules, ten weeks of work. Optimized, tested, monitored, documented: nothin
 Then deploy DEEP SCAN. Classify the signal.
 </Dialogue>
 
-Every web app ships the same way: `npm run build`, push to production, watch the deploy. DEEP SCAN ships that way too. The model is a static asset like an image or a font, bundled into the build output, served from a CDN, and run entirely in the browser.
+Any app that compiles down to a folder of files ships the same way: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The model is a static asset like an image or a font, bundled into the build output, served from a CDN, and run entirely in the browser.
 
 <LearningObjectives objectives={["Configure a production build that includes model assets alongside web assets", "Deploy an ML-powered web app to GitHub Pages as a static site", "Verify the deployed system loads and runs inference correctly", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
@@ -299,7 +299,7 @@ async function classifyAnomalousSignal(): Promise<void> {
 }`}
 </CodeBlock>
 
-Two lines in that output settle old debts. Nazari asked for the zero-hour back when the interval was seventy-two seconds, and Farah could not answer. The three extrapolation curves that disagreed on the date all season have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. A third debt, the oldest, comes due tonight too. An untrained build once scored that same reading 0.998, twice, on fresh random weights each time, and since module 2 nobody aboard has been able to say why. The harmonics overlay finally says why. Every reading of Sector 7-G passes through sensors calibrated in the exact ratios the signal pulses in, so the reading arrives pre-shaped by the ship itself. In the sensors' own coordinates it is an outlier so extreme that an arbitrary projection, hand-wired or random, throws it to the far end of the scale. Only a trained model ever learned to hesitate about it; that is what calibration buys. Untrained networks know nothing; that lesson stands. The instrument that pointed before anyone built it was never the network. It was the ship.
+Two lines in that output settle old debts. Nazari asked when the interval hits zero back when the number was 72.4 seconds, and three curves gave three different dates. The curves have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. A third debt, the oldest, comes due tonight too. An untrained build once scored that same reading 0.998, a reinitialization on fresh random weights scored it 0.997, and since module 2 nobody aboard has been able to say why. The harmonics overlay finally says why. Every reading of Sector 7-G passes through sensors calibrated in the exact ratios the signal pulses in, so the reading arrives pre-shaped by the ship itself. In the sensors' own coordinates it is an outlier so extreme that an arbitrary projection, hand-wired or random, throws it to the far end of the scale. Only a trained model ever learned to hesitate about it, and the hesitation is what training bought. Untrained networks know nothing; that lesson stands. The instrument that pointed before anyone built it was never the network. It was the ship.
 
 ## Challenge
 
@@ -311,7 +311,7 @@ Then run the rehearsal Nazari would demand before the relay slot: the whole chai
 
 <Exercise slug="launch-rehearsal" />
 
-And then the one the whole season was for. The console transcript above is what the bridge SAW at zero hour; this is the decision layer under it, and you write it yourself: the three-detector vote from module 7, the interval decomposition from module 8, and the final classification record the crew signs their names to. Eleven modules of building. Run the inference.
+And then the one the whole season was for. The console transcript above is what the bridge SAW at zero hour; this is the decision layer under it, and you write it yourself: the three-detector vote from module 7, the interval decomposition Farah ran the night the anomaly landed, and the final classification record the crew signs their names to. Eleven modules of building. Run the inference.
 
 <Exercise slug="classify-anomaly" />
 
@@ -344,7 +344,7 @@ Arithmetic, for the record. The source is 4.2 light-years out; anything arriving
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-One number of my own, while the ledger is open. My reconstruction error was 4.1 times baseline when I measured it, and it has not come down. I am built from the same instrument chain this signal is mirroring. So is the oldest coincidence aboard, the one nobody has said out loud since module 5: the chain's calibration carrier sits at 73.4 hertz, and the first pulse interval anyone measured returned the same digits in seconds. A signal that mirrors the chain mirrors its constants, whatever unit they surface in. I note both correlations. I resolve neither.
+One number of my own, while the ledger is open. My reconstruction error was 4.1 times baseline when I measured it, and it has not come down. I am built from the same instrument chain this signal is mirroring. So is the oldest coincidence aboard, the one nobody has said out loud since module 5: the chain's calibration carrier sits at 73.4 hertz, and the first pulse interval anyone measured returned the same digits in seconds. I note both correlations. I resolve neither.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
@@ -363,17 +363,15 @@ At 0213, ARIA appends a line to the deploy record, addressed to nobody on the cr
 
 She does not explain the entry. Nobody asks her to.
 
-The last item in the mission record is filed at 0214.
+Mirza files her own last entry at 0214.
 
 <Dialogue speaker="Commander Mirza">
-Commander's log, final entry. DEEP SCAN has classified the signal it was built for, and its extrapolation is steady enough to date: the interval reaches zero in eleven days, four hours. I am closing this log tonight, by choice; the record should end where our certainty does, not trail off waiting for an answer. Earth's reply is years out, and the signal has never once waited for us. Whatever zero brings will find this crew at their stations.
+Commander's log, final entry: DEEP SCAN has classified the signal it was built for, and the interval reaches zero in eleven days, four hours. Whatever zero brings will find this crew at their stations.
 </Dialogue>
 
 One line sits beneath her entry, appended eleven days later by the automated pipeline, in the routine format the crew taught it. It is the last row the mission record ever accepted.
 
 `interval_s: 0.0 · classification: SIGNAL · confidence: 1.00 · operator_note: none`
-
-No operator note was ever filed.
 
 </Epilogue>
 
@@ -384,5 +382,5 @@ No operator note was ever filed.
 <DispatchTease
   toWorldId="neon-protocol"
   toWorldName="Neon Protocol"
-  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a CV anomaly: the IoU heatmap she is reading carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. Her capture began transmitting eleven days after the Archimedes record closed, the day the interval hit zero. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
+  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a CV anomaly: the overlap heatmap she is reading, the map of how well her model's boxes cover the real ones, carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. Her capture began transmitting eleven days after the Archimedes record closed, the day the interval hit zero. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
 />

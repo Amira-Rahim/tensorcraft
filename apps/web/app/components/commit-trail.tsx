@@ -57,7 +57,7 @@ export function CommitTrail({ compact = false }: { compact?: boolean }) {
           read as a real user's activity. Keep it when editing this copy. */}
       <p className="px-4 py-2.5 border-t border-border text-[11px] text-text-muted">
         +{totalExercises - shown.length} more commits by the capstone, one per
-        solved exercise, generated in the exact format the push pipeline writes.
+        solved exercise, generated in the exact format we push to your repo.
       </p>
     </div>
   );

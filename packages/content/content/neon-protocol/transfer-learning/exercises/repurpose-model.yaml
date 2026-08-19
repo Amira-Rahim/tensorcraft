@@ -1,7 +1,7 @@
 slug: repurpose-model
 lessonSlug: the-heist
 title: "Build the Protocol Sentinel Pipeline"
-instructions: "Write a function that describes a complete model repurposing pipeline. Given the original model info (totalLayers, totalParams, originalClasses, featureSize, avgParamsPerLayer) and repurpose config (newClasses, unfreezeLastN, learningRate), calculate: layers to freeze, layers to train, new head params (featureSize * newClasses + newClasses), total trainable params (unfrozen layers * avgParamsPerLayer + new head), and compressionVsOriginal (trainable / total original as percentage rounded to 1 decimal)."
+instructions: "Write a function that describes a complete model repurposing pipeline. Given the original model info (totalLayers, totalParams, originalClasses, featureSize, avgParamsPerLayer) and repurpose config (newClasses, unfreezeLastN, learningRate), calculate: layers to freeze, layers to train, new head params (featureSize * newClasses + newClasses), total trainable params (unfrozen layers * avgParamsPerLayer + new head), and compressionVsOriginal, the percentage of the original parameter count that is still trainable, rounded to 1 decimal. That last number is the training bill, not the file size: the frozen backbone still ships at full weight."
 starterCode: |
   interface OriginalModel {
     totalLayers: number;

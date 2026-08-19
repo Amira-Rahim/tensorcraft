@@ -56,10 +56,10 @@ Don't tell me what it's like, Ensign. Tell me how far back it can hold a pattern
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in it anywhere. A forget gate reads the current input together with the previous hidden state and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. Within a window it can hold the first step at full strength to the last; and a shape it has learned once, it recognizes whenever the stream brings that shape back, even 72 hours later.
+Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in it anywhere. A forget gate reads the current input together with the previous hidden state and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. Within a window it can carry the first step at full strength all the way to the last, and a shape it has learned once, it recognizes whenever the stream brings that shape back, even 72 hours later.
 </Dialogue>
 
-The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. That [0,1] output is what makes a gate a dimmer rather than a switch.
+The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Farah said switches, but the [0,1] output makes each one closer to a dimmer: a gate can pass 30% of a value, not just all of it or none.
 
 <LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM network using TensorFlow.js that handles long-range dependencies", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Solve the vanishing gradient problem with gated memory cells"]} />
 
@@ -83,8 +83,10 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 //    outputGate = sigmoid(W_o · [prevHidden, input])
 //    newHidden = outputGate * tanh(newCell)
 
-// The cell state acts as a conveyor belt; information flows through
-// with minimal transformation, preventing gradient vanishing`}
+// The cell state is only scaled and added to at each step, never pushed
+// through a weight matrix and a tanh the way the simple RNN's hidden
+// state is. That is why the gradient along it decays slowly instead of
+// exponentially, and why hundreds of steps stay learnable`}
 </CodeBlock>
 
 ## Building an LSTM in TF.js
@@ -147,7 +149,8 @@ gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 // LSTM: 4 sets of weight matrices: forget, input, and output gates plus the
 //       candidate state (more parameters, better long-range memory)
 // GRU:  3 sets: reset gate, update gate, candidate state (~25% fewer params, faster training)
-// Rule of thumb: try both and compare, like choosing between React and Preact`}
+// Rule of thumb: train both and compare. The GRU often wins when the training
+//               set is small; the LSTM tends to win when dependencies run long`}
 </CodeBlock>
 
 ## Challenge

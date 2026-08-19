@@ -22,11 +22,11 @@ consequence:
   narrative: "Diagnostic One now focuses on clinically meaningful words, improving its accuracy on real patient notes."
 hints:
   - level: nudge
-    content: "Add a bias term to attention scores before softmax"
+    content: "Softmax never returns zero for a finite score. Make the score effectively negative infinity instead."
   - level: guidance
-    content: "Create a mask that identifies medical terms, multiply by a boost factor"
+    content: "Invert the valid-token mask, multiply the inverse by -1e9, and add that to the scores before softmax"
   - level: solution
-    content: "const biased = scores.add(medicalMask.mul(biasStrength)); const weights = tf.softmax(biased);"
+    content: "const negInf = tf.scalar(-1e9); const oneMinusMask = tf.scalar(1).sub(validMask); const masked = scores.add(oneMinusMask.mul(negInf)); return tf.softmax(masked);"
 keywords:
   - clinical-attention
   - domain-bias
@@ -48,7 +48,7 @@ That's like search result highlighting. When a user searches for "arthritis," I 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In search UIs, matching terms are highlighted to draw the user's eye. Clinical attention does the same for the model. We add a bias to the attention scores for tokens that belong to a medical vocabulary, gently steering the model toward clinically meaningful relationships.
+Highlighting in a search UI happens after ranking: the `<mark>` changes what the user notices, not what the engine scored. Clinical attention changes the score. We add a bias to the attention scores before softmax, so tokens from a medical vocabulary compete better for weight.
 
 <CodeBlock language="typescript" title="clinical-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -101,25 +101,33 @@ const K = tf.matMul(embeddings, Wk) as tf.Tensor2D;
 const V = tf.matMul(embeddings, Wv) as tf.Tensor2D;
 
 const { weights } = clinicalAttention(Q, K, V, tokens, dk);
-console.log('Clinical attention weights shape:', weights.shape);`}
+
+const plain = await tf.softmax(
+  tf.matMul(Q, K.transpose()).div(Math.sqrt(dk)),
+  -1
+).array() as number[][];
+const biased = await weights.array() as number[][];
+
+// Column 3 is "methotrexate": how much weight token 0 puts on it, before and after the bias
+console.log('methotrexate weight from token 0:', plain[0][3], 'vs', biased[0][3]);`}
 </CodeBlock>
 
 ## Bias vs. Hard Masking
 
 <Dialogue speaker="Vikram">
-We use a soft bias, not a hard mask. The model can still attend to function words like "denied" or "without"; those carry negation, which is clinically critical. We just make it easier for drug names and conditions to get attention. Think of it as raising their hand in a crowded room, not silencing everyone else.
+We use a soft bias, not a hard mask. The model still has to reach function words like "denied" or "without", because those carry the negation that decides whether a symptom is present.
 </Dialogue>
 
 This is the difference between `display: none` (hard mask: token is invisible) and `font-weight: bold` (soft bias: token is emphasized but others remain visible).
 
 ## Challenge
 
-Implement clinical attention weights that prioritize medical terminology.
+The vocabulary bias is one half of the job. The other half is padding. Batching short notes together pads them out to a fixed length, and those slots have to leave softmax at exactly zero, which no finite bias can do. Push them to -1e9 first.
 
 <Exercise slug="clinical-attention-weights" />
 
 <DerivationDrawer summary="Bias in attention: when the model attends to the wrong signal">
-Clinical attention bias: the model learns to attend to features that correlate with the label in training but are spurious in deployment. Example: a chest X-ray classifier that attends to the X-ray machine's metadata stamp (which differs by hospital, and hospital correlates with disease prevalence) rather than the lung tissue.
+The bias term above is one you write and control. There is a second kind you do not: the model learns to attend to features that correlate with the label in training but are spurious in deployment. Example: a chest X-ray classifier that attends to the X-ray machine's metadata stamp (which differs by hospital, and hospital correlates with disease prevalence) rather than the lung tissue.
 
 **Detection:** compute attention statistics per demographic slice. If attention concentrates on features that should be irrelevant (machine model, scan timestamp, hospital ID), retrain with these features removed, or with training that penalizes reliance on them (adversarial debiasing).
 
@@ -136,4 +144,4 @@ Clinical attention bias: the model learns to attend to features that correlate w
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Clinical attention adds domain-specific bias to standard attention scores", "Soft biasing boosts medical terms without silencing context words", "Vocabulary masks identify drugs, conditions, dosages, and symptoms", "A vocabulary bias adapts attention to the clinical domain without retraining the model"]} />
+<KeyTakeaways takeaways={["Clinical attention adds domain-specific bias to standard attention scores", "Soft biasing boosts medical terms without silencing context words", "Vocabulary masks identify drugs, conditions, dosages, and symptoms", "The bias belongs to the model you train: bolting it onto a model trained without it shifts every score the later layers learned to expect"]} />

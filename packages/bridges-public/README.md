@@ -1,6 +1,6 @@
 # @tensorcraft/bridges
 
-50 canonical analogies from JavaScript to ML, with explicit failure-mode labels.
+51 canonical analogies from JavaScript to ML, with explicit failure-mode labels.
 
 > **0.2.0 breaking change:** the bridge fields `feConcept` and `feCode` are now
 > `jsConcept` and `jsCode` (2026-08 rebrand). Pin `0.1.0` if you depend on the
@@ -19,7 +19,7 @@ const relu = BRIDGES.find((b) => b.mlConcept === "Activation functions (ReLU)");
 //   jsConcept: 'Math.max(0, x)',
 //   mlConcept: 'Activation functions (ReLU)',
 //   tier: 'identity',
-//   connection: 'ReLU is literally Math.max(0, x) - same function, same math, different name.',
+//   connection: 'ReLU is literally Math.max(0, x): the same function, same math, different name.',
 //   ...
 // }
 ```

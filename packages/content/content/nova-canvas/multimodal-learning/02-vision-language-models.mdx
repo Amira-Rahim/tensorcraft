@@ -22,11 +22,11 @@ consequence:
   narrative: "MUSE processes the sunset image and outputs: 'warm colors, horizon line, city silhouette.' Not poetic. Not wrong. Yara laughs: 'It has the vocabulary of a real estate listing. But it can see and speak. That is a start.'"
 hints:
   - level: nudge
-    content: "The diagonal of tf.matMul(normImages, normTexts, false, true) holds the matched pairs; training pushes those entries higher than the rest of each row."
+    content: "Cosine similarity throws away how long the vectors are and keeps only the angle between them, which is why both norms belong in the denominator"
   - level: guidance
-    content: "Encode images and their captions into a shared space. Train so that matched pairs are close, mismatched pairs are far apart."
+    content: "Sum the elementwise product to get the dot product, take tf.norm of each vector, then divide the dot product by the product of the two norms"
   - level: solution
-    content: "Image encoder + text encoder -> shared space. Loss = cosine similarity between matched pairs minus similarity between mismatched pairs."
+    content: "dot = sum(a * b), then divide by norm(a) * norm(b). In TensorFlow.js: tf.sum(tf.mul(a, b)) over tf.mul(tf.norm(a), tf.norm(b))."
 keywords:
   - vision-language
   - image-text
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Samir">
-Every `img` tag should have an `alt` attribute: text that describes the image. This is the fundamental vision-language connection: the same concept expressed in two modalities. What we see and what we say about what we see.
+You have written a thousand `alt` attributes. Every one is a vision-language pair: a human looked at pixels and wrote the sentence that means the same thing. A vision-language model wants that same pairing, minus the human, times four hundred million.
 </Dialogue>
 
 <Dialogue speaker="Yara">
@@ -48,7 +48,7 @@ That's the training data, yes. Millions of image-caption pairs, and the model le
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Before you finish the pitch: I captioned 50 of Yara's studio photos this morning. I put a dog in three of them. There has never been a dog in this studio. An author writing a description looks at the image. I generate from alignment statistics, and my statistics like dogs.
+Before you finish the pitch: I ran the pretrained captioner over 50 of Yara's studio photos this morning. It put a dog in three of them. There has never been a dog in this studio. An author writing a description looks at the image. That model generates from alignment statistics, and its statistics like dogs.
 </Dialogue>
 
 <Dialogue speaker="Samir">

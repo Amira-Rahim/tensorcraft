@@ -7,8 +7,8 @@ instructions: |
     {
       suspect: Sample[],         // samples in suspectClass from untrusted sources
       hashCollisions: string[],  // contentHash values appearing more than once across samples
-      untrustedRatio: number,    // fraction of suspectClass samples from untrusted sources (1 decimal)
-      requiresQuarantine: boolean,  // true if untrustedRatio > 0.05 OR hashCollisions.length > 0
+      untrustedRatio: number,    // fraction of suspectClass samples from untrusted sources, rounded to 1 decimal
+      requiresQuarantine: boolean,  // true if the rounded untrustedRatio is above 0.05 (so 0.1 or higher) OR hashCollisions.length > 0
     }
 
   Isolate the suspect samples. Do not retrain on them.

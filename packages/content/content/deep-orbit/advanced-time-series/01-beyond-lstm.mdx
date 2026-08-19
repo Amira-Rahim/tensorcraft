@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 16
 difficulty: advanced
 context:
-  narrative: "The LSTM works, but its sequential nature is slow. Farah introduces attention: a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
+  narrative: "The LSTM works, but a warning ripple at step 4 is diluted to nothing by step 80. Farah introduces attention: a direct connection between any two time steps, so distance stops erasing the evidence the forecast needed."
   speaker: "Dr. Farah"
 concept:
   explanation: "Attention scores every time step for relevance at once, then spends the model's capacity where the scores are high."
@@ -47,10 +47,10 @@ That ripple entered the hidden state at step 4 and got averaged into seventy-six
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Like CSS :focus. Instead of styling every element equally, you highlight just the one that's active. Attention highlights the time steps that are most relevant to the current prediction.
+So instead of inheriting whatever survived eighty steps of averaging, the model scores each step against what it is trying to predict and reads the high scorers directly. CSS :focus, except the model picks the target.
 </Dialogue>
 
-Tab through a form and the browser doesn't restyle every element; it finds the active one and highlights it. Attention is the soft version of that move: it scores every time step for relevance, then spends most of its weight where the score is high and a little everywhere else. Hold Demir's picture up against the mechanism's own arithmetic below and see how far it survives.
+Hold that picture against the mechanism's own arithmetic below, three numbers wide, and see how much of it survives.
 
 <LearningObjectives objectives={["Understand attention as dynamic relevance scoring: focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
@@ -124,7 +124,7 @@ The worked softmax is the part that vetoes the :focus picture, and it does so wi
 
 // Speed comparison for 80-step sequences:
 // LSTM:      80 sequential operations (can't parallelize)
-// Attention: 1 matrix multiply (fully parallelizable on GPU)
+// Attention: 2 matrix multiplies, both fully parallelizable on GPU
 // The hybrid below keeps the sequential LSTM encoder, so it buys the
 // DISTANCE fix, not the wall-clock one; pure-attention stacks buy both.
 

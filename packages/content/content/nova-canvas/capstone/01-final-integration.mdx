@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Monorepo integration ships when packages publish and tests pass. Multi-modal pipelines must validate that each model handles outputs from upstream models without compounding error. Failure modes propagate silently across modalities."
 consequence:
-  narrative: "For the first time, all modalities run together. A visitor speaks a prompt. Text becomes an image. The image generates a soundscape. The soundscape drives visual effects."
+  narrative: "For the first time, all modalities run together. A visitor speaks a prompt, the text encoder turns it into one latent vector, and the image, the soundscape, and the style come back as three readings of that same point."
 hints:
   - level: nudge
     content: "The MultiModalPipeline only composes calls like imageModel.predict(z) and audioModel.predict(z); start by listing each model's input and output tensor shapes"
@@ -43,8 +43,10 @@ This is the same challenge as integrating a monorepo before a major release. Eac
 </Dialogue>
 
 <Dialogue speaker="Erdem">
-A monorepo ships when the tests pass. This pipeline won't get that courtesy. When the image model hands a slightly-off latent to the audio model, nothing throws. The output just degrades, quietly, three models downstream. So we validate every handoff, not just every module.
+A monorepo ships when the tests pass. This pipeline won't get that courtesy. When the text encoder hands a slightly-off latent to the audio model, nothing throws. The soundscape comes back subtly wrong, and nothing in the logs says so. So we validate every handoff, not just every module.
 </Dialogue>
+
+Every module so far produced one artifact: an image, a spectrogram, a style vector. Opening night needs all three from a single prompt, and they have to agree with each other. The move is one shared latent vector fanned out to every generator, so the soundscape and the image are two readings of the same point in the space instead of two unrelated outputs that happened to arrive together. `Promise.all` over three models, one input each.
 
 <LearningObjectives objectives={["Design a multi-modal orchestration layer that connects all generation modules", "Implement shared latent spaces for coherent cross-modal generation", "Build a routing system that directs user input to the appropriate model pipeline", "Handle errors and fallbacks across interconnected generation modules"]} />
 
@@ -72,6 +74,10 @@ class MultiModalOrchestrator {
 
   register(module: ModalityModule) {
     this.modules.set(module.name, module);
+  }
+
+  getModule(name: string): ModalityModule | undefined {
+    return this.modules.get(name);
   }
 
   // Full pipeline: text → image + audio + effects
@@ -135,7 +141,7 @@ interface MultiModalResult {
 }`}
 </CodeBlock>
 
-Notice what the orchestrator cannot do. `tsc` verifies every import in this file; nothing verifies that the latent `generateFromPrompt` hands to the audio model still looks like the distribution the audio model trained on. Samir's monorepo instinct wired this cleanly, and the wiring is the easy half. The guarantees are the half that does not transfer.
+Notice what the orchestrator cannot do. `tsc` verifies every import in this file; nothing verifies that the latent `generateFromPrompt` hands to the audio model still looks like the distribution the audio model trained on. That check does not exist yet, and on opening night its absence sounds like a soundscape that fits the prompt slightly less well than it did in rehearsal.
 
 ## Module Health Check
 
@@ -151,12 +157,17 @@ async function systemHealthCheck(
 
   const results = await Promise.all(
     checks.map(async (name) => {
+      const mod = orchestrator.getModule(name);
+      if (!mod?.isReady()) {
+        return { name, status: 'error', error: 'not registered or not ready' };
+      }
       try {
         const start = performance.now();
-        const testInput = tf.randomNormal([1, 128]);
-        await orchestrator.generateSafe('test');
-        testInput.dispose();
-        return { name, status: 'ok', latencyMs: performance.now() - start };
+        const probe = tf.randomNormal([1, 128]);
+        const out = await mod.generate(probe);
+        const latencyMs = performance.now() - start;
+        tf.dispose([probe, out]);
+        return { name, status: 'ok', latencyMs };
       } catch (err) {
         return { name, status: 'error', error: (err as Error).message };
       }

@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-Look at these numbers, Noor. Four thousand dome cameras, three thousand bullet cameras, eight hundred PTZ units, and only one hundred eighty hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right nearly half the time. That's not intelligence. That's a coin flip dressed up as a prediction.
+Look at these numbers, Noor. Six more weeks of night runs took the catalog from two thousand images to 8,200: 4,200 dome cameras, 3,000 bullet cameras, 820 PTZ units, and 180 hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right just over half the time. That's not intelligence. That's a coin flip dressed up as a prediction.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -55,7 +55,7 @@ The other direction, then. Duplicate the micro-cameras until they catch up.
 Closer. Now tell me what twenty-three copies of the same 180 images teach the model that one copy did not. There is a third option, and it does not touch the data at all. Work through all three and you will know which one this dataset needs.
 </Dialogue>
 
-48%, 34%, 9%, 2%. Spread request load across a four-server cluster in those proportions and the overloaded pair dominates system behavior while the underserved machines barely register. Class imbalance in ML datasets creates exactly this problem: the model optimizes for the most common class and ignores the rare ones.
+51%, 37%, 10%, 2%. That is how the four camera classes divide the catalog. A model minimizes average loss, so it optimizes for the class that fills half the data and lets the 2% go.
 
 <LearningObjectives objectives={[
   "Recognize class imbalance and understand its impact on model performance",
@@ -66,7 +66,7 @@ Closer. Now tell me what twenty-three copies of the same 180 images teach the mo
 
 ## The Load Balancing Parallel
 
-In infrastructure engineering, you never let one server absorb the majority of traffic. Load balancers distribute requests evenly so every server contributes and no single point of failure dominates.
+You have already shipped this fix. Four Node processes behind a load balancer, and the router keeps handing 88% of requests to two of them: the idle pair contributes nothing and the busy pair sets your p99. You change the routing, not the servers.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -114,15 +114,15 @@ function getImbalanceRatio(distribution: ClassDistribution[]): number {
 }
 
 // Example: Neon City surveillance dataset
-// dome-camera:    4200 (48.3%)  <-- majority
-// bullet-camera:  3000 (34.5%)
-// ptz-camera:      820 ( 9.4%)
-// hidden-camera:   180 ( 2.1%)  <-- minority
+// dome-camera:    4200 (51.2%)  <-- majority
+// bullet-camera:  3000 (36.6%)
+// ptz-camera:      820 (10.0%)
+// hidden-camera:   180 ( 2.2%)  <-- minority
 // Imbalance ratio: 4200 / 180 = 23.3x (severely imbalanced)`}
 </CodeBlock>
 
 <Dialogue speaker="Dilan">
-An imbalance ratio above 10 means your model is essentially blind to the minority class. At 23 to 1, the Sentinel would learn to say "dome camera" to almost everything and still score 48% accuracy. Useless.
+An imbalance ratio above 10 means your model is essentially blind to the minority class. At 23 to 1, the Sentinel would learn to say "dome camera" to almost everything and still score 51% accuracy. Useless.
 </Dialogue>
 
 ## Oversampling: Duplicating Minority Requests
@@ -164,7 +164,7 @@ function oversample(samples: Sample[]): Sample[] {
 }`}
 </CodeBlock>
 
-Oversampling is safe and preserves all original data, but duplicated samples add no new information. Combining oversampling with augmentation (from the previous lesson) gives you the best of both worlds: more minority samples *and* more variety.
+Oversampling is safe and preserves all original data, but duplicated samples add no new information. Combining it with augmentation (from the previous lesson) is Dilan's answer: each duplicate arrives flipped, cropped, or relit, so 180 hidden cameras become 4,200 samples instead of 23 copies of the same 180 photographs.
 
 ## Undersampling: Throttling the Majority
 
@@ -185,8 +185,13 @@ The opposite approach: reduce the majority class to match the minority. Like thr
   // Take only minCount samples from each class
   const balanced: Sample[] = [];
   for (const classSamples of Object.values(counts)) {
-    // Shuffle and take first minCount
-    const shuffled = [...classSamples].sort(() => Math.random() - 0.5);
+    // Shuffle and take first minCount.
+    // A random sort comparator is not a uniform shuffle. Fisher-Yates is.
+    const shuffled = [...classSamples];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
     balanced.push(...shuffled.slice(0, minCount));
   }
 
@@ -231,7 +236,7 @@ Instead of changing the data, change how much the model cares about each class. 
 </CodeBlock>
 
 <Dialogue speaker="Noor">
-So the model loses 11 times more when it misclassifies a hidden camera than a dome camera. That forces it to pay attention to the rare class even though it only appears 2% of the time.
+So a miss on a hidden camera costs 11.39 in the loss and a miss on a dome camera costs 0.49. That is 23 times the penalty, which is exactly the imbalance ratio. The model has to care about the rare class even though it only appears 2% of the time.
 </Dialogue>
 
 ## Challenge

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "NEON runs the simple classifier on a surveillance feed. It works. Barely. 62% accuracy. Noor realizes she needs something more powerful."
+  narrative: "NEON runs the simple classifier on a surveillance feed. It works. Barely. 62% accuracy, and every miss is a camera the resistance walks straight past."
   speaker: "NEON"
 concept:
   explanation: "A threshold-based classifier applies if/else rules to pixel values: the simplest possible 'model.' This is where traditional programming ends and ML begins."
@@ -18,14 +18,14 @@ concept:
     mlCode: "if (meanPixel > threshold) return 'active'; else return 'inactive'; // same pattern"
     tier: identity
 consequence:
-  narrative: "62% accuracy. Not good enough to detect Meridian's drones. Noor needs neural networks, models that learn their own rules from data."
+  narrative: "62%, and no rule Noor adds moves it. Then NEON stops mid-scan and posts one line to the console: its own facial recognition model is still running inside Meridian's network, and it has been logging matches the whole time."
 hints:
   - level: nudge
-    content: "Start with the simplest possible approach: if/else on pixel statistics"
+    content: "One number decides the whole thing: the mean of the tensor. Four buckets means three cutoffs, checked in order from darkest up"
   - level: guidance
-    content: "Compute mean brightness, check for red channel spikes (camera LEDs), count threshold"
+    content: "Read the mean with pixels.mean().dataSync()[0], then return 'dark' under 64, 'dim' under 128, 'bright' under 192, and 'overexposed' for everything left. For accuracy, count the samples where classifier(sample.pixels) equals sample.label and divide by how many samples there were"
   - level: solution
-    content: "const mean = image.mean().dataSync()[0]; return mean > 128 ? 'bright' : 'dark';"
+    content: "const meanVal = pixels.mean().dataSync()[0]; if (meanVal < 64) return 'dark'; if (meanVal < 128) return 'dim'; if (meanVal < 192) return 'bright'; return 'overexposed';"
 keywords:
   - classifier
   - threshold
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="NEON">
-Before neural networks, there were rules. If the average brightness exceeds 128, the camera is active. If there is a red spot above 200 intensity, there is a recording LED. If the frame changes less than 5% between captures, the feed is static. These rules get you to 62% accuracy. Machine learning will get you to 95%.
+Before neural networks, there were rules. If the average brightness exceeds 128, the camera is active. If there is a red spot above 200 intensity, there is a recording LED. If the frame changes less than 5% between captures, the feed is static. These rules get you to 62% accuracy. Meridian's own classifier reads the same feeds at 97%, and no one hand-wrote it.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -68,13 +68,19 @@ function classifyCameraStatus(image: tf.Tensor3D): string {
   const bMean = (b as tf.Tensor).mean().dataSync()[0];
   const brightness = (rMean + gMean + bMean) / 3;
 
+  // A recording LED is a handful of hot red pixels, not a red frame.
+  // An average cannot see it, so count the pixels that spike.
+  const ledPixels = tf.tidy(() =>
+    r.greater(220).logicalAnd(g.less(60)).cast('int32').sum().dataSync()[0]
+  );
+
   [r, g, b].forEach(t => t.dispose());
 
   // Rule chain
-  if (brightness < 30) return 'offline';           // Very dark = camera off
-  if (rMean > 200 && gMean < 50) return 'alert';   // Red LED = recording
-  if (brightness > 200) return 'overexposed';       // Washed out = malfunction
-  return 'active';                                  // Normal operation
+  if (brightness < 30) return 'offline';      // Very dark = camera off
+  if (ledPixels > 20) return 'alert';         // Cluster of hot red = recording
+  if (brightness > 200) return 'overexposed'; // Washed out = malfunction
+  return 'active';                            // Normal operation
 }
 
 // Test it
@@ -120,8 +126,8 @@ function measureAccuracy(
 // and let it learn its own features.
 
 console.log('Rule-based accuracy: 62%');
-console.log('Target accuracy:     95%');
-console.log('Gap: neural networks fill this gap');`}
+console.log('Meridian model:      97%');
+console.log('The 35 points in between are what the model has to learn');`}
 </CodeBlock>
 
 ## Challenge
@@ -136,7 +142,7 @@ Build a threshold-based classifier and measure its accuracy.
   question="Why does a brightness-threshold classifier fail on real images?"
   options={[{"text":"Brightness depends on lighting, not class; same object varies wildly across images"},{"text":"Threshold is too strict"},{"text":"Requires more training data"},{"text":"Doesn't use TensorFlow.js"}]}
   correct={0}
-  explanation="A 'cat' photo at noon has different mean brightness than the same cat at dusk. Single-feature classifiers can't generalize across lighting/exposure. CNNs learn lighting-invariant features by composing local patterns into hierarchical representations."
+  explanation="The same camera housing has one mean brightness at noon and another at 0200. A single threshold has to pick one of them, so it ends up tracking the lighting instead of the thing you asked it to name. That is the ceiling on every hand-written rule in this lesson: you can only threshold on statistics you thought of in advance, and lighting moves all of them at once."
   tier="intuition"
 />
 

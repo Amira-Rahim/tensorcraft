@@ -47,7 +47,12 @@ async function settle(page: import("@playwright/test").Page, path: string) {
   await page.goto(path);
   // framer-motion entrance animations don't all respect the emulated
   // reduced-motion preference; let them finish before sampling colors.
-  await page.waitForTimeout(800);
+  // 800ms was too short: the landing hero's demo panel runs 0.9s AFTER a
+  // 0.25s delay, so axe sampled it at ~70% opacity and reported the
+  // blended foreground as a contrast failure (light mode only, where
+  // primary-on-surface has the least headroom). Keep this above the
+  // longest entrance animation on any audited page.
+  await page.waitForTimeout(1600);
 
   // Code steps are highlighted by shiki, which paints token colours onto
   // `.line span`. Sampling before that lands measures UNSTYLED tokens and

@@ -1,9 +1,11 @@
 /**
  * Curated ML glossary for Tensorcraft.
  *
- * Terms are drawn from the `keywords` of deep-orbit lessons (the only worlds in
- * the build) plus a few foundational entries. Definitions are learner-facing
- * refreshers: one or two plain sentences, no em dashes (style bible rule 6).
+ * Terms are drawn from the `keywords` of lessons across all five built worlds,
+ * plus a few foundational entries. Definitions are learner-facing refreshers:
+ * one or two plain sentences, no em dashes (style bible rule 6). Note that
+ * `scope` is documentation only: the build matches the whole dictionary
+ * against every world.
  *
  * Used to auto-underline concept terms in lesson prose and to feed a concept rail.
  */
@@ -118,7 +120,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "layer",
     definition:
-      "A group of neurons that transforms its inputs together and passes the result to the next layer.",
+      "A named stage in a model that transforms its input and passes the result on. In a dense layer that stage is a group of neurons; other layers reshape, drop, or convolve instead.",
     aliases: ["layers"],
     scope: "global",
   },
@@ -139,7 +141,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "bias",
     definition:
-      "A learned constant added to a neuron's weighted sum, letting the output shift independently of the inputs.",
+      "A learned constant added to a neuron's weighted sum, letting the output shift independently of the inputs. Distinct from bias in the fairness sense, which is a systematic gap in how well a model performs for different groups of people.",
     aliases: ["biases"],
     scope: "global",
   },
@@ -168,6 +170,26 @@ export const GLOSSARY: GlossaryEntry[] = [
     term: "sigmoid",
     definition:
       "An activation that squashes any number into the range 0 to 1, often used for probabilities.",
+    scope: "global",
+  },
+  {
+    term: "softmax",
+    definition:
+      "A function that turns a row of raw scores into probabilities that add up to 1. The largest score keeps the largest share, and the gaps between scores decide how confident the result looks.",
+    scope: "global",
+  },
+  {
+    term: "convolution",
+    definition:
+      "Sliding a small grid of weights across an image and recording what it matches at each position. The same weights run everywhere, so a filter that finds an edge in one corner finds it in every corner.",
+    aliases: ["convolutional", "conv layer"],
+    scope: "global",
+  },
+  {
+    term: "pooling",
+    definition:
+      "Shrinking a feature map by summarizing each small block with one value, usually its maximum. It cuts the amount of data downstream layers carry and makes the result less sensitive to a few pixels of shift.",
+    aliases: ["max pooling", "pool"],
     scope: "global",
   },
 
@@ -202,7 +224,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "backward-pass",
     definition:
-      "Propagating the loss gradient back through the network to update the weights.",
+      "Propagating the loss gradient back through the network so every weight ends up with a gradient. The optimizer is what applies those gradients.",
     aliases: ["backward pass"],
     scope: "global",
   },
@@ -293,7 +315,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "precision",
     definition:
-      "Of the items the model flagged as positive, the fraction that truly were positive.",
+      "Of the items the model flagged as positive, the fraction that truly were positive. Distinct from numeric precision, which is how many bits a number is stored in.",
     scope: "global",
   },
   {
@@ -466,6 +488,58 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "global",
   },
 
+  // Representations: embeddings and encodings
+  {
+    term: "embedding",
+    definition:
+      "A learned vector of numbers that stands in for an item such as a word, an image, or a patient note. Items with similar meaning land near each other, so distance between vectors becomes a usable measure of similarity.",
+    aliases: ["embeddings", "embedding space"],
+    scope: "global",
+  },
+  {
+    term: "tokenization",
+    definition:
+      "Splitting text into the units a model reads, such as words or subword pieces, and mapping each to an integer id. Unknown words survive by breaking into pieces the model has already seen.",
+    aliases: ["tokenize", "tokenized", "tokenizing"],
+    scope: "global",
+  },
+  {
+    term: "cosine similarity",
+    definition:
+      "How closely two vectors point in the same direction, scored from -1 to 1. It ignores vector length, so it compares meaning rather than magnitude.",
+    scope: "global",
+  },
+  {
+    term: "one-hot encoding",
+    definition:
+      "Representing a category as a vector of zeros with a single 1 in the slot for that category. Every category sits the same distance from every other, so the encoding carries no notion of similarity.",
+    aliases: ["one-hot", "one hot"],
+    scope: "global",
+  },
+  {
+    term: "latent space",
+    definition:
+      "The compressed coordinate system a model files data under, where each item is a short list of numbers instead of raw pixels or text. Nearby points decode to similar outputs, which is what makes it navigable.",
+    aliases: ["latent", "latent vector"],
+    scope: "global",
+  },
+
+  // Generative models
+  {
+    term: "GAN",
+    definition:
+      "A generative adversarial network: a generator that invents samples and a discriminator that judges them, trained against each other. The generator improves by getting better at fooling its opponent.",
+    aliases: ["GANs", "generative adversarial network"],
+    scope: "global",
+  },
+  {
+    term: "diffusion",
+    definition:
+      "A generative method that trains a model to remove noise, then runs it repeatedly on pure noise until an image appears. Each step undoes a little of the noise the training process added.",
+    aliases: ["diffusion model", "denoising"],
+    scope: "global",
+  },
+
   // Signal processing (deep-orbit specific)
   {
     term: "fourier-transform",
@@ -505,7 +579,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     term: "windowing",
     definition:
       "Multiplying a signal segment by a tapering function before an FFT to reduce leakage from its edges.",
-    aliases: ["window"],
+    aliases: ["windowed", "window function"],
     scope: "deep-orbit",
   },
   {
@@ -588,7 +662,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "quantization",
     definition:
-      "Storing model weights at lower numeric precision, such as int8, to shrink size and speed up inference.",
+      "Storing model weights at lower numeric precision, such as int8, to shrink the model file. Whether inference also gets faster depends on the runtime: TensorFlow.js decodes quantized weights back to float at load, so the win there is download size, not speed.",
     aliases: ["quantize", "quantized"],
     scope: "global",
   },
@@ -597,6 +671,20 @@ export const GLOSSARY: GlossaryEntry[] = [
     definition:
       "Removing weights or neurons that contribute little, making a model smaller and faster.",
     aliases: ["prune", "pruned"],
+    scope: "global",
+  },
+  {
+    term: "distillation",
+    definition:
+      "Training a small model on a large model's outputs instead of on raw labels. The small model learns the big one's full score distribution, which carries more than the single right answer does.",
+    aliases: ["distill", "knowledge distillation"],
+    scope: "global",
+  },
+  {
+    term: "federated learning",
+    definition:
+      "Training one shared model across many devices without moving their data anywhere. Each device trains locally and sends back weight updates, which a server averages.",
+    aliases: ["federated", "federated averaging"],
     scope: "global",
   },
   {
@@ -630,7 +718,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "wasm",
     definition:
-      "WebAssembly, a fast low-level browser runtime TensorFlow.js can use when no GPU is available.",
+      "WebAssembly, a portable low-level bytecode format that runs at near-native speed. TensorFlow.js ships a WASM backend that runs tensor math on the CPU, in the browser or in Node, when no GPU is available.",
     aliases: ["WASM", "WebAssembly"],
     scope: "global",
   },

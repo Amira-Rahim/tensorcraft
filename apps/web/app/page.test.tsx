@@ -122,25 +122,12 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       );
     });
 
-    it("eyebrow carries the No Python differentiator instead of pipeline talk", () => {
+    it("subhead carries the Skip Python differentiator instead of pipeline talk", () => {
+      // 2026-08-19 (owner): the eyebrow, stat line, and trust line were cut
+      // from the hero; the differentiator now lives only in the subhead.
       const { container } = render(<LandingHero />);
-      expect(container.textContent).toMatch(/no python required/i);
+      expect(container.textContent).toMatch(/skip python/i);
       expect(container.textContent).not.toMatch(/pipeline/i);
-    });
-
-    it("renders the stat line (modules / lessons / deployable model)", () => {
-      render(<LandingHero />);
-      const stats = screen.getByTestId("hero-stat-line");
-      expect(stats.textContent).toMatch(/11 modules/i);
-      expect(stats.textContent).toMatch(/56 lessons/i);
-      expect(stats.textContent).toMatch(/1 deployable model/i);
-    });
-
-    it("renders the trust line under the CTAs", () => {
-      render(<LandingHero />);
-      const trust = screen.getByTestId("hero-trust-line");
-      expect(trust.textContent).toMatch(/no credit card/i);
-      expect(trust.textContent).toMatch(/no account for module 1/i);
     });
 
     it("mounts the live-demo proof panel", () => {
@@ -175,7 +162,11 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(
         screen.queryByRole("button", { name: /show bridges in/i }),
       ).toBeNull();
-      expect(screen.getByText(/your javascript/i)).toBeInTheDocument();
+      // Column label is "JAVASCRIPT" (was "YOUR JAVASCRIPT"): house
+      // vocabulary fixes the bridge callout labels as "JavaScript" opposite
+      // "Machine Learning", and packages/ui/src/mdx/bridge-callout.tsx uses
+      // exactly those. Anchored so the section h2 does not satisfy it.
+      expect(screen.getByText(/^javascript$/i)).toBeInTheDocument();
     });
 
     it("exposes exactly one bridge, no cycler (catalog is paid content)", () => {

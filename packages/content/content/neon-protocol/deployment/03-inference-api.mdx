@@ -34,12 +34,16 @@ keywords:
   - abstraction
 ---
 
+<Dialogue speaker="Noor">
+I already wrote model loading twice. Once in the dashboard, once in the scanner, and the second copy drifted: different input size, different threshold. Two copies of the same model answering differently is how we ship a false positive to a safe house.
+</Dialogue>
+
 <Dialogue speaker="Amir">
-Noor needs Sentinel on the dashboard. Dilan needs it on the mobile scanner. The district alert system needs it for automated patrols. I cannot copy-paste model loading code into three different apps. We need a single API contract that all three call.
+You need Sentinel on the dashboard. Dilan needs it on the mobile scanner. The district alert system needs it for automated patrols. I cannot copy-paste model loading code into three different apps. We need a single API contract that all three call.
 </Dialogue>
 
 <Dialogue speaker="NEON">
-A model is just another service, with worse error messages. Wrap it behind a typed contract and stop letting three different apps grope its internals.
+A model is just another service, with worse error messages. Wrap it behind a typed contract and stop letting three different apps reach into its internals.
 </Dialogue>
 
 A trained model is an implementation detail. The rest of your application should never know or care how predictions are made, only that they can call a function with data and get results back. This is the same abstraction principle behind every REST API you have ever consumed.
@@ -95,7 +99,7 @@ class SentinelAPI {
     this.ready = true;
   }
 
-  async predict(imageData: ImageData | HTMLCanvasElement): Promise<PredictionResult> {
+  async predict(imageData: ImageData | HTMLCanvasElement | tf.PixelData): Promise<PredictionResult> {
     if (!this.ready || !this.model) {
       throw new Error('SentinelAPI not initialized. Call init() first.');
     }
@@ -113,12 +117,9 @@ class SentinelAPI {
     });
   }
 
-  private preprocess(input: ImageData | HTMLCanvasElement): tf.Tensor4D {
-    const raw = input instanceof ImageData
-      ? tf.browser.fromPixels(input)
-      : tf.browser.fromPixels(input);
-
-    return raw
+  private preprocess(input: ImageData | HTMLCanvasElement | tf.PixelData): tf.Tensor4D {
+    // fromPixels takes ImageData, HTMLCanvasElement and PixelData directly
+    return tf.browser.fromPixels(input)
       .resizeBilinear(this.config.inputSize)
       .expandDims(0)
       .div(255.0) as tf.Tensor4D;
@@ -199,11 +200,15 @@ app.post('/api/predict', express.json({ limit: '5mb' }), async (req, res) => {
 
     const { imageData, width, height } = req.body;
 
-    // Reconstruct ImageData from serialized pixels
-    const pixels = new Uint8ClampedArray(imageData);
-    const imgData = new ImageData(pixels, width, height);
+    // Node has no ImageData constructor. tf.browser.fromPixels also accepts a
+    // plain PixelData object, which is all the preprocess step needs.
+    const frame: tf.PixelData = {
+      data: new Uint8Array(imageData),
+      width,
+      height
+    };
 
-    const result = await sentinel.predict(imgData);
+    const result = await sentinel.predict(frame);
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: 'Prediction failed' });

@@ -61,7 +61,7 @@ A tensor is a multi-dimensional array with opinions. The numbers sit in contiguo
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-`Float32Array` in JavaScript and `tf.tensor` in TensorFlow.js both store numbers in contiguous memory. The difference is that tensors know their **shape** and come with GPU-accelerated math operations.
+Shape is the piece you'll reach for most: it's what separates a `[2, 3]` matrix from the six numbers underneath it, and the first thing to check when an op refuses to run.
 
 <CodeBlock language="typescript" title="tensors-are-arrays.ts">
 {`import * as tf from '@tensorflow/tfjs';

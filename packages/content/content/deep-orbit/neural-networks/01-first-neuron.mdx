@@ -24,7 +24,7 @@ concept:
     tier: structural
     breaks: "reduce() walks elements one at a time and hands back a plain number you can log and forget. A neuron's weighted sum is one vectorized dot product over a tensor, and its weights and bias are not constants you wrote: they are parameters training will rewrite. The reduce() mental model stops at 'compute once'; a neuron exists to be adjusted."
 consequence:
-  narrative: "The single neuron can now distinguish between two types of signals. But Commander Mirza needs more. Much more."
+  narrative: "One neuron separates the two calibration tones. Nazari watches it hold, then asks what sixty-four channels would cost."
 hints:
   - level: nudge
     content: "A neuron is one computation: multiply each input by its weight, sum the products, and add the bias."
@@ -46,7 +46,7 @@ The calibration bench holds the ship's two reference tones, the cleanest labeled
 ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron. Think of it as a function that can adjust its own parameters, and we will teach it on the only labeled data we have: the calibration tones.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Initialize weights and bias for a simple classifier"]} />
+<LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for how much the input matters"]} />
 
 ## The Simplest Learning Machine
 

@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "GRID initiates the stress test. 'Simulating simultaneous sensor anomalies across 3 regions. 12,400 affected devices. Inference load increasing 400%.' Hassan watches the dashboard. 'This is where we find out if the system holds.'"
+  narrative: "GRID initiates the stress test. 'Simulating simultaneous sensor anomalies across 3 regions. 12,400 affected devices. Inference load at four times baseline.' Hassan watches the dashboard. 'This is where we find out if the system holds.'"
   speaker: "GRID"
 concept:
   explanation: "Scaling ML inference horizontally and vertically mirrors auto-scaling web servers: add more instances, or add more resources to existing ones."
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Edge: minWorkers: 2, maxWorkers: 8, targetLatency: 15ms"
     tier: identity
 consequence:
-  narrative: "Two workers become six within 30 seconds, and latency never crosses 18ms. Hassan exhales. 'Horizontal scaling held. The architecture works.'"
+  narrative: "Latency peaks at 26ms and the scaler adds one worker per cooldown until six are running. Four minutes in, latency is back to 13ms. Hassan exhales. 'Horizontal scaling held. The architecture works.'"
 hints:
   - level: nudge
     content: "Horizontal scaling adds more inference workers; vertical scaling adds more resources to each worker"
@@ -34,14 +34,16 @@ keywords:
 ---
 
 <Dialogue speaker="GRID">
-Stress test initiated. Simulating simultaneous sensor anomalies across Regions 1, 3, and 7. 12,400 devices reporting. Inference requests increasing 400% above baseline. Current latency: 14ms. Monitoring.
+Stress test initiated. Simulating simultaneous sensor anomalies across Regions 1, 3, and 7. 12,400 devices reporting. Inference requests at four times baseline. Current latency: 14ms. Monitoring.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 Everything fails eventually. The question is: does it fail well? If we cannot handle a 4x load spike, we have no business running critical infrastructure monitoring. Watch the latency.
 </Dialogue>
 
-A 400% request spike, and latency is holding at 14ms. That number is the whole game. Nobody watching the stress test cares how many workers are running or what the CPUs are doing; they care whether predictions still arrive inside the budget. So that is what the auto-scaler targets. The machinery is the auto-scaling you have configured for web servers (min and max instances, an orchestrator doing the arithmetic), pointed at prediction latency instead of CPU utilization. Latency climbs, workers spin up. Load drops, they drain.
+Requests at four times baseline, and latency is holding at 14ms. That number is the whole game. Nobody watching the stress test cares how many workers are running or what the CPUs are doing; they care whether predictions still arrive inside the budget. So that is what the auto-scaler targets. The machinery is web-server auto-scaling: a minimum and a maximum instance count, and an orchestrator doing the arithmetic between them. Point it at prediction latency instead of CPU utilization and nothing else about it changes. Latency climbs, workers spin up. Load drops, they drain.
+
+The other lever is vertical: keep one worker and give it a bigger machine, more RAM, more threads, a GPU. On a server you can pull either lever, and vertical is usually the lazier fix, since the code stays the same. On an edge device you cannot pull it at all. The board shipped with the RAM it has, so horizontal is the only direction left, and horizontal here means more devices rather than more instances.
 
 <LearningObjectives objectives={["Implement horizontal scaling for ML inference workers", "Build an auto-scaler that responds to latency thresholds", "Configure scale-up and scale-down policies with cooldown periods", "Compare horizontal vs vertical scaling tradeoffs for edge ML"]} />
 

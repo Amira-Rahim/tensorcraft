@@ -1,7 +1,7 @@
 slug: private-training
 lessonSlug: privacy-preservation
 title: "Apply Differential Privacy"
-instructions: "Write a function clipAndNoise that takes a gradients array (number[]), a clipNorm (number), and a noiseSigma (number). First clip: compute the L2 norm of gradients. If norm > clipNorm, scale all values by clipNorm/norm. Then add Gaussian noise: for each value, add noiseSigma * (Math.random() - 0.5) * 2. Return the resulting array."
+instructions: "Write a function clipAndNoise that takes a gradients array (number[]), a clipNorm (number), and a noiseSigma (number). First clip: compute the L2 norm of gradients. If norm > clipNorm, scale all values by clipNorm/norm. Then add noise: for each value, add noiseSigma * (Math.random() - 0.5) * 2. That draw is uniform rather than the Gaussian from the lesson, which keeps the noise bounded so the test can check the clipping step. Return the resulting array."
 starterCode: |
   function clipAndNoise(
     gradients: number[],

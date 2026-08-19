@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Samir tries to change just the color of a generated artwork without affecting the shape. The latent dimensions are tangled: moving one slider changes everything. Disentanglement is the solution."
+  narrative: "Rohan tries to change the rhythm of a generated soundscape without touching the melody. One knob moves and everything moves with it: the latent dimensions are tangled."
   speaker: "Rohan"
 concept:
   explanation: "Disentanglement means organizing a latent space so each dimension controls one independent factor of variation, like separating color from shape from texture."
@@ -38,7 +38,7 @@ I want to change the rhythm of this generated soundscape without affecting the m
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-What if we retrained me with a higher beta and swept dimension 7 again? When Rohan nudged it by half a unit just now, the rhythm shifted, and so did the melody, which neither of us asked for. My axes are tangled, and I'd like to know whether that's permanent.
+When Rohan nudged dimension 7 by half a unit just now, the rhythm shifted, and so did the melody, which neither of us asked for. My axes are tangled. I don't know yet whether that's something retraining can fix or something my architecture guarantees.
 </Dialogue>
 
 In React, a well-designed component has independent props: `size` does not affect `color`, and `disabled` does not change `variant`. Each prop controls exactly one aspect. A disentangled latent space has the same property: each dimension controls one independent factor of variation.
@@ -143,7 +143,7 @@ function controlsToLatent(controls: ArtControls): number[] {
 - **MIG** (Mutual Information Gap): MI between top-2 latent dims for each factor; penalizes spread across many dims.
 - **β-VAE metric:** classifier accuracy on a fixed-factor batch.
 
-**Locatello et al. 2019:** showed empirically that disentanglement without inductive bias is impossible. β-VAE, FactorVAE, TCVAE all produce LOOK-disentangled latents on toy data but fail to generalize to real data without explicit factor labels.
+**Locatello et al. 2019:** proved that unsupervised disentanglement is impossible without inductive biases on both the model and the data, then trained 12,000 models to see what that costs in practice. β-VAE, FactorVAE and TCVAE all produce latents that look disentangled on toy datasets, but which run you get depends more on the random seed than on the hyperparameters, and without factor labels you cannot pick the good run.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Disentanglement means each latent dimension controls one independent factor", "Map each kiosk slider to a single latent index and hold the remaining dimensions at 0", "Test disentanglement by sweeping one dimension while fixing the rest", "Disentangled spaces make slider controls predictable for end users"]} />

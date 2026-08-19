@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "'Patient denied chest pain' versus 'Patient reported chest pain': in clinical text, word order can reverse the meaning of a finding."
+  narrative: "'Patient denied chest pain' versus 'Patient reported chest pain': in clinical text one word reverses a finding, and word order decides which symptom it attaches to."
   speaker: "Dr. Karimi"
 concept:
   explanation: "Word order changes meaning, and bag-of-words throws order away. Sequence models process tokens in order, preserving the positional context that separates 'denied chest pain' from 'reported chest pain'."
@@ -22,11 +22,11 @@ consequence:
   narrative: "Karimi pins the two sentences side by side above Imran's desk: denied chest pain, reported chest pain. Until the model can tell them apart, they stay up there."
 hints:
   - level: nudge
-    content: "Compare the bag-of-words vectors for 'denied pain' and 'not in pain': they lose the negation."
+    content: "Write the bag-of-words vector for 'patient denied chest pain' and for 'patient pain denied chest'. Same vector. Opposite note."
   - level: guidance
     content: "Create sequences preserving token order: [denied, pain] vs [reported, pain] are different sequences even if they share words."
   - level: solution
-    content: "Use tf.tensor for ordered sequences: tf.tensor([vocabId['denied'], vocabId['pain']]) vs tf.tensor([vocabId['reported'], vocabId['pain']])"
+    content: "Keep the positions: tf.tensor1d([vocab.get('denied'), vocab.get('pain')], 'int32') and tf.tensor1d([vocab.get('reported'), vocab.get('pain')], 'int32') differ at index 0."
 keywords:
   - sequence
   - word-order
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-Listen carefully. "Patient denied chest pain" and "Patient reported chest pain." Same words, different order, opposite meaning. If our system gets this wrong, someone could die.
+Listen carefully. "Patient denied chest pain" and "Patient reported chest pain." One word apart, opposite finding. If our system gets this wrong, someone could die.
 </Dialogue>
 
 <Dialogue speaker="Imran">
@@ -44,11 +44,11 @@ It's like async code. `await validate(); await save();` is completely different 
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-And unlike your code, no compiler ever rejects the wrong order. Clinical notes are full of these traps. "No fever, but reports nausea": the meaning flips mid-sentence.
+And unlike your code, no compiler ever rejects the wrong order. "No fever, but reports nausea." Swap two words and you get "No nausea, but reports fever": same five words, opposite chart.
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Alert: current bag-of-words model cannot distinguish "denied chest pain" from "reported chest pain." Both contain the same unigrams.
+Alert: current bag-of-words model produces an identical vector for "denied chest pain, reported shortness of breath" and "reported chest pain, denied shortness of breath." The two notes have opposite clinical content.
 </Dialogue>
 
 Strip the order out of a sentence and you strip out part of its meaning. A bag-of-words model does exactly that. "No fever, but reports nausea" becomes an unordered pile of tokens, and nothing records whether the negation landed on the fever or the nausea. You already manage this constraint in async code, where `fetch` then `render` produces a different application state than `render` then `fetch`. In clinical text, the same inversion changes the medical record.
@@ -64,10 +64,10 @@ Strip the order out of a sentence and you strip out part of its meaning. A bag-o
 <CodeBlock language="typescript" title="order-matters.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// These two sentences share the same words
-// but have opposite meanings
+// A and B differ by one word. C is A's words in a different order.
 const sentenceA = 'patient denied chest pain';
 const sentenceB = 'patient reported chest pain';
+const sentenceC = 'patient pain denied chest';
 
 // Bag-of-words: loses order, can't distinguish negation
 const vocab = new Map([
@@ -84,9 +84,10 @@ function toBow(text: string): number[] {
   return bow;
 }
 
-// "no pain" and "pain" both have bow_pain = 1
+// Counts only, no positions: reorder the words and nothing changes
 console.log('BoW A:', toBow(sentenceA)); // [1, 1, 0, 1, 1, 0, 0]
 console.log('BoW B:', toBow(sentenceB)); // [1, 0, 1, 1, 1, 0, 0]
+console.log('BoW C:', toBow(sentenceC)); // [1, 1, 0, 1, 1, 0, 0]  same as A
 
 // Sequence representation: preserves order
 function toSequence(text: string): number[] {
@@ -95,8 +96,10 @@ function toSequence(text: string): number[] {
 
 const seqA = toSequence(sentenceA); // [0, 1, 3, 4]
 const seqB = toSequence(sentenceB); // [0, 2, 3, 4]
+const seqC = toSequence(sentenceC); // [0, 4, 1, 3]
 console.log('Seq A:', seqA); // Position 1 is "denied" (1)
 console.log('Seq B:', seqB); // Position 1 is "reported" (2)
+console.log('Seq C:', seqC); // shares A's BoW, not A's sequence
 
 // As tensors, ready for a sequence model
 const tensorA = tf.tensor1d(seqA, 'int32');
@@ -137,7 +140,7 @@ const dangerousPairs = [
 ## From Bag to Sequence
 
 <Dialogue speaker="Vikram">
-Think of it this way. A bag-of-words is like dumping all your async calls into Promise.all: you lose the ordering. A sequence model is like an async/await chain, where each step depends on what came before.
+Think of it this way. A bag-of-words is `Promise.all`: the work all happens, but nothing downstream can tell you which call ran first or which one depended on which. A sequence model is the await chain, where step two literally receives what step one produced.
 </Dialogue>
 
 <CodeBlock language="typescript" title="sequence-representation.ts">
@@ -212,4 +215,4 @@ Without positional encoding, a transformer treats "not good" and "good not" iden
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Word order determines meaning: 'denied pain' is the opposite of 'reported pain'", "Bag-of-words fails on negation, temporal phrases, and conditionals", "Sequence representations preserve token positions for order-aware processing", "Execution order in async code maps directly to token order in sequences"]} />
+<KeyTakeaways takeaways={["A bag-of-words vector counts words and drops their positions, so reordering a note leaves the vector unchanged", "Bag-of-words fails on negation, temporal phrases, and conditionals", "Sequence representations preserve token positions for order-aware processing", "Execution order in async code maps directly to token order in sequences"]} />

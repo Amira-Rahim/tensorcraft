@@ -1,7 +1,7 @@
 slug: forecast-signal
 lessonSlug: forecasting
 title: "Multi-Step Forecast"
-instructions: "Write a function that generates a multi-step forecast. Given a prediction function (that takes the last N values and returns the next value), a seed array of historical values, and a horizon (number of steps to predict), generate the forecast by feeding each prediction back as input."
+instructions: "Write a function that generates a multi-step forecast. Given a prediction function (that takes a window of values and returns the next value), a seed array of historical values, a window size, and a horizon (number of steps to predict), generate the forecast by feeding each prediction back as input. Every call to the prediction function must receive exactly windowSize values, not the whole history."
 starterCode: |
   function forecast(
     predictNext: (window: number[]) => number,

@@ -42,7 +42,7 @@ The generator is a student artist. The discriminator is a harsh critic. The stud
 So you'd split me in two. One half forges, one half audits the forgeries. For the first few epochs the auditor wins almost every round, my fakes get caught 95 times out of 100. What interests me is what happens when it drops to a coin flip.
 </Dialogue>
 
-If you have ever used a fuzzer in testing (a tool that generates random inputs to find bugs in a validator), you already understand the GAN architecture. The fuzzer (generator) creates inputs. The validator (discriminator) judges them. Each one trains on the other's failures.
+If you have ever pointed a fuzzer at an endpoint (a tool that fires generated inputs at your code until something breaks), you have already watched half of a GAN run. The fuzzer is the generator. The validator on the other end is the discriminator. Each one trains on the other's failures.
 
 <LearningObjectives objectives={["Understand how adversarial training works in a GAN", "Identify the roles of generator and discriminator", "Connect fuzzer/validator testing patterns to GAN architecture", "Describe the minimax game that drives GAN training"]} />
 
@@ -84,7 +84,8 @@ GANs are formalized as a minimax game. The discriminator wants to maximize its a
 <CodeBlock language="typescript" title="minimax.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Simplified GAN training step (pseudocode)
+// The shape of one GAN training step: two label sets, in this order.
+// The training calls that consume them arrive in lesson 4.
 async function ganTrainStep(
   generator: tf.LayersModel,
   discriminator: tf.LayersModel,

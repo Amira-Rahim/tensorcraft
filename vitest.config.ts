@@ -7,7 +7,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./vitest.setup.ts"],
+    // Absolute on purpose: a relative "./vitest.setup.ts" resolves against
+    // the INVOKING directory, so running vitest from inside a package (e.g.
+    // packages/content) failed with "Cannot find module vitest.setup.ts"
+    // and silently blinded the prose gates for package-local runs.
+    setupFiles: [path.resolve(__dirname, "vitest.setup.ts")],
     include: ["**/*.test.{ts,tsx}"],
     exclude: ["**/node_modules/**", ".next", "dist", "e2e"],
     coverage: {

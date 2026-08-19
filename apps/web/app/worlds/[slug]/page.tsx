@@ -32,7 +32,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: isComingSoon(slug)
       ? `${world.displayName}: Coming Soon | Tensorcraft`
       : `${world.displayName}: Module Map | Tensorcraft`,
-    description: world.description,
+    // The launched world's search snippet must parse with zero story
+    // context (owner bar, 2026-08-16); the manifest description is the
+    // story hook and stays on the coming-soon page pending a ruling.
+    description: isComingSoon(slug)
+      ? world.description
+      : `${world.displayName} is a story-driven machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Module 1 is free.`,
     alternates: { canonical: `https://tensorcraft.app/worlds/${slug}` },
     // Full openGraph + twitter blocks: an images-only openGraph REPLACES the
     // root block (shallow merge), dropping og:url/type and inheriting the
@@ -192,10 +197,9 @@ export default async function WorldDetailPage({ params }: Props) {
         estimatedMinutes: getLessonTotalMinutes(lesson),
         difficulty: lesson.difficulty,
         status: lessonStatus,
-        sceneLocation: lesson.scene?.location,
-        narrative: lesson.context?.narrative,
-        bridgeJs: lesson.concept?.bridge?.jsTitle,
-        bridgeMl: lesson.concept?.bridge?.mlTitle,
+        // scene location, narrative and bridge titles are deliberately NOT
+        // sent: the map is a pre-lesson surface, so story text must not
+        // render or ship in its payload (pre-lesson copy audit 2026-08-19).
       };
     });
 
@@ -323,17 +327,17 @@ export default async function WorldDetailPage({ params }: Props) {
         </h1>
         <p className="text-sm" style={{ color: "var(--tc-muted)" }}>
           {worldModules.length} modules between your JavaScript and a deployed
-          model. Pick up where you left off.
+          model.
         </p>
 
         <div className="flex gap-8 mt-6">
           {[
             [String(completedModuleCount), "Completed"],
             [
-              activeModuleIndex >= 0 ? String(activeModuleIndex + 1) : "–",
+              activeModuleIndex >= 0 ? String(activeModuleIndex + 1) : "0",
               "Active Now",
             ],
-            [allScores.length > 0 ? String(avgScore) : "–", "Avg Score"],
+            [allScores.length > 0 ? String(avgScore) : "0", "Avg Score"],
           ].map(([value, label]) => (
             <div key={label}>
               <div
@@ -416,10 +420,6 @@ export default async function WorldDetailPage({ params }: Props) {
         <ModuleMapClient
           modules={moduleMapItems}
           worldSlug={slug}
-          terminology={{
-            lesson: world.terminology.lesson,
-            module: world.terminology.module,
-          }}
           continueHref={continueHref}
           continueLabel={continueLabel}
           unlockHref={!hasPurchased && user ? "/paywall" : undefined}

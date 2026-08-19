@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Hassan runs the worst-case scenario. 'Central coordination goes down. Regions lose contact with each other. What happens to 12,400 edge devices running ML inference autonomously? We need a disaster recovery plan that covers every failure mode.'"
+  narrative: "Hassan schedules the drill for 0400 and does not tell the on-call it is a drill. 'Twenty minutes with no central coordination. I want to know what 12,400 devices do when nobody is answering them, and I want it written down before we launch.'"
   speaker: "Hassan Al-Rashid"
 concept:
   explanation: "Disaster recovery for ML systems plans for catastrophic failures, with the same backup and restore procedures you implement for web application databases and infrastructure."
@@ -42,7 +42,7 @@ Worst case: the central coordinator goes offline during a cascading anomaly even
 Same as any infrastructure disaster recovery plan. Define the failure modes, set recovery time objectives, test the recovery procedures. The only difference is we're recovering ML models and inference state, not just database backups.
 </Dialogue>
 
-You have written disaster recovery plans for web applications: database backups every 6 hours, cross-region replication, failover DNS, RTO of 15 minutes. Carry the framework over, but do not trust the restore semantics. `pg_restore` returns the database bit-for-bit. Restoring a model means restoring the weights plus the data version, training code, seeds, and framework version that produced them. Lose any one of those and you have a checkpoint you can run but never reproduce, which means you can never retrain your way out of its bugs.
+A web DR plan comes down to four numbers: backup interval, replication lag, failover target, RTO. Carry the framework over, but do not trust the restore semantics. `pg_restore` returns the database bit-for-bit. Restoring a model means restoring the weights plus the data version, training code, seeds, and framework version that produced them. Lose any one of those and you have a checkpoint you can run but never reproduce, which means you can never retrain your way out of its bugs.
 
 <LearningObjectives objectives={["Design a disaster recovery plan for edge ML infrastructure", "Define Recovery Time Objectives (RTO) and Recovery Point Objectives (RPO) for ML components", "Implement model checkpointing and state recovery procedures", "Test recovery procedures against simulated failure scenarios"]} />
 

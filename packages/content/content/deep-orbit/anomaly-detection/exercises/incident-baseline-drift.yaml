@@ -12,7 +12,7 @@ instructions: |
       action: 'update-baseline' | 'investigate-real-anomaly' | 'no-action',
     }
 
-  Action: 'update-baseline' if driftMagnitude < 0.5 (gradual drift); 'investigate-real-anomaly' if driftMagnitude > 1.0 (suspect a real event); 'no-action' otherwise.
+  Action: 'update-baseline' if driftMagnitude < 0.5 (gradual drift, safe to roll forward); 'investigate-real-anomaly' if driftMagnitude > 1.0 (the world moved too far, too fast, to be drift); 'no-action' in between, where the shift is too big to absorb silently and too small to call an event: the baseline stays as it is and the window stays under watch.
 starterCode: |
   function recomputeBaseline(recentNormalData, currentBaseline) {
     // Concept: when the world drifts, recompute the baseline from recent

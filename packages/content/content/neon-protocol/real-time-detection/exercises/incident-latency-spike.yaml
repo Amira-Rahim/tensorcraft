@@ -3,7 +3,7 @@ lessonSlug: performance-budgets
 title: "Incident: Inference Latency Doubled Overnight"
 mlContent: systems
 instructions: |
-  PAGER: p95 inference latency went from 25ms to 62ms after a model update. Build `pinpointRegression(currentTimings, baselineTimings)` returning:
+  PAGER: p95 inference latency went from 25ms to 62ms after a model update. The pager watches p95; you will localise the regression on medians, which are stabler across the handful of samples you have. Build `pinpointRegression(currentTimings, baselineTimings)` returning:
 
     {
       worstStage: string,            // stage name with largest absolute regression

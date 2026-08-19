@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Terms of Service | Tensorcraft",
   description:
-    "Read the Tensorcraft Terms of Service covering account use, one-time world purchases, refunds, intellectual property, and acceptable use.",
+    "Read the Tensorcraft Terms of Service covering account use, one-time course purchases, refunds, intellectual property, and acceptable use.",
   alternates: { canonical: "https://tensorcraft.app/terms" },
   openGraph: {
     type: "article",

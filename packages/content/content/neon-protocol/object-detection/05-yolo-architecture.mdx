@@ -17,9 +17,9 @@ concept:
     mlTitle: "YOLO Single-Shot Detection"
     mlCode: "const allDetections = model.predict(image); // one pass, all objects"
     tier: structural
-    breaks: "Single-pass rendering produces final HTML in one server pass. YOLO does single-shot detection in one forward pass but pays for it with anchor-grid design choices, multi-scale prediction heads, and harder training compared to two-stage detectors."
+    breaks: "Batching every DOM write into one frame costs nothing but the discipline of collecting them first. YOLO's single pass is bought: the grid and anchor shapes are fixed before training, small or overlapping objects fall between cells, and the multi-scale heads that patch that make it harder to train than a two-stage detector. One pass is the constraint it is designed around, not a tidier way to do the same work."
 consequence:
-  narrative: "Twenty-four frames per second. On Noor's laptop, in a web worker with WebGL acceleration, the browser-based detector chews through drone footage faster than the drones change course. NEON watches the feed. 'For the first time, you see them before they see you. Meridian will not expect detection coming from a browser tab.' Dilan smiles. 'Put it on every feed we have.'"
+  narrative: "Sixty-eight milliseconds a frame, down from 1.9 seconds. On Noor's laptop, in a web worker on the WebGL backend, the detector chews through archived drone footage faster than the drones in it changed course. NEON watches the feed. 'Twenty-eight times faster than your last run, and still a recording. Live video will not wait for you.' Dilan smiles. 'Put it on every feed we have.'"
 hints:
   - level: nudge
     content: "YOLO divides the image into a grid and predicts boxes, confidence, and class probabilities at each cell"
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Traditional detection was two stages. First, propose regions. Then, classify each one. Slow. Accurate, but slow. Then YOLO came along and said: why not do it all at once? One neural network. One forward pass. Every box, every label, every confidence score, all predicted simultaneously. Like the difference between re-rendering your entire component tree in multiple layout passes versus batching everything into a single requestAnimationFrame callback.
+Traditional detection ran in two stages: propose regions, then classify each one. Accurate, but nobody could run it live. Then YOLO asked why not do both at once. One network, one forward pass, every box and label and confidence score predicted together. It is the difference between re-rendering your component tree across multiple layout passes and batching everything into a single requestAnimationFrame callback.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -202,14 +202,17 @@ function detectObjects(
 ): DecodedDetection[] {
   // Step 1: Forward pass (single-shot: one pass, all predictions)
   // Like requestAnimationFrame: batch everything into one call
-  const rawOutput = model.predict(imageData);
+  // model is a tf.LayersModel loaded before this call; arraySync()
+  // pulls its output tensor back into nested arrays the decoder indexes
+  const output = model.predict(tf.tensor4d([imageData])) as tf.Tensor;
+  const rawOutput = output.squeeze().arraySync() as number[][][];
 
   // Step 2: Decode raw output into bounding boxes
   // Like JSON.parse(), converting wire format to usable objects
   const decoded = decodeYOLOOutput(rawOutput, config);
 
-  // Step 3: Confidence threshold (filter low-quality detections)
-  // Like filtering events by relevance
+  // Step 3: Tighten the confidence bar (the decoder only dropped
+  // everything under 0.25, which still leaves plenty of noise)
   const confident = decoded.filter(d => d.confidence > 0.5);
 
   // Step 4: Non-Max Suppression (remove duplicates)
@@ -233,13 +236,13 @@ function detectObjects(
 
 ## Challenge
 
-Build a YOLO output decoder that converts grid predictions into bounding boxes.
+Build the YOLO detection head, then decode its raw output into boxes, objectness, and class scores.
 
-<Exercise slug="yolo-detect" />
+<Exercise slug="build-yolo-head" />
 
 ## On-Call Scenario
 
-An adversarial patch on a stop sign caused the detector to classify it as a yield sign. Build a detector for confidence anomalies that signal adversarial input.
+Someone taped a printed pattern to a stop sign and the detector read it as a yield sign. A pattern designed to push a model's scores toward the wrong class is an adversarial patch. Build the check that flags one: start with the confidence anomalies a patched input leaves behind.
 
 <Exercise slug="incident-adversarial-patch" />
 

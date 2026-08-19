@@ -16,12 +16,12 @@ context:
 concept:
   explanation: "Windowing tapers a slice's edges to zero before the FFT, so the transform never mistakes your cut for a cliff in the signal."
   bridge:
-    jsTitle: "Virtual Scrolling"
-    jsCode: "// Render only items in viewport, fade edges smoothly"
+    jsTitle: "StringDecoder"
+    jsCode: "decoder.write(chunk) // a character split across chunks is held back, not mangled"
     mlTitle: "Windowing"
     mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
     tier: structural
-    breaks: "Virtual scrolling renders only the visible viewport; off-screen DOM is not computed at all. Signal windowing computes overlapping FFTs over the entire signal at every position, with overlap ratio (50-75%) tunable to trade smoother time coverage against compute; frequency resolution is set by window length, not overlap. Compute scales with signal-length × overlap, not viewport size."
+    breaks: "The decoder's fix is lossless: the bytes it holds back arrive intact with the next chunk, and the decoded text is what a single read would have produced. A taper cannot promise that. It attenuates real samples at both edges, trading false frequencies for a wider, blurrier peak, and the only way to recover the discarded edge energy is to overlap the windows (50-75%) so every sample sits mid-window somewhere. Chunk size costs a decoder nothing either; window length is what sets your frequency resolution."
 consequence:
   narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
 hints:
@@ -36,7 +36,7 @@ keywords:
   - hann
   - spectral-leakage
   - overlap
-  - virtual-scrolling
+  - chunk-boundaries
 skillAxes: [data_prep]
 ---
 
@@ -52,7 +52,7 @@ Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges 
 Before you fix it: the dashboard filed two anomaly reports overnight against frequencies that do not exist. I spent eighty minutes standing down phantom contacts. Fix the edges before the next archive replay.
 </Dialogue>
 
-The smear has already cost the mission something countable. Demir's instinct wasn't wrong by browser rules: virtual scrolling hard-cuts the viewport constantly and nothing breaks. But pixels you cut just stay off-screen; samples you cut have mathematical consequences. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is (false) frequency content. The part of his analogy that survives is the fix: taper the boundary smoothly, the way you'd fade items at the edge of a scroll viewport, so the transform never sees a cliff.
+The smear has already cost the mission something countable. Cut a byte stream at an arbitrary offset and a multi-byte character splits in half, and decoding that chunk on its own produces a replacement character that was in nobody's data. Node ships `StringDecoder` for exactly that: it holds the split bytes back until the rest of the character arrives. Samples cut the same way behave worse. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is false frequency content. The fix has the decoder's shape: handle the boundary instead of cutting through it. Taper the edges to zero and the transform never sees a cliff.
 
 <LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
@@ -92,7 +92,7 @@ console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from
 
 <CodeBlock language="typescript" title="window-functions.ts">
 {`// A window function smoothly tapers the signal to zero at the edges
-// Like CSS opacity fading at the edges of a virtual scroll viewport
+// The slice ends where it started, at zero, so the cut is never a cliff
 
 // Hann window: the most common choice (good all-around)
 function hannWindow(n: number): number[] {
@@ -102,7 +102,7 @@ function hannWindow(n: number): number[] {
 }
 
 // Hamming window: main lobe as narrow as Hann's or slightly narrower,
-// and a lower FIRST sidelobe (about -45 dB vs Hann's -31), but its far
+// and a lower FIRST sidelobe (about -43 dB vs Hann's -31), but its far
 // sidelobes decay at only ~-6 dB/octave vs Hann's ~-18: much worse
 // far-field leakage. Pick it for close-in resolution, not cleanliness.
 function hammingWindow(n: number): number[] {
@@ -146,7 +146,7 @@ Windowing tapers the signal to zero at the edges, which means you lose informati
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
 // With 50% overlap: every sample is fully weighted in at least one window
-// Like virtual scrolling with overscan: rendering extra items beyond the viewport
+// Overlap so every sample sits mid-window somewhere, never only at an edge
 
 function stftWithWindowing(
   signal: number[],
@@ -214,7 +214,7 @@ For real-time inference: smaller hop = lower latency between input and STFT avai
     "Windowing functions such as Hann and Hamming taper signal edges to zero before the FFT, suppressing leakage. The tradeoff is a slight widening of the main lobe, reducing frequency resolution.",
     "Overlapping windows (typically 50% hop) ensure that every sample contributes with full weight in at least one window, compensating for the energy lost at tapered edges."
   ]}
-  bridge="Virtual scrolling hard-cuts DOM rendering at the viewport boundary with no consequence because off-screen pixels are simply not rendered. Signal windowing cannot hard-cut because the FFT treats the slice as periodic, so an abrupt edge becomes real frequency content. The fix, tapering the edge smoothly, is analogous to fading items at the scroll viewport boundary."
+  bridge="Cutting a byte stream mid-character decodes to a replacement character that was never in the data, which is why `StringDecoder` holds the split bytes back. Cutting a signal mid-cycle produces frequencies that were never in the signal, and the fix is a taper: the decoder's boundary fix is lossless, the taper's is a trade."
   youCanNow="Apply a Hann window to a signal slice before computing the FFT, choose an appropriate overlap ratio, and explain why windowing reduces spectral leakage."
 />
 

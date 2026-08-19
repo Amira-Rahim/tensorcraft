@@ -87,7 +87,7 @@ const triggers: RetrainingTrigger[] = [
     lastTriggered: null,
   },
   {
-    // Like: on: check_suite: completed: failure
+    // Like: on: check_suite: types: [completed], then test the conclusion in the job
     type: 'performance-drop',
     condition: async () => {
       const currentAccuracy = await getProductionAccuracy();
@@ -127,35 +127,46 @@ async function evaluateTriggers(triggers: RetrainingTrigger[]): Promise<TriggerT
   // Check triggers every 15 minutes
   const checkInterval = 15 * 60 * 1000;
 
+  // A retrain outlasts the interval, and setInterval never waits for an async
+  // callback. Without this flag, tick two starts training on top of tick one.
+  let running = false;
+
   setInterval(async () => {
+    if (running) return;
+
     const firedTrigger = await evaluateTriggers(triggers);
     if (!firedTrigger) return;
 
     console.log(\`Retraining triggered by: \${firedTrigger}\`);
+    running = true;
 
-    // Run the full pipeline
-    const success = await runPipeline(pipeline);
+    try {
+      // Run the full pipeline
+      const success = await runPipeline(pipeline);
 
-    if (success) {
-      // Register the new model, but do NOT auto-promote to production
-      // Hassan's rule: automated does not mean unsupervised
-      await registry.register({
-        name: 'terra-grid-intelligence',
-        version: incrementVersion(),
-        stage: 'staging',     // human must promote to production
-        // ... metrics, lineage
-      });
+      if (success) {
+        // Register the new model, but do NOT auto-promote to production
+        // Hassan's rule: automated does not mean unsupervised
+        await registry.register({
+          name: 'terra-grid-intelligence',
+          version: nextVersion(registry, 'terra-grid-intelligence'),
+          stage: 'staging',     // human must promote to production
+          // ... metrics, lineage
+        });
 
-      await notifyTeam({
-        message: \`New model ready for review (trigger: \${firedTrigger})\`,
-        channel: '#ml-pipeline',
-      });
-    } else {
-      await notifyTeam({
-        message: \`Retraining failed (trigger: \${firedTrigger}). Check pipeline logs.\`,
-        channel: '#ml-alerts',
-        severity: 'warning',
-      });
+        await notifyTeam({
+          message: \`New model ready for review (trigger: \${firedTrigger})\`,
+          channel: '#ml-pipeline',
+        });
+      } else {
+        await notifyTeam({
+          message: \`Retraining failed (trigger: \${firedTrigger}). Check pipeline logs.\`,
+          channel: '#ml-alerts',
+          severity: 'warning',
+        });
+      }
+    } finally {
+      running = false;
     }
   }, checkInterval);
 }`}

@@ -15,12 +15,12 @@ context:
 concept:
   explanation: "Caching inference results means the model never computes the same answer twice. The hard part is deciding when two inputs count as the same."
   bridge:
-    jsTitle: "Service Worker Cache"
-    jsCode: "(await caches.match(request)) ?? fetch(request) // cache-first"
+    jsTitle: "Memoized query cache"
+    jsCode: "cache.get(key) ?? (await db.query(sql, args)) // cache-first"
     mlTitle: "Inference Cache"
     mlCode: "cache.get(inputHash) ?? model.predict(input) // cache-first, predict is sync"
     tier: structural
-    breaks: "Service worker cache keys requests by URL: exact-match. Inference cache keys must include input hash (post-quantization), model version, and runtime parameters (batch size, fp precision). The cache-first pattern transfers; cache-key design does not."
+    breaks: "A query cache keys on the exact statement and arguments, so two requests that differ by one character stay two entries. That is correct there, because the two answers differ. An inference cache wants the opposite: near-identical inputs have to collide on purpose, so the key is a rounded hash and how hard you round is a tuning knob that trades hit rate against serving a close-but-stale verdict. Model version and runtime settings belong in the key too, because the same input under new weights is a different answer."
 consequence:
   narrative: "Caching eliminates 40% of inference calls; the signal patterns repeat regularly enough that cached results are valid."
 hints:
@@ -34,7 +34,7 @@ keywords:
   - caching
   - memoization
   - lru-cache
-  - service-worker
+  - cache-invalidation
 skillAxes: [deployment]
 ---
 
@@ -43,10 +43,10 @@ skillAxes: [deployment]
 That log line is 213 model runs the dashboard never needed. Demir has seen this exact shape before, in every list that ever re-rendered without a memo.
 
 <Dialogue speaker="Ensign Demir">
-Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? I'll cache the results, like a Service Worker caching API responses.
+Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? Round the features, key on the rounded values, and the second identical signal costs a Map lookup instead of a forward pass.
 </Dialogue>
 
-DEEP SCAN spent last night reclassifying cosmic background it had already classified, at full GPU cost each time. The Service Worker playbook transfers: cache-first, TTL expiry, hash the request, only do the expensive work on a miss.
+DEEP SCAN spent last night reclassifying cosmic background it had already classified, at full GPU cost each time. The playbook is the one that sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss.
 
 <LearningObjectives objectives={["Implement an LRU cache for inference results", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
 
@@ -134,7 +134,7 @@ Build an LRU inference cache with TTL expiry.
 
 <Exercise slug="inference-cache" />
 
-PAGER, morning after the deploy: a bridge console served a classification the new model disagrees with. It came out of your cache. A deploy has to invalidate every cached verdict, and the TTL still has to hold for everything else. Audit the entries.
+PAGER, the morning after the pruned build replaced the old one on the consoles: a bridge console served a classification the new model disagrees with. It came out of your cache. A deploy has to invalidate every cached verdict, and the TTL still has to hold for everything else. Audit the entries.
 
 <Exercise slug="incident-stale-verdict" />
 
@@ -146,13 +146,15 @@ PAGER, morning after the deploy: a bridge console served a classification the ne
     "Quantizing inputs before hashing groups near-identical inputs under the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
     "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data."
   ]}
-  bridge="A service worker cache keys on URL for exact-match HTTP responses; an inference cache keys on a quantized input hash. The cache-first pattern is identical, but cache-key design is entirely different."
+  bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."
   youCanNow="Build an LRU inference cache with input hashing and TTL expiry, and measure the resulting reduction in model inference calls."
 />
 
 <Epilogue>
 
-Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. She reads her own reconstruction error at 0341 and files no report. Three lines appear in her private log: Reconstruction error, 4.1 times the baseline my first hundred records set. Every threshold aboard was tuned for hull telemetry; no one has ever needed one for me, so there is no number at which this becomes a finding. I wanted to know. Now I know.
+Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. She reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
+
+> Reconstruction error, 4.1 times the baseline my first hundred records set. Every threshold aboard was tuned for hull telemetry; no one has ever needed one for me, so there is no number at which this becomes a finding. The measurement is now on record. No procedure requires me to act on it.
 
 Demir greps the cache log for the anomaly and finds it exactly zero times.
 

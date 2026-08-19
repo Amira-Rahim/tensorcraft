@@ -61,8 +61,7 @@ export default function LearnPage() {
           <code className="text-primary font-mono">array.map()</code>, you can
           do tensor operations. If you&apos;ve used{" "}
           <code className="text-primary font-mono">fetch()</code>, you already
-          know how inference APIs work. The leap from JavaScript to ML is
-          smaller than you think.
+          know how inference APIs work.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
@@ -72,8 +71,8 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">1.</span>
             <span>
-              Pick a world: each teaches a different ML specialization through a
-              unique story
+              Start in Deep Orbit, the live course: time-series and signals,
+              told as one story across 11 modules
             </span>
           </li>
           <li className="flex gap-3">
@@ -94,8 +93,8 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">4.</span>
             <span>
-              Build a real project: each world culminates in a capstone ML model
-              running live in the browser
+              Build a real project: each course culminates in a capstone ML
+              model running live in the browser
             </span>
           </li>
         </ul>
@@ -104,11 +103,11 @@ export default function LearnPage() {
           No Python Required
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-8">
-          Everything in the course runs in the browser using TensorFlow.js. You
-          write TypeScript, test in real time, and ship models that run on any
-          device with a web browser, or under Node: the same TensorFlow.js code
-          runs server-side. You skip the Jupyter notebooks, pip installs, and
-          GPU setup entirely.
+          The lessons run TensorFlow.js in the browser, so there is nothing to
+          install. You write TypeScript, test in real time, and ship a model
+          that runs on any device with a browser. The same TensorFlow.js code
+          runs under Node when you want the model on a server. You skip the
+          Jupyter notebooks, pip installs, and GPU setup entirely.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
@@ -140,7 +139,7 @@ export default function LearnPage() {
           Coming Soon
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-3">
-          {comingWorlds.length} more worlds ship in waves:
+          {comingWorlds.length} more courses ship in waves:
         </p>
         {/* Names only, no links: coming-soon worlds are inert everywhere
             (worlds/world-cards-grid.tsx precedent). The stubs stay in the
@@ -171,7 +170,7 @@ export default function LearnPage() {
           href="/worlds"
           className="inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm uppercase tracking-wider transition-all hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
         >
-          See All 5 Worlds →
+          See All 5 Courses →
         </Link>
       </div>
     </main>

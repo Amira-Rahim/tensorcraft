@@ -9,7 +9,7 @@ import {
 export const metadata: Metadata = {
   title: "About Tensorcraft | Why this course exists",
   description:
-    "Why Tensorcraft was built, the bridge-tier method, and what we deliberately left out.",
+    "Why Tensorcraft was built, how it maps ML onto JavaScript, and what we deliberately left out.",
   alternates: { canonical: "https://tensorcraft.app/about" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -45,13 +45,13 @@ export default function AboutPage() {
             "@type": "AboutPage",
             name: "About Tensorcraft",
             description:
-              "Why Tensorcraft was built, the bridge-tier method, and what we deliberately left out.",
+              "Why Tensorcraft was built, how it maps ML onto JavaScript, and what we deliberately left out.",
             url: "https://tensorcraft.app/about",
             mainEntity: {
               "@type": "EducationalOrganization",
               name: "Tensorcraft",
               url: "https://tensorcraft.app",
-              description: `Browser-based machine learning course for JavaScript developers. TensorFlow.js. ${WORLD_CONTENT.totalLessonsPerWorld} lessons live in the first of ${WORLD_SLUGS.length} planned worlds.`,
+              description: `Browser-based machine learning course for JavaScript developers. TensorFlow.js. ${WORLD_CONTENT.totalLessonsPerWorld} lessons live in the first of ${WORLD_SLUGS.length} planned courses.`,
             },
           }),
         }}
@@ -105,9 +105,9 @@ export default function AboutPage() {
 
           <p>
             Every exercise grades by executing your code, not by string-matching
-            it. {EXERCISE_CONTENT.liveExercises} exercises are live today at
-            100% solution-passes-all-tests, each one running against real
-            TensorFlow.js in a worker in your browser.{" "}
+            it. {EXERCISE_CONTENT.liveExercises} exercises are live today, each
+            running against real TensorFlow.js in a worker in your browser, with
+            a reference solution that passes its own tests in CI.{" "}
             {EXERCISE_CONTENT.authoredFiveWorlds} are authored across the
             five-world roadmap. Only the shipped set has been through our
             validation gates; we do not claim the rest meet that bar until they
@@ -119,12 +119,13 @@ export default function AboutPage() {
           </p>
 
           <p>
-            Five worlds (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas,
-            Terra Grid) wrap the curriculum in narrative. Each one builds toward
-            a working browser-side ML system, assembled piece by piece across
-            the modules. Connect GitHub and every solved exercise pushes to your
-            repo. The story keeps you on the page. What you take to interviews
-            is the ability to explain every layer of what you built.
+            Five worlds are planned (Deep Orbit, Neon Protocol, Signal Ward,
+            Nova Canvas, Terra Grid), each wrapping the curriculum in a
+            different story. Deep Orbit is the one open today: a working
+            browser-side ML system, assembled piece by piece across the modules.
+            Connect GitHub and every solved exercise pushes to your repo. The
+            story keeps you on the page. What you take to interviews is the
+            ability to explain every layer of what you built.
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">
@@ -190,9 +191,9 @@ export default function AboutPage() {
             Built by JavaScript engineers who shipped ML
           </h2>
           <p>
-            Tensorcraft is authored by people who shipped ML in production web
-            apps before writing the curriculum. We built the course we wanted
-            when we started. Every analogy was tested against our own
+            The people who wrote it shipped ML in production, in browsers and on
+            Node servers, before writing the curriculum. We built the course we
+            wanted when we started. Every analogy was tested against our own
             missed-it-the-first-time mistakes.
           </p>
         </section>

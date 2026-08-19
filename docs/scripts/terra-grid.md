@@ -152,8 +152,8 @@ The student learns to profile and benchmark, discovering that model size and spe
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Model Profiling | Measuring size, speed, and memory usage | Bundle analysis with `webpack-bundle-analyzer` |
-| 2 | Architecture Efficiency | Choosing efficient model designs | Component optimization - avoiding re-renders |
-| 3 | Computational Budgets | Working within hardware limits | Performance budgets in Lighthouse |
+| 2 | Architecture Efficiency | Choosing efficient model designs | Map index instead of a nested scan |
+| 3 | Computational Budgets | Working within hardware limits | Process memory caps (`--max-old-space-size`, container limits) |
 | 4 | Benchmarking | Standardized model performance testing | `performance.mark()` and `performance.measure()` |
 | 5 | Optimization Strategy | Creating a plan for model compression | Build optimization checklist |
 
@@ -261,11 +261,11 @@ Park builds the deployment pipeline. The first edge deployment succeeds on 847 d
 
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
-| 1 | Deployment Targets | Understanding edge hardware diversity | Cross-browser compatibility testing |
+| 1 | Deployment Targets | Understanding edge hardware diversity | Support matrix: browser targets and build platforms |
 | 2 | Model Packaging | Bundling models for deployment | npm package publishing |
-| 3 | Runtime Environments | TFLite, ONNX Runtime, WebAssembly | Browser engines (V8, SpiderMonkey, JSC) |
-| 4 | Over-the-Air Updates | Updating models on remote devices | Service Worker update lifecycle |
-| 5 | Offline Operation | Models that work without connectivity | Offline-first architecture with IndexedDB |
+| 3 | Runtime Environments | TFLite, ONNX Runtime, WebAssembly | JS engines (V8 in Chrome and Node, SpiderMonkey, JSC) |
+| 4 | Over-the-Air Updates | Updating models on remote devices | Atomic release swap: stage, verify, flip the pointer |
+| 5 | Offline Operation | Models that work without connectivity | Disk cache plus a retry queue that drains on reconnect |
 
 **JS BRIDGE (Module-Level):** Model sharding is dynamic `import()`. In JavaScript code, `dynamic import()` splits your application into chunks that load on demand - the user gets the critical path first, and additional chunks load as needed. Model sharding does the same: a large model is split across devices or loaded in parts, with the critical inference path available first and additional capabilities loading as resources permit.
 
@@ -334,12 +334,12 @@ The team retrains and redeploys within hours.
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Production Monitoring | Tracking model health in real time | Application monitoring (Sentry, DataDog) |
-| 2 | Data Drift | When input data changes over time | Lighthouse CI regression - detecting performance changes |
+| 2 | Data Drift | When input data changes over time | Upstream payload baseline - the schema still passes, the values moved |
 | 3 | Model Drift | When predictions degrade silently | Visual regression testing |
 | 4 | Alert Systems | Configuring meaningful alerts | Alerting thresholds in monitoring tools |
 | 5 | Drift Response | Diagnosing and fixing drift incidents | Incident response and rollback procedures |
 
-**JS BRIDGE (Module-Level):** Drift detection is Lighthouse CI. Lighthouse CI runs on every commit and compares performance metrics against a baseline - if Time to Interactive regresses by more than 10%, the build fails. Drift detection does the same for ML models: it continuously compares model performance against a baseline, and if accuracy degrades beyond a threshold, it triggers an alert. Both are automated regression detection systems that catch silent degradation before users notice.
+**JS BRIDGE (Module-Level):** Drift detection is a baseline check on an upstream payload. You record what a healthy response looks like, then compare every batch against that record: the schema still passes and the types still line up, but the numbers moved, so something upstream changed. Drift detection does the same for ML models: it continuously compares input distributions and accuracy against the training baseline, and if either moves past a threshold, it triggers an alert. Both catch silent degradation that no exception reports.
 
 ### GITHUB
 
@@ -371,7 +371,7 @@ The student builds a federated learning system that improves models across regio
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | The Data Silo Problem | When data cannot be centralized | CORS - data boundaries between origins |
-| 2 | Federated Averaging | Combining model updates from distributed training | State sync across browser tabs |
+| 2 | Federated Averaging | Combining model updates from distributed training | A parent merging results from worker threads |
 | 3 | Privacy Preservation | Keeping data local while improving models | Cookie isolation and third-party restrictions |
 | 4 | Communication Efficiency | Minimizing data transfer during training | GraphQL - requesting only needed data |
 | 5 | Secure Aggregation | Protecting individual updates during aggregation | End-to-end encryption in messaging |
@@ -444,7 +444,7 @@ The student watches the system scale, route, and respond. Some edge devices lose
 |---|---|---|---|
 | 1 | Scaling Strategies | Horizontal and vertical scaling for ML | Auto-scaling web servers |
 | 2 | Model Sharding | Splitting models across devices | Dynamic `import()` chunks - code splitting for models |
-| 3 | Failover & Redundancy | Graceful degradation when components fail | Error boundaries and fallback UI |
+| 3 | Failover & Redundancy | Graceful degradation when components fail | Circuit breaker in front of a sick dependency |
 | 4 | Load Management | Handling traffic spikes and batch processing | Rate limiting and request queuing |
 | 5 | Global Operations | Managing ML across time zones and regions | CDN multi-region deployment |
 

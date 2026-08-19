@@ -41,7 +41,7 @@ Sector 5 inputs look perfectly normal. No feature drift. No schema changes. But 
 Concept drift. The relationship between inputs and the correct answer has changed. The model learned that a certain temperature-pressure combination means "normal." But now, with summer heat, that same combination means "warning."
 </Dialogue>
 
-Visual regression testing catches a subtle but important class of bugs: the code is correct, the inputs are valid, but the output looks wrong. A CSS change shifted a button 3px left. The screenshot diff catches it. Model drift is the same: inputs look fine, the model runs correctly, but predictions are quietly degrading because the underlying patterns have shifted.
+A CSS change shifted a button 3px left, and the screenshot diff was the only check that caught it. Visual regression testing exists for that class of bug: the code is correct, the inputs are valid, but the output looks wrong. Model drift is the same: inputs look fine, the model runs correctly, but predictions are quietly degrading because the underlying patterns have shifted.
 
 <LearningObjectives objectives={["Distinguish model drift (concept drift) from data drift: same inputs, different correct answers", "Implement prediction distribution monitoring to detect silent accuracy degradation", "Use delayed ground truth to measure actual vs predicted accuracy over time", "Recognize seasonal and temporal patterns that cause concept drift"]} />
 
@@ -113,9 +113,9 @@ class ModelDriftDetector {
 ## The AI-Wrong Moment
 
 <CodeBlock language="typescript" title="ai-wrong-moment.ts">
-{`// The A/B test winner was trained on stale data from a decommissioned site.
-// It appeared to outperform the baseline, but only because the test set
-// came from the same stale distribution. In production, it failed.
+{`// Sector 5 ran clean on every input check. No feature drift, no schema change.
+// The model kept scoring the same readings the same way, and the readings
+// stopped meaning what they meant in March.
 
 function demonstrateConceptDrift(): void {
   // Winter: temperature 5°C + pressure 1013 hPa = normal operation

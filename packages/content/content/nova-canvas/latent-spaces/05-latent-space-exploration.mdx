@@ -33,7 +33,7 @@ keywords:
   - visualization
 ---
 
-Four weeks from now, a seven-year-old will plant herself at this kiosk, grab the third slider, and refuse to surrender it for twenty minutes. Nothing about that sentence is guaranteed yet. Right now the prototype is a blank canvas element, a decoder with no UI, and Erdem holding the spec.
+At the Biennale a seven-year-old will plant herself in front of one of these kiosks, grab the third slider, and refuse to surrender it for twenty minutes. Nothing about that sentence is guaranteed yet. Right now the prototype is a blank canvas element, a decoder with no UI, and Erdem holding the spec.
 
 <Dialogue speaker="Erdem">
 The kiosks arrive in four weeks. I need a working prototype that runs at 30 frames per second in Chrome on a laptop with integrated graphics. Show me something I can put in front of visitors.
@@ -43,9 +43,9 @@ The kiosks arrive in four weeks. I need a working prototype that runs at 30 fram
 Make it intuitive. A child should be able to walk up, drag a slider, and feel like an artist.
 </Dialogue>
 
-This is where everything converges (latent spaces, encoding, dimensionality, interpolation, disentanglement) into an interactive tool that runs in the browser. If you've built browser interfaces, this is familiar ground: a responsive, real-time UI. The difference is that the data source is a neural network decoder.
+This is where everything converges (latent spaces, encoding, dimensionality, interpolation, disentanglement) into an interactive tool that runs in the browser. The loop is the one behind every `input` event handler: read the value, recompute state, paint. Only the last step changes. The pixels come out of a decoder instead of out of your own drawing code.
 
-<LearningObjectives objectives={["Build a complete latent space explorer with slider controls", "Render decoded output to canvas in real time", "Handle performance with debouncing and tensor disposal", "Create a 2D navigation map for latent space exploration"]} />
+<LearningObjectives objectives={["Build a complete latent space explorer with slider controls", "Render decoded output to canvas in real time", "Handle performance with per-frame scheduling and tensor disposal", "Create a 2D navigation map for latent space exploration"]} />
 
 ## Architecture
 
@@ -89,7 +89,7 @@ async function updateLatentVector() {
 
 ## Performance: Memory and Speed
 
-TensorFlow.js tensors live on the GPU. If you do not dispose them, you get memory leaks: the GPU equivalent of DOM node leaks.
+On the browser's WebGL backend, tensor data lives in GPU textures that the JavaScript garbage collector cannot see, and on every other backend it is off-heap memory the collector also cannot see. Either way nothing frees it for you. Skip the dispose and the count climbs the same way detached DOM nodes climb when you forget to remove a listener.
 
 <CodeBlock language="typescript" title="performance.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -113,15 +113,19 @@ function cleanUpdate() {
   renderToCanvas(output).then(() => output.dispose());
 }
 
-// ALSO GOOD: debounce rapid slider updates
-function debounce(fn: Function, ms: number) {
-  let timer: ReturnType<typeof setTimeout>;
-  return (...args: unknown[]) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), ms);
+// ALSO GOOD: one decode per animation frame, so a drag renders continuously
+function rafThrottle(fn: () => void) {
+  let queued = false;
+  return () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      fn();
+    });
   };
 }
-const debouncedUpdate = debounce(cleanUpdate, 16); // ~60fps cap`}
+const scheduleUpdate = rafThrottle(cleanUpdate); // at most one decode per frame`}
 </CodeBlock>
 
 ## The 2D Map
@@ -189,4 +193,4 @@ Result: path stays on the prior's high-density region (unit sphere if z is L2-no
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A latent space explorer is a slider-driven UI backed by a neural decoder", "Always dispose tensors to prevent GPU memory leaks; use tf.tidy()", "Debounce slider updates for smooth 60fps interaction", "2D maps provide intuitive exploration of two latent dimensions simultaneously"]} />
+<KeyTakeaways takeaways={["A latent space explorer is a slider-driven UI backed by a neural decoder", "Always dispose tensors to prevent GPU memory leaks; use tf.tidy()", "Schedule decodes with requestAnimationFrame so a slider drag renders while it moves; debouncing renders nothing until the visitor lets go", "2D maps provide intuitive exploration of two latent dimensions simultaneously"]} />

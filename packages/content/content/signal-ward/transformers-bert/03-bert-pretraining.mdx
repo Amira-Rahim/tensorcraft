@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Before BERT ever sees a clinical note, it trains on millions of general text documents. And it needs no labels at all. It creates its own training signal by playing two games with the text.
+Count the labels in BERT's pre-training data. There are none. It reads millions of general text documents and creates its own training signal by playing two games with the text.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -189,7 +189,7 @@ console.log('NSP prediction [IsNext, NotNext]:', await nspPrediction.array());`}
 ## Why This Matters for Clinical Text
 
 <Dialogue speaker="Dr. Karimi">
-So BERT learns to fill in blanks and understand sentence flow, on Wikipedia, news articles, books. How does that help us with clinical notes?
+Wikipedia and news articles. Show me why that transfers, because our notes are a different register with a different vocabulary, and half of them are sentence fragments rather than sentences.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
@@ -198,7 +198,7 @@ Because language has universal patterns. A model that can predict "The patient w
 
 ## Challenge
 
-Implement the MLM masking strategy with the 80/10/10 split and build a prediction head that maps encoder outputs to vocabulary probabilities.
+Mask one position in a tokenized note, run it through the model, and read back the token ID the model predicts for that slot.
 
 <Exercise slug="mask-and-predict" />
 
@@ -216,7 +216,7 @@ Summed over all masked positions in the batch.
 - 10%: replace with a random token
 - 10%: keep the original token unchanged
 
-**Why?** The downstream fine-tuning task never sees `[MASK]` tokens (real text). If the model only learned to fill in `[MASK]`, it would degrade on real input. The 10/10/80 mix forces the model to maintain useful representations for ALL tokens, not just masked ones, because it can't tell which tokens are "real" and which were swapped.
+**Why?** Fine-tuning and inference run on real text, which never contains a `[MASK]` token. If the model only learned to fill in `[MASK]`, it would degrade on real input. The 80/10/10 mix forces the model to maintain useful representations for ALL tokens, not just masked ones, because it can't tell which tokens are "real" and which were swapped.
 
 **Combined with NSP** (Next Sentence Prediction, since dropped in RoBERTa) for the original BERT objective. Modern models (RoBERTa, DeBERTa) keep MLM with 80/10/10 but skip NSP.
 </DerivationDrawer>

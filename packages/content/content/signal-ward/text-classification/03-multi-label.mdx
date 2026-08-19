@@ -17,7 +17,7 @@ concept:
     mlTitle: "Multi-Label Classifier"
     mlCode: "// sigmoid([cardiac, respiratory, renal, neuro])\n// Each label is independent: any combination possible"
     tier: structural
-    breaks: "Checkbox groups let users explicitly select any subset. Multi-label classifiers output independent sigmoid per label and label correlations are not modeled by default; the wrong loss (softmax) on multi-label produces silently wrong results."
+    breaks: "Checkbox groups let users explicitly select any subset. Multi-label classifiers output an independent sigmoid per label, and label correlations are not modeled by default. Pairing a softmax output with categorical crossentropy on multi-label data trains without error and predicts wrongly, because it forces labels to compete that should not."
 consequence:
   narrative: "Documents now carry full tag sets. A chest-pain case gets tagged as cardiac, emergency, and pain-management simultaneously."
 hints:
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-Your routing system sends each document to one department. But look at this case: "72-year-old male, chest pain, elevated troponin, history of COPD, renal insufficiency." Troponin is a protein the heart releases when its muscle is damaged, so cardiology. COPD: pulmonology. Renal insufficiency means his kidneys aren't filtering properly, so nephrology too. One label isn't enough.
+Your routing system sends each document to one department. But look at this case: "72-year-old male, chest pain, elevated troponin, history of COPD, renal insufficiency." Troponin is a protein the heart releases when its muscle is damaged, so cardiology. COPD is chronic obstructive pulmonary disease, a lung condition, so pulmonology. Renal insufficiency means his kidneys aren't filtering properly, so nephrology too. One label isn't enough.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -49,9 +49,7 @@ Ah, that's the difference between a radio button and a checkbox group. Radio but
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In HTML forms, radio buttons enforce mutual exclusivity: pick exactly one. Checkboxes allow any combination. Multi-label classification works like checkboxes: each label gets its own independent sigmoid, outputting a probability between 0 and 1. You can check as many boxes as apply, or none at all.
-
-The change is in the output activation: switch from softmax (probabilities sum to 1) to sigmoid (each probability is independent). Each output neuron is its own binary classifier.
+Routing stays single-label: one document, one department, one team to page. The tags are a second layer over the same document, and that layer is where a note gets to be three things at once. Each tag owns an independent sigmoid, so `CARDIAC`, `RESPIRATORY`, and `RENAL` can all fire on the same note, and a note with nothing above threshold gets no tags at all. That is the entire change: softmax makes the classes compete for a fixed budget of 1, while one sigmoid per label lets each label answer its own yes or no.
 
 <CodeBlock language="typescript" title="multi-label-tagger.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -168,7 +166,7 @@ function perLabelMetrics(
 </CodeBlock>
 
 <Dialogue speaker="Vikram">
-So a single document can carry multiple conditions at once, and we need to catch all of them, not just the primary diagnosis.
+Ninety-one of the 300 notes in the backlog carry more than one condition. Single-label scoring grades only the primary diagnosis, so every one of those 91 can score correct with the rest of its conditions unrecorded.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">

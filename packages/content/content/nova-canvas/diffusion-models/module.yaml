@@ -3,11 +3,11 @@ title: "Diffusion Models"
 worldId: nova-canvas
 order: 5
 description: |
-  First high-quality images from MUSE, but at 43 seconds per render, the gallery
-  kiosks grind to a halt. Erdem panics. The fix demands understanding the whole
-  diffusion process, from noise schedules to classifier-free guidance, before
-  progressive distillation can bring generation down to 3.4 seconds without
-  losing the quality.
+  MUSE finally renders something worth hanging, and it takes 43 seconds a frame
+  on kiosks that have to serve two hundred visitors. Getting to 3.4 seconds means
+  understanding the whole diffusion process first: what the noise schedule
+  actually buys, what the U-Net predicts, how a prompt gets amplified, and why
+  the last stage of the pipeline upscales instead of generating big.
 lessonCount: 5
 prerequisites:
   - variational-autoencoders

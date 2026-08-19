@@ -55,9 +55,9 @@ It's like TypeScript strict mode. Without it, everything is implicitly `any`, an
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-TypeScript strict mode forces you to handle every uncertain case explicitly. Without it, the compiler silently allows `any` types, and bugs hide in the ambiguity. Model calibration is the same idea: without it, a model can be 95% "confident" about a prediction and still be wrong half the time.
+You already have a version of this in the type system: `strict` turns the compiler's silent guesses into errors somebody has to answer for. A model ships no such flag. It can report 95% confidence on a prediction it gets wrong half the time, and nothing in the output tells you which kind of 95 you are holding.
 
-A well-calibrated model's confidence matches its actual accuracy. When it says 80%, it should be right about 80% of the time. Most neural networks are overconfident. They need calibration.
+A well-calibrated model's confidence matches its accuracy: say 80%, be right about 80% of the time. Most neural networks are not calibrated, and they skew high. Temperature scaling is the cheapest correction. Before the softmax runs, the model holds raw unbounded scores called logits, one per class. Divide all of them by a single number `T` and every probability that comes out is softer. `T` is fitted, not guessed: you sweep it against a held-out validation slice, keep the value that minimizes loss on data the model never trained on, then freeze it.
 
 <CodeBlock language="typescript" title="calibration.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -106,7 +106,7 @@ console.log('Max entropy:', maxEntropy(6).toFixed(3));`}
 
 ## Reliability Diagrams
 
-A reliability diagram bins predictions by confidence and plots actual accuracy against predicted confidence. A perfectly calibrated model falls on the diagonal: 70% confidence means 70% accuracy. Most models curve above the diagonal (overconfident).
+A reliability diagram bins predictions by confidence and plots actual accuracy against predicted confidence. A perfectly calibrated model falls on the diagonal: 70% confidence means 70% accuracy. Most models sit below it, and that sag is what overconfidence looks like on a chart: the 90% bin comes back right closer to 70% of the time.
 
 <CodeBlock language="typescript" title="reliability-diagram.ts">
 {`interface CalibrationBin {
@@ -174,7 +174,7 @@ Here's my rule: if the model's confidence is below 70%, route it to a human revi
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Understood. Implementing uncertainty-aware routing. Documents below confidence threshold will be flagged for human review.
+Understood. Re-scoring yesterday's 300 documents at temperature 2.0. Forty-seven now fall below 0.70 and go to a reviewer. The autoimmune flare is one of them: 0.94 before scaling, 0.64 after.
 </Dialogue>
 
 <CodeBlock language="typescript" title="uncertainty-routing.ts">
@@ -227,7 +227,7 @@ Implement confidence calibration and uncertainty detection for a clinical classi
 
 ## On-Call Scenario
 
-A clinician overrode 12 of 15 model flags last week. Was the model wrong, or was the clinician? Build a function that decides whether each override warrants a model retrain trigger.
+Clinician override rate on model flags went from 8% to 47% in two weeks. Was the model drifting, or were the clinicians disagreeing at the edges? Build a function that separates the overrides worth retraining on from the ones that are just disagreement in the uncertain band.
 
 <Exercise slug="incident-clinical-override" />
 

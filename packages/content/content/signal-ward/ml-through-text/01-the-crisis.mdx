@@ -51,7 +51,7 @@ The note said "pt has documented PCN allergy: anaphylaxis 2019." The system coul
 We're building our own. Khalil, you built the patient portal frontend. I need you on the ML interface. Vikram will handle the NLP internals. We're calling it Diagnostic One.
 </Dialogue>
 
-A vendor system failed because it relied on rigid keyword matching. Machine learning takes a different approach: instead of hand-coded rules, it learns patterns from data.
+Nobody at the table disputes that the vendor's rules were wrong. The argument that follows is about what replaces them.
 
 <LearningObjectives objectives={["Understand why ML outperforms rule-based systems for clinical text", "Identify the three stages of an ML pipeline: input, model, output", "Create a simple numerical representation of text features using TensorFlow.js"]} />
 
@@ -63,13 +63,13 @@ The vendor system had rules like `if note.includes('no known allergies')`. But c
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-An ML pipeline has layers the way a web app does: data comes in, gets transformed, flows through a model, and produces a prediction.
+An ML pipeline has stages the way any request path does, in the browser or on the server: data comes in, gets transformed, flows through a model, and produces a prediction.
 
 <CodeBlock language="typescript" title="ml-pipeline-overview.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// In a web app, data flows through layers:
-// User Input → Validation → State → UI Update
+// A request path has stages, browser or server:
+// input → validation → transform → output
 
 // In an ML pipeline, data flows the same way:
 // Raw Text → Preprocessing → Model → Prediction
@@ -84,7 +84,8 @@ const weights = tf.tensor([0.8, 0.9, 0.1, 0.7, 0.2]);
 // Step 3: Produce a prediction (dot product + activation)
 const score = noteFeatures.mul(weights).sum();
 console.log('Allergy risk score:', score.dataSync()[0]);
-// Output: ~2.4; high risk, flag for review`}
+// Output: ~2.4. The five weights sum to 2.7, so this note lands
+// near the top of the range and gets flagged for review.`}
 </CodeBlock>
 
 ## The Architecture of Diagnostic One

@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Priya encounters the size problem. 'The ensemble model is 18MB. Our edge devices have 512MB RAM total, with only 64MB available for ML. We need to split this across multiple devices and coordinate inference.'"
+  narrative: "Priya encounters the size problem. 'The ensemble is 18MB of weights, but peak inference memory is four times that: 72MB against the 64MB every edge device can spare for ML. We split this across multiple devices and coordinate inference.'"
   speaker: "Priya Sharma"
 concept:
   explanation: "Model sharding splits a large model across multiple devices for parallel inference, the same concept as dynamic import() code splitting in JavaScript apps."
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Dynamic imports split bundles by route: each chunk runs independently. Model sharding splits a single model across devices and shards must communicate per inference (tensor parallelism, pipeline parallelism), so interconnect bandwidth becomes the bottleneck."
 consequence:
-  narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Priya: 'Sharding solved the memory constraint without shrinking the model.'"
+  narrative: "The ensemble runs across 3 devices, each holding a 6MB shard and peaking near 24MB. Coordinated inference adds 4ms of overhead, and every device stays inside the 64MB budget. Priya: 'Sharding solved the memory constraint without shrinking the model.'"
 hints:
   - level: nudge
     content: "Split the model at layer boundaries, like splitting a bundle at route boundaries"
@@ -35,14 +35,14 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-The ensemble model is 18MB. Each edge device has 512MB total, but after the OS, monitoring agents, and sensor drivers, we have 64MB for ML. The model does not fit. We split it across 3 devices and coordinate inference.
+The ensemble model is 18MB of weights, and peak activation memory during inference runs about four times that. Call it 72MB. Each edge device has 512MB total, but after the OS, monitoring agents, and sensor drivers, we have 64MB for ML. It does not fit. We split it across 3 devices and coordinate inference.
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">
 Same idea as code splitting in a big React app. You don't ship the entire bundle to every page. You split at logical boundaries and load chunks on demand.
 </Dialogue>
 
-Dynamic `import()` splits a JavaScript bundle into chunks loaded on demand. Model sharding applies the same principle: split a large model at layer boundaries, distribute shards across devices, and coordinate inference by piping intermediate tensors between them. Each device only holds a fraction of the model in memory.
+The analogy holds right up until the chunks have to talk to each other. A lazily imported `Chart` runs on its own once it lands; nothing in the main bundle blocks on it mid-render. Shards are the opposite. Shard 2 cannot start until shard 1 hands it an intermediate tensor, and that handoff happens on every inference, not once per session. So the split point is not a route boundary. It is a layer boundary chosen to keep the tensor crossing the wire small, because from here on the link between devices sits inside your latency budget.
 
 <LearningObjectives objectives={["Split a TensorFlow.js model into shards at layer boundaries", "Implement a shard coordinator that distributes inference across devices", "Manage intermediate tensor communication between shards", "Calculate memory budgets and determine optimal shard sizes"]} />
 

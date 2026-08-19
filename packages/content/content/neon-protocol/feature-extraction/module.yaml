@@ -2,7 +2,7 @@ slug: feature-extraction
 title: "Feature Extraction"
 worldId: neon-protocol
 order: 6
-description: "Amir reveals that Meridian stores features, not images: compact numerical fingerprints that encode what makes each frame unique. Noor learns to extract embeddings and build similarity search."
+description: "Meridian's decommissioned server holds no images at all, just rows of 512 numbers, one row per frame somebody walked through. Amir calls it a fingerprint: faster to search, impossible to reverse. Noor learns to produce those vectors herself, then search millions of them for the ones that match a drone."
 lessonCount: 5
 prerequisites:
   - segmentation

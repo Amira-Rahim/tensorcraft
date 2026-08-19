@@ -39,7 +39,7 @@ keywords:
 skillAxes: [deployment]
 ---
 
-The main display carries one number now, wherever you stand on the ship: pulse interval, 47.0 seconds. It was 73.4 when Demir could not tell a tensor from a typed array. The briefing room goes quiet on its own when Mirza stands up.
+The main display carries one number now, wherever you stand on the ship: pulse interval, 47.0 seconds. It was 73.4 when Demir could not tell a tensor from a typed array. The bridge goes quiet on its own when Mirza stands up.
 
 <Dialogue speaker="Commander Mirza">
 Ten modules of separate pieces. Assemble them into one system, Ensign, and show me the architecture.
@@ -49,7 +49,7 @@ Ten modules of separate pieces. Assemble them into one system, Ensign, and show 
 It's like setting up a monorepo. Each module is a package with clear inputs and outputs. I connect them with a pipeline: preprocessor, feature extractor, classifier, anomaly detector, reporter. Each stage validates its input before processing. Raw signal in, classified report out.
 </Dialogue>
 
-The deploy target is already chosen, and it is not forgiving: the repaired bridge dashboard, 512 MB of RAM, one prior fatality on its record. Every architecture decision in this lesson answers to that box. Each component from the last ten modules becomes a typed stage in one pipeline, every stage sharing the machine.
+The deploy target is already chosen, and it is not forgiving: the repaired bridge dashboard, 512 MB of RAM, one dead capture on its record. Every architecture decision in this lesson answers to that box. Each component from the last ten modules becomes a typed stage in one pipeline, every stage sharing the machine.
 
 <Dialogue speaker="Chief Nazari">
 Before anyone asks why it doesn't live on my rig: the rig outruns that dashboard three to one, and it rebooted nine times last week because I flash controllers on it. The dashboard sits on the hardened bus with a watch officer in front of it every minute of every shift. A verdict nobody is standing in front of at 0300 is wasted investigation time. It ships to the box with the person attached.
@@ -96,7 +96,7 @@ class Pipeline {
     let data = input;
     for (const stage of this.stages) {
       if (!stage.validate(data)) {
-        throw new Error(\`Validation failed at stage: \${stage.name}\`);
+        throw new Error(\`Validation failed at: \${stage.name}\`);
       }
       console.log(\`[\${stage.name}] Processing...\`);
       data = await stage.process(data);
@@ -168,7 +168,9 @@ const manifest: ComponentManifest[] = [
   },
 ];
 
-// Validate dependency graph: no cycles, all deps exist
+// Completeness check: every declared dependency resolves to a real component.
+// Cycle detection is a second pass over the same manifest; this one only
+// proves nothing is missing.
 function validateGraph(components: ComponentManifest[]): boolean {
   const names = new Set(components.map(c => c.name));
   return components.every(c =>
@@ -191,7 +193,7 @@ Design a typed pipeline and validate the dependency graph.
   whatYouLearned={[
     "Modeling an ML pipeline as a dependency graph of typed stages documents the contract between stages. Do not mistake that for compile-time safety: the stage list is PipelineStage<any, any>[], so the types erase at exactly the boundary you care about. The check that actually fires is the runtime validate() throw. TypeScript records what you meant; only validate() knows what arrived.",
     "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
-    "A component manifest with dependency declarations lets you run cycle and completeness checks before any inference runs."
+    "A component manifest with declared dependencies lets you prove every stage's inputs exist before any inference runs; catching a cycle takes a second walk over the same manifest."
   ]}
   bridge="Just as `package.json` declares dependencies between npm packages, a pipeline config declares data-shape contracts between ML stages; but unlike npm, a contract violation in ML is silent and shows up as accuracy drift instead of a resolution error."
   youCanNow="Design a multi-stage ML inference pipeline as a typed dependency graph and validate its component contracts before runtime."
@@ -199,7 +201,7 @@ Design a typed pipeline and validate the dependency graph.
 
 <Epilogue>
 
-The diagram stays on the main display after the briefing ends. Five boxes, typed edges, one arrow in and one arrow out. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA), wired to fire if the classifier's confidence drops below threshold. Behind the diagram, the live telemetry ticker updates: pulse interval 47.0 seconds. Mirza looks at the number, then at the five boxes that have fourteen days to be ready for it, and says nothing at all. ARIA studies the lower corner for 1.4 seconds, which for her is a long time.
+The diagram stays on the main display after the briefing ends. Five boxes, typed edges, one arrow in and one arrow out. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA), wired to fire if the classifier's confidence drops below threshold. Mirza is already gone by then. Nazari stays long enough to write 47.0 in grease pencil on the corner of her board, under the four earlier numbers she has put there this month, and adds no note beside it. ARIA studies the lower corner for 1.4 seconds, which for her is a long time.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 I have reviewed the architecture. I appear to be the fallback path. It is a smaller box than I had. It is still a box.

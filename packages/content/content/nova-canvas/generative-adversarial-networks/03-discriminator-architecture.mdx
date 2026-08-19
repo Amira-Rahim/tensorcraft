@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Mirror the generator but in reverse: 784 → 512 → 256 → 1"
   - level: solution
-    content: "model.add(tf.layers.dense({inputShape: [784], units: 512, activation: 'leakyReLU'})); ... model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));"
+    content: "model.add(tf.layers.dense({inputShape: [784], units: 512})); model.add(tf.layers.leakyReLU({ alpha: 0.2 })); ... model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));"
 keywords:
   - discriminator
   - classifier
@@ -39,7 +39,7 @@ A good curator doesn't just say "I like it" or "I don't." They examine the brush
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-The discriminator caught 9 of my last 10 forgeries. The one that got through had softer edges and lower contrast than my usual output. I'm keeping notes on what fools it. That list is my curriculum.
+When it does meet my forgeries, I expect it to catch 9 of 10 in the first epochs. The ones that get through will have softer edges and lower contrast than my usual output. I intend to keep notes on those, and that list becomes my curriculum.
 </Dialogue>
 
 The discriminator is the mirror image of the generator. Where the generator *expands* noise into an image, the discriminator *compresses* an image into a single number: the probability that the input is real.
@@ -60,15 +60,15 @@ function buildDiscriminator(): tf.Sequential {
   model.add(tf.layers.dense({
     inputShape: [784],
     units: 512,
-    activation: 'leakyReLU',
   }));
+  model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
   model.add(tf.layers.dropout({ rate: 0.3 }));
 
   // Layer 2: Compress further
   model.add(tf.layers.dense({
     units: 256,
-    activation: 'leakyReLU',
   }));
+  model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
   model.add(tf.layers.dropout({ rate: 0.3 }));
 
   // Output: single probability, real (1) or fake (0)
@@ -97,7 +97,7 @@ Dropout randomly deactivates neurons during training. For discriminators, this i
 
 // JS analogy: progressive form validation
 // Simple check first, detailed check later
-function validateForm(data: FormData): { valid: boolean; confidence: number } {
+function validateForm(data: { email?: string }): { valid: boolean; confidence: number } {
   // Level 1: Quick format check (like first dense layer)
   if (!data.email?.includes('@')) return { valid: false, confidence: 0.9 };
 
@@ -108,10 +108,9 @@ function validateForm(data: FormData): { valid: boolean; confidence: number } {
   return { valid: true, confidence: 0.85 };
 }
 
-// Dropout = randomly skipping some checks during training
-// This prevents the validator from becoming TOO strict TOO fast
-// Without dropout: discriminator crushes generator early
-// With dropout: discriminator stays beatable → generator improves`}
+// Dropout = randomly skipping some of these checks during training
+// A discriminator that never misses gives the generator nothing to chase:
+// D(G(z)) pins to 0, the gradient goes with it, and G stops moving`}
 </CodeBlock>
 
 ## Generator + Discriminator: The Full GAN

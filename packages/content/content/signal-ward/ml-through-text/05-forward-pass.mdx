@@ -61,7 +61,7 @@ In a forward pass, data flows through layers in sequence, each one transforming 
 
 // Step 1: Tokenize
 function tokenize(text: string): string[] {
-  return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+  return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\\s+/).filter(Boolean);
 }
 
 // Step 2: Encode to bag-of-words vector
@@ -98,25 +98,26 @@ const bias = tf.scalar(-0.2);
 // Run the pipeline
 const note = 'Patient has documented penicillin allergy';
 const probability = forwardPass(note, vocab, weights, bias);
-console.log('Allergy probability:', probability.toFixed(3)); // ~0.83`}
+console.log('Allergy probability:', probability.toFixed(3)); // 0.832`}
 </CodeBlock>
 
 ## Comparing to a Promise Chain
 
 <CodeBlock language="typescript" title="promise-parallel.ts">
 {`// JS pipeline (you know this)
-const result = await fetch('/api/notes/42')
-  .then(res => res.json())           // parse
+const rendered = await fetch('/api/notes/42')
+  .then(res => res.json())            // parse
   .then(data => validate(data))       // validate
-  .then(valid => renderNote(valid));   // render
+  .then(valid => renderNote(valid));  // render
 
-// ML pipeline (same pattern!)
-const prediction = pipe(
-  tokenize,                            // parse text
-  tokens => toBagOfWords(tokens, vocab, vocab.size),  // vectorize
-  bow => tf.tensor(bow).mul(weights).sum().add(bias), // compute
-  score => tf.sigmoid(score).dataSync()[0],           // activate
-)('Patient has documented penicillin allergy');`}
+// ML pipeline: same shape, no promises needed
+const tokens = tokenize('Patient has documented penicillin allergy'); // parse text
+const bow = toBagOfWords(tokens, vocab, vocab.size);                  // vectorize
+const score = tf.tensor(bow).mul(weights).sum().add(bias);            // compute
+const prediction = tf.sigmoid(score).dataSync()[0];                   // activate
+
+// Every step here is synchronous. The chain is the pattern,
+// not the .then.`}
 </CodeBlock>
 
 ## Challenge
@@ -125,13 +126,17 @@ Build a complete forward pass pipeline that takes raw clinical text and outputs 
 
 <Exercise slug="text-forward-pass" />
 
+Then do it the way the production models in later modules will: swap the hand-built bag-of-words for embeddings, average them into one sentence vector, and run that through a dense layer.
+
+<Exercise slug="text-classify-with-tfjs" />
+
 ## Knowledge check
 
 <Quiz
-  question="Why average pooling over token embeddings for sentence classification?"
-  options={[{"text":"Faster than max pooling"},{"text":"Order-invariant + simple baseline; loses sequential info but gives strong starting point"},{"text":"Required by BERT"},{"text":"Always best for classification"}]}
+  question="You run one clinical note through forwardPass and get 0.832. You run the identical string again in the same session and get 0.832 again. What guarantees that?"
+  options={[{"text":"tf.sigmoid caches results for repeated inputs"},{"text":"The weights and bias never change during inference, so the same bag-of-words vector always produces the same score"},{"text":"dataSync() rounds to three decimal places"},{"text":"TensorFlow.js seeds a random number generator once per page load"}]}
   correct={1}
-  explanation="Mean pooling over token embeddings ignores word order; fine for bag-of-words baselines. Loses sentiment cues like 'not bad' vs 'bad not'. For modern systems, use [CLS] token embedding or attention pooling."
+  explanation="Every step in the chain is deterministic: tokenize, count into a bag-of-words vector, multiply by weights, sum, add bias, sigmoid. The weights and bias only move during training, and this pipeline never trains. Change a single weight and the same note scores differently."
   tier="structural"
 />
 

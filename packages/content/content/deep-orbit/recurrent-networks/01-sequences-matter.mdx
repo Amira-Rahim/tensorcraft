@@ -15,12 +15,12 @@ context:
 concept:
   explanation: "In sequences, order is part of the meaning: shuffle the readings and the values survive but the signal dies."
   bridge:
-    jsTitle: "React List Keys"
-    jsCode: "items.map(item => <Item key={item.id} />)"
+    jsTitle: "Stream chunk order"
+    jsCode: "for await (const chunk of stream) out.write(chunk) // arrival order is the file"
     mlTitle: "Sequence Order"
     mlCode: "model.predict(tf.tensor3d([[[t1], [t2], [t3], [t4], [t5]]])) // [batch, steps, features]"
     tier: structural
-    breaks: "React list keys identify elements for diffing; order matters for reconciliation but not for the values themselves. In sequences, position is part of the meaning ('not good' vs 'good not') and the model must learn order-dependent patterns, not just track identity."
+    breaks: "A stream only has to preserve order; nothing inside the pipe reads it. Reassemble the chunks in the wrong order and the file is corrupt, and a checksum catches it. A sequence model has to use the order instead of preserving it: it learns which arrangements mean what, so a shuffled window is not corrupt, it is a valid sample that means something else, and no checksum will ever flag it."
 consequence:
   narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
@@ -103,7 +103,7 @@ console.log(sequences[0]);
 Look at what the slicing bought you. Row for row, nothing changed. The pattern only exists across rows, in the order they arrive: [rising, falling, rising] and [falling, rising, rising] are the same three values telling two different stories. Order carries information, and the model we have throws it away at the door.
 </Dialogue>
 
-It is the React list-key problem wearing a lab coat. Render a list without stable keys and React can't track which items moved, were added, or were removed; identity gets lost in the reorder. Here, position itself is the information, and a model that sees one row at a time never had it to lose.
+Piping a stream is the closest everyday version, and it stops one step short. Chunks arrive in the order they were written, and buffering them back together in the wrong order corrupts the file even though every byte survived. Order matters there because reassembly does; nothing in the pipe ever reads it. Here the order IS the information, and a model that reads one row at a time never receives it in the first place.
 
 ## Sequence Shape: [batch, timeSteps, features]
 
@@ -123,9 +123,9 @@ const sequentialInput = tf.randomNormal([32, 5, 3]);
 // - Feedforward: a single photo (width × height)
 // - Sequential: a video (frames × width × height)
 
-// Or in React terms:
-// - Feedforward: rendering a single component from props
-// - Sequential: rendering an animation from a keyframe sequence
+// Or in JS terms:
+// - Feedforward: one object handed to a function
+// - Sequential: an array of five such objects, where the array order is data
 
 console.log('Feedforward shape:', feedforwardInput.shape);  // [32, 3]
 console.log('Sequential shape:', sequentialInput.shape);     // [32, 5, 3]
@@ -136,7 +136,7 @@ sequentialInput.dispose();`}
 
 ## Challenge
 
-Create time-step sequences from raw signal data.
+`createSequences` above stops at the windows. Training needs two more things out of the same loop: a stride, so you choose how far the window jumps between samples, and a target for every window, the single reading that arrives immediately after it. That target also moves the boundary. A window whose next reading falls past the end of the archive has no answer to train against, so it never enters the set.
 
 <Exercise slug="create-sequences" />
 
@@ -151,7 +151,7 @@ Create time-step sequences from raw signal data.
     "Sequential data requires a third tensor dimension for time, giving inputs shape [batch, timeSteps, features] instead of [batch, features].",
     "Sliding windows convert a continuous signal stream into discrete fixed-size sequences suitable for model input."
   ]}
-  bridge="React list keys track element identity during reconciliation, but in sequence models position encodes meaning: the same values in a different order carry a different signal, and `model.predict` on `[timeSteps, features]` tensors depends on that order."
+  bridge="A stream preserves chunk order because reassembling the bytes out of order corrupts the file; a sequence model goes one step further and reads the order as meaning, so the same values in a different arrangement are a different signal, and `model.predict` on `[timeSteps, features]` tensors depends on it."
   youCanNow="Prepare sequential data by slicing a continuous signal into sliding windows and representing it as a [batch, timeSteps, features] tensor."
 />
 

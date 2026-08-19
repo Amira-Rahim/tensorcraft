@@ -10,7 +10,7 @@ export const ERROR_MESSAGES = {
   network: "Can't reach the server. Check your connection and try again.",
   stripe_declined: "Payment declined. Try a different card or contact support.",
   session_expired: "Your session expired. Sign in again to continue.",
-  content_not_found: "This lesson or world doesn't exist.",
+  content_not_found: "This page doesn't exist.",
   forbidden: "You don't have access to this content. Check your purchases.",
   validation: "Something in the form needs fixing. Review highlighted fields.",
   rate_limited: "Too many requests. Wait a moment and try again.",

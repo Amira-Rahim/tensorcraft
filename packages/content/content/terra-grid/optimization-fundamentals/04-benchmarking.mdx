@@ -10,7 +10,7 @@ context:
   narrative: "Tariq needs standardized benchmarks before deploying updated models to the field."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Benchmarking model performance is like using performance.mark() and performance.measure() in the browser: standardized, repeatable measurements."
+  explanation: "Benchmarking model performance is like timing a hot path with the Performance API: standardized, repeatable measurements, with the same globals available in Node and in the browser."
   bridge:
     jsTitle: "Performance API"
     jsCode: "performance.mark('start');\nprocessData();\nperformance.mark('end');\nperformance.measure('process', 'start', 'end');"
@@ -23,7 +23,7 @@ hints:
   - level: nudge
     content: "Run multiple inference passes and average the results"
   - level: guidance
-    content: "Include warm-up runs to account for JIT compilation"
+    content: "Include warm-up runs so one-time kernel compilation does not land in your numbers"
   - level: solution
     content: "Run 10 warm-up passes, then 100 measurement passes, report mean and p95"
 keywords:
@@ -37,9 +37,9 @@ keywords:
 Last month someone deployed a model that benchmarked at 45ms on their laptop and ran at 890ms on the gateway. We need standardized benchmarks that reflect real device performance. No more surprises in the field.
 </Dialogue>
 
-The timing primitives here are the familiar ones, `performance.mark()` and `performance.measure()`, with ML-specific rituals layered on: warm-up runs, batch sizes, and memory tracking. One vocabulary note before the code: p95 is the latency that 95% of runs beat; the slowest 5% live above it, and on an edge gateway those are the runs that matter.
+You already have the clock: `performance.now()`, the same clock `performance.measure()` reads, available as a global in Node and in the browser. What changes is the ritual around it: warm-up runs before any number counts, and percentiles instead of an average. One vocabulary note before the code. p95 is the latency 95% of runs come in under. The slowest 5% live above it, and on an edge gateway those are the runs that wake Tariq up.
 
-<LearningObjectives objectives={["Build a standardized model benchmark suite", "Account for warm-up runs and JIT compilation effects", "Measure latency, throughput, and memory usage", "Report p50, p95, and p99 latency percentiles"]} />
+<LearningObjectives objectives={["Build a standardized model benchmark suite", "Account for one-time kernel compilation with warm-up runs", "Measure latency, throughput, and memory usage", "Report p95 and p99 latency, not just the mean"]} />
 
 ## Standardized Measurement
 
@@ -64,19 +64,21 @@ async function benchmarkModel(
 ): Promise<BenchmarkResult> {
   const input = tf.randomNormal([1, ...inputShape]);
 
-  // Warm-up: let JIT optimize (like browser JIT for JS)
+  // Warm-up: first runs pay one-time kernel compilation and buffer allocation
   for (let i = 0; i < warmupRuns; i++) {
     const pred = model.predict(input) as tf.Tensor;
     pred.dispose();
   }
 
   // Measure
+  let peakBytes = 0;
   const times: number[] = [];
   for (let i = 0; i < measureRuns; i++) {
     const start = performance.now();
     const pred = model.predict(input) as tf.Tensor;
     pred.dataSync(); // Force synchronous completion
     const elapsed = performance.now() - start;
+    peakBytes = Math.max(peakBytes, tf.memory().numBytes);
     times.push(elapsed);
     pred.dispose();
   }
@@ -89,12 +91,12 @@ async function benchmarkModel(
     p95Ms: times[Math.floor(times.length * 0.95)],
     p99Ms: times[Math.floor(times.length * 0.99)],
     throughputPerSec: 1000 / (times.reduce((a, b) => a + b) / times.length),
-    peakMemoryMB: tf.memory().numBytes / (1024 * 1024)
+    peakMemoryMB: peakBytes / (1024 * 1024)
   };
 }`}
 </CodeBlock>
 
-The warm-up phase is critical. Just as V8's JIT compiler optimizes hot functions after a few calls, TensorFlow.js optimizes tensor operations after initial runs. Skipping warm-up gives you artificially slow first-run numbers.
+The warm-up phase is not optional, and the reason is not JIT. The first call to `predict` makes TensorFlow.js compile a kernel for every op in the graph and allocate the buffers those kernels write into. That bill is paid once. Measure the first ten runs and you are timing compilation, not inference.
 
 ## Challenge
 
@@ -102,4 +104,4 @@ Write a benchmark function that measures model inference latency.
 
 <Exercise slug="benchmark-model" />
 
-<KeyTakeaways takeaways={["Always include warm-up runs before measuring: JIT affects both JS and TF.js", "Report percentiles (p95, p99) not just means: outliers matter on edge devices", "Use dataSync() to force synchronous completion for accurate timing", "Standardized benchmarks prevent deploy-time surprises in the field"]} />
+<KeyTakeaways takeaways={["Always include warm-up runs before measuring: the first calls pay one-time kernel compilation", "Report percentiles (p95, p99) not just means: outliers matter on edge devices", "Use dataSync() to force synchronous completion for accurate timing", "Standardized benchmarks prevent deploy-time surprises in the field"]} />

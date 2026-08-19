@@ -1,7 +1,7 @@
 slug: runtime-setup
 lessonSlug: runtime-environments
 title: "Configure Runtime Environments"
-instructions: "Write a function selectRuntime that takes a deviceType string ('substation', 'sensor', 'remote', or 'dashboard') and returns an object with target ('onnx', 'tflite', 'wasm', or 'tfjs') and format (the file extension: '.onnx', '.tflite', '.wasm', or '.json')."
+instructions: "Write a function selectRuntime that takes a deviceType string ('substation', 'sensor', 'remote', or 'dashboard') and returns an object with target ('onnx', 'tflite', 'wasm', or 'tfjs') and format ('.onnx', '.tflite', '.wasm', or '.json'). Note that '.wasm' is the odd one out: it names the interpreter build rather than a model format, and the graph inside it is still TFLite."
 starterCode: |
   interface RuntimeConfig {
     target: string;

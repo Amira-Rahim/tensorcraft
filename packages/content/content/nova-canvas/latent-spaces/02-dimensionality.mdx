@@ -17,14 +17,14 @@ concept:
     mlTitle: "Latent Dimensions"
     mlCode: "encoder.add(tf.layers.dense({ units: 16 }))  // 16 dimensions"
     tier: structural
-    breaks: "CSS custom properties are a small set of named scalars you authored. Latent dimensions are 100-10000 unnamed axes the model learns for itself. A human concept like 'color' usually spreads across several of them, so finding meaningful directions takes extra analysis after training. Changing the dimension count also changes model capacity, how training behaves, and how cleanly concepts separate."
+    breaks: "CSS custom properties are a small set of named scalars you authored. Latent dimensions are unnamed axes the model learns for itself, typically dozens to a few hundred of them. A human concept like 'color' usually spreads across several of them, so finding meaningful directions takes extra analysis after training. Changing the dimension count also changes model capacity, how training behaves, and how cleanly concepts separate."
 consequence:
   narrative: "Samir experiments with different latent sizes and discovers the tradeoff: too small and the reconstructions blur, too large and the space becomes sparse."
 hints:
   - level: nudge
-    content: "Build the encoder three times with units: 2, 16, and 128 in the bottleneck dense layer, then compare the reconstructions side by side"
+    content: "Build the encoder three times with units: 2, 16, and 64 in the bottleneck dense layer, then compare the reconstructions side by side"
   - level: guidance
-    content: "Try encoding 784-dimensional data into 2, 16, and 128 dimensions and compare reconstruction quality"
+    content: "Try encoding 784-dimensional data into 2, 16, and 64 dimensions and compare reconstruction quality"
   - level: solution
     content: "const encoder = tf.sequential(); encoder.add(tf.layers.dense({inputShape: [784], units: latentDim}));"
 keywords:
@@ -50,13 +50,13 @@ You'll give it sixteen and name none of them. I chose my four axes; MUSE has to 
 And budgets have failure modes in both directions. Three knobs on a synth and you can explore a whole sound space. Thirty and you're lost before the first patch.
 </Dialogue>
 
-The budget question is measurable. A 28x28 pattern arrives as 784 numbers, and the encoder has to decide what survives the squeeze. This lesson builds the same encoder at three budgets (2, 16, 128) and reads the answer off the reconstruction error.
+The budget question is measurable. A 28x28 pattern arrives as 784 numbers, and the encoder has to decide what survives the squeeze. This lesson builds the same encoder at three budgets (2, 16, 64) and reads the answer off the reconstruction error.
 
 <LearningObjectives objectives={["Understand dimensionality as the number of independent axes in a space", "Recognize the compression tradeoff: too few dims lose info, too many fail to compress", "Build encoders with different bottleneck sizes", "Measure reconstruction quality to find the right dimensionality"]} />
 
 ## The Bottleneck
 
-The latent dimension is a bottleneck. A 28x28 image has 784 values. Compressing that into 16 dimensions means the encoder must learn which 16 numbers preserve the most information about the image.
+The bottleneck is the narrowest layer in the network, and the only place data cannot route around. Squeezing 784 values through 16 units means the encoder has to decide which 16 numbers carry the most about the image, because nothing else gets through.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -90,8 +90,8 @@ const tiny = buildAutoencoder(2);
 // Good balance (16 dims): captures key features
 const balanced = buildAutoencoder(16);
 
-// Too large (256 dims): barely compressing, no useful structure
-const large = buildAutoencoder(256);`}
+// Diminishing returns (64 dims): sharper reconstructions, far less pressure to organize
+const large = buildAutoencoder(64);`}
 </CodeBlock>
 
 ## Measuring the Tradeoff
@@ -113,7 +113,7 @@ async function measureReconstruction(
 
 // Compare: latentDim=2 → MSE ~0.08 (blurry)
 //          latentDim=16 → MSE ~0.02 (good)
-//          latentDim=128 → MSE ~0.005 (diminishing returns)`}
+//          latentDim=64 → MSE ~0.008 (diminishing returns)`}
 </CodeBlock>
 
 ## Challenge

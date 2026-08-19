@@ -7,7 +7,7 @@ instructions: |
 
     {
       perFeatureError: number[],          // |input - reconstruction| per feature
-      suspiciouslyLowFeatures: number[],  // feature indices where reconstruction < baseline by 50%
+      suspiciouslyLowFeatures: number[],  // features whose error is under half that feature's baseline error
       requiresRetrain: boolean,            // true if any feature in suspiciouslyLowFeatures
     }
 

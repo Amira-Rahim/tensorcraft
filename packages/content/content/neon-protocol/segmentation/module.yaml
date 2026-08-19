@@ -2,7 +2,7 @@ slug: segmentation
 title: "Segmentation"
 worldId: neon-protocol
 order: 5
-description: "A drone detector tells you what; segmentation tells you where. Zara teaches Noor to classify every pixel in a street scene, distinguishing individual objects and generating precise masks. The resistance can now map Meridian's surveillance, pixel by pixel."
+description: "A detector puts a box around the drone. Segmentation says which pixels are drone and which are sky. Zara teaches Noor to classify every pixel in a street scene, distinguishing individual objects and generating precise masks. The resistance can now map Meridian's surveillance, pixel by pixel."
 lessonCount: 5
 prerequisites:
   - object-detection

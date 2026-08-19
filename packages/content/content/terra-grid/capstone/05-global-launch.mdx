@@ -140,17 +140,17 @@ await launcher.launch();`}
 
 <BossBeat
   beatId="terra-grid-launch-cascade-call"
-  prompt="Hassan is on incident-bridge. 63 of 12,400 edge devices are reporting drift PSI > 0.3 across three sites. Dr. Park's red team flagged the same pattern in pre-prod two weeks ago and called it benign. The on-call is asking: full rollback, geofence the affected sites, or trust Park's pre-prod call and watch?"
+  prompt="Hassan is on incident-bridge. 63 of 12,400 edge devices are reporting drift PSI > 0.3 across three sites. Priya flagged the same pattern in pre-prod two weeks ago and called it benign sensor calibration. The on-call is asking: full rollback, geofence the affected sites, or trust Priya's pre-prod call and watch?"
   options={[
     {
       label: "cooperate",
-      display: "Trust Park's pre-prod read: keep everything live, increase telemetry sampling",
-      consequence: "Telemetry doubles. Drift stabilizes at PSI 0.31 over 6 hours, no accuracy regression in user-visible metrics. Park's call was right; the pattern was a sensor calibration drift, not model drift. Hassan: 'You read the pre-prod report and trusted the gate.' Cooperative play with the team's pre-prod discipline; payoff = no rollback churn."
+      display: "Trust Priya's pre-prod read: keep everything live, increase telemetry sampling",
+      consequence: "Telemetry doubles. Drift stabilizes at PSI 0.31 over 6 hours, no accuracy regression in user-visible metrics. Priya's call was right; the pattern was a sensor calibration drift, not model drift. Hassan: 'You read the pre-prod report and trusted the gate.' Cooperative play with the team's pre-prod discipline; payoff = no rollback churn."
     },
     {
       label: "defect",
       display: "Full global rollback: accept the operational cost",
-      consequence: "Rollback fires. 12,400 devices revert to last-known-good in 11.7 seconds (per the runbook). Service quality regresses ~2% for 18 hours during the re-investigation. Park: 'You bypassed pre-prod findings.' Hassan: 'You also kept the SLO sacred. Both readings stand.' Defection paid in safety; the next pre-prod report carries less weight in your future decisions."
+      consequence: "Rollback fires. Devices revert to last-known-good as they check in: 11,900 inside the hour, the satellite-linked stragglers by morning. Service quality regresses ~2% for 18 hours during the re-investigation. Priya: 'You bypassed pre-prod findings.' Hassan: 'You also kept the SLO sacred. Both readings stand.' Defection paid in safety; the next pre-prod report carries less weight in your future decisions."
     },
     {
       label: "random",
@@ -159,8 +159,8 @@ await launcher.launch();`}
     },
     {
       label: "dominant",
-      display: "Geofence + trigger Park's pre-prod replay on live telemetry",
-      consequence: "Geofence isolates. Park's pre-prod test suite replays against the live telemetry from the 3 affected sites. Within 2 hours: pattern matches benign sensor drift. Geofence lifts. Total operational impact: 2 hours, 3 sites, no SLO breach. Hassan: 'You used the pre-prod gate as a live diagnostic.' Dominant strategy = treat the pre-prod call as a hypothesis you can test against production, not a verdict to obey or ignore."
+      display: "Geofence + trigger Priya's pre-prod replay on live telemetry",
+      consequence: "Geofence isolates. Priya's pre-prod test suite replays against the live telemetry from the 3 affected sites. Within 2 hours: pattern matches benign sensor drift. Geofence lifts. Total operational impact: 2 hours, 3 sites, no SLO breach. Hassan: 'You used the pre-prod gate as a live diagnostic.' Dominant strategy = treat the pre-prod call as a hypothesis you can test against production, not a verdict to obey or ignore."
     }
   ]}
 />
@@ -187,7 +187,7 @@ const incident: IncidentReport = {
   anomalyType: 'cascading-temperature-spike',
   timeToDetectionSeconds: 4.2,
   timeToRootCauseSeconds: 11.7,
-  affectedDevices: 847,
+  affectedDevices: 2847,
   affectedRegions: ['region-1', 'region-3', 'region-5'],
   manualEstimateHours: 2.5,
 };
@@ -207,7 +207,7 @@ Incident detected at Substation 7-Alpha. Temperature spike: 38 degrees above bas
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
-Manual analysis would have taken 2 to 3 hours. By then, the cascade would have reached Region 7. Instead we had the root cause in 11.7 seconds, from a 4.2MB model running on 12,400 edge devices across 47 sites. Edge deployment served it, federated training taught it, the A/B gate cleared it, and failover kept Region 3 answering while the cascade was live. Each piece paid for itself this morning.
+Manual analysis would have taken 2 to 3 hours. By then the cascade is in Region 7 and we are calling people at home to explain why their power is out. Instead we had the root cause in 11.7 seconds, from a 4.2MB model running on hardware that costs 35 dollars. Tariq is already on the road.
 </Dialogue>
 
 ## Challenge
@@ -221,5 +221,5 @@ Build a launch controller with pre-flight checks and post-launch monitoring.
 <DispatchTease
   toWorldId="deep-orbit"
   toWorldName="Deep Orbit"
-  body="Operator. Cross-channel intel: a long-mission vessel just transmitted a 7.83 Hz harmonic in their anomaly stream, the same frequency Hassan's edge fleet has been logging in localized power signatures. Operator Demir on the bridge is calling it deep-space; Hassan is calling it ground-station. Both can't be right. The mission ends where it began: time-series eyes catch what edge eyes miss. Signal logged: 7.83 Hz. Correlation: unresolved. 47 sites listening."
+  body="Operator. Cross-channel intel: a long-mission vessel just transmitted a 73.4 Hz component in their anomaly stream, the same frequency Hassan's edge fleet has been logging in localized power signatures. Ensign Demir on the bridge is calling it deep-space; Hassan is calling it ground-station. Both can't be right. The mission ends where it began: time-series eyes catch what edge eyes miss. Signal logged: 73.4 Hz. Correlation: unresolved. 47 sites listening."
 />

@@ -12,12 +12,12 @@ context:
 concept:
   explanation: "KL divergence measures how different the encoder's learned distribution is from a standard normal. It regularizes the latent space, pushing it toward a smooth, continuous distribution."
   bridge:
-    jsTitle: "CSS Specificity Balance"
-    jsCode: "// Too specific: #app > .nav > .link { } is inflexible. Balance specificity."
+    jsTitle: "ESLint Config Strictness"
+    jsCode: "module.exports = { extends: 'house-style', rules: { complexity: ['warn', 10] } };"
     mlTitle: "KL Divergence"
     mlCode: "klLoss = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))"
     tier: intuition
-    breaks: "CSS specificity is a hand-tunable balance between rules. KL divergence is an asymmetric distance between distributions used as a regularization term in VAEs. The weight on KL vs reconstruction loss is a hyperparameter that materially shapes the latent space."
+    breaks: "A lint config is a hand-written rule list with discrete enforcement: off, warn, or error, and passing has no gradient. KL divergence is a continuous, asymmetric distance between probability distributions, added to reconstruction error in one differentiable loss and traded off by beta at every training step. The payoff differs too: conforming code is merely consistent, while conforming encodings overlap, and that overlap is what lets a point between two of them decode to something coherent."
 consequence:
   narrative: "With KL divergence in the loss, the latent space smooths out. Random samples decode into coherent art. MUSE generates an 'original' that eerily resembles a famous painting: memorization vs generalization."
 hints:
@@ -34,14 +34,14 @@ keywords:
 ---
 
 <Dialogue speaker="MUSE">
-Train me twice and compare. With beta at 0.1, I reconstruct Samir's sketches almost pixel-perfect and my latent space turns to gravel: clusters, gaps, dead zones. With beta at 4, everything decodes soft and blurry but the space goes smooth as glass. Where between those two would you like me to live?
+Same sketches, two runs, and I changed one number. With beta at 0.1, I reconstruct Samir's sketches almost pixel-perfect and my latent space turns to gravel: clusters, gaps, dead zones. With beta at 4, everything decodes soft and blurry but the space goes smooth as glass. Where between those two would you like me to live?
 </Dialogue>
 
 <Dialogue speaker="Yara">
-It's like CSS specificity. Too specific and your styles are rigid, impossible to override. Too generic and nothing looks right. You need the balance point.
+I answer that question every time I hang a show. Pin every piece to an exact spot and the room reads as a list. Leave too much air between them and nothing reads at all. You find the setting by walking the room, not by calculating it.
 </Dialogue>
 
-The VAE loss function has two parts: **reconstruction loss** (how well it rebuilds the input) and **KL divergence** (how close the latent distribution is to a standard normal). Together, they form the Evidence Lower Bound (ELBO).
+The VAE loss function has two parts: **reconstruction loss** (how well it rebuilds the input) and **KL divergence** (how close the latent distribution is to a standard normal). Minimizing their sum is the same as maximizing the Evidence Lower Bound (ELBO).
 
 <LearningObjectives objectives={["Understand KL divergence as a measure of distribution difference", "Implement the VAE loss function with reconstruction + KL terms", "Tune the balance between reconstruction quality and latent smoothness", "Recognize the ELBO as the objective function for VAEs"]} />
 
@@ -61,7 +61,7 @@ KL divergence answers: "How different is the encoder's distribution from a stand
 
 function klDivergence(mu: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
   // KL = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))
-  // Terms rearranged below, so the sign flips to +0.5: KL is never negative
+  // Same terms, reordered so the leading sign is +0.5
   const kl = mu.square()
     .add(logVar.exp())
     .sub(logVar)
@@ -75,8 +75,8 @@ function klDivergence(mu: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
 // Intuition:
 // mu far from 0 → penalty (move toward center)
 // logVar far from 0 → penalty (standardize spread)
-// This forces the encoder to use the SAME region of space
-// for ALL data, creating a smooth, navigable landscape`}
+// Every encoding gets pulled into the same populated region,
+// so a point between two of them still lands where the decoder has been`}
 </CodeBlock>
 
 ## The Complete VAE Loss
@@ -112,20 +112,22 @@ function vaeLoss(
 }`}
 </CodeBlock>
 
-## The AI-Wrong Moment
+## When the Latent Space Memorizes
+
+<Dialogue speaker="Yara">
+Stop. That is a Mondrian. I have stood in front of it: black lines, three blocks of color, and MUSE has handed it back to me with the red square four pixels wider. It did not compose that. It remembered it.
+</Dialogue>
 
 <CodeBlock language="typescript" title="memorization-warning.ts">
-{`// MUSE generates an "original" piece for the exhibition.
-// Yara recognizes it instantly; it's nearly identical to
-// Mondrian's "Composition with Red, Blue, and Yellow."
-
-// This is MEMORIZATION, not generalization.
-// When KL divergence is too low, the model memorizes training data
-// instead of learning the underlying distribution.
+{`// This is MEMORIZATION, not generalization.
+// When beta is too low, the KL term stops costing anything and the encoder is
+// free to park each training image at its own point with near-zero variance.
+// That reconstructs beautifully and generalizes to nothing.
 
 // How to tell the difference:
 // 1. Generate many samples and check for near-duplicates of training data
-// 2. Measure KL divergence; if near zero, the model may be memorizing
+// 2. Watch the KL term while training: if it climbs and never settles, the
+//    encoder is buying itself one private point per image
 // 3. Interpolate between two encoded training samples;
 //    smooth transitions = generalization, jumpy transitions = memorization`}
 </CodeBlock>
@@ -141,7 +143,7 @@ VAE's KL term has a closed-form solution when q(z|x) and p(z) are both Gaussian.
 
 Summed across all latent dimensions, this is the regularization loss VAE pays to keep the encoder's distribution close to the prior.
 
-**Asymmetry of KL:** `KL(q || p) ≠ KL(p || q)`. VAE uses the forward direction `KL(q || p)`, which encourages q to cover only regions where p has mass, so the encoder's distribution stays tight around the prior. The reverse direction would encourage q to cover all of p, which gives blurry, mode-averaged samples.
+**Asymmetry of KL:** `KL(q || p) ≠ KL(p || q)`. VAE uses `KL(q || p)`, the reverse direction, which pushes q to put mass only where the prior already has it, so the encoder's distribution stays tight around N(0, 1). The forward direction `KL(p || q)` would push q to cover all of p, which is what produces blurry, mode-averaged samples.
 
 **β-VAE** scales this term: `L = recon + β · KL`. β > 1 forces a tighter encoder, encouraging disentanglement at the cost of reconstruction quality.
 </DerivationDrawer>

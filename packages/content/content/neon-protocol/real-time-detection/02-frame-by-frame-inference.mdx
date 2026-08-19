@@ -63,8 +63,11 @@ function createInferenceLoop(
   let lastTime = performance.now();
   let frameCount = 0;
   let fps = 0;
+  let running = true;
 
   function detect() {
+    if (!running) return;
+
     const now = performance.now();
     frameCount++;
 
@@ -93,8 +96,8 @@ function createInferenceLoop(
   // Start the loop
   requestAnimationFrame(detect);
 
-  // Return a stop function
-  return () => { /* set a flag to break the loop */ };
+  // Return a stop function: the next scheduled detect() sees the flag and returns
+  return () => { running = false; };
 }`}
 </CodeBlock>
 
@@ -107,7 +110,7 @@ function detectLeaky() {
   const input = frame.resizeBilinear([224, 224]); // Another leak!
   const pred = model.predict(input.expandDims(0)); // And another!
   requestAnimationFrame(detectLeaky);
-  // After 60 seconds at 30fps: 1,800 leaked tensors ~= browser crash
+  // After 60 seconds at 30fps: three leaks a frame, about 5,400 live tensors, dead tab
 }
 
 // GOOD: tf.tidy() cleans up automatically
@@ -131,4 +134,4 @@ Build a frame-by-frame inference loop that tracks FPS and prevents memory leaks.
 
 <Exercise slug="frame-inference" />
 
-<KeyTakeaways takeaways={["requestAnimationFrame schedules the loop, but your real frame rate is set by inference time, not the display's 60Hz", "tf.tidy() is essential; without it, tensor memory leaks crash the browser in seconds", "Real-time means your inference time must be less than your frame budget (33ms at 30fps)", "Monitor tf.memory().numTensors to verify your loop is not leaking"]} />
+<KeyTakeaways takeaways={["requestAnimationFrame schedules the loop, but your real frame rate is set by inference time, not the display's 60Hz", "tf.tidy() is not optional in a frame loop: three undisposed tensors a frame comes to about 5,400 in a minute, and the tab is gone before the second minute is out", "Real-time means your inference time must be less than your frame budget (33ms at 30fps)", "Monitor tf.memory().numTensors to verify your loop is not leaking"]} />

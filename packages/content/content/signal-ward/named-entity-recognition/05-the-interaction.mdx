@@ -58,16 +58,12 @@ Two different specialists. Two different prescribing systems. Neither saw the ot
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-When you run `npm install`, the package manager resolves dependencies. If `package-a` requires `react@17` and `package-b` requires `react@18`, you get a conflict warning. The system catches incompatibilities that a developer manually reviewing two `package.json` files might miss.
+When you run `npm install`, the package manager resolves the whole tree at once. If `package-a` declares a peer dependency on `react@17` and `package-b` declares one on `react@18`, npm stops with an ERESOLVE error instead of installing a tree that cannot work. No human diffed the two `package.json` files. The resolver did.
 
-Drug interaction detection works identically. Each clinical note is a `package.json`. Each prescribed drug is a dependency. The NER pipeline extracts all "dependencies" across all "packages" and checks for conflicts against a known interaction database.
-
-Dependency conflicts span multiple `package.json` files from different teams; drug interactions span multiple clinical notes from different prescribers. No single doctor sees the full picture. The system does.
+Drug interaction detection runs the same shape of check. Each clinical note is a `package.json`, each prescribed drug is a dependency, and the NER pipeline collects every dependency across every package before testing the pairs against a known interaction table. One difference decides whether it works: npm never has to guess whether two spellings mean the same package, and the pipeline does that on every mention before it can check anything.
 
 <CodeBlock language="typescript" title="drug-interaction-detector.ts">
-{`import * as tf from '@tensorflow/tfjs';
-
-// Known drug interactions, like a database of incompatible package versions
+{`// Known drug interactions, like a database of incompatible package versions
 const INTERACTION_DB: Record<string, { severity: string; effect: string }> = {
   'aspirin+warfarin': {
     severity: 'HIGH',
@@ -192,8 +188,8 @@ Build a drug interaction detection pipeline that catches dangerous combinations 
 
 ## On-Call Scenario
 
-Post-mortem: a known drug interaction (warfarin + aspirin) slipped through the NER + interaction pipeline last Tuesday. Diagnose where in the pipeline the failure occurred.
+Karimi has a second chart under the first. Different patient, same pair, warfarin and aspirin, both on the ward last Tuesday, and Diagnostic One said nothing. Find the stage where the pipeline went quiet.
 
 <Exercise slug="incident-missed-interaction" />
 
-<KeyTakeaways takeaways={["Known interactions are a lookup; novel pairs need inference, which is why entity linking and cross-sentence relation extraction do the real work", "Cross-document extraction catches what siloed systems miss, like cross-package dependency conflicts", "The NER-to-interaction pipeline mirrors tokenize → parse → resolve → alert", "Automated safety checks augment clinical judgment: systematic where humans are inconsistent"]} />
+<KeyTakeaways takeaways={["Pairwise lookup only fires after every mention is normalized to one canonical drug name; novel pairs, three-way combinations, and dose-dependent effects need inference no table provides", "Cross-document extraction catches what siloed systems miss, like cross-package dependency conflicts", "The NER-to-interaction pipeline mirrors tokenize → parse → resolve → alert", "Automated safety checks augment clinical judgment: systematic where humans are inconsistent"]} />

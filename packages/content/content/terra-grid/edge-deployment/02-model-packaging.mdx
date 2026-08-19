@@ -34,12 +34,16 @@ keywords:
   - artifact
 ---
 
+<Dialogue speaker="Priya Sharma">
+Before anything ships: which build is on the Cortex-A53 units right now, and which sensor distribution did it train on?
+</Dialogue>
+
 <Dialogue speaker="Tariq Hussain">
-I'm not shipping raw weight files to 847 devices. Every deployment artifact needs a version, a checksum, and a rollback path. One corrupt byte in a weight file and the model outputs garbage.
+Nobody can answer that from here, which is the whole problem. I'm not shipping raw weight files to 847 devices. Every deployment artifact needs a version, a checksum, and a rollback path. One corrupt byte in a weight file and the model outputs garbage.
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-Treat it like a release. Semantic versioning, integrity hashes, the works.
+Then make the version carry something. If 2.1.0 trained on the March sensor distribution and 2.2.0 trained on the June one, the device has to read that off the manifest before it loads a single weight. A checksum tells you the bytes arrived intact. It does not tell you the model still fits the world it landed in.
 </Dialogue>
 
 Nothing reaches the npm registry without a `package.json`, a version number, and an integrity hash; loose files are not a release. Model deployment deserves the same rigor. A model package bundles everything needed for inference into a single, versioned, verifiable artifact.
@@ -61,11 +65,12 @@ interface ModelPackage {
     created: string;
     inputShape: number[];
     outputShape: number[];
+    trainedOn: string;          // sensor distribution these weights learned
     preprocessing: PreprocessConfig;
   };
   weights: ArrayBuffer;          // the model weights binary
   checksum: string;              // SHA-256 of weights
-  signature: string;             // deployment approval hash
+  bundleTag: string;             // ties the checksum to the version
 }
 
 interface PreprocessConfig {
@@ -79,6 +84,7 @@ function createPackage(
   weights: ArrayBuffer,
   config: PreprocessConfig,
   version: string,
+  trainedOn: string,
 ): ModelPackage {
   const checksum = createHash('sha256')
     .update(Buffer.from(weights))
@@ -89,13 +95,19 @@ function createPackage(
       name: 'terra-grid-intelligence',
       version,
       created: new Date().toISOString(),
-      inputShape: [1, 24],       // 24 sensor features
-      outputShape: [1, 3],       // normal, warning, critical
+      inputShape: model.inputs[0].shape.map(d => d ?? 1),   // [1, 24] sensor features
+      outputShape: model.outputs[0].shape.map(d => d ?? 1), // [1, 3] normal, warning, critical
+      trainedOn,                                            // e.g. 'sector-7 june distribution'
       preprocessing: config,
     },
     weights,
     checksum,
-    signature: createHash('sha256')
+    // Binds the checksum to the version so a repackaged artifact fails the
+    // pairing check. It is not a signature: both inputs travel with the
+    // package, so anyone who can rewrite the weights can rewrite this too.
+    // Real deployment approval needs a key the packager holds and the
+    // device does not.
+    bundleTag: createHash('sha256')
       .update(checksum + version)
       .digest('hex'),
   };
@@ -104,7 +116,7 @@ function createPackage(
 
 ## Integrity Verification
 
-Subresource Integrity (SRI) hashes verify that a CDN-served script has not been tampered with. Model checksums do the same thing: verify that the weights arriving on an edge device are exactly what was packaged.
+Subresource Integrity (SRI) hashes let a page reject a CDN script whose bytes changed. They work because the expected hash sits in your HTML, on a path the CDN does not control. A model checksum ships inside the package it is checking, so it proves the weights arrived intact, not that you are the one who sent them. It catches corruption. Substitution needs a signing key the packager holds and the device only verifies.
 
 <CodeBlock language="typescript" title="verify-package.ts">
 {`function verifyPackage(pkg: ModelPackage): boolean {
@@ -118,12 +130,12 @@ Subresource Integrity (SRI) hashes verify that a CDN-served script has not been 
     return false;
   }
 
-  const expectedSig = createHash('sha256')
+  const expectedTag = createHash('sha256')
     .update(pkg.checksum + pkg.manifest.version)
     .digest('hex');
 
-  if (expectedSig !== pkg.signature) {
-    console.error('SIGNATURE MISMATCH: unauthorized package');
+  if (expectedTag !== pkg.bundleTag) {
+    console.error('TAG MISMATCH: these weights were packaged under a different version');
     return false;
   }
 
@@ -145,4 +157,4 @@ Create a model packaging function with versioning and integrity verification.
 
 <Exercise slug="package-model" />
 
-<KeyTakeaways takeaways={["A model package bundles weights, preprocessing config, and version metadata into one verifiable artifact whose format must match the target runtime", "Integrity checksums prevent corrupted deployments the same way SRI hashes prevent tampered scripts", "Semantic versioning for models enables rollback and compatibility tracking across your device fleet", "Never deploy raw weight files: always package, version, verify, then deploy"]} />
+<KeyTakeaways takeaways={["A model package bundles weights, preprocessing config, and version metadata into one verifiable artifact whose format must match the target runtime", "Integrity checksums catch corrupted deployments the same way an SRI hash catches a changed script; proving who sent the weights takes a signing key the device never holds", "Semantic versioning for models enables rollback and compatibility tracking across your device fleet", "Never deploy raw weight files: always package, version, verify, then deploy"]} />

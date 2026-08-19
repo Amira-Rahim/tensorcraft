@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
-import { worlds } from "@tensorcraft/worlds";
 
 /* Design tokens, same set dashboard-view.tsx uses. */
 const LIME = "var(--tc-primary)";
@@ -61,7 +60,6 @@ export function FirstRunView({
   resumeUrl,
   totalWorldLessons,
 }: FirstRunProps) {
-  const lessonTerm = worlds[worldSlug]?.terminology.lesson ?? "Lesson";
   const tx = TRANSMISSION[worldSlug];
 
   // Two plain stats, nothing that needs explaining before lesson 1
@@ -211,7 +209,7 @@ export function FirstRunView({
                 marginBottom: 40,
               }}
             >
-              {resumeUrl ? `Start First ${lessonTerm} →` : "Start Learning →"}
+              {resumeUrl ? "Start First Lesson →" : "Start Learning →"}
             </Link>
 
             {/* Stat strip: neutral hairline dividers (structure, not

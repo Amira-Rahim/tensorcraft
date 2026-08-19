@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Test result dashboards show pass/fail counts. Experiment tracking must capture hyperparameters, dataset version, code hash, environment, and dozens of metrics per run. Naming is the hard problem (which experiment did the prod model come from?)."
 consequence:
-  narrative: "Priya's experiment tracker reveals that learning rate 0.0005 with batch size 64 consistently outperforms all other configurations."
+  narrative: "Priya's tracker finds the missing run in one query: number 31, learning rate 0.001, batch size 64, 96.1% accuracy. She had rerun eleven of the other thirty by hand."
 hints:
   - level: nudge
     content: "ExperimentTracker.log() should capture hyperparameters, metrics, and data version per run, so any two runs can be compared side by side"
@@ -34,15 +34,17 @@ keywords:
   - reproducibility
 ---
 
+Somewhere in this week's 31 training runs is a model that hit 96.1% accuracy. Nobody can say which one.
+
 <Dialogue speaker="Priya Sharma">
-I ran 31 experiments this week. I know one of them hit 96.1% accuracy. But I can't tell you the learning rate, the batch size, or which data version it used. I have to rerun them all.
+I watched that number print. But I can't tell you the learning rate, the batch size, or which data version produced it. I have to rerun them all.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 That is 31 GPU-hours spent buying answers we then threw away. Logging a run costs one line of code; rerunning one costs a GPU-hour and a day of queue time. We do not repeat experiments we cannot remember.
 </Dialogue>
 
-Somewhere in this week's 31 runs is a 96.1% model that nobody can reproduce. A CI dashboard would never permit the equivalent: every test run records what ran, how long it took, and what coverage it hit, and Tuesday's run sits one click from Friday's. Experiment tracking gives training runs the same memory.
+A CI dashboard would never permit the equivalent: every test run records what ran, how long it took, and what coverage it hit, and Tuesday's run sits one click from Friday's. Experiment tracking gives training runs the same memory.
 
 <LearningObjectives objectives={["Design an experiment tracking system that logs hyperparameters, metrics, and artifacts", "Compare training runs to identify the best configuration, like comparing test suite results", "Link experiments to data versions and code versions for full reproducibility", "Query experiment history to answer questions like 'what learning rate works best?'"]} />
 
@@ -84,12 +86,24 @@ class ExperimentTracker {
     );
   }
 
+  // Two of these four metrics are better when they are smaller
+  private static readonly higherIsBetter: Record<keyof ExperimentRun['metrics'], boolean> = {
+    accuracy: true,
+    loss: false,
+    f1Score: true,
+    inferenceMs: false,
+  };
+
   getBestRun(metric: keyof ExperimentRun['metrics']): ExperimentRun | null {
     const completed = this.runs.filter(r => r.status === 'completed');
     if (completed.length === 0) return null;
-    return completed.reduce((best, run) =>
-      run.metrics[metric] > best.metrics[metric] ? run : best
-    );
+    const wantsHigher = ExperimentTracker.higherIsBetter[metric];
+    return completed.reduce((best, run) => {
+      const beatsBest = wantsHigher
+        ? run.metrics[metric] > best.metrics[metric]
+        : run.metrics[metric] < best.metrics[metric];
+      return beatsBest ? run : best;
+    });
   }
 
   compareRuns(idA: string, idB: string): Record<string, any> {
@@ -137,6 +151,11 @@ async function trackedTrainingRun(
     batchSize: params.batchSize,
     validationSplit: 0.2,
   });
+
+  // The per-epoch curve is the most useful artifact fit() hands back:
+  // log it now or rerun the whole thing to get it later
+  const lossCurve = (history.history.loss as number[]).map(l => l.toFixed(3));
+  console.log(\`\${runId} loss curve: \${lossCurve.join(' → ')}\`);
 
   const evalResult = model.evaluate(data.test, data.testLabels) as tf.Scalar[];
 

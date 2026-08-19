@@ -38,7 +38,7 @@ export function CurriculumPreview() {
                 primaryLight={world.paletteLight?.primary}
               >
                 <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-text-primary font-mono tracking-tight">
-                  What&rsquo;s in a World
+                  What&rsquo;s Inside
                 </h2>
                 <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
                   every module in {world.displayName}, lesson by lesson

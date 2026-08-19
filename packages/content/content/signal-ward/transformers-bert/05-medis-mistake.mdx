@@ -55,11 +55,11 @@ Your system just recommended an insulin review for a patient whose diabetes reso
 
 <LearningObjectives objectives={["Identify common failure modes in NLP models: negation blindness, temporal reasoning gaps, and distributional shift", "Implement confidence thresholds to flag uncertain predictions", "Build negation detection to catch resolved/denied/ruled-out conditions", "Design human-in-the-loop safeguards for safety-critical applications"]} />
 
-## The Stale Cache Problem
+## Why MEDI Fired
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-MEDI saw "Type 2 diabetes mellitus" and fired. The phrase activates strong patterns from training data, where it almost always marks an active condition, and the single word "resolved" carried too little attention weight to flip the prediction. If the failure shape feels familiar, it is a stale cache: the data changed, the system's representation didn't, and the CDN keeps serving the old version.
+MEDI saw "Type 2 diabetes mellitus" and fired. The phrase activates strong patterns from training data, where it almost always marks an active condition, and the single word "resolved" carried too little attention weight to flip the prediction. A stale cache is the closest thing you have already debugged, and the resemblance stops at the symptom. A cache holds a value that was correct when it was written, so you refresh it. MEDI holds nothing. It read the note and computed the wrong label, so the fix is in how the note gets read, not in what is stored.
 
 <Dialogue speaker="Vikram">
 This is a negation detection failure. MEDI's model learned strong associations: "Type 2 diabetes" maps to "active condition" in the vast majority of training examples. The word "resolved" should invalidate that classification, but the model's attention weights didn't give it enough importance.
@@ -98,7 +98,7 @@ const tokens = ['[CLS]', 'History', 'of', 'Type', '2', 'diabetes',
                 'resolved', 'after', 'bariatric', 'surgery', '[SEP]'];
 const weights = [0.02, 0.05, 0.01, 0.18, 0.12, 0.35,
                  0.04, 0.02, 0.08, 0.11, 0.02];
-//                                        ^^^^
+//               ^^^^
 // "resolved" got only 4% attention: the model barely noticed it
 
 const analysis = analyzeAttention(tokens, weights);
@@ -111,7 +111,7 @@ analysis.forEach(a => {
 ## Three Lines of Defense
 
 <Dialogue speaker="Vikram">
-MEDI's error teaches us that accuracy on a test set doesn't guarantee safety in production. We need defense in depth, just as you wouldn't rely solely on client-side validation in a web app.
+MEDI's error teaches us that accuracy on a test set doesn't guarantee safety in production. The test set never contained this note. So we add three checks, each cheap, each catching a failure the other two miss.
 </Dialogue>
 
 ### Defense 1: Confidence Thresholds
@@ -151,12 +151,13 @@ const labels = ['Active', 'Resolved', 'Chronic', 'Suspected', 'Ruled-out'];
 // High confidence: model is certain
 const clearCase = tf.tensor1d([3.2, -1.0, 0.1, -0.5, -2.0]);
 console.log('Clear case:', predictWithConfidence(clearCase, labels));
-// → { label: 'Active', confidence: 0.94, requiresReview: false }
+// → { label: 'Active', confidence: 0.92, requiresReview: false }
 
-// MEDI's problematic case: model is uncertain
+// A genuinely uncertain note: the top two labels are nearly tied
 const ambiguousCase = tf.tensor1d([1.1, 0.9, 0.3, -0.2, -0.5]);
 console.log('Ambiguous case:', predictWithConfidence(ambiguousCase, labels));
-// → { label: 'Active', confidence: 0.38, requiresReview: true }`}
+// → { label: 'Active', confidence: 0.36, requiresReview: true }
+// MEDI's alert was not this. It scored 0.91 on 'Active'. This gate would have shipped it.`}
 </CodeBlock>
 
 ### Defense 2: Negation Detection
@@ -198,7 +199,9 @@ console.log('Ambiguous case:', predictWithConfidence(ambiguousCase, labels));
 const note = "History of Type 2 diabetes mellitus, resolved following bariatric surgery";
 const result = detectNegation(note, "diabetes");
 console.log(result);
-// → { isNegated: true, negationCue: 'resolved', windowText: 'History of Type 2 diabetes mellitus, resolved following' }
+// → { isNegated: true, negationCue: 'History of', windowText: 'History of Type 2 diabetes mellitus, resolved following' }
+// Alternation returns the LEFTMOST match, so 'History of' wins over 'resolved'.
+// Both are valid cues here. If you need the strongest one, collect every match and rank them.
 
 // A truly active condition
 const activeNote = "Patient presents with uncontrolled Type 2 diabetes mellitus, A1C 9.8%";
@@ -243,7 +246,7 @@ function triagePrediction(
 }
 
 // MEDI's mistake, caught by the safety net
-const mediResult = triagePrediction('Type 2 diabetes', 'Active', 0.72, true);
+const mediResult = triagePrediction('Type 2 diabetes', 'Active', 0.91, true);
 console.log(mediResult);
 // → { action: 'flag-for-review' }: negation + active = conflict
 
@@ -267,6 +270,6 @@ Build a diagnostic safety pipeline that combines confidence thresholds, negation
 
 <Exercise slug="debug-medi" />
 
-<KeyTakeaways takeaways={["A hallucination has no underlying correct value to refresh: the model invents plausible text from patterns, not from any cached source", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth (confidence, negation, human review) is essential for safety-critical ML applications"]} />
+<KeyTakeaways takeaways={["Nothing is cached: the model recomputes a label from the input every time, so a wrong label is a reading failure, not a staleness bug", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth (confidence, negation, human review) is essential for safety-critical ML applications"]} />
 
 > **DISPATCH archive · field intercept #18-N:** Hassan's edge fleet caught the same kind of confident hallucination: model surfaced a high-confidence prediction on a sensor that had silently disconnected. The signal was zero, the model was sure. Confidence is not validity; both modalities forget this at scale.

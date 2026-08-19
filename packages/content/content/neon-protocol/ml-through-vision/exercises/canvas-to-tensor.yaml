@@ -1,7 +1,7 @@
 slug: canvas-to-tensor
 lessonSlug: seeing-like-a-machine
 title: "Convert Canvas Pixels to a Tensor"
-instructions: "Build `pixelsToTensor(pixelData, width, height)` that takes a flat Uint8 RGBA array (length = width*height*4), creates an RGB tensor of shape [height, width, 3] (drop alpha channel), and normalizes to [0, 1] (divide by 255). This is the canonical preprocessing for browser-based vision models."
+instructions: "Build `pixelsToTensor(pixelData, width, height)` that takes a flat Uint8 RGBA array (length = width*height*4), creates an RGB tensor of shape [height, width, 3] (drop alpha channel), and normalizes to [0, 1] (divide by 255). That shape and that range are what most vision models want before they will look at a frame, in the browser or in Node."
 mlContent: data
 starterCode: |
   function pixelsToTensor(pixelData, width, height) {

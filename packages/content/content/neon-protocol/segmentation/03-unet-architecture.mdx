@@ -12,14 +12,14 @@ context:
 concept:
   explanation: "U-Net is an encoder-decoder architecture for dense prediction. The encoder compresses spatial information into features (like a funnel). The decoder expands features back to full resolution. Skip connections bridge corresponding encoder-decoder layers, preserving spatial detail."
   bridge:
-    jsTitle: "Layout flow: content down, styles up"
-    jsCode: "// CSS cascade: properties flow down, computed styles resolve up"
+    jsTitle: "Layout flow: content down, sizes up"
+    jsCode: "// CSS: inherited properties cascade down, intrinsic content sizes flow back up"
     mlTitle: "U-Net: Encode down, decode up"
     mlCode: "// Encoder compresses, decoder expands, skip connections preserve detail"
     tier: structural
-    breaks: "Layout flow ships content down and styles up, a one-way render. U-Net adds skip connections that fuse encoder feature maps directly into matching-resolution decoder layers; the merge is concatenation, not pass-through."
+    breaks: "CSS layout runs one way at each level: properties cascade down, intrinsic content sizes flow back up, and nothing hands an ancestor's exact box to a distant descendant. U-Net adds skip connections that fuse encoder feature maps directly into matching-resolution decoder layers; the merge is concatenation, not pass-through."
 consequence:
-  narrative: "Fifty epochs on District 7 feeds, and the masks come back pixel-perfect, drones cut cleanly out of sky. Zara taps the sharpest edge: 'The skip connections preserved that. Without them, every drone would be a blurry blob.'"
+  narrative: "Fifty epochs on District 7 feeds. The drone masks come back with the rotor arms intact. Then Zara scrubs to the Carmine Street crosswalk: a man standing flat against a grey wall is painted building, wall to shoulder, no seam. Amir counts four people in the frame and three in the mask. 'Skip connections bought us the rotor arms,' Zara says. 'They did not buy us him.'"
 hints:
   - level: nudge
     content: "The U-Net has two halves: encoder (downsampling) and decoder (upsampling), connected by skip connections"
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-The encoder is the descent: convolutions and pooling that compress a 224-by-224 image down to a tiny 14-by-14 feature map. Rich in meaning, poor in spatial detail. The decoder is the ascent: transposed convolutions that expand back to full resolution. But without skip connections, the decoded output loses fine edges. That is why the U shape matters.
+The encoder is the descent: convolutions and pooling that compress a 224-by-224 image down to a 28-by-28 feature map. Rich in meaning, poor in spatial detail. The decoder is the ascent: transposed convolutions that expand back to full resolution. But without skip connections, the decoded output loses fine edges. That is why the U shape matters.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -95,15 +95,15 @@ function decoderBlock(
   const enc2 = encoderBlock(enc1.downsampled, 64);  // 112 -> 56
   const enc3 = encoderBlock(enc2.downsampled, 128); // 56  -> 28
 
-  // Bottleneck
+  // Bottleneck: same padding and no pooling, so it stays 28x28
   let bottleneck = tf.layers.conv2d({
     filters: 256, kernelSize: 3, padding: 'same', activation: 'relu'
   }).apply(enc3.downsampled) as tf.SymbolicTensor;
 
   // Decoder (ascending path) with skip connections
-  const dec3 = decoderBlock(bottleneck, enc3.skip, 128); // 14 -> 28
-  const dec2 = decoderBlock(dec3, enc2.skip, 64);        // 28 -> 56
-  const dec1 = decoderBlock(dec2, enc1.skip, 32);        // 56 -> 112... -> 224
+  const dec3 = decoderBlock(bottleneck, enc3.skip, 128); // 28 -> 56
+  const dec2 = decoderBlock(dec3, enc2.skip, 64);        // 56 -> 112
+  const dec1 = decoderBlock(dec2, enc1.skip, 32);        // 112 -> 224
 
   // Final 1x1 convolution: one score per class per pixel
   const output = tf.layers.conv2d({
@@ -127,26 +127,27 @@ Build an encoder-decoder block with a skip connection.
 **U-Net structure:**
 
 ```
-Input [256, 256, 3]
-  └── Conv block 1 [256, 256, 64] ──────────┐
-        └── MaxPool                         │
-          └── Conv block 2 [128, 128, 128] ─┼──┐
-                └── MaxPool                 │  │
-                  └── Conv block 3 [64, 64, 256] ─┐
-                        └── MaxPool         │  │  │
-                          └── Bottleneck [32, 32, 512]
-                          └── UpSample      │  │  │
-                  ┌── Concat ──[Conv block 3 features]──┘  │  │
-                Conv [64, 64, 256]                          │  │
-                └── UpSample                               │  │
-          ┌── Concat ──[Conv block 2 features]─────────────┘  │
-        Conv [128, 128, 128]                                  │
-        └── UpSample                                          │
-  ┌── Concat ──[Conv block 1 features]─────────────────────┘
-Conv [256, 256, num_classes]
+Input [224, 224, 3]
+  Conv block 1 -> [224, 224, 32] ---------------------+   (skip 1)
+    MaxPool -> [112, 112, 32]                         |
+      Conv block 2 -> [112, 112, 64] ---------------+ |   (skip 2)
+        MaxPool -> [56, 56, 64]                     | |
+          Conv block 3 -> [56, 56, 128] ---------+  | |   (skip 3)
+            MaxPool -> [28, 28, 128]             |  | |
+              Bottleneck -> [28, 28, 256]        |  | |
+            ConvTranspose -> [56, 56, 128]       |  | |
+          Concat with skip 3 -> [56, 56, 256] <--+  | |
+          Conv -> [56, 56, 128]                     | |
+        ConvTranspose -> [112, 112, 64]             | |
+      Concat with skip 2 -> [112, 112, 128] <-------+ |
+      Conv -> [112, 112, 64]                          |
+    ConvTranspose -> [224, 224, 32]                   |
+  Concat with skip 1 -> [224, 224, 64] <--------------+
+  Conv -> [224, 224, 32]
+  Conv 1x1 -> [224, 224, num_classes]
 ```
 
-**Why skip connections matter:** the bottleneck loses spatial detail (32×32 from 256×256). The decoder upsamples back, but without skips it would have to invent fine details from coarse features. Skips concatenate the original high-resolution features at each upsample stage, restoring boundary detail.
+**Why skip connections matter:** the bottleneck loses spatial detail (28×28 from 224×224). The decoder upsamples back, but without skips it would have to invent fine details from coarse features. Skips concatenate the original high-resolution features at each upsample stage, restoring boundary detail.
 
 **Concatenation channel math:** decoder layer at resolution R has `C_decoder` channels. The corresponding encoder layer has `C_encoder` channels. After concatenation: `C_decoder + C_encoder`. Then a conv layer reduces back to `C_decoder` for the next upsample stage.
 

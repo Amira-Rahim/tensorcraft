@@ -46,4 +46,20 @@ describe("DeepScanDemo", () => {
     );
     expect(screen.getByTestId("demo-verdict-7741").textContent).toMatch(/51/);
   }, 10000);
+
+  // The framing caption renders on the landing page, before lesson 1, so it
+  // carries no story vocabulary (owner bar 2026-08-16; pre-lesson copy audit
+  // 2026-08-19 cut "scoring archived sensor readings from the story's ship").
+  it("frames the demo without story vocabulary", () => {
+    const { container } = render(<DeepScanDemo framing />);
+    expect(container.textContent).toMatch(/4 KB neural network/i);
+    for (const term of ["ship", "Archimedes", "story", "sensor"]) {
+      expect(container.textContent).not.toMatch(new RegExp(term, "i"));
+    }
+  });
+
+  it("omits the framing caption inside lessons, where the story is set", () => {
+    const { container } = render(<DeepScanDemo />);
+    expect(container.textContent).not.toMatch(/4 KB neural network/i);
+  });
 });

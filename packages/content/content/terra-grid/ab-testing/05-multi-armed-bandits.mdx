@@ -10,7 +10,7 @@ context:
   narrative: "Priya proposes an improvement to the A/B framework. 'Standard A/B tests lock in the traffic split. Multi-armed bandits adapt. If one model is clearly better, the algorithm shifts traffic automatically. Less exposure to the worse model.'"
   speaker: "Priya Sharma"
 concept:
-  explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing arm. Read another way: bandits are a one-player game against an adversarial environment, with regret as the loss function. The same algorithm reroutes ad rotation and model selection."
+  explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing arm. Read another way: bandits are a one-player game against chance, with regret as the loss function. The same algorithm reroutes ad rotation and model selection."
   bridge:
     jsTitle: "Dynamic Ad Rotation"
     jsCode: "// Show ad with highest CTR more often, explore alternatives with epsilon"
@@ -39,14 +39,14 @@ hints:
 ---
 
 <Dialogue speaker="Priya Sharma">
-Standard A/B tests split traffic 50/50 and wait for significance. That means half your devices run the worse model for the entire test duration. Multi-armed bandits are smarter: they shift traffic toward the winner as evidence accumulates. Less wasted exposure, faster convergence.
+Our ladder moves on the calendar, not on the evidence. Twenty-four hours at 5%, a week at 20%, a week at 50%, whether or not the answer showed up on day two. Multi-armed bandits move on the evidence: they shift traffic toward the winner as it accumulates. Less wasted exposure, faster convergence.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 If it reduces the time our devices spend on a worse model, I want it. Show me the implementation.
 </Dialogue>
 
-The Region 5 test last winter ran a fixed 50/50 split for six weeks. By week two the dashboards already showed the new model winning; the protocol said keep going. For the remaining month, 6,200 devices ran a model everyone knew was worse, because the test design could not adapt. Multi-armed bandits exist for exactly this case. Like the ad rotation systems that show the best-performing ad most of the time while still sampling the rest, a bandit shifts traffic toward the winner as evidence accumulates instead of holding a fixed split until the calendar says stop.
+The Region 5 test last winter ran a fixed 50/50 split for six weeks. By week two the dashboards already showed the new model winning; the protocol said keep going. For the remaining month, 6,200 devices ran a model everyone knew was worse, because the test design could not adapt. Multi-armed bandits exist for exactly this case. Ad rotation already works this way: show the best-performing ad most of the time, keep sampling the rest so a late winner can still overtake it.
 
 <LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Define regret and explain why minimizing it is a game-theoretic objective", "Build a UCB1 bandit and explain why it wastes less per decision the longer it runs"]} />
 
@@ -56,7 +56,7 @@ The Region 5 test last winter ran a fixed 50/50 split for six weeks. By week two
 
 ## Game Theory: Regret Minimization
 
-A bandit is the simplest game: one player (you) against an adversarial environment (the world's hidden reward distributions). Each round you pull an arm; the world reveals a reward. Your goal is not to win (there is no opponent) but to **minimize regret**.
+A bandit is the simplest game: one player (you) against chance. Each arm hides a reward distribution you never get to see. Each round you pull an arm and the world draws one reward from behind it. Your goal is not to win, since nothing is playing against you, but to **minimize regret**.
 
 **Regret** is the gap between the reward you actually earned and the reward you would have earned if you had known the best arm from round one:
 
@@ -142,8 +142,9 @@ bandit.addArm('v3.2-beta', modelV3_2.predict);
 // Each prediction cycle
 const selected = bandit.selectArm();
 const prediction = await selected.predict(sensorData);
-const correct = prediction[0] === actualLabel ? 1 : 0;
-bandit.recordReward(selected.version, correct);
+// Reward is 1 when the arm's call matched the label the sensor logs confirmed later
+const calledAnomaly = prediction[0] > 0.5 ? 1 : 0;
+bandit.recordReward(selected.version, calledAnomaly === actualLabel ? 1 : 0);
 
 console.log('Traffic distribution:', bandit.getStats());`}
 </CodeBlock>
@@ -198,10 +199,10 @@ Implement an epsilon-greedy bandit for adaptive model selection.
 
 <Exercise slug="bandit-algorithm" />
 
-<KeyTakeaways takeaways={["A bandit is a one-player game vs an adversarial environment; minimizing cumulative regret is the strategic objective", "ε-greedy with fixed ε wastes at a constant rate forever; UCB1's regret grows slower than its pull count, so per-decision waste shrinks, with no ε to tune", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
+<KeyTakeaways takeaways={["A bandit is a one-player game against chance; minimizing cumulative regret is the strategic objective", "ε-greedy with fixed ε wastes at a constant rate forever; UCB1's regret grows slower than its pull count, so per-decision waste shrinks, with no ε to tune", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
 
 <RecallPrompt question="Priya pulls you aside: 'Hassan wants the regret bound on paper. How would you define it for our 3-model setup?'" answer="Regret(T) = T·μ* − Σ rewards earned. μ* is the mean reward of the best model. Sum the actual rewards your bandit collected; the gap is how much accuracy you sacrificed by not knowing which model would win from round 1." />
 
-<RecallPrompt question="The lab skeptic Dr. Park asks: 'Your UCB1 has no ε. How does it know when to stop exploring?'" answer="The exploration bonus √(2·ln(N)/pulls) is the answer. Heavily-pulled arms have small bonuses → they get exploited. Rarely-pulled arms have large bonuses → they get sampled. UCB1 self-tunes; ε is replaced by counting." />
+<RecallPrompt question="Elif stops you in the corridor: 'Your UCB1 has no ε. How does it know when to stop exploring?'" answer="The exploration bonus √(2·ln(N)/pulls) is the answer. Heavily pulled arms carry a small bonus, so they get exploited. Rarely pulled arms carry a large one, so they get sampled. UCB1 self-tunes; ε is replaced by counting." />
 
-<RecallPrompt question="Hassan files the post-mortem: 'Why did fixed-ε underperform vs UCB1 over the full quarter?'" answer="Fixed-ε ε-greedy has linear regret: every round carries a constant ε probability of pulling a suboptimal model. UCB1's regret grows roughly like the square root of the round count, slower than the rounds themselves. Over a quarter of inference traffic, that's the gap between 'always somewhat wrong' and 'eventually mostly right.'" />
+<RecallPrompt question="Hassan files the post-mortem: 'Why did fixed-ε underperform against UCB1 over the full quarter?'" answer="Fixed-ε ε-greedy has linear regret: every round carries a constant ε probability of pulling a suboptimal model, so the waste grows in step with the traffic. With a fixed set of model versions, UCB1's regret grows roughly like the logarithm of the round count, so the same quarter of inference costs a shrinking amount per decision. That is the gap between 'always somewhat wrong' and 'wrong less often the longer it runs.'" />

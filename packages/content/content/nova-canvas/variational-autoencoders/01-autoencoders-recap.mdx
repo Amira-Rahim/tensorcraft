@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Build an encoder (shrink) and decoder (expand) with a bottleneck in the middle"
   - level: solution
-    content: "Encoder: 784→256→16, Decoder: 16→256→784. Train to minimize reconstruction error."
+    content: "Encoder: 784→256→128→16. Decoder: 16→128→256→784. Train to minimize reconstruction error."
 keywords:
   - autoencoder
   - compression
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-Before we get fancy, let's make sure you've got the fundamentals locked in. An autoencoder is an audio codec that taught itself: MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
+An autoencoder is an audio codec that taught itself: MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
@@ -95,7 +95,7 @@ function buildAutoencoder(inputDim: number, latentDim: number) {
 
 ## Training and Reconstruction
 
-The autoencoder trains by trying to reproduce its input. The loss is the difference between the original and the reconstruction.
+The autoencoder trains by trying to reproduce its input. The loss is the difference between the original and the reconstruction. Watch `val_loss` alongside `loss`: when the bottleneck is wide enough to copy the input instead of compressing it, training loss keeps dropping while validation loss flattens out.
 
 <CodeBlock language="typescript" title="train-autoencoder.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -137,7 +137,7 @@ An autoencoder learns to map input x → latent z → reconstruction x̂. Loss i
 
 The **bottleneck dimension** dim(z) constrains how much information the model can route through. If x is a 784-pixel MNIST digit and z is dim 8, the autoencoder must compress 784 floats into 8 floats with minimal loss.
 
-**Information-theoretic lower bound:** if z is dim k, the autoencoder can at best preserve k principal components of variance. PCA achieves this bound exactly. A vanilla autoencoder's solution can collapse to a learned PCA when it has no nonlinear capacity to do better.
+**The linear ceiling:** a dim-k autoencoder built from linear layers can at best span the top k principal components, which is exactly what PCA finds. Nonlinear activations are what let an autoencoder beat that ceiling, bending its k axes to follow curved structure that straight ones miss.
 
 **What changes with VAE (next lesson):** the latent is no longer a single vector but a distribution, which forces the model to learn smooth latent geometry.
 </DerivationDrawer>
@@ -145,10 +145,10 @@ The **bottleneck dimension** dim(z) constrains how much information the model ca
 ## Knowledge check
 
 <Quiz
-  question="A vanilla autoencoder reconstructs input perfectly but generates garbage when you sample random points in its latent space. A VAE generates plausible new images. What's the architectural difference that fixes this?"
-  options={[{"text":"VAEs use bigger latent dimensions"},{"text":"VAEs encode each input as a distribution (μ, σ) instead of a single point, and the KL term forces the encoder's distributions to overlap and cover the prior, making the latent space continuous and samplable"},{"text":"VAEs use ReLU instead of sigmoid"},{"text":"VAEs train longer than autoencoders"}]}
+  question="Your trained autoencoder reconstructs training images with 0.018 error. You hand the decoder a random 16-dimensional vector and get colored static. What does that tell you about the latent space?"
+  options={[{"text":"The decoder is undertrained and needs more epochs"},{"text":"Training only ever visited the points the encoder produced, so the space around and between them was never given a meaning the decoder can read"},{"text":"The bottleneck is too small to hold 784 pixels"},{"text":"The random vector fell outside the range the sigmoid output can produce"}]}
   correct={1}
-  explanation="Vanilla autoencoders learn point-to-point mappings; they leave the latent space full of holes between training points where decoding gives garbage. VAEs encode to a Gaussian (μ, σ) and the KL loss pulls every Gaussian toward N(0, I), filling the latent space with overlapping distributions. Sampling N(0, I) lands in well-trained regions."
+  explanation="Reconstruction loss only ever scores points the encoder actually produced. Nothing in the objective says the region between two encodings has to decode to anything, so those regions stay unclaimed and the decoder returns noise there. More epochs pull the training points tighter and make the gaps worse, not better. The next lesson changes what the encoder emits so the gaps start closing."
   tier="structural"
 />
 

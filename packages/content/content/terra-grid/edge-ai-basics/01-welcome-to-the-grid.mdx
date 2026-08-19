@@ -21,7 +21,7 @@ consequence:
   narrative: "GRID assigns you to Site 12: a wind farm in Patagonia with no reliable uplink."
 hints:
   - level: nudge
-    content: "Compare cloudInference() and edgeInference(): one pays a satellite round trip before the model even runs, the other only pays compute"
+    content: "classifyCompute() has two inputs and one of them is a hard override. Which single condition sends the work to the device no matter what the latency number says?"
   - level: solution
     content: "Edge = local inference, Cloud = remote inference"
 keywords:
@@ -54,7 +54,7 @@ Patagonia, 2 AM. A turbine bearing starts to sing its failure note, and the near
 You already understand edge computing. Every time you configure a CDN, you are making the same architectural decision: move the work closer to the user. CDNs cache static assets at edge locations to reduce latency. Edge AI caches *models* on local devices to reduce inference latency.
 
 <CodeBlock language="typescript" title="edge-vs-cloud.ts">
-{`import * as tf from '@tensorflow/tfjs';
+{`import * as tf from '@tensorflow/tfjs-node'; // the gateway runs Node
 
 // Cloud inference: send data, wait for response
 async function cloudInference(sensorData: number[]) {
@@ -65,11 +65,16 @@ async function cloudInference(sensorData: number[]) {
 }
 
 // Edge inference: model runs locally on the device
+let model: tf.LayersModel | undefined;
+
 async function edgeInference(sensorData: number[]) {
-  const model = await tf.loadLayersModel('file://./model/model.json');
+  // Loaded once at boot, not per reading: the load costs seconds, the inference costs milliseconds
+  if (!model) model = await tf.loadLayersModel('file://./model/model.json');
   const input = tf.tensor2d([sensorData]);
   const prediction = model.predict(input) as tf.Tensor;
-  return prediction.dataSync(); // ~89ms local
+  const score = prediction.dataSync(); // ~89ms local
+  tf.dispose([input, prediction]);
+  return score;
 }`}
 </CodeBlock>
 

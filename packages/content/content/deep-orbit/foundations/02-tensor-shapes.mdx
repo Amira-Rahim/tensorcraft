@@ -21,7 +21,7 @@ concept:
     tier: structural
     breaks: "`Array.length` returns one number for a 1D structure. `Tensor.shape` returns an array of dimensions (`[batch, features]`, `[batch, h, w, channels]`, etc) and the rank itself can vary. Reading shape is multi-dimensional; broadcasting rules depend on the full shape vector, not a single length."
 consequence:
-  narrative: "Four hundred fifty rows by sixty-four channels: the stream finally has a layout, and the layout looks deliberate."
+  narrative: "The layout hunt ends on a grid that does not look accidental."
 hints:
   - level: nudge
     content: "reshape([3, 4]) refills the same 12 values row by row: the first 4 become row 0, the next 4 row 1"
@@ -90,14 +90,14 @@ The golden rule: **reshaping never changes the data or its order, only where the
 
 ## The Wrong Kind of Sixty-Four
 
-Here is that rule with the stakes attached. Farah's layout hunt has produced a candidate grid for the first stretch of the stream: `[450, 64]`, 450 readings by 64 channels, 28,800 values. The channel plotter wants channels as rows, shape `[64, 450]`, and Demir reaches for the tool he learned four paragraphs ago.
+Here is that rule with the stakes attached. Farah's layout hunt has produced a candidate grid for the first stretch of the stream: `[450, 64]`, 450 readings by 64 channels. The channel plotter wants channels as rows, shape `[64, 450]`, and Demir reaches for the tool he just learned.
 
 <CodeBlock language="typescript" title="garbled-channels.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
 // Stand-in for the archive block: each value is its own position in the
 // flat stream, so you can see exactly where every number ends up.
-const block = tf.range(0, 28800).reshape([450, 64]);  // [readings, channels]
+const block = tf.range(0, 450 * 64).reshape([450, 64]);  // [readings, channels]
 
 // WRONG: reshape to [64, 450]. Right shape, garbled data.
 const wrong = block.reshape([64, 450]);
@@ -115,7 +115,7 @@ console.log(right.arraySync()[0].slice(0, 5));  // [0, 64, 128, 192, 256]
 // wrong.shape and right.shape are both [64, 450]. Only one is data.`}
 </CodeBlock>
 
-On a real sensor block the failure is quieter and worse: any per-channel structure dissolves, the plotter draws sixty-four confident-looking traces of interleaved junk, and nothing throws, because the element count checks out. This is also exactly where the CSS Grid analogy betrays you. Change `grid-template-columns` and the browser *reflows*, moving items into the new tracks; that reflow is what `reshape` never does. Reshape rewraps the flat line. When you catch yourself wanting the values rearranged, the tool is `transpose`.
+On a real sensor block the failure is quieter and worse: any per-channel structure dissolves, the plotter draws sixty-four confident-looking traces of interleaved junk, and nothing throws, because the element count checks out. This is also where a layout instinct betrays you. Change `grid-template-columns` on a CSS grid and the browser *reflows*, moving items into the new tracks; that reflow is what `reshape` never does. Reshape rewraps the flat line. When you catch yourself wanting the values rearranged, the tool is `transpose`.
 
 ## Challenge
 

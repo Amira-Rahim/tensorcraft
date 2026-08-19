@@ -24,7 +24,7 @@ concept:
     tier: structural
     breaks: "Array.map runs JavaScript per element on the CPU. tf.add operates on whole tensors with hardware-accelerated kernels (WebGL, WASM, WebGPU) and a single op covers millions of elements. Same elementwise idea; different execution model and orders-of-magnitude different cost profile."
 consequence:
-  narrative: "Nazari watches the combined feed scroll and sees it first: every minute or two, the same ripple across all sixty-four channels at once."
+  narrative: "An hour of merged signal scrolls past Nazari's console before she stops it, and what she stops it on is not noise."
 hints:
   - level: nudge
     content: "Averaging two passes is element-wise: add matching positions and divide by 2. No matrix multiply anywhere in this one"
@@ -46,7 +46,7 @@ Demir's first pass at the amplifier is already on the main console when the shif
 Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings; call it a million if you must round, I won't. Whatever that red text is, it is not keeping up with a million samples a minute.
 </Dialogue>
 
-This lesson starts where you are standing: at the bug. You'll read the error, meet the two multiplication ops it is confusing, and repair the pipeline.
+This lesson starts where you are standing: at the bug. You'll read the error, meet the two multiplication ops that line has confused, and repair the pipeline.
 
 <LearningObjectives objectives={["Read a shape-mismatch error and identify which op it comes from", "Perform element-wise tensor operations (add, multiply, subtract)", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose to make shapes compatible"]} />
 
@@ -150,7 +150,7 @@ Add two tensors together to combine sensor readings.
 
 <Epilogue>
 
-Demir wires the three feeds together, add to merge, scale to amplify, and pipes an hour of combined signal to Nazari's console. She watches it scroll for a long moment.
+Demir wires the two passes together, add to merge, scale to amplify, and pipes an hour of combined signal to Nazari's console. She watches it scroll for a long moment.
 
 <Dialogue speaker="Chief Nazari">
 There. Every minute or two, the same ripple across all sixty-four channels at once. Coordinated. Run it again. And Ensign, if this is a math error, I'm taking it out of your coffee ration.

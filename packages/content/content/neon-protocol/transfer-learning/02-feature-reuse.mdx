@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Back at the resistance safehouse, NEON projects a visualization of MobileNet's internal layers onto the wall. Colored heatmaps cascade from top to bottom: edges, textures, shapes, objects. 'The question is not whether this model works,' NEON says. 'The question is why a model trained on cats and cars can recognize drones it has never seen.'"
+  narrative: "Back at the resistance safehouse, NEON projects a visualization of MobileNet's internal layers onto the wall. Colored heatmaps cascade from top to bottom: edges, textures, shapes, objects. 'The question is not whether this model works,' NEON says. 'The question is why a model trained on cats and cars is most of the way to a drone detector without ever having seen a drone.'"
   speaker: "NEON"
 concept:
   explanation: "Pre-trained models learn hierarchical features that transfer across domains. Early layers detect universal visual primitives: edges, gradients, textures. Later layers combine them into domain-specific patterns. The early layers transfer almost anywhere; the deep ones belong to the task they were trained for."
@@ -35,6 +35,8 @@ keywords:
   - feature-extraction
 ---
 
+Run the stolen model on a drone photo and it answers with a confident wrong label: warplane, or kite. There is no drone class in ImageNet, so the label was never going to land. The machinery that produced it is the part worth stealing.
+
 <Dialogue speaker="NEON">
 A Button component does not care if it lives in a shopping cart or a login form. A convolutional filter that detects vertical edges does not care if the edge belongs to a cat's ear or a drone's wing. Meridian paid two million credits for that insight. You are getting it free, which seems fair.
 </Dialogue>
@@ -47,7 +49,7 @@ So the early layers of a model are like a component library, generic building bl
 For the first few layers, yes. The analogy decays with depth. A layer-2 edge detector is a Box primitive: it works anywhere. A layer-11 "golden retriever" detector is somebody else's checkout page. Reuse the primitives. Replace the pages.
 </Dialogue>
 
-Take NEON's decay curve seriously; it is the entire economics of transfer learning. A model's internal features (edges, textures, shapes) recombine to recognize objects it was never trained on. `Button`, `Input`, and `Card` do the same when they compose into an app their authors never imagined. You import the components without caring how they were built. The catch is depth: the deeper the layer, the more it belongs to someone else's app.
+Take NEON's decay curve seriously; it is the entire economics of transfer learning. A model's internal features (edges, textures, shapes) compose into objects it was never trained on; what is missing is only the layer that names them. `Button`, `Input`, and `Card` do the same when they compose into an app their authors never imagined. You import the components without caring how they were built. The catch is depth: the deeper the layer, the more it belongs to someone else's app.
 
 <LearningObjectives objectives={["Understand the feature hierarchy: edges, textures, shapes, objects", "Explain why features learned on one dataset transfer to different domains", "Extract intermediate features from a pre-trained model", "Connect feature reuse to component library patterns in JavaScript development"]} />
 
@@ -145,18 +147,18 @@ function analyzeTransferability(
 ): string {
   const depth = layerIndex / totalLayers;
 
-  if (depth < 0.2) return 'Universal: edges and gradients work everywhere';
-  if (depth < 0.5) return 'High: textures and patterns transfer broadly';
-  if (depth < 0.8) return 'Moderate: object parts transfer to similar domains';
-  return 'Low: task-specific features, likely need retraining';
+  if (depth < 0.3) return 'Universal: edges and gradients work everywhere';
+  if (depth < 0.7) return 'Reusable: textures and object parts transfer broadly';
+  return 'Task-specific: expect to retrain these layers';
 }`}
 </CodeBlock>
 
 ## Why Cats Help You Find Drones
 
 <CodeBlock language="typescript" title="cross-domain-transfer.ts">
-{`// A model trained on ImageNet (cats, dogs, cars, boats) can detect drones.
-// Why? Because the FEATURES are shared, even when the OBJECTS are different.
+{`// A model trained on ImageNet (cats, dogs, cars, boats) hands you most of a
+// drone detector. Not the label. The machinery underneath it.
+// The FEATURES are shared, even when the OBJECTS are different.
 
 // Cat ear edge     → same edge detector → Drone wing edge
 // Fur texture      → same texture detector → Carbon fiber texture
@@ -211,4 +213,4 @@ Extract reusable features from a model's layer hierarchy and measure transferabi
 
 <Exercise slug="extract-reusable-features" />
 
-<KeyTakeaways takeaways={["Pre-trained models learn a hierarchy: edges, textures, shapes, objects; each layer builds on the previous", "Early-layer features are universal and transfer to any vision task, like primitive UI components", "Later-layer features are task-specific and may need retraining, like app-specific pages", "A model trained on cats can detect drones because they share edges, textures, and shapes"]} />
+<KeyTakeaways takeaways={["Pre-trained models learn a hierarchy: edges, textures, shapes, objects; each layer builds on the previous", "Early-layer features are universal and transfer to any vision task, like primitive UI components", "Later-layer features are task-specific and may need retraining, like app-specific pages", "A model trained on cats gets you most of a drone detector, because edges, textures, and shapes are shared; only the last layer still has to learn the word 'drone'"]} />

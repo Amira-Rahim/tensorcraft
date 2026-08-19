@@ -1,7 +1,7 @@
 slug: interpolate-points
 lessonSlug: interpolation
 title: "Interpolate Between Points"
-instructions: "Implement a linear interpolation function that takes two latent vectors (as tf.Tensor1D) and a parameter t (0 to 1), returning the interpolated vector. Then create a function that generates N evenly-spaced interpolation steps."
+instructions: "Implement a linear interpolation function that takes two latent vectors (as tf.Tensor1D) and a parameter t (0 to 1), returning the interpolated vector. Then create a function that walks from z1 to z2 in `steps` equal jumps and returns every point it lands on, both endpoints included, so `steps` of 4 gives you 5 vectors."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -15,7 +15,7 @@ starterCode: |
     z2: tf.Tensor1D,
     steps: number
   ): tf.Tensor1D[] {
-    // Generate 'steps' evenly spaced interpolations from z1 to z2
+    // Walk from z1 to z2 in 'steps' equal jumps, keeping both endpoints
     return null; // your code here
   }
 solutionCode: |

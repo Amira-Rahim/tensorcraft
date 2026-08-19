@@ -141,6 +141,47 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
+- [ ] **Pre-lesson copy audit: open rulings (2026-08-19).** The audit at
+  `docs/audits/prelesson-copy-audit-2026-08-19.md` applied all 54 FIX and
+  3 CUT items the same day. Six groups were deliberately left alone
+  because they conflict with copy the owner authored or approved, and
+  each needs a ruling before anyone edits it:
+  1. The five "Where X ..." world taglines (owner pattern, 2026-08-15).
+     They render pre-lesson on the landing five-worlds section, the
+     /worlds grid, and every coming-soon page.
+  2. Coming-soon pages as a whole: status boards ("200 CAMERAS DARK ·
+     REBUILD PENDING"), plot-paragraph heroes, in-fiction waitlist
+     buttons ("Get paged", "Get the signal"), renamed module/lesson
+     headings ("The 11 Sectors", "5 Protocols per Sector"), capstone
+     system names, and the character dossiers with `personality` notes.
+     These pages exist to sell story worlds; exempting them is
+     defensible, but their meta descriptions and JSON-LD should still be
+     rewritten because search snippets reach strangers with no framing.
+  3. /paywall's "Module 1 is done. The model isn't." premise, which is
+     false for a stranger arriving from a shared link or search.
+  4. "ship in waves" as a stand-in for "no dates announced" (three
+     surfaces).
+  5. The sr-only keyword h2 on the landing page and the keyword list in
+     the sitewide metadata: SEO-driven by design, heard as copy by
+     screen-reader users.
+  6. Legal enumerations naming product surfaces (privacy "arena
+     challenges"/"streaks", terms "World purchases"). A defining clause
+     would satisfy both accuracy and the rule.
+  7. Module descriptions (found while applying the fixes, not fixed).
+     All 11 `packages/content/content/deep-orbit/*/module.yaml`
+     descriptions are story prose ("Board the Archimedes with 64
+     channels of telemetry", "ARIA's rules can name two calibration
+     tones") and they render pre-lesson on the module map and
+     pre-purchase on the /pricing curriculum preview. Recommended fix
+     is a second plain-language `summary` field for pre-lesson
+     surfaces, leaving `description` intact for in-course use; the
+     alternatives are dropping the description from those two surfaces
+     or rewriting all 11. See the audit's "Found while applying"
+     section.
+  Also outstanding, operator-side: the Kit email subject lines ("Your
+  Tensorcraft week.", "You shipped {world}.") live in the Kit dashboard,
+  outside this repo.
+
 - [ ] **Dashboard per-panel progressive disclosure (considered, not built,
   2026-08-16).** The first-run mission dispatch covers zero-activity
   accounts only; an account with one completed lesson gets the full
@@ -555,11 +596,15 @@ post-launch work.
   identifiers (migration 059: js_background / js_experience_years /
   js_integration; fe_framework dropped), docs, and the content noun pass
   all shipped 2026-08-18.
-- [ ] Remaining from the ICP widening: triage the ~72 browser-anchored
-  bridges (keep-browser vs swap-to-Node vs dual-frame; decision table at
-  docs/audits/bridge-triage-2026-08.md) and the ~24 in-dialogue frontend
-  mentions held for the same editorial pass (`Framework` union still typed
-  for `variants` when multi-framework returns).
+- [x] Remaining from the ICP widening: the browser-anchored bridge triage
+  ran 2026-08-19 across all five worlds plus the canonical registry
+  (`packages/shared/src/bridges.ts`). Roughly 30 anchors swapped to Node or
+  runtime-neutral JS, 6 dual-framed, the rest kept as near-universal or
+  perceptual with reasons recorded; every swap carries freshly written
+  `breaks` and no tier changed. Results in
+  docs/audits/content-editorial-audit-2026-08-19.md; the in-dialogue
+  frontend mentions went with it. (`Framework` union still typed for
+  `variants` when multi-framework returns.)
 - [ ] Launch more of the 4 built-but-gated worlds (overlaps §5 world
   sprints; this is the Gate 1 dependency).
 - [ ] Authoring scaffold `scripts/new-lesson.mjs` (no generator exists;

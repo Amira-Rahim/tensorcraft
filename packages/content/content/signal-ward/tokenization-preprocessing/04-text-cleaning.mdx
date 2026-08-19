@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Input sanitization removes known dangerous characters with explicit rules. Text normalization for ML can over-clean (removing case loses information for NER) or under-clean (leaving artifacts that confuse the model); there is no one-size-fits-all clean function."
 consequence:
-  narrative: "After the cleaning pipeline is applied, Diagnostic One's accuracy on the legacy data recovers to match the clean dataset."
+  narrative: "Cleaning pulls accuracy on the legacy notes back to 74%. The missing three points are the ALL CAPS drug names, now lowercased into ordinary words."
 hints:
   - level: nudge
     content: "Start by stripping HTML tags with a regex, then handle special characters."
@@ -49,7 +49,7 @@ Classic data migration problem. You wouldn't render unsanitized user input in a 
 I should note that my accuracy on the legacy dataset is currently 62%, compared to 77% on properly formatted notes. The noise is not random; it is systematically degrading my performance.
 </Dialogue>
 
-Cleaning these notes is the sanitization discipline you already apply to user input (strip tags, normalize encoding, trim whitespace) plus a judgment call sanitization never asks for: every cleaning step throws information away, and some of it the model needed.
+Sanitizing user input has a right answer: anything that could execute is wrong, so strip it. Cleaning training text has no right answer. Every step below throws information away, and you do not find out which of it the model needed until the model is worse.
 
 <LearningObjectives objectives={["Strip HTML tags and entities from clinical text", "Handle Unicode normalization and special characters", "Apply consistent lowercasing and whitespace normalization", "Implement basic stemming to reduce word variants", "Build a multi-step text cleaning function"]} />
 
@@ -97,7 +97,7 @@ Clinical notes may contain accented characters, smart quotes, or invisible contr
     .replace(/[\\u200B-\\u200D\\uFEFF]/g, '');     // Zero-width characters → remove
 }
 
-console.log(normalizeUnicode('Patient\u2019s dx: caf\u00e9 au lait spots'));
+console.log(normalizeUnicode('Patient\\u2019s dx: caf\\u00e9 au lait spots'));
 // "Patient's dx: cafe au lait spots"`}
 </CodeBlock>
 
@@ -120,7 +120,7 @@ console.log(normalizeWhitespace('Chest  Pain'));        // 'chest pain'`}
 
 ## Basic Stemming
 
-Stemming reduces words to their root form: "medications," "medicated," and "medicating" all become "medic." This is a crude but effective approach for reducing vocabulary size.
+Stemming chops suffixes off so variants collapse onto one token: "medicated" and "medicating" both come out as "medicat." It is crude, the output is often not a real word, and this version strips one suffix per call, so "medications" only loses its plural.
 
 <CodeBlock language="typescript" title="simple-stemmer.ts">
 {`// Simple suffix-stripping stemmer for clinical text
@@ -152,7 +152,7 @@ function stem(word: string): string {
   return word;
 }
 
-console.log(stem('medications'));  // 'medicate'  (via -ation → -ate, then -s)
+console.log(stem('medications'));  // 'medication'  (only /s$/ fires: one rule per call)
 console.log(stem('presenting'));   // 'present'
 console.log(stem('allergies'));    // 'allergy'`}
 </CodeBlock>

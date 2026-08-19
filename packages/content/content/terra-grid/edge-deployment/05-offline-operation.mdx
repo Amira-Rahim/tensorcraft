@@ -10,26 +10,26 @@ context:
   narrative: "A storm severs satellite connectivity to 200 remote sensors. The models must keep running: collecting predictions, queuing telemetry, and syncing when the link returns."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Offline-first ML mirrors offline-first web apps: cache models in IndexedDB, queue predictions locally, sync when connectivity returns."
+  explanation: "Offline-first ML mirrors a worker built for a link that drops: keep the model on local disk, append results to a durable queue, drain the queue when the link returns."
   bridge:
-    jsTitle: "IndexedDB + Service Worker"
-    jsCode: "const db = await idb.open('app-cache'); // offline-first storage"
+    jsTitle: "Disk Cache + Retry Queue"
+    jsCode: "existsSync(cachePath) ? readFile(cachePath) : download(url) // disk first"
     mlTitle: "Offline Model Cache"
-    mlCode: "const model = await tf.loadLayersModel('indexeddb://cached-model');"
+    mlCode: "const model = await tf.loadLayersModel('file://./cache/model.json');"
     tier: structural
-    breaks: "IndexedDB + service worker cache documents you authored, so staleness is bounded by your update cadence. Offline model cache holds weights that drift relative to the world the model was trained on. A 6-month-old offline model may be confidently wrong about today's data, with no signal to the user that the model is stale."
+    breaks: "A retry queue holds work whose meaning does not change while it waits: the request you buffered at hour one is the same request at hour fourteen, and draining it clears the backlog. A cached model is a claim about the world made on training day. It keeps answering at full confidence while the grid moves, nothing in the runtime marks it stale, and reconnecting does not fix it. That is why the age travels with every prediction."
 consequence:
-  narrative: "When the storm finally passes, 200 devices reconnect and sync 14 hours of buffered predictions. Zero data loss."
+  narrative: "The link returns at 0412. 200 devices push 14 hours of buffered predictions and the sync completes clean. Then three sites flag the same reading inside the same minute, and the model has never scored a pattern like it."
 hints:
   - level: nudge
-    content: "OfflineModelCache is your IndexedDB layer; PredictionRingBuffer queues results the way Background Sync queues API calls"
+    content: "OfflineModelCache is the disk cache; PredictionRingBuffer is the retry queue that holds results until the link is back"
   - level: guidance
     content: "Cache the model locally, buffer predictions, and use a sync queue for when connectivity returns"
   - level: solution
-    content: "Load model from IndexedDB, store predictions in a local ring buffer, sync via Background Sync API pattern"
+    content: "Load the model from the local cache path, store predictions in a ring buffer, and drain the buffer when the link returns"
 keywords:
   - offline-first
-  - indexeddb
+  - disk-cache
   - sync-queue
   - edge-resilience
 ---
@@ -39,12 +39,12 @@ Station 7-Delta just lost satellite. Forecast says 14 hours minimum before link 
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
-That is precisely why we designed for offline-first. The models run locally. Predictions buffer. When the link comes back, everything syncs. No data loss. There is a cost, and it is not bandwidth: every hour offline, the model's picture of the grid ages. Fourteen hours is acceptable. Six months would be a model that answers confidently and wrongly, with nothing to tell us so.
+That is precisely why we designed for offline-first. The models run locally, the predictions buffer, and the link is a sync channel rather than a dependency. The buffer holds fourteen hours of predictions without dropping one. What it cannot hold steady is the model's picture of the grid, which ages every hour the link is down and never says so.
 </Dialogue>
 
-Service Workers cache assets, IndexedDB stores data, Background Sync queues API calls until the network returns: the offline-first toolkit, reused here move for move. Cache the model, buffer the results, sync when possible. One word quietly changes meaning in transit, and that word is stale. A stale page is your own content, only older. A stale model is a snapshot of the world as of training day, still answering with full confidence about a world that may have moved.
+Any process that has to survive a flaky link is built the same way: keep what you need on local disk, write results to a queue that outlives a restart, and drain the queue when the link comes back. The gateway runs that exact shape: cache the model, buffer the predictions, sync on reconnect. What does not transfer is the word stale. A stale file is your own bytes, only older, and one fetch replaces it. A stale model is a snapshot of the world as of training day, still answering with full confidence about a world that may have moved.
 
-<LearningObjectives objectives={["Implement offline model caching using IndexedDB, the same pattern as offline-first web apps", "Design prediction buffering with ring buffers for memory-constrained devices", "Build sync queues that reconcile local predictions with the central system", "Handle model staleness during extended offline periods"]} />
+<LearningObjectives objectives={["Implement offline model caching on local disk, the same pattern as a queue-and-retry worker", "Design prediction buffering with ring buffers for memory-constrained devices", "Build sync queues that reconcile local predictions with the central system", "Handle model staleness during extended offline periods"]} />
 
 ## Offline Model Cache
 
@@ -54,12 +54,18 @@ Service Workers cache assets, IndexedDB stores data, Background Sync queues API 
 {`import * as tf from '@tensorflow/tfjs';
 
 class OfflineModelCache {
-  private modelKey = 'indexeddb://terra-grid-model';
+  // The gateways run tfjs-node, so weights land on disk via 'file://'.
+  // The same class in the browser dashboard takes the 'indexeddb://' path.
+  private modelKey = typeof indexedDB !== 'undefined'
+    ? 'indexeddb://terra-grid-model'
+    : 'file://./cache/terra-grid-model';
   private model: tf.LayersModel | null = null;
+  /** Set from the package manifest 'created' timestamp (lesson 2). */
+  private trainedAt = 0;
 
   async initialize(): Promise<void> {
     try {
-      // Try loading from local cache first (like SW cache-first strategy)
+      // Try the local cache first; the network path is the miss case
       this.model = await tf.loadLayersModel(this.modelKey);
       console.log('Model loaded from local cache');
     } catch {
@@ -68,6 +74,11 @@ class OfflineModelCache {
       await this.model.save(this.modelKey);
       console.log('Model downloaded and cached locally');
     }
+  }
+
+  /** How old this snapshot is. Attach it to every prediction you buffer. */
+  modelAgeHours(): number {
+    return (Date.now() - this.trainedAt) / 3_600_000;
   }
 
   async predict(sensorData: number[]): Promise<Float32Array> {
@@ -119,7 +130,7 @@ class PredictionRingBuffer {
     const unsynced = this.getUnsynced();
     if (unsynced.length === 0) return 0;
 
-    // Batch upload, like Background Sync API
+    // Batch upload on reconnect, the way a retry queue drains
     const response = await fetch(endpoint, {
       method: 'POST',
       body: JSON.stringify({ predictions: unsynced }),
@@ -158,4 +169,4 @@ Build an offline inference system with local caching and sync queue.
 
 <Exercise slug="offline-inference" />
 
-<KeyTakeaways takeaways={["Offline ML keeps model, buffer, and decision logic on the device; a 14-hour satellite outage costs sync delay, not predictions", "IndexedDB holds the cached model across restarts; the device loads weights from local storage at boot, never from the link", "Ring buffers prevent memory overflow on constrained devices during extended offline periods", "Background sync patterns reconcile buffered predictions when connectivity returns: zero data loss"]} />
+<KeyTakeaways takeaways={["Offline ML keeps model, buffer, and decision logic on the device; a 14-hour satellite outage costs sync delay, not predictions", "The disk cache holds the model across restarts, so every boot after the first one reads weights locally; the network path only runs on a cache miss", "A ring buffer trades old predictions for bounded memory: size it against your worst planned outage, because past capacity the oldest unsynced entries are gone", "A sync queue reconciles buffered predictions when connectivity returns, the same way a retry queue drains once the upstream answers again", "A cached model has an age as well as a version: stamp every buffered prediction with modelAgeHours(), because the confidence score does not drop as the snapshot gets older than the grid it describes"]} />

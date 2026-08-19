@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "PWA installation gives offline asset access. ML installation must additionally bundle model weights (often 50-500MB), handle model-version updates separately from app updates, and gate inference on weight-load completion."
 consequence:
-  narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference and no server dependency. Erdem: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
+  narrative: "Twelve tablets, each running Nova Canvas as a PWA with the distilled model on-device, so a tablet generation never enters the server queue at all. The three projection walls still stream from it. Erdem: 'If the Wi-Fi dies, the tablets keep painting and the walls replay from cache. That is the standard.'"
 hints:
   - level: nudge
     content: "navigator.serviceWorker.register is the easy half; the hard half is caching the model weight files and gating generation until they finish loading"
@@ -35,16 +35,16 @@ keywords:
 ---
 
 <Dialogue speaker="Samir">
-Three walls, twelve tablets, one gallery space. The Wi-Fi will drop. The internet will lag. The power might flicker. We need an architecture that does not care about any of that. This is a PWA: offline-first, local inference, sync when you can.
+Three walls, twelve tablets, one gallery space. The walls can pull from the server queue. The tablets cannot, because the Wi-Fi will drop. The internet will lag. The power might flicker. We need an architecture that does not care about any of that. This is a PWA: offline-first, local inference, sync when you can.
 </Dialogue>
 
 <Dialogue speaker="Erdem">
-Mostly a PWA. The service-worker pattern transfers; the payload doesn't. Our app shell is 2 megabytes and the model weights are 180. The weights version on their own schedule, and nothing generates until they finish loading. Each tablet runs independently and syncs its logs when connectivity returns. That part I'll sign off on.
+Mostly a PWA. Show me the install step before I sign anything. Two megabytes of app shell I believe. The weights are a different animal, and they version on their own schedule. Each tablet running independently and syncing its logs when connectivity returns, that part I will sign off on.
 </Dialogue>
 
 <LearningObjectives objectives={["Design an offline-first architecture for a physical installation", "Cache ML models in Service Workers for fully offline inference", "Implement local-first data storage with background sync", "Plan hardware deployment with PWA installability and kiosk mode"]} />
 
-Samir's first sketch applied the PWA playbook with no caveats. It died at megabyte 178.
+Samir's first sketch applied the PWA playbook with no caveats. It died at megabyte 45.
 
 <CodeBlock language="typescript" title="why-not-just-a-pwa.ts">
 {`// One cache, addAll everything: textbook offline-first.
@@ -52,12 +52,12 @@ self.addEventListener('install', (event: ExtendableEvent) => {
   event.waitUntil(caches.open('v1').then(c => c.addAll([
     '/app.js',                          //   1.2 MB
     '/styles.css',                      //   0.1 MB
-    '/models/nova-canvas/weights.bin',  // 180 MB <- here it dies
+    '/models/nova-canvas/weights.bin',  //  47 MB <- here it dies
   ])));
 });
-// cache.addAll() is all-or-nothing: one flaky packet at megabyte 178
+// cache.addAll() is all-or-nothing: one flaky packet at megabyte 45
 // and the entire install rejects, app shell included. Now picture
-// twelve tablets each retrying a 180 MB atomic download on shared
+// twelve tablets each retrying a 47 MB atomic download on shared
 // gallery Wi-Fi. The service-worker pattern transfers; the payload
 // breaks it. The architecture below splits the caches and gates
 // generation on the weights, not the shell.`}
@@ -75,7 +75,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
   "display": "fullscreen",
   "orientation": "landscape",
   "background_color": "#080B16",
-  "world_color": "#00D4FF",
+  "theme_color": "#00D4FF",
   "icons": [
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ],
@@ -173,7 +173,7 @@ class LocalFirstGenerator {
         data: output.dataSync() as Float32Array,
         params,
         timestamp: Date.now(),
-        synced: false,
+        syncState: 'pending',
       };
     });
   }
@@ -184,9 +184,7 @@ class LocalFirstGenerator {
   }
 
   private async syncResults() {
-    const tx = this.db!.transaction('generations', 'readonly');
-    const store = tx.objectStore('generations');
-    const unsynced = await store.index('synced').getAll(false);
+    const unsynced = await this.getUnsynced();
 
     for (const result of unsynced) {
       try {
@@ -194,12 +192,29 @@ class LocalFirstGenerator {
           method: 'POST',
           body: JSON.stringify(result),
         });
-        // Mark as synced
-        const writeTx = this.db!.transaction('generations', 'readwrite');
-        result.synced = true;
-        writeTx.objectStore('generations').put(result);
+        result.syncState = 'synced';
+        await this.put(result);
       } catch { /* retry later */ }
     }
+  }
+
+  // IndexedDB keys cannot be booleans, so sync state is a string
+  private getUnsynced(): Promise<GenerationResult[]> {
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction('generations', 'readonly');
+      const req = tx.objectStore('generations').index('syncState').getAll('pending');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  private put(result: GenerationResult): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction('generations', 'readwrite');
+      tx.objectStore('generations').put(result);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
   }
 
   private openDB(): Promise<IDBDatabase> {
@@ -208,7 +223,7 @@ class LocalFirstGenerator {
       req.onupgradeneeded = () => {
         const db = req.result;
         const store = db.createObjectStore('generations', { keyPath: 'id' });
-        store.createIndex('synced', 'synced');
+        store.createIndex('syncState', 'syncState');
       };
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => reject(req.error);

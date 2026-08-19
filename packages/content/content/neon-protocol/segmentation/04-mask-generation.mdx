@@ -35,15 +35,19 @@ keywords:
   - svg-mask
 ---
 
+<Dialogue speaker="Noor">
+Every pixel along the rotor arms comes back near a coin flip. I cannot draw an edge out of that.
+</Dialogue>
+
 <Dialogue speaker="Zara">
 The model gives you probabilities: 0.87 chance this pixel is a drone, 0.12 chance it is sky. You need to turn that into a clean yes-or-no mask. It is the same workflow as building an SVG mask: define the shape, refine the edges, apply it as a cutout.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So thresholding is like setting fill to black or white in an SVG mask element: anything above the threshold is visible, everything below is hidden?
+My drawing app had a magic-wand selection tool. Same shape: pick a tolerance, walk the pixel buffer, write 1 into a `Uint8ClampedArray` where the pixel is inside the selection and 0 where it is not. Nobody ever agreed on one tolerance, so I shipped a slider.
 </Dialogue>
 
-In SVG, `<mask>` elements use white pixels to reveal and black pixels to hide content. Binary mask generation follows the same logic: pixels above a confidence threshold become 1 (object), pixels below become 0 (background). The threshold is your decision boundary.
+That slider is the part to keep. In SVG a `<mask>` reveals wherever the mask is white and hides wherever it is black, and thresholding lands in the same two states: above the cutoff becomes 1 (object), below becomes 0 (background). The difference is who draws the edge. You place an SVG path exactly where you want it. Here the edge falls wherever 0.5 happens to land on a noisy probability map, which is why the threshold is a knob and not a constant. At 0.4 the drone grows a halo of sky. At 0.6 its rotor arms disappear.
 
 <LearningObjectives objectives={["Convert probability maps to binary masks using thresholding", "Apply morphological operations to clean mask boundaries", "Extract contours from binary masks for precise outlines", "Connect the workflow to SVG mask and clipPath techniques"]} />
 

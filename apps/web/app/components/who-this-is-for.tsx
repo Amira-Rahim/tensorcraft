@@ -42,7 +42,7 @@ export function WhoThisIsFor({
               "Write JavaScript or TypeScript and want ML to stop being a black box you call through an API.",
               "Learn by building. Every lesson ends in code you run, graded against real TensorFlow.js, not a quiz.",
               "Want models training in your own browser, with no Python toolchain to install first.",
-              "Already know the language. Array methods, async, and loops over data are the ramp into tensors, not an obstacle.",
+              "Already know the language. Array methods, typed arrays, and async data loading are the ramp into tensors, not an obstacle.",
             ].map((item) => (
               <li
                 key={item}
@@ -65,7 +65,7 @@ export function WhoThisIsFor({
             {[
               "Need Python, PyTorch, or scikit-learn specifically. This is TensorFlow.js end to end, and that is a deliberate constraint, not a stepping stone.",
               "Want to watch rather than type. There is no video track, and the exercises gate progress.",
-              "Are looking for a weekend skim. Deep Orbit is 56 lessons and the later modules assume the earlier ones.",
+              "Are looking for a weekend skim. The course is 56 lessons and the later modules assume the earlier ones.",
               "Want proofs first. The derivations are here, but they sit in optional drawers under the working code.",
             ].map((item) => (
               <li

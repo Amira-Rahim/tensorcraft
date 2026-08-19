@@ -95,6 +95,8 @@ console.log('Step 100 trust:', result.trustHeuristic[99]); // 0.0: too far ahead
 
 ## Non-Stationarity: When Predictions Fail
 
+A forecasting model assumes one thing above all: that the statistics it learned still hold. Non-stationary means they do not. The mean, the variance, or in this case the period drifts while the model keeps predicting from the shape it fit last week, so its error grows in one direction instead of scattering around zero. You cannot see that in a single prediction. You see it by tracking error across a moving window and comparing it against what the model used to cost you.
+
 <CodeBlock language="typescript" title="non-stationary.ts">
 {`// The forecast says the anomaly repeats at step 50
 // It arrives at step 47: three steps EARLY

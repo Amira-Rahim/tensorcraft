@@ -20,9 +20,9 @@ export default function Home() {
         <LandingHero />
 
         <h2 className="sr-only">
-          Learn machine learning for JavaScript developers with TensorFlow.js,
-          browser-based ML tutorials, TensorFlow JS courses, and Transformers.js
-          guides.
+          Learn machine learning with TensorFlow.js: browser-based ML courses,
+          TensorFlow.js tutorials, and Transformers.js guides for JavaScript
+          developers.
         </h2>
 
         {/* ===== BRIDGE SYSTEM (client island) ===== */}
@@ -66,7 +66,7 @@ export default function Home() {
               },
               {
                 label: "Detect",
-                desc: "Live signals classified normal or anomalous by an autoencoder + LSTM ensemble you build yourself.",
+                desc: "Live readings classified normal or anomalous by a neural network you build yourself.",
               },
               {
                 label: "Deploy",
@@ -115,7 +115,7 @@ export default function Home() {
         <FaqSection
           testId="landing-faq"
           eyebrow="Before you ask"
-          heading="Fair Questions, Honest Answers"
+          heading="Common Questions"
         />
 
         {/* ===== FINAL CTA (server-rendered, zero JS) =====

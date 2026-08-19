@@ -17,7 +17,7 @@ concept:
     mlTitle: "Gradient Vanishes Over Time"
     mlCode: "grad_t0 = grad_tN * W^N // shrinks exponentially with depth"
     tier: structural
-    breaks: "Event bubbling decays only when a handler calls stopPropagation. Vanishing gradients shrink multiplicatively at every layer (sigmoid derivative caps at 0.25); by layer 10 the gradient is below float32 precision and weights stop updating. The fix is architectural (residuals, ReLU, LSTM gates), not stylistic."
+    breaks: "Event bubbling decays only when a handler calls stopPropagation. Vanishing gradients shrink multiplicatively at every layer (the tanh derivative never exceeds 1, and the recurrent weight is usually below it); fifty steps in, what reaches the first token is 0.005 of what left the loss and the early weights stop updating. The fix is architectural (residuals, ReLU, LSTM gates), not stylistic."
 consequence:
   narrative: "Imran cancels the bigger-hidden-state retraining job, half-finished. Capacity was never the problem. The fix is architectural, and Vikram says it comes with gates."
 hints:
@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Compare RNN performance on short sequences (5 tokens) vs long sequences (50 tokens): accuracy drops sharply."
   - level: solution
-    content: "Demonstrate gradient magnitude decay: for i in range(50): grad *= 0.9 shows how quickly signal vanishes."
+    content: "Watch it decay in a loop: let grad = 1; for (let t = 0; t < 50; t++) grad *= 0.9; leaves grad at 0.005, and 100 steps leaves 0.00003. tf.grad over a chain of tf.sigmoid calls gives you the same curve from real autodiff."
 keywords:
   - vanishing-gradient
   - backpropagation-through-time
@@ -48,7 +48,7 @@ It might be. Fifty tokens is ten times more to remember than five. Bigger memory
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Bigger memory the gradient still can't reach. Look at the failure pattern: the model nails whatever sits near the end of a long note and whiffs the top. That's the vanishing gradient problem. Closest thing you've shipped is event bubbling fading in a deep DOM, but don't lean on that too hard. Bubbling only dies if a handler kills it. Gradients shrink at every single step, no opt-out: the activation derivative caps at 0.25, so a few dozen steps in you're under float32 precision and the early weights just stop updating.
+Bigger memory the gradient still can't reach. Look at the failure pattern: the model nails whatever sits near the end of a long note and whiffs the top. That's the vanishing gradient problem. Closest thing you've shipped is event bubbling fading in a deep DOM, but don't lean on that too hard. Bubbling only dies if a handler kills it. Gradients shrink at every single step, no opt-out: each step multiplies by the tanh derivative, which never exceeds one, and by the recurrent weight. Fifty tokens up a long note, whatever reaches token one is smaller than anything the optimizer can act on.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
@@ -56,12 +56,12 @@ In clinical notes, the diagnosis is often stated at the top, but the supporting 
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Warning: gradient magnitude at timestep 1 is 0.00003 when sequence length is 50. Information from early tokens has effectively zero influence on weight updates.
+Warning: gradient magnitude at timestep 1 falls to 0.005 at sequence length 50, and to 0.00003 at length 100. Past fifty tokens, information from the top of a note has effectively no influence on weight updates.
 </Dialogue>
 
 Each RNN timestep multiplies the gradient by roughly the same factor. Multiply 0.9 by itself 50 times and you get 0.005; at 100 steps you are at 0.00003. Over a long discharge summary, the tokens at the top lose all influence on what the network learns.
 
-<LearningObjectives objectives={["Understand why gradients vanish during backpropagation through time", "Connect vanishing gradients to event bubbling signal loss in deep DOM trees", "Observe gradient decay experimentally with TensorFlow.js", "Recognize the symptoms: poor performance on long sequences despite good short-sequence accuracy"]} />
+<LearningObjectives objectives={["Understand why gradients vanish during backpropagation through time", "Connect vanishing gradients to event bubbling in a deep DOM, and name where that comparison breaks", "Observe gradient decay experimentally with TensorFlow.js", "Recognize the symptoms: poor performance on long sequences despite good short-sequence accuracy"]} />
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
@@ -70,8 +70,9 @@ Each RNN timestep multiplies the gradient by roughly the same factor. Multiply 0
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="gradient-decay.ts">
-{`// Event bubbling analogy: signal fades through layers
-function simulateEventBubbling(depth: number, dampingFactor: number): number {
+{`// Bubbling does not actually decay. This is the version that would:
+// give every hop a damping factor and see what depth does to the signal.
+function simulateDecay(depth: number, dampingFactor: number): number {
   let signalStrength = 1.0;
   for (let layer = 0; layer < depth; layer++) {
     signalStrength *= dampingFactor;
@@ -79,12 +80,12 @@ function simulateEventBubbling(depth: number, dampingFactor: number): number {
   return signalStrength;
 }
 
-// Shallow DOM (5 levels): signal is strong
-console.log('Depth 5:', simulateEventBubbling(5, 0.9));   // 0.590
-// Deep DOM (50 levels): signal nearly vanishes
-console.log('Depth 50:', simulateEventBubbling(50, 0.9));  // 0.005
-// Very deep (100 levels): effectively zero
-console.log('Depth 100:', simulateEventBubbling(100, 0.9)); // 0.00003
+// Shallow (5 hops): signal is strong
+console.log('Depth 5:', simulateDecay(5, 0.9));   // 0.590
+// Deep (50 hops): signal nearly vanishes
+console.log('Depth 50:', simulateDecay(50, 0.9));  // 0.005
+// Very deep (100 hops): effectively zero
+console.log('Depth 100:', simulateDecay(100, 0.9)); // 0.00003
 
 // This is EXACTLY what happens to gradients in an RNN:
 // grad_at_step_0 = grad_at_step_N × (W_recurrent)^N
@@ -136,10 +137,17 @@ async function testSequenceLength(seqLen: number): Promise<number> {
   const xs = tf.tensor2d(xData, [numSamples, seqLen], 'int32');
   const ys = tf.tensor2d(yData, [numSamples, 1]);
 
-  await model.fit(xs, ys, { epochs: 20, verbose: 0 });
-  const result = model.evaluate(xs, ys) as tf.Tensor[];
+  // Hold out the last 20% so the score measures generalization, not recall
+  const split = Math.floor(numSamples * 0.8);
+  const xTrain = xs.slice([0, 0], [split, seqLen]);
+  const yTrain = ys.slice([0, 0], [split, 1]);
+  const xTest = xs.slice([split, 0], [numSamples - split, seqLen]);
+  const yTest = ys.slice([split, 0], [numSamples - split, 1]);
+
+  await model.fit(xTrain, yTrain, { epochs: 20, verbose: 0 });
+  const result = model.evaluate(xTest, yTest) as tf.Tensor[];
   const accuracy = (await result[1].array()) as number;
-  tf.dispose([xs, ys, ...result, model]);
+  tf.dispose([xs, ys, xTrain, yTrain, xTest, yTest, ...result, model]);
   return accuracy;
 }
 

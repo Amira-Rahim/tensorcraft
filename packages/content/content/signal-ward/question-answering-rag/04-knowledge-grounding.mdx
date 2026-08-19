@@ -22,11 +22,11 @@ consequence:
   narrative: "The grounded QA system now refuses to answer when evidence is insufficient. Vikram's fabricated interaction test returns: 'No supporting evidence found in patient records. Confidence: 0.12. Deferring to clinician.' Karimi approves. 'A system that knows when it does not know is safer than one that always has an answer.'"
 hints:
   - level: nudge
-    content: "Compare the generated answer against the retrieved passages to compute an entailment score"
+    content: "A claim you cannot find the words for in any source document is a claim the model made up"
   - level: guidance
-    content: "Build a Natural Language Inference (NLI) classifier that checks if the evidence entails the answer"
+    content: "Score each claim against every source and keep the best score; the claim is grounded when that best score reaches the threshold"
   - level: solution
-    content: "For each answer span, compute entailment probability against each retrieved passage. If max entailment < threshold, refuse to answer."
+    content: "Tokenize the claim, count how many of its tokens appear in the source's token set, divide by the claim's token count, then compare the highest score across sources against the threshold"
 keywords:
   - knowledge-grounding
   - hallucination-detection
@@ -50,6 +50,8 @@ On the web, hyperlinks are the contract between author and reader. "Reduces risk
 ## Every Claim Needs a Source
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Checking that a passage really supports an answer is a classification problem with a name. Natural Language Inference takes two pieces of text, a premise and a hypothesis, and decides whether the premise entails the hypothesis, contradicts it, or says nothing either way. Here the premise is a retrieved passage and the hypothesis is the answer the system wants to return. Read P(entailment) as the model's estimate that this passage supports this claim, and treat anything under the threshold as unsupported.
 
 <CodeBlock language="typescript" title="grounding.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -91,6 +93,20 @@ function buildNLIModel(vocabSize: number, embDim: number, maxLen: number): tf.La
   return tf.model({ inputs: [premiseInput, hypothesisInput], outputs: output });
 }
 
+// Pad with zeros or truncate so every sequence matches the model's input width
+function fitTo(ids: number[], width: number): number[] {
+  return ids.length >= width
+    ? ids.slice(0, width)
+    : [...ids, ...new Array(width - ids.length).fill(0)];
+}
+
+// Fraction of the answer's words that show up in a candidate sentence
+function overlap(sentence: string, answer: string): number {
+  const words = new Set(sentence.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+  const answerWords = answer.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+  return answerWords.filter((w) => words.has(w)).length / (answerWords.length || 1);
+}
+
 // Ground an answer: verify every claim has supporting evidence
 async function groundAnswer(
   answer: string,
@@ -102,9 +118,11 @@ async function groundAnswer(
   const citations: Citation[] = [];
 
   for (const doc of retrievedDocs) {
-    // Check if this document entails the answer
-    const premiseTokens = tokenize(doc.text);
-    const hypothesisTokens = tokenize(answer);
+    // Check if this document entails the answer.
+    // predict() takes fixed-width input, so pad or truncate before calling it
+    const width = nliModel.inputs[0].shape[1] as number;
+    const premiseTokens = fitTo(tokenize(doc.text), width);
+    const hypothesisTokens = fitTo(tokenize(answer), width);
 
     const prediction = nliModel.predict([
       tf.tensor2d([premiseTokens]),
@@ -115,12 +133,17 @@ async function groundAnswer(
     const entailmentScore = probs[0][0]; // P(entailment)
 
     if (entailmentScore > threshold) {
+      // Cite the sentence that carries the claim, not the first 200 characters
+      const sentences = doc.text.split(/(?<=[.!?])\\s+/);
+      const best = sentences.reduce((a, b) =>
+        overlap(b, answer) > overlap(a, answer) ? b : a);
+      const startOffset = doc.text.indexOf(best);
       citations.push({
         documentId: doc.id,
-        span: doc.text.substring(0, 200),
+        span: best,
         entailmentScore,
-        startOffset: 0,
-        endOffset: 200,
+        startOffset,
+        endOffset: startOffset + best.length,
       });
     }
     prediction.dispose();
@@ -169,6 +192,6 @@ for (const test of tests) {
 
 Build an entailment-based grounding function that verifies answers against evidence.
 
-<Exercise slug="ground-answers" />
+<Exercise slug="ground-knowledge" />
 
 <KeyTakeaways takeaways={["Models misattribute and partial-quote their own citations; grounding requires programmatic verification that the answer text appears in the cited chunk", "NLI models classify whether evidence entails, is neutral to, or contradicts a claim", "Confidence thresholds trigger abstention: 'insufficient evidence' is safer than a hallucinated answer", "When no retrieved passage supports an answer, the system should defer to a clinician instead of answering"]} />

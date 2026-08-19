@@ -2,7 +2,7 @@ slug: attention-mechanisms
 title: "Attention Mechanisms: Focus Where It Matters"
 worldId: signal-ward
 order: 5
-description: "When you read 'The patient was prescribed methotrexate for rheumatoid arthritis,' your brain connects 'methotrexate' to 'arthritis' without being told. Diagnostic One needs that same selective focus, and attention is how it gets there: scores, weights, multiple heads, and finally a heatmap Dr. Karimi can read like an X-ray."
+description: "Diagnostic One reads all 500 words of a discharge summary with the same care, and the twenty that decide the diagnosis get no more weight than the rest. This module fixes that: attention scores, softmax weights, multiple heads, and a heatmap Dr. Karimi can read, plus the limits of what that heatmap proves."
 lessonCount: 5
 prerequisites:
   - sequence-models

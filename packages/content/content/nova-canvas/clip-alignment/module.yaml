@@ -3,11 +3,13 @@ title: "CLIP & Alignment"
 worldId: nova-canvas
 order: 8
 description: |
-  CLIP integration gives MUSE nuance: "a melancholy cityscape at twilight" versus
-  "a city at night" produce meaningfully different images. Rohan says mood is a
-  direction in a 512-dimensional vector space. But technically perfect output can be
-  artistically dead. Contrastive learning, CLIP architecture, zero-shot
-  classification, and prompt engineering: the module where words learn to steer images.
+  CLIP gives MUSE nuance: "a melancholy cityscape at twilight" and "a city
+  at night" stop producing the same picture. Rohan says mood is a direction
+  in a 512-dimensional vector space, and Erdem looks at the first result
+  and calls it technically competent, artistically dead. Contrastive
+  learning, CLIP architecture, zero-shot classification, and prompt
+  engineering, until a typed sentence is the control surface for the
+  picture.
 lessonCount: 5
 prerequisites:
   - multimodal-learning

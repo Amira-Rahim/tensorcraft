@@ -16,14 +16,14 @@ context:
 concept:
   explanation: "An RNN carries hidden state from step to step: previous state in, new input in, updated state out. The transition function is learned, not written."
   bridge:
-    jsTitle: "useReducer"
-    jsCode: "const [state, dispatch] = useReducer(reducer, initialState)"
+    jsTitle: "Event log replay"
+    jsCode: "for (const event of log) state = apply(state, event) // you wrote apply()"
     mlTitle: "RNN Cell"
     mlCode: "newHidden = tanh(W_h * prevHidden + W_x * input + bias)"
     tier: structural
-    breaks: "useReducer is a deterministic pure function you wrote. RNN cells learn the reducer logic from data, carry hidden state across timesteps, and the same input produces different outputs depending on what came before. The 'reducer' is opaque and trained, not authored."
+    breaks: "Replay is reproducible on purpose: `apply` is a function you wrote, the same log always rebuilds the same state, and you can read the rule that produced it. An RNN cell learns its `apply` from data. Nobody authors it, the weights are the function, and the same input arriving at two points in the sequence produces two different outputs, because the carried state holds everything before it."
 consequence:
-  narrative: "Six hours, two hundred epochs, loss pinned at 0.693 since the first hour. The gradients die out around step twenty. The pattern lives at step seventy-three."
+  narrative: "Demir leaves a run going overnight on the strength of an analogy. The analogy does not survive the log."
 hints:
   - level: nudge
     content: "A SimpleRNN layer reads the sequence step by step, carrying a hidden state forward, so the model sees order, not just values."
@@ -41,7 +41,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Ensign Demir">
-So an RNN is just... a reducer? It takes the previous hidden state and the new input, runs them through a function, and outputs new hidden state? I use this pattern every day with useReducer.
+So an RNN is just... a reducer? It takes the previous hidden state and the new input, runs them through a function, and outputs new hidden state? That is what I do every time I rebuild state by replaying an event log.
 </Dialogue>
 
 The cell itself is small: a weight for the previous hidden state, a weight for the input, a bias, a `tanh`. What makes it recurrent is the wiring: the output loops back in as the next step's hidden state. Small enough, in fact, to run by hand before anyone argues about analogies:
@@ -53,16 +53,19 @@ The cell itself is small: a weight for the previous hidden state, a weight for t
 // (weights hand-picked for the drill, bias 0)
 let h = tf.scalar(0);
 for (const x of [0.5, 0.9, 0.5]) {
-  h = tf.tanh(h.mul(0.8).add(x));
+  const next = tf.tidy(() => tf.tanh(h.mul(0.8).add(x)));
+  h.dispose();
+  h = next;
   console.log(h.dataSync()[0].toFixed(4));
 }
+h.dispose();
 // 0.4621
 // 0.8537
 // 0.8284  ← the same 0.5 that scored 0.4621 two steps ago`}
 </CodeBlock>
 
 <Dialogue speaker="Dr. Farah">
-There is your answer, in the last line. The shape is right; the guarantees are gone. Your reducer is a pure function you wrote: same state, same action, same result, and you can read the logic. This one just handed the same input two different outputs, because the hidden state carries everything that came before. And the 0.8 and 1.0 were hand-picked for the demo; in a real cell they are learned from data. Nobody authors the transition function. The weights are the function, and the hidden state is the network's memory.
+There is your answer, in the last line. The shape is right; the guarantees are gone. Your reducer is a pure function you wrote: same state, same event, same result, and you can read the logic. This one just handed the same input two different outputs, because the hidden state carries everything that came before. And the 0.8 and 1.0 were hand-picked for the demo; in a real cell they are learned from data. Nobody authors the transition function. The weights are the function, and the hidden state is the network's memory.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Process sequential signal data through a recurrent architecture"]} />
@@ -74,7 +77,7 @@ There is your answer, in the last line. The shape is right; the guarantees are g
 <CodeBlock language="typescript" title="rnn-as-reducer.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// React useReducer: you write the state transition function
+// Event replay: you write the state transition function
 function signalReducer(state: { count: number; trend: string }, action: { value: number }) {
   const trend = action.value > 0.5 ? 'rising' : 'falling';
   return { count: state.count + 1, trend };
@@ -91,7 +94,7 @@ function signalReducer(state: { count: number; trend: string }, action: { value:
 // Build a simple RNN in TF.js
 const model = tf.sequential();
 model.add(tf.layers.simpleRNN({
-  units: 32,           // hidden state size (like the shape of a Redux store)
+  units: 32,           // hidden state size (the shape of the state you carry)
   inputShape: [5, 3],  // 5 time steps, 3 features each
 }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
@@ -172,7 +175,7 @@ Build a simple RNN that processes sequential signal data.
 
 <RecallPrompt
   question="A simple RNN trains on long windows, but the dependency it must learn spans dozens of time steps. After many epochs the loss is stuck at 0.693. What is happening, and what fixes it?"
-  answer="Vanishing gradients. Backpropagation through time multiplies the gradient by recurrent weights and the tanh derivative at every step, so over dozens of steps it shrinks toward zero and the early time steps never learn. Loss pinned at 0.693 (ln 2) is the binary cross-entropy of a coin flip, meaning the network has learned nothing. Batch size and returnSequences do not change gradient depth; tanh is the standard activation. The fix is an LSTM, whose gated cell state carries gradient across long spans."
+  answer="Vanishing gradients. Backpropagation through time multiplies the gradient by the recurrent weight and the tanh derivative at every step, so across dozens of steps it shrinks toward zero and the earliest steps never learn. A loss pinned at 0.693 is ln 2, the binary cross-entropy of a coin flip: the network has learned nothing at all. Raising the batch size or switching on returnSequences changes neither the number of steps the gradient has to travel nor what it gets multiplied by on the way. The fix is an LSTM, whose gated cell state carries gradient across long spans."
 />
 
 <LessonRecap
@@ -181,7 +184,7 @@ Build a simple RNN that processes sequential signal data.
     "Setting `returnSequences: true` yields hidden state at every time step (shape [batch, timeSteps, units]); the default false yields only the final hidden state (shape [batch, units]).",
     "Simple RNNs suffer from vanishing gradients: the error signal shrinks exponentially as it propagates backward through time, making patterns beyond ~10-20 steps unlearnable."
   ]}
-  bridge="React's `useReducer` gives you a deterministic pure function you wrote; an RNN cell learns that reducer from data, so the same input produces different outputs depending on what came before, and the transition logic is encoded in weights rather than readable code."
+  bridge="Replaying an event log runs a reducer you wrote: same log, same final state, every time. An RNN cell learns that reducer from data, so the same input produces different outputs depending on what came before, and the transition logic is encoded in weights rather than readable code."
   youCanNow="Build a simple RNN with `tf.layers.simpleRNN` and explain why vanishing gradients prevent it from learning long-range dependencies."
 />
 

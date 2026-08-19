@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "URL encoding maps each character to a fixed escape sequence. Variational encoding outputs parameters of a probability distribution (mean + variance) per dimension. Encoding the same input twice draws different latent samples."
 consequence:
-  narrative: "Instead of memorizing exact positions, the VAE learns regions of possibility. Every point in the space now decodes to something meaningful, and Samir starts wondering what lives between two encoded sketches."
+  narrative: "Instead of memorizing exact positions, the VAE learns regions of possibility. Points near an encoded sketch now decode to something close to it, and Samir starts wondering what lives between two of them."
 hints:
   - level: nudge
     content: "A regular autoencoder maps to a point. A VAE maps to a region (mean + variance)."
@@ -40,12 +40,12 @@ Encode the same sketch through me twice. Yesterday I filed it at [0.31, -0.68, 1
 </Dialogue>
 
 <Dialogue speaker="Yara">
-It's like the difference between a pin on a map and a circle on a map. The pin says "here, exactly." The circle says "somewhere in this area." And when circles overlap, you get a continuous landscape you can explore.
+It's like the difference between a pin on a map and a circle on a map. The pin says "here, exactly." The circle says "somewhere in this area." And when the circles overlap, there is no gap between them to fall into.
 </Dialogue>
 
-Last module's autoencoder left holes in its latent space: sample a random point and the decoder hands back garbage, because nothing was ever trained near it. The fix is not more training. It is changing what the encoder outputs. Two vectors instead of one: a mean and a variance, a region instead of a pin.
+Lesson 1's autoencoder left holes in its latent space: sample a random point and the decoder hands back garbage, because nothing was ever trained near it. The fix is not more training. It is changing what the encoder outputs. Two vectors instead of one: a mean and a variance, a region instead of a pin.
 
-<LearningObjectives objectives={["Explain why point-encoding leaves holes that make autoencoders bad generators", "Build an encoder that outputs mean and log-variance", "See how distributional encoding creates a smooth, continuous latent space"]} />
+<LearningObjectives objectives={["Explain why point-encoding leaves holes that make autoencoders bad generators", "Build an encoder that outputs mean and log-variance", "See how distributional encoding starts closing the gaps a point encoder leaves"]} />
 
 ## Points vs. Distributions
 
@@ -64,7 +64,7 @@ function regularEncoder(inputDim: number, latentDim: number) {
 }
 
 // VAE encoder: input → distribution (mean + variance) in latent space
-// The space is forced to be smooth; every point decodes to something valid
+// Each input now covers a region, so points near it decode to near-copies
 function vaeEncoder(inputDim: number, latentDim: number) {
   const input = tf.input({ shape: [inputDim] });
   const hidden = tf.layers.dense({ units: 256, activation: 'relu' }).apply(input);
@@ -91,10 +91,10 @@ We output `log(variance)` instead of `variance` directly because variance must b
 // exp(logVar) is always positive: 0.08, 1.0, 40.4
 // This is the actual variance
 
-// Browser parallel: CSS uses log-like scales for font sizes
-// font-size: 0.75rem, 1rem, 1.25rem, 1.5rem, 2rem
-// The scale is exponential, not linear: small changes at small sizes,
-// big changes at large sizes. Same idea as exp(logVar).
+// JS parallel: audio code stores volume in decibels, which can be negative,
+// then converts with Math.pow(10, db / 20) before applying it.
+// The converted number is always positive, whatever the decibel value.
+// exp(logVar) does the same job for variance.
 
 function latentSample(mu: tf.Tensor, logVar: tf.Tensor): tf.Tensor {
   const std = logVar.mul(0.5).exp();       // std = exp(logVar / 2)
@@ -121,4 +121,4 @@ The encoder outputs `μ(x), σ(x)` for each z dimension. We sample `z ~ N(μ, σ
 **Why both terms?** Without KL, the encoder could spike σ → 0 and place each x at a unique point, a deterministic autoencoder. Without reconstruction, the encoder ignores x entirely. The β-VAE variant scales the KL term to control the tradeoff: high β = more disentangled latent, lower reconstruction quality.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Regular autoencoders encode to points, creating gaps in latent space", "VAEs encode to distributions (mean + variance), creating smooth continuous spaces", "The encoder outputs two vectors: mu (mean) and logVar (log-variance)", "Log-variance ensures the variance is always positive after exponentiation"]} />
+<KeyTakeaways takeaways={["Regular autoencoders encode to points, creating gaps in latent space", "VAEs encode to distributions (mean + variance), spreading each input over a region instead of a single point", "The encoder outputs two vectors: mu (mean) and logVar (log-variance)", "Log-variance ensures the variance is always positive after exponentiation"]} />

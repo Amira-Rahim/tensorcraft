@@ -10,7 +10,7 @@ context:
   narrative: "Every model expects a fixed input size. Noor must resize, crop, and transform surveillance feeds to match Protocol Sentinel's requirements."
   speaker: "NEON"
 concept:
-  explanation: "Image transforms for ML (resize, crop, rotate, flip) are the same operations as CSS transform and object-fit in the browser."
+  explanation: "Image transforms for ML (resize, crop, rotate, flip) are the same operations as CSS transform and object-fit in the browser, and the same ones sharp exposes on the server as fit: 'cover' and fit: 'contain'."
   bridge:
     jsTitle: "CSS object-fit"
     jsCode: "object-fit: cover // center-crop to fill container"
@@ -19,14 +19,14 @@ concept:
     tier: structural
     breaks: "object-fit: cover crops to fill the container at display time, deterministically. tf.image.cropAndResize crops + resamples for model input with sub-pixel interpolation, and the resampling algorithm choice (bilinear, nearest) materially affects model accuracy on small features. Same intent; different fidelity controls."
 consequence:
-  narrative: "The transforms reveal something: Meridian's cameras all output images at an unusual resolution, one optimized for a specific model architecture."
+  narrative: "Noor lines up a hundred frames from a hundred blocks. Every one arrives 640x480, and every one has already been cropped square and padded back out to fill the frame. Meridian's cameras are not framing scenes. They are packing model input."
 hints:
   - level: nudge
-    content: "Models expect fixed input sizes; resize all images to the same dimensions"
+    content: "Two independent jobs here: scale every value into 0-1, and answer yes or no on whether this frame is already the shape the model takes"
   - level: guidance
-    content: "Use tf.image.resizeBilinear() for smooth resizing, slice() for cropping"
+    content: "Map each pixel to p / 255 for the normalized array. The frame counts as valid only when height, width, and channels all match targetHeight, targetWidth, and 3"
   - level: solution
-    content: "const resized = tf.image.resizeBilinear(image.expandDims(0), [224, 224]).squeeze();"
+    content: "const normalized = pixels.map(p => p / 255); const valid = height === targetHeight && width === targetWidth && channels === 3; return { normalized, valid, shape: [height, width, channels] };"
 keywords:
   - resize
   - crop
@@ -43,7 +43,7 @@ Protocol Sentinel expects 224x224 pixel input. Meridian cameras stream at 640x48
 Same as responsive images: `object-fit: cover` is center-crop, `object-fit: contain` is resize-with-padding. I've been doing image transforms in CSS for years.
 </Dialogue>
 
-`object-fit: cover` fills a container with a center-cropped image. CSS `transform: rotate(45deg)` spins an element. ML image preprocessing uses the same operations: resize to a fixed input size, crop to a region of interest, flip and rotate for data augmentation.
+The operations match. What does not match is who pays for getting one wrong. A bad `object-fit` gives a user a squashed thumbnail. A bad resize gives the model a squashed face, and the model was never trained on squashed faces. Preprocessing decides what the network is allowed to see, which is why every transform in this lesson is applied to the training images and the live feed identically.
 
 <LearningObjectives objectives={["Resize images to model-expected dimensions using bilinear interpolation", "Crop regions of interest from larger images", "Apply geometric transforms: flip, rotate, transpose", "Normalize pixel values from 0-255 to 0-1 for model consumption"]} />
 
@@ -54,17 +54,19 @@ Same as responsive images: `object-fit: cover` is center-crop, `object-fit: cont
 <CodeBlock language="typescript" title="image-ops.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Resize: object-fit: contain (with padding)
-function resizeContain(image: tf.Tensor3D, targetSize: [number, number]): tf.Tensor3D {
+// Resize to a fixed size, ignoring aspect ratio.
+// This is object-fit: fill, not contain. A 640x480 frame gets squashed
+// into a square. Contain means resize the long side, then pad the rest.
+function resizeStretch(image: tf.Tensor3D, targetSize: [number, number]): tf.Tensor3D {
   return tf.image.resizeBilinear(
     image.expandDims(0) as tf.Tensor4D,
     targetSize
   ).squeeze() as tf.Tensor3D;
 }
 
-// Resize a 640x480 camera frame to 224x224
-const cameraFrame = tf.randomNormal([480, 640, 3]);
-const resized = resizeContain(cameraFrame, [224, 224]);
+// A camera frame as it arrives: integers 0-255
+const cameraFrame = tf.randomUniform([480, 640, 3], 0, 255, 'int32') as tf.Tensor3D;
+const resized = resizeStretch(cameraFrame, [224, 224]);
 console.log(resized.shape); // [224, 224, 3]
 
 // Crop: extract a region of interest
@@ -76,10 +78,10 @@ function centerCrop(image: tf.Tensor3D, size: number): tf.Tensor3D {
 }
 
 // Flip: horizontal mirror (like transform: scaleX(-1))
-const flipped = tf.reverse(image, 1); // reverse along width axis
+const flipped = tf.reverse(cameraFrame, 1); // reverse along the width axis
 
-// Normalize: 0-255 → 0-1 (models work better with small numbers)
-const normalized = image.toFloat().div(255);
+// Normalize: 0-255 to 0-1 (models work better with small numbers)
+const normalized = cameraFrame.toFloat().div(255);
 console.log('Range:', normalized.min().dataSync()[0], '-', normalized.max().dataSync()[0]);`}
 </CodeBlock>
 

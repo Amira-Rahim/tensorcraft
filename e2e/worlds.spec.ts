@@ -104,7 +104,10 @@ test.describe("World Detail Page", () => {
     await page.goto("/worlds/deep-orbit");
     await expect(page.getByText(/foundations/i).first()).toBeVisible();
     await expect(page.getByText(/neural networks/i).first()).toBeVisible();
-    await expect(page.getByText(/training loop/i).first()).toBeVisible();
+    // Module 3 is titled "Training: Loss, Gradients & Optimization". The old
+    // /training loop/i matched nothing on this page: "The Training Loop" is a
+    // lesson title inside module 3, which stays collapsed for guests.
+    await expect(page.getByText(/training:/i).first()).toBeVisible();
   });
 
   test("shows lesson estimated time", async ({ page }) => {

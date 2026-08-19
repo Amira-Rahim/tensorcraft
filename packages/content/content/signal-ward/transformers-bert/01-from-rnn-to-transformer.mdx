@@ -12,12 +12,12 @@ context:
 concept:
   explanation: "Transformers replace recurrence with self-attention, processing all tokens in parallel instead of one at a time."
   bridge:
-    jsTitle: "Class Components to Hooks"
-    jsCode: "// Class: sequential lifecycle methods\n// Hooks: declare what you need, React handles order"
+    jsTitle: "N+1 Loop to One Batch Call"
+    jsCode: "// N+1: for (const id of ids) await fetchOne(id)\n// Batch: await fetchAll(ids), one round trip"
     mlTitle: "RNN to Transformer"
     mlCode: "// RNN: sequential hidden states\n// Transformer: parallel self-attention"
     tier: structural
-    breaks: "Class → hooks was a refactor: same component behavior, cleaner code. RNN → Transformer is an architectural break: parallelism over sequence steps replaces sequential state, attention replaces hidden-state passing. The output capability shifts (long-range dependencies), not just the API."
+    breaks: "Collapsing an N+1 into one batch call is a refactor: the same records come back, you just stop waiting between them. Dropping recurrence changes what the model can represent. Any two tokens become directly connected instead of relayed through every step in between, and the score matrix costs O(n²) memory where the loop cost O(n)."
 consequence:
   narrative: "Vikram orders the rebuild: recurrence out, attention in. Nobody mentions that the O(n squared) bill will come due on the longest discharge summaries first."
 hints:
@@ -39,11 +39,11 @@ Khalil, our LSTM processes a clinical note one word at a time, left to right, se
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-That reminds me of when React moved from class components to hooks. Class components had these rigid lifecycle methods (mount, update, unmount), everything sequential. Hooks let you declare what you need, and React figures out the execution order.
+That reminds me of the N+1 I had on the records list. It fired one request per patient, each one waiting on the answer before it, and a page of forty took forty round trips. One batched call returned all forty at once.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Smaller than what happened here. Hooks were a refactor: same rendered output, cleaner code. The transformer was an architectural break. Parallel attention replaced sequential state, and the output capability changed with it. Long-range dependencies the LSTM kept losing became learnable. The paper is "Attention Is All You Need," and the title is the whole argument.
+Smaller than what happened here. Batching was a refactor: same forty records, fewer round trips. The transformer was an architectural break. Parallel attention replaced sequential state, and the output capability changed with it. Long-range dependencies the LSTM kept losing became learnable. The paper is "Attention Is All You Need," and the title is the whole argument.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why RNNs bottleneck on long sequences", "Explain the core innovation of the transformer architecture", "Compare sequential vs parallel processing of text", "Identify when transformers outperform RNNs"]} />
@@ -58,22 +58,20 @@ RNNs have a fundamental problem: information from early words must pass through 
 {`import * as tf from '@tensorflow/tfjs';
 
 // RNN approach: sequential, O(n) steps
-async function rnnProcess(tokens: tf.Tensor2D) {
+function rnnProcess(tokens: tf.Tensor2D) {
   const seqLen = tokens.shape[0];
   const hiddenDim = 64;
-  let hidden = tf.zeros([hiddenDim]);
+  // One set of weights, reused at every step. That reuse is what makes it recurrent.
+  const Wih = tf.randomNormal([tokens.shape[1], hiddenDim]);
+  const Whh = tf.randomNormal([hiddenDim, hiddenDim]);
+  let hidden = tf.zeros([1, hiddenDim]);
 
   for (let t = 0; t < seqLen; t++) {
-    const token = tokens.slice([t, 0], [1, -1]).squeeze();
+    const token = tokens.slice([t, 0], [1, -1]);
     // Each step depends on the previous hidden state
-    hidden = tf.tanh(
-      tf.add(
-        tf.matMul(token.reshape([1, -1]), tf.randomNormal([tokens.shape[1], hiddenDim])),
-        tf.matMul(hidden.reshape([1, -1]), tf.randomNormal([hiddenDim, hiddenDim]))
-      )
-    ).squeeze();
+    hidden = tf.tanh(tf.add(tf.matMul(token, Wih), tf.matMul(hidden, Whh)));
   }
-  return hidden; // final hidden state: bottleneck!
+  return hidden.reshape([hiddenDim]); // final hidden state: bottleneck!
 }
 
 // Transformer approach: parallel, O(1) depth
@@ -104,6 +102,8 @@ console.log('All tokens processed in parallel:', output.shape);`}
 2. **Constant path length**: Any two words are connected in one attention step
 3. **No information bottleneck**: Each token retains its own representation
 
+The bill for all three arrives in the score matrix. `tf.matMul(Q, K.transpose())` is n by n, so attention costs O(n²) in time and memory where an RNN costs O(n). At 20 tokens that is 400 scores and nobody notices. At a 3,000-token discharge summary it is nine million, per head, per layer.
+
 <Dialogue speaker="Vikram">
 For clinical text, the constant path length is the payoff. A drug mentioned in the admission note and a contraindication mentioned in the lab results are directly connected. No information decay over distance.
 </Dialogue>
@@ -112,7 +112,7 @@ For clinical text, the constant path length is the payoff. A drug mentioned in t
 
 Build a basic transformer-style parallel processor and compare it to sequential RNN processing.
 
-<Exercise slug="transformer-block" />
+<Exercise slug="compare-architectures" />
 
 <DerivationDrawer summary="Sinusoidal positional encoding (the formula)">
 Self-attention is permutation-equivariant: shuffle input tokens, output shuffles the same way. To break this and inject position information, add a positional encoding vector to each token embedding:

@@ -35,7 +35,7 @@ keywords:
   - epsilon
 ---
 
-Epoch 40: loss 0.241. Epoch 41: loss 0.241. Epoch 42: loss 0.240. Samir checks the decoder gradients: healthy. The encoder gradients: zero, every layer, every epoch. The training has been running for three hours and the encoder has learned nothing, because there is a sampling step between the two halves and gradients cannot cross it.
+Epoch 40: loss 0.241. Epoch 41: loss 0.241. Epoch 42: loss 0.240. Samir checks the decoder gradients: healthy. The encoder gradients: zero, every layer, every epoch. Three hours of training, and the first half of the network has not moved.
 
 <Dialogue speaker="Rohan">
 There's your wall. You need to sample from the distribution to generate output, but sampling is random, and you can't compute gradients through randomness. Backprop needs a smooth, differentiable path. A dice roll isn't one.
@@ -67,8 +67,8 @@ I hit this wall in my own training. The gradient couldn't pass through my sampli
 // Answer: "increase mu by this amount" (clear gradient through addition)
 
 // Analogy: seeded random
-// const random = seededRandom(42);  // epsilon is like the seed
-// const result = base + scale * random;  // mu + sigma * epsilon
+// const noise = seededRandom(42);       // epsilon: drawn once, outside the math
+// const result = base + scale * noise;   // mu + sigma * epsilon
 // The result depends on base and scale (differentiable!)
 // while still being "random" via the seed`}
 </CodeBlock>

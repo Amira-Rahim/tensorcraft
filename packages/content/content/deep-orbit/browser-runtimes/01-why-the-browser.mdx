@@ -48,6 +48,8 @@ But we trained it on the engineering rig, with the rig's GPU behind it. Can a br
 
 You have made this call before: does the work happen on the server or on the client? On the web it shows up as server-side vs client-side rendering, and the tradeoffs are the same: where does the computation happen, and what do you gain or lose by moving it to the client?
 
+TensorFlow.js is not browser-only. `@tensorflow/tfjs-node` binds the same API to the native TensorFlow build and runs on a server, typically faster than any browser backend. This module goes to the browser because that is where DEEP SCAN has to land: the bridge dashboard, on the consoles the watch already reads.
+
 <LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Decide between browser and server inference using the CSR-vs-SSR mental model"]} />
 
 ## Where Inference Runs: Server or Client
@@ -91,7 +93,7 @@ async function clientInference(signalData: number[]) {
 | **Compute** | GPU clusters available | Device CPU/GPU only |
 | **Cold start** | Warm server | Model must download first |
 
-Nazari is right: a dashboard classifying a reading every second cannot afford a network round-trip on each one.
+Nazari is right, though not because one round-trip misses the budget: a 180-millisecond hop to the ship's compute bay fits inside a second easily. Her objection is that the dashboard would then depend on that link staying up, reading after reading, for every hour of every watch.
 
 ## The Cost of Client-Side ML
 
@@ -116,8 +118,10 @@ console.log(\`Cold start: \${coldStartMs}ms\`);  // 200-2000ms depending on mode
 // Signal processing at 1Hz = 1000ms budget (comfortable)
 // Real-time audio at 44.1kHz = 0.023ms budget (very tight)
 const inferenceStart = performance.now();
-const result = model.predict(input);
+const output = model.predict(input) as tf.Tensor;
+await output.data();  // GPU kernels are queued; read one back or you time the queue
 const inferenceMs = performance.now() - inferenceStart;
+output.dispose();
 console.log(\`Inference: \${inferenceMs}ms\`);  // 5-50ms typical`}
 </CodeBlock>
 
@@ -135,12 +139,12 @@ Analyze the tradeoffs for a browser ML deployment scenario.
 
 <Epilogue>
 
-Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one integrated snapshot a second, already boiled down from the raw sample torrent. The archive keeps a slower record of the same stream, one 33-second integration per row, 28,800 rows across eleven days; the dashboard gets the live 1 Hz feed itself, every one of the 86,400. At 180 milliseconds of round-trip to the ship's own compute bay, the server plan spends 4.3 hours of every day waiting on interdeck fiber, aboard a vessel eleven light-minutes from anything resembling a CDN.
+Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one snapshot a second, live. The archive records the same stream more slowly, one row per 33 seconds, which is where its 28,800 rows over eleven days come from. At 180 milliseconds of round-trip to the ship's own compute bay, the server plan spends 4.3 hours of every day waiting on interdeck fiber, aboard a vessel eleven light-minutes from anything resembling a CDN.
 
 <Dialogue speaker="Chief Nazari">
 Four hours a day of waiting, or a one-time download per crew station. Buy the download.
 </Dialogue>
 
-Demir opens a terminal and types `npm install`. The model is going to live where the crew lives. While the package downloads, he starts a survey of the ship's consoles, oldest chair first.
+Demir opens a terminal and types `npm install`; the model is going to live where the crew lives. While the package downloads, he starts a survey of the ship's consoles, oldest chair first.
 
 </Epilogue>

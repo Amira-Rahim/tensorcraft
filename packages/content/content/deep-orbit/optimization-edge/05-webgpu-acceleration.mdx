@@ -149,9 +149,12 @@ console.log('5. WebGPU:         15ms → 5ms inference');
 console.log('');
 console.log('Result:');
 console.log('  Size:     340 MB → 42 MB (8x smaller)');
-console.log('  Speed:    45ms → 5ms (9x, and the backend swap did it:');
-console.log('            steps 2-3 shrink bytes, not FLOPs; step 4 cuts');
-console.log('            call count, not per-call time)');
+console.log('  Speed:    45ms → 5ms (9x, in two parts. 45 → 15: the');
+console.log('            340 MB build was fighting the dashboard for');
+console.log('            memory, and a 42 MB build is not. 15 → 5: the');
+console.log('            backend swap. Steps 2-3 shrink stored bytes,');
+console.log('            not FLOPs; step 4 cuts call count, not');
+console.log('            per-call time)');
 console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
 console.log('  Fits in dashboard: YES ✓');`}
 </CodeBlock>
@@ -172,7 +175,7 @@ Set up the best available GPU backend and benchmark inference speed.
   whatYouLearned={[
     "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders; on DEEP SCAN's matmul-heavy inference workload that measured 2-3x faster.",
     "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in browser feature detection.",
-    "The full optimization stack (quantization, pruning, caching, and WebGPU) compounds: each step multiplies the gains of the previous ones."
+    "The optimization stack works on three separate axes: quantization and pruning cut stored bytes, caching cuts the number of calls, and the backend swap cuts per-call time. They add up because they do not overlap, which also means each one has to be measured on its own axis."
   ]}
   bridge="Switching `canvas.getContext('webgl2')` for `navigator.gpu.requestAdapter()` moves GPU access from a graphics-oriented API to a compute-oriented one, the same shift as moving rendering logic off the main thread into a dedicated Worker."
   youCanNow="Configure TensorFlow.js to use the WebGPU backend with graceful fallback to WebGL and WASM, and benchmark inference speed across backends."

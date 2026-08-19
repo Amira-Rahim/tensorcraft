@@ -1,7 +1,7 @@
 slug: instance-labels
 lessonSlug: instance-segmentation
 title: "Assign Instance Labels"
-instructions: "Write a function that takes an array of detected objects (each with a classId and a binary pixel mask as a flat array) and returns a single instance map where each pixel holds the instance ID (1-indexed) of the object that covers it, or 0 for background."
+instructions: "Write a function that takes an array of detected objects (each with a classId and a binary pixel mask as a flat array) and returns a single instance map where each pixel holds the instance ID of the object covering it, or 0 for background. IDs are 1-indexed by position in the array. Where two masks overlap, the later detection wins, the same way a later sibling paints over an earlier one at the same z-index."
 starterCode: |
   interface Detection {
     classId: number;

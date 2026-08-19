@@ -18,14 +18,14 @@ concept:
     mlCode: "const backbone = await tf.loadLayersModel('mobilenet_v2');"
     tier: structural
 consequence:
-  narrative: "Amir benchmarks three backbones on Noor's laptop. MobileNetV2: 48ms per frame. ResNet50: 180ms. 'For browser-based real-time detection,' he says, 'MobileNet is the only choice. We are not running on Meridian's server farms.'"
+  narrative: "Amir runs all four backbones on Noor's laptop against a live district feed. Three of them keep up. ResNet50 drops the feed to five frames a second, and the drone has left the frame before the second inference returns. 'That is the whole argument,' he says. 'We are not running on Meridian's server farms.'"
 hints:
   - level: nudge
-    content: "Backbone networks are pre-trained models you use as feature extractors, like importing a UI library"
+    content: "Score each backbone on its own first, then sort the scored list at the end"
   - level: guidance
-    content: "Different backbones trade off accuracy for speed: MobileNet is fast, ResNet is accurate"
+    content: "Each term is a fraction of a budget: accuracy/100, inferenceMs/300, sizeMB/150. Speed and size use 1 - x because lower is better"
   - level: solution
-    content: "Load a backbone, remove the classification head, and use it as a feature extractor in your pipeline"
+    content: "Map each backbone to { ...b, score }, round with Math.round(score * 1000) / 1000, then sort descending on score"
 keywords:
   - backbone-network
   - mobilenet
@@ -83,7 +83,7 @@ const BACKBONES: Backbone[] = [
 ## Using a Backbone
 
 <CodeBlock language="typescript" title="use-backbone.ts">
-{`async function loadBackbone(name: string): Promise<tf.LayersModel> {
+{`async function loadBackbone(name: string): Promise<tf.GraphModel> {
   // TensorFlow.js provides pre-converted backbones
   const urls: Record<string, string> = {
     'mobilenet_v2': 'https://tfhub.dev/google/tfjs-model/mobilenet_v2/feature_vector/1/default/1',
@@ -99,27 +99,32 @@ const BACKBONES: Backbone[] = [
 async function buildDroneDetector() {
   const backbone = await loadBackbone('mobilenet_v2');
 
-  // Freeze backbone weights (pre-trained, don't change)
-  // Add custom layers on top for our specific task
-  const input = tf.input({ shape: [224, 224, 3] });
-  const features = backbone.predict(input); // [1, 1280]
+  // The backbone is frozen by construction: it is a loaded graph,
+  // so its weights never update. You train only the head.
+  const head = tf.sequential({
+    layers: [
+      tf.layers.dense({ inputShape: [1280], units: 128, activation: 'relu' }),
+      tf.layers.dense({ units: 2, activation: 'softmax' }),
+    ],
+  });
 
-  // Custom classification head: drone vs not-drone
-  const dense = tf.layers.dense({ units: 128, activation: 'relu' });
-  const output = tf.layers.dense({ units: 2, activation: 'softmax' });
-
-  // Backbone = shared library, custom head = your application code
+  // Pixels through the backbone, features through the head
+  return (image: tf.Tensor3D) => tf.tidy(() => {
+    const batch = image.expandDims(0) as tf.Tensor4D;
+    const features = backbone.predict(batch) as tf.Tensor2D; // [1, 1280]
+    return head.predict(features) as tf.Tensor2D;            // [1, 2]
+  });
 }
 
-// The backbone does the heavy lifting (feature extraction)
-// Your custom head does the specific task (drone classification)`}
+// The backbone turns pixels into features and never changes
+// Your head turns features into a drone/not-drone decision and is the part you train`}
 </CodeBlock>
 
 ## Challenge
 
 Compare backbone networks and select the optimal one for browser deployment.
 
-<Exercise slug="use-backbone" />
+<Exercise slug="load-backbone" />
 
 <DerivationDrawer summary="Transfer learning: why backbone features generalize">
 A pretrained backbone (e.g. ResNet-50 trained on ImageNet) learns features in this hierarchy:

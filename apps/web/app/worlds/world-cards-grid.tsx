@@ -256,7 +256,7 @@ function WorldCard({ card, variant, onNotify }: WorldCardProps) {
                 <span className="text-text-primary font-bold">
                   {card.modulesCount}
                 </span>{" "}
-                mod ·{" "}
+                modules ·{" "}
                 <span className="text-text-primary font-bold">
                   {card.lessonsCount}
                 </span>{" "}

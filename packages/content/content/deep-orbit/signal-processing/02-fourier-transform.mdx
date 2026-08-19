@@ -52,7 +52,7 @@ So the signal is the chord, and the FFT breaks it into individual frequencies? T
 Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N of them for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That universality is what lets me trust whatever peak we find.
 </Dialogue>
 
-One vocabulary check before the word scares anyone off: a "complex coefficient" here is just a PAIR of numbers per frequency, how much of it is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, which is all this course ever uses. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information. Each coefficient answers one question: how strongly is this exact frequency present, and at what phase offset?
+One vocabulary check, because "complex" is the wrong scare word: a complex coefficient here is just a PAIR of numbers per frequency, how much of that frequency is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, which is all this course ever uses. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information.
 
 <LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
 
@@ -121,7 +121,7 @@ function binToFrequency(binIndex: number, sampleRate: number, fftSize: number): 
 
 // Nyquist frequency: the highest frequency you can detect
 // = sampleRate / 2
-// Like the "max viewport width": you can't render details finer than one pixel
+// Like a display's pixel grid: nothing finer than one pixel survives, no matter what you draw
 const nyquist = sampleRate / 2;  // 64 Hz
 console.log('Nyquist frequency:', nyquist, 'Hz');
 

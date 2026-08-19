@@ -8,12 +8,14 @@ test.describe("Landing Page", () => {
     await expect(h1).toContainText(/turns out you'?re fluent/i);
   });
 
-  test("trust line stays above the fold on a 900px-tall laptop", async ({
+  test("primary CTA stays above the fold on a 900px-tall laptop", async ({
     page,
   }) => {
+    // 2026-08-19 (owner): the trust line was cut from the hero; the fold
+    // guarantee now anchors on the primary CTA.
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
-    await expect(page.getByTestId("hero-trust-line")).toBeInViewport();
+    await expect(page.getByTestId("landing-cta-primary")).toBeInViewport();
   });
 
   test("hero mounts the live inference demo panel", async ({ page }) => {

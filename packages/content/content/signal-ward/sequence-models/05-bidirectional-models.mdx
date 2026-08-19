@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "reduce + reduceRight produce two separate folds you compose afterward. Bidirectional RNNs run forward and backward passes whose hidden states are concatenated per timestep; you pay for both passes at training and at inference, not just an additional traversal."
 consequence:
-  narrative: "Diagnostic One now reads clinical notes in both directions, catching negation and context that unidirectional models miss."
+  narrative: "The BiLSTM clears the negation set on the archive. Then Karimi points it at the live intake queue, where notes arrive half-written, and every score comes back at 0.5."
 hints:
   - level: nudge
     content: "tf.layers.bidirectional wraps any RNN layer and runs it in both directions."
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-Consider this note: "The medication was discontinued because the patient developed a rash." When you read "the medication," you don't yet know it was discontinued. You only understand the full meaning after reading the entire sentence.
+Which word tells you the medication stopped? "The medication was discontinued because the patient developed a rash." When you read "the medication," you don't yet know it was discontinued. You only understand the full meaning after reading the entire sentence.
 </Dialogue>
 
 <Dialogue speaker="Imran">
@@ -51,7 +51,7 @@ That's the right pair of primitives, and for once the analogy survives contact w
 Clinical note analysis confirms: 23% of negation patterns require right-to-left context for correct interpretation. Unidirectional models miss these cases.
 </Dialogue>
 
-A forward pass alone means that at "the medication," the model knows nothing about the discontinuation four words ahead. The backward pass fills in exactly that gap, and concatenating the two states gives every token full context from the entire sequence.
+A forward pass alone means that at "the medication," the model knows nothing about the discontinuation two words later. The backward pass fills in exactly that gap, and concatenating the two states gives every token full context from the entire sequence.
 
 <LearningObjectives objectives={["Understand why unidirectional models miss backward context clues", "Connect bidirectional processing to reduce() + reduceRight() combination", "Build a bidirectional LSTM in TensorFlow.js", "Recognize when bidirectional models are appropriate vs unnecessary"]} />
 
@@ -181,9 +181,10 @@ async function compareModels(seqLen: number) {
   biModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
   biModel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
 
-  console.log('Unidirectional params:', uniModel.countParams());
-  console.log('Bidirectional params:', biModel.countParams());
-  // Bidirectional ≈ 2x unidirectional parameters
+  console.log('Unidirectional params:', uniModel.countParams()); // 3,729
+  console.log('Bidirectional params:', biModel.countParams());   // 5,857
+  // The recurrent layer doubles, 2,112 to 4,224. The embedding is shared,
+  // so the whole model grows about 1.6x, not 2x.
 }`}
 </CodeBlock>
 
@@ -193,30 +194,16 @@ Build a bidirectional LSTM that reads clinical text in both directions for impro
 
 <Exercise slug="bidirectional-scan" />
 
-<DerivationDrawer summary="Beam search vs greedy decoding">
-When generating sequences token-by-token (translation, summarization, story generation), the search space is exponential: for vocab V and length T, V^T possible outputs. Practical decoding strategies:
+<DerivationDrawer summary="What the backward pass costs and what it buys">
+A unidirectional RNN computes one state per position: `h_t = f(h_{t-1}, x_t)`, so `h_t` is a function of `x_1 ... x_t` only.
 
-**Greedy decoding:** at each step, pick `argmax_v p(v | history)`. O(T · V). Fast but myopic: local choices can paint the model into a corner.
+A bidirectional layer runs a second cell over the reversed sequence: `h'_t = f'(h'_{t+1}, x_t)`, a function of `x_t ... x_n`.
 
-**Beam search:** maintain top-K hypotheses at each step. For each, expand to V continuations, score, keep top-K total.
+The per-token representation is the concatenation `[h_t ; h'_t]`, which depends on the whole input. With `mergeMode: 'concat'` and `units: u`, every position carries `2u` numbers into the next layer, so each downstream weight matrix doubles its input width.
 
-```
-beams = [(start_token, score=0)]
-for step in 1..T:
-  candidates = []
-  for (sequence, score) in beams:
-    next_log_probs = log p(• | sequence)         // shape: vocab
-    for v in vocab:
-      candidates.append( (sequence + [v], score + next_log_probs[v]) )
-  beams = top-K by score from candidates
-return beams[0]
-```
+**Cost.** Two cells means two sets of recurrent weights, about `2 * 4(du + u^2 + u)` parameters for an LSTM of input width `d`. Both run at inference, not just at training, and the backward cell cannot start until the last token has arrived, so latency is bounded by the full sequence length in both directions.
 
-**Length normalization:** sum-of-log-probs penalizes longer sequences. Normalize by length:
-
-`final_score = sum_log_prob / length^α`     (α typically 0.6-0.7)
-
-**Trade-offs:** Beam K=4 typically captures most of the gain over greedy. K>10 has diminishing returns and risks producing bland "safe" outputs. Modern LLMs often use **sampling** (top-k, top-p / nucleus) instead of beam for diversity.
+**Why generation is out.** `h'_t` reads `x_{t+1}`. During generation `x_{t+1}` is the token you are about to produce, so the quantity does not exist. Bidirectional layers belong to labeling and classification, where the input is complete before the first pass.
 </DerivationDrawer>
 
 ## Knowledge check
@@ -229,4 +216,4 @@ return beams[0]
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["23% of negation patterns in clinical notes need right-to-left context; unidirectional models miss them", "Each token gets context from the entire sequence, not just preceding tokens", "Bidirectional is ideal for clinical text where complete notes are available before analysis", "Tradeoff: 2x parameters and compute, but significantly better accuracy on context-dependent patterns"]} />
+<KeyTakeaways takeaways={["Some negation and scope patterns resolve only from tokens that come after the target word, and a forward-only model cannot see them", "Each token gets context from the entire sequence, not just preceding tokens", "Bidirectional is ideal for clinical text where complete notes are available before analysis", "Tradeoff: the recurrent layer doubles in parameters and compute, paid at inference as well as at training"]} />

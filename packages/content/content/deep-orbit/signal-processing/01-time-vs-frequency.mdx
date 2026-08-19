@@ -58,7 +58,7 @@ As a first sketch. But the DOM and CSSOM are both lossless views of markup someo
 
 The rest of this lesson is learning to read that second view.
 
-<LearningObjectives objectives={["Understand that every signal has two equivalent representations: time domain and frequency domain", "Identify what each domain reveals: time shows when, frequency shows what patterns", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
+<LearningObjectives objectives={["Understand that every signal has two representations, the time domain and the frequency domain, and what each one costs you", "Identify what each domain reveals: time shows when things happen, frequency shows what repeats", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
 
 ## Two Views, One Signal
 
@@ -150,8 +150,8 @@ Identify which domain reveals a hidden pattern in signal data.
 
 <LessonRecap
   whatYouLearned={[
-    "Every signal has two equivalent representations: the time domain shows amplitude at each moment, and the frequency domain shows which periodic components are present and how strong they are.",
-    "The two views contain the same information but each hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
+    "Every signal has two representations: the time domain shows amplitude at each moment, and the frequency domain shows which periodic components are present and how strong they are.",
+    "On a complete, perfectly observed signal the two views carry the same information. On real captures a finite sample rate and a finite window distort the frequency view, and each view still hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
     "The frequency domain is useful for detection tasks because periodic components accumulate into a single frequency bin rather than being spread across many time samples."
   ]}
   bridge="Just as `document.querySelector` gives a structural view of a page while `getComputedStyle` gives a computed-value view, `fft(signal)` gives a frequency view of the same samples that the time-domain array already contains."

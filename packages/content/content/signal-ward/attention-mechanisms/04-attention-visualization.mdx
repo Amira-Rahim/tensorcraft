@@ -22,11 +22,11 @@ consequence:
   narrative: "The heatmaps are up and Karimi reads them like an X-ray. The first bright stripe lands on methotrexate. The second lands on the word 'for', and nobody in the room can say why."
 hints:
   - level: nudge
-    content: "Extract the attention weights matrix and render it as a grid"
+    content: "The renderer needs one number per token pair. Start with Q against every K."
   - level: guidance
-    content: "Map weight values to opacity or color intensity for each token pair"
+    content: "Matrix-multiply Q by K transposed, scale by the square root of K's last dimension, then softmax the last axis"
   - level: solution
-    content: "Use canvas or SVG to render a seqLen x seqLen heatmap from the weights tensor"
+    content: "const dK = K.shape[K.shape.length - 1]; const scores = tf.matMul(Q, K, false, true).div(tf.scalar(Math.sqrt(dK))); return tf.softmax(scores);"
 keywords:
   - visualization
   - heatmap
@@ -42,7 +42,7 @@ I can't trust a system I can't understand. If Diagnostic One flags a drug intera
 That's like DevTools highlighting. When you hover over an element in the inspector, the browser shows you exactly which box on the page it corresponds to. We can do the same with attention weights.
 </Dialogue>
 
-<LearningObjectives objectives={["Extract attention weight matrices from a model", "Render attention weights as a visual heatmap", "Interpret attention patterns in clinical context", "Build interactive token-pair attention displays"]} />
+<LearningObjectives objectives={["Extract attention weight matrices from a model", "Render attention weights as a visual heatmap", "Interpret attention patterns in clinical context", "Say what an attention heatmap does not prove about the model's reasoning"]} />
 
 ## Rendering the Weight Matrix
 
@@ -85,10 +85,11 @@ function renderHeatmap(viz: AttentionViz, canvas: HTMLCanvasElement) {
   canvas.height = cellSize * (n + 1);
 
   for (let i = 0; i < n; i++) {
+    const rowMax = Math.max(...viz.weights[i]);
     for (let j = 0; j < n; j++) {
       const weight = viz.weights[i][j];
-      const intensity = Math.floor(weight * 255);
-      ctx.fillStyle = \`rgba(0, 212, 255, \${weight})\`;
+      // Scale each row so its strongest cell renders fully opaque
+      ctx.fillStyle = \`rgba(0, 212, 255, \${weight / rowMax})\`;
       ctx.fillRect((j + 1) * cellSize, (i + 1) * cellSize, cellSize - 1, cellSize - 1);
     }
     // Row and column labels
@@ -99,7 +100,8 @@ function renderHeatmap(viz: AttentionViz, canvas: HTMLCanvasElement) {
   }
 }
 
-// Example usage
+// Example usage. These projections are random, so this first heatmap is noise:
+// the patterns described below only show up once the model has been trained.
 const tokens = ['Patient', 'prescribed', 'methotrexate', 'for', 'arthritis'];
 const embeddings = tf.randomNormal([5, 32]) as tf.Tensor2D;
 const viz = await extractAttentionWeights(tokens, embeddings, 16);
@@ -127,7 +129,7 @@ Nobody answers. The heatmap doesn't either.
 
 ## Challenge
 
-Visualize attention weights between clinical tokens as a heatmap.
+Build the matrix the renderer draws from: one softmax-normalized row per token.
 
 <Exercise slug="visualize-attention" />
 

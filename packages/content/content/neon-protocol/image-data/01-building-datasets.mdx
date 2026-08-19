@@ -39,7 +39,7 @@ keywords:
 Every great model starts with great data, Noor. You wouldn't ship a frontend app with broken image paths and missing alt tags. Same principle here. Our dataset needs structure, consistency, and clear labels. Tonight, we build the foundation.
 </Dialogue>
 
-`dome-camera/cam_0047.jpg`. That path is doing two jobs: storing the image and labeling it. The same discipline runs through any well-organized asset pipeline (`icons/navigation/arrow-left-24.svg`, where each path segment carries meaning). ML datasets follow the same logic: every image lives in a folder named after its class label, with consistent naming and metadata.
+`dome-camera/cam_0047.jpg`. That path is doing two jobs: storing the image and labeling it. The same discipline runs through any well-organized asset pipeline (`icons/navigation/arrow-left-24.svg`, where each path segment carries meaning).
 
 <LearningObjectives objectives={[
   "Understand the structure of an image classification dataset",
@@ -65,7 +65,7 @@ assets/
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-ML datasets mirror this pattern exactly. The ImageNet dataset, for example, organizes millions of images into folders named after their class:
+ImageNet uses the same layout, with 1,000 classes and 1.2 million photographs:
 
 ```
 dataset/
@@ -158,7 +158,7 @@ class DatasetBuilder {
 }`}
 </CodeBlock>
 
-The `getSummary` method is critical. Just as you'd audit a component library to find missing variants, you audit a dataset to find underrepresented classes. If your dataset has 500 dome cameras but only 12 hidden cameras, the model will struggle to recognize the rare type.
+The `getSummary` method is critical. Just as you'd audit a component library to find missing variants, you audit a dataset to find underrepresented classes. Zara's catalog already leans: the dome cameras outnumber the hidden micro-cameras better than twenty to one. A model trained on that will be sharpest at the type the resistance least needs to find.
 
 ## Quality Control
 
@@ -168,7 +168,7 @@ I've seen resistance cells waste months training on dirty data. Duplicate images
 
 Dataset quality checks are the ML equivalent of linting your codebase. Common issues include:
 
-- **Duplicates**: the same image appearing multiple times inflates your count without adding information
+- **Duplicates**: the same photo ingested twice inflates your count without adding information, and if one copy lands in train and the other in validation, your accuracy number is a lie
 - **Mislabels**: a dome camera photo filed under "bullet-camera" teaches the model the wrong pattern
 - **Corrupt files**: images that can't be decoded will crash your training pipeline
 - **Inconsistent dimensions**: while models resize inputs, wildly different aspect ratios can cause information loss
@@ -205,6 +205,8 @@ function validateSample(sample: ImageSample): string[] {
   return errors;
 }`}
 </CodeBlock>
+
+`findDuplicates` catches the cheap case: one path ingested twice. It will not catch the same photograph saved as `cam_0047.jpg` and `dome_047.jpg`. For that you hash the decoded pixel bytes and group on the hash, or a perceptual hash if the copies survived re-compression.
 
 ## Challenge
 

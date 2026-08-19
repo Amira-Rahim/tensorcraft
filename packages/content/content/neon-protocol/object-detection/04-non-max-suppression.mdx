@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Every anchor near a drone fires a detection. You get 30 boxes for one drone. This is the same problem as a scroll listener firing 60 times per second. You don't want 60 handler calls. You want one. In frontend, you debounce. In detection, you run Non-Max Suppression.
+Every anchor near a drone fires a detection. You get 30 boxes for one drone. This is the same problem as a scroll listener firing 60 times per second. You don't want 60 handler calls. You want one. In JavaScript you reach for debounce. In detection, you run Non-Max Suppression.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -57,7 +57,7 @@ A detection model with 441 anchors will fire many overlapping boxes on the same 
 <CodeBlock language="typescript" title="debounce-vs-nms.ts">
 {`// JS: debounce suppresses redundant events
 function debounce(fn: Function, delay: number) {
-  let timer: number;
+  let timer: ReturnType<typeof setTimeout> | undefined;
   return (...args: any[]) => {
     clearTimeout(timer);
     timer = setTimeout(() => fn(...args), delay);
@@ -212,10 +212,10 @@ Face matching system returned the wrong person for a flagged search. Audit the c
 
 <Quiz
   question="A detector returns 50 boxes for the same vehicle, all overlapping. After NMS with iouThreshold=0.5, you expect 1 box. You set iouThreshold=0.95 instead. What happens?"
-  options={[{"text":"All 50 boxes are kept; only boxes with near-perfect overlap are suppressed"},{"text":"Exactly 1 box is kept regardless of threshold; NMS always converges"},{"text":"All 50 are suppressed; high threshold means more aggressive removal"},{"text":"The model becomes faster; higher threshold short-circuits the IoU comparison"}]}
+  options={[{"text":"Nearly all 50 boxes survive; only near-perfect overlaps get suppressed"},{"text":"Exactly 1 box is kept regardless of threshold; NMS always converges"},{"text":"All 50 are suppressed; high threshold means more aggressive removal"},{"text":"The model becomes faster; higher threshold short-circuits the IoU comparison"}]}
   correct={0}
-  explanation="iouThreshold is the minimum overlap required to suppress a competing box. At 0.5, anything overlapping the top box by ≥50% is removed; most of your 50 redundant boxes share >50% overlap, so 1 survives. At 0.95, only boxes overlapping by ≥95% are removed; boxes with 80-90% overlap survive, so most of the 50 get kept. Higher threshold = LESS suppression. Option C inverts the relation; option B ignores the threshold entirely; option D confuses semantics with performance."
+  explanation="iouThreshold is the overlap a competing box must exceed before it is suppressed. At 0.5, anything overlapping the top box by more than half is removed, and near-duplicate boxes on one vehicle overlap far more than that, so one survives. At 0.95 only near-identical boxes are removed, so boxes overlapping by 80 or 90 percent stay in the output and you get most of the 50 back. A higher threshold suppresses less, not more, and it changes what comes out rather than how fast it runs."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["NMS runs after confidence thresholding: hundreds of candidate boxes go in, one box per object comes out", "The algorithm: sort by confidence, keep the top box, remove high-IoU overlaps, repeat", "IoU threshold controls suppression aggressiveness; 0.5 is the standard starting point", "Class-aware NMS only suppresses within the same object class, like debouncing each input independently", "Greedy NMS can delete real objects: two drones flying close together can merge into a single surviving box"]} />
+<KeyTakeaways takeaways={["NMS is the cleanup pass after prediction: hundreds of overlapping candidate boxes go in, one box per object comes out", "The algorithm: sort by confidence, keep the top box, remove high-IoU overlaps, repeat", "IoU threshold controls suppression aggressiveness; 0.5 is the standard starting point", "Class-aware NMS only suppresses within the same object class, like debouncing each input independently", "Greedy NMS can delete real objects: two drones flying close together can merge into a single surviving box"]} />

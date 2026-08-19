@@ -38,7 +38,7 @@ keywords:
 I need this model running on a $35 sensor gateway. It has 512MB RAM shared between the OS, drivers, and your model. Every byte you save is a byte I can use for the sensor buffer.
 </Dialogue>
 
-PNG, WebP, or AVIF? It is the same decision three times: how much quality are you willing to trade for bytes. Number formats in ML run the same trade, with numerical precision in place of visual quality, and on Tariq's gateway the bytes side of the ledger is not negotiable.
+PNG, WebP, or AVIF? Whichever way you go, you are answering one question: how much quality will you trade for bytes. Number formats in ML run the same trade, with numerical precision in place of visual quality, and on Tariq's gateway the bytes side of the ledger is not negotiable.
 
 <LearningObjectives objectives={["Understand Float32, Float16, and Int8 number formats", "Calculate memory savings from format conversion", "Map image format decisions to number format decisions"]} />
 
@@ -77,10 +77,11 @@ formats.forEach(f => {
 
 // The key question: does 1 byte per weight preserve enough information?
 // For most models: yes, with 0-2% accuracy loss.
-// That is like going from PNG to WebP: visually identical, much smaller.`}
+// JS: this is the gap you already know as Float32Array vs Int8Array.
+// BYTES_PER_ELEMENT is 4 and 1. That ratio is the whole trick.`}
 </CodeBlock>
 
-A 10-million parameter model goes from 38.1MB in Float32 to 9.5MB in Int8. That is a 4x reduction with typically less than 2% accuracy loss. The parallel to image compression is direct: WebP images look identical to PNG at 30% the file size.
+A 10-million parameter model goes from 38.1MB in Float32 to 9.5MB in Int8. That is a 4x reduction, and for most models the accuracy cost stays under 2%.
 
 ## Challenge
 
@@ -89,7 +90,7 @@ Calculate model sizes across different number formats.
 <Exercise slug="compare-formats" />
 
 <DerivationDrawer summary="FP32 vs FP16 vs INT8 vs FP8 representations">
-**IEEE 754 layout:**
+**IEEE 754 layout** (FP32 is Float32 and FP16 is Float16: the same formats, under the short names most ML tooling prints):
 
 ```
 FP32: 1 sign bit | 8 exponent bits | 23 mantissa bits   = 32 bits total
@@ -111,16 +112,16 @@ x_int = round(x_float / scale) + zero_point
 x_recovered = (x_int − zero_point) · scale
 ```
 
-Where `scale = (x_max − x_min) / 255` (float units per integer level) and `zero_point = round(−x_min / scale)` (an integer, in quantized units like x_int). Per-tensor (one scale for the whole tensor) is simpler; per-channel (one scale per output channel of conv/dense) is more accurate but more compute.
+Where `scale = (x_max − x_min) / 255` (float units per integer level) and `zero_point = round(−x_min / scale) − 128`, the integer level that represents float zero. The `− 128` is what shifts the result into signed int8; drop it only if you are storing to unsigned uint8 instead. Per-tensor (one scale for the whole tensor) is simpler; per-channel (one scale per output channel of conv/dense) is more accurate but more compute.
 </DerivationDrawer>
 
 ## Knowledge check
 
 <Quiz
   question="A model has 10M parameters in FP32. You quantize to INT8. What's the approximate model size reduction?"
-  options={[{"text":"4× smaller (40 MB → 10 MB): INT8 uses 1 byte per param vs 4 for FP32"},{"text":"2× smaller: INT8 halves the precision but not the size"},{"text":"8× smaller: bits not bytes"},{"text":"32× smaller: INT8 has 32× fewer representable values"}]}
+  options={[{"text":"4× smaller (38.1 MB → 9.5 MB): INT8 uses 1 byte per param vs 4 for FP32"},{"text":"2× smaller: INT8 halves the precision but not the size"},{"text":"8× smaller: bits not bytes"},{"text":"32× smaller: INT8 has 32× fewer representable values"}]}
   correct={0}
-  explanation="FP32 = 4 bytes per parameter, INT8 = 1 byte per parameter. 10M params × 4 = 40 MB → 10M × 1 = 10 MB, a 4× reduction. Option C (8×) confuses bits and bytes. Option D conflates dynamic-range count with storage size. Option B is wrong; INT8 quarters not halves the storage."
+  explanation="FP32 = 4 bytes per parameter, INT8 = 1 byte per parameter. The same 10M-parameter model that measured 38.1 MB in Float32 measures 9.5 MB in Int8, a 4× reduction. Option C (8×) confuses bits and bytes. Option D conflates dynamic-range count with storage size. Option B is wrong; INT8 quarters the storage, it does not halve it."
   tier="structural"
 />
 

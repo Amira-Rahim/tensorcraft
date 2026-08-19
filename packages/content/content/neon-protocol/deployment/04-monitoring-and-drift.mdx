@@ -35,8 +35,12 @@ keywords:
   - distribution-shift
 ---
 
+<Dialogue speaker="Noor">
+District 9's dashboard has been green for three days. Every prediction above threshold, no errors, no timeouts. And they logged nine drones this week that Sentinel called street furniture.
+</Dialogue>
+
 <Dialogue speaker="Amir">
-District 9 is reporting false negatives. Meridian drones flying right past Sentinel undetected. Three days ago we were at 94% accuracy. Now we are at 71%. The model has not changed. What happened?
+Nine. Flying right past Sentinel, undetected. Three days ago we were at 94% accuracy. Now we are at 71%. The model has not changed. What happened?
 </Dialogue>
 
 <Dialogue speaker="NEON">
@@ -45,7 +49,7 @@ The model has not changed. The world has. Meridian deployed new drone models: di
 
 Deployment starts a second job: watching the model decay as the world changes around it. Data drift is the ML equivalent of an API breaking because a third-party service changed their response format. You need monitoring to catch it.
 
-<LearningObjectives objectives={["Implement real-time confidence score tracking for deployed models", "Detect data drift by comparing input distributions against a baseline", "Build alerting thresholds for model performance degradation", "Design a monitoring dashboard for browser-based ML systems"]} />
+<LearningObjectives objectives={["Implement real-time confidence score tracking for deployed models", "Detect data drift by comparing input distributions against a baseline", "Build alerting thresholds for model performance degradation", "Wrap an existing inference call in monitoring without changing its signature"]} />
 
 ## Error Tracking for Models
 
@@ -131,6 +135,10 @@ class ModelMonitor {
       ).length / recent.length
     };
   }
+
+  getRecentConfidences(count: number): number[] {
+    return this.logs.slice(-count).map(l => l.confidence);
+  }
 }`}
 </CodeBlock>
 
@@ -180,7 +188,8 @@ function detectDrift(
 }
 
 // Usage with the monitor
-const baselineStats = computeStats(baselineConfidences);
+// The same validation-set confidences you passed to monitor.setBaseline
+const baselineStats = computeStats(validationConfidences);
 
 setInterval(() => {
   const recentConfidences = monitor.getRecentConfidences(100);

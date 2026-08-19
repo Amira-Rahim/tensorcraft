@@ -24,7 +24,10 @@ import { WhoThisIsFor } from "@/app/components/who-this-is-for";
 
 export const metadata: Metadata = {
   title: "Module 1 Is Done. The Model Isn't. | Tensorcraft",
-  description: `All 11 modules, the capstone, certificate, and GitHub push flow. One payment, lifetime access, from $${PRICING.single.price}.`,
+  // GitHub push is NOT named here: the comparison table below and the
+  // landing "Own" card both say pushing starts free in Module 1, so selling
+  // it as a paid unlock would contradict them.
+  description: `Modules 2-11, the capstone, the certificate, and lifetime updates. One payment, lifetime access, from $${PRICING.single.price}.`,
   // Gated-content upsell page; not an SEO target.
   robots: { index: false, follow: false },
 };
@@ -95,9 +98,10 @@ export default function PaywallPage() {
             Module 1 is done. The model isn&rsquo;t.
           </h1>
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
-            You&rsquo;ve seen the bridge. Modules 2-11 are where you stop
-            translating and start shipping: tensors, backprop, signal
-            processing, and a capstone, a working browser-side ML system you
+            You&rsquo;ve seen how ML concepts map onto JavaScript you already
+            write. Modules 2-11 are where you stop translating and start
+            shipping: layers, backpropagation, signal processing, recurrent
+            networks, and a capstone, a working browser-side ML system you
             assemble piece by piece.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">

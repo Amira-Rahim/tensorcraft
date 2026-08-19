@@ -36,14 +36,18 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-Two tools on the bench. Convolution extracts, pooling compresses. Neither one is a model. The Sentinel needs them stacked: conv, pool, conv, pool, deeper and narrower until a dense layer turns the features into a verdict. Composition is the whole architecture.
+You can find an edge and you can shrink a map. Neither one is a model. Stack them and bring me a number.
+</Dialogue>
+
+<Dialogue speaker="Amir">
+Conv, pool, conv, pool. Deeper and narrower every block, until a dense layer turns what is left into a verdict. Meridian ran six blocks on hardware we do not have. We get three.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So the model is basically a component tree? Conv is like a data-fetching component, pooling is like a summarization component, and the dense layer at the end is the leaf that renders the final output?
 </Dialogue>
 
-A CNN is a pipeline of composed layers, each transforming its input and passing the result downstream. The standard pattern: convolution blocks (conv + activation + pool) stacked to extract increasingly abstract features, then dense layers for classification.
+A tree is the wrong shape. This stack is a straight line: no branching, no context providers, no portals. Layer n reads exactly one thing, the output of layer n minus 1, and that is what makes the shape arithmetic in the next block tractable. What survives from the analogy is the composition order: conv, activation, pool, repeated until the maps are small and deep.
 
 <LearningObjectives objectives={["Design a CNN architecture by stacking conv, pool, and dense layers", "Understand how data shapes transform through each layer of the network", "Calculate the total parameter count of a CNN"]} />
 
@@ -59,14 +63,14 @@ A CNN is a pipeline of composed layers, each transforming its input and passing 
 //   </Sidebar>
 // </Layout>
 
-// CNN layer composition follows the same pattern:
+// CNN layer composition, drawn with the same indentation:
 // Conv Block 1    extracts low-level features (edges)
 //   Conv Block 2  extracts mid-level features (shapes)
 //     Conv Block 3  extracts high-level features (objects)
 //       Dense      classifies based on features
 //
-// One thing the tree picture hides: this stack is strictly
-// linear. No branching, no context providers, no portals.
+// The nesting above is React's, not the model's: block 3 does not
+// contain block 2, it just reads what block 2 emitted.
 
 interface LayerConfig {
   type: 'conv2d' | 'maxPool' | 'flatten' | 'dense';
@@ -216,7 +220,7 @@ const featureHierarchy = {
 
 Design a CNN layer stack and calculate the output shapes and parameter counts for each layer.
 
-<Exercise slug="build-cnn" />
+<Exercise slug="design-cnn-layers" />
 
 <DerivationDrawer summary="Total parameter count of a CNN classifier">
 For a CNN with three conv blocks (8/16/32 filters, K=3, max-pool 2 between) on 224×224×3 input followed by flatten + dense(64) + dense(num_classes):

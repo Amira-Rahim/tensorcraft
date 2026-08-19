@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-This is the moment. Everything we've built (the distributions, the latent spaces, the reparameterization, the KL balance) comes together here. I want an interactive installation where visitors shape the art. Not by choosing from a menu, but by exploring a continuous space of possibility.
+I do not want a menu of presets. I want a visitor to put a hand on a slider and feel the piece move under it, the way clay moves. Every position between two settings has to be a real work, not a blend of two.
 </Dialogue>
 
 <Dialogue speaker="Erdem">
@@ -44,10 +44,10 @@ And it must run at 30fps in Chrome on those kiosk laptops. No excuses.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Erdem's kiosks give me 33 milliseconds per frame, and one decode costs me 11. Sixteen dimensions with ten slider stops each is 10^16 possible artworks. Tonight's visitors will see maybe 4,000 of them.
+Erdem's kiosks give me 33 milliseconds per frame, and one decode costs me 11. Sixteen dimensions at ten stops each is 10^16 possible artworks. The four sliders you are giving visitors reach ten thousand of them. Opening night will show maybe 4,000.
 </Dialogue>
 
-The kiosk sliders will read like design tokens: warmth, complexity, symmetry. The VAE does not hand you those names. It hands you sixteen unnamed axes, and the labels come later, after traversal experiments reveal which axis moves what. The mapping code in this lesson is the product of that detective work, not a feature of the model.
+The kiosk sliders will read like design tokens: warmth, complexity, symmetry, texture. The VAE does not hand you those names. It hands you sixteen unnamed axes, and the labels come later, after traversal experiments reveal which axis moves what. The mapping code in this lesson is the product of that detective work, not a feature of the model.
 
 <LearningObjectives objectives={["Build a complete VAE with custom training loop in TensorFlow.js", "Implement the full loss function: reconstruction + KL divergence", "Create an interactive generation UI with latent space controls", "Optimize for real-time browser performance"]} />
 
@@ -96,7 +96,7 @@ function buildCreativeVAE(inputDim: number, latentDim: number) {
 
 ## Custom Training Loop
 
-Because the VAE loss has two components, we use a custom training loop with `tf.train.adam` and `tf.variableGrads`.
+The VAE loss needs the encoder's `mu` and `logVar` and a fresh epsilon sample on every step, values `model.fit` never sees. So the whole forward pass lives inside `optimizer.minimize`, where TF.js can differentiate through encode, sample, and decode in one go.
 
 <CodeBlock language="typescript" title="vae-training.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -141,6 +141,7 @@ async function trainCreativeVAE(
 
       totalLoss += (await loss.array());
       loss.dispose();
+      batch.dispose();
     }
 
     if (epoch % 10 === 0) {
@@ -156,7 +157,7 @@ async function trainCreativeVAE(
 {`// Design token style interface for the exhibition kiosk
 interface ArtTokens {
   warmth: number;      // z[0]: cool blues ← → warm reds
-  complexity: number;  // z[1]: minimal ← → intricate
+  complexity: number;  // z[1]: minimal ← → dense
   symmetry: number;    // z[2]: asymmetric ← → symmetric
   texture: number;     // z[3]: smooth ← → textured
 }

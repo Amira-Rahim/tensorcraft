@@ -24,7 +24,7 @@ concept:
     tier: intuition
     breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
-  narrative: "Twelve times the normal threshold. Nazari clears the sensor suite herself; this is not instrument noise. The model is right."
+  narrative: "Twelve times the normal error, and the per-feature map names the source: fft_5, the 73.4 Hz bin, carrying almost all of it alone."
 hints:
   - level: nudge
     content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"
@@ -52,7 +52,7 @@ So the reconstruction error IS the anomaly score? It's like running git diff. If
 Then run your diff, Ensign. And when it fires, tell me which channel it says changed.
 </Dialogue>
 
-The autoencoder's baseline is its learned representation of normal signals. The error score measures total deviation from that baseline, one scalar per sample: the mean of the squared gaps between a signal and its reconstruction, taken across all the feature dimensions at once. Hold Farah's question while you build it; the score will turn out to answer everything except what she asked.
+The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build it; the score will turn out to answer everything except what she asked.
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Establish a normal error distribution to set meaningful thresholds", "Interpret reconstruction error: which features contribute most to the anomaly"]} />
 
@@ -157,7 +157,7 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
   youCanNow="Compute per-sample reconstruction error as an anomaly score and run feature-level error analysis to identify which signal dimensions drive the deviation."
 />
 
-> **DISPATCH archive · field intercept #13-A:** Operator Lin's CV cell logged a similar error spike last quarter: IoU residuals 12× baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
+> **DISPATCH archive · field intercept #13-A:** Operator Lin's CV cell logged a similar error spike last quarter: box-overlap error 12x baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
 
 <Epilogue>
 

@@ -4,7 +4,6 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ParticleField } from "@tensorcraft/ui/effects";
-import { WORLD_CONTENT } from "@tensorcraft/shared";
 
 // The hero's proof panel is the free-tier Deep Scan demo: a real 4 KB TFJS
 // model classifying readings live in the visitor's tab. ssr:false, tfjs is
@@ -46,11 +45,6 @@ export function LandingHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
         >
-          <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-6 flex items-center gap-3">
-            <span className="inline-block w-[7px] h-[7px] bg-primary" />
-            Deep Orbit is live · No Python required
-          </div>
-
           <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-8 uppercase">
             <span className="block">ML Speaks JavaScript.</span>
             <span className="block text-primary">
@@ -63,14 +57,6 @@ export function LandingHero() {
             JavaScript, right in your browser. You&apos;ll walk out with a model
             you can actually ship, built on instincts you already have from
             managing state and caching.
-          </p>
-
-          <p
-            data-testid="hero-stat-line"
-            className="font-mono text-xs text-text-primary tracking-[0.14em] uppercase mb-8"
-          >
-            {WORLD_CONTENT.modulesPerWorld} modules ·{" "}
-            {WORLD_CONTENT.totalLessonsPerWorld} lessons · 1 deployable model
           </p>
 
           <div className="flex gap-4 flex-wrap mb-5">
@@ -89,13 +75,6 @@ export function LandingHero() {
               See how it works
             </Link>
           </div>
-
-          <p
-            data-testid="hero-trust-line"
-            className="font-mono text-[13px] text-text-primary"
-          >
-            No credit card. No account for module 1.
-          </p>
         </motion.div>
 
         <motion.div
@@ -108,7 +87,7 @@ export function LandingHero() {
           <div className="[&_[data-testid=deep-scan-demo]]:my-0 brutalist-shadow">
             <DeepScanDemo
               framing
-              headerLabel="DEEP SCAN · live inference · running in your tab"
+              headerLabel="LIVE DEMO · running in your tab"
             />
           </div>
         </motion.div>

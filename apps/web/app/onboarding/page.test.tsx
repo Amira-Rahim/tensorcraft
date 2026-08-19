@@ -109,7 +109,7 @@ function clickBack() {
 // ---------------------------------------------------------------------------
 
 describe("OnboardingPage", () => {
-  it("renders step 1 (Welcome) by default with mission briefing", async () => {
+  it("renders step 1 (Welcome) by default", async () => {
     await renderPage();
     expect(screen.getByTestId("step-welcome")).toBeTruthy();
     expect(screen.getByTestId("onboarding-step-text").textContent).toMatch(

@@ -24,9 +24,9 @@ hints:
   - level: nudge
     content: "tensor.shape reads [height, width, channels]: rows first, then columns, then depth. Most indexing bugs come from assuming [x, y] order"
   - level: guidance
-    content: "Use tensor.shape to inspect dimensions, tensor.slice() to access specific pixels"
+    content: "tf.slice takes a start position and a size. Start at [y, x, channel] and take a size of [1, 1, 1], then pull the single value out with dataSync()"
   - level: solution
-    content: "const pixel = tensor.slice([y, x, 0], [1, 1, 3]); // RGB values of pixel at (y, x)"
+    content: "const slice = image.slice([y, x, channel], [1, 1, 1]); return slice.dataSync()[0];"
 keywords:
   - tensors
   - pixel-data
@@ -35,15 +35,17 @@ keywords:
   - indexing
 ---
 
-SECTOR 7 // FEED 12 // 2241. The frozen frame on the holotable is a 224-by-224 grid, three numbers per cell. [14, 9, 22] in the shadows under the rail line. [212, 188, 96] where the noodle bar's sign burns. Every camera in Meridian's grid reduces the city to exactly this: stacked grids of small numbers.
+SECTOR 7 // FEED 12 // 2241. The frozen frame on the holotable is a grid 640 wide and 480 tall, three numbers per cell. [14, 9, 22] in the shadows under the rail line. [212, 188, 96] where the noodle bar's sign burns. Every camera in Meridian's grid reduces the city to exactly this: stacked grids of small numbers.
 
 <Dialogue speaker="Zara">
-A grayscale image is a 2D grid, height by width. Each cell holds one brightness value. Add color and you get a third dimension: three channels for red, green, blue. Stack multiple frames and you get a fourth: the batch. That is the entire data model of surveillance.
+One number per cell and you have brightness, the shape of the light and nothing else. Three numbers and you have the color it was wearing. Stack a night of frames and a fourth axis opens up: the batch. Height, width, channels, batch. The whole city fits in there.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So a 224x224 RGB image is like a CSS grid with 224 rows, 224 columns, and 3 layers stacked on top of each other? And a batch is like rendering that grid 32 times?
+So it is a CSS grid. Columns across, rows down, three layers deep. Pull me the noodle bar sign: column 190, row 40.
 </Dialogue>
+
+Zara pulls it. The readout comes back `[14, 9, 22]`, the black under the rail line, nowhere near the sign. Grid syntax puts the column first. A tensor puts the row first, so the sign sits at `[40, 190]`, and Noor just asked for the pixel 150 rows below it.
 
 The flat `Uint8ClampedArray` from `getImageData()` stores pixels in row-major order: `[R, G, B, A, R, G, B, A, ...]`. TensorFlow.js tensors organize the same data as a shaped multi-dimensional array: `[height, width, channels]`. Different interface, same numbers underneath.
 

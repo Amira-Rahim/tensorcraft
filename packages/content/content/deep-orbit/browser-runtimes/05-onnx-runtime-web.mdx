@@ -51,9 +51,9 @@ Fair enough. ONNX is a universal model format, then? Train in Python, export to 
 "Anywhere" is the brochure version. ONNX is a shared operator set. If your model uses an op the target runtime doesn't implement, it doesn't degrade gracefully. It fails to load. There is no polyfill for a missing op; you rewrite the architecture. Check the opset before you promise me portability. Then bring me the numbers.
 </Dialogue>
 
-Demir runs the check before he writes a line of benchmark code. DEEP SCAN exports clean: dense layers and a sigmoid, the plain HTML of the operator world, implemented by every runtime that matters. The models that fail Nazari's check are the ones carrying a researcher's favorite exotic op, and they fail at load time on the target machine, never on the laptop that exported them.
+ONNX (Open Neural Network Exchange) is ML's attempt at a web standard: a shared format any compliant runtime can execute, whatever framework did the training. The operator set is what scopes "compliant."
 
-Train in PyTorch, export once, run anywhere: that is the pitch, and Nazari has already told you what she thinks of pitches. ONNX (Open Neural Network Exchange) is ML's attempt at a web standard: a shared format that any compliant runtime can execute, regardless of which framework trained the model. It carries the same fine print every web standard does: "universal" means "universal where implemented."
+Demir runs the check before he writes a line of benchmark code. DEEP SCAN exports clean: dense layers and a sigmoid, the plain HTML of the operator world, implemented by every runtime that matters. The models that fail Nazari's check are the ones carrying a researcher's favorite exotic op, and they fail at load time on the target machine, never on the laptop that exported them.
 
 <LearningObjectives objectives={["Understand ONNX as a universal model interchange format", "Load and run ONNX models in the browser with onnxruntime-web", "Benchmark TF.js vs ONNX Runtime: cold start, inference speed, memory usage", "Choose the right runtime for your use case based on real performance data"]} />
 
@@ -134,7 +134,7 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
   };
 }
 
-// benchmarkONNX() is the SAME harness with three lines changed:
+// benchmarkONNX() is the SAME harness with four lines changed:
 //
 //   load:   await ort.InferenceSession.create('/models/deep-scan.onnx')
 //           replaces tf.loadLayersModel(...)
@@ -144,6 +144,8 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 //           explicit readback await; session.run resolves when compute
 //           finishes, and ORT Web's JS tensors are garbage-collected,
 //           so the dispose bookkeeping goes too
+//   memory: ORT Web keeps no tensor ledger, so memoryMB reads the WASM
+//           heap size where tf.memory().numBytes was
 //
 // Everything else (warm-up, the 100-iteration loop, the averaging, the
 // result shape with runtime: 'ONNX (WASM)') stays byte-identical. In a
@@ -161,7 +163,7 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 | Factor | TF.js | ONNX Runtime Web |
 |--------|-------|-------------------|
 | **Ecosystem** | Largest, most tutorials | Growing fast |
-| **GPU acceleration** | WebGL (mature) + WebGPU (fastest, Chromium) | WebGPU (its primary GPU path) |
+| **GPU acceleration** | WebGL (mature) + WebGPU (fastest) | WebGPU (its primary GPU path) |
 | **Python interop** | Export from TF/Keras | Any framework via ONNX export |
 | **Cold start** | Slower (WebGL shader compilation) | Faster (WASM) |
 | **Sustained speed** | Faster (GPU shaders cached) | Good (SIMD-optimized WASM) |
@@ -180,8 +182,6 @@ Run an ONNX model and compare its output with TF.js.
 
 <LessonRecap whatYouLearned={["ONNX Runtime Web uses WASM for reliable cross-device inference and starts up faster (180ms) than TF.js (340ms); TF.js uses WebGL for GPU acceleration and sustains faster inference (2.1ms vs 3.8ms)", "The key runtime selection criterion is deployment pattern: always-on workloads favor TF.js for sustained throughput, on-demand workloads favor ONNX for cold-start speed", "Cross-runtime ONNX portability is real but bounded: a model using an op the target runtime lacks fails to load entirely, so opset support must be verified before committing to a deployment target"]} bridge="Just as the same HTML renders across browsers but a missing feature has no polyfill, the same ONNX model runs across runtimes but a missing operator fails hard with no fallback." youCanNow="Load and run an ONNX model in the browser, benchmark it against TF.js, and select the right runtime based on cold-start and sustained-inference requirements." />
 
-One more benchmark story came down the relay while Demir's harness ran, and it is about the machine under the numbers rather than the numbers themselves.
-
 > **DISPATCH archive · field intercept #07-D:** Lin's vision cell benchmarked three runtimes on the lead engineer's laptop, shipped the winner. Fleet hardware ran two GPU generations older; the "fastest" runtime lost by 4x on the metal that mattered. Lin's retraction memo was benchmarked correctly. Nobody reads retraction memos.
 
 Nazari's rule already covers it. Numbers, but numbers from the hardware you ship on.
@@ -191,7 +191,7 @@ Nazari's rule already covers it. Numbers, but numbers from the hardware you ship
 Nazari accepts the split: TF.js on the always-on dashboard, ONNX for the backup system that loads on demand. The next morning, Demir finds a third entry in the benchmark log, one he did not run. Timestamp 0317. Owner: ARIA.
 
 <Dialogue speaker="ARIA">
-I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 2.1 milliseconds on the bench, a few more in the live pipeline, and is uncertain about it. Uncertainty appears to be the more expensive product, and the more accurate one. For the record: the WebGL backend serves my successor best.
+I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 2.1 milliseconds on the bench and 3.4 in the live pipeline, and is uncertain about it. Uncertainty appears to be the more expensive product, and the more accurate one. For the record: the WebGL backend serves my successor best.
 </Dialogue>
 
 "My successor." Demir reads the line twice. Nobody taught her to call it that.

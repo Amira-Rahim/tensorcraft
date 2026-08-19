@@ -24,7 +24,7 @@ hints:
   - level: nudge
     content: "CORS blocks a cross-origin fetch() to protect data by controlling who reads it. The silo boundary here plays the same role, enforced by lawyers instead of the browser."
   - level: solution
-    content: "Federated learning sends the model to the data, trains locally, and only shares model updates; data never leaves its origin"
+    content: "Sum the dataSize values with reduce, take silos.length for the participant count, and return 'federated' whenever that count is 2 or more. One silo has nothing to federate with."
 keywords:
   - data-silos
   - cors
@@ -40,7 +40,7 @@ Power companies won't share sensor data. Regulatory and competitive reasons. If 
 Then we bring the training to the data, not the data to the training. Each company trains on their own data. They share model updates, not data.
 </Dialogue>
 
-CORS exists because browsers must protect data boundaries between origins. A script on `malicious-site.com` cannot read your banking data from `bank.com`. The browser enforces this boundary, not because sharing is impossible, but because sharing is dangerous. Three power companies each hold sensor data that could improve the Terra Grid model, and none of them may share it. The same instinct applies: respect the boundary, then design around it.
+7.3 million rows of sensor data sit behind three corporate firewalls, and the model that would benefit from all of it is allowed to see none of it. CORS is the browser's version of the same rule: you do not switch it off, you design around it. What Hassan just proposed is the design, and the rest of this lesson is why it is the only one on the table.
 
 <LearningObjectives objectives={["Understand why data silos exist and why breaking them is not an option", "Map CORS data boundaries to organizational data boundaries in ML", "Recognize the federated learning insight: share model updates, not raw data"]} />
 

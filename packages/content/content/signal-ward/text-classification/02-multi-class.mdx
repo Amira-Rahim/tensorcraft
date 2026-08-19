@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-The urgency filter is working; we're catching critical findings faster. But flagging something as urgent doesn't tell us where to send it. A cardiac emergency needs cardiology, a suspicious mass needs oncology, an abnormal CT goes to radiology.
+A cardiac panel got flagged urgent at 04:20 and sat in the same undifferentiated pile until 06:00. The filter told us it mattered. It didn't tell us cardiology should have had it, or that the abnormal CT behind it belonged to radiology.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -49,7 +49,7 @@ That's a routing problem. In Express, each request URL matches exactly one route
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-An Express router matches each incoming request to exactly one handler. Similarly, softmax classification assigns each document to exactly one department. The softmax function guarantees that all output probabilities sum to 1. Like a router, every document goes somewhere, and no document goes to two places at once.
+Softmax is what makes the routing exclusive. It takes one score per department and returns one probability per department, and it forces those probabilities to sum to 1. Nothing can come back confidently cardiology and confidently emergency at the same time.
 
 <CodeBlock language="typescript" title="department-router.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -132,7 +132,7 @@ What happens when a document could go to two departments? A patient with chest p
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Softmax forces a single winner, the highest probability department. If we need multiple labels, we'll need a different approach. That's the next lesson.
+Softmax forces a single winner. Every point of probability I hand cardiology comes straight out of emergency, so the chest-pain case routes to cardiology and emergency never hears about it.
 </Dialogue>
 
 ## Confusion Matrix: Where Routing Goes Wrong

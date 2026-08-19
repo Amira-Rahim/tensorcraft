@@ -45,7 +45,7 @@ Leave it running. Every model starts stupid. You feed images in batches, compute
 So each epoch is like a CI run? Forward pass is the build step, loss is the test results, backprop is analyzing failures, and the weight update is the fix?
 </Dialogue>
 
-That is a solid mental model. Training is iterative refinement: each epoch processes the entire dataset, and with each pass the kernels get better at detecting useful features. By epoch 9 the dashboard reads loss 0.74, accuracy 61%. The dice are loaded now.
+A CI run tells you which test failed. Backpropagation tells you how much each of the 1.6 million weights contributed to being wrong, and then nobody writes the fix: the gradient is the fix, applied to every weight at once. The rest of the shape holds. Each epoch walks the entire dataset, and with each pass the kernels get better at finding useful features. By epoch 9 the dashboard reads loss 0.74, accuracy 61%. The dice are loaded now.
 
 <LearningObjectives objectives={["Understand the end-to-end CNN training pipeline: forward pass, loss, backprop, update", "Implement a training loop with epoch and batch tracking", "Compute cross-entropy loss for multi-class classification", "Track accuracy and loss curves to monitor training progress"]} />
 
@@ -132,6 +132,8 @@ function trainEpoch(
 </CodeBlock>
 
 ## Monitoring Training
+
+The loop below is scaffolding, not a trained model. `trainEpoch` draws fresh random logits on every call, so its loss sits at ln(5) forever and `isConverging` flips on noise. Swap the random logits for a real forward pass and the same harness prints the curve Amir is watching.
 
 <CodeBlock language="typescript" title="training-monitor.ts">
 {`// Track training progress across epochs

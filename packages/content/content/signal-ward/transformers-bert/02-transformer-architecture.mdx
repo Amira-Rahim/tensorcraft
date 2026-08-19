@@ -12,13 +12,14 @@ context:
 concept:
   explanation: "A transformer encoder block combines multi-head attention with feedforward layers, skip connections, and layer normalization."
   bridge:
-    jsTitle: "React Virtual DOM"
-    jsCode: "// diff current vs previous → minimal updates"
+    jsTitle: "Spreading a Patch Over State"
+    jsCode: "const next = { ...state, ...patch }; // the base carries through, the step adds"
     mlTitle: "Residual Connections"
     mlCode: "output = layerNorm(input + attention(input)); // preserve + refine"
     tier: structural
+    breaks: "A spread replaces every key the patch names, so the old value for that key is gone. A residual adds elementwise: both values survive inside the sum, and layer norm rescales the result. The skip path is not tidiness either. Gradients travel back through the addition undiminished, which is what makes a twelve-block stack trainable at all."
 consequence:
-  narrative: "Diagnostic One's core architecture is now built: a stack of encoder blocks that can understand clinical text in full context."
+  narrative: "Diagnostic One's core architecture is now built: a stack of encoder blocks that reads every token against every other one. The stack still cannot tell which token came first."
 hints:
   - level: nudge
     content: "Each block has two sub-layers: attention and feedforward, each with residual + norm"
@@ -33,8 +34,10 @@ keywords:
   - feedforward
 ---
 
+Khalil stacks the attention layer from the last lesson twelve deep and prints the encoder output. Every token comes back looking like every other token.
+
 <Dialogue speaker="Vikram">
-Self-attention alone isn't enough. We need to wrap it in a complete encoder block: attention plus feedforward, with skip connections that preserve information. Same move as React's virtual DOM: diff the new state against the old, apply minimal targeted updates.
+Attention averages. Stack twelve of them and you have averaged the note into mush. That's why the block is more than attention: a feedforward layer on top, and a skip path around each sub-layer so the original vector survives the trip.
 </Dialogue>
 
 <LearningObjectives objectives={["Build a complete transformer encoder block", "Wrap each sub-layer in a residual connection followed by layer normalization", "Stack multiple encoder blocks into an encoder"]} />
@@ -50,6 +53,12 @@ A transformer encoder block has two sub-layers, each wrapped in a residual conne
 
 <CodeBlock language="typescript" title="encoder-block.ts">
 {`import * as tf from '@tensorflow/tfjs';
+
+// Read this before you copy it: every helper below calls tf.randomNormal on each
+// invocation, so the weights are fresh random numbers every call. That is fine for
+// tracing shapes, which is all this listing does. It is useless for training, because
+// there is nothing persistent for gradients to update. The exercise builds the same
+// block with tf.layers.dense so the weights survive between calls.
 
 function layerNorm(x: tf.Tensor2D): tf.Tensor2D {
   const mean = x.mean(-1, true);
@@ -117,13 +126,19 @@ console.log('Encoder output:', x.shape); // [10, 64]`}
 The `x.add(attnOut)` step is critical. Without it, deep networks suffer from vanishing gradients, and information from early layers fades. The residual connection provides a highway for gradients and information to flow through unchanged, while the attention layer adds refinements.
 
 <Dialogue speaker="Khalil">
-That's like how React's reconciliation works. You don't rebuild the entire DOM. You keep the existing structure and apply only the changes. The residual connection is the existing DOM; the attention output is the diff.
+That's the move I make on every state update. You don't rebuild the object from scratch. You keep what is already in it and spread the change over the top. The residual connection is the existing state; the attention output is the patch.
 </Dialogue>
+
+Spreading replaces, though, and `x.add(attnOut)` sums. Nothing in the input vector is dropped for the attention output to land; the two are added and layer norm rescales what comes out.
+
+## What the Block Still Cannot Do
+
+Shuffle the tokens of a note and this block returns the same rows in a different order. Self-attention carries no notion of position, which is what the sinusoidal derivation in the previous lesson was for. To the stack you just built, "denied chest pain" and "chest pain denied" are the same input. Positional encodings get added to the token embeddings before the first block, so nothing in this file changes. The input does.
 
 ## Challenge
 
 Build a complete transformer encoder block with attention, feedforward, residuals, and layer norm.
 
-<Exercise slug="build-encoder" />
+<Exercise slug="build-transformer-block" />
 
 <KeyTakeaways takeaways={["An encoder block = multi-head attention + feedforward, each with residual + layer norm", "Residual connections prevent information loss in deep networks", "Layer normalization stabilizes training by normalizing activations", "Stacking blocks lets the model represent more complex patterns"]} />

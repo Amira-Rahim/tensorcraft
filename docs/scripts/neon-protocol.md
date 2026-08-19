@@ -136,7 +136,7 @@ RGB, grayscale, alpha - understanding depth. Each pixel has 3 (or 4) values. Col
 
 Resize, crop, rotate, flip - basic transforms that prepare images for model input. Every model expects a fixed input size.
 
-**JS BRIDGE:** CSS `transform` and `object-fit` are the same two operations image pipelines run constantly: `object-fit: cover` is center-crop, `object-fit: contain` is resize-with-padding.
+**JS BRIDGE:** CSS `transform` and `object-fit` are the same two operations image pipelines run constantly: `object-fit: cover` is center-crop, `object-fit: contain` is resize-with-padding. Sharp names them the same way on the server (`fit: 'cover'`, `fit: 'contain'`).
 
 **Hook:** The transforms reveal something: Meridian's cameras all output images at an unusual resolution - one optimized for a specific model architecture.
 
@@ -172,7 +172,7 @@ The resistance needs training data. Zara leads a nighttime operation to photogra
 |---|---|---|---|
 | 1 | Building Datasets | Collecting, labeling, organizing image data | Asset pipeline and folder structure |
 | 2 | Data Augmentation | Creating training variety through transforms | CSS transform variations (`rotate`, `scale`, `skew`) |
-| 3 | Normalization | Scaling pixel values for model consumption | CSS `normalize.css` - consistent baseline |
+| 3 | Normalization | Scaling pixel values for model consumption | Timestamps to epoch millis - one scale at ingest |
 | 4 | Class Balance | Handling imbalanced datasets | Load balancing across servers |
 | 5 | Data Loaders | Efficient batched data loading | Pagination and infinite scroll |
 
@@ -204,7 +204,7 @@ The model hits 89% accuracy on camera type classification.
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
 | 1 | Convolution Operations | How kernels slide across images. Kira recognizes the pattern from her Canvas drawing app - she's applied blur filters to pixel buffers before. | CSS `filter: blur()` - a convolution kernel operation |
-| 2 | Pooling Layers | Downsampling feature maps | `srcset` responsive image downsampling |
+| 2 | Pooling Layers | Downsampling feature maps | Metric rollup: one peak per bucket |
 | 3 | CNN Architecture | Stacking conv, pool, and dense layers | Component composition patterns |
 | 4 | Training a CNN | End-to-end training on image data | Full build pipeline execution |
 | 5 | Visualizing Features | Understanding what the network learned | DevTools element inspection |
@@ -212,7 +212,7 @@ The model hits 89% accuracy on camera type classification.
 **JS BRIDGES (Module-Level):**
 
 - **Convolution = CSS `blur()`:** A CSS blur filter slides a Gaussian kernel across every pixel of an image. A convolutional layer does the same thing - slides a learned kernel across the image. The difference: CSS uses a fixed kernel (Gaussian); CNNs learn the kernel from data.
-- **Pooling = `srcset` downsampling:** `srcset` provides the browser with multiple image sizes and lets it choose the appropriate resolution. Max pooling does similar downsampling - taking the maximum value from each region to create a smaller, more manageable representation.
+- **Pooling = metric rollup:** a rollup collapses sixty samples a minute into one peak per bucket. Max pooling does the same reduction in two dimensions, keeping the maximum value from each window. The difference: the rollup's raw samples are still in storage, and the pooled activations are gone.
 
 ### GITHUB
 
@@ -278,9 +278,9 @@ The resistance needs to understand full street scenes, not just detect individua
 
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
-| 1 | Semantic Segmentation | Classifying every pixel | CSS `clip-path` - defining regions |
+| 1 | Semantic Segmentation | Classifying every pixel | `map()` vs `find()` - one label out per pixel in |
 | 2 | Instance Segmentation | Distinguishing individual objects | DOM element identity vs class |
-| 3 | U-Net Architecture | Encoder-decoder for dense prediction | Layout flow: content down, styles up |
+| 3 | U-Net Architecture | Encoder-decoder for dense prediction | Layout flow: content down, sizes up |
 | 4 | Mask Generation | Pixel-precise boundaries. Kira realizes this is the same concept as her drawing app's selection tool - isolating pixel regions with a binary mask. | SVG `<mask>` and `<clipPath>` elements |
 | 5 | Scene Understanding | Combining segmentation with context | Semantic HTML - structure implies meaning |
 
@@ -391,7 +391,7 @@ Lin lets them argue. Then: "Build both. Test both. Let the data decide." It's th
 |---|---|---|---|
 | 1 | Video Stream Processing | Accessing and processing video feeds | `getUserMedia()` API |
 | 2 | Frame-by-Frame Inference | Running models on live video | `requestAnimationFrame()` render loop |
-| 3 | Performance Budgets | Maintaining real-time frame rates | Lighthouse performance budgets |
+| 3 | Performance Budgets | Maintaining real-time frame rates | Per-request latency budget split across stages |
 | 4 | WebGL Acceleration | GPU-powered inference | WebGL rendering pipeline |
 | 5 | Streaming Architectures | Processing continuous visual data | WebSocket / Server-Sent Events |
 

@@ -2,7 +2,7 @@ slug: tokenize-text
 lessonSlug: tokens-and-vocabulary
 title: "Tokenize + Pad to Fixed Length"
 mlContent: data
-instructions: "Build `tokenizeAndPad(text, vocab, maxLen)` that tokenizes by whitespace, looks up vocab (0 for unknown), truncates to maxLen if longer, pads with 0 if shorter, and returns a 1D int32 tensor of length maxLen."
+instructions: "Build `tokenizeAndPad(text, vocab, maxLen)` that tokenizes on whitespace and looks up each token in `vocab`. A model takes fixed-length input, so every note has to leave this function the same length: truncate to `maxLen` when the note is longer, pad the end when it is shorter, and return a 1D int32 tensor of length `maxLen`. This `vocab` reserves index 0 for padding and for unknown words alike, so any token missing from `vocab` becomes 0. The lesson's vocabulary gave `<UNK>` its own index; collapsing them is a tradeoff you will revisit."
 starterCode: |
   function tokenizeAndPad(text, vocab, maxLen) {
     return null;

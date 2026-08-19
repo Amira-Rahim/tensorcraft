@@ -22,9 +22,9 @@ consequence:
   narrative: "Khalil understands that NER transforms free text into structured, computable data, the same way querySelectorAll turns a DOM tree into a usable collection."
 hints:
   - level: nudge
-    content: "Every token gets a label from ENTITY_TYPES or O; argMax over the softmax output picks the winner per token"
+    content: "Walk the token array once and give every token a label, the way querySelectorAll tests every node in the tree before returning its matches"
   - level: guidance
-    content: "Assign a category label to each token based on what it represents"
+    content: "Check the lowercased token against the drug, condition, and frequency lists first, then test the dosage regex. Anything unmatched is O"
   - level: solution
     content: "Loop through tokens, check each against known vocabularies and patterns, and assign DRUG, CONDITION, DOSAGE, FREQUENCY, or O"
 keywords:
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text: drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now, it's like having a massive DOM tree with no class names, no IDs, no way to query it.
+Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text: drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now the only query engine I have is me, reading.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -103,7 +103,9 @@ async function extractEntities(
   return entities;
 }
 
-// Example: parse a clinical sentence
+// Example: run the untrained classifier on a clinical sentence. W and b are
+// random here, so the labels below are noise. What is real is the shape:
+// one probability distribution per token.
 const tokens = ['Patient', 'prescribed', 'methotrexate', '15mg', 'weekly'];
 const embeddings = tf.randomNormal([5, 64]) as tf.Tensor2D;
 const probs = findEntities(tokens, embeddings, ENTITY_TYPES.length);
@@ -115,7 +117,7 @@ console.log('Found entities:', entities);
 ## Why NER Matters in Medicine
 
 <Dialogue speaker="Vikram">
-Think of a hospital's electronic health records as one massive web page with millions of text nodes. Without NER, searching for "which patients are on warfarin?" means a human reading every note. With NER, it's a database query. That's the difference between hours and milliseconds.
+Karimi read 47 notes this morning to answer one question. Ask "which patients are on warfarin?" across the whole archive and no one can read fast enough. Whoever needs the answer waits. Tag the entities once and the same question is a WHERE clause: hours become milliseconds.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">

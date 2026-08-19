@@ -53,7 +53,7 @@ So the first question for every document is binary: urgent or not? That's like f
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Form validation makes a binary decision: valid or invalid. A binary classifier does the same, but instead of hand-coded rules, it learns the decision boundary from labeled examples. And it outputs a probability, not a boolean.
+The difference is where the boundary comes from. Yours is a line you wrote; the classifier's is fitted from labeled examples, and it comes back as a probability rather than a boolean. `0.51` and `0.99` both round to `true`, and only one of them should page a physician at 3am.
 
 A sigmoid activation squashes any real number into the range [0, 1]. Values above 0.5 become "urgent," values below become "routine." But in medicine, you might lower that threshold to 0.3, because missing a truly urgent document is far worse than over-flagging a routine one.
 
@@ -93,8 +93,9 @@ function buildUrgencyClassifier(inputDim: number): tf.LayersModel {
 
 // Simulated document embeddings and urgency labels
 const xTrain = tf.randomNormal([200, 64]);
-const yTrain = tf.tensor1d(
-  Array.from({ length: 200 }, () => Math.random() > 0.7 ? 1 : 0)
+const yTrain = tf.tensor2d(
+  Array.from({ length: 200 }, () => [Math.random() > 0.7 ? 1 : 0]),
+  [200, 1]
 );
 
 const model = buildUrgencyClassifier(64);
@@ -121,10 +122,10 @@ Don't set that threshold at 0.5. In medicine, we'd rather flag ten routine docum
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Adjusting threshold. At 0.3, sensitivity increases to 96%: nearly all urgent cases caught. Specificity drops to 71%: more false alarms, no missed emergencies.
+Adjusting threshold. At 0.3, sensitivity is 96%: of every 100 urgent documents, 96 are caught and 4 still get through. Specificity is 71%: 29 of every 100 routine documents are flagged as urgent and land in the queue anyway.
 </Dialogue>
 
-Where that threshold sits is a clinical decision, not a modeling one. Lowering it increases recall (catching more true positives) at the cost of precision (more false positives). In a triage system, that tradeoff almost always favors recall.
+Sensitivity is recall wearing its clinical name: the share of truly urgent documents the system catches. Specificity is the mirror on the other class, the share of routine documents correctly left alone. Drop the threshold and sensitivity rises while specificity and precision both fall, because more routine documents come along for the ride. In a triage queue that trade favors recall, and the physician on service is the one who signs it off.
 
 ## Challenge
 

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Amir sits on the server room floor, the stolen drive glowing in his hand. He looks at Noor. 'I helped build this model when I worked at Meridian. Three years. 200 engineers. 14 billion training images. And now we are going to fork it. Strip out the surveillance layers, retrain the head, turn it into the resistance's greatest weapon. They trained it to find us. We will train it to find them.'"
+  narrative: "Amir sits on the server room floor, the stolen drive glowing in his hand. He looks at Noor. 'I helped build this model when I worked at Meridian. Three years, 200 engineers. Fourteen million ImageNet photos to teach it what an object is, then every street camera in the district to teach it who we are. Now we fork it: strip the surveillance head, retrain on our 500, point it back. They trained it to find us. We will train it to find them.'"
   speaker: "Amir"
 concept:
   explanation: "Repurposing an existing model for a new task is like forking an open-source project. You take the codebase (pre-trained weights), strip out what you do not need (classification head), add your own features (new task-specific layers), and deploy it for a completely different purpose. The original authors' work becomes your foundation."
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-I spent six years at Meridian. I wrote the pooling layers in their flagship model. I optimized the batch normalization. And then I realized what they were using it for. Tracking dissidents. Scoring citizens. Predicting who would resist. I walked out. But I did not walk out empty-handed.
+The pooling layers in this thing are mine. So is the batch normalization tuning. I shipped both before anyone told me what the scores were for. Tracking dissidents. Scoring citizens. Predicting who would resist. I walked out. I did not walk out empty-handed.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -89,7 +89,11 @@ async function buildProtocolSentinel(meridianModelUrl: string) {
   // Step 5: Add resistance classification head
   const featureShape = lastFeatureLayer.outputShape as number[];
   const input = tf.input({ shape: featureShape.slice(1) });
-  let x = tf.layers.dense({ units: 256, activation: 'relu' }).apply(input);
+  // The cut lands one layer earlier than lesson 3's, on a conv output rather
+  // than a pooled vector. Collapse it to one vector per image first, or the
+  // dense stack emits a grid of predictions instead of five numbers.
+  let x = tf.layers.globalAveragePooling2d({ dataFormat: 'channelsLast' }).apply(input);
+  x = tf.layers.dense({ units: 256, activation: 'relu' }).apply(x);
   x = tf.layers.dropout({ rate: 0.4 }).apply(x);
   x = tf.layers.dense({ units: 128, activation: 'relu' }).apply(x);
   const output = tf.layers.dense({
@@ -98,9 +102,16 @@ async function buildProtocolSentinel(meridianModelUrl: string) {
   // Classes: meridian-x7, meridian-scout, meridian-heavy, civilian-drone, no-drone
 
   const head = tf.model({ inputs: input, outputs: output });
+
+  // Step 6: Bolt the head onto the backbone. The three unfrozen conv layers
+  // only train if they sit in the same graph as the loss.
+  const sentinel = tf.model({
+    inputs: meridianModel.input,
+    outputs: head.apply(lastFeatureLayer.output) as tf.SymbolicTensor,
+  });
   console.log('New purpose: counter-surveillance');
 
-  return { backbone, head };
+  return { sentinel };
 }`}
 </CodeBlock>
 
@@ -110,8 +121,7 @@ async function buildProtocolSentinel(meridianModelUrl: string) {
 {`import * as tf from '@tensorflow/tfjs';
 
 async function trainProtocolSentinel(
-  backbone: tf.LayersModel,
-  head: tf.LayersModel,
+  sentinel: tf.LayersModel,
   trainingData: { images: tf.Tensor4D; labels: tf.Tensor2D }
 ) {
   // Domain augmentation: bridge the gap to Neon City conditions
@@ -124,20 +134,22 @@ async function trainProtocolSentinel(
 
     // Sensor noise: Gaussian noise for rain/fog/low-light
     const noise = tf.randomNormal(dimmed.shape, 0, 10);
-    return dimmed.add(noise).clipByValue(0, 255);
+    const noisy = dimmed.add(noise).clipByValue(0, 255);
+
+    // Same scaling detectDrone() uses below: 0-255 in, 0-1 out.
+    // Train and serve on one scale or the browser sees a different image.
+    return noisy.div(255);
   });
 
-  // Extract features through the frozen backbone
-  const features = backbone.predict(augmentedImages) as tf.Tensor;
-
-  // Compile and train the resistance classification head
-  head.compile({
+  // Compile the whole graph. Frozen layers pass data through untouched;
+  // the last three conv layers and the new head update.
+  sentinel.compile({
     optimizer: tf.train.adam(0.001),
     loss: 'categoricalCrossentropy',
     metrics: ['accuracy'],
   });
 
-  const history = await head.fit(features, trainingData.labels, {
+  const history = await sentinel.fit(augmentedImages, trainingData.labels, {
     epochs: 20,
     batchSize: 16,
     validationSplit: 0.2,
@@ -154,8 +166,8 @@ async function trainProtocolSentinel(
   const finalAcc = history.history.acc.slice(-1)[0] as number;
   console.log(\`Protocol Sentinel trained. Final accuracy: \${(finalAcc * 100).toFixed(1)}%\`);
 
-  // Meridian: $2M, 3 years, 200 engineers, 14B images
-  // Resistance: $0, 20 minutes, 1 JS dev, 500 images
+  // Meridian: 2M credits, 3 years, 200 engineers, 14M images
+  // Resistance: 0 credits, 20 minutes, 1 JS dev, 500 images
 }`}
 </CodeBlock>
 
@@ -175,12 +187,12 @@ async function trainProtocolSentinel(
 
 async function deployProtocolSentinel() {
   // Build
-  const { backbone, head } = await buildProtocolSentinel(
+  const { sentinel } = await buildProtocolSentinel(
     'https://resistance.net/stolen-meridian-model/model.json'
   );
 
   // Train
-  await trainProtocolSentinel(backbone, head, resistanceTrainingData);
+  await trainProtocolSentinel(sentinel, resistanceTrainingData);
 
   // Deploy: runs entirely in the browser
   // No server round-trip means no traffic for Meridian to trace.
@@ -191,8 +203,7 @@ async function deployProtocolSentinel() {
       return resized.expandDims(0).div(255);
     });
 
-    const features = backbone.predict(tensor) as tf.Tensor;
-    const prediction = head.predict(features) as tf.Tensor;
+    const prediction = sentinel.predict(tensor) as tf.Tensor;
     const classIndex = prediction.argMax(-1).dataSync()[0];
     const confidence = prediction.max().dataSync()[0];
 
@@ -202,7 +213,6 @@ async function deployProtocolSentinel() {
     ];
 
     tensor.dispose();
-    features.dispose();
     prediction.dispose();
 
     return { class: classes[classIndex], confidence };
@@ -230,4 +240,4 @@ Build the complete Protocol Sentinel pipeline by combining all transfer learning
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Repurposing a model is forking a project: clone the weights, strip the old head, add your own", "Protocol Sentinel combines every technique: pre-training, feature reuse, freezing, domain adaptation, and fine-tuning", "500 images and 20 minutes of training stand on 3 years and $2M of Meridian's compute", "The model runs entirely in the browser, so inference produces no server traffic to trace"]} />
+<KeyTakeaways takeaways={["Repurposing a model is forking a project: clone the weights, strip the old head, add your own", "Protocol Sentinel combines every technique: pre-training, feature reuse, freezing, domain adaptation, and fine-tuning", "500 images and 20 minutes of training stand on 3 years and two million credits of Meridian's compute", "The model runs entirely in the browser, so inference produces no server traffic to trace"]} />

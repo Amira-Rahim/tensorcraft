@@ -49,7 +49,7 @@ The model regressed last Tuesday. But I can't tell you which training data produ
 If you cannot reproduce the training run, you cannot debug the regression. Version everything. Code, data, hyperparameters.
 </Dialogue>
 
-No history means no blame, no bisect, no diff. The model is provably wrong and the why is untraceable, because nobody tracked what data trained it. Data versioning closes that gap with the same primitive git uses: a content hash for every state worth returning to.
+No history means no blame, no bisect, no diff. Data versioning closes that gap with the same primitive git uses: a content hash for every state worth returning to.
 
 <LearningObjectives objectives={["Implement data versioning using content hashing, the same mechanism as git commit hashes", "Track dataset lineage to trace any model back to its exact training data", "Design a version metadata schema that captures what changed and why", "Enable data rollback for reproducing and debugging model regressions"]} />
 
@@ -58,7 +58,7 @@ No history means no blame, no bisect, no diff. The model is provably wrong and t
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="data-versioning.ts">
-{`import { createHash } from 'crypto';
+{`import { createHash } from 'node:crypto';  // Node: in a browser this is crypto.subtle.digest('SHA-256', bytes)
 
 interface DatasetVersion {
   hash: string;              // content hash, like a git commit SHA
@@ -73,21 +73,21 @@ interface DatasetVersion {
 
 function hashDataset(data: Float32Array): string {
   return createHash('sha256')
-    .update(Buffer.from(data.buffer))
+    .update(Buffer.from(data.buffer, data.byteOffset, data.byteLength))
     .digest('hex')
     .slice(0, 12);  // short hash, like git's abbreviated SHA
 }
 
 function createDatasetVersion(
   data: Float32Array,
-  parentHash: string | null,
+  parent: { hash: string; version: string } | null,
   changelog: string,
 ): DatasetVersion {
   const hash = hashDataset(data);
   return {
     hash,
-    version: parentHash ? incrementVersion(parentHash) : '1.0.0',
-    parentHash,
+    version: parent ? bumpMinor(parent.version) : '1.0.0',
+    parentHash: parent ? parent.hash : null,
     timestamp: new Date().toISOString(),
     rowCount: data.length / 24,  // 24 features per row
     schema: '2.1',
@@ -98,8 +98,8 @@ function createDatasetVersion(
 
 // Versioning in action:
 const v1 = createDatasetVersion(batch1, null, 'Initial Sector 7 training data');
-const v2 = createDatasetVersion(batch2, v1.hash, 'Added Sector 3 sensor data');
-const v3 = createDatasetVersion(batch3, v2.hash, 'Removed corrupted Sector 3 batch');
+const v2 = createDatasetVersion(batch2, v1, 'Added Sector 3 sensor data');
+const v3 = createDatasetVersion(batch3, v2, 'Removed corrupted Sector 3 batch');
 
 // Now we can trace: model v2.1 was trained on dataset a3f8e2 (v2)
 // which included the corrupted Sector 3 batch; that is the regression source`}

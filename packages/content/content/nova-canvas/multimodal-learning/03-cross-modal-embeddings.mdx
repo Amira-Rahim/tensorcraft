@@ -42,7 +42,7 @@ Look at the embedding space. The sunset photo lives at coordinates [0.23, -0.45,
 It is like shared component props. A `ButtonProps` interface works whether the component is React, React Native, or a web component. The interface is the same even though the implementation is completely different.
 </Dialogue>
 
-Shared interfaces let different implementations communicate. Cross-modal embeddings do the same: images and text live in the same vector space, sharing the same "interface" (dimensionality and distance metric), even though they come from completely different encoders.
+A `ButtonProps` interface is a promise two implementations agree to keep. A shared embedding space is a promise two encoders were trained into, and the promise is only ever approximately kept: the image encoder and the text encoder drift, so the same concept lands at slightly different coordinates depending on which door it came through. Projection heads exist to shrink that gap, and the rest of this lesson is about measuring it.
 
 <LearningObjectives objectives={["Understand cross-modal embedding spaces and why normalization matters", "Implement projection heads that align different encoder outputs", "Measure cross-modal similarity using cosine distance", "Connect shared embedding spaces to shared TypeScript interfaces"]} />
 
@@ -52,6 +52,9 @@ Shared interfaces let different implementations communicate. Cross-modal embeddi
 
 <CodeBlock language="typescript" title="cross-modal-embeddings.ts">
 {`import * as tf from '@tensorflow/tfjs';
+
+// buildImageEncoder and buildTextEncoder come from lesson 1,
+// cosineSimilarity from lesson 2. Same shapes, same embedding dim.
 
 // Projection head: maps encoder output to the shared space
 // Like an adapter pattern: different implementations, same interface
@@ -65,10 +68,14 @@ function buildProjectionHead(inputDim: number, outputDim: number): tf.LayersMode
     units: outputDim, activation: 'linear'
   }).apply(x) as tf.SymbolicTensor;
 
-  // L2 normalize: all embeddings on the unit hypersphere
-  const normalized = tf.layers.layerNormalization().apply(x) as tf.SymbolicTensor;
+  // The projection head returns raw vectors; TF.js has no L2-normalize
+  // layer, so the caller normalizes on the way out
+  return tf.model({ inputs: input, outputs: x });
+}
 
-  return tf.model({ inputs: input, outputs: normalized });
+// Divide each row by its own length: every embedding lands on the unit hypersphere
+function l2Normalize(x: tf.Tensor2D): tf.Tensor2D {
+  return tf.div(x, tf.norm(x, 2, 1, true)) as tf.Tensor2D;
 }
 
 // Full cross-modal system
@@ -87,12 +94,12 @@ class CrossModalEmbedder {
 
   encodeImage(image: tf.Tensor4D): tf.Tensor2D {
     const features = this.imageEncoder.predict(image) as tf.Tensor2D;
-    return this.imageProjection.predict(features) as tf.Tensor2D;
+    return l2Normalize(this.imageProjection.predict(features) as tf.Tensor2D);
   }
 
   encodeText(tokens: tf.Tensor2D): tf.Tensor2D {
     const features = this.textEncoder.predict(tokens) as tf.Tensor2D;
-    return this.textProjection.predict(features) as tf.Tensor2D;
+    return l2Normalize(this.textProjection.predict(features) as tf.Tensor2D);
   }
 
   // Cross-modal similarity: image vs text
@@ -106,7 +113,8 @@ class CrossModalEmbedder {
 // Usage:
 // const embedder = new CrossModalEmbedder(256);
 // const sim = embedder.similarity(sunsetPhoto, tokenize("sunset"));
-// sim > 0.8 -> these represent the same concept`}
+// Judge sim against the other candidates, not a fixed cutoff: a matched
+// pair only has to outscore the mismatched ones in the same batch`}
 </CodeBlock>
 
 ## Challenge

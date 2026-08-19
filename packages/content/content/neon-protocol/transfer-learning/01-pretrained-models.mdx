@@ -15,11 +15,11 @@ concept:
     jsTitle: "npm package"
     jsCode: "npm install lodash // thousands of hours of work, one command"
     mlTitle: "Pre-trained Model"
-    mlCode: "const model = await tf.loadLayersModel('mobilenet_v2'); // millions of $ of training"
+    mlCode: "const model = await tf.loadGraphModel(MOBILENET_V2_URL); // millions of credits of training"
     tier: intuition
-    breaks: "An npm package ships versioned code that runs deterministically; `lodash@4.17.21` behaves the same on every machine. A pretrained model ships weights from a specific training run on a specific dataset. ImageNet is biased toward Western consumer photography (overrepresentation of dogs, US suburbs, pizza); models fine-tuned for non-Western contexts often lose accuracy. Loading the model also imports its license, its bias, and its failure modes. `loadLayersModel('mobilenet')` will *not* behave the same on every dataset."
+    breaks: "An npm package ships versioned code that runs deterministically; `lodash@4.17.21` behaves the same on every machine. A pretrained model ships weights from a specific training run on a specific dataset. ImageNet is biased toward Western consumer photography (overrepresentation of dogs, US suburbs, pizza), and the same weights transfer measurably worse to imagery from outside that distribution. Loading the model imports its license, its bias, and its failure modes before you write a line of your own code. `loadGraphModel(MOBILENET_V2_URL)` will *not* behave the same on every dataset."
 consequence:
-  narrative: "Forty seconds, 25 megabytes, done. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it.'"
+  narrative: "Forty seconds, 14 megabytes, done. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it.'"
 hints:
   - level: guidance
     content: "Use tf.loadLayersModel() or tf.loadGraphModel() to load pre-trained weights from a URL"
@@ -36,11 +36,11 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-When you need to sort an array, you do not implement mergesort from scratch. You call `Array.sort()`. When you need date formatting, you install `date-fns`. Pre-trained models are the same principle applied to AI. Someone else spent the compute, the data, the engineering hours. You download the result and build on top.
+When you need to sort an array, you do not implement mergesort from scratch. You call `arr.sort()`. When you need date formatting, you install `date-fns`. Pre-trained models are the same principle applied to AI. Someone else spent the compute, the data, the engineering hours. You download the result and build on top.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So `tf.loadLayersModel('mobilenet')` is basically `npm install mobilenet`?
+So `tf.loadGraphModel(MOBILENET_URL)` is basically `npm install mobilenet`?
 </Dialogue>
 
 <Dialogue speaker="Amir">
@@ -51,11 +51,11 @@ An npm package encapsulates thousands of hours of development. A pre-trained mod
 
 <LearningObjectives objectives={["Understand pre-trained models as reusable trained networks you download and use", "Load MobileNet and ResNet models in TensorFlow.js", "Use a pre-trained model for immediate inference without any training"]} />
 
-## One Line, Millions of Dollars
+## One Line, Two Million Credits
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-When you run `npm install react`, you get a decade of engineering from hundreds of contributors. When you load MobileNetV2, you get months of GPU training on 14 million images. The economics are identical: the build cost is paid once, then spread across everyone who downloads the result.
+The difference is what you can read. `npm install react` ships source you can open, patch, and pin to a version. MobileNetV2 ships 3.4 million numbers and a claim about what they do. You cannot diff weights against the data that produced them, so everything you accept about the model, you accept on that training run's terms.
 
 <CodeBlock language="typescript" title="load-mobilenet.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -76,7 +76,7 @@ async function loadMobileNet() {
 }
 
 // Loading ResNet50: heavier, more accurate, deeper architecture
-// Like choosing between lodash (lightweight) and ramda (comprehensive)
+// Like choosing between preact (small, fast) and react (bigger, more surface)
 async function loadResNet() {
   const model = await tf.loadGraphModel(
     'https://tfhub.dev/tensorflow/tfjs-model/resnet_50/classification/1/default/1',
@@ -108,9 +108,16 @@ async function classifyImage(
   });
 
   // Predict: 1000 ImageNet classes, instantly
+  // TFHub's classification graph returns logits, so normalize before
+  // reading anything off it as a confidence
   const predictions = model.predict(tensor) as tf.Tensor;
-  const classIndex = predictions.argMax(-1).dataSync()[0];
-  const confidence = predictions.max().dataSync()[0];
+  const { classIndex, confidence } = tf.tidy(() => {
+    const probs = tf.softmax(predictions);
+    return {
+      classIndex: probs.argMax(-1).dataSync()[0],
+      confidence: probs.max().dataSync()[0],
+    };
+  });
 
   // Clean up tensors
   tensor.dispose();

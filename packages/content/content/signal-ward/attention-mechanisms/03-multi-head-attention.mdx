@@ -22,11 +22,11 @@ consequence:
   narrative: "Diagnostic One can now simultaneously track drug-condition relationships, temporal sequences, and dosage patterns."
 hints:
   - level: nudge
-    content: "Split the embedding dimension across heads, not the sequence"
+    content: "Each entry of headProjections already holds one head's Wq, Wk, Wv. Run attention once per entry."
   - level: guidance
     content: "Run self-attention independently per head, then concatenate results"
   - level: solution
-    content: "Split d_model into numHeads chunks, run attention on each, concat and project"
+    content: "Map each entry of headProjections to Q = tf.matMul(X, Wq), K = tf.matMul(X, Wk), V = tf.matMul(X, Wv), run scaled dot-product attention per head, then return tf.concat(heads, 1). No output projection: this exercise stops at the concatenation."
 keywords:
   - multi-head-attention
   - parallel-heads
@@ -34,7 +34,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-One attention head learns one type of relationship. But clinical text has many simultaneous relationships: the drug to its condition, the dosage to its frequency, the symptom to its temporal qualifier. We need multiple heads, each specializing in a different pattern.
+Khalil, pull the 8 by 8 weight matrix back up. Every row is one weighting, and that is all a single head produces. Clinical text carries the drug to its condition, the dosage to its frequency, and the symptom to its temporal qualifier. One weighting cannot hold all three.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -47,7 +47,7 @@ Like attaching multiple event listeners to the same element. A click handler for
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In a clinical note like "Increase methotrexate to 20mg weekly due to persistent joint inflammation," a single attention head might learn to connect "methotrexate" to "joint inflammation." But we also need a head that connects "20mg" to "weekly," and another that links "increase" to the temporal context. Multi-head attention runs these analyses in parallel.
+In a clinical note like "Increase methotrexate to 20mg weekly due to persistent joint inflammation," one head produces one weighting: it can carry the drug-condition link or the dose-frequency link, not both at full strength. Multi-head attention runs several weightings over the same input at once.
 
 <CodeBlock language="typescript" title="multi-head-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -58,7 +58,6 @@ function multiHeadAttention(
   dModel: number
 ) {
   const dk = dModel / numHeads;
-  const seqLen = input.shape[0];
   const heads: tf.Tensor2D[] = [];
 
   for (let h = 0; h < numHeads; h++) {
@@ -120,7 +119,7 @@ head_i = Attention(X · W_Q^i, X · W_K^i, X · W_V^i)   for i in 1..h
 MultiHead(X) = Concat(head_1, ..., head_h) · W_O
 ```
 
-**Dimensions:** if `d_model = 512` and `h = 8`, each head's `d_k = d_model / h = 64`. Total parameter count of multi-head is similar to a single full-dim attention, so this is a way to express richer relationships without paying a parameter cost.
+**Dimensions:** if `d_model = 512` and `h = 8`, each head's `d_k = d_model / h = 64`. Multi-head therefore costs about the same parameters as one full-dimension attention, and buys eight different weightings of the same input instead of one.
 
 **Why heads specialize:** different heads end up attending to different patterns (some to syntax, some to semantics, some to position). The specialization is emergent; you can't assign roles.
 </DerivationDrawer>

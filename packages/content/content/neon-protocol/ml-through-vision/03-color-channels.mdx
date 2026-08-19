@@ -22,11 +22,11 @@ consequence:
   narrative: "Noor isolates the hidden data channel. Meridian is embedding tracking metadata directly into their camera feeds, invisible to the human eye but readable by their models."
 hints:
   - level: nudge
-    content: "Different color spaces highlight different aspects of an image; HSV separates color from brightness"
+    content: "An array of [r, g, b] triplets is already a matrix: n rows, 3 columns. Averaging down the rows leaves one number per channel"
   - level: guidance
-    content: "Split a tensor into individual channels with tf.split() or tensor.slice()"
+    content: "Build a tf.tensor2d from the triplets, call mean(0) to average along axis 0, then read the three results out with dataSync()"
   - level: solution
-    content: "const [r, g, b] = tf.split(imageTensor, 3, 2); // Split along channel axis"
+    content: "const means = tf.tensor2d(pixels).mean(0).dataSync(); return { r: means[0], g: means[1], b: means[2] };"
 keywords:
   - color-spaces
   - rgb
@@ -43,7 +43,7 @@ I am detecting anomalous patterns in the least significant bits of the blue chan
 So each color channel is like a separate data layer? Like how CSS lets you express the same color in different coordinate systems (rgb(), hsl(), oklch()), each one revealing different properties?
 </Dialogue>
 
-CSS expresses the same color three ways, each chosen for what it makes easy: `rgb` for exact values, `hsl` for adjusting lightness, `oklch` for perceptual uniformity. Color spaces in computer vision work the same way: RGB for raw data, HSV for separating color from brightness, LAB for perceptual difference.
+Two different ideas are stacked in that question. A channel is one slab of the image: every red number, with green and blue set aside. A color space is the rule for what the three numbers in a pixel mean. `rgb`, `hsl`, and `oklch` are three such rules for one color in CSS; RGB, HSV, and LAB are the same kind of choice inside a model. Splitting channels hands you slabs. Converting color spaces changes what a slab measures.
 
 <LearningObjectives objectives={["Understand RGB, HSV, and grayscale color spaces and when to use each", "Split image tensors into individual channels", "Convert between color spaces for different vision tasks", "Recognize that color channels are independent data dimensions"]} />
 
@@ -70,8 +70,9 @@ console.log(blue.shape);  // [224, 224, 1], blue intensity map
 // Grayscale: collapse channels into one
 const gray = image.mean(2, true); // [224, 224, 1]
 
-// RGB to HSV conversion (manual)
-function rgbToHsv(rgb: tf.Tensor3D): tf.Tensor3D {
+// RGB to saturation and value. Hue needs a longer per-channel comparison,
+// so this function stops where the cheap math stops.
+function rgbToSaturationValue(rgb: tf.Tensor3D): tf.Tensor3D {
   const normalized = rgb.toFloat().div(255);
   const [r, g, b] = tf.split(normalized, 3, 2) as tf.Tensor3D[];
 
@@ -84,9 +85,10 @@ function rgbToHsv(rgb: tf.Tensor3D): tf.Tensor3D {
   // Saturation = delta / max (0 when max is 0)
   const s = tf.where(max.greater(0), delta.div(max), tf.zerosLike(max));
 
-  return tf.concat([s, s, v], 2) as tf.Tensor3D; // simplified
+  return tf.concat([s, v], 2) as tf.Tensor3D; // [height, width, 2]
 }
 
+// Hue is the third number: which of R, G, B won, written as an angle.
 // Why HSV matters for vision:
 // H (hue) = what color; invariant to lighting
 // S (saturation) = how vivid; separates color from gray
@@ -112,19 +114,27 @@ function analyzeChannels(image: tf.Tensor3D): void {
 
   // Nighttime camera feeds: high blue bias from IR LEDs
   // Daylight feeds: balanced channels
-  // Meridian hidden data: anomalous blue channel variance
 
-  // Detect hidden data: compare channel variances
-  const rVar = r.toFloat().sub(rMean).square().mean().dataSync()[0];
-  const gVar = g.toFloat().sub(gMean).square().mean().dataSync()[0];
-  const bVar = b.toFloat().sub(bMean).square().mean().dataSync()[0];
+  // Detect the payload. Flipping the lowest bit of a byte moves that pixel
+  // by 1 out of 255, so whole-channel variance will not budge. Read the bit
+  // plane instead: the value of bit 0, pixel by pixel.
+  const lsbMean = (channel: tf.Tensor) =>
+    channel.toFloat().mod(2).mean().dataSync()[0];
 
-  console.log('Channel variance: R:', rVar.toFixed(1),
-              'G:', gVar.toFixed(1), 'B:', bVar.toFixed(1));
+  const rLsb = lsbMean(r);
+  const gLsb = lsbMean(g);
+  const bLsb = lsbMean(b);
 
-  // Unusually high blue variance could indicate embedded data
-  if (bVar > rVar * 1.5 && bVar > gVar * 1.5) {
-    console.warn('Anomalous blue channel variance: possible steganography');
+  console.log('LSB mean: R:', rLsb.toFixed(3),
+              'G:', gLsb.toFixed(3), 'B:', bLsb.toFixed(3));
+
+  // A camera's three bit planes drift together, and in flat dark regions they
+  // all sit well below 0.5. Packed data does not care what the scene looks
+  // like; it splits blue's lowest bit near 50/50 on its own.
+  if (Math.abs(bLsb - 0.5) < 0.02 &&
+      Math.abs(rLsb - 0.5) > 0.05 &&
+      Math.abs(gLsb - 0.5) > 0.05) {
+    console.warn('Blue bit plane is evenly split: possible steganography');
   }
 
   [r, g, b].forEach(t => t.dispose());
@@ -137,4 +147,4 @@ Split an image into channels and compute per-channel statistics.
 
 <Exercise slug="channel-analysis" />
 
-<KeyTakeaways takeaways={["Color channels are independent data dimensions; each channel is a grayscale intensity map", "RGB, HSV, and LAB are different coordinate systems for the same color, like CSS rgb()/hsl()/oklch()", "HSV separates color (hue) from lighting (value), critical for robust vision in varying conditions", "Channel analysis reveals properties invisible to the eye, like hidden data in least-significant bits"]} />
+<KeyTakeaways takeaways={["Color channels are independent data dimensions; each channel is a grayscale intensity map", "RGB, HSV, and LAB are different coordinate systems for the same color, like CSS rgb()/hsl()/oklch()", "HSV separates color (hue) from lighting (value), so the same camera housing reads as the same color at noon and at midnight", "Channel analysis reveals properties invisible to the eye, like hidden data in least-significant bits"]} />

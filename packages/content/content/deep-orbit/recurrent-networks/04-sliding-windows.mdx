@@ -11,17 +11,17 @@ scene:
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "Demir needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline: the same pattern as IntersectionObserver watching elements enter and leave the viewport."
+  narrative: "Demir needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline: the same shape as framing a byte stream, except the frames overlap."
   speaker: "Ensign Demir"
 concept:
   explanation: "Sliding windows convert a continuous stream into fixed-size overlapping chunks, manufacturing one ready-made model input at every step."
   bridge:
-    jsTitle: "IntersectionObserver"
-    jsCode: "observer.observe(element) // process what enters the viewport"
+    jsTitle: "Stream framing"
+    jsCode: "while (buf.length >= size) { emit(buf.subarray(0, size)); buf = buf.subarray(size) }"
     mlTitle: "Sliding Window"
     mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
     tier: structural
-    breaks: "IntersectionObserver fires a discrete event when an element crosses a threshold. Signal sliding windows shift by a stride parameter (often 1 step), so consecutive windows overlap heavily; every position produces a new sample. Compute scales with sequence length × overlap ratio, not viewport size."
+    breaks: "A framer consumes what it emits: every byte lands in exactly one frame, and the buffer advances by the full frame length. A sliding window advances by a stride smaller than the window, so one reading turns up in windowSize / stride different samples and the pipeline emits far more data than the stream handed it. Frames are self-contained too; a window's label sits outside it, in the reading immediately after, which is the one place an off-by-one lets the model read its own answer."
 consequence:
   narrative: "Perfectly shaped windows stream into the LSTM, and Demir can finally process the continuous signal feed in real time."
 hints:
@@ -39,17 +39,19 @@ keywords:
 skillAxes: [model_arch]
 ---
 
+Readings every second, forever, and the LSTM takes exactly 80 of them at a time. Slice 80. Step forward one. Slice again. That is the entire pipeline: a fixed-size window walks the continuous stream, and every position it stops at becomes one ready-made sample.
+
 <Dialogue speaker="Ensign Demir">
-The signal feed is continuous: readings every second, forever. But the LSTM needs fixed-size input: exactly 80 time steps. I need to convert a stream into windows, like IntersectionObserver processing what's currently in view.
+That's stream framing, more or less. Buffer until you have a full frame, emit it, drop it, repeat.
 </Dialogue>
 
-Slice 80 readings. Step forward one. Slice again. That's the entire pipeline: a fixed-size window walks the continuous stream, and every position it stops at becomes one ready-made sample for the LSTM. Demir's IntersectionObserver instinct is close, but an observer only fires when an element crosses a threshold; the window manufactures data at every step.
+A framer drops every byte it emits, which would put each reading in exactly one chunk and never in another. The window steps forward by one and keeps the other seventy-nine, so a single reading turns up in dozens of samples, and that reuse is where the training data comes from.
 
 <LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Create input/label pairs for sequence prediction (next-value forecasting)", "Configure window size and stride for different temporal resolutions", "Build a streaming buffer that feeds the LSTM in real time"]} />
 
 ## Ninety-Seven Percent, Briefly
 
-Demir's first pipeline windows the eleven-day archive end to end, shuffles the pairs, holds out every fifth one for evaluation, and comes back with a score in the high nineties. Farah's response is to make him rebuild the experiment at a scale he can audit by hand before she reads a single decimal of it. Two hundred readings, 8-step windows, and a "model" too stupid to do anything except expose the split:
+Demir's first pipeline windows the eleven-day archive end to end, shuffles the pairs the way foundations taught him to, holds out every fifth one for evaluation, and comes back with a score in the high nineties. Shuffling before splitting is the right move when rows are independent. These rows are not. Farah's response is to make him rebuild the experiment at a scale he can audit by hand before she reads a single decimal of it. Two hundred readings, 8-step windows, and a "model" too stupid to do anything except expose the split:
 
 <CodeBlock language="typescript" title="the-mirror.ts">
 {`// A 200-reading toy stream: a slow swell on a drift. Nothing random,
@@ -94,15 +96,15 @@ const evalB = Array.from({ length: 33 }, (_, i) => ({
 console.log((100 * accuracy(evalB, trainB)).toFixed(1));  // 60.6`}
 </CodeBlock>
 
-A lookup table with no learning in it scores 97.4 on the first split: 38 of 39 held-out windows. The leak is in the windowing arithmetic. With stride 1, window i and window i+1 share seven of their eight readings, so holding out every fifth pair leaves each evaluation window sitting between two training windows that are near-copies of it, labels included. The lookup finds the copy. 97.4 measures the overlap. Split the stream first and the copies vanish: 60.6 is what the lookup actually knows about readings it has never seen, and the 36.8-point gap is the size of the error Demir almost shipped to the bridge.
+A lookup table with no learning in it scores 97.4 on the first split: 38 of 39 held-out windows. The leak is in the windowing arithmetic. With stride 1, window i and window i+1 share seven of their eight readings, so holding out every fifth pair leaves each evaluation window sitting between two training windows that are near-copies of it, labels included. The lookup finds the copy. 97.4 measures the overlap. Split the stream first and the copies vanish: 60.6 is what the lookup actually knows about readings it has never seen, which is nothing at all. Twenty-two of those 33 windows are labeled in contact, so answering yes to every one of them would have scored 66.7. The 36.8-point gap between the two splits is the size of the error Demir almost shipped to the bridge.
 
 ## The Sliding Window Pattern
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="sliding-window.ts">
-{`// rn/01's createSequences gave you the windows. Training pairs are a
-// two-line delta on it:
+{`// The createSequences from 'Sequences Matter' gave you the windows.
+// Training pairs are a two-line delta on it:
 function createWindows(
   signal: number[][],
   windowSize: number,
@@ -175,11 +177,12 @@ Build a sliding window function for sequential data.
 <LessonRecap
   whatYouLearned={[
     "A sliding window converts a continuous stream into fixed-size overlapping samples: each position along the signal yields one input/label pair, with the label being the value immediately after the window.",
+    "Windowing the whole stream before splitting it leaks: with stride 1, neighboring windows are near-copies, so a random or every-Nth holdout scores the model on data it has already seen. Split the stream by time first, then window each side.",
     "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
     "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."
   ]}
-  bridge="`IntersectionObserver` fires when an element crosses a viewport threshold; a sliding window generates a new sample at every stride step regardless of content change, and the amount of data it produces scales with sequence length divided by stride; viewport size never enters it."
-  youCanNow="Implement a sliding window function and a ring buffer that converts a live signal stream into model-ready [timeSteps, features] tensors in real time."
+  bridge="Framing a byte stream consumes each byte into exactly one fixed-size chunk; a sliding window advances by a stride smaller than the window, so each reading turns up in many samples and the pipeline emits sequence length divided by stride windows rather than one chunk per reading."
+  youCanNow="Implement a sliding window function and a fixed-length streaming buffer that converts a live signal stream into model-ready [timeSteps, features] tensors in real time."
 />
 
 > **DISPATCH archive · field intercept #12-A:** Jin's speech cell shipped exactly this mirror at fleet scale, 97% and all. The postmortem runs one line: "we evaluated on our own reflection."

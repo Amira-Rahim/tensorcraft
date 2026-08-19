@@ -1,7 +1,7 @@
 slug: count-dimensions
 lessonSlug: dimensionality
 title: "Count Dimensions"
-instructions: "Build three autoencoders with different bottleneck sizes (2, 16, and 64 latent dimensions). Each should have input/output of 784 and one hidden layer of 128 units. Return them in an object."
+instructions: "Build three autoencoders with different bottleneck sizes (2, 16, and 64 latent dimensions). Each is four dense layers: 784 to 128 to the bottleneck on the encoder side, then back out through 128 to 784. Return them in an object."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

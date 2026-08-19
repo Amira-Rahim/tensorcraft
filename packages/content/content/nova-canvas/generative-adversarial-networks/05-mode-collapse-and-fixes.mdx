@@ -19,7 +19,7 @@ concept:
     tier: intuition
     breaks: "Non-random random (e.g. seeded RNG) is a known reproducibility tool. Mode collapse is an unintended GAN failure where the generator produces only a tiny subset of valid outputs. The model is technically working but lost diversity. Fixes are heuristic, not guaranteed."
 consequence:
-  narrative: "Samir applies minibatch discrimination and the GAN starts producing diverse patterns again. The exhibition installation now generates unique art for every visitor."
+  narrative: "Minibatch discrimination lands on the third try: 200 samples overnight, 200 different spirals. Samir sorts the batch by similarity to check his work, and a cluster forms around six pieces nobody in the collective ever uploaded."
 hints:
   - level: nudge
     content: "If Math.random() always returned 0.5, it would not be random. Mode collapse is the same idea."
@@ -35,8 +35,10 @@ keywords:
   - regularization
 ---
 
+Two hundred samples finished generating overnight. Of those, 187 are the same spiral.
+
 <Dialogue speaker="Yara">
-It's producing the same pattern. Every single time. Different noise, same output. This isn't generative art. It's a photocopier. We call this the one-trick pony problem.
+Different noise, same output, every single time. That is not generative art, that is a photocopier with extra steps. We call it the one-trick pony problem.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
@@ -44,7 +46,7 @@ I've seen this in music. A composer finds one melody the audience likes and play
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-What if the discriminator judged whole batches instead of single images? Overnight I generated 200 samples; 187 are the same spiral. It never penalized me for repeating myself, one image at a time, so I stopped varying. Across a batch, my sameness would be a statistic it could see.
+What if the discriminator judged whole batches instead of single images? It never penalized me for repeating myself, one image at a time, so I stopped varying. Across a batch, my sameness would be a statistic it could see.
 </Dialogue>
 
 Mode collapse is the most infamous GAN failure mode. The generator discovers one output (or a small set of outputs) that reliably fools the discriminator and stops exploring. Every input noise vector produces nearly identical output.
@@ -78,7 +80,7 @@ async function detectModeCollapse(
     noise.dispose();
   }
 
-  // Compute average pairwise distance
+  // Compute the average squared difference across every pair
   let totalDist = 0;
   let pairs = 0;
   for (let i = 0; i < outputs.length; i++) {
@@ -111,6 +113,7 @@ Several techniques can prevent or recover from mode collapse:
 // Instead of training D on hard labels (0 and 1),
 // use soft labels (0.0-0.1 and 0.9-1.0)
 // This prevents D from becoming overconfident
+const batchSize = 64;
 const realLabels = tf.randomUniform([batchSize, 1], 0.9, 1.0);
 const fakeLabels = tf.randomUniform([batchSize, 1], 0.0, 0.1);
 
@@ -128,15 +131,23 @@ function addInstanceNoise(images: tf.Tensor, stddev: number): tf.Tensor {
 // If all samples look identical, D can catch the collapse
 function minibatchStd(x: tf.Tensor2D): tf.Tensor2D {
   const std = x.sub(x.mean(0)).square().mean(0).sqrt().mean();
-  const repeated = std.tile([x.shape[0], 1]);
-  return tf.concat([x, repeated], 1) as tf.Tensor2D;
+  // Broadcast the single batch statistic into one extra column per sample
+  const column = std.reshape([1, 1]).tile([x.shape[0], 1]) as tf.Tensor2D;
+  return tf.concat([x, column], 1) as tf.Tensor2D;
 }
 
 // Fix 4: LEARNING RATE SCHEDULING
 // Reduce learning rates over time to stabilize
 function decayLR(baseLR: number, epoch: number, decay: number): number {
   return baseLR / (1 + decay * epoch);
-}`}
+}
+
+// Fix 5: DIVERSITY LOSS
+// Charge the generator directly for producing the same thing twice
+function diversityPenalty(a: tf.Tensor, b: tf.Tensor, lambda: number): tf.Scalar {
+  return a.sub(b).square().mean().sqrt().mul(-lambda) as tf.Scalar;
+}
+// Two latents in, one penalty out: identical outputs cost the most`}
 </CodeBlock>
 
 ## Challenge
@@ -164,7 +175,7 @@ An NSFW filter missed a generation that surfaced to a user. Diagnose whether the
 ## Knowledge check
 
 <Quiz
-  question="Diversity loss prevents mode collapse by?"
+  question="How does a diversity loss push a generator out of mode collapse?"
   options={[{"text":"Adding noise to inputs"},{"text":"Penalizing the generator when two latent samples produce identical outputs"},{"text":"Increasing batch size"},{"text":"Using a larger discriminator"}]}
   correct={1}
   explanation="Add `L_div = -λ · ||G(z_1) - G(z_2)||` for two random latents. Generator pays for producing similar outputs across different latents → forced to spread. Combined with mini-batch discrimination on D-side. Imperfect; mode collapse is multi-causal."

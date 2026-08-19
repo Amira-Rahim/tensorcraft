@@ -10,19 +10,19 @@ context:
   narrative: "Vikram introduces gated architectures (LSTMs and GRUs) that solve the vanishing gradient problem by controlling what information persists across timesteps."
   speaker: "Vikram"
 concept:
-  explanation: "LSTM cells use three gates (forget, input, output) to control information flow, deciding what to keep, add, and expose. This is analogous to React's useMemo and useCallback, hooks that control what persists across renders."
+  explanation: "LSTM cells use three gates (forget, input, output) to control information flow, deciding what to keep, add, and expose. A moving average blends old and new with one rate you pick; an LSTM computes its blend fresh at every token."
   bridge:
-    jsTitle: "React useMemo / useCallback"
-    jsCode: "const cached = useMemo(() => expensiveCalc(data), [data]); // controls what persists"
+    jsTitle: "Exponential Moving Average"
+    jsCode: "avg = alpha * avg + (1 - alpha) * sample; // alpha decides how much of the old survives"
     mlTitle: "LSTM Gates"
     mlCode: "cellState = forgetGate * cellState + inputGate * candidate; // controls what persists"
     tier: structural
-    breaks: "useMemo/useCallback skip recomputation when deps are unchanged. LSTM gates are learned continuous weights in [0,1] applied every timestep; they always compute, never skip, and the gating function adapts during training to the data distribution."
+    breaks: "A moving average has one blend rate you pick, and its two coefficients are locked together: whatever the running value gives up, the new sample takes. An LSTM computes three separate gates at every token from the current input and hidden state, one value per dimension, so it can hold one dimension steady while overwriting another in the same step. Nothing is picked. Training decides how the gates are computed."
 consequence:
   narrative: "Imran reruns the fifty-token test that broke the simple RNN. The LSTM holds the diagnosis from token one to the end, and the long-note accuracy curve finally looks like the short-note one."
 hints:
   - level: nudge
-    content: "The forget gate decides what to discard from cell state, like useMemo's dependency array decides when to recalculate."
+    content: "The forget gate decides what to discard from cell state, the way the blend rate in a moving average decides how much of the running value survives."
   - level: guidance
     content: "Use tf.layers.lstm instead of tf.layers.simpleRNN; the API is nearly identical."
   - level: solution
@@ -33,20 +33,20 @@ keywords:
   - gates
   - forget-gate
   - cell-state
-  - useMemo
+  - moving-average
   - long-range-dependencies
 ---
 
 <Dialogue speaker="Vikram">
-Imran, when you use `useMemo` in React, what are you doing?
+The architecture you want has a cell that decides, at every token, what to keep and what to drop. It learns the decision.
 </Dialogue>
 
 <Dialogue speaker="Imran">
-Controlling what persists across renders. The dependency array decides when to recalculate and when to keep the cached value.
+That's a moving average with a blend rate the model writes itself.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-An LSTM does exactly the same thing for sequence processing. It has gates that control what information to keep from the previous timestep, what new information to add, and what to expose as output. Instead of a dependency array, it uses learned sigmoid gates.
+Useful, and wrong in two places. Your alpha is one number covering the whole stream, and what the running value gives up is exactly what the new sample takes. An LSTM gate is a number per dimension, recomputed at every token, so it can hold one dimension steady and overwrite the one beside it. And there are three of them: what to drop, what to write, what to expose.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
@@ -57,7 +57,7 @@ So the LSTM can choose to remember that "denied" appeared 20 words ago when it f
 Correct. The LSTM cell state acts as a long-term memory highway. The forget gate selectively preserves clinical context across long sequences.
 </Dialogue>
 
-In React, `useMemo` and `useCallback` control what values persist across re-renders. Without them, expensive computations run unnecessarily or stale closures cause bugs. LSTMs solve the analogous problem in sequences: without gates, information either vanishes or explodes over long timesteps.
+A blend rate is a decision you write once and it holds for every sample after it. An LSTM makes a fresh decision at every token, and training is what tunes those decisions.
 
 <LearningObjectives objectives={["Understand the three LSTM gates: forget, input, and output", "Build an LSTM model in TensorFlow.js for clinical text", "Compare LSTM vs GRU architecture tradeoffs"]} />
 
@@ -68,23 +68,23 @@ In React, `useMemo` and `useCallback` control what values persist across re-rend
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="lstm-gates-explained.ts">
-{`// React memoization analogy
-// useMemo controls WHAT persists across renders
+{`// Moving-average analogy
+// alpha controls WHAT persists across samples
 // LSTM gates control WHAT persists across timesteps
 
 // ---- FORGET GATE: What to discard ----
-// React: useMemo with changing deps → discard old value
+// Moving average: alpha, the share of the running value that survives
 // LSTM: sigmoid(W_f * [hidden, input]) → values near 0 mean "forget"
 
 // ---- INPUT GATE: What new info to add ----
-// React: useMemo recalculates when deps change → store new value
+// Moving average: (1 - alpha), the share the new sample takes
 // LSTM: sigmoid(W_i * [hidden, input]) * tanh(W_c * [hidden, input])
 
 // ---- OUTPUT GATE: What to expose ----
-// React: useMemo returns the cached value to the component
+// Moving average: no equivalent, the running value IS the output
 // LSTM: sigmoid(W_o * [hidden, input]) * tanh(cellState)
 
-// The cell state is the "cache"; it flows through time
+// The cell state is the running value; it flows through time
 // with minimal modification, solving vanishing gradients
 
 function lstmCellConceptual(
@@ -153,7 +153,8 @@ model.compile({
 });
 
 model.summary();
-// Note: LSTM has 4x the parameters of simpleRNN (4 gates × weights)
+// Note: LSTM has 4x the parameters of simpleRNN: three gates plus the
+// candidate, each with its own weight matrix and bias
 // Total params for LSTM with units=32: 4 * (32 * 32 + 32 * 32 + 32) = 8,320
 // vs simpleRNN: 32 * 32 + 32 * 32 + 32 = 2,080`}
 </CodeBlock>
@@ -161,7 +162,7 @@ model.summary();
 ## GRU: The Simpler Alternative
 
 <Dialogue speaker="Imran">
-Four times the parameters? That's going to be slower in the browser.
+Four times the parameters? That's on every inference, browser or server.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
@@ -180,16 +181,17 @@ gruModel.add(tf.layers.gru({
   units: 32,
   returnSequences: false,
   // Two gates: update gate (combines forget+input) and reset gate
-  // Fewer parameters → faster in browser
+  // Fewer parameters → less work per token at inference
 }));
 gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 gruModel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
 gruModel.summary();
 // GRU params: 3 * (32 * 32 + 32 * 32 + 32) = 6,240
-// 25% fewer than LSTM's 8,320
+// Two gates plus the candidate is three weight matrices against the LSTM's
+// four: 6,240 versus 8,320, 25% fewer
 
-// Rule of thumb for browser ML:
+// Rule of thumb for TF.js, browser tab or Node process:
 // - Short sequences (<20 tokens): simpleRNN may suffice
 // - Medium sequences (20-100): GRU is a good default
 // - Long sequences or complex dependencies: LSTM
@@ -220,4 +222,4 @@ h_t = o_t ⊙ tanh(c_t)
 **GRU** is a simpler variant: merges forget and input into a single update gate, no separate cell state. Fewer params, similar performance for many tasks.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["LSTM gates are learned continuous weights in [0,1], applied at every timestep; they always compute, never skip", "The forget gate discards irrelevant info, the input gate adds new info, the output gate controls exposure", "The cell state provides a gradient highway that solves vanishing gradients", "GRU is a lighter alternative with 2 gates instead of 3, better for browser performance"]} />
+<KeyTakeaways takeaways={["LSTM gates are learned continuous weights in [0,1], applied at every timestep; they always compute, never skip", "The forget gate discards irrelevant info, the input gate adds new info, the output gate controls exposure", "The cell state provides a gradient highway that solves vanishing gradients", "GRU is a lighter alternative with 2 gates instead of 3, which is three weight matrices instead of four and 25% fewer parameters to run"]} />

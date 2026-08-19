@@ -1,7 +1,7 @@
 slug: global-deploy
 lessonSlug: global-operations
 title: "Global Deployment Scheduler"
-instructions: "Build a DeploymentScheduler that plans model deployments across regions based on their maintenance windows. Each region has a maintenance window defined by UTC start and end hours. The scheduler creates a plan that deploys to each region during its next available maintenance window."
+instructions: "Build a DeploymentScheduler that plans model deployments across regions based on their maintenance windows. Each region has a maintenance window defined by UTC start and end hours. Schedule each region for the current hour if it already falls inside that region's window, for today's start hour if the window has not opened yet, and for tomorrow's start hour (start + 24) if the window has already closed. Sort the finished plan by scheduled hour."
 starterCode: |
   interface Region {
     id: string;

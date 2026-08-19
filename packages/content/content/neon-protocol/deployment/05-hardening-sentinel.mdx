@@ -15,16 +15,16 @@ concept:
     jsTitle: "Load Testing APIs (k6, Artillery)"
     jsCode: "// k6 script\nexport default function() {\n  http.get('http://api.example.com/health');\n  check(res, { 'status is 200': (r) => r.status === 200 });\n}"
     mlTitle: "Load Testing Models"
-    mlCode: "// Stress test: concurrent predictions\nconst results = await Promise.all(\n  Array(50).fill(null).map(() => sentinel.predict(randomInput))\n);\nassert(results.every(r => r.confidence >= 0));"
+    mlCode: "// Stress test: concurrent predictions\nconst results = await Promise.all(\n  Array(200).fill(null).map(() => sentinel.predict(randomInput))\n);\nassert(results.every(r => r.confidence >= 0));"
     tier: structural
     breaks: "Load testing APIs hits known endpoints with known payloads; success means latency stays under your service-level objective (SLO). Load testing models also needs realistic inputs. The same request rate with adversarial inputs degrades accuracy without changing latency, and that is still a production failure. Measure both latency under load and accuracy on normal versus adversarial inputs."
 consequence:
-  narrative: "Sentinel survives every test. Memory stays stable under 200 concurrent requests. Corrupted inputs return errors instead of crashes. Timeout handling works. Amir marks the system as deployment-ready. NEON: 'Protocol Sentinel is hardened. Deploy to all districts.'"
+  narrative: "Two hundred concurrent requests, memory flat. Corrupted frames return errors. Then Amir feeds it a dead camera, an all-zero frame, and Sentinel answers 'civilian, 0.81'. The validator existed. Nothing called it. He wires validateInput into the resilient wrapper and reruns. NEON: 'Nine days of Meridian silence, and the thing that almost shipped broken was ours.'"
 hints:
   - level: nudge
     content: "List the failure modes before writing tests: invalid inputs, undisposed tensors (watch tf.memory().numTensors), concurrent access, and predictions that never return"
   - level: guidance
-    content: "Write functions that test each failure mode: send a zero-sized tensor, send 100 concurrent requests, monitor tf.memory() for leaks, and set prediction timeouts"
+    content: "Write functions that test each failure mode: send a zero-sized tensor, send 200 concurrent requests, monitor tf.memory() for leaks, and set prediction timeouts"
   - level: solution
     content: "Create a test suite that validates error handling for bad inputs, measures memory before and after 1000 predictions, runs concurrent stress tests, and checks that timeouts abort long-running predictions."
 keywords:
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Before we deploy to all districts, I want to break it: corrupted camera feeds, memory pressure, fifty concurrent users, every failure mode we can stage. If Sentinel crashes in the field, people get caught.
+Before we deploy to all districts, I want to break it: corrupted camera feeds, memory pressure, two hundred concurrent feeds, every failure mode we can stage. If Sentinel crashes in the field, people get caught.
 </Dialogue>
 
 <Dialogue speaker="NEON">
@@ -65,6 +65,13 @@ interface StressTestResult {
   memoryLeakDetected: boolean;
 }
 
+function randomFrame(): ImageData {
+  return new ImageData(
+    new Uint8ClampedArray(224 * 224 * 4).map(() => Math.random() * 255),
+    224, 224
+  );
+}
+
 async function stressTest(
   sentinel: SentinelAPI,
   concurrency: number,
@@ -78,12 +85,7 @@ async function stressTest(
   const memBefore = tf.memory();
 
   // Generate random test inputs
-  const testInputs = Array(totalRequests).fill(null).map(() =>
-    new ImageData(
-      new Uint8ClampedArray(224 * 224 * 4).map(() => Math.random() * 255),
-      224, 224
-    )
-  );
+  const testInputs = Array(totalRequests).fill(null).map(() => randomFrame());
 
   // Run in batches of 'concurrency'
   for (let i = 0; i < totalRequests; i += concurrency) {
@@ -125,25 +127,22 @@ async function stressTest(
 
 ## Memory Leak Detection
 
-Tensor memory leaks are the silent killer of browser ML. Every undisposed tensor accumulates until the tab crashes.
+Tensor leaks do not throw. Every tensor you allocate and never dispose stays on the GPU until the tab runs out of memory and the browser kills it, and nothing appears in the console on the way down. In the field that is a scanner going dark mid-patrol.
 
 <CodeBlock language="typescript" title="memory-audit.ts">
 {`async function memoryAudit(
   sentinel: SentinelAPI,
   iterations: number
 ): Promise<{ leaked: boolean; tensorsLeaked: number; bytesLeaked: number }> {
-  // Force garbage collection of any pending tensors
-  tf.engine().startScope();
-  tf.engine().endScope();
+  // One warmup prediction first. The first call allocates kernels and program
+  // caches that are never freed, and counting those would flag a leak on a
+  // clean API every time.
+  await sentinel.predict(randomFrame());
 
   const before = tf.memory();
 
   for (let i = 0; i < iterations; i++) {
-    const input = new ImageData(
-      new Uint8ClampedArray(224 * 224 * 4).map(() => Math.random() * 255),
-      224, 224
-    );
-    await sentinel.predict(input);
+    await sentinel.predict(randomFrame());
   }
 
   const after = tf.memory();
@@ -170,7 +169,22 @@ if (audit.leaked) {
 ## Error Handling and Circuit Breakers
 
 <CodeBlock language="typescript" title="resilient-api.ts">
-{`class ResilientSentinelAPI {
+{`// Input validation
+function validateInput(imageData: ImageData): void {
+  if (!imageData || imageData.width === 0 || imageData.height === 0) {
+    throw new Error('Invalid input: ImageData is empty or null');
+  }
+  if (imageData.data.length !== imageData.width * imageData.height * 4) {
+    throw new Error('Invalid input: ImageData buffer size mismatch');
+  }
+  // Check for all-zero frames (camera disconnected)
+  const hasSignal = imageData.data.some(v => v > 0);
+  if (!hasSignal) {
+    throw new Error('Invalid input: blank frame detected; camera may be disconnected');
+  }
+}
+
+class ResilientSentinelAPI {
   private sentinel: SentinelAPI;
   private consecutiveFailures = 0;
   private circuitOpen = false;
@@ -183,6 +197,10 @@ if (audit.leaked) {
   }
 
   async predict(imageData: ImageData): Promise<PredictionResult> {
+    // Bad input is the caller's fault, so it is checked before the breaker
+    // sees it. A blank frame must not count as a model failure.
+    validateInput(imageData);
+
     // Circuit breaker: if too many failures, stop trying temporarily
     if (this.circuitOpen) {
       throw new Error('Circuit open: model temporarily unavailable');
@@ -225,21 +243,6 @@ if (audit.leaked) {
       console.log('Circuit breaker reset, accepting requests');
     }, this.cooldownMs);
   }
-}
-
-// Input validation
-function validateInput(imageData: ImageData): void {
-  if (!imageData || imageData.width === 0 || imageData.height === 0) {
-    throw new Error('Invalid input: ImageData is empty or null');
-  }
-  if (imageData.data.length !== imageData.width * imageData.height * 4) {
-    throw new Error('Invalid input: ImageData buffer size mismatch');
-  }
-  // Check for all-zero frames (camera disconnected)
-  const hasSignal = imageData.data.some(v => v > 0);
-  if (!hasSignal) {
-    throw new Error('Invalid input: blank frame detected; camera may be disconnected');
-  }
 }`}
 </CodeBlock>
 
@@ -259,4 +262,4 @@ Write a stress test that validates memory stability and error handling under loa
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Hardened means proven: memory flat under 200 concurrent requests, corrupted inputs returning errors instead of crashes, timeouts that abort", "Memory leaks from undisposed tensors are the most common production failure in browser ML", "Circuit breakers and timeouts prevent cascading failures when the model is under pressure", "Always validate inputs before inference; corrupted data should return errors, not crashes"]} />
+<KeyTakeaways takeaways={["Hardened means proven: memory flat under 200 concurrent requests, corrupted inputs returning errors instead of crashes, timeouts that abort", "Undisposed tensors surface as a tab that dies after an hour, not as an error, so audit tf.memory() across a long run rather than a single call", "Circuit breakers and timeouts prevent cascading failures when the model is under pressure", "Always validate inputs before inference; corrupted data should return errors, not crashes"]} />

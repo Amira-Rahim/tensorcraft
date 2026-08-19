@@ -12,17 +12,17 @@ context:
 concept:
   explanation: "Real-time inference runs on a time budget per frame: preprocessing, inference, and postprocessing must all fit inside it, or you drop frames. At 30fps the entire budget is 33 milliseconds."
   bridge:
-    jsTitle: "Lighthouse Performance Budgets"
-    jsCode: "// Budget: FCP < 1.8s, LCP < 2.5s, TBT < 200ms"
+    jsTitle: "Per-request latency budget"
+    jsCode: "// Budget per request: auth < 5ms, query < 30ms, serialize < 5ms, p95 under 50ms"
     mlTitle: "Inference Performance Budget"
     mlCode: "// Budget per frame at 30fps: preprocess < 5ms, inference < 20ms, postprocess < 5ms"
     tier: structural
-    breaks: "Lighthouse budgets are bytes and milliseconds with hard pass/fail thresholds. Inference budgets must trade off latency vs accuracy, and the same model meets budget on a desktop GPU but misses by 10× on mobile; single-budget targets hide device variance. Budgets must be set per-device-class and monitored separately."
+    breaks: "A request budget is statistical. You watch p95 across thousands of requests, and one slow response disappears into the ones around it. A frame budget is absolute and per frame: miss 33ms once and that frame is gone, which is one missed detection. The fix differs too. A slow endpoint gets faster by doing the same work more efficiently, while a frame over budget usually gets fixed by running a smaller model, and a smaller model returns different answers. You also do not own the hardware, so the same build meets budget on a desktop GPU and misses by 10× on a phone. Set the budget per device class."
 consequence:
   narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms. Over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game.'"
 hints:
   - level: nudge
-    content: "Break down the total frame time into stages the way a Lighthouse audit breaks down page load"
+    content: "Break the total frame time into stages the way a request trace splits an endpoint into auth, query, and serialize"
   - level: guidance
     content: "Use performance.now() to measure each stage: preprocessing, inference, and postprocessing"
   - level: solution
@@ -47,7 +47,7 @@ If we go pure browser, we lose 15% accuracy. That 15% is people, Noor. Misidenti
 Build both. Test both. Let the data decide. But first, profile what you have. I want stage times, not opinions.
 </Dialogue>
 
-33.3 milliseconds. That is the entire budget for one frame at 30fps, and preprocessing, inference, and postprocessing all eat from it. The discipline is the one Lighthouse enforces, with the stakes raised: instead of First Contentful Paint under 1.8 seconds and Total Blocking Time under 200ms, the budget being policed is a single frame's, thirty times a second.
+33.3 milliseconds. That is the entire budget for one frame at 30fps, and preprocessing, inference, and postprocessing all eat from it. The shape is the same as any latency budget on an endpoint: 50ms to answer, split across auth, query, and serialization, with an alert when p95 crosses the line. What changes here is the clock. The budget belongs to a single frame, and you spend it again thirty times a second.
 
 <LearningObjectives objectives={["Define performance budgets for real-time ML inference", "Profile each stage of the inference pipeline using performance.now()", "Identify bottlenecks through systematic measurement", "Apply frame-skipping and resolution reduction strategies when over budget"]} />
 
@@ -90,12 +90,13 @@ function profileFrame(
   );
   const t1 = performance.now();
 
-  // Stage 2: Inference
+  // Stage 2: Inference. dataSync() blocks until the GPU has finished. Without it,
+  // model.predict() only queues the work and stage 2 reads close to zero on WebGL.
   const prediction = model.predict(input) as tf.Tensor;
+  const scores = prediction.dataSync();
   const t2 = performance.now();
 
   // Stage 3: Postprocess
-  const scores = prediction.dataSync();
   const classIndex = scores.indexOf(Math.max(...scores));
   const t3 = performance.now();
 
@@ -151,7 +152,7 @@ Build a profiler that measures inference pipeline stages and determines if you a
 
 ## On-Call Scenario
 
-Inference latency doubled overnight after a model update. Forensic-debug which stage of the inference pipeline regressed.
+Inference latency more than doubled overnight after a model update. Forensic-debug which stage of the inference pipeline regressed.
 
 <Exercise slug="incident-latency-spike" />
 

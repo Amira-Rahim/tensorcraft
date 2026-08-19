@@ -968,7 +968,7 @@ The module order follows a deliberate pedagogical arc:
 - Knowledge grounding with citation linking
 - Cross-system retrieval across heterogeneous EHR formats
 - Multilingual handling (Spanish-language clinical notes)
-- Bridge: React Server Components = RAG (server fetches data, renders with grounded content)
+- Bridge: query before you render = RAG (the handler blocks on its data call, so the output describes rows that came back)
 
 ---
 

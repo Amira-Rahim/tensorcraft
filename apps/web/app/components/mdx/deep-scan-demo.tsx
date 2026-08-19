@@ -191,8 +191,7 @@ export function DeepScanDemo({
             line answers "what is this" before the table starts filling in. */}
         {framing && (
           <p className="text-text-muted pb-2.5 mb-1 border-b border-border">
-            A real 4 KB neural network, downloaded into this page (no server),
-            scoring archived sensor readings from the story&rsquo;s ship.
+            A real 4 KB neural network downloaded into this page
           </p>
         )}
         {status === "loading" && (

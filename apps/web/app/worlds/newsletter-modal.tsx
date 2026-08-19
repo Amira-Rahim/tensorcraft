@@ -100,8 +100,8 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
               Launch updates
             </h2>
             <p className="text-sm text-text-muted mb-5 leading-relaxed">
-              Get an email when a new world launches, with its launch discount.
-              Unsubscribe anytime.
+              Get an email when the next course goes live, with its launch
+              discount. Unsubscribe anytime.
             </p>
 
             {status === "done" ? (

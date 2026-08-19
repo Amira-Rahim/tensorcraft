@@ -61,7 +61,7 @@ export function BridgePreviewSection() {
           <div className="px-10 md:px-16 py-10 md:py-12 flex">
             <div className="max-w-lg w-full mx-auto md:mx-0 md:ml-auto flex flex-col">
               <div className="font-mono text-xs text-text-muted uppercase tracking-[0.15em] mb-3">
-                YOUR JAVASCRIPT
+                JAVASCRIPT
               </div>
               <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
                 {jsTitle}
@@ -103,7 +103,7 @@ export function BridgePreviewSection() {
           <div className="px-10 md:px-16 py-10 md:py-12 flex">
             <div className="max-w-lg w-full mx-auto md:mx-0 flex flex-col">
               <div className="font-mono text-xs text-text-muted uppercase tracking-[0.15em] mb-3">
-                ML EQUIVALENT
+                MACHINE LEARNING
               </div>
               <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
                 {bridge.mlConcept}

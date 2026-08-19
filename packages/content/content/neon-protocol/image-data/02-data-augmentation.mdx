@@ -22,9 +22,9 @@ consequence:
   narrative: "The augmentation pipeline transforms 2,000 images into an effective training set of 16,000. Amir nods approvingly at the augmented samples scrolling across the screen. 'Same cameras, but the Sentinel will see them from every angle, in every light.'"
 hints:
   - level: nudge
-    content: "Start from transform: rotate(15deg) scale(0.9): the pixels change, the label does not. That invariance is what every augmentation you write must preserve."
+    content: "Start from transform: scaleX(-1): the pixels move, the label does not. That invariance is what every augmentation you write must preserve."
   - level: guidance
-    content: "Each augmentation function takes pixel data (a 2D number array) and returns a transformed version. Rotation shifts positions, flipping reverses rows or columns, brightness adds to values."
+    content: "Each augmentation function takes pixel data (a 2D number array) and returns a transformed version. Flipping reverses rows or columns; brightness adds a delta to every value and clips it back into range."
   - level: solution
     content: "For horizontal flip, reverse each row. For brightness adjustment, add the delta to each pixel and clamp between 0 and 255. Apply a random subset of transforms to create variety."
 keywords:
@@ -44,25 +44,25 @@ If you've written browser code, you've typed `transform: rotate(45deg) scale(1.2
 <LearningObjectives objectives={[
   "Understand why data augmentation prevents overfitting",
   "Connect CSS transform operations to image augmentation techniques",
-  "Implement common augmentations: flip, rotate, brightness, and crop",
+  "Implement common augmentations: flip, brightness, and crop",
   "Build an augmentation pipeline that applies random transforms"
 ]} />
 
 ## CSS Transforms Meet Image Transforms
 
-One source image, seven transforms, fourteen training samples. Flip it, rotate it, brighten it, crop it, and the dataset multiplies without a single new photograph. The vocabulary is the one CSS animations and hover effects use: spatial transformations applied to visual elements.
+One source image, seven transforms, eight training samples: the original plus one per transform. Flip it, rotate it, brighten it, crop it, and two thousand photographs become sixteen thousand without a single new night on the street. The vocabulary is the one CSS animations and hover effects use: spatial transformations applied to visual elements.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 The operations map directly:
 
-| CSS Transform | Image Augmentation | Effect |
+| CSS | Image Augmentation | Effect |
 |---|---|---|
-| `rotate(15deg)` | Rotation | Tilts the image |
-| `scale(0.8)` | Random crop + resize | Zooms in or out |
-| `scaleX(-1)` | Horizontal flip | Mirrors left-right |
-| `skewX(10deg)` | Shear transform | Angular distortion |
-| `brightness(1.2)` | Brightness adjustment | Lighter or darker |
+| `transform: rotate(15deg)` | Rotation | Tilts the image |
+| `transform: scale(0.8)` | Random crop + resize | Zooms in or out |
+| `transform: scaleX(-1)` | Horizontal flip | Mirrors left-right |
+| `transform: skewX(10deg)` | Shear transform | Angular distortion |
+| `filter: brightness(1.2)` | Brightness adjustment | Lighter or darker |
 
 **A dome camera rotated 15 degrees is still a dome camera.** The label doesn't change, but the model sees a new example. This forces it to learn the *concept* of "dome camera" rather than memorizing specific pixel patterns.
 
@@ -74,7 +74,7 @@ Imagine you only ever saw cars from the front. You'd recognize a grille and head
 
 Without augmentation, neural networks overfit: they memorize the training images pixel-for-pixel instead of learning general features. It's the ML equivalent of a component that only works at exactly 1440px width because you hardcoded every measurement instead of using flexible layouts.
 
-<CodeBlock language="typescript" title="overfitting-analogy.ts">
+<CodeBlock language="tsx" title="overfitting-analogy.tsx">
 {`// JS: brittle component (overfitting)
 const BrittleCard = () => (
   <div style={{ width: "342px", height: "218px", left: "89px" }}>
@@ -95,7 +95,7 @@ const FlexibleCard = () => (
 
 ## Core Augmentation Operations
 
-Let's implement the fundamental transforms. We'll work with images represented as 2D arrays of pixel values (0-255).
+Four operations carry most of the work. Images here are plain 2D arrays of pixel values (0-255) so the index math stays visible, but the challenge asks for the tensor versions you met in Image Operations: `flipHorizontal` collapses to `tf.reverse(t, 1)`, and `adjustBrightness` to `t.add(delta).clipByValue(0, 255)`. Write the loop once so you know what the library is doing, then let the library do it.
 
 <CodeBlock language="typescript" title="augmentations.ts">
 {`type PixelGrid = number[][];
@@ -202,7 +202,7 @@ The pipeline above encodes a claim about the world: rotation and lighting do not
 
 ## What NOT to Augment
 
-Not all transforms preserve meaning. Flipping text horizontally makes it unreadable. Rotating a "6" by 180 degrees turns it into a "9." For Zara's surveillance cameras, vertical flips are safe (cameras can be mounted upside down), but extreme rotations beyond 30 degrees would create unrealistic orientations.
+Not all transforms preserve meaning. Flipping text horizontally makes it unreadable. Rotating a "6" by 180 degrees turns it into a "9." For Zara's surveillance cameras, horizontal flips are safe: a dome camera mirrored left to right is still a dome camera, and the crew shoots them from both sides of the street. Vertical flips are not. Nothing in Neon City hangs a camera upside down, so a flipped dome teaches the Sentinel an orientation it will never meet in a live feed. That is why `flipVertical` is a config flag and not a default.
 
 ## Challenge
 
@@ -213,6 +213,6 @@ Implement an augmentation pipeline that transforms surveillance camera images us
 <KeyTakeaways takeaways={[
   "Augmentation turned 2,000 labeled images into an effective training set of 16,000 without collecting a single new photo",
   "Augmentation prevents overfitting by forcing the model to learn general features rather than memorizing exact pixel patterns",
-  "Common augmentations (flip, rotate, brightness, crop) map directly to CSS transform operations",
+  "Common augmentations (flip, brightness, crop) map onto the CSS transform and filter functions one for one",
   "Not all transforms preserve label meaning; choose augmentations that create realistic variations"
 ]} />

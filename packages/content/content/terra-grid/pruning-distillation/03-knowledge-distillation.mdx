@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The cloud model knows everything about anomaly detection. We need to transfer that knowledge to a tiny edge model."
+  narrative: "Priya has a 200MB teacher no gateway can hold, and a student a fifth its size with none of its experience."
   speaker: "Priya Sharma"
 concept:
   explanation: "Knowledge distillation trains a small 'student' model to reproduce a large 'teacher' model's judgment, capturing the essential knowledge in a fraction of the parameters."
@@ -17,8 +17,9 @@ concept:
     mlTitle: "Knowledge Distillation"
     mlCode: "// Teacher: 200MB, full knowledge\n// Student: 5MB, distilled knowledge\nstudent.fitWith(teacherOutputs);"
     tier: structural
+    breaks: "Code splitting moves code between chunks; every byte still exists and still runs when its route loads. Distillation does not move the teacher's knowledge into the student, it retrains a smaller network to imitate the teacher's outputs, and whatever the student cannot represent is gone. There is no second chunk to load."
 consequence:
-  narrative: "96% of the teacher's accuracy at 2.5% of its size: the student passes."
+  narrative: "The student holds 96% of the teacher's accuracy at 40MB. Still eight times the gateway budget."
 hints:
   - level: nudge
     content: "The student learns from the teacher's soft predictions, not just the hard labels"
@@ -77,7 +78,7 @@ function distillationLoss(teacherProbs: number[], studentProbs: number[]): numbe
 }`}
 </CodeBlock>
 
-Temperature is the key parameter. At temperature 1, the teacher's outputs are nearly one-hot (hard). At higher temperatures, the distribution softens, revealing relationships between classes that the student can learn from. It is like the difference between binary "used/unused" in tree-shaking versus the nuanced dependency graph that code splitting uses.
+Temperature is the key parameter. At temperature 1, the teacher's outputs are nearly one-hot (hard). At higher temperatures, the distribution softens, revealing relationships between classes that the student can learn from. The code block above shows what that buys: at T=1 the top class takes 0.943 and the other two round to noise, and at T=3 the same logits read 0.629, 0.231, 0.140. The student can now see that class 1 was a near miss and class 2 was not, which is exactly the ranking the hard label throws away.
 
 ## Challenge
 
@@ -104,7 +105,7 @@ L = α · L_KD(student_soft, teacher_soft, T) + (1 − α) · L_CE(student_hard,
 
 **KD loss:**
 
-`L_KD = T² · KL(softmax(z_student / T) || softmax(z_teacher / T))`
+`L_KD = T² · KL(softmax(z_teacher / T) || softmax(z_student / T))`
 
 The T² factor compensates for the gradient scale change from temperature.
 </DerivationDrawer>

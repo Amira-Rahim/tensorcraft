@@ -7,19 +7,19 @@ order: 2
 estimatedMinutes: 22
 difficulty: intermediate
 context:
-  narrative: "The convolution output is massive: 224x224 feature maps for each of 32 kernels. Amir shakes his head: 'Same wall we hit at Meridian. Downsample. srcset logic: serve the smaller image, keep the details that matter.'"
+  narrative: "The convolution output is massive: 224x224 feature maps for each of 32 kernels. Amir does not look up. 'Same wall we hit at Meridian. Downsample, or the layer after this one never finishes.'"
   speaker: "Amir"
 concept:
   explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions: each 2x2 window collapses to a single value, so the map shrinks by 75% while the strongest activations survive."
   bridge:
-    jsTitle: "srcset Responsive Images"
-    jsCode: "<img srcset='photo-800w.jpg 800w, photo-400w.jpg 400w' sizes='(max-width: 600px) 400px, 800px' />"
+    jsTitle: "Metric rollup: peak per bucket"
+    jsCode: "const perMinute = buckets.map(w => Math.max(...w)); // 60 samples in, one peak out"
     mlTitle: "Max Pooling"
     mlCode: "const pooled = tf.maxPool(featureMap, poolSize, strides, 'valid'); // halves spatial dims"
     tier: structural
-    breaks: "srcset picks one image variant based on viewport; the alternatives still exist. Max pooling discards information permanently: only the strongest activation in each region survives forward. The downsampled tensor cannot reconstruct the original."
+    breaks: "A rollup keeps the raw samples in storage, so you can re-bucket them at ten seconds tomorrow and get the shape back. Max pooling has no archive. Only the strongest activation in each window moves forward, the backward pass sends gradient to that one position, and the other three values never reach the rest of the network."
 consequence:
-  narrative: "A quarter of the size, sharpest activations intact: the pooled feature maps roll across the display. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million.'"
+  narrative: "A quarter of the size, sharpest activations intact: the pooled feature maps roll across the display. NEON calculates the memory savings: 'From 1,605,632 values to 401,408. Three quarters of what you just computed, discarded on purpose.'"
 hints:
   - level: nudge
     content: "Max pooling takes the maximum value from each non-overlapping region. Think of it as keeping only the strongest signal."
@@ -36,20 +36,20 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-At Meridian, our first surveillance model choked because the feature maps were too large. A 224x224 input with 64 filters means over 3 million values per layer. Pooling solves this. You take each 2x2 region and keep only the max value. Same idea as responsive images. You downsample, but the important features survive.
+At Meridian our first surveillance model choked on its own feature maps. A 224x224 input with 32 filters is 1.6 million numbers leaving one layer, and that is before the second conv reads them. Pooling cuts it. Take each 2x2 square, keep the largest number, throw the other three away.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So it is like serving a 400px image instead of an 800px one via srcset? You lose resolution but the content is still recognizable.
+So it is a rollup? My dashboard collapses sixty samples a minute into one peak, and the spike still shows up.
 </Dialogue>
 
-Srcset is gentler than that. The 800px original still sits on the server; the browser just picked a smaller variant. Max pooling has no original to fall back on. Only the strongest activation in each region moves forward, and the rest is discarded permanently. The downsampled tensor cannot reconstruct what it threw away. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean). Max is far more common because strong activations usually signal important features.
+A rollup is gentler than that. The raw samples stay in the database, so you can re-bucket them at ten seconds tomorrow and get the detail back. Max pooling has no archive to fall back on. Only the strongest activation in each region moves forward, and an activation here is just a number one filter produced at one position. The rest is discarded permanently. The downsampled tensor cannot reconstruct what it threw away. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean). Max is far more common because strong activations usually signal important features.
 
 <LearningObjectives objectives={["Understand why spatial downsampling is necessary in CNNs", "Implement max pooling and average pooling from scratch", "Calculate output dimensions after pooling operations"]} />
 
 ## Why Downsample?
 
-After convolution, feature maps can be enormous. A 224x224 image with 64 filters produces 64 feature maps of 224x224 each. That is over 3.2 million values. Pooling reduces spatial dimensions while preserving the most important activations.
+The cost compounds. Those 1.6 million values are what the next conv layer reads, and it emits its own set on top of them. Pool first and the second layer sees 401,408: a quarter of the work, with the largest activation from every 2x2 square still in place.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -175,7 +175,7 @@ console.log(result2.shape);    // [56, 56, 32]
 
 Implement max pooling on a 2D feature map.
 
-<Exercise slug="max-pooling" />
+<Exercise slug="implement-max-pool" />
 
 <DerivationDrawer summary="Pooling output size + parameter count">
 **Pooling has zero learnable parameters.** It downsamples by taking the max or mean over each window.

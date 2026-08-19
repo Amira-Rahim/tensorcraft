@@ -10,14 +10,14 @@ context:
   narrative: "GRID establishes hard computational budgets for every model deployed to the field."
   speaker: "GRID"
 concept:
-  explanation: "Setting computational budgets for models is like setting performance budgets in Lighthouse: hard limits that cannot be exceeded."
+  explanation: "Setting computational budgets for models is like running a service under a hard memory cap: the ceiling is declared before deploy and enforced by something that does not negotiate."
   bridge:
-    jsTitle: "Lighthouse Budget"
-    jsCode: "// performance-budget.json\n{ \"resourceSizes\": [{ \"resourceType\": \"script\", \"budget\": 300 }] }"
+    jsTitle: "Process Memory Cap"
+    jsCode: "// deploy config: memory = 512mb\nnode --max-old-space-size=307 gateway.js"
     mlTitle: "Model Budget"
-    mlCode: "// model-budget.json\n{ \"maxSizeMB\": 50, \"maxLatencyMs\": 89, \"maxRamMB\": 307 }"
+    mlCode: "// model-budget.json\n{ \"maxRamMB\": 307, \"maxLatencyMs\": 89, \"maxSizeMB\": 1024 }"
     tier: structural
-    breaks: "Lighthouse budgets are static thresholds for build artifacts. Model budgets must trade off compute, memory, accuracy, and latency simultaneously across target devices. Single-axis budgets hide the tradeoff space."
+    breaks: "A memory cap is one axis with a binary outcome: stay under it and the process runs, cross it and the kernel kills it. A model budget is RAM, latency, artifact size, and an accuracy floor at once, and those pull against each other. Shrink the model to clear RAM and accuracy pays; cap latency and you may be forced into a quantization that drops accuracy under the floor. Nothing kills the process when the model just gets worse."
 consequence:
   narrative: "Every model now has a deployment budget. No exceptions."
 hints:
@@ -30,21 +30,21 @@ hints:
 keywords:
   - performance-budget
   - constraints
-  - lighthouse
+  - memory-cap
   - limits
 ---
 
 <Dialogue speaker="GRID">
-New deployment policy: no model ships without passing budget validation. Maximum model size: 50MB. Maximum inference latency: 89ms. Maximum RAM usage: 307MB. They are requirements, not guidelines.
+New deployment policy: no model ships without passing budget validation. Maximum RAM usage: 307MB, which is 60% of the 512MB on the gateway. Maximum inference latency: 89ms. Storage gives you 1GB of headroom, so storage is not what stops you. RAM is. These are requirements, not guidelines.
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-The Sector 11 forecaster ran fine in staging, then got OOM-killed nine minutes after deploy because nobody set a memory ceiling. We don't do that twice. This is our Lighthouse budget, but for ML.
+The Sector 11 forecaster ran fine in staging, then got OOM-killed nine minutes after deploy because nobody set a memory ceiling. We don't do that twice. Same rule as the cap on a service: write the ceiling down before deploy, or the kernel picks it for you.
 </Dialogue>
 
-Lighthouse made performance budgets famous: maximum bundle size, maximum time-to-interactive, maximum total blocking time, and a failed build when any of them is exceeded. Priya's instinct to copy the enforcement is right. Her analogy hides one trap: Lighthouse budgets are independent dials, and model budgets are coupled. Shrink the model to pass the size gate and accuracy pays. Cap RAM and you may force a quantization that breaks the accuracy floor. GRID's three numbers plus the accuracy threshold form one four-way trade, not four separate checkboxes.
+A process cap is the enforcement Priya wants: `--max-old-space-size` and a container memory limit, both declared in the deploy config, both checked by something that has no opinion about your release schedule. Her instinct to copy it is right. The shape of the limit is where it stops matching. A memory cap is one number with a binary outcome, and staying under it costs you nothing else. Model budgets pull against each other, and against a number the runtime never measures. Shrink the model to pass the RAM gate and accuracy pays. Cap latency and you may force a quantization that drops the model under whatever accuracy floor the site owner signed off on. Three limits and an accuracy floor is one four-way trade, not four checkboxes.
 
-<LearningObjectives objectives={["Define computational budgets for edge model deployment", "Calculate budget thresholds from device specifications", "Validate models against budget constraints before deployment", "Apply Lighthouse performance budget concepts to ML models"]} />
+<LearningObjectives objectives={["Define computational budgets for edge model deployment", "Calculate budget thresholds from device specifications", "Validate models against budget constraints before deployment", "Apply deploy-time resource caps to ML models"]} />
 
 ## Hard Limits
 
@@ -79,12 +79,13 @@ function validateBudget(metrics: ModelMetrics, budget: ModelBudget): { pass: boo
   if (metrics.sizeMB > budget.maxSizeMB) violations.push(\`Size \${metrics.sizeMB}MB > \${budget.maxSizeMB}MB\`);
   if (metrics.ramMB > budget.maxRamMB) violations.push(\`RAM \${metrics.ramMB}MB > \${budget.maxRamMB}MB\`);
   if (metrics.latencyMs > budget.maxLatencyMs) violations.push(\`Latency \${metrics.latencyMs}ms > \${budget.maxLatencyMs}ms\`);
+  if (metrics.params > budget.maxParams) violations.push(\`Params \${metrics.params} > \${budget.maxParams}\`);
   return { pass: violations.length === 0, violations };
 }
 
 const budget = createBudget(512, 4, 89);
 console.log(budget);
-// { maxSizeMB: 1024, maxRamMB: 307.2, maxLatencyMs: 89, maxParams: 80530636 }
+// { maxSizeMB: 1024, maxRamMB: 307.2, maxLatencyMs: 89, maxParams: 80530636.8 }
 
 const result = validateBudget({ sizeMB: 200, ramMB: 400, latencyMs: 50, params: 5000000 }, budget);
 console.log(result);
@@ -97,4 +98,4 @@ Create and validate computational budgets for Terra Grid devices.
 
 <Exercise slug="set-budgets" />
 
-<KeyTakeaways takeaways={["Computational budgets are hard limits derived from device specifications", "Apply the 60% RAM rule, 25% storage rule, and latency targets", "Budget validation blocks deployment: 50MB size, 89ms latency, and 307MB RAM are gates, not review comments", "Define budgets before optimization so you know exactly what 'done' looks like"]} />
+<KeyTakeaways takeaways={["Computational budgets are hard limits derived from device specifications", "Apply the 60% RAM rule, 25% storage rule, and latency targets", "Budget validation blocks deployment: 307MB RAM and 89ms latency are gates, not review comments", "Define budgets before optimization so you know exactly what 'done' looks like"]} />

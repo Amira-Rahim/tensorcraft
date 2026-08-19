@@ -75,9 +75,9 @@ async function retrieveSignals(
   db: Signal[],
 ): Promise<Signal[]> {
   // Parse query for filters
-  const bandMatch = query.match(/band[- ]?(\w+)/i);
-  const hoursMatch = query.match(/(\d+)\s*hours/i);
-  const classMatch = query.match(/anomal/i) ? 'anomaly' : null;
+  const bandMatch = query.match(/band[- ]?(\\w+)/i);
+  const hoursMatch = query.match(/(\\d+)\\s*hours/i);
+  const wantsAnomalies = /anomal/i.test(query);
 
   let results = [...db];
 
@@ -88,7 +88,7 @@ async function retrieveSignals(
     const cutoff = Date.now() - parseInt(hoursMatch[1]) * 3600 * 1000;
     results = results.filter(s => new Date(s.timestamp).getTime() > cutoff);
   }
-  if (classMatch) {
+  if (wantsAnomalies) {
     results = results.filter(s => s.classification === 'anomaly');
   }
 
@@ -96,7 +96,7 @@ async function retrieveSignals(
 }
 
 // The honest label for the above: keyword-and-metadata retrieval. It
-// works here because the archive is 28,800 STRUCTURED rows with named
+// works here because the catalogue is 12,001 STRUCTURED rows with named
 // fields you can match on. Production RAG over prose replaces this
 // function with embeddings: every document and every query mapped to a
 // vector, retrieval = cosine similarity, top-k. Different machinery,
@@ -141,7 +141,7 @@ const answer = await querySignals(
 
 ## Challenge
 
-Build a RAG pipeline that retrieves and contextualizes signal data.
+The retrieval half is above. Build the other half: the checker that holds every number in a generated answer against the rows it was supposed to come from.
 
 <Exercise slug="rag-pipeline" />
 
@@ -167,6 +167,6 @@ Three hours to the window. Demir demos the pipeline on the bridge: data in, rend
 Fourteen. I logged them myself. Your pipeline retrieved fourteen and reported seventeen with citations, which means I now audit every answer it has produced today. That's an hour, Ensign, out of three.
 </Dialogue>
 
-Demir spends the audit hour writing a checker that compares every number in an answer against the retrieved rows; it catches two more before the report is even drafted. One of the two sits in a summary Nazari signed off by hand this morning. She initials the correction without comment. The checker does not care whose signature is on the page; that is the point.
+Demir spends the audit hour writing a checker that compares every number in an answer against the retrieved rows; it catches two more before the report is even drafted. One of the two sits in a summary Nazari signed off by hand this morning. She initials the correction without comment. The checker does not care whose signature is on the page. Nazari asks him to run it back over everything the pipeline has produced this week.
 
 </Epilogue>

@@ -50,13 +50,13 @@ That is the whole problem, Chief. We trained it to recognize what things are. No
 How do we know which? How do we tell a genuine anomaly from a false alarm?
 </Dialogue>
 
-If you've monitored browser performance, you've set baseline metrics (LCP under 2.5s, CLS under 0.1) and alerted when values drift past them. Anomaly detection is the same move: define what "normal" looks like, then flag whatever lands outside it.
+Monitoring works the same way whatever you ship: pick a baseline for the numbers you care about (Largest Contentful Paint under 2.5s in a browser, p99 response time under 200ms on a Node service), then alert when a value drifts past it. Anomaly detection is the same move: define what "normal" looks like, then flag whatever lands outside it.
 
 <LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute baseline statistics (mean, std, percentiles) from normal signal data", "Set detection thresholds using statistical methods (z-score, percentile cutoffs)", "Evaluate detection quality with precision and recall tradeoffs"]} />
 
 <BossBeat
   beatId="deep-orbit-anomaly-7741-training-set"
-  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every flagged window. The filter halts on Sample 7741. It sits inside every baseline he has computed, and it is the first thing DEEP SCAN ever flagged. Train on it, or pull it? Your call, operator."
+  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every window with a confirmed event label. The filter halts on Sample 7741, which has no label to remove it. It sits inside every baseline he has computed, and it is the first thing DEEP SCAN ever flagged. Train on it, or pull it? Your call, operator."
   options={[
     {
       label: "cooperate",
@@ -131,7 +131,7 @@ console.log(isAnomaly(1.82, baseline));  // true: 8.7 sigmas away!`}
 
 **Two standard ways production data breaks it.** Heavy tails: when rare large effects dominate, 3-sigma events stop being rare and the detector cries wolf. Correlation: channels mounted on the same hull move together, so their noise does not average away and the effective spread is wider than any per-channel std reports.
 
-**Per-channel thresholds also compound.** If each of 64 channels independently trips 5% of the time on calm data, a fully dark board has probability 0.95⁶⁴ ≈ 0.0375: some channels lit is the calm state. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Judge the count of lit channels against that expectation, rather than treating each lit channel as its own alarm.
+**Per-channel thresholds also compound.** Loosen the dial to 2 sigma and each channel trips about 5% of the time on calm data. Across 64 channels, a fully dark board then has probability 0.95⁶⁴ ≈ 0.0375: some channels lit is the calm state. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Judge the count of lit channels against that expectation, rather than treating each lit channel as its own alarm.
 </DerivationDrawer>
 
 ## Precision vs Recall
@@ -172,7 +172,7 @@ Compute baseline statistics and detect anomalies using z-scores.
 
 <Exercise slug="detect-anomaly" />
 
-PAGER, two weeks after go-live: yesterday's 95th percentile is today's median (the middle value once sorted: the 50th percentile). The world drifted underneath the model. Recompute the baseline from the last seven days of normal data and decide whether to roll it forward.
+PAGER, two weeks after go-live: yesterday's 95th percentile is today's median. The world drifted underneath the model. Recompute the baseline from the last seven days of normal data and decide whether to roll it forward.
 
 <Exercise slug="incident-baseline-drift" />
 
@@ -193,12 +193,12 @@ PAGER, two weeks after go-live: yesterday's 95th percentile is today's median (t
 
 <Epilogue>
 
-Demir builds the training set that night: eleven days of archive, 28,800 readings, minus every flagged window. The filter is three lines of code and runs in seconds, right up until it reaches Sample 7741. It was logged in the calmest stretch of the archive and sits comfortably inside every baseline he computed an hour ago. It is also the first thing DEEP SCAN ever flagged.
+The filter takes four seconds to strip eleven days down to a training set, then stops on one row and waits for a human.
 
 <Dialogue speaker="Ensign Demir">
 If I leave it in, the model learns it as normal. If I pull it out, I've decided the answer before I've built the thing that's supposed to decide.
 </Dialogue>
 
-He pulls it out, and leaves a comment in the exclusion list with a question mark in it.
+He pulls it out. The exclusion list gets its first line that is not a labeled event: one ID, one reason, and a question mark he does not take back out.
 
 </Epilogue>

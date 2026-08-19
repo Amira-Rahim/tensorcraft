@@ -1,6 +1,6 @@
 slug: train-word2vec
 lessonSlug: dense-vectors
-title: "Train Word2Vec Embeddings"
+title: "Create an Embedding Layer and Score Word Vectors"
 instructions: "Create an embedding layer with TensorFlow.js that maps a vocabulary of 100 words to 64-dimensional dense vectors. Then implement a cosineSimilarity function that takes two number arrays and returns their cosine similarity. Use the simulated trained embeddings to verify that 'aspirin' is more similar to 'ibuprofen' than to 'appendectomy'."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';

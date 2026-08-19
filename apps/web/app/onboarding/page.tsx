@@ -437,7 +437,7 @@ export default function OnboardingPage() {
               onClick={goNext}
               className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-on-primary bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {step === 0 ? "Begin Briefing →" : "Continue →"}
+              {step === 0 ? "Get Started →" : "Continue →"}
             </button>
           ) : (
             <button
@@ -471,9 +471,15 @@ function WelcomeStep() {
     {
       icon: "◉",
       name: "Story-Driven",
-      desc: "11 modules aboard the Archimedes",
+      desc: "11 modules, one continuous story",
     },
-    { icon: "⌘", name: "Build Real ML", desc: "Ship a classifier by module 3" },
+    {
+      icon: "⌘",
+      name: "Build Real ML",
+      // "Train", not "ship": module 3 trains the classifier; it reaches the
+      // browser in module 4 (the /pricing module map says so).
+      desc: "Train a working classifier by module 3",
+    },
   ];
   return (
     <div
@@ -481,16 +487,16 @@ function WelcomeStep() {
       data-testid="step-welcome"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        MISSION BRIEFING
+        WELCOME
       </div>
       <h1 className="font-mono text-4xl md:text-4xl font-bold text-text-primary tracking-tight leading-tight mb-4">
-        Welcome Aboard
+        Learn ML in
         <br />
-        the <span className="text-primary">Archimedes</span>
+        <span className="text-primary">JavaScript</span>
       </h1>
       <p className="text-base text-text-muted leading-relaxed max-w-[500px] mb-10 font-sans">
-        You&apos;re a JavaScript engineer. You&apos;re about to learn ML, not by
-        re-learning math, but by mapping it to what you already know.
+        You&apos;re a JavaScript engineer. You&apos;ll learn ML by mapping it
+        onto code you already write: state, arrays, and async.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 w-full mb-4">
         {features.map((f) => (
@@ -538,13 +544,13 @@ function BackgroundStep(props: {
       data-testid="step-background"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        CREW ASSESSMENT
+        ABOUT YOU
       </div>
       <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
         Tell us about your JavaScript background
       </h2>
       <p className="text-sm text-text-muted mb-8 font-sans max-w-[480px]">
-        Advanced and expert crew get the math derivations opened by default
+        Advanced and expert levels get the math derivations opened by default
         inside lessons; everyone else keeps them one click away. Only experience
         level is required.
       </p>
@@ -680,13 +686,13 @@ function GoalStep(props: {
       data-testid="step-goal"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        MISSION OBJECTIVE
+        YOUR GOAL
       </div>
       <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
         What&apos;s your goal?
       </h2>
       <p className="text-sm text-text-muted mb-10 font-sans">
-        This tells us which bridges and future worlds to build next.
+        This tells us what to build next.
       </p>
       <fieldset className="w-full text-left">
         <legend className="sr-only">Learning goal</legend>
@@ -750,7 +756,7 @@ function ReadyStep(props: {
   const { experienceLevel, learningGoal, jsBackground, years } = props;
 
   const rows: Array<[string, string]> = [
-    ["World", `${LAUNCH_WORLD_NAME} (live now)`],
+    ["Course", `${LAUNCH_WORLD_NAME} (live now)`],
     [
       "Experience",
       experienceLevel
@@ -775,7 +781,7 @@ function ReadyStep(props: {
       data-testid="step-ready"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        LAUNCH SEQUENCE
+        READY
       </div>
       {/* The launch moment lands on the Bridge, the room the learner is
           being handed to. The ◎ glyph is both the art-less render and the
@@ -794,8 +800,8 @@ function ReadyStep(props: {
         All Systems Go
       </h2>
       <p className="text-[15px] text-text-muted leading-relaxed max-w-[460px] mb-10 font-sans">
-        Your first mission: understand what tensors are and why JavaScript
-        engineers have already been thinking about them.
+        Your first lesson: understand what a tensor is, and why it behaves so
+        much like a Float32Array you have already shipped.
       </p>
       <div
         className="border-2 border-primary bg-surface-raised px-8 py-6 mb-2 text-left w-full max-w-md rounded-none"

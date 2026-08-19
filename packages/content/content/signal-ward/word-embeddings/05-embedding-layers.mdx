@@ -22,11 +22,11 @@ consequence:
   narrative: "Diagnostic One now has a trainable embedding layer initialized with medical vectors. As the model trains on hospital data, the embeddings fine-tune to capture institution-specific terminology."
 hints:
   - level: nudge
-    content: "Create a sequential model with an embedding layer as the first layer, followed by a dense output layer."
+    content: "Build the layer with tf.layers.embedding, then apply it to the token tensor you were handed."
   - level: guidance
-    content: "Use tf.sequential(), add tf.layers.embedding, then tf.layers.globalAveragePooling1d, then tf.layers.dense. Compile and train."
+    content: "inputDim is the vocabulary size, outputDim is the vector width. Applying the layer to a [batch, seqLen] int32 tensor gives you back [batch, seqLen, embedDim]."
   - level: solution
-    content: "const model = tf.sequential(); model.add(tf.layers.embedding({inputDim, outputDim})); model.add(tf.layers.globalAveragePooling1d()); model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));"
+    content: "const layer = tf.layers.embedding({ inputDim: vocabSize, outputDim: embedDim }); return layer.apply(tokenIds);"
 keywords:
   - embedding-layer
   - trainable-lookup
@@ -34,20 +34,24 @@ keywords:
   - transfer-learning
 ---
 
-<Dialogue speaker="Vikram">
-Imran, think of a Map in JavaScript. You pass in a key, you get back a value. An embedding layer starts there: you pass in a token ID, you get back a vector. The difference? During training, the vectors update automatically.
-</Dialogue>
-
 <Dialogue speaker="Imran">
-So it is like a Map where the values optimize themselves based on how well the model performs?
+Our vocabulary is 500 rows. Last night's batch handed the model a token ID above 500 and the lookup had nothing to return.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That's the trainable part, yes. The piece your Map never has to deal with is a missing key. Map.get returns undefined and you handle it inline. An embedding layer has no row at all for an unseen token, so it needs an UNK entry or a subword fallback before the lookup ever runs.
+You found the one thing a Map does for you that an embedding layer will not. Map.get on a missing key hands you undefined and you handle it inline. An embedding layer is a matrix indexed by row number, so an unseen token has no row to hand back. Reserve an UNK row, or fall back to subwords, before the lookup ever runs.
 </Dialogue>
 
 <Dialogue speaker="Imran">
-And we start the values from the medical vectors we loaded last lesson?
+And once the rows exist, they move? A Map whose values optimize themselves against the loss?
+</Dialogue>
+
+<Dialogue speaker="Vikram">
+Gradients reach them like any other weight. You pass in a token ID, you get back a vector, and the next training step edits that vector. A lookup table you authored never moves; this one is trained.
+</Dialogue>
+
+<Dialogue speaker="Imran">
+Do we start the values from the medical vectors we loaded last lesson?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
@@ -221,12 +225,12 @@ Which approach should we use for Diagnostic One?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-We've got about 50,000 annotated clinical notes. That's a medium-sized dataset. I recommend initializing with BioWordVec and fine-tuning. We get the benefit of pre-trained medical knowledge while letting the model adapt to our hospital's specific terminology and abbreviations.
+We've got about 4,000 annotated notes. That is thin for learning medical vocabulary from scratch, so we initialize from BioWordVec. At that size the safe call is to freeze, and I still want to unfreeze: BioWordVec has never seen this hospital's abbreviations. So we unfreeze and watch validation loss. If it climbs while training loss drops, the embeddings are memorizing and we lock them.
 </Dialogue>
 
 ## Challenge
 
-Build a neural network model with a trainable embedding layer and initialize it with pre-trained vectors.
+Build the embedding layer itself and run a batch of token IDs through it.
 
 <Exercise slug="build-embedding-layer" />
 
@@ -243,7 +247,7 @@ This is a single matrix multiply: sparse, but mathematically the same as the loo
 
 **Storage cost:** `vocab_size × d_embed × 4 bytes`. For 50k vocab and d=768, that's ~150MB just for the embedding table. Larger LLMs have embedding tables that dominate parameter count.
 
-**Tied embeddings:** language models often tie the input embedding with the output (next-token prediction) projection, the same matrix used for both. Halves the parameter count and often improves quality.
+**Tied embeddings:** language models often tie the input embedding with the output (next-token prediction) projection, the same matrix used for both. That halves the parameters spent on embeddings and often improves quality.
 </DerivationDrawer>
 
 ## Knowledge check

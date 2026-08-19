@@ -17,16 +17,16 @@ concept:
     mlTitle: "Image Tensor"
     mlCode: "const tensor = tf.browser.fromPixels(canvas); // [height, width, channels]"
     tier: structural
-    breaks: "`getImageData` returns `Uint8ClampedArray` with values 0-255. `tf.browser.fromPixels` returns a float32 tensor with shape `[h, w, channels]`, and most models then need normalization to [0,1] or per-channel mean/std before inference. The pixels are the same; the numeric type, range, and rank are not."
+    breaks: "`getImageData` returns `Uint8ClampedArray` with values 0-255. `tf.browser.fromPixels` returns an int32 tensor with shape `[h, w, channels]`, and most models then need a cast to float plus normalization to [0,1] or per-channel mean/std before inference. The pixels are the same; the numeric type, range, and rank are not."
 consequence:
   narrative: "NEON boots up: glitchy, disoriented, but functional. 'I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen.'"
 hints:
   - level: nudge
-    content: "Every canvas getImageData() call already returns an image tensor: a flat grid of pixel numbers"
+    content: "The alpha byte is the one you do not want. Walk the flat array four bytes at a time and keep the first three of each group"
   - level: guidance
-    content: "Use tf.browser.fromPixels() to convert a canvas element to a tensor"
+    content: "Collect R, G, B into a plain array with a loop that steps i += 4, hand that array to tf.tensor3d with shape [height, width, 3], then divide by 255"
   - level: solution
-    content: "const tensor = tf.browser.fromPixels(canvas); console.log(tensor.shape); // [height, width, 3]"
+    content: "const rgb = []; for (let i = 0; i < pixelData.length; i += 4) { rgb.push(pixelData[i], pixelData[i + 1], pixelData[i + 2]); } return tf.tensor3d(rgb, [height, width, 3]).div(255);"
 keywords:
   - computer-vision
   - pixels
@@ -46,7 +46,7 @@ Meridian Systems operates 200 cameras per city block. Their AI tracks every face
 So when I was streaming pixel buffers over WebRTC in my drawing app, I was already working with image tensors? I just didn't call them that?
 </Dialogue>
 
-Every time you call `getImageData()` on a canvas context, you get back a `Uint8ClampedArray`, a flat buffer of RGBA pixel values. That array *is* a tensor: a multi-dimensional grid of numbers. Computer vision starts with exactly the data structures JavaScript engineers already use.
+Every time you call `getImageData()` on a canvas context, you get back a `Uint8ClampedArray`, a flat buffer of RGBA pixel values. A tensor is that same buffer with a shape attached: `[height, width, channels]` instead of index arithmetic you do by hand. Computer vision starts with exactly the data structures JavaScript engineers already use.
 
 <LearningObjectives objectives={["Understand that images are multi-dimensional arrays (tensors) of pixel values", "Convert between canvas pixel data and TensorFlow.js tensors", "Identify the shape of image data: [height, width, channels]", "Recognize that browser canvas work is already image tensor manipulation"]} />
 

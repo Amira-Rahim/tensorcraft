@@ -35,18 +35,18 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Khalil, you've parsed JSON a thousand times, right? You take a string, run JSON.parse, and get a structured object. Turning text into ML features is the same idea. Different format, same principle.
+The model takes numbers. Only numbers. Before Diagnostic One reads a single note, something has to turn "patient reports chest pain" into a list of them.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-So instead of key-value pairs, I'm getting... what, a list of numbers?
+JSON.parse, then. String in, structure out. I've done that a thousand times.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-A vector, yes. But careful with the JSON.parse comparison. Parsing keeps structure; this throws it away. Each position counts one vocabulary word, nothing more. "Denied chest pain" and "chest pain denied" come out as the same vector. It's called bag-of-words, and the bag part is literal.
+Halfway. JSON.parse keeps the structure; this throws it away. Each position counts one vocabulary word, nothing more. "Denied chest pain" and "chest pain denied" come out as the same vector. It's called bag-of-words, and the bag part is literal.
 </Dialogue>
 
-`JSON.parse()` turns a raw string into structured data your app can use. Bag-of-words turns raw text into a vector your model can process, at the cost Vikram named: the structure is gone, and only counts remain.
+`JSON.parse()` turns a raw string into structured data your app can use. Bag-of-words turns raw text into a vector your model can compute with, and that vector is all the model ever sees.
 
 <LearningObjectives objectives={["Convert text into a bag-of-words vector", "Understand why models require numerical input", "Build a vocabulary from a set of clinical notes", "Recognize the limitations of bag-of-words for clinical text"]} />
 
@@ -65,7 +65,7 @@ A bag-of-words representation is simple: define a vocabulary, then count occurre
 const vocab = ['patient', 'reports', 'chest', 'pain', 'denies', 'fever'];
 
 function textToVector(text: string): number[] {
-  const words = text.toLowerCase().split(/\s+/);
+  const words = text.toLowerCase().split(/\\s+/);
   return vocab.map(v => words.filter(w => w === v).length);
 }
 
@@ -91,9 +91,9 @@ Bag-of-words captures *what* words are present but ignores *order*. "Patient den
 const noteA = textToVector('patient denied chest pain');
 const noteB = textToVector('patient reported chest pain');
 
-// But with our current vocabulary, they differ only
-// in words not yet in the vocab!
-// We need 'denied' and 'reported' in the vocabulary.
+// With our current vocabulary both come out as
+// [1, 0, 1, 1, 0, 0]. The two words that carry the
+// difference, 'denied' and 'reported', have no position.
 const expandedVocab = ['patient', 'reports', 'chest', 'pain',
                        'denies', 'fever', 'denied', 'reported'];
 

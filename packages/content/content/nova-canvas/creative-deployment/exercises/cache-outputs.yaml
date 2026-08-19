@@ -1,7 +1,7 @@
 slug: cache-outputs
 lessonSlug: caching-precomputation
 title: "Cache Generation Outputs"
-instructions: "Implement an LRU (Least Recently Used) cache with a maximum size. The cache should support get(key), set(key, value), and evict the oldest entry when capacity is reached. Track hit and miss counts."
+instructions: "Implement an LRU (Least Recently Used) cache with a maximum size. The cache should support get(key) and set(key, value). When it is at capacity, the entry evicted is the one that has gone longest without a get or a set, not the one inserted first. Track hit and miss counts."
 starterCode: |
   class LRUCache<T> {
     private cache = new Map<string, T>();

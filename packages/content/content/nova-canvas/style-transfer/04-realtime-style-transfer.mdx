@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Erdem tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Rohan pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. Like pre-compiling CSS: no runtime optimization needed.'"
+  narrative: "Erdem tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Rohan pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. The optimization happens once, at training time, and never again.'"
   speaker: "Rohan"
 concept:
   explanation: "Real-time style transfer replaces per-image optimization with a feedforward network trained once per style. The expensive loop moves to training time; inference collapses to a single forward pass."
@@ -22,11 +22,11 @@ consequence:
   narrative: "One forward pass. 85 milliseconds. The photograph transforms into a Monet in the time it takes to blink. Yara stares at the kiosk screen, watching visitors' photographs become paintings in real time. 'This is what I dreamed it could be.'"
 hints:
   - level: nudge
-    content: "CSS filters are instant because the computation is pre-compiled. A feedforward style network works the same way."
+    content: "The block has to hand back a tensor the same shape it received, or the skip connection has nothing to add it to."
   - level: guidance
-    content: "Train an encoder-decoder network on the style loss. At inference, a single forward pass applies the style."
+    content: "Two conv2d layers, kernelSize 3, padding 'same', both with the same filter count. Relu on the first, no activation on the second, then combine the result with the original input."
   - level: solution
-    content: "The network: encode (downsample) -> residual blocks (transform) -> decode (upsample). Train with perceptual + style losses."
+    content: "return tf.layers.add().apply([input, x]) as tf.SymbolicTensor;"
 keywords:
   - realtime
   - feedforward
@@ -38,7 +38,7 @@ keywords:
 Three minutes per frame. Erdem times it on the kiosk twice to be sure: 180 seconds of gradient descent for one restyled photograph, on a screen that has to feel instant. A visitor will give that screen maybe ten seconds. The optimization loop owes two orders of magnitude, and no amount of tuning pays that debt. The loop itself has to go.
 
 <Dialogue speaker="Rohan">
-The Gatys method optimizes each image from scratch: hundreds of iterations, minutes per image. That is like computing CSS styles by running gradient descent on every page load. We need to pre-compile the style into a network.
+The Gatys method optimizes every image from scratch: hundreds of iterations, minutes each. In studio terms you are re-rendering the whole mix every time somebody hits play. Bounce it down once and playback costs nothing.
 </Dialogue>
 
 <Dialogue speaker="Samir">

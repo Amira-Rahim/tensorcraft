@@ -46,7 +46,7 @@ Look at them. They're not looking at screens. They're inside the art. A woman is
 Tomorrow we fix the memory leak in the WebSocket handler. Tonight we watch.
 </Dialogue>
 
-You know the rhythm of a production launch: weeks of preparation, a checklist, the deploy, the anxious monitoring, the first real users. An installation opening night is a production deployment you can see happening in front of you, with your users standing in the room instead of hiding in the analytics.
+Nothing you do tonight is new: the checklist was written last week, the runbook the week before. An installation opening night is a production deployment you can see happening in front of you, with your users standing in the room instead of hiding in the analytics.
 
 <LearningObjectives objectives={["Build a pre-launch checklist that verifies every system component", "Create a runbook with typed failure scenarios and recovery procedures", "Monitor a live system in production, knowing when to act and when to watch", "Conduct a post-launch retrospective that captures lessons for future deployments"]} />
 
@@ -154,14 +154,14 @@ const runbook: RunbookEntry[] = [
     severity: 'high',
     symptoms: ['Tensor count > 1000', 'Increasing memory usage', 'Slowing inference'],
     steps: [
-      '1. Check tf.memory().numTensors',
-      '2. Run tf.engine().startScope() / endScope() to force cleanup',
-      '3. If persists, restart the generation pipeline',
-      '4. If still persists, reload the page on affected tablet',
+      '1. Compare tf.memory().numTensors against the pre-launch baseline (under 50)',
+      '2. Dispose what the pipeline still holds: tf.disposeVariables()',
+      '3. If the count does not drop, rebuild the generation pipeline',
+      '4. If it still does not drop, reload the page on the affected tablet',
     ],
     autoRecovery: async () => {
-      tf.engine().startScope();
-      tf.engine().endScope();
+      tf.disposeVariables();
+      await reloadPipeline();
       return tf.memory().numTensors < 200;
     },
     escalation: 'Rohan; audio pipeline likely source',
@@ -266,7 +266,7 @@ function renderDashboard(canvas: HTMLCanvasElement, monitor: InstallationMonitor
 </CodeBlock>
 
 <Dialogue speaker="MUSE">
-A child whispered "a dragon made of stars." I generated it in 280 milliseconds. She smiled. That is the only metric that matters.
+A child whispered "a dragon made of stars." I generated it in 280 milliseconds. She smiled. I do not have a metric for that. We could try to build one.
 </Dialogue>
 
 ## Challenge
@@ -280,5 +280,5 @@ Build a launch checklist and runbook for deploying a live installation.
 <DispatchTease
   toWorldId="terra-grid"
   toWorldName="Terra Grid"
-  body="Operator. Cross-channel intel: Hassan's edge cell just inherited the model Yara's collective shipped. Three days in: latency creeping, accuracy drifting, and the runbook doesn't cover what the field keeps producing. Yara wrote it for one room of museum-goers. Hassan is pushing it to 12,000 devices on satellite links. He needs you on Terra Grid before the drift eats his accuracy budget."
+  body="Operator. Cross-channel intel: Hassan's edge cell copied the runbook Yara's collective wrote for opening night, and it is failing them. Three days in: latency creeping, accuracy drifting, and the procedures don't cover what the field keeps producing. Yara wrote them for twelve tablets in one room, with someone standing in it. Hassan is running 12,400 devices across 47 sites on satellite links, with nobody standing anywhere. He needs you on Terra Grid before the drift eats his accuracy budget."
 />

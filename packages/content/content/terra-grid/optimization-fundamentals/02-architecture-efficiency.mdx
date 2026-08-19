@@ -10,16 +10,16 @@ context:
   narrative: "Hassan suggests redesigning the model architecture instead of brute-force compression."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Choosing an efficient model architecture is like optimizing React components to avoid unnecessary re-renders."
+  explanation: "Choosing an efficient model architecture is like replacing a nested scan with a Map lookup: the cheaper design beats tuning the expensive one."
   bridge:
-    jsTitle: "Avoiding Re-renders"
-    jsCode: "// useMemo(() => expensive, [deps])\n// Only recompute when dependencies change"
+    jsTitle: "Map Index vs Nested Scan"
+    jsCode: "// nested scan: n * m comparisons\n// Map index: one pass to build, one lookup each"
     mlTitle: "Efficient Layers"
     mlCode: "// depthwiseConv2d: fewer multiplications\n// Same result, less compute"
     tier: structural
-    breaks: "Avoiding re-renders reduces wasted React reconciliation. Efficient layer choices affect FLOPS, memory bandwidth, and cache behavior. And the most FLOPS-efficient layer (depthwise conv) is not always the fastest in wall-clock time on a given accelerator."
+    breaks: "Swapping a nested scan for a Map index returns the same output for less work, and the tests you already have prove it. A bottleneck layer does not preserve the output: 512 numbers are squeezed into 32, and only an accuracy run tells you what went missing. Timing breaks too. Fewer multiplications is not automatically less wall-clock time, because the chip may be waiting on weight data moving from memory rather than on the math."
 consequence:
-  narrative: "Same accuracy, 60% fewer parameters. The architecture was the first optimization, and the cheapest."
+  narrative: "58% fewer parameters, and nobody has checked the accuracy yet. The architecture change was the first optimization to try, and the cheapest to undo."
 hints:
   - level: nudge
     content: "Compare parameter counts between different layer configurations"
@@ -35,10 +35,10 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-Before you compress a model, ask whether the architecture itself is efficient. You would not minify a React component that re-renders 60 times per second. You would fix the component first.
+Before you compress a model, ask whether the architecture itself is efficient. You would not buy a bigger machine to run a loop that scans the same array a million times. You would fix the loop.
 </Dialogue>
 
-The cheapest optimization is choosing the right architecture from the start, before any compression. Just as `React.memo` and `useMemo` prevent unnecessary computation in a React component tree, efficient architectures prevent unnecessary computation in your model.
+The cheapest optimization is choosing the right architecture from the start, before any compression. An index that turns a nested scan into a lookup is the same move at a different scale: the work never happens, because the design stopped asking for it.
 
 <LearningObjectives objectives={["Understand how architecture choices affect model size", "Use bottleneck layers to reduce parameters", "Compare parameter counts between different designs"]} />
 
@@ -71,12 +71,12 @@ function efficientModel(): tf.Sequential {
 const naive = naiveModel();
 const efficient = efficientModel();
 
-console.log(\`Naive: \${naive.countParams()} params\`);     // 394,241
-console.log(\`Efficient: \${efficient.countParams()} params\`); // 164,897
-// 58% fewer parameters with comparable capacity`}
+console.log(\`Naive: \${naive.countParams()} params\`);     // 394,753
+console.log(\`Efficient: \${efficient.countParams()} params\`); // 165,409
+// 58% fewer parameters, and the 32-unit layer is where you pay for it`}
 </CodeBlock>
 
-The bottleneck forces the model to learn a compressed representation, like reducing 512 dimensions down to 32 essential features, then expanding back. It is the model architecture equivalent of lazy loading: only compute what you actually need.
+The bottleneck forces the model to learn a compressed representation, like reducing 512 dimensions down to 32 essential features, then expanding back. That squeeze is the whole mechanism, and it is also the cost. Everything the model wants to say about a reading has to fit through 32 numbers. Capacity you did not need is gone, and capacity you did need may be gone too. The parameter count tells you nothing about which one happened, so measure accuracy before you keep the change.
 
 ## Challenge
 
@@ -84,6 +84,6 @@ Redesign a model using the bottleneck pattern to reduce parameters.
 
 <Exercise slug="measure-efficiency" />
 
-<KeyTakeaways takeaways={["Architecture efficiency is the first optimization, before compression", "Bottleneck layers (large → small → large) dramatically reduce parameters", "A 32-unit bottleneck in a 512-unit model cuts parameters by ~58%", "Efficient architecture design parallels avoiding unnecessary re-renders in React"]} />
+<KeyTakeaways takeaways={["Architecture efficiency is the first optimization, before compression", "Bottleneck layers (large → small → large) dramatically reduce parameters", "A 32-unit bottleneck in a 512-unit model cuts parameters by ~58%", "Pick the design before you tune the artifact, the way you pick the data structure before you tune the loop"]} />
 
-> **DISPATCH archive · field intercept #36-E:** Yara's autoencoder for latent walks runs the same bottleneck pattern: they're not optimizing for size, they're optimizing for representation. Same architecture, different reward function. The bottleneck that compresses for Hassan IS the latent that creates for Yara.
+> **DISPATCH archive · field intercept #36-E:** Yara's image autoencoder runs the same 32-unit bottleneck. Hassan trains his to throw away everything the anomaly score does not need. Yara trains hers to keep everything a picture needs, then walks between those 32 numbers to make images that were never in the training set. Same layer shape, different loss.

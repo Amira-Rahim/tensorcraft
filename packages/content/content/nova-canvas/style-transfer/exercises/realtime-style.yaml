@@ -1,7 +1,7 @@
 slug: realtime-style
 lessonSlug: realtime-style-transfer
 title: "Build a Residual Block for Fast Style Transfer"
-instructions: "Implement a residual block for a feedforward style transfer network. The block applies two conv2d layers (kernelSize 3, same padding) and adds the input back via a skip connection. The first conv2d uses relu activation; the second uses no activation (added before the skip)."
+instructions: "Implement a residual block for a feedforward style transfer network. The block applies two conv2d layers (kernelSize 3, same padding) and adds the input back via a skip connection. The first conv2d uses relu activation; the second uses no activation, because its raw output is what the skip connection adds the original input to."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

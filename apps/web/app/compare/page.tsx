@@ -55,15 +55,14 @@ const ROWS: Row[] = [
   },
   {
     feature: "Analogies labeled where they break",
-    tensorcraft: "Identity / structural / intuition labels + breaks",
+    tensorcraft: "Yes, every analogy carries a label and a break note",
     fastai: "Top-down practice; no formal tier system",
     karpathy: "Bottom-up math; no analogy framing",
     coursera: "Formal definitions, less analogy",
   },
   {
     feature: "Math depth",
-    tensorcraft:
-      "Chain rule, DFT, cross-entropy derived in optional drawers; KL divergence in the math companion (ELBO, DDPM with future worlds)",
+    tensorcraft: "Chain rule, DFT, cross-entropy derived in optional drawers",
     fastai: "Pragmatic depth, not paper-grade",
     karpathy: "Paper-grade: autograd from scratch, attention from scratch",
     coursera: "Theory + math, exam-grade",

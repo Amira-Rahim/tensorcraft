@@ -605,10 +605,10 @@ The model reaches 78% accuracy. Mirza says: "Good enough to trust? Not yet. Keep
 
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
-| 1 | Network Architecture | Layers, widths, depths - designing a network | Component hierarchy in React |
+| 1 | Network Architecture | Layers, widths, depths - designing a network | Middleware chain - each stage transforms and passes on |
 | 2 | Loss Functions | Measuring how wrong the model is | Unit test assertions (`expect().toBe()`) |
-| 3 | Backpropagation | How the network learns from errors | Hot module replacement feedback loop |
-| 4 | Training Loop | Epochs, batches, convergence | `npm run build` - iterative compilation |
+| 3 | Backpropagation | How the network learns from errors | An error travelling back up the call stack |
+| 4 | Training Loop | Epochs, batches, convergence | `setImmediate(loop)` - a self-scheduling drain loop |
 | 5 | Evaluation Metrics | Accuracy, precision, recall, F1 | Lighthouse performance scores |
 
 **JS BRIDGE (Module-Level):** CSS animation keyframes are decomposition - breaking complex motion into discrete steps at specific percentages. A training loop does the same: at each epoch, the model evaluates its position, computes the error, and adjusts. The `@keyframes` analogy extends further - `ease-in-out` is like a learning rate schedule that starts slow, accelerates, then decelerates.
@@ -702,7 +702,7 @@ Demir builds a spectrogram visualizer and feeds FFT features into the classifier
 | 2 | Fourier Transform | Decomposing signals into frequencies | CSS animation decomposition (`@keyframes`) |
 | 3 | Spectrograms | Visualizing frequency over time | DevTools waterfall / performance timeline |
 | 4 | FFT as Features | Using frequency bins as model input | Computing derived state for components |
-| 5 | Windowing & Overlap | Handling signal chunks | Virtual scrolling / windowed rendering |
+| 5 | Windowing & Overlap | Handling signal chunks | `StringDecoder` - a character split across chunk edges |
 
 **JS BRIDGES (Module-Level):**
 - **CSS animation decomposition:** A `@keyframes` rule decomposes motion into discrete steps. FFT decomposes a waveform into discrete frequency components. Both take something continuous and express it as a sum of simpler parts.
@@ -748,14 +748,14 @@ Demir builds an LSTM (Long Short-Term Memory) network to predict the next signal
 
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
-| 1 | Sequences Matter | Why order matters in signal data | Array order in rendering lists (React keys) |
-| 2 | Simple RNNs | Recurrent connections and hidden state | `useReducer` - state depending on previous state |
+| 1 | Sequences Matter | Why order matters in signal data | Stream chunk order - reassemble out of order and the file is corrupt |
+| 2 | Simple RNNs | Recurrent connections and hidden state | Event log replay - state depending on previous state |
 | 3 | LSTM Gates | Long Short-Term Memory architecture | `localStorage` with TTL - selective persistence |
-| 4 | Sliding Windows | Preparing sequential input batches | `IntersectionObserver` viewport sliding |
+| 4 | Sliding Windows | Preparing sequential input batches | Stream framing - fixed-size chunks off a buffer |
 | 5 | Sequence Prediction | Predicting next signal values | Autocomplete / typeahead suggestions |
 
 **JS BRIDGES (Module-Level):**
-- **Redux state management:** A Redux reducer is a recurrent function - it takes previous state and a new action, and produces updated state. RNNs do exactly this: `newState = f(prevState, newInput)`. The hidden state of an RNN is the Redux store.
+- **Event log replay:** Rebuilding state by replaying an append-only log is a recurrent function - it takes previous state and the next event, and produces updated state. RNNs do exactly this: `newState = f(prevState, newInput)`. The hidden state of an RNN is the state you carry across the replay, except nobody wrote the `apply` function; it is learned.
 - **localStorage with TTL:** LSTMs have a forget gate that decides what to keep and what to discard - like a cache with time-to-live. Some memories are worth keeping (long-term patterns); others should expire (short-term noise).
 
 **Inter-Lesson Hook:** The LSTM remembers the anomalous pattern from 72 hours ago. It's happening again.
@@ -803,7 +803,7 @@ Mirza convenes the crew. The unknown signal has a structure that is unlike anyth
 | 2 | Autoencoders | Learning to compress and reconstruct | `gzip` compression - lossy reconstruction |
 | 3 | Reconstruction Error | Measuring deviation from normal | `git diff` - what changed from the baseline? |
 | 4 | Threshold Tuning | Setting sensitivity for alerts | Alert thresholds in monitoring dashboards |
-| 5 | The Anomaly | DEEP SCAN flags an unclassifiable signal | Error boundary catching an unexpected throw |
+| 5 | The Anomaly | DEEP SCAN flags an unclassifiable signal | `process.on('uncaughtException')` - the case nobody wrote a branch for |
 
 **JS BRIDGE (Module-Level):** `git diff` is the perfect analogy for reconstruction error. An autoencoder learns to encode and decode "normal" data. When it encounters something anomalous, the decode (reconstruction) does not match the original - just like `git diff` shows you what changed from the expected baseline. Large diffs = large reconstruction error = anomaly.
 
@@ -849,7 +849,7 @@ The crew attempts to predict the anomalous signal's next occurrence. Demir build
 | 2 | Temporal Attention | Attending to relevant time steps | `scrollIntoView()` - focusing on what matters |
 | 3 | Forecasting | Predicting future signal behavior | Predictive prefetching (`<link rel="prefetch">`) |
 | 4 | Kalman Filters | State estimation under noise | Exponential moving average in analytics |
-| 5 | Ensemble Methods | Combining multiple models | Micro-frontends - multiple apps, one view |
+| 5 | Ensemble Methods | Combining multiple models | `Promise.all` fan-out - every call runs, results merged |
 
 **JS BRIDGES (Module-Level):**
 - **CSS `:focus`:** Attention mechanisms in neural networks work like CSS `:focus` - they dynamically highlight the most relevant elements based on context. When you tab through a form, `:focus` moves to the active element. When a temporal attention model processes a sequence, it assigns "focus" to the most relevant time steps.
@@ -944,7 +944,7 @@ The optimization work is no longer academic. Remaining fuel reserves limit compu
 | 1 | Model Profiling | Measuring inference speed and memory | Chrome DevTools Performance tab |
 | 2 | Quantization | Reducing model precision for speed | Image compression (PNG to WebP) |
 | 3 | Pruning | Removing unnecessary weights | Tree-shaking unused code |
-| 4 | Caching Strategies | Storing results for repeated queries | Service Worker caching strategies |
+| 4 | Caching Strategies | Storing results for repeated queries | Memoized query cache - cache-first, keyed, versioned |
 | 5 | WebGPU Acceleration | Using GPU compute in the browser | `<canvas>` WebGL rendering pipeline |
 
 ### Shared Core

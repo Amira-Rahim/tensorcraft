@@ -34,20 +34,20 @@ keywords:
   - clinical-nlp
 ---
 
+<Dialogue speaker="Dr. Karimi">
+The vendor system read "discharge summary" as termination. Our pipeline expands PCN to penicillin now, and it still has no idea what discharge means on a ward.
+</Dialogue>
+
 <Dialogue speaker="Vikram">
-Imran, in CSS you can define a variable globally and then override it in a specific scope. --color-primary might be blue site-wide, but inside a clinical dashboard, you scope it to mean something specific. Domain embeddings work the same way.
+Which is what you get when the word meanings come from everyday English. In general text, "discharge" is closest to "fire" and "release." Train on clinical notes and it is closest to "hospital," "home," and "follow-up."
 </Dialogue>
 
 <Dialogue speaker="Imran">
-So generic Word2Vec is like the global stylesheet, and medical embeddings are the scoped overrides?
+So we scope it. --color-primary is blue site-wide, then you override it inside the clinical dashboard.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That's the shape of it. In generic English, "discharge" is closest to "fire" and "release." In clinical text, it's closest to "hospital," "home," and "follow-up." Train on the right corpus and the override comes built in.
-</Dialogue>
-
-<Dialogue speaker="Dr. Karimi">
-That class of error brought down the vendor system. It read "discharge summary" and associated it with termination instead of a patient leaving the hospital.
+Scoped by corpus, not by selector. You do not reassign a value inside a subtree; you train on medical text and the neighbors come out different. Same word, different company.
 </Dialogue>
 
 Medical embeddings are trained on millions of clinical documents, and the associations they learn replace the generic ones: "stat" lands near "urgent" instead of "statistics".
@@ -99,25 +99,25 @@ const medicalEmbeddings: Record<string, number[]> = {
 // "discharge" in generic embeddings: closest to "fire"
 console.log('Generic: discharge ~ fire =',
   cosineSim(genericEmbeddings['discharge'], genericEmbeddings['fire']).toFixed(3)
-); // ~0.95
+); // ~0.99
 
 console.log('Generic: discharge ~ hospital =',
   cosineSim(genericEmbeddings['discharge'], genericEmbeddings['hospital']).toFixed(3)
-); // ~0.12
+); // ~0.04
 
 // "discharge" in medical embeddings: closest to "hospital"
 console.log('Medical: discharge ~ hospital =',
   cosineSim(medicalEmbeddings['discharge'], medicalEmbeddings['hospital']).toFixed(3)
-); // ~0.97
+); // ~0.99
 
 console.log('Medical: discharge ~ fire =',
   cosineSim(medicalEmbeddings['discharge'], medicalEmbeddings['fire']).toFixed(3)
-); // ~-0.20
+); // ~-0.16
 
 // "stat" in medical context means "immediately", not "statistics"
 console.log('Medical: stat ~ urgent =',
   cosineSim(medicalEmbeddings['stat'], medicalEmbeddings['urgent']).toFixed(3)
-); // ~0.92`}
+); // ~0.99`}
 </CodeBlock>
 
 <Dialogue speaker="Imran">
@@ -131,7 +131,7 @@ This is where the cascade stops helping you. CSS falls back cleanly because both
 ## Real-World Medical Embedding Models
 
 <Dialogue speaker="MEDI">
-Several pre-trained medical embedding models are available for clinical NLP. BioWordVec was trained on PubMed and MIMIC-III clinical notes. Clinical embeddings from the NLP community capture abbreviations like "PCN" (penicillin), "PRN" (as needed), and "q.i.d." (four times daily).
+Several pre-trained medical embedding models are available for clinical NLP. BioWordVec was trained on PubMed and MIMIC-III clinical notes. Vectors trained on clinical corpora also carry the shorthand: "PCN" (penicillin), "PRN" (as needed), "q.i.d." (four times daily).
 </Dialogue>
 
 <CodeBlock language="typescript" title="loading-pretrained.ts">
@@ -140,15 +140,15 @@ Several pre-trained medical embedding models are available for clinical NLP. Bio
 // In production, you would load pre-trained medical embeddings
 // from a binary file or an API endpoint:
 //
-// BioWordVec: trained on PubMed + MIMIC-III
-// fastText-medical: trained on clinical notes
-// ClinicalBERT embeddings: contextual medical vectors
+// BioWordVec: fastText vectors trained on PubMed + MIMIC-III
+// BioSentVec: sentence vectors from the same corpora
+// ClinicalBERT: contextual vectors, one per token occurrence
 
-async function loadMedicalEmbeddings(
+function loadMedicalEmbeddings(
   vocabSize: number,
   embeddingDim: number,
   pretrainedWeights: number[][]
-): Promise<tf.LayersModel> {
+): tf.LayersModel {
   const model = tf.sequential();
 
   const embeddingLayer = tf.layers.embedding({
@@ -162,9 +162,9 @@ async function loadMedicalEmbeddings(
   return model;
 }
 
-// The key insight: freezing the embedding layer means
-// your model inherits knowledge from millions of documents
-// without needing millions of your own training samples.`}
+// Freezing the embedding layer means your model inherits
+// knowledge from millions of documents without needing
+// millions of your own training samples.`}
 </CodeBlock>
 
 ## Challenge

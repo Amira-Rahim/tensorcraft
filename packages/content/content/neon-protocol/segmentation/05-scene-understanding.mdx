@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Dilan calls the team to the war room. The holotable projects District 7 in full segmented view: every pixel classified, every object outlined. 'Detection told us where the drones were,' Dilan says. 'This tells us which streets are clear, which rooftops have coverage, where the blind spots are.'"
+  narrative: "Dilan calls the team to the war room. The holotable projects District 7 in full segmented view: every pixel classified, every object outlined. 'Detection told us a drone was in the frame,' Dilan says. 'This tells us which streets are clear, which rooftops have coverage, where the blind spots are.'"
   speaker: "Dilan"
 concept:
   explanation: "Scene understanding combines segmentation maps with spatial reasoning to extract meaning: object relationships and traversable paths. A drone above a person is a surveillance event, not two independent labels."
@@ -45,7 +45,7 @@ A segmentation mask tells you what each pixel is. Scene understanding tells you 
 It is like semantic HTML. A `<nav>` element inside a `<header>` means something different than a `<nav>` inside a `<footer>`. The tag alone is not enough; position and context define the meaning.
 </Dialogue>
 
-Semantic HTML gives meaning to structure: `<nav>` implies navigation, `<main>` implies primary content. Scene understanding does the same for segmentation: it reads spatial relationships between labeled regions to extract higher-level meaning. A "road" region adjacent to a "building" region forms a "street." A "drone" region above a "person" region forms a "surveillance event."
+A screen reader can trust `<nav>` inside `<header>` because you typed both tags. Nothing here is typed. The labels come from a model that can be wrong, and the relationship is inferred by counting which labels touch which. `road` touching `building` reads as a street. `drone` touching `person` reads as a surveillance event. The adjacency map below is unordered, so it reports that two regions share a border and nothing about which one sits on top. If you need `above`, compare row indices yourself.
 
 <LearningObjectives objectives={["Combine segmentation labels with spatial relationships for scene reasoning", "Build adjacency maps that encode which classes neighbor each other", "Extract contextual events from spatial patterns in segmentation masks"]} />
 
@@ -58,29 +58,27 @@ Semantic HTML gives meaning to structure: `<nav>` implies navigation, `<main>` i
 
 const CLASSES = ['background', 'road', 'building', 'person', 'drone', 'vehicle'];
 
-interface SceneEvent {
-  type: string;
-  location: { row: number; col: number };
-  involvedClasses: string[];
-}
-
 // Analyze which classes are adjacent in the segmentation mask
 function buildAdjacencyMap(mask: Int32Array, width: number, height: number) {
   const adjacency = new Set<string>();
 
-  for (let y = 0; y < height - 1; y++) {
-    for (let x = 0; x < width - 1; x++) {
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
       const current = mask[y * width + x];
-      const right = mask[y * width + x + 1];
-      const below = mask[(y + 1) * width + x];
 
-      if (current !== right) {
-        const pair = [CLASSES[current], CLASSES[right]].sort().join('-');
-        adjacency.add(pair);
+      if (x < width - 1) {
+        const right = mask[y * width + x + 1];
+        if (current !== right) {
+          const pair = [CLASSES[current], CLASSES[right]].sort().join('-');
+          adjacency.add(pair);
+        }
       }
-      if (current !== below) {
-        const pair = [CLASSES[current], CLASSES[below]].sort().join('-');
-        adjacency.add(pair);
+      if (y < height - 1) {
+        const below = mask[(y + 1) * width + x];
+        if (current !== below) {
+          const pair = [CLASSES[current], CLASSES[below]].sort().join('-');
+          adjacency.add(pair);
+        }
       }
     }
   }
@@ -135,10 +133,10 @@ Build a scene analysis function that detects contextual events from a segmentati
 ## Knowledge check
 
 <Quiz
-  question="Difference between semantic and instance segmentation?"
-  options={[{"text":"Semantic is faster"},{"text":"Semantic: per-pixel class. Instance: per-pixel class + which instance of that class"},{"text":"Instance only handles people"},{"text":"Semantic uses CNN, instance uses transformer"}]}
+  question="A District 7 frame produces the adjacency set { building-drone, person-road }, and detectEvents returns street-scene, aerial-patrol, and clear-corridor. What does that report actually license you to conclude?"
+  options={[{"text":"A drone is hovering directly above a pedestrian, so the corridor is compromised"},{"text":"Some drone pixels border some building pixels, and no drone pixels border a person or a road, which is weaker than 'nobody on this street is being watched'"},{"text":"There is exactly one drone and exactly one person in the frame"},{"text":"No drone is present in the frame, since clear-corridor fired"}]}
   correct={1}
-  explanation="Semantic: 'all cat pixels'. Instance: 'cat #1 pixels vs cat #2 pixels'. Instance is harder; model must distinguish overlapping objects of the same class. Panoptic segmentation combines both."
+  explanation="An adjacency set records which class labels share a border and nothing else. building-drone says some drone pixels touch some building pixels; the pair is sorted alphabetically, so it carries no direction and cannot mean 'above'. clear-corridor fires on the absence of drone-person and drone-road, and a drone watching the street from three floors up touches only sky, so it never enters the set at all: absence of adjacency is not absence of surveillance, which rules out D. Counting how many drones and people are in the frame (C) needs instance masks, not an adjacency set."
   tier="structural"
 />
 

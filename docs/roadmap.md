@@ -117,7 +117,7 @@ Tracked canonically in `docs/launch-blockers.md`; not duplicated here. Status ha
 
 Preconditions, not preferences. Violating the order wastes capital.
 
-- **Gate 1 - Denominator.** Only 1 world is purchasable and the ICP was "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies - impossible arithmetic. Widen to JS devs (10M+) and launch more worlds. *Nothing downstream matters until this opens.* Status 2026-08-18: the JavaScript rebrand shipped (copy, SEO metadata, schema identifiers, docs, content noun pass); still open for Gate 1: the browser-anchored bridge triage and launching more worlds.
+- **Gate 1 - Denominator.** Only 1 world is purchasable and the ICP was "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies - impossible arithmetic. Widen to JS devs (10M+) and launch more worlds. *Nothing downstream matters until this opens.* Status 2026-08-19: the JavaScript rebrand is complete (copy, SEO metadata, schema identifiers, docs, content noun pass, and the browser-anchored bridge triage across all five worlds and the canonical registry). Still open for Gate 1: launching more worlds.
 - **Gate 2 - LTV.** No recurring revenue exists. Until LTV > 3×CAC, paid acquisition is a furnace, not an engine.
 - **Gate 3 - Proof.** Do not hire sales or buy traffic against an unproven funnel. Activation/retention curves must exist and flatten - and enterprise buyers will demand completion data. (Horizon 0 produces it.)
 - **Gate 4 - Catalog.** Enterprises buy *broad* upskilling. One narrow path does not clear procurement. Catalog breadth is a hard dependency for enterprise being sellable.

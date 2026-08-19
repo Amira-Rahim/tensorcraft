@@ -40,7 +40,7 @@ keywords:
 skillAxes: [deployment, evaluation]
 ---
 
-Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. That argument was over the moment the screen went dark, and the dashboard lost it.
+Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. The 0249 crash made that argument, and nobody has reopened it.
 
 <Dialogue speaker="ARIA" expression="emphasis">
 Commander, I must flag a concern. The model performs at 91.8% accuracy now. In three weeks, that number will change. The signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.
@@ -68,7 +68,7 @@ So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set,
 }
 
 class ModelMonitor {
-  private logs: PredictionLog[] = [];
+  readonly logs: PredictionLog[] = [];
   private baselineFeatures: number[][] = [];
 
   constructor(baselineData: number[][]) {
@@ -167,7 +167,7 @@ function detectDrift(
   // The model's REAL input vector (module 5's fixed-bin design): 3 raw
   // features + 8 fixed FFT bins. Drift checks watch what the model eats.
   const featureNames = [
-    'amplitude', 'frequency', 'phase',
+    'amplitude', 'zeroCrossings', 'phase',
     'fft_0', 'fft_1', 'fft_2', 'fft_3', 'fft_4', 'fft_5', 'fft_6', 'fft_7',
   ];
   const features = featureNames.map((name, i) => {
@@ -181,7 +181,7 @@ function detectDrift(
     };
   });
 
-  const driftScore = features.reduce((s, f) => s + f.shift, 0) / features.length;
+  const driftScore = Math.sqrt(features.reduce((s, f) => s + f.shift ** 2, 0));
 
   return {
     driftScore,
@@ -223,7 +223,7 @@ Build a model monitor with drift detection.
 
 <Epilogue>
 
-The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift in two places: fft_5, the 73.4 Hz line, hotter every hour, and the timing between its spikes. The interval attached to the second alert: 37.0 seconds. Under both alerts, the triangulation job posts its overnight fix, the third in a row to agree with itself: bearing 127.3, stable for a week now, distance estimate settling toward 4.2 light-years.
+The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the whole shift in one place: fft_5, the 73.4 Hz line, hotter every hour. Both alerts are that same bin, six hours apart, and the pulse interval stamped on the second one reads 37.0 seconds. Under both alerts, the triangulation job posts its overnight fix, the third in a row to agree with itself: bearing 127.3, stable for a week now, distance estimate settling toward 4.2 light-years.
 
 <Dialogue speaker="Dr. Farah">
 We built this to catch the model degrading. It's catching the signal changing instead. Keep both alerts armed. I no longer trust either one of them to stay still.

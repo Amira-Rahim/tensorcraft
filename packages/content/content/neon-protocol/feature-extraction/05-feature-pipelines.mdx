@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Build each stage as an independent function: preprocess, extract features, normalize the vector, add to the index"
   - level: solution
-    content: "Create a FeaturePipeline class that runs preprocess → backbone.predict → L2 normalize → index.add in sequence, with each stage configurable"
+    content: "Create a FeaturePipeline whose process method calls preprocess, passes the result to extractFeatures, and then divides each element by the vector's Euclidean magnitude when config.normalize is true"
 keywords:
   - feature-pipeline
   - middleware
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-In a production Express server, you do not write one giant handler that does authentication, validation, logging, and business logic. You build a middleware pipeline. Each function does one thing and passes the result to the next. Feature extraction works the same way. Preprocess the image. Extract features with a backbone. Normalize the vector. Add it to the index. Each stage is independent and replaceable.
+Preprocess the image. Extract features with a backbone. Normalize the vector. Add it to the index. Four stages, four contracts, and none of them knows what the others are. Six months from now that is the difference between a config change and a rewrite.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So the pipeline is middleware for images. Each step transforms the data and passes it forward. If I swap MobileNet for EfficientNet, only one stage changes. The rest of the pipeline stays the same.
 </Dialogue>
 
-The middleware pattern decouples processing stages. In Express, `cors()` does not know about `auth()`, and `auth()` does not know about the route handler. Each middleware transforms the request and calls `next()`. A feature pipeline works identically: each stage transforms data and passes it to the next stage. This decoupling is what makes production systems maintainable.
+The signature is what makes a stage swappable: one input type, one output type, no knowledge of what runs before or after. Feature pipelines carry one constraint Express does not. Whatever preprocessing ran when the backbone was trained has to run again at query time, identically. Resize with a different interpolation and every vector in your index shifts a little, silently, and search starts returning the wrong frames with the same confident scores.
 
 <LearningObjectives objectives={["Build an end-to-end feature extraction pipeline with configurable stages", "Implement preprocessing, extraction, normalization, and indexing as independent pipeline stages", "Connect the pipeline pattern to Express middleware architecture", "Run a complete pipeline against image data to populate a searchable feature index"]} />
 
@@ -61,7 +61,7 @@ The middleware pattern decouples processing stages. In Express, `cors()` does no
 // image → preprocess → extract → normalize → index → searchable
 
 // Each stage has a clear input and output type
-type PreprocessFn = (image: tf.Tensor3D) => tf.Tensor4D;
+type PreprocessFn = (image: tf.Tensor3D, size: [number, number]) => tf.Tensor4D;
 type ExtractFn = (batch: tf.Tensor4D) => tf.Tensor2D;
 type NormalizeFn = (features: tf.Tensor2D) => tf.Tensor2D;
 type IndexFn = (vector: number[], label: string) => void;
@@ -77,18 +77,18 @@ type IndexFn = (vector: number[], label: string) => void;
 {`import * as tf from '@tensorflow/tfjs';
 
 // Stage 1: Preprocess. Resize and normalize pixels
-function preprocess(image: tf.Tensor3D): tf.Tensor4D {
+function preprocess(image: tf.Tensor3D, size: [number, number]): tf.Tensor4D {
   return tf.tidy(() => {
-    const resized = tf.image.resizeBilinear(image, [224, 224]);
+    const resized = tf.image.resizeBilinear(image, size);
     const normalized = resized.div(255.0);
-    return normalized.expandDims(0) as tf.Tensor4D; // [1, 224, 224, 3]
+    return normalized.expandDims(0) as tf.Tensor4D; // [1, h, w, 3]
   });
 }
 
 // Stage 2: Extract. Run through backbone
 async function extract(
   batch: tf.Tensor4D,
-  backbone: tf.LayersModel
+  backbone: tf.GraphModel
 ): Promise<tf.Tensor2D> {
   const features = backbone.predict(batch) as tf.Tensor2D;
   return features; // [1, 1280]
@@ -139,7 +139,7 @@ interface PipelineConfig {
 }
 
 class FeaturePipeline {
-  private backbone: tf.LayersModel | null = null;
+  private backbone: tf.GraphModel | null = null;
   private index = new FeatureIndex();
   private config: PipelineConfig;
 
@@ -149,14 +149,14 @@ class FeaturePipeline {
 
   // Initialize: load the backbone (like app.listen())
   async init(): Promise<void> {
-    this.backbone = await tf.loadLayersModel(this.config.backboneUrl);
+    this.backbone = await tf.loadGraphModel(this.config.backboneUrl, { fromTFHub: true });
     console.log('Pipeline ready. Backbone loaded.');
   }
 
   // Process a single image through the full pipeline
   async process(image: tf.Tensor3D, label: string): Promise<number[]> {
     // Stage 1: Preprocess
-    const batch = preprocess(image);
+    const batch = preprocess(image, this.config.inputSize);
 
     // Stage 2: Extract features
     const raw = await extract(batch, this.backbone!);
@@ -229,7 +229,7 @@ Build a feature pipeline class that chains preprocessing, extraction, and normal
   question="What's training/serving skew?"
   options={[{"text":"Model trained on different data than evaluated"},{"text":"Preprocessing in production differs from training: same input, different features"},{"text":"Train/test split that overlaps"},{"text":"Model loss is unstable"}]}
   correct={1}
-  explanation="If training preprocessing applies normalize→onehot but production applies onehot→normalize, the model sees different features in production. Subtle, silent. Catch via shadow inference (run prod preprocessing on training samples, compare features)."
+  explanation="Train on frames resized with bilinear interpolation, then serve on frames resized with nearest neighbor, and the backbone sees inputs it never trained on. Same picture, different features, no error thrown. Catch it with shadow inference: run the production pipeline over training images and diff the vectors."
   tier="structural"
 />
 

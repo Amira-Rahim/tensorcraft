@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The extractive QA model found the allergy note, but Vikram raises a concern. 'Finding a keyword match is not comprehension. What if the record says the allergy was ruled out? Or that a family member has the allergy, not the patient?' Khalil realizes that locating text is not the same as understanding it."
+  narrative: "The extractive QA model found the allergy note, but Vikram raises a concern. 'Your span predictor picked the sentence that looks most like an answer. It never checked whose allergy it was. What if the record says the allergy was ruled out? Or that it belongs to a family member?' Khalil realizes the model ranked words and never asked who they were about."
   speaker: "Vikram"
 concept:
   explanation: "Reading comprehension models don't just locate text; they model the relationship between question and context, so 'allergy ruled out' and 'mother's allergy' stop counting as answers about the patient."
@@ -17,16 +17,16 @@ concept:
     mlTitle: "Reading Comprehension"
     mlCode: "model.comprehend({ question: 'active allergies?', context: record }) // understands scope"
     tier: structural
-    breaks: "GraphQL resolvers fetch named fields from defined sources. Reading-comprehension models infer answers from passages and routinely fabricate plausible-sounding answers ungrounded in the source; fluent output is no evidence of correct comprehension. Ground-truth verification requires checking the cited span exists in the input passage."
+    breaks: "GraphQL resolvers fetch named fields from defined sources. A reading-comprehension model returns a span that really is in the passage, but it routinely returns one about the wrong subject or the wrong date: a family member's allergy, a drug stopped two years ago. Verification means checking who and when the span refers to, not only that it exists."
 consequence:
   narrative: "Run against the adversarial set, the model stops conflating 'patient allergic to penicillin' with 'patient's mother allergic to penicillin.' Vikram nods. 'Now it reads like a clinician, not a search engine.'"
 hints:
   - level: nudge
-    content: "Attention scores reveal which context tokens the model focuses on for each question token"
+    content: "Score each sentence on its own, then rank; the passage is just a list of candidate spans"
   - level: guidance
-    content: "Use cross-attention between question and context embeddings to build a question-aware context representation"
+    content: "Cosine similarity is the dot product of two vectors over the product of their magnitudes, so accumulate dot, magA and magB in one pass"
   - level: solution
-    content: "Compute attention weights as softmax(Q*K^T / sqrt(d)), apply to values, then predict answer span from the attended representation"
+    content: "Map each sentence to { sentence, index, score } with the score from cosineSimilarity(embedFn(sentence), queryEmbedding), sort by score descending, then slice the first topK"
 keywords:
   - reading-comprehension
   - cross-attention
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Your QA model found the word "penicillin" in the record. But read this note carefully: "Patient's mother has documented penicillin allergy. Patient has no known drug allergies." A keyword search would flag this as a positive. A comprehension model wouldn't.
+Your span predictor did its job. Now read the whole note: "Patient's mother has documented penicillin allergy. Patient has no known drug allergies." The highest-scoring span sits in the first sentence, and it is about the wrong person. Locating the right words is not the same as knowing whose they are.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -49,6 +49,8 @@ A GraphQL resolver does not return the entire database. It parses your query, un
 ## Query-Specific Understanding
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Cross-attention is the mechanism that makes the reading question-specific. Every question token scores every context token by dot product, scaled down by the square root of the embedding size so the softmax does not saturate. Softmax turns those scores into weights, and the weighted sum of context vectors becomes the representation the answer head reads. The head never sees the raw passage, only the passage as this question saw it. That is what keeps "Patient's mother has documented penicillin allergy" and "Patient has no known drug allergies" from scoring alike when the question is about the patient.
 
 <CodeBlock language="typescript" title="reading-comprehension.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -148,7 +150,7 @@ const adversarialTests = [
   {
     question: "Does the patient have diabetes?",
     context: "Rule out diabetes. HbA1c 5.4% (normal). No evidence of insulin resistance.",
-    expectedAnswer: "No evidence of insulin resistance",
+    expectedAnswer: "HbA1c 5.4% (normal)",
     label: "rule-out-vs-diagnosis"
   },
 ];
@@ -167,6 +169,6 @@ for (const test of adversarialTests) {
 
 Implement a cross-attention function that computes question-aware context representations.
 
-<Exercise slug="reading-comprehension" />
+<Exercise slug="reading-comprehension-exercise" />
 
-<KeyTakeaways takeaways={["Fluent output is no evidence of comprehension: verify the cited span actually exists in the input passage", "Question-aware representations prevent false matches (family allergies, discontinued medications, ruled-out conditions)", "Adversarial clinical examples separate real comprehension from keyword matching", "Attention weight visualization reveals which context tokens the model focuses on for each question"]} />
+<KeyTakeaways takeaways={["A span model cannot invent text, but it can hand back a real sentence about the wrong person or the wrong year; check who and when the span refers to, not just that it exists", "Question-aware representations prevent false matches (family allergies, discontinued medications, ruled-out conditions)", "Adversarial clinical examples separate real comprehension from keyword matching", "Attention weight visualization reveals which context tokens the model focuses on for each question"]} />

@@ -47,12 +47,12 @@ skillAxes: [deployment, js_integration]
 Do the review before reading on. What would the model have needed to produce something a scientist could sign? Who is it supposed to be, what situation is it in, which data is it looking at, what shape should the answer take? Every gap you can name is a line the prompt failed to include.
 
 <Dialogue speaker="Dr. Farah">
-My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report. Your review found the same four holes; now you know they have names.
+My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report. Your review probably found three of the four. Format is the one people skip, because output without it still reads like English right up until you try to parse it.
 </Dialogue>
 
 Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. It's `git log` versus `git log --oneline --graph --all`: specificity and structure decide what you get back.
 
-<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Use few-shot examples to guide output format and style", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging: refine until results match expectations"]} />
+<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Parse the model's JSON reply back into an object your code can use", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging: refine until results match expectations"]} />
 
 ## From Vague to Precise
 

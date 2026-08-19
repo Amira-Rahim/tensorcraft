@@ -12,14 +12,14 @@ context:
 concept:
   explanation: "RAG splits question answering into two stages: retrieve the documents most relevant to the question, then comprehend only those. The answer is grounded in what was actually retrieved, not in whatever the model happens to remember."
   bridge:
-    jsTitle: "React Server Components"
-    jsCode: "async function PatientCard({ id }) { const data = await db.query(id); return <Card data={data} />; }"
+    jsTitle: "Query Before You Render"
+    jsCode: "async function card(id) { const docs = await db.find(id); return render('card', { docs }); }"
     mlTitle: "RAG Pipeline"
     mlCode: "async function answer(q) { const docs = await retrieve(q); return generate(q, docs); }"
     tier: structural
-    breaks: "React Server Components render server-side and stream HTML. RAG retrieves passages then conditions an LLM on them; retrieval recall, chunking strategy (how documents are split into indexable pieces), and the LLM's tendency to ignore retrieved content (or hallucinate around it) are the dominant failure modes."
+    breaks: "A template can only print what you handed it. Leave a field out and you get a blank, never an invention. A decoder conditioned on retrieved passages can still answer from its weights, contradict the passages, or cite one it never read. What it has to work with is decided upstream by retrieval recall and by chunking, meaning how documents are split into indexable pieces."
 consequence:
-  narrative: "The RAG pipeline retrieves the three most relevant documents from 47 records in 12 milliseconds. One is a Spanish-language discharge summary from a clinic in Guatemala. The QA model extracts the critical allergy information. Imran exhales. 'That would have taken me twenty minutes.'"
+  narrative: "The RAG pipeline retrieves the three most relevant documents from 47 records in 12 milliseconds. One is a Spanish-language discharge summary from a clinic in Guatemala. The QA model pulls the allergy out of it: penicillin, anaphylaxis, documented 2015. The attending cancels the amoxicillin and starts levofloxacin with nineteen minutes left on the hour. 'That would have taken me twenty minutes,' Imran says."
 hints:
   - level: nudge
     content: "Encode documents and queries into the same vector space, then use cosine similarity to retrieve"
@@ -35,15 +35,17 @@ keywords:
   - embeddings
 ---
 
+Reading one discharge summary carefully takes four minutes. Forty minutes of the hour are already gone.
+
 <Dialogue speaker="Dr. Karimi">
 One document, one answer. That was a proof of concept. This patient has 47 records across two hospital systems. Emergency notes, lab results, imaging reports, discharge summaries. Some in Spanish. We cannot comprehend 47 documents sequentially. We need to retrieve the right ones first.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-It is the same pattern as React Server Components. Fetch the data you need on the server, then render on the client. Retrieve the relevant documents first, then pass them to the QA model. Retrieval-Augmented Generation.
+It is the shape of any handler that queries before it renders. The data call finishes first, and the template only ever sees rows that came back. Retrieve the right documents first, then hand only those to the QA model. That is Retrieval-Augmented Generation.
 </Dialogue>
 
-With React Server Components, instead of shipping a loading spinner and fetching on the client, you fetch on the server and stream the result. RAG does the same thing for question answering: instead of feeding the entire corpus to the model, you retrieve the relevant documents first, then pass only those as context.
+The word doing the work there is `await`. The handler blocks on its query before it renders, so the output can only describe data that actually came back. RAG puts the same block in front of generation: nothing is generated until retrieval returns, and the model answers from those passages instead of from whatever its weights happen to hold. What differs is downstream of the await. A template prints what you passed it or prints nothing. A decoder can write a sentence that appeared in none of the passages, which is why what reaches it matters more here than it does in a render.
 
 <LearningObjectives objectives={["Build a dense retrieval system using document embeddings and cosine similarity", "Implement a vector index for fast nearest-neighbor search in the browser", "Construct a complete RAG pipeline: embed → retrieve → comprehend → answer", "Handle multilingual retrieval for clinical documents in different languages"]} />
 
@@ -55,7 +57,7 @@ With React Server Components, instead of shipping a loading spinner and fetching
 {`import * as tf from '@tensorflow/tfjs';
 
 // RAG Pipeline: Retrieve → Augment → Generate
-// Same pattern as React Server Components: fetch data, then render
+// Same pattern as a server handler: query first, then render
 
 interface Document {
   id: string;
@@ -167,10 +169,12 @@ result.sources.forEach((s, i) => {
 // → 3. [medication_list] 2023-11-01 (score: 0.743)`}
 </CodeBlock>
 
+One of those three documents is in Spanish. Cross-lingual retrieval only works if the encoder saw both languages during training: a monolingual English model puts `alergia a la penicilina` nowhere near `penicillin allergy`, and the Guatemala record never enters the top three. Check what your embedding model was trained on before you tell a clinician the system reads every chart in the file.
+
 ## Challenge
 
 Build a vector index with cosine similarity retrieval for a RAG pipeline.
 
-<Exercise slug="rag-pipeline" />
+<Exercise slug="build-rag" />
 
-<KeyTakeaways takeaways={["RAG's dominant failure modes are retrieval recall, chunking strategy, and the generator ignoring retrieved content; debug retrieval before blaming the model", "Dense retrieval uses embedding similarity to find relevant documents, replacing keyword search", "Vector indexes enable sub-millisecond retrieval over thousands of clinical documents", "Source attribution in RAG means every answer points back to the documents it came from"]} />
+<KeyTakeaways takeaways={["RAG's dominant failure modes are retrieval recall, chunking strategy, and the generator ignoring retrieved content; debug retrieval before blaming the model", "Dense retrieval uses embedding similarity to find relevant documents, replacing keyword search", "A brute-force cosine scan over a few thousand chunks answers in single-digit milliseconds in the browser; approximate nearest-neighbor indexes only start paying for themselves above that", "Source attribution in RAG means every answer points back to the documents it came from"]} />

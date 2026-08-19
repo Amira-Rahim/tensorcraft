@@ -48,7 +48,7 @@ First integration of the trained model into the dashboard, and the console's fir
 So the model is not one file at all. That's... exactly like a web font or a spritesheet, isn't it. I was fetching the spritesheet by the name of the folder.
 </Dialogue>
 
-The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the full network leg of the trip. Where it goes after that is a question ARIA answers later in this lesson.
+The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the network leg of the trip, and only for that leg.
 
 <LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
 

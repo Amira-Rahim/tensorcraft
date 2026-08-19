@@ -2,7 +2,7 @@ slug: compute-word-similarity
 lessonSlug: similarity-and-analogy
 title: "Word Embedding Cosine Similarity"
 mlContent: data
-instructions: "Build `wordSimilarity(embedding, idA, idB)` that takes a [vocab, dim] embedding tensor and two token IDs, slices out the two row vectors, and returns their cosine similarity as a number."
+instructions: "You wrote the cosine formula over plain arrays in the dense-vectors lesson. Here the vectors live inside a `[vocab, dim]` embedding tensor. Build `wordSimilarity(embedding, idA, idB)` that slices out row `idA` and row `idB`, squeezes each one down to 1D, and returns their cosine similarity as a number."
 starterCode: |
   function wordSimilarity(embedding, idA, idB) {
     return 0;

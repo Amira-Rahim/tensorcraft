@@ -45,7 +45,7 @@ Wait. Their multi-billion credit surveillance system outputs the same data struc
 The same four numbers. X, Y, width, height. The difference is how you get them.
 </Dialogue>
 
-Call `getBoundingClientRect()` on a tooltip and you get `{ x: 120, y: 80, width: 60, height: 40 }`. Run a detection model on a surveillance frame and you get `[0.19, 0.17, 0.09, 0.08]`. Same rectangle, same four numbers, one difference: the model's coordinates are normalized to the 0-1 range instead of pixels. Every object the network finds in an image comes back as one of these rectangles, a **bounding box**.
+Call `getBoundingClientRect()` on a tooltip and you get `{ x: 120, y: 80, width: 60, height: 40 }`. Run a detection model on a surveillance frame and you get `[0.19, 0.17, 0.09, 0.08]`. Four numbers either way, describing the same kind of rectangle. Two things separate them: the browser measured its numbers off a laid-out element while the model predicted its numbers from raw image data, and the model reports them on a 0-1 scale rather than in pixels. Every object the network finds in an image comes back as one of these rectangles, a **bounding box**.
 
 <LearningObjectives objectives={["Understand bounding boxes as the fundamental representation of object locations", "Convert between pixel coordinates and normalized coordinates", "Calculate bounding box area and center points"]} />
 
@@ -171,9 +171,9 @@ function xywhToXyxy(box: number[]): number[] {
 
 ## Challenge
 
-Build functions to create and convert bounding boxes.
+Draw a detection box and its label onto a canvas overlay.
 
-<Exercise slug="compute-bbox" />
+<Exercise slug="draw-bounding-box" />
 
 ## Knowledge check
 
@@ -181,8 +181,8 @@ Build functions to create and convert bounding boxes.
   question="A sentinel detector outputs a box at (x=120, y=80, width=60, height=40) on a 640×480 frame. To pass this box to a downstream model that expects normalized [x1, y1, x2, y2] coordinates in [0, 1], what is the correct conversion?"
   options={[{"text":"[120/640, 80/480, 180/640, 120/480]: divide each (x, y) corner by image dimensions"},{"text":"[120/640, 80/480, 60/640, 40/480]: normalize all four values by their own axis"},{"text":"[120, 80, 180, 120] / 255: scale by pixel intensity range"},{"text":"[120, 80, 60, 40] / max(640, 480): divide everything by the longest side"}]}
   correct={0}
-  explanation="The detector returned (x, y, width, height). To get [x1, y1, x2, y2] you compute x2 = x + width and y2 = y + height, then normalize each x by image width and each y by image height. The other options either keep the wh format (option B), confuse pixel value with coordinate (option C), or use a single divisor that distorts non-square images (option D)."
+  explanation="The detector returned (x, y, width, height). To get [x1, y1, x2, y2] you compute x2 = x + width and y2 = y + height, then normalize each x by image width and each y by image height. The wrong answers keep the width-height format, treat a coordinate as a pixel intensity, or divide both axes by the longest side, which squashes anything that is not square."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A bounding box is four numbers plus a label and a confidence score; the confidence is what makes it a prediction rather than a measurement", "Normalized coordinates (0-1) make boxes resolution-independent across feed sizes", "Detection models output boxes in different formats (xywh, cxcywh, xyxy) that you convert between", "getBoundingClientRect() and model.predict() return fundamentally the same data structure"]} />
+<KeyTakeaways takeaways={["A bounding box is four numbers plus a label and a confidence score; the confidence is what makes it a prediction rather than a measurement", "Normalized coordinates (0-1) make boxes resolution-independent across feed sizes", "Detection models output boxes in different formats (xywh, cxcywh, xyxy) that you convert between", "A DOMRect and a decoded detection box carry the same four numbers, but the browser measures them off a laid-out element while the model predicts them from raw image data"]} />

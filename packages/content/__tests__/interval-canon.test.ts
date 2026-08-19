@@ -33,6 +33,14 @@ interface WorldCanon {
   moduleOrder: Record<string, number>;
   /** file (relative to the world dir) -> the interval mentions it must contain. */
   canon: Record<string, number[]>;
+  /**
+   * Mentions that are deliberate CALLBACKS to an earlier era (e.g. the finale
+   * quoting the module-8 reading while settling an old question). They must
+   * still appear in `canon` (the mention is pinned), but they are excluded
+   * from the non-increasing countdown timeline, which tracks only live
+   * readings.
+   */
+  historical?: Record<string, number[]>;
 }
 
 const DEEP_ORBIT_MODULE_ORDER: Record<string, number> = {
@@ -66,11 +74,16 @@ const DEEP_ORBIT_CANON: Record<string, number[]> = {
   "optimization-edge/01-model-profiling.mdx": [61.2],
   "optimization-edge/03-pruning.mdx": [55.1],
   "optimization-edge/05-webgpu-acceleration.mdx": [47.9],
-  "capstone/01-system-architecture.mdx": [47.0, 47.0, 47.0],
+  // Editorial pass 2026-08-19: capstone/01 dropped one 47.0 (the consequence
+  // logline no longer repeats verbatim in the epilogue), and the finale now
+  // pays off Nazari's interval-hits-zero question with a callback to the
+  // 72.4 s era (canon value of advanced-time-series/04-05) before the live
+  // 29.7 s reading.
+  "capstone/01-system-architecture.mdx": [47.0, 47.0],
   "capstone/02-ci-cd-pipeline.mdx": [44.0],
   "capstone/03-monitoring.mdx": [37.0],
   "capstone/04-documentation.mdx": [31.6],
-  "capstone/05-launch.mdx": [29.7],
+  "capstone/05-launch.mdx": [72.4, 29.7],
 };
 
 /**
@@ -82,6 +95,10 @@ const WORLD_INTERVAL_CANON: Record<string, WorldCanon> = {
   "deep-orbit": {
     moduleOrder: DEEP_ORBIT_MODULE_ORDER,
     canon: DEEP_ORBIT_CANON,
+    // The finale's 72.4 is Nazari's interval-hits-zero question being paid
+    // off with the module-8 reading; it is a quotation of the past, not a
+    // live reading, so the countdown check skips it.
+    historical: { "capstone/05-launch.mdx": [72.4] },
   },
 };
 
@@ -127,7 +144,17 @@ for (const world of BUILT_STORY_WORLDS) {
       for (const [file, values] of Object.entries(spec.canon)) {
         const moduleSlug = file.split("/")[0];
         const order = spec.moduleOrder[moduleSlug];
-        for (const value of values) timeline.push({ order, file, value });
+        // Drop one timeline entry per declared historical callback; the
+        // mention itself is still pinned by the canon-table assertion above.
+        const skips = [...(spec.historical?.[file] ?? [])];
+        for (const value of values) {
+          const skipAt = skips.indexOf(value);
+          if (skipAt !== -1) {
+            skips.splice(skipAt, 1);
+            continue;
+          }
+          timeline.push({ order, file, value });
+        }
       }
       timeline.sort((a, b) => a.order - b.order);
 

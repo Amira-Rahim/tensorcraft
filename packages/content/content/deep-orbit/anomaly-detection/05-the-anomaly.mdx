@@ -15,14 +15,14 @@ context:
   narrative: "Before the ship's loudest alert, a replay of its quietest moment: sample 7741, logged in the calm period, back when nothing aboard could see it. Then the live feed does the same thing at twelve times the baseline error."
   speaker: "Chief Nazari"
 concept:
-  explanation: "When an error boundary catches an unexpected throw, it means something genuinely new happened: the system encountered a case it was never designed for."
+  explanation: "When a throw reaches the last handler in the process, something genuinely new happened: the system hit a case nobody wrote a branch for."
   bridge:
-    jsTitle: "Error Boundary"
-    jsCode: "componentDidCatch(error) { // unexpected error: show fallback UI }"
+    jsTitle: "uncaughtException"
+    jsCode: "process.on('uncaughtException', (err) => { report(err); process.exit(1) })"
     mlTitle: "Anomaly Alert"
     mlCode: "if (error > 12 * baseline) { alert('UNKNOWN SIGNAL DETECTED') }"
     tier: intuition
-    breaks: "componentDidCatch fires on a thrown exception: deterministic, after the fact, always right that something threw. An anomaly alert fires on a statistical threshold over valid inputs, so it can fire on healthy data and stay silent through a real failure. Nothing throws; you chose where weird begins."
+    breaks: "The uncaughtException handler fires on a real throw: deterministic, after the fact, always right that something broke. An anomaly alert fires on a statistical threshold over inputs that are all perfectly valid. Nothing threw, nothing is corrupt, and you chose where weird begins, so the alert can fire on healthy data and stay silent through a real failure."
 consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
@@ -42,7 +42,7 @@ skillAxes: [model_arch, evaluation]
 
 > **ARIA ARCHIVE · PLAYBACK: SAMPLE 7741** · Logged mid-calm-period. Rule-engine assessment at the time: nominal. Human assessment at the time: none; nobody was looking. End of frame.
 
-Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. Every method the ship has built since flags the old sample in the first pass. Demir is still staring at that, mid-morning, when the live feed does the same thing at twelve times the baseline reconstruction error, and the bridge lights up with the loudest alert DEEP SCAN has ever fired.
+Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. The z-score gate still clears it, exactly as it did in the archive; the autoencoder and the LSTM both flag it on the first pass, and two votes out of three is all the ensemble needs. Demir is still staring at that, mid-morning, when the live feed does the same thing at twelve times the baseline reconstruction error, and the bridge lights up with the loudest alert DEEP SCAN has ever fired.
 
 By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite.
 
@@ -62,9 +62,9 @@ What am I looking at, Dr. Farah?
 Something the training data has never contained, Commander. That is the one claim three agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
 </Dialogue>
 
-In browser terms, the bridge just watched an error boundary fire: the application hit a case no developer anticipated. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on.
+In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on.
 
-<LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Assemble the full detection ensemble and wire its verdicts into the DEEP SCAN dashboard feed"]} />
+<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Read a 2-of-3 majority vote as a confidence number, and state what three agreeing detectors can and cannot claim"]} />
 
 ## Ensemble Detection
 
@@ -140,7 +140,7 @@ function detectAnomaly(
 
 ## The Discovery
 
-While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome; the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the spacing between them steps through ratios: 1, 1, 2, 3, 5, 8, 13. The carrier keeps its clock. The freight it carries keeps a different one.
+While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome; the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the gaps between them run in Fibonacci proportion: 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it. The carrier keeps its clock. The freight it carries keeps a different one.
 
 <CodeBlock language="typescript" title="the-discovery.ts">
 {`// Run the full ensemble on the flagged signal
@@ -181,7 +181,7 @@ Build an ensemble anomaly detector combining multiple methods.
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
     "A model's job is detection and quantification; ensemble agreement tells you how confident the system is, but interpretation of what was detected remains a human decision."
   ]}
-  bridge="Like a React error boundary (`componentDidCatch(error)`) firing when the application hits a case no developer anticipated, an anomaly alert (`if (error > 12 * baseline) alert('UNKNOWN SIGNAL DETECTED')`) fires when every detector agrees the input falls outside anything the system was trained to handle."
+  bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, an anomaly alert (`if (error > 12 * baseline) alert('UNKNOWN SIGNAL DETECTED')`) fires when every detector agrees the input falls outside anything the system was trained to handle."
   youCanNow="Build an ensemble anomaly detection pipeline that combines statistical, autoencoder, and temporal detectors using majority voting for high-confidence flagging."
 />
 

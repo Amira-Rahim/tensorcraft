@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Yara types a prompt: 'a forest at dawn, watercolor style.' The image that appears is vaguely forest-shaped but ignores the watercolor instruction. 'It's not listening to me,' she says. Rohan responds: 'We need to amplify the prompt's influence. Think of it like !important in CSS, forcing the style override.'"
-  speaker: "Rohan"
+  narrative: "Yara types a prompt: 'a forest at dawn, watercolor style.' The image that appears is vaguely forest-shaped but ignores the watercolor instruction. 'It's not listening to me,' she says. Samir answers: 'We amplify the prompt's influence. Think of it like !important in CSS, forcing the style override.'"
+  speaker: "Samir"
 concept:
   explanation: "Classifier-free guidance runs the model twice per step, once with the prompt and once without, then exaggerates the difference. The guidance scale controls how hard the prompt's contribution is amplified over the model's own habits."
   bridge:
@@ -39,11 +39,11 @@ keywords:
 I typed "a forest at dawn, watercolor style" and it gave me a forest. But not watercolor. The prompt is a suggestion, not an instruction.
 </Dialogue>
 
-<Dialogue speaker="Rohan">
-That is because the model balances its own learned priors with your prompt. We need to shift that balance. Classifier-free guidance lets us amplify the prompt's influence, like adding `!important` to override a CSS default.
+<Dialogue speaker="Samir">
+That is because the model balances its own learned priors with your prompt. Classifier-free guidance shifts the balance. It is `!important` for prompts: the text stops being a default and starts overriding.
 </Dialogue>
 
-Rohan's `!important` is a decent slogan and a misleading mechanism. An override replaces one value outright. Guidance never replaces anything: it runs the model both with and without the prompt, subtracts to isolate what the prompt contributes, and multiplies only that part. The prompt does not win the argument. It gets a louder voice in it.
+Samir's `!important` is a decent slogan and a misleading mechanism. An override replaces one value outright. Guidance never replaces anything: it runs the model both with and without the prompt, subtracts to isolate what the prompt contributes, and multiplies only that part. The prompt does not win the argument. It gets a louder voice in it.
 
 <LearningObjectives objectives={["Understand why unconditioned generation ignores prompt details", "Implement classifier-free guidance using conditioned and unconditioned predictions", "Control the guidance scale to balance prompt adherence and image quality"]} />
 
@@ -110,7 +110,29 @@ console.log('Guidance scale 15+ = !important');`}
 ## Guidance in the Generation Loop
 
 <CodeBlock language="typescript" title="guided-generation-loop.ts">
-{`async function generateWithGuidance(
+{`// One reverse step under the schedule (DDIM, deterministic). This supersedes
+// lesson 1's fixed-step version now that we have alpha_bar per timestep.
+function scheduledDenoiseStep(
+  noisyImage: tf.Tensor4D,
+  predictedNoise: tf.Tensor4D,
+  alphaBar: number,
+  alphaBarPrev: number
+): tf.Tensor4D {
+  return tf.tidy(() => {
+    // Invert the forward formula for an x_0 estimate
+    const x0 = tf.div(
+      tf.sub(noisyImage, tf.mul(predictedNoise, tf.scalar(Math.sqrt(1 - alphaBar)))),
+      tf.scalar(Math.sqrt(alphaBar))
+    );
+    // Re-noise it to the previous timestep
+    return tf.add(
+      tf.mul(x0, tf.scalar(Math.sqrt(alphaBarPrev))),
+      tf.mul(predictedNoise, tf.scalar(Math.sqrt(1 - alphaBarPrev)))
+    );
+  }) as tf.Tensor4D;
+}
+
+async function generateWithGuidance(
   model: tf.LayersModel,
   prompt: tf.Tensor2D,
   steps: number,
@@ -129,9 +151,9 @@ console.log('Guidance scale 15+ = !important');`}
     );
 
     // Standard denoising step with the guided prediction
-    const alpha = cumAlpha[t];
-    const alphaPrev = t > 0 ? cumAlpha[t - 1] : 1;
-    const cleaned = denoiseStep(image, predictedNoise, alpha, alphaPrev);
+    const alphaBar = cumAlpha[t];
+    const alphaBarPrev = t > 0 ? cumAlpha[t - 1] : 1;
+    const cleaned = scheduledDenoiseStep(image, predictedNoise, alphaBar, alphaBarPrev);
 
     image.dispose();
     predictedNoise.dispose();

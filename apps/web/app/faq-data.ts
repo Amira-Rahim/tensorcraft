@@ -8,7 +8,7 @@ import { PRICING } from "@tensorcraft/shared";
 export const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Can I learn machine learning with JavaScript?",
-    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser in these lessons, and the same TensorFlow.js code runs under Node. No Python required. The launched world covers neural networks, LSTMs, signal processing, and attention. CNNs and full transformer architectures are not covered.",
+    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser in these lessons, and the same TensorFlow.js code runs under Node. No Python required. The live course, Deep Orbit, covers neural networks, recurrent networks (LSTMs), signal processing, and attention. CNNs and full transformer architectures are not covered.",
   },
   // The next three absorb the load-bearing "Skip it if you" objections when
   // the landing Who This Is For section was cut (2026-08-16): Python-stack
@@ -32,7 +32,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit, the live world, is free, no account or credit card required. The full world costs $${PRICING.single.price}: one payment, lifetime access.`,
+    a: `Module 1 of Deep Orbit, the live course, is free, no account or credit card required. The full course costs $${PRICING.single.price}: one payment, lifetime access.`,
   },
   {
     q: "What if it turns out not to be for me?",

@@ -60,17 +60,11 @@ One reading per second sounds gentle until you do the multiplication Nazari alre
 {`import * as tf from '@tensorflow/tfjs';
 
 // The model expects normalized 3-feature input: [amplitude, frequency, phase]
-// Training used min-max normalization to [0, 1]. Module 1's rule sends
-// open-ended streams to z-score; amplitude and frequency qualify for
-// min-max because their bounds are hardware, not history: the hull
-// sensors saturate at 2048 counts, and "frequency" is a zero-crossing
-// count over the 64-sample capture window (63 sign flips is its
-// physical ceiling). Phase is bounded too, but it is CIRCULAR: it
-// wraps at pi, -pi and +pi are the same angle, and min-max tears that
-// seam, sending near-identical readings to 0 and 1. The clean encoding
-// is two features, sin(phase) and cos(phase); this model was trained
-// on the 3-input min-max contract, so inference must match training,
-// seam included.
+// Training used min-max to [0, 1]. Module 1's rule sends open-ended
+// streams to z-score; amplitude and frequency are bounded by hardware,
+// not by history: the hull sensors saturate at 2048 counts, and
+// "frequency" is a zero-crossing count over the 64-sample capture
+// window, so 63 sign flips is its physical ceiling.
 const FEATURE_RANGES = {
   amplitude: { min: 0, max: 2048 },
   frequency: { min: 0, max: 63 },
@@ -109,6 +103,8 @@ function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequen
   });
 }`}
 </CodeBlock>
+
+Phase is bounded too, but it is circular: it wraps at pi, so -pi and +pi are the same angle and min-max tears that seam, sending near-identical readings to 0 and 1. The clean encoding is two features, `sin(phase)` and `cos(phase)`. This model was trained on the 3-input min-max contract, so inference has to match training, seam included.
 
 ## Memory Management with tf.tidy()
 
@@ -205,13 +201,13 @@ PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deplo
 
 <Exercise slug="incident-tensor-leak" />
 
-<RecallPrompt question="Why prefer await tensor.data() over tensor.dataSync() in a real-time inference loop?" answer="dataSync() is synchronous: it blocks the JavaScript thread until tensor data is read back from the GPU, freezing UI updates. data() returns a Promise and yields control so the event loop can handle other callbacks, keeping the interface responsive." />
+<RecallPrompt question="Every prediction in the loop allocates tensors the JavaScript garbage collector cannot see. What keeps the dashboard from filling GPU memory over 86,400 readings, and what do you watch to prove it is working?" answer="Wrapping the preprocess-predict-read sequence in tf.tidy() disposes every intermediate tensor when the callback returns; only the plain number you return survives. tf.memory().numTensors is the proof: a count that stays flat while the feed runs means nothing escaped." />
 
 <LessonRecap whatYouLearned={["Raw input must be normalized with the exact same feature ranges used during training before calling model.predict(); mismatched preprocessing silently corrupts accuracy without throwing any error", "tf.tidy() automatically disposes all intermediate tensors created inside its callback, preventing GPU memory leaks in loops that allocate thousands of tensors per day", "tf.memory() reports live tensor count and byte usage, giving you the same visibility as the DevTools memory tab for diagnosing leaks"]} bridge="Just as a UI event handler follows the pattern `event -> process -> render`, a browser inference pipeline follows `input -> predict -> display`, with one additional obligation: every tensor allocated inside the loop must be freed." youCanNow="Build a real-time browser inference loop that preprocesses inputs, runs model.predict(), manages GPU memory with tf.tidy(), and updates the UI without leaking tensors." />
 
 <Epilogue>
 
-The live pipeline clears its first hour without a leak: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test. The labeled windows light amber on schedule, a roll call of already-known events, exactly what a 94% model should do to its own history. At 14:31 ship-time one more flag lands where no label exists, in the calmest stretch of the tape. The ID on the screen is sample 7741. Farah's calibration ghost, the one she filed and moved past, now glowing on the bridge dashboard where the whole crew can see it.
+The patched pipeline clears a full hour after the 03:10 page: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test. The labeled windows light amber on schedule, a roll call of already-known events, exactly what a 94% model should do to its own history. At 14:31 ship-time one more flag lands where no label exists, in the calmest stretch of the tape. The ID on the screen is sample 7741. Farah's calibration ghost, the one she flagged before there was a network to flag it with, now glowing on the bridge dashboard where the whole crew can see it.
 
 <Dialogue speaker="Dr. Farah">
 It looks different on a screen than in a spreadsheet, doesn't it.

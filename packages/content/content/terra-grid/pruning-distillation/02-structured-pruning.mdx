@@ -90,7 +90,7 @@ console.log(\`After: \${pruned.length} neurons, \${pruned.length * 3} params\`);
 Four neurons, twelve parameters, no zeros to iterate over. That I can ship.
 </Dialogue>
 
-The key difference: unstructured pruning creates a sparse matrix (same shape, many zeros). Structured pruning creates a smaller dense matrix (fewer rows, no zeros). ARM processors handle dense matrices much more efficiently than sparse ones.
+The cut is not free. Zeroing 60% of individual weights barely moved the output in the last lesson. Dropping half the neurons removes every connection those neurons carried, so a structured cut of the same size costs more accuracy, and the layer needs fine-tuning to earn it back. Tariq pays that training time anyway, because on ARM a sparse matrix buys him nothing: the processor multiplies the zeros at the same cost as the survivors.
 
 ## Challenge
 

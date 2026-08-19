@@ -38,7 +38,7 @@ keywords:
 A model that works in your notebook is a hypothesis. A model that works at 3 AM on a solar farm in the Atacama Desert with no internet: that is a product. Start simple. Get something running on the device.
 </Dialogue>
 
-Your first edge model does not need to be complex. In JavaScript, a simple bounds check comes before an elaborate input pipeline. Edge ML follows the same principle: start with a simple anomaly detector, prove it works on the hardware, then iterate.
+Forty-nine parameters. That is the whole model you are about to build, and it is enough to flag a bearing that is starting to come apart. Nobody reaches for a schema validator before they have shipped `if (value < min || value > max)`, and the same order applies on the gateway: get the smallest thing that detects anything running on real hardware, then find out what it misses.
 
 <LearningObjectives objectives={["Build a simple anomaly detection model using TensorFlow.js", "Understand the structure of sensor data input", "Run inference on a small model within edge constraints", "Measure model size and memory usage"]} />
 
@@ -96,7 +96,7 @@ sensorReading.dispose();
 prediction.dispose();`}
 </CodeBlock>
 
-Notice the `dispose()` calls. On a device with 512MB RAM, you cannot afford memory leaks. Every tensor must be explicitly freed. This is like removing event listeners in JavaScript code to prevent memory leaks, except the consequences here are a frozen gateway device at a remote site.
+Notice the `dispose()` calls. On a device with 512MB RAM, you cannot afford memory leaks. Every tensor must be explicitly freed. It is the same discipline as pairing every `addEventListener` with a `removeEventListener`, except a leaked listener costs you a slow tab and a leaked tensor costs you a frozen gateway on a tower nobody reaches until Thursday.
 
 ## Challenge
 

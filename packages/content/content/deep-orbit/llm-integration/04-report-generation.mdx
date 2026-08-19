@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "Template rendering substitutes known values into known slots; the schema is enforced. Generated reports invent facts, omit caveats, and round-trip uncertainty into confident prose. Human review is required for any report shown to a user, regardless of model quality."
 consequence:
-  narrative: "The validator flags two claims in the Hypotheses section that trace to no timestamp in any log. There is no time to regenerate and review before the window. Farah cuts the section instead, and the report leaves with five instead of six."
+  narrative: "One section fails its own validator with twenty-two minutes left before the window."
 hints:
   - level: nudge
     content: "This one is deterministic assembly, not generation: the LLM's work already sits inside each section's content, and your job is to lay the markdown out exactly."
@@ -40,7 +40,7 @@ skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The report needs six sections: Executive Summary, Methodology, Signal Classification Results, Anomaly Analysis, Hypotheses, and Recommendations. I'll generate each section separately for better quality control.
+Six sections, one prompt, one draft: eleven hundred words back in nine seconds, and the Methodology section cites an instrument this ship does not carry. I'm not reading the other five to find out what else it invented. We generate them one at a time, each with its own data and its own check.
 </Dialogue>
 
 Generating a full report in one shot is the monolithic-component mistake: mediocre output and nothing you can verify in isolation. Sections are components: each gets its own data, its own prompt, and its own review.
@@ -137,7 +137,7 @@ const report = await generateReport(reportSections, llm);`}
 
 ## Challenge
 
-Build a section-by-section report generator from signal data.
+The model has written the sections. Assemble them into one markdown document a human can sign.
 
 <Exercise slug="generate-report" />
 
@@ -146,7 +146,7 @@ Build a section-by-section report generator from signal data.
 <LessonRecap
   whatYouLearned={[
     "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
-    "Low temperature (0.1-0.3) reduces VARIABILITY, not hallucination: it narrows which token gets sampled, and even at temperature zero (always picking the likeliest token) the model invents just as confidently, only reproducibly. Farah's draft in this lesson fabricated a Band-3 cluster at temperature 0.3. The only thing that catches a fabricated claim is validating it against the data.",
+    "Low temperature (0.1-0.3) reduces VARIABILITY, not hallucination: it narrows which token gets sampled, and even at temperature zero (always picking the likeliest token) the model invents just as confidently, only reproducibly. Farah's very first draft, back in lesson 1, fabricated a Band-3 cluster at temperature 0.3. The only thing that catches a fabricated claim is validating it against the data.",
     "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
   ]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."

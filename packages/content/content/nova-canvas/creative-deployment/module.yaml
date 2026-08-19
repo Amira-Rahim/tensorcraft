@@ -3,11 +3,13 @@ title: "Creative Deployment: Scaling Art"
 worldId: nova-canvas
 order: 10
 description: |
-  The Biennale is three weeks away. Erdem runs the numbers: 200 people generating
-  simultaneously, zero lag tolerance, gallery Wi-Fi that drops packets like confetti.
-  You'll profile generation bottlenecks, optimize models with quantization and distillation,
-  implement caching strategies with Service Workers, handle concurrent WebSocket connections,
-  and architect a physical-digital installation as a PWA.
+  The Biennale is three weeks away. Erdem runs the numbers: 200 people
+  generating at once, on gallery Wi-Fi nobody gets to fix before opening
+  night. You'll profile what makes a generation slow, shrink models with
+  quantization and distillation, and cache with Service Workers so a
+  repeat prompt never hits the model twice. Then you'll hold hundreds of
+  concurrent WebSocket connections and ship the installation as an
+  offline-first PWA, so the tablets keep painting when the Wi-Fi drops.
 lessonCount: 5
 prerequisites:
   - audio-generation

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "One week to opening. Erdem builds the load test. 'We simulate 300 visitors, fifty more than capacity. If it breaks now, we fix it. If it breaks on opening night, we are finished.'"
+  narrative: "One week to opening. Erdem builds the load test. 'We simulate 300 visitors, a hundred more than capacity. If it breaks now, we fix it. If it breaks on opening night, we are finished.'"
   speaker: "Erdem"
 concept:
   explanation: "Load testing for ML installations simulates concurrent users making generation requests: the same methodology as load testing web APIs, but with heavier compute per request."
@@ -50,7 +50,7 @@ Waves, then. But the 300 ceiling stays, and I want the recovery window measured,
 Fine. For the record, my audio pipeline has never seen more than 10 concurrent streams. Whatever shape you pick, it's going to be revealing.
 </Dialogue>
 
-p99 is the number that ruins opening nights. Median latency describes the typical visitor; the 99th percentile describes the one who waited eleven seconds, gave up, and told a friend. You've measured both with Artillery, k6, or Locust against REST endpoints. The methodology survives unchanged here. The payload doesn't: each request triggers model inference instead of a database query.
+p99 is the number that ruins opening nights. Median latency describes the typical visitor; the 99th percentile describes the one who waited eleven seconds, gave up, and told a friend. You have the tools already. Artillery and k6 print both against a REST endpoint, and the methodology survives unchanged here. The payload doesn't: each request triggers model inference instead of a database query.
 
 <LearningObjectives objectives={["Design load test scenarios that model realistic visitor behavior patterns", "Simulate concurrent WebSocket connections with generation requests", "Measure latency percentiles (p50, p95, p99) under increasing load", "Identify breaking points and failure modes before production deployment"]} />
 
@@ -136,13 +136,20 @@ class VirtualVisitor {
 
   private requestGeneration(params: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('Timeout')), 10000);
-      this.ws.send(JSON.stringify({ type: 'generate', ...params }));
-      this.ws.addEventListener('message', (e) => {
+      const onMessage = (e: MessageEvent) => {
         const data = JSON.parse(e.data);
-        if (data.status === 'complete') { clearTimeout(timeout); resolve(data); }
-        if (data.status === 'error') { clearTimeout(timeout); reject(new Error(data.message)); }
-      }, { once: true });
+        if (data.status !== 'complete' && data.status !== 'error') return; // queued/progress frame
+        cleanup();
+        if (data.status === 'complete') resolve(data);
+        else reject(new Error(data.message));
+      };
+      const timeout = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, 10000);
+      const cleanup = () => {
+        clearTimeout(timeout);
+        this.ws.removeEventListener('message', onMessage);
+      };
+      this.ws.addEventListener('message', onMessage);
+      this.ws.send(JSON.stringify({ type: 'generate', ...params }));
     });
   }
 

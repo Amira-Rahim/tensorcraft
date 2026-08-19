@@ -10,23 +10,23 @@ context:
   narrative: "Vikram explains that some words, especially medical terms, need to be broken into smaller pieces to handle the vast vocabulary of clinical language."
   speaker: "Vikram"
 concept:
-  explanation: "Subword tokenization (BPE, WordPiece) breaks rare words into known sub-units. 'Cardiology' becomes ['cardio', '##logy'], so a medical term the model has never seen still decomposes into pieces it already knows."
+  explanation: "Subword tokenization (BPE, WordPiece) breaks rare words into known sub-units. 'Cardiology' becomes ['card', '##io', '##logy'], so a medical term the model has never seen still decomposes into pieces it already knows."
   bridge:
     jsTitle: "Route Parsing"
     jsCode: "'/patients/:id/records'.match(/:([a-z]+)/g)"
     mlTitle: "Subword Tokenizer"
-    mlCode: "'cardiology' → ['cardio', '##logy']"
+    mlCode: "'cardiology' → ['card', '##io', '##logy']"
     tier: structural
     breaks: "Route parsing splits URLs at known delimiters (`/`, `?`). Subword tokenizers (BPE, WordPiece) learn merge rules from a training corpus; the same word tokenizes differently across model versions ('chatgpt' is 1 token in GPT-4, 3 tokens in earlier vocab). There is no canonical tokenization; you must pin the tokenizer to your model version."
 consequence:
   narrative: "Diagnostic One can now handle medical terminology it hasn't seen before by breaking words into known sub-parts."
 hints:
   - level: nudge
-    content: "Start with the longest known subword that matches the beginning of the word."
+    content: "The merges are ordered. The first key in the Map is the merge the tokenizer learned first, so it outranks every later one."
   - level: guidance
-    content: "Iterate through the word, greedily matching the longest prefix in your vocabulary, then continue with the remainder."
+    content: "Split the word into characters. Each pass, check every adjacent pair against mergeMap, keep the match whose key appears earliest, and splice the merged token into place. Stop when a pass finds nothing."
   - level: solution
-    content: "Use a while loop: find the longest prefix match in vocab, add it to tokens, advance the pointer."
+    content: "Loop until no adjacent pair is in mergeMap, hash each surviving token, then return tf.tensor1d(ids, 'int32')"
 keywords:
   - subword-tokenization
   - bpe
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Our vocabulary can't contain every medical term; there are hundreds of thousands. But "cardiology" is just "cardio" plus "logy." If the model knows the parts, it can understand the whole.
+Our vocabulary can't contain every medical term; there are hundreds of thousands. But "cardiology" is card, then io, then logy, and the vocabulary already holds all three. If the model knows the parts, it can read the whole.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -48,7 +48,7 @@ That one actually holds. Segments compose, position carries meaning, and you can
 
 A subword tokenizer breaks "electrocardiogram" into `["electro", "##cardio", "##gram"]`. Each piece carries meaning, and each piece is in the vocabulary even when the full word is not.
 
-<LearningObjectives objectives={["Explain why subword vocabularies cover rare terms that word-level vocabularies miss", "Implement a greedy WordPiece-style tokenizer", "Recognize how morphemes carry meaning in medical terminology"]} />
+<LearningObjectives objectives={["Explain why subword vocabularies cover rare terms that word-level vocabularies miss", "Read a greedy WordPiece tokenizer and implement the BPE merge loop", "Recognize how prefixes and suffixes carry meaning in medical terminology"]} />
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
@@ -101,6 +101,8 @@ console.log(wordPieceTokenize('gastroenteritis'));
 // ['gastro', '##enter', '##itis']`}
 </CodeBlock>
 
+WordPiece scans forward for the longest piece it already knows. Byte Pair Encoding, BPE, builds the same kind of vocabulary from the other end: it starts from single characters and repeatedly merges whichever adjacent pair was most frequent in the training corpus. The merge list comes out ordered, earliest merge wins, and the exercise below implements that half.
+
 ## Prefixes and Suffixes Carry Meaning
 
 Medical language is highly compositional. Prefixes like "hyper-", "hypo-", "cardio-" combine with suffixes like "-itis", "-ectomy", "-ology". Subword tokenization captures this structure.
@@ -112,7 +114,7 @@ Medical language is highly compositional. Prefixes like "hyper-", "hypo-", "card
 const decompositions = {
   'cardiology':     ['card', '##io', '##logy'],     // study of heart
   'carditis':       ['card', '##itis'],              // heart inflammation
-  'cardiectomy':    ['cardi', '##ectomy'],           // heart removal (surgical)
+  'hypertension':   ['hyper', '##tension'],          // sustained high blood pressure
   'gastroenteritis': ['gastro', '##enter', '##itis'], // stomach/intestine inflammation
 };
 
@@ -123,8 +125,8 @@ const decompositions = {
 
 ## Challenge
 
-Implement a WordPiece-style subword tokenizer.
+Implement the BPE merge loop and turn the pieces it leaves you with into token IDs.
 
 <Exercise slug="subword-tokenize" />
 
-<KeyTakeaways takeaways={["Subword tokenization breaks words into known morpheme-like pieces", "Decomposing unseen words means far fewer [UNK] tokens, though the fallback still fires when no vocabulary piece matches", "Medical terminology builds words from reusable prefixes and suffixes, which is exactly what subword vocabularies capture", "The ## prefix marks continuation pieces (not the start of a word)"]} />
+<KeyTakeaways takeaways={["Subword tokenization breaks a word into pieces the vocabulary already holds: prefixes, roots, and suffixes", "Decomposing unseen words means far fewer [UNK] tokens, though the fallback still fires when no vocabulary piece matches", "Medical terminology builds words from reusable prefixes and suffixes, which is exactly what subword vocabularies capture", "The ## prefix marks continuation pieces (not the start of a word)"]} />

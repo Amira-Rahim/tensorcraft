@@ -22,11 +22,11 @@ consequence:
   narrative: "Noor stares at the feature database. Millions of rows. Each row a 512-number fingerprint of a moment in someone's life. 'They compressed entire lives into vectors,' she says quietly. Amir nods. 'And we are going to use that same technique to track their drones.'"
 hints:
   - level: nudge
-    content: "Feature extraction uses a neural network with the final classification layer removed"
+    content: "rawValues is width * height * channels; the feature count is handed to you as an argument"
   - level: guidance
-    content: "Feed an image through the network and take the output of the second-to-last layer"
+    content: "The compression ratio is rawValues / featureSize. Round to one decimal with Math.round(x * 10) / 10"
   - level: solution
-    content: "Load a pre-trained model, remove the classification head, and call predict to get the feature vector"
+    content: "Memory saved is (rawValues - featureSize) * 4 / 1024 kilobytes, since a float32 is 4 bytes"
 keywords:
   - feature-vector
   - embedding
@@ -43,7 +43,7 @@ When I worked at Meridian, we processed 14 million camera frames per hour. You c
 So it is like hashing. A hash function takes arbitrary input and produces a fixed-size fingerprint. You cannot reconstruct the original, but you can compare fingerprints efficiently.
 </Dialogue>
 
-A hash function maps input of any size to a fixed-size output, and a feature extractor does the same, but in the opposite spirit. Hash functions are designed so similar inputs produce wildly different outputs. Feature extractors are designed so similar inputs produce **similar** outputs. That similarity is what makes them useful for search, comparison, and recognition.
+A cryptographic hash is built so that flipping one bit of the input scrambles the whole digest; near-collisions are the failure case you engineer against. A feature extractor is built for the reverse: nudge the input a little and the vector moves a little. Both hand back a fixed-size output; only one of them keeps similarity intact. That is what makes a feature vector searchable, and it is why you cannot use one where you need the other.
 
 <LearningObjectives objectives={["Understand feature vectors as compact numerical representations of images", "Extract features by removing the classification head from a pre-trained model", "Compare the structure of hash functions with neural feature extraction", "Calculate the compression ratio from raw pixels to feature vectors"]} />
 
@@ -55,16 +55,17 @@ A hash function maps input of any size to a fixed-size output, and a feature ext
 {`import * as tf from '@tensorflow/tfjs';
 
 // A 224x224 RGB image = 150,528 values
-// A feature vector = 512 values
-// Compression ratio: 294:1
+// MobileNetV2's feature vector = 1,280 values
+// Compression ratio: 118:1
 
 // To extract features, use a pre-trained model without the classification head
-// MobileNet's second-to-last layer outputs a 1024-d feature vector
+// The layer feeding the classification head is the one you want
 
 async function extractFeatures(image: tf.Tensor3D): Promise<tf.Tensor1D> {
   // Load MobileNet and get the feature layer
-  const mobilenet = await tf.loadLayersModel(
-    'https://tfhub.dev/google/tfjs-model/mobilenet_v2/feature_vector/1/default/1'
+  const mobilenet = await tf.loadGraphModel(
+    'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/feature_vector/3/default/1',
+    { fromTFHub: true }
   );
 
   // Preprocess: resize and normalize
@@ -75,10 +76,10 @@ async function extractFeatures(image: tf.Tensor3D): Promise<tf.Tensor1D> {
 
   // Extract features
   const features = mobilenet.predict(preprocessed) as tf.Tensor2D;
-  return features.squeeze() as tf.Tensor1D; // [1024]
+  return features.squeeze() as tf.Tensor1D; // [1280]
 }
 
-// The result: a 1024-number fingerprint of the image
+// The result: a 1280-number fingerprint of the image
 // Similar images will have similar fingerprints
 // Unlike crypto hashes, similarity is preserved`}
 </CodeBlock>
@@ -105,10 +106,10 @@ async function buildFeatureExtractor() {
   return featureExtractor;
 }
 
-// Compression comparison:
-// Raw image:    224 * 224 * 3 = 150,528 float32 values = 602 KB
+// Compression comparison for a 512-value feature vector:
+// Raw image:    224 * 224 * 3 = 150,528 float32 values = 588 KB
 // Feature vec:  512 float32 values = 2 KB
-// Ratio:        ~300x compression
+// Ratio:        ~294x compression
 // And the features carry more meaning than raw pixels`}
 </CodeBlock>
 
@@ -124,7 +125,7 @@ A feature vector is a point in d-dimensional space chosen so that **distances en
 **Mathematical property required:** the embedding map `f: input → R^d` should preserve a meaningful relation. Common choices:
 
 - **Triplet loss:** `||f(a) − f(p)|| < ||f(a) − f(n)||` for anchor a, positive p, negative n.
-- **Contrastive (NT-Xent):** see CLIP lesson.
+- **Contrastive (NT-Xent):** pull matched pairs together, push every other item in the batch apart, all in one loss.
 - **Reconstruction (autoencoder):** preserves variance via `||x − decode(f(x))||²`.
 
 **Curse of dimensionality:** in high d, all random vectors become near-orthogonal (cosine ≈ 0). Useful structure must be learned, not assumed. Random initialization gives uniform-distance embeddings, meaningless until trained.

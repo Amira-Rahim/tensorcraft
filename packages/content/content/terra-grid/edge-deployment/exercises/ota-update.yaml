@@ -1,7 +1,7 @@
 slug: ota-update
 lessonSlug: over-the-air-updates
 title: "OTA Model Update"
-instructions: "Write an async function performUpdate that takes currentVersion (string), newVersion (string), and newChecksum (string). It should: 1) return { success: false, reason: 'same version' } if versions match, 2) return { success: false, reason: 'checksum mismatch' } if newChecksum does not start with 'v', 3) return { success: true, version: newVersion } otherwise."
+instructions: "Write an async function performUpdate that takes currentVersion (string), newVersion (string), and newChecksum (string). It should: 1) return { success: false, reason: 'same version' } if versions match, 2) return { success: false, reason: 'checksum mismatch' } if newChecksum does not start with 'v' (a stand-in for comparing a real SHA-256 digest, which needs bytes this harness does not have), 3) return { success: true, version: newVersion } otherwise."
 starterCode: |
   interface UpdateResult {
     success: boolean;

@@ -22,11 +22,11 @@ consequence:
   narrative: "Diagnostic One can now reliably split clinical notes into word tokens, handling punctuation and edge cases."
 hints:
   - level: nudge
-    content: "Consider what counts as a word boundary: spaces, punctuation, line breaks."
+    content: "The tokenizer gives you strings. The model takes numbers. Something has to sit between them."
   - level: guidance
-    content: "Use a regex that matches word characters and splits on everything else."
+    content: "Lowercase, split on whitespace, drop the empty strings, then look each word up in the vocab Map. Words that are not in the Map get ID 0."
   - level: solution
-    content: "text.toLowerCase().match(/[a-z0-9]+/g) || []"
+    content: "const ids = words.map(w => vocab.get(w) ?? 0), then tf.tensor1d(ids, 'int32')"
 keywords:
   - word-tokenization
   - string-split
@@ -35,18 +35,18 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-Here's what we're dealing with. This patient record has periods inside abbreviations, hyphens in drug names, and slashes in dates. Good luck splitting that cleanly.
+Here's what we're dealing with. This patient record has periods inside abbreviations, hyphens in drug names, and slashes in the vitals. Good luck splitting that cleanly.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Imran just described every frontend developer's nightmare with user input. You've cleaned form data before, right Khalil? This is the same battle.
+Imran just described every JavaScript engineer's nightmare with user input. You've cleaned form data before, right Khalil? This is the same battle.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
 String.split() with a regex. I've done this a hundred times for search inputs.
 </Dialogue>
 
-You already use `String.split()` to break strings apart: CSV rows, search queries, URL parameters. Clinical notes are a harder version of that job: periods inside abbreviations, hyphens inside drug names, slashes inside blood pressure readings.
+`String.split()` works on CSV rows and search queries because you chose the delimiter. In a clinical note the delimiters were chosen by whoever typed it between patients, and some of the punctuation is load-bearing: the slash in `130/85` is the reading, not a separator.
 
 <LearningObjectives objectives={["Split clinical text into word tokens using regex patterns", "Handle punctuation, numbers, and special characters in medical text", "Understand whitespace vs. regex-based tokenization strategies", "Build a word tokenizer for clinical notes"]} />
 
@@ -66,7 +66,7 @@ Naive `split(' ')` breaks on spaces but misses punctuation attached to words. Cl
 
 // Better: regex-based word extraction
 function wordTokenize(text: string): string[] {
-  return text.toLowerCase().match(/[a-z0-9]+(?:\.[0-9]+)?/g) || [];
+  return text.toLowerCase().match(/[a-z0-9]+(?:\\.[0-9]+)?/g) || [];
 }
 
 wordTokenize('BP: 120/80, temp 98.6F.');
@@ -75,7 +75,7 @@ wordTokenize('BP: 120/80, temp 98.6F.');
 // Clinical-aware: preserve meaningful patterns
 function clinicalTokenize(text: string): string[] {
   return text.toLowerCase()
-    .match(/[a-z]+(?:[-'][a-z]+)*|[0-9]+(?:\.[0-9]+)?(?:\/[0-9]+(?:\.[0-9]+)?)?/g) || [];
+    .match(/[a-z]+(?:[-'][a-z]+)*|[0-9]+(?:\\.[0-9]+)?(?:\\/[0-9]+(?:\\.[0-9]+)?)?/g) || [];
 }
 
 clinicalTokenize('BP: 120/80, temp 98.6F, non-insulin dependent.');
@@ -84,16 +84,16 @@ clinicalTokenize('BP: 120/80, temp 98.6F, non-insulin dependent.');
 
 ## Handling Clinical Edge Cases
 
-Medical text has patterns that general-purpose tokenizers struggle with: vitals with slashes, hyphenated drug names, decimal measurements.
+The same pattern again, this time wrapped in whitespace normalization so the tabs and newlines in an exported record do not leak into tokens. Watch what it still does to a dose.
 
 <CodeBlock language="typescript" title="clinical-edges.ts">
-{`function robustClinicalTokenize(text: string): string[] {
+{`function clinicalTokenizeWithCleanup(text: string): string[] {
   // Normalize whitespace
-  const normalized = text.toLowerCase().replace(/\s+/g, ' ').trim();
+  const normalized = text.toLowerCase().replace(/\\s+/g, ' ').trim();
 
   // Match: words (with hyphens), numbers (with decimals/fractions), standalone punctuation
   const tokens = normalized.match(
-    /[a-z]+(?:[-'][a-z]+)*|[0-9]+(?:\.[0-9]+)?(?:\/[0-9]+(?:\.[0-9]+)?)?/g
+    /[a-z]+(?:[-'][a-z]+)*|[0-9]+(?:\\.[0-9]+)?(?:\\/[0-9]+(?:\\.[0-9]+)?)?/g
   ) || [];
 
   return tokens;
@@ -101,15 +101,32 @@ Medical text has patterns that general-purpose tokenizers struggle with: vitals 
 
 // Test with real clinical text
 const note = "Pt c/o chest pain x 2 days. BP 130/85. Started on aspirin 81mg daily.";
-console.log(robustClinicalTokenize(note));
+console.log(clinicalTokenizeWithCleanup(note));
 // ['pt', 'c', 'o', 'chest', 'pain', 'x', '2', 'days', 'bp', '130/85',
-//  'started', 'on', 'aspirin', '81', 'daily']`}
+//  'started', 'on', 'aspirin', '81', 'mg', 'daily']
+
+// 81mg came out as '81' and 'mg'. The tokenizer has no idea those belong
+// together, so the model has to learn the association from scratch, and
+// '81' now means the same thing whether it was milligrams or a heart rate.`}
+</CodeBlock>
+
+## From Tokens to IDs
+
+The model does not take strings. Every token has to become a number first, and the vocabulary is what decides which number.
+
+<CodeBlock language="typescript" title="tokens-to-ids.ts">
+{`const vocab = new Map([['chest', 4], ['pain', 5], ['aspirin', 6]]);
+
+const ids = clinicalTokenize('chest pain, aspirin').map(t => vocab.get(t) ?? 0);
+// [4, 5, 6]
+// Unknown words collapse to 0. Every drug name outside the vocabulary is the
+// same number to the model, so the vocabulary decides what it can tell apart.`}
 </CodeBlock>
 
 ## Challenge
 
-Build a word tokenizer that handles clinical text edge cases.
+Split a note into words, then turn those words into the ID tensor a model can take.
 
 <Exercise slug="word-tokenize" />
 
-<KeyTakeaways takeaways={["Extracting with text.match(/[a-z0-9]+/g) beats splitting on spaces: '120/80,' stops dragging its comma along", "Naive space-splitting fails on punctuation, hyphens, and medical patterns", "Regex-based tokenizers can preserve meaningful units like vitals and compound words", "The model only ever sees what the tokenizer emits, so tokenizer mistakes become model mistakes"]} />
+<KeyTakeaways takeaways={["Extract with match() rather than splitting on spaces, then pick the pattern to fit the text: a bare /[a-z0-9]+/g drops the comma from '120/80,' but splits the reading into '120' and '80' as well", "Naive space-splitting fails on punctuation, hyphens, and medical patterns", "Regex-based tokenizers can preserve meaningful units like vitals and compound words", "The model only ever sees what the tokenizer emits, so tokenizer mistakes become model mistakes"]} />

@@ -16,11 +16,11 @@ concept:
   explanation: "Layers, activations, compilation: the full assembly. A compiled network will answer predict() immediately, which is exactly why you need to know that compiling and training are different steps."
   bridge:
     jsTitle: "App Assembly"
-    jsCode: "createRoot(el).render(<App />)"
+    jsCode: "const server = http.createServer(handler) // built, wired, serving nothing yet"
     mlTitle: "Model Compilation"
     mlCode: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' })"
     tier: structural
-    breaks: "createRoot().render() mounts a component tree once and React handles updates. model.compile() does not run training; it attaches optimizer + loss configuration that fit() will use. Compilation is a setup step; the real work happens in fit/train."
+    breaks: "createServer() holds a handler that already knows how to answer; one listen() call later it is doing the job it was written for. A compiled model knows nothing yet. Its weights are random, and the thing that makes it useful is not a switch you flip but hours of fit() rewriting every one of those numbers."
 consequence:
   narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the weights are still random numbers. Mostly."
 hints:
@@ -46,7 +46,7 @@ Assemble it. I want the classifier compiled and ready for training by end of wat
 
 ## Assembly Required
 
-Compile the network below, then call `model.predict()` immediately. It runs. It returns a probability. And the number is meaningless, because compilation wires up the optimizer and loss without ever touching the weights, which are still random. Assembly and training are separate steps, the same way composing and mounting a React app is separate from anything the user actually does with it.
+Compile the network below, then call `model.predict()` immediately. It runs. It returns a probability. And the number is meaningless, because compilation wires up the optimizer and loss without ever touching the weights, which are still random. Assembly and training are separate steps, the way `http.createServer(handler)` and the `listen()` call that puts it to work are separate steps.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -56,7 +56,7 @@ Compile the network below, then call `model.predict()` immediately. It runs. It 
 // 1. Create the model
 const model = tf.sequential();
 
-// 2. Add layers (like adding components to your app)
+// 2. Add layers (like registering each stage of the pipeline)
 model.add(tf.layers.dense({
   units: 32,
   activation: 'relu',
@@ -65,7 +65,7 @@ model.add(tf.layers.dense({
 model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
-// 3. Compile (like createRoot(): prepares for execution)
+// 3. Compile (like createServer(): wired up, not yet working)
 model.compile({
   optimizer: 'adam',              // how to update weights
   loss: 'binaryCrossentropy',    // how to measure error
@@ -100,7 +100,7 @@ console.log('Initial prediction:', prediction.dataSync());`}
 
 ## Challenge
 
-Assemble and compile the complete DEEP SCAN signal classifier. One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 raw channels (673 parameters), but the version Farah wants specced takes the full 8-value sensor frame the archive stores per reading, which puts it at 833 parameters. Same architecture, wider front door. Build hers.
+Assemble and compile the complete DEEP SCAN signal classifier. One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 raw channels (673 parameters), but Farah has specced a wider front door, 8 features per reading, which puts it at 833 parameters. Same architecture, five more inputs. Build hers.
 
 <Exercise slug="simple-network" />
 
@@ -115,7 +115,7 @@ Assemble and compile the complete DEEP SCAN signal classifier. One difference fr
     "model.compile() is configuration, not training: it wires up the optimizer, loss function, and metrics for the later fit() call.",
     "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for classification, MSE for regression."
   ]}
-  bridge="createRoot().render() mounts a React component tree and prepares it for user interaction; model.compile() mounts optimizer and loss configuration and prepares the model for training. In both cases, the real work happens after assembly."
+  bridge="`http.createServer(handler)` wires a server that has not served a request yet; `model.compile()` wires optimizer and loss onto a model that has not learned anything yet. In both cases the real work happens after assembly."
   youCanNow="Assemble, compile, and verify a complete sequential neural network, then run an initial prediction to confirm the pipeline is wired correctly."
 />
 

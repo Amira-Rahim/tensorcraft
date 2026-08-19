@@ -22,11 +22,11 @@ consequence:
   narrative: "You now understand exactly what hardware your models must run on."
 hints:
   - level: nudge
-    content: "canDeployModel() is a spec check: compare the model's RAM, storage, and compute needs against each EdgeDevice's fields"
+    content: "The exercise is one comparison. What is 60 percent of deviceRamMB, and is modelRamMB inside it?"
   - level: guidance
-    content: "List the constraints: RAM, CPU architecture, storage, power"
+    content: "Multiply deviceRamMB by 0.6 to get the budget, then return whether modelRamMB fits inside it. A model that lands on exactly 60 percent still fits."
   - level: solution
-    content: "512MB RAM, ARM quad-core, 4GB storage, 5W power budget"
+    content: "return modelRamMB <= deviceRamMB * 0.6;"
 keywords:
   - arm
   - hardware-constraints
@@ -38,7 +38,7 @@ keywords:
 Here's what we're deploying to Site 12. Quad-core ARM Cortex-A53, 512MB RAM, 4GB eMMC storage, powered by a solar panel. It needs to run 24/7 on about 5 watts. Your model has to fit in this.
 </Dialogue>
 
-A React app that runs beautifully on an M2 MacBook and crawls on a budget Android phone teaches that lesson exactly once. Edge ML teaches the same lesson, amplified, except the budget device is bolted to a tower in Patagonia and nobody is around to clear its cache.
+A React app that runs at 60fps on an M2 MacBook and stutters on a budget Android phone is the usual first version of this lesson: the slowest target sets the bar, and you find that out once. Edge ML teaches the same thing, amplified, except the budget device is bolted to a tower in Patagonia and nobody is around to clear its cache.
 
 <LearningObjectives objectives={["Identify common edge device hardware specifications", "Understand memory, compute, and power constraints", "Calculate whether a model fits within device constraints"]} />
 
@@ -46,7 +46,7 @@ A React app that runs beautifully on an M2 MacBook and crawls on a budget Androi
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-If you've shipped a browser app, you've maintained a device testing matrix: the range of devices your application must support. Edge ML requires the same discipline. You need to know your target hardware intimately.
+A device testing matrix answers one question: what is the worst machine this code has to run on? Edge ML asks the same question and gets a harder answer, because the worst machine is fixed for the life of the installation and nobody is driving out to upgrade it.
 
 <CodeBlock language="typescript" title="device-constraints.ts">
 {`interface EdgeDevice {

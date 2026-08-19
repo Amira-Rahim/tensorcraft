@@ -92,6 +92,8 @@ console.log('Quantized:', quantized.map(w => w.toFixed(5)));
 
 The straight-through estimator is the key trick: during the forward pass, weights are quantized (adding rounding noise). During the backward pass, gradients flow through as if no quantization happened. The model learns to produce correct outputs even with rounded weights.
 
+That is also the answer to Site 23. QAT does not add buckets, it moves them. With the rounding inside the training loop, the network learns to keep that layer's values in a narrow band, and a narrow band means a smaller scale and a finer bucket. The 0.3% shift that used to sit inside one bucket with everything else now has a bucket edge to cross.
+
 ## Challenge
 
 Implement a fake quantization function for quantization-aware training.

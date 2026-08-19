@@ -35,7 +35,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Tensorcraft: Machine Learning for JavaScript Developers",
   description:
-    "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for JavaScript developers: train real models in the browser, no Python required. Covers TensorFlow JS, Transformers.js, LSTMs, CNNs, and transformer tutorials.",
+    "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for JavaScript developers: train real models in the browser, no Python required.",
   keywords: [
     "machine learning for javascript developers",
     "machine learning javascript",

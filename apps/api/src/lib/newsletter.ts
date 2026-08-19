@@ -99,7 +99,7 @@ function renderText(
   unsubUrl: string,
 ): string {
   const lines = [
-    `The Bridge: ${weekIso}`,
+    `The Bridge (weekly digest): ${weekIso}`,
     "",
     `Browser-ML news this week, mapped to lessons that teach the underlying concepts.`,
     "",
@@ -161,7 +161,7 @@ function renderHtml(
 <html><head><meta charset="utf-8"/><title>The Bridge: ${escapeHtml(weekIso)}</title></head>
 <body style="margin: 0; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #111; background: #fafafa;">
   <div style="max-width: 560px; margin: 0 auto; background: #fff; padding: 32px; border: 1px solid #eaeaea;">
-    <p style="margin: 0 0 8px 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #666;">The Bridge: ${escapeHtml(weekIso)}</p>
+    <p style="margin: 0 0 8px 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #666;">The Bridge · weekly digest · ${escapeHtml(weekIso)}</p>
     <h1 style="margin: 0 0 24px 0; font-size: 22px;">Browser-ML news, mapped to lessons.</h1>
     <ul style="list-style: none; padding: 0; margin: 0;">${itemsHtml}</ul>
     <hr style="border: none; border-top: 1px solid #eaeaea; margin: 32px 0;"/>

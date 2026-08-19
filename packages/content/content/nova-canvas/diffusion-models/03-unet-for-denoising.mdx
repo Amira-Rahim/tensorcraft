@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "The encoder downsamples (compresses), the decoder upsamples (expands), and skip connections bridge matching resolution levels"
   - level: solution
-    content: "Build conv blocks that halve spatial dimensions, then transposed conv blocks that double them, concatenating skip tensors at each level"
+    content: "tf.layers.maxPooling2d({ poolSize: 2 }) to halve, tf.layers.upSampling2d({ size: [2, 2] }) to double, then tf.layers.concatenate().apply([x, skip]) before the two conv2d layers"
 keywords:
   - unet
   - encoder-decoder
@@ -34,6 +34,8 @@ keywords:
   - denoising
   - architecture
 ---
+
+The denoiser trains and the loss drops, but every image it returns looks like it was left out in the rain: shapes in roughly the right places, edges gone. Whatever the network learns about fine detail is not surviving the trip to the output.
 
 <Dialogue speaker="Samir">
 The architecture that predicts noise is called a U-Net: an encoder-decoder, the same shape as a layout component. The encoder compresses the noisy image to understand the big picture. The decoder expands it back to full resolution to predict the noise at every pixel.
@@ -47,7 +49,7 @@ But if you compress and then expand, don't you lose detail? Like over-compressin
 That is what skip connections solve. They bridge from the encoder to the decoder at each resolution level, carrying the fine details that compression would destroy. Like passing `children` through a layout wrapper.
 </Dialogue>
 
-Yara's JPEG worry is the right instinct, and skip connections are the whole answer to it. Without them, every fine edge has to survive a round trip through the bottleneck, and most don't. With them, detail takes the bridge while context takes the long way down and back up. The U-Net's middle is not a clean handoff; it is a multi-resolution merge.
+Yara's JPEG worry is the right instinct, and skip connections are the whole answer to it. Without them, every fine edge has to survive a round trip through the bottleneck, and most don't. With them, detail takes the bridge while context takes the long way down and back up. The cost is real: concatenating the skip widens the tensor entering each decoder conv, which is where most of this network's parameters end up.
 
 <LearningObjectives objectives={["Understand the U-Net encoder-decoder structure and why it suits denoising", "Implement downsampling (encoder) and upsampling (decoder) blocks", "Add skip connections that preserve fine detail across resolution levels"]} />
 
@@ -128,7 +130,10 @@ function buildUNet(inputShape: [number, number, number]): tf.LayersModel {
 
 const unet = buildUNet([64, 64, 3]);
 unet.summary();
-// Total params: ~300K, small enough for browser inference`}
+// Total params: ~324K, small enough for browser inference
+// This is the spatial path only. The trained denoiser takes the timestep as a
+// second input, embedded and added into every block (see Time conditioning
+// below), which is what the generation loop passes alongside the image.`}
 </CodeBlock>
 
 ## Challenge

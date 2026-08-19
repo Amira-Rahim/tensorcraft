@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "OWASP checklist enumerates known web vulnerabilities. ML security adds adversarial examples, model extraction, training data poisoning, and prompt injection. Many ML attacks have no equivalent in the web checklist and exploit the model's learned behavior."
 consequence:
-  narrative: "Elif's security audit passes all 24 checks. Model integrity verified with SHA-256 hashes. Input validation catches 99.7% of adversarial patterns. Update authentication requires multi-factor from authorized operators only. 'Hardened. Ship it.'"
+  narrative: "Elif's security audit closes 23 of 24 checks. Model integrity verified with SHA-256 hashes. Update authentication requires multi-factor from authorized operators only. Bounds validation rejects every crude injection the red team throws at it and still passes the in-bounds ramp from the replay, so the sequence check ships as a blocking gate before launch. Elif: 'Hardened enough to ship. Not hardened enough to stop watching.'"
 hints:
   - level: nudge
     content: "Start with an attack surface inventory: list every way an attacker could compromise the ML system"
@@ -41,12 +41,12 @@ Before this goes to 47 sites, every attack surface gets reviewed. Model files: c
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
-The adversarial sensor incident from the stress test proved the point. Someone fed crafted readings that made the model ignore a cooling system failure. We cannot deploy without hardening against that class of attack.
+12,400 devices, and every one of them will accept a model file over a satellite link. That channel gets an authenticated gate before we ship, and the gate gets a test that fails loudly. I would rather hold the launch than push a model nobody can prove we built.
 </Dialogue>
 
 The discipline is the OWASP audit you know from web applications: check for XSS, verify CSRF tokens, enforce CSP headers, sanitize inputs. ML security hardening follows the same checklist approach with a different threat list: model tampering, adversarial inputs, data poisoning, unauthorized updates.
 
-<LearningObjectives objectives={["Conduct a security audit for an edge ML deployment", "Implement model integrity verification using cryptographic hashes", "Build input validation that detects adversarial sensor readings", "Design secure model update channels with authentication and verification"]} />
+<LearningObjectives objectives={["Conduct a security audit for an edge ML deployment", "Implement model integrity verification using cryptographic hashes", "Build input validation that rejects out-of-bounds readings and impossible jumps between samples", "Design secure model update channels with authentication and verification"]} />
 
 ## Security Audit
 
@@ -96,7 +96,8 @@ async function verifyModelIntegrity(
   return hash === expectedHash;
 }
 
-// Input validation: detect adversarial sensor readings
+// Input validation: reject readings outside physical bounds or with an impossible jump between samples.
+// This is the floor, not adversarial detection: a slow in-bounds ramp passes both tests.
 function validateSensorInput(readings: Float32Array, bounds: {
   min: number; max: number; maxRateOfChange: number;
 }): { valid: boolean; anomalies: number[] } {
@@ -111,6 +112,12 @@ function validateSensorInput(readings: Float32Array, bounds: {
   }
   return { valid: anomalies.length === 0, anomalies };
 }
+
+// Web Crypto (crypto.subtle) is global in browsers and in Node 19+.
+// These two come from the deploy pipeline: the model file and the hash recorded at build time.
+const modelBuffer = await fetch('/models/anomaly-detector-v1.0.bin').then(r => r.arrayBuffer());
+const knownHash = '9f2c4b1e...'; // model registry entry for v1.0
+const testData = new Float32Array([21.4, 21.6, 21.9, 22.3, 61.0]);
 
 // Run audit
 const auditor = new SecurityAuditor();
@@ -138,4 +145,4 @@ Build a security auditor with model integrity and input validation checks.
 
 <Exercise slug="harden-security" />
 
-<KeyTakeaways takeaways={["Every ML attack surface gets a control and a verification test: model tampering, adversarial inputs, data poisoning, unauthorized updates", "Model integrity verification uses cryptographic hashes to detect tampering", "Input validation catches adversarial sensor readings before they reach the model", "Secure update channels prevent unauthorized model deployments to edge devices"]} />
+<KeyTakeaways takeaways={["Every ML attack surface gets a control and a verification test: model tampering, adversarial inputs, data poisoning, unauthorized updates", "Model integrity verification uses cryptographic hashes to detect tampering", "Bounds and rate-of-change checks reject crude injections; an in-bounds ramp still passes them, so adversarial inputs stay an open surface to monitor", "Secure update channels prevent unauthorized model deployments to edge devices"]} />

@@ -57,7 +57,7 @@ Four models, four contracts: a class and a confidence from the classifier, a rec
 interface PipelineResult {
   classification: { class: string; confidence: number };
   anomaly: { isAnomaly: boolean; score: number };
-  prediction: { nextValues: number[]; confidence: number };
+  prediction: { nextValues: number[] };
   report: string | null;
 }
 
@@ -96,7 +96,7 @@ async function processSignal(
   const prediction = tf.tidy(() => {
     const input = tf.tensor3d([window]);
     const pred = (models.lstm.predict(input) as tf.Tensor).dataSync();
-    return { nextValues: Array.from(pred), confidence: 0.85 };
+    return { nextValues: Array.from(pred) };
   });
 
   // Stage 4: Generate report if anomaly detected (LLM)
@@ -124,8 +124,8 @@ Generate a brief alert summary in 2-3 sentences.
 async function resilientPipeline(
   signal: number[],
   window: number[][],
-  models: any,
-  thresholds: any,
+  models: { classifier: tf.LayersModel; autoencoder: tf.LayersModel; lstm: tf.LayersModel; llm: LLMClient },
+  thresholds: { anomaly: number },
 ): Promise<PipelineResult> {
   // Classification is required: fail if it fails
   const classification = await classifyWithRetry(signal, models.classifier);
@@ -141,7 +141,7 @@ async function resilientPipeline(
   }
 
   // Prediction: optional (skip if LSTM fails)
-  let prediction = { nextValues: [], confidence: 0 };
+  let prediction: PipelineResult['prediction'] = { nextValues: [] };
   try {
     prediction = await predictNext(window, models.lstm);
   } catch {
@@ -168,11 +168,11 @@ Wire together a multi-model pipeline with error handling.
 
 <Exercise slug="model-pipeline" />
 
-PAGER, 02:40: the claim checker is down and reports are queueing for the transmission window. Standing order stands: no unverified number leaves the ship. Triage the queue.
+PAGER, 02:40: the claim checker is down and reports are queueing for the next relay window. Standing order stands: no unverified number leaves the ship. Triage the queue.
 
 <Exercise slug="incident-checker-down" />
 
-<RecallPrompt question="What is the best way to chain LLM calls reliably in a multi-model pipeline?" answer="Decompose the task into small, focused calls and validate the output of each step before passing it to the next. Each LLM call is probabilistic: five unchecked calls at 95% reliability each yield only 77% end-to-end reliability. Validate output shape (JSON schema, length, format) between steps and retry on failure rather than letting errors propagate silently." />
+<RecallPrompt question="Why does a chain of four models need validation between stages when every model passes its own tests?" answer="Errors compound: four stages at 95% reliability each leave 81% end to end, and a model that is merely wrong raises no exception. The classifier's label becomes the detector's input and the detector's score becomes the reporter's evidence, so one bad value travels the chain as a confident one. Check each stage's output shape and range before passing it on, and fall back to a simpler method when a stage fails outright." />
 
 <LessonRecap
   whatYouLearned={[

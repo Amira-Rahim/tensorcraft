@@ -34,12 +34,12 @@ keywords:
   - artifact-store
 ---
 
-<Dialogue speaker="Priya Sharma">
-I have 31 trained models. Which one is in production? Which one should Tariq deploy next? Without a registry, nobody knows.
+<Dialogue speaker="Tariq Hussain">
+I need one command: give me the approved model. Not the newest one. The approved one. Those are two different artifacts and only one of them is allowed on a device.
 </Dialogue>
 
-<Dialogue speaker="Tariq Hussain">
-I need one command: give me the latest approved model. Not the latest trained model. The latest approved model. Those are different things.
+<Dialogue speaker="Priya Sharma">
+That command does not exist yet. Right now I can point you at a directory and tell you which filename I believe is current.
 </Dialogue>
 
 You do not deploy npm packages by copying files around. You publish to a registry with a version, metadata, and dist-tags like `latest`, `next`, and `beta`. Tariq's one command exists because that design is worth stealing, minus one assumption: npm's `latest` is chronological, and for models chronology means nothing. The newest of Priya's 31 models is frequently not the best one. A model registry's `production` tag is earned through evaluation metrics and explicit approval, which is why it also tracks training metadata and per-version eval results that npm never needed.
@@ -123,9 +123,9 @@ class ModelRegistry {
 // Priya registers her best experiment
 registry.register({
   name: 'terra-grid-intelligence',
-  version: '2.3.0',
+  version: '3.3.0',
   stage: 'development',
-  artifactPath: 's3://models/tgi-2.3.0.bin',
+  artifactPath: 's3://models/tgi-3.3.0.bin',
   metrics: { accuracy: 0.961, f1Score: 0.948, inferenceMs: 12, modelSizeMB: 4.2 },
   dataVersion: 'a3f8e2',
   experimentId: 'run-31',
@@ -134,15 +134,15 @@ registry.register({
 });
 
 // Hassan reviews and promotes to staging
-registry.promote('terra-grid-intelligence', '2.3.0', 'staging', 'hassan');
+registry.promote('terra-grid-intelligence', '3.3.0', 'staging', 'hassan');
 
 // After staging tests pass, promote to production
-registry.promote('terra-grid-intelligence', '2.3.0', 'production', 'hassan');
+registry.promote('terra-grid-intelligence', '3.3.0', 'production', 'hassan');
 
 // Tariq deploys the production model
 const model = registry.getProductionModel('terra-grid-intelligence');
 console.log(\`Deploying: \${model.name}@\${model.version}\`);
-// Deploying: terra-grid-intelligence@2.3.0`}
+// Deploying: terra-grid-intelligence@3.3.0`}
 </CodeBlock>
 
 ## Challenge

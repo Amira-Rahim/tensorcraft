@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The fine-tuned model works perfectly on daytime footage but fails at night. Noor replays the test results: 94% accuracy at noon, 52% after dark. NEON projects the failure cases: neon-lit streets, rain-streaked lenses, fog-blurred silhouettes. 'The training data is from one domain: daylight, clear skies,' NEON explains. 'Neon City at 2AM is a different domain entirely. Same app, different locale.'"
+  narrative: "Past 3AM in the safehouse. NEON has the overnight failures up on the wall: neon-lit streets, rain-streaked lenses, fog-blurred silhouettes, every frame a drone the model called empty sky. 'The training data is from one domain: daylight, clear skies,' NEON says. 'Neon City at 2AM is a different domain entirely. Same app, different locale.'"
   speaker: "NEON"
 concept:
   explanation: "Domain adaptation bridges the gap between the distribution of training data (source domain) and real-world deployment data (target domain). The model's job has not changed, but the surface conditions have: brightness, contrast, noise, weather. You close the gap by training on data that looks like where the model will actually run."
@@ -50,7 +50,7 @@ So domain adaptation is i18n for neural networks. Same model, same features, but
 i18n is a lookup table. Total, deterministic, done. Domain adaptation has no table. You nudge learned feature distributions toward the target with augmented data and more training, the alignment is partial, and pushing accuracy up at 2AM can pull it down at noon. Measure both domains or you have only moved the failure somewhere you are not looking.
 </Dialogue>
 
-In i18n, you do not rewrite the entire app for each locale. You adapt the surface: translations, date formats, currency symbols. The architecture stays the same. Domain adaptation follows the same principle: you adapt the model to handle different visual conditions without rebuilding from scratch.
+So keep the shape of the i18n move and drop the guarantee that comes with it. You are not rewriting the model for 2AM any more than you rewrite an app for `ja-JP`; you are changing what it has already seen. What you do not get is i18n's coverage report. There is no key list to diff, so the only evidence the gap closed is a number measured in both domains.
 
 <LearningObjectives objectives={["Understand domain shift as the gap between training and deployment data distributions", "Use data augmentation to simulate target domain conditions", "Apply brightness, contrast, and noise transforms for night-time adaptation"]} />
 
@@ -70,7 +70,7 @@ In i18n, you do not rewrite the entire app for each locale. You adapt the surfac
 interface DomainStats {
   meanBrightness: number;  // 0-255
   contrast: number;        // standard deviation of pixel values
-  noiseLevel: number;      // signal-to-noise ratio
+  noiseLevel: number;      // noise standard deviation, fraction of full scale
   conditions: string[];
 }
 

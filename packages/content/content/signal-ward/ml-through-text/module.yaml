@@ -2,7 +2,7 @@ slug: ml-through-text
 title: "ML Through Text: Why Words Need Numbers"
 worldId: signal-ward
 order: 1
-description: "A pharmacist's good memory is the only reason the vendor NLP system's mistake didn't reach a patient. Dr. Karimi cancels the contract and assembles her own team to build Diagnostic One. The first problem is foundational: a model only understands numbers, and a clinical note is anything but. By the end, your first classifier sorts real note types and gets one of four wrong."
+description: "A pharmacist's good memory is the only reason the vendor NLP system's mistake didn't reach a patient. Dr. Karimi cancels the contract and assembles her own team to build Diagnostic One. The first problem is foundational: a model only understands numbers, and a clinical note is anything but. By the end you have a pipeline that takes a raw note in one end and returns a probability at the other, with one misfiled allergy note still sitting at the top of Khalil's list."
 lessonCount: 5
 prerequisites: []
 track: foundations

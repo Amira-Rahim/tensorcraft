@@ -106,7 +106,7 @@ turbine.forEach(r => console.log(
 // Int8 (QAT): 50MB, 98.0%, PASS ← best choice`}
 </CodeBlock>
 
-Run the table for turbine monitoring and the knee announces itself. Float16 is free. Post-training Int8 scrapes past the 97% floor with 0.3 points to spare, which is not a margin Hassan would sign off on for a safety system. Int8 with quantization-aware training lands at 98.0% at the same 50MB, and that recovered accuracy is exactly what QAT's extra training time purchases. For non-critical telemetry with its 92% floor, post-training quantization clears the bar by five points and the extra training would be money spent on margin nobody needs.
+Run the table for turbine monitoring and the curve bends between Float16 and Int8. Float16 costs 0.1 points for half the bytes, which is close enough to free. Post-training Int8 clears Hassan's 97% floor at 97.3%, so it ships, but 0.3 points is the entire margin, and Site 23 turned on a 0.3% anomaly. Int8 with quantization-aware training lands at 98.0% at the same 50MB, and that recovered accuracy is exactly what QAT's extra training time buys. For environmental telemetry with its 92% floor, post-training quantization clears the bar by five points and the extra training would be time spent on margin nobody needs.
 
 ## Challenge
 
@@ -133,7 +133,7 @@ Binary (1 bit): ~50% top-1 accuracy     3.1% size               -- specialized
 - Accuracy floor (regulatory, business, safety)
 - Calibration data availability (for PTQ) or labeled data (for QAT)
 
-**Per-layer mixed quantization:** sensitive layers (attention output projection, first/last layers) stay FP16; bulk of network is INT8. Common in production. Results in ~30-40% size reduction with minimal accuracy hit.
+**Per-layer mixed quantization:** sensitive layers (attention output projection, first/last layers) stay FP16; bulk of network is INT8. Common in production. Against an FP32 baseline it lands near 3x smaller, between all-FP16 at 2x and all-INT8 at 4x, and it keeps most of INT8's savings without INT8's worst accuracy cases.
 </DerivationDrawer>
 
 ## Knowledge check
@@ -147,7 +147,7 @@ Binary (1 bit): ~50% top-1 accuracy     3.1% size               -- specialized
 />
 
 <Quiz
-  question="Quantizing a vision classifier from FP32 to INT8 dropped accuracy from 92% to 88%. The deployment latency budget is 50ms; FP32 takes 80ms; INT8 takes 25ms. What's the right call for an attention-driven UI feature where wrong predictions are recoverable?"
+  question="Quantizing a vision classifier from FP32 to INT8 dropped accuracy from 92% to 88%. The deployment latency budget is 50ms; FP32 takes 80ms; INT8 takes 25ms. What's the right call for a user-facing feature where a wrong prediction is visible on screen and the user can correct it?"
   options={[{"text":"Stay on FP32: never trade accuracy for speed"},{"text":"Ship INT8: the latency budget is binding (FP32 misses it by 60%) and 4 points of accuracy is acceptable for the use case"},{"text":"Train a smaller FP32 model from scratch to fit the latency budget"},{"text":"Quantize to INT4 to push latency below 25ms"}]}
   correct={1}
   explanation="The latency budget is the hard constraint: FP32 at 80ms ships nothing. INT8 hits 25ms with a 4-point accuracy drop in a low-stakes UI context. Option A ignores that no shipped model = no value. Option C is a bigger investment with no guarantee of better accuracy. Option D risks more accuracy drop without measurable additional benefit."

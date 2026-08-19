@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Priya Sharma reviews the first 24 hours of data. 'The new model looks 3% better, but we only have 1,200 predictions. Is that signal or noise? We need statistical significance before making any decisions.'"
+  narrative: "Priya Sharma reviews the first 24 hours of data. 'The new model is 2.6 points ahead on 1,200 predictions. That could be a real gain or it could be a good day. I want a p-value before we move.'"
   speaker: "Priya Sharma"
 concept:
   explanation: "Statistical significance tells you whether observed differences are real or random noise, the same confidence intervals you use in analytics dashboards, applied to model comparison."
@@ -34,14 +34,14 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-After 24 hours we have 1,200 predictions from the treatment group. The new model shows 93.8% accuracy versus 91.2% for the control. That is a 2.6% improvement. But is it real? With 1,200 samples, the confidence interval is wide. We need more data before we act.
+After 24 hours the treatment arm has 1,200 predictions: 93.8% accuracy against 91.2% for the control. A 2.6-point gap. It looks real to me, and looking real is exactly how v2.3 got shipped. Run the test before anyone touches the traffic weights.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
-I have seen teams ship models based on 200 predictions and a gut feeling. That is how you get the March 2024 incident. Run the numbers. Tell me when the result is statistically significant.
+I have seen teams ship models based on 200 predictions and a gut feeling. That is how you get the March 2024 incident. Tell me when the result is statistically significant.
 </Dialogue>
 
-Flip a fair coin 1,200 times and a 51.3% heads rate would surprise nobody. That is roughly the gap Priya is staring at: 2.6 points on 1,200 samples could be a better model, or it could be a lucky day. The math that settles it is the math behind every analytics dashboard you have read ("Conversion rate: 4.5% +/- 0.3%, 95% confidence"): proportions, standard errors, z-scores. Enough samples to separate real improvement from random variation.
+Flip a fair coin 1,200 times and heads can land anywhere from about 47% to 53% without anything being wrong, because at a 50% rate the noise on 1,200 samples runs around 1.4 points. Priya's numbers sit somewhere much quieter. At a 91% baseline the same 1,200 samples wobble by about 0.8 points, so her 2.6-point gap is roughly three noise-widths wide, not one. The math that turns that intuition into a number is the math behind every analytics dashboard you have read ("Conversion rate: 4.5% +/- 0.3%, 95% confidence"): proportions, standard errors, and a z-score that reports how many noise-widths apart two rates sit.
 
 <LearningObjectives objectives={["Calculate statistical significance for model A/B test results", "Determine minimum sample sizes needed for reliable conclusions", "Implement a two-proportion z-test for comparing model accuracy", "Understand p-values and confidence intervals in the context of ML deployment decisions"]} />
 
@@ -114,7 +114,7 @@ function normalCDF(x: number): number {
   return x > 0 ? 1 - p : p;
 }
 
-// Terra Grid A/B test after 1 week
+// Terra Grid A/B test, the first 24 hours: 1,200 treatment predictions against 7,200 control
 const result = twoProportionZTest(
   { version: '3.0', total: 7200, successes: 6566, rate: 0.912 },
   { version: '3.1', total: 1200, successes: 1126, rate: 0.938 },
@@ -158,7 +158,7 @@ function requiredSampleSize(
 // Terra Grid: baseline 91.2% accuracy, want to detect 2% improvement
 const needed = requiredSampleSize(0.912, 0.02);
 console.log(\`Need \${needed} predictions per group\`);
-// At ~600 predictions/day per group, that is about \${Math.ceil(needed / 600)} days`}
+// requiredSampleSize(0.912, 0.02) returns 2818. At ~600 predictions/day per group, that is 5 days.`}
 </CodeBlock>
 
 ## Challenge

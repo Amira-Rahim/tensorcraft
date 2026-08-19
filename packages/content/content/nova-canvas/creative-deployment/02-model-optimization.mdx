@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The profiling data is clear: the model is too large for real-time gallery use. Erdem calls the team. 'We need a smaller model that produces the same quality. Distillation and quantization, the same tricks that make webpack bundles smaller.'"
+  narrative: "The profiling data is clear: the model is too large for real-time gallery use. Erdem calls the team. 'We need a smaller model that produces the same quality.'"
   speaker: "Erdem"
 concept:
   explanation: "Model optimization shrinks the network until inference fits the frame budget: quantization trades numeric precision for size, distillation trains a smaller student to mimic a larger teacher, and every step is a measured trade of quality for speed."
@@ -24,9 +24,9 @@ hints:
   - level: nudge
     content: "Quantization converts float32 weights to uint8 during model conversion: 4 bytes become 1, and you measure what the lost precision costs in output quality"
   - level: guidance
-    content: "Convert float32 weights to uint8 with tf.quantization, measure quality vs speed tradeoff"
+    content: "Quantize at conversion time: tensorflowjs_converter --quantize_uint8 writes uint8 weight files that the browser expands back to float32 on load"
   - level: solution
-    content: "Use tf.GraphModel quantization during conversion, then benchmark both models side by side"
+    content: "Convert the model twice, once plain and once with --quantize_uint8, then load both in the same page and compare download size against output MSE"
 keywords:
   - quantization
   - distillation
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Erdem">
-The model is 47 megabytes. It downloads in 8 seconds on gallery Wi-Fi. Inference takes 3 seconds. We need both numbers to drop by 10x. Same approach as production frontend builds: strip everything unnecessary.
+The model is 47 megabytes. It downloads in 8 seconds on gallery Wi-Fi. Inference takes 3 seconds. We need both numbers to drop by 10x. Tell me what that costs the output.
 </Dialogue>
 
 <Dialogue speaker="Samir">
@@ -46,9 +46,9 @@ Webpack takes a 2MB bundle and produces 200KB through minification, tree-shaking
 Except Webpack hands you back the identical program, minus whitespace. Quantization hands you back a slightly different artist. We're trading accuracy for size, and there's no `--mode production` flag that makes that call for us. Benchmark the output quality after every step, or we ship a worse model and never notice.
 </Dialogue>
 
-The first dry run on gallery Wi-Fi was grim: 47 megabytes of weights crawling through a shared access point while a test visitor stared at a spinner. You already know the cure from shipping bundles. Minification strips whitespace, tree-shaking strips dead code, code splitting defers the rest. Model optimization runs the same playbook with different verbs: quantization cuts precision, pruning cuts weights, distillation moves the knowledge into a smaller network.
+The first dry run on gallery Wi-Fi was grim: 47 megabytes of weights crawling through a shared access point while a test visitor stared at a spinner. Three levers move that number. Quantization cuts the precision of each weight, pruning deletes the weights that contribute least, and distillation retrains the knowledge into a smaller network. All three change what the model outputs, which is why every one of them ships with a benchmark attached.
 
-<LearningObjectives objectives={["Apply weight quantization to reduce model size and inference time", "Understand knowledge distillation as training a small model to mimic a large one", "Measure the quality-speed tradeoff using generation benchmarks", "Choose the right optimization strategy based on deployment constraints"]} />
+<LearningObjectives objectives={["Apply weight quantization to cut the bytes a model transfers, and measure what the lost precision costs the output", "Understand knowledge distillation as training a small model to mimic a large one", "Measure the quality-speed tradeoff using generation benchmarks", "Choose the right optimization strategy based on deployment constraints"]} />
 
 ## Quantization: Reducing Precision
 
@@ -58,12 +58,17 @@ The first dry run on gallery Wi-Fi was grim: 47 megabytes of weights crawling th
 {`import * as tf from '@tensorflow/tfjs';
 
 // Float32 → Uint8 quantization
-// Like converting PNG → JPEG: smaller, slightly lossy, much faster
+// Like converting PNG → JPEG: smaller on the wire, slightly lossy
 async function quantizeWeights(model: tf.LayersModel): Promise<tf.LayersModel> {
   const quantizedWeights = model.getWeights().map(weight => {
     const data = weight.dataSync();
-    const min = Math.min(...data);
-    const max = Math.max(...data);
+    // Never spread a weight tensor into Math.min: a layer this size
+    // blows the call stack long before it returns a number.
+    let min = Infinity, max = -Infinity;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i] < min) min = data[i];
+      if (data[i] > max) max = data[i];
+    }
     const scale = (max - min) / 255;
 
     // Quantize: float32 → uint8 with scale and offset
@@ -152,7 +157,7 @@ async function compareQuality(
   teacher: tf.LayersModel,
   student: tf.LayersModel,
   numSamples: number = 50
-): Promise<{ mse: number; correlation: number }> {
+): Promise<{ mse: number; similarity: number }> {
   let totalMSE = 0;
 
   for (let i = 0; i < numSamples; i++) {
@@ -168,13 +173,13 @@ async function compareQuality(
 
   return {
     mse: totalMSE / numSamples,
-    correlation: 1 - (totalMSE / numSamples), // simplified quality score
+    similarity: Math.exp(-totalMSE / numSamples), // 1.0 = identical, decays as error grows
   };
 }
 
 const quality = await compareQuality(teacher, student);
-console.log('MSE:', quality.mse.toFixed(6));         // lower is better
-console.log('Quality:', (quality.correlation * 100).toFixed(1) + '%'); // higher is better`}
+console.log('MSE:', quality.mse.toFixed(6));                             // lower is better
+console.log('Similarity:', (quality.similarity * 100).toFixed(1) + '%'); // higher is better`}
 </CodeBlock>
 
 ## Challenge

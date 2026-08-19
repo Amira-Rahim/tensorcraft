@@ -33,8 +33,12 @@ keywords:
   - token-ids
 ---
 
+<Dialogue speaker="Khalil">
+Line one of the WHY list. The note it got wrong reads "pt c/o CP, hx PCN rxn." My features went looking for the word allergy. There was nothing there to look at.
+</Dialogue>
+
 <Dialogue speaker="Vikram">
-Khalil, when you parse a URL like /patient/123/records, you split it into segments: "patient", "123", "records." Each segment means something different. Tokenization does the same for text.
+Because nothing told it what a word is yet. You do this every time you parse a URL: /patient/123/records splits into "patient", "123", "records", and each segment means something different. Text needs the same cut before it can be counted.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -42,10 +46,10 @@ So "patient reports chest pain" becomes four tokens?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Four, once you strip the period. Leave it attached and "pain." becomes a fifth token that shares nothing with "pain". Then each token maps to an index in our vocabulary. "patient" might be index 42, "reports" is 107, and so on. The model only sees these numbers.
+Four, once you strip the period. Leave it attached and you still get four, but the last one is "pain.", which claims its own slot in the vocabulary and shares nothing with "pain". Then each token maps to an index: "patient" might be 42, "reports" 107. The model only sees these numbers.
 </Dialogue>
 
-You parse URLs all the time. `new URL()` breaks a URL into structured parts: protocol, host, pathname, search params. Tokenization does the same for natural language: it breaks a sentence into structured parts that a model can process.
+A tokenizer has one job `new URL()` does not. The URL parser has a spec telling it that `/` and `?` are boundaries. Clinical text has no spec, so where you cut is a decision you make, and every downstream count inherits it.
 
 <LearningObjectives objectives={["Tokenize text by splitting on whitespace and punctuation", "Build a vocabulary mapping from words to integer indices", "Convert a sentence into a sequence of token IDs", "Handle unknown words with an out-of-vocabulary token"]} />
 
@@ -65,7 +69,7 @@ const segments = url.pathname.split('/').filter(Boolean);
 function tokenize(text: string): string[] {
   return text.toLowerCase()
     .replace(/[.,!?;:]/g, ' ')
-    .split(/\s+/)
+    .split(/\\s+/)
     .filter(Boolean);
 }
 

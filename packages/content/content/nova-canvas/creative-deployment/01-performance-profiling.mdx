@@ -17,9 +17,9 @@ concept:
     mlTitle: "Inference Profiling"
     mlCode: "performance.mark('inference-start'); model.predict(input); performance.mark('inference-end');"
     tier: structural
-    breaks: "performance.mark API is the same. Profiling a generative model adds: per-step inference cost over many denoising iterations, latent memory pressure, queue backpressure under concurrent users. None of which web-app perf measurement encounters."
+    breaks: "performance.mark API is the same. Profiling a generative model adds: per-step inference cost over many denoising iterations, latent memory that a heap snapshot cannot see because it lives on the GPU, and kernels that finish long after the JavaScript call returns. That last one is why a mark wrapped around model.predict() reads near zero until you await the data."
 consequence:
-  narrative: "The flame chart shows 60% of time spent on tensor allocation, not computation. Erdem smiles grimly. 'We have been optimizing the wrong thing.'"
+  narrative: "The flame chart splits the 2,847 ms of inference into 50 denoising passes, and inside each pass 41% of the time goes to allocating and freeing tensors rather than to arithmetic. Erdem smiles grimly. 'We have been optimizing the wrong layer.'"
 hints:
   - level: nudge
     content: "Use performance.mark() and performance.measure() to instrument each stage of generation"
@@ -34,15 +34,17 @@ keywords:
   - bottleneck
 ---
 
+3,200 milliseconds per image. Erdem's dashboard shows it as one bar. Inside that bar live tensor prep, inference, post-processing, data transfer, and at least one bottleneck nobody has met yet.
+
 <Dialogue speaker="Erdem">
 Three-point-two seconds per generation. Unacceptable. The gallery visitors will walk away after one. We need sub-second response. Where's the time going?
 </Dialogue>
 
 <Dialogue speaker="Samir">
-The same place it always goes in frontend apps: where you least expect it. We need to profile before we optimize. Chrome DevTools does not care whether you are rendering DOM or running inference.
+No one knows yet, and that is the actual problem. We profile before we optimize. Chrome DevTools does not care whether you are rendering DOM or running inference.
 </Dialogue>
 
-3,200 milliseconds. Somewhere inside that number live tensor prep, inference, post-processing, data transfer, and at least one bottleneck nobody has met yet. The tools that find it are the ones used to chase React re-renders and layout thrashing: `performance.mark()`, `performance.measure()`, the DevTools Performance panel, memory snapshots. All of it applies directly to inference.
+The tools that find it are the ones used to chase React re-renders and layout thrashing: `performance.mark()`, `performance.measure()`, the DevTools Performance panel, memory snapshots. All of it applies directly to inference.
 
 <LearningObjectives objectives={["Profile TensorFlow.js inference using Chrome DevTools Performance panel", "Identify bottlenecks in tensor allocation, computation, and data transfer", "Measure memory usage patterns during generation loops", "Build a profiling harness that instruments each pipeline stage"]} />
 

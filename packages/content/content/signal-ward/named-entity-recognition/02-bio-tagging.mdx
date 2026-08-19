@@ -17,7 +17,7 @@ concept:
     mlTitle: "BIO Tags"
     mlCode: "B-CONDITION I-CONDITION O // tags mark entity boundaries"
     tier: structural
-    breaks: "HTML tags are explicit author-written boundaries. BIO tags are predicted per-token (Begin, Inside, Outside) and inconsistent BIO sequences (I-PER following B-LOC) are a common model failure; post-processing must repair invalid tag sequences."
+    breaks: "HTML tags are explicit author-written boundaries. BIO tags are predicted per token (Begin, Inside, Outside), and inconsistent sequences are a common model failure: an I-DRUG emitted right after a B-CONDITION. Post-processing must repair invalid tag sequences before any span is trusted."
 consequence:
   narrative: "'Rheumatoid arthritis' comes back as one condition now, not two strangers sharing a sentence. Vikram queues the harder test: a model that has to predict the tags itself."
 hints:
@@ -152,15 +152,15 @@ What happens if a patient has "diabetes hypertension", two conditions listed bac
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Without the B tag, both words get I-CONDITION. The decoder merges them into one entity: "diabetes hypertension." The B tag on "hypertension" is like a new opening `<span>`. It signals that a separate entity starts there, even though the type is the same.
+Give the second word I-CONDITION and the decoder reads it as a continuation. One entity: "diabetes hypertension." B on "hypertension" is a new opening `<span>`. It says a separate entity starts here, same type or not.
 </Dialogue>
 
 Consider the difference:
 
-- **Wrong:** `I-CONDITION I-CONDITION` → "diabetes hypertension" (one merged entity)
+- **Wrong:** `B-CONDITION I-CONDITION` → "diabetes hypertension" (one merged entity)
 - **Correct:** `B-CONDITION B-CONDITION` → "diabetes" and "hypertension" (two separate entities)
 
-This mirrors the HTML rule: you can't nest two `<span>` elements without proper opening tags for each.
+Same rule as HTML: two sibling `<span>` elements need two opening tags. Write only one and the browser gives you a single element, not two.
 
 ## Challenge
 

@@ -43,12 +43,12 @@ skillAxes: [deployment]
 Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference; the runtime decodes them back to floats at load. Promise me a file that fits.
 </Dialogue>
 
-Two ledgers, one knife. The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The uint8 pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier. Its number has a history. The spectrogram re-annotation knocked it to 78; the FFT features earned it back to 87; five modules of sequence features and a retrain this week carried it to 94.2. That same retrain is when the head widened: Farah's catalog labels finally landed, and the old binary anomaly-or-noise gate became five classes (pulsar, quasar, noise, interference, anomaly). Quantize the whole bundle, and the scoreboard reports what the knife cost where cost can be measured.
+The uint8 pass makes one cut, and it lands on two different ledgers. The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier. Its number has a history. The spectrogram re-annotation knocked it to 78; the FFT features earned it back to 87; five modules of sequence features and a retrain this week carried it to 94.2. That same retrain is when the head widened: Farah's catalog labels finally landed, and the old binary anomaly-or-noise gate became five classes (pulsar, quasar, noise, interference, anomaly). Quantize the whole bundle, and the scoreboard reports what the knife cost where cost can be measured.
 
-The technique runs exactly as deep as Nazari's arithmetic. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0247 has 512 MB of RAM and went down parsing a 340 MB weight file; cutting that file to 85 MB is the first and largest payment on the debt.
+The technique runs exactly as deep as Nazari's arithmetic. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0249 has 512 MB of RAM and went down parsing a 340 MB weight file; cutting that file to 85 MB is the first and largest payment on the debt.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-Don't sell me the WebP comparison, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.
+The WebP comparison stops at the file size, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure the accuracy-size tradeoff of different quantization levels", "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)"]} />
@@ -152,7 +152,7 @@ The uint8 build loads on the engineering rig from an 85 MB file, and for the fir
 Then, instead of leaving, she does something Demir has never seen her do. She pulls the live feed onto the rig she just certified, raw waveform, no dashboard in between, and stands through a full cycle waiting for the pulse.
 
 <Dialogue speaker="Chief Nazari">
-Eighteen days I've been rationing megabytes for this thing, and I'd never once looked at it. It doesn't look like a malfunction. It looks patient.
+Since the anomaly sprint I've been rationing megabytes for this thing, and I'd never once looked at it. It doesn't look like a malfunction. It looks patient.
 </Dialogue>
 
 She watches two more pulses arrive before she logs off, and writes nothing down at all.

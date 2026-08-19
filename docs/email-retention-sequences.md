@@ -14,7 +14,7 @@ post-launch index).
 
 - **Trigger:** tag `signed_up` added.
 - **Exit:** tag `first_lesson` added (Kit automation exit condition).
-- **A1, +1 day** - subject: `Module 1 is free. The pager is already on.`
+- **A1, +1 day** - subject: `Module 1 is free. It runs in your browser.`
   Body: You made an account and then the real world happened, that is
   fine. Module 1 of Deep Orbit is free, no card, about an hour end to end.
   The first lesson takes fifteen minutes and ends with real TensorFlow.js

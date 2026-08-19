@@ -15,7 +15,9 @@ export function buildCourseJsonLd(world: WorldManifest) {
     "@context": "https://schema.org",
     "@type": "Course",
     name: `${world.displayName}: ${world.specialization}`,
-    description: world.description,
+    // Plain-language description: search snippets reach strangers with no
+    // story context, so the manifest's story hook stays off structured data.
+    description: `${world.displayName} is a story-driven machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Module 1 is free.`,
     provider: {
       "@type": "Organization",
       name: "Tensorcraft",

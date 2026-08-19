@@ -7,17 +7,17 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Sector 7 runs three different processor architectures. Tariq must choose the right ML runtime for each: TFLite for ARM, ONNX for x86, WASM for the browser dashboards."
+  narrative: "Sector 7 runs x86 substations, ARM sensors, low-power remote monitors, and a browser dashboard on top. Four hosts, four runtimes, one model that has to reach all of them."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "ML runtimes are like browser engines: V8, SpiderMonkey, and JSC all run JavaScript differently, just as TFLite, ONNX Runtime, and WASM run models differently."
+  explanation: "ML runtimes are like JavaScript engines: V8, SpiderMonkey, and JSC all run the same JavaScript differently, just as TFLite, ONNX Runtime, and WASM run models differently."
   bridge:
-    jsTitle: "Browser Engines"
-    jsCode: "// V8 (Chrome), SpiderMonkey (Firefox), JSC (Safari)"
+    jsTitle: "JS Engines"
+    jsCode: "// V8 (Chrome, Node), SpiderMonkey (Firefox), JSC (Safari, Bun)"
     mlTitle: "ML Runtimes"
     mlCode: "// TFLite (mobile/ARM), ONNX (x86), WASM (browser)"
     tier: structural
-    breaks: "Browser engines (V8, JSC) implement the same EcmaScript spec, so code runs identically. ML runtimes (TFLite, ONNX Runtime, Core ML) support different operator subsets. A model with a single unsupported op fails to load entirely on that runtime. Op-set audit is required before targeting a runtime."
+    breaks: "JS engines (V8, JSC) implement the same ECMAScript spec, so code runs identically. ML runtimes (TFLite, ONNX Runtime, Core ML) support different operator subsets. A model with a single unsupported op fails to load entirely on that runtime. Op-set audit is required before targeting a runtime."
 consequence:
   narrative: "Tariq maps each device tier to its optimal runtime. The deployment matrix is complete."
 hints:
@@ -34,26 +34,28 @@ keywords:
   - runtime-selection
 ---
 
+<Dialogue speaker="GRID">
+Runtime conversion report. ONNX Runtime: 137 of 137 targets converted. TFLite: 0 of 710. Layer `spectrogram_stft` lowers to an FFT operator with no TFLite builtin equivalent. Conversion halted.
+</Dialogue>
+
 <Dialogue speaker="Tariq Hussain">
-The substations run x86 Linux. The field sensors run ARM. And Hassan wants a browser dashboard that runs inference locally. That's three different runtimes for the same model.
+So it runs on the 137 machines I was least worried about. The substations run x86 Linux. The field sensors run ARM. The remote monitors are too small for either full build. And Hassan wants a browser dashboard that does inference locally. Four runtimes, one model, and it just failed the only conversion that mattered.
 </Dialogue>
 
 <Dialogue speaker="GRID">
-Runtime compatibility matrix updated. TFLite coverage: 710 devices. ONNX Runtime coverage: 137 devices. WebAssembly fallback available for all.
+Operator replaced with a fixed-band energy approximation. TFLite coverage: 710 devices. ONNX Runtime coverage: 137 devices. WebAssembly fallback available for all. Frequency resolution above 2 kHz on the TFLite build is now coarser than on the ONNX build.
 </Dialogue>
 
-You write JavaScript once, but V8, SpiderMonkey, and JavaScriptCore each compile and execute it differently. Each engine has different JIT strategies, different garbage collection, different performance characteristics. ML runtimes work the same way: one model, multiple execution engines, each optimized for different hardware.
+You write JavaScript once, but V8 (Chrome and Node), SpiderMonkey (Firefox), and JavaScriptCore (Safari and Bun) each compile and execute it differently. Each engine has different JIT strategies, different garbage collection, different performance characteristics. ML runtimes look like that from a distance: one trained model, several execution engines, each tuned for different hardware. The resemblance stops there. Every engine implements the same ECMAScript spec, so your code runs on all of them. Your model does not get that guarantee: TFLite, ONNX Runtime, and Core ML each support a different subset of operators, and an unsupported op does not run slowly, it fails the load. So targeting a runtime starts with an op-set audit rather than a benchmark.
 
-<LearningObjectives objectives={["Compare ML runtimes (TFLite, ONNX, WASM) to browser engines (V8, SpiderMonkey, JSC)", "Select the optimal runtime based on target hardware constraints", "Convert models between runtime formats", "Implement a runtime abstraction layer for cross-platform deployment"]} />
+<LearningObjectives objectives={["Compare ML runtimes (TFLite, ONNX, WASM) to JavaScript engines (V8, SpiderMonkey, JSC)", "Select the optimal runtime based on target hardware constraints", "Convert models between runtime formats", "Implement a runtime abstraction layer for cross-platform deployment"]} />
 
 ## One Model, Multiple Engines
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="runtime-selection.ts">
-{`import * as tf from '@tensorflow/tfjs';
-
-type RuntimeTarget = 'tflite' | 'onnx' | 'wasm' | 'tfjs';
+{`type RuntimeTarget = 'tflite' | 'onnx' | 'wasm' | 'tfjs';
 
 interface RuntimeConfig {
   target: RuntimeTarget;
@@ -78,6 +80,8 @@ const runtimeMatrix: Record<string, RuntimeConfig> = {
   },
   remote: {
     target: 'wasm',
+    // A .tflite graph loaded by a WebAssembly interpreter build. WASM is
+    // the backend here, not a model format of its own.
     format: 'model_wasm.bin',
     optimizations: ['simd128', 'threads'],
     avgInferenceMs: 45,
@@ -100,10 +104,12 @@ function selectRuntime(deviceType: string): RuntimeConfig {
 
 ## Runtime Abstraction
 
-Just as a framework-agnostic component library works across React and Vue, you can build a runtime abstraction that works across ML engines:
+This is the shape of a database driver interface: `query()` and `close()` mean the same thing whether Postgres or SQLite is underneath, and the calling code never learns which. A runtime abstraction does that for ML engines:
 
 <CodeBlock language="typescript" title="runtime-abstraction.ts">
-{`interface InferenceEngine {
+{`import * as tf from '@tensorflow/tfjs';
+
+interface InferenceEngine {
   load(modelPath: string): Promise<void>;
   predict(input: Float32Array): Promise<Float32Array>;
   dispose(): void;
@@ -153,4 +159,4 @@ Set up a runtime configuration for a multi-architecture edge deployment.
 
 <Exercise slug="runtime-setup" />
 
-<KeyTakeaways takeaways={["One model file, several execution engines; the runtime choice changes latency and memory, not the predictions", "TFLite excels on ARM (mobile/embedded), ONNX on x86 (servers), WASM provides universal fallback", "An abstraction layer over TFLite (710 ARM devices) and ONNX Runtime (137 x86 servers) keeps inference code single-source", "Always benchmark on actual target hardware: simulated performance numbers lie, just like desktop Lighthouse scores"]} />
+<KeyTakeaways takeaways={["One trained model becomes a separate converted artifact per runtime (model.onnx, model.tflite, model.json); the conversion step, not the training, is where operators get dropped", "TFLite excels on ARM (mobile/embedded), ONNX on x86 (servers), WASM provides universal fallback", "An abstraction layer over TFLite (710 ARM devices) and ONNX Runtime (137 x86 servers) keeps inference code single-source", "Always benchmark on actual target hardware: simulated performance numbers lie, just like desktop Lighthouse scores"]} />

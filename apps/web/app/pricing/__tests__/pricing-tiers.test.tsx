@@ -158,7 +158,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     // 2026-07-14 UX audit: with exactly one launched world, the picker
     // preselects it - the CTA must be enabled immediately.
     const cta = Array.from(card.querySelectorAll("button")).find((b) =>
-      /Get Single/i.test(b.textContent ?? ""),
+      /Buy Now/i.test(b.textContent ?? ""),
     ) as HTMLButtonElement | undefined;
     expect(cta).toBeTruthy();
     expect(cta!.disabled).toBe(false);

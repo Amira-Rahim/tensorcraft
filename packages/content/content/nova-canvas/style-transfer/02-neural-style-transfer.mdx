@@ -21,7 +21,7 @@ consequence:
   narrative: "The gallery wall shows the same cityscape in five styles: Monet, Basquiat, Hokusai, Rothko, and Yara's own. Erdem studies them in silence. 'The machine has taste,' he says finally. 'Or at least, it can borrow ours.'"
 hints:
   - level: nudge
-    content: "totalLoss adds two MSEs with very different scales: styleWeight defaults to 1000 because raw Gram-matrix differences are tiny next to feature differences"
+    content: "totalLoss adds two MSEs that sit on completely different numeric scales, so the weights do real work. contentWeight 1 with styleWeight 1000 is a starting ratio: print both terms and retune until neither one flatlines while the other is still moving."
   - level: guidance
     content: "Generate an image by minimizing two losses: content loss (match the photograph's structure) and style loss (match the painting's textures)"
   - level: solution
@@ -42,7 +42,7 @@ I want to see this photograph through Monet's eyes. Can MUSE do that?
 The algorithm is elegant. We take the content features from your photograph and the style features from a Monet painting. Then we optimize a new image that matches both: photograph's structure, Monet's brushstrokes.
 </Dialogue>
 
-Swapping CSS themes preserves content while changing visual identity. Neural style transfer does the same. It generates an image that preserves one image's content while adopting another image's style.
+Swapping CSS themes preserves content while changing presentation. Neural style transfer lands in the same place by a much stranger route. Every training loop up to now moved the weights and left the input alone; this one freezes the weights and makes the image itself the variable. A hundred steps of gradient descent applied straight to the pixel buffer, scored by two losses at once. What comes out is not a prediction about the image. It is the image.
 
 <LearningObjectives objectives={["Define content loss as the MSE between content feature activations", "Define style loss as the MSE between Gram matrices of style features", "Combine losses with weighting to control content-style balance", "Optimize pixel values using gradient descent to minimize total loss"]} />
 
@@ -143,7 +143,7 @@ L_total = α · L_content + β · L_style
 
 **Why Gram matrices?** Texture is about which features co-occur, not where. Two images of the same texture (e.g., "oil painting brush strokes") have similar Gram matrices regardless of which side of the canvas the strokes are on.
 
-**Optimization:** start x = content image (or noise). Compute gradient of L_total w.r.t. x (NOT w.r.t. weights; VGG is frozen). Iterate: `x ← x − η · ∇_x L_total`. After ~500 iterations, x is the styled image.
+**Optimization:** start x = content image (or noise). Compute gradient of L_total w.r.t. x (NOT w.r.t. weights; VGG is frozen). Iterate: `x ← x − η · ∇_x L_total`. From a noise start that takes around 500 iterations; starting from the content image gets there in about 100.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Start the optimization from the content image instead of random noise: you converge in about 100 iterations instead of 500", "Content loss measures difference in deep CNN features between generated and content image", "Style loss measures difference in Gram matrices between generated and style image", "The balance between content weight and style weight controls how much the original structure is preserved"]} />

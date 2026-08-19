@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Use two output heads: one for start logits, one for end logits, then extract the span between them"
   - level: solution
-    content: "Apply softmax to start and end logits independently, take argmax of each, slice the tokenized context between those positions"
+    content: "Score every (start, end) pair where end is at or after start and the span stays inside the length cap, then keep the pair with the best combined score"
 keywords:
   - extractive-qa
   - span-extraction
@@ -34,7 +34,7 @@ keywords:
   - clinical-search
 ---
 
-He came in by ambulance twenty minutes ago and hasn't said a word since. No wallet, no bracelet, no chart. The infection needs antibiotics within the hour, and whether they're safe depends on a sentence that may or may not exist in another hospital's records.
+He came in by ambulance twenty minutes ago and hasn't been conscious since. No wallet, no bracelet, no chart. His temperature is 39.4, the antibiotics have to go in within the hour, and whether they're safe depends on a sentence that may or may not exist in another hospital's records.
 
 <Dialogue speaker="Imran">
 Unconscious male, mid-forties. Paramedics found him collapsed at a bus stop. We need to start antibiotics but we have no allergy history. If he's allergic to penicillin and we give him amoxicillin, we could trigger anaphylaxis.
@@ -44,9 +44,9 @@ Unconscious male, mid-forties. Paramedics found him collapsed at a bus stop. We 
 I built the records interface at Meridian Health. Their discharge summaries are structured: diagnoses, medications, allergies, all in free text sections. If I can search those documents semantically, I can find whether this patient has any recorded allergies.
 </Dialogue>
 
-`notes.filter(n => n.text.includes('penicillin allergy'))` returns zero rows for this patient. The discharge summary says "exhibited hypersensitivity to penicillin-class agents," and substring matching cannot see that those are the same fact. Neither can Ctrl+F. Extractive QA closes the gap: the model reads the question and the document together, matches on *meaning* rather than characters, and returns the span that answers it.
+`notes.filter(n => n.text.includes('penicillin allergy'))` returns zero rows for this patient. The 2019 discharge summary says "patient reported severe allergic reaction to penicillin-class antibiotics," and substring matching cannot see that those are the same fact. Neither can Ctrl+F. Extractive QA closes the gap: the model reads the question and the document together, matches on *meaning* rather than characters, and returns the span that answers it.
 
-<LearningObjectives objectives={["Understand extractive QA as span prediction over a context passage", "Build start and end position predictors using TensorFlow.js", "Extract answer spans from tokenized clinical text", "Evaluate QA accuracy with exact match and F1 metrics"]} />
+<LearningObjectives objectives={["Understand extractive QA as span prediction over a context passage", "Build start and end position predictors using TensorFlow.js", "Extract answer spans from tokenized clinical text", "Constrain candidates to the context passage and cap span length when decoding"]} />
 
 ## From Ctrl+F to Semantic Search
 
@@ -107,7 +107,8 @@ function extractAnswer(
 
   for (let s = contextStart; s < tokens.length; s++) {
     for (let e = s; e < Math.min(s + 30, tokens.length); e++) {
-      const score = startProbs[s] + endProbs[e];
+      // Joint probability of this start and this end
+      const score = startProbs[s] * endProbs[e];
       if (score > bestScore) {
         bestScore = score;
         bestStart = s;
@@ -121,7 +122,7 @@ function extractAnswer(
     answer: answerTokens.join(' '),
     startIndex: bestStart,
     endIndex: bestEnd,
-    confidence: Math.exp(bestScore) / 2,
+    confidence: bestScore,
   };
 }`}
 </CodeBlock>

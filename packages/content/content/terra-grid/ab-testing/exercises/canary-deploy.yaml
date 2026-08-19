@@ -1,7 +1,7 @@
 slug: canary-deploy
 lessonSlug: canary-deployments
 title: "Canary Deployment Manager"
-instructions: "Build a CanaryManager class that manages staged model rollouts. Implement checkHealth to verify metrics against thresholds, and evaluate to decide whether to promote to the next stage or rollback. The manager tracks deployment stages: canary -> promoted -> rolled-back."
+instructions: "Build a CanaryManager class that manages a staged model rollout. Implement checkHealth to compare metrics against thresholds and report which ones failed, and evaluate to advance the deployment. A canary that clears requiredHealthyChecks consecutive health checks becomes promoted; one failed check sends it to rolled-back. Both of those are terminal, so evaluate returns immediately once the deployment reaches either."
 starterCode: |
   interface HealthMetrics {
     accuracy: number;

@@ -18,30 +18,30 @@ import { FaqSection } from "@/app/components/faq-section";
 // buyable today. What to reinstate when more worlds launch is tracked in
 // docs/post-launch-backlog.md ("Restore the bundle surfaces").
 export const metadata: Metadata = {
-  title: `ML Course Pricing: Free Preview, $${PRICING.single.price} per World | Tensorcraft`,
-  description: `One payment. Lifetime access. Learn browser-based ML through JavaScript concepts you already know. Free preview, $${PRICING.single.price} per world.`,
+  title: `ML Course Pricing: Free Preview, $${PRICING.single.price} per Course | Tensorcraft`,
+  description: `One payment. Lifetime access. Learn browser-based ML through JavaScript concepts you already know. Free preview, $${PRICING.single.price} per course.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/pricing",
     siteName: "Tensorcraft",
-    title: "Buy a World. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per world.`,
+    title: "Buy Once. Keep It Forever. | Tensorcraft",
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per course.`,
     images: [
       {
-        url: "/api/og?title=Buy%20a%20World.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
+        url: "/api/og?title=Buy%20Once.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
         width: 1200,
         height: 630,
-        alt: "Tensorcraft: Buy a World. Keep It Forever.",
+        alt: "Tensorcraft: Buy Once. Keep It Forever.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buy a World. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per world.`,
+    title: "Buy Once. Keep It Forever. | Tensorcraft",
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per course.`,
     images: [
-      "/api/og?title=Buy%20a%20World.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
+      "/api/og?title=Buy%20Once.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
     ],
   },
 };
@@ -55,7 +55,7 @@ export default function PricingPage() {
     name: "Tensorcraft course pricing",
     url: "https://tensorcraft.app/pricing",
     description:
-      "One-payment lifetime-access pricing for the Tensorcraft browser-ML course: free preview and single-world purchase.",
+      "One-payment lifetime-access pricing for the Tensorcraft browser-ML course: free preview and one-time course purchase.",
     itemListElement: buildPricingOffers(),
   };
 
@@ -97,8 +97,9 @@ export default function PricingPage() {
               launched. Same defect as the metadata above and the tier grid
               below; fixed in the same pass so the page tells one story. */}
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
-            Each world is a separate ML specialization. Buy the one that fits,
-            one payment, lifetime access, no subscription.
+            Each world is a separate ML specialization, priced on its own. Deep
+            Orbit is the one you can buy today: one payment, lifetime access, no
+            subscription.
           </p>
         </section>
 
@@ -157,7 +158,7 @@ export default function PricingPage() {
         <FaqSection
           testId="pricing-faq"
           eyebrow="Before you buy"
-          heading="Fair Questions, Honest Answers"
+          heading="Common Questions"
           containerClassName="px-6 max-w-4xl mx-auto w-full"
           className="border-t border-border"
         />
@@ -171,13 +172,17 @@ export default function PricingPage() {
             Add ML to your engineering toolkit.
           </h2>
           <p className="text-base mb-10 text-text-muted font-sans max-w-130 mx-auto">
-            Start with the free preview. Upgrade when you&rsquo;re ready.
+            Start with the free module. Buy when you want the other ten.
           </p>
+          {/* The close does what the sentence above says: the free start.
+              Was "See All 5 Worlds" pointing at /worlds, four of which are
+              coming-soon and unbuyable (future plans are not user-facing,
+              header comment above). */}
           <Link
-            href="/worlds"
+            href="/worlds/deep-orbit/foundations/introduction-to-tensors"
             className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
           >
-            See All 5 Worlds &rarr;
+            Start Module 1 &rarr;
           </Link>
         </section>
       </div>

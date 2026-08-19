@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-We have the pieces: urgency detection, department routing, multi-label tagging, and confidence calibration. Now we need to wire them into a single pipeline that handles every document hitting the ward.
+I ran one note through all three models by hand this morning. Nine minutes and three terminal windows, for one document. There are 300 behind it.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -80,7 +80,6 @@ class TriagePipeline {
 
   // Confidence thresholds: clinical decisions, not hyperparameters
   private urgencyThreshold = 0.3;  // Low: catch all urgent cases
-  private routingThreshold = 0.6;  // Moderate: need reasonable certainty
   private taggingThreshold = 0.5;  // Standard: per-label decision
   private reviewThreshold = 0.7;   // Below this → human review
 
@@ -101,13 +100,13 @@ class TriagePipeline {
     const reviewReasons: string[] = [];
 
     // Stage 1: Urgency detection (binary)
-    const urgencyScore = (
-      this.urgencyModel.predict(embedding) as tf.Tensor
-    ).dataSync()[0];
+    const urgencyOut = this.urgencyModel.predict(embedding) as tf.Tensor;
+    const urgencyScore = urgencyOut.dataSync()[0];
+    urgencyOut.dispose();
     const urgencyLabel = urgencyScore > this.urgencyThreshold
       ? 'URGENT' : 'ROUTINE';
 
-    if (urgencyScore > 0.3 && urgencyScore < 0.7) {
+    if (urgencyScore > this.urgencyThreshold && urgencyScore < this.reviewThreshold) {
       reviewReasons.push('Ambiguous urgency score');
     }
 
@@ -116,6 +115,7 @@ class TriagePipeline {
     const deptIdx = routingProbs.argMax(-1).dataSync()[0];
     const deptScore = routingProbs.max().dataSync()[0];
     const deptLabel = DEPARTMENTS[deptIdx];
+    routingProbs.dispose();
 
     if (deptScore < this.reviewThreshold) {
       reviewReasons.push(
@@ -124,9 +124,9 @@ class TriagePipeline {
     }
 
     // Stage 3: Multi-label tagging
-    const tagScores = await (
-      this.taggingModel.predict(embedding) as tf.Tensor
-    ).data();
+    const tagOut = this.taggingModel.predict(embedding) as tf.Tensor;
+    const tagScores = await tagOut.data();
+    tagOut.dispose();
     const tags = CLINICAL_TAGS
       .map((label, i) => ({ label, score: tagScores[i] }))
       .filter(t => t.score > this.taggingThreshold);
@@ -165,7 +165,7 @@ Show me the flow. A document arrives. What happens?
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Step one: urgency check. If the threshold is crossed, the document is fast-tracked. Step two: department routing. The document is sent to the most likely department. Step three: tagging. All relevant clinical tags are applied. At any step, if my confidence drops below the review threshold, I flag it for a human physician.
+DOC-2847 arrived at 06:14. Urgency 0.81, above threshold, so it is marked urgent. Routing returns cardiology at 0.62, below my review threshold of 0.70, so it stops there. I apply the tags and put it in front of a person. Cardiology will not see it until someone else agrees with me.
 </Dialogue>
 
 <CodeBlock language="typescript" title="process-queue.ts">

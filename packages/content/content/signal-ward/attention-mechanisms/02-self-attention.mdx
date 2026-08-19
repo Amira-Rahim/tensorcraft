@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Multiply the input by three different weight matrices to get Q, K, V"
   - level: solution
-    content: "Q = input * Wq; K = input * Wk; V = input * Wv; attn = softmax(Q * K^T / sqrt(dk)) * V"
+    content: "const Q = tf.matMul(X, Wq); const K = tf.matMul(X, Wk); const V = tf.matMul(X, Wv); const dK = K.shape[K.shape.length - 1]; const scores = tf.matMul(Q, K, false, true).div(tf.scalar(Math.sqrt(dK))); const weights = tf.softmax(scores); return tf.matMul(weights, V);"
 keywords:
   - self-attention
   - query-key-value
@@ -38,11 +38,11 @@ Basic attention uses an external query. We ask "what's the diagnosis?" and the m
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Like when I use `scrollIntoView()`: any element can programmatically bring another element into focus, not just the user's click.
+Like when I call `scrollIntoView()`: the code picks which element the page moves to, and any element can be that target, not just the one the user clicked.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-You've got the symmetry right: any element can initiate. Hold that thought until you've seen the weight matrix, because the rest of the analogy is going to fall apart in an instructive way.
+Any element can be the target, yes. Hold onto that and run the code. Then look at the shape of the weight matrix before you trust the rest of it.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the Query-Key-Value framework", "Implement scaled dot-product self-attention", "Explain why scaling by sqrt(d_k) prevents gradient issues", "Apply self-attention to a clinical text sequence"]} />
@@ -61,7 +61,6 @@ Think of self-attention like a hospital database. Each clinical term plays three
 
 function selfAttention(input: tf.Tensor2D, dk: number) {
   // input shape: [seqLen, embedDim]
-  const seqLen = input.shape[0];
   const embedDim = input.shape[1];
 
   // Learned projection matrices
@@ -96,17 +95,15 @@ The weight matrix is 8 by 8. So token three doesn't focus on one other token. It
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-And that's where scrollIntoView stops being your model. It jumps to one element, all or nothing, with behavior you hard-coded. Attention never jumps: every word spreads fractional weight across every other word, the weights are learned, and it happens again at every layer and every head. Each word ends up with a representation that accounts for its full context.
+And that's where scrollIntoView stops being your model. It scrolls to one element, all or nothing, with behavior you hard-coded. Attention never picks one: every word spreads fractional weight across every other word, the weights are learned, and the whole operation repeats at every layer. Each word ends up with a representation that accounts for its full context.
 </Dialogue>
 
 ## Why Scale by sqrt(d_k)?
 
 Without scaling, dot products grow large as dimensionality increases. Large values push softmax into regions with extremely small gradients, and the model stops learning. Dividing by `sqrt(d_k)` keeps values in a reasonable range.
 
-It's the same reason a `z-index: 999999` is a code smell: it works, but it makes the system brittle and hard to reason about.
-
 <Dialogue speaker="Vikram">
-In the note "Patient denied chest pain but reported nausea after starting methotrexate," self-attention lets "nausea" attend strongly to "methotrexate", capturing that causal relationship even though four words separate them.
+In the note "Patient denied chest pain but reported nausea after starting methotrexate," self-attention lets "nausea" attend strongly to "methotrexate" across the words that sit between them. Position does not decide the weight. The learned projections do.
 </Dialogue>
 
 ## Challenge

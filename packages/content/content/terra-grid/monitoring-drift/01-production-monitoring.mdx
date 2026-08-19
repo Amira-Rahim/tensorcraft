@@ -22,7 +22,7 @@ consequence:
   narrative: "Dashboards light up sector by sector. For the first time, Hassan can see every model's health in real time."
 hints:
   - level: nudge
-    content: "ModelMonitor.record() should log per-prediction latency and confidence, the ML counterparts of response time and error rate"
+    content: "ModelMonitor.logPrediction() should log per-prediction latency and confidence, the ML counterparts of response time and error rate"
   - level: guidance
     content: "Track prediction latency, confidence distributions, throughput, and error rates"
   - level: solution
@@ -91,7 +91,7 @@ class ModelMonitor {
       avgConfidence: mean(confidences),
       lowConfidenceRate: recent.filter(l => l.confidence < 0.5).length / recent.length,
       throughput: recent.length,
-      errorRate: recent.filter(l => l.latencyMs > 200).length / recent.length,
+      slowResponseRate: recent.filter(l => l.latencyMs > 200).length / recent.length,  // over the 200ms budget
     };
   }
 
@@ -144,4 +144,4 @@ Implement a monitoring system that tracks prediction health metrics.
 
 <Exercise slug="monitor-metrics" />
 
-<KeyTakeaways takeaways={["Log every prediction: latency, confidence, and throughput per sector, at 50,000 inferences an hour", "Rolling windows keep memory bounded while providing recent-enough visibility into model health", "Per-sector (per-region) health breakdowns reveal localized issues that aggregate metrics hide", "Low confidence rate is the ML equivalent of elevated error rate, a signal that something is changing"]} />
+<KeyTakeaways takeaways={["Log every prediction: latency, confidence, and throughput, broken out per sector", "Rolling windows keep memory bounded while providing recent-enough visibility into model health", "Per-sector (per-region) health breakdowns reveal localized issues that aggregate metrics hide", "Low confidence rate is the ML equivalent of elevated error rate, a signal that something is changing"]} />

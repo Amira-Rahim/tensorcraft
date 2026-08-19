@@ -1,7 +1,7 @@
 slug: version-data
 lessonSlug: data-versioning
 title: "Version a Dataset"
-instructions: "Write a function versionDataset that takes a data array of numbers and an optional parentVersion string. Return an object with hash (sum of all values mod 1000000 as hex string), rowCount (length of data), and parentVersion (the input or null)."
+instructions: "Write a function versionDataset that takes a data array of numbers and an optional parentVersion string. Return an object with hash, rowCount (length of data), and parentVersion (the input or null). For hash, fold every value into a single 32-bit integer and render it as lowercase hex padded to 6 characters. Any fold works as long as different data produces a different hash; the reference runs sum = ((sum << 5) - sum + Math.round(val * 1000)) | 0 across the array from a starting value of 0, then formats Math.abs(sum % 1000000)."
 starterCode: |
   interface DatasetVersion {
     hash: string;

@@ -234,7 +234,7 @@ Ren builds a VAE and discovers controllable generation:
 | 1 | Autoencoders Recap | Compress and reconstruct | `gzip` / Brotli compression pipeline |
 | 2 | The Variational Part | Adding structure to the latent space | URL encoding - structured, decodable compression |
 | 3 | Reparameterization Trick | Making randomness differentiable | Seeded random - reproducible randomness |
-| 4 | KL Divergence | Balancing reconstruction and regularity | CSS specificity balance - structure vs flexibility |
+| 4 | KL Divergence | Balancing reconstruction and regularity | ESLint config strictness - conformity vs freedom |
 | 5 | Creative VAE | Using VAEs for controllable generation | Design system tokens - controlled variation |
 
 **JS BRIDGE (Module-Level):** A VAE is a URL shortener. A URL shortener takes a long URL, encodes it into a compact form (the latent code), and can decode it back to the original. A VAE takes an image, encodes it into a compact latent vector, and can decode it back. The key insight: nearby short codes produce similar URLs, just as nearby latent vectors produce similar images.

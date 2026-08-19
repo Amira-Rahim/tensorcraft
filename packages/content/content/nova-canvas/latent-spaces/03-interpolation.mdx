@@ -40,7 +40,7 @@ The walkway between Gallery A and Gallery B is thirty meters long. I want visito
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Halfway between your two walkway pieces, the geometry still holds but the palette has already gone organic. That's the midpoint I decoded an hour ago, t = 0.5. We could render all ten steps and find where the switch happens. My guess is somewhere past 0.6.
+Halfway between your two walkway pieces the palette has already gone organic, but the geometry still holds. That's the midpoint I decoded an hour ago, t = 0.5. So color turned somewhere before it and shape hasn't turned at all. Render all ten steps and we find out where shape gives way. My guess is somewhere past 0.6.
 </Dialogue>
 
 If you've written CSS transitions, this shape is already familiar: `transition: transform 0.3s ease-in-out` tells the browser to smoothly interpolate between the start and end states. Latent space interpolation works on the same principle, but instead of interpolating CSS properties, it interpolates entire images, sounds, or artworks.
@@ -101,7 +101,8 @@ In a well-structured latent space, nearby points represent similar data. So a po
 // Midpoint between two valid points might be in a "dead zone"
 // where the decoder produces meaningless output
 
-// Spherical interpolation (slerp) often works better for high dimensions
+// Spherical interpolation (slerp) keeps every step the same distance from the origin,
+// where the training samples sit; a straight line dips toward the middle, where they don't
 function slerp(z1: tf.Tensor, z2: tf.Tensor, t: number): tf.Tensor {
   const omega = tf.acos(
     z1.div(z1.norm()).dot(z2.div(z2.norm())).clipByValue(-1, 1)
@@ -117,4 +118,4 @@ function slerp(z1: tf.Tensor, z2: tf.Tensor, t: number): tf.Tensor {
 
 <Exercise slug="interpolate-points" />
 
-<KeyTakeaways takeaways={["Decode and inspect every interpolation step: midpoints can land in dead zones where the decoder produces garbage", "Linear interpolation (lerp) is result = a * (1-t) + b * t; spherical interpolation (slerp) often works better in high dimensions", "Structured latent spaces produce meaningful intermediate points"]} />
+<KeyTakeaways takeaways={["Decode and inspect every interpolation step: midpoints can land in dead zones where the decoder produces garbage", "Linear interpolation (lerp) is result = a * (1-t) + b * t; slerp curves the path so every step stays the same distance from the origin, which is where the model's training samples sit", "Structured latent spaces produce meaningful intermediate points"]} />

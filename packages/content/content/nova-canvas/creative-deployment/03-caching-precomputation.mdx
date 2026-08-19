@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Service worker cache keys static assets by URL: same URL, same payload. Generation cache keys must include prompt, seed, model version, and inference parameters. A one-character prompt change misses the cache, while identical prompts without a fixed seed produce different output and shouldn't share a cache entry at all."
 consequence:
-  narrative: "The top 100 prompts now respond in under 10ms. Samir: 'We pre-generated 200 variations and cached them in the Service Worker. The visitor gets instant art. The model only fires for novel requests.'"
+  narrative: "The top 20 prompts now respond in under 10ms. Samir: 'Twenty prompts, ten seeded variations each. All 200 fit in the Service Worker cache. The model only fires for the other 40% of requests.'"
 hints:
   - level: nudge
     content: "The cache key has to capture everything that changes the output: hash prompt + seed + model version + inference parameters, then check it before calling predict"
@@ -54,34 +54,47 @@ Wrap two identical requests in `console.time('generate')` and the log reads 340m
 {`import * as tf from '@tensorflow/tfjs';
 
 // LRU cache for generated outputs, same pattern as any memoization
+interface CacheKeyParams {
+  modelVersion: string;
+  seed: number;
+  steps: number;
+  prompt: string;
+}
+
 class GenerationCache {
   private cache = new Map<string, Float32Array>();
   private accessOrder: string[] = [];
   private maxSize: number;
+  private hits = 0;
+  private misses = 0;
 
   constructor(maxSize: number = 200) {
     this.maxSize = maxSize;
   }
 
-  // Hash input parameters to create cache key
-  private hashInput(params: Record<string, any>): string {
-    return JSON.stringify(params, Object.keys(params).sort());
+  // Everything that changes the output belongs in the key
+  private hashInput(params: CacheKeyParams): string {
+    return \`\${params.modelVersion}|\${params.seed}|\${params.steps}|\${params.prompt}\`;
   }
 
-  get(params: Record<string, any>): Float32Array | null {
+  get(params: CacheKeyParams): Float32Array | null {
     const key = this.hashInput(params);
     const result = this.cache.get(key);
     if (result) {
+      this.hits++;
       // Move to end of access order (LRU update)
       this.accessOrder = this.accessOrder.filter(k => k !== key);
       this.accessOrder.push(key);
       return result;
     }
+    this.misses++;
     return null;
   }
 
-  set(params: Record<string, any>, output: Float32Array) {
+  set(params: CacheKeyParams, output: Float32Array) {
     const key = this.hashInput(params);
+    // Re-setting a key must not leave a stale position behind
+    this.accessOrder = this.accessOrder.filter(k => k !== key);
     // Evict least recently used if at capacity
     while (this.cache.size >= this.maxSize) {
       const oldest = this.accessOrder.shift()!;
@@ -94,8 +107,6 @@ class GenerationCache {
   get hitRate(): number {
     return this.hits / (this.hits + this.misses) || 0;
   }
-  private hits = 0;
-  private misses = 0;
 }`}
 </CodeBlock>
 
@@ -105,7 +116,7 @@ class GenerationCache {
 {`// Cache-first strategy, identical to Service Worker cache-first pattern
 async function generateWithCache(
   model: tf.LayersModel,
-  params: Record<string, any>,
+  params: CacheKeyParams,
   cache: GenerationCache
 ): Promise<Float32Array> {
   // Check cache first: instant response for cached outputs
@@ -128,10 +139,11 @@ async function generateWithCache(
   return result;
 }
 
-function paramsToLatent(params: Record<string, any>): tf.Tensor {
-  // Deterministic latent from params: same input always gives same output
-  const seed = hashToNumbers(JSON.stringify(params));
-  return tf.tensor2d([seed.slice(0, 128)]);
+function paramsToLatent(params: CacheKeyParams): tf.Tensor {
+  // The seed comes in with the request, so the same key always
+  // reproduces the same latent and the entry stays valid
+  const values = hashToNumbers(String(params.seed));
+  return tf.tensor2d([values.slice(0, 128)]);
 }`}
 </CodeBlock>
 

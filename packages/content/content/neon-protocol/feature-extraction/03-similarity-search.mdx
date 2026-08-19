@@ -40,11 +40,11 @@ Three weeks of footage. Forty cameras. I want every frame this drone appears in,
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Then we diff pixels. Hash every frame, compare against the capture. Exact, fast, and I can write it in an hour.
+Hashing is out. Similar images do not get similar digests. But I can still diff pixels: downscale every frame, subtract it from the capture, keep anything under a threshold. An hour of work.
 </Dialogue>
 
 <Dialogue speaker="Zara">
-And it returns nothing. Different angle, different lighting, different district. Not one pixel survives the change, so your hash only matches frames we already have.
+And it returns nothing. Different angle, different lighting, different district. Not one pixel lands where it landed in your capture, so the only frames under your threshold are the ones you already have.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -109,10 +109,10 @@ function findKNearest(
 class VisualSearchIndex {
   private vectors: number[][] = [];
   private labels: string[] = [];
-  private extractor: tf.LayersModel | null = null;
+  private extractor: tf.GraphModel | null = null;
 
   async init(modelUrl: string) {
-    this.extractor = await tf.loadLayersModel(modelUrl);
+    this.extractor = await tf.loadGraphModel(modelUrl, { fromTFHub: true });
   }
 
   async addImage(image: tf.Tensor3D, label: string) {
@@ -142,9 +142,9 @@ const index = new VisualSearchIndex();
 
 ## Challenge
 
-Implement a k-nearest neighbor search function.
+Implement the cosine similarity that every ranking in this lesson runs on.
 
-<Exercise slug="similarity-search" />
+<Exercise slug="cosine-similarity" />
 
 <DerivationDrawer summary="Approximate nearest neighbor (ANN): why exact search doesn't scale">
 **Exact search** for nearest neighbor in N points: O(N · d) per query. For N=10M and d=768, that's ~8 billion ops per query. At 1ms per query budget, exact search caps at ~10K vectors.

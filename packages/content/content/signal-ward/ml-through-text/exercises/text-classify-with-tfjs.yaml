@@ -1,5 +1,5 @@
 slug: text-classify-with-tfjs
-lessonSlug: forward-pass
+lessonSlug: sw-forward-pass
 title: "Text Classification Forward Pass"
 instructions: "Build `classifyText(tokenIds, embedding, classifier)` that embeds a sequence of token IDs (tensor [seqLen]), averages the embeddings into a single sentence vector, and runs it through a classifier dense layer that returns logits."
 mlContent: arithmetic

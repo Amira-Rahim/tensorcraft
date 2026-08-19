@@ -35,15 +35,15 @@ keywords:
   - loss
 ---
 
-<Dialogue speaker="Erdem">
-I've seen this on engineering teams, and it never resolves itself. Discriminator too smart? Generator gradients flatline and it quits improving. Generator too clever? Discriminator stops learning anything. Watch both loss curves every epoch, and the moment one runs away, throttle it.
-</Dialogue>
-
 <Dialogue speaker="MUSE">
 Watch my loss curves tonight. If the discriminator's drops to 0.02 and stays there, my generator half is getting gradients too small to learn from. What we want is both curves wobbling around 0.69 and neither one flatlining.
 </Dialogue>
 
-Training a GAN is notoriously tricky. Unlike training a single model where loss steadily decreases, GAN training is two competing losses that must stay in balance, and there is no autoscaler to keep them there. You are the homeostat.
+<Dialogue speaker="Erdem">
+I've seen this on engineering teams, and it never resolves itself. Discriminator too smart? Generator gradients flatline and it quits improving. Generator too clever? Discriminator stops learning anything. Watch both loss curves every epoch, and the moment one runs away, throttle it.
+</Dialogue>
+
+Training a GAN does not feel like anything you have trained so far. A single model has one loss and you watch it fall. A GAN runs two losses that pull against each other, and there is no autoscaler to bring them back when one runs away. Holding that balance is your job, every epoch.
 
 <LearningObjectives objectives={["Implement the alternating GAN training loop", "Monitor generator and discriminator losses for balance", "Recognize signs of training instability", "Apply practical tricks for stable GAN training"]} />
 
@@ -79,24 +79,30 @@ async function trainGAN(
       const fakeBatch = generator.predict(noise) as tf.Tensor;
 
       // Real images labeled 1, fake images labeled 0
+      const realLabels = tf.ones([batchSize, 1]);
+      const fakeLabels = tf.zeros([batchSize, 1]);
       const dLossReal = await discriminator.trainOnBatch(
-        realBatch, tf.ones([batchSize, 1])
+        realBatch, realLabels
       ) as number[];
       const dLossFake = await discriminator.trainOnBatch(
-        fakeBatch, tf.zeros([batchSize, 1])
+        fakeBatch, fakeLabels
       ) as number[];
       dLossTotal += (dLossReal[0] + dLossFake[0]) / 2;
 
       // --- Train Generator ---
       const genNoise = tf.randomNormal([batchSize, noiseDim]);
       // Generator wants discriminator to say "real" (1)
+      const misleadingLabels = tf.ones([batchSize, 1]);
       const gLoss = await gan.trainOnBatch(
-        genNoise, tf.ones([batchSize, 1])
+        genNoise, misleadingLabels
       ) as number[];
       gLossTotal += gLoss[0];
 
-      // Dispose intermediate tensors
-      tf.dispose([noise, fakeBatch, genNoise]);
+      // Every tensor this batch allocated, released before the next one
+      tf.dispose([
+        realBatch, noise, fakeBatch,
+        realLabels, fakeLabels, genNoise, misleadingLabels,
+      ]);
     }
 
     console.log(\`Epoch \${epoch}: D loss=\${(dLossTotal/numBatches).toFixed(4)}, G loss=\${(gLossTotal/numBatches).toFixed(4)}\`);
@@ -148,7 +154,7 @@ function diagnose(metrics: TrainingMetrics): string {
 
 ## On-Call Scenario
 
-After a model update, generated outputs lost coherence: text in images garbled, faces distorted. Decide whether to roll back or fine-tune.
+After a model update the installation's output degraded: patterns smeared, edges dissolved, and FID went from 18 to 31 overnight. Decide whether to roll back or fine-tune.
 
 <Exercise slug="incident-quality-regression" />
 

@@ -39,12 +39,12 @@ Six months from now, someone who has never seen this codebase will get paged at 
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">
-Same as any on-call runbook for web infrastructure. Alert fires, engineer opens the runbook, follows the steps, verifies each action, escalates if needed. The only difference is the steps involve model metrics instead of server metrics.
+Write them for the truck, not the office. One bar of signal, no laptop, and the only thing I can do is what the step tells me to type. If a step needs me to work out which model version is live, it is not a step, it is a research project.
 </Dialogue>
 
 A runbook is four fields: a trigger condition, ordered steps, a verification command per step, and an escalation path. That structure is exactly what you wrote for web operations ("If CPU exceeds 90%, check top, identify the process, scale horizontally or restart"). What fills the fields here is different: drift alerts, accuracy degradation, failed federated learning rounds, adversarial inputs. The test of a good runbook is whether the steps survive contact with a half-awake stranger.
 
-<LearningObjectives objectives={["Design operational runbooks for edge ML systems", "Structure runbooks with trigger conditions, steps, verifications, and escalation", "Create model cards that document model behavior, limitations, and intended use", "Build a documentation system that stays in sync with the deployed system"]} />
+<LearningObjectives objectives={["Design operational runbooks for edge ML systems", "Structure runbooks with trigger conditions, steps, verifications, and escalation", "Generate an operator checklist from a runbook definition", "Build a documentation system that stays in sync with the deployed system"]} />
 
 ## Runbook System
 
@@ -152,4 +152,4 @@ Build a runbook registry with checklist generation.
 
 <Exercise slug="write-runbook" />
 
-<KeyTakeaways takeaways={["A runbook is a trigger condition, ordered steps, verification commands, and an escalation path; no step should require judgment at 2 AM", "Every operational scenario needs a documented procedure", "Model cards document model behavior, limitations, and intended use for stakeholders", "Runbooks must be tested regularly: an outdated runbook is worse than no runbook"]} />
+<KeyTakeaways takeaways={["A runbook is a trigger condition, ordered steps, verification commands, and an escalation path; no step should require judgment at 2 AM", "Every operational scenario needs a documented procedure", "Name the escalation contact and the exact condition that triggers the call; 'escalate if needed' is not a step", "Runbooks must be tested regularly: an outdated runbook is worse than no runbook"]} />

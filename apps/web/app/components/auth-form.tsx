@@ -13,7 +13,12 @@ import { EVENTS, track } from "@/lib/analytics-events";
 const COPY = {
   new: {
     heading: "Start Learning",
-    subtitle: "Create an account to start learning",
+    // The subtitle names what an account adds; module 1 itself needs no
+    // account, and every funnel page promises exactly that. Keep the heading
+    // "Start Learning": e2e/auth.spec.ts asserts a heading matching
+    // /start learning/i.
+    subtitle:
+      "Create an account to save your progress and push solved exercises to GitHub",
     terms: "creating an account",
   },
   returning: {

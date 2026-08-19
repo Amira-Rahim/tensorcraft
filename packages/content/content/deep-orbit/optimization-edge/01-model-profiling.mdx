@@ -22,7 +22,7 @@ concept:
     mlTitle: "Model Profiling"
     mlCode: "const t0 = performance.now(); model.predict(x); const ms = performance.now() - t0;"
     tier: structural
-    breaks: "performance.mark API is identical for both. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
+    breaks: "performance.mark API is identical for both, and identical again in Node, where the same pair ships in `node:perf_hooks`. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
 consequence:
   narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
@@ -41,9 +41,9 @@ keywords:
 skillAxes: [deployment]
 ---
 
-Two nights after the report went out, the bridge dashboard died. ARIA's reboot watchdog kept the last four seconds. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
+Two nights after the report went out, the bridge dashboard died. ARIA's reboot watchdog kept the last three minutes. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
 
-00:02:47.0: the ensemble flags the incoming pulse window, the cleanest capture opportunity in nine days. 00:02:47.4: the dashboard starts loading DEEP SCAN's full 340 MB beside the telemetry suite, and the free-memory line starts falling like an altimeter. 00:02:49.1: the line touches zero. No exception. No log entry. The render loop dies mid-frame and the last buffered frame just stays there, wrong, on every screen on the bridge. By the time the dashboard reboots, the window has closed. Earth's relay slot closes forty minutes later, without the capture in it.
+02:47:00: the ensemble flags the incoming pulse window, the cleanest capture opportunity in nine days. 02:47:26: the dashboard starts loading DEEP SCAN's full 340 MB beside the telemetry suite, and the free-memory line starts falling like an altimeter. 02:49:06: the line touches zero. No exception. No log entry. The render loop dies mid-frame and the last buffered frame just stays there, wrong, on every screen on the bridge. By the time the dashboard reboots, the window has closed. Earth's relay slot closes forty minutes later, without the capture in it.
 
 The data is gone. Not delayed. Gone. The next relay slot is in nineteen days, and nothing in the optimization work ahead brings that capture back.
 
@@ -77,8 +77,11 @@ interface ModelProfile {
 }
 
 async function profileModel(model: tf.LayersModel, inputShape: number[]): Promise<ModelProfile> {
-  // Memory
-  const memBefore = tf.memory();
+  // Live tensor memory the backend is holding right now. Not the same
+  // number as the weight bytes below: tf.memory() counts every tensor
+  // currently allocated, including the ones a sloppy loop forgets to
+  // dispose.
+  const residentBytesBefore = tf.memory().numBytes;
 
   // Parameter count
   const parameterCount = model.countParams();
@@ -116,6 +119,11 @@ async function profileModel(model: tf.LayersModel, inputShape: number[]): Promis
   }
 
   times.sort((a, b) => a - b);
+
+  // If this is not zero the loop leaked, and every number below was
+  // measured on a backend still holding the garbage.
+  const leakedBytes = tf.memory().numBytes - residentBytesBefore;
+  if (leakedBytes !== 0) console.warn('Leaked bytes while profiling:', leakedBytes);
 
   return {
     memorySizeMB,
@@ -178,7 +186,7 @@ Profile a model and identify its heaviest layer.
 By evening the profile hangs on the engineering board next to Nazari's handwritten totals: dashboard RAM 512, model 340, reconstruction 9 hours, capture 0, days to the next relay slot 19. Below it sits a line nobody expected: 211 KB of partial telemetry from the crash window, recovered. Demir replays the fragment three times. The last clean reading before the crash puts the pulse interval at 61.2 seconds; it was 73.4 when they first measured it, and nobody has decided what to do about that.
 
 <Dialogue speaker="ARIA">
-When the dashboard failed at 0247, my reboot watchdog buffered the final telemetry frames to my own store. Standing procedure since before DEEP SCAN existed. It is not the capture. It is what a rule-based system keeps when nobody asks it to.
+When the dashboard failed at 0249, my reboot watchdog buffered the final telemetry frames to my own store. Standing procedure since before DEEP SCAN existed. It is not the capture. It is what a rule-based system keeps when nobody asks it to.
 </Dialogue>
 
 </Epilogue>

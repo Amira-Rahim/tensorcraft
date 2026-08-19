@@ -235,7 +235,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 2b. Onboarding Flow (COMPLETE)
 
 - [x] 6-step post-signup flow (`/onboarding`) - from `prototypes/onboarding.html`:
-  1. Welcome screen - headline "Welcome Aboard the Archimedes" + 3 feature cards
+  1. Welcome screen - headline "Learn ML in JavaScript" + 3 feature cards *(was "Welcome Aboard the Archimedes"; story vocabulary was cut from every pre-lesson surface on 2026-08-19, see docs/audits/prelesson-copy-audit-2026-08-19.md)*
   2. Your Background - 5 options (beginner to ML-adjacent), saved to `profiles.js_background` *(column renamed in migration 059)*
   3. Your Goal - 5 options (understand concepts to just curious), saved to `profiles.learning_goal`
   4. Your Framework - React/Vue/Angular/Svelte/Vanilla with live bridge preview *(REMOVED: the framework step went away with React-only V1, and `fe_framework` was dropped in migration 059 with the 2026-08-18 JavaScript rebrand)*

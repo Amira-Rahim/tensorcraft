@@ -36,16 +36,16 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-Every time you apply `filter: blur()` in CSS, the browser slides a Gaussian kernel across every pixel. It multiplies neighboring pixel values by kernel weights, sums them up, and writes the result. That is a convolution. The only difference in ML is that we learn the kernel weights instead of hardcoding them.
+Nine numbers. That is a `filter: blur()` in its simplest form: a 3x3 grid of weights the browser drags across two million pixels, multiplying and adding and writing the answer back one pixel at a time. You have shipped that operation a hundred times. The only thing ML changes is who picks the nine numbers.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Wait. So when I built that photo editor with Canvas filters in my drawing app, I was literally doing convolutions? The sharpen filter, the edge detection... those were all kernels?
+Wait. The sharpen and edge-detect filters I wrote for the drawing app, the ones running over the pixel buffer before it went out on the wire. Those were convolutions? Those were kernels?
 </Dialogue>
 
-She was, with one asterisk. Those Canvas filters ran kernels somebody hardcoded. A convolution is the sliding window operation itself: take a small matrix (the kernel), slide it across an image, and at each position compute a weighted sum. A CNN runs that same operation but learns its kernel weights from data, and learns dozens of them per layer. The sliding window is just mechanics. The learned weights are the entire point of training.
+Yes, with one asterisk: somebody else picked those weights. Write `[-1, -1, -1, -1, 8, -1, -1, -1, -1]` into the loop over the `getImageData()` pixel array and you have hand-authored an edge detector. A conv layer starts that same 3x3 grid at random noise and rewrites it every batch, dozens of them per layer, until they detect whatever the training set rewards. Nobody in the building knows in advance what the numbers will be.
 
-<LearningObjectives objectives={["Understand how a convolution kernel slides across an image to produce a feature map", "Implement a 2D convolution operation from scratch", "Recognize that CSS blur, sharpen, and edge-detect filters are convolution operations", "Distinguish between valid and same padding strategies"]} />
+<LearningObjectives objectives={["Understand how a convolution kernel slides across an image to produce a feature map", "Implement a 2D convolution operation from scratch", "Recognize that CSS filter: blur() and hand-written Canvas sharpen or edge-detect filters are the same convolution operation", "Distinguish between valid and same padding strategies"]} />
 
 ## The Kernel Slides
 

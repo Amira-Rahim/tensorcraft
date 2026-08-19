@@ -13,13 +13,13 @@ concept:
   explanation: "Feature visualization reveals what each CNN layer has learned by examining activation patterns, just like DevTools element inspection shows how each DOM node contributes to the rendered page."
   bridge:
     jsTitle: "DevTools Element Inspection"
-    jsCode: "document.querySelector('.card').computedStyle // inspect what each element contributes"
+    jsCode: "getComputedStyle(document.querySelector('.card')) // inspect what each element contributes"
     mlTitle: "Feature Map Visualization"
     mlCode: "const activations = intermediateModel.predict(image); // inspect what each layer detects"
     tier: structural
     breaks: "DevTools element inspection shows the literal DOM you authored. Feature map visualization shows the activation pattern of a learned filter. Interpretation is approximate, single feature maps often correspond to no human concept, and 'this filter detects edges' is a post-hoc story rather than a guarantee. Use multiple visualizations (activation maps, gradient × input, integrated gradients) to triangulate."
 consequence:
-  narrative: "Zara overlays the feature maps on the original surveillance feed. Layer 1: edges and gradients. Layer 2: camera lens circles and rectangular housings. Layer 3: full camera silhouettes. 'It sees exactly what we need it to see,' Zara confirms. The Protocol Sentinel is ready for deployment."
+  narrative: "Zara overlays the feature maps on the original surveillance feed. Layer 1: edges. Layer 2: circles and rectangles. Layer 3: shapes that look like camera housings if you already expected camera housings. Amir watches from the doorway. 'Meridian's profiler was 97 percent accurate. It was also sorting people by ethnicity, and its third layer looked exactly this reasonable.' He points at one bright cluster on the third map. 'What is that one firing on?'"
 hints:
   - level: nudge
     content: "Each filter in a conv layer produces an activation map. High values mean the filter detected something at that position."
@@ -43,13 +43,13 @@ A model that works but you can't explain is dangerous. At 89% accuracy, we need 
 So instead of inspecting DOM nodes, we inspect neurons? Each conv filter is like a computed style property that tells us what that layer is doing to the data?
 </Dialogue>
 
-Feature visualization is model inspection. You extract the activations from intermediate layers and examine what patterns each filter responds to. It is the neural network equivalent of opening DevTools.
+A computed style is a value somebody set, read back verbatim. A filter's activation is a response you have to interpret: the model hands you a grid of numbers and no labels. You extract activations from intermediate layers the way you would inspect a node, but what comes back is evidence, not documentation. Every filter name in this lesson was written by a human staring at that grid.
 
 <LearningObjectives objectives={["Understand that each conv filter produces an activation map showing where it detected features", "Implement activation extraction and normalization for visualization", "Interpret the feature hierarchy: edges in early layers, objects in deep layers", "Connect DevTools element inspection to neural network feature inspection"]} />
 
 ## Inspecting Activations
 
-Each conv filter produces a 2D activation map. High values indicate regions where the filter detected its target pattern. By normalizing and visualizing these maps, you can see exactly what the network has learned.
+Each conv filter produces a 2D activation map. High values mark the positions where that filter responded most strongly. Normalizing and rendering the map shows you where the response landed, which is the raw material for any claim about what the network learned.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -210,7 +210,10 @@ function findStrongestFilters(
 // conv3 filter 0 (camera dome shapes): 0.97 activation
 // conv3 filter 1 (camera box housings): 0.94 activation
 // conv2 filter 1 (circular shapes): 0.91 activation
-// These are exactly the features that distinguish camera types!`}
+// The filter names above are Zara's annotations, not model output.
+// The model emits numbers. Somebody looked at which inputs made filter 0
+// fire hardest and wrote 'camera dome shapes' beside it. Retrain from a
+// different random seed and filter 0 detects something else.`}
 </CodeBlock>
 
 ## Challenge

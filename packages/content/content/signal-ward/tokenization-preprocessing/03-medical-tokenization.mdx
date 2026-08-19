@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Tokenize first, then apply the abbreviation map to each token."
   - level: solution
-    content: "tokens.map(t => abbreviationMap.get(t) || t)"
+    content: "Expand first, splitting any multi-word expansion into separate words, then map each word through vocab.get(w) ?? 0 and return tf.tensor1d(ids, 'int32')"
 keywords:
   - medical-abbreviations
   - text-normalization
@@ -35,18 +35,18 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-This record has three different abbreviations for the same medication: "PCN", "penicillin", and "pen." And that's just one drug. We've got hundreds of abbreviations flying around.
+This record spells one medication three ways: "PCN", "penicillin", and "pen." Two abbreviations and the real name, same chart, same patient. That's one drug out of a hundred.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Every domain has its own shorthand. In web dev, you parse phone numbers that come in as "(555) 123-4567" or "555.123.4567" or "5551234567." Same problem, different domain.
+Every domain has its own shorthand. A checkout form parses phone numbers that arrive as "(555) 123-4567" or "555.123.4567" or "5551234567." Same problem, different domain.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-If Diagnostic One can't normalize these abbreviations, it will miss the same allergy our vendor missed. This is critical.
+If Diagnostic One cannot map "PCN" onto "penicillin," it fails the allergy check the vendor system failed, on the same field, for the same reason.
 </Dialogue>
 
-"PCN", "penicillin", "pen." Three spellings, one drug, and that is a single entry in a shorthand vocabulary running to the hundreds. The dangerous entries are the ambiguous ones: the same abbreviation can expand two different ways, and the wrong expansion changes the clinical meaning. You have practiced this craft before. Phone number formatters, date normalizers, address cleaners. Medical tokenization is that same custom-parser work, pointed at a domain where a missed normalization can hide an allergy.
+Three spellings of one drug is a Map lookup, one line, done. `RA` is not. In a rheumatology note it is rheumatoid arthritis; in a cardiology note it is right atrium; a Map has room for exactly one answer. Pick wrong and the record now claims a chronic autoimmune disease, or a heart chamber. Every normalization rule from here is a bet that context does not matter, and the ambiguous entries are where that bet loses.
 
 <LearningObjectives objectives={["Build an abbreviation expansion map for common clinical shorthand", "Normalize medical text before tokenization", "Handle multiple representations of the same concept", "Implement a medical-aware preprocessing pipeline"]} />
 
@@ -84,13 +84,10 @@ function normalizeToken(token: string): string {
 }
 
 function medicalTokenize(text: string): string[] {
-  // Handle slash abbreviations before splitting
-  const prepared = text.toLowerCase()
-    .replace(/c\/o/g, 'c/o')
-    .replace(/s\/p/g, 's/p')
-    .replace(/w\/o/g, 'w/o');
+  const prepared = text.toLowerCase();
 
-  const tokens = prepared.match(/[a-z]+(?:\/[a-z])?|[0-9]+(?:\.[0-9]+)?/g) || [];
+  // c/o, s/p and w/o survive the match below because of the (?:\\/[a-z])? branch
+  const tokens = prepared.match(/[a-z]+(?:\\/[a-z])?|[0-9]+(?:\\.[0-9]+)?/g) || [];
   return tokens.map(normalizeToken);
 }
 
@@ -129,6 +126,6 @@ console.log(preprocessClinicalText('Patinet reports symtoms after PCN dose'));
 
 Build a medical tokenizer that expands abbreviations.
 
-<Exercise slug="medical-tokens" />
+<Exercise slug="medical-tokenize" />
 
 <KeyTakeaways takeaways={["Medical text uses hundreds of abbreviations that must be normalized", "RA expands to rheumatoid arthritis or right atrium; a lookup map cannot tell which, only context can", "A preprocessing pipeline chains tokenization, abbreviation expansion, and spelling correction", "Consistent normalization directly improves model accuracy"]} />

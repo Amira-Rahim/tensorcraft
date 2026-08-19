@@ -18,14 +18,14 @@ concept:
     mlCode: "if (modelFlags.v2) { predict(modelV2, input); } else { predict(modelV1, input); }"
     tier: identity
 consequence:
-  narrative: "Hassan nods at the monitoring dashboard. 'Now every model update goes through A/B testing. We prove it's better before it touches production. Tariq, show them what happened when we tested v3.1.' Tariq grins. 'v3.1 flagged a bearing failure while the control arm was still calling it normal vibration. Six hours of warning we didn't have before.'"
+  narrative: "Hassan nods at the monitoring dashboard. 'Now every model update goes through A/B testing. We prove it's better before it touches production.' Tariq is already pulling up the routing table. 'v3.1 goes out tomorrow. Five percent, and I want the control arm answering the same sensors it does today.'"
 hints:
   - level: nudge
-    content: "Your ModelRouter.assignModel() should hash the device ID into a bucket, so device-7alpha-003 gets the same model version on every request"
+    content: "Same device ID in, same version out, every time. What can you compute from the ID that never changes between requests?"
   - level: guidance
-    content: "Create a ModelRouter that accepts a version map and routes predictions based on assignment"
+    content: "Hash the device ID to a number, reduce it to a 0-99 bucket, and compare that bucket against treatmentPercent"
   - level: solution
-    content: "Use a hash of the device ID to deterministically assign devices to model versions"
+    content: "In assignVersion, call this.hashCode(deviceId), take Math.abs(hash) % 100, and return treatmentVersion when that bucket is below treatmentPercent, otherwise controlVersion"
 keywords:
   - ab-testing
   - feature-flags
@@ -41,7 +41,7 @@ March 2024. Model v2.3 deployed to all 12,400 devices simultaneously. Power grid
 We had the monitoring. We had the metrics. What we didn't have was a controlled comparison. The old model was gone. Nothing to measure against.
 </Dialogue>
 
-Route 10% of the fleet to the new model. Keep 90% on the old one. Let live metrics pick the winner. The mechanism is a feature flag with a model version behind it instead of a checkout flow. The waiting is the unfamiliar part. A conversion confirms itself in minutes, but the ground truth for a bearing-failure prediction can take hours to arrive, so the test has to run long enough for those answers to come back.
+Route 5% of the fleet to the new model. Keep 95% on the old one. Let live metrics pick the winner. The mechanism is a feature flag with a model version behind it instead of a checkout flow. The waiting is the unfamiliar part. A conversion confirms itself in minutes, but the ground truth for a bearing-failure prediction can take hours to arrive, so the test has to run long enough for those answers to come back.
 
 <LearningObjectives objectives={["Understand why A/B testing is critical for production ML deployments", "Map feature flag concepts to model version routing", "Implement a basic model router that assigns devices to model versions", "Define metrics that determine whether a new model is actually better"]} />
 
@@ -96,11 +96,11 @@ class ModelRouter {
   }
 }
 
-// Terra Grid deployment: 10% of devices get the new model
+// Terra Grid deployment: 5% of devices get the new model
 const router = new ModelRouter({
   control: { id: 'anomaly-v3.0', version: '3.0', predict: modelV3.predict },
   treatment: { id: 'anomaly-v3.1', version: '3.1', predict: modelV3_1.predict },
-  treatmentPercent: 10,
+  treatmentPercent: 5,
 });
 
 const result = await router.predict('device-7alpha-003', sensorData);
@@ -168,7 +168,7 @@ Build a model router with deterministic device assignment.
 
 <Quiz
   question="You A/B test a new model variant against the current production model on 10% of traffic. After 3 days the variant shows +2% accuracy. Should you ship to 100%?"
-  options={[{"text":"Yes: 2% is meaningful, ship immediately"},{"text":"Not yet: check whether the difference is statistically significant given the sample size, and look for confounders (time-of-day mix, user segment shifts, day-of-week patterns)"},{"text":"No: A/B tests need 90 days minimum"},{"text":"Run it on 100% to confirm"}]}
+  options={[{"text":"Yes: 2% is meaningful, ship immediately"},{"text":"Not yet: check whether the difference is statistically significant given the sample size, and look for confounders (time-of-day mix, which regions landed in each arm, weather events inside the window)"},{"text":"No: A/B tests need 90 days minimum"},{"text":"Run it on 100% to confirm"}]}
   correct={1}
   explanation="A 2% point estimate is meaningless without (a) a significance test on the actual sample size and (b) checking that the 10% slice is representative. Option A skips both. Option C invents a calendar rule. Option D defeats the purpose of A/B testing: ramp gradually and roll back if metrics drop."
   tier="intuition"

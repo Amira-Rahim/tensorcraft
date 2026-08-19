@@ -2,7 +2,7 @@ slug: pruning-distillation
 title: "Pruning & Distillation"
 worldId: terra-grid
 order: 4
-description: "A massive model that knows everything needs to become a tiny model that knows just enough. Learn pruning and knowledge distillation, the ML equivalents of tree-shaking and code splitting."
+description: "A 200MB cloud model has to fit in 5MB on the gateway, and Hassan finds 60% of its weights already sitting near zero. Pruning cuts what carries no signal, distillation trains a small model on a big one's answers, and both are the ML relatives of tree-shaking and code splitting."
 lessonCount: 5
 prerequisites:
   - quantization

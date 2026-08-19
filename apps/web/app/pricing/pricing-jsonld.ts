@@ -35,10 +35,10 @@ const OFFER_DEFS: PricingOfferDef[] = [
       "Module 1 of Deep Orbit free: lessons and exercises, no account required.",
   },
   {
-    name: "Single world",
+    name: "Full course",
     price: PRICING.single.price,
     worlds: PRICING.single.worlds,
-    description: `One full world: ${WORLD_CONTENT.totalLessonsPerWorld} lessons across ${WORLD_CONTENT.modulesPerWorld} modules, capstone, lifetime access.`,
+    description: `One full course: ${WORLD_CONTENT.totalLessonsPerWorld} lessons across ${WORLD_CONTENT.modulesPerWorld} modules, capstone, lifetime access.`,
   },
   {
     name: "Two-world bundle",

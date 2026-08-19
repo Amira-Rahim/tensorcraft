@@ -44,10 +44,10 @@ The FFT tells us which frequencies are present, but not *when* they appear. The 
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-So we compute the FFT at different time windows and stack them together? That sounds like... the DevTools performance waterfall. Time on one axis, event types on another, colored by duration.
+Then we cut the signal into slices, transform each slice, and stack the results left to right. That's a DevTools performance waterfall with frequency on the vertical axis.
 </Dialogue>
 
-Demir's mapping holds, and nobody corrects it because there is nothing to correct. A spectrogram keeps the waterfall's layout exactly: time on x, frequency on y, color for magnitude. Read enough of them and a DevTools waterfall starts looking like a spectrogram of a page load.
+Demir has the layout right: time on the x-axis, the second quantity on the y-axis, and a picture you read whole instead of row by row. Two things change on the way across. The waterfall sizes its bars by duration; a spectrogram spends color on magnitude. And a waterfall cell is an event that either happened or did not, while every cell of a spectrogram carries a computed amount of energy, including the ones that read as empty. Read enough of them and a DevTools waterfall starts looking like a spectrogram of a page load.
 
 <LearningObjectives objectives={["Understand spectrograms as time-frequency representations of signals", "Implement the Short-Time Fourier Transform (STFT) by windowing and computing FFTs", "Read spectrogram output: what the axes and values mean", "Connect spectrogram visualization to the DevTools waterfall mental model"]} />
 
@@ -143,9 +143,9 @@ console.log('Anomaly appears at windows:', activeWindows);
 // - Small window → better time resolution, worse frequency resolution
 // This is the "Heisenberg uncertainty" of signal processing.
 
-// Like responsive design breakpoints:
-// - Wide breakpoint (1200px) → detailed layout but misses narrow behaviors
-// - Narrow breakpoint (320px) → catches mobile behavior but loses detail
+// Same tension as a rolling average over a stream: widen the window and
+// the estimate gets steadier, but you lose the ability to say when the
+// change actually happened.
 
 // Small window: precise in time, blurry in frequency
 const fineTime = stft(signal, 64, 32);

@@ -56,7 +56,7 @@ One method call decides whether this pipeline survives contact with real sensor 
 
 ## From Fetch to Feed
 
-In JavaScript, you fetch data from an API and hand it to whatever consumes it. In ML, you fetch data and feed it to a model. The pattern is similar, and the key promise of a generator is the same as paginated fetching: **nothing is loaded until it's asked for.**
+You already know half of this pattern. A paginated fetch pulls page 1, hands it off, and never touches page 2 until something asks for it. A tf.data pipeline works the same way, except the thing asking is a model: **nothing is loaded until it's asked for.**
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -102,9 +102,13 @@ The key difference from paginated fetching: ML shuffles the data before batching
 
 Batching is virtual-list rendering for model input. A virtual list doesn't render 10,000 DOM nodes at once; it renders a window of visible items. ML models likewise process a window (batch) of data at a time, updating their understanding incrementally.
 
+## Splitting Without Leaking
+
+Batching decides what the model sees on each step. The split decides what it never sees while training. Get the second one wrong and your validation score is measuring memory, not learning.
+
 <CodeBlock language="typescript" title="train-test-split.ts">
 {`// Split data into training (80%) and validation (20%)
-const TOTAL = 1000;
+const TOTAL = 28_800;  // the whole archive, the same count the generator walks
 const TRAIN_SIZE = Math.floor(TOTAL * 0.8);
 
 // The trap everyone falls into: .shuffle().take()/.skip(). Dataset
@@ -144,7 +148,7 @@ Build the lazy pipeline yourself: generator, shuffle, batch, without ever holdin
     "The canonical pipeline order is shuffle first, then batch: shuffle(bufferSize).batch(32). Batching before shuffling freezes per-batch ordering.",
     "Split train/validation by dealing the deck once: shuffle the indices yourself and filter the stream, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets."
   ]}
-  bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it."
+  bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it, the same backpressure a Node readable stream applies when the consumer sets the pace."
   youCanNow="Build a tf.data pipeline that reads lazily with a generator, shuffles and batches records correctly, and splits data into training and validation sets."
 />
 
@@ -156,6 +160,6 @@ The rebuilt pipeline chews through eleven days of archived telemetry in four min
 Pipeline nominal. For reference: I processed this archive in nine seconds. I simply could not tell you what any of it meant.
 </Dialogue>
 
-Fast and blind, or slower and learning. One more piece of preparation, putting every channel on the same scale, and the foundation is done.
+Fast and blind, or slower and learning. Demir closes the log and looks at the channel readouts, still stacked at four different scales, the ripple Nazari found buried somewhere under the loudest of them.
 
 </Epilogue>

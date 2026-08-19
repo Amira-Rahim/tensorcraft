@@ -1,7 +1,7 @@
 slug: package-model
 lessonSlug: model-packaging
 title: "Package a Model"
-instructions: "Write a function createModelPackage that takes a version string and a weights ArrayBuffer, and returns an object with version, checksum (first 12 chars of a simple hash), and sizeBytes. For the hash, sum all byte values and convert to hex."
+instructions: "Write a function createModelPackage that takes a version string and a weights ArrayBuffer, and returns an object with version, checksum, and sizeBytes. Real packages hash with SHA-256; this one uses a 32-bit stand-in small enough to trace by hand. For the checksum, fold every byte into a running 32-bit integer (hash = ((hash << 5) - hash + byte) | 0), take its absolute value in hex, then left-pad with zeros to exactly 12 characters."
 starterCode: |
   interface ModelPackage {
     version: string;

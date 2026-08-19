@@ -233,7 +233,7 @@ export function PricingTiers() {
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
               Module 1 of Deep Orbit. {lessonsPerModule} lessons, full code
-              editor, bridges, graded exercises.
+              editor, JS-to-ML bridges, graded exercises.
             </p>
             <ul className="flex-1 mb-6 space-y-2">
               {[
@@ -343,7 +343,7 @@ export function PricingTiers() {
               disabled={!singleWorld}
               disabledReason="Select a world above"
             >
-              Get Single &rarr;
+              Buy Now &rarr;
             </CheckoutButton>
           </article>
         </div>

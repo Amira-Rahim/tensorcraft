@@ -13,7 +13,7 @@ concept:
   explanation: "The generator takes a low-dimensional noise vector and progressively upscales it through dense and reshape layers to produce full-resolution output."
   bridge:
     jsTitle: "Template Engine"
-    jsCode: "const html = template.render({ title, items, world })"
+    jsCode: "const html = template.render({ title, items, theme })"
     mlTitle: "Generator Network"
     mlCode: "const image = generator.predict(tf.randomNormal([1, 100]))"
     tier: structural
@@ -26,7 +26,7 @@ hints:
   - level: guidance
     content: "Use dense layers with increasing units: 100 → 256 → 512 → 784"
   - level: solution
-    content: "model.add(tf.layers.dense({inputShape: [100], units: 256, activation: 'leakyReLU'})); // then 512, then 784"
+    content: "model.add(tf.layers.dense({inputShape: [100], units: 256})); model.add(tf.layers.leakyReLU({ alpha: 0.2 })); // then 512, then 784"
 keywords:
   - generator
   - architecture
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-A template engine takes a small data object (title, items, world) and expands it into a full HTML page. Every template call produces a different page, but they all follow the same structure. A generator does the same thing: small input, structured output.
+A template engine takes a small data object (title, items, theme) and expands it into a full HTML page. Every template call produces a different page, but they all follow the same structure. A generator does the same thing: small input, structured output.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
@@ -60,23 +60,16 @@ function buildGenerator(noiseDim: number = 100): tf.Sequential {
   model.add(tf.layers.dense({
     inputShape: [noiseDim],
     units: 256,
-    activation: 'leakyReLU',
   }));
   model.add(tf.layers.batchNormalization());
+  model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
 
   // Layer 2: Further expansion
   model.add(tf.layers.dense({
     units: 512,
-    activation: 'leakyReLU',
   }));
   model.add(tf.layers.batchNormalization());
-
-  // Layer 3: Expand to image dimensions
-  model.add(tf.layers.dense({
-    units: 1024,
-    activation: 'leakyReLU',
-  }));
-  model.add(tf.layers.batchNormalization());
+  model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
 
   // Output layer: 784 pixels (28x28), sigmoid for [0,1] range
   model.add(tf.layers.dense({
@@ -89,7 +82,7 @@ function buildGenerator(noiseDim: number = 100): tf.Sequential {
 
 const generator = buildGenerator();
 console.log(generator.summary());
-// Input: [null, 100]  → Output: [null, 784]`}
+// Input: [null, 100]  → Output: [null, 784], two hidden layers`}
 </CodeBlock>
 
 ## Key Design Choices
@@ -152,4 +145,4 @@ With stride 2, K=4, P=1: each input pixel becomes a 4×4 patch in the output, mu
 **Checkerboard artifacts:** when K is not divisible by stride, overlap regions get more contributions than non-overlap → visible grid pattern in generated images. Fix: use K = 2·stride (e.g. K=4 with stride=2) or replace transposed conv with `bilinear upsample + regular conv` ("sub-pixel convolution").
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded: sigmoid for [0,1], tanh for [-1,1]", "Pair kernel size with stride (K = 2·stride) or transposed convolutions leave checkerboard artifacts in every generated image"]} />
+<KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded: sigmoid for [0,1], tanh for [-1,1]", "Transposed convolutions leave checkerboard artifacts when the kernel size does not divide evenly by the stride, so pair them (K = 2·stride)"]} />

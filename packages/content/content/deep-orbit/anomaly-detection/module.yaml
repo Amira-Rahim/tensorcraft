@@ -4,9 +4,10 @@ worldId: deep-orbit
 order: 7
 description: |
   DEEP SCAN's anomaly detector fires on a signal that matches no known category.
-  The reconstruction error is off the charts. You'll build autoencoders that learn
-  what "normal" looks like, then flag anything that deviates, using the same
-  intuition as git diff and error boundaries.
+  The reconstruction error comes back at twelve times baseline. You'll build
+  autoencoders that learn what "normal" looks like, then flag whatever they
+  cannot rebuild: git diff against a baseline the model learned instead of
+  one you committed.
 lessonCount: 5
 prerequisites:
   - foundations

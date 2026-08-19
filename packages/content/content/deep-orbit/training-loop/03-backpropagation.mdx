@@ -15,11 +15,12 @@ context:
 concept:
   explanation: "Backpropagation computes gradients for every weight in one backward sweep, applying the chain rule from the loss back to the input."
   bridge:
-    jsTitle: "React Reconciliation"
-    jsCode: "// Diff propagates from changed leaf → parent → root"
+    jsTitle: "Error up the call stack"
+    jsCode: "// A throw in parseRow() travels parseRow → readFile → main"
     mlTitle: "Backpropagation"
     mlCode: "// Gradient flows from loss → output → hidden → input"
     tier: intuition
+    breaks: "A stack trace names one path, stops at the first catch, and tells you where the failure surfaced rather than how much each frame contributed to it. The backward pass stops nowhere: it touches every weight on every run and hands each one a number, how far the loss moves if that weight moves. Nothing is thrown and nothing is caught."
 consequence:
   narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
 hints:
@@ -37,9 +38,9 @@ keywords:
 skillAxes: [training]
 ---
 
-You already know how to find one gradient without any new math: nudge the weight, rerun the network, see how the loss moved. Demir knows it too. So before this lesson hands you anything, do what he did at the engineering rig: take the method you have and scale it to all 673 parameters. Watch what it costs.
+Parameter 500 of 673, twenty seconds into a single training step, and the engineering rig is still going. The method Demir reached for needs no new math, which is exactly why he reached for it: nudge one weight, rerun the network, see how the loss moved. You know how to do that already. So before this lesson hands you anything, do it his way and watch what it costs.
 
-<LearningObjectives objectives={["Estimate a gradient numerically and count what that costs at network scale", "Understand how backpropagation works at a high level", "See the connection to React's reconciliation algorithm", "Use tf.variableGrads() for automatic gradient computation"]} />
+<LearningObjectives objectives={["Estimate a gradient numerically and count what that costs at network scale", "Understand how backpropagation works at a high level", "See the connection to an error travelling back up the call stack", "Use tf.variableGrads() for automatic gradient computation"]} />
 
 ## The Method You Already Have
 
@@ -72,7 +73,7 @@ Estimating the gradient for each of 673 parameters one nudge at a time costs 673
 
 ## Working Backwards
 
-The name is **backpropagation**. React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by walking the loss gradient backwards, from output to input.
+The name is **backpropagation**. A call chain already runs in two directions: the calls go down, `main` into `readFile` into `parseRow`, and when `parseRow` throws, the error comes back up the same path it came down, every frame adding its line to the trace. Backpropagation has that same two-pass shape. The forward pass runs input to output computing the loss, then the backward pass returns output to input, each layer folding what it receives into the gradient it hands to the layer below.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -151,9 +152,9 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
     "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the cost backpropagation was invented to remove.",
     "Backpropagation computes gradients for every weight in one backward pass by applying the chain rule from output to input, making it orders of magnitude faster than computing each gradient individually.",
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
-    "Vanishing gradients occur when the chain rule product collapses across many layers. Residual connections help by adding 1 to each link in the chain."
+    "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, keeps a 1 in every link of that product so it cannot collapse to zero."
   ]}
-  bridge="React reconciliation diffs the virtual DOM from changed leaf to root. Backpropagation diffs the loss from output layer to input layer, propagating gradient information through the same tree-walking pattern."
+  bridge="A throw deep in a call chain travels back the way the calls came, frame by frame, and the stack trace records the path. Backpropagation runs those same two directions: forward from input to output for the loss, backward from output to input for every gradient."
   youCanNow="Use `tf.variableGrads()` to compute gradients for a multi-layer network in a single backward pass and read the gradient shapes for each variable."
 />
 

@@ -44,7 +44,7 @@ So instead of the model saying "there is an object at exactly pixel 347, 218," i
 </Dialogue>
 
 <Dialogue speaker="Zara">
-Predicting offsets from known positions is much easier than predicting absolute coordinates from nothing. But the grid intuition will bite you in one spot: you author grid-template-areas to fit your content. Anchor scales and aspect ratios are guesses you commit to before training. Guess wrong, say all square anchors for long, thin drones, and recall craters no matter how good the model is.
+Predicting offsets from known positions is much easier than predicting absolute coordinates from nothing. But the grid intuition will bite you in one spot: you author grid-template-areas to fit your content. Anchor scales and aspect ratios are guesses you commit to before training. Pick square anchors, then point the model at long, thin drones, and recall craters no matter how good the model is.
 </Dialogue>
 
 Searching an entire image for objects is computationally brutal. Instead, modern detection models pre-define a grid of **anchor boxes**: candidate regions at various sizes and aspect ratios. The model then predicts two things for each anchor: (1) "is there an object here?" and (2) "how should I adjust this anchor to fit the object?"
@@ -193,7 +193,7 @@ Generate an anchor grid with multiple scales.
   question="Why do object detectors use multiple anchor boxes per spatial location instead of just one box?"
   options={[{"text":"To average predictions across anchors and reduce variance"},{"text":"Because objects in real scenes have varying aspect ratios and scales; a single anchor cannot match a tall pedestrian and a wide bus equally well"},{"text":"To run detection in parallel on different GPU cores"},{"text":"To make the loss function differentiable"}]}
   correct={1}
-  explanation="A single anchor shape can match either tall objects (pedestrians) OR wide objects (buses) but not both simultaneously. Multiple anchors per location (typically 3 scales × 3 ratios = 9 anchors) let the network specialize each anchor to a different shape; during training, only the anchor with highest IoU to the ground-truth gets the regression target. Variance reduction (A) is not the motivation; parallelism (C) is unrelated; loss differentiability (D) is independent of anchor count."
+  explanation="A single anchor shape can match tall objects (pedestrians) or wide objects (buses), not both. Nine anchors per cell (3 scales × 3 aspect ratios) let each anchor specialize in a different shape, and training hands each real object to whichever anchor already sits closest to it. Averaging predictions is not the motivation, GPU parallelism is unrelated, and the loss is differentiable whatever the anchor count."
   tier="structural"
 />
 

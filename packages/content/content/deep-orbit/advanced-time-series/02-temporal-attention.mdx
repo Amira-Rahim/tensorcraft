@@ -90,8 +90,9 @@ function temporalAttention(
 ## Interpreting Attention Weights
 
 <CodeBlock language="typescript" title="interpret-attention.ts">
-{`// Attention weights are interpretable, unlike LSTM hidden state
-// You can show the crew EXACTLY why the model made its prediction
+{`// Attention weights are inspectable, unlike LSTM hidden state
+// You can show the crew exactly WHERE the model put its weight.
+// Why it decided is a separate question the weights do not settle.
 
 interface AttentionInsight {
   timeStep: number;
@@ -111,18 +112,19 @@ function topAttentionSteps(
 }
 
 // For the anomalous signal:
-// Step 77: weight=0.15, reading=[0.31, 37, 1.57]  ← frequency shift
+// Step 77: weight=0.15, reading=[0.31, 40, 1.57]  ← frequency shift
 // Step 4:  weight=0.12, reading=[1.82, 37, 0.23]  ← amplitude spike
 // Step 40: weight=0.09, reading=[0.95, 37, 0.89]  ← mid-pattern
-// (middle feature is the zero-crossing count: ~37 for the 73.4 Hz line
-//  in this window, steady across the steps the model locked onto)`}
+// (middle feature is the zero-crossing count over the 64-sample capture:
+//  37 is the 73.4 Hz line, and step 77's 40 is the shift itself, near
+//  80 Hz, which is why the model spent its top weight there)`}
 </CodeBlock>
 
 ## Applied: Attention Over a Live Ring Buffer
 
 The heatmaps above assume the model gets the whole window. On the bridge array it gets whatever the capture buffer kept, and storage is tight enough that the tempting move is the browser one: virtualize. Keep the steps around the predicted event, drop the rest, let a viewport stand in for the sequence.
 
-Attention has a failure mode built exactly for that trick, and four tensor shapes are enough to see it:
+Attention has a failure mode built exactly for that trick, and one truncated buffer is enough to see it:
 
 <CodeBlock language="typescript" title="ring-buffer-attention.ts">
 {`// One full capture cycle from the ring buffer: 80 steps, 3 features.
@@ -158,7 +160,7 @@ Build a temporal attention mechanism and identify the focused time steps.
   whatYouLearned={[
     "Temporal attention applies a learned scoring function along the time axis, then softmax-normalizes the scores into a probability distribution over time steps.",
     "The weighted sum of time-step features concentrates the model's representation on the highest-scoring positions, reducing noise from irrelevant steps.",
-    "Attention weights are natively interpretable: visualizing them as a heatmap shows exactly which time steps drove the output."
+    "Attention weights are inspectable as a heatmap over time, showing where the model put its weight; that is a map of where it looked, not a proof of why it decided."
   ]}
   bridge="Like `scrollIntoView()` jumping the viewport to the element that matters, temporal `attentionWeights = softmax(scores)` concentrate processing on the highest-scoring time steps."
   youCanNow="Build a temporal attention layer, extract its weights, and identify the time steps a model focused on to explain its prediction."

@@ -45,8 +45,8 @@ export default async function UnsubscribePage({
       <main className="mx-auto max-w-xl px-6 py-24">
         <h1 className="mb-4 text-3xl font-bold">Unsubscribed.</h1>
         <p className="text-text-muted">
-          You won&apos;t get The Bridge anymore. If this was a mistake, reply to
-          any past email and we&apos;ll re-add you.
+          You won&apos;t get The Bridge, the weekly digest, anymore. If this was
+          a mistake, reply to any past email and we&apos;ll re-add you.
         </p>
       </main>
     );

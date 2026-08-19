@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir trains the LSTM to predict the next signal values. Prediction error on the anomalous pattern: under 3%. The LSTM remembers it from 72 hours ago."
+  narrative: "Demir trains the LSTM to predict the next signal values. Prediction error on the anomalous pattern: under 3%. It recognizes the shape it learned three days ago."
   speaker: "Ensign Demir"
 concept:
   explanation: "Sequence prediction forecasts the next values in a series. If the model can call the next reading, the series has structure worth interrogating."
@@ -24,7 +24,7 @@ concept:
     tier: structural
     breaks: "Autocomplete picks from a finite list of pre-indexed completions you control. Sequence forecasting generates novel continuations from a learned distribution: predictions are unbounded, often invent values outside the training range, and confidence drops sharply with horizon. You must bound predictions with domain constraints (clip to physical limits, etc.)."
 consequence:
-  narrative: "The LSTM predicts the anomalous signal will repeat in exactly 47 minutes. The crew waits. At 47 minutes and 3 seconds, it arrives."
+  narrative: "The forecast goes up on the main display with a 47-minute countdown, and nobody on the bridge leaves their station."
 hints:
   - level: nudge
     content: "Forecasting the next reading is regression: the output layer stays linear and the loss is squared error, not crossentropy."
@@ -41,7 +41,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Ensign Demir">
-The LSTM just predicted the next signal reading within 3% accuracy. It knows the pattern. And look: it's predicting the anomaly will repeat in... 47 minutes.
+The LSTM just predicted the next signal reading to within 3% of the real one. It knows the pattern. And look: it's predicting the anomaly will repeat in... 47 minutes.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -50,7 +50,7 @@ If it can predict the timing, the signal has structure. And if it has structure.
 
 Autocomplete is everywhere in JavaScript work: search suggestions, code completion, the email composer finishing your sentence. Each predicts the next token from the sequence so far. Our LSTM does the same: given the last 80 signal readings, predict the next one.
 
-<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and visual comparison", "Generate multi-step forecasts by feeding predictions back as input", "Sanity-check a forecast's horizon, units, and step size before it reaches the DEEP SCAN dashboard"]} />
+<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the MAE metric", "Generate multi-step forecasts by feeding predictions back as input", "Sanity-check a forecast's horizon, units, and step size before it reaches the DEEP SCAN dashboard"]} />
 
 ## Next-Value Prediction
 
@@ -139,7 +139,7 @@ Train a prediction model and forecast the next signal value.
   whatYouLearned={[
     "Next-value prediction is regression: the output is a continuous vector of signal values, so the loss is `meanSquaredError` and the diagnostic metric is MAE; accuracy has no meaning for continuous outputs.",
     "Multi-step forecasting feeds each prediction back as the next input, extending the horizon one step at a time; error compounds with each step, so confidence degrades with distance.",
-    "Unusually high prediction error on a specific region of a signal can itself be an anomaly signal: the model's surprise is informative."
+    "A forecast horizon is measured in steps, not minutes: 47 steps means 47 seconds on a 1 Hz stream and 47 pulses on the interval series, so check what one step means before you read a prediction off a display."
   ]}
   bridge="Autocomplete picks from a finite pre-indexed list you control; sequence forecasting generates novel continuations from a learned distribution, so predictions are unbounded and confidence drops sharply with horizon, requiring domain-level output clipping."
   youCanNow="Train an LSTM for next-value regression using MSE loss, evaluate it with MAE, and generate multi-step forecasts by feeding predictions back as input."

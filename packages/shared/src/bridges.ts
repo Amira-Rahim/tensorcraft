@@ -153,16 +153,17 @@ export const BRIDGES: Bridge[] = [
   {
     id: 6,
     mlConcept: "Epochs",
-    jsConcept: "requestAnimationFrame loop",
+    jsConcept: "setImmediate() self-scheduling loop",
     tier: "structural",
     connection:
-      "requestAnimationFrame(loop) reruns the render logic as soon as the last frame finishes, and the animation creeps toward its target. Training does this with the whole dataset: one epoch ends, the next begins, and the loss creeps down.",
+      "In Node, function loop() { processChunk(); if (!done) setImmediate(loop); } queues the next pass to run as soon as the event loop clears, and the work creeps toward done without starving anything else. Training runs that loop over the whole dataset: one epoch ends, the next begins, and the loss creeps down.",
     breaks:
-      "rAF runs at 60Hz with deterministic frame timing on in-memory data. An epoch can take seconds to hours per iteration, runs as fast as the GPU allows, and reads batches from disk or network. What carries over is the loop, not the clock.",
+      "One setImmediate turn costs microseconds and shares the event loop with every other pending callback; one epoch is a full pass over the dataset that can take seconds to hours on a GPU. The exit test differs too: your loop stops when a condition you wrote flips, while training stops when validation loss stops improving, a judgment call rather than a boolean.",
     category: "shared",
     variants: {
       react: {
         jsCode: `useEffect(() => {\n  let id = requestAnimationFrame(function loop() {\n    processEpoch(data);\n    if (!converged) id = requestAnimationFrame(loop);\n  });\n  return () => cancelAnimationFrame(id);\n}, []);`,
+        jsConcept: "requestAnimationFrame loop",
       },
     },
     mlCode:
@@ -297,7 +298,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Math.max(0, x)",
     tier: "identity",
     connection:
-      "ReLU is literally Math.max(0, x) \u2014 the same function, same math, different name. The strongest bridge in the system. Clip negative values to zero, pass positives through unchanged.",
+      "ReLU is literally Math.max(0, x): the same function, same math, different name. The strongest bridge in the system. Clip negative values to zero, pass positives through unchanged.",
     category: "shared",
     variants: {
       react: {
@@ -309,16 +310,17 @@ export const BRIDGES: Bridge[] = [
   {
     id: 15,
     mlConcept: "Backpropagation",
-    jsConcept: "Reconciliation (tracing diffs backward)",
+    jsConcept: "Error propagation up the call stack",
     tier: "intuition",
     connection:
-      "Backprop traces from loss back to input weights via the chain rule; React traces from changed leaves back to root. In each case, information propagates backward through a structure to determine what needs updating.",
+      "An error thrown deep in a call chain travels backward, callee to caller, and the stack trace records the path that produced it. Backpropagation sends the loss backward the same way: layer by layer, the chain rule hands every weight its share of the blame.",
     breaks:
-      "Reconciliation moves data; backpropagation computes partial derivatives via the chain rule. There is no DOM equivalent of a gradient. The traversal direction matches; the operation at each node does not.",
+      "A stack trace names one path, stops at the first catch, and tells you where the failure happened, not how much each frame contributed. Backpropagation touches every weight on every backward pass and hands each one a number, the partial derivative, that says exactly how far and in which direction to move.",
     category: "shared",
     variants: {
       react: {
         jsCode: `class ErrorBoundary extends React.Component {\n  componentDidCatch(error, info) {\n    // Error flows backward up the tree\n  }\n}`,
+        jsConcept: "Error boundary",
       },
     },
     mlCode:
@@ -382,16 +384,17 @@ export const BRIDGES: Bridge[] = [
   {
     id: 19,
     mlConcept: "Confusion matrix",
-    jsConcept: "Error boundary report",
+    jsConcept: "Access-log tally by route and status",
     tier: "structural",
     connection:
-      "An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Structured breakdowns of what went right and what went wrong, and either one tells you where to start debugging.",
+      "Tally a week of access logs by route and status class and you get a grid: rows are routes, columns are 2xx, 4xx, 5xx, and the worst cell tells you where to start debugging. A confusion matrix is that grid for a classifier: rows are the actual class, columns are the predicted class, and the biggest off-diagonal cell is the bug.",
     breaks:
-      "Error boundaries catch exceptions you did not anticipate. Confusion matrices show wrong predictions the model is fully confident about; there is no exception, just bad output. The errors are silent and require knowing ground truth to detect.",
+      "A 5xx announces itself: the server knew the request failed and logged it. A confusion matrix counts errors the model made with full confidence; nothing threw, the output was simply wrong, and you can only build the matrix because you hold labeled test data. Production traffic arrives without the answer column.",
     category: "shared",
     variants: {
       react: {
         jsCode: `// Categorize render errors by type\nclass ErrorBoundary extends React.Component {\n  state = { errors: { render: 0, network: 0, auth: 0 } };\n}`,
+        jsConcept: "Error boundary tally",
       },
     },
     mlCode:
@@ -420,24 +423,24 @@ export const BRIDGES: Bridge[] = [
   {
     id: 21,
     mlConcept: "Weight initialization",
-    jsConcept: "CSS initial values",
+    jsConcept: "Randomized retry backoff (jitter)",
     tier: "structural",
     connection:
-      "Before any updates occur, something has to set the starting point: CSS initial values for layout, weight initialization for training. Poor initial values lead to broken layouts or slow convergence; deliberate defaults matter in each world.",
+      "Retry a failed request after exactly 500ms and every client in the fleet retries in lockstep, so the pileup repeats. Jitter fixes that by drawing the delay at random from a window you size on purpose: `const delay = Math.random() * base * 2 ** attempt`. Weight initialization is the same move at the start of training. Every weight in a layer starts as a random draw from a scaled distribution, because weights that start equal produce equal outputs, receive equal gradients, and stay equal forever.",
     breaks:
-      "CSS initial values are static defaults: `display: inline` for an unstyled `<span>` never changes by itself. Weight initialization controls the dynamics of training: He/Xavier init keeps activation variance stable across layers; bad init causes vanishing/exploding gradients or dead neurons that never recover. Init is a one-shot choice with multi-epoch consequences.",
+      "Jitter only has to decorrelate clients, so any wide-enough window works and you tune it by watching the retry graph. Init scale is less forgiving: He and Xavier pick the variance from the layer's fan-in (how many inputs feed each unit) so activations neither shrink toward zero nor blow up across dozens of layers, and a bad choice surfaces epochs later as gradients that vanish or explode. Jitter also runs on every retry; initialization happens once and the whole run inherits it.",
     category: "deep-orbit",
     mlCode: "tf.initializers.heNormal() // weight init for ReLU layers",
   },
   {
     id: 22,
     mlConcept: "Batch normalization",
-    jsConcept: "CSS normalize / reset",
+    jsConcept: "Z-scoring a batch of samples",
     tier: "structural",
     connection:
-      "Why does every stylesheet start with a reset? Because downstream rules are easier to write when inputs are predictable. Batch norm applies that logic between layers: standardize what each layer receives, and distribution shift stops compounding through the network.",
+      "You have a batch of latency samples and you want them on a comparable scale, so you z-score the batch: subtract its mean, divide by its standard deviation, and every sample now reads as a distance from the batch's own center. `const z = batch.map((x) => (x - mean) / (sd + 1e-5));` Batch normalization runs that line between layers, over activations instead of latencies, so each layer receives inputs on a stable scale no matter how the layer below it shifted.",
     breaks:
-      "CSS reset runs once at page load. Batch normalization runs every forward pass and uses learned scale/shift parameters that update during training. It is an active learnable transform per layer, not a one-time normalization.",
+      "Your version stops after the division. Batch norm then applies a learned scale and shift that training updates like any other weight, so a layer can partly undo the normalization when that lowers the loss. It also stores a running mean and variance during training and uses those at inference, because one prediction has no batch to compute statistics from. Miss that switch and a model that trained cleanly returns nonsense on single requests.",
     category: "deep-orbit",
     mlCode:
       "model.add(tf.layers.batchNormalization()); // normalize activations per mini-batch",
@@ -445,12 +448,12 @@ export const BRIDGES: Bridge[] = [
   {
     id: 23,
     mlConcept: "Residual connections",
-    jsConcept: "Component composition via children",
+    jsConcept: "Object spread: { ...state, ...patch }",
     tier: "structural",
     connection:
-      "React children pass content through wrapper components; residual connections pass activations around layers. Each gives information a direct path that skips the intermediate processing.",
+      "A reducer returning `{ ...state, ...patch }` gives every field two ways to reach the next state: through the patch if the update touched it, straight from the old object if it did not. A residual block wires that second path into a network with `output = f(x) + x`, so the input still reaches the next layer when the block in between learns to contribute almost nothing.",
     breaks:
-      "React children pass content unchanged through wrappers. Residual connections add the input to the output of a transformed block (`output = f(x) + x`); the path is additive, not pass-through. The shortcut value is summed with the processed value; child rendering does not sum.",
+      "The spread settles each key one way or the other, and the patch wins outright wherever it names a field. A residual adds instead of choosing, so both values land in the output and the sum can be larger than either one. Shapes constrain it too: when a block changes the channel count, the shortcut needs its own 1x1 convolution to reshape x before the addition, and a spread has no equivalent of that.",
     category: "deep-orbit",
     mlCode:
       "const out = layerNorm(input.add(attention(input))); // skip + transform",
@@ -610,12 +613,12 @@ export const BRIDGES: Bridge[] = [
   {
     id: 36,
     mlConcept: "LSTM cell memory",
-    jsConcept: "Session storage",
+    jsConcept: "sessionStorage, or per-connection state on a socket",
     tier: "structural",
     connection:
-      "State that has to survive navigation goes in session storage. An LSTM threads the same need through time: its cell state persists across timesteps, selectively read and updated at each one.",
+      "State that has to survive navigation goes in sessionStorage, the per-tab store a browser keeps until the tab closes; on a Node socket server the same job goes to an object you hang off the connection and read again on the next message. Either way something persists between turns and you decide what to write each turn. An LSTM threads that need through time: cell state carries forward across timesteps, and learned gates decide at each step what to keep, what to overwrite, and what to hand on.",
     breaks:
-      "Session storage is a key-value store you write and read with explicit keys. LSTM cell state is a fixed-size vector with learned read/write gates; there is no key. The model decides what to remember; you do not address it.",
+      "Both of those stores are addressed by keys you picked, and you can read any key whenever you want. LSTM cell state is one fixed-size vector of floats with no keys at all: the gates are learned functions that decide per timestep how much of each slot to erase and how much to add. Nothing guarantees a slot means one thing, so there is no entry to look up and no value you can set by hand.",
     category: "signal-ward",
     mlCode: "tf.layers.lstm({ units: 128, returnSequences: true })",
   },
@@ -785,7 +788,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "CI/CD pipeline",
     tier: "structural",
     connection:
-      "CI/CD: code \u2192 build \u2192 test \u2192 deploy. ML: data \u2192 train \u2192 evaluate \u2192 deploy. Same workflow pattern \u2014 an automated multi-stage pipeline that transforms inputs into production artifacts.",
+      "CI/CD: code \u2192 build \u2192 test \u2192 deploy. ML: data \u2192 train \u2192 evaluate \u2192 deploy. Same workflow pattern: an automated multi-stage pipeline that transforms inputs into production artifacts.",
     breaks:
       "CI/CD outputs are deterministic and identical given identical inputs. ML pipeline outputs (trained models) vary across runs even with fixed code due to random init, data shuffling, and GPU nondeterminism. Reproducibility requires extra effort (seeds, deterministic kernels).",
     category: "terra-grid",
@@ -794,12 +797,12 @@ export const BRIDGES: Bridge[] = [
   {
     id: 50,
     mlConcept: "Drift detection",
-    jsConcept: "Lighthouse CI",
+    jsConcept: "p95 latency alert against a stored baseline",
     tier: "structural",
     connection:
-      "A Lighthouse CI gate asks every PR: did performance regress against the baseline? Drift detection asks production the same question about your model: has the incoming data wandered away from what it was trained on?",
+      "Your service records p95 latency, the value 95 percent of requests come in under, and an alert fires when this week's traffic sits far enough above the stored baseline. Drift detection asks production the same question about model inputs: has the distribution arriving now moved away from the distribution the model trained on?",
     breaks:
-      "Lighthouse runs a fixed test suite per PR and returns a deterministic pass/fail score. Drift detection compares incoming data distributions to a baseline using PSI/KL/KS: non-binary, threshold-tunable, and lagging because ground-truth labels arrive late or never. A drift alert is a hint that the model MAY be degrading; you still need a labelled holdout to confirm. Lighthouse failure is the bug; drift alert is a hypothesis.",
+      "The latency alert measures the thing you care about. Requests really did get slower, and the number is the problem. Drift measures the inputs and only suggests something about accuracy: it scores distributions with PSI, KL, or a KS test against a threshold you tune, it can fire on a harmless shift such as a new market or a renamed category, and a model can rot with no drift signal at all. Confirming a drift alert takes labeled holdout data, which arrives late or never.",
     category: "terra-grid",
     mlCode: "const psi = computePSI(baselineDistribution, currentDistribution)",
   },

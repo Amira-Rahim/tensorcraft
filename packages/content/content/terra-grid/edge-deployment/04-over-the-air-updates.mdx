@@ -7,29 +7,29 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "A critical model update needs to reach 847 devices. Tariq designs an OTA pipeline that mirrors the Service Worker update lifecycle: download in background, verify, swap atomically."
+  narrative: "A critical model update needs to reach 847 devices. Tariq designs an OTA pipeline shaped like a staged release: download into its own directory, verify, flip one pointer."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "OTA model updates follow the Service Worker lifecycle: install new version in background, verify integrity, activate on next inference cycle, keep the old version as fallback."
+  explanation: "OTA model updates follow the staged-release deploy: unpack the new version beside the running one, verify its integrity hash, flip the active pointer, and keep the previous release for rollback."
   bridge:
-    jsTitle: "Service Worker Update"
-    jsCode: "navigator.serviceWorker.register('/sw.js') // install → waiting → active"
+    jsTitle: "Atomic Release Swap"
+    jsCode: "await symlink('releases/3.2.1', 'current.tmp')\nawait rename('current.tmp', 'current') // atomic flip"
     mlTitle: "OTA Model Update"
-    mlCode: "otaUpdate({ download, verify, stage, activate }) // same lifecycle"
+    mlCode: "otaUpdate({ download, verify, stage, activate }) // same sequence"
     tier: structural
-    breaks: "Service worker updates ship code that runs against current data deterministically. OTA model updates ship new weights that may suddenly shift prediction distribution. Staged rollout, shadow inference (running both old and new in parallel), and accuracy gating against a holdout set are required to detect regressions before full deployment."
+    breaks: "A release swap ships code that behaves the same on every request, so a smoke test on one instance clears the fleet. OTA model updates ship new weights that can shift the prediction distribution the moment they activate, and the device reports nothing wrong because predictions keep arriving on schedule. Staged rollout, shadow inference (running both old and new in parallel), and accuracy gating against a holdout set are required to detect regressions before full deployment."
 consequence:
-  narrative: "GRID confirms: 847 of 847 devices updated. Zero downtime. Tariq exhales."
+  narrative: "846 of 847 on the new version. One Cortex-A53 unit failed the accuracy gate and rolled itself back inside 40 seconds, which is the only line of the log Tariq reads twice."
 hints:
   - level: nudge
-    content: "performOTAUpdate() should behave like a Service Worker install: download in the background, verify, and keep serving the old model until the swap"
+    content: "performOTAUpdate() should behave like a staged release: download into its own key, verify it, and keep serving the old model until the pointer flips"
   - level: guidance
     content: "Download new model in background, verify checksum, then swap atomically"
   - level: solution
     content: "Stage the new model alongside the old one, run validation inference, then swap the active pointer"
 keywords:
   - ota-update
-  - service-worker
+  - staged-release
   - atomic-swap
   - rollback
 ---
@@ -42,9 +42,9 @@ We have a model update that improves anomaly detection by 4.2%. I need it on 847
 Deployment to Sector 7 initiated. Estimated completion: 38 minutes. Satellite bandwidth allocated.
 </Dialogue>
 
-A Service Worker installs a new version in the background while the current version keeps serving requests; when the new version is verified and ready, it activates on the next navigation. That is the right transport model for OTA: download, verify, stage, activate, zero downtime. It is the wrong risk model. New code behaves identically on every page load; new weights can shift the prediction distribution the moment they activate. So this pipeline adds what Service Workers never needed: staged rollout, shadow inference running old and new side by side, and an accuracy gate against a holdout set before the rest of the fleet sees the update.
+A deploy that cannot take the service down has a standard shape: unpack the new release into `releases/3.2.1`, run its checks there while `current` still points at the old one, then flip `current` with a single atomic rename. The previous release stays on disk, so rollback is one more flip. That is the right transport model for OTA: download, verify, stage, activate, zero downtime. It is the wrong risk model. New code behaves identically on every request, so one smoke test clears the fleet. New weights can shift the prediction distribution the moment they activate, and nothing throws, because predictions keep arriving on schedule. So this pipeline adds what a release swap never needed: staged rollout, shadow inference running old and new side by side, and an accuracy gate against a holdout set before the rest of the fleet sees the update.
 
-<LearningObjectives objectives={["Map the Service Worker lifecycle (install, waiting, active) to model OTA updates", "Implement atomic model swaps with automatic rollback on failure", "Design bandwidth-efficient update strategies using delta compression", "Build health checks that validate new models before activation"]} />
+<LearningObjectives objectives={["Map the staged-release deploy (download, verify, flip) to model OTA updates", "Implement atomic model swaps with automatic rollback on failure", "Design bandwidth-efficient update strategies using delta compression", "Build health checks that validate new models before activation"]} />
 
 ## The Update Lifecycle
 
@@ -64,13 +64,14 @@ interface OTAManager {
 async function performOTAUpdate(
   manager: OTAManager,
   updateUrl: string,
+  newVersion: string,
   expectedChecksum: string,
 ): Promise<boolean> {
-  // Phase 1: Download (like SW install event)
+  // Phase 1: Download (like fetching a release tarball)
   manager.state = 'downloading';
   const packageData = await fetch(updateUrl).then(r => r.arrayBuffer());
 
-  // Phase 2: Verify integrity (like SRI check)
+  // Phase 2: Verify integrity (like the integrity hash in a lockfile)
   manager.state = 'verifying';
   const checksum = await computeChecksum(packageData);
   if (checksum !== expectedChecksum) {
@@ -79,12 +80,23 @@ async function performOTAUpdate(
     return false;
   }
 
-  // Phase 3: Stage (like SW waiting state)
+  // Phase 3: Stage (a release that is on disk but not current yet). Store
+  // under the version's own key so staging the next update cannot
+  // overwrite the model now running.
   manager.state = 'staging';
-  await writeToStorage('staged-model', packageData);
+  manager.stagedVersion = newVersion;
+  await writeToStorage(\`model-\${newVersion}\`, packageData);
 
-  // Phase 4: Validate with test inference
-  const stagedModel = await tf.loadLayersModel('indexeddb://staged-model');
+  // Phase 4: Gate on accuracy, not just on shape. A random-noise probe
+  // proves the graph loads. It says nothing about whether the new weights
+  // still agree with the old ones on real sensor data. On the fleet this
+  // phase also scores the staged model against a stored holdout set and
+  // shadows the live model for one inference cycle before any device
+  // promotes it.
+  //
+  // parseArtifacts splits the downloaded package into the three things
+  // tf.io.fromMemory expects: modelTopology, weightSpecs, and weightData.
+  const stagedModel = await tf.loadLayersModel(tf.io.fromMemory(parseArtifacts(packageData)));
   const testInput = tf.randomNormal([1, 24]);
   const testOutput = stagedModel.predict(testInput) as tf.Tensor;
   const outputValid = testOutput.shape[1] === 3;
@@ -94,14 +106,23 @@ async function performOTAUpdate(
 
   if (!outputValid) {
     manager.state = 'failed';
-    await deleteFromStorage('staged-model');
+    manager.stagedVersion = null;
+    await deleteFromStorage(\`model-\${newVersion}\`);
     return false;
   }
 
-  // Phase 5: Activate (like SW activate event)
+  // Phase 5: Activate (the pointer flip)
   manager.state = 'activating';
-  await copyStorage('current-model', 'rollback-model');  // backup
-  await copyStorage('staged-model', 'current-model');    // atomic swap
+  // One pointer write, not two byte copies. Two awaited copies are not
+  // atomic: lose power between them and the device boots with a truncated
+  // current model and nothing to fall back to. Write both models under
+  // their own keys, then flip a single active-version record.
+  await setActivePointer({
+    active: \`model-\${manager.stagedVersion}\`,
+    rollback: \`model-\${manager.currentVersion}\`,
+  });
+  manager.currentVersion = newVersion;
+  manager.stagedVersion = null;
   manager.state = 'active';
 
   console.log('OTA update complete; new model active');
@@ -139,7 +160,10 @@ function applyDelta(currentWeights: ArrayBuffer, delta: DeltaUpdate): ArrayBuffe
   }
 
   console.log(\`Delta update: \${delta.deltaSizeMB}MB vs \${delta.fullSizeMB}MB full\`);
-  // Typical savings: 60-80% bandwidth reduction
+  // Savings track how much of the model you retrained, not the method.
+  // Fine-tune the last two layers and the delta is a few percent of the
+  // artifact. Retrain end to end and almost every weight moves, so the
+  // delta is the full model plus offset bookkeeping: ship the package.
   return result.buffer;
 }`}
 </CodeBlock>
@@ -154,4 +178,4 @@ Implement an OTA model update with integrity verification and rollback.
 
 <Exercise slug="ota-update" />
 
-<KeyTakeaways takeaways={["OTA updates download, verify, stage, then activate; the running model keeps serving until the new one passes verification", "Atomic swaps with rollback guarantee zero-downtime deployments: never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80%, like git diffs vs full clones", "A delta patch is an attack surface: sign it, not just checksum it", "Always validate with test inference before activation: never trust a model you have not run"]} />
+<KeyTakeaways takeaways={["OTA updates download, verify, stage, then activate; the running model keeps serving until the new one passes verification", "Atomic swaps with rollback guarantee zero-downtime deployments: never leave a device with no working model", "Delta updates send only changed weights, like git diffs vs full clones, so the saving tracks how much you retrained: a fine-tuned head ships small, a full retrain ships the whole model", "A delta patch is an attack surface: sign it, not just checksum it", "Validate before activation on two levels: a shape check proves the graph loads, an accuracy gate against a holdout set proves the weights still work"]} />

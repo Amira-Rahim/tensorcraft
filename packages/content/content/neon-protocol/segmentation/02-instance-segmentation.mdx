@@ -43,7 +43,7 @@ So semantic segmentation is `.className` and instance segmentation is `#elementI
 </Dialogue>
 
 <Dialogue speaker="Zara">
-As selectors, yes. As guarantees, no. Your ids are unique because you assigned them. An instance model has to invent its IDs from raw pixels, and it gets that wrong in two specific ways: two people standing close merge into one instance, or one person splits into two. And nothing keeps person-2 in this frame from becoming person-5 in the next. ID stability across frames takes explicit tracking on top of per-frame segmentation.
+As selectors, yes. As guarantees, no. You assigned those ids, so they hold. Run the model on frame 412 and it calls the two men at the bus shelter one instance. Run 413 and it calls them two, and the count on the display climbs from fourteen to fifteen with nobody having walked into the frame.
 </Dialogue>
 
 <LearningObjectives objectives={["Distinguish semantic segmentation (class labels) from instance segmentation (unique object masks)", "Represent instances as separate binary masks", "Assign unique IDs to detected objects", "Connect the concept to DOM element identity vs class membership"]} />
@@ -68,7 +68,7 @@ interface InstanceMask {
   bbox: [number, number, number, number]; // [x, y, w, h]
 }
 
-// A scene with 3 people and 2 drones = 5 instance masks
+// A scene with 2 people and 1 drone = 3 instance masks
 const instances: InstanceMask[] = [
   {
     classId: 3, className: 'person', instanceId: 1,

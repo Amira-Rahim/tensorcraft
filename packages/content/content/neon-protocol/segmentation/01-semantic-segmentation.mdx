@@ -12,11 +12,12 @@ context:
 concept:
   explanation: "Semantic segmentation assigns a class label to every pixel in an image, producing a dense prediction map the same size as the input. Instead of one label per image or one box per object, you get one label per pixel."
   bridge:
-    jsTitle: "CSS clip-path"
-    jsCode: "clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"
+    jsTitle: "map() vs find()"
+    jsCode: "const labels = rows.map(classify); // one label out for every row in"
     mlTitle: "Segmentation Mask"
     mlCode: "const mask = model.predict(image); // [H, W, numClasses]"
     tier: structural
+    breaks: "`map` runs your callback on one element at a time, and the value it returns for row 3 cannot depend on rows 2 and 4. A segmentation head reads a neighborhood around every pixel, so an identical pixel comes back road in one frame and sidewalk in another. The raw output is scores rather than labels, shape [H, W, numClasses], and you argMax it yourself. Along object edges the winning class flips from pixel to pixel."
 consequence:
   narrative: "The feed transforms. Instead of boxes, every pixel glows with color: roads blue, buildings green, people red, drones orange. Zara nods. 'There it is. Where the road ends and the sidewalk begins.'"
 hints:
@@ -30,7 +31,7 @@ keywords:
   - semantic-segmentation
   - pixel-classification
   - dense-prediction
-  - clip-path
+  - argmax
   - segmentation-mask
 ---
 
@@ -50,13 +51,13 @@ Yes. That map is called a **segmentation mask**: a tensor with the same height a
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-With `clip-path`, you define polygon regions that carve out visible areas of an element. A segmentation model does this for every object category in the image (roads, buildings, people, sky), producing a dense map of non-overlapping regions. One difference matters before the code: you author a clip-path polygon, so the region sits exactly where you declared it. The model predicts its regions pixel by pixel, and it can be wrong about any one of them.
+Detection was `find`: sweep the frame, come back with a handful of boxes. Segmentation is `map`: every pixel that goes in gets a value out, and the result has the same height and width as the input. One difference matters before the code. The callback you hand to `map` sees one element and returns a settled answer. The model labels a pixel from what surrounds it, and it can be wrong about any one of them.
 
 <CodeBlock language="typescript" title="semantic-segmentation.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
 // Segmentation model output: [1, height, width, numClasses]
-// Each pixel gets a probability distribution over classes
+// Each pixel gets one raw score (a logit) per class
 const NUM_CLASSES = 6;
 const CLASSES = ['background', 'road', 'building', 'person', 'drone', 'vehicle'];
 
@@ -64,13 +65,14 @@ const CLASSES = ['background', 'road', 'building', 'person', 'drone', 'vehicle']
 // In practice: const prediction = model.predict(inputTensor);
 const prediction = tf.randomNormal([1, 224, 224, NUM_CLASSES]);
 
-// Convert probabilities to class labels using argMax
-// This picks the highest-probability class for each pixel
+// argMax picks the winning class per pixel. Softmax is monotonic,
+// so the argMax of the logits equals the argMax of the probabilities:
+// you only need softmax when you want a confidence number back
 const mask = tf.argMax(prediction.squeeze(), -1);
 console.log(mask.shape); // [224, 224], one class index per pixel
 
-// This is like applying a different clip-path region
-// for every object category in the scene`}
+// Same contract as map(): one entry out for every entry in,
+// except the entry is a pixel and the value is a class index`}
 </CodeBlock>
 
 ## Visualizing Masks
@@ -107,7 +109,9 @@ function renderMask(mask: tf.Tensor2D, canvas: HTMLCanvasElement): void {
   ctx.putImageData(imageData, 0, 0);
 }
 
-// Overlay onto the original feed to show each pixel's class`}
+// Stack this canvas over the video element in CSS to get the overlay.
+// putImageData writes straight into the bitmap and ignores globalAlpha
+// and compositing, so calling it on the feed canvas would erase the frame`}
 </CodeBlock>
 
 ## Challenge

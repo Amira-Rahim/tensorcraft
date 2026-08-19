@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "TypeScript union types are checked at compile time against an exact list. Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms; the model must learn fuzzy mappings, not enforce a literal union."
 consequence:
-  narrative: "Diagnostic One can now parse complex clinical notes, correctly distinguishing between drugs, conditions, procedures, and dosages even when they look similar."
+  narrative: "Diagnostic One now sorts drugs, conditions, procedures, and dosages by dictionary, pattern, and abbreviation. Every one of those strategies still judges a token on its own, with no idea what sits next to it."
 hints:
   - level: nudge
     content: "Each entity type has distinct patterns: drugs have specific suffixes, dosages have numeric patterns, abbreviations map to known types"
@@ -43,7 +43,7 @@ So each entity type is like a variant in a union: `type Entity = Drug | Conditio
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-And just like TypeScript catches type errors at compile time, our NER needs to catch classification errors before they reach a clinician. Labeling "methotrexate" as a CONDITION instead of a DRUG could be dangerous downstream.
+A union is checked once, at compile time, and after that it stays true. Ours is checked per token, on every note, and it can be wrong on the next admission. File methotrexate under CONDITION and the interaction check never runs on it.
 </Dialogue>
 
 <LearningObjectives objectives={["Define medical entity types as a structured type system (Drug | Condition | Procedure | Dosage)", "Handle clinical abbreviations, dosage patterns, and non-standard notation", "Build a multi-strategy token classifier using dictionaries, patterns, and abbreviation maps", "Evaluate NER performance with precision, recall, and F1"]} />
@@ -163,16 +163,16 @@ console.log(result);
 ## Precision, Recall, and F1
 
 <Dialogue speaker="Imran">
-How do we know the model is correct? Finding 90% of drugs means nothing if it also flags "patient" as a drug 30% of the time. We need the TypeScript equivalent of strict mode, something that catches false positives and false negatives.
+How do we know it's right? Finding 90% of the drugs means nothing if the model also calls "patient" a drug once every three notes. I read the flagged output, and a list that noisy stops getting read.
 </Dialogue>
 
-Just like TypeScript's strict mode catches both "value used as wrong type" (false positive) and "type not checked" (false negative), NER evaluation uses three metrics:
+Wrong runs in two directions, so NER evaluation reports two numbers plus a summary of both:
 
 - **Precision**: Of tokens the model labeled as DRUG, how many actually are drugs? (How many false positives?)
 - **Recall**: Of all actual drugs in the text, how many did the model find? (How many false negatives?)
 - **F1**: The harmonic mean of precision and recall, the single number that balances both
 
-In a clinical setting, a false negative (missing a drug) can be as dangerous as a false positive (hallucinating one). Both metrics matter.
+In this ward the two errors do not cost the same. A false positive costs a clinician the seconds it takes to dismiss an alert. A false negative is a drug nobody checked, and no later stage of the pipeline will catch it.
 
 ## Challenge
 
@@ -183,10 +183,10 @@ Build a medical entity classifier that handles drugs, conditions, dosages, frequ
 ## Knowledge check
 
 <Quiz
-  question="A NER model uses BIO tags: B-DRUG (begin), I-DRUG (inside), O (other). Why not just have a single DRUG tag for any drug-named token?"
-  options={[{"text":"BIO tags are required by the loss function"},{"text":"BIO tags let the decoder distinguish two adjacent drug mentions ('aspirin ibuprofen' = 2 entities) from a single multi-token drug ('lisinopril hydrochloride' = 1 entity)"},{"text":"BIO tags speed up training"},{"text":"BIO tags reduce vocabulary size"}]}
+  question="Your medical NER labels 92% of the drug mentions it emits correctly, but it only emits 61% of the drugs actually present in the notes. Which number is the problem, and what does it cost downstream?"
+  options={[{"text":"Precision is 61%, so clinicians see alerts for drugs that are not there"},{"text":"Recall is 61%, so a drug the model never emits never reaches the interaction check"},{"text":"F1 is 61%, so precision and recall have to be retuned together"},{"text":"Neither number matters while overall token accuracy stays above 90%"}]}
   correct={1}
-  explanation="Without BIO, two consecutive DRUG tokens are ambiguous: could be one drug name (multi-word) or two drugs side by side. B- marks the START of an entity span; I- marks continuation. So 'aspirin ibuprofen' tags as B-DRUG B-DRUG (two entities) while 'lisinopril hydrochloride' tags as B-DRUG I-DRUG (one entity)."
+  explanation="92% of emitted labels being correct is precision. Finding 61% of the drugs that are present is recall, and that is the number that is low. A precision failure costs a clinician the seconds it takes to dismiss an alert. A recall failure is silent: a drug that never becomes an entity never reaches the pairwise interaction check, so no alert is raised and nothing downstream notices."
   tier="structural"
 />
 

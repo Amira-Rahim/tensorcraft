@@ -39,18 +39,18 @@ We start at 5%. Only 620 devices see the new model. If anything looks wrong (acc
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-Same pattern as canary deployments for web apps. Weighted routing with automatic rollback triggers. The only difference is we're routing sensor data to model versions instead of HTTP requests to server versions.
+Same pattern as a canary release for a Node service. Weighted routing with automatic rollback triggers. The only difference is we're routing sensor data to model versions instead of HTTP requests to server versions.
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">
-One wrinkle, and it's expensive. A web canary runs identical code at two percentages, so any metric gap belongs to the rollout. Our two arms are different models. A cold snap in Region 4 hands the new model a week of inputs the old one never saw, and the dashboard will swear the model got worse.
+One wrinkle, and it's expensive. A code canary runs identical code at two percentages, so any metric gap belongs to the rollout. Our two arms are different models. A cold snap in Region 4 hands the new model a week of inputs the old one never saw, and the dashboard will swear the model got worse.
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
 Then we stratify the split. Every region, every device tier represented in both arms, and we hold the observation window open longer than a code canary would ever need. The routing stays; the patience changes.
 </Dialogue>
 
-A canary, in deploy jargon, is the small first slice of traffic that absorbs the risk of a new version, named for the bird miners carried underground. Priya and Tariq just designed one for models: the weighted routing you already trust, plus two disciplines code canaries never needed. Stratified sampling keeps both arms on comparable inputs. A longer observation window keeps a one-week cold snap from deciding the verdict.
+A canary, in deploy jargon, is the small first slice of traffic that absorbs the risk of a new version, named for the bird miners carried underground. Both of the disciplines Priya just added cost something. Stratifying means you cannot simply fill the treatment arm with whichever devices phone home first. Holding the window open means the rollout Tariq sketched in days runs for weeks instead, with most of the fleet still on the old model for all of it.
 
 <LearningObjectives objectives={["Implement weighted traffic splitting across model versions", "Configure graduated rollout schedules (5% -> 20% -> 50% -> 100%)", "Build automatic rollback triggers based on metric thresholds", "Track per-version metrics to validate traffic split decisions"]} />
 
@@ -175,7 +175,16 @@ class RollbackController {
     this.splitter.updateWeights(new Map([[this.controlVersion, 100]]));
     console.log(\`ROLLBACK: All traffic routed to v\${this.controlVersion}\`);
   }
-}`}
+}
+
+// Wire the gate to the splitter. check() returns true while the canary is healthy;
+// one false pulls every device back to the control model.
+const controller = new RollbackController(splitter, '3.0');
+const healthy = controller.check(
+  { accuracyDrop: 0.03, latencyIncrease: 1, falsePositiveRate: 0.01 },
+  rolloutPlan[0].rollbackThresholds,
+);
+if (!healthy) controller.rollback();`}
 </CodeBlock>
 
 ## Challenge

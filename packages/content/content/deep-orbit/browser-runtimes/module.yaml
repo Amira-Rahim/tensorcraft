@@ -5,9 +5,11 @@ order: 4
 description: |
   Take your trained model out of the lab and into the browser. Nazari
   challenges Demir to deploy the DEEP SCAN classifier on the ship's
-  browser-based dashboard, with real performance constraints. You'll
-  master TensorFlow.js setup, model loading, real-time inference, and
-  compare runtimes like a JavaScript engineer compares frameworks.
+  browser-based dashboard, where a new reading arrives every second and
+  the verdict has to be on screen before the next one lands. You'll set
+  up TensorFlow.js, load and cache a model, run real-time inference, and
+  compare TF.js, ONNX Runtime Web, and Transformers.js the way a
+  JavaScript engineer compares frameworks.
 lessonCount: 6
 prerequisites:
   - foundations

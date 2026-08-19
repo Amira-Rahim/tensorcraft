@@ -236,7 +236,7 @@ Dr. Vasquez presents a case where word order is life-or-death: "Patient denied c
 |---|---|---|---|
 | 1 | Why Sequences Matter | Word order changes meaning in clinical text | Array order matters - React list rendering |
 | 2 | RNNs for Text | Processing text word by word | `Array.reduce()` - accumulating state |
-| 3 | LSTMs for Documents | Handling long clinical narratives | Session storage with selective persistence |
+| 3 | LSTMs for Documents | Handling long clinical narratives | Exponential moving average - one blend rate vs three learned gates |
 | 4 | Bidirectional Models | Reading text in both directions | Doubly-linked list traversal |
 | 5 | Clinical Narrative Parsing | Extracting structured info from narratives | Form parsing from unstructured input |
 
@@ -302,15 +302,15 @@ Obi introduces the transformer architecture:
 
 | # | Title | Description | JS Bridge |
 |---|---|---|---|
-| 1 | From RNN to Transformer | Why self-attention replaced recurrence | React class components to hooks - paradigm shift |
-| 2 | Transformer Architecture | Encoder stack with attention and feedforward | React virtual DOM - diffing and reconciliation |
+| 1 | From RNN to Transformer | Why self-attention replaced recurrence | N+1 loop replaced by one batch call |
+| 2 | Transformer Architecture | Encoder stack with attention and feedforward | Spreading a patch over state - the base carries through |
 | 3 | Positional Encoding | Injecting word order into attention | CSS `order` property and `z-index` stacking |
 | 4 | BERT | Bidirectional understanding of text | Doubly-linked list - forward and backward traversal |
 | 5 | Fine-Tuning BERT | Adapting pre-trained transformers to clinical text | Customizing a component library's world |
 
 **JS BRIDGES (Module-Level):**
 
-- **Transformer = React virtual DOM:** The transformer processes input, computes attention (which parts relate to which), and produces an output representation. React's vDOM processes the component tree, computes diffs (which parts changed), and produces an updated DOM. Both are reconciliation engines that compare current state to desired state.
+- **Residual connection = spreading a patch over state:** `const next = { ...state, ...patch }` keeps everything already in the object and layers the change on top; the encoder block does `layerNorm(x + attention(x))`, keeping the input vector and layering the attention output on top. Where it ends: a spread replaces the keys the patch names, while a residual adds elementwise, so both values survive inside the sum. The addition is also what carries gradients back undiminished through a deep stack.
 - **BERT = doubly-linked list:** A unidirectional model (like GPT) reads tokens left-to-right, like a singly-linked list - each node knows only what came before. BERT is bidirectional, like a doubly-linked list - each token has context from both directions. This bidirectional context is why BERT excels at understanding (classification, NER) rather than generation.
 
 ### GITHUB
@@ -424,11 +424,11 @@ An unconscious patient arrives in the ER with no accessible medical history. Rec
 |---|---|---|---|
 | 1 | Extractive QA | Finding answers within documents | `Ctrl+F` - finding text in a page |
 | 2 | Reading Comprehension | Understanding context to answer questions | GraphQL resolvers - query-specific data fetching |
-| 3 | RAG Architecture | Retrieval-augmented generation pipeline | React Server Components - server-fetched data in client UI |
+| 3 | RAG Architecture | Retrieval-augmented generation pipeline | A handler that queries before it renders |
 | 4 | Knowledge Grounding | Ensuring answers are supported by evidence | Hyperlinks - every claim has a source URL |
 | 5 | Clinical Queries | Doctors asking questions in natural language | Search bar with NLU |
 
-**JS BRIDGE (Module-Level):** RAG is React Server Components. In RSC, the server fetches data from databases and APIs, then renders components with that data - the client gets pre-hydrated content grounded in real data sources. RAG does the same: the retrieval step fetches relevant documents (like a DB query), and the LLM generates a response grounded in those retrieved documents (like server rendering). Both patterns connect a generation engine to authoritative data sources.
+**JS BRIDGE (Module-Level):** RAG is a handler that queries before it renders. `const docs = await db.find(id); return render('card', { docs })` blocks on the data call, so the output can only describe rows that came back. RAG puts the same block in front of generation: retrieval runs first, and the answer is conditioned on those passages. Where it ends: a template prints what you passed it or prints nothing, while a decoder can write a sentence that appeared in none of the passages.
 
 ### GITHUB
 

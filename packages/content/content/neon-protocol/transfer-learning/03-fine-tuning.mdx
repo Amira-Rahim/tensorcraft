@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "`Object.freeze` prevents JS object property mutation at runtime. `layer.trainable = false` prevents the optimizer from updating that layer's weights during the backward pass, but the layer still participates in the forward pass and contributes to gradient computation for unfrozen layers. Different mechanism, different blast radius."
 consequence:
-  narrative: "After 20 epochs on 500 labeled drone images, the fine-tuned model hits 94% accuracy on Meridian's drone fleet. Amir leans back. 'Two million credits of pre-training. Twenty minutes of fine-tuning. That is the exchange rate of transfer learning.' Noor watches the loss curve flatten. 'What if we unfroze a few more layers?'"
+  narrative: "After 20 epochs on 500 labeled drone images, the fine-tuned model hits 94% accuracy on Meridian's drone fleet. Amir leans back. 'Two million credits of pre-training. Twenty minutes of fine-tuning. That is the exchange rate of transfer learning.' Noor watches the loss curve flatten. '94% on what, though. Every test frame we have was shot in daylight.'"
 hints:
   - level: nudge
     content: "Freeze the backbone with layer.trainable = false, like Object.freeze() protecting shared state"
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-`Object.freeze()` makes a JavaScript object immutable. Setting `layer.trainable = false` does the same for a neural network layer. The weights become read-only. The optimizer can't update them during training. You freeze what you want to preserve, and leave trainable what needs to adapt.
+`Object.freeze()` makes a JavaScript object immutable. `layer.trainable = false` is the closest move a network has: the optimizer stops updating that layer's weights. You freeze what you want to preserve and leave trainable what needs to adapt.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -48,7 +48,7 @@ So fine-tuning is `Object.freeze(backbone)` and then extending with our own clas
 That is the code, yes. Watch what "frozen" actually means, though. `Object.freeze` takes the object out of play. A frozen layer stays in the game: every forward pass still runs through it, and gradients still flow through it to reach whatever you left trainable. The optimizer just skips its update step. That is why 500 images is enough. The backbone already understands edges, textures, and shapes; the new head only has to learn which combination of those equals X-7 drone.
 </Dialogue>
 
-When you use `Object.freeze()`, you protect the properties that should be stable while keeping other parts mutable. Fine-tuning applies the same pattern to neural networks: freeze the pre-trained layers that already extract useful features, then attach and train a new classification head for your specific task.
+So the shape of the move carries over from `Object.freeze()` and the mechanism does not. You are not making the backbone's weights unwritable; you are handing the optimizer a skip list. The rest of this lesson is about who goes on that list, and what it costs when you draw the line in the wrong place.
 
 <LearningObjectives objectives={["Freeze pre-trained layers using layer.trainable = false", "Replace a model's classification head with task-specific layers", "Fine-tune on a small dataset using a frozen backbone", "Connect layer freezing to Object.freeze() and immutability patterns"]} />
 
@@ -153,7 +153,8 @@ function applyFreezeStrategy(
 
 // Catastrophic forgetting: when fine-tuning overwrites the useful
 // knowledge the model learned during pre-training.
-// Like accidentally calling Object.assign(defaults, {}), wiping everything.
+// Like calling Object.assign(defaults, incoming) and finding out incoming
+// carried a key for every default you meant to keep.
 // Prevention: freeze aggressively, use low learning rates.`}
 </CodeBlock>
 

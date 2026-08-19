@@ -38,7 +38,7 @@ keywords:
 Never optimize without a plan. I have watched engineers spend three weeks quantizing a model that needed an architecture change. Profile first. Set your budget. Then execute in order of impact.
 </Dialogue>
 
-In JavaScript, your build optimization follows a systematic order: tree-shake unused code, minify what remains, compress the output, code-split for lazy loading. You do not skip steps or do them out of order. Model optimization follows the same discipline.
+In JavaScript, your build optimization follows a systematic order: tree-shake unused code, minify what remains, compress the output, code-split for lazy loading. You do not choose that order; the bundler does, and it is the same order every build. Model optimization needs the same sequencing, with one difference that costs money if you miss it: here the order changes the result. Prune then quantize and you get a different model than quantize then prune.
 
 <LearningObjectives objectives={["Create a systematic model optimization plan", "Prioritize techniques by impact and risk", "Map JavaScript build optimization stages to ML model compression", "Define success criteria before starting optimization"]} />
 
@@ -95,15 +95,15 @@ const optimizationPipeline: OptimizationStep[] = [
 // 5. Combined → Full production build config`}
 </CodeBlock>
 
-Each step is independent, but they compound. A model that is 40% smaller after architecture review, then 4x smaller after quantization, then 50% smaller after pruning is now 12x smaller than the original. That is how a 1.8GB model fits in 512MB of RAM.
+The steps are not independent. They compound, and they interfere, which is why the order in the list is the order you run them. Multiply the survival ratios: architecture review leaves 60% of the original, pruning halves that, quantization cuts it by another factor of four. That is 0.075 of the original, roughly 13x smaller, which puts a 1.8GB model at about 135MB. Run pruning after quantization instead and you get a different number, because there is less signal left to decide which weights to drop.
 
 ## Challenge
 
-Create an optimization plan for a model that needs to shrink from 1.8GB to under 300MB.
+Create an optimization plan for a model that needs to shrink from 1.8GB to under 200MB.
 
 <Exercise slug="optimization-plan" />
 
-<KeyTakeaways takeaways={["Optimization is a sequenced plan with measurements between steps, not a bag of techniques applied at once", "Start with architecture review (low risk, high impact) before compression", "Techniques compound: 40% + 4x + 50% = 12x total reduction", "Always profile and benchmark between each optimization step"]} />
+<KeyTakeaways takeaways={["Optimization is a sequenced plan with measurements between steps, not a bag of techniques applied at once", "Start with architecture review (low risk, high impact) before compression", "Techniques compound multiplicatively: 60% of original size, halved, then quartered, is about 13x smaller overall", "Always profile and benchmark between each optimization step"]} />
 
 <Dialogue speaker="Hassan Al-Rashid">
 One more thing. The plan is allowed to be wrong. The budget is not. If step three breaks the accuracy floor, you go back to step one and pay for the architecture change; you do not negotiate with the floor.

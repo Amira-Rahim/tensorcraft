@@ -10,7 +10,7 @@ context:
   narrative: "Erdem needs 1024x1024 for the gallery prints. Samir runs the numbers: 'At 64x64 it takes 43 seconds. At 1024x1024... the browser tab will crash.' Rohan suggests: 'Generate small, upscale smart. Serve the resolution the moment needs.'"
   speaker: "Rohan"
 concept:
-  explanation: "High-resolution generation runs as a cascade: a base diffusion model generates small, where denoising is fast, then a separate super-resolution model upscales the result. The high-res image is generated, not selected, and each stage adds real compute."
+  explanation: "High-resolution generation runs as a cascade: a base diffusion model works small, where denoising is cheap, then a separate super-resolution model conditioned on that output climbs to print size. Splitting the work is what keeps a one-meter print inside a browser's memory budget."
   bridge:
     jsTitle: "srcset and responsive images"
     jsCode: "<img srcset='small.jpg 256w, large.jpg 1024w' sizes='100vw' />"
@@ -22,11 +22,15 @@ consequence:
   narrative: "3.4 seconds. Low-res generation plus a fast upscaler. Erdem's hands are shaking, not from panic this time, but from something closer to awe. 'We open in three days,' he says quietly. 'We are ready.'"
 hints:
   - level: nudge
-    content: "Generate at 64x64 where diffusion is cheap; let a separate super-resolution model handle the climb to print size"
+    content: "Two upSampling2d layers, each doubling: 32 to 64, then 64 to 128"
   - level: guidance
-    content: "Generate a small 64x64 image first, then use a separate super-resolution model to upscale to 256x256 or higher."
+    content: "Follow each upsample with a conv2d ('same' padding, relu) so the model learns what detail to invent. The last conv2d outputs 3 channels through a sigmoid, which keeps pixels in [0, 1]."
   - level: solution
-    content: "Cascaded pipeline: diffusion model at 64x64 (fast) -> super-resolution model at 256x256 -> optional second upscale to 1024x1024"
+    content: |
+      let x = tf.layers.upSampling2d({ size: [2, 2] }).apply(input) as tf.SymbolicTensor;
+      x = tf.layers.conv2d({
+        filters: 32, kernelSize: 3, padding: 'same', activation: 'relu'
+      }).apply(x) as tf.SymbolicTensor;
 keywords:
   - high-resolution
   - super-resolution
@@ -40,16 +44,16 @@ The gallery prints are one meter wide. I need at least 1024 by 1024 pixels. Can 
 </Dialogue>
 
 <Dialogue speaker="Samir">
-Directly? No. Memory scales quadratically with resolution. A 1024x1024 image has 256 times more pixels than 64x64. The browser tab would crash before step one.
+Directly? No. Memory scales quadratically with resolution. A 1024x1024 image has 256 times more pixels than 64x64. The browser tab would crash before step one. So we do what responsive images do: generate at 64x64 where diffusion is fast, then hand it to a lightweight super-resolution model. `srcset` for pixels.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-So we do what responsive images do: serve the right resolution for the task. Generate at 64x64 where diffusion is fast, then upscale with a lightweight super-resolution model. Like srcset: the browser picks the size it needs.
+`srcset` picks a file that already exists. Ours does not exist until the second model makes it. Same move though: the print gets the full render, the kiosk gets the sketch.
 </Dialogue>
 
-The economics work because the two stages have different jobs. The base model does all the creative work at 64x64, where twenty denoising steps are cheap. The upscaler only has to add plausible detail to an image that already exists. Splitting the job is what brings 43 seconds down to 3.4.
+The economics work because the two stages have different jobs. The base model does all the creative work at 64x64, where twenty steps of a distilled denoiser cost about two seconds. The upscaler only has to add plausible detail to an image that already exists, so the climb to print size costs one forward pass instead of a second diffusion run.
 
-<LearningObjectives objectives={["Understand why direct high-resolution diffusion is prohibitively expensive", "Implement a cascaded pipeline: base generation + super-resolution upscaling", "Build a simple super-resolution model using transposed convolutions", "Compare cascaded diffusion with latent diffusion for high-resolution output"]} />
+<LearningObjectives objectives={["Understand why direct high-resolution diffusion is prohibitively expensive", "Implement a cascaded pipeline: base generation + super-resolution upscaling", "Build a simple super-resolution model from upsampling and convolution layers", "Compare cascaded diffusion with latent diffusion for high-resolution output"]} />
 
 ## The Resolution Problem
 
@@ -124,10 +128,9 @@ async function generateHighRes(
   return highRes; // total: ~3.4 seconds
 }
 
-// From 43 seconds to 3.4 seconds:
-// - Fewer diffusion steps (100 -> 20) via distilled model
-// - Lower base resolution (64x64 instead of 256x256)
-// - Lightweight super-resolution for the final upscale`}
+// From 43 seconds to 3.4 seconds, at the same 64x64 base resolution:
+// - Fewer denoising steps (100 -> 20), each through a smaller distilled U-Net
+// - The climb to 256x256 handled by one upscaler pass, not by diffusion`}
 </CodeBlock>
 
 ## Challenge
@@ -168,4 +171,4 @@ Diffusion runs on the small latent. The VAE adds quality loss (the latent can't 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser; pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "Latent diffusion is the alternative: run the denoising loop in a compressed latent space instead of pixel space"]} />
+<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser; pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models", "Fewer denoising steps through a smaller distilled model, plus a single upscaler pass, is what takes 43 seconds down to 3.4", "Latent diffusion is the alternative: run the denoising loop in a compressed latent space instead of pixel space"]} />

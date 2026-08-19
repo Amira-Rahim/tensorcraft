@@ -17,7 +17,7 @@ concept:
     mlTitle: "Mixed Precision"
     mlCode: "// First layer: Float16 (sensitive)\n// Middle layers: Int8 (robust)\n// Last layer: Float16 (sensitive)"
     tier: structural
-    breaks: "Responsive images deliver different assets per breakpoint. Mixed-precision training mixes float16 and float32 within a single forward/backward pass: most ops in fp16 for speed, accumulation in fp32 for numerical stability. The 'switching' is per-op, not per-environment."
+    breaks: "Responsive images deliver a different file per breakpoint, chosen once at request time. Mixed precision assigns a format per layer inside one model, and a layer that cannot take Int8 does not degrade gracefully like a low-res image; it produces wrong predictions."
 consequence:
   narrative: "Mixed precision gives you 3x compression instead of 4x, but preserves critical accuracy."
 hints:
@@ -34,11 +34,19 @@ keywords:
   - per-layer
 ---
 
+```text
+LAYER SENSITIVITY SWEEP, turbine-v4, Int8 per layer
+input_dense   -4.1% accuracy
+hidden_1      -0.2%
+hidden_2      -0.3%
+output        -3.8%
+```
+
 <Dialogue speaker="Elif Yilmaz">
-I ran a sensitivity analysis. The first and last layers lose significant accuracy when quantized to Int8. The middle layers are robust. We should use different precision for different parts of the model.
+The two ends of the network are where Int8 hurts. The middle does not notice. We have been treating the model as one artifact with one format, and it is not.
 </Dialogue>
 
-Elif's sensitivity table reads like a srcset: a few consumers need the full-resolution asset, most are fine with the compressed one. Mixed precision applies that judgment per layer: keep precision where accuracy is fragile, and use Int8 everywhere it is not.
+Elif's sensitivity table reads like a `srcset`, the image attribute that lists several versions of the same picture and lets the client pick one: a few consumers need the full-resolution asset, most are fine with the compressed one. Mixed precision applies that judgment per layer: keep precision where accuracy is fragile, and use Int8 everywhere it is not.
 
 <LearningObjectives objectives={["Understand why different layers have different precision sensitivity", "Implement per-layer precision assignment", "Calculate memory savings from mixed precision strategies", "Map responsive image strategies to mixed precision model deployment"]} />
 
@@ -68,11 +76,11 @@ function assignPrecision(layers: LayerConfig[]): LayerConfig[] {
   return layers.map((layer, i) => {
     // First and last layers: keep higher precision (sensitive)
     // Middle layers: quantize aggressively (robust)
-    const isEdgeLayer = i === 0 || i === layers.length - 1;
+    const isBoundaryLayer = i === 0 || i === layers.length - 1;
     return {
       ...layer,
-      precision: isEdgeLayer ? 'float16' : 'int8',
-      sensitive: isEdgeLayer,
+      precision: isBoundaryLayer ? 'float16' : 'int8',
+      sensitive: isBoundaryLayer,
     };
   });
 }
@@ -94,7 +102,7 @@ const mixed = assignPrecision(layers);
 console.log('Mixed precision:', totalSizeMB(mixed).toFixed(2) + 'MB'); // 0.75MB`}
 </CodeBlock>
 
-The edge layers (first and last) stay at Float16 because they touch the raw input data and produce the final predictions. The middle layers, which learn abstract features, tolerate Int8 well. This is analogous to serving hero images at full resolution while compressing thumbnails.
+The first and last layers drop only as far as Float16, because they touch raw sensor values and produce the final prediction. The middle layers, which work on abstract features, tolerate Int8 well. Which layers are fragile is measured, not assumed: a network with a different shape can put its sensitive layers somewhere else entirely, so run the sweep on your own model before you assign anything.
 
 ## Challenge
 
@@ -103,7 +111,9 @@ Assign precision levels to model layers and calculate total size.
 <Exercise slug="mixed-precision" />
 
 <DerivationDrawer summary="Mixed-precision training: loss scaling math">
-**Mixed precision** keeps FP32 master weights but does forward/backward in FP16 for speed.
+"Mixed precision" names two different practices, and this module teaches one of them. The lesson above is the inference-side one: pick a storage format per layer so the finished model fits the device. Below is the training-side one: keep FP32 master weights, run forward and backward in FP16 so training runs faster. Same phrase, different problem.
+
+**Mixed-precision training** keeps FP32 master weights but does forward/backward in FP16 for speed.
 
 **The problem:** FP16 has range `~6e-8` to `~65504`. Most ML gradients fall in `1e-8` to `1e-3`, partly below FP16's smallest normal value → **gradient underflow** (gradients become 0).
 

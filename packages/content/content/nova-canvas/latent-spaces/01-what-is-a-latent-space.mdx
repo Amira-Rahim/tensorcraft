@@ -41,7 +41,7 @@ Come with me to the material library. See how I organize pigments: not by name o
 Yara's sketch reached me as 784 numbers. I filed it under 16. When I redraw it from those 16, the linework survives and the paper grain doesn't. I wonder what I'd lose at 8.
 </Dialogue>
 
-A URL shortener takes a long URL and compresses it into a short code. The short code is not random. It encodes the original URL in a way that can be reversed. A latent space works exactly the same way, but for images, sounds, or any complex data.
+A URL shortener hands back a six-character code for a long URL. The code carries none of the original text: the service keeps a `Map` from code to URL and looks the original up on the way back. A latent space makes the same swap for images, sounds, or any complex data. A short vector stands in for a whole image, and a decoder turns it back. One difference matters for the rest of this module. The shortener's lookup is exact, so you get back the URL you put in, while the decoder rebuilds an approximation from 16 numbers and drops whatever did not fit.
 
 <LearningObjectives objectives={["Understand latent space as compressed representation of data", "Connect the encoder-decoder pattern to URL shortening", "Build a simple encoder that maps data to a lower dimension", "Visualize positions in latent space"]} />
 
@@ -129,4 +129,4 @@ The encoder maximizes I(X; z) subject to a capacity constraint on z (small dim, 
 - VAE adds Gaussian prior → latent space is smooth (interpolations decode coherently).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["A latent space is a compressed representation where similar data points are nearby", "Encoders compress high-dimensional data; decoders reconstruct from the compressed form", "The 16-unit bottleneck layer is what forces compression: without it the network can pass inputs through unchanged", "Structure in latent space emerges from training; similar items cluster naturally"]} />
+<KeyTakeaways takeaways={["A latent space is a compressed representation where similar data points are nearby", "Encoders compress high-dimensional data; decoders reconstruct from the compressed form", "A bottleneck is any layer narrower than the input: 784 values in and 16 out means the network cannot copy its input forward, it has to choose what to keep", "Structure in latent space emerges from training; similar items cluster naturally"]} />

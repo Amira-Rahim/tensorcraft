@@ -42,9 +42,9 @@ A gallery visitor isn't a user reading documentation. They won't tap a help icon
 Progressive disclosure. Same principle as onboarding flows in web apps. Show the simplest interaction first. Reveal depth as the visitor engages. Every app I have built starts with the same question: what does the user see in the first five seconds?
 </Dialogue>
 
-Sixty seconds. That is the budget Yara's whiteboard allows for a stranger to walk up, understand, and feel something. None of these strangers arrived to operate software. A landing page gets five seconds and a literate, seated user. The gallery gets a tired parent holding a coat and a seven-year-old who refuses one. The visitor is the user, the gallery is the viewport, and the interaction has to explain itself.
+Sixty seconds. That is the budget Yara's whiteboard allows for a stranger to walk up, understand, and feel something. None of these strangers arrived to operate software. A landing page gets five seconds and a literate, seated user. The gallery gets a tired parent holding the coat a seven-year-old refuses to wear. The visitor is the user, the gallery is the viewport, and the interaction has to explain itself.
 
-<LearningObjectives objectives={["Design a progressive disclosure flow for non-technical gallery visitors", "Implement visual and audio feedback loops that guide interaction without text instructions", "Build error states that feel intentional rather than broken", "Create an accessibility-first interaction model for diverse visitors"]} />
+<LearningObjectives objectives={["Design a progressive disclosure flow for non-technical gallery visitors", "Implement visual and audio feedback loops that guide interaction without text instructions", "Design the waiting state for a generation that takes seconds instead of milliseconds", "Create an accessibility-first interaction model for diverse visitors"]} />
 
 ## The Visitor Journey
 
@@ -165,7 +165,7 @@ class FeedbackSystem {
 <CodeBlock language="typescript" title="accessibility.ts">
 {`// Gallery visitors include children, elderly, wheelchair users, visually impaired
 const accessibilityConfig = {
-  // Touch targets: minimum 48px (WCAG), but for installations aim for 80px+
+  // Touch targets: WCAG 2.2 asks 24px minimum, 44px at AAA; installations aim for 80px+
   minTouchTarget: 80,
 
   // Text: large, high-contrast, minimal
@@ -197,4 +197,4 @@ Design a visitor experience flow with progressive disclosure and non-verbal feed
 
 <Exercise slug="design-ux" />
 
-<KeyTakeaways takeaways={["Generation is slow and non-deterministic: design the waiting state and the regenerate affordance before the happy path", "Non-verbal feedback (visual ripples, audio chimes, animated progress) replaces text instructions", "State machine patterns from multi-step forms map directly to visitor journey flows", "Accessibility in physical spaces means reachable touch targets, large text, and audio-visual parity"]} />
+<KeyTakeaways takeaways={["Generation is slow and non-deterministic: design the waiting state before the happy path, because the visitor spends real seconds inside it", "Non-verbal feedback (visual ripples, audio chimes, animated progress) replaces text instructions", "State machine patterns from multi-step forms map directly to visitor journey flows", "Accessibility in physical spaces means reachable touch targets, large text, and audio-visual parity"]} />

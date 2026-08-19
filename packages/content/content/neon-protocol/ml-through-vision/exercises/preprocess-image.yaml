@@ -1,7 +1,7 @@
 slug: preprocess-image
 lessonSlug: image-operations
 title: "Preprocess an Image"
-instructions: "Write a function that normalizes pixel values from 0-255 to 0-1 and validates that the image has the correct dimensions for a model (targetHeight x targetWidth x 3 channels)."
+instructions: "Resizing is the one step you cannot fake with array math, so the grader hands you a frame and asks for the two steps on either side of it. Write `preprocessImage` so it (1) normalizes every pixel from 0-255 to 0-1 into `normalized`, and (2) sets `valid` to true only when height, width, and channels match `targetHeight`, `targetWidth`, and 3. Return the frame's own shape in `shape` even when it is invalid: the caller needs to know what it was handed."
 starterCode: |
   interface PreprocessResult {
     normalized: number[];

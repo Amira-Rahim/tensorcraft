@@ -2,7 +2,7 @@ slug: tokenization-preprocessing
 title: "Tokenization & Preprocessing: Breaking Text Apart"
 worldId: signal-ward
 order: 2
-description: "Clinical text is messy: abbreviations, misspellings, shorthand, three spellings for one medication, HTML baked into legacy notes. Imran brings in the worst records in the building, and the module turns them into clean, consistent tokens, the only kind of text a model can use."
+description: "Clinical text is messy: abbreviations, misspellings, three spellings for one medication, HTML baked into legacy notes. Imran brings in the worst records in the building. You split them into word tokens, break unseen medical terms into subword pieces, expand the shorthand, strip the markup, and chain all of it into one ordered pipeline, the way Express middleware stacks, so training and production see the same text."
 lessonCount: 5
 prerequisites:
   - ml-through-text

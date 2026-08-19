@@ -11,7 +11,7 @@ instructions: |
       recoverable: boolean,
     }
 
-  pipelineLog has shape `{ tokens, entities, normalizedEntities, interactionsChecked }`. Walk the pipeline and identify the earliest stage where the interaction's entities went missing.
+  pipelineLog has shape `{ tokens, entities, normalizedEntities, interactionsChecked }`. Walk the pipeline in order and return the earliest stage where the interaction's entities went missing. Set `recoverable: true` when replaying this same log through a fixed stage would surface the interaction, and `false` when the drug never made it into the input or when every stage produced what it should have.
 starterCode: |
   function diagnoseMiss(pipelineLog, knownInteraction) {
     return { stage: 'unknown', detail: '', recoverable: false };

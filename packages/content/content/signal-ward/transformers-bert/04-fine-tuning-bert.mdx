@@ -164,6 +164,14 @@ function gradualUnfreeze(
     }
   });
 
+  // TF.js caches the trainable-weight list at compile time. After flipping .trainable
+  // you must compile again, or fit() keeps optimizing the old set and only warns.
+  model.compile({
+    optimizer: tf.train.adam(2e-5),
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy']
+  });
+
   console.log(\`Epoch \${epoch}: \${model.layers.filter(l => l.trainable).length} trainable layers\`);
 }
 
@@ -178,20 +186,20 @@ function discriminativeLR(
   return baseRate * factor;
 }
 
-// Layer 0 (bottom): 2e-5 * 0.7^4 = ~4.8e-6
-// Layer 3 (top):    2e-5 * 0.7^1 = ~1.4e-5
+// Layer 0 (bottom): 2e-5 * 0.7^5 = ~3.4e-6
+// Layer 4 (top):    2e-5 * 0.7^1 = ~1.4e-5
 // Classifier head:  2e-5 (full rate)
 for (let i = 0; i < 5; i++) {
   console.log(\`Layer \${i} LR: \${discriminativeLR(2e-5, i, 5).toExponential(2)}\`);
 }`}
 </CodeBlock>
 
-<Dialogue speaker="Imran">
-So lower layers, the ones that learned basic language patterns, get tiny updates. Upper layers, closer to the task, get larger updates. Like how you'd be more careful editing a utility library than a feature component.
+<Dialogue speaker="Khalil">
+So lower layers, the ones that learned basic language patterns, get tiny updates. Upper layers, closer to the task, get larger updates. It's the care you'd take editing a shared utility package versus editing the one feature that imports it.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Right instinct. Layer 0 gets about 4.8e-6, the head gets the full 2e-5. The general language patterns barely move while the clinical head does the learning.
+Right instinct. Layer 0 gets about 3.4e-6, the head gets the full 2e-5. The general language patterns barely move while the clinical head does the learning.
 </Dialogue>
 
 ## Challenge

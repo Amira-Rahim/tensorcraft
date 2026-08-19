@@ -1,7 +1,7 @@
 slug: reading-comprehension-exercise
 lessonSlug: reading-comprehension
 title: "Score Answer Spans with Reading Comprehension"
-instructions: "Implement a scorePassage function that takes a passage (array of sentences), a query embedding, and a function to embed text. The function should embed each sentence, compute cosine similarity against the query embedding, rank sentences by score, and return the top-k sentences with their similarity scores. This mirrors how a reading comprehension model identifies the most relevant spans in a clinical document."
+instructions: "Implement two functions. cosineSimilarity returns the dot product of two vectors over the product of their magnitudes, or 0 when either magnitude is 0. scorePassage takes a passage (array of sentences), a query embedding and an embedding function, scores every sentence against the query, and returns the top k with their scores and original indexes. This mirrors how a reading comprehension model ranks the candidate spans in a clinical document."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

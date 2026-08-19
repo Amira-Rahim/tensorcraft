@@ -11,7 +11,7 @@ starterCode: |
     numSamples: number
   ): Promise<number> {
     // Generate numSamples outputs from different noise vectors
-    // Compute average pairwise L2 distance between outputs
+    // Compute the average squared difference between every pair of outputs
     // Return the average distance (low = collapsed, high = diverse)
     return null; // your code here
   }

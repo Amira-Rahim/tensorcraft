@@ -12,13 +12,14 @@ context:
 concept:
   explanation: "Data drift means the statistical distribution of the model's inputs has moved away from the training baseline while the model itself stood still."
   bridge:
-    jsTitle: "Lighthouse CI Regression"
-    jsCode: "assert(LCP < 2500) // input metric shifted; investigate"
+    jsTitle: "Upstream Payload Baseline"
+    jsCode: "assert(inRange(median(body.temp), baseline)) // schema passed, values moved"
     mlTitle: "Data Drift Detection"
     mlCode: "assert(featureDist.klDivergence < 0.3) // input distribution shifted"
     tier: structural
+    breaks: "A payload baseline compares against a contract you can renegotiate: call the vendor, fix the units, done. A drift detector compares against the snapshot the model trained on, and that snapshot cannot be renegotiated. Either preprocessing absorbs the shift or the model is retrained. The check is statistical rather than per request, so one odd reading proves nothing and a window that is too short fires on noise."
 consequence:
-  narrative: "The drift detector fires on Region 4. Feature 7 (temperature readings) shifted by 2 standard deviations. Root cause: firmware v3.2 changed the sensor scale from Celsius to Kelvin."
+  narrative: "The drift detector fires on Region 4. Feature 7 (temperature readings) shifted by 8.2 standard deviations. Root cause: firmware v3.2 changed the sensor scale from Celsius to Kelvin."
 hints:
   - level: nudge
     content: "computeKLDivergence() compares today's inputs against the FeatureBaseline captured at training time; a rising score means the inputs moved"
@@ -41,15 +42,15 @@ Region 4 accuracy degraded from 96.2% to 89.1% over 14 days. The model did not c
 This is why we monitor inputs, not just outputs. The model is doing exactly what we trained it to do. The problem is that the world changed underneath it.
 </Dialogue>
 
-Lighthouse CI catches regressions by comparing performance metrics against a baseline. When LCP jumps from 2.1s to 3.8s, you know something changed: maybe a new font, maybe an unoptimized image. Data drift detection works the same way: compare current input distributions against the training baseline, and flag when they diverge.
+An upstream service changes something and nothing in your code complains. The payload still validates, the types still line up, and the numbers are wrong: readings that arrived in Celsius all quarter now arrive in Kelvin. The only check that catches that class of bug is one that recorded what normal looked like and compares today's values against the record. Data drift detection is that check, run continuously against the distribution the model trained on.
 
-<LearningObjectives objectives={["Understand data drift as a distribution shift in model inputs, like Lighthouse metric regression", "Implement KL divergence to quantify how much input data has changed", "Build per-feature drift monitors that pinpoint which inputs changed", "Design alerting thresholds that distinguish noise from real distribution shifts"]} />
+<LearningObjectives objectives={["Understand data drift as a distribution shift in model inputs, like an upstream payload that validates but no longer means the same thing", "Implement KL divergence to quantify how much input data has changed", "Build per-feature drift monitors that pinpoint which inputs changed", "Design alerting thresholds that distinguish noise from real distribution shifts"]} />
 
 ## Detecting Distribution Shift
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-The number this detector runs on is KL divergence, so here is what it means before you read the code. It compares two histograms, the training-day baseline and today's readings, and scores the mismatch: zero means identical distributions, and the score climbs as readings pile up in bins the baseline said should be rare. The 0.3 alert threshold is a calibrated rule of thumb: by that point, roughly a quarter of the readings are landing where the baseline did not expect them, which is too much movement to call noise.
+The number this detector runs on is KL divergence, so here is what it means before you read the code. It compares two histograms, the training-day baseline and today's readings, and scores the mismatch: zero means identical distributions, and the score climbs as readings pile up in bins the baseline said should be rare. The 0.3 threshold is a convention, not a constant. Teams land on it by replaying a few months of their own history and picking the score that fires on the shifts they had to act on and stays quiet on the ones they did not.
 
 <CodeBlock language="typescript" title="data-drift-detector.ts">
 {`interface FeatureBaseline {
@@ -139,6 +140,8 @@ function detectDataDrift(
 }`}
 </CodeBlock>
 
+KL divergence has a cousin you will meet on every drift dashboard: the Population Stability Index (PSI). It answers the same question, today's distribution against a fixed baseline, with a symmetric formula and well-worn conventions: below 0.1 is stable, 0.1 to 0.25 is worth watching, above 0.25 is major drift.
+
 ## Challenge
 
 Build a data drift detector that monitors feature distributions against a baseline.
@@ -150,8 +153,6 @@ Build a data drift detector that monitors feature distributions against a baseli
 Production model accuracy is degrading slowly over 2 weeks. Suspect: training/serving skew. The scenario below walks the on-call diagnostic: z-score per feature, identify the worst, decide whether retrain is required.
 
 <Exercise slug="incident-feature-skew" />
-
-KL divergence has a cousin you will meet on every drift dashboard: the Population Stability Index (PSI). It answers the same question, today's distribution against a fixed baseline, with a symmetric formula and well-worn conventions: below 0.1 is stable, 0.1 to 0.25 is worth watching, above 0.25 is major drift.
 
 ## Knowledge check
 
@@ -165,4 +166,4 @@ KL divergence has a cousin you will meet on every drift dashboard: the Populatio
 
 <KeyTakeaways takeaways={["Data drift means the input distribution changed: the model is correct, but the world moved underneath it", "KL divergence puts a number on input shift; this pipeline flags a feature once KL crosses the 0.3 threshold", "Per-feature monitoring pinpoints exactly which inputs drifted, enabling targeted fixes instead of full retraining", "The fix for data drift is often preprocessing (rescaling), not retraining: understand the root cause first"]} />
 
-> **DISPATCH archive · field intercept #38-E:** Operator Demir on Deep Orbit logs drift differently: the world they sample doesn't have a 'training distribution' to drift away from. Their drift is anomaly. Hassan's drift is degradation. Same metric, opposite operational stance.
+> **DISPATCH archive · field intercept #38-E:** Operator Demir on Deep Orbit logs drift differently: their detector is hunting the thing that never appeared in the training archive, so a distribution that moves is the find. Their drift is the discovery. Hassan's drift is the damage. Same statistic, opposite operational stance.

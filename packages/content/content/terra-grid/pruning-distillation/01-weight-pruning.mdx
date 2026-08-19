@@ -78,7 +78,7 @@ console.log('Sparsity:', (result.sparsity * 100).toFixed(0) + '%'); // 60%
 // The small weights (0.003, -0.002, 0.001) are noise, like unused imports`}
 </CodeBlock>
 
-Most trained neural networks are over-parameterized. Just as a JavaScript bundle often contains unused code paths, a neural network often contains weights that contribute almost nothing to the output. Removing them has minimal impact on accuracy.
+Most trained networks are over-parameterized, which is why 60% of the weights can go without the predictions moving much. What magnitude alone cannot tell you is which surviving weights were compensating for the ones you just zeroed, so a production prune is followed by a few epochs of fine-tuning to let the rest re-absorb the work. Tree-shaking never needs that step: the exports it deletes were doing nothing at all.
 
 ## Challenge
 

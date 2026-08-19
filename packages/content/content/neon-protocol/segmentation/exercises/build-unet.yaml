@@ -1,7 +1,7 @@
 slug: np-build-unet
 lessonSlug: unet-architecture
 title: "Build U-Net Encoder-Decoder Blocks"
-instructions: "Write two functions: encoderBlock that takes an input size and filter count and returns the output size after conv + pool (halved), and decoderBlock that takes an input size, skip size, and filter count and returns the output size after upsample + concatenate (doubled input, channels = filters)."
+instructions: "Write two functions that compute U-Net block output shapes. `encoderBlock(inputSize, inputChannels, filters)` returns `{ outputSize, outputChannels }` after a same-padding conv and a 2x max pool: the spatial size halves, rounding down, and the channel count becomes `filters`. `decoderBlock(inputSize, inputChannels, skipChannels, filters)` returns the same shape after a stride-2 transposed conv, a concatenate with the skip tensor, and a conv: the spatial size doubles and the channel count becomes `filters`. Note that `skipChannels` widens the tensor at the concatenate step but not at the output, because the conv that follows collapses it back to `filters`."
 starterCode: |
   interface BlockOutput {
     outputSize: number;

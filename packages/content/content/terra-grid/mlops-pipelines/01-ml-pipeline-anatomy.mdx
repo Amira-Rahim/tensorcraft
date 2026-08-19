@@ -55,8 +55,8 @@ Automate it. But with human oversight at the gates. Automated does not mean unsu
 interface PipelineStage {
   name: string;
   status: StageStatus;
-  gate: () => Promise<boolean>;    // must pass to proceed
-  execute: () => Promise<any>;
+  gate: (prior: Record<string, any>) => Promise<boolean>;    // must pass to proceed
+  execute: (prior: Record<string, any>) => Promise<any>;
 }
 
 interface MLPipeline {
@@ -64,8 +64,8 @@ interface MLPipeline {
   triggerSource: 'schedule' | 'data-change' | 'manual';
 }
 
-// CI/CD:     lint        → test        → build    → deploy
-// ML:        validate    → preprocess  → train    → evaluate  → deploy
+// The pipeline below, stage by stage, with its CI/CD counterpart:
+// ingest (checkout) → validate (lint) → train (build) → evaluate (test) → deploy
 const terraGridPipeline: MLPipeline = {
   triggerSource: 'data-change',
   stages: [
@@ -75,43 +75,43 @@ const terraGridPipeline: MLPipeline = {
       gate: async () => true,  // always allowed to start
       execute: async () => {
         const newData = await fetchSectorData('all');
-        return { rowCount: newData.length, sectors: 12 };
+        return { rows: newData, rowCount: newData.length, sectors: 12 };
       },
     },
     {
       name: 'data-validation',       // ← like lint
       status: 'pending',
       gate: async () => true,
-      execute: async () => {
-        const stats = await validateSchema(data);
-        const driftScore = await checkDistribution(data, baseline);
+      execute: async (prior) => {
+        const stats = await validateSchema(prior['data-ingestion'].rows);
+        const driftScore = await checkDistribution(prior['data-ingestion'].rows, baseline);
         return { valid: stats.errors === 0, driftScore };
       },
     },
     {
       name: 'training',              // ← like build
       status: 'pending',
-      gate: async () => validationResult.valid && validationResult.driftScore < 0.3,
-      execute: async () => {
-        const model = await trainModel(processedData, hyperparams);
+      gate: async (prior) => prior['data-validation'].valid && prior['data-validation'].driftScore < 0.3,
+      execute: async (prior) => {
+        const model = await trainModel(prior['data-ingestion'].rows, hyperparams);
         return { model, epochs: 50, finalLoss: 0.023 };
       },
     },
     {
       name: 'evaluation',            // ← like test
       status: 'pending',
-      gate: async () => trainingResult.finalLoss < 0.05,
-      execute: async () => {
-        const metrics = await evaluateModel(model, testSet);
+      gate: async (prior) => prior['training'].finalLoss < 0.05,
+      execute: async (prior) => {
+        const metrics = await evaluateModel(prior['training'].model, testSet);
         return { accuracy: metrics.accuracy, f1: metrics.f1 };
       },
     },
     {
       name: 'deployment',            // ← like deploy
       status: 'pending',
-      gate: async () => evalResult.accuracy > 0.95 && evalResult.f1 > 0.92,
-      execute: async () => {
-        const pkg = await packageModel(model, version);
+      gate: async (prior) => prior['evaluation'].accuracy > 0.95 && prior['evaluation'].f1 > 0.92,
+      execute: async (prior) => {
+        const pkg = await packageModel(prior['training'].model, version);
         await deployToFleet(pkg, 'sector-7');
         return { devicesUpdated: 847 };
       },
@@ -126,9 +126,13 @@ const terraGridPipeline: MLPipeline = {
 {`async function runPipeline(pipeline: MLPipeline): Promise<boolean> {
   console.log(\`Pipeline triggered by: \${pipeline.triggerSource}\`);
 
+  // Each stage reads what the stages before it produced, the way a CI job
+  // reads the previous job's artifacts
+  const prior: Record<string, any> = {};
+
   for (const stage of pipeline.stages) {
     // Check gate, like a CI check that must pass
-    const gateOpen = await stage.gate();
+    const gateOpen = await stage.gate(prior);
     if (!gateOpen) {
       stage.status = 'failed';
       console.error(\`Gate blocked at stage: \${stage.name}\`);
@@ -140,9 +144,9 @@ const terraGridPipeline: MLPipeline = {
     console.log(\`Running: \${stage.name}\`);
 
     try {
-      const result = await stage.execute();
+      prior[stage.name] = await stage.execute(prior);
       stage.status = 'passed';
-      console.log(\`Passed: \${stage.name}\`, result);
+      console.log(\`Passed: \${stage.name}\`, prior[stage.name]);
     } catch (error) {
       stage.status = 'failed';
       console.error(\`Failed: \${stage.name}\`, error);

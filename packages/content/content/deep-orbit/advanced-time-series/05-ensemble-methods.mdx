@@ -15,12 +15,12 @@ context:
 concept:
   explanation: "An ensemble runs several models on every input and combines their answers; their individual errors partially cancel, and the blend beats any single member."
   bridge:
-    jsTitle: "Micro-Frontends"
-    jsCode: "// Multiple apps compose into one view, each handling its domain"
+    jsTitle: "Promise.all fan-out"
+    jsCode: "const [a, b, c] = await Promise.all([svcA(x), svcB(x), svcC(x)])"
     mlTitle: "Model Ensemble"
     mlCode: "prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))"
     tier: structural
-    breaks: "Micro-frontends serve different routes; each handles its own slice. Model ensembles run all members on every input and combine predictions (vote, average, stack). Compute is multiplied per inference, not partitioned."
+    breaks: "A fan-out gives you three different answers to three different questions, and one rejection fails the whole batch. An ensemble asks every member the same question, keeps no member's answer on its own, and has nothing to reject: a wrong member still returns a number, and it drags the average instead of throwing. The payoff is conditional too. Three services are worth their bill because they do different work; three models are worth theirs only when their mistakes land in different places."
 consequence:
   narrative: "Three architectures, one verdict: the ensemble catches the timing drift the LSTM alone missed."
 hints:
@@ -35,7 +35,7 @@ keywords:
   - model-averaging
   - bagging
   - stacking
-  - micro-frontends
+  - fan-out
 skillAxes: [model_arch, evaluation]
 ---
 
@@ -47,7 +47,7 @@ The LSTM is great at short-range patterns. The attention model catches long-rang
 Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model fires every time, and you pay the sum of their inference costs. If the compute budget covers that, then yes: each model has blind spots, and the ensemble covers them.
 </Dialogue>
 
-Micro-frontends compose independent apps into one view by partitioning the work: each app owns its route. The analogy bends exactly where Farah said it would. An ensemble doesn't partition the work; it multiplies it per request.
+`Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Three services hand back three different pieces of an answer. Three models hand back the same answer three times, and the only thing that makes the third one worth paying for is that it is wrong in places the other two are right.
 
 <LearningObjectives objectives={["Combine multiple models using averaging, weighted averaging, and stacking", "Understand why ensembles reduce error: averaging out individual model mistakes", "Build an ensemble of LSTM, attention, and Kalman filter for signal forecasting", "Evaluate ensemble performance vs individual models"]} />
 
@@ -95,14 +95,14 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
 
 // DEEP SCAN ensemble
 const predictions: ModelPrediction[] = [
-  { modelName: 'LSTM', prediction: [0.82, 74.1, 0.45], confidence: 0.85 },
-  { modelName: 'Attention', prediction: [0.79, 73.8, 0.51], confidence: 0.90 },
-  { modelName: 'Kalman', prediction: [0.80, 74.3, 0.48], confidence: 0.75 },
+  { modelName: 'LSTM', prediction: [0.82, 37.4, 0.45], confidence: 0.85 },
+  { modelName: 'Attention', prediction: [0.79, 36.9, 0.51], confidence: 0.90 },
+  { modelName: 'Kalman', prediction: [0.80, 37.6, 0.48], confidence: 0.75 },
 ];
 
 const avg = averageEnsemble(predictions);
 const weighted = weightedEnsemble(predictions);
-console.log('Average:', avg);    // [0.803, 74.067, 0.480]
+console.log('Average:', avg);    // [0.803, 37.300, 0.480]
 console.log('Weighted:', weighted); // attention contributes most
 
 // Stacking: the third rung. Instead of hand-picking weights, TRAIN a
@@ -186,7 +186,7 @@ Build a weighted ensemble from multiple model predictions.
 
 <Exercise slug="weighted-ensemble" />
 
-<RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated, and averaging cancels part of them. The factor-N variance cut (typical error shrinking by sqrt(N)) holds only for fully uncorrelated errors. With average pairwise correlation rho between member errors of variance sigma^2, ensemble variance is rho*sigma^2 + (1 - rho)*sigma^2/N: it floors at rho*sigma^2 no matter how many members you add. Correlated mistakes, like members trained on the same mislabeled batch, survive any amount of averaging, and bias is unchanged either way." />
+<RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated, and averaging cancels part of them. The factor-N variance cut (typical error shrinking by sqrt(N)) holds only for fully uncorrelated errors. With average pairwise correlation rho between member errors of variance sigma^2, ensemble variance is rho*sigma^2 + (1 - rho)*sigma^2/N: it floors at rho*sigma^2 no matter how many members you add." />
 
 <LessonRecap
   whatYouLearned={[
@@ -194,7 +194,7 @@ Build a weighted ensemble from multiple model predictions.
     "Weighted averaging assigns each member influence proportional to its measured confidence, letting better-performing models contribute more to the final output.",
     "Architectural diversity, using models with different built-in assumptions like LSTM, attention, and Kalman, is the main driver of uncorrelated errors and ensemble gain."
   ]}
-  bridge="Like micro-frontends composing independent apps into one view, a `prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))` ensemble combines independent models, though unlike micro-frontends every member runs on every input rather than owning a separate slice."
+  bridge="`Promise.all([svcA(x), svcB(x), svcC(x)])` runs every call on the same input and hands back all three results; `prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))` runs the same fan-out and then collapses the three into one, so a weak member is not a failed call, it is a worse average."
   youCanNow="Build a weighted ensemble from multiple model predictions and evaluate whether it outperforms the best individual member."
 />
 
@@ -208,6 +208,6 @@ Farah leaves the ensemble extrapolating overnight: LSTM, attention, Kalman, all 
 I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to four significant figures; I can supply eleven. You did not request this precision. I had it available.
 </Dialogue>
 
-Eleven decimal places of agreement, three architectures, one conclusion: the thing in Sector 7-G is not repeating itself; it is counting down. The only number still missing is to what.
+Four significant figures of agreement, three architectures, one conclusion: the thing in Sector 7-G is not repeating itself; it is counting down. The curves still disagree on the date, and not one of them says what arrives when the count runs out.
 
 </Epilogue>

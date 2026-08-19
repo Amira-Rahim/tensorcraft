@@ -38,7 +38,7 @@ keywords:
 The distillation process has two objectives. First, the student should match the teacher's predictions, learning the patterns. Second, the student should still be correct on the actual labels. Balance both.
 </Dialogue>
 
-When a senior engineer pair programs with a junior, the junior learns from two sources: the senior's explanations (soft knowledge) and the actual requirements (hard truth). Distillation training works the same way: the student learns from both the teacher's outputs and the ground truth labels.
+Two objectives means two loss terms, and one number, alpha, decides which one wins. Push alpha toward 1 and the student inherits the teacher's judgment on the ambiguous readings, including the ones the teacher is confidently wrong about. The ground-truth term is the only check that catches those, and pushing alpha up is turning that check down. Pair programming fails the same way: a junior who has learned the mentor's habits has learned the mentor's bugs.
 
 <LearningObjectives objectives={["Implement the combined distillation loss function", "Understand the alpha parameter for balancing teacher vs ground truth", "Set up a teacher-student training loop", "Evaluate student model accuracy relative to teacher"]} />
 
@@ -86,7 +86,7 @@ function softmax(logits: number[], temperature: number): number[] {
 
 // Teacher (200MB cloud model) output for a sensor reading
 const teacherLogits = [4.5, 1.2, 0.3]; // confident: class 0 (normal)
-// Student (5MB edge model) output
+// Student (40MB distilled model) output
 const studentLogits = [2.1, 1.8, 0.9]; // less confident, learning
 // Ground truth
 const trueLabels = [1, 0, 0]; // class 0 is correct
@@ -108,10 +108,10 @@ Implement the combined distillation loss function.
 **Hard labels carry less information than soft labels.** A hard label says "this is class 7." A soft distribution from a well-trained teacher says "this is class 7 (0.82), but it shares features with class 1 (0.10) and class 9 (0.05)."
 
 **Information content:**
-- Hard one-hot label: log₂(num_classes) bits per sample
-- Soft distribution: depends on entropy. For ImageNet (1000 classes), a calibrated teacher distribution might carry 4-6 bits per sample of useful gradient signal
+- Hard one-hot label: one class index per sample. Every sample of class 7 hands the student the identical target.
+- Soft distribution: 999 extra numbers per sample on ImageNet, and they differ sample to sample. Two class-7 images with different backgrounds put their runner-up mass on different classes, so the gradient carries per-sample detail that a one-hot target cannot express.
 
-**Implication:** the student can learn from far fewer samples when supervised by a teacher's soft labels, because each sample carries more information. Empirically: a student with 10% of the teacher's parameters can recover 90%+ of the teacher's accuracy with the same training data when trained via distillation.
+**Implication:** the student can learn from far fewer samples when supervised by a teacher's soft labels, because each sample carries more information.
 
 **Dark knowledge** (Hinton's term): the implicit similarity structure encoded in the soft labels ("cats look more like dogs than like cars") that hard labels destroy. Distillation transfers this structure.
 

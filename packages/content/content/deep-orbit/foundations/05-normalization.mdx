@@ -41,7 +41,7 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
-Before the deep scan runs, normalize every sensor feed. One scale. No exceptions.
+Before the deep scan runs, normalize every sensor feed. One scale, no exceptions.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -86,7 +86,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-If you've ever built a scroll progress bar, you've already computed min-max normalization. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so a progress bar can use it. That's the entire min-max formula: subtract the minimum, divide by the range.
+Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so the bar can use it. Subtract the minimum, divide by the range: that's the entire formula, and it does the same job on a sensor channel that it does on a scroll position.
 
 Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both in raw and temperature's numbers land roughly forty times larger, so the louder feature dominates what the model learns while the quiet one barely registers, even if the quiet one carries the signal you actually care about.
 
@@ -168,14 +168,14 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 
 <Epilogue>
 
-Demir flips the four normalized feeds live and the bridge displays settle onto one scale, every channel finally speaking the same language. Scrolling the archive to confirm the backlog converted cleanly, he stops on sample 7741, logged eight days ago in the middle of the calm period. Normalized, it shouldn't stand out. It does.
+Demir flips the four normalized feeds live and the bridge displays settle onto one scale, every channel finally speaking the same language. Scrolling the archive to confirm the backlog converted cleanly, he reaches sample 7741 again, logged eight days ago in the middle of the calm period. It converted like everything else. It still doesn't sit like everything else.
 
 Farah pulls up a preview build of the classifier the crew will spend the next ten modules earning, and runs it on the archive, live, in front of you:
 
 <DeepScanDemo />
 
 <Dialogue speaker="Dr. Farah">
-Five clean verdicts and one shrug. A model that says "fifty-one percent" is a model that's never seen anything like this. Flag it. We have a classifier to build. A real one.
+Five clean verdicts and one shrug. A model that says "fifty-one percent" is a model that's never seen anything like this. Tag it. We have a classifier to build. A real one.
 </Dialogue>
 
 She doesn't delete sample 7741, though.

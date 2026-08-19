@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "WebSocket connection pooling reuses idle sockets. Generation queues must batch requests for GPU efficiency and trade off batching delay vs throughput. Pool size, max wait, and batch size are coupled hyperparameters with no obvious right answer."
 consequence:
-  narrative: "200 concurrent connections hold. Excess requests queue with estimated wait times, nobody waits more than 2 seconds, and Erdem exhales for the first time in weeks."
+  narrative: "200 concurrent connections hold. Excess requests get a queue position and a live estimate, load shedding takes over before any wait passes three seconds, and Erdem exhales for the first time in weeks."
 hints:
   - level: nudge
     content: "GenerationQueue(maxConcurrent: 4) is the whole trick: 4 inferences run, everyone else holds a live WebSocket and a queue position"
@@ -39,10 +39,10 @@ Two hundred people in the gallery. Each one generating. That is 200 concurrent W
 </Dialogue>
 
 <Dialogue speaker="Samir">
-Same problem as a chat application with thousands of users. Connection pooling, message queuing, backpressure. The generation is just the payload. The infrastructure is pure frontend engineering.
+Same problem as a chat application with thousands of users. Connection pooling, message queuing, backpressure. The generation is just the payload. None of the queue logic is new to us, it just runs on the server side of the socket instead of the visitor's.
 </Dialogue>
 
-Every request that can't run right now needs three things: a place in line, a connection that stays alive, and an honest estimate of the wait. That's the whole system. You've built it before as a chat room, a live dashboard, a multiplayer lobby. The generation model is just the expensive operation at the end of a very familiar pipeline.
+Every request that can't run right now needs three things: a place in line, a connection that stays alive, and an honest estimate of the wait. That's the whole system, and it's the same one running under every chat room, live dashboard, and multiplayer lobby. The generation model is just the expensive operation at the end of a very familiar pipeline.
 
 <LearningObjectives objectives={["Implement a generation queue with configurable concurrency limits", "Manage WebSocket connections for multiple simultaneous users", "Provide real-time progress updates and estimated wait times", "Design graceful degradation when demand exceeds generation capacity"]} />
 
@@ -181,7 +181,12 @@ class GalleryConnectionManager {
 
 <CodeBlock language="typescript" title="load-shedding.ts">
 {`// Graceful degradation when queue is overwhelmed
-function handleOverload(queue: GenerationQueue, request: GenerationRequest): Response {
+type OverloadResponse =
+  | { type: 'cached'; data: Float32Array }
+  | { type: 'fast'; quality: 'reduced'; data: Float32Array }
+  | { type: 'queued'; estimatedWaitMs: number };
+
+async function handleOverload(queue: GenerationQueue, request: GenerationRequest): Promise<OverloadResponse> {
   const stats = queue.stats;
 
   if (stats.queueLength > 50) {
@@ -189,9 +194,9 @@ function handleOverload(queue: GenerationQueue, request: GenerationRequest): Res
     return { type: 'cached', data: getCachedFallback(request.prompt) };
   }
 
-  if (stats.estimatedWaitMs > 5000) {
+  if (stats.estimatedWaitMs > 3000) {
     // Reduce quality for faster generation
-    return { type: 'fast', quality: 'reduced', data: generateFast(request) };
+    return { type: 'fast', quality: 'reduced', data: await generateFast(request) };
   }
 
   // Normal path

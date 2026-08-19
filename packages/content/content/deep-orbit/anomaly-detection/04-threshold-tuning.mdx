@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "Alert thresholds are static numbers you set in config. Anomaly thresholds must trade off false positives against false negatives across a continuous distribution and the right value depends on the cost asymmetry, not just the data."
 consequence:
-  narrative: "Demir sets the threshold at the 99th percentile of normal errors. DEEP SCAN is precise: it flags only the signals that truly don't belong."
+  narrative: "Demir locks the threshold at the 99th percentile of normal error: one flag per hundred calm readings, and both of last week's real events still caught."
 hints:
   - level: nudge
     content: "There is no formula for the cutoff here: score every candidate threshold against the labeled data and keep the one with the highest F1"
@@ -149,8 +149,8 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 />
 
 <RecallPrompt
-  question="Two deployments use the same model. One guards a smoke detector, the other gates a crew-waking alarm. Why should their thresholds differ even though F1 is optimal at the same cutoff?"
-  answer="F1 weighs precision and recall equally, but the two systems have opposite cost asymmetries: a missed fire is catastrophic (favor recall, lower threshold) while waking the crew nightly destroys trust in the alert (favor precision, higher threshold). The optimal threshold follows the cost of each error type, not the F1 peak."
+  question="Two deployments run the same detector on the same errors: one gates the capture pipeline, the other pages the bridge crew. Why should their thresholds differ when F1 peaks at the same cutoff?"
+  answer="F1 weighs precision and recall equally, but the two deployments have opposite cost asymmetries. A capture the ship never gets to repeat makes the miss the expensive error, so that threshold goes down and buys recall with false alarms. An alert channel fails by being tuned out, so that threshold goes up and buys precision with missed detections. The cutoff follows the cost of each error, not the F1 peak."
 />
 
 <LessonRecap

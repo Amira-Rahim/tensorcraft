@@ -19,10 +19,10 @@ concept:
     tier: structural
     breaks: "CSR vs SSR is a rendering location decision. Edge vs cloud for ML trades latency + privacy against model size + compute. Unlike rendering, you cannot easily fall back from edge to cloud at runtime; the choice is architectural."
 consequence:
-  narrative: "Hybrid strategy approved: edge for real-time alerts, cloud for deep analysis. One problem survives the architecture diagram. The best anomaly model is still 200MB, and the gateway's RAM budget is 307MB with the OS already inside it. Something has to shrink."
+  narrative: "Hybrid strategy approved: edge for real-time alerts, cloud for deep analysis. One problem survives the architecture diagram. The anomaly model Priya trained needs 1.8GB of RAM to run. The gateway's model budget is 307MB, the 60 percent of 512MB left once the OS, the drivers, and the radio stack have taken theirs. Something has to shrink."
 hints:
   - level: nudge
-    content: "chooseDeployment() weighs the same factors as a CSR-vs-SSR call: latency floor, compute weight, and what happens when the network drops"
+    content: "chooseTarget() weighs the same factors as a CSR-vs-SSR call: latency floor, model weight, and what happens when the network drops"
   - level: guidance
     content: "Map each factor: latency, model complexity, connectivity, cost"
   - level: solution
@@ -42,7 +42,7 @@ Recommendation: hybrid architecture. Real-time anomaly detection on edge devices
 GRID is right. Not everything needs to run on the edge, and not everything should run in the cloud. The architecture should match the requirements.
 </Dialogue>
 
-If you've shipped a browser app, you've made this call: client-side rendering or server-side rendering? The answer is always: it depends. Edge vs cloud inference follows the same decision framework.
+Client-side rendering or server-side rendering: nobody settles that argument in the abstract, because the answer depends on what the page has to do and where the data already lives. Edge or cloud is the same argument about a model, with two constraints a browser never imposed: the device has 512MB of RAM, and the uplink is not always there.
 
 <LearningObjectives objectives={["Evaluate when to use edge vs cloud inference", "Understand the tradeoffs: latency, model size, accuracy, connectivity, cost", "Design a hybrid edge-cloud architecture", "Map CSR/SSR decision frameworks to edge/cloud decisions"]} />
 
@@ -73,6 +73,9 @@ function chooseDeployment(req: InferenceRequirements): DeploymentTarget {
 
   // Model too large for device → cloud (like choosing SSR for heavy computation)
   if (req.modelSizeMB > 300) return 'cloud';
+
+  // An accuracy bar this high needs the full model → cloud
+  if (req.accuracyThreshold > 0.98) return 'cloud';
 
   // Real-time alerts on edge, deep analysis in cloud
   return 'hybrid';
@@ -108,9 +111,9 @@ Design a deployment strategy for different Terra Grid inference tasks.
 
 <Quiz
   question="Primary reason for edge inference vs cloud?"
-  options={[{"text":"Edge is always faster"},{"text":"Cloud inference adds network round-trip; edge eliminates it, critical for latency-sensitive UX"},{"text":"Cloud is more secure"},{"text":"Edge models are smaller"}]}
+  options={[{"text":"Edge is always faster"},{"text":"Cloud inference adds a network round trip to every prediction; edge inference removes it, which is what a real-time alert budget requires"},{"text":"Cloud is more secure"},{"text":"Edge models are smaller"}]}
   correct={1}
-  explanation="Cloud inference: 50-200ms network round-trip + cold start. Edge: 10-50ms total. For interactive UX (autocomplete, real-time AR), cloud is too slow. Tradeoff: edge model is constrained by device memory + compute, cloud has no such limit."
+  explanation="Site 31's measured cloud round trip is 8,234ms over the satellite uplink. The same prediction on the gateway is 89ms, because the data never leaves the device. Removing the network is the whole gain, and it costs you capability: the edge model has to fit inside 512MB of RAM on an ARM CPU, and a cloud model has no such cap."
   tier="structural"
 />
 

@@ -8,7 +8,7 @@ instructions: |
     - quality floor (min acceptable accuracy),
     - dependency health (each fallback has an `available` flag).
 
-  Build `pickFallback(primary, fallbacks, budget)` that returns the highest-quality available fallback whose `latencyMs ≤ budget.latencyMs` AND `accuracy ≥ budget.minAccuracy`. Prefer higher accuracy on tie. If none qualify, return `null` (meaning: serve cached / degraded UX rather than a worse model).
+  Build `pickFallback(primary, fallbacks, budget)` that returns the available fallback with the highest `accuracy` among those whose `latencyMs` is at or under `budget.latencyMs` and whose `accuracy` is at or above `budget.minAccuracy`. If nothing qualifies, return `null`: no answer at all is safer than an answer below the accuracy floor.
 mlContent: systems
 starterCode: |
   function pickFallback(primary, fallbacks, budget) {

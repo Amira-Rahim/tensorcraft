@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "`reduce` folds with a pure function YOU define. An RNN step folds with a LEARNED cell that has trainable weights, an activation, and a hidden state vector; the cell behavior changes per training run. The fold shape transfers; the cell content is opaque and stochastic."
 consequence:
-  narrative: "Diagnostic One can now process clinical notes sequentially, understanding that 'denied' before 'pain' negates the symptom."
+  narrative: "Imran trains the RNN on four hundred short notes overnight. It separates denied from reported at 0.94. Then Karimi drops a stack of three-page discharge summaries on his desk."
 hints:
   - level: nudge
     content: "An RNN cell takes two inputs: the current token embedding and the previous hidden state."
@@ -48,10 +48,10 @@ An RNN is exactly that. Start with an initial hidden state, process each token, 
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Confirmed: Array.reduce and RNN forward pass share identical computational structure. Both are left-fold operations over sequences.
+Noted, with one correction. The fold is the same shape. The function being folded is not: my simpleRNN cell holds 2,080 trainable weights whose values change on every training run. I would not call the two identical.
 </Dialogue>
 
-`Array.reduce()` processes elements one at a time, carrying forward an accumulator. An RNN does the same: it processes tokens one at a time, carrying forward a hidden state vector. After reading the entire sequence, the hidden state encodes the sentence's meaning.
+The accumulator in `reduce` is whatever you decide it is: a running sum, an object, a string you keep appending to. The accumulator in an RNN is a fixed-width vector of floats, and training decides what goes in it. Thirty-two numbers have to hold everything the network learned to care about from every token it has read so far.
 
 <LearningObjectives objectives={["Understand RNNs as Array.reduce over token sequences", "Build a simple RNN in TensorFlow.js for clinical text classification", "Trace how hidden state evolves as each token is processed", "Combine embedding + RNN + dense layers for end-to-end text processing"]} />
 

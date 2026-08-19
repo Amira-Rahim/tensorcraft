@@ -22,11 +22,11 @@ consequence:
   narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Karimi and 'Who needs their blood thinner levels checked?' from Imran. Same intent, different language. Khalil's query-understanding layer normalizes both into the same structured query."
 hints:
   - level: nudge
-    content: "Break query understanding into intent classification and entity extraction"
+    content: "The nurse's words and the chart's words are different strings for the same thing, so widen the query before you score anything"
   - level: guidance
-    content: "Classify the query intent (lookup, comparison, aggregation), then extract clinical entities (medications, labs, conditions)"
+    content: "Count how many expanded query tokens each candidate contains, then turn those raw counts into comparable confidences with softmax"
   - level: solution
-    content: "Use a multi-task model: one head for intent classification, one for entity extraction (NER), then map the structured output to a retrieval query"
+    content: "Expand the query with every synonym whose key appears in it, score candidates by token overlap, softmax the scores, then filter by threshold and take the top k"
 keywords:
   - clinical-queries
   - query-understanding
@@ -40,14 +40,14 @@ Which of my patients on immunosuppressants have upcoming dental procedures?
 </Dialogue>
 
 <Dialogue speaker="Imran">
-Can I ask it something? How about: "Who needs their blood checked this week?" Same question a doctor might ask, just in different words.
+Can I ask it one? I'd type "who needs their blood thinner levels checked this week?" She'd type "current anticoagulant patients with subtherapeutic INR." Same patients, different vocabulary.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
 It is the same problem as building a search bar for an e-commerce site. Users type "red shoes under fifty bucks" and the system needs to parse that into structured filters. Here, doctors and nurses type clinical questions and we parse them into structured queries against patient records.
 </Dialogue>
 
-Every e-commerce site with a decent search bar does query understanding: parsing "red shoes under $50" into `{ color: 'red', type: 'shoes', maxPrice: 50 }`. Clinical query understanding does the same thing with medical language, handling the variability between how doctors, nurses, and specialists phrase the same clinical question.
+Query parsing is a solved problem in one direction and open in the other. `red shoes under $50` has a closed vocabulary: a color list, a category list, a number. Clinical language has neither. "Blood thinner" and "anticoagulant" name the same drug class, "MS" is multiple sclerosis in neurology and morphine sulfate on a medication list, and the synonym table is never finished. Every JavaScript engineer who has shipped a search bar knows the first half of this job; the second half is where one missed expansion quietly returns fewer patients than it should.
 
 <LearningObjectives objectives={["Build a clinical query parser that extracts intents and entities from natural language questions", "Handle query variability between different clinical roles (doctors, nurses, specialists)", "Map parsed queries to structured retrieval operations against patient records", "Implement query expansion to handle synonyms and abbreviations in medical terminology"]} />
 
@@ -112,6 +112,13 @@ function expandQuery(query: string): string {
   return expanded;
 }
 
+// Pad with zeros or truncate so every sequence matches the model's input width
+function fitTo(ids: number[], width: number): number[] {
+  return ids.length >= width
+    ? ids.slice(0, width)
+    : [...ids, ...new Array(width - ids.length).fill(0)];
+}
+
 // Parse a natural language clinical query
 async function parseClinicalQuery(
   queryText: string,
@@ -122,8 +129,10 @@ async function parseClinicalQuery(
   // 1. Expand query with medical synonyms
   const expanded = expandQuery(queryText);
 
-  // 2. Classify intent
-  const tokens = tokenize(expanded);
+  // 2. Classify intent. predict() takes fixed-width input,
+  //    so pad or truncate before calling it
+  const width = intentModel.inputs[0].shape[1] as number;
+  const tokens = fitTo(tokenize(expanded), width);
   const intentPred = intentModel.predict(
     tf.tensor2d([tokens])
   ) as tf.Tensor;
@@ -183,6 +192,6 @@ for (const variant of queryVariants) {
 
 Build a clinical query parser that extracts intent and entities from natural language questions.
 
-<Exercise slug="clinical-query" />
+<Exercise slug="clinical-qa" />
 
 <KeyTakeaways takeaways={["Abbreviations with multiple expansions are the riskiest inputs: a parser that silently drops critical context is worse than one that asks", "Query expansion with medical synonyms bridges informal and formal clinical language", "Multi-task models handle intent classification and entity extraction in a single pass", "Role-aware normalization ensures doctors and nurses get the same results from differently phrased questions"]} />

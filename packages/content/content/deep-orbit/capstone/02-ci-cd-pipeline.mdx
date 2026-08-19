@@ -43,7 +43,7 @@ skillAxes: [deployment]
 
 > **MERGE REQUEST 47 · deploy.yml · DEMIR → NAZARI · REVIEW REQUIRED** · "Standard web CI plus three model gates: accuracy, latency, memory budget. All green on my branch. Requesting sign-off before this wires to main."
 
-Nazari reviews files, not badges. You are reviewing this one with her, and here is the tell: the flaw is not in what the pipeline checks. It is in what the pipeline checks it *against*. Hold that question while you read the workflow; before this lesson ends, the pipeline's own log will hand you the catch, and the rest of the lesson is the repair.
+Nazari reviews files, not badges. You are reviewing this one with her, so read the workflow the way she will: every gate in it is only as good as the thing it was pointed at. The pipeline's own log settles it before the lesson ends.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Manual testing is how systems fail in production, which is why the standing order was: automate everything, every push runs the full pipeline, any failure blocks the ship. Your merge request claims all of that. So we open the file. A review that only reads the green parts is not a review.
@@ -53,7 +53,7 @@ Manual testing is how systems fail in production, which is why the standing orde
 It's the same shape as any web app CI: GitHub Actions, test on push, deploy on merge to main, plus the three model gates: accuracy threshold, inference speed benchmark, memory budget validation. All green on my branch. I don't see what else there is to read.
 </Dialogue>
 
-Demir is one assumption away from being right. The workflow engine transfers whole; the belief that a green build tested the artifact you actually ship does not, and that assumption is about to cost forty minutes.
+Demir is one assumption away from being right. The workflow engine transfers whole; the belief that a green build tested the artifact you actually ship does not, and nothing in the file he is defending would tell him.
 
 <LearningObjectives objectives={["Extend a standard CI/CD pipeline with ML-specific validation steps", "Implement model accuracy gates that block deployment on regression", "Add inference performance benchmarks as CI checks", "Configure automated deployment with rollback on failure", "Export a model with model.save() and an in-memory save handler, and read its topology, weight specs, and byte count"]} />
 
@@ -129,6 +129,11 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      - name: Restore model artifact
+        uses: actions/cache@v4
+        with:
+          path: models/
+          key: deep-scan-model
       - run: npm run build
       - uses: peaceiris/actions-gh-pages@v4
         with:
@@ -143,7 +148,7 @@ jobs:
         continue-on-error: true
         run: |
           node scripts/validate-model.js \\
-            --model https://deep-scan.pages.dev/models/deep-scan-v1.json \\
+            --model https://\${{ github.repository_owner }}.github.io/deep-scan-signal-classifier/models/deep-scan-v1.json \\
             --test-data data/holdout.json \\
             --min-accuracy 0.90
       - name: Roll back model artifact
@@ -267,7 +272,7 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
 
 <Epilogue>
 
-The rerun goes green at 2214, hash-pinned this time, every gate aimed at the artifact that will actually ship. Nazari watches all four stages pass and gives the screen a single nod, which from her is a parade. On the wall display the telemetry ticker reads: pulse interval 44.0 seconds.
+The rerun goes green at 2214, hash-pinned this time, every gate aimed at the artifact that will actually ship. Nazari watches all three jobs pass, nods once at the screen, and does not say anything about it. On the wall display the telemetry ticker reads: pulse interval 44.0 seconds.
 
 <Dialogue speaker="Chief Nazari">
 Three days ago that ticker said 47.0. The pipeline doesn't get to need second takes.

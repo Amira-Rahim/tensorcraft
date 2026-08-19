@@ -23,7 +23,7 @@ describe("buildPricingOffers", () => {
     expect(LAUNCHED_WORLDS).toHaveLength(1);
     expect(buildPricingOffers().map((o) => o.name)).toEqual([
       "Free preview",
-      "Single world",
+      "Full course",
     ]);
   });
 
@@ -59,6 +59,6 @@ describe("buildPricingOffers", () => {
       buildPricingOffers().map((o) => [o.name, o.price]),
     );
     expect(priced["Free preview"]).toBe(String(PRICING.free.price));
-    expect(priced["Single world"]).toBe(String(PRICING.single.price));
+    expect(priced["Full course"]).toBe(String(PRICING.single.price));
   });
 });

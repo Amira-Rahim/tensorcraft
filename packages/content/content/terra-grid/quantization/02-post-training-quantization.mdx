@@ -17,7 +17,7 @@ concept:
     mlTitle: "Post-Training Quantization"
     mlCode: "// After training: convert Float32 → Int8\n// 0.123456789 → 31 (scaled integer)\n// No retraining needed"
     tier: structural
-    breaks: "Webpack minification rewrites code to equivalent shorter syntax; runtime behavior is preserved exactly. Post-training quantization rounds float weights to int8 and changes numeric output: accuracy can drop several percent, requiring calibration data to mitigate."
+    breaks: "Webpack minification rewrites code to equivalent shorter syntax; runtime behavior is preserved exactly. Post-training quantization rounds float weights to int8 and changes numeric output: accuracy can drop by a point or two, requiring calibration data to mitigate."
 consequence:
   narrative: "Four times smaller, no retraining. But accuracy on extreme sensor values dropped, and nobody can say yet by how much."
 hints:
@@ -48,7 +48,7 @@ add(2, 2)   // 4 before terser, 4 after terser
 0.123 → Int8 bucket -10 → dequantize → 0.1221
 ```
 
-Minification loses readability and nothing else. Quantization rounds every weight into one of 256 buckets, the outputs shift, and accuracy can drop several points until you give the converter calibration data to set the ranges.
+Minification loses readability and nothing else. Quantization rounds every weight into one of 256 buckets, the outputs shift, and accuracy usually drops between half a point and two points, more if you skip the calibration data that sets the ranges.
 
 <LearningObjectives objectives={["Understand the post-training quantization process", "Implement min-max scaling to convert Float32 weights to Int8", "Calculate quantization scale and zero-point", "Evaluate accuracy impact of post-training quantization"]} />
 
@@ -97,7 +97,7 @@ console.log('Original size:', original.byteLength, 'bytes');   // 20 bytes
 console.log('Quantized size:', quantized.byteLength, 'bytes'); // 5 bytes, 4x smaller`}
 </CodeBlock>
 
-The process is mechanical: find the min and max of each weight tensor, compute a scale factor, and map every floating-point value to the nearest integer in [-128, 127]. Information is lost, just as minified code loses readability, but the behavior is preserved within acceptable tolerance.
+The process is mechanical: find the min and max of each weight tensor, compute a scale factor, and map every floating-point value to the nearest integer in [-128, 127]. Every weight lands a little off where it started, so the outputs move too. The size win you can check in one line of console output. The accuracy cost you have to measure on held-out data.
 
 ## Challenge
 

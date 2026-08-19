@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Rohan examines the Gram matrices on screen. 'Each artist has a unique signature in these numbers. Monet's Gram matrix is smooth gradients. Basquiat's is sharp, high-contrast. The math captures what makes their art recognizable.' Yara: 'Like design tokens: the encoded DNA of a visual identity.'"
+  narrative: "Rohan pulls two Gram matrices onto the wall display, Monet on the left and Basquiat on the right, and turns the monitor so Yara can see both without leaning."
   speaker: "Rohan"
 concept:
   explanation: "Style representations are Gram matrices taken across multiple CNN layers, each capturing which textures co-occur at one scale. Stacked together they form a numeric fingerprint of an artistic identity, derived rather than authored."
@@ -43,7 +43,7 @@ Look at these two Gram matrices. This one is Monet: see the smooth, gradual corr
 Like design tokens. When I build a design system, I encode the visual identity into tokens: colors, spacing, radii, type scales. Everything that makes a brand feel like itself. The Gram matrix does the same thing for a painting.
 </Dialogue>
 
-A 256-by-256 Gram matrix is small enough to extract once from a painting, cache, and reuse against any photograph you want to restyle.
+One Gram matrix is one scale. The 32-filter first block gives you a 32-by-32 matrix that knows about brushstroke and color patch; the 128-filter third block gives you 128-by-128 that knows about larger shapes and repeated motifs. A style is all of them at once, which is why the extractor returns a list rather than a matrix. Each one costs a single forward pass per painting, so you compute a style once, cache it, and reuse it against every photograph that walks through the kiosk.
 
 <LearningObjectives objectives={["Understand how Gram matrices capture style at different scales across CNN layers", "Build a multi-output model to extract features from multiple layers simultaneously", "Compute multi-scale style representations for richer style capture"]} />
 

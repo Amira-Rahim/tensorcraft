@@ -8,7 +8,7 @@ instructions: |
       shifted: boolean,         // true if any class freq changed by ≥5 pp (percentage points)
       worstClass: number,       // class index with largest absolute shift
       worstShiftPp: number,     // shift magnitude in percentage points (rounded to 1 decimal)
-      severity: 'low'|'med'|'high',  // <5pp = low, 5-15pp = med, >15pp = high
+      severity: 'low'|'med'|'high',  // <5pp = low, 5pp up to but not including 15pp = med, 15pp or more = high
     }
 
   Use Math.round(x * 10) / 10 for one-decimal rounding.

@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "JSDoc comments describe deterministic functions whose behavior is verifiable from the source. A model card describes statistical performance over a held-out distribution that the production data may not match. Reading the docs tells you how the function behaves; reading the model card tells you how the model performed yesterday on a benchmark that may already be stale. Documentation discipline transfers; verifiability does not."
 consequence:
-  narrative: "Demir writes the handover: a Model Card, an API reference, and a runbook precise enough that a rule-based system could execute it without him. One will review it."
+  narrative: "Demir writes the handover: a Model Card, an API reference, and a runbook. It goes to exactly one reviewer, and she does not have intuitions."
 hints:
   - level: nudge
     content: "A Model Card is a README for a model: render the metadata you are given into fixed sections, never hardcode the values."
@@ -44,7 +44,7 @@ Demir, if you were incapacitated tomorrow, could Nazari operate DEEP SCAN? Could
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Right, same rule as any codebase. If it's not documented, it doesn't exist. I'll write a Model Card for the ML model and API docs for the pipeline. Like a really thorough README, but covering training data, accuracy metrics, and known limitations too.
+Then it needs a Model Card, not just API docs. Training set, split, per-class recall, the input contract, and every limitation I can name, including the ones that make us look bad. If ARIA has to retrain this at 0300 she needs the numbers, not my judgment.
 </Dialogue>
 
 There is a version of the next two weeks in which Demir is not available to run DEEP SCAN. The crew is busy surviving something, the bridge is understaffed, and the only operator still awake is the one who does not sleep. This lesson writes the handover for that scenario: the **Model Card** Demir describes, plus a runbook precise enough that a rule-based system could execute it without you.
@@ -105,7 +105,7 @@ const deepScanCard: ModelCard = {
   training: {
     dataset: 'Sector 7-G Signal Archive (11 days, one reading per 33-second window)',
     datasetSize: 28_800,
-    features: ['amplitude', 'frequency', 'phase', 'FFT bin magnitudes (8 fixed bins)'],
+    features: ['amplitude', 'zeroCrossings', 'phase', 'FFT bin magnitudes (8 fixed bins)'],
     trainTestSplit: '80/10/10 (train/val/test)',
     epochs: 50,
     optimizer: 'Adam (lr=0.001)',
@@ -212,6 +212,6 @@ The runbook's first draft comes together in the dead hours of the night watch, a
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-Demir rewrites it with a number: drift above 0.5, retrain, no judgment required. The finished document reads less like documentation and more like a will, which he supposes is the point: this is the version of him that stays behind if the crew can't. He signs it at an interval reading of 31.6 seconds, because ARIA timestamps reviews in pulses now, the way other systems use dates. Tomorrow they deploy.
+Demir rewrites it with a number: drift above 0.5, retrain, no judgment required. The finished document reads less like documentation and more like a will, which he supposes is the point: if he is not here to run DEEP SCAN, this is the part of him that is. He signs it at an interval reading of 31.6 seconds, because ARIA timestamps reviews in pulses now, the way other systems use dates. Tomorrow they deploy.
 
 </Epilogue>
