@@ -50,13 +50,19 @@ most strangers; listed so nothing is silently dropped).
   internal plan id surfaced as a button label; nobody writes this.
 - FIX apps/web/app/worlds/world-cards-grid.tsx:256-263: "11 mod · 56
   lessons". "mod" is not a word a person writes.
-- DECIDE apps/web/app/paywall/page.tsx:26, 92, 98, 250: the page title
-  "Module 1 Is Done. The Model Isn't.", the eyebrow "module 1 complete ·
-  the real work starts here", and "Ready for Module 2?" assert a
-  completion the reader has made only when they arrive from inside the
-  product. For a stranger arriving from a shared link or search, the
-  premise is false. Ruling needed: keep the premise (and keep the page
-  out of campaigns/index), or make the copy arrival-agnostic.
+- ~~DECIDE apps/web/app/paywall/page.tsx:26, 92, 98, 250: the "Module 1
+  is done" premise.~~ **WITHDRAWN 2026-08-20, the finding was wrong.**
+  The sweep asserted /paywall is "a documented direct landing target for
+  email/social campaigns"; that claim is unsupported. Verified: the page
+  sets `robots: { index: false, follow: false }`, and every link into it
+  is authenticated and gated on having finished the free module
+  (worlds/[slug]/page.tsx:263 and :425 require
+  `completedModuleCount > 0 && !hasPurchased && nextLockedModule`;
+  dashboard/page.tsx:278 requires `modIndex > 0 && !purchased`). The
+  only doc references are analytics event definitions and dev-plan
+  history, not campaign copy. So the premise is true for everyone who
+  can reach the page, and no change is needed. If /paywall is ever used
+  as a public campaign destination, this finding becomes live again.
 
 ## 2. Story vocabulary on pre-lesson surfaces (clear rule hits)
 
@@ -308,14 +314,14 @@ These are rule hits, but the copy was deliberately authored or
 approved by the owner, in some cases after significant iteration. They
 need a ruling, not a silent fix.
 
-- World taglines, the "Where X ..." pattern set by the owner on
-  2026-08-15 ("Where signals guide you through the unknown", "Where AI
+- ~~World taglines, the "Where X ..." pattern~~ **RULED 2026-08-20:
+  KEEP, unchanged.** Owner decision. The five taglines stay exactly as
+  written ("Where signals guide you through the unknown", "Where AI
   watches the city", "Where language saves lives", "Where AI learns to
-  imagine", "Where models meet the real world"). Rendered pre-lesson
-  at five-worlds-section.tsx:168-170, world-cards-grid.tsx:249,
-  coming-soon-stub.tsx:155. Poetic register, not decodable as product
-  fact; also the newest owner directive postdates the tagline pass by
-  one day.
+  imagine", "Where models meet the real world") on all three pre-lesson
+  surfaces (five-worlds-section.tsx:168-170, world-cards-grid.tsx:249,
+  coming-soon-stub.tsx:155). Do not reopen this in a future audit: the
+  pattern is deliberate and postdates nothing that overrides it.
 - The coming-soon pages' story-forward design (2026-07-19 redesign):
   statusBoard org/status lines ("NEURALCORE HQ · SURVEILLANCE GRID",
   "200 CAMERAS DARK · REBUILD PENDING", coming-soon-stub.tsx:133-140
@@ -400,15 +406,64 @@ discoveries:
   copy from manifest fields; the manifest's story description still
   serves the coming-soon surfaces pending the section 5 ruling.
 
-Verification: 1754 unit tests pass (5 assertions updated to the new
-copy: first-run CTA x2, JSON-LD offer name x2, pricing CTA x1); eslint
-clean; 18 visual baselines re-minted and compared green (landing,
-pricing, worlds index, paywall, deep-orbit map, both responsive sets).
+Verification (final state at end of session): 1757 unit tests pass
+(5 assertions updated to the new copy: first-run CTA x2, JSON-LD offer
+name x2, pricing CTA x1; 2 new tests added pinning the DeepScanDemo
+framing caption as story-free); 112 e2e pass with `--workers=1` and
+zero failures; all 30 axe audits pass in both schemes; all 28 visual
+baselines pass after 18 were re-minted (landing, pricing, worlds index,
+paywall, deep-orbit map, both responsive sets); `turbo typecheck` passes
+across 10 packages; eslint and prettier clean.
 
 Still open: the section 5 DECIDE rulings, and the Kit email subject
 lines (operator task outside this repo).
 
-### Found while applying, NOT fixed, needs a ruling: module descriptions
+## Second pass applied 2026-08-20 (owner: "Go")
+
+Four remaining fixes plus the module-summary mechanism, all shipped:
+
+1. **Waitlist buttons.** All four coming-soon CTAs now read "Join the
+   waitlist" (were "Get the signal", "Get paged", "Save my invite", "Put
+   me on call"). A visitor could not tell those joined a waitlist, which
+   made it a conversion defect on pages whose only job is email capture.
+   `WorldPreview.ctaLabel` stays per-world so a future world can vary it;
+   its doc comment now records why the in-fiction labels went.
+2. **Coming-soon metadata.** The page keeps its story copy, ruled
+   exempt. Its `<meta name="description">` and Course JSON-LD now state
+   what the course is and that it is unreleased, because a search
+   snippet reaches a stranger with no page around it.
+3. **"ship in waves"** replaced with the literal fact on all three
+   surfaces (/learn, /worlds, landing five-worlds section): the other
+   four have no release dates yet.
+4. **Legal defining clauses.** /terms now opens the purchase section
+   with "A world is one complete course track, such as Deep Orbit".
+   /privacy replaces the bare "streaks" with "your run of consecutive
+   active days" and glosses "arena challenges" in place. Both snapshot
+   tests updated; no compliance doc mirrors those sentences (the other
+   "streaks" references in docs are database schema, not prose).
+
+5. **Module summaries (option 2, the recommended one).** Every
+   `module.yaml` in a built world now carries a required `summary`: one
+   plain sentence, no story vocabulary. `description` is untouched and
+   still serves in-course surfaces. The module map
+   (worlds/[slug]/page.tsx) and the /pricing curriculum preview now read
+   `summary`. Verified on the live page: "Board the Archimedes with 64
+   channels of telemetry" no longer appears anywhere in the module map's
+   HTML, and the plain line renders in its place.
+
+   New gate: `packages/content/__tests__/module-summary-prelesson.test.ts`
+   requires a quoted one-line `summary` on every built-world module,
+   rejects a story-lexicon hit inside it, and caps length. Scoped to
+   `BUILT_STORY_WORLDS` to match the velite schema, so unlaunched worlds
+   are exempt until they launch. The gate was confirmed to actually fail
+   by injecting "Board the Archimedes and meet the crew" into module 1,
+   which it caught on both "Archimedes" and "the crew".
+
+The 11 summaries as shipped are in the module.yaml files; they are
+one sentence each, name what you build, and use the FE anchors the
+lessons already lean on (Float32Array, reducers, cache expiry).
+
+### Superseded: the module-description ruling below
 
 Both sweeps missed this one; it surfaced when the applied module map was
 checked against the live page. Every module description in
@@ -466,6 +521,30 @@ watching them fail identically, so neither was caused by this work.
   because primary-on-surface has more headroom there. The settle wait is
   now 1600ms and all 30 audits pass, which also confirms the palette
   itself clears AA at rest.
+
+### The visual gate cannot see a one-line copy edit on a tall page
+
+Noticed on 2026-08-20 while re-minting: the landing baselines came back
+byte-identical after "ship in waves" was replaced, even though the two
+strings render at the same spot. The gate was then proved to work by
+swapping that line for a long sentinel string, which failed both landing
+tests immediately. So the region IS captured; the ordinary edit simply
+falls under the threshold.
+
+The arithmetic: the landing capture is 1280x4861, about 6.2 million
+pixels, and `maxDiffPixelRatio` is 0.001. One line of 15px body text is
+roughly 5,000 changed pixels, near 0.08 percent, comfortably under the
+0.1 percent gate. Anything that does not reflow the page is invisible to
+this suite.
+
+Practical consequence: do not treat a green visual run as evidence that
+copy changed correctly. Verify copy by reading the rendered HTML (`curl
+| grep`), which is what caught the RSC payload leak the same week. The
+visual suite is for layout and palette regressions, and it does that
+job. Tightening the tolerance is not obviously right either, since these
+full-page captures are exactly where anti-aliasing noise accumulates;
+scoping a per-section screenshot would be the real fix if copy ever
+needs pixel coverage.
 
 Also worth recording for whoever runs these next: the full e2e suite at
 default parallelism produces 3 to 4 rotating false failures per run on

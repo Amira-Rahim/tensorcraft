@@ -1,4 +1,33 @@
-# Launch Blockers - Definitive List (2026-07-21, re-baselined 2026-07-25)
+# Launch Blockers - Definitive List (2026-07-21, re-baselined 2026-07-25, reconciled 2026-08-20)
+
+> **Status convention (introduced by the 2026-08-20 reconcile). Every
+> forward-looking entry below now carries exactly one of these, and nothing
+> else counts as a status:**
+>
+> - `- [x]` **DONE** - verified against the repo, with the evidence named in
+>   the entry. Not "a previous session said so".
+> - `- [ ]` **OPEN** - real work, doable in this repository.
+> - `- [ ] (OPERATOR)` - real work that CANNOT be done or verified from a
+>   checkout: a third-party dashboard, a billing plan, a DNS record, a
+>   signature, a production database. The entry names what to check and
+>   where.
+>
+> **Why this was needed:** before the reconcile the file mixed 30 checkbox
+> items with 91 prose bullets, and genuine open work lived in both. Anyone
+> counting `- [ ]` undercounted, and three live items were sitting inside
+> sections whose headings say "CLEARED" or "FIXED" (external uptime
+> monitoring, Vercel deploys not gated on CI, and the Vercel install
+> command). Those are now checkboxes in the tiers below.
+>
+> **What the reconcile did NOT touch:** the round-by-round audit narrative
+> (ROUND 2, ROUND 3, the 2026-08-14 CI and Vercel sections, Tier 1). That is
+> the historical record of what was found and fixed, and it stays as written.
+> Only the four forward-looking tiers were normalized.
+>
+> **A caution that came out of the pass:** several entries previously marked
+> done rest on production database state (migrations applied, ledger IN
+> SYNC). A checkout cannot confirm any of it. Those are now `(OPERATOR)`
+> with the exact command to run, rather than `[x]`.
 
 > **What this document is:** the complete set of pre-launch work - code defects (Tier 1; Tier 2 in week 1), operator setup (Tier 1-OPS), and legal/compliance actions (Tier 1-LEGAL). Originally scoped to code defects only ("when Tier 1 is done there is no further blocker"); that claim is superseded - since the 2026-07-22 consolidation the release gate is **Tier 1 + Tier 1-OPS + Tier 1-LEGAL complete**, with Tier 2 due in week 1 before ad spend. **Round 3 (2026-07-25) adds two release-gate items: R3-1 (API undeployable at HEAD) and R3-2 (migration 047 must precede the next API deploy).**
 >
@@ -893,25 +922,49 @@ measurement, email, and reach infrastructure whose value is multiplied by
 launch traffic. Launch-day data is unrepeatable, and historical funnel data
 has already been written off once (see above) - do not launch dark again.
 
-- [ ] **Apply migration 058 (`rename_theme_to_world`) before the next
-  deploy or local run against prod data.** The 2026-08-12 product rename
-  ("theme" → "world") renamed every `theme_*` database identifier; the app
-  code at HEAD queries `world_progress`/`world_id`/`p_world_id` and will
-  error against a pre-058 database. Apply via the same deploy-api.yml flow
-  as 037-057 (ledger will read 58/58). Afterward regenerate
-  `packages/supabase/src/types.ts` from the live DB to confirm parity with
-  the hand-renamed copy, and check any pg_cron/Inngest job SQL for
-  embedded `theme_*` identifiers (none known in-repo).
-- [ ] **PostHog:** create project, set `NEXT_PUBLIC_POSTHOG_KEY` (web
-  `.env.local` + Vercel). Then verify each of the 10 events appears in the
-  dashboard (checklist: `docs/analytics-verification.md`). Free tier = 1M
+- [ ] (OPERATOR) **Confirm the migration ledger is IN SYNC at 059, and
+  apply anything pending.** Reconciled 2026-08-20: this entry used to say
+  "apply 058, ledger will read 58/58". That target is now stale. The repo
+  has **59** migrations on disk (001..059); `059_rename_fe_identifiers_to_js`
+  landed with the 2026-08-18 JavaScript rebrand and carries the same
+  apply-before-you-deploy ordering rule 058 does, and the app code at HEAD
+  already reads BOTH renames (`world_progress`/`p_world_id` in
+  `apps/web/lib/progress.ts` and `apps/api/src/routes/profiles.ts`;
+  `js_background`/`js_integration` in `apps/api/src/routes/onboarding.ts`
+  and `apps/web/app/onboarding/page.tsx`). A pre-058 or pre-059 database
+  therefore errors at runtime.
+  **How to check:** `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… pnpm
+  migrate:status`, expect IN SYNC 59/59. Without credentials the script
+  exits 0 in OFFLINE mode and tells you nothing, which is why this cannot
+  be closed from a checkout.
+  Repo side is ready and already gated: `.github/workflows/ci.yml:186` and
+  `.github/workflows/deploy-api.yml:48` both run `migrate:status`, and type
+  parity is done (`packages/supabase/src/types.ts` defines `world_progress`
+  and contains zero `theme` identifiers).
+- [ ] (OPERATOR) **PostHog:** create the EU project, set
+  `NEXT_PUBLIC_POSTHOG_KEY` (web `.env.local` + Vercel), then walk the
+  event checklist in `docs/analytics-verification.md`. Free tier = 1M
   events/month.
-- [ ] **Success-metrics dashboard + alerts** in PostHog: lesson completion
+  Repo side is wired and fails soft: `apps/web/lib/posthog.ts:25` only
+  initializes when the key is present, and `apps/web/lib/env.ts:38` warns
+  "product analytics OFF" when it is not.
+  Stale count corrected 2026-08-20: this entry said "the 10 events".
+  `docs/analytics-verification.md` documents 20, and
+  `apps/web/lib/analytics-events.ts` defines about 25.
+- [ ] (OPERATOR) **Success-metrics dashboard + alerts** in PostHog: lesson completion
   (target ≥60%), paid conversion (3%), NPS (≥40), 7-day retention (≥30%),
   30-day retention (≥15%), avg time per lesson, hint dependency, paywall
   conversion. At minimum, payment-failure alerting live before real money
   flows.
-- [ ] **Kit (ConvertKit) lifecycle setup.** Manually create the Form + the
+- [ ] (OPERATOR) **Kit (ConvertKit) lifecycle setup.** Code side is complete
+  and verified 2026-08-20: the client (`apps/api/src/lib/kit.ts`), every tag
+  lookup (`apps/api/src/routes/email-tags.ts:8-19`,
+  `preferences.ts:98,109`, `payments.ts:873,1196`), the fail-closed bounce
+  webhook (`webhooks.ts:50-54`, rejects everything while
+  `KIT_WEBHOOK_SECRET` is unset, and that var is in the API's `PROD_REQUIRED`
+  list so production refuses to boot without it), and all names documented in
+  `apps/api/.env.example:47-72`. Everything below is dashboard and secret
+  work. Manually create the Form + the
   seven lifecycle Tags in the Kit dashboard (`signed_up`, `onboarded`,
   `first_lesson`, `capstone`, `purchased`, `email_alerts`, `weekly_digest`),
   then set `KIT_FORM_ID` + `KIT_TAG_SIGNED_UP` / `KIT_TAG_ONBOARDED` /
@@ -926,19 +979,31 @@ has already been written off once (see above) - do not launch dark again.
   but subscribers are never tagged and no lifecycle email fires - including
   the purchase receipt flagged in R2-4. Templates must follow
   `docs/email-templates.md`.
-- [ ] **Kit retention automations** A/B/C per
+- [ ] (OPERATOR) **Kit retention automations** A/B/C per
   `docs/email-retention-sequences.md`. Copy drafted, code side live;
   dashboard work only. The sequences target exactly the launch cohort
   (signed up / stalled / finished free tier).
-- [ ] **Sentry alerting.** Capture works; nothing notifies (R2-5). Create
-  the three alert rules specified at `pre-launch-checklist.md` §B10.
-- [ ] **Plausible:** add site `tensorcraft.app`, set
-  `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
-- [ ] **Google Search Console:** verify the production domain now - indexing
-  lead time is weeks, the clock should start before launch.
-- [ ] **Product Hunt "upcoming" page** - follower capture only works
+- [ ] (OPERATOR) **Sentry alerting.** Capture is real and verified in both
+  apps (`apps/api/src/lib/sentry.ts` + `middleware/sentry.ts`; web's three
+  `sentry.*.config.ts` loaded via `instrumentation.ts:14-18`), but alert
+  rules have no repo representation at all. Create the three rules specified
+  at `pre-launch-checklist.md` §B10 in each Sentry project.
+- [ ] (OPERATOR) **Plausible:** add site `tensorcraft.app`, set
+  `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` in Vercel. ~EUR 9/mo. The script component
+  (`apps/web/app/components/plausible-script.tsx:8`) is already conditional
+  on the var. Note `apps/web/.env.example:26` carries a template default,
+  which is NOT evidence the Vercel env is set.
+- [x] **Google Search Console: verified.** Closed 2026-08-20. A real
+  performance baseline was pulled on 2026-08-17 (3 months: 6 clicks, 549
+  impressions, average position 51), which is impossible without a verified
+  property. Verification used a method that leaves no repo artifact: there
+  is no `verification.google` key in `apps/web/app/layout.tsx` metadata.
+  Remaining GSC work (resubmit the sitemap, request indexing) is ordinary
+  SEO operations, tracked in `docs/post-launch-backlog.md`, not a launch
+  blocker.
+- [ ] (OPERATOR) **Product Hunt "upcoming" page** - follower capture only works
   pre-launch.
-- [ ] **Twitter/X account @tensorcraft** - create now (posting cadence can
+- [ ] (OPERATOR) **Twitter/X account @tensorcraft** - create now (posting cadence can
   wait). Launch execution (`dev-plan.md` §10b) announces on Twitter/X, so
   the account must predate launch; also removes handle-squatting risk. The
   old "DEFERRED to V1.0" note contradicted §10b and is resolved in favor of
@@ -950,8 +1015,32 @@ has already been written off once (see above) - do not launch dark again.
 - [ ] **Distribution head start:** write + publish the first blog batch and
   begin the audience track. `roadmap.md` §7: longest lead time in the plan,
   runs in parallel, starts before the code is ready.
-- [x] **Apply the pending migrations - DONE 2026-07-25 (ops-deploy session):** 037-055 applied to production in order; `pnpm migrate:status` = IN SYNC 55/55; GitHub secrets set (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FLY_API_TOKEN); `deploy-api.yml` ran green; `/api/health` + `/api/health/ready` both 200. ~~Remaining sub-step: enable the 046 Custom Access Token hook in the Supabase Auth dashboard (middleware falls back safely meanwhile).~~ 046 hook ENABLED in the Supabase dashboard 2026-07-25 (ops-deploy session); ledger now IN SYNC **57/57** after 056/057 (entries below). Original text retained below for the record.
-- [x] **Apply migration 056 - DONE 2026-07-25:** applied to production via
+  Verified 2026-08-20: infrastructure is DONE and content is ZERO.
+  `packages/content/content/blog/` holds only `.gitkeep`, while the whole
+  render path is built and waiting (`apps/web/app/blog/page.tsx` branches on
+  `posts.length === 0`, `blog/[slug]/page.tsx` and `blog/rss.xml/route.ts`
+  both exist). This is a writing task, not an engineering one.
+- [ ] (OPERATOR) **Re-confirm the migration ledger.** Reclassified
+  2026-08-20 from `[x]`: everything this entry asserts (IN SYNC 55/55, then
+  57/57, GitHub secrets set, `/api/health` 200, the 046 auth hook enabled)
+  is production and dashboard state that a checkout cannot confirm, and the
+  entry's own prose is the only evidence. It is also superseded: disk head
+  is now 059. Fold this into the ledger check at the top of this tier.
+  Note the internal contradiction left by the original entries: this one
+  says the 046 Custom Access Token hook was enabled on 2026-07-25, while
+  the struck entry below still lists it as an open operator step. Only the
+  Supabase dashboard settles it. Original text follows.
+  **Apply the pending migrations - claimed DONE 2026-07-25 (ops-deploy session):** 037-055 applied to production in order; `pnpm migrate:status` = IN SYNC 55/55; GitHub secrets set (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FLY_API_TOKEN); `deploy-api.yml` ran green; `/api/health` + `/api/health/ready` both 200. ~~Remaining sub-step: enable the 046 Custom Access Token hook in the Supabase Auth dashboard (middleware falls back safely meanwhile).~~ 046 hook ENABLED in the Supabase dashboard 2026-07-25 (ops-deploy session); ledger now IN SYNC **57/57** after 056/057 (entries below). Original text retained below for the record.
+- [ ] (OPERATOR) **Confirm migration 056 is applied.** Reclassified
+  2026-08-20 from `[x]` for the same reason: the proof named is
+  `pg_constraint` state in the production database. This one carries real
+  consequence, so it is worth one explicit check rather than trust: the
+  account-deletion endpoint is live (`apps/api/src/routes/profiles.ts:351`)
+  and its own code comment says 056 MUST be applied before it ships. If it
+  is not applied, every account deletion erases VAT records the law
+  requires you to keep. Check the `purchases.user_id` FK delete rule is
+  SET NULL. Original text follows.
+  **Apply migration 056 - claimed DONE 2026-07-25:** applied to production via
   the same Node `pg` procedure as 037-055; pre/post state verified in
   `pg_constraint` (delete rule CASCADE → SET NULL, `user_id` now nullable,
   still references `profiles`); `pnpm migrate:status` = IN SYNC 56/56, so
@@ -974,10 +1063,41 @@ has already been written off once (see above) - do not launch dark again.
   is off). ~~Wire `pnpm migrate:status` into CI~~ - CI job added 2026-07-25;
   needs `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions
   secrets or it stays red (fail-closed by design, R3-9).
-- [ ] **Move Vercel off the Hobby plan.** Hobby prohibits commercial use;
-  selling a $59-159 product on it is a ToS/takedown risk before it is a
-  cost one (R2-5).
-- [ ] **Env-var hygiene** (audit §4; doc side CLOSED 2026-07-25 - remaining
+- [ ] (OPERATOR) **Move Vercel off the Hobby plan.** Hobby prohibits
+  commercial use; selling a $59-159 product on it is a ToS/takedown risk
+  before it is a cost one (R2-5). Still recorded as Hobby in the repo at
+  `docs/infrastructure.md:45` and in the cost table at `:202`; the
+  authoritative source is the Vercel billing dashboard. After upgrading,
+  update both lines.
+- [ ] (OPERATOR) **Make Vercel installs honor the lockfile.** Moved here
+  2026-08-20 from the "VERCEL BUILD FAILURE (2026-08-14)" section, where it
+  was the only live item under a heading that reads as resolved. Set the
+  install command to `pnpm install --frozen-lockfile`; until then every
+  deploy re-resolves caret ranges and can compile against dependencies CI
+  never tested, which is exactly what broke the 2026-08-14 build. The code
+  half is done (`apps/web/app/admin/digest/actions.ts` types its update
+  payload as `NewsItemUpdate`, which compiles under both supabase-js
+  versions).
+  Worth considering instead: there is no `vercel.json` in the repo, so this
+  setting lives only in the dashboard and can drift silently. Committing a
+  `vercel.json` with `installCommand` would put it under version control.
+  Not done here because a wrong value breaks every deploy; owner call.
+- [ ] (OPERATOR) **Gate Vercel deploys on CI.** Moved here 2026-08-20 from
+  the "CI RED CLEARED (2026-08-14)" section, where it was one prose
+  sentence under a heading that reads as fully resolved. A green `main`
+  does not by itself prevent the next deploy-before-CI incident, which is
+  the same class of failure as the 2026-08-12 outage where the web app
+  auto-deployed before its migration was applied.
+- [ ] (OPERATOR) **Env-var hygiene: three settings remain, all outside the
+  repo.** Verified 2026-08-20: every code and doc sub-item below is genuinely
+  done (`apps/api/src/env.ts` three tiers boot-called at `index.ts:123`;
+  `apps/web/lib/env.ts` mirrored through `instrumentation.ts`, unit-tested).
+  What is left: (1) `SENTRY_AUTH_TOKEN` in Vercel, absent means minified
+  production stack traces; (2) `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
+  in the Vercel **production** environment, which is a hard launch gate now
+  that the boot assertion refuses to start production without them; (3)
+  `APP_URL` on Fly. Historical detail follows.
+  (audit §4; doc side CLOSED 2026-07-25 - remaining
   work is the startup assertion + operator settings): ~~document
   `STRIPE_TAX_ENABLED`~~ (now in `.env.example` + deployment-guide, with
   prerequisites); ~~remove dead GitHub App vars~~ (gone from `.env.example`,
@@ -998,22 +1118,52 @@ has already been written off once (see above) - do not launch dark again.
   assertion now refuses to start production without them), and `APP_URL`
   on Fly (guest email falls back to the production domain rather than a
   broken link, but the explicit var is still correct).
-- [ ] **Upstash paid plan.** Free tier is 10k commands/day ≈ **1,700 API
-  requests** at ~5-6 commands each. Dies on launch day.
-- [ ] **Email domain warmup + Postmaster.** §10b plans a launch-week blast
+- [ ] (OPERATOR) **Upstash plan check.** This entry's arithmetic is stale:
+  it assumed 5-6 Redis commands per API request. The 2026-08-17 limiter
+  rewrite cut that to 2 commands per request (fixed window via
+  `@upstash/ratelimit`, blocked subjects served from an ephemeral cache),
+  and `/api/health` is now exempt from the limiter entirely, which was the
+  probe traffic that consumed most of the quota. Free tier headroom is
+  therefore roughly 250k requests/month, not 1,700/day, and the owner has
+  deferred payment until traffic justifies it. Re-check the console before
+  a launch spike rather than treating this as a hard blocker.
+  Code fails closed in production: `apps/api/src/env.ts:42-43` puts both
+  Upstash vars in `PROD_REQUIRED`.
+- [ ] (OPERATOR) **Email domain warmup + Postmaster.** Doc conflict found
+  2026-08-20 and still unresolved: this entry says register Postmaster
+  Tools pre-launch, while `docs/email-setup.md:153` defers it ("worth doing
+  post-V1 once volume > 5k/day"). Pick one and make both docs agree. No
+  warmup schedule exists anywhere in the repo. DNS auth is in place with
+  DMARC at `p=none` (`docs/dns-records.md:31`).
+  §10b plans a launch-week blast
   to 500 waitlist users from a domain that has never bulk-sent - cold
   domain + burst = spam folder at the worst moment. Ramp sends gradually
   over the preceding weeks; register Google Postmaster Tools (added
   2026-07-22).
-- [ ] **Create the community space.** The ops cadence
+- [ ] **Create the community space.** Verified 2026-08-20: the repo half is
+  definitively not done. There is no Discord reference anywhere in
+  `apps/web`, and the footer that is supposed to carry the invite has only
+  four links (`apps/web/app/components/site-footer.tsx:30,33,36,39`).
+  Creating the server is operator work; adding the link and updating the
+  footer snapshot is repo work. The ops cadence
   (`post-launch-backlog.md` §2) says "respond to community Discord
   questions" but no task ever created a Discord - server, channels,
   rules, invite link in the app footer (added 2026-07-22).
-- [ ] **Cloud-cost alerts.** Configure billing/usage alerts on Vercel
+- [ ] (OPERATOR) **Cloud-cost alerts.** Configure billing/usage alerts on Vercel
   (bandwidth), Supabase (egress/compute), Fly, PostHog (1M-event
   overage), Upstash. One viral spike currently produces a surprise bill
   with zero warning (added 2026-07-22).
-- [x] **Migration + runbook safety** - closed 2026-07-25: `skill_events_old`
+- [ ] (OPERATOR) **Migration + runbook safety: one sub-item is NOT closed.**
+  Reclassified 2026-08-20. The 057 artifact exists in the repo and the
+  runbook/refund concern is genuinely superseded by 051's
+  `restore_purchase_after_dispute`. But the **019 rollback signature
+  mismatch** (`(text)` vs `(p_id uuid)`, which silently succeeds and leaves
+  an anon-callable function live) has no fix anywhere in the repo: no later
+  migration corrects it, and the entry below dismisses it as "superseded"
+  by the 042 ledger, which is a scoping decision rather than a fix. If that
+  function is still live in production, it is still live. Check `pg_proc`
+  and drop it with the correct signature if present. Original text follows.
+  **Migration + runbook safety** - claimed closed 2026-07-25: `skill_events_old`
   VERIFIED still existing in production with ZERO rows (PostgREST probe);
   **migration 057** drops it - APPLIED to production 2026-07-26 (table
   re-verified 0 rows immediately before drop; ledger IN SYNC 57/57;
@@ -1022,50 +1172,97 @@ has already been written off once (see above) - do not launch dark again.
   the rollback-SQL page as the source of truth, and migration 051's
   `restore_purchase_after_dispute` is the sanctioned repair path the old
   runbook SQL lacked. Original text below for the record.
-- [ ] ~~**Migration + runbook safety** (do with the ledger reconcile):~~
-  verify `skill_events_old` was actually dropped (013's DROP is commented
-  out - production may carry a full duplicate); fix the 019 rollback
-  signature mismatch (`(text)` vs `(p_id uuid)` - it silently succeeds
-  leaving the anon-callable function live); reconcile the incident
-  runbook's refund-window SQL with migration 038's terminal-status
-  trigger, which silently ignores the corrective update.
-- [ ] **Verify backups + run one restore drill.** No doc anywhere records
-  the Supabase backup tier, PITR status, or a tested restore (gap found
-  2026-07-22 - the ops audit covered alerting but not recoverability).
-  Confirm the plan includes daily backups, then restore into a scratch
-  project once and write the result into `docs/infrastructure.md`.
+
+> Historical, superseded by the entry above (2026-08-20): ~~**Migration +
+> runbook safety** (do with the ledger reconcile):~~
+> verify `skill_events_old` was actually dropped (013's DROP is commented
+> out - production may carry a full duplicate); fix the 019 rollback
+> signature mismatch (`(text)` vs `(p_id uuid)` - it silently succeeds
+> leaving the anon-callable function live); reconcile the incident
+> runbook's refund-window SQL with migration 038's terminal-status
+> trigger, which silently ignores the corrective update.
+
+- [ ] (OPERATOR) **Verify backups + run one restore drill.** Re-verified
+  2026-08-20 and the gap is exactly as described: `docs/infrastructure.md`
+  contains zero hits for backup, PITR, or restore across all 254 lines, so
+  the file this entry says to write the result into still has no such
+  section. The only backup prose in the repo is generic advice at
+  `docs/deployment-guide.md:167`, which assumes a Supabase Pro plan while
+  `docs/infrastructure.md:45` records the web tier as Hobby; the Supabase
+  tier is stated nowhere.
+  Confirm the plan includes daily backups and note the PITR window, restore
+  into a scratch project once, then write the tier, retention window, drill
+  date and result into `docs/infrastructure.md`.
 
 ## Tier 1-LEGAL - advisor + compliance actions before selling in the EU/UK
 
 Action list for the R2-4 findings (R2-4 stays as the findings record;
 flagging exposure, not legal advice).
 
-- [ ] Engage an advisor in the establishment country; decide Stripe Tax +
-  OSS registration vs geo-gating EU checkout at launch (fee analysis:
-  `roadmap.md` §4).
-- [ ] ~~Implement the chosen tax handling~~ **Code side DONE (R3-3,
-  2026-07-24):** `taxSessionParams()` wires `automatic_tax`,
-  `billing_address_collection`, `tax_id_collection`, `invoice_creation`.
-  Remaining: Stripe-dashboard Tax setup + OSS registration, document + set
-  `STRIPE_TAX_ENABLED=true`, apply migration 047 first (R3-2).
+> **Reconcile note (2026-08-20): every open item in this tier funnels
+> through ONE unmade decision, the establishment country and legal entity.
+> It blocks the postal address, the controller identity, the Art. 27
+> question, the choice of advisor and OSS registration, and the EAA
+> microenterprise thresholds. Deciding it unblocks six entries at once; it
+> is the highest-leverage item in this file.**
+
+- [ ] (OPERATOR) Engage an advisor in the establishment country; decide
+  Stripe Tax + OSS registration vs geo-gating EU checkout at launch (fee
+  analysis: `roadmap.md` §4). Note geo-gating does not exist in code: the
+  checkout path has no country restriction, so choosing it means writing it.
+- [ ] (OPERATOR) **Tax handling: code is written but switched OFF.**
+  Verified 2026-08-20. `taxSessionParams()`
+  (`apps/api/src/routes/payments.ts:47-53`) wires `automatic_tax`,
+  `billing_address_collection`, `tax_id_collection` and `invoice_creation`,
+  and is spread into both checkout sessions (`:282`, `:426`). But it returns
+  `{}` unless `STRIPE_TAX_ENABLED === "true"` (`:48`), and that var ships
+  empty (`apps/api/.env.example:17`). **At repo defaults, zero tax is
+  collected**, so the R2-4 exposure is live even though the code exists.
+  Remaining: Stripe-dashboard Tax setup, OSS registration, confirm
+  migration 047 is applied, then set `STRIPE_TAX_ENABLED=true` and redeploy.
 - [x] Refund terms - **RESOLVED in code 2026-07-25 (wave 3):** the
   20%-accessed condition is dropped from terms/pricing/FAQ; refunds are an
   unconditional 14 days via support@. Advisor sanity-check remains part of
   the general terms review, but no waiver mechanism is needed anymore.
-- [ ] Add legal entity, postal address, and jurisdiction clause to terms +
-  privacy pages.
-- [ ] Send a real receipt/invoice on purchase (the Kit receipt automation
-  in Tier 1-OPS covers the email; confirm it satisfies invoice
-  requirements or enable Stripe invoices - note `invoice_creation` is now
-  wired behind `STRIPE_TAX_ENABLED`, R3-3, so flipping the flag covers the
-  invoice half).
-- [ ] Postal address in the weekly digest footer (CAN-SPAM).
+- [ ] **Add legal entity, postal address, and jurisdiction clause to terms +
+  privacy pages.** Re-verified 2026-08-20 and still fully open.
+  `apps/web/app/terms/page.tsx` has no entity, no address and no
+  governing-law section anywhere in its ten sections;
+  `apps/web/app/privacy/page.tsx:55-59` carries an explicit code comment
+  marking the GDPR Art. 13(1)(a) hole and names only bare "Tensorcraft".
+  This is the blocking decision described above.
+- [ ] **Send a real receipt/invoice on purchase.** Verified 2026-08-20:
+  still fully open. The only purchase-time email action is a Kit tag
+  (`apps/api/src/routes/payments.ts:873-875` and the async duplicate at
+  `:1196-1198`); no receipt email template exists anywhere
+  (`apps/api/src/lib/email.ts` sends issue notifications only). The
+  on-screen receipt at `apps/web/app/dashboard/purchase-success/page.tsx`
+  is not an email. Two independent halves: the Kit receipt automation
+  (dashboard, Tier 1-OPS) and the Stripe invoice half, which is unreachable
+  while `STRIPE_TAX_ENABLED` is unset.
+- [ ] **Postal address in the weekly digest footer (CAN-SPAM).** Verified
+  2026-08-20: the plaintext footer is one unsubscribe line
+  (`apps/api/src/lib/newsletter.ts:119`) and the HTML footer is
+  read-on-web plus unsubscribe (`:167-171`). No postal-address constant or
+  env var exists anywhere in the repo to inject, so this is blocked on the
+  entity/address decision above.
 - [x] Waitlist consent fix (code) - **DONE 2026-07-25.** Migration 050 flips
   the column default to false; `submitWaitlist` takes an explicit
   `subscribeToDigest` flag that only the newsletter modal passes, so the
   digest sender's `subscribed = true` filter now selects exactly the
   consented set. OPERATOR DECISION remains: whether to un-enroll the
   pre-050 auto-enrolled rows (one-line SQL in the migration header).
+  **Two things found 2026-08-20 that make this urgent rather than tidy.**
+  (1) No surface anywhere passes `subscribeToDigest: true` (verified across
+  all three callers, and stated in the docstring at
+  `apps/web/lib/waitlist.ts:19-29`). So the digest's recipient set today is
+  *exactly and only* the pre-050 auto-enrolled legacy rows: the weekly
+  digest currently mails the non-consented cohort and nobody else, and the
+  Settings toggle cannot add anyone to it. (2) The remediation SQL in the
+  050 header is stale: it filters `source not in ('theme-selection')`, but
+  migration 058 renamed theme to world and the live call site now writes
+  `"world-selection"` (`apps/web/app/worlds/newsletter-modal.tsx:50`).
+  Running it as written would not match the rows you intend.
 - [x] Self-serve account deletion (code) - **BUILT 2026-07-25.**
   `POST /api/profiles/delete` (typed-DELETE confirmation, ESP cleanup,
   waitlist rows removed by email, auth user deleted) + real Settings flow.
@@ -1077,36 +1274,76 @@ flagging exposure, not legal advice).
   `GET /api/profiles/export` returns a JSON attachment (account + all 12
   user tables + waitlist rows by email; the GitHub token is disclosed but
   never exported - it is a live credential); Settings has the download
-  button. STILL OPEN: DSAR runbook (30-day clock) + unify `privacy@` vs
-  `support@` (advisor/copy).
+  button. Re-verified 2026-08-20: the loop now covers **14** tables, not 12
+  (`arena_submissions` and `issues` were added 2026-08-16).
+  STILL OPEN, both confirmed still missing: the DSAR runbook with its
+  30-day clock does not exist anywhere (the only "DSAR" hits in the repo are
+  this entry and the original finding), and the contact address is now split
+  three ways rather than two: `privacy@` on /privacy, `legal@` on /terms,
+  and `support@` in the Settings deletion and export flows.
 - [x] Vercel Analytics consent gating (code) - **DONE 2026-07-25.**
   `ConsentGatedVercelAnalytics` renders nothing pre-consent and drops
   queued events via `beforeSend` after a withdrawal.
 - [x] Consent withdrawal path (code) - **DONE 2026-07-25.** Sitewide
   "Cookie settings" footer control clears the consent key, re-shows the
   banner, and flips every consent gate off in-tab (Art. 7(3)).
-- [ ] Privacy-page Art. 13 gaps (advisor + copy): controller identity,
-  lawful basis, international-transfer disclosure (EU personal data on
-  US-hosted Supabase, disclosed nowhere), complaint right, Art. 27 EU/UK
-  representative, waitlist retention.
-- [ ] Sub-processor list + DPAs: page omits Resend (live digest sender)
-  and Vercel Web Analytics; no DPA in the checklist has been signed.
-- [ ] Confirm (don't assume) the EAA microenterprise exemption with the
-  advisor - accessibility-statement obligation applies to e-commerce
-  since 2025-06-28.
-- [ ] **Privacy-page data-inventory update (R3-8, added 2026-07-25):** add
-  the new categories - billing country + VAT id (047, once tax flips full
-  billing address), `stripe_customer_id` (043), arena `submitted_code`
-  retention (048, pre-ship) - and resolve the §7 "30-day removal" clause
-  against ~10-year VAT/OSS record retention with the advisor (the deletion
-  endpoint must carve out tax records).
+- [ ] **Privacy-page Art. 13 gaps: 4 of 6 closed by the 2026-08-16 rewrite,
+  3 still open.** Re-verified line by line 2026-08-20.
+  CLOSED: lawful basis per purpose (§3), international transfers with
+  DPF/SCC safeguards (§7), complaint right (§10).
+  STILL OPEN: controller identity (blocked on the entity decision);
+  **Art. 27 EU/UK representative**, which the policy does not mention at
+  all; and **waitlist retention**, which §2 collects but §9 never gives a
+  period for.
+  Also open and narrower than the original wording: §7 names US-processing
+  providers generically but does not name Supabase, so "EU personal data on
+  US-hosted Supabase" is only addressed in the abstract. Confirm the
+  Supabase project region and name it.
+- [ ] **Sub-processor list + DPAs: the list is done, no DPA is signed.**
+  Re-verified 2026-08-20. The list half is CLOSED: /privacy §5 now
+  enumerates twelve processors including Resend (correctly described as the
+  digest sender) and Vercel. The DPA half is untouched: all six boxes in
+  the "DPA execution checklist" at `docs/privacy-compliance.md:87-101` are
+  unchecked, the processor table marks "DPA required: Yes" for all ten, and
+  no executed-DPA artifact exists in the repo. One checklist line there
+  ("Add PostHog + Sentry to the privacy Sub-processors section") is in fact
+  already done and can be ticked now.
+- [ ] (OPERATOR) **Confirm (don't assume) the EAA microenterprise
+  exemption** with the advisor - the accessibility-statement obligation has
+  applied to e-commerce since 2025-06-28. Verified 2026-08-20: no
+  accessibility statement page or route exists. Note the exemption turns on
+  headcount and turnover of a legal entity that does not exist yet, and
+  that the repo's a11y coverage is desktop-chromium only, so a conformance
+  claim is not currently evidenced.
+- [ ] **Correct the guest-checkout copy.** Found 2026-08-20 during the
+  reconcile, not previously tracked: /privacy §2 and /terms §3 both
+  describe guest checkout as a live flow, but it is disabled
+  (`apps/web/app/pricing/checkout-button.tsx:66-83`: the endpoint exists on
+  the API but nothing routes to it). Shipped legal copy should not describe
+  a flow the product does not offer.
+- [ ] **Privacy-page data-inventory update (R3-8): mostly closed, one real
+  gap left.** Re-verified 2026-08-20.
+  DONE: billing country + VAT id are disclosed (§2); arena `submitted_code`
+  is disclosed and covered by the §9 learning-data rule; the "30-day
+  removal" versus ten-year VAT retention conflict is resolved in copy (§9
+  carries the carve-out) and genuinely implemented in code
+  (`apps/api/src/routes/profiles.ts:346-349` with migration 056's
+  `on delete set null`).
+  STILL OPEN: **`stripe_customer_id` is stored and is returned in the data
+  export (`profiles.ts:259`) but is disclosed nowhere in the policy.** Add
+  it to §2. Separately, the ten-year figure is currently an assertion in
+  shipped copy with no jurisdiction behind it; the advisor should confirm
+  it for the eventual establishment country.
 - [x] **GitHub integration disclosure (R3-8)** - terms side **DONE
   2026-07-25**: new Terms §6 "GitHub Integration" (public-by-default
   repos, token storage + removal on disconnect, code ownership);
-  consent-moment disclosures were already added in wave 3. STILL OPEN:
-  privacy's "industry-standard OAuth 2.0 / PKCE" line vs the plaintext
-  browser-readable `github_token` (Tier 2 encryption item + advisor copy
-  pass).
+  consent-moment disclosures were already added in wave 3.
+  Re-verified 2026-08-20: the overclaiming "industry-standard OAuth 2.0 /
+  PKCE" line is GONE from the rewritten policy, which now makes no security
+  claim about the token. STILL OPEN underneath it: `profiles.github_token`
+  is stored plaintext and is browser-readable through the row-level RLS
+  policy (Tier 2 encryption item), and neither /privacy nor /terms §6 tells
+  the user the token is unencrypted.
 
 ---
 
@@ -1114,43 +1351,70 @@ flagging exposure, not legal advice).
 
 Not launch blockers. Each one wastes acquisition spend if left.
 
-- **First lesson opens with a ~15.5s auto-playing scene** during which the page is functionally blank, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the entire product, and it is the destination of the landing page's primary CTA.
-- **No email capture for guests anywhere in the free module.** A guest who reads two lessons and leaves is permanently unreachable - no retention sequence can target them.
-- **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold, with no mobile affordance past the mandatory exercise gate - now duplicated in BOTH Sandpack worlds (dark + light, `exercise.tsx`). No axe run exists at any mobile viewport (the 28/28 matrix is desktop-chromium only), and all non-axe e2e runs dark-only via the global `colorScheme: "dark"` pin.
-- **Lessons ship ~100 indexable words** (only the current step is in the DOM) and require JS to render at all, with no `<noscript>`. Large organic-acquisition loss for a content-led product.
-- **SEO/metadata + funnel polish** (folded from R2-6b, 2026-07-22; **re-baselined 2026-07-25 - 5 of 7 sub-items were already fixed in code, see R3-10**). Still open: a guest who finishes module 1 sees "Continue M1" pointing backwards; **og:url shallow-merge drop on world detail / every lesson / `/learn` / capstone** (images-only `openGraph` wipes url/type/siteName and inherits the homepage Twitter card, R3-7); duplicate `Course` JSON-LD on all five world slugs; bundles still emit `PreOrder` on hard-disabled buttons and coming-soon worlds assert `price: "59"` in two places. Fixed and removed from this list: capstone sitemap 307, `session_expired` for first-timers, `PreOrder`→`OutOfStock` on coming-soon worlds, `numberOfCredits`, og:url on pricing/about/compare/worlds.
-- **Load test before ad spend** (gap found 2026-07-22 - no audit dimension
+> **Reconciled 2026-08-20.** Before this pass every entry in this tier was a
+> prose bullet, so a reader building a worklist from `- [ ]` saw none of it.
+> All entries are now checkboxes. Four were verified DONE and one was found
+> to be describing a feature that already shipped; the rest were re-verified
+> against current code and several had their sub-items corrected.
+
+- [ ] **First lesson opens with a ~15.5s auto-playing scene** during which the page is functionally blank, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the entire product, and it is the destination of the landing page's primary CTA. Re-verified 2026-08-20: `lesson-steps.tsx:1357` still auto-plays on first visit, per-beat hold is 800-3200ms so 6-8 beats lands in the 15s band, and the Skip control is still `text-[10px]`. The only other escape is `prefers-reduced-motion`.
+- [x] **Guest email capture: SHIPPED.** Corrected 2026-08-20; this entry said "no email capture for guests anywhere in the free module", which is no longer true. `guest-email-capture.tsx` renders for guests only and is mounted in the lesson flow behind `isFreeModule` (`lesson-steps.tsx:1757`). Rows land with `subscribed` false per migration 050, so capture does not imply digest consent.
+- [ ] **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold. Re-verified 2026-08-20: still `size: "13px"` in BOTH Sandpack themes (`packages/ui/src/mdx/exercise.tsx:174` dark, `:205` light). Also still true: no axe run at any mobile viewport (`e2e/accessibility.spec.ts` runs only in the chromium project, which excludes the mobile specs), and all non-axe e2e is dark-only via the global `colorScheme: "dark"` pin (`playwright.config.ts:32`). **Corrected:** the "no mobile affordance past the exercise gate" clause is stale, the mobile pane toggle exists (`lesson-steps.tsx:820`).
+- [ ] **Lessons ship ~100 indexable words** (only the current step is in the DOM) and require JS to render at all, with no `<noscript>`. Re-verified 2026-08-20: zero `noscript` anywhere in `apps/web`, and exactly one of six steps renders because `currentStep` is client state. Large organic-acquisition loss for a content-led product.
+- [ ] **SEO/metadata + funnel polish: ONE sub-item left of four.** Re-verified 2026-08-20 and this entry was badly out of date. **Now fixed and struck:** the og:url shallow-merge drop (all four surfaces, world detail / lesson / `/learn` / capstone, now declare full `openGraph` and their own `twitter` block); the `PreOrder` emission (gated bundles are filtered out of the catalog entirely, `PreOrder` survives only in a comment and a negative test); and both "duplicate `Course` JSON-LD" and "`price: 59` in two places" are **not reproducible** (the launched and coming-soon Course emitters are mutually exclusive because the page early-returns, and the price has a single source in `packages/shared/src/constants.ts:101`).
+  **Still genuinely open:** a guest who finishes module 1 sees **"Continue M1" pointing backwards**. The paywall branch at `apps/web/app/worlds/[slug]/page.tsx:272-278` requires `!activeModule`, so a learner whose `activeModule` still resolves to module 1 gets a Continue link back into the module they just finished. Fix the `activeModule`/`paywallBlocked` precedence so a completed module 1 advances or routes to `/paywall`.
+- [ ] **Load test before ad spend** (gap found 2026-07-22 - no audit dimension
   covered it): nobody has ever pushed the payment path, the SSR lesson
   route, or the Stripe webhook handler under concurrency. Gates 2/3
   explicitly precede buying traffic; measure before spending.
-- **Support workflow** (2026-07-22): support@ is a mailbox, not a process.
+- [ ] **Support workflow** (2026-07-22): support@ is a mailbox, not a process.
+  Re-verified 2026-08-20: `docs/` contains a digest runbook and a migration
+  runbook, and nothing for support or refunds.
   Write the refund-processing runbook (exact Stripe steps), the
   chargeback-evidence workflow, and a response-time target before launch
   week fills the inbox.
-- ~~Story-skip instrumentation missing~~ - **DONE 2026-07-25:**
-  `script_skipped` (worldId, lessonId, step, elapsedMs) fires from the
-  Skip control; the ">40% skip triggers narrative redesign" rule is now
-  computable from day 1.
-- **Uptime monitoring + status page** (gap found 2026-07-22): no external
-  uptime check exists on web, API, or the Stripe webhook endpoint, and no
-  status page. Sentry alert rules (Tier 1-OPS) cover errors, not
-  down-and-silent.
-- **Mobile/a11y** (folded from R2-6c, 2026-07-22; **re-baselined 2026-07-25 - 6 of 7 sub-items fixed in code, see R3-10**: step bar wraps, waitlist focus outline, live-region reveals, `aria-pressed`, per-step `<h1>`, `--tc-border-interactive` token both schemes). Still open: 13px editor type + no mobile axe (bullet above); LOW residuals - interactive stragglers on decorative `border-border` (landing secondary CTAs, unselected picker toggle, scheme toggle, poller support link; worst in light at 1.31:1), dark accents on overlay surfaces 3.99-4.23:1 for text-size use, ~~`pending-poller`~~ (fixed - always-mounted since run 1) - only the challenge-passed banner still mounts `role="status"` with its content.
-- **Security mediums from the audit register** (triaged in 2026-07-22): rate-limit bypass - `cf-connecting-ip` trusted first with no Fly origin lock, so hitting the Fly hostname directly gives unlimited buckets; CSP carries removable `'unsafe-inline'` (keep the genuinely required `'unsafe-eval'`, fix the misattributing comment); `POST /api/github/token` stores any caller-supplied token (stolen-token binding); waitlist INSERT volume control (shape bounded by migration 041; rate-limit/captcha still open); run the empirical check that skill_events child partitions inherit the parent RLS policy via direct PostgREST select.
-- **Unsubscribe does not propagate to Kit.** Handlers flip `waitlist.subscribed` in Supabase only; `unsubscribeFromAll()` is dead code, no Kit webhook exists. Once the Tier 1-OPS retention automations go live, an unsubscribed address would keep receiving sequence emails. Wire both directions.
-- **No server-side timeouts on Kit, Resend, Upstash, or Supabase queries** (re-baselined 2026-07-25: the GitHub lib now has 15s `AbortSignal.timeout` on all 8 fetch sites + retry/backoff; Octokit no longer exists); client-side, settings/GitHub/onboarding/report-issue/capstone bypass `apiFetch`. Sharpest case narrowed 2026-07-25: a hung Kit call still stalls the webhook past Stripe's timeout and forces a re-delivery, but the re-delivery is now fully deduped (R3-4c fixed) - the remaining cost is retry noise and delayed fulfilment, not double-firing. A Kit/Resend timeout wrapper is still the right week-1 fix.
-- **Error-boundary copy misattributes DB faults** - a paying customer during a 2s Supabase blip reads "Lesson failed to load / something went wrong on our end" as a content bug; only hard-failing Postgres call on a render path.
-- **Fly config drift:** no `[[vm]]` block (machine size unversioned; docs claim 256MB/$15 with no source), and the Dockerfile builds `dist/` then runs `tsx src/index.ts` anyway - TypeScript transpiled at runtime inside the container on the payment path.
-- ~~Rate limit is 60/min in code, 120/min in both docs~~ - **reconciled 2026-07-25**: all docs now state 60/min (the code truth). Raising the actual limit to 120 remains a product decision if multi-tab 429s show up.
-- ~~Opacity-dimmed text fails contrast at 41 sites~~ - **substantially remediated by 2026-07-25 re-census (R3-10):** 22 sites remain, all ≥/65 alpha at 4.96-11.4:1 in both schemes; cited failures (landing "Notify me", ticker @40, bridge tiles) gone or exempt-class. Residual tracked in the Mobile/a11y bullet above.
-- **Lesson body ships in HTML at `opacity:0`** until JS stamps the beat state - cloaking-adjacent on the primary organic surface (compounds the ~100-indexable-words item above).
-- **Small UX/cleanup - mostly DONE 2026-07-25:** ~~root 404 primary CTA → /dashboard~~ (now public `/worlds`; world 404 already had it); ~~`.gitignore` misses `.env.production`/`.env.development`~~ (added; `supabase/.temp/` was already untracked); ~~ci-cd.md "~210 allowlisted" claim~~ (corrected to empty-allowlist truth); ~~infrastructure.md query cache / tech-spec.md packages/github~~ (removed). Still open: counterfactual debris - table 031 + generated types survive a fully-deleted feature (drop in a future migration or document as dormant); broken admin link `admin/digest` → `/learn/...` (admin-only).
-- **`github_token` stored plaintext and browser-readable.** R2-3 assigned this to Tier 2 but it was never listed here until 2026-07-22. `select("github_token")` works for your own row (row-level RLS, no column restriction). Encrypt at rest + block direct column reads.
-- ~~Money-path hardening (R3-4)~~ - **all six DONE 2026-07-25** (see R3-4 note; payments.test.ts 41/41).
-- **Journey/new-surface hardening (R3-6/R3-7):** **DONE 2026-07-25 through run 2** (completed_at writer + journey/learn axe cells landed in run 2). Still open: **single-mount the lesson editor for real** (CSS-only today - stale buffer on rotate across `lg`, doubled CPU on the graded path); `/journey` does a per-request `getUser()`, keeping an otherwise-static marketing page dynamic (crawl-cost nit).
-- ~~CI hardening (R3-9)~~ - **DONE 2026-07-25** (WebKit installed; `migrations` CI job added, fail-closed; operator must add the two Supabase secrets to GitHub).
-- ~~No `immutable` cache headers on `/vendor` or `/models`~~ - **stale entry; shipped 2026-07-21** (see R2-7 above; verified against `next.config.ts` headers 2026-07-22).
-- ~~Kit automations still unbuilt~~ - promoted to Tier 1-OPS above (2026-07-22).
+- [x] ~~Story-skip instrumentation missing~~ - **DONE 2026-07-25**, re-verified 2026-08-20:
+  `script_skipped` fires from the Skip control with exactly the four
+  documented fields (`lesson-steps.tsx:1406-1414`), and is covered by a test.
+  The ">40% skip triggers narrative redesign" rule is computable from day 1.
+- [ ] (OPERATOR) **Uptime monitoring + status page.** Re-verified 2026-08-20,
+  and this is the single most consequential gap in this tier: it is the
+  failure mode that let the API certificate expire unnoticed for weeks in
+  July, killing every browser-to-API call.
+  What exists: `/api/health` (liveness, static JSON) and `/api/health/ready`
+  (readiness, real DB check, 503 on failure), correctly split at
+  `apps/api/src/routes/health.ts`. What does NOT exist: any external
+  observer. Both current probes are self-probes from inside the host
+  (`apps/api/fly.toml` `[checks.health]` every 10s, and a Dockerfile
+  `HEALTHCHECK` hitting localhost), which is exactly the case that cannot
+  report down-and-silent. No workflow pings a URL on a schedule, and no
+  status page route exists.
+  Cheap to close: `/api/health` is already exempt from rate limiting
+  (`apps/api/src/middleware/rate-limit.ts:95`), so an external monitor can
+  poll it freely. Point one at the web root, at
+  `https://api.tensorcraft.app/api/health/ready`, and at the Stripe webhook
+  path. Sentry alert rules (Tier 1-OPS) cover errors, not silence.
+- [ ] **Mobile/a11y residuals.** Re-verified 2026-08-20. Confirmed FIXED and struck: `pending-poller` (its `role="status"` region is always mounted) and the `--tc-border-interactive` token, which exists in both schemes and is in real use. Still open, all sites confirmed: the **challenge-passed banner** still mounts `role="status"` together with its content (`lesson-steps.tsx:743-753`), the exact defect pending-poller fixed, so lift the region out of the `canContinue` conditional; and interactive controls still carry decorative `border-border` at `apps/web/app/page.tsx:152`, `components/scheme-toggle.tsx:69`, and `dashboard/purchase-success/pending-poller.tsx:88`, plus the unselected picker toggle. The 3.99-4.23:1 overlay-contrast claim needs a rendered run and could not be settled by reading. 13px editor type and mobile axe are in the bullet above.
+- [ ] **Security mediums from the audit register.** Re-verified 2026-08-20; one improved, three unchanged, one unverifiable.
+  - **Rate-limit bypass: reduced, NOT closed, and the code comment overstates it.** Identity is now keyed first off a hash of the bearer token, which cannot be spoofed by rotating a header. But the anonymous fallback still reads `cf-connecting-ip` first with **no Fly origin lock** (`apps/api/src/middleware/rate-limit.ts:124`), so unauthenticated traffic hitting the Fly hostname directly with a rotated header still mints unlimited buckets. The comment at `:113-115` describes the bypass in the past tense; correct it along with the fix.
+  - **CSP `'unsafe-inline'` still present** in `script-src` and `style-src` (`apps/web/next.config.ts:180,189`), and the misattributing comment at `:174-176` is still there. `'unsafe-eval'` is the genuinely required one.
+  - **`POST /api/github/token` still accepts any caller-supplied token** (`apps/api/src/routes/github.ts:718-757`): it validates only that GitHub answers with some username, then stores the token on the caller's row. No binding between the token's identity and the calling user. Its only caller is the web session listener, so deleting the route is a live option.
+  - **Waitlist has no route-scoped limiter and no captcha.** It falls back to the global 60/min keyed on the spoofable anonymous identity above.
+  - **skill_events child-partition RLS check: still not run.** The parent's RLS and INSERT policy are declared in migrations, but the ask is a live PostgREST select against a child partition, and nothing in CI performs it.
+- [ ] **Unsubscribe does not propagate to Kit.** Core defect CONFIRMED open in both directions 2026-08-20, but two clauses of this entry were stale and are corrected here: `unsubscribeFromAll()` is **not** dead code (account deletion calls it), and a Kit webhook **does** exist (`apps/api/src/routes/webhooks.ts:49`, shared-secret guarded). What is actually broken: the two unsubscribe handlers only flip `waitlist.subscribed` in Supabase and never call `unsubscribeFromAll`; and the kit-bounce handler only logs, performing zero database writes, so a Kit-side unsubscribe or complaint never flips anything. Once the Tier 1-OPS retention automations go live, an unsubscribed address keeps receiving sequence emails. Wire both directions.
+- [ ] **No server-side timeouts on Kit, Resend, or Supabase queries.** Re-verified 2026-08-20 by grepping every `AbortSignal.timeout` in the repo: there are exactly 8, all in the GitHub lib. Kit's single `kitFetch` wrapper has no signal, the Resend send has none, and no Supabase query has one. Upstash has a partial mitigation (a 2s SDK-level timeout on the rate limiter only). The sharpest case is confirmed and worth noting precisely: `apps/api/src/routes/payments.ts:872-875` **awaits** two Kit calls inline in the Stripe webhook handler even though the comment above them says fire-and-forget, so a hung Kit connection stalls the webhook. Re-delivery is fully deduped via the `payment_events` ledger, so the cost is retry noise and delayed fulfilment rather than double-firing. Client-side, seven call sites still bypass `apiFetch` and its 10s abort (settings x4, onboarding, report-issue, capstone).
+- [ ] **Error-boundary copy misattributes DB faults** - a paying customer during a 2s Supabase blip reads "Lesson failed to load / something went wrong on our end" as a content bug. Re-verified 2026-08-20: a DB throw carries no code the message map recognizes, so it falls through to the generic "our end" string, and six sibling boundaries share the pattern.
+- [ ] **Fly config drift:** re-verified 2026-08-20, both halves still true. `apps/api/fly.toml` has no `[[vm]]` block, so machine size is unversioned while `docs/infrastructure.md:33` asserts 256MB with no in-repo source. And the Dockerfile builds `dist/` and then discards it: the runner stage copies `src`, installs `tsx` globally, and runs `CMD ["tsx", "src/index.ts"]`, so TypeScript is transpiled at container runtime on the payment path.
+- [x] ~~Rate limit is 60/min in code, 120/min in both docs~~ - **reconciled 2026-07-25**, re-verified 2026-08-20: code is 60 and all five docs say 60, with no surviving 120 claim. Raising the actual limit remains a product decision if multi-tab 429s show up. **New drift found in passing:** `docs/infrastructure.md:149` still describes a sliding-window algorithm using sorted sets, but the limiter was rewritten to `Ratelimit.fixedWindow` on 2026-08-17. Correct that line.
+- [ ] **Opacity-dimmed text contrast: the "22 sites, all ≥/65" claim does not reproduce.** Re-censused 2026-08-20: **29** alpha-dimmed text sites, and **4 are below the claimed /65 floor** (`components/auth-form.tsx:339` and `:346` at `/30`; `pricing/pricing-tiers.tsx:72` and `pricing/page.tsx:135` at `/40`). The cited fixes do check out (no "Notify me" or ticker `/40` survives). Either re-census and correct the number, or document those four as exempt-class with the reason. The measured 4.96-11.4:1 range needs a rendered run.
+- [ ] **Lesson body ships in HTML at `opacity:0`** until JS stamps the beat state - cloaking-adjacent on the primary organic surface (compounds the ~100-indexable-words item above). Re-verified 2026-08-20: `globals.css:323-336` hides unshown beats and sets instructional content to `display: none` while playing, and the file's own comment states that first-visit SSR HTML starts in "playing", so JS is required to reveal the page.
+- [ ] **Small UX/cleanup: one item left.** Re-verified 2026-08-20. Now also fixed and struck: ~~broken admin link `admin/digest` → `/learn/...`~~ (now points at `/worlds/...`, with a code comment naming this exact defect), alongside the previously struck root-404 CTA and `.gitignore` items. **Still open: counterfactual debris.** Table 031 was never dropped (033 explicitly preserves it, nothing through 059 touches it), and it survives in the ledger, in generated types, in two RPCs that migration 058 still maintains, and in the GDPR export table list (`apps/api/src/routes/profiles.ts:196`). Drop it in a new migration and regenerate types, or document it as dormant.
+- [ ] **`github_token` stored plaintext and browser-readable.** Re-verified 2026-08-20: written in plaintext at three sites in `apps/api/src/routes/github.ts` and read back at eight, with an in-code acknowledgement at `profiles.ts:139`. No encryption helper, no pgcrypto, and no column-level grant restriction in any migration (049 clamps `stripe_customer_id`; nothing equivalent here). Encrypt at rest + block direct column reads.
+- [x] ~~Money-path hardening (R3-4)~~ - **all six DONE 2026-07-25** (payments.test.ts 41/41). Partially re-verified 2026-08-20: the sub-claim other entries lean on, webhook dedupe via the `payment_events` ledger, checks out in code and migration 053. The 41/41 figure was not re-run.
+- [x] **Journey/new-surface hardening (R3-6/R3-7): both "still open" items are now closed.** Re-verified 2026-08-20. The lesson editor is genuinely single-mount, not CSS-only: `lesson-shell.tsx:22-31` states the pane is single-mount by contract and takes `paneOpenOnMobile`, and the second copy is gone from the caller. The `/journey` `getUser()` nit is moot because the route no longer exists (consolidated into `/worlds` on 2026-08-15). **Note the concern migrated rather than vanished:** `apps/web/app/worlds/page.tsx:110` does a per-request `getUser()` and that file exports no `revalidate`, so the same crawl-cost characteristic now applies to `/worlds`. Tracked as a nit, not a blocker.
+- [x] ~~CI hardening (R3-9)~~ - **DONE 2026-07-25**, code side re-verified 2026-08-20: WebKit is installed in CI, and the `migrations` job runs unconditionally and is fail-closed by design. The operator half (adding the two Supabase secrets to GitHub) is external and is tracked in Tier 1-OPS; until they exist the job fails on every push, deliberately.
+- [x] ~~No `immutable` cache headers on `/vendor` or `/models`~~ - **stale entry; shipped 2026-07-21**, re-verified 2026-08-20 against `next.config.ts:106-126` (both paths carry `public, max-age=31536000, immutable`).
+- [x] ~~Kit automations still unbuilt~~ - promoted to Tier 1-OPS above (2026-07-22). Note the dependency: the unsubscribe gap above becomes user-visible the moment those automations go live.
 
 ---
 

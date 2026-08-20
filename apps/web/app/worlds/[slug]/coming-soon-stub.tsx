@@ -88,7 +88,11 @@ export function ComingSoonStub({ world }: Props) {
     "@context": "https://schema.org",
     "@type": "Course",
     name: `${world.displayName}: ${world.specialization}`,
-    description: world.description,
+    // Plain-language description for structured data. The page itself keeps
+    // the story hook (rendered below), but a search snippet reaches a
+    // stranger with no framing around it, so it states what the course is
+    // (pre-lesson copy audit 2026-08-19).
+    description: `${world.displayName} is a planned machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Not released yet; join the waitlist.`,
     provider: {
       "@type": "Organization",
       name: "Tensorcraft",

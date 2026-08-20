@@ -8,6 +8,7 @@ description: |
   autoencoders that learn what "normal" looks like, then flag whatever they
   cannot rebuild: git diff against a baseline the model learned instead of
   one you committed.
+summary: "Autoencoders that learn what normal looks like, then flag whatever they cannot rebuild, using reconstruction error and a tuned threshold."
 lessonCount: 5
 prerequisites:
   - foundations

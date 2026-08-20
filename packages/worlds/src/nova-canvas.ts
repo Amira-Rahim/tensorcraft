@@ -73,7 +73,7 @@ export const novaCanvas: WorldManifest = {
       org: "NOVA LABS · INSTALLATION CONTROL",
       status: "CO-CREATION SYSTEM OFFLINE",
     },
-    ctaLabel: "Save my invite",
+    ctaLabel: "Join the waitlist",
     modules: [
       { order: 1, title: "Generative Basics", free: true },
       { order: 2, title: "Latent Spaces" },

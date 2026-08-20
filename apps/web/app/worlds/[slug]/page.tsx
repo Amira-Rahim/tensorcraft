@@ -32,11 +32,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: isComingSoon(slug)
       ? `${world.displayName}: Coming Soon | Tensorcraft`
       : `${world.displayName}: Module Map | Tensorcraft`,
-    // The launched world's search snippet must parse with zero story
-    // context (owner bar, 2026-08-16); the manifest description is the
-    // story hook and stays on the coming-soon page pending a ruling.
+    // Search snippets reach strangers with no framing, so they state what
+    // the course is rather than opening on the story (owner bar 2026-08-16;
+    // ruled 2026-08-20: the coming-soon PAGES keep their story copy, their
+    // metadata does not).
     description: isComingSoon(slug)
-      ? world.description
+      ? `${world.displayName} is a planned machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Not released yet; join the waitlist.`
       : `${world.displayName} is a story-driven machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Module 1 is free.`,
     alternates: { canonical: `https://tensorcraft.app/worlds/${slug}` },
     // Full openGraph + twitter blocks: an images-only openGraph REPLACES the
@@ -207,7 +208,9 @@ export default async function WorldDetailPage({ params }: Props) {
       slug: mod.slug,
       title: mod.title,
       order: mod.order,
-      description: mod.description,
+      // `summary`, not `description`: the map is a pre-lesson surface, so it
+      // gets the plain-language line (pre-lesson copy audit 2026-08-19).
+      description: mod.summary,
       status,
       completedLessons: completedCount,
       totalLessons,

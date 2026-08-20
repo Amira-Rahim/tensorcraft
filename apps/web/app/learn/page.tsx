@@ -139,7 +139,8 @@ export default function LearnPage() {
           Coming Soon
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-3">
-          {comingWorlds.length} more courses ship in waves:
+          {comingWorlds.length} more courses are planned. No release dates
+          announced yet:
         </p>
         {/* Names only, no links: coming-soon worlds are inert everywhere
             (worlds/world-cards-grid.tsx precedent). The stubs stay in the

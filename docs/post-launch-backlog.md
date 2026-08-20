@@ -16,6 +16,12 @@ this doc is the index of record. Deferred mentions surviving elsewhere
 Everything in this file is V2 (post-launch). There is no V3 tier; former
 "V3+" items are folded into the sections below like everything else.
 
+Status convention (aligned with `docs/launch-blockers.md` at its 2026-08-20
+reconcile): `[ ]` is work doable in this repo, `[ ] (OPERATOR)` is work that
+cannot be done or verified from a checkout (a third-party dashboard, a
+billing plan, a signature, production database state), and `[x]` means
+verified against the repo, not "a previous session said so".
+
 Not tracked here (pre-launch, one document): ALL pre-launch work lives in
 `docs/launch-blockers.md` - code defects (Tier 1/2), pending operator
 migrations (037-040), and the operator + distribution setup moved there
@@ -146,38 +152,38 @@ memory was refuted by that audit: `pnpm audit` clean.)
   3 CUT items the same day. Six groups were deliberately left alone
   because they conflict with copy the owner authored or approved, and
   each needs a ruling before anyone edits it:
-  1. The five "Where X ..." world taglines (owner pattern, 2026-08-15).
-     They render pre-lesson on the landing five-worlds section, the
-     /worlds grid, and every coming-soon page.
-  2. Coming-soon pages as a whole: status boards ("200 CAMERAS DARK ·
-     REBUILD PENDING"), plot-paragraph heroes, in-fiction waitlist
-     buttons ("Get paged", "Get the signal"), renamed module/lesson
-     headings ("The 11 Sectors", "5 Protocols per Sector"), capstone
-     system names, and the character dossiers with `personality` notes.
-     These pages exist to sell story worlds; exempting them is
-     defensible, but their meta descriptions and JSON-LD should still be
-     rewritten because search snippets reach strangers with no framing.
-  3. /paywall's "Module 1 is done. The model isn't." premise, which is
-     false for a stranger arriving from a shared link or search.
-  4. "ship in waves" as a stand-in for "no dates announced" (three
-     surfaces).
+  1. ~~The five "Where X ..." world taglines.~~ **RULED 2026-08-20:
+     KEEP, unchanged.** Owner decision; do not reopen.
+  2. **PARTLY RULED 2026-08-20.** Coming-soon pages keep their story
+     copy (status boards, plot-paragraph heroes, capstone system names,
+     character dossiers): they exist to sell story worlds. Already
+     fixed on 2026-08-20: the waitlist buttons now say "Join the
+     waitlist", and the meta description + JSON-LD state what the
+     course is. STILL OPEN, one item: the renamed syllabus headings
+     ("The 11 Sectors", "5 Protocols per Sector") are the one place
+     these pages state their actual shape, so renaming them to modules
+     and lessons costs little story and buys the most clarity. Owner
+     call.
+  3. ~~/paywall's "Module 1 is done" premise.~~ **WITHDRAWN 2026-08-20:
+     the finding was wrong.** /paywall is `robots: noindex, nofollow`
+     and every link into it is authenticated and gated on having
+     finished the free module, so the premise is true for everyone who
+     can reach it. Becomes live again only if /paywall is ever used as
+     a public campaign destination.
+  4. ~~"ship in waves"~~ **DONE 2026-08-20**: replaced with the literal
+     "no release dates yet" on all three surfaces.
   5. The sr-only keyword h2 on the landing page and the keyword list in
      the sitewide metadata: SEO-driven by design, heard as copy by
      screen-reader users.
-  6. Legal enumerations naming product surfaces (privacy "arena
-     challenges"/"streaks", terms "World purchases"). A defining clause
-     would satisfy both accuracy and the rule.
-  7. Module descriptions (found while applying the fixes, not fixed).
-     All 11 `packages/content/content/deep-orbit/*/module.yaml`
-     descriptions are story prose ("Board the Archimedes with 64
-     channels of telemetry", "ARIA's rules can name two calibration
-     tones") and they render pre-lesson on the module map and
-     pre-purchase on the /pricing curriculum preview. Recommended fix
-     is a second plain-language `summary` field for pre-lesson
-     surfaces, leaving `description` intact for in-course use; the
-     alternatives are dropping the description from those two surfaces
-     or rewriting all 11. See the audit's "Found while applying"
-     section.
+  6. ~~Legal enumerations naming product surfaces.~~ **DONE
+     2026-08-20**: /terms defines a world at first use; /privacy spells
+     out streaks and glosses arena challenges. Snapshots updated.
+  7. ~~Module descriptions.~~ **DONE 2026-08-20** via the recommended
+     option: a required plain-language `summary` field on every
+     built-world module, rendered by the module map and the /pricing
+     curriculum preview, with the story `description` untouched for
+     in-course use. Gated by
+     `packages/content/__tests__/module-summary-prelesson.test.ts`.
   Also outstanding, operator-side: the Kit email subject lines ("Your
   Tensorcraft week.", "You shipped {world}.") live in the Kit dashboard,
   outside this repo.

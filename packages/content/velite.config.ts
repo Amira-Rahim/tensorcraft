@@ -227,6 +227,12 @@ const modules = defineCollection({
     worldId: s.string().min(1),
     order: s.number().int().positive(),
     description: s.string().min(1),
+    // Plain-language one-liner for surfaces a reader sees BEFORE lesson 1
+    // (the module map and the /pricing curriculum preview), where
+    // `description`'s story framing assumes context they do not have yet
+    // (owner bar 2026-08-16; pre-lesson copy audit 2026-08-19). Required
+    // so a new module cannot ship without one.
+    summary: s.string().min(1),
     lessonCount: s.number().int().positive(),
     prerequisites: s.array(s.string()).default([]),
     // "foundations" = shared core (modules 1-6), "specialization" = world-specific (modules 7-11)

@@ -70,7 +70,7 @@ export const signalWard: WorldManifest = {
       org: "MERIDIAN GENERAL HOSPITAL · EHR STATUS BOARD",
       status: "SYSTEM OFFLINE · REBUILD PENDING",
     },
-    ctaLabel: "Get paged",
+    ctaLabel: "Join the waitlist",
     modules: [
       { order: 1, title: "ML Through Text", free: true },
       { order: 2, title: "Tokenization & Preprocessing" },

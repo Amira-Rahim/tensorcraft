@@ -9,6 +9,7 @@ description: |
   forecast the next reading. You already have the instincts: a reducer folds
   each step into the state it carries, and a cached value expires when it
   goes stale.
+summary: "Recurrent networks that carry state across time: RNNs, LSTMs, and GRUs, mapped onto the reducers and cache expiry you already write."
 lessonCount: 5
 prerequisites:
   - foundations

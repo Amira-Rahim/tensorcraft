@@ -74,7 +74,7 @@ export const terraGrid: WorldManifest = {
       org: "TERRA SYSTEMS · GLOBAL OPERATIONS",
       status: "FIELD ACCURACY 67% · INTERVENTION REQUIRED",
     },
-    ctaLabel: "Put me on call",
+    ctaLabel: "Join the waitlist",
     modules: [
       { order: 1, title: "Edge AI Basics", free: true },
       { order: 2, title: "Model Optimization Fundamentals" },

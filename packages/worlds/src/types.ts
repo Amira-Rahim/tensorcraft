@@ -81,7 +81,10 @@ export interface WorldPreview {
     org: string;
     status: string;
   };
-  /** Hero waitlist button label, e.g. "Get paged" */
+  /** Hero waitlist button label. Says plainly what the button does: the
+   *  in-fiction labels ("Get paged", "Get the signal") left a visitor
+   *  unable to tell it joins a waitlist (pre-lesson copy audit
+   *  2026-08-19). Per-world so a future world can vary it. */
   ctaLabel: string;
   /** Exactly 11 entries */
   modules: WorldPreviewModule[];

@@ -82,8 +82,8 @@ export default async function WorldsPage() {
         </h1>
         <p className="text-lg text-text-muted mb-6 max-w-2xl">
           Five ML specializations, each told through its own story universe.
-          Deep Orbit is live. The other four ship in waves; sign up to their
-          waitlists below.
+          Deep Orbit is live. The other four have no release dates yet; join a
+          waitlist below and we will email you when one opens.
         </p>
         <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
           Pick the world that maps to the ML problem you actually want to solve.

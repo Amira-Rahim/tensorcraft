@@ -101,7 +101,10 @@ export function CurriculumPreview() {
                             )}
                           </div>
                           <p className="mt-2 font-sans text-sm text-text-muted leading-relaxed">
-                            {mod.description}
+                            {/* Plain-language summary: this preview is shown
+                                before purchase, so it cannot lean on the
+                                story (pre-lesson copy audit 2026-08-19). */}
+                            {mod.summary}
                           </p>
                         </div>
 

@@ -9,6 +9,7 @@ description: |
   profiling, quantization, pruning, caching, and WebGPU acceleration to
   shrink the model to 42 MB with 2.4% accuracy loss, measured rather than
   rounded away. The lost capture stays lost; the next one does not have to.
+summary: "Profiling, quantization, pruning, caching, and WebGPU acceleration, treated as a measured tradeoff between model size and accuracy."
 lessonCount: 5
 prerequisites:
   - foundations

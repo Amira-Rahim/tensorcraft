@@ -73,7 +73,7 @@ export const neonProtocol: WorldManifest = {
       org: "NEURALCORE HQ · SURVEILLANCE GRID",
       status: "200 CAMERAS DARK · REBUILD PENDING",
     },
-    ctaLabel: "Get the signal",
+    ctaLabel: "Join the waitlist",
     modules: [
       { order: 1, title: "ML Through Vision", free: true },
       { order: 2, title: "Image Data" },

@@ -87,11 +87,12 @@ export default function PrivacyPage() {
             </p>
             <p className="mb-3">
               <strong className="text-text-primary">Learning data:</strong>{" "}
-              lessons completed, exercise attempts and scores, hints used,
-              streaks, the code you write in exercises and arena challenges, and
-              certificates you earn. A certificate page shows your display name
-              and avatar to anyone who has its link, so share that link
-              deliberately.
+              lessons completed, exercise attempts and scores, hints used, your
+              run of consecutive active days, the code you write in exercises
+              and in arena challenges (timed coding challenges inside the
+              course), and certificates you earn. A certificate page shows your
+              display name and avatar to anyone who has its link, so share that
+              link deliberately.
             </p>
             <p className="mb-3">
               <strong className="text-text-primary">Purchase data:</strong>{" "}
