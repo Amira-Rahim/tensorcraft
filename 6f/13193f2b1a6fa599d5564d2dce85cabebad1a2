@@ -1,0 +1,56 @@
+docs/migration-runbook.md
+  s_ee7cb7b717dd40::t_cd07088eb2a3a3 83-124
+docs/launch-blockers.md
+  s_ee7cb7b717dd40::t_465d700e9b51a3 1011-1041,1045-1046
+  s_05a49bab834291::t_40b586a973671d 1254-1278
+  s_ee7cb7b717dd40::t_f20120b489f009 1163-1188
+  s_05a49bab834291::t_8265653edd6631 944-955
+  s_05a49bab834291::t_8de04c73b17b40 1096-1120
+  s_ee7cb7b717dd40::t_06d47e993b9b20 1002
+  s_05a49bab834291::t_dcc3b554bf3bc3 31-49
+  s_05a49bab834291::t_2c53a4520e878a 1334-1341
+  s_05a49bab834291::t_34927d14b2eb90 1084-1094
+vercel.json
+  s_ee7cb7b717dd40::t_0acc6857fb4286 1-4
+docs/post-launch-backlog.md
+  s_c5dbef5147e5cc::t_172c4ff70c03e8 476-497
+  s_ee7cb7b717dd40::t_e3994835c097a7 609-626
+docs/pre-launch-checklist.md
+  s_05a49bab834291::t_373b438cd2af65 671-674
+packages/bridges-public/src/index.ts
+  s_ee7cb7b717dd40::t_e747cd95db4dab 4
+apps/web/app/components/landing-hero.tsx
+  s_c5dbef5147e5cc::t_b4f280f1703a98 56-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6f13193f2b1a6fa599d5564d2dce85cabebad1a2",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_c5dbef5147e5cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4bad64e4-8d58-4336-af88-b3ae3908c9c0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_ee7cb7b717dd40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b3a93f0a-a729-4a7b-a089-b83fcb7bb9b8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
