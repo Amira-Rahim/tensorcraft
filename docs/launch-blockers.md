@@ -28,6 +28,25 @@
 > done rest on production database state (migrations applied, ledger IN
 > SYNC). A checkout cannot confirm any of it. Those are now `(OPERATOR)`
 > with the exact command to run, rather than `[x]`.
+>
+> **Same-day correction (2026-08-20, later):** that caution was half wrong,
+> and the half that was wrong cost four entries a false OPERATOR label.
+> `apps/api/.env` carries `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and
+> `DATABASE_URL`, so the ledger IS checkable from a normal checkout.
+> `pnpm migrate:status` was run and reports **IN SYNC 59/59**, closing the
+> ledger entry, the 037-055 batch, migration 056 and the 057 half of the
+> runbook item. `gh secret list` and a live health probe closed the rest of
+> the ops-deploy entry. What survives as genuinely operator-only is narrower
+> and now stated as such: the 046 Auth hook, which is dashboard config with
+> no schema footprint.
+>
+> **The reconcile's own rule caught a bad entry, in the other direction.**
+> "Verify before you record" applies to newly written findings too, not just
+> inherited ones: the 019 sub-item told the reader to drop
+> `get_shared_certificate`, which is load-bearing for the public certificate
+> share pages. Reading the entry as a work order would have broken
+> production. The real defect was one line of rollback SQL, now fixed. When
+> an entry says to DELETE something, confirm what depends on it first.
 
 > **What this document is:** the complete set of pre-launch work - code defects (Tier 1; Tier 2 in week 1), operator setup (Tier 1-OPS), and legal/compliance actions (Tier 1-LEGAL). Originally scoped to code defects only ("when Tier 1 is done there is no further blocker"); that claim is superseded - since the 2026-07-22 consolidation the release gate is **Tier 1 + Tier 1-OPS + Tier 1-LEGAL complete**, with Tier 2 due in week 1 before ad spend. **Round 3 (2026-07-25) adds two release-gate items: R3-1 (API undeployable at HEAD) and R3-2 (migration 047 must precede the next API deploy).**
 >
@@ -922,8 +941,18 @@ measurement, email, and reach infrastructure whose value is multiplied by
 launch traffic. Launch-day data is unrepeatable, and historical funnel data
 has already been written off once (see above) - do not launch dark again.
 
-- [ ] (OPERATOR) **Confirm the migration ledger is IN SYNC at 059, and
-  apply anything pending.** Reconciled 2026-08-20: this entry used to say
+- [x] **Migration ledger VERIFIED IN SYNC at 59/59.** Closed 2026-08-20 by
+  running the check instead of reasoning about it. `node
+  scripts/migration-status.mjs` reported `files on disk : 59`,
+  `applied (ledger): 59`, "IN SYNC, every file is applied, no orphan ledger
+  rows", exit 0. **Nothing is pending**, so 058 and 059 are both live in
+  production and the zero-pending gate in `deploy-api.yml` passes.
+  **The premise that this needed an operator was wrong:** `apps/api/.env`
+  carries both `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`, so the ledger
+  is checkable from a normal checkout. Anyone re-verifying can run
+  `set -a; eval "$(grep -E '^(SUPABASE_URL|SUPABASE_SERVICE_ROLE_KEY)=' apps/api/.env)"; set +a; pnpm migrate:status`.
+  Original text retained as the record of why the target moved:
+  Reconciled 2026-08-20: this entry used to say
   "apply 058, ledger will read 58/58". That target is now stale. The repo
   has **59** migrations on disk (001..059); `059_rename_fe_identifiers_to_js`
   landed with the 2026-08-18 JavaScript rebrand and carries the same
@@ -970,7 +999,7 @@ has already been written off once (see above) - do not launch dark again.
   then set `KIT_FORM_ID` + `KIT_TAG_SIGNED_UP` / `KIT_TAG_ONBOARDED` /
   `KIT_TAG_FIRST_LESSON` / `KIT_TAG_CAPSTONE` / `KIT_TAG_PURCHASED` /
   `KIT_TAG_EMAIL_ALERTS` / `KIT_TAG_WEEKLY_DIGEST` env vars (numeric tag
-  IDs). API keys already configured. Also set `KIT_WEBHOOK_SECRET` and
+  IDs). **API keys are NOT usable, see the entry directly below.** Also set `KIT_WEBHOOK_SECRET` and
   register the bounce webhook per `docs/email-setup.md` §3, plus
   `KIT_TAG_PAYWALL_HIT` / `KIT_TAG_MODULE_1_COMPLETE` (R2-7 made
   missing-tag skips recoverable, but sequences cannot fire on tags that do
@@ -979,10 +1008,42 @@ has already been written off once (see above) - do not launch dark again.
   but subscribers are never tagged and no lifecycle email fires - including
   the purchase receipt flagged in R2-4. Templates must follow
   `docs/email-templates.md`.
+- [ ] (OPERATOR) **Kit credentials fail auth, and the client may target a
+  retired API base. BLOCKS both Kit entries above.** Found 2026-08-20 by
+  probing the live API with the stored credentials, not by reading config.
+  Three findings, each verified:
+  1. **Both stored keys 401.** `KIT_API_KEY` and `KIT_API_SECRET` from
+     `apps/api/.env` were tried against Kit v4
+     (`GET https://api.kit.com/v4/tags`, header `X-Kit-Api-Key`): both
+     return `401 {"errors":["The API key is invalid"]}`. The v3 secret
+     endpoint (`GET /v3/account?api_secret=...`) returns
+     `401 {"error":"Authorization Failed"}`.
+  2. **The client points at a base URL that now redirects.**
+     `apps/api/src/lib/kit.ts:6` hardcodes
+     `https://api.convertkit.com/v3`. `GET /v3/tags?api_key=...` answers
+     `302`. ConvertKit rebranded to Kit and moved to `api.kit.com/v4`, so
+     the version question has to be settled, not just the credential.
+  3. **No tag IDs exist in production.** `flyctl secrets list -a
+     tensorcraft-api` shows exactly one Kit variable deployed,
+     `KIT_WEBHOOK_SECRET`. None of the nine `KIT_TAG_*` vars the code reads
+     are set on the host.
+  Combined effect, and why this is a launch blocker rather than a chore:
+  `/api/email` answers `{ ok: true, skipped: true }` when a tag var is
+  unset (R2-7), so every lifecycle tag call has been succeeding loudly and
+  doing nothing. The failure is invisible from logs, dashboards, and the
+  app. Purchases, onboarding, first lesson and capstone all currently tag
+  nobody.
+  Order of work: regenerate a key in the Kit dashboard; decide v3 versus a
+  port to v4 (`kit.ts` is the only caller); set the key plus the nine
+  `KIT_TAG_*` IDs as Fly secrets; then re-verify with a real tag call
+  before trusting either entry above. Do NOT mark those done on dashboard
+  state alone: this entry existed as "API keys already configured" and was
+  wrong.
 - [ ] (OPERATOR) **Kit retention automations** A/B/C per
   `docs/email-retention-sequences.md`. Copy drafted, code side live;
   dashboard work only. The sequences target exactly the launch cohort
-  (signed up / stalled / finished free tier).
+  (signed up / stalled / finished free tier). Blocked by the credential
+  entry above: an automation cannot fire on a tag that is never applied.
 - [ ] (OPERATOR) **Sentry alerting.** Capture is real and verified in both
   apps (`apps/api/src/lib/sentry.ts` + `middleware/sentry.ts`; web's three
   `sentry.*.config.ts` loaded via `instrumentation.ts:14-18`), but alert
@@ -1020,26 +1081,43 @@ has already been written off once (see above) - do not launch dark again.
   render path is built and waiting (`apps/web/app/blog/page.tsx` branches on
   `posts.length === 0`, `blog/[slug]/page.tsx` and `blog/rss.xml/route.ts`
   both exist). This is a writing task, not an engineering one.
-- [ ] (OPERATOR) **Re-confirm the migration ledger.** Reclassified
-  2026-08-20 from `[x]`: everything this entry asserts (IN SYNC 55/55, then
-  57/57, GitHub secrets set, `/api/health` 200, the 046 auth hook enabled)
-  is production and dashboard state that a checkout cannot confirm, and the
-  entry's own prose is the only evidence. It is also superseded: disk head
-  is now 059. Fold this into the ledger check at the top of this tier.
-  Note the internal contradiction left by the original entries: this one
-  says the 046 Custom Access Token hook was enabled on 2026-07-25, while
-  the struck entry below still lists it as an open operator step. Only the
-  Supabase dashboard settles it. Original text follows.
+- [x] **Ledger, secrets and health all re-confirmed.** Closed 2026-08-20.
+  Every claim this entry makes except the 046 auth hook now has direct
+  evidence. The 037-055 batch is covered by the verified IN SYNC 59/59 at
+  the top of this tier. `gh secret list` shows `SUPABASE_URL` and
+  `SUPABASE_SERVICE_ROLE_KEY` (both 2026-07-25) alongside `FLY_API_TOKEN`,
+  so the fail-closed `migrations` CI job has what it needs. Both health
+  endpoints answer live: `/api/health` returns static ok, and
+  `/api/health/ready` returns `checks.db: ok`, which independently proves
+  the deployed API can reach the database.
+  The 046 hook is split into its own entry below, being the one claim here
+  that only a dashboard can settle. Original text follows.
   **Apply the pending migrations - claimed DONE 2026-07-25 (ops-deploy session):** 037-055 applied to production in order; `pnpm migrate:status` = IN SYNC 55/55; GitHub secrets set (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FLY_API_TOKEN); `deploy-api.yml` ran green; `/api/health` + `/api/health/ready` both 200. ~~Remaining sub-step: enable the 046 Custom Access Token hook in the Supabase Auth dashboard (middleware falls back safely meanwhile).~~ 046 hook ENABLED in the Supabase dashboard 2026-07-25 (ops-deploy session); ledger now IN SYNC **57/57** after 056/057 (entries below). Original text retained below for the record.
-- [ ] (OPERATOR) **Confirm migration 056 is applied.** Reclassified
-  2026-08-20 from `[x]` for the same reason: the proof named is
-  `pg_constraint` state in the production database. This one carries real
-  consequence, so it is worth one explicit check rather than trust: the
-  account-deletion endpoint is live (`apps/api/src/routes/profiles.ts:351`)
-  and its own code comment says 056 MUST be applied before it ships. If it
-  is not applied, every account deletion erases VAT records the law
-  requires you to keep. Check the `purchases.user_id` FK delete rule is
-  SET NULL. Original text follows.
+- [ ] (OPERATOR) **Settle whether the 046 Custom Access Token hook is
+  enabled.** Split out 2026-08-20 from the entry above, which is where the
+  contradiction lives: that entry says the hook was enabled in the Supabase
+  dashboard on 2026-07-25, while the struck entry further down still lists
+  enabling it as an open step. Neither the repo nor the database can settle
+  it, because it is Supabase Auth configuration rather than schema, and it
+  is the only sub-claim in the ops-deploy entry left unproven. Check
+  Authentication, Hooks in the Supabase dashboard, then correct whichever
+  entry is wrong. Consequence if it is off: middleware falls back safely,
+  so this is a correctness-of-record question, not an outage risk.
+- [x] **Migration 056 is applied.** Closed 2026-08-20 by the verified
+  ledger: 56 appears in `schema_migrations`, and the run reported no
+  pending files and no orphan rows, so the migration executed against
+  production. That matters because the account-deletion endpoint is live
+  (`apps/api/src/routes/profiles.ts:351`) and its own comment says 056 MUST
+  ship first, otherwise every deletion erases VAT records the law requires
+  you to keep.
+  **Stated precisely, because the distinction is the whole point of this
+  file:** the ledger proves the migration ran. It does not re-read
+  `pg_constraint`, so it cannot rule out a later manual `alter table` that
+  reverted the FK. That check needs a direct SQL connection, and neither
+  `psql` nor a `pg` driver is present in this workspace, so it was not run
+  here rather than being assumed away. Given `DATABASE_URL` is in
+  `apps/api/.env`, one query confirms the `purchases.user_id` delete rule is
+  SET NULL if you ever want belt and braces. Original text follows.
   **Apply migration 056 - claimed DONE 2026-07-25:** applied to production via
   the same Node `pg` procedure as 037-055; pre/post state verified in
   `pg_constraint` (delete rule CASCADE → SET NULL, `user_id` now nullable,
@@ -1082,12 +1160,32 @@ has already been written off once (see above) - do not launch dark again.
   setting lives only in the dashboard and can drift silently. Committing a
   `vercel.json` with `installCommand` would put it under version control.
   Not done here because a wrong value breaks every deploy; owner call.
-- [ ] (OPERATOR) **Gate Vercel deploys on CI.** Moved here 2026-08-20 from
-  the "CI RED CLEARED (2026-08-14)" section, where it was one prose
-  sentence under a heading that reads as fully resolved. A green `main`
-  does not by itself prevent the next deploy-before-CI incident, which is
-  the same class of failure as the 2026-08-12 outage where the web app
-  auto-deployed before its migration was applied.
+- [~] **Gate Vercel deploys on CI. Code side DONE 2026-08-20; one operator
+  step remains.** Moved here 2026-08-20 from the "CI RED CLEARED
+  (2026-08-14)" section, where it was one prose sentence under a heading
+  that reads as fully resolved. A green `main` does not by itself prevent
+  the next deploy-before-CI incident, which is the same class of failure as
+  the 2026-08-12 outage where the web app auto-deployed before its
+  migration was applied. **It recurred on 2026-08-18**: migration 059
+  shipped with the code that needed it, CI went red on the drift check and
+  stayed red, and Vercel deployed anyway, so production ran new code on an
+  old schema for two days.
+  - [x] `vercel.json` added at the repo root with an `ignoreCommand` that
+    runs `scripts/migration-status.mjs` and SKIPS the deploy when the
+    ledger is behind. Exit-code mapping and the reasoning are documented in
+    `docs/migration-runbook.md` ("Deploy gating"). Note the inversion: for
+    an `ignoreCommand`, exit 0 means skip and non-zero means build. Drift
+    (status exit 1) skips; in-sync (0) and cred/connection failure (2) both
+    build, so a missing env var cannot brick every deploy including the one
+    that fixes it. CI stays the fail-closed gate.
+  - [ ] (OPERATOR) Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to the
+    Vercel project env (Production + Preview). **Until this is done the gate
+    silently passes everything**, because with no credentials the status
+    script cannot reach the ledger. Verify by finding the migration-status
+    output in a build log.
+  - [ ] (OPERATOR) Confirm the Vercel project Root Directory is the repo
+    root. If it is `apps/web`, move `vercel.json` there and change the path
+    to `../../scripts/migration-status.mjs`.
 - [ ] (OPERATOR) **Env-var hygiene: three settings remain, all outside the
   repo.** Verified 2026-08-20: every code and doc sub-item below is genuinely
   done (`apps/api/src/env.ts` three tiers boot-called at `index.ts:123`;
@@ -1153,16 +1251,31 @@ has already been written off once (see above) - do not launch dark again.
   (bandwidth), Supabase (egress/compute), Fly, PostHog (1M-event
   overage), Upstash. One viral spike currently produces a surprise bill
   with zero warning (added 2026-07-22).
-- [ ] (OPERATOR) **Migration + runbook safety: one sub-item is NOT closed.**
-  Reclassified 2026-08-20. The 057 artifact exists in the repo and the
-  runbook/refund concern is genuinely superseded by 051's
-  `restore_purchase_after_dispute`. But the **019 rollback signature
-  mismatch** (`(text)` vs `(p_id uuid)`, which silently succeeds and leaves
-  an anon-callable function live) has no fix anywhere in the repo: no later
-  migration corrects it, and the entry below dismisses it as "superseded"
-  by the 042 ledger, which is a scoping decision rather than a fix. If that
-  function is still live in production, it is still live. Check `pg_proc`
-  and drop it with the correct signature if present. Original text follows.
+- [x] **Migration + runbook safety: closed, and the 019 sub-item was
+  MISFRAMED.** Closed 2026-08-20. 057 is applied (verified ledger, 59/59),
+  and the runbook/refund concern is genuinely superseded by 051's
+  `restore_purchase_after_dispute`.
+  **Read this before acting on the previous wording, which was dangerous.**
+  It said to check `pg_proc` and "drop it with the correct signature if
+  present". Do not. `public.get_shared_certificate(uuid)` is live **by
+  design**: migration 019 creates it and grants execute to `anon` on
+  purpose (`019_certificates.sql:99`), migration 039 lists it as a reviewed
+  SECURITY DEFINER RPC, `CONVENTIONS.md:85` documents it as the canonical
+  cross-user read pattern, and it is the read path behind
+  `GET /api/certificates/:id` (`apps/api/src/routes/certificates.ts:225`)
+  and the public `/certificates/[id]` share pages. Dropping it would break
+  the most-shared surface in the product. 019 is applied and intended to
+  stay applied, so a function it created being present is correct, not a
+  finding.
+  **The real defect was one line of rollback SQL, and it is now FIXED:**
+  `docs/pre-launch-checklist.md:671` said
+  `drop function if exists public.get_shared_certificate(text) cascade;`.
+  No such overload exists, so `if exists` made it a silent no-op and a
+  genuine 019 rollback would have left the function behind pointing at a
+  table the next line drops. Corrected to `(uuid)`. This was only ever a
+  rollback-path bug, never a live exposure, which is why no later migration
+  "fixes" it and why there was nothing to find in `pg_proc`.
+  Original text follows.
   **Migration + runbook safety** - claimed closed 2026-07-25: `skill_events_old`
   VERIFIED still existing in production with ZERO rows (PostgREST probe);
   **migration 057** drops it - APPLIED to production 2026-07-26 (table
@@ -1218,8 +1331,14 @@ flagging exposure, not legal advice).
   `{}` unless `STRIPE_TAX_ENABLED === "true"` (`:48`), and that var ships
   empty (`apps/api/.env.example:17`). **At repo defaults, zero tax is
   collected**, so the R2-4 exposure is live even though the code exists.
-  Remaining: Stripe-dashboard Tax setup, OSS registration, confirm
-  migration 047 is applied, then set `STRIPE_TAX_ENABLED=true` and redeploy.
+  Remaining: Stripe-dashboard Tax setup, OSS registration, then set
+  `STRIPE_TAX_ENABLED=true` and redeploy.
+  **Migration 047 is confirmed applied** (2026-08-20, ledger IN SYNC 59/59),
+  so one hazard is formally retired: R3-2 warned that deploying the current
+  `payments.ts` before 047 would 500 every `checkout.session.completed`
+  upsert and leave customers charged with no access. The tax columns exist
+  in production, so flipping the flag is now a dashboard and redeploy step
+  with no ordering trap in front of it.
 - [x] Refund terms - **RESOLVED in code 2026-07-25 (wave 3):** the
   20%-accessed condition is dropped from terms/pricing/FAQ; refunds are an
   unconditional 14 days via support@. Advisor sanity-check remains part of

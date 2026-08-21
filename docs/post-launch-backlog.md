@@ -473,6 +473,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 7. Platform + infra deferrals
 
+- [ ] Visual gate is blind to the entire landing hero (found 2026-08-22
+  while re-minting baselines after a hero subhead rewrite). Both
+  `e2e/visual/key-pages.spec.ts` and `e2e/visual/responsive.spec.ts`
+  mask `page.locator("canvas")`. On `/` the first match is the hero's
+  ParticleField, which is `absolute inset-0` inside a `min-h-screen`
+  section, so the magenta mask covers the headline, subhead, both CTAs,
+  and the demo panel. Measured on the freshly minted
+  `landing-1440-chromium-darwin.png`, the hero band is 100% magenta.
+  What proves the gate cannot see hero copy: rewriting the subhead from
+  four rendered lines down to three left 5 of the 6 landing baselines
+  byte-identical to HEAD. Only `landing-320` moved, and only because the
+  total page height changed. This is the same failure the responsive
+  spec's own comment records for /pricing's AmbientBackground on
+  2026-08-09; the landing page was never re-checked. The mask is not
+  simply removable: ParticleField seeds particle positions with
+  `Math.random()` (`packages/ui/src/effects/particle-field.tsx:38-43`),
+  so even its reduced-motion static frame differs between runs. Fix
+  shape: hide ParticleField at capture time in
+  `e2e/visual/screenshot.css` (that file already exists, for the
+  dev-overlay badge) and narrow the mask to the world-card canvases,
+  then re-mint the landing baselines.
+
 - [ ] Privacy deferrals from the 2026-08-16 policy audit
   (`docs/audits/privacy-policy-audit-2026-08-16.md`; the shipped fixes
   are listed there too):
@@ -584,7 +606,24 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] i18n.
 - [ ] TFJS major upgrade.
 - [ ] npm-publishable `@tensorcraft/bridges` (blocked by `workspace:*` dep;
-  needs tsup/rollup `noExternal`).
+  needs tsup/rollup `noExternal`). Re-verified 2026-08-20, and the blocker
+  is real: `packages/bridges-public/package.json` declares
+  `"@tensorcraft/shared": "workspace:*"` and `src/index.ts` only
+  re-exports from it, so the built `dist/index.js` is 802 bytes of
+  re-export with no bridge data in it. `@tensorcraft/shared` is
+  `private: true` at version `0.0.0` and 404s on the registry, so
+  publishing today yields a package that installs and then throws
+  `Cannot find module '@tensorcraft/shared'` on first import. The
+  workspace-protocol rewrite pnpm does at publish time does not help: it
+  rewrites to `0.0.0`, which is equally unpublished.
+  Fix is a bundling step (tsup or rollup with the shared package marked
+  `noExternal`) so the 51 bridges are inlined and the package has zero
+  runtime dependencies, then `npm pack --dry-run` should show a
+  substantially larger `dist/index.js`. Also note `@tensorcraft/bridges`
+  has never been published at all (registry 404), so this is a first
+  release rather than a version bump, and the name is unclaimed.
+  Version, README, and description were corrected to 51 on 2026-08-19/20
+  and are publish-ready; only the packaging is not.
 
 ## 8. Growth roadmap (100k paying users)
 

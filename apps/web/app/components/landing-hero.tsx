@@ -53,10 +53,8 @@ export function LandingHero() {
           </h1>
 
           <p className="text-lg text-text-muted max-w-[520px] mb-6 leading-relaxed font-sans">
-            Skip Python. Learn machine learning the way you already build in
-            JavaScript, right in your browser. You&apos;ll walk out with a model
-            you can actually ship, built on instincts you already have from
-            managing state and caching.
+            Skip Python. Learn machine learning in JavaScript, in the browser.
+            You&apos;ll build a model and ship it.
           </p>
 
           <div className="flex gap-4 flex-wrap mb-5">

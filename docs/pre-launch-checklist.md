@@ -668,7 +668,10 @@ If migration 018/019/020 needs rollback:
 drop table if exists public.issues cascade;
 
 -- 019 rollback
-drop function if exists public.get_shared_certificate(text) cascade;
+-- Signature must be (uuid): migration 019 declares get_shared_certificate(p_id uuid).
+-- This line said (text) until 2026-08-20, and since no such overload exists,
+-- `if exists` made it a silent no-op that left the function behind.
+drop function if exists public.get_shared_certificate(uuid) cascade;
 drop table if exists public.certificates cascade;
 
 -- 018 rollback

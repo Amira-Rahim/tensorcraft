@@ -80,3 +80,45 @@ all-or-nothing:
   corrective path. Do not use it; handle refunds per Stripe event, not bulk SQL.
 - **17 pre-042 migrations are non-idempotent.** Never re-run 001–041 blind;
   trust the ledger, not a re-paste.
+
+## Deploy gating (added 2026-08-20)
+
+Two gates now stand between a pending migration and production. Both call
+`scripts/migration-status.mjs`; they differ in what they do with the result.
+
+**GitHub Actions** (`.github/workflows/ci.yml`, job "Migration ledger drift
+check") fails the build on drift and fails CLOSED when the secrets are
+missing (exit 2), so a blind gate can never read as green.
+
+**Vercel** (`vercel.json`, `ignoreCommand`) skips the deploy on drift. Its
+exit codes are INVERTED relative to normal tools, which is the trap: for an
+`ignoreCommand`, exit 0 means "ignore this build" (skip) and any non-zero
+means "go ahead and build". The wrapper therefore maps:
+
+| migrate:status | meaning              | gate exits | Vercel does |
+|----------------|----------------------|------------|-------------|
+| 1              | drift, schema behind | 0          | SKIP deploy |
+| 0              | in sync              | 1          | deploy      |
+| 2              | no creds / no conn   | 1          | deploy      |
+
+Exit 2 deliberately fails OPEN here, the opposite of the CI job. A missing
+env var on Vercel would otherwise block every deploy of the site, including
+the deploy that fixes it. CI is the fail-closed gate; Vercel is the
+last-resort brake.
+
+For the Vercel gate to do anything, `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY` must exist in the Vercel project's environment
+variables (Production and Preview). Without them the gate silently passes
+everything. Verify after setting them by checking a build log for the
+migration-status output.
+
+`vercel.json` lives at the repo root and its command path assumes the
+Vercel project Root Directory is the repo root. If the project is
+configured with Root Directory `apps/web`, move the file there and change
+the path to `../../scripts/migration-status.mjs`.
+
+Why this exists: on 2026-08-18 migration 059 was committed with the app code
+that depended on it. CI went red on exactly this check and stayed red, while
+Vercel deployed the web app anyway. Production ran new code against an old
+schema for two days, silently discarding onboarding fields. The check was
+never missing; nothing consumed its verdict.
