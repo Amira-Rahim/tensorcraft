@@ -108,14 +108,22 @@ last-resort brake.
 
 For the Vercel gate to do anything, `SUPABASE_URL` and
 `SUPABASE_SERVICE_ROLE_KEY` must exist in the Vercel project's environment
-variables (Production and Preview). Without them the gate silently passes
-everything. Verify after setting them by checking a build log for the
-migration-status output.
+variables (Production and Preview). Verified present 2026-08-23. Without
+them the gate silently passes everything.
 
-`vercel.json` lives at the repo root and its command path assumes the
-Vercel project Root Directory is the repo root. If the project is
-configured with Root Directory `apps/web`, move the file there and change
-the path to `../../scripts/migration-status.mjs`.
+`vercel.json` lives at the repo root, but the command does NOT run there.
+The Vercel project's Root Directory is `apps/web`; Vercel still reads the
+repo-root `vercel.json`, yet executes the `ignoreCommand` with `apps/web`
+as the working directory (verified against build logs, 2026-08-23). The
+script path is therefore `../../scripts/migration-status.mjs`. A
+repo-root-relative path fails as module-not-found, which Node reports
+with exit code 1, the exact code the wrapper reads as drift: from
+2026-08-22 to 2026-08-23 that path bug canceled every production deploy
+while the dashboard's status filter hid the Canceled rows. The path and
+the fail-open behavior are now gated by
+`packages/content/__tests__/vercel-ignore-command.test.ts`; if the Root
+Directory setting ever changes, update that test's constant and the
+script path together.
 
 Why this exists: on 2026-08-18 migration 059 was committed with the app code
 that depended on it. CI went red on exactly this check and stayed red, while
