@@ -63,7 +63,7 @@ export function LandingHero() {
               data-testid="landing-cta-primary"
               className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
-              Run Your First Tensor (Free) →
+              Start Mission: Deep Orbit →
             </Link>
             <Link
               href="/learn"

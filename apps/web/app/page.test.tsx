@@ -113,10 +113,24 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
 
     // Conversion pass (2026-06-10), spec:
     // docs/superpowers/specs/2026-06-10-hero-conversion-pass.md
-    it("primary CTA uses outcome copy and keeps the free-lesson href", () => {
+    // 2026-08-22 (owner): label was "Run Your First Tensor (Free)". "Run"
+    // was wrong (lesson 1 has the learner write tf.tensor(...), not run
+    // one), and "tensor" was the taught term with no gloss anywhere on the
+    // page, logged BORDERLINE in
+    // docs/audits/prelesson-copy-audit-2026-08-19.md:170. "Mission" is
+    // deep-orbit's own word for a lesson (packages/worlds/src/deep-orbit.ts
+    // terminology.lesson) and is what the destination renders via
+    // lesson-steps.tsx, so the button names the thing the way the product
+    // names it three seconds later. The world name follows the same
+    // precedent as onboarding's "Start Deep Orbit" (audit :450). Owner also
+    // dropped the "(free)" tag here, so no free assertion: if it comes
+    // back, restore one, since module 1 is the entire free tier and the
+    // claim is the hero's only risk reversal.
+    it("primary CTA names the mission and world and keeps the free-lesson href", () => {
       render(<LandingHero />);
       const primary = screen.getByTestId("landing-cta-primary");
-      expect(primary.textContent).toMatch(/run your first tensor/i);
+      expect(primary.textContent).toMatch(/start mission/i);
+      expect(primary.textContent).toMatch(/deep orbit/i);
       expect(primary.getAttribute("href")).toBe(
         "/worlds/deep-orbit/foundations/introduction-to-tensors",
       );
