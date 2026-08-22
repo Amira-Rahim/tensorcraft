@@ -45,8 +45,8 @@ export default function Home() {
                   commit log beside this. (Owner, 2026-08-16: this band was
                   overcrowded; every card now carries one fact once.) */}
               <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] font-sans mb-5">
-                Across 11 modules you assemble and deploy one real-time anomaly
-                detection system.
+                Across 11 modules you&apos;ll build and deploy one real-time
+                anomaly detection system.
               </p>
               <Link
                 href="/pricing#curriculum"
@@ -62,19 +62,19 @@ export default function Home() {
             {[
               {
                 label: "Train",
-                desc: "Neural networks built layer by layer in TensorFlow.js, trained in your tab.",
+                desc: "Build neural networks layer by layer in TensorFlow.js and train them in your browser.",
               },
               {
                 label: "Detect",
-                desc: "Live readings classified normal or anomalous by a neural network you build yourself.",
+                desc: "Classify readings as normal or anomalous with the network you built yourself.",
               },
               {
                 label: "Deploy",
-                desc: "Real-time inference on an ordinary laptop via WebGL, entirely client-side.",
+                desc: "Run real-time inference on your laptop via WebGL, 100% client-side.",
               },
               {
                 label: "Own",
-                desc: "Solved exercises push to your GitHub, starting free in Module 1. Walk into interviews able to explain every layer.",
+                desc: "Push solved exercises to your GitHub and build your portfolio one module at a time.",
               },
             ].map((item, i) => (
               <div

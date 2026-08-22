@@ -41,8 +41,15 @@ export function BridgePreviewSection() {
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-4">
           THE BRIDGE SYSTEM
         </div>
+        {/* "Anchor", not "Name" (owner, 2026-08-23): only 2 of the 51
+            catalog bridges are tier `identity`. 38 are structural and 11
+            are intuition, and every entry carries a `breaks` note recording
+            where the analogy stops (this section hides it by owner
+            decision, so the headline gets no counterweight on screen). A
+            name would claim an equivalence the data does not support. An
+            anchor claims a starting point, which is what a bridge is. */}
         <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-          Every ML Concept Has a JavaScript Name
+          Every ML Concept Has a JavaScript Anchor
         </h2>
       </div>
 
