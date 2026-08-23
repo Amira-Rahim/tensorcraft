@@ -117,11 +117,10 @@ export default function PricingPage() {
               </span>
               <p className="m-0 text-text-primary leading-relaxed min-w-0">
                 <span className="text-primary font-bold">
-                  5-day money-back guarantee
-                </span>
+                  A 5-day money-back guarantee.
+                </span>{" "}
                 <span className="text-text-muted">
-                  : full refund within 5 days, no questions asked. Email
-                  support@tensorcraft.app.{" "}
+                  Full refund, no questions asked.{" "}
                 </span>
                 <Link
                   href="/terms#refunds"

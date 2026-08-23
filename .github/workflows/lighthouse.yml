@@ -7,6 +7,23 @@ on:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    # Same placeholder-env story as the e2e job in ci.yml: `next start` sets
+    # NODE_ENV=production, which arms the PROD_REQUIRED tier of the boot
+    # assertion in apps/web/lib/env.ts, so the server-side vars below must
+    # exist or the server refuses to boot and "Wait for server" times out
+    # (that is what turned every PR run red once the assertion landed,
+    # 2026-08-23). Real secrets are deliberately NOT used here: Dependabot-
+    # triggered runs cannot read the Actions secrets anyway (they get the
+    # Dependabot store), an unreachable Supabase host degrades every page
+    # to signed-out (verified for e2e 2026-08-14), and Lighthouse only
+    # audits public pages, so placeholders keep human and Dependabot PR
+    # runs identical.
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_placeholder_anon_key
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      SUPABASE_URL: https://placeholder.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: sb_placeholder_service_role_key
     steps:
       - uses: actions/checkout@v4
 
@@ -22,17 +39,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Web app only: the old root `pnpm build` also built apps/api, which
+      # this job never runs and whose failures used to mask the actual
+      # Lighthouse signal (e.g. the 2026-08-18 runs).
       - name: Build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+        run: pnpm turbo build --filter @tensorcraft/web
 
       - name: Start Next.js server
         run: pnpm --filter @tensorcraft/web start &
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
 
       - name: Wait for server
         run: npx wait-on http://localhost:3000 -t 60000

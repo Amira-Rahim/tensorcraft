@@ -170,6 +170,16 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
     expect(body.worldIds).toEqual(["deep-orbit"]);
   });
 
+  // Owner directive 2026-08-23: with one world launched, the one-option
+  // picker's only possible action was deselecting the preselected world and
+  // disabling the CTA. It returns via the launchedWorldCount > 1 guard when
+  // a second world launches.
+  it("hides the world picker while exactly one world is launched", () => {
+    render(<PricingTiers />);
+    expect(screen.queryByText(/pick 1 world/i)).toBeNull();
+    expect(screen.queryByRole("button", { name: /^Deep Orbit$/ })).toBeNull();
+  });
+
   // /extras was removed 2026-08-15 (owner decision). The free tier must not
   // advertise content that no longer exists.
   it("free tier advertises no bonus deep-dive lessons and never links to /extras", () => {

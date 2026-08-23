@@ -339,17 +339,26 @@ export function PricingTiers() {
                 </li>
               ))}
             </ul>
-            <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
-              pick 1 world
-            </p>
-            <WorldPicker
-              max={1}
-              selected={singleWorld ? [singleWorld] : []}
-              onToggle={(slug) =>
-                setSingleWorld(singleWorld === slug ? null : slug)
-              }
-              ownedWorlds={ownedWorlds}
-            />
+            {/* With exactly one world launched, this picker was a one-option
+                toggle whose only possible action was deselecting the
+                preselected world and disabling the CTA (owner directive
+                2026-08-23). It renders only once there is a real choice,
+                the same self-retiring guard as the ribbon above. */}
+            {launchedWorldCount > 1 && (
+              <>
+                <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
+                  pick 1 world
+                </p>
+                <WorldPicker
+                  max={1}
+                  selected={singleWorld ? [singleWorld] : []}
+                  onToggle={(slug) =>
+                    setSingleWorld(singleWorld === slug ? null : slug)
+                  }
+                  ownedWorlds={ownedWorlds}
+                />
+              </>
+            )}
             <CheckoutButton
               planId="single"
               worldIds={singleWorld ? [singleWorld] : []}
