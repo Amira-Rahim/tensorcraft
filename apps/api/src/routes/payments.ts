@@ -53,7 +53,7 @@ function getStripe(): Stripe {
  */
 /**
  * EU/UK checkout gate (owner decision 2026-08-23, reviewed at the 500-user
- * gate; see the Tier 1-LEGAL decision note in docs/launch-blockers.md).
+ * gate; see the Tier 1-LEGAL decision note in docs/post-launch-backlog.md).
  *
  * A seller established outside the EU gets no EUR 10,000 threshold, so EU VAT
  * would be due at the buyer's rate from the very first sale, and the UK has no

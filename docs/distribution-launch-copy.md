@@ -1,7 +1,7 @@
 # Distribution Launch Copy (drafts, 2026-08-11)
 
 Ready-to-paste copy for the two account-creation items in Tier 1-OPS
-(`docs/launch-blockers.md`): the Product Hunt "upcoming" page and the
+(`docs/post-launch-backlog.md`): the Product Hunt "upcoming" page and the
 @tensorcraft X account. Voice rules applied: brand speaks as a group of
 JavaScript engineers (no personal names, per the identity policy), checkable
 numbers only, no em dashes, no claims the audits removed (no

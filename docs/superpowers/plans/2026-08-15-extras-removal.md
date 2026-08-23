@@ -167,7 +167,7 @@ Expected: PASS.
 - Modify: `docs/launch-scope.md:70` - velite collections row `{deep-orbit,extras}` → `deep-orbit`
 - Modify: `docs/superpowers/specs/2026-08-09-pricing-reevaluation-design.md` - the extras count-pin checklist: dated obsolescence note, don't rewrite history
 - Modify: `docs/superpowers/specs/2026-06-15-end-of-lesson-design.md`, `docs/superpowers/specs/2026-06-15-reading-experience-design.md` - both state "the only live, testable lesson surface today is deep-orbit + extras (77 lessons)" as current fact; same dated-obsolescence-note treatment
-- Modify: `docs/pre-launch-checklist.md`, `docs/launch-blockers.md`, `docs/v2-polish-backlog.md` - grep for extras, fix stale claims (v2-polish-backlog is superseded; a one-line note suffices)
+- Modify: `docs/pre-launch-checklist.md`, `docs/audits/launch-blockers-history-2026-08-23.md`, `docs/v2-polish-backlog.md` - grep for extras, fix stale claims (v2-polish-backlog is superseded; a one-line note suffices)
 - Modify: `docs/post-launch-backlog.md` - remove/annotate the "public route for extras/*" item (~199-200) AND add the removal entry
 
 - [x] **Step 1: Fix stale claims** (list above; grep `-i extras` each file to catch stragglers)

@@ -16,6 +16,46 @@ acted on literally (the 019 RPC, the Dockerfile CMD, the GitHub token route).
 
 ---
 
+## Closed out 2026-08-23: deployed, zero blockers, file deleted
+
+`docs/launch-blockers.md` was deleted on 2026-08-23 because it had no blockers
+left in it. This is the last state it held.
+
+**Deployed.** API via the `Deploy API` workflow (green: migration gate passed,
+Fly runtime-secret check passed) and web via Vercel, both from commit
+`488a339` after CI went green on that exact sha.
+
+**Verified live rather than assumed.** `/api/health/ready` returned
+`checks.db: ok`. A live Checkout Session carried
+`billing_address_collection: required` while `automatic_tax.enabled` was
+false, a combination only the post-hoist code can produce, since that field
+used to sit inside `taxSessionParams()` and that helper returns `{}` while the
+tax flag is off. `/terms` and `/privacy` served the new governing-law,
+US-only, retention and disclosure copy, with both stale guest-checkout claims
+gone.
+
+**EU/UK geo-gate verified in production.** DE, GB and FR each answered 403
+`region_unavailable`, and no Stripe session was created for any of them.
+
+Two caveats worth carrying forward, both recorded in the backlog:
+
+1. That test had to run against the **Fly origin directly**. Through the edge,
+   Cloudflare overwrites `CF-IPCountry`, so a spoofed header never reaches the
+   app. That is the gate's security property working as designed, and it also
+   means the gate is only as strong as the origin lock, which does not exist
+   yet. The webhook billing-country backstop catches what slips through.
+2. **Vercel Hobby: risk accepted** (owner, 2026-08-23). Pro is bundled with
+   LLC formation at the 500-user gate. Hobby prohibits commercial use, but the
+   downside is bounded because upgrading is instant and self-serve, so the
+   worst case is a short interruption rather than a lost project. That is a
+   different shape of risk from the VAT exposure, which accrues silently and
+   cannot be undone.
+
+Open work now lives in `docs/post-launch-backlog.md`, tagged with the
+benchmark that triggers it.
+
+---
+
 ## Why earlier audits said "launch ready"
 
 Every audit before 2026-07-21 examined **content and copy** (`docs/audits/*`). The verdict "A+ / launch ready" was accurate about lesson quality, story, and exercise rigor. It was never a statement about the monetization path, funnel instrumentation, database security, or behaviour at scale - those dimensions had **never been audited**. They were unexamined, not cleared. This document closes that gap.

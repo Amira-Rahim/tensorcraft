@@ -151,7 +151,7 @@ describe("isColorScheme", () => {
  * VAT-gated regions. Selling to EU/UK consumers creates a VAT obligation from
  * the FIRST sale for a non-EU-established seller (no threshold applies), so
  * checkout is gated to those regions until the entity exists. See the
- * Tier 1-LEGAL decision note in docs/launch-blockers.md.
+ * Tier 1-LEGAL decision note in docs/post-launch-backlog.md.
  */
 describe("isVatGatedCountry", () => {
   it("gates EU member states", () => {

@@ -257,7 +257,7 @@ export function isColorScheme(v: string): v is ColorScheme {
  * does not, because VAT triggers on a supply for consideration.
  *
  * Owner decision 2026-08-23, reviewed at the 500-user gate. See the
- * Tier 1-LEGAL decision note in `docs/launch-blockers.md`.
+ * Tier 1-LEGAL decision note in `docs/post-launch-backlog.md`.
  */
 export const VAT_GATED_COUNTRIES = [
   "AT",

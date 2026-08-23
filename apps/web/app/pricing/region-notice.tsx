@@ -11,7 +11,7 @@ import { submitWaitlist } from "@/lib/waitlist";
  * very first sale, the UK has no threshold either, and OSS registration
  * cannot be backdated. Until the US LLC exists, refusing the sale is cheaper
  * than a liability that cannot be unwound. Owner decision 2026-08-23; see the
- * Tier 1-LEGAL decision note in `docs/launch-blockers.md`.
+ * Tier 1-LEGAL decision note in `docs/post-launch-backlog.md`.
  *
  * Why it captures rather than merely refuses: this list is the only
  * measurement of EU/UK paid demand that exists, and that number is evidence

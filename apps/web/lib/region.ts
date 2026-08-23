@@ -10,7 +10,7 @@
  * using Cloudflare's `CF-IPCountry`, which the client cannot forge. Deleting
  * this cookie only gets you a buy button that answers 403.
  *
- * See the Tier 1-LEGAL decision note in `docs/launch-blockers.md`.
+ * See the Tier 1-LEGAL decision note in `docs/post-launch-backlog.md`.
  */
 export const REGION_GATED_COOKIE = "tc_region_gated";
 

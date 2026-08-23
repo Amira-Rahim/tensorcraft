@@ -1,6 +1,6 @@
 /**
  * Startup env assertion for the web app (Tier 1-OPS "env-var hygiene",
- * docs/launch-blockers.md). Mirrors apps/api/src/env.ts: plain TypeScript,
+ * docs/post-launch-backlog.md). Mirrors apps/api/src/env.ts: plain TypeScript,
  * three tiers, fail LOUD at server boot instead of degrading silently at
  * the point of use. Called from instrumentation.ts (nodejs runtime only),
  * so a misconfigured deploy refuses to start rather than serving with

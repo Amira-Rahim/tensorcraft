@@ -68,6 +68,13 @@ jurisdiction in terms and privacy, the Art. 27 representatives, controller
 identity, the DPAs, and the EAA microenterprise confirmation. Every one of
 these is blocked on an entity existing, which is why they cluster.
 
+Also here: **upgrade Vercel to Pro** (owner decision 2026-08-23, moved out of
+launch-blockers). It is bundled with formation deliberately, because that is
+when there is an entity to invoice and expense it against. Until then the
+Hobby commercial-use conflict is an accepted risk, bounded by the fact that
+upgrading is instant and self-serve, so the worst case is a short
+interruption rather than a lost project.
+
 **B5, when you buy traffic.** The load test. The success-metrics dashboard.
 Product Hunt, the X account, the blog batch, email domain warmup and
 Postmaster, cloud-cost alerts, the Upstash plan re-check, and the
@@ -99,14 +106,14 @@ above rather than defaulted.
 Everything in this file is V2 (post-launch). There is no V3 tier; former
 "V3+" items are folded into the sections below like everything else.
 
-Status convention (aligned with `docs/launch-blockers.md` at its 2026-08-20
+Status convention (aligned with `docs/audits/launch-blockers-history-2026-08-23.md` at its 2026-08-20
 reconcile): `[ ]` is work doable in this repo, `[ ] (OPERATOR)` is work that
 cannot be done or verified from a checkout (a third-party dashboard, a
 billing plan, a signature, production database state), and `[x]` means
 verified against the repo, not "a previous session said so".
 
 Not tracked here (pre-launch, one document): ALL pre-launch work lives in
-`docs/launch-blockers.md` - code defects (Tier 1/2), pending operator
+`docs/audits/launch-blockers-history-2026-08-23.md` - code defects (Tier 1/2), pending operator
 migrations (037-040), and the operator + distribution setup moved there
 2026-07-22 (Tier 1-OPS). Full findings register:
 `docs/audits/full-audit-2026-07-21.md`. (The "91 Dependabot alerts" note in
@@ -122,7 +129,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
 > Console, Product Hunt upcoming page, first blog batch + audience-track
 > start; second pass same day: Twitter/X account creation + pricing
 > FAQPage JSON-LD) is pre-launch work and now lives in
-> `docs/launch-blockers.md` "Tier 1-OPS". Launch-traffic data is
+> `docs/audits/launch-blockers-history-2026-08-23.md` "Tier 1-OPS". Launch-traffic data is
 > unrepeatable; those were mis-filed here. Remaining below = genuinely
 > post-launch.
 
@@ -164,7 +171,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   module flags narrative redesign.
 - [ ] Respond to beta feedback + community Discord questions.
   **Blocked on the Discord existing.** Moved here from
-  `docs/launch-blockers.md` 2026-08-23 (owner: postpone until after launch).
+  `docs/audits/launch-blockers-history-2026-08-23.md` 2026-08-23 (owner: postpone until after launch).
   Nothing in `apps/web` references Discord and the site footer carries only
   four links (`apps/web/app/components/site-footer.tsx`). When you want it:
   create the server, channels and rules, then send the invite link and the
@@ -564,7 +571,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
 ## 7. Platform + infra deferrals
 
 - [ ] **Drop the counterfactual debris.** Deferred from
-  `docs/launch-blockers.md` 2026-08-23: the table is empty and harmless, and
+  `docs/audits/launch-blockers-history-2026-08-23.md` 2026-08-23: the table is empty and harmless, and
   a pending migration blocks the API deploy gate, so this waits until the
   launch deploy is out. The feature's client was deleted in 24d45e4;
   `counterfactual_choices` was verified at **0 rows** in production on
@@ -595,7 +602,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   removal is roughly 2026-08-27, one release after the migration landed;
   taking them out sooner defeats the purpose they were added for. Delete
   both blocks plus their tests, then redeploy the API. No migration and no
-  web change. Filed here rather than in `launch-blockers.md` because it is
+  web change. Filed here rather than in `docs/audits/launch-blockers-history-2026-08-23.md` because it is
   post-deploy cleanup, not a release gate: leaving the shims in place is
   harmless, only untidy.
 
@@ -758,7 +765,7 @@ doc); the work items are indexed here. Gate order is a hard precondition
 chain: Gate 1 denominator (widen ICP + more worlds) → Gate 2 LTV (recurring
 revenue) → Gate 3 proof (funnel data, produced by Horizon 0) → Gate 4
 catalog breadth (enterprise procurement). Horizon 0 shipped 2026-07-21; its
-still-open defects are launch blockers (`docs/launch-blockers.md`), not
+still-open defects are launch blockers (`docs/audits/launch-blockers-history-2026-08-23.md`), not
 post-launch work.
 
 ### Horizon 1: fix the economics (0-9 months)
@@ -857,7 +864,7 @@ platform work.
 
 ## 9. Scale debt (before ~10k users)
 
-Moved from `launch-blockers.md` Tier 3 on 2026-07-22: that tier is
+Moved from `docs/audits/launch-blockers-history-2026-08-23.md` Tier 3 on 2026-07-22: that tier is
 post-launch by its own definition ("not before launch"), user-count-gated
 like §3. Last two items were prose-only findings (launch-blockers R2-5)
 with no checkbox anywhere until now.
@@ -930,7 +937,7 @@ companion links, the drawer link feature rebuilt.
 
 # Moved out of launch-blockers (2026-08-23)
 
-The owner set a harder bar for `docs/launch-blockers.md`: an item belongs
+The owner set a harder bar for `docs/audits/launch-blockers-history-2026-08-23.md`: an item belongs
 there only if the app cannot be BETA TESTED without it, where beta means real
 money from US buyers, geo-gated, before the LLC exists. 41 of 44 open items
 failed that bar and moved here **with their full text, evidence and status

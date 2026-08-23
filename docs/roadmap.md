@@ -2,8 +2,8 @@
 
 > **Status:** living document. Supersedes the version-roadmap tables in `docs/prd.md` §7 and `docs/dev-plan.md` "Version Roadmap", both of which predate the 100k-paying-users goal and are reconciled below.
 > **Scope:** what to build, in what order, to grow revenue. Engineering phase detail stays in `docs/dev-plan.md`; pricing/positioning detail stays in `docs/product-plan.md`.
-> **Task index (2026-07-21):** the Horizon 1-3 work items are indexed canonically in `docs/post-launch-backlog.md` §8, the single source of truth for post-launch tasks. This file remains the strategy detail doc (arithmetic, gates, framing). Still-open Horizon 0 defects: `docs/launch-blockers.md`.
-> **Deduped 2026-07-22:** horizon sections carry rationale, decisions, and codebase facts only - item enumerations and exit criteria live solely in the backlog §8 index; still-open defect lists live solely in `launch-blockers.md`.
+> **Task index (2026-07-21):** the Horizon 1-3 work items are indexed canonically in `docs/post-launch-backlog.md` §8, the single source of truth for post-launch tasks. This file remains the strategy detail doc (arithmetic, gates, framing). Still-open Horizon 0 defects: `docs/audits/launch-blockers-history-2026-08-23.md`.
+> **Deduped 2026-07-22:** horizon sections carry rationale, decisions, and codebase facts only - item enumerations and exit criteria live solely in the backlog §8 index; still-open defect lists live solely in `docs/audits/launch-blockers-history-2026-08-23.md`.
 
 ---
 
@@ -103,11 +103,11 @@ Conversion repairs to the current product, most of them trivial. **Several resto
 
 ### Still open from the 2026-07-21 re-audit
 
-Tracked canonically in `docs/launch-blockers.md`; not duplicated here. Status has moved since this section was first written: the six Tier 1 defects (world-callable `SECURITY DEFINER` RPCs, middleware SPOF, paying customers shown the paywall, checkout hang/double-charge, missing signup instrumentation, false guest-progress notice) were **fixed in code the same day** - one blocking operator step remains (apply migration `039`). Everything else open lives in that doc's Tier 1-OPS (operator/distribution setup), Tier 2 (fix in week 1, pre-ad-spend) and Tier 3 (fix before ~10k users). One item this list previously carried was stale: `immutable` headers on `/vendor`/`/models` shipped 2026-07-21 (`next.config.ts`).
+Tracked canonically in `docs/audits/launch-blockers-history-2026-08-23.md`; not duplicated here. Status has moved since this section was first written: the six Tier 1 defects (world-callable `SECURITY DEFINER` RPCs, middleware SPOF, paying customers shown the paywall, checkout hang/double-charge, missing signup instrumentation, false guest-progress notice) were **fixed in code the same day** - one blocking operator step remains (apply migration `039`). Everything else open lives in that doc's Tier 1-OPS (operator/distribution setup), Tier 2 (fix in week 1, pre-ad-spend) and Tier 3 (fix before ~10k users). One item this list previously carried was stale: `immutable` headers on `/vendor`/`/models` shipped 2026-07-21 (`next.config.ts`).
 
 ### New environment variables (operator)
 
-`KIT_TAG_PAYWALL_HIT` and `KIT_TAG_MODULE_1_COMPLETE` - documented with the rest of the Kit setup in `docs/launch-blockers.md` Tier 1-OPS. Setting them late is safe: R2-7 made missing-tag skips recoverable.
+`KIT_TAG_PAYWALL_HIT` and `KIT_TAG_MODULE_1_COMPLETE` - documented with the rest of the Kit setup in `docs/audits/launch-blockers-history-2026-08-23.md` Tier 1-OPS. Setting them late is safe: R2-7 made missing-tag skips recoverable.
 
 **Why Horizon 0 came first:** it is the cheapest revenue in the plan, and it produces the funnel data (`paywall_hit`, conversion by step) that Gate 3 below requires before any spending scales. That data now exists for the first time.
 
@@ -132,7 +132,7 @@ _Work items: `docs/post-launch-backlog.md` §8, Horizon 1. This section carries 
 
 **Add recurring revenue (Gate 2).** An all-access subscription (~$15–25/mo) alongside one-time purchases, replacing ad-hoc entitlement derivation with a real entitlements model. Money-touching - full TDD and Stripe test-mode e2e before any live charge.
 
-**Payment rails (decided 2026-07-22): stay on Stripe; Lemon Squeezy rejected.** Lemon Squeezy has been in maintenance mode since Stripe acquired it (July 2024) - its team now builds Stripe Managed Payments (SMP), Stripe's own merchant-of-record product, and LS support/updates have visibly slowed. Adopting it in 2026 means migrating twice. Fee reality on the $59–159 ladder: Stripe direct 2.9% + 30¢ (~3.2% effective on $99); Lemon Squeezy 5% + 50¢, plus 1.5% international and 0.5% subscription surcharges (~5.5%); SMP 6.4% + 30¢ (~6.7%). The MoR premium is 2.3–3.5 points of revenue, and what it buys - global tax registration, filing, remittance - matters to us almost entirely as EU/UK VAT, which is already a launch blocker (`docs/launch-blockers.md` R2-4). Stripe Tax (+0.5%/txn) automates calculation and collection but leaves OSS registration and filing with us.
+**Payment rails (decided 2026-07-22): stay on Stripe; Lemon Squeezy rejected.** Lemon Squeezy has been in maintenance mode since Stripe acquired it (July 2024) - its team now builds Stripe Managed Payments (SMP), Stripe's own merchant-of-record product, and LS support/updates have visibly slowed. Adopting it in 2026 means migrating twice. Fee reality on the $59–159 ladder: Stripe direct 2.9% + 30¢ (~3.2% effective on $99); Lemon Squeezy 5% + 50¢, plus 1.5% international and 0.5% subscription surcharges (~5.5%); SMP 6.4% + 30¢ (~6.7%). The MoR premium is 2.3–3.5 points of revenue, and what it buys - global tax registration, filing, remittance - matters to us almost entirely as EU/UK VAT, which is already a launch blocker (`docs/audits/launch-blockers-history-2026-08-23.md` R2-4). Stripe Tax (+0.5%/txn) automates calculation and collection but leaves OSS registration and filing with us.
 
 The money path is deep and freshly hardened (`apps/api/src/routes/payments.ts`, migrations 035/037/038, Run #7 behavioral proofs); switching providers pre-launch is pure risk with zero launch upside. Re-evaluate MoR only when the subscription launches or international mix makes OSS filing a real operating cost - and then compare Paddle (5% + 50¢, mature B2B invoicing, relevant to Horizon 3 seats) and Polar (~4% + 40¢) against SMP, not Lemon Squeezy.
 
@@ -190,6 +190,6 @@ Every item here could ship perfectly and the goal could still be missed.
 | Requirements, release gates (superseded §7) | `docs/prd.md` |
 | SEO, launch sequence, paid ads | `docs/marketing-plan.md` |
 | Retention email sequences (operator setup pending) | `docs/email-retention-sequences.md` |
-| **Launch blockers (actionable subset)** | `docs/launch-blockers.md` |
+| **Launch blockers (actionable subset)** | `docs/audits/launch-blockers-history-2026-08-23.md` |
 | **Full six-dimension audit register (everything found)** | `docs/audits/full-audit-2026-07-21.md` |
 | V1 launch scope (Deep Orbit only) | `docs/launch-scope.md` |
