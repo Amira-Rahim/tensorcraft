@@ -1,0 +1,60 @@
+playwright.config.ts
+  s_ae5c585cf5607b::t_326679685fb798 66-76,78-80,83
+  s_ae5c585cf5607b::t_fe5f4684714624 12-21
+docs/post-launch-backlog.md
+  s_ae5c585cf5607b::t_3326c949595e9f 1008-1009
+  s_ae5c585cf5607b::t_e891eddda96089 1837-1838
+e2e/exercise-run.spec.ts
+  s_ae5c585cf5607b::t_222993e51265c0 65-98
+docs/launch-blockers.md
+  s_05a49bab834291::t_540426b6452ee8 11-27
+packages/ui/src/mdx/exercise.tsx
+  s_ae5c585cf5607b::t_bf3a734d1f6ae3 677,691-695,697,705-708,715-717
+  s_ae5c585cf5607b::t_53c97e90ca028b 213-215
+  s_ae5c585cf5607b::t_2ce4abe00b4b50 174-182
+  s_ae5c585cf5607b::t_6bb74b2c89d286 678-690,696,698-704,709-714
+  s_ae5c585cf5607b::t_3720ed04f4c50e 805-808
+apps/web/app/pricing/page.tsx
+  s_2bf9e56d49ffc8::t_f46cf11b4bb87c 93,95
+  s_2bf9e56d49ffc8::t_2577ef780cc8e7 94
+.github/workflows/ci.yml
+  s_ae5c585cf5607b::t_6096cfea1c9c8a 3-12,19-21,24,27-28,30,48-60,71-99,103-144,152-175,192-195,206-208,212-227,251-274,291,323,356
+  s_ae5c585cf5607b::t_2d72eaf783a18e 196-205,209-211
+docs/ci-cd.md
+  s_ae5c585cf5607b::t_2bfb96e1473441 33-39,42-48,51-53
+  s_05a49bab834291::t_c9f8252dfc49b0 54
+docs/deployment-guide.md
+  s_ae5c585cf5607b::t_86f43d0de40263 173-183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a4fb52912e0087025ea6aa234e20ca6732821ebb",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_2bf9e56d49ffc8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6a75b1dd-7202-4d6c-98f1-72236503f38e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_ae5c585cf5607b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1207c746-692e-4a4f-9b29-306993da8e4d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
