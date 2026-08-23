@@ -171,7 +171,16 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
     font: {
       body: '"JetBrains Mono", ui-monospace, monospace',
       mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-      size: "16px",
+      // Reverted to 13px 2026-08-23. Raising this to 16px (the iOS auto-zoom
+      // threshold) made the code overflow the editor box, which turned
+      // `.cm-scroller` into a scrollable region that is not keyboard
+      // focusable: axe `scrollable-region-focusable`, serious, on the graded
+      // challenge step in both schemes. CI caught it; no local test can,
+      // because it needs a real browser to lay out.
+      //
+      // Closing this properly means the editor box grows with the type, or
+      // `.cm-scroller` gets tabindex="0". Both need browser verification.
+      size: "13px",
       lineHeight: "1.6",
     },
   },
@@ -202,7 +211,16 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
     font: {
       body: '"JetBrains Mono", ui-monospace, monospace',
       mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-      size: "16px",
+      // Reverted to 13px 2026-08-23. Raising this to 16px (the iOS auto-zoom
+      // threshold) made the code overflow the editor box, which turned
+      // `.cm-scroller` into a scrollable region that is not keyboard
+      // focusable: axe `scrollable-region-focusable`, serious, on the graded
+      // challenge step in both schemes. CI caught it; no local test can,
+      // because it needs a real browser to lay out.
+      //
+      // Closing this properly means the editor box grows with the type, or
+      // `.cm-scroller` gets tabindex="0". Both need browser verification.
+      size: "13px",
       lineHeight: "1.6",
     },
   },
