@@ -50,7 +50,7 @@ jobs:
       # results) across runs; turbo entries are content-hashed, so restoring
       # another job's or an older run's cache only ever adds hits.
       - name: Restore turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo/cache
           key: turbo-${{ github.job }}-${{ github.sha }}
@@ -125,7 +125,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Restore turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo/cache
           key: turbo-${{ github.job }}-${{ github.sha }}
@@ -136,7 +136,7 @@ jobs:
       # Webpack's incremental cache; .next/cache is excluded from turbo
       # outputs, so it needs its own carrier to speed up cache-miss builds.
       - name: Restore Next.js build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: apps/web/.next/cache
           key: nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
@@ -227,7 +227,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -249,7 +249,7 @@ jobs:
         run: pnpm exec playwright install-deps chromium webkit
 
       - name: Restore turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo/cache
           key: turbo-${{ github.job }}-${{ github.sha }}
@@ -258,7 +258,7 @@ jobs:
             turbo-
 
       - name: Restore Next.js build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: apps/web/.next/cache
           key: nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
