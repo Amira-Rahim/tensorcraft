@@ -1,0 +1,33 @@
+.github/workflows/lighthouse.yml
+  s_4f5a60d6d8eff1::t_5e8ee396389bbb 10-26,42-44,46
+apps/web/app/pricing/page.tsx
+  s_2bf9e56d49ffc8::t_128f70f670dee0 120-121,123
+apps/web/app/pricing/__tests__/pricing-tiers.test.tsx
+  s_2bf9e56d49ffc8::t_fdc574787c1f5d 173-182
+apps/web/app/pricing/pricing-tiers.tsx
+  s_2bf9e56d49ffc8::t_09bdd279817f8d 342-361
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "53216adfea2cf1a8243ebb9c6eef43a2c4a3a81d",
+  "prompts": {},
+  "sessions": {
+    "s_2bf9e56d49ffc8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6a75b1dd-7202-4d6c-98f1-72236503f38e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_4f5a60d6d8eff1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0345b761-3222-4e70-801c-0a25e56e5d5c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
