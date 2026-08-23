@@ -118,3 +118,148 @@ export async function sendIssueNotification(
     captureException(err, { source: "issues.email" });
   }
 }
+
+/**
+ * Bound a promise's WAIT (not its socket). Used for the receipt send, which
+ * happens inside the Stripe webhook handler: a hung Resend connection must
+ * not hold the handler past Stripe's timeout and force a re-delivery.
+ */
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error(`${label} timed out after ${ms}ms`)),
+      ms,
+    );
+    p.then(
+      (v) => {
+        clearTimeout(timer);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(timer);
+        reject(e);
+      },
+    );
+  });
+}
+
+/** "deep-orbit" reads as an internal id to a customer. "Deep Orbit" does not. */
+function worldDisplayName(slug: string): string {
+  return slug
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+interface PurchaseReceiptParams {
+  email: string;
+  worldIds: string[];
+  /** Dollars, not cents. */
+  amount: number;
+  /** Stripe Checkout Session id, so support can find the payment. */
+  sessionId: string;
+  purchasedAt: Date;
+  timeoutMs?: number;
+}
+
+/**
+ * Send the buyer a purchase receipt.
+ *
+ * Why this exists on Resend rather than Kit: the only purchase-time email
+ * action was a Kit tag, and Kit's stored credentials 401, so buyers have been
+ * receiving nothing at all after paying. A receipt is a legal expectation and
+ * a leading cause of chargebacks, so it must not depend on an integration
+ * that is currently dark. Resend is already wired and sending (digest, issue
+ * notifications).
+ *
+ * Never throws: it runs inside the Stripe webhook, where an exception would
+ * turn a successful payment into a 500 and a re-delivery.
+ *
+ * No postal address in the footer: CAN-SPAM's physical-address requirement
+ * applies to commercial messages, and a receipt is transactional. The digest
+ * is the one that needs the address (Tier 1-LEGAL).
+ */
+export async function sendPurchaseReceipt(
+  params: PurchaseReceiptParams,
+): Promise<void> {
+  const client = getResend();
+  if (!client) {
+    logger.warn(
+      { source: "email.sendPurchaseReceipt", sessionId: params.sessionId },
+      "Resend not configured, skipping purchase receipt",
+    );
+    return;
+  }
+
+  const appUrl = process.env.APP_URL || "https://tensorcraft.app";
+  const support = process.env.SUPPORT_EMAIL || "support@tensorcraft.app";
+  const names = params.worldIds.map(worldDisplayName).join(", ");
+  const amount = `$${params.amount.toFixed(2)}`;
+  const date = params.purchasedAt.toISOString().slice(0, 10);
+
+  const subject = "Your Tensorcraft receipt";
+  const text = [
+    "Thanks for your purchase.",
+    "",
+    `What you bought: ${names}`,
+    `Amount: ${amount}`,
+    `Date: ${date}`,
+    `Order reference: ${params.sessionId}`,
+    "",
+    `Start here: ${appUrl}/dashboard`,
+    "",
+    `Need a refund or have a question? Write to ${support}.`,
+    "Refunds are available for 14 days.",
+  ].join("\n");
+
+  // Server-derived values, but they still land in HTML, so escape them.
+  const eNames = escapeHtml(names);
+  const eSession = escapeHtml(params.sessionId);
+  const eSupport = escapeHtml(support);
+  const html = `
+    <div style="font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; color: #1a1a1a; background: #ffffff; padding: 24px; max-width: 560px;">
+      <h1 style="font-size: 18px; margin: 0 0 16px;">Thanks for your purchase.</h1>
+      <table style="border-collapse: collapse; width: 100%; font-size: 14px;">
+        <tr><td style="padding: 6px 12px 6px 0; color: #555;">What you bought</td><td>${eNames}</td></tr>
+        <tr><td style="padding: 6px 12px 6px 0; color: #555;">Amount</td><td>${amount}</td></tr>
+        <tr><td style="padding: 6px 12px 6px 0; color: #555;">Date</td><td>${date}</td></tr>
+        <tr><td style="padding: 6px 12px 6px 0; color: #555;">Order reference</td><td>${eSession}</td></tr>
+      </table>
+      <p style="margin: 20px 0;">
+        <a href="${appUrl}/dashboard" style="background: #1a1a1a; color: #ffffff; padding: 10px 16px; text-decoration: none; display: inline-block;">Start here</a>
+      </p>
+      <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 20px 0;" />
+      <p style="font-size: 13px; color: #555; margin: 0;">
+        Need a refund or have a question? Write to
+        <a href="mailto:${eSupport}" style="color: #1a1a1a;">${eSupport}</a>.
+        Refunds are available for 14 days.
+      </p>
+    </div>
+  `;
+
+  try {
+    // Resend reports failures in the result and does not throw (F1, 2026-07-25).
+    const { error: sendError } = await withTimeout(
+      client.emails.send({
+        from: "Tensorcraft <noreply@tensorcraft.app>",
+        to: params.email,
+        subject,
+        text,
+        html,
+      }),
+      params.timeoutMs ?? 5000,
+      "purchase receipt send",
+    );
+    if (sendError) {
+      captureException(new Error(sendError.message), {
+        source: "payments.receipt",
+        extra: { sessionId: params.sessionId, name: sendError.name },
+      });
+    }
+  } catch (err) {
+    captureException(err, {
+      source: "payments.receipt",
+      extra: { sessionId: params.sessionId },
+    });
+  }
+}

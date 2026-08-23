@@ -80,11 +80,47 @@ export function FiveWorldsSection() {
 
   return (
     <section className="border-b border-border">
-      {/* Title lives ON the flagship surface: header and Deep Orbit share
-          one full-width canvas, so they can't read as separate sections.
-          The four unlaunched worlds run as a compact strip underneath. */}
+      {/* Header rides the page surface, NOT the plate (owner ruling
+          2026-08-23): prose over the busy art read as a defect no scrim
+          could fully fix. Only the world block goes onto the glass below. */}
       <motion.div
-        className="relative overflow-hidden"
+        className="px-10 md:px-20 pt-16 pb-12"
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+      >
+        <div className="flex items-start justify-between gap-6 mb-3">
+          <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase">
+            CHOOSE YOUR WORLD
+          </div>
+          <span
+            className="font-mono text-xs font-bold tracking-wider px-3 py-1 shrink-0"
+            style={{
+              color: "var(--tc-primary)",
+              background:
+                "color-mix(in srgb, var(--tc-primary) 12%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--tc-primary) 35%, transparent)",
+            }}
+          >
+            LIVE NOW
+          </span>
+        </div>
+        <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
+          Five Worlds
+        </h2>
+        <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
+          Same ML foundations track. Five story universes.{" "}
+          <span style={{ color: "var(--tc-primary)" }}>{HERO_CARD.name}</span>{" "}
+          is live. The other four have no release dates yet.
+        </p>
+      </motion.div>
+
+      {/* The flagship band is the viewport onto the ship: plate ground,
+          canvas reflection on the glass, world block over both. */}
+      <motion.div
+        className="relative overflow-hidden border-t border-border"
         onMouseEnter={() => setHovered(HERO_CARD.slug)}
         onMouseLeave={() => setHovered(null)}
         onFocus={() => setHovered(HERO_CARD.slug)}
@@ -131,35 +167,9 @@ export function FiveWorldsSection() {
             HERO_PLATE_SRC ? " tc-on-art" : ""
           }`}
         >
-          <div className="flex items-start justify-between gap-6 mb-3">
-            <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase">
-              CHOOSE YOUR WORLD
-            </div>
-            <span
-              className="font-mono text-xs font-bold tracking-wider px-3 py-1 shrink-0"
-              style={{
-                color: "var(--tc-primary)",
-                background:
-                  "color-mix(in srgb, var(--tc-primary) 12%, transparent)",
-                border:
-                  "1px solid color-mix(in srgb, var(--tc-primary) 35%, transparent)",
-              }}
-            >
-              LIVE NOW
-            </span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
-            Five Worlds
-          </h2>
-          <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
-            Same ML foundations track. Five story universes.{" "}
-            <span style={{ color: "var(--tc-primary)" }}>{HERO_CARD.name}</span>{" "}
-            is live. The other four have no release dates yet.
-          </p>
-
           <Link
             href={`/worlds/${HERO_CARD.slug}`}
-            className="block mt-12 group max-w-[640px]"
+            className="block group max-w-[640px]"
           >
             <div
               className="text-4xl md:text-6xl font-mono font-black tracking-tight mb-3"

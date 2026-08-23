@@ -941,12 +941,16 @@ measurement, email, and reach infrastructure whose value is multiplied by
 launch traffic. Launch-day data is unrepeatable, and historical funnel data
 has already been written off once (see above) - do not launch dark again.
 
-- [ ] (OPERATOR) **Apply migration 060 (waitlist constraint fix). This
-  BLOCKS the next API deploy and it is not optional.** Added 2026-08-23.
-  `pnpm migrate:status` now reports 60 files on disk against 59 applied and
-  exits 1, so `deploy-api.yml`'s zero-pending gate will refuse to ship until
-  this is applied. That ordering is correct: the geo-gate's demand capture
-  writes a source value the current constraint rejects.
+- [x] **Migration 060 APPLIED to production 2026-08-23, and the waitlist
+  bug is fixed at the database level.** Verified directly, not assumed:
+  `chk_waitlist_source` now reads
+  `length(source) between 1 and 64 and source ~ '^[a-z0-9]+(-[a-z0-9]+)*$'`
+  and `chk_waitlist_world_id` now includes `'all'`. Ledger reads 60/60 and
+  `pnpm migrate:status` exits 0, so the `deploy-api.yml` zero-pending gate is
+  clear again.
+  **What this means in practice:** every capture surface on the site can now
+  write a row. The pre-apply state was captured first and confirmed the
+  diagnosis exactly, so this was a real defect and not a theoretical one.
   **What it fixes is a live bug, not new-feature scaffolding.** 009 declared
   `chk_waitlist_source` as an enum allowing only
   ('landing','pricing','blog','referral','social'). Every capture surface
@@ -1567,9 +1571,9 @@ flagging exposure, not legal advice).
   fed by a middleware cookie so the statically rendered page stays static
   (5 tests).
   **What is left:**
-  1. **Apply migration 060** (see Tier 1-OPS). The capture writes
-     `region-blocked`, which today's constraint rejects, so the notice would
-     collect nothing until 060 lands.
+  1. ~~Apply migration 060~~ **DONE 2026-08-23** (see Tier 1-OPS). The
+     capture writes `region-blocked`, which the new shape constraint accepts,
+     so the notice will record blocked demand as soon as the code deploys.
   2. **Deploy both halves.** The API gate is the enforcement and the web
      cookie is only presentation, so shipping the web half alone leaves
      purchases open.
@@ -1611,8 +1615,32 @@ flagging exposure, not legal advice).
   `apps/web/app/privacy/page.tsx:55-59` carries an explicit code comment
   marking the GDPR Art. 13(1)(a) hole and names only bare "Tensorcraft".
   This is the blocking decision described above.
-- [ ] **Send a real receipt/invoice on purchase.** Verified 2026-08-20:
-  still fully open. The only purchase-time email action is a Kit tag
+- [ ] **Send a real receipt/invoice on purchase. RECEIPT BUILT 2026-08-23,
+  needs deploying; the invoice half is still open.**
+  Built on **Resend, deliberately not Kit**: Kit's credentials 401 (see
+  Tier 1-OPS), and a receipt is the legally expected artifact of a payment,
+  so it must not sit behind an integration that is currently dark. Resend was
+  already wired and sending (digest, issue notifications).
+  `sendPurchaseReceipt` (`apps/api/src/lib/email.ts`) inspects Resend's
+  `{data, error}` result rather than assuming a throw (the F1 lesson), bounds
+  its own wait so a hung mailer cannot hold the Stripe webhook past its
+  timeout, and never throws. Wired into BOTH settle paths inside the existing
+  dedupe guard, so it inherits the two-layer dedupe instead of inventing a
+  third: the sync path and `async_payment_succeeded`, the latter being where
+  delayed methods (SEPA, bank debit) settle. 10 tests.
+  **Two defects found while building it, both fixed:** the buyer's email was
+  looked up INSIDE the Kit try block, so a Kit failure (the current state)
+  would have skipped the receipt too; and the webhook 500'd when the receipt
+  rejected, turning a successful payment into a Stripe retry. The lookup is
+  now shared and each sender has its own failure domain, and the call site is
+  guarded independently of the helper's contract.
+  **Also worth knowing:** `async_payment_succeeded` had NO test coverage at
+  all before this, and the admin-client `profiles` mock returned a bare null,
+  which had made both the receipt and the pre-existing Kit tag unreachable in
+  tests. Both fixed.
+  **Remaining:** deploy the API, and decide the invoice half, which is
+  unreachable while `STRIPE_TAX_ENABLED` is unset. Original text follows.
+  Verified 2026-08-20: still fully open. The only purchase-time email action is a Kit tag
   (`apps/api/src/routes/payments.ts:873-875` and the async duplicate at
   `:1196-1198`); no receipt email template exists anywhere
   (`apps/api/src/lib/email.ts` sends issue notifications only). The

@@ -100,7 +100,15 @@ vi.mock("@tensorcraft/supabase", () => ({
         return {
           select: () => ({
             eq: () => ({
-              single: () => Promise.resolve({ data: null, error: null }),
+              // The webhook looks the buyer's email up through the ADMIN
+              // client to send the receipt and the Kit tag. This returned a
+              // bare null until 2026-08-23, which silently made both
+              // unreachable in tests.
+              single: () =>
+                Promise.resolve({
+                  data: mockProfileEmail ? { email: mockProfileEmail } : null,
+                  error: null,
+                }),
             }),
           }),
           // The webhook persists stripe_customer_id via
@@ -192,6 +200,11 @@ const mockTagSubscriber = vi.fn(async () => {});
 vi.mock("../lib/kit", () => ({
   addSubscriber: (...args: unknown[]) => mockAddSubscriber(...args),
   tagSubscriber: (...args: unknown[]) => mockTagSubscriber(...args),
+}));
+
+const mockSendReceipt = vi.fn().mockResolvedValue(undefined);
+vi.mock("../lib/email", () => ({
+  sendPurchaseReceipt: (...args: unknown[]) => mockSendReceipt(...args),
 }));
 
 vi.mock("@tensorcraft/shared", async (importOriginal) => ({
@@ -1488,5 +1501,149 @@ describe("EU/UK checkout geo-gate", () => {
 
     expect(res.status).toBe(200);
     expect(mockSessionCreate).toHaveBeenCalled();
+  });
+});
+
+/**
+ * Purchase receipt. Buyers received nothing at all after paying: the only
+ * purchase-time email action was a Kit tag, and Kit's credentials 401. The
+ * receipt rides the same settle guard as the revenue event, so it inherits
+ * the two-layer dedupe rather than inventing a third.
+ */
+describe("purchase receipt on settle", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    mockInsert.mockReset();
+    mockInsert.mockResolvedValue({ error: null });
+    mockConstructEvent.mockReset();
+    mockSendReceipt.mockClear();
+    mockSendReceipt.mockResolvedValue(undefined);
+    mockAdminExistingRow = null;
+    mockEqResult = null;
+    mockProfileEmail = "buyer@example.com";
+  });
+
+  function settleEvent(id = "cs_receipt_1") {
+    return {
+      id: "evt_receipt_1",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id,
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "paid",
+          metadata: { planId: "single", worldIds: "deep-orbit" },
+        },
+      },
+    };
+  }
+
+  async function deliver(event: unknown) {
+    mockConstructEvent.mockReturnValue(event);
+    return app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+  }
+
+  it("emails the buyer a receipt when the payment settles", async () => {
+    const res = await deliver(settleEvent());
+
+    expect(res.status).toBe(200);
+    expect(mockSendReceipt).toHaveBeenCalledTimes(1);
+    expect(mockSendReceipt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        email: "buyer@example.com",
+        worldIds: ["deep-orbit"],
+        amount: 49,
+        sessionId: "cs_receipt_1",
+      }),
+    );
+  });
+
+  it("does not re-send on a webhook re-delivery", async () => {
+    // The row is already completed, which is what a sequential re-delivery
+    // looks like. Charging once and mailing twice is its own support ticket.
+    mockAdminExistingRow = { status: "completed" };
+
+    const res = await deliver(settleEvent());
+
+    expect(res.status).toBe(200);
+    expect(mockSendReceipt).not.toHaveBeenCalled();
+  });
+
+  it("still records the purchase when the receipt cannot be sent", async () => {
+    // A dead mailer must never turn a successful payment into a 500 and a
+    // Stripe retry.
+    mockSendReceipt.mockRejectedValue(new Error("resend down"));
+
+    const res = await deliver(settleEvent("cs_receipt_2"));
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalled();
+  });
+});
+
+/**
+ * Delayed payment methods (SEPA, bank debit) settle ONLY in
+ * async_payment_succeeded, never in the sync branch. Before 2026-08-23 this
+ * handler had no test coverage at all, so a receipt wired into the sync path
+ * alone would have silently excluded every delayed-method buyer.
+ */
+describe("purchase receipt on delayed settle", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    mockInsert.mockReset();
+    mockInsert.mockResolvedValue({ error: null });
+    mockConstructEvent.mockReset();
+    mockSendReceipt.mockClear();
+    mockSendReceipt.mockResolvedValue(undefined);
+    mockAdminExistingRow = null;
+    mockEqResult = null;
+    mockProfileEmail = "sepa-buyer@example.com";
+  });
+
+  const asyncEvent = {
+    id: "evt_async_1",
+    type: "checkout.session.async_payment_succeeded",
+    data: {
+      object: {
+        id: "cs_async_1",
+        client_reference_id: "user_789",
+        amount_total: 4900,
+        payment_intent: "pi_async_1",
+        metadata: { planId: "single", worldIds: "deep-orbit" },
+      },
+    },
+  };
+
+  it("emails a receipt when a delayed payment finally settles", async () => {
+    mockConstructEvent.mockReturnValue(asyncEvent);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(asyncEvent),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockSendReceipt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        email: "sepa-buyer@example.com",
+        worldIds: ["deep-orbit"],
+        amount: 49,
+        sessionId: "cs_async_1",
+      }),
+    );
   });
 });

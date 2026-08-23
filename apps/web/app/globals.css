@@ -451,14 +451,14 @@ body {
   background: color-mix(in srgb, #181818 45%, transparent);
 }
 
-/* Reading-column variant for the tall flagship band, where a full section
-   header plus the world block sit over the plate. A flat veil dims the whole
-   painting yet still leaves that much type fighting the art; this one banks
-   the ink behind the text column and releases the right side, so the type
-   gets ground and the art gets shown. Constant, not token-derived, for the
-   same reason as the base scrim. Below md the text spans the full width, so
-   the veil stays uniform there (slightly deeper than the base 45%, tuned for
-   paragraph text rather than a single display line). */
+/* Reading-column variant for the flagship band, where the world block reads
+   over the plate (the section header sits on the page surface above it,
+   owner ruling 2026-08-23). A flat veil dims the whole painting yet still
+   leaves the type fighting the art; this one banks the ink behind the text
+   column and releases the right side, so the type gets ground and the art
+   gets shown. Constant, not token-derived, for the same reason as the base
+   scrim. Below md the text spans the full width, so the veil stays uniform
+   there (deeper than the base 45%, tuned for body text over art). */
 .tc-art-scrim-read {
   background: color-mix(in srgb, #181818 74%, transparent);
 }

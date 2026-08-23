@@ -17,6 +17,7 @@ import {
   sendPurchaseAccessLink,
 } from "../lib/guest-account";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
+import { sendPurchaseReceipt } from "../lib/email";
 import { logger } from "../lib/logger";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
 import type { AppEnv } from "../types";
@@ -918,19 +919,65 @@ payments.post("/webhook", async (c) => {
           userId,
         );
 
-        // Send purchase confirmation email via Kit (fire-and-forget)
+        // The buyer's email feeds two independent sends. Fetched ONCE and
+        // outside both, because the receipt must not depend on Kit: Kit's
+        // stored credentials currently 401, and a receipt is the legally
+        // expected artifact of a payment.
+        let buyerEmail: string | null = null;
         try {
           const { data: profile } = await supabase
             .from("profiles")
             .select("email")
             .eq("id", userId)
             .single();
+          buyerEmail = profile?.email ?? null;
+        } catch (profileErr) {
+          logger.warn(
+            {
+              err: profileErr,
+              route: "payments.webhook",
+              userId,
+              stripeSessionId: sessionId,
+            },
+            "Buyer profile lookup failed; no receipt or Kit tag will be sent",
+          );
+        }
 
-          if (profile?.email) {
-            await addSubscriber(profile.email);
+        // Receipt first: it is the one the buyer actually needs, and it must
+        // not be skipped by a Kit failure. sendPurchaseReceipt never throws
+        // and bounds its own wait, so this cannot 500 the webhook.
+        if (buyerEmail) {
+          // Guarded at the CALL SITE as well as inside the helper. Relying on
+          // a callee's promise never to reject is how a successful payment
+          // turns into a 500 and a Stripe retry after some later edit.
+          try {
+            await sendPurchaseReceipt({
+              email: buyerEmail,
+              worldIds,
+              amount: amount ? amount / 100 : expectedAmount,
+              sessionId,
+              purchasedAt: new Date(),
+            });
+          } catch (receiptErr) {
+            logger.warn(
+              {
+                err: receiptErr,
+                route: "payments.webhook",
+                userId,
+                stripeSessionId: sessionId,
+              },
+              "Purchase receipt failed (non-blocking); payment is recorded",
+            );
+          }
+        }
+
+        // Kit lifecycle tagging (fire-and-forget, separate failure domain)
+        try {
+          if (buyerEmail) {
+            await addSubscriber(buyerEmail);
             const purchaseTagId = process.env.KIT_TAG_PURCHASED;
             if (purchaseTagId) {
-              await tagSubscriber(profile.email, purchaseTagId);
+              await tagSubscriber(buyerEmail, purchaseTagId);
             }
           }
         } catch (emailErr) {
@@ -1242,18 +1289,60 @@ payments.post("/webhook", async (c) => {
                 asyncUserId,
               );
 
+              // Same split as the sync path: one lookup, receipt first, Kit
+              // in its own failure domain. A delayed-method buyer (SEPA,
+              // bank debit) settles ONLY here, so skipping the receipt in
+              // this branch would mean those buyers never get one.
+              let asyncBuyerEmail: string | null = null;
               try {
                 const { data: asyncProfile } = await supabase
                   .from("profiles")
                   .select("email")
                   .eq("id", asyncUserId)
                   .single();
+                asyncBuyerEmail = asyncProfile?.email ?? null;
+              } catch (profileErr) {
+                logger.warn(
+                  {
+                    err: profileErr,
+                    route: "payments.webhook",
+                    userId: asyncUserId,
+                    stripeSessionId: asyncSession.id,
+                  },
+                  "Buyer profile lookup failed; no receipt or Kit tag will be sent",
+                );
+              }
 
-                if (asyncProfile?.email) {
-                  await addSubscriber(asyncProfile.email);
+              if (asyncBuyerEmail) {
+                try {
+                  await sendPurchaseReceipt({
+                    email: asyncBuyerEmail,
+                    worldIds: asyncWorldIds,
+                    amount: asyncSession.amount_total
+                      ? asyncSession.amount_total / 100
+                      : asyncPlan.price,
+                    sessionId: asyncSession.id,
+                    purchasedAt: new Date(),
+                  });
+                } catch (receiptErr) {
+                  logger.warn(
+                    {
+                      err: receiptErr,
+                      route: "payments.webhook",
+                      userId: asyncUserId,
+                      stripeSessionId: asyncSession.id,
+                    },
+                    "Purchase receipt failed (non-blocking); payment is recorded",
+                  );
+                }
+              }
+
+              try {
+                if (asyncBuyerEmail) {
+                  await addSubscriber(asyncBuyerEmail);
                   const purchaseTagId = process.env.KIT_TAG_PURCHASED;
                   if (purchaseTagId) {
-                    await tagSubscriber(asyncProfile.email, purchaseTagId);
+                    await tagSubscriber(asyncBuyerEmail, purchaseTagId);
                   }
                 }
               } catch (emailErr) {
