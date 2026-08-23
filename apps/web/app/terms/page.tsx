@@ -92,7 +92,7 @@ export default function TermsPage() {
               A world is one complete course track, such as Deep Orbit. World
               purchases are one-time payments that grant lifetime access to the
               purchased world content. All prices are in USD. Refunds are
-              available within 14 days of purchase, no questions asked: email
+              available within 5 days of purchase, no questions asked: email
               support@tensorcraft.app.
             </p>
             <p className="mt-3">

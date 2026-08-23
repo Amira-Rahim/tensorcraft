@@ -70,7 +70,7 @@ export function PaywallNotice() {
       <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
         Modules 2-11 of <strong>{displayName}</strong> are where the model
         actually learns: {getPaidLessonCount()} lessons, the capstone you ship,
-        and your certificate. One payment, lifetime access, and a 14-day
+        and your certificate. One payment, lifetime access, and a 5-day
         money-back guarantee.
       </p>
     </div>

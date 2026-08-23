@@ -18,6 +18,7 @@ import {
 } from "../lib/guest-account";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 import { sendPurchaseReceipt } from "../lib/email";
+import { sendOperatorAlert } from "../lib/operator-alert";
 import { logger } from "../lib/logger";
 import { captureException } from "../lib/error-tracking";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
@@ -920,6 +921,24 @@ payments.post("/webhook", async (c) => {
           userId,
         );
 
+        // Tell the operator a sale happened. At beta volume one mail per
+        // purchase is the right resolution; it is also the only signal that
+        // the whole money path worked end to end, since PostHog has no
+        // project yet.
+        void sendOperatorAlert({
+          event: "purchase",
+          severity: "info",
+          summary: `${worldIds.join(", ")} sold for $${(amount ? amount / 100 : expectedAmount).toFixed(2)}`,
+          detail: {
+            worldIds: worldIds.join(", "),
+            amount: amount ? amount / 100 : expectedAmount,
+            planId: metadata.planId,
+            sessionId,
+            userId,
+            isUpgrade: creditApplied > 0,
+          },
+        });
+
         // Geo-gate backstop. The gate refuses checkout on Cloudflare's edge
         // geolocation, which a VPN defeats. Stripe collects the BILLING
         // country regardless, so this is the one place that sees ground
@@ -1099,6 +1118,19 @@ payments.post("/webhook", async (c) => {
             refundedRow.user_id,
           );
         }
+
+        void sendOperatorAlert({
+          event: "refund",
+          severity: "info",
+          summary: isFullRefund
+            ? "Full refund processed, access revoked"
+            : "Partial refund processed, access retained",
+          detail: {
+            paymentIntent: refundPaymentIntent,
+            isFullRefund,
+            userId: refundedRow?.user_id ?? null,
+          },
+        });
       }
 
       break;
@@ -1148,6 +1180,19 @@ payments.post("/webhook", async (c) => {
           return c.json({ error: "No purchase row for dispute yet" }, 500);
         }
       }
+
+      // Critical: a dispute has a fixed evidence window, and access has
+      // already been revoked automatically. Missing this one for a week is
+      // how you lose by default. See docs/support-runbook.md.
+      void sendOperatorAlert({
+        event: "dispute",
+        severity: "critical",
+        summary: "Chargeback opened: access revoked, evidence window running",
+        detail: {
+          paymentIntent: disputePaymentIntent,
+          action: "See docs/support-runbook.md, section 2",
+        },
+      });
 
       break;
     }

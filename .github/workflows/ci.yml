@@ -321,13 +321,22 @@ jobs:
     name: Migration ledger drift check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # ALWAYS runs, and HARD-FAILS until SUPABASE_URL +
-    # SUPABASE_SERVICE_ROLE_KEY exist as repo secrets (the script exits 2
-    # under CI when they are missing - fail-closed by design, never a
-    # silent green; R3-9). Fork PRs have no secrets and will always fail
-    # this job. Pending migrations exit 1 and fail the job, surfacing
-    # "code assumes a schema production doesn't have yet" before deploy -
-    # exactly the 047 class of failure (R3-2).
+    # ALWAYS runs (except for Dependabot, below), and HARD-FAILS until
+    # SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY exist as repo secrets (the
+    # script exits 2 under CI when they are missing - fail-closed by
+    # design, never a silent green; R3-9). Fork PRs have no secrets and
+    # will always fail this job. Pending migrations exit 1 and fail the
+    # job, surfacing "code assumes a schema production doesn't have yet"
+    # before deploy - exactly the 047 class of failure (R3-2).
+    #
+    # Dependabot PRs are skipped (2026-08-23): their runs read the
+    # Dependabot secrets store, not the Actions store, so this job could
+    # only ever fail offline there, and a dependency bump cannot add a
+    # migration. Do NOT "fix" that by mirroring the service-role key into
+    # Dependabot secrets: `pnpm install` in this job executes install
+    # scripts from the freshly bumped packages, which is exactly the code
+    # a secret must never be exposed to.
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

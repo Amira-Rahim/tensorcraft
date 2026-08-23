@@ -47,7 +47,14 @@ intelligible.
 including the check for onboarding answers dropped between 2026-08-18 and
 08-20. Settle whether the 046 Custom Access Token hook is enabled.
 
-**B1, first paying customer.** Verify backups and run one restore drill, now
+**B1, first paying customer.** **Set up the external uptime monitor and the
+Sentry alert rules first, both are free and take 15 minutes together**, exact
+steps in `docs/observability.md`. Operator alerts on purchases, refunds and
+chargebacks now send themselves over Resend, and synthetic checks run every 6
+hours, but neither replaces a monitor polling from outside our own
+infrastructure. Set `OPERATOR_ALERT_EMAIL` so those alerts do not land in the
+support inbox alongside user mail.
+Then: Verify backups and run one restore drill, now
 that losing data means losing someone's purchase. Set `GITHUB_TOKEN_ENC_KEY`
 so token encryption stops being inert. Stand up external uptime monitoring:
 this is the failure mode that let the API certificate expire unnoticed for

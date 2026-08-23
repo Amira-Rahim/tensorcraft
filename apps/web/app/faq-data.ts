@@ -28,14 +28,14 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "How long does Deep Orbit take?",
-    a: "Deep Orbit is 56 lessons across 11 modules, meant to be worked in order; the later modules assume the earlier ones. It is not a weekend skim. Per-module time estimates are listed with the curriculum on the pricing page.",
+    a: "Deep Orbit consists of 56 lessons across 11 modules. Since it's story-based, it's meant to be tackled in order. Each module's time estimates are listed with the curriculum on the pricing page and on the Deep Orbit course page.",
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit, the live course, is free, no account or credit card required. The full course costs $${PRICING.single.price}: one payment, lifetime access.`,
+    a: `Module 1 of Deep Orbit is free, no account or credit card required. The full course costs $${PRICING.single.price}. Make a one-time payment, get lifetime access.`,
   },
   {
     q: "What if it turns out not to be for me?",
-    a: "Module 1 is free before any money moves. After purchase there's a 14-day money-back guarantee: full refund, no questions asked. Email support@tensorcraft.app.",
+    a: "Module 1 is free. The full course is paid: after purchase there's a 5-day refund guarantee, no questions asked.",
   },
 ];

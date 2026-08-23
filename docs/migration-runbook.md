@@ -88,7 +88,12 @@ Two gates now stand between a pending migration and production. Both call
 
 **GitHub Actions** (`.github/workflows/ci.yml`, job "Migration ledger drift
 check") fails the build on drift and fails CLOSED when the secrets are
-missing (exit 2), so a blind gate can never read as green.
+missing (exit 2), so a blind gate can never read as green. The one
+exception is Dependabot-triggered runs, where the job is skipped: those
+runs read the Dependabot secrets store (never the Actions secrets), a
+dependency bump cannot add a migration, and mirroring the service-role
+key into Dependabot secrets would expose it to install scripts of the
+very packages being bumped.
 
 **Vercel** (`vercel.json`, `ignoreCommand`) skips the deploy on drift. Its
 exit codes are INVERTED relative to normal tools, which is the trap: for an

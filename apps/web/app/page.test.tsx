@@ -275,7 +275,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(FAQ_ITEMS.length).toBeGreaterThanOrEqual(4);
       const all = FAQ_ITEMS.map((i) => `${i.q} ${i.a}`).join(" ");
       expect(all).toMatch(/math/i);
-      expect(all).toMatch(/14-day money-back/i);
+      expect(all).toMatch(/5-day refund guarantee/i);
       expect(all).toMatch(/no python required/i);
     });
 
@@ -286,7 +286,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       // (landing section cut 2026-08-16; /paywall keeps the component).
       expect(all).toMatch(/pytorch/i);
       expect(all).toMatch(/video/i);
-      expect(all).toMatch(/weekend/i);
+      expect(all).toMatch(/time estimates/i);
     });
   });
 });

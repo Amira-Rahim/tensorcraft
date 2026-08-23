@@ -45,7 +45,7 @@ burn the 6-hour default.
 | `unit-tests` | `pnpm turbo build:content`, `pnpm test` (vitest), exercise validator. | Advisory |
 | `e2e` | Builds the web app WITH placeholder Supabase env (`NEXT_PUBLIC_*` inline at build time), serves it via `next start`, runs `pnpm test:e2e` (Playwright, 2 workers, 1 retry). See the webServer comment in [`playwright.config.ts`](../playwright.config.ts). | Advisory |
 | `exercise-runtime` | Runs the exercise corpus through the shipped runtime (`EXERCISE_CORPUS=1`). | Advisory |
-| `migrations` | Migration ledger drift check against production Supabase (fail-closed without secrets). | Advisory |
+| `migrations` | Migration ledger drift check against production Supabase (fail-closed without secrets). Skipped for Dependabot-triggered runs, which read the Dependabot secrets store and so can never see the Actions secrets. | Advisory |
 | `links` | Runs `lychee` over every markdown file in the repo using [`.lychee.toml`](../.lychee.toml). Internal dead links fail; external 4xx/5xx are tolerated per the `accept` list. | Advisory |
 
 Concurrency: superseded runs are cancelled on PRs only. On `main` every

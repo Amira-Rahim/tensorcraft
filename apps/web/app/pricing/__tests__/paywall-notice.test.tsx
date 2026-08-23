@@ -90,9 +90,7 @@ describe("PaywallNotice", () => {
   it("restates the money-back guarantee at the objection moment", () => {
     mockLocked = "deep-orbit";
     render(<PaywallNotice />);
-    expect(
-      screen.getByText(/14-day money-back guarantee/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/5-day money-back guarantee/i)).toBeInTheDocument();
   });
 
   it("fires upgrade_cta_shown on mount when the banner renders for a launched slug", () => {

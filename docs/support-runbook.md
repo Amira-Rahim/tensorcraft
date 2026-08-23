@@ -20,10 +20,12 @@ than a chargeback in every dimension.
 
 ## 1. Refunds
 
-**The terms are unconditional 14 days.** There is no "less than 20% accessed"
-condition any more; that clause was removed in 2026-07 because it was
-unenforceable against EU and UK consumers without a waiver nobody collected.
-Do not reintroduce it in an email. If someone asks inside 14 days, refund.
+**The terms are unconditional 5 days** (changed from 14 on 2026-08-23; a
+purchase made under the older terms keeps its 14-day window, per "terms in
+force at purchase"). There is no "less than 20% accessed" condition any
+more; that clause was removed in 2026-07 because it was unenforceable
+against EU and UK consumers without a waiver nobody collected. Do not
+reintroduce it in an email. If someone asks inside their window, refund.
 
 ### Steps
 
@@ -75,8 +77,9 @@ Assemble from what the product already records:
 - The Checkout Session id and Stripe's own customer and billing details.
 - Access and usage: lessons completed and exercise attempts for that account,
   which show the product was delivered and used.
-- The terms in force at purchase, specifically the unconditional 14-day
-  refund policy, which demonstrates a refund was available and unused.
+- The terms in force at purchase, specifically the unconditional refund
+  window (5 days from 2026-08-23, 14 days before that), which demonstrates
+  a refund was available and unused.
 
 ### If you win
 

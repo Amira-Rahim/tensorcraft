@@ -190,7 +190,7 @@ export async function sendPurchaseReceipt(
     `Start here: ${appUrl}/dashboard`,
     "",
     `Need a refund or have a question? Write to ${support}.`,
-    "Refunds are available for 14 days.",
+    "Refunds are available for 5 days.",
   ].join("\n");
 
   // Server-derived values, but they still land in HTML, so escape them.
@@ -213,7 +213,7 @@ export async function sendPurchaseReceipt(
       <p style="font-size: 13px; color: #555; margin: 0;">
         Need a refund or have a question? Write to
         <a href="mailto:${eSupport}" style="color: #1a1a1a;">${eSupport}</a>.
-        Refunds are available for 14 days.
+        Refunds are available for 5 days.
       </p>
     </div>
   `;

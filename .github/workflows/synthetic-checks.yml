@@ -1,0 +1,63 @@
+# Synthetic checks against PRODUCTION.
+#
+# Deliberately NOT an uptime monitor. This repo is private, so Actions minutes
+# are capped at 2000/month and CI already spends ~20 per push; a 15-minute
+# uptime cron would cost 2880/month by itself, because every run bills at a
+# one-minute minimum. Uptime belongs on a free external monitor that polls from
+# outside our infrastructure anyway (see docs/observability.md).
+#
+# What this covers instead: BEHAVIOURAL invariants that only change when we
+# deploy, checked a few times a day. These are the things a pure ping cannot
+# see, such as the EU/UK geo-gate quietly ceasing to gate.
+#
+# A failure fails the job, and GitHub emails the person who last touched this
+# file. That is the notification channel.
+name: Synthetic checks
+
+on:
+  schedule:
+    # Every 6 hours: ~120 runs/month, a rounding error against the quota.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    name: Production invariants
+    runs-on: ubuntu-latest
+    steps:
+      - name: API readiness (includes a real database check)
+        run: |
+          body=$(curl -sS --max-time 20 -w "\n%{http_code}" https://api.tensorcraft.app/api/health/ready)
+          code=$(echo "$body" | tail -n1)
+          json=$(echo "$body" | sed '$d')
+          echo "$json"
+          test "$code" = "200" || { echo "::error::readiness returned $code"; exit 1; }
+          echo "$json" | grep -q '"db":"ok"' || { echo "::error::readiness reachable but the database check is not ok"; exit 1; }
+
+      - name: Web is serving
+        run: |
+          for path in "/" "/pricing" "/terms"; do
+            code=$(curl -sS -o /dev/null --max-time 25 -w "%{http_code}" "https://tensorcraft.app$path")
+            echo "$path -> $code"
+            test "$code" = "200" || { echo "::error::$path returned $code"; exit 1; }
+          done
+
+      # The check a ping cannot make. Selling into the EU or UK before the
+      # entity exists creates VAT liability from the first sale that cannot be
+      # unwound, so a silently-broken gate is expensive and invisible.
+      #
+      # Probed at the Fly ORIGIN, not through the edge: Cloudflare overwrites
+      # CF-IPCountry, so a spoofed header never reaches the app through
+      # api.tensorcraft.app. A 403 here means the gate logic is live.
+      # No Stripe session is created when it blocks.
+      - name: EU/UK checkout gate still refuses
+        run: |
+          for country in DE GB FR; do
+            code=$(curl -sS -o /dev/null --max-time 25 -w "%{http_code}" \
+              -X POST https://tensorcraft-api.fly.dev/api/payments/guest-checkout \
+              -H 'Content-Type: application/json' \
+              -H "CF-IPCountry: $country" \
+              -d '{"planId":"single","worldIds":["deep-orbit"]}')
+            echo "$country -> $code"
+            test "$code" = "403" || { echo "::error::geo-gate did not block $country (got $code). EU/UK buyers may be able to purchase."; exit 1; }
+          done
