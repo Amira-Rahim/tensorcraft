@@ -1,4 +1,6 @@
 import { updateSession } from "@/lib/supabase/middleware";
+import { isVatGatedCountry } from "@tensorcraft/shared";
+import { REGION_GATED_COOKIE } from "@/lib/region";
 import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
@@ -13,6 +15,17 @@ export async function middleware(request: NextRequest) {
       sameSite: "lax",
     });
   }
+
+  // EU/UK checkout gate, presentation half. Resolved here because /pricing is
+  // statically rendered and reading headers in the page would make every hit
+  // dynamic. Written on every response (including "0") so a visitor who
+  // changes country is not stuck with a stale flag. The API gate is the real
+  // enforcement; this only decides which UI to show.
+  response.cookies.set(
+    REGION_GATED_COOKIE,
+    isVatGatedCountry(request.headers.get("x-vercel-ip-country")) ? "1" : "0",
+    { path: "/", maxAge: 60 * 60 * 24, sameSite: "lax" },
+  );
 
   return response;
 }

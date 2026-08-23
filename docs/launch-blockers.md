@@ -941,8 +941,36 @@ measurement, email, and reach infrastructure whose value is multiplied by
 launch traffic. Launch-day data is unrepeatable, and historical funnel data
 has already been written off once (see above) - do not launch dark again.
 
-- [x] **Migration ledger VERIFIED IN SYNC at 59/59.** Closed 2026-08-20 by
-  running the check instead of reasoning about it. `node
+- [ ] (OPERATOR) **Apply migration 060 (waitlist constraint fix). This
+  BLOCKS the next API deploy and it is not optional.** Added 2026-08-23.
+  `pnpm migrate:status` now reports 60 files on disk against 59 applied and
+  exits 1, so `deploy-api.yml`'s zero-pending gate will refuse to ship until
+  this is applied. That ordering is correct: the geo-gate's demand capture
+  writes a source value the current constraint rejects.
+  **What it fixes is a live bug, not new-feature scaffolding.** 009 declared
+  `chk_waitlist_source` as an enum allowing only
+  ('landing','pricing','blog','referral','social'). Every capture surface
+  built since passes something else: `world-selection` (newsletter modal),
+  `free-module-end` (guest email capture), `coming-soon-hero` and
+  `coming-soon-footer` (the coming-soon pages). The newsletter modal also
+  passes `world_id` "all", which 041's CHECK rejects too. `submitWaitlist`
+  returns "error" instead of throwing, by design, so every one of those
+  submissions has been failing silently behind a generic error message, with
+  nothing logged and nothing alerting.
+  **Why this is launch-gating:** the coming-soon pages are the ONLY waitlist
+  entry point for four of the five worlds, and the launch plan depends on
+  mailing that list. Production currently holds ONE waitlist row, from
+  2026-03-27, source `landing`, which is the only source the constraint ever
+  allowed. Traffic has been near zero so the absence of rows is not proof on
+  its own, but the constraint analysis is deterministic and 009/041 are both
+  in the applied ledger with no later migration dropping either.
+  060 replaces the enum with a shape check (lowercase kebab-case, 64 chars),
+  the same call 041 deliberately made for email, so a new capture surface
+  never again needs a migration to work.
+- [x] **Migration ledger verified IN SYNC at 59/59 for 001-059.** Closed
+  2026-08-20 by running the check instead of reasoning about it.
+  Superseded in part 2026-08-23 by the 060 entry above: the ledger was
+  genuinely in sync when checked, and a new migration has been added since. `node
   scripts/migration-status.mjs` reported `files on disk : 59`,
   `applied (ledger): 59`, "IN SYNC, every file is applied, no orphan ledger
   rows", exit 0. **Nothing is pending**, so 058 and 059 are both live in
@@ -1346,17 +1374,136 @@ has already been written off once (see above) - do not launch dark again.
 Action list for the R2-4 findings (R2-4 stays as the findings record;
 flagging exposure, not legal advice).
 
-> **Reconcile note (2026-08-20): every open item in this tier funnels
+> **DECISION (owner, 2026-08-23): the entity will be a US LLC. Formation
+> is deferred, so the decision is made but the entity does not exist yet.**
+> That answers the question this tier funnelled through, and it changes the
+> tax math rather than merely filling in a blank. Still flagging exposure,
+> not giving legal advice: an advisor should confirm all of the below.
+>
+> **What US establishment settles.** The seller is established OUTSIDE the
+> EU and outside the UK, which removes the threshold cushion the entries
+> below were written assuming might exist:
+>
+> - The **EUR 10,000 threshold does not apply**. It is available only to
+>   EU-established sellers. For a US seller, EU VAT on digital services is
+>   due at the buyer's rate from the **first** B2C sale.
+> - The registration route is the **non-Union OSS scheme**, not Union OSS.
+> - **The UK is separate and also has no threshold** for non-UK-established
+>   sellers. UK VAT is due from the first consumer sale. Two registrations,
+>   not one.
+> - **GDPR Art. 27 (EU representative) and UK GDPR Art. 27 (UK
+>   representative) become live requirements**, not open questions, unless
+>   the narrow Art. 27(2) exemption applies. Selling accounts that store
+>   progress over time reads as regular rather than occasional processing,
+>   so do not assume the exemption. Both are paid appointments.
+> - US side: state economic nexus, home state first, the rest on crossing
+>   thresholds. This is what Stripe Tax is good at.
+>
+> **What formation still gates, and the cost of deferring it.** The
+> published entity name, the postal address, the controller identity, which
+> entity signs the DPAs, and the EAA microenterprise thresholds (headcount
+> and turnover of an entity that does not exist yet).
+>
+> **The deferral collides with a standing owner directive, and this is the
+> part worth deciding deliberately.** Identity stays private is an explicit
+> rule for this project. A US LLC is precisely the mechanism that satisfies
+> it: the LLC name and a registered agent or virtual business address are
+> what get published, so the consumer-disclosure requirements are met
+> without exposing a personal name or home address. Selling BEFORE
+> formation inverts that. A sole proprietor's required disclosures point at
+> the individual, so the choice becomes publishing personal details or
+> shipping legal pages that stay non-compliant. Forming the LLC is not
+> merely paperwork ahead of launch, it is the thing that keeps the identity
+> private once money changes hands.
+>
+> **Sequencing consequence.** Because a US seller gets no threshold cushion
+> in either the EU or the UK, **geo-gating EU and UK checkout at launch is
+> now the cheaper opening move**, not the fallback. It defers two VAT
+> registrations and two Art. 27 appointments until volume justifies them.
+> It does not exist in code today (see the entry below), so choosing it is
+> a small build, not a config flip. Stripe account ownership is the other
+> sequencing item: revenue taken before formation lands on an individual
+> and has to be migrated to the LLC afterwards.
+>
+> Original note, now answered: every open item in this tier funnelled
 > through ONE unmade decision, the establishment country and legal entity.
-> It blocks the postal address, the controller identity, the Art. 27
+> It blocked the postal address, the controller identity, the Art. 27
 > question, the choice of advisor and OSS registration, and the EAA
-> microenterprise thresholds. Deciding it unblocks six entries at once; it
-> is the highest-leverage item in this file.**
+> microenterprise thresholds.
+>
+> ---
+>
+> **LAUNCH SEQUENCING (owner, 2026-08-23): ship and sell BEFORE the LLC
+> exists. The LLC gets formed only once 500 users prove real market need.**
+> Same shape as the world-2 gate: validate first, spend second. The concern
+> below was raised and the owner reaffirmed the plan, so this is the
+> recorded decision, not an open question. What follows is how to keep its
+> cost bounded.
+>
+> **Geo-gating fixes exactly one of the two problems.** The distinction
+> decides most of this tier, so it is worth stating precisely:
+>
+> - **VAT is triggered by a supply for consideration.** Blocking EU and UK
+>   **checkout** therefore removes the EU/UK VAT exposure completely, and
+>   with it non-Union OSS, the separate UK registration, and the tax half of
+>   the advisor engagement. Those all move behind the 500-user gate.
+> - **GDPR is triggered by OFFERING services to EU data subjects, free
+>   included.** It applies the moment an EU visitor signs up for the free
+>   module. Geo-gating checkout does NOT remove it. Art. 13 controller
+>   identity, the Art. 27 representatives, and the privacy-page gaps all
+>   stay live during validation.
+>
+> The only way to escape GDPR would be blocking EU/UK from the whole site,
+> which would defeat the validation goal outright, since the free module is
+> the top of exactly the funnel the 500-user gate measures. So it is not on
+> the table.
+>
+> **ACCEPTED RISK, recorded rather than hidden.** Selling before formation
+> means the controller is a natural person. This project will publish a
+> trading name plus a mailbox address and will not name that person, which
+> is what most indie operators do and which is NOT strictly complete under
+> Art. 13(1)(a). The owner has weighed that against the identity-private
+> directive and chosen it deliberately. Trigger to close: LLC formation at
+> the 500-user gate. Do not silently re-open this as a finding; it is a
+> decision with a known cost and a named exit.
+>
+> **How to bound the exposure while validating:**
+>
+> 1. **Geo-gate checkout for EU/UK, and CAPTURE the blocked demand instead
+>    of just refusing it.** That converts lost revenue into a measurable
+>    EU/UK paid-demand list, which is precisely the evidence the 500-user
+>    gate is supposed to weigh. Refusing silently throws that away.
+> 2. **Get a virtual business address now.** It satisfies CAN-SPAM for the
+>    already-live digest and gives a publishable address that is not a home
+>    address. It does not depend on formation and becomes the LLC's address
+>    later.
+> 3. **Keep free signups global.** No VAT is triggered, and signups are the
+>    validation metric.
+> 4. **Merchant of record is the unlock AT the gate, not now.** `roadmap.md`
+>    §4's re-evaluate trigger is arguably met already, since OSS filing is
+>    not merely costly without an entity, it is impractical. But the same
+>    section's warning stands: the money path is deep and freshly hardened,
+>    and switching rails pre-launch is risk with no launch upside. An MoR
+>    would also put the MoR's identity on the invoice rather than a natural
+>    person, which is why it is the right conversation to have once the
+>    entity question is live again.
 
-- [ ] (OPERATOR) Engage an advisor in the establishment country; decide
-  Stripe Tax + OSS registration vs geo-gating EU checkout at launch (fee
-  analysis: `roadmap.md` §4). Note geo-gating does not exist in code: the
-  checkout path has no country restriction, so choosing it means writing it.
+- [ ] (OPERATOR) **Engage a US advisor, and pick the launch market scope.**
+  Rewritten 2026-08-23 now that the entity is decided (US LLC). Two things
+  to settle, and they are separable:
+  (a) **Market scope at launch.** Sell to EU/UK from day one, which means
+  non-Union OSS plus a UK VAT registration plus two Art. 27
+  representatives before the first sale, or geo-gate EU/UK checkout and
+  defer all four until volume justifies them. For a US seller with no
+  threshold cushion in either market, the geo-gate is the cheaper opening
+  move.
+  (b) **The advisor.** A US CPA or tax counsel who has actually handled
+  non-Union OSS and UK VAT for a US seller of digital services, not a
+  generalist. Fee analysis: `roadmap.md` §4.
+  Note geo-gating does not exist in code: the checkout path has no country
+  restriction, so choosing it means writing it. Scope it as billing-country
+  detection at checkout plus an explanatory state on `/pricing`, and expect
+  it to need its own test coverage on the money path.
 - [ ] (OPERATOR) **Tax handling: code is written but switched OFF.**
   Verified 2026-08-20. `taxSessionParams()`
   (`apps/api/src/routes/payments.ts:47-53`) wires `automatic_tax`,
@@ -1365,7 +1512,20 @@ flagging exposure, not legal advice).
   `{}` unless `STRIPE_TAX_ENABLED === "true"` (`:48`), and that var ships
   empty (`apps/api/.env.example:17`). **At repo defaults, zero tax is
   collected**, so the R2-4 exposure is live even though the code exists.
-  Remaining: Stripe-dashboard Tax setup, OSS registration, then set
+  **Rescoped 2026-08-23 by the launch-before-LLC decision.** With EU/UK
+  checkout geo-gated, EU VAT and OSS drop out of the launch path entirely,
+  so this entry is no longer blocked on OSS registration.
+  **But US-only is not tax-free, and that is the trap in this rescope.**
+  Digital-goods taxability varies by state, and home-state nexus applies
+  from the first sale with no threshold to hide behind, so whether tax is
+  owed depends on which state the owner sells from. Confirm that with the
+  US advisor before assuming the flag can stay off. If the home state taxes
+  digital products, the sequence is unchanged in shape: Stripe dashboard Tax
+  setup, then register in that one state, then set `STRIPE_TAX_ENABLED=true`
+  and redeploy. The 0.5% Stripe Tax fee on a single-state registration is
+  the cheap version of this problem.
+  Original remaining work, for when EU/UK opens at the gate:
+  Stripe-dashboard Tax setup, OSS registration, then set
   `STRIPE_TAX_ENABLED=true` and redeploy.
   **Migration 047 is confirmed applied** (2026-08-20, ledger IN SYNC 59/59),
   so one hazard is formally retired: R3-2 warned that deploying the current
@@ -1377,6 +1537,74 @@ flagging exposure, not legal advice).
   20%-accessed condition is dropped from terms/pricing/FAQ; refunds are an
   unconditional 14 days via support@. Advisor sanity-check remains part of
   the general terms review, but no waiver mechanism is needed anymore.
+- [ ] (OPERATOR) **Form the US LLC. GATED: at 500 users with proven market
+  need, per the owner decision of 2026-08-23, NOT before launch.** Added as
+  its own entry because the decision and the formation are different things
+  and only the first is done. What downstream work needs from it: the registered
+  legal name, a registered agent or virtual business address that is safe
+  to publish, an EIN, a business bank account, and the Stripe account moved
+  to or opened under the entity. Until it exists, five entries below cannot
+  close, and any sale made in the meantime is made by an individual, with
+  the disclosure consequences described in the decision note above.
+  When the gate opens, revisit merchant-of-record at the same time: the two
+  decisions interact (see item 4 of the decision note).
+- [ ] **EU/UK checkout geo-gate: CODE DONE 2026-08-23, three steps left.**
+  Built after the owner chose to gate rather than sell into the EU/UK or
+  switch to a merchant of record.
+  **Shipped in this working tree (all tested, all suites green: api 268,
+  web 620, shared 45, content 413, typecheck 10/10):**
+  (a) `billing_address_collection: "required"` hoisted OUT of
+  `taxSessionParams()` so the buyer's country is captured whether or not the
+  tax flag is on (2 tests).
+  (b) `VAT_GATED_COUNTRIES` + `isVatGatedCountry()` in `@tensorcraft/shared`,
+  the 27 EU states plus GB, failing OPEN on an absent or `XX` country
+  (6 tests).
+  (c) API refuses `/checkout` and `/guest-checkout` with 403
+  `region_unavailable` when Cloudflare's `CF-IPCountry` is gated, asserting
+  no Stripe session is created, since a created session is a payable link
+  (4 tests).
+  (d) `RegionNotice` on `/pricing` replacing the buy button with an
+  explanation plus email capture against source `region-blocked` (4 tests),
+  fed by a middleware cookie so the statically rendered page stays static
+  (5 tests).
+  **What is left:**
+  1. **Apply migration 060** (see Tier 1-OPS). The capture writes
+     `region-blocked`, which today's constraint rejects, so the notice would
+     collect nothing until 060 lands.
+  2. **Deploy both halves.** The API gate is the enforcement and the web
+     cookie is only presentation, so shipping the web half alone leaves
+     purchases open.
+  3. **Add the webhook backstop** when real money is flowing: check
+     `customer_details.address.country` on `checkout.session.completed` and
+     flag or refund what slipped through a VPN. Deliberately deferred as the
+     hardened layer; the country is now always collected, so no further
+     change is needed to enable it.
+  Also add the country restriction to `/terms`, which is still open.
+  **Original scoping note, and the blocker it named, now fixed:**
+  `billing_address_collection: "required"` currently sits INSIDE
+  `taxSessionParams()` (`apps/api/src/routes/payments.ts:47-55`), which
+  returns `{}` while `STRIPE_TAX_ENABLED` is unset. So today Stripe collects
+  no billing country at all, and a geo-gate has nothing to verify against
+  after the fact. Hoist `billing_address_collection` out of the tax-gated
+  block so it applies unconditionally. That is a one-line change on the
+  money path and needs its own test.
+  **Then three layers, because an IP check alone is not enough:**
+  (1) UI: the web layer knows the country from Vercel's
+  `x-vercel-ip-country` (middleware already runs), so render an
+  explanatory state instead of the buy button, and capture an email against
+  a `region_blocked` source so the demand is measured.
+  (2) API: refuse session creation for EU/UK, since the Fly host has no geo
+  header of its own and must not trust a client-supplied country.
+  (3) Webhook: check `customer_details.address.country` on
+  `checkout.session.completed` and flag or refund anything that slipped
+  through. VPN traffic makes this a real path, not a theoretical one.
+  Add the country restriction to `/terms` in the same change.
+- [ ] (OPERATOR) **Get a virtual business address or PO box.** New
+  2026-08-23. Independent of LLC formation and unblocks the CAN-SPAM
+  postal-address entry below for the digest that is already sending. A USPS
+  PO box or a commercial mail-receiving agency address is acceptable for
+  CAN-SPAM. This is also the address that goes on `/terms` and `/privacy`
+  under the trading name, which is what keeps a home address off the site.
 - [ ] **Add legal entity, postal address, and jurisdiction clause to terms +
   privacy pages.** Re-verified 2026-08-20 and still fully open.
   `apps/web/app/terms/page.tsx` has no entity, no address and no
@@ -1397,8 +1625,14 @@ flagging exposure, not legal advice).
   2026-08-20: the plaintext footer is one unsubscribe line
   (`apps/api/src/lib/newsletter.ts:119`) and the HTML footer is
   read-on-web plus unsubscribe (`:167-171`). No postal-address constant or
-  env var exists anywhere in the repo to inject, so this is blocked on the
-  entity/address decision above.
+  env var exists anywhere in the repo to inject.
+  **Unblocked 2026-08-23:** this no longer waits on the entity. It waits
+  only on the virtual mailbox entry above, since CAN-SPAM accepts a PO box
+  or a commercial mail-receiving agency address and does not require a
+  registered company. Once the address exists this is a small repo change:
+  add the constant plus an env var, inject into both the plaintext and HTML
+  footers, and cover it with a test. The digest is already sending, so this
+  is live non-compliance today rather than a pre-launch task.
 - [x] Waitlist consent fix (code) - **DONE 2026-07-25.** Migration 050 flips
   the column default to false; `submitWaitlist` takes an explicit
   `subscribeToDigest` flag that only the newsletter modal passes, so the
@@ -1444,9 +1678,13 @@ flagging exposure, not legal advice).
   3 still open.** Re-verified line by line 2026-08-20.
   CLOSED: lawful basis per purpose (§3), international transfers with
   DPF/SCC safeguards (§7), complaint right (§10).
-  STILL OPEN: controller identity (blocked on the entity decision);
+  STILL OPEN: controller identity (no longer an open question as of
+  2026-08-23, just gated on LLC formation: the controller is the LLC);
   **Art. 27 EU/UK representative**, which the policy does not mention at
-  all; and **waitlist retention**, which §2 collects but §9 never gives a
+  all and which US establishment turns from a question into a requirement,
+  in both the EU and the UK, unless the narrow Art. 27(2) exemption is
+  confirmed to apply (do not assume it does, and note the geo-gate option
+  above avoids both appointments); and **waitlist retention**, which §2 collects but §9 never gives a
   period for.
   Also open and narrower than the original wording: §7 names US-processing
   providers generically but does not name Supabase, so "EU personal data on

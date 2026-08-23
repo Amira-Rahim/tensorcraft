@@ -117,7 +117,12 @@ export function FiveWorldsSection() {
           }`}
         />
         {HERO_PLATE_SRC && (
-          <div aria-hidden="true" className="tc-art-scrim z-2" />
+          // Reading-column scrim: banked behind the text on the left, open
+          // on the right where the art is the point. See .tc-art-scrim-read.
+          <div
+            aria-hidden="true"
+            className="tc-art-scrim tc-art-scrim-read z-2"
+          />
         )}
         {/* tc-on-art: the band is a lit viewport onto the ship, so its type
             stays on the dark palette even when the page around it is paper. */}

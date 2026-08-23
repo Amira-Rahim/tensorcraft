@@ -194,7 +194,11 @@ vi.mock("../lib/kit", () => ({
   tagSubscriber: (...args: unknown[]) => mockTagSubscriber(...args),
 }));
 
-vi.mock("@tensorcraft/shared", () => ({
+vi.mock("@tensorcraft/shared", async (importOriginal) => ({
+  // Spread the real module so genuinely shared logic (isVatGatedCountry and
+  // its country table) is exercised rather than re-implemented in a stub.
+  // Only the pricing/slug surfaces below are pinned for test determinism.
+  ...(await importOriginal<typeof import("@tensorcraft/shared")>()),
   PRICING: {
     free: { price: 0, worlds: 0, label: "Free Preview" },
     single: { price: 49, worlds: 1, label: "Single World" },
@@ -1355,5 +1359,134 @@ describe("webhook: guest session identity resolution", () => {
       expect.objectContaining({ user_id: "user_456" }),
       expect.anything(),
     );
+  });
+});
+
+/**
+ * Billing country capture.
+ *
+ * `billing_address_collection` used to live inside `taxSessionParams()`, which
+ * returns `{}` while `STRIPE_TAX_ENABLED` is unset. With tax off (the shipped
+ * default) Stripe therefore collected no billing country at all, so the EU/UK
+ * geo-gate had nothing to verify against after the fact and the VAT exposure
+ * could not even be measured. Collection is now unconditional.
+ */
+describe("checkout collects the billing country with Stripe Tax off", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    vi.stubEnv("APP_URL", "http://localhost:3000");
+    vi.stubEnv("STRIPE_TAX_ENABLED", "");
+    mockSessionCreate.mockReset();
+    mockSessionCreate.mockResolvedValue({ url: "https://stripe.test/billing" });
+    mockExistingPurchases = null;
+    mockProfileEmail = "buyer@example.com";
+    mockProfileCustomerId = null;
+  });
+
+  it("requires the billing address on authed checkout", async () => {
+    const res = await app.request("/api/payments/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer test-token",
+      },
+      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ billing_address_collection: "required" }),
+    );
+  });
+
+  it("requires the billing address on guest checkout", async () => {
+    const res = await app.request("/api/payments/guest-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ billing_address_collection: "required" }),
+    );
+  });
+});
+
+/**
+ * EU/UK checkout geo-gate (owner decision 2026-08-23).
+ *
+ * Selling to an EU or UK consumer as a seller established outside both
+ * creates a VAT obligation from the first sale, with no threshold. Until the
+ * US LLC exists, checkout is refused for those regions. Free signups are
+ * deliberately unaffected: VAT triggers on a supply for consideration, so
+ * reading the free module from Berlin costs nothing.
+ *
+ * The country comes from Cloudflare's `CF-IPCountry`, which sits in front of
+ * the API, and is therefore server-observed rather than client-supplied.
+ */
+describe("EU/UK checkout geo-gate", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    vi.stubEnv("APP_URL", "http://localhost:3000");
+    mockSessionCreate.mockReset();
+    mockSessionCreate.mockResolvedValue({ url: "https://stripe.test/geo" });
+    mockExistingPurchases = null;
+    mockProfileEmail = "buyer@example.com";
+    mockProfileCustomerId = null;
+  });
+
+  function checkout(country?: string) {
+    return app.request("/api/payments/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer test-token",
+        ...(country ? { "CF-IPCountry": country } : {}),
+      },
+      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
+    });
+  }
+
+  function guestCheckout(country?: string) {
+    return app.request("/api/payments/guest-checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(country ? { "CF-IPCountry": country } : {}),
+      },
+      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
+    });
+  }
+
+  it("refuses authed checkout from an EU country", async () => {
+    const res = await checkout("DE");
+
+    expect(res.status).toBe(403);
+    expect((await res.json()).code).toBe("region_unavailable");
+    // No Stripe session may exist for a blocked region: a created session is
+    // a payable link, so creating one and then refusing is not a gate.
+    expect(mockSessionCreate).not.toHaveBeenCalled();
+  });
+
+  it("refuses guest checkout from the United Kingdom", async () => {
+    const res = await guestCheckout("GB");
+
+    expect(res.status).toBe(403);
+    expect(mockSessionCreate).not.toHaveBeenCalled();
+  });
+
+  it("allows checkout from the United States", async () => {
+    const res = await checkout("US");
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalled();
+  });
+
+  it("allows checkout when the country header is absent, failing open", async () => {
+    const res = await checkout();
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalled();
   });
 });

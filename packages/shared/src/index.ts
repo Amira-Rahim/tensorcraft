@@ -23,6 +23,8 @@ export {
   isComingSoon,
   SCHEME_STORAGE_KEY,
   isColorScheme,
+  VAT_GATED_COUNTRIES,
+  isVatGatedCountry,
 } from "./constants";
 export type {
   WorldSlug,

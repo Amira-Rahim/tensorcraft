@@ -451,6 +451,31 @@ body {
   background: color-mix(in srgb, #181818 45%, transparent);
 }
 
+/* Reading-column variant for the tall flagship band, where a full section
+   header plus the world block sit over the plate. A flat veil dims the whole
+   painting yet still leaves that much type fighting the art; this one banks
+   the ink behind the text column and releases the right side, so the type
+   gets ground and the art gets shown. Constant, not token-derived, for the
+   same reason as the base scrim. Below md the text spans the full width, so
+   the veil stays uniform there (slightly deeper than the base 45%, tuned for
+   paragraph text rather than a single display line). */
+.tc-art-scrim-read {
+  background: color-mix(in srgb, #181818 74%, transparent);
+}
+
+@media (min-width: 768px) {
+  .tc-art-scrim-read {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, #181818 86%, transparent) 0%,
+      color-mix(in srgb, #181818 78%, transparent) 34%,
+      color-mix(in srgb, #181818 45%, transparent) 60%,
+      color-mix(in srgb, #181818 24%, transparent) 82%,
+      color-mix(in srgb, #181818 16%, transparent) 100%
+    );
+  }
+}
+
 /* A region laid over dark raster art is a lit viewport in a room, not part of
    the page surface. In light scheme it opts back out to the dark palette,
    because the art underneath cannot lighten with the page: without this,

@@ -11,7 +11,9 @@ import {
   isValidWorldSlug,
 } from "@tensorcraft/shared";
 import { CheckoutButton } from "./checkout-button";
+import { RegionNotice } from "./region-notice";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { isRegionGatedCookie } from "@/lib/region";
 
 // V1 scope-revert (2026-05-05): the picker shows only launched worlds, so the
 // cart can never produce a basket the API would reject (`validateWorldIds` →
@@ -125,6 +127,15 @@ export function PricingTiers() {
     { worldIds: string[]; amount: number }[]
   >([]);
 
+  // EU/UK checkout gate. Read from the cookie middleware sets rather than
+  // from headers, so this page stays statically rendered. Starts false so
+  // the buy path is never hidden by a cookie that failed to arrive; the API
+  // refuses the sale regardless.
+  const [regionGated, setRegionGated] = useState(false);
+  useEffect(() => {
+    setRegionGated(isRegionGatedCookie(document.cookie));
+  }, []);
+
   // Restore a selection carried through the auth roundtrip. CheckoutButton
   // sends signed-out buyers to /auth with redirectTo=/pricing?plan=...&worlds=...;
   // nothing ever read those params back, so the buyer returned to an
@@ -213,6 +224,8 @@ export function PricingTiers() {
         <p className="text-[13px] uppercase tracking-[0.15em] mb-6 text-text-muted font-mono">
           Choose your plan
         </p>
+        {regionGated ? <RegionNotice /> : null}
+
         <div className="grid gap-5 sm:grid-cols-2">
           {/* ───── TIER 1 · Free Preview ───── */}
           <article
@@ -340,8 +353,12 @@ export function PricingTiers() {
             <CheckoutButton
               planId="single"
               worldIds={singleWorld ? [singleWorld] : []}
-              disabled={!singleWorld}
-              disabledReason="Select a world above"
+              disabled={regionGated || !singleWorld}
+              disabledReason={
+                regionGated
+                  ? "Not available in your region yet"
+                  : "Select a world above"
+              }
             >
               Buy Now &rarr;
             </CheckoutButton>

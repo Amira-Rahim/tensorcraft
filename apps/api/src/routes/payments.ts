@@ -4,7 +4,12 @@ import {
   getSupabaseAdminClient,
   getSupabaseServerClient,
 } from "@tensorcraft/supabase";
-import { PRICING, isValidWorldSlug, isLaunched } from "@tensorcraft/shared";
+import {
+  PRICING,
+  isValidWorldSlug,
+  isLaunched,
+  isVatGatedCountry,
+} from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { createRateLimiter } from "../middleware/rate-limit";
 import {
@@ -44,11 +49,35 @@ function getStripe(): Stripe {
  * tax, and issues a real (VAT-grade) invoice; the webhook persists the country
  * and tax amount, which cannot be reconstructed from a flat USD row afterward.
  */
+/**
+ * EU/UK checkout gate (owner decision 2026-08-23, reviewed at the 500-user
+ * gate; see the Tier 1-LEGAL decision note in docs/launch-blockers.md).
+ *
+ * A seller established outside the EU gets no EUR 10,000 threshold, so EU VAT
+ * would be due at the buyer's rate from the very first sale, and the UK has no
+ * threshold for non-UK-established sellers either. Until the LLC exists,
+ * refuse the sale rather than incur a liability that cannot be unwound later
+ * (OSS registration cannot be backdated).
+ *
+ * The country is read from Cloudflare's `CF-IPCountry`, which is set at the
+ * edge in front of this API and so cannot be forged by the client. It FAILS
+ * OPEN when absent: a direct-to-origin request or an edge config change would
+ * otherwise stop every sale worldwide, which is a worse outcome than the
+ * exposure it prevents. The billing country is now always collected at
+ * checkout, so a webhook-side backstop can be added without further changes.
+ *
+ * Deliberately NOT applied to signup or lesson access: VAT triggers on a
+ * supply for consideration, so free use from the EU costs nothing, and those
+ * signups are the validation metric this gate is protecting.
+ */
+function isRegionBlocked(countryHeader: string | undefined): boolean {
+  return isVatGatedCountry(countryHeader);
+}
+
 function taxSessionParams(): Partial<Stripe.Checkout.SessionCreateParams> {
   if (process.env.STRIPE_TAX_ENABLED !== "true") return {};
   return {
     automatic_tax: { enabled: true },
-    billing_address_collection: "required",
     tax_id_collection: { enabled: true },
     invoice_creation: { enabled: true },
   };
@@ -140,6 +169,17 @@ export function purchaseStatusForSession(
 payments.use("/checkout", authMiddleware);
 
 payments.post("/checkout", async (c) => {
+  if (isRegionBlocked(c.req.header("cf-ipcountry"))) {
+    return c.json(
+      {
+        error:
+          "Purchases are not available in your region yet. Join the list and we will email you when they are.",
+        code: "region_unavailable",
+      },
+      403,
+    );
+  }
+
   const userId = c.get("userId");
 
   let body: { planId: string; worldIds: string[] };
@@ -279,6 +319,11 @@ payments.post("/checkout", async (c) => {
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
     mode: "payment",
     client_reference_id: userId,
+    // Unconditional, and deliberately NOT inside taxSessionParams(): with the
+    // tax flag off that helper returns {}, so the buyer's country was never
+    // captured. Without it the EU/UK gate has nothing to verify against and
+    // the VAT exposure cannot even be measured.
+    billing_address_collection: "required",
     ...taxSessionParams(),
     // Abandoned-cart recovery. Stripe can only mail a buyer who drops out of
     // checkout when the session carries their email AND recovery is enabled;
@@ -383,6 +428,17 @@ payments.use(
 );
 
 payments.post("/guest-checkout", async (c) => {
+  if (isRegionBlocked(c.req.header("cf-ipcountry"))) {
+    return c.json(
+      {
+        error:
+          "Purchases are not available in your region yet. Join the list and we will email you when they are.",
+        code: "region_unavailable",
+      },
+      403,
+    );
+  }
+
   let body: { planId: string; worldIds: string[] };
   try {
     body = await c.req.json();
@@ -423,6 +479,8 @@ payments.post("/guest-checkout", async (c) => {
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
+    // See the authed path: country capture must not depend on the tax flag.
+    billing_address_collection: "required",
     ...taxSessionParams(),
     // No client_reference_id: there is no user yet. The webhook resolves
     // identity from customer_details.email instead, and `guest: "true"`

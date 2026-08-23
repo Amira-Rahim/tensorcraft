@@ -102,4 +102,21 @@ describe("FiveWorldsSection coming-soon interactivity", () => {
     fireEvent.click(screen.getAllByRole("button", { name: /notify me/i })[0]);
     expect(screen.getByTestId("newsletter-modal-stub")).toBeInTheDocument();
   });
+
+  // The visual suite masks every canvas on the landing page, and OrbitCanvas
+  // is inset-0 over the whole flagship band, so the mask box swallows the
+  // band's text and scrim: no screenshot diff can catch a scrim regression
+  // here. This DOM assertion is the only gate on the band's art treatment.
+  it("veils the flagship plate with the reading-column scrim", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/location-art", () => ({
+      heroPlateSrc: () => "/locations/deep-orbit/bridge.webp",
+    }));
+    const { FiveWorldsSection: WithPlate } =
+      await import("./five-worlds-section");
+    const { container } = render(<WithPlate />);
+    const scrim = container.querySelector(".tc-art-scrim");
+    expect(scrim).not.toBeNull();
+    expect(scrim!.className).toContain("tc-art-scrim-read");
+  });
 });
