@@ -970,6 +970,21 @@ has already been written off once (see above) - do not launch dark again.
   `.github/workflows/deploy-api.yml:48` both run `migrate:status`, and type
   parity is done (`packages/supabase/src/types.ts` defines `world_progress`
   and contains zero `theme` identifiers).
+- [ ] (OPERATOR) **Verify the 059 rename end to end with a signed-in
+  session.** Migration 059 was applied 2026-08-20 and the API redeployed
+  (Fly v18) the same day, but the two behaviors it touched have only been
+  checked at the infrastructure layer (ledger IN SYNC 59/59,
+  `/api/health/ready` reports `db: ok`, CI green). Neither has been
+  exercised as a user, because both need an authenticated session:
+  (1) complete an onboarding and confirm the JavaScript-background and
+  years-of-experience answers persist, which is what the deployed-old-API
+  window was silently discarding; (2) download a GDPR export from settings
+  and confirm it returns `js_background` and `js_experience_years`, the
+  endpoint that would have 500'd between the migration and the API deploy.
+  Also worth one query while signed into Supabase: profiles with
+  `onboarding_completed = true` and a null `js_background` created between
+  2026-08-18 and 2026-08-20 are learners whose answers the old API dropped.
+  Expected to be zero or near-zero at current traffic.
 - [ ] (OPERATOR) **PostHog:** create the EU project, set
   `NEXT_PUBLIC_POSTHOG_KEY` (web `.env.local` + Vercel), then walk the
   event checklist in `docs/analytics-verification.md`. Free tier = 1M
@@ -1178,14 +1193,33 @@ has already been written off once (see above) - do not launch dark again.
     (status exit 1) skips; in-sync (0) and cred/connection failure (2) both
     build, so a missing env var cannot brick every deploy including the one
     that fixes it. CI stays the fail-closed gate.
-  - [ ] (OPERATOR) Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to the
-    Vercel project env (Production + Preview). **Until this is done the gate
-    silently passes everything**, because with no credentials the status
-    script cannot reach the ledger. Verify by finding the migration-status
-    output in a build log.
-  - [ ] (OPERATOR) Confirm the Vercel project Root Directory is the repo
-    root. If it is `apps/web`, move `vercel.json` there and change the path
-    to `../../scripts/migration-status.mjs`.
+  - [x] `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are present in the
+    Vercel project env: both Sensitive, scoped to Production and Preview,
+    added 2026-05-03. Confirmed 2026-08-23 from the Environment Variables
+    page. The gate has the credentials it needs.
+  - [x] Root Directory question settled: it is `apps/web`, NOT the repo
+    root. Vercel reads the repo-root `vercel.json` but runs the
+    `ignoreCommand` with cwd `apps/web`, so the path is
+    `../../scripts/migration-status.mjs` and the file stays at the root.
+    Both facts are now pinned by
+    `packages/content/__tests__/vercel-ignore-command.test.ts`. When
+    testing this gate by hand, `cd apps/web` first: run from the repo root
+    and the script path fails to resolve, node exits 1, the wrapper reads
+    that as drift, and it looks like the gate cancels every deploy. That
+    false alarm is easy to hit.
+  - [x] Gate output is no longer piped to `/dev/null` (2026-08-23), so the
+    migration-status verdict appears in the build log. Without it the gate
+    was unverifiable and undebuggable from Vercel's side. The script prints
+    counts and version numbers only, never secrets.
+  - [ ] (OPERATOR) **Confirm the gate is actually live by reading one build
+    log.** This is the last unverified assumption in the whole mechanism:
+    whether Vercel's Ignored Build Step receives project environment
+    variables at all. Open the next deployment's log and look for the
+    `Migration status` summary. If it shows `files on disk : NN` and
+    `applied (ledger): NN`, the gate is real. If it instead prints the
+    offline "Set the env vars to diff against the live ledger" message, the
+    vars are not reaching that step and the gate is decorative, passing
+    every deploy regardless of schema state.
 - [ ] (OPERATOR) **Env-var hygiene: three settings remain, all outside the
   repo.** Verified 2026-08-20: every code and doc sub-item below is genuinely
   done (`apps/api/src/env.ts` three tiers boot-called at `index.ts:123`;

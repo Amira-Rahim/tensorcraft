@@ -473,6 +473,20 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 7. Platform + infra deferrals
 
+- [ ] **Remove the two one-release API shims from migration 059.** Added
+  2026-08-18 so an old client could not break against the renamed columns,
+  and deliberately scoped to a single release. Both are still deployed
+  (Fly v18, 2026-08-20): `apps/api/src/routes/onboarding.ts` maps
+  `fe_background` / `fe_experience_years` onto their `js_*` names when the
+  new keys are absent, and `apps/api/src/routes/skill-events.ts` rewrites
+  an incoming `fe_integration` axis to `js_integration`. Earliest safe
+  removal is roughly 2026-08-27, one release after the migration landed;
+  taking them out sooner defeats the purpose they were added for. Delete
+  both blocks plus their tests, then redeploy the API. No migration and no
+  web change. Filed here rather than in `launch-blockers.md` because it is
+  post-deploy cleanup, not a release gate: leaving the shims in place is
+  harmless, only untidy.
+
 - [ ] Visual gate is blind to the entire landing hero (found 2026-08-22
   while re-minting baselines after a hero subhead rewrite). Both
   `e2e/visual/key-pages.spec.ts` and `e2e/visual/responsive.spec.ts`
