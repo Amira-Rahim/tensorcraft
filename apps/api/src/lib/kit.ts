@@ -5,6 +5,13 @@
 
 const KIT_BASE_URL = "https://api.convertkit.com/v3";
 
+/**
+ * Wall-clock bound for any single Kit request. Chosen shorter than the
+ * GitHub lib's 15s because the sharpest caller is a webhook handler that
+ * Stripe will re-deliver if we hold it too long.
+ */
+const KIT_TIMEOUT_MS = 10_000;
+
 function getApiKey(): string {
   const key = process.env.KIT_API_KEY;
   if (!key) throw new Error("KIT_API_KEY not configured");
@@ -42,6 +49,14 @@ async function kitFetch<T>(
   const url = `${KIT_BASE_URL}${path}`;
   const response = await fetch(url, {
     ...options,
+    // Every Kit call goes through here, which is why the bound lives here
+    // rather than at each call site. It matters most on the Stripe webhook:
+    // `payments.ts` awaits two Kit calls inline, so an unbounded hang holds
+    // the handler past Stripe's timeout and forces a re-delivery.
+    //
+    // Latent until now only because the stored credentials 401 instantly.
+    // Repairing them turns these into real network calls.
+    signal: options.signal ?? AbortSignal.timeout(KIT_TIMEOUT_MS),
     headers: {
       "Content-Type": "application/json",
       ...options.headers,

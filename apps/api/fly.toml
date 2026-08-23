@@ -4,6 +4,16 @@ primary_region = "iad"
 [build]
   dockerfile = "Dockerfile"
 
+# Machine size, declared 2026-08-23. It was previously unset, so the size was
+# whatever the Fly default happened to be and could change under us without a
+# commit. The Dockerfile already assumes this number: it caps the V8 heap at
+# 200MB, described there as 80% of a 256MB container. Two places asserting a
+# size that neither of them declared is how drift starts.
+# `docs/infrastructure.md` quotes the same figure.
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+
 [http_service]
   internal_port = 3001
   force_https = true

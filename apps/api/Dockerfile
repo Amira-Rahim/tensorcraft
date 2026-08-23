@@ -14,7 +14,11 @@ WORKDIR /app
 COPY --from=deps /app ./
 COPY apps/api ./apps/api
 COPY packages ./packages
-RUN pnpm --filter @tensorcraft/api build
+# Was `build`, whose dist/ output the runner stage never copied: a full tsc
+# emit produced and thrown away on every deploy. `typecheck` is the same tsc
+# invocation with --noEmit, so the image still fails on a type error without
+# paying for output nothing consumes.
+RUN pnpm --filter @tensorcraft/api typecheck
 RUN pnpm --filter @tensorcraft/api deploy /app/deployed --prod --legacy
 
 FROM node:22-alpine AS runner
@@ -29,4 +33,15 @@ COPY --from=build /app/deployed/package.json ./package.json
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
   CMD wget -qO- http://localhost:3001/api/health || exit 1
 EXPOSE 3001
+# tsx, not `node dist/index.js`, and this is STRUCTURAL rather than an
+# oversight. The workspace packages export raw TypeScript
+# (packages/shared/package.json: "exports": {".": "./src/index.ts"}), which
+# plain node cannot load at all, and apps/api's own emit uses extensionless
+# relative imports that fail ESM resolution. Verified 2026-08-23: running
+# `node dist/index.js` exits 1 with ERR_MODULE_NOT_FOUND.
+#
+# The cost is real (TypeScript is transpiled at container start, on the
+# payment path) and closing it is a project, not a line: either the workspace
+# packages build to JS and apps/api gains import extensions, or the API is
+# bundled to a single file at build time. Tracked in docs/launch-blockers.md.
 CMD ["tsx", "src/index.ts"]
