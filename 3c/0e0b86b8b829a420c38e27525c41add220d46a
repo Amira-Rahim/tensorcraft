@@ -1,0 +1,71 @@
+apps/api/src/routes/payments.test.ts
+  s_05a49bab834291::t_9e7ac859cbf89b 197-201,1413-1490
+  s_05a49bab834291::t_526847f882252a 1364-1412,1491-1492
+docs/launch-blockers.md
+  s_05a49bab834291::t_bb9beb7fe7b5c1 1515-1528,1628-1635
+  s_05a49bab834291::t_833c63ab99e428 1551-1583
+  s_05a49bab834291::t_5b177e6194eb64 944-973
+  s_05a49bab834291::t_fc19c46478c3e3 1433-1489,1540-1543,1549-1550,1584-1607
+  s_05a49bab834291::t_0483635a22c87e 1491-1506,1544-1548,1681-1682,1684-1687
+  s_05a49bab834291::t_c44f25835ab7db 1377-1428,1430,1432
+  s_05a49bab834291::t_d9930474858069 1490
+apps/web/lib/region.ts
+  s_05a49bab834291::t_1a355d6392e9dc 1-22
+packages/shared/src/constants.ts
+  s_05a49bab834291::t_ace6232affa5ed 243-306
+apps/web/app/pricing/region-notice.test.tsx
+  s_05a49bab834291::t_38d9cadfbd6d05 54-58
+  s_05a49bab834291::t_ecdddcf7e62c6a 1-53,59-78
+apps/web/middleware.ts
+  s_05a49bab834291::t_967a8fa58846b9 2-3,19-28
+  s_05a49bab834291::t_6f7b098e373b2c 29
+apps/web/app/pricing/pricing-tiers.tsx
+  s_05a49bab834291::t_b1a49c613ebb63 14,16,130-138,227-228,356-361
+packages/shared/src/index.ts
+  s_05a49bab834291::t_ace6232affa5ed 26-27
+packages/shared/src/constants.test.ts
+  s_05a49bab834291::t_54df57a4583e1f 12-13,149-190
+  s_05a49bab834291::t_94ce7f690c4563 191
+apps/web/app/pricing/region-notice.tsx
+  s_05a49bab834291::t_2d5fe9a029857f 1-101
+packages/supabase/migrations/060_fix_waitlist_source_constraint.sql
+  s_05a49bab834291::t_4c44462d479a1e 1-59
+apps/web/app/components/five-worlds-section.tsx
+  s_2080e50fcd36ff::t_43437093d7b336 120-122
+  s_2080e50fcd36ff::t_84233537e670f7 123-125
+apps/web/app/components/five-worlds-section.test.tsx
+  s_2080e50fcd36ff::t_6300dbd4bf087d 105-121
+apps/web/lib/__tests__/region.test.ts
+  s_05a49bab834291::t_93438c73410ad0 1-38
+apps/web/app/globals.css
+  s_2080e50fcd36ff::t_b3e06241b79f7d 454-478
+apps/api/src/routes/payments.ts
+  s_05a49bab834291::t_6eb712f5453bda 322-326,482-483
+  s_05a49bab834291::t_c965efd5578dc0 7-12,52-76,172-182,431-441
+packages/supabase/migrations/060_fix_waitlist_source_constraint.down.sql
+  s_05a49bab834291::t_634fd7e96e756f 1-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3c0e0b86b8b829a420c38e27525c41add220d46a",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_2080e50fcd36ff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3d6d62a2-836a-4ff4-b7d0-6f6d11b7b177",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
