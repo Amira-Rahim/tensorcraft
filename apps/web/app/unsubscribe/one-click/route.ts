@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
+import { notifyKitUnsubscribe } from "@/lib/notify-kit-unsubscribe";
 
 /**
  * RFC 8058 One-Click unsubscribe target. The digest's List-Unsubscribe
@@ -16,13 +17,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "invalid token" }, { status: 400 });
   }
   const supabase = getSupabaseAdminClient();
-  const { error } = await supabase
+  // `select` so the address is available to relay to Kit. The local flip
+  // below is what stops OUR digest; Kit sends its own sequences off its own
+  // subscriber state and has to be told separately.
+  const { data, error } = await supabase
     .from("waitlist")
     .update({ subscribed: false })
-    .eq("unsubscribe_token", token);
+    .eq("unsubscribe_token", token)
+    .select("email");
   if (error) {
     return NextResponse.json({ error: "unsubscribe failed" }, { status: 500 });
   }
+
+  // Best effort and deliberately after the flip: this must never be able to
+  // turn a successful unsubscribe into a non-2xx, which providers retry.
+  const email = data?.[0]?.email;
+  if (email) await notifyKitUnsubscribe(email);
   // No matched-row check: RFC 8058 wants an idempotent 2xx, and providers
   // retry on non-2xx. A token that matches nothing (already-unsubscribed,
   // deleted row) still gets ok:true; only a real DB error is a 500.

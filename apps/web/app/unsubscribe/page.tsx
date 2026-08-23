@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
+import { notifyKitUnsubscribe } from "@/lib/notify-kit-unsubscribe";
 
 export const metadata: Metadata = {
   title: "Unsubscribe | Tensorcraft",
@@ -23,8 +24,11 @@ async function unsubscribeByToken(token: string): Promise<boolean> {
     .from("waitlist")
     .update({ subscribed: false })
     .eq("unsubscribe_token", token)
-    .select("id");
+    .select("id, email");
   if (error) return false;
+  const email = data?.[0]?.email;
+  // Best effort, after the local flip. See notify-kit-unsubscribe.ts.
+  if (email) await notifyKitUnsubscribe(email);
   return (data?.length ?? 0) > 0;
 }
 

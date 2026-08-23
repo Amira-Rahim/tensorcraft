@@ -13,6 +13,7 @@ vi.mock("@tensorcraft/supabase", () => ({
   }),
 }));
 
+const mockUnsubscribeFromAll = vi.fn().mockResolvedValue({ id: 1 });
 vi.mock("../../lib/kit", () => ({
   addSubscriber: vi
     .fn()
@@ -20,6 +21,7 @@ vi.mock("../../lib/kit", () => ({
   tagSubscriber: vi
     .fn()
     .mockResolvedValue({ id: 1, email_address: "test@example.com" }),
+  unsubscribeFromAll: (...args: unknown[]) => mockUnsubscribeFromAll(...args),
 }));
 
 const { emailTags } = await import("../email-tags");
@@ -142,5 +144,88 @@ describe("POST /api/email", () => {
     expect(body.skipped).toBeUndefined();
     expect(body.event).toBe("paywall_hit");
     vi.unstubAllEnvs();
+  });
+});
+
+/**
+ * Internal Kit unsubscribe relay.
+ *
+ * The email-link unsubscribe handlers live in apps/web, which has no Kit
+ * client and no Kit secrets. They flip `waitlist.subscribed` themselves and
+ * then call this endpoint so Kit stops its own sequences too. Without it, an
+ * unsubscribed address keeps receiving Kit sequence mail once the retention
+ * automations go live.
+ *
+ * Server-to-server only, guarded by ADMIN_API_KEY. It deliberately answers
+ * the same way whether or not the address is known to Kit: the caller is our
+ * own unsubscribe route, and a differentiated response would turn this into
+ * a subscriber-enumeration oracle for anyone who obtained the key.
+ */
+describe("POST /api/email/unsubscribe", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.unstubAllEnvs();
+    vi.stubEnv("ADMIN_API_KEY", "secret-key");
+    mockUnsubscribeFromAll.mockResolvedValue({ id: 1 });
+  });
+
+  function call(body: unknown, key?: string) {
+    return app.request("/api/email/unsubscribe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(key ? { "x-admin-api-key": key } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  it("unsubscribes the address in Kit", async () => {
+    const res = await call({ email: "gone@example.com" }, "secret-key");
+
+    expect(res.status).toBe(200);
+    expect(mockUnsubscribeFromAll).toHaveBeenCalledWith("gone@example.com");
+  });
+
+  it("rejects a wrong key without touching Kit", async () => {
+    const res = await call({ email: "gone@example.com" }, "wrong-key");
+
+    expect(res.status).toBe(401);
+    expect(mockUnsubscribeFromAll).not.toHaveBeenCalled();
+  });
+
+  it("rejects a missing key", async () => {
+    const res = await call({ email: "gone@example.com" });
+
+    expect(res.status).toBe(401);
+  });
+
+  it("refuses when no key is configured, rather than running open", async () => {
+    vi.stubEnv("ADMIN_API_KEY", "");
+
+    const res = await call({ email: "gone@example.com" }, "anything");
+
+    expect(res.status).toBe(401);
+    expect(mockUnsubscribeFromAll).not.toHaveBeenCalled();
+  });
+
+  it("requires an email", async () => {
+    const res = await call({}, "secret-key");
+
+    expect(res.status).toBe(400);
+  });
+
+  /**
+   * Kit is currently unreachable (its stored credentials 401), and this
+   * endpoint sits behind a compliance path. A Kit outage must not make the
+   * caller think the unsubscribe failed: the database flip has already
+   * happened by the time we are called.
+   */
+  it("still answers ok when Kit is unreachable", async () => {
+    mockUnsubscribeFromAll.mockRejectedValue(new Error("kit down"));
+
+    const res = await call({ email: "gone@example.com" }, "secret-key");
+
+    expect(res.status).toBe(200);
   });
 });

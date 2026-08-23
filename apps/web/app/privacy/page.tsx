@@ -80,10 +80,8 @@ export default function PrivacyPage() {
               <strong className="text-text-primary">Account data:</strong> your
               email address, display name, and avatar, from GitHub, Google, or
               the email address you sign up with. Onboarding also records your
-              JavaScript background, experience level, and learning goal. If you
-              buy without an account, we create one from the email you used at
-              checkout so the purchase has an owner, and we email you a sign-in
-              link.
+              JavaScript background, experience level, and learning goal. An
+              account is required to buy.
             </p>
             <p className="mb-3">
               <strong className="text-text-primary">Learning data:</strong>{" "}
@@ -98,7 +96,9 @@ export default function PrivacyPage() {
               <strong className="text-text-primary">Purchase data:</strong>{" "}
               payment happens on Stripe, and card numbers never reach our
               servers. We keep the plan, amount, payment status, your billing
-              country, and a VAT or tax ID if you entered one.
+              country, a VAT or tax ID if you entered one, and the customer
+              reference Stripe assigns you, which lets us match a payment to
+              your account without holding card details.
             </p>
             <p className="mb-3">
               <strong className="text-text-primary">Bug reports:</strong> the

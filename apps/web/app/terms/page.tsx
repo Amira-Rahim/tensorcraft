@@ -77,12 +77,10 @@ export default function TermsPage() {
             <p>
               You may browse Module 1 content without creating an account. To
               access full course content and track progress, you need an
-              account, created with GitHub, Google, or email authentication. You
-              can also buy as a guest: we then create an account for you from
-              the email you used at checkout and send it a sign-in link. You
-              must be at least 16 years old to hold an account. You are
-              responsible for maintaining the security of your account
-              credentials.
+              account, created with GitHub, Google, or email authentication.
+              Purchases require an account. You must be at least 16 years old to
+              hold an account. You are responsible for maintaining the security
+              of your account credentials.
             </p>
           </section>
 
@@ -96,6 +94,12 @@ export default function TermsPage() {
               purchased world content. All prices are in USD. Refunds are
               available within 14 days of purchase, no questions asked: email
               support@tensorcraft.app.
+            </p>
+            <p className="mt-3">
+              Purchases are currently available to buyers in the United States
+              only. If you are in the European Union or the United Kingdom you
+              can still create a free account and read the free module, and you
+              can ask us to email you when paid access opens in your region.
             </p>
           </section>
 

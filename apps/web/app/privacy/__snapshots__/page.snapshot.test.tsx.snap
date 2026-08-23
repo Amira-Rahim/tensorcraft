@@ -61,7 +61,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
           >
             Account data:
           </strong>
-           your email address, display name, and avatar, from GitHub, Google, or the email address you sign up with. Onboarding also records your JavaScript background, experience level, and learning goal. If you buy without an account, we create one from the email you used at checkout so the purchase has an owner, and we email you a sign-in link.
+           your email address, display name, and avatar, from GitHub, Google, or the email address you sign up with. Onboarding also records your JavaScript background, experience level, and learning goal. An account is required to buy.
         </p>
         <p
           class="mb-3"
@@ -83,7 +83,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
             Purchase data:
           </strong>
            
-          payment happens on Stripe, and card numbers never reach our servers. We keep the plan, amount, payment status, your billing country, and a VAT or tax ID if you entered one.
+          payment happens on Stripe, and card numbers never reach our servers. We keep the plan, amount, payment status, your billing country, a VAT or tax ID if you entered one, and the customer reference Stripe assigns you, which lets us match a payment to your account without holding card details.
         </p>
         <p
           class="mb-3"

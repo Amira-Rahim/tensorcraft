@@ -1637,7 +1637,11 @@ flagging exposure, not legal advice).
      flag or refund what slipped through a VPN. Deliberately deferred as the
      hardened layer; the country is now always collected, so no further
      change is needed to enable it.
-  Also add the country restriction to `/terms`, which is still open.
+  ~~Also add the country restriction to `/terms`~~ **DONE 2026-08-23:** §4
+  Purchases now states that purchases are available to US buyers only, and
+  that EU and UK visitors can still create a free account, read the free
+  module, and ask to be told when paid access opens. That last clause is what
+  makes the notice's email capture honest rather than a dead end.
   **Original scoping note, and the blocker it named, now fixed:**
   `billing_address_collection: "required"` currently sits INSIDE
   `taxSessionParams()` (`apps/api/src/routes/payments.ts:47-55`), which
@@ -1814,7 +1818,11 @@ flagging exposure, not legal advice).
   headcount and turnover of a legal entity that does not exist yet, and
   that the repo's a11y coverage is desktop-chromium only, so a conformance
   claim is not currently evidenced.
-- [ ] **Correct the guest-checkout copy.** Found 2026-08-20 during the
+- [x] **Guest-checkout copy corrected 2026-08-23.** Both pages described a
+  flow the product does not offer. /terms §3 now says purchases require an
+  account, and /privacy §2 drops the "if you buy without an account we create
+  one" sentence. Snapshots updated. Original finding follows.
+  Found 2026-08-20 during the
   reconcile, not previously tracked: /privacy §2 and /terms §3 both
   describe guest checkout as a live flow, but it is disabled
   (`apps/web/app/pricing/checkout-button.tsx:66-83`: the endpoint exists on
@@ -1828,9 +1836,10 @@ flagging exposure, not legal advice).
   carries the carve-out) and genuinely implemented in code
   (`apps/api/src/routes/profiles.ts:346-349` with migration 056's
   `on delete set null`).
-  STILL OPEN: **`stripe_customer_id` is stored and is returned in the data
-  export (`profiles.ts:259`) but is disclosed nowhere in the policy.** Add
-  it to §2. Separately, the ten-year figure is currently an assertion in
+  ~~STILL OPEN: `stripe_customer_id` is stored and returned in the data
+  export but disclosed nowhere~~ **CLOSED 2026-08-23:** /privacy §2 now
+  discloses "the customer reference Stripe assigns you", described in plain
+  terms rather than by column name. Separately, the ten-year figure is currently an assertion in
   shipped copy with no jurisdiction behind it; the advisor should confirm
   it for the eventual establishment country.
 - [x] **GitHub integration disclosure (R3-8)** - terms side **DONE
@@ -1900,7 +1909,55 @@ Not launch blockers. Each one wastes acquisition spend if left.
   - **`POST /api/github/token` still accepts any caller-supplied token** (`apps/api/src/routes/github.ts:718-757`): it validates only that GitHub answers with some username, then stores the token on the caller's row. No binding between the token's identity and the calling user. Its only caller is the web session listener, so deleting the route is a live option.
   - **Waitlist has no route-scoped limiter and no captcha.** It falls back to the global 60/min keyed on the spoofable anonymous identity above.
   - **skill_events child-partition RLS check: still not run.** The parent's RLS and INSERT policy are declared in migrations, but the ask is a live PostgREST select against a child partition, and nothing in CI performs it.
-- [ ] **Unsubscribe does not propagate to Kit.** Core defect CONFIRMED open in both directions 2026-08-20, but two clauses of this entry were stale and are corrected here: `unsubscribeFromAll()` is **not** dead code (account deletion calls it), and a Kit webhook **does** exist (`apps/api/src/routes/webhooks.ts:49`, shared-secret guarded). What is actually broken: the two unsubscribe handlers only flip `waitlist.subscribed` in Supabase and never call `unsubscribeFromAll`; and the kit-bounce handler only logs, performing zero database writes, so a Kit-side unsubscribe or complaint never flips anything. Once the Tier 1-OPS retention automations go live, an unsubscribed address keeps receiving sequence emails. Wire both directions.
+- [ ] (OPERATOR) **Unsubscribe propagation: BOTH DIRECTIONS BUILT
+  2026-08-23. Needs two Vercel env vars to take effect.**
+  **Outbound (we tell Kit) is built via option 1**, the owner's choice: the
+  web handlers flip `waitlist.subscribed` as before, then relay the address
+  to a new `POST /api/email/unsubscribe` on the API, which owns the Kit
+  client. The relay is strictly best effort and runs AFTER the flip, so it
+  can never turn a successful unsubscribe into the non-2xx that mail
+  providers retry, and it no-ops quietly when unconfigured. The endpoint is
+  guarded by `ADMIN_API_KEY` (the check was extracted to
+  `apps/api/src/lib/admin-auth.ts` and is now shared with the admin routes
+  rather than duplicated) and answers identically whether or not Kit knows
+  the address, so it cannot be used to enumerate subscribers. 13 tests.
+  **OPERATOR STEP: set `API_URL` and `ADMIN_API_KEY` in the Vercel server
+  environment** (documented in `apps/web/.env.example`). Until then the relay
+  is inert and Kit is simply not told, which is the same position as before,
+  not a regression.
+  Note the signed-in Settings toggle never needed this: it already
+  reconciles Kit tags through `routes/preferences.ts`.
+  Original entry follows.
+  **Inbound (Kit tells us) is fixed.** The `/api/webhooks/kit-bounce` handler
+  used to only log. It now suppresses locally on unsubscribe, complaint,
+  bounce or cancelled: `waitlist.subscribed` to false and
+  `profiles.weekly_digest` / `email_alerts` to false, matched with `ilike`
+  because Kit echoes the subscriber's own casing and a casing mismatch
+  between these two tables has bitten this project before. Writes are best
+  effort and never 500, since a retry carries no new information and Kit
+  would hammer a database that is not answering. Event matching is
+  deliberately loose: over-matching costs someone a newsletter they can
+  resubscribe to, under-matching means mailing someone who reported us as
+  spam. 6 tests.
+  **Outbound (we tell Kit) is NOT a code gap, it is a routing choice.** The
+  signed-in settings toggle already reconciles Kit tags correctly in
+  `apps/api/src/routes/preferences.ts`. What does not reach Kit is the
+  EMAIL-LINK unsubscribe, and both handlers for it live in `apps/web`
+  (`unsubscribe/one-click/route.ts` and `unsubscribe/page.tsx`) while the Kit
+  client and its secrets live in `apps/api`. Three ways to close it, none
+  free:
+  1. Web calls a new internal API endpoint, best effort after the DB flip.
+     Needs `API_URL` + `ADMIN_API_KEY` on Vercel. Keeps RFC 8058 reliability
+     intact because the DB flip still happens first.
+  2. Web calls Kit directly. Needs `KIT_API_SECRET` on Vercel and duplicates
+     the Kit base URL, which is exactly the drift that produced the waitlist
+     constraint bug.
+  3. Move the unsubscribe endpoint into the API, where the mailer already
+     lives. Architecturally cleanest, but it changes the `List-Unsubscribe`
+     target on a Gmail and Yahoo compliance path, so it wants its own
+     deliberate change window.
+  Recommendation: option 1. Original finding follows.
+  Core defect CONFIRMED open in both directions 2026-08-20, but two clauses of this entry were stale and are corrected here: `unsubscribeFromAll()` is **not** dead code (account deletion calls it), and a Kit webhook **does** exist (`apps/api/src/routes/webhooks.ts:49`, shared-secret guarded). What is actually broken: the two unsubscribe handlers only flip `waitlist.subscribed` in Supabase and never call `unsubscribeFromAll`; and the kit-bounce handler only logs, performing zero database writes, so a Kit-side unsubscribe or complaint never flips anything. Once the Tier 1-OPS retention automations go live, an unsubscribed address keeps receiving sequence emails. Wire both directions.
 - [ ] **No server-side timeouts on Kit, Resend, or Supabase queries.** Re-verified 2026-08-20 by grepping every `AbortSignal.timeout` in the repo: there are exactly 8, all in the GitHub lib. Kit's single `kitFetch` wrapper has no signal and no Supabase query has one. **Partially closed 2026-08-23:** the purchase-receipt send bounds its own wait (`withTimeout` in `apps/api/src/lib/email.ts`, 5s default) precisely because it runs inside the Stripe webhook; the digest and issue sends still have none. Upstash has a partial mitigation (a 2s SDK-level timeout on the rate limiter only). The sharpest case is confirmed and worth noting precisely: `apps/api/src/routes/payments.ts:872-875` **awaits** two Kit calls inline in the Stripe webhook handler even though the comment above them says fire-and-forget, so a hung Kit connection stalls the webhook. Re-delivery is fully deduped via the `payment_events` ledger, so the cost is retry noise and delayed fulfilment rather than double-firing. Client-side, seven call sites still bypass `apiFetch` and its 10s abort (settings x4, onboarding, report-issue, capstone).
 - [ ] **Error-boundary copy misattributes DB faults** - a paying customer during a 2s Supabase blip reads "Lesson failed to load / something went wrong on our end" as a content bug. Re-verified 2026-08-20: a DB throw carries no code the message map recognizes, so it falls through to the generic "our end" string, and six sibling boundaries share the pattern.
 - [ ] **Fly config drift:** re-verified 2026-08-20, both halves still true. `apps/api/fly.toml` has no `[[vm]]` block, so machine size is unversioned while `docs/infrastructure.md:33` asserts 256MB with no in-repo source. And the Dockerfile builds `dist/` and then discards it: the runner stage copies `src`, installs `tsx` globally, and runs `CMD ["tsx", "src/index.ts"]`, so TypeScript is transpiled at container runtime on the payment path.

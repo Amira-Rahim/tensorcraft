@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { addSubscriber, tagSubscriber } from "../lib/kit";
+import { addSubscriber, tagSubscriber, unsubscribeFromAll } from "../lib/kit";
+import { isValidAdminKey } from "../lib/admin-auth";
+import { logger } from "../lib/logger";
 
 // Read env vars at request time (not module load) so tests can stub them
 // and so Fly.io secret rotations take effect without a redeploy.
@@ -70,4 +72,49 @@ emailTags.post("/", async (c) => {
   } catch {
     return c.json({ ok: true, skipped: true });
   }
+});
+
+/**
+ * Internal relay: tell Kit that an address unsubscribed.
+ *
+ * The email-link unsubscribe handlers live in `apps/web`, which has no Kit
+ * client and no Kit secrets. They flip `waitlist.subscribed` themselves,
+ * which stops OUR digest, and then call this so Kit stops its own sequences.
+ * Without it an unsubscribed address keeps receiving Kit sequence mail the
+ * moment the retention automations go live.
+ *
+ * Server-to-server only. Answers identically whether or not Kit knows the
+ * address: the only legitimate caller is our own unsubscribe route, and a
+ * differentiated response would make this a subscriber-enumeration oracle
+ * for anyone who obtained the key.
+ */
+emailTags.post("/unsubscribe", async (c) => {
+  if (!isValidAdminKey(c.req.header("x-admin-api-key"))) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  let body: { email?: string };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON body" }, 400);
+  }
+  const email = body.email?.trim();
+  if (!email) {
+    return c.json({ error: "email is required" }, 400);
+  }
+
+  // Kit's stored credentials currently 401, and this sits behind a
+  // compliance path. The caller has ALREADY flipped the database, so a Kit
+  // outage must not read as a failed unsubscribe.
+  try {
+    await unsubscribeFromAll(email);
+  } catch (err) {
+    logger.warn(
+      { err, route: "email.unsubscribe" },
+      "Kit unsubscribe relay failed; local opt-out already applied",
+    );
+  }
+
+  return c.json({ ok: true });
 });

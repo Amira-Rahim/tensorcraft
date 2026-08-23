@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { timingSafeEqual } from "node:crypto";
+import { isValidAdminKey } from "../lib/admin-auth";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { isAdmin } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
@@ -16,27 +16,8 @@ type AdminEnv = {
 
 const admin = new Hono<AdminEnv>();
 
-/**
- * Timing-safe comparison for API key.
- * Uses constant-time comparison to prevent timing attacks.
- */
-function isValidApiKey(provided: string | undefined): boolean {
-  const expected = process.env.ADMIN_API_KEY;
-  if (!expected || !provided) return false;
-
-  // timingSafeEqual requires equal-length buffers
-  const expectedBuf = Buffer.from(expected);
-  const providedBuf = Buffer.from(provided);
-
-  if (expectedBuf.length !== providedBuf.length) {
-    // Still perform a comparison to avoid leaking length info via timing
-    const dummy = Buffer.alloc(expectedBuf.length);
-    timingSafeEqual(expectedBuf, dummy);
-    return false;
-  }
-
-  return timingSafeEqual(expectedBuf, providedBuf);
-}
+// Key check lives in lib/admin-auth.ts, shared with the Kit unsubscribe relay.
+const isValidApiKey = isValidAdminKey;
 
 /**
  * Combined admin auth middleware.
