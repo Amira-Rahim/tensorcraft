@@ -30,10 +30,27 @@ Defined in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 **Advisory only** - runs post-push, emails on fail. Not wired to branch
 protection, so nothing blocks merge.
 
+Split into parallel jobs 2026-08-23: the old single `ci` job serialized
+everything on one runner and took ~20 minutes, most of it Playwright behind
+one worker on a `next dev` server. Jobs now fail independently (one red step
+no longer hides the others' signal) and wall clock is roughly the e2e job
+alone. Every job carries a `timeout-minutes` ceiling so a hung server cannot
+burn the 6-hour default.
+
 | Job | What it does | Blocking? |
 | --- | ------------ | --------- |
-| `ci` | Install, `pnpm lint`, `pnpm typecheck`, `pnpm turbo build:content`, `pnpm build`, `pnpm test`, exercise validator, `pnpm test:e2e` (Playwright). | Advisory |
+| `checks` | Install, `pnpm lint`, `pnpm format:check`, `pnpm typecheck`. Restores the turbo cache across runs, so unchanged packages are near-instant. | Advisory |
+| `audit` | `pnpm audit --prod --audit-level moderate`. Isolated in its own job because a fresh registry advisory goes red with zero code change and must not block the other signals. | Advisory |
+| `build` | `pnpm turbo build:content` + `pnpm build` with NO env vars, deliberately: this is the regression test for building without runtime secrets. | Advisory |
+| `unit-tests` | `pnpm turbo build:content`, `pnpm test` (vitest), exercise validator. | Advisory |
+| `e2e` | Builds the web app WITH placeholder Supabase env (`NEXT_PUBLIC_*` inline at build time), serves it via `next start`, runs `pnpm test:e2e` (Playwright, 2 workers, 1 retry). See the webServer comment in [`playwright.config.ts`](../playwright.config.ts). | Advisory |
+| `exercise-runtime` | Runs the exercise corpus through the shipped runtime (`EXERCISE_CORPUS=1`). | Advisory |
+| `migrations` | Migration ledger drift check against production Supabase (fail-closed without secrets). | Advisory |
 | `links` | Runs `lychee` over every markdown file in the repo using [`.lychee.toml`](../.lychee.toml). Internal dead links fail; external 4xx/5xx are tolerated per the `accept` list. | Advisory |
+
+Concurrency: superseded runs are cancelled on PRs only. On `main` every
+commit keeps its completed verdict; cancel-in-progress there left rapid
+pushes with no CI result at all.
 
 ### Exercise validator
 

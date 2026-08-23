@@ -9,8 +9,16 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // 1 retry, not 2: the dev-server compile races the extra retry buffered
+  // are gone now that CI runs against `next start` (see webServer below),
+  // and each retry of a REAL failure costs a full serial re-run through the
+  // long expect timeouts (the 2026-08-23 axe failure ran 3x per scheme).
+  retries: process.env.CI ? 1 : 0,
+  // 2 workers in CI. The old `workers: 1` existed to keep parallel specs
+  // from stampeding `next dev`'s on-demand compiler; a prod server has no
+  // compile step to stampede. The runner has 2 vCPUs, so 2 overlaps one
+  // browser with server work without oversubscribing.
+  workers: process.env.CI ? 2 : undefined,
   reporter: [["html", { open: "never" }]],
   // The local webServer is `next dev`, which compiles routes on demand; a
   // cold first hit on the lesson route measured 14.96s on 2026-07-14, so
@@ -55,22 +63,23 @@ export default defineConfig({
       testMatch: /mobile\.spec\.ts/,
     },
   ],
+  // CI serves the production build: the e2e job in ci.yml runs
+  // `turbo build --filter @tensorcraft/web` with the placeholder Supabase
+  // env first (NEXT_PUBLIC_* inline at build time), then `next start`
+  // serves precompiled pages. That is what retired the dev-server compile
+  // problem this block used to document: `next dev` compiled routes on
+  // demand (19-154s cold), which forced workers: 1, a 180s boot ceiling,
+  // and at the old 30s ceiling silently skipped 10 of 14 a11y specs - a
+  // gate whose absence was indistinguishable from its success. Local runs
+  // keep `next dev` so `pnpm test:e2e` needs no build step; the 180s local
+  // ceiling stays for cold dev compiles, and it only costs time on a
+  // genuinely stuck server.
   webServer: {
-    command: `pnpm --filter @tensorcraft/web dev -p ${PORT}`,
+    command: process.env.CI
+      ? `pnpm --filter @tensorcraft/web start -p ${PORT}`
+      : `pnpm --filter @tensorcraft/web dev -p ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
-    // 30s was not enough and the failure mode was dangerous. `next dev`
-    // compiles on demand; measured cold compiles here run 19-154s (the
-    // comment above already records a 14.96s cold lesson hit). When this
-    // timeout fires, the whole run aborts before a single spec executes -
-    // and that reads as infra flake, not as "accessibility was never
-    // checked". The a11y suite in particular was passing only 4 of 14 specs
-    // for that reason, with the ten covering Worlds, World Detail, Pricing
-    // and every lesson step - the entire paid surface - simply never run.
-    //
-    // A gate whose absence is indistinguishable from its success is worse
-    // than no gate: it manufactures confidence. Raise the ceiling so the
-    // suite actually runs; it only costs time on a genuinely stuck server.
-    timeout: 180_000,
+    timeout: process.env.CI ? 60_000 : 180_000,
   },
 });

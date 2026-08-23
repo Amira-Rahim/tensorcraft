@@ -83,23 +83,16 @@ export default function PricingPage() {
 
         {/* Hero */}
         <section className="pt-24 pb-14 px-6 text-center">
-          <div className="inline-flex px-5 py-2 border border-border font-mono text-[13px] text-text-muted tracking-wider mb-8 rounded-none">
-            one payment &middot; lifetime access &middot; no subscriptions
-          </div>
           <h1
             data-testid="pricing-heading"
             className="text-4xl sm:text-5xl font-bold mb-5 text-text-primary font-mono tracking-tight"
           >
             Buy once. Keep forever.
           </h1>
-          {/* 2026-08-09: was "Buy one, bundle a few, or all five worlds",
-              which offered two actions no buyer can take while one world is
-              launched. Same defect as the metadata above and the tier grid
-              below; fixed in the same pass so the page tells one story. */}
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
-            Each world is a separate ML specialization, priced on its own. Deep
-            Orbit is the one you can buy today: one payment, lifetime access, no
-            subscription.
+            Each world is a separate ML specialization. Deep Orbit is the one
+            available today: buy once, get lifetime access, no subscription, all
+            updates included.
           </p>
         </section>
 

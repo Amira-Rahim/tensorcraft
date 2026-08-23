@@ -62,3 +62,37 @@ test.describe("Exercise run in the real browser worker", () => {
     });
   });
 });
+
+/**
+ * Keyboard-access contract for the editor scroller (backlog B9).
+ *
+ * The 16px editor type overflows the 400px editor cap on most starters, so
+ * `.cm-scroller` scrolls. axe does not count CodeMirror's contenteditable
+ * surface as focusable content, which makes an unfocusable scroller a WCAG
+ * 2.1.1 failure (scrollable-region-focusable): keyboard users could never
+ * reach the hidden lines. The Exercise component applies these attributes
+ * after CodeMirror mounts; this test names that contract so a Sandpack or
+ * CodeMirror upgrade that drops it fails here, not only in the axe sweep.
+ */
+test.describe("Exercise editor keyboard access", () => {
+  test("the editor scroller is focusable with a role and name", async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      ({ stepKey, maxKey }) => {
+        localStorage.setItem(stepKey, "3"); // Challenge step
+        localStorage.setItem(maxKey, "3");
+      },
+      { stepKey: STEP_KEY, maxKey: MAX_KEY },
+    );
+    await page.goto(LESSON, { waitUntil: "domcontentloaded" });
+
+    const scroller = page.locator(".cm-scroller").first();
+    await expect(scroller).toBeVisible({ timeout: 30_000 });
+    await expect(scroller).toHaveAttribute("tabindex", "0", {
+      timeout: 30_000,
+    });
+    await expect(scroller).toHaveAttribute("role", "group");
+    await expect(scroller).toHaveAttribute("aria-label", "Code editor");
+  });
+});

@@ -1,19 +1,33 @@
 name: CI
 
+# Split into parallel jobs 2026-08-23. The old single "Lint, Typecheck &
+# Build" job serialized eleven steps on one 2-vCPU runner and took ~20
+# minutes, ~12 of them Playwright pushing the e2e suite through one worker
+# against a compile-on-demand `next dev` server (measured on run
+# 32655772405: e2e 710s, vitest 255s, build 112s, lint+format+typecheck+
+# audit 72s). Parallel jobs cost ~20s of setup each (pnpm store cache), cut
+# wall clock to roughly the e2e job alone, and stop one failing step from
+# hiding every other signal. E2E now runs against a production `next start`
+# server built in its own job; see playwright.config.ts.
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
+# Cancel superseded runs on PRs only. On main every commit keeps its
+# verdict: cancel-in-progress there left rapid pushes with no completed
+# run at all (e.g. the 2026-08-23 17:07 push, cancelled 16 minutes in).
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  ci:
-    name: Lint, Typecheck & Build
+  checks:
+    name: Lint, format & typecheck
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -31,6 +45,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # lint and typecheck dependOn ^build (turbo.json), so package builds
+      # run here first. The cache carries them (and the lint/typecheck task
+      # results) across runs; turbo entries are content-hashed, so restoring
+      # another job's or an older run's cache only ever adds hits.
+      - name: Restore turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-
+            turbo-
+
       - name: Lint
         run: pnpm lint
 
@@ -41,20 +68,110 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
-      # Surfaces the NEXT CVE instead of relying on someone remembering to
-      # run it (full-audit §4: "pnpm audit is not a CI step"). Prod deps
-      # only; moderate floor keeps dev-chain noise out of the signal.
+      - name: Typecheck
+        run: pnpm typecheck
+
+  # Surfaces the NEXT CVE instead of relying on someone remembering to
+  # run it (full-audit §4: "pnpm audit is not a CI step"). Prod deps
+  # only; moderate floor keeps dev-chain noise out of the signal.
+  # Its own job so a fresh registry advisory (red with zero code change)
+  # cannot block the lint/build/test signal the way it could mid-job.
+  audit:
+    name: Audit production dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level moderate
 
-      - name: Typecheck
-        run: pnpm typecheck
+  # Deliberately env-less: this is the regression test for building without
+  # runtime secrets (the e2e job builds separately WITH placeholder env,
+  # because NEXT_PUBLIC_* inline at build time).
+  build:
+    name: Build (no runtime secrets)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Restore turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-
+            turbo-
+
+      # Webpack's incremental cache; .next/cache is excluded from turbo
+      # outputs, so it needs its own carrier to speed up cache-miss builds.
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: apps/web/.next/cache
+          key: nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-
 
       - name: Build content
         run: pnpm turbo build:content
 
       - name: Build all
         run: pnpm build
+
+  unit-tests:
+    name: Unit tests & exercise validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build content
+        run: pnpm turbo build:content
 
       - name: Run tests
         run: pnpm test
@@ -72,9 +189,42 @@ jobs:
             **/coverage/
           retention-days: 7
 
-      - name: Test summary
-        if: always()
-        run: echo "## Test Results" >> $GITHUB_STEP_SUMMARY && echo "Tests completed. Check artifacts for details on any failures." >> $GITHUB_STEP_SUMMARY
+  e2e:
+    name: E2E (Playwright, prod server)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    # Placeholder env for BOTH the build (NEXT_PUBLIC_* inline at build
+    # time) and the server. `next start` sets NODE_ENV=production, which
+    # arms the production tier of the boot assertion in apps/web/lib/env.ts,
+    # so the two server-side Supabase vars must exist too or the server
+    # refuses to boot (this is by design; the dev server never armed it).
+    # Every spec runs as a guest: an unreachable Supabase host degrades to
+    # signed-out (verified 2026-08-14; keeps fork PRs runnable), and
+    # NEXT_PUBLIC_API_URL points at the same unreachable localhost the dev
+    # fallback in lib/api-url.ts used, so spec behavior is unchanged. The
+    # env-less build regression lives in the build job.
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_placeholder_anon_key
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      SUPABASE_URL: https://placeholder.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: sb_placeholder_service_role_key
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -98,19 +248,32 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium webkit
 
-      # Placeholder Supabase values, e2e only: the playwright webServer is
-      # `next dev`, whose boot assertion (apps/web/lib/env.ts) requires the
-      # two NEXT_PUBLIC_SUPABASE vars in every environment. Every spec runs
-      # as a guest, so an unreachable Supabase host degrades to signed-out
-      # and the suite passes without secrets (verified 2026-08-14; keeps
-      # fork PRs runnable). Deliberately NOT job-level: the build step runs
-      # env-less on purpose, as a regression test for building without
-      # runtime secrets.
+      - name: Restore turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-
+            turbo-
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: apps/web/.next/cache
+          key: nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      # Production build for the webServer: `next start` serves precompiled
+      # pages, which is what lets playwright.config.ts run more than one
+      # worker in CI (the old `next dev` webServer compiled routes on
+      # demand, 19-154s cold, and forced workers: 1).
+      - name: Build web app (placeholder env)
+        run: pnpm turbo build --filter @tensorcraft/web
+
       - name: Run E2E tests
         run: pnpm test:e2e
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_placeholder_anon_key
 
       - name: Upload Playwright artifacts
         if: failure()
@@ -125,6 +288,7 @@ jobs:
   exercise-runtime:
     name: Exercise corpus through the shipped runtime
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # The corpus gate was written but never wired: `describe.runIf(
     # process.env.EXERCISE_CORPUS === "1")` had ZERO hits in .github/, so
     # the runtime that grades every paid exercise had no CI coverage at all
@@ -156,6 +320,7 @@ jobs:
   migrations:
     name: Migration ledger drift check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     # ALWAYS runs, and HARD-FAILS until SUPABASE_URL +
     # SUPABASE_SERVICE_ROLE_KEY exist as repo secrets (the script exits 2
     # under CI when they are missing - fail-closed by design, never a
@@ -188,6 +353,7 @@ jobs:
   links:
     name: Broken-link check (docs + markdown)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -171,16 +171,15 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
     font: {
       body: '"JetBrains Mono", ui-monospace, monospace',
       mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-      // Reverted to 13px 2026-08-23. Raising this to 16px (the iOS auto-zoom
-      // threshold) made the code overflow the editor box, which turned
-      // `.cm-scroller` into a scrollable region that is not keyboard
-      // focusable: axe `scrollable-region-focusable`, serious, on the graded
-      // challenge step in both schemes. CI caught it; no local test can,
-      // because it needs a real browser to lay out.
-      //
-      // Closing this properly means the editor box grows with the type, or
-      // `.cm-scroller` gets tabindex="0". Both need browser verification.
-      size: "13px",
+      // 16px clears the iOS auto-zoom threshold: Safari zooms the page when
+      // an input focused at a smaller size receives focus (backlog B9). The
+      // first attempt (2026-08-23) shipped the size bump alone; the taller
+      // code overflowed the 400px editor box and axe failed the challenge
+      // step with scrollable-region-focusable, because `.cm-scroller`
+      // scrolled but held nothing keyboard-focusable. The companion fix
+      // lives in the Exercise component, which puts tabindex="0" on
+      // `.cm-scroller`; do not raise this size again without it.
+      size: "16px",
       lineHeight: "1.6",
     },
   },
@@ -211,16 +210,9 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
     font: {
       body: '"JetBrains Mono", ui-monospace, monospace',
       mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-      // Reverted to 13px 2026-08-23. Raising this to 16px (the iOS auto-zoom
-      // threshold) made the code overflow the editor box, which turned
-      // `.cm-scroller` into a scrollable region that is not keyboard
-      // focusable: axe `scrollable-region-focusable`, serious, on the graded
-      // challenge step in both schemes. CI caught it; no local test can,
-      // because it needs a real browser to lay out.
-      //
-      // Closing this properly means the editor box grows with the type, or
-      // `.cm-scroller` gets tabindex="0". Both need browser verification.
-      size: "13px",
+      // 16px for the same iOS auto-zoom reason as the dark theme above; see
+      // that comment and the `.cm-scroller` focus effect in Exercise.
+      size: "16px",
       lineHeight: "1.6",
     },
   },
@@ -682,6 +674,47 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
     [exercise?.starterCode],
   );
 
+  // The editor box is capped at 400px (style on SandpackCodeEditor below),
+  // so at 16px type most starters overflow and `.cm-scroller` scrolls. That
+  // region ships unreachable by keyboard: CodeMirror's constructor sets
+  // scrollDOM.tabIndex = -1, and Sandpack sets tabindex="-1" on the
+  // contenteditable surface too (its pattern is Tab to the wrapper, Enter
+  // to focus the editor), so nothing inside the scroller is tabbable and
+  // axe fails WCAG 2.1.1 as scrollable-region-focusable, the violation
+  // that reverted the first 16px attempt (backlog B9). Overwrite the
+  // scroller's -1 with 0; a focused scrollable element scrolls with the
+  // arrow keys in every engine we ship to. State (not a plain ref) because
+  // the wrapper mounts only after the lazy Sandpack chunk resolves; the
+  // observer re-applies when Sandpack recreates the editor (theme swaps)
+  // and watches tabindex so a re-stamped -1 cannot stick. The guards keep
+  // the observer's own writes from re-triggering it.
+  const [editorBox, setEditorBox] = useState<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!editorBox) return;
+    const makeScrollersFocusable = () => {
+      editorBox
+        .querySelectorAll<HTMLElement>(".cm-scroller")
+        .forEach((scroller) => {
+          if (scroller.tabIndex !== 0) scroller.tabIndex = 0;
+          if (scroller.getAttribute("role") !== "group") {
+            scroller.setAttribute("role", "group");
+          }
+          if (!scroller.hasAttribute("aria-label")) {
+            scroller.setAttribute("aria-label", "Code editor");
+          }
+        });
+    };
+    makeScrollersFocusable();
+    const observer = new MutationObserver(makeScrollersFocusable);
+    observer.observe(editorBox, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["tabindex"],
+    });
+    return () => observer.disconnect();
+  }, [editorBox]);
+
   // Fallback if exercise data not provided via context
   if (!exercise) {
     return (
@@ -769,7 +802,10 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
 
       {/* Sandpack Editor */}
       <Suspense fallback={<ExerciseLoadingSkeleton />}>
-        <div className="overflow-hidden border border-border rounded-none">
+        <div
+          ref={setEditorBox}
+          className="overflow-hidden border border-border rounded-none"
+        >
           <SandpackProvider
             template="vanilla"
             theme={SANDPACK_THEMES[scheme]}

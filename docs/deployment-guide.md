@@ -170,14 +170,17 @@ Supabase is managed via their dashboard:
 
 ## CI/CD Pipeline
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every push and PR:
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push and PR, as
+parallel jobs since 2026-08-23 (see `docs/ci-cd.md` for the full table):
 
-1. **Install** - `pnpm install`
-2. **Lint** - `pnpm lint`
-3. **Typecheck** - `pnpm typecheck`
-4. **Build** - `pnpm build` (includes content compilation)
-5. **Unit Tests** - `pnpm test`
-6. **E2E Tests** - Install Playwright browsers, then `pnpm test:e2e`
+- **checks** - `pnpm lint`, `pnpm format:check`, `pnpm typecheck`
+- **audit** - `pnpm audit --prod` (isolated so registry advisories cannot
+  block other signals)
+- **build** - `pnpm build` with no env vars (regression test for building
+  without runtime secrets)
+- **unit-tests** - `pnpm test` + exercise validator
+- **e2e** - builds the web app with placeholder Supabase env, serves it via
+  `next start`, runs `pnpm test:e2e` (Playwright)
 
 ### Pre-commit Hooks
 
