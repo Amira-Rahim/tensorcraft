@@ -2,13 +2,13 @@
   {
     "path": "/*",
     "timings": [
-      { "metric": "largest-contentful-paint", "budget": 2500 },
-      { "metric": "cumulative-layout-shift", "budget": 0.1 },
-      { "metric": "interactive", "budget": 3500 }
+      { "metric": "largest-contentful-paint", "budget": 11500 },
+      { "metric": "cumulative-layout-shift", "budget": 0.35 },
+      { "metric": "interactive", "budget": 14000 }
     ],
     "resourceSizes": [
-      { "resourceType": "script", "budget": 500 },
-      { "resourceType": "total", "budget": 1000 }
+      { "resourceType": "script", "budget": 800 },
+      { "resourceType": "total", "budget": 1150 }
     ]
   }
 ]

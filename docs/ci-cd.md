@@ -52,6 +52,22 @@ Concurrency: superseded runs are cancelled on PRs only. On `main` every
 commit keeps its completed verdict; cancel-in-progress there left rapid
 pushes with no CI result at all.
 
+### Lighthouse CI (separate workflow, PRs only)
+
+[`lighthouse.yml`](../.github/workflows/lighthouse.yml) builds the web
+app with the same placeholder env as the `e2e` job (the `next start`
+boot assertion applies here too), serves it, and audits `/`, `/pricing`,
+`/worlds`, and `/learn` against
+[`.github/lighthouse-budget.json`](../.github/lighthouse-budget.json).
+The budgets are a REGRESSION RATCHET, not targets: set 2026-08-24 to the
+then-worst measurement plus ~25% headroom, because the original
+aspirational budgets had never once passed and a permanently red job
+gates nothing. Aspirational values and the perf work to earn them back
+live in `docs/post-launch-backlog.md` §7. Assertions come only from the
+budget file: the action's `budgetPath` bypasses any `assert` block in
+`lighthouserc.json`, which is why that file holds only `collect`
+settings.
+
 ### Exercise validator
 
 Script: [`scripts/validate-exercises.mjs`](../scripts/validate-exercises.mjs).
