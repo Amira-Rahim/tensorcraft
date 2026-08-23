@@ -1,0 +1,47 @@
+docs/launch-blockers.md
+  s_05a49bab834291::t_029fc7ba0ed256 944-953,1574-1576
+  s_05a49bab834291::t_7e7859ade43d32 1618-1643
+apps/api/src/lib/__tests__/purchase-receipt.test.ts
+  s_05a49bab834291::t_547eb2243d6e02 1-121
+apps/api/src/routes/payments.ts
+  s_05a49bab834291::t_d7b4904f5e14bc 1316
+  s_05a49bab834291::t_9534a8a75fdb0a 950-971
+  s_05a49bab834291::t_3d987665032253 1292-1296,1303-1314,1317-1338,1340-1342,1345
+  s_05a49bab834291::t_2d0c6a58c93786 20,922-926,933-949,972,974-977,980
+  s_05a49bab834291::t_d41132c682723f 1315
+apps/api/src/lib/email.ts
+  s_05a49bab834291::t_231f2fc35b1204 121-265
+apps/web/app/globals.css
+  s_2080e50fcd36ff::t_a43fa1070a5fe6 454-461
+apps/web/app/components/five-worlds-section.tsx
+  s_2080e50fcd36ff::t_f75259a1ea4db8 83-85,87-123
+  s_2080e50fcd36ff::t_1e6dd66b5e9b89 172
+apps/api/src/routes/payments.test.ts
+  s_05a49bab834291::t_e3a03cac2ea189 205-209,1506-1589
+  s_05a49bab834291::t_24b1732adeb711 103-111
+  s_05a49bab834291::t_db126a284c3cab 1590-1649
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d7152c9bcd0fec2ea43a5c56651fcac91cc7888c",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_2080e50fcd36ff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3d6d62a2-836a-4ff4-b7d0-6f6d11b7b177",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
