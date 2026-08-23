@@ -66,7 +66,7 @@ export function SchemeToggle() {
         // the same string is intentional (tooltip parity), not redundancy
         // to clean up.
         title={label}
-        className="flex items-center justify-center w-11 h-11 border border-border bg-surface font-mono text-base leading-none text-text-primary rounded-none transition-colors hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        className="flex items-center justify-center w-11 h-11 border border-interactive bg-surface font-mono text-base leading-none text-text-primary rounded-none transition-colors hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
       >
         {/*
          * Hydration note: the server snapshot for `schemePreference` is

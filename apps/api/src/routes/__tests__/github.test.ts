@@ -70,6 +70,7 @@ function makeExerciseAttemptsQuery() {
   return thenable;
 }
 
+const mockGetUserById = vi.fn();
 vi.mock("@tensorcraft/supabase", () => ({
   getSupabaseServerClient: () => ({
     auth: { getUser: mockGetUser },
@@ -81,6 +82,9 @@ vi.mock("@tensorcraft/supabase", () => ({
     },
   }),
   getSupabaseAdminClient: () => ({
+    auth: {
+      admin: { getUserById: (...a: unknown[]) => mockGetUserById(...a) },
+    },
     from: (table: string) => {
       if (table === "profiles") {
         return {
@@ -851,6 +855,139 @@ describe("GitHub routes, retroactive push", () => {
       },
       body: JSON.stringify({ worldId: "bogus" }),
     });
+    expect(res.status).toBe(400);
+  });
+});
+
+/**
+ * Token binding on POST /api/github/token.
+ *
+ * The route validated that the posted string was *a* valid GitHub token, by
+ * fetching a username with it, and then stored it on the CALLER's row. It
+ * never checked that the token's GitHub identity was the caller's. Anyone
+ * holding someone else's provider token could bind it to their own account
+ * and have the product act on GitHub as the victim.
+ *
+ * The legitimate flow is narrow: Supabase exposes `provider_token` only at
+ * GitHub sign-in, and the web session listener immediately posts it here. So
+ * a legitimate caller always has a GitHub identity that matches.
+ */
+describe("POST /api/github/token binding", () => {
+  beforeEach(() => {
+    authedUser();
+    mockGetUserById.mockReset();
+    mockAdminProfileUpdate.mockReset();
+    mockProfileRow = null;
+    mockGetUserById.mockResolvedValue({
+      data: { user: { identities: [] } },
+      error: null,
+    });
+  });
+
+  function githubUserIs(login: string) {
+    fetchHandler = async (url: string) => {
+      if (url.includes("api.github.com/user")) {
+        return jsonResponse({ login });
+      }
+      throw new Error(`Unhandled fetch: ${url}`);
+    };
+  }
+
+  function callerIdentity(login: string | null) {
+    mockGetUserById.mockResolvedValue({
+      data: {
+        user: {
+          identities: login
+            ? [{ provider: "github", identity_data: { user_name: login } }]
+            : [],
+        },
+      },
+      error: null,
+    });
+  }
+
+  function post(app: ReturnType<typeof createApp>) {
+    return app.request("/api/github/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer test-token",
+      },
+      body: JSON.stringify({ github_token: "gho_posted" }),
+    });
+  }
+
+  it("stores a token whose identity matches the caller", async () => {
+    callerIdentity("octocat");
+    githubUserIs("octocat");
+
+    const res = await post(createApp());
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ stored: true });
+  });
+
+  it("refuses a token belonging to someone else", async () => {
+    callerIdentity("octocat");
+    githubUserIs("victim");
+
+    const res = await post(createApp());
+
+    expect(res.status).toBe(403);
+    expect(mockAdminProfileUpdate).not.toHaveBeenCalled();
+  });
+
+  it("matches case-insensitively, since GitHub logins are not case sensitive", async () => {
+    callerIdentity("OctoCat");
+    githubUserIs("octocat");
+
+    const res = await post(createApp());
+
+    expect(res.status).toBe(200);
+  });
+
+  /**
+   * Second line of defence for accounts whose auth identity carries no
+   * username: an account already connected to one GitHub login cannot be
+   * re-pointed at another.
+   */
+  it("refuses a token that contradicts the already-connected account", async () => {
+    callerIdentity(null);
+    mockProfileRow = { github_username: "octocat" };
+    githubUserIs("victim");
+
+    const res = await post(createApp());
+
+    expect(res.status).toBe(403);
+  });
+
+  /**
+   * Fails OPEN when neither source yields an expected login. The legitimate
+   * first-time flow must not break because a provider changed its metadata
+   * shape; the two checks above still cover every account that has ever
+   * connected.
+   */
+  it("allows a first connection when no prior identity is known", async () => {
+    callerIdentity(null);
+    mockProfileRow = null;
+    githubUserIs("brand-new");
+
+    const res = await post(createApp());
+
+    expect(res.status).toBe(200);
+  });
+
+  it("still rejects a token GitHub does not recognise", async () => {
+    callerIdentity("octocat");
+    fetchHandler = async (url: string) => {
+      if (url.includes("api.github.com/user")) {
+        return jsonResponse({ message: "Bad credentials" }, { status: 401 });
+      }
+      throw new Error(`Unhandled fetch: ${url}`);
+    };
+
+    const res = await post(createApp());
+
     expect(res.status).toBe(400);
   });
 });

@@ -149,7 +149,7 @@ export default function Home() {
             <Link
               href="/pricing"
               data-testid="landing-cta-final-pricing"
-              className="rounded-none inline-flex items-center px-8 py-[18px] font-mono font-bold text-sm tracking-wider uppercase border-2 border-border text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+              className="rounded-none inline-flex items-center px-8 py-[18px] font-mono font-bold text-sm tracking-wider uppercase border-2 border-interactive text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
               See pricing
             </Link>

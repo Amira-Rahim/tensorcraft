@@ -715,6 +715,54 @@ github.post("/retroactive-push", async (c) => {
 
 github.use("/token", authMiddleware);
 
+/**
+ * The GitHub login the caller is expected to present, or null if we have no
+ * way to know yet.
+ *
+ * Two independent sources, in order of authority:
+ *   1. the caller's GitHub auth identity, which they cannot forge
+ *   2. the login already stored on their profile, so an account connected to
+ *      one GitHub user cannot later be re-pointed at another
+ *
+ * Both are read defensively: a lookup failure yields null (no binding) rather
+ * than a rejection, so an unexpected provider metadata shape cannot lock
+ * legitimate users out of connecting.
+ */
+async function expectedGitHubLogin(
+  userId: string,
+  serverClient: ReturnType<typeof getSupabaseServerClient>,
+): Promise<string | null> {
+  try {
+    const { getSupabaseAdminClient } = await import("@tensorcraft/supabase");
+    const { data } =
+      await getSupabaseAdminClient().auth.admin.getUserById(userId);
+    const identities = (data?.user?.identities ?? []) as {
+      provider?: string;
+      identity_data?: Record<string, unknown>;
+    }[];
+    const login = identities.find((i) => i.provider === "github")?.identity_data
+      ?.user_name;
+    if (typeof login === "string" && login.length > 0) return login;
+  } catch {
+    // Fall through to the stored username.
+  }
+
+  try {
+    const { data } = await serverClient
+      .from("profiles")
+      .select("github_username")
+      .eq("id", userId)
+      .single();
+    const stored = (data as { github_username?: string } | null)
+      ?.github_username;
+    if (typeof stored === "string" && stored.length > 0) return stored;
+  } catch {
+    // No binding available.
+  }
+
+  return null;
+}
+
 github.post("/token", async (c) => {
   const userId = c.get("userId");
   const token = c.get("accessToken");
@@ -730,12 +778,49 @@ github.post("/token", async (c) => {
     return c.json({ error: "github_token (string) is required" }, 400);
   }
 
-  const username = await getGitHubUsername(body.github_token);
+  // getGitHubUsername THROWS on a 401 (expired or revoked token) rather than
+  // returning null, so an unwrapped call answered 500 for what is plainly a
+  // bad-request case. Found 2026-08-23 by a test written for the binding
+  // check below.
+  let username: string | null;
+  try {
+    username = await getGitHubUsername(body.github_token);
+  } catch {
+    username = null;
+  }
   if (!username) {
     return c.json({ error: "Invalid GitHub token" }, 400);
   }
 
   const supabase = getSupabaseServerClient(token);
+
+  // Bind the token to the caller.
+  //
+  // This route used to prove only that the posted string was *a* valid
+  // GitHub token, then store it on the caller's row. Anyone holding someone
+  // else's provider token could therefore attach it to their own account and
+  // have the product act on GitHub as that person.
+  //
+  // The legitimate flow is narrow: Supabase exposes `provider_token` only at
+  // GitHub sign-in, and the session listener posts it here immediately, so a
+  // real caller always has a matching GitHub identity.
+  const expectedLogin = await expectedGitHubLogin(userId, supabase);
+  if (expectedLogin && expectedLogin.toLowerCase() !== username.toLowerCase()) {
+    logger.warn(
+      { route: "github.token", userId, expectedLogin, presented: username },
+      "Refused GitHub token: presented account does not match the caller",
+    );
+    return c.json({ error: "GitHub token does not match your account" }, 403);
+  }
+  if (!expectedLogin) {
+    // First connection with no identity to check against. Allowed so a
+    // provider metadata change cannot break sign-in, but recorded: the two
+    // checks above cover every account that has connected even once.
+    logger.info(
+      { route: "github.token", userId, presented: username },
+      "Storing GitHub token without a prior identity to bind against",
+    );
+  }
 
   const { error } = await supabase
     .from("profiles")

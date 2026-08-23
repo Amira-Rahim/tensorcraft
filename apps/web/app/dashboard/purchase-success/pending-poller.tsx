@@ -85,7 +85,7 @@ export function PendingPoller({ sessionId }: { sessionId?: string }) {
         </button>
         <a
           href={`mailto:support@tensorcraft.app?subject=${mailSubject}&body=${mailBody}`}
-          className="inline-flex items-center justify-center h-10 px-5 text-sm font-mono border border-border text-text-primary hover:border-primary transition-colors"
+          className="inline-flex items-center justify-center h-10 px-5 text-sm font-mono border border-interactive text-text-primary hover:border-primary transition-colors"
         >
           Email support
         </a>

@@ -19,6 +19,7 @@ import {
 } from "@/lib/script-preference";
 import { completesModule } from "./completes-module";
 import { PatchAward } from "./patch-award";
+import { ChallengePassedBanner } from "./challenge-passed-banner";
 import {
   trackLessonStarted,
   trackLessonCompleted,
@@ -741,41 +742,11 @@ function LessonStepsInner({
           visibleComponents={CHALLENGE_RIGHT}
           onExerciseComplete={handleExerciseComplete}
         />
-        {/* The green "tests passed" moment and the unlocked Continue used
-            to live in opposite columns (2026-07-14 UX audit): surface the
-            way forward right where the pass landed. */}
-        {canContinue && (
-          <div
-            data-testid="challenge-passed-banner"
-            className="mt-4 flex items-center justify-between gap-4 border px-5 py-4"
-            style={{
-              borderColor: "var(--tc-primary)",
-              background:
-                "color-mix(in srgb, var(--tc-primary) 8%, transparent)",
-            }}
-            role="status"
-          >
-            <p
-              className="font-mono text-xs uppercase tracking-widest"
-              style={{ color: "var(--tc-primary)" }}
-            >
-              {exercises.length > 1
-                ? "All exercises passed"
-                : "Exercise passed"}
-            </p>
-            <button
-              type="button"
-              onClick={goNext}
-              className="text-sm font-mono font-bold px-6 py-2.5"
-              style={{
-                background: "var(--tc-primary)",
-                color: "var(--tc-on-primary)",
-              }}
-            >
-              Continue &rarr;
-            </button>
-          </div>
-        )}
+        <ChallengePassedBanner
+          passed={canContinue}
+          exerciseCount={exercises.length}
+          onContinue={goNext}
+        />
       </div>
     );
   } else if (currentStep === 4) {
