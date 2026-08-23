@@ -1,0 +1,56 @@
+apps/api/src/lib/admin-auth.ts
+  s_05a49bab834291::t_d52c4a55af1144 1-29
+docs/launch-blockers.md
+  s_05a49bab834291::t_e2bfb42bbdb735 1640-1644,1821-1825,1839-1842
+  s_05a49bab834291::t_962fc94529490b 1912-1930
+  s_05a49bab834291::t_a552cf02000284 1931-1960
+apps/api/src/routes/__tests__/email-tags.test.ts
+  s_05a49bab834291::t_b96bea1680eaa6 16,24,149-230
+  s_05a49bab834291::t_8fc9c0c4bd9332 231
+apps/api/src/routes/email-tags.ts
+  s_05a49bab834291::t_8867be85e65220 3-5,76-119
+  s_05a49bab834291::t_23b22bc1651ff1 120
+apps/api/src/routes/__tests__/webhooks.test.ts
+  s_05a49bab834291::t_d47e61d993cfc1 14-30,125-217
+  s_05a49bab834291::t_b12b9263d5734b 218
+apps/web/app/unsubscribe/one-click/route.ts
+  s_05a49bab834291::t_ddadb31e2df7fa 3,20-23,26-27,31-35
+apps/web/app/terms/page.tsx
+  s_05a49bab834291::t_d2c034543122f9 80-83,98-102
+  s_05a49bab834291::t_bf39d36a969138 103
+apps/web/lib/notify-kit-unsubscribe.ts
+  s_05a49bab834291::t_2671cd5b7a71b3 1-45
+apps/web/.env.example
+  s_05a49bab834291::t_962fc94529490b 27-37
+apps/web/app/unsubscribe/page.tsx
+  s_05a49bab834291::t_ddadb31e2df7fa 4,27,29-31
+apps/web/lib/__tests__/notify-kit-unsubscribe.test.ts
+  s_05a49bab834291::t_3af751524a86d6 1-84
+apps/api/src/routes/webhooks.ts
+  s_05a49bab834291::t_5184706c477b51 3,50-73,116-152
+  s_05a49bab834291::t_893ad2ab1f9d11 153
+apps/api/src/routes/admin.ts
+  s_05a49bab834291::t_8867be85e65220 2,19-20
+apps/web/app/privacy/page.tsx
+  s_05a49bab834291::t_d2c034543122f9 83-84,99-101
+apps/web/app/privacy/__snapshots__/page.snapshot.test.tsx.snap
+  s_05a49bab834291::t_cfc665b6e06145 64,86
+apps/web/app/terms/__snapshots__/page.snapshot.test.tsx.snap
+  s_05a49bab834291::t_6365d5aac12f14 56,70-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b690154c6486b31891d80a2a5095d32c4aacd90a",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
