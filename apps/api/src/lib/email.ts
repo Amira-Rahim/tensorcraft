@@ -2,6 +2,7 @@
 import { Resend } from "resend";
 import { captureException } from "./error-tracking";
 import { logger } from "./logger";
+import { withTimeout } from "./with-timeout";
 
 let resend: Resend | null = null;
 
@@ -101,13 +102,17 @@ export async function sendIssueNotification(
     // Resend's SDK reports failures in the result, it does not throw -
     // ignoring `error` silently lost support notifications (gap sweep F1
     // class, 2026-07-25). The catch only covers unexpected throws.
-    const { error: sendError } = await client.emails.send({
-      from: "Tensorcraft <noreply@tensorcraft.app>",
-      to,
-      subject,
-      text,
-      html,
-    });
+    const { error: sendError } = await withTimeout(
+      client.emails.send({
+        from: "Tensorcraft <noreply@tensorcraft.app>",
+        to,
+        subject,
+        text,
+        html,
+      }),
+      10_000,
+      "issue notification send",
+    );
     if (sendError) {
       captureException(new Error(sendError.message), {
         source: "issues.email",
@@ -117,30 +122,6 @@ export async function sendIssueNotification(
   } catch (err) {
     captureException(err, { source: "issues.email" });
   }
-}
-
-/**
- * Bound a promise's WAIT (not its socket). Used for the receipt send, which
- * happens inside the Stripe webhook handler: a hung Resend connection must
- * not hold the handler past Stripe's timeout and force a re-delivery.
- */
-function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(
-      () => reject(new Error(`${label} timed out after ${ms}ms`)),
-      ms,
-    );
-    p.then(
-      (v) => {
-        clearTimeout(timer);
-        resolve(v);
-      },
-      (e) => {
-        clearTimeout(timer);
-        reject(e);
-      },
-    );
-  });
 }
 
 /** "deep-orbit" reads as an internal id to a customer. "Deep Orbit" does not. */

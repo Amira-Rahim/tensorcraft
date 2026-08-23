@@ -18,6 +18,7 @@ import {
   revokeUserToken,
 } from "../lib/github";
 import { logger } from "../lib/logger";
+import { decryptToken, encryptToken } from "../lib/token-crypto";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
 
 const github = new Hono<AppEnv>();
@@ -258,7 +259,7 @@ github.get("/callback", async (c) => {
     const { error: dbError } = await supabase
       .from("profiles")
       .update({
-        github_token: tokens.access_token,
+        github_token: encryptToken(tokens.access_token),
         github_username: username,
         github_connected: true,
         updated_at: new Date().toISOString(),
@@ -308,7 +309,11 @@ github.post("/disconnect", async (c) => {
 
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-  const token = profile?.github_token as string | null | undefined;
+  // Stored encrypted since 2026-08-23. decryptToken passes legacy plaintext
+  // rows through unchanged and returns null for anything it cannot open, and
+  // null is already the "not connected" path below.
+  const storedToken = profile?.github_token as string | null | undefined;
+  const token = storedToken ? decryptToken(storedToken) : storedToken;
 
   // Best-effort revocation, if env vars are missing or GitHub is down, we
   // still want to clear our DB so the user is locally disconnected.
@@ -427,7 +432,8 @@ github.post("/commit", async (c) => {
     );
   }
 
-  const token = profile.github_token as string | null;
+  const storedToken = profile.github_token as string | null;
+  const token = storedToken ? decryptToken(storedToken) : storedToken;
   const username = profile.github_username as string | null;
 
   if (!token || !username) {
@@ -539,7 +545,8 @@ github.post("/retroactive-push", async (c) => {
     );
   }
 
-  const token = profile.github_token as string | null;
+  const storedToken = profile.github_token as string | null;
+  const token = storedToken ? decryptToken(storedToken) : storedToken;
   const username = profile.github_username as string | null;
   if (!token || !username) {
     return c.json(
@@ -825,7 +832,7 @@ github.post("/token", async (c) => {
   const { error } = await supabase
     .from("profiles")
     .update({
-      github_token: body.github_token,
+      github_token: encryptToken(body.github_token),
       github_username: username,
       github_connected: true,
       updated_at: new Date().toISOString(),

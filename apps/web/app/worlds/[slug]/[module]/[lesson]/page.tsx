@@ -20,6 +20,7 @@ import {
   isModuleCompleted,
 } from "@/lib/progress";
 import { LessonSteps } from "./lesson-steps";
+import { NoscriptReveal } from "./noscript-reveal";
 import { LessonPrefsProvider } from "@tensorcraft/ui";
 import type { Metadata } from "next";
 
@@ -238,6 +239,12 @@ export default async function LessonPage({ params }: Props) {
 
   return (
     <main className="min-h-screen" style={{ background: "var(--tc-bg)" }}>
+      {/* Undoes the scene-playback hiding for clients that never run JS.
+          Without it the lesson body ships at opacity:0 / display:none and
+          stays that way, which is cloaking-adjacent on the primary organic
+          surface. Must be server-rendered: React drops noscript children on
+          a client render. */}
+      <NoscriptReveal />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

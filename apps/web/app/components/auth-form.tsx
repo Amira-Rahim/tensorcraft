@@ -336,14 +336,14 @@ export function AuthForm() {
             By {copy.terms}, you agree to our{" "}
             <Link
               href="/terms"
-              className="text-text-muted underline underline-offset-2 decoration-text-muted/30 hover:text-text-primary transition-colors"
+              className="text-text-muted underline underline-offset-2 decoration-text-muted/60 hover:text-text-primary transition-colors"
             >
               Terms
             </Link>{" "}
             and{" "}
             <Link
               href="/privacy"
-              className="text-text-muted underline underline-offset-2 decoration-text-muted/30 hover:text-text-primary transition-colors"
+              className="text-text-muted underline underline-offset-2 decoration-text-muted/60 hover:text-text-primary transition-colors"
             >
               Privacy Policy
             </Link>

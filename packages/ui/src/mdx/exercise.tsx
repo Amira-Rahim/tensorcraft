@@ -171,7 +171,7 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
     font: {
       body: '"JetBrains Mono", ui-monospace, monospace',
       mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-      size: "13px",
+      size: "16px",
       lineHeight: "1.6",
     },
   },
@@ -202,7 +202,7 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
     font: {
       body: '"JetBrains Mono", ui-monospace, monospace',
       mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-      size: "13px",
+      size: "16px",
       lineHeight: "1.6",
     },
   },

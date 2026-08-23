@@ -202,6 +202,11 @@ vi.mock("../lib/kit", () => ({
   tagSubscriber: (...args: unknown[]) => mockTagSubscriber(...args),
 }));
 
+const mockCaptureException = vi.fn();
+vi.mock("../lib/error-tracking", () => ({
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
+}));
+
 const mockSendReceipt = vi.fn().mockResolvedValue(undefined);
 vi.mock("../lib/email", () => ({
   sendPurchaseReceipt: (...args: unknown[]) => mockSendReceipt(...args),
@@ -1645,5 +1650,80 @@ describe("purchase receipt on delayed settle", () => {
         sessionId: "cs_async_1",
       }),
     );
+  });
+});
+
+/**
+ * Geo-gate backstop.
+ *
+ * The gate refuses checkout for EU/UK countries using Cloudflare's edge
+ * geolocation, which a VPN defeats. Stripe collects the buyer's BILLING
+ * country regardless, so the webhook is the one place that sees ground truth.
+ *
+ * It flags rather than acts: by the time this runs the money has moved, and
+ * auto-refunding on a billing address is a worse failure than a human
+ * reviewing a rare event. The purchase is always recorded either way.
+ */
+describe("EU/UK billing country backstop", () => {
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    mockInsert.mockReset();
+    mockInsert.mockResolvedValue({ error: null });
+    mockConstructEvent.mockReset();
+    mockAdminExistingRow = null;
+    mockEqResult = null;
+    mockProfileEmail = "buyer@example.com";
+    mockCaptureException.mockClear();
+  });
+
+  function settleFrom(country: string | undefined, id = "cs_geo_1") {
+    const event = {
+      id: `evt_${id}`,
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id,
+          client_reference_id: "user_456",
+          amount_total: 4900,
+          payment_status: "paid",
+          metadata: { planId: "single", worldIds: "deep-orbit" },
+          customer_details: country ? { address: { country } } : undefined,
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+    return app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+  }
+
+  it("records the purchase and flags a gated billing country", async () => {
+    const res = await settleFrom("DE");
+
+    // Recorded: the charge succeeded, and withholding access from someone who
+    // paid would be the worse error.
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalled();
+    expect(mockCaptureException).toHaveBeenCalled();
+  });
+
+  it("stays quiet for an ungated country", async () => {
+    const res = await settleFrom("US", "cs_geo_2");
+
+    expect(res.status).toBe(200);
+    expect(mockCaptureException).not.toHaveBeenCalled();
+  });
+
+  it("stays quiet when Stripe sent no billing country", async () => {
+    const res = await settleFrom(undefined, "cs_geo_3");
+
+    expect(res.status).toBe(200);
+    expect(mockCaptureException).not.toHaveBeenCalled();
   });
 });

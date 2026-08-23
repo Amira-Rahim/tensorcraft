@@ -64,3 +64,54 @@ describe("errorMessageForCode", () => {
     );
   });
 });
+
+/**
+ * Transient database faults.
+ *
+ * A Supabase blip reached the lesson boundary carrying a Postgres SQLSTATE
+ * that the map did not recognise, so it fell through to `unknown`: "Something
+ * went wrong on our end. Try again or contact support." A paying customer
+ * reads that as a broken product and emails support about a lesson that was
+ * never broken. These are usually over in seconds and the right advice is to
+ * retry, not to write in.
+ */
+describe("transient database faults", () => {
+  it("recognises Postgres connection-exception codes (SQLSTATE class 08)", () => {
+    for (const code of ["08000", "08003", "08006", "08001", "08004"]) {
+      expect(errorMessageForCode(code)).toBe(
+        ERROR_MESSAGES.service_unavailable,
+      );
+    }
+  });
+
+  it("recognises overload and shutdown codes", () => {
+    expect(errorMessageForCode("53300")).toBe(
+      ERROR_MESSAGES.service_unavailable,
+    );
+    expect(errorMessageForCode("57P01")).toBe(
+      ERROR_MESSAGES.service_unavailable,
+    );
+    expect(errorMessageForCode("57P03")).toBe(
+      ERROR_MESSAGES.service_unavailable,
+    );
+    expect(errorMessageForCode("57014")).toBe(
+      ERROR_MESSAGES.service_unavailable,
+    );
+  });
+
+  it("tells the reader to retry rather than to contact support", () => {
+    expect(ERROR_MESSAGES.service_unavailable).toMatch(/try again/i);
+    expect(ERROR_MESSAGES.service_unavailable).not.toMatch(/contact support/i);
+  });
+
+  /**
+   * The class-08 rule is a prefix match, so guard that it cannot swallow an
+   * unrelated code that merely starts with those digits.
+   */
+  it("does not treat an arbitrary 08-prefixed string as a database fault", () => {
+    expect(errorMessageForCode("08")).toBe(ERROR_MESSAGES.unknown);
+    expect(errorMessageForCode("0800-not-a-sqlstate")).toBe(
+      ERROR_MESSAGES.unknown,
+    );
+  });
+});

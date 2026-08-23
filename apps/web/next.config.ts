@@ -171,9 +171,23 @@ const nextConfig: NextConfig = {
           // Supabase (auth + storage + realtime), our own api.tensorcraft.app,
           // Google Fonts via next/font (inline-style pragma required), and
           // data:/blob: images for OG previews and canvas exports.
-          // 'unsafe-inline' + 'unsafe-eval' for scripts are required by Next.js
-          // hydration and PostHog's dynamic loader; revisit after launch with
-          // nonce-based inline once we have telemetry on what actually needs it.
+          // On 'unsafe-inline' and 'unsafe-eval', corrected 2026-08-23. The
+          // previous comment attributed both to "Next.js hydration", which is
+          // wrong and made the whole line look immovable:
+          //
+          //   script-src 'unsafe-eval'   GENUINELY required. PostHog's loader
+          //     evaluates code at runtime, and removing it breaks analytics
+          //     rather than tightening anything.
+          //   script-src 'unsafe-inline' NOT a Next.js requirement. Next
+          //     supports nonce-based CSP. It is here because we have no nonce
+          //     plumbing: that needs middleware to mint a per-request nonce
+          //     and thread it through, and it must be verified in a real
+          //     browser because getting it wrong blocks every inline script
+          //     and white-screens the site. Worth doing, not worth guessing.
+          //   style-src 'unsafe-inline'  Effectively required, and this is the
+          //     part that reads as "removable" and is not: the codebase styles
+          //     heavily through inline `style={{ ... }}` attributes, which
+          //     this directive governs. Removing it unstyles the product.
           key: "Content-Security-Policy",
           value: [
             "default-src 'self'",

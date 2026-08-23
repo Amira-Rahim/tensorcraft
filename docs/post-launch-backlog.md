@@ -480,6 +480,28 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 7. Platform + infra deferrals
 
+- [ ] **Drop the counterfactual debris.** Deferred from
+  `docs/launch-blockers.md` 2026-08-23: the table is empty and harmless, and
+  a pending migration blocks the API deploy gate, so this waits until the
+  launch deploy is out. The feature's client was deleted in 24d45e4;
+  `counterfactual_choices` was verified at **0 rows** in production on
+  2026-08-23. When you do it, in one transaction-wrapped migration:
+
+  ```sql
+  -- Drop by ARGUMENT TYPES, not parameter names: 058 renamed the params
+  -- (p_theme_id to p_world_id) but function identity is name + arg types.
+  drop function if exists public.record_counterfactual(text, text, text, int, int);
+  drop function if exists public.get_counterfactual(text);
+  drop table if exists public.counterfactual_choices cascade;
+  ```
+
+  Then remove `"counterfactual_choices"` from the export table list in
+  `apps/api/src/routes/profiles.ts` and regenerate
+  `packages/supabase/src/types.ts` from the live database. Ship the code
+  change with or before the migration, or the GDPR export queries a table
+  that no longer exists.
+
+
 - [ ] **Remove the two one-release API shims from migration 059.** Added
   2026-08-18 so an old client could not break against the renamed columns,
   and deliberately scoped to a single release. Both are still deployed

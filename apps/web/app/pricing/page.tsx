@@ -132,7 +132,7 @@ export default function PricingPage() {
                 </span>
                 <Link
                   href="/terms#refunds"
-                  className="underline underline-offset-[3px] decoration-text-muted/40 hover:text-primary hover:decoration-primary transition-colors"
+                  className="underline underline-offset-[3px] decoration-text-muted/60 hover:text-primary hover:decoration-primary transition-colors"
                 >
                   See terms
                 </Link>

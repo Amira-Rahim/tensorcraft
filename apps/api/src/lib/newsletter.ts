@@ -20,6 +20,7 @@ import { Resend } from "resend";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { isLaunched } from "@tensorcraft/shared";
 import { logger } from "./logger";
+import { withTimeout } from "./with-timeout";
 import { captureException } from "./error-tracking";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://tensorcraft.app";
@@ -290,17 +291,21 @@ export async function sendDigestNewsletter(
       // `result.failed` structurally unreachable - every failed send
       // counted as sent, with zero Sentry captures (gap sweep F1,
       // 2026-07-25; same defect class as the supabase-js R3-4e fix).
-      const { error: sendError } = await client.emails.send({
-        from: FROM,
-        to: r.email,
-        subject,
-        text: renderText(weekIso, items, unsubUrl),
-        html: renderHtml(weekIso, items, unsubUrl),
-        headers: {
-          "List-Unsubscribe": `<${oneClickUrl}>`,
-          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-        },
-      });
+      const { error: sendError } = await withTimeout(
+        client.emails.send({
+          from: FROM,
+          to: r.email,
+          subject,
+          text: renderText(weekIso, items, unsubUrl),
+          html: renderHtml(weekIso, items, unsubUrl),
+          headers: {
+            "List-Unsubscribe": `<${oneClickUrl}>`,
+            "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+          },
+        }),
+        10_000,
+        "digest send",
+      );
       if (sendError) {
         result.failed += 1;
         // No recipient address in the capture: it lands in Fly logs

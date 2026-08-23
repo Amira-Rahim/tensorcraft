@@ -19,6 +19,7 @@ import {
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 import { sendPurchaseReceipt } from "../lib/email";
 import { logger } from "../lib/logger";
+import { captureException } from "../lib/error-tracking";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
 import type { AppEnv } from "../types";
 
@@ -918,6 +919,34 @@ payments.post("/webhook", async (c) => {
           },
           userId,
         );
+
+        // Geo-gate backstop. The gate refuses checkout on Cloudflare's edge
+        // geolocation, which a VPN defeats. Stripe collects the BILLING
+        // country regardless, so this is the one place that sees ground
+        // truth.
+        //
+        // It flags and does not act: the money has already moved by now, and
+        // auto-refunding on a billing address would be a worse failure than a
+        // human reviewing a rare event. The purchase is recorded either way,
+        // because withholding access from someone who paid is the bigger
+        // error.
+        const billingCountry = (
+          session.customer_details as { address?: { country?: string } } | null
+        )?.address?.country;
+        if (isVatGatedCountry(billingCountry)) {
+          captureException(
+            new Error(`Purchase settled from gated region: ${billingCountry}`),
+            {
+              source: "payments.geo-backstop",
+              extra: {
+                sessionId,
+                billingCountry,
+                worldIds,
+                note: "Sale completed from an EU/UK billing address while checkout is US-only. Review and refund if required.",
+              },
+            },
+          );
+        }
 
         // The buyer's email feeds two independent sends. Fetched ONCE and
         // outside both, because the receipt must not depend on Kit: Kit's
