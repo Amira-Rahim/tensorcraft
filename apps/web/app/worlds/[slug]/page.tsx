@@ -18,6 +18,7 @@ import { ModulePatch } from "@tensorcraft/ui/module-patch";
 import { GuestModuleBanner } from "./guest-module-banner";
 import { ComingSoonStub } from "./coming-soon-stub";
 import { buildCourseJsonLd } from "./course-jsonld";
+import { resolveContinueCta } from "./continue-cta";
 import type { Metadata } from "next";
 
 interface Props {
@@ -240,42 +241,15 @@ export default async function WorldDetailPage({ params }: Props) {
   // Check capstone eligibility
   const isWorldComplete = moduleMapItems.every((m) => m.status === "completed");
 
-  // Find active module for "Continue" CTA
-  const activeModule = moduleMapItems.find(
-    (m) => m.status === "active" || m.status === "available",
-  );
-  const activeLesson = activeModule?.lessons.find(
-    (l) => l.status === "in_progress" || l.status === "available",
-  );
-
-  // The free-module dead end (2026-07-14 UX audit): with module 1 done
-  // and module 2 paywall-locked, activeModule is undefined and the CTA
-  // used to render "Start Learning" pointing at a route that redirects
-  // straight back to this map - a self-loop at the exact moment the
-  // learner is most ready to buy. Route that state to the paywall.
-  const nextLockedModule = moduleMapItems.find((m) => m.status === "locked");
-  const paywallBlocked =
-    !activeModule &&
-    !isWorldComplete &&
-    !hasPurchased &&
-    completedModuleCount > 0 &&
-    !!nextLockedModule;
-
-  // Continue CTA info
-  const continueHref = paywallBlocked
-    ? "/paywall"
-    : activeModule && activeLesson
-      ? `/worlds/${slug}/${activeModule.slug}/${activeLesson.slug}`
-      : isWorldComplete
-        ? `/worlds/${slug}/capstone`
-        : `/worlds/${slug}/${worldModules[0]?.slug}`;
-  const continueLabel = paywallBlocked
-    ? `Unlock Module ${nextLockedModule.order}`
-    : activeModule
-      ? `Continue M${activeModule.order}`
-      : isWorldComplete
-        ? "View Capstone"
-        : "Start Learning";
+  // Continue CTA. Extracted to continue-cta.ts on 2026-08-23 so it could be
+  // tested: a guest who finished the free module was shown "Continue M1"
+  // pointing back into the module they had just completed. See that file for
+  // the mechanism.
+  const { href: continueHref, label: continueLabel } = resolveContinueCta({
+    worldSlug: slug,
+    modules: moduleMapItems,
+    hasPurchased,
+  });
 
   const courseJsonLd = buildCourseJsonLd(world);
 

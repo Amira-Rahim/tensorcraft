@@ -1321,7 +1321,13 @@ has already been written off once (see above) - do not launch dark again.
   production stack traces; (2) `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
   in the Vercel **production** environment, which is a hard launch gate now
   that the boot assertion refuses to start production without them; (3)
-  `APP_URL` on Fly. Historical detail follows.
+  `APP_URL` on Fly; (4) **added 2026-08-23: `API_URL` and `ADMIN_API_KEY` in
+  the Vercel server environment**, which the email-link unsubscribe relay
+  needs in order to tell Kit about an opt-out. `API_URL` must NOT be
+  `NEXT_PUBLIC_`, since it is paired with a secret, and `ADMIN_API_KEY` must
+  match the API's value exactly or the relay is rejected 401. Both are
+  documented in `apps/web/.env.example`. Unset is safe but inert: the local
+  opt-out still applies and Kit is simply not told. Historical detail follows.
   (audit §4; doc side CLOSED 2026-07-25 - remaining
   work is the startup assertion + operator settings): ~~document
   `STRIPE_TAX_ENABLED`~~ (now in `.env.example` + deployment-guide, with
@@ -1870,7 +1876,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
 - [ ] **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold. Re-verified 2026-08-20: still `size: "13px"` in BOTH Sandpack themes (`packages/ui/src/mdx/exercise.tsx:174` dark, `:205` light). Also still true: no axe run at any mobile viewport (`e2e/accessibility.spec.ts` runs only in the chromium project, which excludes the mobile specs), and all non-axe e2e is dark-only via the global `colorScheme: "dark"` pin (`playwright.config.ts:32`). **Corrected:** the "no mobile affordance past the exercise gate" clause is stale, the mobile pane toggle exists (`lesson-steps.tsx:820`).
 - [ ] **Lessons ship ~100 indexable words** (only the current step is in the DOM) and require JS to render at all, with no `<noscript>`. Re-verified 2026-08-20: zero `noscript` anywhere in `apps/web`, and exactly one of six steps renders because `currentStep` is client state. Large organic-acquisition loss for a content-led product.
 - [ ] **SEO/metadata + funnel polish: ONE sub-item left of four.** Re-verified 2026-08-20 and this entry was badly out of date. **Now fixed and struck:** the og:url shallow-merge drop (all four surfaces, world detail / lesson / `/learn` / capstone, now declare full `openGraph` and their own `twitter` block); the `PreOrder` emission (gated bundles are filtered out of the catalog entirely, `PreOrder` survives only in a comment and a negative test); and both "duplicate `Course` JSON-LD" and "`price: 59` in two places" are **not reproducible** (the launched and coming-soon Course emitters are mutually exclusive because the page early-returns, and the price has a single source in `packages/shared/src/constants.ts:101`).
-  **Still genuinely open:** a guest who finishes module 1 sees **"Continue M1" pointing backwards**. The paywall branch at `apps/web/app/worlds/[slug]/page.tsx:272-278` requires `!activeModule`, so a learner whose `activeModule` still resolves to module 1 gets a Continue link back into the module they just finished. Fix the `activeModule`/`paywallBlocked` precedence so a completed module 1 advances or routes to `/paywall`.
+  ~~Still genuinely open: a guest who finishes module 1 sees "Continue M1" pointing backwards~~ **FIXED 2026-08-23, and the diagnosis in this entry was wrong.** It was not a precedence problem. It was a PARTIAL state: `activeModule` matched module 1 because its STATUS was still `active`, while `activeLesson` was undefined because every lesson inside it was complete. The label branch tested only `activeModule` (so "Continue M1"), the href branch tested both, fell through, and landed on the module root. A second guard hid it further: `completedModuleCount > 0` counts module STATUS, which reads zero in exactly this state, so the paywall branch could not fire even once `!activeModule` was satisfied. Fix: the CTA logic moved to `apps/web/app/worlds/[slug]/continue-cta.ts` (same extraction pattern as `course-jsonld.ts`, so it is testable outside a server component), "active" now requires a module to still have a remaining lesson, and the progress guard keys off completed LESSONS rather than module status. 6 tests, including the paywall case and a guard that a purchaser is never routed to buy what they own.
 - [ ] **Load test before ad spend** (gap found 2026-07-22 - no audit dimension
   covered it): nobody has ever pushed the payment path, the SSR lesson
   route, or the Stripe webhook handler under concurrency. Gates 2/3
