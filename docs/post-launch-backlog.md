@@ -80,6 +80,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
   triggers exercise redesign); scroll depth ≥75%; story-skip >40% in any
   module flags narrative redesign.
 - [ ] Respond to beta feedback + community Discord questions.
+  **Blocked on the Discord existing.** Moved here from
+  `docs/launch-blockers.md` 2026-08-23 (owner: postpone until after launch).
+  Nothing in `apps/web` references Discord and the site footer carries only
+  four links (`apps/web/app/components/site-footer.tsx`). When you want it:
+  create the server, channels and rules, then send the invite link and the
+  repo half is a footer link plus a snapshot update. It was only ever on the
+  launch list because this cadence line assumed a server already existed.
 - [ ] Plan V1.0 scope (Deep Orbit Modules 6-11).
 - [ ] Re-audit cadence: run the multi-agent quality audit after each major
   content sprint; index audits in `docs/audits/README.md` (index still TODO).

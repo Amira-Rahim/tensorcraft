@@ -33,7 +33,7 @@ vi.mock("@tensorcraft/supabase", () => ({
 }));
 
 vi.mock("../logger", () => ({
-  logger: { info: vi.fn(), warn: vi.fn() },
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 vi.mock("../error-tracking", () => ({
   captureException: vi.fn(),
@@ -44,6 +44,10 @@ import { sendDigestNewsletter } from "../newsletter";
 beforeEach(() => {
   sendSpy.mockClear();
   process.env.RESEND_API_KEY = "test-key";
+  // The sender fails closed without a postal address (CAN-SPAM). Existing
+  // cases here assert send BEHAVIOUR, so give them a configured address;
+  // the postal-address describe deletes it to exercise the refusal.
+  process.env.NEWSLETTER_POSTAL_ADDRESS = "Tensorcraft, Wilmington, DE 19801";
   tables["news_items"] = chain({
     data: [
       {
@@ -123,5 +127,50 @@ describe("sendDigestNewsletter lesson links", () => {
     expect(call.html).toContain(expected);
     expect(call.text).not.toContain("/learn/");
     expect(call.html).not.toContain("/learn/");
+  });
+});
+
+/**
+ * CAN-SPAM postal address.
+ *
+ * Every commercial message must carry a physical postal address. The digest
+ * footer carried only an unsubscribe link, and nothing in the repo held an
+ * address to inject. The owner has deferred getting one (2026-08-23), which
+ * is safe ONLY because the digest never sends on a schedule: the weekly cron
+ * scrapes news for curation, and a human triggers the send from /admin/digest.
+ *
+ * So the sender fails CLOSED instead of waiting for someone to remember. A
+ * missing address stops the send rather than mailing without one.
+ */
+describe("digest postal address", () => {
+  beforeEach(() => {
+    delete process.env.NEWSLETTER_POSTAL_ADDRESS;
+  });
+
+  it("refuses to send when no postal address is configured", async () => {
+    const result = await sendDigestNewsletter("2026-W35");
+
+    expect(sendSpy).not.toHaveBeenCalled();
+    expect(result.sent).toBe(0);
+    expect(result.blockedReason).toBe("missing_postal_address");
+  });
+
+  it("puts the address in both the plaintext and HTML footers", async () => {
+    process.env.NEWSLETTER_POSTAL_ADDRESS =
+      "Tensorcraft, 1209 Orange St, Wilmington, DE 19801";
+
+    await sendDigestNewsletter("2026-W35");
+
+    expect(sendSpy).toHaveBeenCalled();
+    const arg = sendSpy.mock.calls[0][0] as { text: string; html: string };
+    expect(arg.text).toContain("Wilmington, DE 19801");
+    expect(arg.html).toContain("Wilmington, DE 19801");
+  });
+
+  it("still sends on a dry run without an address, since nothing is mailed", async () => {
+    const result = await sendDigestNewsletter("2026-W35", { dryRun: true });
+
+    expect(sendSpy).not.toHaveBeenCalled();
+    expect(result.blockedReason).toBeUndefined();
   });
 });

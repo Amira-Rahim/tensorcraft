@@ -327,6 +327,11 @@ export default function PrivacyPage() {
                 pseudonymous form.
               </li>
             </ul>
+            <p className="mt-3">
+              Waitlist and newsletter emails are separate from your account. We
+              keep them until you unsubscribe, or for 24 months without
+              engagement, whichever comes first.
+            </p>
           </section>
 
           <section>

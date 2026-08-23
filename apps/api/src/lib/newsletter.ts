@@ -57,6 +57,27 @@ export interface NewsletterSendResult {
   recipientCount: number;
   sent: number;
   failed: number;
+  /**
+   * Set when the send was refused before any mail went out. Present only on
+   * a genuine block, so `sent: 0` alone stays ambiguous between "nothing to
+   * do" and "we refused".
+   */
+  blockedReason?: "missing_postal_address";
+}
+
+/**
+ * CAN-SPAM requires a physical postal address in every commercial message.
+ * Nothing in the repo holds one yet (the owner deferred acquiring it on
+ * 2026-08-23), so the sender fails CLOSED: no address means no send.
+ *
+ * That is safe to defer precisely because the digest has no scheduled
+ * trigger. The weekly cron only scrapes news for curation; a human sends
+ * from /admin/digest. Failing closed converts "remember before you click
+ * send" into something the code enforces.
+ */
+function postalAddress(): string | null {
+  const value = process.env.NEWSLETTER_POSTAL_ADDRESS?.trim();
+  return value ? value : null;
 }
 
 /**
@@ -117,6 +138,8 @@ function renderText(
     lines.push("");
   }
   lines.push(`Unsubscribe: ${unsubUrl}`);
+  const address = postalAddress();
+  if (address) lines.push(address);
   return lines.join("\n");
 }
 
@@ -169,6 +192,7 @@ function renderHtml(
       <a href="${escapeHtml(webUrl)}" style="color: #888;">Read on the web</a> ·
       <a href="${escapeHtml(unsubUrl)}" style="color: #888;">Unsubscribe</a>
     </p>
+    ${postalAddress() ? `<p style="font-size: 12px; color: #888; margin: 8px 0 0 0;">${escapeHtml(postalAddress() as string)}</p>` : ""}
   </div>
 </body></html>`;
 }
@@ -219,6 +243,17 @@ export async function sendDigestNewsletter(
     sent: 0,
     failed: 0,
   };
+
+  // Checked AFTER the dry-run branch below would have been cheaper, but the
+  // order matters: a real send with no address must stop here, while a dry
+  // run mails nobody and is allowed to proceed for previewing.
+  if (!options.dryRun && list.length > 0 && !postalAddress()) {
+    logger.error(
+      { source: "newsletter.sendDigest", ...result },
+      "Refusing to send: NEWSLETTER_POSTAL_ADDRESS is unset and CAN-SPAM requires a physical address",
+    );
+    return { ...result, blockedReason: "missing_postal_address" };
+  }
 
   if (options.dryRun || list.length === 0) {
     logger.info(

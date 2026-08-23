@@ -13,6 +13,10 @@ import {
   getGuestCompletions,
 } from "@/lib/guest-progress";
 import { patchSrc } from "@/lib/patch-art";
+import {
+  prefersSkippedScript,
+  rememberScriptSkipped,
+} from "@/lib/script-preference";
 import { completesModule } from "./completes-module";
 import { PatchAward } from "./patch-award";
 import {
@@ -1353,8 +1357,17 @@ function StepBriefing({
   }, [scriptState]);
 
   // Kick the timeline once on mount when auto-playing.
+  //
+  // A learner who skipped once is not asked again: replaying a ~15.5s scene
+  // at someone who already opted out is the complaint, not the scene itself
+  // (owner decision 2026-08-23, keep the story, fix the affordance). The
+  // "Replay scene" control below stays, so the scene is never unreachable.
   useEffect(() => {
-    if (scriptAutoPlay) play();
+    if (scriptAutoPlay && !prefersSkippedScript()) {
+      play();
+    } else if (scriptAutoPlay) {
+      finish(false);
+    }
     return clearTimeline;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1411,16 +1424,21 @@ function StepBriefing({
                   ? Date.now() - playStartedAtRef.current
                   : 0,
               });
+              rememberScriptSkipped();
               finish(false);
             }}
-            className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
+            // Was text-[10px] on a decorative border: technically a control,
+            // practically invisible, and the only exit from a 15.5s scene at
+            // the product's activation moment. Now readable, with a real
+            // touch target and an interactive border that clears 3:1.
+            className="text-xs font-mono uppercase tracking-[2px] px-4 py-2 min-h-11 transition-colors hover:opacity-80"
             style={{
-              color: "var(--tc-muted)",
-              border: "1px solid var(--tc-border)",
+              color: "var(--tc-text)",
+              border: "1px solid var(--tc-border-interactive)",
               background: "transparent",
             }}
           >
-            Skip <span aria-hidden="true">&#9656;</span>
+            Skip intro <span aria-hidden="true">&#9656;</span>
           </button>
         ) : (
           <button

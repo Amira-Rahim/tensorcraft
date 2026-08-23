@@ -849,6 +849,60 @@ pass inline literals.
 
 ---
 
+## 2026-08-23: launch-before-LLC decided, three fixes shipped, one live bug found
+
+A working session that changed both the plan and the code. Recorded here
+because the tiers below now read differently as a result.
+
+**Decisions taken (owner).** The entity will be a **US LLC**, and the product
+**ships and sells before it exists**, with formation gated at 500 users and
+proven market need. EU/UK checkout is **geo-gated** rather than sold into or
+routed through a merchant of record. Both are written up in the Tier 1-LEGAL
+decision note, including the accepted risk (the controller is a natural
+person until the LLC) and its named exit.
+
+**A live bug found and fixed: every waitlist signup was failing.** 009's
+`chk_waitlist_source` enum allowed only five values; every capture surface
+built since passes something else (`world-selection`, `free-module-end`,
+`coming-soon-hero`, `coming-soon-footer`), and the newsletter modal also
+passes `world_id` "all", which 041 rejects. `submitWaitlist` returns "error"
+rather than throwing, so this failed silently behind a generic message with
+nothing logged. The coming-soon pages are the only waitlist entry point for
+four of five worlds. **Migration 060 replaces the enum with a shape check and
+is APPLIED to production**, verified by reading `pg_constraint` before and
+after. Production held exactly one waitlist row, from 2026-03-27, source
+`landing`, the only value the old constraint ever allowed.
+
+**Shipped in code, all pending one API deploy:**
+
+- **Purchase receipt on Resend** (not Kit, whose credentials 401), wired into
+  both settle paths inside the existing dedupe guard. Buyers previously
+  received nothing at all after paying.
+- **EU/UK checkout geo-gate**: shared country table, API refusal on
+  Cloudflare's `CF-IPCountry`, and a `/pricing` notice that captures the
+  blocked demand instead of discarding it.
+- **`billing_address_collection` hoisted out of the tax flag**, so the buyer's
+  country is captured whether or not Stripe Tax is on. Without it the gate had
+  nothing to verify against and the exposure could not even be measured.
+
+**Verified against production rather than assumed:** the migration ledger
+(59/59, then 60/60 after 060), the 056 foreign key (`confdeltype = 'n'`, so
+account deletion preserves VAT records), all three GitHub Actions secrets,
+both health endpoints (`checks.db: ok`), and CI green on `main`.
+
+**Two corrections to THIS document.** The 019 entry instructed dropping
+`get_shared_certificate`, which is load-bearing for the public certificate
+share pages; following it would have broken production. The real defect was
+one line of rollback SQL naming a `(text)` overload that never existed, now
+fixed. Separately, four entries carried `(OPERATOR)` on the premise that the
+ledger could not be checked from a checkout; `apps/api/.env` carries the
+credentials, so it can.
+
+**Battery at the end:** typecheck 10/10, 1797 tests passing across 200 files,
+content gates (em dash, slop lexicon) green.
+
+---
+
 ## Tier 1 - STATUS: ALL SIX FIXED IN CODE (2026-07-21)
 
 Typecheck 11/11, 1367 unit tests passing. (Re-verified 2026-07-25 at HEAD
@@ -1053,7 +1107,10 @@ has already been written off once (see above) - do not launch dark again.
   not exist). Purchase is a single world-agnostic tag in V1 (per-world
   sequences: `post-launch-backlog.md` §5). Without this, purchases succeed
   but subscribers are never tagged and no lifecycle email fires - including
-  the purchase receipt flagged in R2-4. Templates must follow
+  ~~the purchase receipt flagged in R2-4~~ (**no longer true as of
+  2026-08-23**: the receipt is sent over Resend and does not depend on Kit,
+  see Tier 1-LEGAL. What is still lost while Kit is unconfigured is lifecycle
+  tagging and every sequence that keys off it). Templates must follow
   `docs/email-templates.md`.
 - [ ] (OPERATOR) **Kit credentials fail auth, and the client may target a
   retired API base. BLOCKS both Kit entries above.** Found 2026-08-20 by
@@ -1080,6 +1137,11 @@ has already been written off once (see above) - do not launch dark again.
   doing nothing. The failure is invisible from logs, dashboards, and the
   app. Purchases, onboarding, first lesson and capstone all currently tag
   nobody.
+  **Narrowed 2026-08-23:** the purchase RECEIPT no longer depends on this.
+  It was rebuilt on Resend precisely because these credentials are dead, so a
+  buyer now gets the legally expected artifact even with Kit dark. What
+  remains lost here is lifecycle tagging and the retention sequences keyed to
+  it, which is a marketing outage rather than a compliance one.
   Order of work: regenerate a key in the Kit dashboard; decide v3 versus a
   port to v4 (`kit.ts` is the only caller); set the key plus the nine
   `KIT_TAG_*` IDs as Fly secrets; then re-verify with a real tag call
@@ -1303,15 +1365,6 @@ has already been written off once (see above) - do not launch dark again.
   domain + burst = spam folder at the worst moment. Ramp sends gradually
   over the preceding weeks; register Google Postmaster Tools (added
   2026-07-22).
-- [ ] **Create the community space.** Verified 2026-08-20: the repo half is
-  definitively not done. There is no Discord reference anywhere in
-  `apps/web`, and the footer that is supposed to carry the invite has only
-  four links (`apps/web/app/components/site-footer.tsx:30,33,36,39`).
-  Creating the server is operator work; adding the link and updating the
-  footer snapshot is repo work. The ops cadence
-  (`post-launch-backlog.md` §2) says "respond to community Discord
-  questions" but no task ever created a Discord - server, channels,
-  rules, invite link in the app footer (added 2026-07-22).
 - [ ] (OPERATOR) **Cloud-cost alerts.** Configure billing/usage alerts on Vercel
   (bandwidth), Supabase (egress/compute), Fly, PostHog (1M-event
   overage), Upstash. One viral spike currently produces a surprise bill
@@ -1510,7 +1563,9 @@ flagging exposure, not legal advice).
 - [ ] (OPERATOR) **Tax handling: code is written but switched OFF.**
   Verified 2026-08-20. `taxSessionParams()`
   (`apps/api/src/routes/payments.ts:47-53`) wires `automatic_tax`,
-  `billing_address_collection`, `tax_id_collection` and `invoice_creation`,
+  `tax_id_collection` and `invoice_creation` (`billing_address_collection`
+  was hoisted OUT of that helper on 2026-08-23 so the buyer's country is
+  captured whether or not the tax flag is on),
   and is spread into both checkout sessions (`:282`, `:426`). But it returns
   `{}` unless `STRIPE_TAX_ENABLED === "true"` (`:48`), and that var ships
   empty (`apps/api/.env.example:17`). **At repo defaults, zero tax is
@@ -1608,8 +1663,15 @@ flagging exposure, not legal advice).
   PO box or a commercial mail-receiving agency address is acceptable for
   CAN-SPAM. This is also the address that goes on `/terms` and `/privacy`
   under the trading name, which is what keeps a home address off the site.
-- [ ] **Add legal entity, postal address, and jurisdiction clause to terms +
-  privacy pages.** Re-verified 2026-08-20 and still fully open.
+- [ ] **Legal entity + address still open; JURISDICTION DONE 2026-08-23.**
+  Terms now carries a governing-law section (§11): Delaware law, Delaware
+  courts, with an explicit carve-out stating it does not remove the mandatory
+  protections of EU and UK consumer law, which a choice-of-law clause cannot
+  waive. Covered by `e2e/legal.spec.ts`.
+  Still open and blocked on the LLC and the mailbox: the published entity
+  name and the postal address. The accepted-risk note above already settles
+  what goes in the meantime (trading name, no natural person named).
+  Original text follows. Re-verified 2026-08-20 and still fully open.
   `apps/web/app/terms/page.tsx` has no entity, no address and no
   governing-law section anywhere in its ten sections;
   `apps/web/app/privacy/page.tsx:55-59` carries an explicit code comment
@@ -1648,7 +1710,23 @@ flagging exposure, not legal advice).
   is not an email. Two independent halves: the Kit receipt automation
   (dashboard, Tier 1-OPS) and the Stripe invoice half, which is unreachable
   while `STRIPE_TAX_ENABLED` is unset.
-- [ ] **Postal address in the weekly digest footer (CAN-SPAM).** Verified
+- [ ] (OPERATOR) **Postal address: PLUMBING BUILT AND FAIL-CLOSED
+  2026-08-23, waiting only on the address itself.** The owner deferred
+  acquiring one. That is safe because the digest has NO scheduled trigger:
+  the weekly cron only scrapes news for curation, and a human sends from
+  /admin/digest, so nothing has gone out without an address.
+  Rather than leave a trap for whoever clicks send first,
+  `sendDigestNewsletter` now **refuses to send** when
+  `NEWSLETTER_POSTAL_ADDRESS` is unset, returning
+  `blockedReason: "missing_postal_address"`. Dry runs still work, since they
+  mail nobody. When set, the value renders in both the plaintext and HTML
+  footers. 3 tests.
+  **This cannot affect selling**: the guard lives in the digest sender only.
+  The purchase receipt is a separate function and is transactional, so
+  CAN-SPAM's address requirement does not apply to it.
+  **To close:** a PO box or virtual mailbox (neither needs the LLC, and
+  neither exposes a home address), then set the env var. Original text
+  follows. Verified
   2026-08-20: the plaintext footer is one unsubscribe line
   (`apps/api/src/lib/newsletter.ts:119`) and the HTML footer is
   read-on-web plus unsubscribe (`:167-171`). No postal-address constant or
@@ -1705,6 +1783,9 @@ flagging exposure, not legal advice).
   3 still open.** Re-verified line by line 2026-08-20.
   CLOSED: lawful basis per purpose (§3), international transfers with
   DPF/SCC safeguards (§7), complaint right (§10).
+  **Waitlist retention CLOSED 2026-08-23** (owner approved the default):
+  §9 now states waitlist and newsletter emails are kept until unsubscribe or
+  24 months without engagement, whichever comes first.
   STILL OPEN: controller identity (no longer an open question as of
   2026-08-23, just gated on LLC formation: the controller is the LLC);
   **Art. 27 EU/UK representative**, which the policy does not mention at
@@ -1775,7 +1856,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
 > to be describing a feature that already shipped; the rest were re-verified
 > against current code and several had their sub-items corrected.
 
-- [ ] **First lesson opens with a ~15.5s auto-playing scene** during which the page is functionally blank, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the entire product, and it is the destination of the landing page's primary CTA. Re-verified 2026-08-20: `lesson-steps.tsx:1357` still auto-plays on first visit, per-beat hold is 800-3200ms so 6-8 beats lands in the 15s band, and the Skip control is still `text-[10px]`. The only other escape is `prefers-reduced-motion`.
+- [ ] **First lesson auto-play: AFFORDANCE FIXED 2026-08-23, scene kept by owner decision.** The complaint was never the story, it was being trapped in it. Fixed: Skip is now a real control ("Skip intro", `text-xs`, 44px min target, `--tc-border-interactive` which clears 3:1) instead of a 10px label on a decorative border; and a learner who skips once is not auto-played at again, remembered in `localStorage` through `lib/script-preference.ts`. Every storage access is guarded, because this API throws SecurityError when site data is blocked and an unguarded read once white-screened the whole site. "Replay scene" still exists, so the scene is never unreachable. 5 tests. **Still open:** the scene itself is unchanged at ~15.5s for a first-time visitor, which is a deliberate product call, not an oversight. Original finding: the page is functionally blank during playback, escapable only via a `text-[10px]` "Skip" control. This is the activation moment for the entire product, and it is the destination of the landing page's primary CTA. Re-verified 2026-08-20: `lesson-steps.tsx:1357` still auto-plays on first visit, per-beat hold is 800-3200ms so 6-8 beats lands in the 15s band, and the Skip control is still `text-[10px]`. The only other escape is `prefers-reduced-motion`.
 - [x] **Guest email capture: SHIPPED.** Corrected 2026-08-20; this entry said "no email capture for guests anywhere in the free module", which is no longer true. `guest-email-capture.tsx` renders for guests only and is mounted in the lesson flow behind `isFreeModule` (`lesson-steps.tsx:1757`). Rows land with `subscribed` false per migration 050, so capture does not imply digest consent.
 - [ ] **Mobile: code editor sets 13px type**, below the iOS 16px auto-zoom threshold. Re-verified 2026-08-20: still `size: "13px"` in BOTH Sandpack themes (`packages/ui/src/mdx/exercise.tsx:174` dark, `:205` light). Also still true: no axe run at any mobile viewport (`e2e/accessibility.spec.ts` runs only in the chromium project, which excludes the mobile specs), and all non-axe e2e is dark-only via the global `colorScheme: "dark"` pin (`playwright.config.ts:32`). **Corrected:** the "no mobile affordance past the exercise gate" clause is stale, the mobile pane toggle exists (`lesson-steps.tsx:820`).
 - [ ] **Lessons ship ~100 indexable words** (only the current step is in the DOM) and require JS to render at all, with no `<noscript>`. Re-verified 2026-08-20: zero `noscript` anywhere in `apps/web`, and exactly one of six steps renders because `currentStep` is client state. Large organic-acquisition loss for a content-led product.
@@ -1820,7 +1901,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
   - **Waitlist has no route-scoped limiter and no captcha.** It falls back to the global 60/min keyed on the spoofable anonymous identity above.
   - **skill_events child-partition RLS check: still not run.** The parent's RLS and INSERT policy are declared in migrations, but the ask is a live PostgREST select against a child partition, and nothing in CI performs it.
 - [ ] **Unsubscribe does not propagate to Kit.** Core defect CONFIRMED open in both directions 2026-08-20, but two clauses of this entry were stale and are corrected here: `unsubscribeFromAll()` is **not** dead code (account deletion calls it), and a Kit webhook **does** exist (`apps/api/src/routes/webhooks.ts:49`, shared-secret guarded). What is actually broken: the two unsubscribe handlers only flip `waitlist.subscribed` in Supabase and never call `unsubscribeFromAll`; and the kit-bounce handler only logs, performing zero database writes, so a Kit-side unsubscribe or complaint never flips anything. Once the Tier 1-OPS retention automations go live, an unsubscribed address keeps receiving sequence emails. Wire both directions.
-- [ ] **No server-side timeouts on Kit, Resend, or Supabase queries.** Re-verified 2026-08-20 by grepping every `AbortSignal.timeout` in the repo: there are exactly 8, all in the GitHub lib. Kit's single `kitFetch` wrapper has no signal, the Resend send has none, and no Supabase query has one. Upstash has a partial mitigation (a 2s SDK-level timeout on the rate limiter only). The sharpest case is confirmed and worth noting precisely: `apps/api/src/routes/payments.ts:872-875` **awaits** two Kit calls inline in the Stripe webhook handler even though the comment above them says fire-and-forget, so a hung Kit connection stalls the webhook. Re-delivery is fully deduped via the `payment_events` ledger, so the cost is retry noise and delayed fulfilment rather than double-firing. Client-side, seven call sites still bypass `apiFetch` and its 10s abort (settings x4, onboarding, report-issue, capstone).
+- [ ] **No server-side timeouts on Kit, Resend, or Supabase queries.** Re-verified 2026-08-20 by grepping every `AbortSignal.timeout` in the repo: there are exactly 8, all in the GitHub lib. Kit's single `kitFetch` wrapper has no signal and no Supabase query has one. **Partially closed 2026-08-23:** the purchase-receipt send bounds its own wait (`withTimeout` in `apps/api/src/lib/email.ts`, 5s default) precisely because it runs inside the Stripe webhook; the digest and issue sends still have none. Upstash has a partial mitigation (a 2s SDK-level timeout on the rate limiter only). The sharpest case is confirmed and worth noting precisely: `apps/api/src/routes/payments.ts:872-875` **awaits** two Kit calls inline in the Stripe webhook handler even though the comment above them says fire-and-forget, so a hung Kit connection stalls the webhook. Re-delivery is fully deduped via the `payment_events` ledger, so the cost is retry noise and delayed fulfilment rather than double-firing. Client-side, seven call sites still bypass `apiFetch` and its 10s abort (settings x4, onboarding, report-issue, capstone).
 - [ ] **Error-boundary copy misattributes DB faults** - a paying customer during a 2s Supabase blip reads "Lesson failed to load / something went wrong on our end" as a content bug. Re-verified 2026-08-20: a DB throw carries no code the message map recognizes, so it falls through to the generic "our end" string, and six sibling boundaries share the pattern.
 - [ ] **Fly config drift:** re-verified 2026-08-20, both halves still true. `apps/api/fly.toml` has no `[[vm]]` block, so machine size is unversioned while `docs/infrastructure.md:33` asserts 256MB with no in-repo source. And the Dockerfile builds `dist/` and then discards it: the runner stage copies `src`, installs `tsx` globally, and runs `CMD ["tsx", "src/index.ts"]`, so TypeScript is transpiled at container runtime on the payment path.
 - [x] ~~Rate limit is 60/min in code, 120/min in both docs~~ - **reconciled 2026-07-25**, re-verified 2026-08-20: code is 60 and all five docs say 60, with no surviving 120 claim. Raising the actual limit remains a product decision if multi-tab 429s show up. **New drift found in passing:** `docs/infrastructure.md:149` still describes a sliding-window algorithm using sorted sets, but the limiter was rewritten to `Ratelimit.fixedWindow` on 2026-08-17. Correct that line.

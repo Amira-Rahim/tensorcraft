@@ -15,6 +15,10 @@ test.describe("Legal Pages", () => {
     await expect(
       page.getByRole("link", { name: /legal@tensorcraft\.app/i }),
     ).toBeVisible();
+    // Choice of law was missing entirely until 2026-08-23 (Tier 1-LEGAL).
+    await expect(
+      page.getByRole("heading", { name: /11\. governing law/i }),
+    ).toBeVisible();
   });
 
   test("terms page has back link to home", async ({ page }) => {

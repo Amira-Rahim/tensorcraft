@@ -178,6 +178,23 @@ export default function TermsPage() {
               .
             </p>
           </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-text-primary mb-3">
+              11. Governing Law
+            </h2>
+            <p className="mb-2">
+              These terms are governed by the laws of the State of Delaware,
+              United States, without regard to its conflict of law rules. Any
+              dispute will be brought in the state or federal courts located in
+              Delaware.
+            </p>
+            <p>
+              If you are a consumer in the European Union or the United Kingdom,
+              this section does not take away the protections of your local
+              consumer law. Those apply whatever this agreement says.
+            </p>
+          </section>
         </div>
       </article>
     </main>
