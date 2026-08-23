@@ -1,0 +1,82 @@
+apps/api/src/lib/error-tracking.ts
+  s_05a49bab834291::t_c1b51baf5bed40 2,4-17,20,46-54
+apps/api/src/lib/email.ts
+  s_2bf9e56d49ffc8::t_1e4d877ac3124c 193,216
+docs/support-runbook.md
+  s_2bf9e56d49ffc8::t_418bf54b58b367 23-28
+  s_2bf9e56d49ffc8::t_55a19ce8212aa9 80-82
+docs/post-launch-backlog.md
+  s_05a49bab834291::t_3fb34f726be398 50-57
+apps/api/src/lib/__tests__/error-tracking.test.ts
+  s_05a49bab834291::t_951459b978ab1d 188
+  s_05a49bab834291::t_7c2c14ec0363b0 3-7,118-187
+  s_05a49bab834291::t_f0cd233aedfbdb 189
+docs/observability.md
+  s_05a49bab834291::t_d164f5079097d4 43,45-46,48,50,52-54,56,58-61,63-67,69-71,73-76,78-81,83,85-147,150-154,156,158,160-162,164-166
+  s_05a49bab834291::t_e7c0981178f991 1-42,44,47,49,51,55,57,62,68,72,77,82,84,148-149,155,157,159,163,167-181
+.github/workflows/ci.yml
+  s_4f5a60d6d8eff1::t_1655fdc4eab1a1 324-339
+docs/ci-cd.md
+  s_4f5a60d6d8eff1::t_ccf2fd57962ba8 48
+docs/migration-runbook.md
+  s_4f5a60d6d8eff1::t_f91f142c2d1912 91-96
+apps/web/app/pricing/page.tsx
+  s_2bf9e56d49ffc8::t_a0246d573c0517 120,123
+apps/api/src/lib/__tests__/operator-alert.test.ts
+  s_05a49bab834291::t_da0c34efda81dc 1-147
+.github/workflows/synthetic-checks.yml
+  s_05a49bab834291::t_1786ceac88ca5b 1-63
+apps/web/app/terms/page.tsx
+  s_2bf9e56d49ffc8::t_152f260dff36d2 95
+apps/web/app/page.test.tsx
+  s_2bf9e56d49ffc8::t_576c2f90487ecb 289
+  s_2bf9e56d49ffc8::t_d1537f0e0d8a77 278
+apps/api/src/routes/payments.ts
+  s_05a49bab834291::t_c78421da50b341 1122-1133
+  s_05a49bab834291::t_11001a68228527 21,924-941,1121,1184-1195
+  s_05a49bab834291::t_55706935c3ba02 1196
+apps/api/src/lib/operator-alert.ts
+  s_05a49bab834291::t_c2ec4d4f116096 1-139
+apps/api/.env.example
+  s_05a49bab834291::t_3fb34f726be398 103-107
+apps/web/app/faq-data.ts
+  s_2bf9e56d49ffc8::t_0d51034b84ff3a 39
+  s_2bf9e56d49ffc8::t_b9ec7c1b5e51b8 31
+  s_2bf9e56d49ffc8::t_f49fb6bb2cfd8e 35
+apps/web/app/pricing/paywall-notice.tsx
+  s_2bf9e56d49ffc8::t_840a071694b535 73
+apps/web/app/terms/__snapshots__/page.snapshot.test.tsx.snap
+  s_2bf9e56d49ffc8::t_9de9e827ea0f35 68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "61ae74c18add102d84825e41979787400433f9f3",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_2bf9e56d49ffc8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6a75b1dd-7202-4d6c-98f1-72236503f38e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_4f5a60d6d8eff1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0345b761-3222-4e70-801c-0a25e56e5d5c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
