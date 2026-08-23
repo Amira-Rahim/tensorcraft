@@ -25,6 +25,11 @@
 -- needs a migration to work, which is precisely the trap that produced this
 -- bug: the constraint and the code drifted with nothing to catch it.
 
+-- Follows packages/supabase/migrations/CONVENTIONS.md:
+--   transaction wrapped, idempotent, records its version, paired .down.sql.
+
+begin;
+
 -- Constraint names: 058 renamed identifiers containing "theme" generically,
 -- so the 041 constraint is `chk_waitlist_world_id` on an applied database.
 -- Both names are dropped so this migration is safe either way.
@@ -57,3 +62,10 @@ alter table public.waitlist
       'all'
     )
   );
+
+-- ---- record this migration (keep last, before commit) ----
+insert into public.schema_migrations (version, name)
+values (60, 'fix_waitlist_source_constraint')
+on conflict (version) do nothing;
+
+commit;

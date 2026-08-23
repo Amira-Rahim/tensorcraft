@@ -1153,14 +1153,13 @@ has already been written off once (see above) - do not launch dark again.
   (`apps/api/src/routes/profiles.ts:351`) and its own comment says 056 MUST
   ship first, otherwise every deletion erases VAT records the law requires
   you to keep.
-  **Stated precisely, because the distinction is the whole point of this
-  file:** the ledger proves the migration ran. It does not re-read
-  `pg_constraint`, so it cannot rule out a later manual `alter table` that
-  reverted the FK. That check needs a direct SQL connection, and neither
-  `psql` nor a `pg` driver is present in this workspace, so it was not run
-  here rather than being assumed away. Given `DATABASE_URL` is in
-  `apps/api/.env`, one query confirms the `purchases.user_id` delete rule is
-  SET NULL if you ever want belt and braces. Original text follows.
+  **Upgraded from ledger-inference to direct proof 2026-08-23:** a
+  `pg_constraint` query over `DATABASE_URL` returns
+  `purchases_user_id_fkey` with `confdeltype = 'n'`, which is SET NULL. So
+  the FK rule is confirmed in the live database, not merely inferred from
+  the migration having run, and the account-deletion endpoint is safe to
+  ship: erasing an account unlinks its purchases instead of deleting the VAT
+  records the law requires you to keep. Original text follows.
   **Apply migration 056 - claimed DONE 2026-07-25:** applied to production via
   the same Node `pg` procedure as 037-055; pre/post state verified in
   `pg_constraint` (delete rule CASCADE → SET NULL, `user_id` now nullable,

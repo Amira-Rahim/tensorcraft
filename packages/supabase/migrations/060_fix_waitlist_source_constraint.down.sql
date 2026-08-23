@@ -5,6 +5,8 @@
 -- source or world_id the old constraints reject. Delete or rewrite those rows
 -- first.
 
+begin;
+
 alter table public.waitlist
   drop constraint if exists chk_waitlist_source;
 alter table public.waitlist
@@ -24,3 +26,7 @@ alter table public.waitlist
       'deep-orbit','neon-protocol','signal-ward','nova-canvas','terra-grid'
     )
   );
+
+delete from public.schema_migrations where version = 60;
+
+commit;
