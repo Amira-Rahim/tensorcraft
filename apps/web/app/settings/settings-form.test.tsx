@@ -389,8 +389,7 @@ describe("SettingsForm", () => {
     });
     // Notification prefs now go through PATCH /api/preferences (§4e).
     const lastCall = (fromUpdateMock.mock.calls as unknown[][]).at(-1)?.[0] as
-      | Record<string, unknown>
-      | undefined;
+      Record<string, unknown> | undefined;
     expect(lastCall).toBeDefined();
     expect(lastCall).not.toHaveProperty("email_alerts");
     expect(lastCall).not.toHaveProperty("weekly_digest");

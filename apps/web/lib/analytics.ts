@@ -119,10 +119,7 @@ export function trackCheckoutCompleted(planId: string, amount: number) {
 export function trackWorldSelected(
   worldId: string,
   source:
-    | "onboarding"
-    | "worlds_grid"
-    | "dashboard"
-    | "settings" = "onboarding",
+    "onboarding" | "worlds_grid" | "dashboard" | "settings" = "onboarding",
 ) {
   track(EVENTS.WORLD_SELECTED, { worldId, source });
 }

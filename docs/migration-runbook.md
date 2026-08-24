@@ -36,6 +36,23 @@ The ledger did not exist before migration 042. To start it truthfully:
    backfill for those.
 3. Re-run `migration-status.mjs`. It should read IN SYNC.
 
+## Regenerating database types (after every applied migration)
+
+`packages/supabase/src/types.ts` is generated from the live schema and both
+apps typecheck against it. Since supabase-js 2.99 the client rejects insert
+and update properties the generated types do not know, so a stale file turns
+into `never`-type build errors (this bit us when the file had drifted 49
+migrations behind, see the 2026-08-24 Dependabot group PR). After migrations
+reach IN SYNC:
+
+```bash
+DATABASE_URL="$(grep -m1 '^DATABASE_URL=' apps/api/.env | cut -d= -f2-)" pnpm gen:types
+```
+
+The script (`scripts/gen-supabase-types.mjs`) introspects over the wire with
+@supabase/postgres-meta, so it needs no Docker, unlike the current supabase
+CLI. Commit the regenerated file together with the migration.
+
 ## Authoring a new migration
 
 1. Copy the template to the next number:

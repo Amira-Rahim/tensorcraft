@@ -3,10 +3,7 @@
 import { getSupabaseBrowserClient } from "./supabase/client";
 
 export type BossBeatChoiceLabel =
-  | "cooperate"
-  | "defect"
-  | "random"
-  | "dominant";
+  "cooperate" | "defect" | "random" | "dominant";
 
 export interface BossBeatChoice {
   beatId: string;
@@ -34,7 +31,7 @@ export async function getBossBeatChoice(
   return {
     beatId: row.beat_id,
     choiceIndex: row.choice_index,
-    choiceLabel: row.choice_label,
+    choiceLabel: row.choice_label as BossBeatChoiceLabel,
     reactionMs: row.reaction_ms,
     chosenAt: row.chosen_at,
   };
@@ -66,7 +63,10 @@ export async function recordBossBeatChoice(args: {
     p_beat_id: args.beatId,
     p_choice_index: args.choiceIndex,
     p_choice_label: args.choiceLabel,
-    p_reaction_ms: args.reactionMs ?? null,
+    // Omitting the arg (undefined) hits the SQL "default null" in migration
+    // 030, so this is behavior-identical to passing null, which the generated
+    // RPC arg type no longer accepts.
+    p_reaction_ms: args.reactionMs ?? undefined,
   });
   if (error) return false;
   return Boolean(data);

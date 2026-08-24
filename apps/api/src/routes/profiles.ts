@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import {
   getSupabaseServerClient,
   getSupabaseAdminClient,
+  type TablesUpdate,
 } from "@tensorcraft/supabase";
 import { isValidWorldSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
@@ -110,15 +111,19 @@ profiles.patch("/:userId", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  // Filter to only allowed fields
-  const updates: Record<string, unknown> = {};
+  // Filter to only allowed fields. Typing the accumulator as the profiles
+  // Update row makes the compiler reject any ALLOWED_FIELDS entry that is not
+  // a real column; the value cast is safe because validateField has already
+  // checked the runtime shape (a union-keyed index write otherwise demands
+  // the intersection of all column types).
+  const updates: TablesUpdate<"profiles"> = {};
   for (const field of ALLOWED_FIELDS) {
     if (field in body) {
       const error = validateField(field, body[field]);
       if (error) {
         return c.json({ error }, 400);
       }
-      updates[field] = body[field];
+      updates[field] = body[field] as never;
     }
   }
 

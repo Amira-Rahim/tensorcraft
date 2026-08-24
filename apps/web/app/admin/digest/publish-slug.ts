@@ -4,8 +4,7 @@
 const SLUG_SHAPE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export type PublishSlugResult =
-  | { ok: true; slug: string }
-  | { ok: false; reason: string };
+  { ok: true; slug: string } | { ok: false; reason: string };
 
 /**
  * Normalize what a curator pastes (bare slug, /blog/<slug> path, or full

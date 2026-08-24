@@ -10,11 +10,7 @@ export interface LessonRef {
 }
 
 export type ConceptSource =
-  | "keyword"
-  | "bridge_ml"
-  | "bridge_js"
-  | "skill_axis"
-  | "module_id";
+  "keyword" | "bridge_ml" | "bridge_js" | "skill_axis" | "module_id";
 
 export interface ConceptIndex {
   /** Concept token → list of lessons mentioning it (with source). */

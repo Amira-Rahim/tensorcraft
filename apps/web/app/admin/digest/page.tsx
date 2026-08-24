@@ -11,12 +11,7 @@ export const metadata: Metadata = {
 };
 
 type StatusFilter =
-  | "pending"
-  | "shortlisted"
-  | "published"
-  | "rejected"
-  | "all"
-  | "gap";
+  "pending" | "shortlisted" | "published" | "rejected" | "all" | "gap";
 
 interface MatchedLesson {
   worldId: string;
@@ -74,7 +69,7 @@ export default async function DigestAdminPage({
   }
   const { data, error } = await query;
   if (error) throw new Error(error.message);
-  const items: NewsItemRow[] = (data ?? []) as NewsItemRow[];
+  const items: NewsItemRow[] = (data ?? []) as unknown as NewsItemRow[];
 
   const counts = await getCounts(admin);
   const currentWeek = isoWeek();

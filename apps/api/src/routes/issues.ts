@@ -4,6 +4,7 @@ import { bodyLimit } from "hono/body-limit";
 import {
   getSupabaseAdminClient,
   getSupabaseServerClient,
+  type Json,
 } from "@tensorcraft/supabase";
 import { getRedis } from "../lib/redis";
 import { sendIssueNotification } from "../lib/email";
@@ -188,7 +189,7 @@ issues.post("/", async (c) => {
       screenshot_url: screenshotUrl,
       page_url: context.url ?? "",
       user_agent: context.userAgent ?? "",
-      viewport: (context.viewport as Record<string, unknown>) ?? null,
+      viewport: (context.viewport as Json) ?? null,
     })
     .select()
     .single();

@@ -100,9 +100,11 @@ async function loadDigestItems(weekIso: string): Promise<DigestItem[]> {
   // email + UTM chain only surface launched-world lessons.
   return (data ?? []).map((row) => ({
     ...row,
-    matched_lessons: (row.matched_lessons ?? []).filter(
-      (m: { worldId: string }) => isLaunched(m.worldId),
-    ),
+    matched_lessons: (
+      (Array.isArray(row.matched_lessons)
+        ? row.matched_lessons
+        : []) as unknown as MatchedLessonRef[]
+    ).filter((m) => isLaunched(m.worldId)),
   })) as DigestItem[];
 }
 

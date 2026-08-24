@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { getSupabaseServerClient } from "@tensorcraft/supabase";
+import { getSupabaseServerClient, type Json } from "@tensorcraft/supabase";
 import { isValidWorldSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
@@ -42,7 +42,7 @@ skillEvents.post("/", async (c) => {
     worldId: string;
     eventType: string;
     skillAxis: string;
-    metadata?: Record<string, unknown>;
+    metadata?: Json;
   };
 
   try {
@@ -113,7 +113,7 @@ skillEvents.post("/batch", async (c) => {
       worldId: string;
       eventType: string;
       skillAxis: string;
-      metadata?: Record<string, unknown>;
+      metadata?: Json;
     }>;
   };
 
