@@ -167,6 +167,11 @@ function ModuleRow({
         />
       )}
 
+      {/* Locked rows are dimmed via the decorative node box and a muted
+          title, never via container opacity: opacity multiplies onto every
+          descendant, and at 0.45 over a light surface no text color can
+          reach the AA 4.5:1 ratio (even pure black lands ~3.5:1). axe-core
+          >= 4.12 computes these blended colors and fails the audit. */}
       <details
         open={shouldOpen}
         className="group rounded-none border"
@@ -177,7 +182,6 @@ function ModuleRow({
           background: isActive
             ? "var(--tc-surface)"
             : "color-mix(in srgb, var(--tc-surface) 60%, transparent)",
-          opacity: isLocked ? 0.45 : 1,
         }}
       >
         <summary
@@ -203,8 +207,10 @@ function ModuleRow({
                     : accentOn
                       ? "var(--tc-primary)"
                       : "var(--tc-muted)",
+                  opacity: isLocked ? 0.45 : 1,
                 }}
                 aria-hidden="true"
+                data-decorative="true"
               >
                 {isDone ? "✓" : moduleLabel.replace("M", "")}
               </div>
@@ -229,7 +235,9 @@ function ModuleRow({
               </span>
               <span
                 className="font-sans text-sm font-bold"
-                style={{ color: "var(--tc-text)" }}
+                style={{
+                  color: isLocked ? "var(--tc-muted)" : "var(--tc-text)",
+                }}
               >
                 {mod.title}
               </span>
@@ -416,7 +424,6 @@ function LessonCard({
             : available
               ? "var(--tc-border-active)"
               : "var(--tc-border)",
-        opacity: locked ? 0.5 : 1,
       }}
       data-lesson-status={lesson.status}
     >
@@ -433,12 +440,18 @@ function LessonCard({
             done || current ? "var(--tc-border-active)" : "var(--tc-border)",
         }}
       >
+        {/* Same no-container-opacity constraint as the module row above:
+            locked lessons dim only this decorative ordinal (duplicated by
+            the "Lesson NN" label beside it), the visible text stays in AA
+            tokens at full opacity. */}
         <span
           className="font-mono text-base font-bold"
           style={{
             color: done || current ? "var(--tc-primary)" : "var(--tc-muted)",
+            opacity: locked ? 0.5 : 1,
           }}
           aria-hidden="true"
+          data-decorative="true"
         >
           {String(lesson.order).padStart(2, "0")}
         </span>

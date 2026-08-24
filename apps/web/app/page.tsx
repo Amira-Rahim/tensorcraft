@@ -85,8 +85,14 @@ export default function Home() {
                   i < 3 ? "xl:border-r" : ""
                 } group`}
               >
+                {/* Ghost numeral at 10% opacity is pure decoration (the real
+                    step number is in the label below), which WCAG 1.4.3
+                    exempts from contrast. axe-core >= 4.12 computes through
+                    the opacity and would flag it, so it carries the audit's
+                    data-decorative exclusion. */}
                 <span
                   aria-hidden="true"
+                  data-decorative="true"
                   className="font-mono text-[72px] font-black leading-none text-primary opacity-10 group-hover:opacity-20 transition-opacity block mb-4 select-none"
                 >
                   0{i + 1}
