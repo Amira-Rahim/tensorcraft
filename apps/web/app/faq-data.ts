@@ -16,23 +16,23 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   // that section restated the hero or existing FAQ answers.
   {
     q: "What if I need Python or PyTorch?",
-    a: "Then skip Tensorcraft. It is TensorFlow.js end to end, a deliberate constraint, not a stepping stone to the Python stack. The concepts transfer (tensors, loss functions, gradient descent); the tooling does not.",
+    a: "Then skip Tensorcraft. It is entirely taught with TensorFlow.js and intended as a fun and easy way for JavaScript engineers to break into machine learning.",
   },
   {
     q: "How much math do I need?",
-    a: "None upfront. You need working JavaScript: comfortable with functions, arrays, and async. The math is there when you want it: derivations sit in optional expandable drawers, and you can finish every module without opening one.",
+    a: "None upfront. You just need JavaScript knowledge and comfort with concepts like functions, arrays, and async. The math will be introduced when you need it, in optional expandable drawers.",
   },
   {
     q: "Is there a video track?",
-    a: "No. Lessons are written scenes with runnable code, and exercises gate progress: you advance by making the checks pass, not by watching. If you learn best from video, this format will fight you.",
+    a: "No. Lessons are scenes written in text, with code snippets alongside. Completing exercises opens the gate to new lessons. Short video scenes are on the roadmap: subscribe to updates on the Worlds page to hear when they land.",
   },
   {
     q: "How long does Deep Orbit take?",
-    a: "Deep Orbit consists of 56 lessons across 11 modules. Since it's story-based, it's meant to be tackled in order. Each module's time estimates are listed with the curriculum on the pricing page and on the Deep Orbit course page.",
+    a: "Deep Orbit consists of 56 lessons across 11 modules. Since it's story-based, it's meant to be tackled in order. Each module's time estimates are listed on the pricing page and the Deep Orbit course page.",
   },
   {
     q: "Is Tensorcraft free?",
-    a: `Module 1 of Deep Orbit is free, no account or credit card required. The full course costs $${PRICING.single.price}. Make a one-time payment, get lifetime access.`,
+    a: `Module 1 of Deep Orbit is free, no account or credit card is required. However, the full course costs $${PRICING.single.price}. You will make a one-time payment and get lifetime access to your purchased world.`,
   },
   {
     q: "What if it turns out not to be for me?",
