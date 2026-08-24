@@ -189,12 +189,12 @@ Client component with Framer Motion animations:
 ### SEO Setup
 
 - **Canonical URLs**: Set on root layout (`https://tensorcraft.app`), all world pages, all lesson pages, and capstone pages via Next.js `alternates.canonical` in `generateMetadata`.
-- **Structured Data (JSON-LD)**: Root layout emits an Organization schema and one Course schema per world (5 courses total), each with pricing ($59), educational level, and `teaches` fields. Script tag in `<head>` via `dangerouslySetInnerHTML`. Lesson pages additionally emit `LearningResource` schema (name, description, educationalLevel, timeRequired, isPartOf Course) and `BreadcrumbList` schema (Home > World > Module > Lesson).
+- **Structured Data (JSON-LD)**: Root layout emits `Organization` and `WebSite` schemas only. `Course` schema lives on each world page (moved out of the root layout 2026-07-25: markup belongs on the page that describes the course). `/pricing` emits an `OfferCatalog`, `/learn` emits `BreadcrumbList` plus a course `ItemList` (2026-08-24), and the shared FAQ section co-emits `FAQPage` on the pages that visibly render it. Lesson pages additionally emit `LearningResource` schema (name, description, educationalLevel, timeRequired, isPartOf Course) and `BreadcrumbList` schema (Home > World > Module > Lesson).
 - **Dynamic OG Images**: All pages use `/api/og` (Vercel OG) with per-page `title`, `world`, and `subtitle` query params. No static `/og-image.png` fallback.
-- **Sitemap** (`app/sitemap.ts`): Static routes + 5 world pages + 275 lesson pages (all worlds) + glossary term pages + bridge concept pages. Lesson routes built from `getWorldLessons` at build time.
+- **Sitemap** (`app/sitemap.ts`): phased. `SITEMAP_PHASE = "core"` ships a trimmed set of high-value URLs (static routes, world pages, free-module lesson pages) to clear GSC "Discovered, currently not indexed"; the full lesson set returns via `SITEMAP_PHASE = "full"` once the core set is indexed. Lesson routes built from `getWorldLessons` at build time. (`/glossary` and `/bridges` routes do not exist; earlier drafts of this list predate their removal.)
 - **robots.txt**: Crawl directives configured.
 - **AI Discoverability**: `llms.txt` (product description for AI crawlers), `.well-known/ai-plugin.json` (OpenAI plugin metadata), FAQ schema in JSON-LD, `/learn` page for answer engine queries.
-- **Internal Linking Strategy**: Landing page links to `/learn` (below hero) and `/glossary` (final CTA). `/learn` page links to all 5 world pages, `/glossary`, and `/pricing`. `/worlds` page includes enriched intro copy and a "Why 5 Worlds?" explainer section for topical depth.
+- **Internal Linking Strategy**: Landing page links to `/learn` (hero secondary CTA "See how it works") and `/pricing`. `/learn` links to the launched world page, the free first lesson, and `/pricing`; coming-soon worlds are listed unlinked (they are inert everywhere). `/worlds` page includes enriched intro copy and a "Why 5 Worlds?" explainer section for topical depth.
 
 ### Accessibility (WCAG 2.1 AA)
 

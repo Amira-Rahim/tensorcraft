@@ -75,12 +75,13 @@ jurisdiction in terms and privacy, the Art. 27 representatives, controller
 identity, the DPAs, and the EAA microenterprise confirmation. Every one of
 these is blocked on an entity existing, which is why they cluster.
 
-Also here: **upgrade Vercel to Pro** (owner decision 2026-08-23, moved out of
-launch-blockers). It is bundled with formation deliberately, because that is
-when there is an entity to invoice and expense it against. Until then the
-Hobby commercial-use conflict is an accepted risk, bounded by the fact that
-upgrading is instant and self-serve, so the worst case is a short
-interruption rather than a lost project.
+~~Also here: upgrade Vercel to Pro~~ **DONE, verified 2026-08-24: the team
+scope `amira-salahs-projects` is on Pro.** The Hobby commercial-use conflict
+is closed rather than accepted, and it is no longer bundled with formation.
+GOTCHA for anyone re-checking: the plan lives on the TEAM, so the Vercel API
+`/v2/user` reports `hobby` even while the owning team is Pro. Query
+`/v2/teams`. Pro also unlocks Log Drains, queryable Observability logs, and
+anomaly plus usage Alerts; see `docs/observability.md` Task 5.
 
 **B5, when you buy traffic.** The load test. The success-metrics dashboard.
 Product Hunt, the X account, the blog batch, email domain warmup and
@@ -250,6 +251,31 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] #18 Character-perspective re-render (3-4x MDX cost; defer).
 
 ## 4. Polish (editorial, models, features)
+
+- [ ] **/learn redesign follow-ups (2026-08-24).** The story-driven /learn
+  rebuild (briefing hero over the bridge plate, translation strip, IO-gated
+  live demo, scene-canvas coming-soon cards, FAQ band, `free_lesson_cta_clicked`
+  instrumentation) landed as Phase 1 on 2026-08-24 (uncommitted). Three
+  follow-ups:
+  1. **Phase 2 video band.** `scripts/marketing/capture-lesson-walkthrough.mjs`
+     records a walkthrough of the free first lesson (Playwright `recordVideo`,
+     webm + poster into `apps/web/public/media/`). Owner reviews the cut, then
+     the "Watch a lesson" band lands on /learn as a native
+     `<video preload="none" poster controls>` (click-to-play, zero bytes
+     against the audited load) and the /learn visual baselines are re-minted.
+     An externally produced video can replace the file at the same path later.
+  2. **Adopt `FreeLessonCtaTracker` beyond /learn.** The landing hero, landing
+     final CTA, bridge-preview section, and /pricing footer all link the free
+     lesson untracked. Wrap them in
+     `apps/web/app/components/free-lesson-cta-tracker.tsx` and widen the
+     event's `source` union in `apps/web/lib/analytics-events.ts` as surfaces
+     adopt it.
+  3. [ ] (OPERATOR) **Request GSC re-indexing of /learn after the redesign
+     deploys** (Search Console URL inspection, "Request indexing"). Already
+     queued as an open operator leftover in
+     `docs/audits/content-editorial-audit-2026-08-19.md`; the redesign makes
+     it urgent enough to track here. Watch the "javascript machine learning"
+     cluster position afterward.
 
 - [ ] **Pre-lesson copy audit: open rulings (2026-08-19).** The audit at
   `docs/audits/prelesson-copy-audit-2026-08-19.md` applied all 54 FIX and
@@ -1238,7 +1264,8 @@ has already been written off once (see above) - do not launch dark again.
   is off). ~~Wire `pnpm migrate:status` into CI~~ - CI job added 2026-07-25;
   needs `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions
   secrets or it stays red (fail-closed by design, R3-9).
-- [ ] (OPERATOR) **Move Vercel off the Hobby plan.** Hobby prohibits
+- [x] **Vercel is on Pro, verified 2026-08-24** (team scope
+  `amira-salahs-projects`). Closes this entirely. Original text: Hobby prohibits
   commercial use; selling a $59-159 product on it is a ToS/takedown risk
   before it is a cost one (R2-5). Still recorded as Hobby in the repo at
   `docs/infrastructure.md:45` and in the cost table at `:202`; the

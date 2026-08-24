@@ -497,6 +497,12 @@ body {
   --color-text-muted: #b0b0b0;
   --color-primary: #6baa8a;
   --color-border: #3d3d3d;
+  /* On-primary ink must revert with primary. The light scheme pairs white
+     ink with the darkened light primary; over art, primary reverts to the
+     dark #6baa8a above, and white on that green is 2.71:1 (the /learn hero
+     CTA, caught by axe 2026-08-24). Restate the dark pair's ink. */
+  --tc-on-primary: #181818;
+  --color-on-primary: #181818;
   /* Same trap one level simpler: `color` inherits as a computed value, so an
      element with no colour of its own already holds body's #1f1f1f.
      Re-resolving it here is what reaches the headings inside. */

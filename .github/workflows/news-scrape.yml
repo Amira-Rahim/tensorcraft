@@ -59,3 +59,30 @@ jobs:
       - name: Job summary
         if: always()
         run: echo "News scrape completed at $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+      # Dead-man's-switch. Everything above fails LOUDLY, but a job that never
+      # STARTS says nothing at all, and that is the failure mode with a date
+      # attached: partitions exist only to 2027-04-01.
+      #
+      # Two ways this job silently stops. GitHub disables scheduled workflows
+      # after 60 days of repository inactivity, which is entirely plausible for
+      # a solo project between pushes. And on 2026-08-24 a run was refused
+      # outright with "the job was not started because recent account payments
+      # have failed or your spending limit needs to be increased" - a billing
+      # condition, nothing to do with the code, and nobody noticed.
+      #
+      # Pinging only on success is the point: no ping means the external
+      # monitor alerts, whether the job failed, was disabled, or was never
+      # allowed to start. Provider-agnostic on purpose (BetterStack Heartbeats,
+      # Sentry Crons and healthchecks.io all accept a plain GET).
+      - name: Heartbeat (only reached when everything above succeeded)
+        env:
+          HEARTBEAT_URL: ${{ secrets.HEARTBEAT_URL_NEWS_SCRAPE }}
+        run: |
+          if [ -z "$HEARTBEAT_URL" ]; then
+            echo "::notice::HEARTBEAT_URL_NEWS_SCRAPE not set, skipping heartbeat. See docs/observability.md."
+            exit 0
+          fi
+          curl -fsS --max-time 15 --retry 3 "$HEARTBEAT_URL" > /dev/null \
+            && echo "heartbeat sent" \
+            || echo "::warning::heartbeat ping failed; the job itself succeeded"

@@ -44,6 +44,11 @@ export const EVENTS = {
   PAYWALL_HIT: "paywall_hit",
   UPGRADE_CTA_SHOWN: "upgrade_cta_shown",
   UPGRADE_CTA_CLICKED: "upgrade_cta_clicked",
+  // Added 2026-08-24: /learn gained free-lesson CTAs with the story-driven
+  // redesign, and no marketing surface had ever measured the free-start
+  // click. Deliberately separate from UPGRADE_CTA_* (paid intent); this one
+  // opens the activation funnel that LESSON_STARTED continues.
+  FREE_LESSON_CTA_CLICKED: "free_lesson_cta_clicked",
 
   // Signup funnel.
   // Added 2026-07-21: the auth screen previously emitted NOTHING, so the
@@ -180,6 +185,13 @@ export interface EventProperties {
   [EVENTS.UPGRADE_CTA_CLICKED]: {
     source: "paywall" | "pricing" | "dashboard" | "lesson_footer";
     worldId?: string;
+  };
+  [EVENTS.FREE_LESSON_CTA_CLICKED]: {
+    /**
+     * Placement of the clicked free-lesson CTA. Learn-scoped today;
+     * extend the union when landing/pricing adopt the tracker.
+     */
+    source: "learn_hero" | "learn_demo" | "learn_start_free" | "learn_footer";
   };
 
   /**

@@ -1,6 +1,7 @@
 "use client";
 
 import { getSupabaseBrowserClient } from "./supabase/client";
+import { reportDataError } from "./report-data-error";
 import { trackStreakAchieved } from "@/lib/analytics";
 
 interface ProgressUpdate {
@@ -60,6 +61,18 @@ export async function markLessonStarted(
       .eq("lesson_id", lessonId)
       .single();
 
+    if (!existing) {
+      // An upsert error is EXPECTED here when the row already exists, because
+      // ignoreDuplicates makes it a no-op. Only report when the fallback SELECT
+      // also comes back empty: at that point the write genuinely failed and the
+      // learner's progress was silently dropped.
+      reportDataError("progress.markLessonStarted", error, {
+        worldId,
+        moduleId,
+        lessonId,
+      });
+    }
+
     return existing ?? null;
   }
 
@@ -109,7 +122,16 @@ export async function markLessonCompleted(
     .select()
     .single();
 
-  if (error) return null;
+  if (error) {
+    // Losing this write means the learner finished a lesson and the product
+    // forgot. Previously it returned null and told nobody.
+    reportDataError("progress.markLessonCompleted", error, {
+      worldId,
+      moduleId,
+      lessonId,
+    });
+    return null;
+  }
 
   // Streak update + genome recomputation + analytics (all fire-and-forget)
   Promise.resolve(
@@ -169,7 +191,10 @@ export async function updateExerciseProgress(update: ProgressUpdate) {
     .select()
     .single();
 
-  if (error) return null;
+  if (error) {
+    reportDataError("progress.updateExerciseProgress", error);
+    return null;
+  }
   return data;
 }
 

@@ -39,6 +39,7 @@ import { trackWorldSelected } from "@/lib/analytics";
 import { EVENTS, track } from "@/lib/analytics-events";
 import { getApiUrl } from "@/lib/api-url";
 import { ERROR_MESSAGES } from "@/lib/error-messages";
+import { reportDataError } from "@/lib/report-data-error";
 
 const LAUNCH_WORLD_SLUG = "deep-orbit";
 const LAUNCH_WORLD_NAME = "Deep Orbit";
@@ -223,6 +224,11 @@ export default function OnboardingPage() {
           .eq("id", user.id);
 
         if (completeError) {
+          // The comment above describes what this failure does to a learner:
+          // an infinite first-run loop with no way out. It showed them a
+          // generic message and told us nothing, so we only ever heard about
+          // it if someone wrote in.
+          reportDataError("onboarding.complete", completeError);
           setError(ERROR_MESSAGES.unknown);
           setSaving(false);
           return;

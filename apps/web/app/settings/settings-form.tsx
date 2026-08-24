@@ -28,6 +28,7 @@ import { LAUNCHED_WORLDS } from "@tensorcraft/shared";
 import { UserAvatar } from "@/app/components/user-avatar";
 import { resizeImage } from "@/lib/resize-image";
 import { ERROR_MESSAGES } from "@/lib/error-messages";
+import { reportDataError } from "@/lib/report-data-error";
 
 // ---------------------------------------------------------------------------
 // Tabs
@@ -195,10 +196,15 @@ export function SettingsForm({
 
       const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
 
-      await supabase
+      // The result used to be discarded entirely, so a failed write still ran
+      // setAvatarUrl below and the UI showed the new avatar regardless. The
+      // optimistic update stays (re-uploading is cheap, a broken form is not),
+      // but the failure is no longer invisible.
+      const { error: avatarError } = await supabase
         .from("profiles")
         .update({ avatar_url: newUrl })
         .eq("id", user.id);
+      reportDataError("settings.updateAvatar", avatarError);
 
       setAvatarUrl(newUrl);
     } catch (err) {
@@ -287,6 +293,8 @@ export function SettingsForm({
 
     // setSaving(false) now lives in handleSave's finally, so it runs on the
     // throwing paths too.
+    reportDataError("settings.updateProfile", updateError);
+
     if (updateError || prefsError) {
       setError(prefsError ?? updateError?.message ?? "Failed to save settings");
     } else {

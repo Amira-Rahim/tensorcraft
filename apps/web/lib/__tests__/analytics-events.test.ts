@@ -166,6 +166,17 @@ describe("lib/analytics-events", () => {
     });
   });
 
+  it("track forwards free_lesson_cta_clicked with its placement source", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
+    initPostHog();
+
+    track(EVENTS.FREE_LESSON_CTA_CLICKED, { source: "learn_hero" });
+
+    expect(posthog.capture).toHaveBeenCalledWith("free_lesson_cta_clicked", {
+      source: "learn_hero",
+    });
+  });
+
   it("track forwards code_pushed payload verbatim", () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
     initPostHog();

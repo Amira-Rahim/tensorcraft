@@ -1,4 +1,5 @@
 import { getSupabaseBrowserClient } from "./supabase/client";
+import { reportDataError } from "./report-data-error";
 
 /**
  * Submit a waitlist signup. Returns "done" on success or duplicate, "error" on
@@ -44,12 +45,22 @@ export async function submitWaitlist(
       return "done";
     }
 
-    if (error) return "error";
+    if (error) {
+      // The bug this exists for: a CHECK constraint rejected every source
+      // value the app sends, this returned "error", and nothing anywhere
+      // recorded why. For months. 23505 above is deliberately excluded, since
+      // a duplicate is a success from the visitor's point of view.
+      reportDataError("waitlist.insert", error, { worldId, source });
+      return "error";
+    }
 
     return "done";
-  } catch {
+  } catch (err) {
     // Network failure, blocked storage while constructing the client, or a
     // PostgREST transport error. All are "try again", never a dead form.
+    reportDataError("waitlist.insert", {
+      message: err instanceof Error ? err.message : "transport failure",
+    });
     return "error";
   }
 }

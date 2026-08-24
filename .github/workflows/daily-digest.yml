@@ -1,0 +1,94 @@
+# Daily operator digest: the absence detector.
+#
+# Every other alert in this system fires when something HAPPENS. Nothing fires
+# when something STOPS: signups going to zero, purchases drying up, the
+# webhook falling silent. There is no event to hang an alert on, so those
+# failures are invisible. This is the cheapest thing that closes that hole.
+#
+# The numbers are half the point. The other half is that a MISSING email is
+# itself a signal, which is why this job fails loudly rather than skipping
+# when it cannot do its work. A digest that silently stops sending looks
+# exactly like a quiet week, and a quiet week is what it exists to distinguish
+# from a broken system.
+#
+# It also performs the one reconciliation nothing else does: Stripe's count of
+# paid sessions against rows in `purchases`. Drift means someone paid and was
+# not recorded, the most expensive silent failure the product has.
+name: Daily digest
+
+on:
+  schedule:
+    # 07:23 UTC daily. Odd minute to dodge the top-of-hour scheduler crunch,
+    # matching the convention in partitions.yml.
+    - cron: "23 7 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Query and print, send no email"
+        required: false
+        default: "false"
+
+concurrency:
+  group: daily-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    name: Send the operator digest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      # No dependency install: the script uses fetch and the PostgREST/Stripe/
+      # Resend HTTP APIs directly, so it runs on a bare Node with no lockfile
+      # to honour and nothing to go stale.
+      - name: Send digest
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          OPERATOR_ALERT_EMAIL: ${{ secrets.OPERATOR_ALERT_EMAIL }}
+        run: |
+          # Fail loud on missing secrets, per the house rule in partitions.yml:
+          # never a silent green. A red job here means "the digest is not set
+          # up", which is exactly what you want to see until it is.
+          #
+          # STRIPE_SECRET_KEY is the one exception: without it the script skips
+          # reconciliation and still reports every other number, because a
+          # partial digest beats no digest.
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Missing Supabase secrets."
+            exit 2
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node scripts/daily-digest.mjs --dry-run
+          else
+            if [ -z "$RESEND_API_KEY" ]; then
+              echo "RESEND_API_KEY is not set, so the digest cannot send."
+              echo "See docs/observability.md. Failing rather than pretending."
+              exit 2
+            fi
+            node scripts/daily-digest.mjs
+          fi
+
+      # Dead-man's-switch, same pattern as partitions.yml and news-scrape.yml.
+      # Only reached on success, so a failed send, a disabled workflow and a
+      # run GitHub refused to start all look identical to the monitor: no ping.
+      - name: Heartbeat (only reached when everything above succeeded)
+        env:
+          HEARTBEAT_URL: ${{ secrets.HEARTBEAT_URL_DAILY_DIGEST }}
+        run: |
+          if [ -z "$HEARTBEAT_URL" ]; then
+            echo "::notice::HEARTBEAT_URL_DAILY_DIGEST not set, skipping heartbeat. See docs/observability.md."
+            exit 0
+          fi
+          curl -fsS --max-time 15 --retry 3 "$HEARTBEAT_URL" > /dev/null \
+            && echo "heartbeat sent" \
+            || echo "::warning::heartbeat ping failed; the job itself succeeded"

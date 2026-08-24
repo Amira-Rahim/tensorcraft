@@ -42,7 +42,7 @@ This document covers the production deployment architecture, scaling configurati
 
 | Property | Value |
 |----------|-------|
-| Platform | Vercel (Hobby plan, free tier) |
+| Platform | Vercel **Pro** (team scope `amira-salahs-projects`), verified 2026-08-24 |
 | Framework | Next.js (auto-detected) |
 | Root directory | `apps/web` |
 | Deploy trigger | Auto-deploy from GitHub `main` branch |
@@ -199,7 +199,7 @@ Email delivery is fire-and-forget - Kit failures do not block the purchase flow.
 
 | Component | 100K Users | 500K Users | 1M Users |
 |-----------|-----------|-----------|---------|
-| Vercel (web, Hobby) | $0/mo | $0/mo | $0/mo |
+| Vercel (web, Pro) | $20/mo + usage | $20/mo + usage | $20/mo + usage |
 | Fly.io (API, 3–5 machines) | $15/mo | $75/mo | $200/mo |
 | Cloudflare Pro | $20/mo | $20/mo | $20/mo |
 | Supabase Pro + Compute + Read Replica | $50/mo | $175/mo | $400/mo |

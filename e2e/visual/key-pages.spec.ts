@@ -48,6 +48,17 @@ const KEY_PAGES = [
     base: "paywall",
     maskCanvas: false,
   },
+  // maskCanvas false on purpose: the hero orbit canvas spans the whole band,
+  // so masking would magenta-block the hero (the landing blind spot,
+  // post-launch-backlog). Reduced motion gives every SceneCanvas one
+  // deterministic static frame, and the tfjs demo stays on its placeholder
+  // because fullPage capture never scrolls, so its IO gate never fires.
+  {
+    name: "learn page",
+    path: "/learn",
+    base: "learn",
+    maskCanvas: false,
+  },
 ] as const;
 
 /* Scheme matrix (light-mode rollout, 2026-07-23): dark keeps the original
