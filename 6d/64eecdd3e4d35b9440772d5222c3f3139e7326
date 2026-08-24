@@ -1,0 +1,87 @@
+docs/post-launch-backlog.md
+  s_05a49bab834291::t_4c1c179b22afbd 72-74,76-77,2044,2048
+  s_05a49bab834291::t_1e2fc954699a33 50-66
+  s_05a49bab834291::t_0786d3df383c47 2023
+  s_7ca13fcef6a075::t_a824bfb7097ccf 273-282
+.github/workflows/synthetic-checks.yml
+  s_05a49bab834291::t_08dc18c9fd7c94 73-131
+  s_05a49bab834291::t_d06045e7a47837 28-36
+apps/web/app/learn/course-map.tsx
+  s_7ca13fcef6a075::t_feabfcf917a0a2 77-81
+  s_7ca13fcef6a075::t_591999cf5daa0c 60-65
+  s_7ca13fcef6a075::t_9b730087d0d20d 1-59,66-76,82-127
+packages/supabase/src/__tests__/server-timeout.test.ts
+  s_05a49bab834291::t_d8dca5f0d38216 1-16,28,31-32,34-45,48-81,85-99,106-110
+  s_05a49bab834291::t_1290f874bbf8bf 17-27,29-30,33,46-47,82-84,100-105
+apps/web/app/learn/page.tsx
+  s_7ca13fcef6a075::t_d2b81e6d0cc322 8,10-11
+  s_7ca13fcef6a075::t_c95762c9bea650 254-261
+  s_7ca13fcef6a075::t_e44107e697c575 274-278,282,287
+  s_7ca13fcef6a075::t_aefe58ee9cc4ea 208-211,213-214,216,218-221,223-225,235-236,238-243,245-252,267
+  s_7ca13fcef6a075::t_7349e5e3061906 148-149,151-162,166-167
+  s_7ca13fcef6a075::t_f19075a9f9d1e1 178,184-186
+  s_7ca13fcef6a075::t_54adc739a3ae5c 113-118,130
+  s_7ca13fcef6a075::t_9e282518c75064 88-92,96
+  s_7ca13fcef6a075::t_86edf97535460b 163-165
+  s_7ca13fcef6a075::t_f40ae88302faf5 172-174,176-177,179-183,187-203
+  s_7ca13fcef6a075::t_7dd4c557a88cda 141-143,150,168
+  s_7ca13fcef6a075::t_f474213c5d090c 207
+  s_7ca13fcef6a075::t_ceeaa594a8363c 253
+  s_7ca13fcef6a075::t_5cbe5b4a78b1a6 262-266
+packages/supabase/src/server.ts
+  s_05a49bab834291::t_818a6e6573a301 11-41,59-67,88
+apps/web/app/learn/page.test.tsx
+  s_7ca13fcef6a075::t_1b88cc30adc4e6 108-138
+docs/observability.md
+  s_05a49bab834291::t_267b815886ca57 214
+  s_05a49bab834291::t_26ffdaae9bd135 186-213,215-217
+  s_05a49bab834291::t_0786d3df383c47 48-60,389-392
+  s_05a49bab834291::t_8b815fe466c091 261-263,265-282,284-287,289-297,301,303-305,307,312-318
+  s_05a49bab834291::t_9170405f227396 319-321
+  s_05a49bab834291::t_78d9867b0a2d87 322
+apps/web/lib/__tests__/report-data-error.test.ts
+  s_05a49bab834291::t_267b815886ca57 102
+apps/web/app/learn/coming-soon-worlds.tsx
+  s_7ca13fcef6a075::t_23f2e7e7446236 97
+  s_7ca13fcef6a075::t_3752469b67f74f 66
+  s_7ca13fcef6a075::t_8a0598e9954725 40-42
+apps/web/lib/report-data-error.ts
+  s_05a49bab834291::t_267b815886ca57 36
+apps/web/instrumentation-client.ts
+  s_05a49bab834291::t_b04231bee9c20f 1-71
+apps/web/app/learn/taught-bridge.tsx
+  s_7ca13fcef6a075::t_96b2f65b9f460f 53-55,57-62,70-75
+  s_7ca13fcef6a075::t_d6347bbf8eea9b 6-52,56,63-69,76-104
+  s_7ca13fcef6a075::t_acb79377bbc0a2 1-5
+apps/web/next.config.ts
+  s_05a49bab834291::t_760108f81cf16b 5,201-207,227-229,231-241,246,252-257,265
+  s_05a49bab834291::t_7764da29e6cdcc 247-251
+  s_05a49bab834291::t_abcbee7c85c002 242-245,266-267
+  s_05a49bab834291::t_267b815886ca57 230,258-264
+apps/web/app/learn/crew-strip.tsx
+  s_7ca13fcef6a075::t_964f0145b152e9 1-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6d64eecdd3e4d35b9440772d5222c3f3139e7326",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_7ca13fcef6a075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "367f541d-6aa4-4a66-a448-f86f2f91911f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
