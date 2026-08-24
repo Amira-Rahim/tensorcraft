@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 import { fileURLToPath } from "url";
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const velitePath = path.resolve(__dirname, "../../packages/content/.velite");
@@ -197,7 +198,13 @@ const nextConfig: NextConfig = {
             // script-src otherwise) the worker is silently blocked and every
             // Run Tests click times out.
             "worker-src 'self' blob:",
-            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.tensorcraft.app https://api.stripe.com https://checkout.stripe.com https://eu.posthog.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://plausible.io",
+            // Sentry ingest is region scoped and the host is NOT
+            // interchangeable: our DSN lives on `ingest.de.sentry.io`, and a
+            // CSP wildcard for `*.ingest.sentry.io` does not match it because
+            // the suffix differs. Omitting the region host does not degrade
+            // reporting, it blocks it outright and silently, in the browser,
+            // where no server side tooling can see the failure.
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.tensorcraft.app https://api.stripe.com https://checkout.stripe.com https://eu.posthog.com https://*.ingest.de.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://plausible.io",
             "frame-src https://js.stripe.com https://checkout.stripe.com",
             "img-src 'self' data: blob: https:",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -217,4 +224,44 @@ const withAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
-export default withAnalyzer(nextConfig);
+/**
+ * Sentry build plugin.
+ *
+ * This wrapper is what injects `instrumentation-client.ts` into the browser
+ * bundle and uploads source maps. Without it the client SDK never
+ * initializes, so browser errors are collected by nothing at all.
+ *
+ * It belongs HERE rather than in the repo root `next.config.js` the Sentry
+ * wizard created: the Vercel project builds with `rootDirectory: apps/web`,
+ * so a root config is never read.
+ *
+ * Source map upload additionally needs `SENTRY_AUTH_TOKEN` at build time.
+ * Without it the build still succeeds and stack traces stay minified, which
+ * is the right failure: a missing token should not break deploys.
+ */
+// Annotated explicitly rather than inferred. Without the annotation TS2742
+// fires here, because the inferred type reaches into a pnpm-internal path
+// that cannot be named portably.
+const config: NextConfig = withSentryConfig(withAnalyzer(nextConfig), {
+  org: "amira-salah",
+  // Slug, not display name, and NOT the `nextjs` the Sentry wizard guessed.
+  // A wrong slug does not fail the build: source maps upload to the wrong
+  // project and stack traces stay minified, which looks identical to never
+  // having set the auth token at all.
+  project: "tensorcraft-nextjs",
+
+  // Quiet locally, verbose in CI where the upload log is the only evidence
+  // the source maps actually shipped.
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+
+  webpack: {
+    treeshake: {
+      // Strips the Sentry SDK's own debug logging from the client bundle.
+      // Replaces the deprecated top level `disableLogger`.
+      removeDebugLogging: true,
+    },
+  },
+});
+
+export default config;

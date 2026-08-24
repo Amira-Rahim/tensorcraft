@@ -105,6 +105,37 @@ describe("LearnPage SEO payload", () => {
   });
 });
 
+describe("LearnPage gateway bands", () => {
+  it("teaches one real bridge, breaks panel included", () => {
+    const { container } = render(<LearnPage />);
+    const bridge = screen.getByTestId("learn-taught-bridge");
+    expect(bridge).toBeInTheDocument();
+    expect(bridge.textContent).toContain("Component state");
+    expect(container.textContent).toContain("where it breaks");
+  });
+
+  it("renders the full course map with the free door on module 1", () => {
+    const { container } = render(<LearnPage />);
+    expect(screen.getByTestId("learn-course-map")).toBeInTheDocument();
+    const rows = container.querySelectorAll(
+      '[data-testid^="learn-map-module-"]',
+    );
+    // The map is the real curriculum, same source as /pricing; a count
+    // drift here means the content package and the marketing map split.
+    expect(rows.length).toBeGreaterThanOrEqual(11);
+    expect(
+      container.querySelector(
+        '[data-testid="learn-map-module-foundations"] a[href="/worlds/deep-orbit/foundations/introduction-to-tensors"]',
+      ),
+    ).not.toBeNull();
+  });
+
+  it("renders the crew strip", () => {
+    render(<LearnPage />);
+    expect(screen.getByTestId("learn-crew-strip")).toBeInTheDocument();
+  });
+});
+
 describe("LearnPage demo band", () => {
   it("stays on the static placeholder without IntersectionObserver", () => {
     // jsdom has no IO; the tfjs demo must never mount here (the IO gate is

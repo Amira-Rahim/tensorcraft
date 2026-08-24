@@ -47,16 +47,34 @@ intelligible.
 including the check for onboarding answers dropped between 2026-08-18 and
 08-20. Settle whether the 046 Custom Access Token hook is enabled.
 
+**B0, found 2026-08-24: "Connect GitHub" is a dead button in production.**
+`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` and `GITHUB_CALLBACK_URL` are unset
+on Fly, so `POST /api/github/connect` returns a 500 with "GitHub App is not
+configured on this server" (`apps/api/src/routes/github.ts:121`). The route
+fails honestly rather than crashing, which is why nothing surfaced it. The
+problem is that three web surfaces invite the click anyway: the Settings form,
+`app/components/github-nudge-toast.tsx`, which actively prompts for it, and
+`/about`. A user who follows the nudge gets an error, and the nudge is the
+product asking them to.
+
+Either register the GitHub OAuth App and set the three secrets, or hide the
+nudge and the Settings control until it exists. Registering is the smaller
+job: GitHub, Settings, Developer settings, OAuth Apps, callback
+`https://api.tensorcraft.app/api/github/callback`. Note that token encryption
+(`GITHUB_TOKEN_ENC_KEY`, set 2026-08-24) protects this column already, so
+nothing further is needed on that side once the flow works.
+
 **B1, first paying customer.** **Set up the external uptime monitor and the
 Sentry alert rules first, both are free and take 15 minutes together**, exact
 steps in `docs/observability.md`. Operator alerts on purchases, refunds and
 chargebacks now send themselves over Resend, and synthetic checks run every 6
 hours, but neither replaces a monitor polling from outside our own
-infrastructure. Set `OPERATOR_ALERT_EMAIL` so those alerts do not land in the
-support inbox alongside user mail.
+infrastructure. Optionally set `OPERATOR_ALERT_EMAIL` so those alerts do not land in the
+support inbox alongside user mail; both consumers fall back to `SUPPORT_EMAIL`,
+which is already deployed, so this is a routing preference and not a gap.
 Then: Verify backups and run one restore drill, now
-that losing data means losing someone's purchase. Set `GITHUB_TOKEN_ENC_KEY`
-so token encryption stops being inert. Stand up external uptime monitoring:
+that losing data means losing someone's purchase.
+~~Set `GITHUB_TOKEN_ENC_KEY`~~ **DONE 2026-08-24.** Stand up external uptime monitoring:
 this is the failure mode that let the API certificate expire unnoticed for
 weeks in July. Confirm US home-state sales tax with an advisor.
 
@@ -252,11 +270,16 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
-- [ ] **/learn redesign follow-ups (2026-08-24).** The story-driven /learn
-  rebuild (briefing hero over the bridge plate, translation strip, IO-gated
-  live demo, scene-canvas coming-soon cards, FAQ band, `free_lesson_cta_clicked`
-  instrumentation) landed as Phase 1 on 2026-08-24 (uncommitted). Three
-  follow-ups:
+- [ ] **/learn redesign follow-ups (2026-08-24).** The /learn rebuild landed
+  2026-08-24 and was restructured the same day into a gateway walk (owner
+  ruling: the first cut read as a second landing page): briefing hero over
+  the bridge plate with the sample-7741 hook, Step 01 = one registry bridge
+  taught in full with its breaks panel (`taught-bridge.tsx`), Step 02 = the
+  IO-gated live demo, Step 03 = the real Deep Orbit module map with mission
+  patches and the free door on module 1 (`course-map.tsx`, same
+  `@tensorcraft/content` source as /pricing), crew strip, scene-canvas
+  coming-soon cards, FAQ band, `free_lesson_cta_clicked` instrumentation.
+  Three follow-ups:
   1. **Phase 2 video band.** `scripts/marketing/capture-lesson-walkthrough.mjs`
      records a walkthrough of the free first lesson (Playwright `recordVideo`,
      webm + poster into `apps/web/public/media/`). Owner reviews the cut, then
@@ -1997,7 +2020,7 @@ Not launch blockers. Each one wastes acquisition spend if left.
      deliberate change window.
   Recommendation: option 1. Original finding follows.
   Core defect CONFIRMED open in both directions 2026-08-20, but two clauses of this entry were stale and are corrected here: `unsubscribeFromAll()` is **not** dead code (account deletion calls it), and a Kit webhook **does** exist (`apps/api/src/routes/webhooks.ts:49`, shared-secret guarded). What is actually broken: the two unsubscribe handlers only flip `waitlist.subscribed` in Supabase and never call `unsubscribeFromAll`; and the kit-bounce handler only logs, performing zero database writes, so a Kit-side unsubscribe or complaint never flips anything. Once the Tier 1-OPS retention automations go live, an unsubscribed address keeps receiving sequence emails. Wire both directions.
-- [ ] **No server-side timeouts on Kit, Resend, or Supabase queries.** Re-verified 2026-08-20 by grepping every `AbortSignal.timeout` in the repo: there are exactly 8, all in the GitHub lib. ~~Kit's single `kitFetch` wrapper has no signal~~ **CLOSED 2026-08-23: `kitFetch` now carries `AbortSignal.timeout(10_000)`**, so every Kit call is bounded at one place rather than per call site. 10s rather than the GitHub lib's 15s because the sharpest caller is a webhook handler Stripe will re-deliver if held. This was latent only because the stored credentials 401 instantly; repairing them turns these into real network calls, which is why the bound went in first. 4 tests, three of which are regression guards on the existing swallow-and-return-null behaviour. The purchase-receipt send is also bounded (`withTimeout` in `apps/api/src/lib/email.ts`, 5s). **Resend CLOSED 2026-08-23:** `withTimeout` was extracted to `apps/api/src/lib/with-timeout.ts` and now bounds the digest send and the issue notification as well as the receipt, all at 10s. Both sit on paths where hanging is worse than failing: the digest holds an admin request open, and the webhook gets re-delivered. **Still open: no Supabase query has a timeout.** That one is a broad mechanical sweep (`.abortSignal()` on every query) rather than a single wrapper, so it was not attempted here. Upstash has a partial mitigation (a 2s SDK-level timeout on the rate limiter only). The sharpest case is confirmed and worth noting precisely: `apps/api/src/routes/payments.ts:872-875` **awaits** two Kit calls inline in the Stripe webhook handler even though the comment above them says fire-and-forget, so a hung Kit connection stalls the webhook. Re-delivery is fully deduped via the `payment_events` ledger, so the cost is retry noise and delayed fulfilment rather than double-firing. Client-side, seven call sites still bypass `apiFetch` and its 10s abort (settings x4, onboarding, report-issue, capstone).
+- [ ] **No server-side timeouts on Kit, Resend, or Supabase queries.** Re-verified 2026-08-20 by grepping every `AbortSignal.timeout` in the repo: there are exactly 8, all in the GitHub lib. ~~Kit's single `kitFetch` wrapper has no signal~~ **CLOSED 2026-08-23: `kitFetch` now carries `AbortSignal.timeout(10_000)`**, so every Kit call is bounded at one place rather than per call site. 10s rather than the GitHub lib's 15s because the sharpest caller is a webhook handler Stripe will re-deliver if held. This was latent only because the stored credentials 401 instantly; repairing them turns these into real network calls, which is why the bound went in first. 4 tests, three of which are regression guards on the existing swallow-and-return-null behaviour. The purchase-receipt send is also bounded (`withTimeout` in `apps/api/src/lib/email.ts`, 5s). **Resend CLOSED 2026-08-23:** `withTimeout` was extracted to `apps/api/src/lib/with-timeout.ts` and now bounds the digest send and the issue notification as well as the receipt, all at 10s. Both sit on paths where hanging is worse than failing: the digest holds an admin request open, and the webhook gets re-delivered. ~~Still open: no Supabase query has a timeout~~ **CLOSED 2026-08-24: bounded at the two client factories in `packages/supabase/src/server.ts` via a custom `fetch`, so it covers every existing query and every future one. 10s, chosen against the Stripe webhook, the sharpest caller. A caller-supplied signal still wins. 5 tests.** That one is a broad mechanical sweep (`.abortSignal()` on every query) rather than a single wrapper, so it was not attempted here. Upstash has a partial mitigation (a 2s SDK-level timeout on the rate limiter only). The sharpest case is confirmed and worth noting precisely: `apps/api/src/routes/payments.ts:872-875` **awaits** two Kit calls inline in the Stripe webhook handler even though the comment above them says fire-and-forget, so a hung Kit connection stalls the webhook. Re-delivery is fully deduped via the `payment_events` ledger, so the cost is retry noise and delayed fulfilment rather than double-firing. Client-side, seven call sites still bypass `apiFetch` and its 10s abort (settings x4, onboarding, report-issue, capstone).
 - [x] **Error-boundary copy: FIXED 2026-08-23.** A transient Supabase fault
   arrives carrying a Postgres SQLSTATE the message map did not recognise, so
   it fell through to `unknown`: "Something went wrong on our end. Try again or
@@ -2018,11 +2041,11 @@ Not launch blockers. Each one wastes acquisition spend if left.
 - [x] **Lesson body `opacity:0` cloaking: FIXED 2026-08-23** by `NoscriptReveal` (see the indexability entry above). Original finding:
   **Lesson body ships in HTML at `opacity:0`** until JS stamps the beat state - cloaking-adjacent on the primary organic surface (compounds the ~100-indexable-words item above). Re-verified 2026-08-20: `globals.css:323-336` hides unshown beats and sets instructional content to `display: none` while playing, and the file's own comment states that first-visit SSR HTML starts in "playing", so JS is required to reveal the page.
 - [ ] **Small UX/cleanup: one item left.** Re-verified 2026-08-20. Now also fixed and struck: ~~broken admin link `admin/digest` → `/learn/...`~~ (now points at `/worlds/...`, with a code comment naming this exact defect), alongside the previously struck root-404 CTA and `.gitignore` items. **Counterfactual debris: DOCUMENTED AS DORMANT 2026-08-23**, which is the second option this entry offered, chosen deliberately. Verified against production: `counterfactual_choices` holds **0 rows**, so dropping it is safe whenever you want it gone. It is deferred because authoring the migration now would leave a PENDING migration, and `deploy-api.yml` gates on zero pending, so purely cosmetic cleanup would block the deploy that carries the receipt and the geo-gate. Nothing about the table costs anything while it sits there: it is empty, its RLS policy is intact, and its presence in the GDPR export list just yields an empty array. Moved to `docs/post-launch-backlog.md` with the exact drop, including the two RPCs, which must be dropped by ARGUMENT TYPES rather than parameter names since 058 renamed the parameters.
-- [ ] (OPERATOR) **`github_token`: ENCRYPTED AT REST 2026-08-23. Needs one env var to take effect.**
+- [x] (OPERATOR) **`github_token`: ENCRYPTED AT REST 2026-08-23. LIVE 2026-08-24.**
   AES-256-GCM with a fresh IV per write, authenticated so tampering is detected rather than silently decrypting to garbage. `apps/api/src/lib/token-crypto.ts`, wired at both write sites and all three read sites in `github.ts`. 9 tests.
   **Backwards compatible by design:** the stored envelope (`v1:iv:tag:ct`) is self-identifying, so rows written before this keep working until they are rewritten. Without that, every already-connected account would break the moment this deploys.
   **Degrades honestly:** with no key set it stores plaintext and warns, rather than refusing to store and breaking GitHub sign-in while the variable is still unset. An envelope it cannot open returns null, never the envelope itself, because returning it would send ciphertext to GitHub as a bearer token.
-  **OPERATOR STEP: set `GITHUB_TOKEN_ENC_KEY` on Fly** (`openssl rand -base64 48`; documented in `apps/api/.env.example`). Until then this is inert and the column is still plaintext.
+  ~~**OPERATOR STEP: set `GITHUB_TOKEN_ENC_KEY` on Fly**~~ **DONE 2026-08-24**: set from `openssl rand -base64 32`, rolling restart across both machines, health check green through Cloudflare. Key length is not load bearing because `token-crypto.ts:39` SHA-256 hashes whatever it is given into a 32 byte key, so the `-base64 48` in `apps/api/.env.example` is a suggestion rather than a requirement. Tokens written from now on are encrypted; rows written before stay plaintext until rewritten, by design. **Losing the key is recoverable, not catastrophic:** `token-crypto.ts:98` treats an unopenable envelope as disconnected, so the worst case is affected users reconnecting GitHub. No backup of the key is required.
   **On the second half, "block direct column reads":** encryption substantially retires it. A browser `select("github_token")` now returns ciphertext, not a credential. A column-level REVOKE would additionally need care, because the API reads that column through the AUTHENTICATED role on some paths, so revoking would break the product as well as the attacker. Not attempted; the migration would also leave a pending entry blocking the deploy gate.
 - [x] ~~Money-path hardening (R3-4)~~ - **all six DONE 2026-07-25** (payments.test.ts 41/41). Partially re-verified 2026-08-20: the sub-claim other entries lean on, webhook dedupe via the `payment_events` ledger, checks out in code and migration 053. The 41/41 figure was not re-run.
 - [x] **Journey/new-surface hardening (R3-6/R3-7): both "still open" items are now closed.** Re-verified 2026-08-20. The lesson editor is genuinely single-mount, not CSS-only: `lesson-shell.tsx:22-31` states the pane is single-mount by contract and takes `paneOpenOnMobile`, and the second copy is gone from the caller. The `/journey` `getUser()` nit is moot because the route no longer exists (consolidated into `/worlds` on 2026-08-15). **Note the concern migrated rather than vanished:** `apps/web/app/worlds/page.tsx:110` does a per-request `getUser()` and that file exports no `revalidate`, so the same crawl-cost characteristic now applies to `/worlds`. Tracked as a nit, not a blocker.

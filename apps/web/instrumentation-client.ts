@@ -1,6 +1,12 @@
 /**
  * Sentry client-side config, runs in the browser.
  *
+ * Named `instrumentation-client.ts` rather than `sentry.client.config.ts`
+ * because Next.js loads this filename natively. The old name only works
+ * through the webpack plugin and stops working entirely under Turbopack,
+ * which would take browser error reporting down silently: the build keeps
+ * passing, the bundle just no longer contains an init.
+ *
  * Only initializes when `NEXT_PUBLIC_SENTRY_DSN` is set. In dev/preview
  * environments without a DSN this is a complete no-op.
  *
@@ -57,3 +63,9 @@ if (dsn) {
     },
   });
 }
+
+/**
+ * Lets Sentry trace App Router client navigations. Without this export,
+ * transitions between routes are invisible to tracing.
+ */
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

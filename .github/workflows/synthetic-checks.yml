@@ -25,6 +25,15 @@ jobs:
     name: Production invariants
     runs-on: ubuntu-latest
     steps:
+      # Only the "main has been deployed" step needs the repo, but a checkout
+      # is cheap and keeps that step honest: without it `git rev-parse` has
+      # nothing to read and the check silently compares against an empty
+      # string. fetch-depth 0 so `git rev-list` can count the gap.
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
       - name: API readiness (includes a real database check)
         run: |
           body=$(curl -sS --max-time 20 -w "\n%{http_code}" https://api.tensorcraft.app/api/health/ready)
@@ -61,3 +70,62 @@ jobs:
             echo "$country -> $code"
             test "$code" = "403" || { echo "::error::geo-gate did not block $country (got $code). EU/UK buyers may be able to purchase."; exit 1; }
           done
+
+      # Does anon actually get nothing? RLS is declared in migrations and
+      # verified by unit tests against mocks, neither of which proves the LIVE
+      # policy holds. A regression here is a data breach that no error rate or
+      # uptime check would ever show, because every request succeeds.
+      #
+      # The anon key is public by design (it ships in the browser bundle), so
+      # holding it as a repo secret adds no exposure. Warns rather than fails
+      # when unset: unlike the digest this is a supplementary check, and a red
+      # run for a missing optional secret trains you to ignore red.
+      - name: RLS still denies anonymous reads
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$ANON_KEY" ] || [ -z "$SUPABASE_URL" ]; then
+            echo "::warning::NEXT_PUBLIC_SUPABASE_ANON_KEY not set, skipping the RLS probe. See docs/observability.md."
+            exit 0
+          fi
+          fail=0
+          for table in profiles purchases world_progress skill_events waitlist; do
+            body=$(curl -sS --max-time 20 \
+              "$SUPABASE_URL/rest/v1/$table?select=id&limit=5" \
+              -H "apikey: $ANON_KEY" -H "Authorization: Bearer $ANON_KEY")
+            # A correct policy returns an empty array to an anonymous caller.
+            # Anything with an id in it means anon can read other people's rows.
+            if echo "$body" | grep -q '"id"'; then
+              echo "::error::RLS REGRESSION: anon read rows from $table"
+              fail=1
+            else
+              echo "$table -> denied"
+            fi
+          done
+          test "$fail" = "0" || exit 1
+
+      # Has main actually shipped? On 2026-08-22/23 a misconfigured Vercel
+      # ignoreCommand cancelled every deploy for two days and the dashboard
+      # filtered the cancelled rows out of view, so main drifted ahead of
+      # production silently. Nothing in the stack notices that: the site is up,
+      # healthy and serving old code.
+      - name: main has been deployed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          head_sha=$(git rev-parse HEAD 2>/dev/null || echo "")
+          deployed=$(gh run list --workflow=deploy-api.yml --branch=main \
+            --status=success --limit=1 --json headSha -q '.[0].headSha' 2>/dev/null || echo "")
+          echo "main:     ${head_sha:0:8}"
+          echo "deployed: ${deployed:0:8}"
+          if [ -z "$deployed" ]; then
+            echo "::warning::no successful API deploy found to compare against."
+            exit 0
+          fi
+          if [ "$head_sha" != "$deployed" ]; then
+            behind=$(git rev-list --count "$deployed".."$head_sha" 2>/dev/null || echo "?")
+            echo "::warning::production API is $behind commit(s) behind main. Expected right after a merge; investigate if it persists."
+          else
+            echo "API is running current main."
+          fi

@@ -37,7 +37,9 @@ export function ComingSoonWorlds() {
 
   return (
     <>
-      <div className="border border-border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Full-bleed strip under a border-t, edge to edge like the landing
+          five-worlds coming-next row; the section's own borders frame it. */}
+      <div className="border-t border-border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {CARDS.map((card, i) => (
           <div
             key={card.slug}
@@ -61,7 +63,7 @@ export function ComingSoonWorlds() {
               className="absolute inset-0 z-0 pointer-events-none"
             />
             <div
-              className="flex flex-col gap-1.5 relative z-10 px-6 py-7 h-full cursor-not-allowed"
+              className="flex flex-col gap-1.5 relative z-10 px-8 py-8 h-full min-h-[200px] cursor-not-allowed"
               data-testid={`learn-coming-soon-${card.slug}`}
             >
               <div className="flex items-center justify-between gap-3">
@@ -92,7 +94,7 @@ export function ComingSoonWorlds() {
                 onClick={() => setNotifyOpen(true)}
                 onFocus={() => setHovered(card.slug)}
                 onBlur={() => setHovered(null)}
-                className="font-mono text-xs tracking-wider group-hover:opacity-100 transition-opacity mt-1 self-start text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                className="font-mono text-xs tracking-wider group-hover:opacity-100 transition-opacity mt-auto pt-3 self-start text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                 style={{ color: "var(--card-active-primary)" }}
               >
                 Notify me &rarr;

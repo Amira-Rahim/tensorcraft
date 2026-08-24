@@ -45,6 +45,19 @@ It fails red rather than skipping when it cannot send, per the house rule in
 `partitions.yml`: never a silent green. A digest that quietly stops sending
 looks exactly like a quiet week, which is the thing it exists to distinguish.
 
+**Two more invariants in the synthetic checks** (added 2026-08-24):
+
+- **RLS still denies anonymous reads**, probed with the public anon key across
+  profiles, purchases, world_progress, skill_events and waitlist. RLS is
+  declared in migrations and unit-tested against mocks; neither proves the LIVE
+  policy holds. A regression there is a data breach that no error rate or
+  uptime check would ever surface, because every request succeeds.
+- **main has actually been deployed**, comparing HEAD against the last
+  successful API deploy. On 2026-08-22/23 a misconfigured Vercel
+  `ignoreCommand` cancelled every deploy for two days while the dashboard
+  filtered the cancelled rows out of view. Nothing notices that: the site is
+  up, healthy, and serving old code.
+
 **Synthetic checks** every 6 hours (`.github/workflows/synthetic-checks.yml`),
 failing loudly to GitHub email: API readiness including a real database check,
 the web serving `/`, `/pricing` and `/terms`, and the EU/UK geo-gate still
@@ -170,7 +183,38 @@ it (`payments.webhook`, `payments.receipt`, `payments.geo-backstop`,
 
 **Also set `SENTRY_AUTH_TOKEN` in Vercel** while you are in there, or
 production stack traces stay minified and your alerts point at unreadable
-frames. Vercel project, Settings, Environment Variables, add for Production.
+frames. Get it from Sentry, Settings, Auth Tokens, Create New Token; an
+organization token (`sntrys_...`) arrives pre-scoped for source map upload.
+Add it in the Vercel project under Settings, Environment Variables, for
+Production. It is consumed at BUILD time, so it takes no `NEXT_PUBLIC_`
+prefix and does nothing until the next deploy.
+
+**Three traps, all hit on 2026-08-24 and all fixed:**
+
+1. **The Sentry wizard configures the wrong directory.** Run at the repo root
+   it wraps `/next.config.js` and writes `instrumentation-client.ts`,
+   `sentry.*.config.ts` and `pages/` beside it. The Vercel project builds with
+   `rootDirectory: apps/web`, so none of it is ever read. The wrapper has to
+   live in `apps/web/next.config.ts`, which is where it now is. Without it the
+   client SDK is never injected into the browser bundle and no source maps
+   upload, so the auth token has nothing to attach to.
+
+2. **`NEXT_PUBLIC_*` is inlined at build time.** Adding the DSN to an
+   already-built deployment changes nothing. Always redeploy after, and verify
+   by fetching a chunk and grepping for the ingest host rather than trusting
+   the dashboard, which renders build-time and runtime variables identically.
+
+3. **Sentry ingest is region scoped and CSP is exact.** Our DSN is on
+   `ingest.de.sentry.io`. A `connect-src` wildcard for `*.ingest.sentry.io`
+   does NOT match it, because the suffix differs. Miss this and every event is
+   blocked in the browser, where no server side tooling can see it fail.
+
+**Do not adopt the wizard's client config.** It enables `replayIntegration()`
+with a 10 percent session sample. Session Replay records the DOM the user is
+looking at, and `apps/web/instrumentation-client.ts` keeps it off on purpose:
+Sentry runs outside the cookie consent gate as legitimate interest, which is
+only defensible while events carry no screen content. Turning it on means
+moving that init behind consent and disclosing it in `/privacy` first.
 
 **Prove it works:** Sentry's onboarding has a "send test event" button per
 project. Fire it and confirm the mail arrives.
@@ -214,34 +258,67 @@ project between pushes.
 
 **Steps**
 
-1. In BetterStack (same account as Task 1): **Monitors**, then **Heartbeats**,
-   then create two.
+Provider: **Sentry Crons**, in the `tensorcraft-api` project. BetterStack
+Heartbeats and healthchecks.io work identically; the workflows accept any URL
+that answers a plain GET, which is exactly what Sentry's cURL guide emits.
 
-   | Name | Expected period | Grace |
-   |---|---|---|
-   | Partitions (monthly) | 1 month | 2 days |
-   | News scrape (weekly) | 1 week | 1 day |
+1. Sentry, **Monitors**, **Create Monitor**, then **Manually Create a
+   Monitor**. The SDK path instruments a long-running app, which is not what a
+   workflow is. Project `tensorcraft-api`, schedule type Crontab, UTC.
 
-   Sentry Crons and healthchecks.io work identically; the workflows accept any
-   URL that responds to a plain GET.
+   | Monitor slug | Crontab | Grace (min) | Max runtime |
+   |---|---|---|---|
+   | `partitions` | `17 3 1 * *` | 2880 | 30 |
+   | `news-scrape` | `0 9 * * 1` | 1440 | 30 |
+   | `daily-digest` | `23 7 * * *` | 360 | 30 |
 
-2. Copy each heartbeat URL into a **GitHub repository secret**: Settings,
-   Secrets and variables, Actions.
+   Grace has to absorb GitHub's scheduler, which is best-effort and routinely
+   runs late. A tight grace produces false alarms, and a channel that cries
+   wolf gets ignored, which costs more than the miss it was meant to catch.
+   Failure and recovery tolerance stay at 1: for a monthly job, waiting out a
+   second failure means waiting another month.
+
+   Leave the Alert section empty. Project-level rules already cover the issues
+   these monitors raise.
+
+2. **A new monitor is dormant, not armed.** Sentry will not detect a miss
+   until it has seen one check-in, so a freshly created monitor looks
+   identical to a healthy one and alerts on nothing. Arm each with a manual
+   ping, which doubles as proof the URL is right:
+
+   ```
+   curl -fsS 'https://oORG.ingest.REGION.sentry.io/api/PROJECT/cron/SLUG/KEY/?status=ok'
+   ```
+
+   HTTP 202 means accepted. On the monitor page **Last check-in** stops
+   reading `-` and **Next check-in** fills in. The three URLs differ only by
+   SLUG, so deriving the other two from the first is faster than the UI.
+
+3. Store each URL, `?status=ok` included, as a GitHub repository secret:
 
    - `HEARTBEAT_URL_PARTITIONS`
    - `HEARTBEAT_URL_NEWS_SCRAPE`
-   - `HEARTBEAT_URL_DAILY_DIGEST` (daily period, 6 hour grace)
+   - `HEARTBEAT_URL_DAILY_DIGEST`
 
-   The digest additionally needs `RESEND_API_KEY` to send at all, plus
-   optionally `STRIPE_SECRET_KEY` for the payment reconciliation and
-   `OPERATOR_ALERT_EMAIL` for the recipient. **Until `RESEND_API_KEY` exists
-   that job goes red every morning**, deliberately: a red job is a truthful
-   "not set up yet".
+   Use `env -u GITHUB_TOKEN gh secret set NAME`. An ambient `GITHUB_TOKEN`
+   shadows the `gh` login and fails with a misleading 404 on the public-key
+   endpoint rather than a permissions error.
 
-3. Nothing else. The workflows ping on success only, which is the whole point:
+4. Nothing else. The workflows ping on success only, which is the whole point:
    no ping means alert, whether the job failed, was disabled, or was never
    allowed to start. Unset secrets are skipped with a notice rather than
    failing the job.
+
+The digest additionally needs both Supabase secrets and `RESEND_API_KEY` to
+send at all, plus optionally `STRIPE_SECRET_KEY` for the payment
+reconciliation. **Until `RESEND_API_KEY` exists that job goes red every
+morning**, deliberately: a red job is a truthful "not set up yet".
+`OPERATOR_ALERT_EMAIL` is genuinely optional, since both consumers fall back
+to `SUPPORT_EMAIL` and then to `support@tensorcraft.app`.
+
+**Status 2026-08-24:** all three monitors created, armed (HTTP 202 each) and
+their secrets stored. Every other repo secret the digest needs is already
+present, so it sends on its next scheduled run.
 
 **Prove it works:** run `partitions.yml` manually (Actions tab, **Run
 workflow**) and confirm the heartbeat registers as received. Then, if you want
@@ -309,6 +386,10 @@ week two.
 
 Being explicit so the list does not read as complete when it is not:
 
+- **Upstash quota is still unmonitored.** August's near-miss was 490K of 500K
+  commands. Checking it needs Upstash's management API credentials, which this
+  repo does not hold, so it is a dashboard alert you set rather than something
+  the repo can watch.
 - **No log aggregation for the API.** Fly logs are ephemeral and not
   searchable after the fact. The web side is solvable now via Vercel Pro Log
   Drains (Task 5); Fly has no equivalent free path, so the API stays blind.

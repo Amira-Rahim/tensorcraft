@@ -33,7 +33,7 @@ type Context = Record<string, string | number | boolean | null | undefined>;
 const EMAIL = /[^\s@,()]+@[^\s@,()]+\.[^\s@,()]+/g;
 
 /**
- * `beforeSend` in sentry.client.config.ts scrubs `event.user` and headers, but
+ * `beforeSend` in instrumentation-client.ts scrubs `event.user` and headers, but
  * NOT `extra`. So anything placed there leaves the browser exactly as written.
  *
  * This matters more than it looks: PostgREST returns the offending row in

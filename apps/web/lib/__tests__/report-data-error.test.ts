@@ -99,7 +99,7 @@ describe("reportDataError", () => {
   });
 
   /**
-   * `beforeSend` in sentry.client.config.ts scrubs `event.user` and headers,
+   * `beforeSend` in instrumentation-client.ts scrubs `event.user` and headers,
    * but NOT `extra`. Anything put there leaves the browser as written, and
    * these call sites sit next to email addresses.
    */

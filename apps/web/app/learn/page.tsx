@@ -1,13 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { worlds } from "@tensorcraft/worlds";
 import { WORLD_SLUGS, WORLD_CONTENT, isLaunched } from "@tensorcraft/shared";
 import { heroPlateSrc } from "@/lib/location-art";
 import { FaqSection } from "@/app/components/faq-section";
 import { FreeLessonCtaTracker } from "@/app/components/free-lesson-cta-tracker";
 import { LearnHeroScene } from "./learn-hero-scene";
-import { TranslationStrip } from "./translation-strip";
+import { TaughtBridge } from "./taught-bridge";
 import { DemoBand } from "./demo-band";
+import { CourseMap } from "./course-map";
+import { CrewStrip } from "./crew-strip";
 import { ComingSoonWorlds } from "./coming-soon-worlds";
 import { buildLearnBreadcrumbs, buildLearnCourseList } from "./learn-jsonld";
 
@@ -64,7 +65,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 export default function LearnPage() {
-  const liveWorlds = WORLD_SLUGS.filter((slug) => isLaunched(slug));
   const comingCount = WORLD_SLUGS.filter((slug) => !isLaunched(slug)).length;
   const hasPlate = Boolean(heroPlateSrc("deep-orbit"));
 
@@ -85,11 +85,15 @@ export default function LearnPage() {
 
       {/* Hero: a briefing over the bridge of the station. Decoration stack
           (plate, orbit scene, scrim) is a client island; every word below is
-          server JSX. Layering per the five-worlds flagship band. */}
+          server JSX. Layering per the five-worlds flagship band. The min-h
+          is load-bearing on wide screens: without it the band's height is the
+          copy's, the 3:2 plate crops to a sliver of ceiling, and the page
+          opens on a letterbox instead of the bridge (caught on a 3024px
+          display, 2026-08-24). */}
       <section className="relative overflow-hidden border-b border-border">
         <LearnHeroScene />
         <div
-          className={`relative z-10 px-10 md:px-20 pt-24 pb-20 md:pt-32 md:pb-28${
+          className={`relative z-10 flex items-center min-h-[520px] md:min-h-[65svh] xl:min-h-[78svh] px-10 md:px-20 py-20 md:py-24${
             hasPlate ? " tc-on-art" : ""
           }`}
         >
@@ -106,6 +110,12 @@ export default function LearnPage() {
               {WORLD_CONTENT.modulesPerWorld} modules aboard a station in deep
               orbit, written in TypeScript, run in your browser.
             </p>
+            <p className="text-base text-text-muted font-sans leading-relaxed mb-8 max-w-[560px]">
+              The story opens on a mystery: archive sample 7741, a sensor
+              reading the station&apos;s model scores at 51 percent. Too odd to
+              ignore, too ambiguous to alarm. Everything you learn is a step
+              toward answering it.
+            </p>
             <div className="flex gap-4 flex-wrap mb-4">
               <FreeLessonCtaTracker source="learn_hero">
                 <Link
@@ -117,7 +127,7 @@ export default function LearnPage() {
                 </Link>
               </FreeLessonCtaTracker>
               <a href="#how-it-works" className={SECONDARY_CTA}>
-                See how it works
+                Take the first step
               </a>
             </div>
             <p className="font-mono text-xs text-text-muted tracking-wide">
@@ -128,140 +138,91 @@ export default function LearnPage() {
         </div>
       </section>
 
-      {/* The claim, made concrete: three of the pairings as code. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="max-w-[880px]">
-          <Eyebrow>JS-to-ML bridges</Eyebrow>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-            You already know more ML than you think
-          </h2>
-          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-10 max-w-[640px]">
-            If you understand{" "}
-            <code className="text-primary font-mono">useState()</code>, you
-            understand model weights. If you can write{" "}
-            <code className="text-primary font-mono">array.map()</code>, you can
-            do tensor operations. If you have used{" "}
-            <code className="text-primary font-mono">fetch()</code>, you know
-            what inference looks like. Tensorcraft calls these pairings bridges:{" "}
-            {WORLD_CONTENT.lessonBridges} of them map ML concepts to the
-            JavaScript you already write, and each one is labeled where the
-            analogy breaks.
-          </p>
-          <TranslationStrip />
-        </div>
-      </section>
-
-      {/* Proof: the real model, run live. The demo island defers tfjs until
-          the band nears the viewport; the framing copy is server text. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="max-w-[880px]">
-          <Eyebrow>Live demo</Eyebrow>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-            A real model, running in this tab
-          </h2>
-          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-8 max-w-[640px]">
-            The panel below downloads a real 4 KB neural network and scores six
-            archived sensor readings, live in your browser. It is the same demo
-            you reach at the end of Module 1. Watch the last row: sample 7741
-            lands near 51 percent, and 51 percent is not an answer.
-          </p>
-          <DemoBand />
-          <p className="text-base text-text-muted font-sans leading-relaxed mt-8 max-w-[640px]">
-            The course teaches you to build the model that can answer.{" "}
-            <FreeLessonCtaTracker source="learn_demo">
-              <Link
-                href={FREE_LESSON}
-                data-testid="learn-cta-demo"
-                className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-              >
-                Start Module 1 free →
-              </Link>
-            </FreeLessonCtaTracker>
-          </p>
-        </div>
-      </section>
-
-      {/* How it works: the four mechanics as a numbered grid. */}
+      {/* Step 01: don't describe the bridge mechanic, run one. The visitor
+          learns a true thing in a minute, breaks panel included; that panel
+          is the differentiator and this is its one public appearance. */}
       <section
         id="how-it-works"
         className="border-b border-border px-10 md:px-20 py-16 md:py-20"
       >
-        <div className="max-w-[880px]">
-          <Eyebrow>How it works</Eyebrow>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-10">
-            How Tensorcraft works
-          </h2>
-          <ol className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border">
-            {[
-              {
-                num: "01",
-                title: "One story, told in code",
-                body: `Deep Orbit, the live course, teaches time-series and signals as a single story across ${WORLD_CONTENT.modulesPerWorld} modules. You are the engineer the crew calls when the data stops making sense.`,
-              },
-              {
-                num: "02",
-                title: `${WORLD_CONTENT.lessonBridges} JS-to-ML bridges`,
-                body: "Every ML concept is anchored to a JavaScript concept you already use. Each bridge is labeled where the analogy breaks, so it never teaches you something false.",
-              },
-              {
-                num: "03",
-                title: "Code in the browser",
-                body: "Exercises run real TensorFlow.js against tests, in the page. Nothing to install.",
-              },
-              {
-                num: "04",
-                title: "A capstone you can ship",
-                body: "The course ends with you building an ML model that runs live in the browser, on any device.",
-              },
-            ].map((step) => (
-              <li key={step.num} className="bg-page p-8">
-                <div
-                  aria-hidden="true"
-                  className="font-mono text-5xl font-black text-primary opacity-20 mb-4"
-                  data-decorative="true"
-                >
-                  {step.num}
-                </div>
-                <h3 className="font-mono text-lg font-bold text-text-primary mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-base text-text-muted font-sans leading-relaxed">
-                  {step.body}
-                </p>
-              </li>
-            ))}
-          </ol>
+        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 xl:gap-20 items-start">
+          <div>
+            <Eyebrow>Step 01 · A bridge</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
+              You already know more ML than you think
+            </h2>
+            <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed max-w-[640px]">
+              If you understand{" "}
+              <code className="text-primary font-mono">useState()</code>, you
+              understand model weights. If you can write{" "}
+              <code className="text-primary font-mono">array.map()</code>, you
+              can do tensor operations. If you have used{" "}
+              <code className="text-primary font-mono">fetch()</code>, you know
+              what inference looks like. Tensorcraft calls these pairings
+              bridges: {WORLD_CONTENT.lessonBridges} of them map ML concepts to
+              the JavaScript you already write, each labeled where the analogy
+              breaks. Here is one, taught the way the course teaches all of
+              them.
+            </p>
+          </div>
+          <TaughtBridge />
         </div>
       </section>
 
-      {/* No Python: the operational promise, plain prose. */}
+      {/* Proof: the real model, run live. Copy left, panel right (the
+          landing hero's orientation, so the two pages rhyme); the demo
+          island defers tfjs until the band nears the viewport. */}
       <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="max-w-[640px]">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)] gap-10 lg:gap-24 items-center">
+          <div>
+            <Eyebrow>Step 02 · Run it</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
+              A real model, running in this tab
+            </h2>
+            <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-6">
+              The panel on this page downloads a real 4 KB neural network and
+              scores six archived sensor readings live in your browser, sample
+              7741 among them. It is the same demo you reach at the end of
+              Module 1. Watch the last row: 51 percent is not an answer.
+            </p>
+            <p className="text-base text-text-muted font-sans leading-relaxed">
+              The course teaches you to build the model that can answer.{" "}
+              <FreeLessonCtaTracker source="learn_demo">
+                <Link
+                  href={FREE_LESSON}
+                  data-testid="learn-cta-demo"
+                  className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+                >
+                  Start Module 1 free →
+                </Link>
+              </FreeLessonCtaTracker>
+            </p>
+          </div>
+          <div className="w-full lg:justify-self-end lg:max-w-[560px]">
+            <DemoBand />
+          </div>
+        </div>
+      </section>
+
+      {/* How it works: the four mechanics as a numbered grid. */}
+      {/* Step 03: the road. The gateway's missing piece everywhere else on
+          the old page: what the course actually is, module by module, with
+          the free door marked. Replaces the feature grid and the offer band;
+          both said in claims what this shows in curriculum. */}
+      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
+        <div className="mb-10 max-w-[680px]">
+          <Eyebrow>Step 03 · The road</Eyebrow>
           <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-            No Python required
+            The whole course, module by module
           </h2>
           <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed">
-            The whole course runs TensorFlow.js. You write TypeScript, the
-            browser runs it, and the model you finish with works anywhere a
-            browser does. The same code runs under Node when you want it on a
-            server. There are no notebooks to set up, nothing to pip install,
-            and no GPU drivers to fight.
+            Bridges and exercises like the two above, sequenced as one story.
+            Module 1 is free in full: the lessons, the exercises, and the demo
+            above. No account, no credit card.
           </p>
         </div>
-      </section>
-
-      {/* The offer: start free, and what is live today. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="max-w-[880px]">
-          <Eyebrow>The course</Eyebrow>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-            Start free
-          </h2>
-          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-8 max-w-[640px]">
-            Module 1 of Deep Orbit is free in full: the lessons, the exercises,
-            and the demo above. No account, no credit card. Open the first
-            lesson and start.
-          </p>
+        <CourseMap />
+        <div className="mt-10">
           <FreeLessonCtaTracker source="learn_start_free">
             <Link
               href={FREE_LESSON}
@@ -271,51 +232,59 @@ export default function LearnPage() {
               Start Module 1 free →
             </Link>
           </FreeLessonCtaTracker>
+        </div>
+      </section>
 
-          <h2 className="text-2xl md:text-3xl font-mono font-black tracking-tight mt-14 mb-6">
-            Available now
+      {/* The crew: the story dimension, shown with the shipped art. */}
+      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
+        <div className="mb-10 max-w-[680px]">
+          <Eyebrow>The crew</Eyebrow>
+          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
+            Told as one story
           </h2>
-          <ul className="space-y-3">
-            {liveWorlds.map((slug) => (
-              <li
-                key={slug}
-                className="border border-border bg-surface px-6 py-5 max-w-[640px]"
-              >
-                <Link
-                  href={`/worlds/${slug}`}
-                  className="font-mono text-lg font-bold text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-                >
-                  {worlds[slug]?.displayName ?? slug}
-                </Link>
-                <span className="block mt-1 text-base text-text-muted font-sans">
-                  {worlds[slug]?.specialization}
-                </span>
-                <span className="block mt-2 font-mono text-xs text-text-muted tracking-wide">
-                  {WORLD_CONTENT.modulesPerWorld} modules ·{" "}
-                  {WORLD_CONTENT.totalLessonsPerWorld} lessons · capstone
-                  project
-                </span>
-              </li>
-            ))}
-          </ul>
+          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed">
+            Deep Orbit is written as a single continuous story: you join the
+            crew of a research station and learn each technique when the plot
+            needs it. These are the people you work with.
+          </p>
+        </div>
+        <CrewStrip />
+      </section>
+
+      {/* No Python: the operational promise, set as a broadsheet row
+          (heading | body), the FAQ rows' grid so the two rhyme. */}
+      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
+        <div className="md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-16">
+          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4 md:mb-0">
+            No Python required
+          </h2>
+          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed max-w-[640px]">
+            The whole course runs TensorFlow.js. You write TypeScript, the
+            browser runs it, and the model you finish with works anywhere a
+            browser does. The same code runs under Node when you want it on a
+            server. There are no notebooks to set up, nothing to pip install,
+            and no GPU drivers to fight.
+          </p>
         </div>
       </section>
 
       {/* Coming soon: live scene cards, deliberately inert.
           Names only, no links: coming-soon worlds are inert everywhere
           (worlds/world-cards-grid.tsx precedent). The stubs stay in the
-          sitemap for crawlers; the notify path is the card's button. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="max-w-[1100px]">
+          sitemap for crawlers; the notify path is the card's button.
+          Header in the gutter, cards full-bleed edge to edge (the landing
+          five-worlds strip's move). */}
+      <section className="border-b border-border">
+        <div className="px-10 md:px-20 pt-16 md:pt-20 pb-10">
           <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
             Coming soon
           </h2>
-          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-8 max-w-[640px]">
+          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed max-w-[640px]">
             {comingCount} more courses are planned. No release dates announced
             yet:
           </p>
-          <ComingSoonWorlds />
         </div>
+        <ComingSoonWorlds />
       </section>
 
       {/* FAQ: shared server component; co-emits the FAQPage JSON-LD. */}
