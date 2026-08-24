@@ -7,6 +7,35 @@
 
 set -e
 
+# Node >= 22 is required (repo engines field; undici 8 throws
+# "markAsUncloneable is not a function" on older Nodes and every jsdom test
+# worker dies). Git hooks inherit the caller's PATH, which can resolve an old
+# nvm default ahead of newer installs, so prefer any Node >= 22 from volta or
+# nvm before running the checks.
+node_ok() {
+  v=$(node -v 2>/dev/null) || return 1
+  v=${v#v}
+  [ "${v%%.*}" -ge 22 ] 2>/dev/null
+}
+if ! node_ok; then
+  for dir in "$HOME/.volta/tools/image/node"/* "$HOME/.nvm/versions/node"/*; do
+    [ -x "$dir/bin/node" ] || continue
+    v=$(basename "$dir")
+    v=${v#v}
+    if [ "${v%%.*}" -ge 22 ] 2>/dev/null; then
+      PATH="$dir/bin:$PATH"
+      export PATH
+      break
+    fi
+  done
+fi
+if ! node_ok; then
+  echo "pre-push: Node >= 22 required, found $(node -v 2>/dev/null || echo none)." >&2
+  echo "Install one (nvm install 22, or volta install node@22) and retry." >&2
+  exit 1
+fi
+echo "→ node $(node -v)"
+
 echo "→ typecheck"
 pnpm turbo typecheck --continue=never
 
