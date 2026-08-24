@@ -113,6 +113,29 @@ helper, same pattern, not yet applied.
 Six tasks. Total time about an hour. Ordered by value, and each one ends
 with a way to prove it works, because an alert you never tested is a guess.
 
+### Status, verified against live systems 2026-08-25
+
+| Task | State | Evidence |
+|---|---|---|
+| 1. External uptime monitor | OPEN | nothing polls from outside the hosts |
+| 2. Sentry alert rules | PARTIAL | `SENTRY_AUTH_TOKEN` set; rules unverified |
+| 3. Two environment variables | PARTIAL | `SENTRY_AUTH_TOKEN` done; `OPERATOR_ALERT_EMAIL` unset and optional, it falls back to `SUPPORT_EMAIL` |
+| 4. Heartbeats | DONE | 3 monitors armed, 3 secrets stored, digest dry run green end to end |
+| 5. Stripe notifications | OPEN | dashboard only, not checkable from here |
+| 6. Vercel Log Drains | OPEN | Log Drains API returns 0 configured |
+| PostHog | OPEN | `NEXT_PUBLIC_POSTHOG_KEY` unset, ~25 events land nowhere |
+
+Also now live, outside the numbered tasks: browser-side Sentry reports from
+production (DSN present in `main-app`, correct project, Replay off), the API
+carries `SENTRY_DSN`, and `GITHUB_TOKEN_ENC_KEY` encrypts stored tokens.
+
+**Watch for:** the audit gate went red on commit `6d64eec` because the Sentry
+wizard added `@sentry/nextjs` to the ROOT `package.json` as a production
+dependency, dragging in `@opentelemetry/core@1.30.1`. The existing override
+pins `@opentelemetry/core@2` only, so a 1.x copy walks straight past it.
+Removing the root dependency and the six inert wizard files at the repo root
+clears it.
+
 ---
 
 ### Task 1: External uptime monitor (10 min, free) - DO THIS FIRST

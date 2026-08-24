@@ -110,12 +110,6 @@ export default function LearnPage() {
               {WORLD_CONTENT.modulesPerWorld} modules aboard a station in deep
               orbit, written in TypeScript, run in your browser.
             </p>
-            <p className="text-base text-text-muted font-sans leading-relaxed mb-8 max-w-[560px]">
-              The story opens on a mystery: archive sample 7741, a sensor
-              reading the station&apos;s model scores at 51 percent. Too odd to
-              ignore, too ambiguous to alarm. Everything you learn is a step
-              toward answering it.
-            </p>
             <div className="flex gap-4 flex-wrap mb-4">
               <FreeLessonCtaTracker source="learn_hero">
                 <Link
@@ -127,7 +121,7 @@ export default function LearnPage() {
                 </Link>
               </FreeLessonCtaTracker>
               <a href="#how-it-works" className={SECONDARY_CTA}>
-                Take the first step
+                See how it works
               </a>
             </div>
             <p className="font-mono text-xs text-text-muted tracking-wide">
@@ -138,124 +132,124 @@ export default function LearnPage() {
         </div>
       </section>
 
-      {/* Step 01: don't describe the bridge mechanic, run one. The visitor
-          learns a true thing in a minute, breaks panel included; that panel
-          is the differentiator and this is its one public appearance. */}
+      {/* How it works: ONE band, the lesson page's own step grammar. Three
+          chapters, each a step label, one line, and its artifact; the
+          artifacts are the explanation. (v2 gave every chapter a full band
+          of eyebrow + display H2 + paragraph and the page shouted the same
+          thing three times; owner ruling 2026-08-24.) */}
       <section
         id="how-it-works"
         className="border-b border-border px-10 md:px-20 py-16 md:py-20"
       >
-        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 xl:gap-20 items-start">
-          <div>
-            <Eyebrow>Step 01 · A bridge</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-              You already know more ML than you think
-            </h2>
-            <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed max-w-[640px]">
-              If you understand{" "}
-              <code className="text-primary font-mono">useState()</code>, you
-              understand model weights. If you can write{" "}
-              <code className="text-primary font-mono">array.map()</code>, you
-              can do tensor operations. If you have used{" "}
-              <code className="text-primary font-mono">fetch()</code>, you know
-              what inference looks like. Tensorcraft calls these pairings
-              bridges: {WORLD_CONTENT.lessonBridges} of them map ML concepts to
-              the JavaScript you already write, each labeled where the analogy
-              breaks. Here is one, taught the way the course teaches all of
-              them.
-            </p>
-          </div>
-          <TaughtBridge />
-        </div>
-      </section>
+        <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-8">
+          How it works
+        </h2>
 
-      {/* Proof: the real model, run live. Copy left, panel right (the
-          landing hero's orientation, so the two pages rhyme); the demo
-          island defers tfjs until the band nears the viewport. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)] gap-10 lg:gap-24 items-center">
+        {/* Segmented step rail, the lesson header's grammar. Decorative
+            duplicate of the h3s below. */}
+        <div
+          aria-hidden="true"
+          className="grid grid-cols-3 gap-2 mb-14 max-w-[880px] font-mono text-[11px] uppercase tracking-[0.2em] text-text-muted"
+        >
+          <div className="border-t-2 border-primary/40 pt-2">
+            <span className="text-primary">01</span> A bridge
+          </div>
+          <div className="border-t-2 border-primary/40 pt-2">
+            <span className="text-primary">02</span> Run it
+          </div>
+          <div className="border-t-2 border-primary/40 pt-2">
+            <span className="text-primary">03</span> The road
+          </div>
+        </div>
+
+        <div className="space-y-16 md:space-y-20">
+          {/* 01: don't describe the bridge mechanic, run one. The breaks
+              panel is the differentiator; this is its one public showing. */}
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] gap-8 xl:gap-20 items-start max-w-[1280px]">
+            <div>
+              <h3 className="font-mono text-xl md:text-2xl font-bold tracking-tight mb-3">
+                <span aria-hidden="true" className="text-primary mr-3">
+                  01
+                </span>
+                A bridge
+              </h3>
+              <p className="text-base text-text-muted font-sans leading-relaxed max-w-[560px]">
+                You already know more ML than you think: every concept in the
+                course is anchored to JavaScript you write today, across{" "}
+                {WORLD_CONTENT.lessonBridges} bridges, each labeled where the
+                analogy breaks. Here is one.
+              </p>
+            </div>
+            <TaughtBridge />
+          </div>
+
+          {/* 02: the live model. The demo island defers tfjs until the band
+              nears the viewport; its own closing line hands off to the road. */}
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] gap-8 xl:gap-20 items-center max-w-[1280px]">
+            <div>
+              <h3 className="font-mono text-xl md:text-2xl font-bold tracking-tight mb-3">
+                <span aria-hidden="true" className="text-primary mr-3">
+                  02
+                </span>
+                Run it
+              </h3>
+              <p className="text-base text-text-muted font-sans leading-relaxed max-w-[560px]">
+                A real 4 KB neural network scores six archived sensor readings
+                in your tab, the same demo that ends Module 1. Watch sample
+                7741: 51 percent is not an answer.
+              </p>
+            </div>
+            <div className="w-full max-w-[560px]">
+              <DemoBand />
+            </div>
+          </div>
+
+          {/* 03: the road, full width. The real curriculum with the free
+              door marked; replaces the old feature grid and offer band. */}
           <div>
-            <Eyebrow>Step 02 · Run it</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-              A real model, running in this tab
-            </h2>
-            <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-6">
-              The panel on this page downloads a real 4 KB neural network and
-              scores six archived sensor readings live in your browser, sample
-              7741 among them. It is the same demo you reach at the end of
-              Module 1. Watch the last row: 51 percent is not an answer.
+            <h3 className="font-mono text-xl md:text-2xl font-bold tracking-tight mb-3">
+              <span aria-hidden="true" className="text-primary mr-3">
+                03
+              </span>
+              The road
+            </h3>
+            <p className="text-base text-text-muted font-sans leading-relaxed mb-8 max-w-[560px]">
+              The whole course, module by module. Module 1 is free in full: the
+              lessons, the exercises, and the demo above. No account, no credit
+              card.
             </p>
-            <p className="text-base text-text-muted font-sans leading-relaxed">
-              The course teaches you to build the model that can answer.{" "}
-              <FreeLessonCtaTracker source="learn_demo">
+            <CourseMap />
+            <div className="mt-10">
+              <FreeLessonCtaTracker source="learn_start_free">
                 <Link
                   href={FREE_LESSON}
-                  data-testid="learn-cta-demo"
-                  className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+                  data-testid="learn-cta-start-free"
+                  className={PRIMARY_CTA}
                 >
                   Start Module 1 free →
                 </Link>
               </FreeLessonCtaTracker>
-            </p>
-          </div>
-          <div className="w-full lg:justify-self-end lg:max-w-[560px]">
-            <DemoBand />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How it works: the four mechanics as a numbered grid. */}
-      {/* Step 03: the road. The gateway's missing piece everywhere else on
-          the old page: what the course actually is, module by module, with
-          the free door marked. Replaces the feature grid and the offer band;
-          both said in claims what this shows in curriculum. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="mb-10 max-w-[680px]">
-          <Eyebrow>Step 03 · The road</Eyebrow>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-            The whole course, module by module
-          </h2>
-          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed">
-            Bridges and exercises like the two above, sequenced as one story.
-            Module 1 is free in full: the lessons, the exercises, and the demo
-            above. No account, no credit card.
-          </p>
-        </div>
-        <CourseMap />
-        <div className="mt-10">
-          <FreeLessonCtaTracker source="learn_start_free">
-            <Link
-              href={FREE_LESSON}
-              data-testid="learn-cta-start-free"
-              className={PRIMARY_CTA}
-            >
-              Start Module 1 free →
-            </Link>
-          </FreeLessonCtaTracker>
-        </div>
-      </section>
-
-      {/* The crew: the story dimension, shown with the shipped art. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
-        <div className="mb-10 max-w-[680px]">
-          <Eyebrow>The crew</Eyebrow>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-            Told as one story
-          </h2>
-          <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed">
-            Deep Orbit is written as a single continuous story: you join the
-            crew of a research station and learn each technique when the plot
-            needs it. These are the people you work with.
-          </p>
-        </div>
+      {/* The crew: a quiet interlude, no heading machinery. */}
+      <section className="border-b border-border px-10 md:px-20 py-12 md:py-14">
+        <p className="text-base text-text-muted font-sans leading-relaxed mb-8 max-w-[640px]">
+          Deep Orbit is written as one continuous story: you join the crew of a
+          research station and learn each technique when the plot needs it. The
+          people you work with:
+        </p>
         <CrewStrip />
       </section>
 
       {/* No Python: the operational promise, set as a broadsheet row
-          (heading | body), the FAQ rows' grid so the two rhyme. */}
-      <section className="border-b border-border px-10 md:px-20 py-16 md:py-20">
+          (heading | body), the FAQ rows' grid so the two rhyme. Heading at
+          FAQ-question size, not display size: this is an aside, not an act. */}
+      <section className="border-b border-border px-10 md:px-20 py-12 md:py-14">
         <div className="md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-16">
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4 md:mb-0">
+          <h2 className="text-xl md:text-2xl font-mono font-bold tracking-tight mb-4 md:mb-0">
             No Python required
           </h2>
           <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed max-w-[640px]">

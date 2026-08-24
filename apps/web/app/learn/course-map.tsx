@@ -67,7 +67,7 @@ export function CourseMap() {
             <li
               key={mod.slug}
               data-testid={`learn-map-module-${mod.slug}`}
-              className={`group grid grid-cols-[2.75rem_1fr] sm:grid-cols-[3.5rem_1fr_auto] items-start gap-x-5 gap-y-3 px-5 py-5 transition-colors hover:bg-surface ${
+              className={`group grid grid-cols-[2.5rem_1fr] sm:grid-cols-[3rem_1fr_auto] items-start gap-x-5 gap-y-2 px-5 py-4 transition-colors hover:bg-surface ${
                 isFree ? "bg-primary/4" : ""
               }`}
             >
@@ -75,7 +75,7 @@ export function CourseMap() {
                   a world whose patches have not shipped. */}
               <span className="self-center" aria-hidden="true">
                 {patch ? (
-                  <ModulePatch src={patch} size={44} fallback={numeral} />
+                  <ModulePatch src={patch} size={36} fallback={numeral} />
                 ) : (
                   numeral
                 )}
@@ -110,13 +110,8 @@ export function CourseMap() {
                 )}
               </div>
 
-              <div className="col-start-2 sm:col-start-3 font-mono whitespace-nowrap sm:text-right self-center">
-                <div className="text-sm font-semibold text-text-primary tabular-nums">
-                  {lessons.length} lessons
-                </div>
-                <div className="text-xs text-text-muted tabular-nums">
-                  ~{minutes} min
-                </div>
+              <div className="col-start-2 sm:col-start-3 font-mono whitespace-nowrap sm:text-right self-center text-xs text-text-muted tabular-nums">
+                {lessons.length} lessons · ~{minutes} min
               </div>
             </li>
           );

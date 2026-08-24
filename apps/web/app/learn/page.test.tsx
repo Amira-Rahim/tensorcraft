@@ -52,11 +52,13 @@ describe("LearnPage world links", () => {
 const FREE_LESSON = "/worlds/deep-orbit/foundations/introduction-to-tensors";
 
 describe("LearnPage free-lesson CTAs", () => {
-  it("renders a tracked free-lesson CTA in every band", () => {
+  it("renders the three tracked free-lesson CTAs", () => {
+    // Hero, road (step 03), footer. The v2 mid-demo inline CTA was cut in
+    // the busy-page pass (2026-08-24): the demo's own closing line hands
+    // off to the road, which holds the button.
     render(<LearnPage />);
     for (const id of [
       "learn-cta-hero",
-      "learn-cta-demo",
       "learn-cta-start-free",
       "learn-cta-footer",
     ]) {

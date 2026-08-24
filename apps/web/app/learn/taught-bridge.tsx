@@ -1,8 +1,4 @@
-import {
-  BRIDGES,
-  BRIDGE_TIER_LABELS,
-  WORLD_CONTENT,
-} from "@tensorcraft/shared";
+import { BRIDGES, WORLD_CONTENT } from "@tensorcraft/shared";
 
 /**
  * One bridge, taught in full, on /learn. Server component, zero JS.
@@ -32,24 +28,23 @@ export function TaughtBridge() {
       data-testid="learn-taught-bridge"
       className="border border-border bg-surface"
     >
-      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-border">
-        <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-          Bridge {bridge.id} of {WORLD_CONTENT.lessonBridges}
-        </span>
-        <span className="font-mono text-[11px] uppercase tracking-wider text-text-muted">
-          Tier: {BRIDGE_TIER_LABELS[bridge.tier]}
-        </span>
-      </div>
-
-      <div className="px-5 py-5 space-y-4">
-        <p className="font-mono text-base font-bold text-text-primary">
+      {/* The concept pair IS the header; no bookkeeping chrome. ("Tier"
+          is course vocabulary a stranger has not been taught, and the
+          catalog position is trivia at this point in the funnel.) */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-b border-border">
+        <p className="font-mono text-sm md:text-base font-bold text-text-primary m-0">
           {bridge.jsConcept}{" "}
           <span aria-hidden="true" className="text-primary">
             ⇄
           </span>{" "}
           {bridge.mlConcept}
         </p>
+        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-muted">
+          Bridge {bridge.id} of {WORLD_CONTENT.lessonBridges}
+        </span>
+      </div>
 
+      <div className="px-5 py-5 space-y-4">
         {/* tabIndex + region: the cells scroll sideways when the code
             overflows, and a scrollable region must be keyboard-reachable
             (axe scrollable-region-focusable). */}

@@ -27,9 +27,10 @@ const CARDS = WORLD_SLUGS.filter((slug) => !isLaunched(slug)).map((slug) => {
  * grammar, minus framer-motion: /learn copy never rides an entrance).
  *
  * Inert on purpose: names are plain text, no link anywhere on the card
- * (worlds/world-cards-grid precedent, pinned by page.test.tsx). The one
- * interactive element is the Notify me button, which opens the newsletter
- * modal; focus mirrors hover so keyboard users get the same scene ignition.
+ * (worlds/world-cards-grid precedent, pinned by page.test.tsx). One notify
+ * line under the strip instead of a button per card: four identical
+ * buttons opening the same modal read as noise (busy-page pass,
+ * 2026-08-24), and the cards themselves stay purely informational.
  */
 export function ComingSoonWorlds() {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -89,19 +90,19 @@ export function ComingSoonWorlds() {
               <span className="font-mono text-xs text-text-muted">
                 {card.spec}
               </span>
-              <button
-                type="button"
-                onClick={() => setNotifyOpen(true)}
-                onFocus={() => setHovered(card.slug)}
-                onBlur={() => setHovered(null)}
-                className="font-mono text-xs tracking-wider group-hover:opacity-100 transition-opacity mt-auto pt-3 self-start text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-                style={{ color: "var(--card-active-primary)" }}
-              >
-                Notify me &rarr;
-              </button>
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="px-10 md:px-20 py-6 border-t border-border">
+        <button
+          type="button"
+          onClick={() => setNotifyOpen(true)}
+          className="font-mono text-xs tracking-wider text-primary hover:opacity-80 transition-opacity cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+        >
+          Notify me when a course opens &rarr;
+        </button>
       </div>
 
       <NewsletterModal open={notifyOpen} onClose={() => setNotifyOpen(false)} />

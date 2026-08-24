@@ -271,15 +271,18 @@ memory was refuted by that audit: `pnpm audit` clean.)
 ## 4. Polish (editorial, models, features)
 
 - [ ] **/learn redesign follow-ups (2026-08-24).** The /learn rebuild landed
-  2026-08-24 and was restructured the same day into a gateway walk (owner
-  ruling: the first cut read as a second landing page): briefing hero over
-  the bridge plate with the sample-7741 hook, Step 01 = one registry bridge
-  taught in full with its breaks panel (`taught-bridge.tsx`), Step 02 = the
-  IO-gated live demo, Step 03 = the real Deep Orbit module map with mission
-  patches and the free door on module 1 (`course-map.tsx`, same
-  `@tensorcraft/content` source as /pricing), crew strip, scene-canvas
-  coming-soon cards, FAQ band, `free_lesson_cta_clicked` instrumentation.
-  Three follow-ups:
+  2026-08-24 and was reworked twice the same day on owner rulings (first
+  cut read as a second landing page; second cut was "extremely busy").
+  Final shape: briefing hero over the bridge plate, then ONE "How it
+  works" band in the lesson page's step grammar (segmented rail, three h3
+  chapters: 01 a registry bridge taught in full with its breaks panel via
+  `taught-bridge.tsx`, 02 the IO-gated live demo, 03 the real Deep Orbit
+  module map with mission patches and the free door on module 1 via
+  `course-map.tsx`, same `@tensorcraft/content` source as /pricing), then
+  a quiet crew interlude, a demoted No-Python aside, scene-canvas
+  coming-soon cards with a single notify line, FAQ band, and three tracked
+  CTAs (`free_lesson_cta_clicked`: learn_hero / learn_start_free /
+  learn_footer). Three follow-ups:
   1. **Phase 2 video band.** `scripts/marketing/capture-lesson-walkthrough.mjs`
      records a walkthrough of the free first lesson (Playwright `recordVideo`,
      webm + poster into `apps/web/public/media/`). Owner reviews the cut, then
