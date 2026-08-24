@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM node:26-alpine AS base
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 FROM base AS deps
@@ -21,7 +21,7 @@ COPY packages ./packages
 RUN pnpm --filter @tensorcraft/api typecheck
 RUN pnpm --filter @tensorcraft/api deploy /app/deployed --prod --legacy
 
-FROM node:22-alpine AS runner
+FROM node:26-alpine AS runner
 WORKDIR /app
 RUN npm install -g tsx
 ENV NODE_ENV=production
