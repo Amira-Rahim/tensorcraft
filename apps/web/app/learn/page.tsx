@@ -15,7 +15,7 @@ import { buildLearnBreadcrumbs, buildLearnCourseList } from "./learn-jsonld";
 export const metadata: Metadata = {
   title: "Learn Machine Learning with JavaScript | Tensorcraft",
   description:
-    "A JavaScript developer's guide to machine learning. Learn ML through code you already know: useState becomes model weights, Array.map becomes tensor ops. No Python required. Module 1 is free.",
+    "Machine learning for JavaScript developers. Every lesson is TypeScript that runs in your browser with TensorFlow.js. No Python required. Module 1 is free.",
   alternates: {
     canonical: "https://tensorcraft.app/learn",
   },

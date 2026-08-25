@@ -228,6 +228,13 @@ memory was refuted by that audit: `pnpm audit` clean.)
 > unrepeatable; those were mis-filed here. Remaining below = genuinely
 > post-launch.
 
+- [ ] Search Console reindex request after the next deploy (added
+  2026-08-25): the /learn result still serves a pre-rebrand snippet
+  ("frontend developer's guide", www host). Inspect `/` and `/learn` in
+  GSC and hit Request Indexing so Google picks up the rewritten /learn
+  meta description and shows the site name "Tensorcraft" instead of the
+  bare domain (signals: WebSite JSON-LD, og:site_name, application-name;
+  gated by `apps/web/app/layout.test.tsx`).
 - [ ] PPP (Purchasing Power Parity) indicator on pricing page.
 - [ ] Payment plans (installments): evaluate Klarna/Afterpay.
 - [ ] Review prompt at certificate issuance + collect beta quotes: the

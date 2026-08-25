@@ -34,6 +34,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Tensorcraft: Machine Learning for JavaScript Developers",
+  // Google derives the SERP site-name line (shown above the URL) from the
+  // homepage's WebSite JSON-LD, og:site_name, and this application-name
+  // meta. All three must say "Tensorcraft" or the result shows the bare
+  // domain "tensorcraft.app" instead.
+  applicationName: "Tensorcraft",
   description:
     "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for JavaScript developers: train real models in the browser, no Python required.",
   keywords: [
