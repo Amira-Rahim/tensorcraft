@@ -117,12 +117,12 @@ with a way to prove it works, because an alert you never tested is a guess.
 
 | Task | State | Evidence |
 |---|---|---|
-| 1. External uptime monitor | OPEN | nothing polls from outside the hosts |
-| 2. Sentry alert rules | PARTIAL | `SENTRY_AUTH_TOKEN` set; rules unverified |
-| 3. Two environment variables | PARTIAL | `SENTRY_AUTH_TOKEN` done; `OPERATOR_ALERT_EMAIL` unset and optional, it falls back to `SUPPORT_EMAIL` |
-| 4. Heartbeats | DONE | 3 monitors armed, 3 secrets stored, digest dry run green end to end |
+| 1. External uptime monitor | DONE | 3 UptimeRobot monitors at 5 min, all up; down alert tested and received |
+| 2. Sentry alert rules | DONE | 6 rules created 2026-08-25 via API, verified by read-back, 3 per project |
+| 3. Two environment variables | DONE | `SENTRY_AUTH_TOKEN` on Vercel. `OPERATOR_ALERT_EMAIL` set on BOTH Fly and GitHub Actions 2026-08-25, so the digest and operator alerts reach a real inbox rather than the support queue |
+| 4. Heartbeats | DONE | 3 monitors armed. Proven by a real scheduled run 2026-08-25 08:03 UTC: digest sent, heartbeat delivered |
 | 5. Stripe notifications | OPEN | dashboard only, not checkable from here |
-| 6. Vercel Log Drains | OPEN | Log Drains API returns 0 configured |
+| 6. Vercel Log Drains | DONE | `betterstack-production` drain, `lambda`+`edge`+`external`, production only. Delivery confirmed in Live tail 2026-08-25; 14 competing drains for unrelated projects removed |
 | PostHog | OPEN | `NEXT_PUBLIC_POSTHOG_KEY` unset, ~25 events land nowhere |
 
 Also now live, outside the numbered tasks: browser-side Sentry reports from
@@ -164,7 +164,23 @@ unnoticed for weeks in July.
 **Why both API monitors:** `/api/health` proves the process is running.
 `/api/health/ready` runs a real database query. Alive UP plus ready DOWN means
 the database, not the API. That distinction saves you the first 20 minutes of
-an incident. Both are exempt from rate limiting, so polling is free.
+an incident.
+
+**Correction 2026-08-25, an earlier version of this file got it wrong.** Only
+`/api/health` is exempt from the limiter. `/api/health/ready` is deliberately
+NOT exempt, because it queries Supabase per hit, and there is a test pinning
+that behaviour (`rate-limit.test.ts`, "still rate limits /api/health/ready").
+Two consequences for an external monitor:
+
+- **No 429 risk.** The limit is 60 requests per minute per subject
+  (`rate-limit.ts:8`) and a 5 minute interval is one request per 300 seconds.
+- **It is not free, it is cheap.** Each `/ready` hit spends Upstash commands
+  (fixed window, 2 per request). At 5 minute polling that is roughly 17K
+  commands a month against the 500K free tier, about 3 percent. Worth stating
+  precisely rather than hand waving, because on 2026-08-17 health probes
+  routed through the limiter burned ~98 percent of that quota, which is the
+  entire reason `/api/health` is exempt today. Do not lower the interval below
+  5 minutes on `/ready` without redoing this arithmetic.
 
 **Prove it works:** add a fourth monitor pointing at
 `https://tensorcraft.app/this-page-does-not-exist`, wait for the down alert to
@@ -182,27 +198,45 @@ rules, all of it lands in a dashboard nobody opens.
 **Steps.** Do this in BOTH Sentry projects (the API one and the web one):
 **Alerts** then **Create Alert** then **Issues**.
 
-**Rule 1, the money path.** Name: `Money path errors`.
-- WHEN: *A new issue is created*
-- IF: *The event's tags match* `source` *contains* `payments`
-- THEN: *Send a notification to* your email
-- Action interval: 5 minutes
+**CREATED 2026-08-25 via the API, six rules, verified by read-back.** The
+table below is what actually exists. An earlier version of this section
+prescribed a rule filtering `source` *contains* `webhooks`, which was dead:
+nothing emits that value. The webhook capture site tags `payments.webhook`,
+already covered by the `payments` rule. A rule matching a tag value nothing
+emits does not error or warn, it just sits there looking like coverage, which
+is indistinguishable from "no errors happened".
 
-Repeat the same rule with `source` containing `webhooks`, then `github`. The
-`source` tag exists precisely so these filters work; every capture site sets
-it (`payments.webhook`, `payments.receipt`, `payments.geo-backstop`,
-`github.token`, and so on).
+The rules also differ per project, deliberately, because the two projects emit
+different tags. Mirroring the API's filters into the web project would have
+produced three more dead rules.
 
-**Rule 2, bad deploy detector.** Name: `Error spike`.
-- WHEN: *The issue is seen more than* `10` *times in* `5 minutes`
-- THEN: email
-- This catches a broken release faster than any user will report it.
+| Project | Rule | WHEN | IF | Every |
+|---|---|---|---|---|
+| api | `Money path errors` | new issue | `source` contains `payments` | 5 min |
+| api | `GitHub integration errors` | new issue | `source` contains `github` | 5 min |
+| api | `Error spike` | seen > 10 times in 5 min | - | 5 min |
+| web | `Browser data write failures` | new issue | `source` **is set** | 5 min |
+| web | `Error spike` | seen > 10 times in 5 min | - | 5 min |
+| web | `Lesson errors, daily` | new issue | `boundary` equals `lesson-error` | 1440 min |
 
-**Rule 3, quieter.** Name: `Lesson errors, daily`.
-- WHEN: *A new issue is created*
-- IF: tags match `boundary` equals `lesson-error`
-- THEN: email, action interval **24 hours**
-- One learner hitting a transient fault is not an incident; fifty is.
+`source` is set in the web project ONLY by `reportDataError`, so "is set"
+captures exactly the browser-side write failures and nothing else. That is the
+blind spot the waitlist CHECK-constraint bug hid in for months, so it is the
+single most valuable rule on the web side.
+
+Verified tag values at time of writing. API `source`: `payments.webhook`,
+`payments.receipt`, `payments.geo-backstop`, `github.token`,
+`github.commitLessonArtifact`, plus `auth.signup`, `email.*`, `newsletter.*`,
+`token-crypto`, `issues.*`. Web `source`: `waitlist.insert`,
+`progress.upsert`, `progress.markLessonStarted`,
+`progress.markLessonCompleted`, `progress.updateExerciseProgress`,
+`onboarding.complete`, `settings.updateProfile`, `settings.updateAvatar`. Web
+`boundary`: `lesson-error`, `route-error`, `global-error`, `auth-error`,
+`settings-error`, `dashboard-error`, `onboarding-error`, `paywall-error`,
+`pricing-error`, `world-error`, `worlds-error`, `certificate-error`.
+
+**If you add a capture site, check its `source` value against this list**, or
+it will report into Sentry and notify nobody.
 
 **Also set `SENTRY_AUTH_TOKEN` in Vercel** while you are in there, or
 production stack traces stay minified and your alerts point at unreadable
@@ -355,11 +389,21 @@ get the alert.
 **Why:** Stripe sees failures our webhook never does, such as a card declined
 before a session completes.
 
-**Steps:** Stripe Dashboard, **Settings**, **Notifications**. Enable email for:
-- Failed payments
-- Disputes and chargebacks (redundant with our critical alert, deliberately:
-  disputes are the one event where two notifications beat zero)
-- Successful payments, optional, if you want a second source
+**Steps.** There is no "Notifications" page any more, verified 2026-08-25.
+Stripe split it in two, and BOTH matter:
+
+1. **Settings, Communication preferences** (under Personal settings), which is
+   "the emails, SMS and push notifications YOU receive". Enable email for:
+   - Failed payments
+   - Disputes and chargebacks (redundant with our own operator alert,
+     deliberately: disputes are the one event where two notifications beat
+     zero)
+   - Successful payments, optional, if you want a second source
+2. **Settings, Team notifications** (under Account settings), which is "who on
+   your team receives emails". This is per ACCOUNT, not per user, and Stripe
+   routes some critical mail through it. Every personal preference can be on
+   and a dispute still go to an address nobody reads if this points elsewhere.
+   Confirm the recipient is a real inbox.
 
 ---
 
@@ -373,9 +417,59 @@ them.
 
 **Steps**
 
-1. Vercel, project **tensorcraft**, **Settings**, **Log Drains**.
-2. Add a drain pointing at the BetterStack source you created in Task 1, so
-   uptime, status page and logs all live in one free account.
+1. Vercel, project **tensorcraft**, **Settings**, **Drains**.
+2. Point it at a BetterStack Telemetry source (`telemetry.betterstack.com`,
+   Sources, Connect source, Vercel).
+
+**Done 2026-08-25, and the default the integration creates is wrong.**
+Connecting BetterStack's Vercel integration authorises it at ACCOUNT level, so
+it silently created one drain per Vercel project, 15 in total, each with
+`sources: [static, lambda, build, edge, external]` and
+`environments: [production, preview]`.
+
+Two problems with that default:
+
+- **`static` is roughly 95 percent of the volume and none of the signal.** It
+  logs one line per asset request, so a single page view that pulls ~20 chunks
+  produces ~20 static lines against ~1 lambda line. On a volume capped free
+  tier that evicts the Function logs you actually want.
+- **The other 14 projects share one quota.** Any traffic to an unrelated
+  personal project competes with Tensorcraft's budget.
+
+Neither UI can fix it: the integration owns the drain (`clientId: oac_...`) so
+Vercel hands editing back to BetterStack, and BetterStack only shows the source
+list. It has to be REPLACED. Create the correctly scoped drain FIRST, then
+delete the integration one, so log delivery never gaps:
+
+```
+POST https://api.vercel.com/v1/log-drains?teamId=<team>
+  { name, url: <same BetterStack url incl. token>, deliveryFormat: "ndjson",
+    sources: ["lambda","edge","external"], environments: ["production"],
+    projectIds: [<project>] }
+DELETE https://api.vercel.com/v1/integrations/log-drains/<old id>?teamId=<team>
+```
+
+Current state: one drain on the project, `betterstack-production`, sources
+`lambda`+`edge`+`external`, production only, `clientId: null` so it is
+editable. `edge` is the one that matters most for us: middleware runs there,
+and middleware is where the VAT geo-gate reads `x-vercel-ip-country`
+(`apps/web/middleware.ts:26`).
+
+**Cleaned up 2026-08-25:** the 14 drains for unrelated personal projects were
+deleted via `DELETE /v1/integrations/log-drains/<id>`, leaving exactly one
+drain on the account. They were competing for the same volume capped free tier.
+Reconnecting the BetterStack Vercel integration would recreate all of them, so
+do not reconnect it at account level; add the single project instead.
+
+Note the dependency direction when tidying BetterStack: **Vercel drain feeds
+BetterStack source**, so a source deleted while its drain still exists either
+refuses to delete or comes back on the next event. Remove the drain first.
+BetterStack's group level `...` menu greys out Rename and Remove because the
+default group is not user created; individual sources delete from their own
+settings page.
+
+**Still open:** the BetterStack "Onboarding, Real-time flights" demo source,
+which has no drain behind it and deletes normally from its own settings.
 3. While you are in the dashboard: **Observability** in the sidebar now gives
    queryable runtime logs, and the **Alerts** panel does anomaly detection.
    Neither exists on Hobby.

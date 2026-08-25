@@ -136,8 +136,36 @@ let it sit in the inbox.
   migration or the sanctioned RPC, never an ad-hoc `update`. Two triggers
   (038, 040) silently ignore writes that look like client updates, so "it
   said it worked" is not evidence that it worked.
-- **Nothing currently alerts.** Sentry captures errors but no rule notifies
-  anyone, so support email is presently the primary outage detector. Treat
-  two unrelated reports of the same symptom as an incident.
+- **Alerting exists as of 2026-08-25**, so support mail is no longer the
+  primary outage detector. Three independent channels now report: UptimeRobot
+  polls the site and both API health endpoints from outside our hosts, six
+  Sentry rules email on money-path errors, browser write failures, error
+  spikes and lesson errors, and a daily digest makes an ABSENCE of signups or
+  purchases visible. Details in `docs/observability.md`. Still treat two
+  unrelated reports of the same symptom as an incident.
+
+## 6. The support mailbox itself
+
+`support@tensorcraft.app` had NO inbound mail path until 2026-08-25: the
+domain had zero MX records, so every message users sent to it bounced. It now
+forwards through Cloudflare Email Routing to the operator inbox.
+
+Two operational consequences:
+
+- **Check Spam.** The first forwarded message landed there. Forwarded mail
+  from a new domain usually does. Pin it out of Spam with a rule, because a
+  support address that silently files itself away is indistinguishable from
+  one nobody writes to, which is the exact failure that just got fixed.
+- **Replying is safe as of 2026-08-25, but check the From line.** Cloudflare
+  Email Routing is receive only, so send-as runs through Resend SMTP to make
+  replies leave as `support@tensorcraft.app`. Verified by headers:
+  `mailed-by: send.tensorcraft.app`, `signed-by: tensorcraft.app`. **If the
+  From line ever shows a personal address, stop and fix it before sending.**
+  A reply from a personal account shows a customer a real identity, and that
+  cannot be walked back once it is in their mailbox.
+- **The domain is `tensorcraft.app`.** `tensorcraft.com` belongs to someone
+  else, is parked on Google nameservers, and has no MX, so anything sent there
+  bounces. Gmail autocompletes from history, so check the `.app` before
+  sending to a "support@" the composer offers you.
 - **Kit is not sending.** Lifecycle emails are dark until the Kit credentials
   are repaired. Purchase receipts are unaffected: those go through Resend.

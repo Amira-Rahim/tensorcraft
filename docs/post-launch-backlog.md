@@ -47,6 +47,75 @@ intelligible.
 including the check for onboarding answers dropped between 2026-08-18 and
 08-20. Settle whether the 046 Custom Access Token hook is enabled.
 
+**B0, found AND FIXED 2026-08-25: `support@tensorcraft.app` could not
+receive mail.** Verified by DNS, not inferred: `dig MX tensorcraft.app`
+returned zero records, so the domain had no inbound mail path at all. Not a
+missing mailbox, a missing mail server. Every message a user sent to that
+address bounced, and the bounce went to the SENDER, so the silence looked
+exactly like nobody needing help.
+
+**Resolved** by enabling Cloudflare Email Routing, forwarding
+`support@tensorcraft.app` to the operator inbox. MX now resolves to
+`route1/2/3.mx.cloudflare.net` on the authoritative server and on public
+resolvers. Delivery confirmed by test message.
+
+**Send-as CONFIGURED 2026-08-25** through Resend SMTP, so replies leave as
+`support@tensorcraft.app` rather than the operator's personal address, which
+is what the identity-privacy directive requires. Verified by headers on a test
+message: `mailed-by: send.tensorcraft.app`, `signed-by: tensorcraft.app`, so
+DKIM aligns to the domain. Both directions of the mailbox now work.
+
+**Still open, small:**
+
+1. **Spam filing.** Forwarded mail from a new domain lands in Spam by default.
+   A support address that silently files itself away is the same failure as no
+   support address. Needs a mail rule pinning `support@tensorcraft.app` out of
+   Spam, plus a label.
+2. **Set send-as as the DEFAULT reply address.** A per-message switch that has
+   to be remembered is a personal address in a customer's inbox on the first
+   day it is forgotten.
+3. **Brand casing in the send-as display name.** Set it to `Tensorcraft`. The
+   repo uses that spelling 147 times and `TensorCraft` zero times, and all four
+   transactional `from` names are `Tensorcraft <...>`. A receipt from one
+   spelling and a support reply from another reads as two senders.
+
+**Gotcha for whoever tests this next:** the domain is `tensorcraft.app`.
+`tensorcraft.com` is a DIFFERENT owner's parked domain on Google nameservers
+with no MX, so test mail sent there bounces and proves nothing. A test round
+on 2026-08-25 was lost to exactly that typo.
+
+The address is advertised on surfaces where a bounce is expensive:
+
+- `app/terms/page.tsx:96`, the refund mechanism itself: "Refunds are available
+  within 5 days of purchase, no questions asked: email support@tensorcraft.app".
+  A customer who cannot reach that address cannot exercise a refund right the
+  terms grant them.
+- `app/dashboard/purchase-success/pending-poller.tsx:87`, the "I paid and it
+  is still pending" mailto, with subject and body prefilled. This is precisely
+  the path a buyer takes immediately before opening a card dispute.
+- `app/pricing/payment-error.tsx:33`, shown when a payment fails.
+- `app/settings/settings-form.tsx:991` and `:1090`, the fallbacks when GDPR
+  export or account deletion fail. Deletion requests carry a 30 day legal
+  clock that starts when the user sends, not when we notice.
+
+Also `app/about/page.tsx`, `public/llms.txt`, `public/.well-known/ai-plugin.json`.
+
+**Fix, about 5 minutes and free: Cloudflare Email Routing.** The domain is
+already on Cloudflare nameservers (`dylan`/`thea.ns.cloudflare.com`), so
+enabling Email Routing adds the MX records and forwards
+`support@tensorcraft.app` to the operator's personal inbox. Senders only ever
+see the brand address, which is what keeps the operator identity private, so
+this is strictly better than editing the address out of the UI. No code change
+on any of the surfaces above.
+
+Do NOT resolve this by putting a personal address in the app: owner directive
+2026-08-25, and it conflicts with the standing identity-privacy rule.
+
+Note `SUPPORT_EMAIL` is set on Fly and its value is unreadable (Fly secrets are
+write only). If it also points at an address that cannot receive, operator mail
+was silently going nowhere too. `OPERATOR_ALERT_EMAIL` was set 2026-08-25 and
+takes precedence, so that path is now correct regardless.
+
 **B0, found 2026-08-24: "Connect GitHub" is a dead button in production.**
 `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` and `GITHUB_CALLBACK_URL` are unset
 on Fly, so `POST /api/github/connect` returns a 500 with "GitHub App is not
