@@ -6,6 +6,8 @@ vi.mock("posthog-js", () => {
     default: {
       init: vi.fn(),
       capture: vi.fn(),
+      identify: vi.fn(),
+      reset: vi.fn(),
     },
   };
 });
@@ -19,8 +21,31 @@ describe("lib/posthog", () => {
     vi.unstubAllEnvs();
   });
 
-  it("does not initialize when NEXT_PUBLIC_POSTHOG_KEY is absent", async () => {
+  it("throws outside production when NEXT_PUBLIC_POSTHOG_KEY is absent", async () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
+
+    const mod = await import("../posthog");
+
+    expect(() => mod.initPostHog()).toThrow(/NEXT_PUBLIC_POSTHOG_KEY/);
+    expect(mod.isInitialized()).toBe(false);
+    expect(posthog.init).not.toHaveBeenCalled();
+  });
+
+  it("throws outside production when NEXT_PUBLIC_POSTHOG_HOST is absent", async () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test_key");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "");
+
+    const mod = await import("../posthog");
+
+    expect(() => mod.initPostHog()).toThrow(/NEXT_PUBLIC_POSTHOG_HOST/);
+    expect(posthog.init).not.toHaveBeenCalled();
+  });
+
+  it("returns null silently in production when the key is absent", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
 
     const mod = await import("../posthog");
     const instance = mod.initPostHog();
@@ -32,6 +57,7 @@ describe("lib/posthog", () => {
 
   it("capture is a no-op when PostHog is not initialized", async () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
 
     const mod = await import("../posthog");
     mod.capture("lesson_started", { worldId: "deep-orbit" });
@@ -39,9 +65,9 @@ describe("lib/posthog", () => {
     expect(posthog.capture).not.toHaveBeenCalled();
   });
 
-  it("initializes with EU host by default when key is set", async () => {
+  it("initializes with the configured host when key is set", async () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test_key");
-    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
 
     const mod = await import("../posthog");
     mod.__resetForTests();
@@ -51,7 +77,7 @@ describe("lib/posthog", () => {
     expect(instance).not.toBeNull();
     expect(posthog.init).toHaveBeenCalledWith(
       "phc_test_key",
-      expect.objectContaining({ api_host: "https://eu.posthog.com" }),
+      expect.objectContaining({ api_host: "https://example.test" }),
     );
     expect(mod.isInitialized()).toBe(true);
   });
@@ -73,6 +99,7 @@ describe("lib/posthog", () => {
 
   it("capture forwards to posthog.capture once initialized", async () => {
     vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test_key");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
 
     const mod = await import("../posthog");
     mod.__resetForTests();

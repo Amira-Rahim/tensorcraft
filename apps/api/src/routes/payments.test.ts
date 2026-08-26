@@ -190,6 +190,7 @@ vi.mock("../lib/guest-account", () => ({
 const mockCaptureServer = vi.fn();
 vi.mock("../lib/posthog", () => ({
   captureServer: (...args: unknown[]) => mockCaptureServer(...args),
+  withPostHogUserContext: (_distinctId: string, fn: () => unknown) => fn(),
   SERVER_EVENTS: {
     PAYMENT_COMPLETED: "payment_completed",
     PAYMENT_REFUNDED: "payment_refunded",

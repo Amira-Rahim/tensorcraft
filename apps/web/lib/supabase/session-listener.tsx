@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getSupabaseBrowserClient } from "./client";
+import { hasAnalyticsConsent, onConsentChange } from "../consent";
+import { identify, reset } from "../analytics";
 
 /**
  * Persists the GitHub OAuth provider_token to the profiles table.
@@ -33,9 +35,33 @@ async function persistProviderToken(
 
 export function SessionListener() {
   const router = useRouter();
+  const identifiedUserId = useRef<string | null>(null);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
+
+    function identifyUser(user: { id: string; created_at: string }) {
+      if (!hasAnalyticsConsent()) return;
+      if (identifiedUserId.current && identifiedUserId.current !== user.id) {
+        reset();
+      }
+      identify(user.id, { created_at: user.created_at });
+      identifiedUserId.current = user.id;
+    }
+
+    function identifyCurrentUser() {
+      if (!hasAnalyticsConsent()) return;
+
+      void supabase.auth.getUser().then(({ data: { user } }) => {
+        if (!user) return;
+        identifyUser(user);
+      });
+    }
+
+    // Covers a page refresh for an already authenticated user. The consent
+    // subscription also retries when analytics is enabled after this listener
+    // first receives Supabase's INITIAL_SESSION event.
+    const unsubscribeConsent = onConsentChange(identifyCurrentUser);
 
     const {
       data: { subscription },
@@ -45,6 +71,8 @@ export function SessionListener() {
       }
 
       if (event === "SIGNED_OUT") {
+        identifiedUserId.current = null;
+        reset();
         router.push("/auth");
       }
 
@@ -79,21 +107,14 @@ export function SessionListener() {
           }),
         );
 
-        // Identify user in PostHog by opaque UUID only. The email must
-        // never ride along: the event taxonomy's own rule is "No PII"
-        // (analytics-events.ts) and /privacy describes analytics as
-        // pseudonymous. Cohorting by signup date only needs created_at.
-        import("../analytics").then(({ identify }) => {
-          if (session.user) {
-            identify(session.user.id, {
-              created_at: session.user.created_at,
-            });
-          }
-        });
+        // Identify with the Supabase UUID. Email is deliberately person-only
+        // data and is not sent with product events.
+        identifyUser(session.user);
       }
     });
 
     return () => {
+      unsubscribeConsent();
       subscription.unsubscribe();
     };
   }, [router]);

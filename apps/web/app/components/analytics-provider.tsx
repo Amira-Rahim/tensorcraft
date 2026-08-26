@@ -29,12 +29,20 @@ function AnalyticsInner() {
   // decide) emitted no events at all.
   useEffect(() => {
     return onConsentChange(() => {
-      if (initialized.current) return;
-      if (!hasAnalyticsConsent()) return;
+      if (!hasAnalyticsConsent()) {
+        if (isInitialized()) posthog.opt_out_capturing();
+        return;
+      }
+
+      if (initialized.current) {
+        posthog.opt_in_capturing();
+        return;
+      }
 
       const instance = initPostHog();
       if (!instance) return;
       initialized.current = true;
+      posthog.opt_in_capturing();
 
       // The route effect below only fires on navigation, so without this the
       // page consent was granted on would never be counted.

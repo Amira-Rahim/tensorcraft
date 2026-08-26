@@ -49,6 +49,10 @@ export const EVENTS = {
   // click. Deliberately separate from UPGRADE_CTA_* (paid intent); this one
   // opens the activation funnel that LESSON_STARTED continues.
   FREE_LESSON_CTA_CLICKED: "free_lesson_cta_clicked",
+  // Added 2026-08-25 with the /learn trailer hero: measures whether the
+  // trailer earns its slot (loop = ambient hero playback began; full = the
+  // visitor chose the 90-second cut).
+  TRAILER_PLAYED: "learn_trailer_played",
 
   // Signup funnel.
   // Added 2026-07-21: the auth screen previously emitted NOTHING, so the
@@ -192,6 +196,10 @@ export interface EventProperties {
      * extend the union when landing/pricing adopt the tracker.
      */
     source: "learn_hero" | "learn_start_free" | "learn_footer";
+  };
+  [EVENTS.TRAILER_PLAYED]: {
+    /** loop = silent hero loop began; full = the lightbox 90s cut opened. */
+    mode: "loop" | "full";
   };
 
   /**

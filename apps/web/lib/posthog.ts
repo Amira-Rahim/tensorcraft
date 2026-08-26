@@ -1,42 +1,69 @@
 /**
- * PostHog client initialization, EU instance (GDPR compliance).
- *
- * Initialization rules:
- * - Only initializes on the client (no-op on server).
- * - Only initializes when `NEXT_PUBLIC_POSTHOG_KEY` is present, dev/preview
- *   environments without a key get a silent no-op.
- * - Host defaults to `https://eu.posthog.com`; override via
- *   `NEXT_PUBLIC_POSTHOG_HOST`. EU host is mandatory for data residency.
- *
- * The actual capture guard lives in `apps/web/lib/analytics.ts` which is
- * consent-gated; this module only handles init.
+ * PostHog client initialization. This module is called from the consent-gated
+ * AnalyticsProvider, so the browser singleton is initialized only after the
+ * visitor grants analytics consent.
  */
 
 import posthog, { type PostHog } from "posthog-js";
 
-const DEFAULT_HOST = "https://eu.posthog.com";
-
 let initialized = false;
+let pendingIdentity:
+  | { distinctId: string; personProperties?: Record<string, unknown> }
+  | undefined;
+
+function requirePostHogEnv(
+  name: string,
+  value: string | undefined,
+): value is string {
+  if (value) return true;
+
+  if (process.env.NODE_ENV !== "production") {
+    throw new Error(
+      `${name} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${name} is configured`,
+    );
+  }
+
+  return false;
+}
 
 export function initPostHog(): PostHog | null {
   if (typeof window === "undefined") return null;
   if (initialized) return posthog;
 
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || DEFAULT_HOST;
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 
-  // Skip gracefully when no key is configured (dev/preview).
-  if (!key) return null;
+  if (
+    !requirePostHogEnv("NEXT_PUBLIC_POSTHOG_KEY", key) ||
+    !requirePostHogEnv("NEXT_PUBLIC_POSTHOG_HOST", host)
+  ) {
+    return null;
+  }
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const tracingHeaders = apiUrl ? [new URL(apiUrl).hostname] : undefined;
 
   posthog.init(key, {
     api_host: host,
     capture_pageview: false,
     persistence: "localStorage+cookie",
-    autocapture: false,
+    tracing_headers: tracingHeaders,
     capture_performance: { web_vitals: true },
+    capture_exceptions: {
+      capture_unhandled_errors: true,
+      capture_unhandled_rejections: true,
+      capture_console_errors: false,
+    },
   });
 
   initialized = true;
+  if (pendingIdentity) {
+    posthog.identify(
+      pendingIdentity.distinctId,
+      pendingIdentity.personProperties,
+    );
+    pendingIdentity = undefined;
+  }
   return posthog;
 }
 
@@ -53,6 +80,24 @@ export function capture(
   posthog.capture(event, properties);
 }
 
+export function identify(
+  distinctId: string,
+  personProperties?: Record<string, unknown>,
+): void {
+  if (!initialized) {
+    pendingIdentity = { distinctId, personProperties };
+    return;
+  }
+  posthog.identify(distinctId, personProperties);
+}
+
+/** Clear the persisted identity when a user signs out. */
+export function reset(): void {
+  pendingIdentity = undefined;
+  if (!initialized) return;
+  posthog.reset();
+}
+
 export function isInitialized(): boolean {
   return initialized;
 }
@@ -60,4 +105,5 @@ export function isInitialized(): boolean {
 /** Test-only: reset module state between tests. */
 export function __resetForTests(): void {
   initialized = false;
+  pendingIdentity = undefined;
 }

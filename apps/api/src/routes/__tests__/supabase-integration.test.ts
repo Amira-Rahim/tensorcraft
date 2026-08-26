@@ -237,6 +237,7 @@ vi.mock("../../lib/kit", () => ({
 
 vi.mock("../../lib/posthog", () => ({
   captureServer: vi.fn(),
+  withPostHogUserContext: (_distinctId: string, fn: () => unknown) => fn(),
   SERVER_EVENTS: {
     PAYMENT_COMPLETED: "payment_completed",
     PAYMENT_FAILED: "payment_failed",

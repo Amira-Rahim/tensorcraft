@@ -7,8 +7,12 @@
  * checkout-button, etc.) keep working without churn.
  */
 
-import posthog from "posthog-js";
 import { EVENTS, track } from "./analytics-events";
+import {
+  capture as capturePostHog,
+  identify as identifyPostHog,
+  reset as resetPostHog,
+} from "./posthog";
 
 /**
  * Generic event capture, wraps posthog.capture with a guard.
@@ -20,8 +24,7 @@ export function capture(
   event: string,
   properties?: Record<string, unknown>,
 ): void {
-  if (typeof window === "undefined") return;
-  posthog?.capture(event, properties);
+  capturePostHog(event, properties);
 }
 
 /**
@@ -32,8 +35,12 @@ export function identify(
   userId: string,
   traits?: Record<string, unknown>,
 ): void {
-  if (typeof window === "undefined") return;
-  posthog?.identify(userId, traits);
+  identifyPostHog(userId, traits);
+}
+
+/** Clear the browser's PostHog identity after a completed sign-out. */
+export function reset(): void {
+  resetPostHog();
 }
 
 // Re-export the typed primitives for convenience.

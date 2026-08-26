@@ -23,6 +23,7 @@ import { ChallengePassedBanner } from "./challenge-passed-banner";
 import {
   trackLessonStarted,
   trackLessonCompleted,
+  trackModuleCompleted,
   track,
   EVENTS,
 } from "@/lib/analytics";
@@ -404,21 +405,25 @@ function LessonStepsInner({
         // "done" merges server truth (the lessons prop) with local guest
         // records, so free-module guests get the moment too. Restored
         // mounts never reach here, so the award cannot re-fire on reload.
+        const guestDone = new Set(
+          getGuestCompletions()
+            .filter((c) => c.worldId === worldSlug && c.moduleId === moduleSlug)
+            .map((c) => c.lessonId),
+        );
+        const completedModule = completesModule(
+          lessons,
+          lesson.slug,
+          guestDone,
+        );
         const patch = patchSrc(worldSlug, moduleSlug);
-        if (patch) {
-          const guestDone = new Set(
-            getGuestCompletions()
-              .filter(
-                (c) => c.worldId === worldSlug && c.moduleId === moduleSlug,
-              )
-              .map((c) => c.lessonId),
-          );
-          if (completesModule(lessons, lesson.slug, guestDone)) {
-            setAwardSrc(patch);
-          }
+        if (patch && completedModule) {
+          setAwardSrc(patch);
         }
 
         trackLessonCompleted(worldSlug, moduleSlug, lesson.slug);
+        if (completedModule) {
+          trackModuleCompleted(worldSlug, moduleSlug, lessons?.length ?? 1);
+        }
 
         // Skill genome. `emitSkillEvent` had ZERO call sites until now: the
         // buffer, the 5s flush, the keepalive batch endpoint and

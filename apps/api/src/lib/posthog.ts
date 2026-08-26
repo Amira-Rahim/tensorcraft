@@ -3,7 +3,7 @@
  *
  * Used for server-emitted conversion events (payment_completed /
  * payment_failed from the Stripe webhook, etc.). Only constructs a
- * client when `POSTHOG_KEY` is set so dev/preview without credentials
+ * client when `POSTHOG_PROJECT_TOKEN` is set so dev/preview without credentials
  * is a complete no-op.
  *
  * Event names here must match the taxonomy in
@@ -12,8 +12,6 @@
 
 import { PostHog } from "posthog-node";
 
-const DEFAULT_HOST = "https://eu.posthog.com";
-
 let client: PostHog | null = null;
 let attempted = false;
 
@@ -21,13 +19,14 @@ export function getPostHog(): PostHog | null {
   if (attempted) return client;
   attempted = true;
 
-  const key = process.env.POSTHOG_KEY;
-  const host = process.env.POSTHOG_HOST || DEFAULT_HOST;
+  const key = process.env.POSTHOG_PROJECT_TOKEN;
+  const host = process.env.POSTHOG_HOST;
 
-  if (!key) return null;
+  if (!key || !host) return null;
 
   client = new PostHog(key, {
     host,
+    enableExceptionAutocapture: true,
     // Low flush delay suits our low-volume server events (webhooks).
     flushAt: 1,
     flushInterval: 1000,
@@ -36,12 +35,12 @@ export function getPostHog(): PostHog | null {
   return client;
 }
 
-/**
- * Capture a server-side event. No-ops when PostHog is not configured.
- *
- * @param distinctId - User UUID (Supabase auth user id). Required so events
- *   attribute to the same person as client-side events from `posthog-js`.
- */
+/** Run authenticated request work in an identity context, including errors. */
+export function withPostHogUserContext<T>(distinctId: string, fn: () => T): T {
+  const ph = getPostHog();
+  return ph ? ph.withContext({ distinctId }, fn) : fn();
+}
+
 export function captureServerEvent(
   distinctId: string,
   event: string,

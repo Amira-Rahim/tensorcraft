@@ -16,6 +16,9 @@ describe("lib/analytics-events", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
+    // initPostHog throws outside production when the host is missing;
+    // tests below vary only the key.
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://example.test");
     __resetForTests();
   });
 

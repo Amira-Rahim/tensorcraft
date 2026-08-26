@@ -26,19 +26,22 @@ describe("api/lib/posthog", () => {
     __resetForTests();
   });
 
-  it("returns null when POSTHOG_KEY is absent", () => {
-    vi.stubEnv("POSTHOG_KEY", "");
+  it("returns null when POSTHOG_PROJECT_TOKEN is absent", () => {
+    vi.stubEnv("POSTHOG_PROJECT_TOKEN", "");
+    vi.stubEnv("POSTHOG_HOST", "https://example.test");
     expect(getPostHog()).toBeNull();
   });
 
   it("captureServerEvent no-ops when client is null", () => {
-    vi.stubEnv("POSTHOG_KEY", "");
+    vi.stubEnv("POSTHOG_PROJECT_TOKEN", "");
+    vi.stubEnv("POSTHOG_HOST", "https://example.test");
     captureServerEvent("user-1", "payment_completed", { amount: 49 });
     expect(captureMock).not.toHaveBeenCalled();
   });
 
   it("captureServer forwards to PostHog with distinctId", () => {
-    vi.stubEnv("POSTHOG_KEY", "phc_server");
+    vi.stubEnv("POSTHOG_PROJECT_TOKEN", "phc_server");
+    vi.stubEnv("POSTHOG_HOST", "https://example.test");
 
     captureServer(
       SERVER_EVENTS.PAYMENT_COMPLETED,
@@ -71,7 +74,8 @@ describe("api/lib/posthog", () => {
   });
 
   it("captureServer forwards code_pushed with expected shape", () => {
-    vi.stubEnv("POSTHOG_KEY", "phc_server");
+    vi.stubEnv("POSTHOG_PROJECT_TOKEN", "phc_server");
+    vi.stubEnv("POSTHOG_HOST", "https://example.test");
 
     captureServer(
       SERVER_EVENTS.CODE_PUSHED,

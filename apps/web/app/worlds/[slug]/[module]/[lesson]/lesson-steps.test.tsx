@@ -58,6 +58,7 @@ vi.mock("@/lib/progress-client", () => ({
 vi.mock("@/lib/analytics", () => ({
   trackLessonStarted: vi.fn(),
   trackLessonCompleted: vi.fn(),
+  trackModuleCompleted: vi.fn(),
   // The Skip control now emits script_skipped through the typed helper.
   track: vi.fn(),
   EVENTS: { SCRIPT_SKIPPED: "script_skipped" },
