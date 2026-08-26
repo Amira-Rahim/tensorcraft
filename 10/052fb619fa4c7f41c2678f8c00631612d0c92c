@@ -1,0 +1,44 @@
+apps/api/src/routes/__tests__/stripe-flow-integration.test.ts
+  s_bc0e57f6d34170::t_be94b549d8f9a3 162
+apps/api/src/routes/payments.test.ts
+  s_bc0e57f6d34170::t_4cd8012a158392 193
+apps/web/lib/__tests__/posthog.test.ts
+  s_bc0e57f6d34170::t_9b82dc99023d23 24,26-46,48,60,70,102
+  s_bc0e57f6d34170::t_04327aaf432bf2 47
+apps/web/lib/__tests__/analytics-events.test.ts
+  s_bc0e57f6d34170::t_3c0e5f36032101 19-21
+apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.test.tsx
+  s_bc0e57f6d34170::t_795f461e45d1f8 61
+apps/web/lib/analytics-events.ts
+  s_7ca13fcef6a075::t_e375a860fe9b2e 200-202
+  s_7ca13fcef6a075::t_32747f54b63d7d 52-55
+  s_7ca13fcef6a075::t_711dce4e4e4ede 203
+docs/analytics-verification.md
+  s_7ca13fcef6a075::t_8ed6b3d498879f 65
+apps/api/src/routes/__tests__/supabase-integration.test.ts
+  s_bc0e57f6d34170::t_e423378f6d774c 240
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "10052fb619fa4c7f41c2678f8c00631612d0c92c",
+  "prompts": {},
+  "sessions": {
+    "s_7ca13fcef6a075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "367f541d-6aa4-4a66-a448-f86f2f91911f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    },
+    "s_bc0e57f6d34170": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c3bda2c7-7797-4825-b33a-237cdfd4d67e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
