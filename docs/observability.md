@@ -123,7 +123,7 @@ with a way to prove it works, because an alert you never tested is a guess.
 | 4. Heartbeats | DONE | 3 monitors armed. Proven by a real scheduled run 2026-08-25 08:03 UTC: digest sent, heartbeat delivered |
 | 5. Stripe notifications | OPEN | dashboard only, not checkable from here |
 | 6. Vercel Log Drains | DONE | `betterstack-production` drain, `lambda`+`edge`+`external`, production only. Delivery confirmed in Live tail 2026-08-25; 14 competing drains for unrelated projects removed |
-| PostHog | OPEN | `NEXT_PUBLIC_POSTHOG_KEY` unset, ~25 events land nowhere |
+| PostHog | DONE | EU project live 2026-08-26, events confirmed arriving |
 
 Also now live, outside the numbered tasks: browser-side Sentry reports from
 production (DSN present in `main-app`, correct project, Replay off), the API
@@ -377,6 +377,29 @@ to `SUPPORT_EMAIL` and then to `support@tensorcraft.app`.
 their secrets stored. Every other repo secret the digest needs is already
 present, so it sends on its next scheduled run.
 
+**If ALL THREE heartbeats alert at once, check the GitHub Actions budget
+BEFORE debugging any job.** Independent jobs on three different schedules do
+not fail simultaneously by chance, so a correlated miss means something
+upstream of all of them, and the budget is the only thing upstream of all of
+them.
+
+The org Actions budget is **$20/month with "Stop usage when budget is reached"
+ON** (set 2026-08-25, raised from the $0 that refused a scheduled run on
+08-24). That is a hard cap: when it trips, every Actions run stops, heartbeats
+included, and the symptom is three missed check-ins rather than a billing
+message. Runway at the time of writing, repo is PRIVATE so minutes are billed:
+
+- Team plan includes 3,000 min/month, $20 buys roughly 2,500 more at $0.008
+  per Linux 2-core minute, so the ceiling is about 5,500.
+- CI costs about 25 min per run (the SUM of the parallel jobs is what bills,
+  not wall clock: e2e 710s, vitest 255s, build 112s, lint/format/typecheck/
+  audit 72s, plus the rest).
+- Scheduled jobs cost about 280 min/month, mostly synthetic checks every 6h.
+- That leaves roughly 200 CI runs a month, about 7 pushes a day sustained.
+
+Turning Stop usage OFF converts the cap into an alert and removes the failure
+mode entirely, at the cost of an uncapped bill.
+
 **Prove it works:** run `partitions.yml` manually (Actions tab, **Run
 workflow**) and confirm the heartbeat registers as received. Then, if you want
 the full test, wait out one grace period without running it and confirm you
@@ -489,11 +512,38 @@ Upstash or Stripe.
 
 ---
 
-### Later, not now: PostHog (20 min)
+### PostHog (DONE 2026-08-26)
 
-About 25 events are instrumented and currently land nowhere. Create the EU
-project, set `NEXT_PUBLIC_POSTHOG_KEY` in Vercel, then walk
-`docs/analytics-verification.md`.
+EU project live, events confirmed arriving. Four things that are easy to get
+wrong, all hit on the way in:
+
+1. **TWO variables are required, not one.** `apps/web/lib/posthog.ts:33-40`
+   returns null and initialises nothing unless BOTH
+   `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` are set. An
+   earlier version of this file named only the key.
+2. **The host is the INGEST host, not the dashboard host.** EU is
+   `https://eu.i.posthog.com`. `eu.posthog.com` is where you log in.
+3. **Use the PROJECT API key (`phc_...`), never the project SECRET key
+   (`phs_...`).** The `phc_` key is public by design and write only, which is
+   why it is safe in a `NEXT_PUBLIC_` variable that ships to every visitor.
+   A secret key grants scoped READ access to project data; putting it in a
+   `NEXT_PUBLIC_` variable would publish that to everyone, and rotating it
+   would need a rebuild rather than a dashboard change. Do not create a
+   secret key at all.
+4. **CSP.** `connect-src` and `script-src` now use `https://*.posthog.com`.
+   CSP wildcards are a SUFFIX match on the whole host, so that one entry
+   covers `eu.posthog.com`, `eu.i.posthog.com` and
+   `eu-assets.i.posthog.com`. Contrast the Sentry line, `*.ingest.sentry.io`,
+   whose suffix does NOT match `o123.ingest.de.sentry.io`, which is why that
+   region host had to be added explicitly.
+
+**Verifying: analytics is CONSENT GATED.** `initPostHog` runs only after the
+visitor grants analytics consent, deliberately, because Sentry runs as
+legitimate interest and product analytics does not. Zero events before
+accepting the cookie banner is correct behaviour, not a broken setup. Accept
+it, reload, then check Live.
+
+Full event checklist in `docs/analytics-verification.md`.
 
 Deliberately last. This answers "what are people doing", not "what broke". It
 matters less than the four above for launch week, and more than all of them by
