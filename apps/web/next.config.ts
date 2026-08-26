@@ -192,7 +192,7 @@ const nextConfig: NextConfig = {
           key: "Content-Security-Policy",
           value: [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://checkout.stripe.com https://eu.posthog.com https://plausible.io https://browser.sentry-cdn.com https://cdn.jsdelivr.net",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://checkout.stripe.com https://*.posthog.com https://plausible.io https://browser.sentry-cdn.com https://cdn.jsdelivr.net",
             // The exercise grader runs learner code in a Worker built from a
             // Blob URL; without blob: here (worker-src falls back to
             // script-src otherwise) the worker is silently blocked and every
@@ -204,7 +204,7 @@ const nextConfig: NextConfig = {
             // the suffix differs. Omitting the region host does not degrade
             // reporting, it blocks it outright and silently, in the browser,
             // where no server side tooling can see the failure.
-            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.tensorcraft.app https://api.stripe.com https://checkout.stripe.com https://eu.posthog.com https://*.ingest.de.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://plausible.io",
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.tensorcraft.app https://api.stripe.com https://checkout.stripe.com https://*.posthog.com https://*.ingest.de.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://plausible.io",
             "frame-src https://js.stripe.com https://checkout.stripe.com",
             "img-src 'self' data: blob: https:",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
