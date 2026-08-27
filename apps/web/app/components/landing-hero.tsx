@@ -70,7 +70,7 @@ export function LandingHero() {
               data-testid="landing-cta-secondary"
               className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
-              See how it works
+              Discover Tensorcraft
             </Link>
           </div>
         </motion.div>

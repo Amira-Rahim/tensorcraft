@@ -61,7 +61,7 @@ production release.
 | `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
 | `upgrade_cta_shown` | `/pricing?locked=<slug>` banner renders, OR `/paywall` mounts | `source="paywall"`, `worldId?` |
 | `upgrade_cta_clicked` | Click "See Plans" on `/paywall` hero or footer | `source="paywall"` |
-| `free_lesson_cta_clicked` | Click any "Start Module 1 free" CTA on `/learn` | `source` (`learn_hero`/`learn_start_free`/`learn_footer`) |
+| `free_lesson_cta_clicked` | Click any "Start Module 1 free" CTA on `/learn` | `source` (`learn_hero`/`learn_footer`) |
 | `learn_trailer_played` | `/learn` hero loop begins, or "Watch the trailer" opens the full cut (only once trailer assets ship) | `mode` (`loop`/`full`) |
 | `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `worldId` |
 | `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `worldId`, `lessonId`, `exerciseSlug`, `commitSha` |

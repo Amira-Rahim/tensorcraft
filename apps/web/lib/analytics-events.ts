@@ -195,7 +195,7 @@ export interface EventProperties {
      * Placement of the clicked free-lesson CTA. Learn-scoped today;
      * extend the union when landing/pricing adopt the tracker.
      */
-    source: "learn_hero" | "learn_start_free" | "learn_footer";
+    source: "learn_hero" | "learn_footer";
   };
   [EVENTS.TRAILER_PLAYED]: {
     /** loop = silent hero loop began; full = the lightbox 90s cut opened. */

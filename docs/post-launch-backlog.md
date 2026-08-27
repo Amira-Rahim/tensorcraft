@@ -347,19 +347,37 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
-- [ ] **/learn redesign follow-ups (2026-08-24).** The /learn rebuild landed
-  2026-08-24 and was reworked twice the same day on owner rulings (first
-  cut read as a second landing page; second cut was "extremely busy").
-  Final shape: briefing hero over the bridge plate, then ONE "How it
-  works" band in the lesson page's step grammar (segmented rail, three h3
-  chapters: 01 a registry bridge taught in full with its breaks panel via
-  `taught-bridge.tsx`, 02 the IO-gated live demo, 03 the real Deep Orbit
-  module map with mission patches and the free door on module 1 via
-  `course-map.tsx`, same `@tensorcraft/content` source as /pricing), then
-  a quiet crew interlude, a demoted No-Python aside, scene-canvas
-  coming-soon cards with a single notify line, FAQ band, and three tracked
-  CTAs (`free_lesson_cta_clicked`: learn_hero / learn_start_free /
-  learn_footer). Three follow-ups:
+- [ ] **/learn v5 video-first (2026-08-27), supersedes the v4 store page.**
+  The owner's Flow/Veo trailer (72s, Epidemic "ES_Slipping" bed) shipped
+  to `public/media/learn-trailer*`; the page is now trailer hero ->
+  crew line -> collapsible "About this video" transcript -> close CTAs.
+  Video SEO: VideoObject JSON-LD + sitemap `videos` entry + the visible
+  transcript block. Store-page components deleted (git history keeps
+  them). Watch GSC after deploy: the owner accepted the thin-content
+  tradeoff; if the "javascript machine learning" cluster slips, the
+  lever is expanding the transcript block, not restoring sections.
+  Original v4 record follows for history:
+- [x] **/learn v4 trailer + store page (2026-08-25).** Owner rulings: the
+  page video is a produced movie trailer in game-trailer grammar (title
+  cards + licensed music, no voiceover), and /learn is rebuilt in
+  store-page grammar: trailer hero (asset-gated: `trailer-hero.tsx` mounts
+  only when `public/media/learn-trailer.mp4` exists; hero loop fetches
+  after interaction/idle so it never enters the Lighthouse trace),
+  screenshots strip from shipped scene art (`screenshot-strip.tsx`, thumbs
+  via `scripts/marketing/make-learn-shots.mjs`), About + the one public
+  bridge, Play-the-demo band, the module-map contents, crew interlude,
+  requirements box, coming-soon strip, FAQ. Trailer pipeline at
+  `scripts/marketing/tour-video/` (spec.yaml storyboard, local sharp title
+  cards, Runway gen4.5 beats, review gate, ffmpeg assemble; verified API
+  facts and costs in the spec comments, ~$10-25 one-time).
+  **Owner-gated to finish the trailer:** `brew install ffmpeg`; Runway dev
+  credits (`RUNWAYML_API_SECRET` in .env.art); licensed music file in
+  `art-src/tour-video/music/`; re-run
+  `scripts/marketing/capture-lesson-walkthrough.mjs` and re-time the
+  capture trim windows in spec.yaml; then generate -> review/approve ->
+  assemble. Analytics: `learn_trailer_played` (loop/full) +
+  `free_lesson_cta_clicked` (learn_hero / learn_start_free /
+  learn_footer). Three older follow-ups:
   1. **Phase 2 video band.** `scripts/marketing/capture-lesson-walkthrough.mjs`
      records a walkthrough of the free first lesson (Playwright `recordVideo`,
      webm + poster into `apps/web/public/media/`). Owner reviews the cut, then

@@ -1,6 +1,3 @@
-import { worlds } from "@tensorcraft/worlds";
-import { WORLD_SLUGS, isLaunched } from "@tensorcraft/shared";
-
 const SITE = "https://tensorcraft.app";
 
 /**
@@ -34,28 +31,21 @@ export function buildLearnBreadcrumbs() {
 }
 
 /**
- * ItemList of the five courses. `item.url` mirrors the on-page link policy:
- * launched worlds link to their world page, coming-soon worlds are inert
- * everywhere (world-cards-grid precedent, pinned by page.test.tsx), so their
- * list entries carry a name and nothing else. Membership is derived from
- * `isLaunched`, so a world launch flips its url on without an edit here.
+ * VideoObject for the trailer: the page is video-first (owner ruling
+ * 2026-08-27), so the film itself is the indexable object. Emitted only
+ * when the trailer assets exist (page passes the gate through), matching
+ * the visible-content rule that governs all schema here.
  */
-export function buildLearnCourseList() {
+export function buildLearnVideo() {
   return {
     "@context": "https://schema.org",
-    "@type": "ItemList" as const,
-    name: "Tensorcraft courses",
-    itemListElement: WORLD_SLUGS.map((slug, index) => {
-      const world = worlds[slug];
-      const name = world
-        ? `${world.displayName}: ${world.specialization}`
-        : slug;
-      return {
-        "@type": "ListItem" as const,
-        position: index + 1,
-        name,
-        ...(isLaunched(slug) ? { url: `${SITE}/worlds/${slug}` } : {}),
-      };
-    }),
+    "@type": "VideoObject" as const,
+    name: "How Tensorcraft works",
+    description:
+      "How Tensorcraft teaches machine learning to JavaScript developers: ML concepts mapped to code you already write, taught inside the story of the Deep Orbit research station. No Python required.",
+    thumbnailUrl: [`${SITE}/media/learn-trailer-poster.webp`],
+    contentUrl: `${SITE}/media/learn-trailer.mp4`,
+    uploadDate: "2026-08-27",
+    duration: "PT1M12S",
   };
 }

@@ -39,6 +39,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
+      // Video-first page (2026-08-27): surface the trailer to video
+      // search alongside the page's VideoObject JSON-LD.
+      videos: [
+        {
+          title: "How Tensorcraft works",
+          thumbnail_loc: `${BASE_URL}/media/learn-trailer-poster.webp`,
+          description:
+            "How Tensorcraft teaches machine learning to JavaScript developers: ML concepts mapped to code you already write, taught inside the story of the Deep Orbit research station. No Python required.",
+        },
+      ],
     },
     {
       url: `${BASE_URL}/blog`,
