@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
-import { worldSlugs } from "@tensorcraft/worlds";
+import { worldSlugs, worlds } from "@tensorcraft/worlds";
 import { isLaunched } from "@tensorcraft/shared";
 import { getWorldLessons, getModules, getPosts } from "@tensorcraft/content";
+import { worldTrailer } from "@/lib/world-trailer";
+import { buildWorldVideoJsonLd } from "./worlds/[slug]/world-video-jsonld";
 
 const BASE_URL = "https://tensorcraft.app";
 
@@ -91,12 +93,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // World pages: launched worlds carry a higher priority; coming-soon stubs
   // (which render a teaser + waitlist form) get a lower priority so the
   // launched world outranks them in search budget allocation.
-  const worldRoutes: MetadataRoute.Sitemap = worldSlugs.map((slug) => ({
-    url: `${BASE_URL}/worlds/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: isLaunched(slug) ? 0.9 : 0.4,
-  }));
+  const worldRoutes: MetadataRoute.Sitemap = worldSlugs.map((slug) => {
+    // A world's own trailer surfaces to video search beside the page's
+    // VideoObject JSON-LD, mirroring /learn's entry. Reading the fields
+    // from the JSON-LD builder keeps the identity signals byte-identical,
+    // and the same asset gate as the page means the sitemap never
+    // advertises a film that is not deployed.
+    const trailer = worldTrailer(slug);
+    const video = trailer
+      ? buildWorldVideoJsonLd(worlds[slug], trailer)
+      : undefined;
+    return {
+      url: `${BASE_URL}/worlds/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: isLaunched(slug) ? 0.9 : 0.4,
+      ...(video
+        ? {
+            videos: [
+              {
+                title: video.name,
+                thumbnail_loc: video.thumbnailUrl[0],
+                description: video.description,
+              },
+            ],
+          }
+        : {}),
+    };
+  });
 
   // Capstone pages are deliberately NOT listed.
   //

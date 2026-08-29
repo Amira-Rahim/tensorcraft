@@ -13,6 +13,9 @@ import { heroPlateSrc } from "@/lib/location-art";
 import { patchSrc, sealSrc } from "@/lib/patch-art";
 import { WorldSceneBackdrop } from "./world-scene-backdrop";
 import { WorldCast } from "./world-cast";
+import { WorldTrailerPanel } from "./world-trailer-panel";
+import { buildWorldVideoJsonLd } from "./world-video-jsonld";
+import { worldTrailer } from "@/lib/world-trailer";
 import { ModuleMapClient } from "./module-map-client";
 import { ModulePatch } from "@tensorcraft/ui/module-patch";
 import { GuestModuleBanner } from "./guest-module-banner";
@@ -253,6 +256,28 @@ export default async function WorldDetailPage({ params }: Props) {
 
   const courseJsonLd = buildCourseJsonLd(world);
 
+  // Trailer band: prospects only, and the server decides, so nothing swaps
+  // client-side and purchasers keep today's page byte-for-byte (marketing
+  // ends at purchase; the film stays reachable on /learn). A prospect who
+  // already has progress gets the band demoted below the map so their
+  // Continue CTA stays first. Resolves to undefined until the film's
+  // assets ship to public/media/, leaving this page exactly as it is now.
+  const trailer = !hasPurchased ? worldTrailer(slug) : undefined;
+  const trailerAboveCast = progress.length === 0;
+  const firstModule = moduleMapItems[0];
+  const firstLesson = firstModule?.lessons[0];
+  const trailerPanel =
+    trailer && firstModule && firstLesson ? (
+      <WorldTrailerPanel
+        worldId={slug}
+        worldName={world.displayName}
+        poster={trailer.poster}
+        src={trailer.full}
+        durationLabel={trailer.durationLabel}
+        freeLessonHref={`/worlds/${slug}/${firstModule.slug}/${firstLesson.slug}`}
+      />
+    ) : null;
+
   return (
     <main
       className="min-h-screen relative overflow-hidden"
@@ -262,6 +287,16 @@ export default async function WorldDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
+      {/* VideoObject only while the band renders: schema mirrors visible
+          content, same rule as every other block. */}
+      {trailer && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(buildWorldVideoJsonLd(world, trailer)),
+          }}
+        />
+      )}
       {/* The world's signature scene (Deep Orbit's orbital system for the
           live world) behind the module map - same renderer as the homepage
           and /worlds cards, viewport-capped with a bottom fade. Worlds with
@@ -339,6 +374,20 @@ export default async function WorldDetailPage({ params }: Props) {
           with no characters. */}
       <WorldCast slug={world.slug} />
 
+      {/* The trailer for prospects with no progress, mounted BELOW the crew
+          strip on purpose: header and cast are tc-on-art surfaces whose dark
+          veil only stays legible in the light scheme while they overlap the
+          viewport-capped backdrop plate. A band above the cast pushes them
+          off the plate onto the light page bg, where the translucent dark
+          veil composites to mid-gray and every on-art text node fails AA
+          (found by axe [light], 2026-08-29). The band itself and the module
+          map are scheme-native, so pushing THEM is free. */}
+      {trailerAboveCast && trailerPanel && (
+        <div className="relative z-10 max-w-[900px] mx-auto px-8 pt-10">
+          {trailerPanel}
+        </div>
+      )}
+
       {/* Capstone banner */}
       {isWorldComplete && (
         <div className="max-w-[900px] mx-auto px-8 relative z-10 mt-6">
@@ -409,6 +458,11 @@ export default async function WorldDetailPage({ params }: Props) {
               : undefined
           }
         />
+        {/* A prospect mid-free-module gets the film after the map, never
+            in front of their Continue CTA. */}
+        {!trailerAboveCast && trailerPanel && (
+          <div className="mt-8">{trailerPanel}</div>
+        )}
       </div>
 
       <style>{`

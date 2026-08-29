@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FocusTrap } from "@tensorcraft/ui/a11y";
+import { TrailerLightbox } from "@/app/components/trailer-lightbox";
 import { EVENTS, track } from "@/lib/analytics-events";
 
 /**
@@ -21,7 +21,16 @@ const LOOP = "/media/learn-trailer-loop.webm";
 const FULL = "/media/learn-trailer.mp4";
 
 function prefersStillness(): boolean {
-  if (typeof window === "undefined") return true;
+  // The matchMedia guard also covers jsdom, which never implements it:
+  // under vitest 4 an effect throwing here fails every test that renders
+  // the page (surfaced 2026-08-29; the poster-only path is the right
+  // behavior for a motionless environment anyway).
+  if (
+    typeof window === "undefined" ||
+    typeof window.matchMedia !== "function"
+  ) {
+    return true;
+  }
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     return true;
   }
@@ -71,8 +80,12 @@ export function TrailerHero() {
   return (
     <>
       <div aria-hidden="true" className="absolute inset-0 z-0">
-        {/* eslint-disable-next-line @next/next/no-img-element -- full-bleed
-            poster; sized by the container, not the layout */}
+        {/* Raw <img> rather than next/image on purpose: full-bleed poster,
+            sized by the container rather than the layout. The eslint-disable
+            that used to sit here named `@next/next/no-img-element`, a rule
+            this config does not load, so ESLint errored on the unknown rule
+            reference itself and turned main red. Keep the rationale, drop the
+            directive: there is nothing to suppress. */}
         <img
           src={POSTER}
           alt=""
@@ -121,41 +134,12 @@ export function TrailerHero() {
       />
 
       {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-12"
-          style={{ background: "color-mix(in srgb, #0a0a0a 92%, transparent)" }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) close();
-          }}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Tensorcraft trailer"
-        >
-          <FocusTrap active onEscape={close}>
-            <div className="max-w-[1280px] w-full">
-              {/* The film has no speech: title cards carry the copy, so
-                  the cards are the captions. */}
-              <video
-                controls
-                autoPlay
-                playsInline
-                preload="none"
-                poster={POSTER}
-                src={FULL}
-                className="block w-full h-auto border border-border bg-[#0a0a0a]"
-              />
-              <div className="flex justify-end mt-3">
-                <button
-                  type="button"
-                  onClick={close}
-                  className="font-mono text-xs uppercase tracking-wider text-primary hover:opacity-80 transition-opacity cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-                >
-                  Close ✕
-                </button>
-              </div>
-            </div>
-          </FocusTrap>
-        </div>
+        <TrailerLightbox
+          src={FULL}
+          poster={POSTER}
+          ariaLabel="Tensorcraft trailer"
+          onClose={close}
+        />
       )}
     </>
   );

@@ -53,6 +53,11 @@ export const EVENTS = {
   // trailer earns its slot (loop = ambient hero playback began; full = the
   // visitor chose the 90-second cut).
   TRAILER_PLAYED: "learn_trailer_played",
+  // Added 2026-08-29 with the world-page trailer band. A separate event
+  // from learn_trailer_played (different film, different surface) so the
+  // /learn cohorts stay clean. No loop mode here by design: the world
+  // backdrop already animates, so the band is poster-only at rest.
+  WORLD_TRAILER_PLAYED: "world_trailer_played",
 
   // Signup funnel.
   // Added 2026-07-21: the auth screen previously emitted NOTHING, so the
@@ -192,14 +197,19 @@ export interface EventProperties {
   };
   [EVENTS.FREE_LESSON_CTA_CLICKED]: {
     /**
-     * Placement of the clicked free-lesson CTA. Learn-scoped today;
-     * extend the union when landing/pricing adopt the tracker.
+     * Placement of the clicked free-lesson CTA. Extend the union when
+     * landing/pricing adopt the tracker.
      */
-    source: "learn_hero" | "learn_footer";
+    source: "learn_hero" | "learn_footer" | "world_trailer_endcard";
   };
   [EVENTS.TRAILER_PLAYED]: {
     /** loop = silent hero loop began; full = the lightbox 90s cut opened. */
     mode: "loop" | "full";
+  };
+  [EVENTS.WORLD_TRAILER_PLAYED]: {
+    worldId: string;
+    /** Only the lightbox cut exists on world pages; kept for parity. */
+    mode: "full";
   };
 
   /**

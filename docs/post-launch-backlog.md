@@ -397,6 +397,22 @@ memory was refuted by that audit: `pnpm audit` clean.)
      `docs/audits/content-editorial-audit-2026-08-19.md`; the redesign makes
      it urgent enough to track here. Watch the "javascript machine learning"
      cluster position afterward.
+  4. **World-page trailer band (LIVE 2026-08-29, assets shipped).**
+     `/worlds/deep-orbit` gained a click-to-play trailer band for
+     prospects (`world-trailer-panel.tsx`; purchasers see no marketing,
+     prospects with progress get it below the map). Final assets shipped:
+     `public/media/deep-orbit-trailer.mp4` (88s, 23.4MB, CRF 20 faststart
+     re-encode of the owner's cut) + `-poster.webp` (crew-walk frame,
+     71KB). Resolver: `apps/web/lib/world-trailer.ts`; bump its
+     `uploadDate`/duration if the film is ever replaced. Placement note:
+     the band mounts BELOW the crew strip, not above it; above, it pushed
+     the tc-on-art header/cast off the backdrop plate and their dark veil
+     failed AA on the light scheme (269 axe hits). Baselines reminted +
+     verified, axe green both schemes, worlds/reflow/mobile e2e green.
+     Follow-up: move BOTH trailer mp4s (learn ~46MB, world 23.4MB) out of
+     `public/` to Vercel Blob or a CDN bucket; committed video doubles
+     repo weight and egress rides every watch. Only a URL swap in
+     `world-trailer.ts`/`trailer-hero.tsx` is needed.
 
 - [ ] **Pre-lesson copy audit: open rulings (2026-08-19).** The audit at
   `docs/audits/prelesson-copy-audit-2026-08-19.md` applied all 54 FIX and

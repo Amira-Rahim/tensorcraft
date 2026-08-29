@@ -61,8 +61,9 @@ production release.
 | `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
 | `upgrade_cta_shown` | `/pricing?locked=<slug>` banner renders, OR `/paywall` mounts | `source="paywall"`, `worldId?` |
 | `upgrade_cta_clicked` | Click "See Plans" on `/paywall` hero or footer | `source="paywall"` |
-| `free_lesson_cta_clicked` | Click any "Start Module 1 free" CTA on `/learn` | `source` (`learn_hero`/`learn_footer`) |
+| `free_lesson_cta_clicked` | Click any "Start Module 1 free" CTA on `/learn`, or the trailer end card on a world page | `source` (`learn_hero`/`learn_footer`/`world_trailer_endcard`) |
 | `learn_trailer_played` | `/learn` hero loop begins, or "Watch the trailer" opens the full cut (only once trailer assets ship) | `mode` (`loop`/`full`) |
+| `world_trailer_played` | World-page trailer band opens the lightbox cut (only once `/media/<slug>-trailer.mp4` ships; prospects only, no loop mode on this surface) | `worldId`, `mode="full"` |
 | `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `worldId` |
 | `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `worldId`, `lessonId`, `exerciseSlug`, `commitSha` |
 
