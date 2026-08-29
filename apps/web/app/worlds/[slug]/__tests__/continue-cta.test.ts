@@ -30,17 +30,50 @@ const FRESH: CtaModule[] = [
 ];
 
 describe("resolveContinueCta", () => {
-  it("points a brand new learner at the first lesson", () => {
+  it("offers a brand new guest a start, not a continue", () => {
     const cta = resolveContinueCta({
       worldSlug: "deep-orbit",
       modules: FRESH,
       hasPurchased: false,
     });
 
-    // The label reads "Continue M1" even for someone who has not started.
-    // That wording predates this extraction and is left alone: it points
-    // FORWARD, which is the defect being fixed here.
+    // Nothing is started, so "Continue" would claim progress that does not
+    // exist. The wording matches the trailer endcard CTA, which points at
+    // the same lesson (2026-08-29 design audit).
     expect(cta.href).toBe("/worlds/deep-orbit/m1/l1");
+    expect(cta.label).toBe("Start Module 1 free");
+  });
+
+  it("offers a purchaser who never started a start without the free tag", () => {
+    const cta = resolveContinueCta({
+      worldSlug: "deep-orbit",
+      modules: FRESH,
+      hasPurchased: true,
+    });
+
+    expect(cta.href).toBe("/worlds/deep-orbit/m1/l1");
+    expect(cta.label).toBe("Start Module 1");
+  });
+
+  it("switches to Continue once any lesson is completed", () => {
+    const modules: CtaModule[] = [
+      {
+        order: 1,
+        slug: "m1",
+        status: "active",
+        lessons: [lesson("l1", "completed"), lesson("l2", "available")],
+      },
+      FRESH[1],
+    ];
+
+    const cta = resolveContinueCta({
+      worldSlug: "deep-orbit",
+      modules,
+      hasPurchased: false,
+    });
+
+    expect(cta.label).toBe("Continue M1");
+    expect(cta.href).toBe("/worlds/deep-orbit/m1/l2");
   });
 
   it("continues into the lesson actually in progress", () => {

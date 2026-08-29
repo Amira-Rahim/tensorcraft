@@ -247,6 +247,93 @@ describe("ModuleMapClient", () => {
     expect(teaser).toHaveTextContent("From $59 · Module 1 free");
   });
 
+  it("locked guest rows are clickable across the whole row, title included", () => {
+    // The teaser used to be a chip absolutely positioned into the title row;
+    // at phone widths it sat on top of the module titles (2026-08-29 design
+    // audit). The link now wraps the full row, so the title lives inside it.
+    const locked2 = makeModule({
+      slug: "neural-networks",
+      title: "Neural Networks",
+      order: 2,
+      status: "locked",
+    });
+    const locked3 = makeModule({
+      slug: "training",
+      title: "Training",
+      order: 3,
+      status: "locked",
+    });
+    render(
+      <ModuleMapClient
+        {...defaultProps}
+        modules={[makeModule(), locked2, locked3]}
+        lockedTeaser={{
+          href: "/pricing?locked=deep-orbit",
+          label: "From $59 · Module 1 free",
+        }}
+      />,
+    );
+
+    const teasers = screen.getAllByTestId("locked-teaser");
+    expect(teasers).toHaveLength(2);
+    for (const teaser of teasers) {
+      expect(teaser).toHaveAttribute("href", "/pricing?locked=deep-orbit");
+    }
+    expect(teasers[0]).toHaveTextContent("Neural Networks");
+    expect(teasers[1]).toHaveTextContent("Training");
+  });
+
+  it("states the price fact once; later locked rows carry the lock glyph", () => {
+    const locked2 = makeModule({
+      slug: "neural-networks",
+      title: "Neural Networks",
+      order: 2,
+      status: "locked",
+    });
+    const locked3 = makeModule({
+      slug: "training",
+      title: "Training",
+      order: 3,
+      status: "locked",
+    });
+    render(
+      <ModuleMapClient
+        {...defaultProps}
+        modules={[makeModule(), locked2, locked3]}
+        lockedTeaser={{
+          href: "/pricing?locked=deep-orbit",
+          label: "From $59 · Module 1 free",
+        }}
+      />,
+    );
+
+    expect(screen.getAllByText("From $59 · Module 1 free")).toHaveLength(1);
+    const teasers = screen.getAllByTestId("locked-teaser");
+    expect(teasers[1]).toHaveTextContent("🔒");
+  });
+
+  it("locked rows for signed-in non-purchasers link the whole row to the paywall", () => {
+    const locked = makeModule({
+      slug: "neural-networks",
+      title: "Neural Networks",
+      order: 2,
+      status: "locked",
+    });
+    render(
+      <ModuleMapClient
+        {...defaultProps}
+        modules={[locked]}
+        unlockHref="/paywall"
+      />,
+    );
+
+    const link = screen.getByRole("link", {
+      name: /Unlock module 2: Neural Networks/i,
+    });
+    expect(link).toHaveAttribute("href", "/paywall");
+    expect(link).toHaveTextContent("Neural Networks");
+  });
+
   it("locked rows without teaser or unlockHref keep the lock glyph", () => {
     const locked = makeModule({ status: "locked" });
     const { container } = render(

@@ -22,6 +22,7 @@ import { GuestModuleBanner } from "./guest-module-banner";
 import { ComingSoonStub } from "./coming-soon-stub";
 import { buildCourseJsonLd } from "./course-jsonld";
 import { resolveContinueCta } from "./continue-cta";
+import { resolveWorldStats } from "./world-stats";
 import type { Metadata } from "next";
 
 interface Props {
@@ -224,7 +225,8 @@ export default async function WorldDetailPage({ params }: Props) {
     };
   });
 
-  // Compute stats
+  // Header stats: course facts until any lesson progress exists, progress
+  // figures after (see world-stats.ts for the reasoning).
   const completedModuleCount = moduleMapItems.filter(
     (m) => m.status === "completed",
   ).length;
@@ -239,7 +241,20 @@ export default async function WorldDetailPage({ params }: Props) {
       ? Math.round(
           (allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10,
         ) / 10
-      : 0;
+      : null;
+  const worldStats = resolveWorldStats({
+    hasProgress: progress.length > 0,
+    moduleCount: moduleMapItems.length,
+    lessonCount: moduleMapItems.reduce((n, m) => n + m.totalLessons, 0),
+    totalMinutes: moduleMapItems.reduce(
+      (n, m) => n + m.lessons.reduce((s, l) => s + l.estimatedMinutes, 0),
+      0,
+    ),
+    completedModuleCount,
+    currentModuleOrder:
+      activeModuleIndex >= 0 ? moduleMapItems[activeModuleIndex]!.order : null,
+    avgScore,
+  });
 
   // Check capstone eligibility
   const isWorldComplete = moduleMapItems.every((m) => m.status === "completed");
@@ -263,7 +278,7 @@ export default async function WorldDetailPage({ params }: Props) {
   // Continue CTA stays first. Resolves to undefined until the film's
   // assets ship to public/media/, leaving this page exactly as it is now.
   const trailer = !hasPurchased ? worldTrailer(slug) : undefined;
-  const trailerAboveCast = progress.length === 0;
+  const trailerAboveMap = progress.length === 0;
   const firstModule = moduleMapItems[0];
   const firstLesson = firstModule?.lessons[0];
   const trailerPanel =
@@ -343,14 +358,7 @@ export default async function WorldDetailPage({ params }: Props) {
         </p>
 
         <div className="flex gap-8 mt-6">
-          {[
-            [String(completedModuleCount), "Completed"],
-            [
-              activeModuleIndex >= 0 ? String(activeModuleIndex + 1) : "0",
-              "Active Now",
-            ],
-            [allScores.length > 0 ? String(avgScore) : "0", "Avg Score"],
-          ].map(([value, label]) => (
+          {worldStats.map(({ value, label }) => (
             <div key={label}>
               <div
                 className="font-mono text-xl font-bold"
@@ -370,19 +378,21 @@ export default async function WorldDetailPage({ params }: Props) {
       </header>
 
       {/* The crew, directly under the header: who you'll be working with,
-          before the module list says what you'll do. Self-hides for a world
+          before the module list says what you'll do. Only when the page has
+          no film: the trailer poster IS the crew, so running both stacks
+          the same faces twice (owner call, 2026-08-29). Purchasers never
+          get the band, so they keep this strip. Self-hides for a world
           with no characters. */}
-      <WorldCast slug={world.slug} />
+      {!trailerPanel && <WorldCast slug={world.slug} />}
 
-      {/* The trailer for prospects with no progress, mounted BELOW the crew
-          strip on purpose: header and cast are tc-on-art surfaces whose dark
-          veil only stays legible in the light scheme while they overlap the
-          viewport-capped backdrop plate. A band above the cast pushes them
-          off the plate onto the light page bg, where the translucent dark
-          veil composites to mid-gray and every on-art text node fails AA
-          (found by axe [light], 2026-08-29). The band itself and the module
-          map are scheme-native, so pushing THEM is free. */}
-      {trailerAboveCast && trailerPanel && (
+      {/* The trailer for prospects with no progress. The header above is a
+          tc-on-art surface whose dark veil only stays legible in the light
+          scheme while it overlaps the viewport-capped backdrop plate;
+          nothing may mount above the header for that reason (found by axe
+          [light], 2026-08-29). The band itself and the module map are
+          scheme-native, so their own position on or off the plate is
+          free. */}
+      {trailerAboveMap && trailerPanel && (
         <div className="relative z-10 max-w-[900px] mx-auto px-8 pt-10">
           {trailerPanel}
         </div>
@@ -460,7 +470,7 @@ export default async function WorldDetailPage({ params }: Props) {
         />
         {/* A prospect mid-free-module gets the film after the map, never
             in front of their Continue CTA. */}
-        {!trailerAboveCast && trailerPanel && (
+        {!trailerAboveMap && trailerPanel && (
           <div className="mt-8">{trailerPanel}</div>
         )}
       </div>

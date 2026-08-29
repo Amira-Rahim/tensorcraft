@@ -93,9 +93,22 @@ export function resolveContinueCta({
   }
 
   if (activeModule && activeLesson) {
+    // "Continue" is only true once something is started. A fresh learner
+    // gets the same wording as the trailer endcard CTA, which points at the
+    // same lesson; two names for one action read as two actions
+    // (2026-08-29 design audit). Purchasers own the module, so no "free".
+    const hasStartedAnything = modules.some((m) =>
+      m.lessons.some(
+        (l) => l.status === "completed" || l.status === "in_progress",
+      ),
+    );
     return {
       href: `/worlds/${worldSlug}/${activeModule.slug}/${activeLesson.slug}`,
-      label: `Continue M${activeModule.order}`,
+      label: hasStartedAnything
+        ? `Continue M${activeModule.order}`
+        : hasPurchased
+          ? `Start Module ${activeModule.order}`
+          : `Start Module ${activeModule.order} free`,
     };
   }
 

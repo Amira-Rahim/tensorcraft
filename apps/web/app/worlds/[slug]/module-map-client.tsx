@@ -57,11 +57,13 @@ const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2";
 
 /**
- * Brutalist module map. Each module is a native `<details>` element
- * (keyboard-accessible, no JS state). Modules render a numbered node
+ * Brutalist module map. Each unlocked module is a native `<details>`
+ * element (keyboard-accessible, no JS state) with a numbered node
  * indicator (option a from spec §11d), a lesson list with status icons,
- * and per-module stats. Colors come from CSS custom properties set by
- * `WorldSync`, this component carries no hex values.
+ * and per-module stats. Locked modules are plain cards, fully wrapped in
+ * their unlock/pricing link when one applies (see ModuleRow). Colors come
+ * from CSS custom properties set by `WorldSync`, this component carries
+ * no hex values.
  */
 export function ModuleMapClient({
   modules,
@@ -83,6 +85,12 @@ export function ModuleMapClient({
         const isLocked = mod.status === "locked";
         const shouldOpen = isActive;
         const accentOn = isDone || isActive;
+        // The price fact renders once, on the first locked row; stating it
+        // on all ten reads as a wall of price chips (2026-08-29 design
+        // audit). Every locked row stays clickable regardless.
+        const firstLockedIndex = modules.findIndex(
+          (m) => m.status === "locked",
+        );
 
         return (
           <ModuleRow
@@ -98,6 +106,7 @@ export function ModuleMapClient({
             worldSlug={worldSlug}
             unlockHref={unlockHref}
             lockedTeaser={lockedTeaser}
+            teaserShowsPrice={i === firstLockedIndex}
           />
         );
       })}
@@ -132,6 +141,8 @@ interface ModuleRowProps {
   worldSlug: string;
   unlockHref?: string;
   lockedTeaser?: { href: string; label: string };
+  /** True on the first locked row only: the one that states the price. */
+  teaserShowsPrice?: boolean;
 }
 
 function ModuleRow({
@@ -146,6 +157,7 @@ function ModuleRow({
   worldSlug,
   unlockHref,
   lockedTeaser,
+  teaserShowsPrice,
 }: ModuleRowProps) {
   const moduleLabel = `M${String(mod.order).padStart(2, "0")}`;
   const pct =
@@ -153,25 +165,139 @@ function ModuleRow({
       ? Math.round((mod.completedLessons / mod.totalLessons) * 100)
       : 0;
 
-  return (
-    <div className="relative">
-      {/* Connector line between module rows (option a: numbered circles +
-          thin connector). Purely decorative. */}
-      {index < total - 1 && (
+  // Connector line between module rows (option a: numbered circles + thin
+  // connector). Purely decorative.
+  const connector = index < total - 1 && (
+    <div
+      className="absolute left-[22px] top-full h-2 w-px"
+      style={{
+        background: isDone ? "var(--tc-primary)" : "var(--tc-border)",
+      }}
+      aria-hidden="true"
+    />
+  );
+
+  // Locked rows are plain cards, not <details>: they have no expanded body,
+  // and a disclosure widget that never discloses is noise to a screen
+  // reader. It also lets the unlock/pricing link wrap the WHOLE row in
+  // normal flow. The link used to be a chip absolutely positioned into the
+  // title row (kept outside the <summary> for axe's nested-interactive
+  // rule), and at phone widths that chip sat on top of the module title
+  // (2026-08-29 design audit).
+  if (isLocked) {
+    const href = unlockHref ?? lockedTeaser?.href;
+    const chipClass =
+      "ml-auto shrink-0 whitespace-nowrap rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest";
+    const rowBody = (
+      <div className="flex items-start gap-4 px-6 py-5">
         <div
-          className="absolute left-[22px] top-full h-2 w-px"
+          className="flex shrink-0 items-center justify-center rounded-none border-2 font-mono text-xs font-bold"
           style={{
-            background: isDone ? "var(--tc-primary)" : "var(--tc-border)",
+            width: 32,
+            height: 32,
+            borderColor: "var(--tc-muted)",
+            color: "var(--tc-muted)",
+            opacity: 0.45,
           }}
           aria-hidden="true"
-        />
-      )}
+          data-decorative="true"
+        >
+          {moduleLabel.replace("M", "")}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+            <span
+              className="font-mono text-xs"
+              style={{ color: "var(--tc-muted)" }}
+            >
+              {moduleLabel}
+            </span>
+            <span
+              className="font-sans text-sm font-bold"
+              style={{ color: "var(--tc-muted)" }}
+            >
+              {mod.title}
+            </span>
+            {unlockHref ? (
+              <span
+                className={chipClass}
+                style={{
+                  color: "var(--tc-primary)",
+                  borderColor: "var(--tc-primary)",
+                  background: "var(--tc-bg)",
+                }}
+              >
+                Unlock →
+              </span>
+            ) : lockedTeaser && teaserShowsPrice ? (
+              <span
+                className={chipClass}
+                style={{
+                  color: "var(--tc-primary)",
+                  borderColor: "var(--tc-primary)",
+                  background: "var(--tc-bg)",
+                }}
+              >
+                {lockedTeaser.label}
+              </span>
+            ) : (
+              <span
+                className="ml-auto font-mono text-xs"
+                style={{ color: "var(--tc-muted)" }}
+                aria-hidden="true"
+              >
+                &#x1F512;
+              </span>
+            )}
+          </div>
+          <p
+            className="mt-1 font-sans text-xs"
+            style={{ color: "var(--tc-muted)" }}
+          >
+            {mod.description}
+          </p>
+        </div>
+      </div>
+    );
 
-      {/* Locked rows are dimmed via the decorative node box and a muted
-          title, never via container opacity: opacity multiplies onto every
-          descendant, and at 0.45 over a light surface no text color can
-          reach the AA 4.5:1 ratio (even pure black lands ~3.5:1). axe-core
-          >= 4.12 computes these blended colors and fails the audit. */}
+    return (
+      <div className="relative">
+        {connector}
+        <div
+          className={`rounded-none border ${href ? "transition-all brutalist-hover" : ""}`}
+          data-module={mod.slug}
+          data-status={mod.status}
+          style={{
+            borderColor: "var(--tc-border)",
+            background:
+              "color-mix(in srgb, var(--tc-surface) 60%, transparent)",
+          }}
+        >
+          {href ? (
+            <Link
+              href={href}
+              className={`block rounded-none ${FOCUS_RING}`}
+              aria-label={
+                unlockHref
+                  ? `Unlock module ${mod.order}: ${mod.title}`
+                  : `Module ${mod.order}: ${mod.title}. Paid content: ${lockedTeaser?.label}`
+              }
+              data-testid={unlockHref ? undefined : "locked-teaser"}
+            >
+              {rowBody}
+            </Link>
+          ) : (
+            rowBody
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      {connector}
+
       <details
         open={shouldOpen}
         className="group rounded-none border"
@@ -185,7 +311,7 @@ function ModuleRow({
         }}
       >
         <summary
-          className={`flex cursor-pointer list-none items-start gap-4 rounded-none px-6 py-5 ${FOCUS_RING} ${isLocked ? "pointer-events-none" : ""}`}
+          className={`flex cursor-pointer list-none items-start gap-4 rounded-none px-6 py-5 ${FOCUS_RING}`}
           aria-label={`Module ${mod.order}: ${mod.title}`}
         >
           {/* Node indicator, simple numbered square at left edge (option a).
@@ -207,7 +333,6 @@ function ModuleRow({
                     : accentOn
                       ? "var(--tc-primary)"
                       : "var(--tc-muted)",
-                  opacity: isLocked ? 0.45 : 1,
                 }}
                 aria-hidden="true"
                 data-decorative="true"
@@ -235,9 +360,7 @@ function ModuleRow({
               </span>
               <span
                 className="font-sans text-sm font-bold"
-                style={{
-                  color: isLocked ? "var(--tc-muted)" : "var(--tc-text)",
-                }}
+                style={{ color: "var(--tc-text)" }}
               >
                 {mod.title}
               </span>
@@ -260,15 +383,6 @@ function ModuleRow({
                   }}
                 >
                   ACTIVE
-                </span>
-              )}
-              {isLocked && !unlockHref && !lockedTeaser && (
-                <span
-                  className="ml-auto font-mono text-xs"
-                  style={{ color: "var(--tc-muted)" }}
-                  aria-hidden="true"
-                >
-                  &#x1F512;
                 </span>
               )}
             </div>
@@ -317,59 +431,24 @@ function ModuleRow({
         </summary>
 
         {/* Expanded body: lesson list */}
-        {!isLocked && (
-          <div
-            className="border-t px-6 pb-5 pt-4"
-            style={{ borderColor: "var(--tc-border)" }}
-          >
-            <ul className="flex flex-col gap-2" data-testid="lesson-list">
-              {mod.lessons.map((lesson) => (
-                <li key={lesson.slug} className="rounded-none">
-                  <LessonCard
-                    lesson={lesson}
-                    moduleDone={isDone}
-                    worldSlug={worldSlug}
-                    moduleSlug={mod.slug}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <div
+          className="border-t px-6 pb-5 pt-4"
+          style={{ borderColor: "var(--tc-border)" }}
+        >
+          <ul className="flex flex-col gap-2" data-testid="lesson-list">
+            {mod.lessons.map((lesson) => (
+              <li key={lesson.slug} className="rounded-none">
+                <LessonCard
+                  lesson={lesson}
+                  moduleDone={isDone}
+                  worldSlug={worldSlug}
+                  moduleSlug={mod.slug}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
       </details>
-
-      {/* Locked-row actions live OUTSIDE the <summary>: a link nested in an
-          interactive <summary> is an axe nested-interactive violation
-          (2026-07-19 audit). Absolutely positioned into the header row. */}
-      {isLocked && unlockHref && (
-        <Link
-          href={unlockHref}
-          className={`absolute right-6 top-5 rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${FOCUS_RING}`}
-          style={{
-            color: "var(--tc-primary)",
-            borderColor: "var(--tc-primary)",
-            background: "var(--tc-bg)",
-          }}
-          aria-label={`Unlock module ${mod.order}: ${mod.title}`}
-        >
-          Unlock →
-        </Link>
-      )}
-      {isLocked && !unlockHref && lockedTeaser && (
-        <Link
-          href={lockedTeaser.href}
-          className={`absolute right-6 top-5 whitespace-nowrap rounded-none border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${FOCUS_RING}`}
-          style={{
-            color: "var(--tc-primary)",
-            borderColor: "var(--tc-primary)",
-            background: "var(--tc-bg)",
-          }}
-          aria-label={`Module ${mod.order} is paid content: ${lockedTeaser.label}`}
-          data-testid="locked-teaser"
-        >
-          {lockedTeaser.label}
-        </Link>
-      )}
     </div>
   );
 }

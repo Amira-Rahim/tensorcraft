@@ -347,6 +347,27 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 4. Polish (editorial, models, features)
 
+- [ ] **Module map design passes (2026-08-29 audit, deferred).** The four
+  defect fixes from the audit shipped same day (mobile teaser overlap,
+  Start-vs-Continue CTA, header stats modes, price-once locked rows, crew
+  strip hidden when the trailer band renders). Deferred design work, in
+  priority order:
+  1. Make the map read as a route: the connector between module rows is a
+     1x8px sliver nobody sees. A continuous full-height spine with waypoint
+     nodes, filled to the learner's position, would encode "you are here,
+     this far to a deployed model". Keep it a neutral border-token hairline
+     with nodes, structural like the pane dividers; the left accent bar ban
+     still applies to colored edges glued to cards.
+  2. Type hierarchy in the list: module titles (14px) match lesson titles
+     and sit 2px above their descriptions, while the 16px lesson ordinal is
+     the largest type in each card. One step up for module titles, ordinals
+     demoted to muted 12px.
+  3. Trailer resting affordance: the only play cue is a 12px mono caption
+     on a 900px poster. A centered play glyph on hover/focus keeps the
+     restraint. Decide with WORLD_TRAILER_PLAYED data.
+  4. Mobile: lesson titles truncate at 390px (56px ordinal panel + chevron
+     leave ~200px). Consider dropping the ordinal panel or the chevron on
+     small screens.
 - [ ] **/learn v5 video-first (2026-08-27), supersedes the v4 store page.**
   The owner's Flow/Veo trailer (72s, Epidemic "ES_Slipping" bed) shipped
   to `public/media/learn-trailer*`; the page is now trailer hero ->
