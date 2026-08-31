@@ -1,6 +1,17 @@
 # Future: AI-Generated Video Scenes
 
-> Status: **Deferred** (2026-04-15) - revisit when budget allows (~$540-1,140 one-time generation cost)
+> Status: **Activated for Deep Orbit** (2026-08-31, owner decision). The
+> generation stage below is revised: Google Flow/Veo (the trailer and
+> /learn film pipeline), one 10-second clip per scene instead of several
+> short beats, the cast on camera with faces and expressions (owner
+> ruling 2026-08-31: emotional connection is the point; the still-art
+> silhouette law does not apply to video), silent deliverable (screenplay
+> text stays on the page; captions remain this doc's integration design).
+> The full paste-ready prompt set is
+> `docs/video-scene-prompts-deep-orbit.md`. The `<VideoScene>` component,
+> caption timing, and CDN plan below still stand as the integration
+> design. Runway/ElevenLabs specifics and the cost table are superseded.
+> Prior status: Deferred (2026-04-15).
 > Supersedes: Audio narration deferral (2026-04-14) - video includes voice acting, making standalone audio redundant
 
 ## Overview

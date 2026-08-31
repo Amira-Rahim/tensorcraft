@@ -111,8 +111,10 @@ const verdict = (score: number) =>
 interface DeepScanDemoProps {
   /** One-line premise for surfaces without the lesson's story context. */
   framing?: boolean;
-  /** Override the terminal header label (default: lesson preview wording). */
-  headerLabel?: string;
+  /** Override the terminal header label (default: lesson preview wording).
+      Pass null to omit the header bar entirely; the landing hero does this
+      (owner request 2026-08-31) so the panel opens on the framing line. */
+  headerLabel?: string | null;
 }
 
 export function DeepScanDemo({
@@ -179,14 +181,19 @@ export function DeepScanDemo({
       data-status={status}
       className="my-6 border border-border bg-code-bg font-mono text-[13px]"
     >
-      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-surface">
-        <span
-          className={`w-2 h-2 inline-block ${status === "running" ? "bg-primary animate-pulse" : "bg-primary"}`}
-        />
-        <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-          {headerLabel}
-        </span>
-      </div>
+      {headerLabel !== null && (
+        <div
+          data-testid="demo-header"
+          className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-surface"
+        >
+          <span
+            className={`w-2 h-2 inline-block ${status === "running" ? "bg-primary animate-pulse" : "bg-primary"}`}
+          />
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+            {headerLabel}
+          </span>
+        </div>
+      )}
       <div className="p-4 space-y-1.5">
         {/* Landing visitors arrive without the lesson's story context, one
             line answers "what is this" before the table starts filling in. */}

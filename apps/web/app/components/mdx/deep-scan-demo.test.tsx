@@ -62,4 +62,19 @@ describe("DeepScanDemo", () => {
     const { container } = render(<DeepScanDemo />);
     expect(container.textContent).not.toMatch(/4 KB neural network/i);
   });
+
+  // The landing hero passes headerLabel={null} (owner request 2026-08-31):
+  // the panel opens on the framing line instead of terminal chrome. null is
+  // the opt-out; undefined still means the lesson default label.
+  it("hides the terminal header bar when headerLabel is null", () => {
+    render(<DeepScanDemo framing headerLabel={null} />);
+    expect(screen.queryByTestId("demo-header")).not.toBeInTheDocument();
+  });
+
+  it("keeps the default header bar inside lessons", () => {
+    render(<DeepScanDemo />);
+    expect(screen.getByTestId("demo-header").textContent).toMatch(
+      /deep scan · preview build/i,
+    );
+  });
 });

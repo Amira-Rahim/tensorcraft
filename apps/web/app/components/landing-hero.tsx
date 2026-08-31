@@ -89,10 +89,7 @@ export function LandingHero() {
           className="max-w-[560px] w-full lg:justify-self-end"
         >
           <div className="[&_[data-testid=deep-scan-demo]]:my-0 brutalist-shadow">
-            <DeepScanDemo
-              framing
-              headerLabel="LIVE DEMO · running in your tab"
-            />
+            <DeepScanDemo framing headerLabel={null} />
           </div>
         </motion.div>
       </div>

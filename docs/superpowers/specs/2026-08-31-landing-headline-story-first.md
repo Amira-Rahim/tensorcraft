@@ -73,6 +73,14 @@ ship it."), both CTAs, and the live Deep Scan demo panel. The subhead
 carries the category and method; the demo still proves that ML runs in the
 visitor's tab.
 
+**Same-day follow-up (owner request):** the demo panel's terminal header
+bar ("LIVE DEMO · running in your tab") is removed from the hero. The
+`DeepScanDemo` prop contract is now `headerLabel?: string | null`:
+`undefined` keeps the lesson default label, `null` omits the bar entirely
+(only the hero passes `null`). The panel opens on its framing line, which
+already says what it is. Unit tests cover both branches
+(`deep-scan-demo.test.tsx`); landing baselines re-minted again.
+
 ## Test impact
 
 `e2e/landing.spec.ts` ("renders hero section with headline") asserts the

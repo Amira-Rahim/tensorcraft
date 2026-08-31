@@ -746,12 +746,14 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 6. Big deferred bets
 
-- [ ] **AI video scenes** (post-V1, one-time ~$540-1,140 via Runway Gen-3/4 +
-  ElevenLabs). Full design spec: `docs/future-ai-video-scenes.md`. Key
-  decisions made: stylized/animated, 5-15s clips, R2 CDN, `<VideoScene>`
-  swap, build-time generation. Revisit when world sales can fund it or AI
-  video drops below ~$0.25/clip. Subsumes audio narration (video includes
-  voice acting).
+- [ ] **AI video scenes**: ACTIVATED for Deep Orbit 2026-08-31 (owner).
+  Paste-ready Flow/Veo prompts for all 63 scenes (56 lessons + 7
+  epilogues): `docs/video-scene-prompts-deep-orbit.md`. Integration design
+  (`<VideoScene>` swap, captions, R2 CDN) still lives in
+  `docs/future-ai-video-scenes.md`; its Runway/ElevenLabs generation stage
+  and cost table are superseded. Remaining work tracked in the dated
+  "Lesson video scenes follow-ups (2026-08-31)" section at the end of this
+  file. Subsumes audio narration (video includes voice acting).
 - [ ] **Audio narration fallback** (only if video stays too expensive):
   AI TTS, narrative steps only (Briefing + Consequence), one world first,
   auto-regeneration from MDX. Standalone narration was rejected for V1:
@@ -2271,3 +2273,39 @@ decision, so it is owner-only. Naming a person remains rejected
 (roadmap §2 P3, identity-privacy rule); the audit records anonymity as
 the largest single suppressor of the price that can be charged, without
 reopening the ruling.
+
+## Lesson video scenes follow-ups (2026-08-31)
+
+Source: `docs/video-scene-prompts-deep-orbit.md` (paste-ready Flow/Veo
+prompts, 56 lessons + 7 epilogues) and the revised
+`docs/future-ai-video-scenes.md` status header. Owner decision 2026-08-31:
+all written lesson scenes become video scenes, Deep Orbit first, one
+10-second clip per lesson, the trailer/learn-film pipeline, the cast ON
+CAMERA with faces and expressions (owner ruling 2026-08-31, emotional
+connection; the still-art silhouette law stays still-only).
+
+- [ ] (OPERATOR) **Generate the 63 clips in Flow.** One 8s Veo pass per
+  scene extended to 10s, portrait + master ingredients per the entry's
+  Refs line (3 max), strip native audio. Face-locking order first, before
+  any batch: 2.5 (Mirza), 7.2 (Farah), 3.2 (Nazari), 6.4 (Demir); each
+  approved best frame becomes that character's reference everywhere
+  after. Rejection rules (identity drift, de-aging, lip movement, camera
+  looks, invented crew) and the reroll budget are in the prompts doc.
+- [ ] **Comp pass for kit signatures** on flagged entries: alert signal,
+  ambiguous reading, interval arc, AI ring states come from the trailer's
+  motion-graphics kit, never from Veo, before any clip ships.
+- [ ] **Owner review gate per batch**, same as the still-scene pipeline
+  (Gate D pattern): eyeball every take against the reject list before
+  ingest; no auto-approve.
+- [ ] **Build the integration** from `docs/future-ai-video-scenes.md`:
+  `<VideoScene>` MDX component with the text fallback, caption timing
+  from the existing Dialogue text, lesson schema fields, hosting (R2 or
+  Vercel Blob; the backlog §4 item moving the two trailer mp4s off
+  `public/` should land first and this follows its choice), Velite
+  manifest validation, and tests per the doc's file list.
+- [ ] **Accessibility**: captions on by default where the clip replaces
+  read text; `prefers-reduced-motion` gets the existing still scene, not
+  autoplaying video.
+- [ ] **Other worlds** repeat this per world at launch (their scene bibles
+  and masters do not exist yet; each world needs its Gate C masters
+  first).
