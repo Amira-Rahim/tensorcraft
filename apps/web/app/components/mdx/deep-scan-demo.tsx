@@ -176,6 +176,7 @@ export function DeepScanDemo({
   return (
     <div
       data-testid="deep-scan-demo"
+      data-status={status}
       className="my-6 border border-border bg-code-bg font-mono text-[13px]"
     >
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-surface">

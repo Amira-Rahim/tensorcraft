@@ -117,6 +117,23 @@ If a test is still flaky, consider:
 - Increasing `maxDiffPixelRatio` **locally** for debugging - do not commit
   a loosened tolerance without discussion.
 
+A mask cannot fix a LAYOUT race: with `fullPage: true` the screenshot's
+dimensions are part of the assertion, so a component whose height depends
+on load state fails on image size before any mask applies. The landing
+hero's Deep Scan demo is the known case (ssr:false, no IO gate; its
+"loading" render is one line, its settled render is a row table, a 108px
+delta that self-failed the 320px baseline on 2026-08-31). Fix pattern:
+expose the component's state machine as a DOM attribute
+(`data-status={status}`) and `waitFor()` the terminal state before
+capture; both landing visual specs do this. Do not accept the error state
+into a baseline - let the wait time out loudly instead.
+
+Note when re-minting landing baselines: they cannot verify hero content
+at all. `maskCanvas` masks every canvas and `ParticleField` spans the
+hero, so the whole band is a magenta block in every landing baseline. The
+DOM assertions in `e2e/landing.spec.ts` are the real gate on hero copy
+and structure; eyeball an unmasked capture for anything visual.
+
 ## CI integration (deferred)
 
 The suite stays opt-in (`RUN_VISUAL=1`) until baselines land. Once

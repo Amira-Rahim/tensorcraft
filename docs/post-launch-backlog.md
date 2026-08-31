@@ -2210,3 +2210,64 @@ Not launch blockers. Each one wastes acquisition spend if left.
 - [x] ~~Kit automations still unbuilt~~ - promoted to Tier 1-OPS above (2026-07-22). Note the dependency: the unsubscribe gap above becomes user-visible the moment those automations go live.
 
 ---
+
+## Pricing re-price follow-ups (2026-08-31)
+
+Source: `docs/audits/pricing-audit-2026-08-31.md` (the re-price decision
+record and the trust/content/platform sweeps behind it). Ladder is now
+$50 / $90 / $135 / $225 (bundles flat 10% off retail, owner pick). The
+audit's verdict: $50 is the correct list price; trust, not price, is the
+binding constraint.
+
+- [ ] **B0: re-mint the visual baselines for the $50 price text.** Price
+  renders on landing, /pricing, world module maps ("From $50 · Module 1
+  free"), and /paywall, so `e2e/visual/*-snapshots` will diff. Procedure
+  per the standing traps: build prod and serve via `next start` (dev-over-
+  prod `.next` silently serves unstyled pages that pass fresh baselines),
+  delete the affected PNGs before minting (diffs sit at the 0.001
+  tolerance), run with `RUN_VISUAL=1`, never pipe playwright through
+  `tail` (masks exit codes), then eyeball every minted PNG.
+- [ ] **B0: terms still say purchases are US-only.**
+  `apps/web/app/terms/page.tsx:99-103` tells EU/UK buyers they cannot
+  purchase, contradicting the 2026-08-31 geo-gate removal (see the
+  purchases-open memory/decision). This is the one gate layer the removal
+  missed. Note the standing caveat: STRIPE_TAX_ENABLED is still off, so
+  EU sales collect no VAT until Stripe Tax is configured.
+- [ ] **B0: fix `public/llms.txt` overclaims.** It ships publicly and says
+  55 lessons / ~22 hours / 295 exercises / "Module 1 of every world is
+  free"; disk says 56 lessons, ~29 hours (matches the FAQ), 65 live
+  exercises (300 authored), and one launched world. It is a hand-written
+  file with no CI pin, unlike every rendered surface; consider pinning it
+  to `WORLD_CONTENT` / `EXERCISE_CONTENT` the way the pages are.
+- [ ] **B5: checkout trust microcopy.** Nothing at the buy button says
+  where the card data goes. Add "Secure checkout via Stripe" plus a
+  one-line refund restatement at `CheckoutButton`, and an
+  instant-access-after-payment line. (The 5-day badge sits at the top of
+  /pricing only.)
+- [ ] **B5: make /about and /compare reachable on the buying path.**
+  /about (the only page answering "who made this?") has exactly one
+  inbound link in the app, from /compare; /compare is footer-only.
+  Neither is in the nav.
+- [ ] **B3: depth pass on module 2 (`neural-networks`).** Thinnest module
+  in the shipped world (~1,087 words/lesson vs the 1,537 average, 1
+  derivation drawer, shortest exercises) and it is the first thing a
+  buyer sees after paying. Gate on early refund/completion data pointing
+  at it.
+- [ ] **B9 (owner call first): module summary jargon sweep.** The owner
+  flagged the `neural-networks` summary ("Build a classifier one piece at
+  a time...") as assuming knowledge the cold JS-engineer audience lacks
+  (classifier, activation). Assessment delivered 2026-08-31: spend the
+  first clause defining the payoff in the reader's terms. If the owner
+  approves a rewrite, sweep the other module summaries for the same
+  pattern. These summaries survived the 2026-08-19/20 pre-lesson audits,
+  so this reopens a judgment call, not a defect.
+
+**Owner-decision records from the audit, documented, not scheduled:**
+the refund window (5 days, cut from 14 on 2026-08-23) is shorter than the
+course's own 29 stated hours, and for a product with no testimonials the
+window is the trust substitute; extending it is the cheapest
+willingness-to-pay lever available, and it reverses a recent owner
+decision, so it is owner-only. Naming a person remains rejected
+(roadmap §2 P3, identity-privacy rule); the audit records anonymity as
+the largest single suppressor of the price that can be charged, without
+reopening the ruling.

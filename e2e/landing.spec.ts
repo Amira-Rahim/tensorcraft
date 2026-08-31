@@ -4,8 +4,12 @@ test.describe("Landing Page", () => {
   test("renders hero section with headline", async ({ page }) => {
     await page.goto("/");
     const h1 = page.getByRole("heading", { level: 1 });
-    await expect(h1).toContainText(/ml speaks javascript/i);
-    await expect(h1).toContainText(/turns out you'?re fluent/i);
+    // Story-first headline (owner decision 2026-08-31). This DOM assertion
+    // is the real gate on the headline: the visual baselines magenta-mask
+    // the whole hero (ParticleField spans it), so they cannot see the text.
+    // Spec: docs/superpowers/specs/2026-08-31-landing-headline-story-first.md.
+    await expect(h1).toContainText(/stories that take you/i);
+    await expect(h1).toContainText(/from javascript to ml/i);
   });
 
   test("primary CTA stays above the fold on a 900px-tall laptop", async ({

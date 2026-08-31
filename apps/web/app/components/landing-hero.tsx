@@ -22,9 +22,11 @@ const DeepScanDemo = dynamic(
  * - Right column embeds the live Deep Scan inference demo as proof of the
  *   headline's claim. Spec: docs/superpowers/specs/2026-06-10-hero-conversion-pass.md.
  *
- * The landing headline ("ML Speaks JavaScript. / Turns Out You're Fluent.") is
- * the iterated baseline as of 2026-05-08, do not silently rewrite. Spec:
- * docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md.
+ * The landing headline ("Stories That / Take You From / JavaScript to ML.")
+ * is the owner-decided baseline as of 2026-08-31 (story-first, category-clear
+ * for cold traffic; the accent line carries the information), do not silently
+ * rewrite. Spec: docs/superpowers/specs/2026-08-31-landing-headline-story-first.md.
+ * Prior: docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md.
  */
 export function LandingHero() {
   return (
@@ -46,10 +48,14 @@ export function LandingHero() {
           transition={{ duration: 0.9 }}
         >
           <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-8 uppercase">
-            <span className="block">ML Speaks JavaScript.</span>
-            <span className="block text-primary">
-              Turns Out You&apos;re Fluent.
-            </span>
+            {/* Explicit line breaks: the 620px column fits ~18 mono chars at
+                text-6xl, so free wrapping orphans single words ("YOU", "ML.").
+                Three deliberate word groups instead; each non-final span keeps
+                a trailing space so the accessibility tree and textContent stay
+                legible across the block boundaries. */}
+            <span className="block">Stories That </span>
+            <span className="block">Take You From </span>
+            <span className="block text-primary">JavaScript to ML.</span>
           </h1>
 
           <p className="text-lg text-text-muted max-w-[520px] mb-6 leading-relaxed font-sans">

@@ -327,7 +327,21 @@ that answers a plain GET, which is exactly what Sentry's cURL guide emits.
    |---|---|---|---|
    | `partitions` | `17 3 1 * *` | 2880 | 30 |
    | `news-scrape` | `0 9 * * 1` | 1440 | 30 |
-   | `daily-digest` | `23 7 * * *` | 360 | 30 |
+   | `daily-digest` | `23 7 * * *` | 900 | 30 |
+
+   **Grace corrected 2026-08-31 from MEASURED data, the original 360 for the
+   digest was wrong.** Actual lateness of the last six scheduled digest runs,
+   against a 07:23 UTC cron: 41, 42, 337, 349, 657 and 726 minutes. Two of six
+   blew past a 6 hour grace, so Sentry fired false "missed check-in" alerts on
+   08-27 and 08-28 for a job that ran fine. 900 minutes (15 hours) covers the
+   observed worst case with margin while still detecting a real miss the same
+   day. Do NOT go to 1440: a full day of grace on a daily job means a genuinely
+   missed run is indistinguishable from a late one.
+
+   The lesson generalises. GitHub's scheduler is not "a few minutes late", it
+   is HOURS late under load, and the delay is unpredictable rather than
+   consistent. Size grace from measured history, not from intuition, and
+   re-measure after a few weeks of real runs.
 
    Grace has to absorb GitHub's scheduler, which is best-effort and routinely
    runs late. A tight grace produces false alarms, and a channel that cries

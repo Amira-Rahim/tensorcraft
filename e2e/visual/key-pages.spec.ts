@@ -92,6 +92,18 @@ for (const scheme of ["dark", "light"] as const) {
         await page.evaluate(async () => {
           await document.fonts.ready;
         });
+        // Landing only: the hero's Deep Scan demo is ssr:false and loads
+        // its model on hydration (no IO gate), so the panel's height and
+        // row content depend on capture timing. Wait for the terminal
+        // "done" state; "error" is deliberately not accepted (a baseline
+        // minted from the error state would be a bad baseline). See the
+        // same wait in responsive.spec.ts, which caught the 320px height
+        // self-fail on 2026-08-31.
+        if (path === "/") {
+          await page
+            .locator('[data-testid="deep-scan-demo"][data-status="done"]')
+            .waitFor();
+        }
         await expect(page).toHaveScreenshot(`${base}${suffix}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,
