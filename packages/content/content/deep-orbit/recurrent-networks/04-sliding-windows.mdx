@@ -181,7 +181,7 @@ Build a sliding window function for sequential data.
     "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
     "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."
   ]}
-  bridge="Framing a byte stream consumes each byte into exactly one fixed-size chunk; a sliding window advances by a stride smaller than the window, so each reading turns up in many samples and the pipeline emits sequence length divided by stride windows rather than one chunk per reading."
+  bridge="Framing a byte stream consumes each byte into exactly one fixed-size chunk; a sliding window advances by a stride smaller than the window, so each reading turns up in many samples and the pipeline emits far more windows than a framer would emit chunks."
   youCanNow="Implement a sliding window function and a fixed-length streaming buffer that converts a live signal stream into model-ready [timeSteps, features] tensors in real time."
 />
 

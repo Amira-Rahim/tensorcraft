@@ -1,7 +1,7 @@
 slug: browser-ml-tradeoffs
 lessonSlug: why-the-browser
 title: "Evaluate Browser ML Tradeoffs"
-instructions: "Complete the function that evaluates whether a given ML use case should use client-side (browser) or server-side inference. Consider latency requirements, data sensitivity, model size, and offline needs."
+instructions: "Complete the function that decides whether a given ML use case should run inference in the browser or on the server. Consider latency requirements, data sensitivity, model size, and offline needs."
 starterCode: |
   interface UseCase {
     latencyBudgetMs: number;

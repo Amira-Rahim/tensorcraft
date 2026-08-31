@@ -13,7 +13,7 @@ import { PendingPoller } from "./pending-poller";
 
 export const metadata: Metadata = {
   title: "Purchase Confirmed | Tensorcraft",
-  description: "Your world is yours: every module is open.",
+  description: "The world is yours: every module is open.",
   robots: { index: false, follow: false },
 };
 
@@ -194,7 +194,7 @@ export default async function PurchaseSuccessPage({
                 : "Your purchase is confirmed. Everything you bought is open."
               : paymentFailed
                 ? "Your payment method declined the charge, so nothing was billed and no access was granted. You can try again with a different method."
-                : "We're confirming your payment with Stripe. This usually takes a few seconds; this page updates itself the moment it clears."}
+                : "We're confirming your payment with Stripe. This usually takes a few seconds; this page updates itself the moment the payment clears."}
           </p>
           {paymentFailed && (
             <Link

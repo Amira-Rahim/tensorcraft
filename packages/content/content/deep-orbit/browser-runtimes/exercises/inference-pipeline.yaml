@@ -1,7 +1,7 @@
 slug: inference-pipeline
 lessonSlug: inference-pipeline
 title: "Build an Inference Pipeline"
-instructions: "Write a classify function that takes a model and raw signal data (amplitude, frequency, phase). Normalize each feature to [0, 1] using the provided ranges, then run model.predict() inside tf.tidy(). Return the classification ('anomaly' if confidence > 0.5, else 'noise') along with the confidence value."
+instructions: "Write a classify function that takes a model and raw signal data (amplitude, frequency, phase). Normalize each feature to [0, 1] using the provided ranges, then run model.predict() inside tf.tidy(). Return the classification ('anomaly' if the model's output exceeds 0.5, else 'noise') along with that raw output as the confidence value."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

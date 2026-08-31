@@ -33,7 +33,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "rank",
     definition:
-      "The number of dimensions (axes) a tensor has: a scalar is rank 0, a vector rank 1, a matrix rank 2. Distinct from matrix rank in linear algebra, which counts the independent directions a matrix preserves.",
+      "The number of dimensions (axes) a tensor has: a scalar is rank 0, a vector is rank 1, a matrix is rank 2. Distinct from matrix rank in linear algebra, which counts the independent directions a matrix preserves.",
     aliases: ["ranks"],
     scope: "global",
   },
@@ -120,7 +120,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "layer",
     definition:
-      "A named stage in a model that transforms its input and passes the result on. In a dense layer that stage is a group of neurons; other layers reshape, drop, or convolve instead.",
+      "A named stage in a model. It transforms its input and passes the result on. In a dense layer that stage is a group of neurons; other layers reshape, drop, or convolve instead.",
     aliases: ["layers"],
     scope: "global",
   },
@@ -134,7 +134,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "weights",
     definition:
-      "The learned numbers a model multiplies its inputs by. Training adjusts them to reduce error.",
+      "The learned numbers a model multiplies its inputs by. Training adjusts the weights to reduce error.",
     aliases: ["weight"],
     scope: "global",
   },
@@ -245,7 +245,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "binary-crossentropy",
     definition:
-      "A loss for two-class problems that penalizes confident wrong predictions of a yes or no label.",
+      "A loss for two-class problems. It penalizes confident wrong predictions of a yes or no label.",
     aliases: ["binary cross-entropy", "binary crossentropy"],
     scope: "global",
   },
@@ -578,7 +578,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "windowing",
     definition:
-      "Multiplying a signal segment by a tapering function before an FFT to reduce leakage from its edges.",
+      "Multiplying a signal segment by a tapering function before an FFT to reduce leakage from the segment's edges.",
     aliases: ["windowed", "window function"],
     scope: "deep-orbit",
   },

@@ -109,10 +109,11 @@ export default function LearnPage() {
         </h1>
         <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-4 max-w-[640px] mx-auto">
           You already think in arrays, state, and async. Machine learning uses
-          the same patterns under different names. Tensorcraft maps them with{" "}
-          {WORLD_CONTENT.lessonBridges} JavaScript-to-ML bridges and teaches
-          them through one story: {WORLD_CONTENT.modulesPerWorld} modules aboard
-          a station in deep orbit, written in TypeScript, run in your browser.
+          the same patterns under different names. Tensorcraft maps those
+          patterns with {WORLD_CONTENT.lessonBridges} JavaScript-to-ML bridges
+          and teaches them through one story: {WORLD_CONTENT.modulesPerWorld}{" "}
+          modules aboard a station in deep orbit. Every lesson is TypeScript
+          that runs in your browser.
         </p>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-10 max-w-[640px] mx-auto">
           Module 1 of{" "}
@@ -146,8 +147,8 @@ export default function LearnPage() {
             </p>
             <p>
               Deep Orbit, the live course in the video, is one continuous story:
-              a research station is tracking a sensor reading its model cannot
-              classify, and you are the engineer they bring in. Across{" "}
+              a research station is tracking a sensor reading that its model
+              cannot classify, and you are the engineer they bring in. Across{" "}
               {WORLD_CONTENT.modulesPerWorld} modules it teaches neural
               networks, training and gradient descent, signal processing, and
               anomaly detection, and ends with a capstone model you ship. Module
@@ -167,7 +168,7 @@ export default function LearnPage() {
           >
             pricing
           </Link>{" "}
-          for what each plan includes.
+          for what&apos;s included.
         </p>
         <div className="flex gap-4 flex-wrap justify-center">
           <FreeLessonCtaTracker source="learn_footer">

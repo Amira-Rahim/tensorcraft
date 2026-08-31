@@ -2,7 +2,7 @@ slug: inference-cache
 lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
-instructions: "Build a cache that hashes input tensors (after quantization) so near-identical inputs hit the same cache entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }` where predict returns model.predict result + caches by hash of decimals-rounded values."
+instructions: "Build a cache that hashes input tensors (after quantization) so near-identical inputs hit the same cache entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`; predict runs `model.predict` on a miss and caches the result under a hash of the input values rounded to `decimals` places."
 starterCode: |
   function makeInferenceCache(model, decimals = 2) {
     return { predict(input) { return model.predict(input); }, stats: { hits: 0, misses: 0 } };

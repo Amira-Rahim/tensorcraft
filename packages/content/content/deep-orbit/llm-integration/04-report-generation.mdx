@@ -21,7 +21,7 @@ concept:
     mlTitle: "Report Generation"
     mlCode: "const report = await llm.generate({ sections, signalData, format })"
     tier: structural
-    breaks: "Template rendering substitutes known values into known slots; the schema is enforced. Generated reports invent facts, omit caveats, and round-trip uncertainty into confident prose. Human review is required for any report shown to a user, regardless of model quality."
+    breaks: "Template rendering substitutes known values into known slots; the schema is enforced. Generated reports invent facts, omit caveats, and flatten uncertainty into confident prose. Human review is required for any report shown to a user, regardless of model quality."
 consequence:
   narrative: "One section fails its own validator with twenty-two minutes left before the window."
 hints:
@@ -155,7 +155,7 @@ The model has written the sections. Assemble them into one markdown document a h
 
 <Epilogue>
 
-The transmission window opens at 0410. At 0348 the validator flags the Hypotheses section: two claims that trace to no timestamp in any log; the model braided the Fibonacci finding into a causal story nobody can stand behind. Regenerating takes fifteen minutes; reviewing the regeneration takes more than the twenty-two they have. Farah doesn't take the fifteen. She cuts the section whole, and the report leaves at 0411, one minute into the window, five sections instead of six. Somewhere in the cut section one hypothesis might even be right; the next two relay windows will come and go before anyone could tell them which.
+The transmission window opens at 0410. At 0348 the validator flags the Hypotheses section: two claims that trace to no timestamp in any log; the model braided the Fibonacci finding into a causal story nobody can stand behind. Regenerating takes fifteen minutes; reviewing the regeneration takes more than the twenty-two they have. Farah doesn't take the fifteen. She cuts the section whole, and the report leaves at 0411, one minute into the window, five sections instead of six. Somewhere in the cut section one hypothesis might even be right; the next two relay windows will come and go before anyone could find out which.
 
 <Dialogue speaker="Dr. Farah">
 Earth gets our data and our uncertainty. A guess wearing the report's letterhead is neither, and the call to cut it was never going to be delegated to the thing that wrote the guess.

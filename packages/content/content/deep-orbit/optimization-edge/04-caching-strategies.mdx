@@ -20,7 +20,7 @@ concept:
     mlTitle: "Inference Cache"
     mlCode: "cache.get(inputHash) ?? model.predict(input) // cache-first, predict is sync"
     tier: structural
-    breaks: "A query cache keys on the exact statement and arguments, so two requests that differ by one character stay two entries. That is correct there, because the two answers differ. An inference cache wants the opposite: near-identical inputs have to collide on purpose, so the key is a rounded hash and how hard you round is a tuning knob that trades hit rate against serving a close-but-stale verdict. Model version and runtime settings belong in the key too, because the same input under new weights is a different answer."
+    breaks: "A query cache keys on the exact statement and arguments, so two requests that differ by one character stay two entries. That is correct there, because the two answers differ. An inference cache wants the opposite: near-identical inputs have to collide on purpose, so the key is a rounded hash, and how hard you round is a tuning knob that trades hit rate against serving a close-but-wrong verdict. Model version and runtime settings belong in the key too, because the same input under new weights is a different answer."
 consequence:
   narrative: "Caching eliminates 40% of inference calls; the signal patterns repeat regularly enough that cached results are valid."
 hints:
@@ -143,7 +143,7 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 <LessonRecap
   whatYouLearned={[
     "An LRU inference cache uses a cache-first pattern: hash the input, return a stored result on hit, run the model and store on miss. The delete + re-set trick on get() is required for true LRU behavior.",
-    "Quantizing inputs before hashing groups near-identical inputs under the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
+    "Quantizing inputs before hashing means near-identical inputs land on the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
     "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data."
   ]}
   bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."
@@ -152,7 +152,7 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <Epilogue>
 
-Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. She reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
+Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. ARIA reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
 
 > Reconstruction error, 4.1 times the baseline my first hundred records set. Every threshold aboard was tuned for hull telemetry; no one has ever needed one for me, so there is no number at which this becomes a finding. The measurement is now on record. No procedure requires me to act on it.
 

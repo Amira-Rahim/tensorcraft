@@ -141,7 +141,7 @@ Train a prediction model and forecast the next signal value.
     "Multi-step forecasting feeds each prediction back as the next input, extending the horizon one step at a time; error compounds with each step, so confidence degrades with distance.",
     "A forecast horizon is measured in steps, not minutes: 47 steps means 47 seconds on a 1 Hz stream and 47 pulses on the interval series, so check what one step means before you read a prediction off a display."
   ]}
-  bridge="Autocomplete picks from a finite pre-indexed list you control; sequence forecasting generates novel continuations from a learned distribution, so predictions are unbounded and confidence drops sharply with horizon, requiring domain-level output clipping."
+  bridge="Autocomplete picks from a finite pre-indexed list you control; sequence forecasting generates novel continuations from a learned distribution, so predictions are unbounded and confidence drops sharply with horizon. Clip the outputs to physical limits yourself."
   youCanNow="Train an LSTM for next-value regression using MSE loss, evaluate it with MAE, and generate multi-step forecasts by feeding predictions back as input."
 />
 

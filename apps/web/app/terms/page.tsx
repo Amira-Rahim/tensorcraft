@@ -126,7 +126,7 @@ export default function TermsPage() {
               created <strong className="text-text-primary">public</strong> on
               your account; you can make them private or delete them in GitHub
               at any time. Your GitHub access token is stored so pushes work
-              across sessions and is removed when you disconnect GitHub in
+              across sessions; it is removed when you disconnect GitHub in
               Settings. The code pushed is your own work and belongs to you (see
               Section 5).
             </p>

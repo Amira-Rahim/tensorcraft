@@ -104,17 +104,17 @@ Any app that compiles down to a folder of files ships the same way: `npm run bui
 
 <BossBeat
   beatId="deep-orbit-launch-deploy-call"
-  prompt="Mirza is on comms. Demir's finger is on Deploy. Telemetry shows the anomalous signal pulses every 30 seconds. The next pulse is the cleanest classification window the bridge will get tonight. What's your call, operator?"
+  prompt="Mirza is on comms. Demir's finger is on Deploy. Telemetry shows the anomalous signal pulsing every 30 seconds. The next pulse is the cleanest classification window the bridge will get tonight. What's your call, operator?"
   options={[
     {
       label: "cooperate",
       display: "Hold and let Demir's verification suite run one more pass",
-      consequence: "Demir reruns. The suite passes; the pulse window closes. DEEP SCAN deploys to a steady-state target two minutes late, and the cleanest classification of the night goes uncaptured. Mirza nods anyway: 'Good operators wait.' A held door costs exactly what it saves; tonight it saved nothing, and nobody knew that in advance."
+      consequence: "Demir reruns. The suite passes; the pulse window closes. DEEP SCAN deploys to a steady-state target two minutes late, and the cleanest classification of the night goes uncaptured. Mirza nods anyway: 'Good operators wait.' Tonight the hold bought nothing, and nobody knew that in advance."
     },
     {
       label: "defect",
       display: "Override Demir, push deploy now while the pulse window is open",
-      consequence: "DEEP SCAN ships. Classification lands inside the pulse window: sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated the team as a constraint rather than a teammate. The science wins; the next deploy will be slower."
+      consequence: "DEEP SCAN ships. Classification lands inside the pulse window: sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated Demir as a constraint rather than a teammate. The science wins; the next deploy will be slower."
     },
     {
       label: "random",
@@ -124,7 +124,7 @@ Any app that compiles down to a folder of files ships the same way: `npm run bui
     {
       label: "dominant",
       display: "Hot canary: deploy to one console for 30 seconds on the live pulse, then fleet-wide if it holds",
-      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight lost both the pulse and the rerun. Mirza: 'You found the third option. That's the work.' A third door is still a bet; this one was priced right."
+      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight would have lost both the pulse and the rerun. Mirza: 'You found the third option. That's the work.' A third door is still a bet; this one was priced right."
     }
   ]}
 />
@@ -185,7 +185,7 @@ const config: BuildConfig = {
 
 ## Deploy and Verify
 
-Two deployment shapes appear in this lesson. The verification suite below is the full gate. The other is the hot canary from the decision above: ship to ONE console, watch it against live data for a fixed interval, then roll fleet-wide only if it holds. Canaries trade a slice of your window for a bounded blast radius; the suite trades time for certainty. Production teams run both, in that order.
+Two deployment shapes appear in this lesson. The verification suite below is the full gate. The other is the hot canary from the decision above: ship to ONE console, watch it against live data for a fixed interval, then roll fleet-wide only if it holds. Canaries trade a slice of your window for a bounded blast radius; the suite trades time for certainty. Production teams run both: the suite first, then the canary.
 
 <CodeBlock language="typescript" title="deploy.ts">
 {`// Deployment verification: smoke test the live system
@@ -307,7 +307,7 @@ Write a deployment verification script for the complete system.
 
 <Exercise slug="verify-deployment" />
 
-Then run the rehearsal Nazari would demand before the relay slot: the whole chain in one function, and a launch gate with the authority to say no. Preprocess, batch predict, drift check, verdict. If any stage fails, including a single leaked tensor, the answer is hold.
+Then run the rehearsal Nazari would demand before the relay slot: the whole chain in one function, and a launch gate with the authority to say no. Preprocess, batch predict, drift check, verdict. If any stage fails, the answer is hold; a single leaked tensor counts as a failure.
 
 <Exercise slug="launch-rehearsal" />
 
@@ -382,5 +382,5 @@ One line sits beneath her entry, appended eleven days later by the automated pip
 <DispatchTease
   toWorldId="neon-protocol"
   toWorldName="Neon Protocol"
-  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a CV anomaly: the overlap heatmap she is reading, the map of how well her model's boxes cover the real ones, carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. Her capture began transmitting eleven days after the Archimedes record closed, the day the interval hit zero. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
+  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a computer-vision anomaly: the overlap heatmap she is reading, the map of how well her model's boxes cover the real ones, carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. Her capture began transmitting eleven days after the Archimedes record closed, the day the interval hit zero. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
 />

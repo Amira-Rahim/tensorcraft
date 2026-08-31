@@ -6,14 +6,14 @@ worldId: deep-orbit
 order: 5
 scene:
   location: "Archimedes, Bridge"
-  portraitAlt: "At the bridge holo table triangle wireframes dissolve into a clean compute grid while a console latency trace steps down."
+  portraitAlt: "At the bridge holo table, triangle wireframes dissolve into a clean compute grid while a console latency trace steps down."
 estimatedMinutes: 30
 difficulty: advanced
 context:
   narrative: "Nazari wants maximum speed. 'WebGL is good. WebGPU is better: direct GPU compute access without the graphics overhead. Use it.' Demir discovers the next generation of browser GPU compute."
   speaker: "Chief Nazari"
 concept:
-  explanation: "WebGPU gives inference direct GPU compute access with no graphics pipeline in the way. Most of inference is matrix math, and now it runs as exactly that."
+  explanation: "WebGPU gives inference direct GPU compute access with no graphics pipeline in the way. Most of inference is matrix math, and that is exactly what WebGPU runs."
   bridge:
     jsTitle: "Canvas WebGL"
     jsCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
@@ -106,7 +106,7 @@ Before you fall for your own Web Worker analogy, Demir: a Worker keeps the langu
 
 ## Measure the Claim
 
-That table did not come off a spec sheet, and its first draft was wrong. Demir's opening timing run at the bridge console put WebGPU at 0.4 milliseconds, a figure that would make it nearly forty times faster than WebGL's 15 instead of three. The figure survived until he applied module 4's own rule to it:
+That table did not come off a spec sheet, and its first draft was wrong. Demir's opening timing run at the bridge console put WebGPU at 0.4 milliseconds, a figure that would make it nearly forty times faster than WebGL's 15, not the 3x the table above reports. The figure survived until he applied module 4's own rule to it:
 
 <CodeBlock language="typescript" title="measure-inference.ts">
 {`// First attempt: start the clock, call predict, stop the clock.

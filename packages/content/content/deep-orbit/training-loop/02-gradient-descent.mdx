@@ -20,7 +20,7 @@ concept:
     mlTitle: "Gradient descent step"
     mlCode: "weights = weights.sub(grad.mul(0.1))  // ease toward minimum"
     tier: structural
-    breaks: "These are literally the same update: lerp IS gradient descent on loss = ½(target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown; the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only information you have."
+    breaks: "These are literally the same update: lerp IS gradient descent on loss = ½(target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown; the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only move you have."
 consequence:
   narrative: "Down is now computable. Every weight knows which direction reduces the loss, and by how much."
 hints:

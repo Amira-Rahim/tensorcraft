@@ -182,7 +182,7 @@ Run an ONNX model and compare its output with TF.js.
 
 <LessonRecap whatYouLearned={["ONNX Runtime Web uses WASM for reliable cross-device inference and starts up faster (180ms) than TF.js (340ms); TF.js uses WebGL for GPU acceleration and sustains faster inference (2.1ms vs 3.8ms)", "The key runtime selection criterion is deployment pattern: always-on workloads favor TF.js for sustained throughput, on-demand workloads favor ONNX for cold-start speed", "Cross-runtime ONNX portability is real but bounded: a model using an op the target runtime lacks fails to load entirely, so opset support must be verified before committing to a deployment target"]} bridge="Just as the same HTML renders across browsers but a missing feature has no polyfill, the same ONNX model runs across runtimes but a missing operator fails hard with no fallback." youCanNow="Load and run an ONNX model in the browser, benchmark it against TF.js, and select the right runtime based on cold-start and sustained-inference requirements." />
 
-> **DISPATCH archive · field intercept #07-D:** Lin's vision cell benchmarked three runtimes on the lead engineer's laptop, shipped the winner. Fleet hardware ran two GPU generations older; the "fastest" runtime lost by 4x on the metal that mattered. Lin's retraction memo was benchmarked correctly. Nobody reads retraction memos.
+> **DISPATCH archive · field intercept #07-D:** Lin's vision cell benchmarked three runtimes on the lead engineer's laptop, shipped the winner. Fleet hardware ran two GPU generations older; the "fastest" runtime lost by 4x on the metal that mattered. Lin's retraction memo had the numbers right. Nobody reads retraction memos.
 
 Nazari's rule already covers it. Numbers, but numbers from the hardware you ship on.
 

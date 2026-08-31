@@ -41,7 +41,7 @@ describe("ComingSoonStub", () => {
     // Roster header carries the curriculum counts.
     expect(screen.getByText(/The 11 Wards/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/5 Procedures per Ward · 55 in the full rebuild/i),
+      screen.getByText(/5 Procedures per Ward · 55 in the full course/i),
     ).toBeInTheDocument();
 
     // Status-board rows: module 1 online + free, 9 pending, capstone finale.

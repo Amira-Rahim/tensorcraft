@@ -1,7 +1,7 @@
 slug: rag-pipeline
 lessonSlug: rag-for-signals
 title: "Build the Claim Checker"
-instructions: "Demir's checker from the epilogue, for real: verifyClaims(answerText, retrievedRows) extracts every number from the generated answer and checks it against the retrieved data. A claimed number is verified if it appears in some retrieved row within a tolerance of 0.05; otherwise it is fabricated. Return { verified, fabricated } with the numbers in the order they appear in the text. This is the deterministic gate that lets a generated report ship: every number either traces to a row, or the report does not go."
+instructions: "Demir's checker, for real: verifyClaims(answerText, retrievedRows) extracts every number from the generated answer and checks it against the retrieved data. A claimed number is verified if it appears in some retrieved row within a tolerance of 0.05; otherwise it is fabricated. Return { verified, fabricated } with the numbers in the order they appear in the text. This is the deterministic gate that lets a generated report ship: every number either traces to a row, or the report does not go."
 starterCode: |
   function verifyClaims(
     answerText: string,

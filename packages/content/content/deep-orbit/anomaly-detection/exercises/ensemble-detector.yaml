@@ -1,7 +1,7 @@
 slug: ensemble-detector
 lessonSlug: the-anomaly
 title: "Build the DEEP SCAN Ensemble"
-instructions: "Assemble the real ensemble the module built, three detectors, one verdict. Given a window of recent amplitudes plus the other two detectors' raw outputs, compute each verdict yourself: (1) statistical: z-score of `actual` against the window using tf.moments (flag when |z| > 3); (2) autoencoder: flag when reconstructionError > reconThreshold; (3) LSTM: flag when |predicted - actual| > predTolerance. Majority vote (at least 2 of 3) decides. Return { zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }."
+instructions: "Assemble the real ensemble the module built, three detectors, one verdict. Given a window of recent amplitudes for the statistical check, plus the autoencoder's and the LSTM's raw outputs, compute each verdict yourself: (1) statistical: z-score of `actual` against the window using tf.moments (flag when |z| > 3); (2) autoencoder: flag when reconstructionError > reconThreshold; (3) LSTM: flag when |predicted - actual| > predTolerance. Majority vote (at least 2 of 3) decides. Return { zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }."
 starterCode: |
   interface EnsembleVerdict {
     zScore: number;

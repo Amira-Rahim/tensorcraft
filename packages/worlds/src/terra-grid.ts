@@ -6,7 +6,7 @@ export const terraGrid: WorldManifest = {
   displayName: "Terra Grid",
   tagline: "Where models meet the real world",
   description:
-    "TERRA SYSTEMS' ML models achieve 99.9% in the lab and 67% in the field. Build Terra Grid Intelligence, an edge-deployed monitoring system.",
+    "TERRA SYSTEMS' ML models achieve 99.9% accuracy in the lab and 67% in the field. Build Terra Grid Intelligence, an edge-deployed monitoring system.",
   palette: {
     bg: "#181818",
     primary: "#C49535",

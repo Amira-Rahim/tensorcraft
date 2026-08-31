@@ -151,7 +151,7 @@ sequentialInput.dispose();`}
     "Sequential data requires a third tensor dimension for time, giving inputs shape [batch, timeSteps, features] instead of [batch, features].",
     "Sliding windows convert a continuous signal stream into discrete fixed-size sequences suitable for model input."
   ]}
-  bridge="A stream preserves chunk order because reassembling the bytes out of order corrupts the file; a sequence model goes one step further and reads the order as meaning, so the same values in a different arrangement are a different signal, and `model.predict` on `[timeSteps, features]` tensors depends on it."
+  bridge="A stream preserves chunk order because reassembling the bytes out of order corrupts the file; a sequence model goes one step further and reads the order as meaning, so the same values in a different arrangement are a different signal to `model.predict`."
   youCanNow="Prepare sequential data by slicing a continuous signal into sliding windows and representing it as a [batch, timeSteps, features] tensor."
 />
 

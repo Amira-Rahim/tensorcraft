@@ -48,7 +48,7 @@ But we trained it on the engineering rig, with the rig's GPU behind it. Can a br
 
 You have made this call before: does the work happen on the server or on the client? On the web it shows up as server-side vs client-side rendering, and the tradeoffs are the same: where does the computation happen, and what do you gain or lose by moving it to the client?
 
-TensorFlow.js is not browser-only. `@tensorflow/tfjs-node` binds the same API to the native TensorFlow build and runs on a server, typically faster than any browser backend. This module goes to the browser because that is where DEEP SCAN has to land: the bridge dashboard, on the consoles the watch already reads.
+TensorFlow.js is not browser-only. `@tensorflow/tfjs-node` binds the same API to the native TensorFlow build and runs on a server, typically faster than any browser backend. This module goes to the browser because that is where DEEP SCAN has to land: the bridge dashboard, on the consoles the crew already reads.
 
 <LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Decide between browser and server inference using the CSR-vs-SSR mental model"]} />
 
@@ -89,7 +89,7 @@ async function clientInference(signalData: number[]) {
 | **Latency** | Network round-trip (50-500ms) | Instant (5-50ms) |
 | **Privacy** | Data leaves device | Data stays local |
 | **Offline** | Requires connection | Works offline |
-| **Model size** | Unlimited | ~50MB budget for this dashboard's cold load (lesson 6's commodity runtimes ship 50-500MB when the download IS the product) |
+| **Model size** | Unlimited | ~50MB budget for this dashboard's cold load (lesson 6 ships 50-500MB models when the download itself is the product) |
 | **Compute** | GPU clusters available | Device CPU/GPU only |
 | **Cold start** | Warm server | Model must download first |
 
@@ -119,7 +119,7 @@ console.log(\`Cold start: \${coldStartMs}ms\`);  // 200-2000ms depending on mode
 // Real-time audio at 44.1kHz = 0.023ms budget (very tight)
 const inferenceStart = performance.now();
 const output = model.predict(input) as tf.Tensor;
-await output.data();  // GPU kernels are queued; read one back or you time the queue
+await output.data();  // GPU kernels are queued; read a result back or you time the queue
 const inferenceMs = performance.now() - inferenceStart;
 output.dispose();
 console.log(\`Inference: \${inferenceMs}ms\`);  // 5-50ms typical`}

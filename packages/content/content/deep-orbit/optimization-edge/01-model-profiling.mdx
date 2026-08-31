@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Two nights after the report went out, the 0247 pulse window came, and at 0249 the 340 MB model killed the bridge dashboard under it. The capture was lost. Now the optimization sprint begins, as penance."
+  narrative: "Two nights after the report went out, the 0247 pulse window came, and at 0249, mid-window, the 340 MB model killed the bridge dashboard. The capture was lost. Now the optimization sprint begins, as penance."
   speaker: "Chief Nazari"
 concept:
   explanation: "Profiling measures before optimizing: memory footprint, latency, and which layers hold the parameters. The numbers decide where the knife goes."
@@ -177,7 +177,7 @@ Profile a model and identify its heaviest layer.
     "Layer breakdown pinpoints where the parameters concentrate, so optimization effort goes to the right place. It does not measure per-layer time; that needs a profiler that instruments each op.",
     "A warmup pass before timing removes JIT and compilation noise from measurements."
   ]}
-  bridge="Just as `performance.mark`/`performance.measure` locates slow code in a JS app, `tf.memory()` and `performance.now()` around `model.predict()` locates the memory and latency cost in an ML model."
+  bridge="Just as `performance.mark`/`performance.measure` locates slow code in a JS app, `tf.memory()` and `performance.now()` around `model.predict()` locate the memory and latency cost in an ML model."
   youCanNow="Profile a TensorFlow.js model to measure its memory footprint, inference latency, and per-layer parameter distribution before making any optimization decisions."
 />
 

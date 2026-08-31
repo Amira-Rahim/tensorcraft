@@ -163,12 +163,12 @@ Build a temporal attention mechanism and identify the focused time steps.
     "Attention weights are inspectable as a heatmap over time, showing where the model put its weight; that is a map of where it looked, not a proof of why it decided."
   ]}
   bridge="Like `scrollIntoView()` jumping the viewport to the element that matters, temporal `attentionWeights = softmax(scores)` concentrate processing on the highest-scoring time steps."
-  youCanNow="Build a temporal attention layer, extract its weights, and identify the time steps a model focused on to explain its prediction."
+  youCanNow="Build a temporal attention layer, extract its weights, and identify the time steps a model relied on for a prediction."
 />
 
 <Epilogue>
 
-Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record around each predicted re-entry, the 47-minute clock, and discards the rest. By the third re-entry the onset is shaved off every capture; the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
+Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record around each predicted re-entry (the 47-minute clock) and discards the rest. By the third re-entry the onset is shaved off every capture; the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
 
 <Dialogue speaker="Chief Nazari">
 Seven captures, six hours, all missing their first four hundred milliseconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.

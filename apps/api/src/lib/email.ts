@@ -1,6 +1,7 @@
 // apps/api/src/lib/email.ts
 import { Resend } from "resend";
 import { captureException } from "./error-tracking";
+import { worldDisplayName } from "./world-name";
 import { logger } from "./logger";
 import { withTimeout } from "./with-timeout";
 
@@ -122,14 +123,6 @@ export async function sendIssueNotification(
   } catch (err) {
     captureException(err, { source: "issues.email" });
   }
-}
-
-/** "deep-orbit" reads as an internal id to a customer. "Deep Orbit" does not. */
-function worldDisplayName(slug: string): string {
-  return slug
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
 }
 
 interface PurchaseReceiptParams {

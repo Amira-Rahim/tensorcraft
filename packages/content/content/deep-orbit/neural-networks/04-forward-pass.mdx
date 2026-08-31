@@ -21,7 +21,7 @@ concept:
     mlTitle: "Forward Pass"
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: intuition
-    breaks: "DOM events bubble up; data flows down through layers. Event handlers run independently and can stop propagation; layer outputs are summed and multiplied through learned weights and cannot be stopped. The 'propagation' word matches; the data direction and combinator do not."
+    breaks: "DOM events bubble up; data flows down through layers. Event handlers run independently and can stop propagation; layer outputs are summed and multiplied through learned weights and cannot be stopped. The 'propagation' word matches; the direction of flow and the way results combine do not."
 consequence:
   narrative: "Rough, untrained numbers, but they emerge: the pipeline works end to end. Now the network needs training."
 hints:

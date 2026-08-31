@@ -148,7 +148,7 @@ Build the lazy pipeline yourself: generator, shuffle, batch, without ever holdin
     "The canonical pipeline order is shuffle first, then batch: shuffle(bufferSize).batch(32). Batching before shuffling freezes per-batch ordering.",
     "Split train/validation by dealing the deck once: shuffle the indices yourself and filter the stream, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets."
   ]}
-  bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it, the same backpressure a Node readable stream applies when the consumer sets the pace."
+  bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it. Node streams call that backpressure: the consumer sets the pace."
   youCanNow="Build a tf.data pipeline that reads lazily with a generator, shuffles and batches records correctly, and splits data into training and validation sets."
 />
 

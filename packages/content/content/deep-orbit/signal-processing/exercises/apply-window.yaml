@@ -1,6 +1,6 @@
 slug: apply-window
 lessonSlug: windowing-and-overlap
-title: "Vectorized Hann Window with tf"
+title: "Build and Apply a Hann Window"
 mlContent: data
 instructions: "Build `hannWindow(n)` returning a JS number array: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))). Plain JS (Array.from + Math.cos, like the lesson) or tensors, your choice; the grader only checks the numbers. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map)."
 starterCode: |

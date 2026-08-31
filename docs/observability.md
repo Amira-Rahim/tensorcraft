@@ -60,10 +60,9 @@ looks exactly like a quiet week, which is the thing it exists to distinguish.
 
 **Synthetic checks** every 6 hours (`.github/workflows/synthetic-checks.yml`),
 failing loudly to GitHub email: API readiness including a real database check,
-the web serving `/`, `/pricing` and `/terms`, and the EU/UK geo-gate still
-returning 403. That last one is the check a ping cannot make, and the one with
-money attached: a silently-broken gate creates VAT liability from the first
-sale that cannot be unwound.
+the web serving `/`, `/pricing` and `/terms`, and the anon-key RLS probe.
+(The EU/UK geo-gate 403 probe lived here until 2026-08-31, when the owner
+opened EU/UK purchases and the gate was removed.)
 
 It is deliberately NOT an uptime monitor. This repo is private, so Actions
 minutes cap at 2000/month and CI already spends about 20 per push. A
@@ -225,7 +224,8 @@ blind spot the waitlist CHECK-constraint bug hid in for months, so it is the
 single most valuable rule on the web side.
 
 Verified tag values at time of writing. API `source`: `payments.webhook`,
-`payments.receipt`, `payments.geo-backstop`, `github.token`,
+`payments.receipt` (`payments.geo-backstop` retired 2026-08-31 with the
+EU/UK gate), `github.token`,
 `github.commitLessonArtifact`, plus `auth.signup`, `email.*`, `newsletter.*`,
 `token-crypto`, `issues.*`. Web `source`: `waitlist.insert`,
 `progress.upsert`, `progress.markLessonStarted`,
@@ -474,9 +474,8 @@ DELETE https://api.vercel.com/v1/integrations/log-drains/<old id>?teamId=<team>
 
 Current state: one drain on the project, `betterstack-production`, sources
 `lambda`+`edge`+`external`, production only, `clientId: null` so it is
-editable. `edge` is the one that matters most for us: middleware runs there,
-and middleware is where the VAT geo-gate reads `x-vercel-ip-country`
-(`apps/web/middleware.ts:26`).
+editable. `edge` is the one that matters most for us: middleware (auth
+session refresh, world cookie) runs there.
 
 **Cleaned up 2026-08-25:** the 14 drains for unrelated personal projects were
 deleted via `DELETE /v1/integrations/log-drains/<id>`, leaving exactly one

@@ -88,7 +88,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
 
 Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so the bar can use it. Subtract the minimum, divide by the range: that's the entire formula, and it does the same job on a sensor channel that it does on a scroll position.
 
-Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both in raw and temperature's numbers land roughly forty times larger, so the louder feature dominates what the model learns while the quiet one barely registers, even if the quiet one carries the signal you actually care about.
+Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both in raw and temperature's numbers land roughly forty times larger. The louder feature dominates what the model learns; the quiet one barely registers, even when it carries the signal you actually care about.
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -156,7 +156,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 
 <LessonRecap
   whatYouLearned={[
-    "Unnormalized scales bias gradient updates toward whichever feature has the largest raw values. Normalization gives every feature comparable numerical influence during training.",
+    "Unnormalized scales skew gradient updates toward whichever feature has the largest raw values. Normalization gives every feature comparable numerical influence during training.",
     "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call.",
     "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds like pixel values. Live sensor streams have no such bounds, which is why z-score wins there.",
     "Save the training-time mean and standard deviation. Inference data must be normalized with those same statistics; never recompute them from the new batch.",

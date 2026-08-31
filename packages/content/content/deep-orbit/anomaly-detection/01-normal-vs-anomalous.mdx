@@ -56,7 +56,7 @@ Monitoring works the same way whatever you ship: pick a baseline for the numbers
 
 <BossBeat
   beatId="deep-orbit-anomaly-7741-training-set"
-  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every window with a confirmed event label. The filter halts on Sample 7741, which has no label to remove it. It sits inside every baseline he has computed, and it is the first thing DEEP SCAN ever flagged. Train on it, or pull it? Your call, operator."
+  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every window with a confirmed event label. The filter halts on Sample 7741, which has no event label, so nothing removes it. It sits inside every baseline he has computed, and it is the first thing DEEP SCAN ever flagged. Train on it, or pull it? Your call, operator."
   options={[
     {
       label: "cooperate",
@@ -131,7 +131,7 @@ console.log(isAnomaly(1.82, baseline));  // true: 8.7 sigmas away!`}
 
 **Two standard ways production data breaks it.** Heavy tails: when rare large effects dominate, 3-sigma events stop being rare and the detector cries wolf. Correlation: channels mounted on the same hull move together, so their noise does not average away and the effective spread is wider than any per-channel std reports.
 
-**Per-channel thresholds also compound.** Loosen the dial to 2 sigma and each channel trips about 5% of the time on calm data. Across 64 channels, a fully dark board then has probability 0.95⁶⁴ ≈ 0.0375: some channels lit is the calm state. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Judge the count of lit channels against that expectation, rather than treating each lit channel as its own alarm.
+**Per-channel thresholds also compound.** Loosen the dial to 2 sigma and each channel trips about 5% of the time on calm data. Across 64 channels, a fully dark board then has probability 0.95⁶⁴ ≈ 0.0375: the calm state has a few channels lit. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Judge the count of lit channels against that expectation, rather than treating each lit channel as its own alarm.
 </DerivationDrawer>
 
 ## Precision vs Recall

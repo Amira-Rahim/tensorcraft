@@ -56,7 +56,7 @@ Don't tell me what it's like, Ensign. Tell me how far back it can hold a pattern
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in it anywhere. A forget gate reads the current input together with the previous hidden state and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. Within a window it can carry the first step at full strength all the way to the last, and a shape it has learned once, it recognizes whenever the stream brings that shape back, even 72 hours later.
+Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in an LSTM anywhere. A forget gate reads the current input together with the previous hidden state and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. Within a window it can carry the first step at full strength all the way to the last, and a shape it has learned once, it recognizes whenever the stream brings that shape back, even 72 hours later.
 </Dialogue>
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Farah said switches, but the [0,1] output makes each one closer to a dimmer: a gate can pass 30% of a value, not just all of it or none.
@@ -173,7 +173,7 @@ Build an LSTM that handles long signal sequences.
   whatYouLearned={[
     "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that smoothly scale information flow.",
     "The cell state acts as a direct gradient highway through time, preventing the exponential decay that breaks simple RNNs on long sequences.",
-    "GRUs use two gates instead of three (roughly 25% fewer parameters) and often match LSTM accuracy: training both and comparing is a standard first step.",
+    "GRUs use two gates instead of three, dropping one of the LSTM's four weight sets (roughly 25% fewer parameters), and often match LSTM accuracy: training both and comparing is a standard first step.",
     "A flatlined loss at 0.693 on a binary task is the coin-flip signature: the model is learning nothing, and on long sequences with a simple RNN, vanishing gradients are the first suspect."
   ]}
   bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context instead of a timer."

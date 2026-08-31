@@ -314,7 +314,7 @@ export default async function LessonPage({ params }: Props) {
           >
             Create a free account
           </a>{" "}
-          and we&rsquo;ll carry it over.
+          and we&rsquo;ll carry your progress over.
         </div>
       )}
       <Suspense>

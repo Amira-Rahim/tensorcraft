@@ -43,7 +43,7 @@ skillAxes: [deployment]
 
 > **MERGE REQUEST 47 · deploy.yml · DEMIR → NAZARI · REVIEW REQUIRED** · "Standard web CI plus three model gates: accuracy, latency, memory budget. All green on my branch. Requesting sign-off before this wires to main."
 
-Nazari reviews files, not badges. You are reviewing this one with her, so read the workflow the way she will: every gate in it is only as good as the thing it was pointed at. The pipeline's own log settles it before the lesson ends.
+Nazari reviews files, not badges. You are reviewing this one with her, so read the workflow the way she will: every gate in it is only as good as the thing it was pointed at. The pipeline's own log settles the question before the lesson ends.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Manual testing is how systems fail in production, which is why the standing order was: automate everything, every push runs the full pipeline, any failure blocks the ship. Your merge request claims all of that. So we open the file. A review that only reads the green parts is not a review.
@@ -160,7 +160,7 @@ jobs:
           exit 1`}
 </CodeBlock>
 
-The last two steps are the rollback objective made concrete: the smoke test re-runs the accuracy gate against what actually deployed, and on failure the previous model artifact is restored and republished while the workflow stays red. A rollback that quietly succeeds is how a bad model stays shipped.
+The last two steps are the rollback objective made concrete: the smoke test re-runs the accuracy gate against what actually deployed, and on failure the previous model artifact is restored and republished while the workflow stays red. A rollback that goes green in silence tells nobody a bad model ever shipped.
 
 ## Validation Scripts
 

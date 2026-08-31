@@ -48,7 +48,7 @@ Last week, DEEP SCAN flagged 14 signals. I checked every one. Twelve were cosmic
 But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Nazari.
 </Dialogue>
 
-Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore it; Nazari just described the bridge-crew version. The threshold must balance sensitivity against specificity.
+Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore the tracker; Nazari just described the bridge-crew version. The threshold must balance missed anomalies against false alarms.
 
 <LearningObjectives objectives={["Set detection thresholds using percentiles of normal error distribution", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the optimal balance point"]} />
 
@@ -139,7 +139,7 @@ Find the optimal anomaly detection threshold using F1 score.
 
 <Exercise slug="find-threshold" />
 
-PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls faster than Demir can read it. Before anyone silences anything, run the triage: sensor change, threshold drift, stale model, and if it fits none of those signatures, it goes to a human, loud.
+PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls faster than Demir can read it. Before anyone silences anything, run the triage: sensor change, threshold drift, stale model. If the storm fits none of those signatures, it goes to a human, loud.
 
 <Exercise slug="incident-false-alarm-storm" />
 

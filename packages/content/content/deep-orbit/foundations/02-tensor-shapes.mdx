@@ -19,7 +19,7 @@ concept:
     mlTitle: "Tensor.shape"
     mlCode: "tensor.shape // [3, 4]"
     tier: structural
-    breaks: "`Array.length` returns one number for a 1D structure. `Tensor.shape` returns an array of dimensions (`[batch, features]`, `[batch, h, w, channels]`, etc) and the rank itself can vary. Reading shape is multi-dimensional; broadcasting rules depend on the full shape vector, not a single length."
+    breaks: "`Array.length` returns one number for a 1D structure. `Tensor.shape` returns an array of dimensions (`[batch, features]`, `[batch, h, w, channels]`, etc) and the rank itself can vary. A shape has one entry per axis; broadcasting rules depend on the full shape vector, not a single length."
 consequence:
   narrative: "The layout hunt ends on a grid that does not look accidental."
 hints:
@@ -55,7 +55,7 @@ Shapes are already everywhere in the data you handle. A responsive grid with 3 r
 
 ## Where Does Each Value Land?
 
-Here's the question that actually trips people up: not what the new shape *is*, but which value ends up *where*. The answer: tensors fill **row by row** (row-major order). Watch where each value lands:
+Here's the question that actually trips people up when you reshape: not what the new shape *is*, but which value ends up *where*. The answer: reshape fills the new shape **row by row** (row-major order). Watch where each value lands:
 
 <CodeBlock language="typescript" title="tensor-shapes.ts">
 {`import * as tf from '@tensorflow/tfjs';

@@ -65,7 +65,7 @@ const base = computeLoss();             // forward pass 0
 const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 </CodeBlock>
 
-It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; a run the backward pass finishes in minutes stretches past thirty hours. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
+It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; a run that takes minutes with the backward pass stretches past thirty hours. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a cost of roughly two forward passes. It has a name.
@@ -73,7 +73,7 @@ Estimating the gradient for each of 673 parameters one nudge at a time costs 673
 
 ## Working Backwards
 
-The name is **backpropagation**. A call chain already runs in two directions: the calls go down, `main` into `readFile` into `parseRow`, and when `parseRow` throws, the error comes back up the same path it came down, every frame adding its line to the trace. Backpropagation has that same two-pass shape. The forward pass runs input to output computing the loss, then the backward pass returns output to input, each layer folding what it receives into the gradient it hands to the layer below.
+The name is **backpropagation**. A call chain already runs in two directions: the calls go down, `main` into `readFile` into `parseRow`, and when `parseRow` throws, the error comes back up the same path it came down, every frame adding its line to the trace. Backpropagation has that same two-pass shape. The forward pass runs input to output computing the loss, then the backward pass runs output back to input, each layer folding what it receives into the gradient it hands to the layer below.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -110,7 +110,7 @@ No magic involved: `tf.variableGrads()` records every operation during the forwa
 
 ## Challenge
 
-Run the marquee algorithm yourself: one call to `tf.variableGrads()`, and prove the gradient tracks the variable instead of memorizing an answer.
+Run the marquee algorithm yourself: one call to `tf.variableGrads()`, and prove the gradient tracks the variable, not a memorized answer.
 
 <Exercise slug="backprop-chain" />
 

@@ -375,7 +375,7 @@ describe("CapstonePage, Phase 11 §11d", () => {
     expect(notFoundMock).toHaveBeenCalled();
   });
 
-  it("renders the V1.0-coming placeholder when only Deep Orbit is launched and the user owns it", async () => {
+  it("renders the all-complete placeholder when only Deep Orbit is launched and the user owns it", async () => {
     // V1 scope-revert: the next-world teaser is filtered to launched worlds
     // only. With deep-orbit the sole launched world and the user owning it,
     // the placeholder fires instead of a coming-soon teaser.
@@ -384,7 +384,7 @@ describe("CapstonePage, Phase 11 §11d", () => {
     expect(screen.getByTestId("next-world-placeholder")).toBeInTheDocument();
   });
 
-  it("renders the V1.0-coming placeholder when the user owns every world", async () => {
+  it("renders the all-complete placeholder when the user owns every world", async () => {
     purchasesRef.data = [
       {
         world_ids: [
@@ -400,7 +400,10 @@ describe("CapstonePage, Phase 11 §11d", () => {
     expect(screen.queryByTestId("next-world-teaser")).toBeNull();
     const placeholder = screen.getByTestId("next-world-placeholder");
     expect(placeholder).toBeInTheDocument();
-    expect(placeholder.textContent).toContain("V1.0 coming");
+    // No roadmap tease: unshipped content stays off user surfaces (owner
+    // directive; enforced here so the promise cannot quietly return).
+    expect(placeholder.textContent).toContain("All worlds complete");
+    expect(placeholder.textContent).not.toMatch(/coming|roadmap|inbox/i);
   });
 
   it("renders certificate number + hash preview when an existing cert is found server-side", async () => {

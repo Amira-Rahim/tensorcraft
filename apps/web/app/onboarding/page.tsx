@@ -557,8 +557,8 @@ function BackgroundStep(props: {
       </h2>
       <p className="text-sm text-text-muted mb-8 font-sans max-w-[480px]">
         Advanced and expert levels get the math derivations opened by default
-        inside lessons; everyone else keeps them one click away. Only experience
-        level is required.
+        inside lessons; everyone else keeps the derivations one click away. Only
+        experience level is required.
       </p>
 
       {/* experience_level, required radio group */}
@@ -806,8 +806,8 @@ function ReadyStep(props: {
         All Systems Go
       </h2>
       <p className="text-[15px] text-text-muted leading-relaxed max-w-[460px] mb-10 font-sans">
-        Your first lesson: understand what a tensor is, and why it behaves so
-        much like a Float32Array you have already shipped.
+        Your first lesson: what a tensor is, and why it behaves so much like the
+        Float32Array you already know.
       </p>
       <div
         className="border-2 border-primary bg-surface-raised px-8 py-6 mb-2 text-left w-full max-w-md rounded-none"

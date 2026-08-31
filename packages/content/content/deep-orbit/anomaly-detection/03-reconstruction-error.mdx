@@ -52,7 +52,7 @@ So the reconstruction error IS the anomaly score? It's like running git diff. If
 Then run your diff, Ensign. And when it fires, tell me which channel it says changed.
 </Dialogue>
 
-The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build it; the score will turn out to answer everything except what she asked.
+The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build the score; it will turn out to answer everything except what she asked.
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Establish a normal error distribution to set meaningful thresholds", "Interpret reconstruction error: which features contribute most to the anomaly"]} />
 

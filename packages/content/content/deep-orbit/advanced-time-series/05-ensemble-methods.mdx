@@ -47,7 +47,7 @@ The LSTM is great at short-range patterns. The attention model catches long-rang
 Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model fires every time, and you pay the sum of their inference costs. If the compute budget covers that, then yes: each model has blind spots, and the ensemble covers them.
 </Dialogue>
 
-`Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Three services hand back three different pieces of an answer. Three models hand back the same answer three times, and the only thing that makes the third one worth paying for is that it is wrong in places the other two are right.
+`Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Three services hand back three different pieces of an answer. Three models hand back three answers to the same question, and the only thing that makes the third one worth paying for is that it is wrong in places the other two are right.
 
 <LearningObjectives objectives={["Combine multiple models using averaging, weighted averaging, and stacking", "Understand why ensembles reduce error: averaging out individual model mistakes", "Build an ensemble of LSTM, attention, and Kalman filter for signal forecasting", "Evaluate ensemble performance vs individual models"]} />
 

@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "One setImmediate turn costs microseconds and hands the event loop back between passes, so pending I/O still runs. One epoch is a full sweep of the dataset that can hold the device for minutes and yields to nothing. The exit test differs more: your loop stops when a flag you set flips, and training stops when the validation loss stops improving, which is a judgment call rather than a boolean."
 consequence:
-  narrative: "The loop now decides for itself when to stop. Trained longer stopped meaning trained better."
+  narrative: "The loop now decides for itself when to stop. \"Trained longer\" stopped meaning \"trained better.\""
 hints:
   - level: nudge
     content: "model.fit() runs the whole training loop for you: forward pass, loss, backprop, and weight update, repeated once per epoch."
@@ -51,7 +51,7 @@ Training sequence initiated. I have run this loop by hand twice this week: forwa
 
 ## The Learning Loop
 
-`setImmediate(loop)` gives you a loop only because each callback queues the next one: do a pass, check the exit condition, re-schedule, with the event loop free for other work in between. Training has that same self-rescheduling shape, plus one problem a drain loop never has. Nothing hands it its last iteration.
+`setImmediate(loop)` gives you a loop only because each callback queues the next one: do a pass, check the exit condition, re-schedule, with the event loop free for other work in between. Training has that same self-rescheduling shape, plus one problem a drain loop never has. Nothing hands training its last iteration.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -132,7 +132,7 @@ const history = await model.fit(trainX, trainY, {
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.
 - **validationSplit**: Fraction of data held out to check for overfitting.
 
-"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from drain loops, where another pass always means less backlog, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had bottomed out near epoch 97 and climbed for the four hundred epochs after it, and a model worse on real signals than the four-minute version. It had stopped learning the pattern and started memorizing the dataset. A drain loop that runs longer gets closer to an empty queue; a network that trains longer gets closer to its training data, which is not the same place.
+"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from drain loops, where another pass always means less backlog, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had bottomed out near epoch 97 and climbed for the four hundred epochs after it, and a model worse on real signals than the four-minute version. The 500-epoch model had stopped learning the pattern and started memorizing the dataset. A drain loop that runs longer gets closer to an empty queue; a network that trains longer gets closer to its training data, which is not the same place.
 
 The fix is a callback that watches the validation loss and halts when it stops improving, so the loop stops itself instead of trusting your epoch guess:
 
@@ -235,6 +235,6 @@ Train the DEEP SCAN network and watch the loss decrease.
 
 <Epilogue>
 
-The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 102-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network now knows something about that nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
+The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 102-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
 
 </Epilogue>

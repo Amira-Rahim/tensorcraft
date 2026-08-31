@@ -4,12 +4,7 @@ import {
   getSupabaseAdminClient,
   getSupabaseServerClient,
 } from "@tensorcraft/supabase";
-import {
-  PRICING,
-  isValidWorldSlug,
-  isLaunched,
-  isVatGatedCountry,
-} from "@tensorcraft/shared";
+import { PRICING, isValidWorldSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { createRateLimiter } from "../middleware/rate-limit";
 import {
@@ -18,6 +13,7 @@ import {
 } from "../lib/guest-account";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 import { sendPurchaseReceipt } from "../lib/email";
+import { worldDisplayName } from "../lib/world-name";
 import { sendOperatorAlert } from "../lib/operator-alert";
 import { logger } from "../lib/logger";
 import { captureException } from "../lib/error-tracking";
@@ -52,31 +48,6 @@ function getStripe(): Stripe {
  * tax, and issues a real (VAT-grade) invoice; the webhook persists the country
  * and tax amount, which cannot be reconstructed from a flat USD row afterward.
  */
-/**
- * EU/UK checkout gate (owner decision 2026-08-23, reviewed at the 500-user
- * gate; see the Tier 1-LEGAL decision note in docs/post-launch-backlog.md).
- *
- * A seller established outside the EU gets no EUR 10,000 threshold, so EU VAT
- * would be due at the buyer's rate from the very first sale, and the UK has no
- * threshold for non-UK-established sellers either. Until the LLC exists,
- * refuse the sale rather than incur a liability that cannot be unwound later
- * (OSS registration cannot be backdated).
- *
- * The country is read from Cloudflare's `CF-IPCountry`, which is set at the
- * edge in front of this API and so cannot be forged by the client. It FAILS
- * OPEN when absent: a direct-to-origin request or an edge config change would
- * otherwise stop every sale worldwide, which is a worse outcome than the
- * exposure it prevents. The billing country is now always collected at
- * checkout, so a webhook-side backstop can be added without further changes.
- *
- * Deliberately NOT applied to signup or lesson access: VAT triggers on a
- * supply for consideration, so free use from the EU costs nothing, and those
- * signups are the validation metric this gate is protecting.
- */
-function isRegionBlocked(countryHeader: string | undefined): boolean {
-  return isVatGatedCountry(countryHeader);
-}
-
 function taxSessionParams(): Partial<Stripe.Checkout.SessionCreateParams> {
   if (process.env.STRIPE_TAX_ENABLED !== "true") return {};
   return {
@@ -172,17 +143,6 @@ export function purchaseStatusForSession(
 payments.use("/checkout", authMiddleware);
 
 payments.post("/checkout", async (c) => {
-  if (isRegionBlocked(c.req.header("cf-ipcountry"))) {
-    return c.json(
-      {
-        error:
-          "Purchases are not available in your region yet. Join the list and we will email you when they are.",
-        code: "region_unavailable",
-      },
-      403,
-    );
-  }
-
   const userId = c.get("userId");
 
   let body: { planId: string; worldIds: string[] };
@@ -324,8 +284,8 @@ payments.post("/checkout", async (c) => {
     client_reference_id: userId,
     // Unconditional, and deliberately NOT inside taxSessionParams(): with the
     // tax flag off that helper returns {}, so the buyer's country was never
-    // captured. Without it the EU/UK gate has nothing to verify against and
-    // the VAT exposure cannot even be measured.
+    // captured. The persisted billing country is the only record of where
+    // VAT-relevant sales settle, so it must not depend on the tax flag.
     billing_address_collection: "required",
     ...taxSessionParams(),
     // Abandoned-cart recovery. Stripe can only mail a buyer who drops out of
@@ -354,7 +314,7 @@ payments.post("/checkout", async (c) => {
             name: isUpgrade
               ? `Tensorcraft: Upgrade to ${plan.label}`
               : `Tensorcraft: ${plan.label}`,
-            description: `Access to ${body.worldIds.join(", ")}`,
+            description: `Access to ${body.worldIds.map(worldDisplayName).join(", ")}`,
           },
           unit_amount: adjustedPrice * 100, // cents
         },
@@ -431,17 +391,6 @@ payments.use(
 );
 
 payments.post("/guest-checkout", async (c) => {
-  if (isRegionBlocked(c.req.header("cf-ipcountry"))) {
-    return c.json(
-      {
-        error:
-          "Purchases are not available in your region yet. Join the list and we will email you when they are.",
-        code: "region_unavailable",
-      },
-      403,
-    );
-  }
-
   let body: { planId: string; worldIds: string[] };
   try {
     body = await c.req.json();
@@ -494,7 +443,7 @@ payments.post("/guest-checkout", async (c) => {
           currency: "usd",
           product_data: {
             name: `Tensorcraft: ${plan.label}`,
-            description: `Access to ${body.worldIds.join(", ")}`,
+            description: `Access to ${body.worldIds.map(worldDisplayName).join(", ")}`,
           },
           unit_amount: plan.price * 100, // cents
         },
@@ -938,34 +887,6 @@ payments.post("/webhook", async (c) => {
             isUpgrade: creditApplied > 0,
           },
         });
-
-        // Geo-gate backstop. The gate refuses checkout on Cloudflare's edge
-        // geolocation, which a VPN defeats. Stripe collects the BILLING
-        // country regardless, so this is the one place that sees ground
-        // truth.
-        //
-        // It flags and does not act: the money has already moved by now, and
-        // auto-refunding on a billing address would be a worse failure than a
-        // human reviewing a rare event. The purchase is recorded either way,
-        // because withholding access from someone who paid is the bigger
-        // error.
-        const billingCountry = (
-          session.customer_details as { address?: { country?: string } } | null
-        )?.address?.country;
-        if (isVatGatedCountry(billingCountry)) {
-          captureException(
-            new Error(`Purchase settled from gated region: ${billingCountry}`),
-            {
-              source: "payments.geo-backstop",
-              extra: {
-                sessionId,
-                billingCountry,
-                worldIds,
-                note: "Sale completed from an EU/UK billing address while checkout is US-only. Review and refund if required.",
-              },
-            },
-          );
-        }
 
         // The buyer's email feeds two independent sends. Fetched ONCE and
         // outside both, because the receipt must not depend on Kit: Kit's

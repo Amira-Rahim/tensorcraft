@@ -695,9 +695,9 @@ export function SettingsForm({
                 lineHeight: 1.6,
               }}
             >
-              Connect GitHub so each completed lesson commits to your own
-              repository. Solution repos are created public on your GitHub
-              account. Tensorcraft stores only a personal OAuth token, no
+              Connect GitHub and each lesson you complete lands as a commit in
+              your own repository. Solution repos are created public on your
+              GitHub account. Tensorcraft stores only a personal OAuth token, no
               passwords, no private code mirroring.
             </p>
 

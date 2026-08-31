@@ -1,7 +1,7 @@
 slug: profile-model
 lessonSlug: model-profiling
 title: "Profile a Model"
-instructions: "Write a function that profiles a model by measuring its parameter count, memory size in MB (assuming float32 = 4 bytes per param; divide by 1e6 for MB, per the lesson's units rule, not 1024*1024 which gives MiB), and average inference time over N runs."
+instructions: "Write a function that profiles a model: parameter count, memory size in MB, and average inference time over N runs. For memory, assume float32 (4 bytes per param) and divide by 1e6, per the lesson's units rule; 1024*1024 would give MiB."
 starterCode: |
   interface ModelProfile {
     parameterCount: number;

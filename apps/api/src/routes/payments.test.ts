@@ -214,8 +214,8 @@ vi.mock("../lib/email", () => ({
 }));
 
 vi.mock("@tensorcraft/shared", async (importOriginal) => ({
-  // Spread the real module so genuinely shared logic (isVatGatedCountry and
-  // its country table) is exercised rather than re-implemented in a stub.
+  // Spread the real module so genuinely shared logic (slug validation,
+  // launch flags) is exercised rather than re-implemented in a stub.
   // Only the pricing/slug surfaces below are pinned for test determinism.
   ...(await importOriginal<typeof import("@tensorcraft/shared")>()),
   PRICING: {
@@ -1433,18 +1433,14 @@ describe("checkout collects the billing country with Stripe Tax off", () => {
 });
 
 /**
- * EU/UK checkout geo-gate (owner decision 2026-08-23).
- *
- * Selling to an EU or UK consumer as a seller established outside both
- * creates a VAT obligation from the first sale, with no threshold. Until the
- * US LLC exists, checkout is refused for those regions. Free signups are
- * deliberately unaffected: VAT triggers on a supply for consideration, so
- * reading the free module from Berlin costs nothing.
- *
- * The country comes from Cloudflare's `CF-IPCountry`, which sits in front of
- * the API, and is therefore server-observed rather than client-supplied.
+ * EU/UK checkout is OPEN (owner decision 2026-08-31; it removed the
+ * 2026-08-23 geo-gate). The visitor's country no longer influences checkout
+ * in any way. VAT handling rides the always-on billing-address collection
+ * plus Stripe Tax behind STRIPE_TAX_ENABLED; the registration obligations
+ * that opening these regions created are tracked in the Tier 1-LEGAL note
+ * in docs/post-launch-backlog.md.
  */
-describe("EU/UK checkout geo-gate", () => {
+describe("EU/UK checkout open", () => {
   beforeEach(() => {
     vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
     vi.stubEnv("APP_URL", "http://localhost:3000");
@@ -1478,21 +1474,18 @@ describe("EU/UK checkout geo-gate", () => {
     });
   }
 
-  it("refuses authed checkout from an EU country", async () => {
+  it("creates a session for authed checkout from an EU country", async () => {
     const res = await checkout("DE");
 
-    expect(res.status).toBe(403);
-    expect((await res.json()).code).toBe("region_unavailable");
-    // No Stripe session may exist for a blocked region: a created session is
-    // a payable link, so creating one and then refusing is not a gate.
-    expect(mockSessionCreate).not.toHaveBeenCalled();
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalled();
   });
 
-  it("refuses guest checkout from the United Kingdom", async () => {
+  it("creates a session for guest checkout from the United Kingdom", async () => {
     const res = await guestCheckout("GB");
 
-    expect(res.status).toBe(403);
-    expect(mockSessionCreate).not.toHaveBeenCalled();
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalled();
   });
 
   it("allows checkout from the United States", async () => {
@@ -1507,6 +1500,35 @@ describe("EU/UK checkout geo-gate", () => {
 
     expect(res.status).toBe(200);
     expect(mockSessionCreate).toHaveBeenCalled();
+  });
+
+  // The Stripe checkout page shows this description to the buyer at the
+  // moment of payment; "deep-orbit" reads as an internal id there, the
+  // same problem the receipt already solves (2026-08-31 phrasing audit).
+  it("describes the product with world display names, not slugs", async () => {
+    await checkout("US");
+
+    const params = mockSessionCreate.mock.calls[0]![0] as {
+      line_items: {
+        price_data: { product_data: { description: string } };
+      }[];
+    };
+    expect(params.line_items[0]!.price_data.product_data.description).toBe(
+      "Access to Deep Orbit",
+    );
+  });
+
+  it("guest checkout also describes the product with display names", async () => {
+    await guestCheckout("US");
+
+    const params = mockSessionCreate.mock.calls[0]![0] as {
+      line_items: {
+        price_data: { product_data: { description: string } };
+      }[];
+    };
+    expect(params.line_items[0]!.price_data.product_data.description).toBe(
+      "Access to Deep Orbit",
+    );
   });
 });
 
@@ -1651,80 +1673,5 @@ describe("purchase receipt on delayed settle", () => {
         sessionId: "cs_async_1",
       }),
     );
-  });
-});
-
-/**
- * Geo-gate backstop.
- *
- * The gate refuses checkout for EU/UK countries using Cloudflare's edge
- * geolocation, which a VPN defeats. Stripe collects the buyer's BILLING
- * country regardless, so the webhook is the one place that sees ground truth.
- *
- * It flags rather than acts: by the time this runs the money has moved, and
- * auto-refunding on a billing address is a worse failure than a human
- * reviewing a rare event. The purchase is always recorded either way.
- */
-describe("EU/UK billing country backstop", () => {
-  beforeEach(() => {
-    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
-    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
-    mockInsert.mockReset();
-    mockInsert.mockResolvedValue({ error: null });
-    mockConstructEvent.mockReset();
-    mockAdminExistingRow = null;
-    mockEqResult = null;
-    mockProfileEmail = "buyer@example.com";
-    mockCaptureException.mockClear();
-  });
-
-  function settleFrom(country: string | undefined, id = "cs_geo_1") {
-    const event = {
-      id: `evt_${id}`,
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          id,
-          client_reference_id: "user_456",
-          amount_total: 4900,
-          payment_status: "paid",
-          metadata: { planId: "single", worldIds: "deep-orbit" },
-          customer_details: country ? { address: { country } } : undefined,
-        },
-      },
-    };
-    mockConstructEvent.mockReturnValue(event);
-    return app.request("/api/payments/webhook", {
-      method: "POST",
-      headers: {
-        "stripe-signature": "sig_test",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(event),
-    });
-  }
-
-  it("records the purchase and flags a gated billing country", async () => {
-    const res = await settleFrom("DE");
-
-    // Recorded: the charge succeeded, and withholding access from someone who
-    // paid would be the worse error.
-    expect(res.status).toBe(200);
-    expect(mockInsert).toHaveBeenCalled();
-    expect(mockCaptureException).toHaveBeenCalled();
-  });
-
-  it("stays quiet for an ungated country", async () => {
-    const res = await settleFrom("US", "cs_geo_2");
-
-    expect(res.status).toBe(200);
-    expect(mockCaptureException).not.toHaveBeenCalled();
-  });
-
-  it("stays quiet when Stripe sent no billing country", async () => {
-    const res = await settleFrom(undefined, "cs_geo_3");
-
-    expect(res.status).toBe(200);
-    expect(mockCaptureException).not.toHaveBeenCalled();
   });
 });

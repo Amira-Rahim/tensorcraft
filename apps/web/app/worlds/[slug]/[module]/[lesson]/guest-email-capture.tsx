@@ -52,8 +52,8 @@ export function GuestEmailCapture({ worldSlug }: { worldSlug: string }) {
         Reading as a guest
       </p>
       <p className="text-sm text-text-muted leading-relaxed mb-4">
-        Your progress lives in this browser only. Leave your email and we
-        &rsquo;ll send you a link back to where you stopped, plus what comes
+        Your progress lives in this browser only. Leave your email and{" "}
+        we&rsquo;ll send you a link back to where you stopped, plus what comes
         after the free module.
       </p>
       {status === "done" ? (

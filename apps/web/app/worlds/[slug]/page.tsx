@@ -340,21 +340,21 @@ export default async function WorldDetailPage({ params }: Props) {
           background: "color-mix(in srgb, var(--tc-bg) 70%, transparent)",
         }}
       >
-        <p
-          className="font-mono text-xs uppercase mb-2.5"
-          style={{ color: "var(--tc-primary)", letterSpacing: "0.15em" }}
-        >
-          {world.displayName} &middot; {worldModules.length} MODULES
-        </p>
+        {/* The world name is the title (owner call, 2026-08-31; it replaced
+            a generic "MODULE MAP" h1). The old world-name eyebrow went with
+            it: the same words directly above the h1 read as a stutter. The
+            module count survives in the subline and the stats strip. */}
         <h1
-          className="font-mono text-3xl font-bold mb-2.5"
+          className="font-mono text-3xl font-bold uppercase mb-2.5"
           style={{ color: "var(--tc-text)", letterSpacing: "-0.02em" }}
         >
-          MODULE MAP
+          {world.displayName}
         </h1>
         <p className="text-sm" style={{ color: "var(--tc-muted)" }}>
-          {worldModules.length} modules between your JavaScript and a deployed
-          model.
+          {/* "first" holds while one world is launched; this header only
+              renders for launched worlds, so reword when world 2 opens. */}
+          {worldModules.length} modules stand between you and your first machine
+          learning model.
         </p>
 
         <div className="flex gap-8 mt-6">

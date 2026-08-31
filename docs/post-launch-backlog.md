@@ -176,9 +176,11 @@ Postmaster, cloud-cost alerts, the Upstash plan re-check, and the
 indexable-words rendering decision. None of these pay for themselves during a
 quiet beta.
 
-**B6, when EU/UK sales open.** Stripe Tax setup and the `STRIPE_TAX_ENABLED`
-flip, non-Union OSS registration, separate UK VAT registration, removing the
-geo-gate, and the Stripe invoice half of the receipt.
+**B6, when EU/UK sales open.** TRIGGERED 2026-08-31: the geo-gate is removed
+(owner decision), so the rest of this bundle is now due, not deferred: Stripe
+Tax setup and the `STRIPE_TAX_ENABLED` flip, non-Union OSS registration,
+separate UK VAT registration, and the Stripe invoice half of the receipt.
+See the dated Tier 1-LEGAL entry.
 
 **B7, ~10k users.** Section 9, scale debt, unchanged. Plus the API bundling
 question from the Fly config entry: transpiling TypeScript at container start
@@ -1723,6 +1725,25 @@ flagging exposure, not legal advice).
 >    would also put the MoR's identity on the invoice rather than a natural
 >    person, which is why it is the right conversation to have once the
 >    entity question is live again.
+
+- [ ] (OPERATOR, NOW URGENT) **EU/UK purchases OPENED 2026-08-31: the
+  geo-gate is removed from code by owner decision.** Every layer of the
+  2026-08-23 gate is deleted: the middleware cookie, the `/pricing`
+  RegionNotice with its email capture, both API `region_unavailable`
+  refusals, the webhook billing-country backstop, and the synthetic-check
+  403 probe. EU/UK visitors can complete checkout the moment this deploys,
+  which makes the obligations this tier deferred live from the FIRST EU/UK
+  sale:
+  1. Configure Stripe Tax in the dashboard (origin address, product tax
+     code, registrations), then flip `STRIPE_TAX_ENABLED`. Until that flip,
+     EU/UK sales settle with NO VAT collected while the liability accrues
+     at the buyer's local rate.
+  2. Non-Union OSS registration plus the separate UK VAT registration.
+  3. Art. 27 representatives (EU and UK) per the advisor entry below.
+  4. The `region-blocked` waitlist rows were promised exactly one email
+     when purchases open; send it.
+  5. Retire any Sentry alert built on `payments.geo-backstop`; the source
+     no longer exists and the alert can never fire again.
 
 - [ ] (OPERATOR) **Engage a US advisor, and pick the launch market scope.**
   Rewritten 2026-08-23 now that the entity is decided (US LLC). Two things

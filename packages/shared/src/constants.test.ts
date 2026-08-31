@@ -9,8 +9,6 @@ import {
   getPaidLessonCount,
   SCHEME_STORAGE_KEY,
   isColorScheme,
-  isVatGatedCountry,
-  VAT_GATED_COUNTRIES,
 } from "./constants";
 
 describe("WORLD_SLUGS", () => {
@@ -144,48 +142,5 @@ describe("isColorScheme", () => {
 
   it("uses the expected storage key", () => {
     expect(SCHEME_STORAGE_KEY).toBe("tc-scheme");
-  });
-});
-
-/**
- * VAT-gated regions. Selling to EU/UK consumers creates a VAT obligation from
- * the FIRST sale for a non-EU-established seller (no threshold applies), so
- * checkout is gated to those regions until the entity exists. See the
- * Tier 1-LEGAL decision note in docs/post-launch-backlog.md.
- */
-describe("isVatGatedCountry", () => {
-  it("gates EU member states", () => {
-    expect(isVatGatedCountry("DE")).toBe(true);
-    expect(isVatGatedCountry("FR")).toBe(true);
-    expect(isVatGatedCountry("IE")).toBe(true);
-  });
-
-  it("gates the United Kingdom", () => {
-    expect(isVatGatedCountry("GB")).toBe(true);
-  });
-
-  it("does not gate the United States", () => {
-    expect(isVatGatedCountry("US")).toBe(false);
-  });
-
-  it("is case insensitive, since header casing is not guaranteed", () => {
-    expect(isVatGatedCountry("de")).toBe(true);
-  });
-
-  /**
-   * Fail OPEN on an unknown country. Cloudflare sends "XX" for anonymous
-   * proxies and the header is absent entirely on a direct-to-origin request.
-   * Failing closed would mean any change in edge configuration silently stops
-   * every sale worldwide; the webhook billing-country check is the backstop.
-   */
-  it("does not gate when the country is unknown or absent", () => {
-    expect(isVatGatedCountry(undefined)).toBe(false);
-    expect(isVatGatedCountry(null)).toBe(false);
-    expect(isVatGatedCountry("")).toBe(false);
-    expect(isVatGatedCountry("XX")).toBe(false);
-  });
-
-  it("covers all 27 EU member states plus the UK", () => {
-    expect(VAT_GATED_COUNTRIES).toHaveLength(28);
   });
 });

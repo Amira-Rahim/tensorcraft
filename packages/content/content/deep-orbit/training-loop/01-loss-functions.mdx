@@ -79,7 +79,7 @@ console.log('Perfect MSE:', perfectLoss.dataSync()); // 0`}
 The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
 
 <DerivationDrawer summary="MSE and cross-entropy from first principles">
-**Why squared error?** MSE squares the residuals so positive and negative errors don't cancel, AND so large errors are penalized more than small ones (a 0.4 error counts 4× more than a 0.2 error). The formula:
+**Why squared error?** MSE squares each error so positive and negative errors don't cancel, AND so large errors are penalized more than small ones (a 0.4 error counts 4× more than a 0.2 error). The formula:
 
 `MSE = (1/n) Σ (yᵢ - ŷᵢ)²`
 
@@ -122,10 +122,10 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
 
 <Epilogue>
 
-Farah writes the network's opening loss on the lab's glass wall in marker, dated and initialed: 0.6931. Demir asks why the number is so round. It isn't round, she tells him: it's ln(2) to four places, the exact cross-entropy of a coin flip, the score of a network that knows nothing at all. He'd guessed it was a fluke of the random seed; it's arithmetic.
+Farah writes the network's opening loss on the lab's glass wall in marker, dated and initialed: 0.6931. Demir asks whether the number means anything or is just where the random seed dropped them. It's ln(2) to four places, she tells him: the exact cross-entropy of a coin flip, the score of a network that knows nothing at all. He'd guessed it was a fluke of the random seed; it's arithmetic.
 
 <Dialogue speaker="Dr. Farah">
-That number is our honesty. We don't get to claim the network learned anything until it moves.
+That number is our honesty. We don't get to claim the network learned anything until that number moves.
 </Dialogue>
 
 </Epilogue>

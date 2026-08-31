@@ -11,7 +11,7 @@ scene:
   location: "Archimedes, Lab"
   portraitAlt: "On a lab display a descending scatter of interval marks carries two imperfect smoothing curves as two silhouettes confer."
 context:
-  narrative: "The signal's timing is drifting. Demir reaches for the smoothing trick every JavaScript engineer owns, and rides it straight into the dilemma this lesson exists to solve."
+  narrative: "The signal's timing is drifting. Demir reaches for a smoothing trick most JavaScript engineers know, and rides it straight into the dilemma this lesson exists to solve."
   speaker: "Dr. Farah"
 concept:
   explanation: "A Kalman filter tracks a moving value under noise by predicting where it should be, then correcting with each new measurement, trusting whichever is currently less uncertain."
@@ -41,9 +41,9 @@ skillAxes: [model_arch]
 
 > **PULSE INTERVAL LOG · first cycle of each of the last eight days (seconds):** 73.1 · 72.9 · 73.0 · 72.6 · 72.7 · 72.3 · 72.4 · 72.0
 
-Read the column both ways. The noise says the numbers wander; the trend says they only wander downhill. Before this lesson names its subject, try to track that drift with a tool you already own.
+Read the column both ways. The noise says the numbers wander; the trend says they only wander downhill. Before this lesson names its subject, try to track that drift with a tool you already know.
 
-Demir's first move is the one every JavaScript engineer makes when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
+Demir's first move is the usual one when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
 
 <CodeBlock language="typescript" title="ema-two-alphas.ts">
 {`const log = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];
@@ -148,7 +148,7 @@ dV/dK = -2(1-K)·P + 2K·R = 0
 
 That is line-for-line the `gain` in the code above: `predictedVariance / (predictedVariance + measurementNoise)`. Sanity-check the endpoints: a perfect sensor (R → 0) gives K → 1, trust the measurement; a useless sensor (R → ∞) gives K → 0, keep the prediction. Demir's "alpha that adjusts itself" is this quotient, recomputed every step as P shrinks with each correction. The EMA's fixed alpha is what you get if you freeze this formula and hope the uncertainties never change.
 
-One honesty note the bridge has earned: with a constant-state model like this one, P settles and the gain converges (to about 0.27 with these Q and R), so after a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. What the adaptive gain buys is the burn-in and principled noise handling; it buys no immunity to trends. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-cycle]` instead of a single number. The crew's filter is the honest first rung, not the whole ladder.
+One honesty note the EMA bridge has earned: with a constant-state model like this one, P settles and the gain converges (to about 0.27 with these Q and R), so after a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. What the adaptive gain buys is a clean burn-in and principled noise handling; it buys no immunity to trends. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-cycle]` instead of a single number. The crew's filter is the honest first rung, not the whole ladder.
 </DerivationDrawer>
 
 ## Challenge
@@ -162,11 +162,11 @@ Implement a Kalman filter and track the anomaly timing.
 <LessonRecap
   whatYouLearned={[
     "A Kalman filter runs a predict-then-correct loop: it projects the current estimate forward, then blends in the new measurement weighted by the Kalman gain.",
-    "The gain is computed dynamically from the current estimate variance and measurement noise, making it the optimal linear blend at every step.",
+    "The gain is computed dynamically from the current estimate variance and measurement noise, so each update is the optimal linear blend of prediction and measurement.",
     "The predict-correct structure generalizes the exponential moving average: EMA uses a fixed alpha, Kalman computes the equivalent weight adaptively."
   ]}
-  bridge="Like a smoothed = `alpha * newValue + (1 - alpha) * smoothed` exponential moving average, a Kalman update blends `gain * measurement + (1 - gain) * prediction`, but computes `gain` dynamically from current uncertainty rather than holding it fixed."
-  youCanNow="Implement a 1D Kalman filter that tracks a drifting signal value under noise and report the smoothed estimate at each step."
+  bridge="Like the exponential moving average `smoothed = alpha * newValue + (1 - alpha) * smoothed`, a Kalman update blends `gain * measurement + (1 - gain) * prediction`, but computes `gain` dynamically from current uncertainty rather than holding it fixed."
+  youCanNow="Implement a 1D Kalman filter that tracks a drifting signal value under noise and reports the smoothed estimate at each step."
 />
 
 <Epilogue>

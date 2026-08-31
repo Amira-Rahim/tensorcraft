@@ -346,18 +346,10 @@ export function DashboardView(props: DashboardProps) {
                   {m.score}%
                 </span>
               )}
-              {m.status === "active" && (
-                <div
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: 2,
-                    background: LIME,
-                  }}
-                />
-              )}
+              {/* No left accent bar here: banned repo-wide (owner
+                  directive 2026-08-16). The active state already reads
+                  through the background wash above, the bold title, and
+                  the lime status box. */}
             </Link>
           ))}
         </aside>

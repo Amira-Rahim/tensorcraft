@@ -78,10 +78,11 @@ export default function PrivacyPage() {
             </h2>
             <p className="mb-3">
               <strong className="text-text-primary">Account data:</strong> your
-              email address, display name, and avatar, from GitHub, Google, or
-              the email address you sign up with. Onboarding also records your
-              JavaScript background, experience level, and learning goal. An
-              account is required to buy.
+              email address, display name, and avatar. GitHub or Google provides
+              these when you sign in with one; with email sign-up we collect
+              only your email address. Onboarding also records your JavaScript
+              background, experience level, and learning goal. An account is
+              required to buy.
             </p>
             <p className="mb-3">
               <strong className="text-text-primary">Learning data:</strong>{" "}
@@ -243,9 +244,9 @@ export default function PrivacyPage() {
             </p>
             <p>
               Local storage on your device holds your cookie choice, color
-              scheme, lesson progress, and drafts of your exercise code. That
-              data stays in your browser until a feature you use sends it to us,
-              like finishing a lesson while signed in.
+              scheme, lesson progress, and drafts of your exercise code. This
+              data stays in your browser; we receive a copy only when a feature
+              you use sends one, like finishing a lesson while signed in.
             </p>
           </section>
 
@@ -328,9 +329,9 @@ export default function PrivacyPage() {
               </li>
             </ul>
             <p className="mt-3">
-              Waitlist and newsletter emails are separate from your account. We
-              keep them until you unsubscribe, or for 24 months without
-              engagement, whichever comes first.
+              Waitlist and newsletter email addresses are separate from your
+              account. We keep your email address until you unsubscribe, or for
+              24 months without engagement, whichever comes first.
             </p>
           </section>
 

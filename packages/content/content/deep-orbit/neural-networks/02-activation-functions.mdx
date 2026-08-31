@@ -26,7 +26,7 @@ hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
   - level: guidance
-    content: "applyRelu(preActivation) is a single call: every tensor has a .relu() method (tf.relu(preActivation) also works), which applies Math.max(0, x) elementwise. Return the activated tensor; the grader runs it on two different tensors, so no hardcoded values."
+    content: "applyRelu(preActivation) is a single call: every tensor has a .relu() method (tf.relu(preActivation) also works), which applies Math.max(0, x) elementwise. Return the activated tensor; the grader runs your function on two different tensors, so no hardcoded values."
   - level: solution
     content: "return preActivation.relu();"
 keywords:

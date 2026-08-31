@@ -22,7 +22,7 @@ concept:
     mlTitle: "Prompt Design"
     mlCode: "// Bad: 'analyze signal' → vague, unfocused output"
     tier: structural
-    breaks: "Search queries match against an index with deterministic ranking. Prompts steer a probabilistic generator and tiny wording changes can change output drastically (prompt sensitivity). There is no result page to inspect, only one generated answer per call."
+    breaks: "Search queries match against an index with deterministic ranking. Prompts steer a probabilistic generator, and tiny wording changes can swing the output drastically (prompt sensitivity). There is no result page to inspect, only one generated answer per call."
 consequence:
   narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
 hints:
@@ -153,6 +153,6 @@ Write a prompt template that produces structured signal analysis.
 
 <Epilogue>
 
-Four hours, fifty minutes to the window. Farah's prompt log shows nine versions; version nine is the first one whose output survives her red pen with fewer than three corrections. Demir diffs v8 against v9 looking for the trick. The diff is one added line: the normal amplitude range. Farah's commit message does the explaining for her: the model has read more physics than anyone aboard and still had no idea what normal looks like in Sector 7-G, because nothing out here does. One line of context outperformed eight rounds of sharper instructions. She commits the prompt file to the mission repository like any other instrument calibration, then queues the next problem: the model still can't see the signal database it keeps being asked about.
+Four hours, fifty minutes to the window. Farah's prompt log shows nine versions; version nine is the first one whose output survives her red pen with fewer than three corrections. Demir diffs v8 against v9 looking for the trick. The diff is one added line: the normal amplitude range. Farah's commit message does the explaining for her: the model has read more physics than anyone aboard and still had no idea what normal looks like in Sector 7-G, because nothing out here is normal. One line of context outperformed eight rounds of sharper instructions. She commits the prompt file to the mission repository like any other instrument calibration, then queues the next problem: the model still can't see the signal database it keeps being asked about.
 
 </Epilogue>

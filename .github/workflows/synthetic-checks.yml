@@ -8,7 +8,9 @@
 #
 # What this covers instead: BEHAVIOURAL invariants that only change when we
 # deploy, checked a few times a day. These are the things a pure ping cannot
-# see, such as the EU/UK geo-gate quietly ceasing to gate.
+# see, such as the anon key quietly gaining read access it should not have.
+# (The EU/UK geo-gate probe lived here until the gate was removed on
+# 2026-08-31, when the owner opened EU/UK purchases.)
 #
 # A failure fails the job, and GitHub emails the person who last touched this
 # file. That is the notification channel.
@@ -49,26 +51,6 @@ jobs:
             code=$(curl -sS -o /dev/null --max-time 25 -w "%{http_code}" "https://tensorcraft.app$path")
             echo "$path -> $code"
             test "$code" = "200" || { echo "::error::$path returned $code"; exit 1; }
-          done
-
-      # The check a ping cannot make. Selling into the EU or UK before the
-      # entity exists creates VAT liability from the first sale that cannot be
-      # unwound, so a silently-broken gate is expensive and invisible.
-      #
-      # Probed at the Fly ORIGIN, not through the edge: Cloudflare overwrites
-      # CF-IPCountry, so a spoofed header never reaches the app through
-      # api.tensorcraft.app. A 403 here means the gate logic is live.
-      # No Stripe session is created when it blocks.
-      - name: EU/UK checkout gate still refuses
-        run: |
-          for country in DE GB FR; do
-            code=$(curl -sS -o /dev/null --max-time 25 -w "%{http_code}" \
-              -X POST https://tensorcraft-api.fly.dev/api/payments/guest-checkout \
-              -H 'Content-Type: application/json' \
-              -H "CF-IPCountry: $country" \
-              -d '{"planId":"single","worldIds":["deep-orbit"]}')
-            echo "$country -> $code"
-            test "$code" = "403" || { echo "::error::geo-gate did not block $country (got $code). EU/UK buyers may be able to purchase."; exit 1; }
           done
 
       # Does anon actually get nothing? RLS is declared in migrations and

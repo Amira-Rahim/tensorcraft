@@ -112,19 +112,19 @@ export default function AboutPage() {
             five-world roadmap. Only the shipped set has been through our
             validation gates; we do not claim the rest meet that bar until they
             ship. Roughly half of the live exercises drive tensor and model APIs
-            directly, and there a failing test means the model behavior is
+            directly, and there, a failing test means the model behavior is
             actually wrong. The other half grade the data preparation and
-            production plumbing around a model, and there a failing test means
+            production plumbing around a model, and there, a failing test means
             that logic is wrong.
           </p>
 
           <p>
             Five worlds are planned (Deep Orbit, Neon Protocol, Signal Ward,
             Nova Canvas, Terra Grid), each wrapping the curriculum in a
-            different story. Deep Orbit is the one open today: a working
-            browser-side ML system, assembled piece by piece across the modules.
-            Connect GitHub and every solved exercise pushes to your repo. The
-            story keeps you on the page. What you take to interviews is the
+            different story. Deep Orbit is the one open today. Across its
+            modules you assemble a working browser-side ML system, piece by
+            piece. Connect GitHub and every solved exercise pushes to your repo.
+            The story keeps you on the page. What you take to interviews is the
             ability to explain every layer of what you built.
           </p>
 
@@ -191,9 +191,9 @@ export default function AboutPage() {
             Built by JavaScript engineers who shipped ML
           </h2>
           <p>
-            The people who wrote it shipped ML in production, in browsers and on
-            Node servers, before writing the curriculum. We built the course we
-            wanted when we started. Every analogy was tested against our own
+            Before writing the curriculum, we shipped ML in production, in
+            browsers and on Node servers. We built the course we wish we&apos;d
+            had when we started. Every analogy was tested against our own
             missed-it-the-first-time mistakes.
           </p>
         </section>

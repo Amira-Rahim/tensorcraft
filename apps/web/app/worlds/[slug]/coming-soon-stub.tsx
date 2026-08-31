@@ -205,7 +205,7 @@ export function ComingSoonStub({ world }: Props) {
               {world.terminology.module} ·{" "}
               {/* Per-world count from WORLD_SHAPE: neon-protocol authors 54,
                   not the flat 55 this line promised until 2026-07-25. */}
-              {getWorldTotalLessons(slug)} in the full rebuild
+              {getWorldTotalLessons(slug)} in the full course
             </p>
           </div>
           <ul

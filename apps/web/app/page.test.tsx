@@ -286,7 +286,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       // (landing section cut 2026-08-16; /paywall keeps the component).
       expect(all).toMatch(/pytorch/i);
       expect(all).toMatch(/video/i);
-      expect(all).toMatch(/time estimates/i);
+      expect(all).toMatch(/per-module estimates/i);
     });
   });
 });

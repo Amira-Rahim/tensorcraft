@@ -632,13 +632,13 @@ export default async function CapstonePage({ params }: Props) {
                 letterSpacing: "0.1em",
               }}
             >
-              NEXT {world.terminology.lesson.toUpperCase()}
+              STATUS
             </div>
             <div
               className="font-mono font-bold mb-1"
               style={{ fontSize: 14, color: P.text }}
             >
-              V1.0 coming
+              All worlds complete
             </div>
             <div
               style={{
@@ -647,8 +647,11 @@ export default async function CapstonePage({ params }: Props) {
                 color: P.muted,
               }}
             >
-              You&apos;ve completed every mission in every world. New V1.0
-              content is on the roadmap. Watch your inbox.
+              {/* No roadmap tease here: unshipped content stays off user
+                  surfaces (owner directive; the two ruled exceptions are
+                  the /worlds coming-soon page and the FAQ video note). */}
+              You&apos;ve completed every{" "}
+              {world.terminology.lesson.toLowerCase()} in every world.
             </div>
           </div>
         ) : null}
