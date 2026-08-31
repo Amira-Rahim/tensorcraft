@@ -59,6 +59,26 @@ test.describe("Visual: Responsive Breakpoints", () => {
         // on load state (the removed hero Deep Scan demo self-failed the
         // 320px baseline this way on 2026-08-31), wait for its terminal
         // state before capture; see "layout race" in docs/visual-regression.md.
+        //
+        // Pricing: the curriculum scene resolves its mode client-side after
+        // mount and only then draws the orbit backdrop, so an early capture
+        // gets an empty band (self-failed pricing@768 on 2026-08-31, a
+        // rosette-shaped 12k-pixel diff). Under the suite's reduced-motion
+        // emulation the resolved mode is always "settled"; anything else
+        // means the emulation broke, so fail loudly via timeout. The double
+        // rAF lets the settled frame actually paint.
+        if (pageDef.name === "pricing") {
+          await page
+            .locator('[data-testid="curriculum-scene"][data-mode="settled"]')
+            .first()
+            .waitFor();
+          await page.evaluate(
+            () =>
+              new Promise((resolve) =>
+                requestAnimationFrame(() => requestAnimationFrame(resolve)),
+              ),
+          );
+        }
         await expect(page).toHaveScreenshot(`${pageDef.name}-${bp.label}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,

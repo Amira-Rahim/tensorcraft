@@ -83,13 +83,19 @@ export default function PricingPage() {
 
         {/* Hero */}
         <section className="pt-24 pb-14 px-6 text-center">
+          {/* Fluid one-liner (owner: "spread across the grid", 2026-08-31,
+              same pattern as the landing hero and /learn H1): 24 mono chars
+              at 0.575em per char (0.6em advance minus tracking-tight's
+              0.025em) fit inside the px-6 gutters from ~640px up. The
+              2.25rem floor keeps the old mobile size, where the sentence
+              breaks into its two clean halves. */}
           <h1
             data-testid="pricing-heading"
-            className="text-4xl sm:text-5xl font-bold mb-5 text-text-primary font-mono tracking-tight"
+            className="text-[clamp(2.25rem,calc(7vw-0.5rem),6rem)] font-bold mb-6 text-text-primary font-mono tracking-tight"
           >
             Buy once. Keep forever.
           </h1>
-          <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
+          <p className="text-lg sm:text-2xl max-w-[70ch] mx-auto text-text-muted font-sans">
             Each world is a separate ML specialization. Deep Orbit is the one
             available today: buy once, get lifetime access, no subscription, all
             updates included.

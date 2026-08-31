@@ -92,6 +92,22 @@ for (const scheme of ["dark", "light"] as const) {
         await page.evaluate(async () => {
           await document.fonts.ready;
         });
+        // Pricing only: wait for the curriculum scene's client-side mode
+        // resolution and one painted frame, or the capture races the orbit
+        // backdrop's first draw. Same wait and rationale as
+        // responsive.spec.ts (self-fail caught 2026-08-31).
+        if (path === "/pricing") {
+          await page
+            .locator('[data-testid="curriculum-scene"][data-mode="settled"]')
+            .first()
+            .waitFor();
+          await page.evaluate(
+            () =>
+              new Promise((resolve) =>
+                requestAnimationFrame(() => requestAnimationFrame(resolve)),
+              ),
+          );
+        }
         await expect(page).toHaveScreenshot(`${base}${suffix}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,

@@ -129,6 +129,17 @@ a DOM attribute (`data-status={status}`, which `DeepScanDemo` still does)
 and `waitFor()` the terminal state before capture. Do not accept the
 error state into a baseline - let the wait time out loudly instead.
 
+The same family includes PAINT races with stable dimensions: /pricing's
+curriculum scene resolves its mode client-side after mount and only then
+draws the orbit backdrop, so a fullPage capture can land before or after
+the first draw (self-failed pricing@768 on 2026-08-31 as a rosette-shaped
+12k-pixel diff with identical image dimensions). Both visual specs wait
+for `[data-testid="curriculum-scene"][data-mode="settled"]` plus a double
+requestAnimationFrame before capturing /pricing. The general recipe: a
+component that decides what to draw after mount must expose the decision
+as a DOM attribute, and the spec waits for the terminal value plus one
+painted frame.
+
 Note when re-minting landing baselines: they cannot verify hero content
 at all. `maskCanvas` masks every canvas and `ParticleField` spans the
 hero, so the whole band is a magenta block in every landing baseline. The
