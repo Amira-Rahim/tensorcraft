@@ -135,14 +135,7 @@ export default function LearnPage() {
       {/* Close: the one symmetric moment on the page. */}
       <section className="px-10 md:px-20 py-20 md:py-24 text-center">
         <p className="text-base text-text-muted font-sans leading-relaxed mb-8 max-w-[560px] mx-auto">
-          Module 1 is free. After that, each course is a one-time purchase: see{" "}
-          <Link
-            href="/pricing"
-            className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-          >
-            pricing
-          </Link>{" "}
-          for what&apos;s included.
+          Module 1 is free. After that, a course is a one-time purchase.
         </p>
         <div className="flex gap-4 flex-wrap justify-center">
           <FreeLessonCtaTracker source="learn_footer">
