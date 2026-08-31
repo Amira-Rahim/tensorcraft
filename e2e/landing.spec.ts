@@ -63,6 +63,12 @@ test.describe("Landing Page", () => {
   test("final CTA opens the free lesson: copy promises no account", async ({
     page,
   }) => {
+    // The only test here that navigates into the lesson route. On a cold
+    // local `next dev` that route compiles on demand (9.5s measured
+    // 2026-08-31, on top of compiling "/"), which can blow the default 30s
+    // test budget; it failed exactly this way 3/3 cold and passed 2/2 warm.
+    // slow() triples the budget locally; CI runs `next start`, no compile.
+    test.slow();
     await page.goto("/");
     await page.getByTestId("landing-cta-final").click();
     await expect(page).toHaveURL(/\/worlds\/deep-orbit\/foundations/);

@@ -87,6 +87,28 @@ module 1 one click away. Tests inverted to guard the removal
 of both visual specs (nothing to wait for on the landing page); landing
 baselines re-minted a third time.
 
+**Third same-day follow-up (owner: "structure the header better to use
+this whitespace"):** with the panel gone, the hero's furniture huddled in
+the left half. Restructured as a full-width fluid type wall: the headline
+scales as `clamp(3rem, 10vw - 1rem, 8.5rem)`. The formula comes from the
+longest line (17 mono chars at 0.555em per char: 0.6em advance minus
+0.045em tracking) having to clear the `md:px-20` gutters at every width;
+the 3rem floor is exactly the old mobile size (no change below ~640px)
+and the ceiling stops ultrawide growth at 136px. Below the wall, the
+subhead (left) and both CTAs (right) sit on one `justify-between`
+baseline row spanning the same measure; the row stacks below `md`.
+Measured 48/60.8/112/128px at 320/768/1280/1440, no horizontal overflow.
+
+Incidental fixes while verifying: `e2e/landing.spec.ts` "final CTA opens
+the free lesson" is now `test.slow()`. It is the suite's only navigation
+into the lesson route, which compiles on demand on a cold local
+`next dev` (9.5s measured) on top of compiling "/", and that blew the
+default 30s budget (failed 3/3 cold, passed 2/2 warm; unrelated to the
+hero change). CI runs `next start` and is unaffected. Also
+`npx playwright install webkit` was needed locally: the iPhone SE and
+iPad mobile projects run WebKit, and the binary was missing from the
+Playwright cache, failing silently in any run piped through `tail`.
+
 ## Test impact
 
 `e2e/landing.spec.ts` ("renders hero section with headline") asserts the
