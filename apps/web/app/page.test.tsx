@@ -79,14 +79,13 @@ vi.mock("framer-motion", () => ({
 
 describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   describe("LandingHero", () => {
-    it("renders the curiosity-hook landing headline", () => {
+    it("renders the story-first landing headline (owner baseline 2026-08-31)", () => {
       render(<LandingHero />);
-      // The headline is split across spans; match by combined text.
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(
-        /ml speaks javascript/i,
-      );
-      expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(
-        /turns out you'?re fluent/i,
+      // The headline is split across spans; the exact combined text also
+      // gates the trailing spaces that keep the accessibility tree legible
+      // across the block boundaries.
+      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
+        "Stories That Take You From JavaScript to ML.",
       );
     });
 
