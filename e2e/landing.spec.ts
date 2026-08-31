@@ -22,27 +22,14 @@ test.describe("Landing Page", () => {
     await expect(page.getByTestId("landing-cta-primary")).toBeInViewport();
   });
 
-  test("hero mounts the live inference demo panel", async ({ page }) => {
+  // The live Deep Scan proof panel was removed from the hero on 2026-08-31
+  // (owner request; spec 2026-08-31-landing-headline-story-first.md). The
+  // demo and its 7741 cliffhanger now mount only inside lessons, covered by
+  // deep-scan-demo.test.tsx and the lesson e2e specs.
+  test("hero no longer mounts the demo panel", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByTestId("hero-demo-panel")).toBeVisible();
-    // tfjs loads async post-hydration; the demo shell should attach even
-    // before inference finishes.
-    await expect(page.getByTestId("deep-scan-demo")).toBeAttached({
-      timeout: 15_000,
-    });
-  });
-
-  test("hero demo runs the real model to the 7741 cliffhanger", async ({
-    page,
-  }) => {
-    await page.goto("/");
-    // Real model load + staggered reveal takes a few seconds.
-    await expect(page.getByTestId("demo-verdict-7741")).toBeVisible({
-      timeout: 30_000,
-    });
-    await expect(page.getByTestId("demo-verdict-7741")).toContainText(
-      /not an answer/i,
-    );
+    await expect(page.getByTestId("landing-hero")).toBeVisible();
+    await expect(page.getByTestId("deep-scan-demo")).toHaveCount(0);
   });
 
   test("landing FAQ renders with answers visible", async ({ page }) => {

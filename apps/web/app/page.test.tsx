@@ -143,10 +143,12 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(container.textContent).not.toMatch(/pipeline/i);
     });
 
-    it("mounts the live-demo proof panel", () => {
+    it("no longer mounts the live-demo proof panel (removed 2026-08-31)", () => {
       render(<LandingHero />);
-      expect(screen.getByTestId("hero-demo-panel")).toBeInTheDocument();
-      expect(screen.getByTestId("deep-scan-demo-stub")).toBeInTheDocument();
+      expect(screen.queryByTestId("hero-demo-panel")).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId("deep-scan-demo-stub"),
+      ).not.toBeInTheDocument();
     });
   });
 

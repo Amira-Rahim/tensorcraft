@@ -1,17 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ParticleField } from "@tensorcraft/ui/effects";
-
-// The hero's proof panel is the free-tier Deep Scan demo: a real 4 KB TFJS
-// model classifying readings live in the visitor's tab. ssr:false, tfjs is
-// browser-only and the panel is post-LCP enhancement, not critical path.
-const DeepScanDemo = dynamic(
-  () => import("./mdx/deep-scan-demo").then((m) => m.DeepScanDemo),
-  { ssr: false },
-);
 
 /**
  * Brutalist landing hero (Phase 11 §11d Wave 1; conversion pass 2026-06-10).
@@ -19,8 +10,9 @@ const DeepScanDemo = dynamic(
  * - ParticleField canvas background (aria-hidden, z-0, low density).
  * - Square-edged CTAs (rounded-none) with hard brutalist-shadow.
  * - Mono labels, uppercase tracking, focus-visible rings.
- * - Right column embeds the live Deep Scan inference demo as proof of the
- *   headline's claim. Spec: docs/superpowers/specs/2026-06-10-hero-conversion-pass.md.
+ * - The live Deep Scan proof panel that filled the right column from
+ *   2026-06-10 was REMOVED on 2026-08-31 (owner request); the hero is a
+ *   single text column and DeepScanDemo now mounts only inside lessons.
  *
  * The landing headline ("Stories That / Take You From / JavaScript to ML.")
  * is the owner-decided baseline as of 2026-08-31 (story-first, category-clear
@@ -41,7 +33,7 @@ export function LandingHero() {
       />
       <div className="absolute inset-0 grid-bg pointer-events-none z-1" />
 
-      <div className="w-full grid lg:grid-cols-[minmax(0,620px)_minmax(0,1fr)] gap-16 lg:gap-24 items-center relative z-10">
+      <div className="w-full relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -78,18 +70,6 @@ export function LandingHero() {
             >
               Discover Tensorcraft
             </Link>
-          </div>
-        </motion.div>
-
-        <motion.div
-          data-testid="hero-demo-panel"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.25 }}
-          className="max-w-[560px] w-full lg:justify-self-end"
-        >
-          <div className="[&_[data-testid=deep-scan-demo]]:my-0 brutalist-shadow">
-            <DeepScanDemo framing headerLabel={null} />
           </div>
         </motion.div>
       </div>

@@ -73,13 +73,19 @@ ship it."), both CTAs, and the live Deep Scan demo panel. The subhead
 carries the category and method; the demo still proves that ML runs in the
 visitor's tab.
 
-**Same-day follow-up (owner request):** the demo panel's terminal header
-bar ("LIVE DEMO · running in your tab") is removed from the hero. The
-`DeepScanDemo` prop contract is now `headerLabel?: string | null`:
-`undefined` keeps the lesson default label, `null` omits the bar entirely
-(only the hero passes `null`). The panel opens on its framing line, which
-already says what it is. Unit tests cover both branches
-(`deep-scan-demo.test.tsx`); landing baselines re-minted again.
+**Same-day follow-up (owner request), supersedes the sentence above about
+the demo panel:** the live Deep Scan proof panel is REMOVED from the hero
+entirely (first its terminal header bar, then, on a second request, the
+whole panel). The hero is now a single left-aligned text column over the
+ParticleField; the grid, the dynamic `DeepScanDemo` import, and the
+`hero-demo-panel` wrapper are gone from `landing-hero.tsx`. `DeepScanDemo`
+itself is untouched (an interim `headerLabel: null` contract was reverted
+as unused) and still mounts inside lessons; the landing page's live proof
+of "ML runs in your tab" now rests on the bridge section and the free
+module 1 one click away. Tests inverted to guard the removal
+(`page.test.tsx`, `e2e/landing.spec.ts`); the demo settle-waits came out
+of both visual specs (nothing to wait for on the landing page); landing
+baselines re-minted a third time.
 
 ## Test impact
 

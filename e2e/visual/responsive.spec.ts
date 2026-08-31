@@ -55,19 +55,10 @@ test.describe("Visual: Responsive Breakpoints", () => {
         await page.evaluate(async () => {
           await document.fonts.ready;
         });
-        // The hero's Deep Scan demo is ssr:false and loads its model on
-        // hydration (no IO gate): "loading" renders a one-line placeholder,
-        // "done" renders the sample rows, so fullPage HEIGHT depends on
-        // capture timing. The 320px baseline self-failed on 2026-08-31
-        // (8596px vs 8704px, a 108px stacked-panel delta). Masking cannot
-        // fix a height race; wait for the terminal state instead. "error"
-        // is deliberately not accepted: a baseline minted from the error
-        // state would be a bad baseline, so fail loudly via timeout.
-        if (pageDef.name === "landing") {
-          await page
-            .locator('[data-testid="deep-scan-demo"][data-status="done"]')
-            .waitFor();
-        }
+        // If a captured page ever mounts a component whose HEIGHT depends
+        // on load state (the removed hero Deep Scan demo self-failed the
+        // 320px baseline this way on 2026-08-31), wait for its terminal
+        // state before capture; see "layout race" in docs/visual-regression.md.
         await expect(page).toHaveScreenshot(`${pageDef.name}-${bp.label}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,

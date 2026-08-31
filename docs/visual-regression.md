@@ -119,14 +119,15 @@ If a test is still flaky, consider:
 
 A mask cannot fix a LAYOUT race: with `fullPage: true` the screenshot's
 dimensions are part of the assertion, so a component whose height depends
-on load state fails on image size before any mask applies. The landing
-hero's Deep Scan demo is the known case (ssr:false, no IO gate; its
-"loading" render is one line, its settled render is a row table, a 108px
-delta that self-failed the 320px baseline on 2026-08-31). Fix pattern:
-expose the component's state machine as a DOM attribute
-(`data-status={status}`) and `waitFor()` the terminal state before
-capture; both landing visual specs do this. Do not accept the error state
-into a baseline - let the wait time out loudly instead.
+on load state fails on image size before any mask applies. The known case
+was the Deep Scan demo while it lived in the landing hero (ssr:false, no
+IO gate; its "loading" render is one line, its settled render is a row
+table, a 108px delta that self-failed the 320px baseline on 2026-08-31;
+the panel was removed from the hero later that day). Fix pattern, should
+a captured page mount such a component again: expose its state machine as
+a DOM attribute (`data-status={status}`, which `DeepScanDemo` still does)
+and `waitFor()` the terminal state before capture. Do not accept the
+error state into a baseline - let the wait time out loudly instead.
 
 Note when re-minting landing baselines: they cannot verify hero content
 at all. `maskCanvas` masks every canvas and `ParticleField` spans the
