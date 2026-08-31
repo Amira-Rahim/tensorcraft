@@ -106,10 +106,15 @@ export default function LearnPage() {
           removed 2026-08-31 (owner request); these two paragraphs are now
           the page's whole indexable text layer. */}
       <section className="border-b border-border px-10 md:px-20 py-14 md:py-16 text-center">
-        <h1 className="text-3xl md:text-4xl font-mono font-black leading-[1.05] tracking-[-0.03em] mb-5 max-w-[720px] mx-auto">
+        {/* Fluid one-liner (owner: "spread across the grid", 2026-08-31):
+            38 mono chars at 0.57em per char (0.6em advance minus 0.03em
+            tracking) fit inside the md:px-20 gutters from ~1024px up, so
+            the H1 runs as a single line across the grid on desktop and
+            wraps naturally below. */}
+        <h1 className="text-[clamp(2.25rem,calc(4.6vw-0.5rem),4.5rem)] font-mono font-black leading-[1.05] tracking-[-0.03em] mb-6">
           Learn Machine Learning with JavaScript
         </h1>
-        <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-4 max-w-[640px] mx-auto">
+        <p className="text-lg md:text-2xl text-text-muted font-sans leading-relaxed mb-4 max-w-[70ch] mx-auto">
           You already think in arrays, state, and async. Machine learning uses
           the same patterns under different names. Tensorcraft maps those
           patterns with {WORLD_CONTENT.lessonBridges} JavaScript-to-ML bridges
@@ -117,7 +122,7 @@ export default function LearnPage() {
           modules aboard a station in deep orbit. Every lesson is TypeScript
           that runs in your browser.
         </p>
-        <p className="text-base text-text-muted font-sans leading-relaxed mb-10 max-w-[640px] mx-auto">
+        <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-10 max-w-[70ch] mx-auto">
           Module 1 of{" "}
           <Link
             href="/worlds/deep-orbit"
