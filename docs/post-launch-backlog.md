@@ -373,12 +373,15 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] **/learn v5 video-first (2026-08-27), supersedes the v4 store page.**
   The owner's Flow/Veo trailer (72s, Epidemic "ES_Slipping" bed) shipped
   to `public/media/learn-trailer*`; the page is now trailer hero ->
-  crew line -> collapsible "About this video" transcript -> close CTAs.
-  Video SEO: VideoObject JSON-LD + sitemap `videos` entry + the visible
-  transcript block. Store-page components deleted (git history keeps
-  them). Watch GSC after deploy: the owner accepted the thin-content
-  tradeoff; if the "javascript machine learning" cluster slips, the
-  lever is expanding the transcript block, not restoring sections.
+  crew line -> close CTAs. Video SEO: VideoObject JSON-LD + sitemap
+  `videos` entry. Store-page components deleted (git history keeps
+  them). 2026-08-31 (owner request): the collapsible "About this video"
+  transcript block was removed too, so the H1 + two intro paragraphs are
+  the page's whole indexable text layer now. Watch GSC after deploy: the
+  owner accepted the thin-content tradeoff twice; the previously
+  documented lever ("expand the transcript block") no longer exists, so
+  if the "javascript machine learning" cluster slips, bring the owner
+  options rather than restoring removed sections unprompted.
   Original v4 record follows for history:
 - [x] **/learn v4 trailer + store page (2026-08-25).** Owner rulings: the
   page video is a produced movie trailer in game-trailer grammar (title

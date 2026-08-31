@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { BRIDGES } from "@tensorcraft/shared";
 import type { BridgeTier } from "@tensorcraft/shared";
@@ -136,16 +135,10 @@ export function BridgePreviewSection() {
         </p>
       </div>
 
-      {/* Section exit CTA */}
-      <div className="border-t border-border px-10 md:px-20 py-8 text-center">
-        <Link
-          href="/worlds/deep-orbit/foundations/introduction-to-tensors"
-          data-testid="bridge-section-cta"
-          className="inline-flex items-center gap-2 font-mono text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-        >
-          Write your first tensor (a nested array of numbers), free →
-        </Link>
-      </div>
+      {/* The section exit CTA ("Write your first tensor..., free") was
+          removed 2026-08-31 (owner request); the hero's primary CTA above
+          and the closing section's CTA below both point at the same free
+          lesson, so the section ends on its content. */}
     </section>
   );
 }

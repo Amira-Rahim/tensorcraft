@@ -191,12 +191,12 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(screen.queryByTestId("bridge-counter")).toBeNull();
     });
 
-    it("has a section exit CTA pointing at the free lesson", () => {
+    it("no longer renders the section exit CTA (removed 2026-08-31)", () => {
       render(<BridgePreviewSection />);
-      const cta = screen.getByTestId("bridge-section-cta");
-      expect(cta.getAttribute("href")).toBe(
-        "/worlds/deep-orbit/foundations/introduction-to-tensors",
-      );
+      expect(
+        screen.queryByTestId("bridge-section-cta"),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText(/write your first tensor/i)).toBeNull();
     });
 
     it("does not render the removed bridge-explanation footer", () => {

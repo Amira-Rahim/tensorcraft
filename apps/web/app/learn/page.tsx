@@ -102,7 +102,9 @@ export default function LearnPage() {
 
       {/* Below the film: the page's words. The H1 keeps the search
           identity; the free-module line carries the canonical Deep Orbit
-          link; the details block is the indexable transcript. */}
+          link. The collapsible "About this video" transcript block was
+          removed 2026-08-31 (owner request); these two paragraphs are now
+          the page's whole indexable text layer. */}
       <section className="border-b border-border px-10 md:px-20 py-14 md:py-16 text-center">
         <h1 className="text-3xl md:text-4xl font-mono font-black leading-[1.05] tracking-[-0.03em] mb-5 max-w-[720px] mx-auto">
           Learn Machine Learning with JavaScript
@@ -128,35 +130,6 @@ export default function LearnPage() {
         <div className="flex justify-center">
           <CrewStrip />
         </div>
-
-        <details className="mt-10 max-w-[720px] mx-auto text-left border border-border bg-surface">
-          <summary className="cursor-pointer px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-            About this video
-          </summary>
-          <div className="px-5 pb-5 pt-2 space-y-4 text-base text-text-muted font-sans leading-relaxed">
-            <p>
-              Tensorcraft teaches machine learning in TypeScript, in the
-              browser. Every lesson runs real TensorFlow.js against tests as you
-              read, so there is nothing to install, and the model you finish
-              with works anywhere a browser does. No Python required.
-            </p>
-            <p>
-              The teaching mechanic is the JavaScript-to-ML bridge:{" "}
-              {WORLD_CONTENT.lessonBridges} of them anchor ML concepts to code
-              you already write, each labeled where the analogy breaks.
-            </p>
-            <p>
-              Deep Orbit, the live course in the video, is one continuous story:
-              a research station is tracking a sensor reading that its model
-              cannot classify, and you are the engineer they bring in. Across{" "}
-              {WORLD_CONTENT.modulesPerWorld} modules it teaches neural
-              networks, training and gradient descent (how a model learns from
-              its own errors), signal processing, and anomaly detection, and
-              ends with a capstone model you ship. Module 1 is free in full: no
-              account, no credit card.
-            </p>
-          </div>
-        </details>
       </section>
 
       {/* Close: the one symmetric moment on the page. */}

@@ -71,12 +71,13 @@ describe("LearnPage SEO payload", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders the indexable transcript block", () => {
-    // The video-SEO trade: the film carries the page, the details block
-    // carries the words. It must stay visible (real DOM, no cloaking).
+  it("no longer renders the About this video transcript block (removed 2026-08-31)", () => {
+    // Owner request 2026-08-31. The intro paragraphs are now the page's
+    // whole indexable text layer; the VideoObject JSON-LD and sitemap
+    // video entry are untouched.
     const { container } = render(<LearnPage />);
-    expect(screen.getByText("About this video")).toBeInTheDocument();
-    expect(container.textContent).toContain("where the analogy breaks");
+    expect(screen.queryByText("About this video")).toBeNull();
+    expect(container.textContent).not.toContain("where the analogy breaks");
   });
 
   it("emits BreadcrumbList always, VideoObject only with the trailer", () => {

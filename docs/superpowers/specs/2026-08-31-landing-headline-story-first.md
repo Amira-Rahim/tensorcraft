@@ -99,6 +99,13 @@ subhead (left) and both CTAs (right) sit on one `justify-between`
 baseline row spanning the same measure; the row stacks below `md`.
 Measured 48/60.8/112/128px at 320/768/1280/1440, no horizontal overflow.
 
+**Fourth same-day follow-up (owner request):** the bridge section's exit
+CTA ("Write your first tensor (a nested array of numbers), free") is
+removed along with its bordered strip; the section now ends on the
+connection band. The hero's primary CTA and the closing section's CTA
+both already point at the same free lesson. Unit test inverted to guard
+the removal; landing baselines re-minted.
+
 Incidental fixes while verifying: `e2e/landing.spec.ts` "final CTA opens
 the free lesson" is now `test.slow()`. It is the suite's only navigation
 into the lesson route, which compiles on demand on a cold local
