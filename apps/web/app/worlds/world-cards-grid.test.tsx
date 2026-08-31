@@ -37,7 +37,7 @@ function makeCard(overrides: Partial<WorldCardData> = {}): WorldCardData {
     owned: false,
     modulesCount: 11,
     lessonsCount: 56,
-    price: 59,
+    price: 50,
     status: "live",
     ...overrides,
   };

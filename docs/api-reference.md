@@ -137,10 +137,10 @@ Create a Stripe Checkout session. **Authenticated.**
 
 | `planId` | `worldIds` | Price |
 |----------|-----------|-------|
-| `single` | Any one world | $59 |
-| `two` | Any two worlds | $99 |
-| `three` | Any three worlds | $129 |
-| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $159 |
+| `single` | Any one world | $50 |
+| `two` | Any two worlds | $90 |
+| `three` | Any three worlds | $225 |
+| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $225 |
 
 **Example - All 5 Worlds:**
 ```json

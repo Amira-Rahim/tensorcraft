@@ -8,7 +8,7 @@ import { PRICING } from "@tensorcraft/shared";
 export const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Can I learn machine learning with JavaScript?",
-    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript using the TensorFlow.js library. You will build models, then train and run them in the browser right in the lessons; the same code runs under Node. No Python required. The live world, Deep Orbit, covers topics like neural networks, recurrent networks (LSTMs), signal processing, and attention. More topics are covered in the upcoming worlds.",
+    a: "Yes. Tensorcraft teaches machine learning entirely in JavaScript using the TensorFlow.js library. You will build models, then train and run them in the browser right in the lessons; the same code runs under Node. No Python required. The live world, Deep Orbit, covers topics like neural networks, recurrent networks (LSTMs, models that read data in sequence), signal processing (finding patterns in noisy data), and attention, the mechanism behind today's AI models. More topics are covered in the upcoming worlds.",
   },
   // The next three absorb the load-bearing "Skip it if you" objections when
   // the landing Who This Is For section was cut (2026-08-16): Python-stack

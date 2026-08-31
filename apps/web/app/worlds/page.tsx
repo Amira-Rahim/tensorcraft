@@ -16,7 +16,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: `ML Courses in JavaScript: ${LAUNCHED_WORLDS.length} live, ${WORLD_SLUGS.length - LAUNCHED_WORLDS.length} coming | Tensorcraft`,
   description:
-    "Deep Orbit, a time-series and signals course in JavaScript, is live. Four more story worlds (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) are coming; join the waitlists.",
+    "Deep Orbit, a JavaScript course on reading signals and data that arrive over time (time series), is live. Four more story worlds (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) are coming; join the waitlists.",
   alternates: { canonical: "https://tensorcraft.app/worlds" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of

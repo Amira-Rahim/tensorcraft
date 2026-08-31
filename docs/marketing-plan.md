@@ -3,7 +3,7 @@
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
 > The other 4 worlds appear as "coming soon" cards with waitlist forms. The
 > bundled pricing tiers described below (2-world / 3-world / all-five) are
-> **unavailable at V1** - only the single-world $59 SKU is purchasable.
+> **unavailable at V1** - only the single-world $50 SKU is purchasable.
 > Activate the bundle tiers when additional worlds ship. Authoritative spec:
 > [`launch-scope.md`](./launch-scope.md). Treat any "five worlds," "275
 > lessons," or "Discord community" claims below as **post-V1 roadmap**, not
@@ -15,7 +15,7 @@ Tensorcraft is an interactive machine learning education platform built specific
 
 The platform's core differentiator is its library of 50+ JS-to-ML concept bridges: structured explanations that map familiar JavaScript patterns (component state, reactive data flow, middleware chains, event propagation) directly onto ML concepts (model weights, gradient descent, backpropagation, optimization). This approach eliminates the "blank slate" problem that causes most JavaScript developers to abandon ML learning within the first week.
 
-Tensorcraft is delivered as five story-driven worlds, each with a distinct narrative, visual identity, and character cast. All courses run entirely in the browser - no Python environment, no Jupyter notebooks, no conda installs. Learners purchase individual worlds at $59 each (not a subscription), with Module 1 free across all worlds to reduce friction.
+Tensorcraft is delivered as five story-driven worlds, each with a distinct narrative, visual identity, and character cast. All courses run entirely in the browser - no Python environment, no Jupyter notebooks, no conda installs. Learners purchase individual worlds at $50 each (not a subscription), with Module 1 free across all worlds to reduce friction.
 
 This marketing plan outlines the strategy for taking Tensorcraft from launch through full scale, targeting a community of 10,000 active learners and $500K in revenue within the first 18 months.
 
@@ -103,10 +103,10 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 | Tier          | Price | Includes                                    |
 |---------------|-------|---------------------------------------------|
 | Free Preview  | $0    | Module 1 of any world (5 lessons)           |
-| Single World  | $59   | All modules of one world                    |
-| Two Worlds    | $99   | Any two worlds ($19 savings)                |
-| Three Worlds  | $129  | Any three worlds ($48 savings)              |
-| All 5 Worlds  | $159  | Lifetime access to all worlds (best value)  |
+| Single World  | $50   | All modules of one world                    |
+| Two Worlds    | $90   | Any two worlds ($10 savings)                |
+| Three Worlds  | $135  | Any three worlds ($15 savings)              |
+| All 5 Worlds  | $225  | Lifetime access to all worlds (best value)  |
 
 ### Team Pricing
 
@@ -124,8 +124,8 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 
 ### Pricing Psychology
 
-- The $59 single-world price anchors against $99 for two, making the bundle feel like a deal.
-- Free Module 1 eliminates purchase anxiety - learners already know what they're getting before paying $59.
+- The $50 single-world price anchors against $90 for two, making the bundle feel like a deal.
+- Free Module 1 eliminates purchase anxiety - learners already know what they're getting before paying $50.
 - Team pricing (post-V1.0) will be positioned as "all worlds included" to increase perceived value.
 - No subscription means no churn problem. Revenue is transactional but predictable via launch cycles.
 
@@ -138,13 +138,13 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 - **Month 1-2:** Core platform development. Landing page live. Email capture begins.
 - **Month 3-4:** Content production for Deep Orbit Modules 1-3. Beta tester recruitment.
 - **Month 5:** Closed beta with 50-100 testers. Collect feedback, fix issues.
-- **Month 6 (V0.5):** Public launch - Deep Orbit at $59. Module 1 free preview.
+- **Month 6 (V0.5):** Public launch - Deep Orbit at $50. Module 1 free preview.
 
 ### Phase 2: Completion (Months 7-10)
 
 - **Month 7-8:** Deep Orbit Modules 4-6 production. Community building intensifies.
 - **Month 9:** Deep Orbit Modules 4-6 released (free update for world owners).
-- **Month 10 (V1.0):** Deep Orbit complete. Price holds at $59. Full launch campaign.
+- **Month 10 (V1.0):** Deep Orbit complete. Price holds at $50. Full launch campaign.
 
 ### Phase 3: Expansion (Months 11-14)
 
@@ -330,7 +330,7 @@ All paid traffic flows through a single, optimized funnel:
 1. **Ad click** -> Landing page (world-specific or bridge-specific based on ad content)
 2. **Landing page** -> Free Module 1 signup (primary CTA) or email capture (secondary CTA)
 3. **Free Module 1** -> Complete Module 1 (trigger email nurture sequence)
-4. **Email nurture** -> Purchase world at $59
+4. **Email nurture** -> Purchase world at $50
 5. **Post-purchase** -> Upsell to bundle (email sequence triggers at 50% completion)
 
 **CAC trajectory:**
@@ -526,9 +526,9 @@ Post-waitlist-signup email sequence to keep subscribers engaged until launch.
 | 5 | Day 21 | 5 things you can build with JavaScript ML | Practical project showcase (sentiment analysis, image classification, anomaly detection, recommendations, search ranking) | Demonstrate practical value |
 | 6 | Day 30 | Behind the scenes: how we built Tensorcraft | Technical deep-dive on the platform (Next.js, Sandpack, TensorFlow.js, design system) | Build trust through transparency |
 | 7 | Day 45 | The bridge that surprised us most | Highlight an unexpected JS-to-ML bridge that beta testers loved, include their quotes. **Note: Testimonials/quotes descoped until real testimonials are available.** | Social proof + engagement |
-| 8 | Day 60 | Tensorcraft launch date announcement | Announce the launch date, full world pricing ($59), and what's included | Create anticipation |
+| 8 | Day 60 | Tensorcraft launch date announcement | Announce the launch date, full world pricing ($50), and what's included | Create anticipation |
 | 9 | Day 75 | 1 week until launch: here's your plan | Pre-launch checklist for the reader (block 2 hours, bookmark the URL, prepare your dev environment - just kidding, it's browser-based) | Build urgency with humor |
-| 10 | Launch Day | Tensorcraft is LIVE. Your bridge awaits. | Launch announcement, launch pricing ($59), direct link to free Module 1, 48-hour launch discount | Convert to signup/purchase |
+| 10 | Launch Day | Tensorcraft is LIVE. Your bridge awaits. | Launch announcement, launch pricing ($50), direct link to free Module 1, 48-hour launch discount | Convert to signup/purchase |
 | 11 | Launch +7 | How the first week went (honest numbers) | Transparent update on launch results, learner count, first testimonials, what's next. **Note: Testimonials descoped until real testimonials are available.** | Build community through transparency |
 
 ## 5.4 Waitlist Target
@@ -542,7 +542,7 @@ Conversion math:
 - 20% of visitors start free Module 1 = 180 free users from waitlist email
 - Plus organic launch day traffic (Product Hunt, HN, Twitter/X) = estimated 2,000-5,000 additional visitors
 - 8-12% free-to-paid conversion over 30 days = 200-500 paid users in first month
-- At $59 per world: $11,800-$29,500 launch month revenue
+- At $50 per world: $10,000-$25,000 launch month revenue
 
 The waitlist is not just a launch asset - it's the foundation of the email nurture engine that drives long-term revenue. Every subscriber who doesn't convert at launch enters the ongoing newsletter funnel.
 

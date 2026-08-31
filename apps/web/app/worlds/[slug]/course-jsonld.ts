@@ -41,7 +41,7 @@ export function buildCourseJsonLd(world: WorldManifest) {
       // Google's Course-info rich result requires offers.category; every
       // other field here can be valid and the page is still ineligible
       // without it (confirmed against the live page, 2026-08-17). "Paid",
-      // not "Partially Free": the $59 purchase IS the course, and module 1
+      // not "Partially Free": the $50 purchase IS the course, and module 1
       // is framed product-wide as a free preview with its own $0 offer in
       // the /pricing OfferCatalog.
       category: "Paid",

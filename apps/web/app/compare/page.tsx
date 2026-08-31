@@ -62,7 +62,8 @@ const ROWS: Row[] = [
   },
   {
     feature: "Math depth",
-    tensorcraft: "Chain rule, DFT, cross-entropy derived in optional drawers",
+    tensorcraft:
+      "The heavy math (chain rule, Fourier transforms, cross-entropy) derived in optional drawers you can skip",
     fastai: "Pragmatic depth, not paper-grade",
     karpathy: "Paper-grade: autograd from scratch, attention from scratch",
     coursera: "Theory + math, exam-grade",
@@ -135,9 +136,10 @@ export default function ComparePage() {
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mb-12">
           <p>
-            Tensorcraft is not the right course for everyone. If you want
-            paper-grade autograd internals, Karpathy&apos;s Zero-to-Hero is free
-            and excellent. If you want hands-on PyTorch with Hugging Face
+            Tensorcraft is not the right course for everyone. If you want to
+            build the training machinery itself from raw math (paper-grade
+            autograd internals), Karpathy&apos;s Zero-to-Hero is free and
+            excellent. If you want hands-on PyTorch with Hugging Face
             superpowers, fast.ai is free and excellent. If you want a graded
             credential for your CV, Coursera does that and we don&apos;t.
           </p>

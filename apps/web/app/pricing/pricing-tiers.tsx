@@ -49,7 +49,7 @@ function WorldPicker({
             onClick={() => !isOwned && !isFull && onToggle(t.slug)}
             disabled={isOwned || isFull}
             // Selection was conveyed ONLY by colour (border/background/weight),
-            // so a screen-reader user building a $99-$159 bundle had no way to
+            // so a screen-reader user building a $90-$225 bundle had no way to
             // know which worlds were in their basket, and the state was
             // invisible to anyone who cannot distinguish the accent. This is
             // purchasing information, not decoration. WCAG 4.1.2 and 1.4.1.

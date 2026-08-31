@@ -100,9 +100,10 @@ export default function PaywallPage() {
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
             You&rsquo;ve seen how ML concepts map onto JavaScript you already
             write. Modules 2-11 are where you stop translating and start
-            shipping: layers, backpropagation, signal processing, recurrent
-            networks, and a capstone, a working browser-side ML system you
-            assemble piece by piece.
+            shipping: layers stacked into a real network, backpropagation (how
+            the model learns from its own errors), pulling patterns out of noisy
+            signals, recurrent networks (models with memory), and a capstone, a
+            working browser-side ML system you assemble piece by piece.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <PaywallCtaTracker>

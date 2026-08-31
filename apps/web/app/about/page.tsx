@@ -143,15 +143,17 @@ export default function AboutPage() {
               <span className="text-text-primary font-mono text-sm">
                 GPU training pipelines.
               </span>{" "}
-              Browser ML lives within the inference budget the user&apos;s
-              device gives you. Distributed GPU training is a different sport.
+              Browser ML lives within the compute budget the user&apos;s device
+              gives you when the model runs. Distributed GPU training is a
+              different sport.
             </li>
             <li>
               <span className="text-text-primary font-mono text-sm">
                 Paper-grade math derivations.
               </span>{" "}
-              Chain rule, softmax, KL, cross-entropy. All derived. Beyond that,
-              Karpathy&apos;s Zero-to-Hero is the right course.
+              The math the course needs (chain rule, softmax, KL, cross-entropy)
+              is all derived when it first appears. Beyond that, Karpathy&apos;s
+              Zero-to-Hero is the right course.
             </li>
             <li>
               <span className="text-text-primary font-mono text-sm">

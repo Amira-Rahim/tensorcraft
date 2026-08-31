@@ -122,7 +122,7 @@ This document is the single source of truth for all development work needed to s
 - [x] 15 HTML prototypes covering full user journey (landing, auth, onboarding, dashboard, world-selection, module-overview, lesson-viewer, exercise, pricing, settings, paywall, bridge-explorer, capstone, purchase-confirmation, index)
 - [x] PRD, tech-spec, product-plan, ui-ux-notes, marketing-plan
 - [x] 5 world scripts (Deep Orbit complete, 4 outlines)
-- [x] Pricing model aligned across all docs (per-model $59, bundles $99/$129/$159) - rebased from $79/$129/$169/$219 on 2026-05-05; single raised $49→$59 + bundles $99/$129/$159 on 2026-06-20
+- [x] Pricing model aligned across all docs (per-model $50, bundles $90/$135/$225) - rebased from $79/$129/$169/$219 on 2026-05-05; single raised $49→$59 + bundles $99/$129/$159 on 2026-06-20; re-priced to $50/$90/$135/$225 on 2026-08-31 (bundles flat 10% off retail)
 - [x] Database schema added to tech-spec (profiles, purchases, world_progress, waitlist_signups)
 - [x] Bridge quality tiers documented (Identity/Structural/Intuition)
 - [x] GitHub retroactive push behavior specified in tech-spec 5.3
@@ -140,7 +140,7 @@ All blocking decisions have been resolved. This table documents the final choice
 | --- | --- | --- | --- |
 | 1 | **V0.5 module scope** | All 11 Deep Orbit modules (55 lessons) authored; all 5 worlds content-complete (275 lessons total). V0.5 gates access to Deep Orbit only. *(OBSOLETE: all worlds launch simultaneously as of 2026-04-13)* | Originally M1–3; content authoring exceeded plan. |
 | 2 | **Database** | Supabase (PostgreSQL + Auth + RLS) | Already implemented in architecture. Auth + RLS from day one. |
-| 3 | **Bundle pricing** | $59 single / $99 two / $129 three / $159 all five | Diminishing per-world cost. All tiers are one-time purchases. (Rebased from $79/$129/$169/$219 on 2026-05-05; raised to $59/$99/$129/$159 on 2026-06-20 after market audit - founder anchor dropped.) |
+| 3 | **Bundle pricing** | $50 single / $90 two / $135 three / $225 all five | Diminishing per-world cost. All tiers are one-time purchases. (Rebased from $79/$129/$169/$219 on 2026-05-05; raised to $59/$99/$129/$159 on 2026-06-20 after market audit - founder anchor dropped; re-priced to $50/$90/$135/$225 on 2026-08-31 (bundles flat 10% off retail).) |
 | 4 | **Payment processor** | Stripe Checkout + Webhooks | One-time purchases. No subscriptions. Webhook-driven fulfillment. |
 | 5 | **Code execution** | TensorFlow.js in Sandpack | Client-side only. No server sandbox. |
 | 6 | **Narrative branching** | Convergent (single path) | Simpler content pipeline. All 5C variations are structural, not branching. |
@@ -150,7 +150,7 @@ All blocking decisions have been resolved. This table documents the final choice
 | 10 | **Code highlighting** | Code Hike (Shiki-based) | Scrollytelling for JS Bridge side-by-side code comparisons. |
 | 11 | **Email provider** | Kit (ConvertKit) | Waitlist, per-world segments, 11-email nurture sequence. |
 | 12 | **Team pricing** | Deferred to post-V1.0 | No team tiers at launch. Added to product plan as future phase. |
-| 13 | **Early Access tier** | Removed | V0.5 uses Free (M1) + $59 (full world). No intermediate tier. |
+| 13 | **Early Access tier** | Removed | V0.5 uses Free (M1) + $50 (full world). No intermediate tier. |
 | 14 | **Ship name** | Archimedes | Consistent across all docs and prototypes. |
 | 15 | **Nova Canvas model** | Nova Canvas (not "Nova Canvas" or "Nova Gen Engine") | Simplified. |
 
@@ -260,7 +260,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Product preview mockup (2-col: narrative + code editor with syntax highlighting)
 - [x] 6 JS-to-ML bridge cards in 3-column grid (Math.max→ReLU, Array.map→NN, etc.)
 - [x] World showcase: Deep Orbit featured hero card (2-col + code mockup) + 4 coming-soon cards in 2x2 grid
-- [x] Stats section (50+ bridges, 275 lessons, 5 worlds, $59/world) - price rebased 2026-05-05, raised 2026-06-20
+- [x] Stats section (50+ bridges, 275 lessons, 5 worlds, $50/world) - price rebased 2026-05-05, raised 2026-06-20, re-priced 2026-08-31
 - [x] CTA footer with gradient background
 - [x] All animations respect `prefers-reduced-motion`
 
@@ -361,7 +361,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 4a. Pricing Page
 
 - [x] Build from `prototypes/pricing.html`
-- [x] 5 individual tiers: Free Preview ($0), Single World ($59), Two Worlds ($99), Three Worlds ($129), All 5 Worlds ($159) - rebased from $79/$129/$169/$219 on 2026-05-05, raised 2026-06-20
+- [x] 5 individual tiers: Free Preview ($0), Single World ($50), Two Worlds ($90), Three Worlds ($135), All 5 Worlds ($225) - rebased from $79/$129/$169/$219 on 2026-05-05, raised 2026-06-20, re-priced 2026-08-31
 - [ ] Team pricing: Deferred to post-V1.0. Design based on enterprise demand data.
 - [x] FAQ accordion (interactive)
 - [x] Feature comparison table
@@ -759,7 +759,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 7g. Bundle & Team Pricing
 
-- [x] Bundle purchase flow ($99 two worlds, $129 three worlds, $159 all five - rebased 2026-05-05, raised 2026-06-20) - `checkout-button.tsx` accepts `worldIds: string[]`; `/api/payments/checkout` handles multi-world plans; pricing page ships all four paid tiers live at tensorcraft.app/pricing
+- [x] Bundle purchase flow ($90 two worlds, $135 three worlds, $225 all five - rebased 2026-05-05, raised 2026-06-20, re-priced 2026-08-31) - `checkout-button.tsx` accepts `worldIds: string[]`; `/api/payments/checkout` handles multi-world plans; pricing page ships all four paid tiers live at tensorcraft.app/pricing
 - [ ] Team license management (admin dashboard, seat assignment, progress reports) - deferred to V2.0 Constellation
 - [x] Upgrade credit logic (pay difference when moving to higher tier). COMPLETED 2026-04-14.
 
@@ -858,7 +858,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Auth pages: sign-in/sign-up rendering, OAuth buttons, magic link, guest link
 - [x] Legal pages: terms/privacy content, back links, cookie consent banner
 - [x] Learning routes: worlds listing (LIVE badges), world detail with modules, module overview with lesson cards, lesson viewer with 6-step progression (progress bar, Continue button, Back link), 404 handling
-- [x] Pricing page: all tiers ($0/$59/$99/$129/$159 - rebased 2026-05-05, raised 2026-06-20), feature comparison, CTA
+- [x] Pricing page: all tiers ($0/$50/$90/$135/$225 - rebased 2026-05-05, raised 2026-06-20, re-priced 2026-08-31), feature comparison, CTA
 - [x] Onboarding page: auth redirect for unauthenticated users
 - [x] E2E test suite - fixed broken tests for 6-step lesson UI, added pricing + onboarding specs. COMPLETED 2026-04-14.
 - [ ] Fix E2E selector precision issues - use `getByRole` over `getByText` where multiple matches exist
@@ -969,7 +969,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Success criteria:
   - NPS ≥ 40
   - ≥ 70% module completion rate across cohort
-  - ≥ 80% would pay $59
+  - ≥ 80% would pay $50
   - < 5% of lessons flagged as "confusing" by > 20% of testers
 
 ### 9b. Content Authoring Infrastructure
@@ -1040,7 +1040,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [ ] Risk #1 (story fatigue): Implement narrative on/off toggle (default: on). Track skip rates per lesson. If >40% skip in any module, flag for narrative redesign.
 - [ ] Risk #5 (animation complexity): Prototype the 3 most complex interactive animations first. If any takes >2x estimated time, simplify or replace with pre-rendered alternatives.
-- [ ] Risk #3 (pricing resistance): Validate willingness-to-pay during beta exit survey. If <70% would pay $59, evaluate $49 launch promo.
+- [ ] Risk #3 (pricing resistance): Validate willingness-to-pay during beta exit survey. If <70% would pay $50, evaluate $45 launch promo.
 
 ### 10d. Success Metrics Dashboard
 
@@ -1226,7 +1226,7 @@ Historical placeholder-link inventory (prototypes deleted; links now embedded in
 | --- | --- | --- | --- | --- |
 | 1 | Story fatigue - learners skip narrative | Medium | High | Make narrative optional (default on). Track skip rates. If >40% skip, redesign to be shorter/more decision-driven |
 | 2 | Bridge confusion - bridges feel forced | Low | High | 2 JS devs + 1 ML engineer review each bridge. Remove/rewrite if <3/5 clarity |
-| 3 | Pricing resistance - $59 feels too high | Medium | High | Validate willingness-to-pay in beta. Consider $49 launch promo |
+| 3 | Pricing resistance - $50 feels too high | Medium | High | Validate willingness-to-pay in beta. Consider $45 launch promo |
 | 4 | Scope creep on V0.5 | High | Medium | Strict scope doc. Weekly review. Addition = removal of equal effort |
 | 5 | Interactive animation complexity | Medium | Medium | Prototype 3 most complex first. If >2x time, simplify or pre-render |
 | 6 | GitHub integration reliability | Medium | Low | Robust retry logic. GitHub integration optional. Queue commits + retry on failure |

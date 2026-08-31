@@ -237,14 +237,14 @@ describe("ModuleMapClient", () => {
         unlockHref={undefined}
         lockedTeaser={{
           href: "/pricing?locked=deep-orbit",
-          label: "From $59 · Module 1 free",
+          label: "From $50 · Module 1 free",
         }}
       />,
     );
 
     const teaser = screen.getByTestId("locked-teaser");
     expect(teaser).toHaveAttribute("href", "/pricing?locked=deep-orbit");
-    expect(teaser).toHaveTextContent("From $59 · Module 1 free");
+    expect(teaser).toHaveTextContent("From $50 · Module 1 free");
   });
 
   it("locked guest rows are clickable across the whole row, title included", () => {
@@ -269,7 +269,7 @@ describe("ModuleMapClient", () => {
         modules={[makeModule(), locked2, locked3]}
         lockedTeaser={{
           href: "/pricing?locked=deep-orbit",
-          label: "From $59 · Module 1 free",
+          label: "From $50 · Module 1 free",
         }}
       />,
     );
@@ -302,12 +302,12 @@ describe("ModuleMapClient", () => {
         modules={[makeModule(), locked2, locked3]}
         lockedTeaser={{
           href: "/pricing?locked=deep-orbit",
-          label: "From $59 · Module 1 free",
+          label: "From $50 · Module 1 free",
         }}
       />,
     );
 
-    expect(screen.getAllByText("From $59 · Module 1 free")).toHaveLength(1);
+    expect(screen.getAllByText("From $50 · Module 1 free")).toHaveLength(1);
     const teasers = screen.getAllByTestId("locked-teaser");
     expect(teasers[1]).toHaveTextContent("🔒");
   });

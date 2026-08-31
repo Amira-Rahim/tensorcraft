@@ -98,10 +98,10 @@ export function isComingSoon(slug: string): boolean {
  */
 export const PRICING = {
   free: { price: 0, worlds: 0, label: "Free Preview" },
-  single: { price: 59, worlds: 1, label: "Single World" },
-  twoBundle: { price: 99, worlds: 2, label: "Two Worlds" },
-  threeBundle: { price: 129, worlds: 3, label: "Three Worlds" },
-  allFive: { price: 159, worlds: 5, label: "All 5 Worlds" },
+  single: { price: 50, worlds: 1, label: "Single World" },
+  twoBundle: { price: 90, worlds: 2, label: "Two Worlds" },
+  threeBundle: { price: 135, worlds: 3, label: "Three Worlds" },
+  allFive: { price: 225, worlds: 5, label: "All 5 Worlds" },
 } as const;
 
 export type PricingTier = keyof typeof PRICING;

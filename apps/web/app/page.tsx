@@ -70,7 +70,7 @@ export default function Home() {
               },
               {
                 label: "Deploy",
-                desc: "Run real-time inference on your laptop via WebGL, 100% client-side.",
+                desc: "Run your model live on your laptop, GPU-accelerated through WebGL, 100% client-side.",
               },
               {
                 label: "Own",

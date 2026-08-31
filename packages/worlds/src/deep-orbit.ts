@@ -6,7 +6,7 @@ export const deepOrbit: WorldManifest = {
   displayName: "Deep Orbit",
   tagline: "Where signals guide you through the unknown",
   description:
-    "Research vessel Archimedes has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN, a deep-space signal classifier.",
+    "Research vessel Archimedes has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN, a deep-space signal classifier: a model that tells the crew what kind of signal just arrived.",
   palette: {
     bg: "#181818",
     primary: "#6BAA8A",
@@ -75,7 +75,7 @@ export const deepOrbit: WorldManifest = {
     },
   ],
   specialization: "Time-Series & Signals",
-  modelBuilt: "DEEP SCAN: deep-space signal classifier",
+  modelBuilt: "DEEP SCAN: deep-space signal classifier (sorts signals by kind)",
   careerPaths: [
     "Signal Processing Engineer ($108K-$258K)",
     "Time-Series ML Engineer ($120K-$200K)",

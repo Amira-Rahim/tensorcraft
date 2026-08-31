@@ -484,7 +484,7 @@ function WelcomeStep() {
       name: "Build Real ML",
       // "Train", not "ship": module 3 trains the classifier; it reaches the
       // browser in module 4 (the /pricing module map says so).
-      desc: "Train a working classifier by module 3",
+      desc: "Train a model that sorts signal from noise by module 3",
     },
   ];
   return (

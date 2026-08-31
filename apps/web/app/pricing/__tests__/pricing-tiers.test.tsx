@@ -122,7 +122,7 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
   it("renders canonical dollar amounts on every buyable tier", () => {
     render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-free")).toHaveTextContent("$0");
-    expect(screen.getByTestId("tier-card-single")).toHaveTextContent("$59");
+    expect(screen.getByTestId("tier-card-single")).toHaveTextContent("$50");
   });
 
   it("maps plan ids to tier cards", () => {

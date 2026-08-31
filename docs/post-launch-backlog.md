@@ -1426,7 +1426,7 @@ has already been written off once (see above) - do not launch dark again.
   secrets or it stays red (fail-closed by design, R3-9).
 - [x] **Vercel is on Pro, verified 2026-08-24** (team scope
   `amira-salahs-projects`). Closes this entirely. Original text: Hobby prohibits
-  commercial use; selling a $59-159 product on it is a ToS/takedown risk
+  commercial use; selling a $50-225 product on it is a ToS/takedown risk
   before it is a cost one (R2-5). Still recorded as Hobby in the repo at
   `docs/infrastructure.md:45` and in the cost table at `:202`; the
   authoritative source is the Vercel billing dashboard. After upgrading,

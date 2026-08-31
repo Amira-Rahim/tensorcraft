@@ -31,28 +31,32 @@ describe("PRICING", () => {
     expect(PRICING.free.worlds).toBe(0);
   });
 
-  it("has correct single tier at $59", () => {
-    expect(PRICING.single.price).toBe(59);
+  it("has correct single tier at $50", () => {
+    expect(PRICING.single.price).toBe(50);
     expect(PRICING.single.worlds).toBe(1);
   });
 
   it("has correct bundle tiers", () => {
-    expect(PRICING.twoBundle.price).toBe(99);
+    expect(PRICING.twoBundle.price).toBe(90);
     expect(PRICING.twoBundle.worlds).toBe(2);
-    expect(PRICING.threeBundle.price).toBe(129);
+    expect(PRICING.threeBundle.price).toBe(135);
     expect(PRICING.threeBundle.worlds).toBe(3);
-    expect(PRICING.allFive.price).toBe(159);
+    expect(PRICING.allFive.price).toBe(225);
     expect(PRICING.allFive.worlds).toBe(5);
   });
 
-  it("bundles are cheaper per-world than single", () => {
+  it("bundles are cheaper per-world than single, never worse than a smaller bundle", () => {
+    // Flat 10%-off-retail bundle rule (2026-08-31): every bundle lands at
+    // the same per-world price, so bundle-to-bundle is <=, not <.
     const singlePerWorld = PRICING.single.price;
     const twoPerWorld = PRICING.twoBundle.price / PRICING.twoBundle.worlds;
     const threePerWorld =
       PRICING.threeBundle.price / PRICING.threeBundle.worlds;
+    const fivePerWorld = PRICING.allFive.price / PRICING.allFive.worlds;
 
     expect(twoPerWorld).toBeLessThan(singlePerWorld);
-    expect(threePerWorld).toBeLessThan(twoPerWorld);
+    expect(threePerWorld).toBeLessThanOrEqual(twoPerWorld);
+    expect(fivePerWorld).toBeLessThanOrEqual(threePerWorld);
   });
 });
 

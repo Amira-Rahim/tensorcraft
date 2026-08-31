@@ -117,7 +117,7 @@ interface DeepScanDemoProps {
 
 export function DeepScanDemo({
   framing = false,
-  headerLabel = "DEEP SCAN · preview build · live inference",
+  headerLabel = "DEEP SCAN · preview build · running live in your tab",
 }: DeepScanDemoProps = {}) {
   const [rows, setRows] = useState<Row[]>(
     STREAM.map((s) => ({ ...s, score: null })),

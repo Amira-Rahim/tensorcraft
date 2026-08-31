@@ -150,9 +150,10 @@ export default function LearnPage() {
               a research station is tracking a sensor reading that its model
               cannot classify, and you are the engineer they bring in. Across{" "}
               {WORLD_CONTENT.modulesPerWorld} modules it teaches neural
-              networks, training and gradient descent, signal processing, and
-              anomaly detection, and ends with a capstone model you ship. Module
-              1 is free in full: no account, no credit card.
+              networks, training and gradient descent (how a model learns from
+              its own errors), signal processing, and anomaly detection, and
+              ends with a capstone model you ship. Module 1 is free in full: no
+              account, no credit card.
             </p>
           </div>
         </details>

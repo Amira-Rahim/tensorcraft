@@ -143,7 +143,7 @@ export function BridgePreviewSection() {
           data-testid="bridge-section-cta"
           className="inline-flex items-center gap-2 font-mono text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
         >
-          Write your first tensor, free →
+          Write your first tensor (a nested array of numbers), free →
         </Link>
       </div>
     </section>
