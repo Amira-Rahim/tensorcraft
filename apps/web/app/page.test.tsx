@@ -218,10 +218,13 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     const previewBridge =
       BRIDGES.find((b) => b.mlCode && b.variants?.react?.jsCode) ?? BRIDGES[0];
 
-    it("explains the mapping with the bridge's connection prose", () => {
+    it("no longer renders the connection band (removed 2026-09-01)", () => {
+      // Owner request; the section ends on the code band, and the full
+      // bridge grammar (connection + breaks) lives on in lesson callouts.
       const { container } = render(<BridgePreviewSection />);
       const firstSentence = previewBridge.connection.split(". ")[0];
-      expect(container.textContent).toContain(firstSentence);
+      expect(container.textContent).not.toContain(firstSentence);
+      expect(container.textContent).not.toContain("bridge:");
     });
 
     it("does not show the breaks note (owner decision: connection only)", () => {
@@ -283,10 +286,13 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     it("carries the objections absorbed from the removed Who This Is For section", async () => {
       const { FAQ_ITEMS } = await import("./faq-data");
       const all = FAQ_ITEMS.map((i) => `${i.q} ${i.a}`).join(" ");
-      // Python-stack mismatch, video expectations, time commitment
-      // (landing section cut 2026-08-16; /paywall keeps the component).
+      // Python-stack mismatch and time commitment (landing section cut
+      // 2026-08-16; /paywall keeps the component). The video-track entry,
+      // and with it the owner-ruled video-scenes tease (2026-08-24), was
+      // removed 2026-09-01 by owner request, superseding that ruling; the
+      // FAQ must no longer mention video at all.
       expect(all).toMatch(/pytorch/i);
-      expect(all).toMatch(/video/i);
+      expect(all).not.toMatch(/video/i);
       expect(all).toMatch(/per-module estimates/i);
     });
   });

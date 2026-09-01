@@ -126,19 +126,11 @@ export function BridgePreviewSection() {
         </motion.div>
       </div>
 
-      {/* Connection band: why the two sides map. Same "bridge:" grammar as
-          the lesson callout footer; the headline's claim gets its evidence
-          instead of standing alone. */}
-      <div className="border-t border-border px-10 md:px-20 py-8">
-        <p className="max-w-[65ch] mx-auto font-mono text-sm leading-relaxed text-text-muted">
-          <span style={{ color: tierColor }}>bridge:</span> {bridge.connection}
-        </p>
-      </div>
-
-      {/* The section exit CTA ("Write your first tensor..., free") was
-          removed 2026-08-31 (owner request); the hero's primary CTA above
-          and the closing section's CTA below both point at the same free
-          lesson, so the section ends on its content. */}
+      {/* The connection band ("bridge: {connection}") was removed
+          2026-09-01 and the exit CTA ("Write your first tensor..., free")
+          2026-08-31, both owner requests; the section now ends on the code
+          band. The full bridge grammar (connection + breaks) lives on in
+          the lesson callouts. */}
     </section>
   );
 }
