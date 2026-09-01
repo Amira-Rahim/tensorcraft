@@ -80,19 +80,22 @@ export default function PricingPage() {
           </Suspense>
         </div>
 
-        {/* Hero */}
-        <section className="pt-24 pb-14 px-6 text-center">
-          {/* Fluid one-liner (owner: "spread across the grid", 2026-08-31,
-              same pattern as the landing hero and /learn H1): 24 mono chars
-              at 0.575em per char (0.6em advance minus tracking-tight's
-              0.025em) fit inside the px-6 gutters from ~640px up. The
-              2.25rem floor keeps the old mobile size, where the sentence
-              breaks into its two clean halves. */}
+        {/* Hero. pt-0: the banner container above already carries pt-24, so
+            the header-to-title gap is 96px, matched with /worlds and /blog
+            (owner, 2026-09-01). */}
+        <section className="pt-0 pb-14 px-6 text-center">
+          {/* Two stacked lines (owner, 2026-09-01), which re-derives the
+              clamp: the longest line is now 13 mono chars ("Keep forever.")
+              at 0.575em per char, so 13vw fills the px-6 gutters and the
+              2.25rem floor holds two clean lines even at 320px. Span one
+              keeps a trailing space so textContent reads as one sentence
+              (same a11y contract as the landing wall). */}
           <h1
             data-testid="pricing-heading"
-            className="text-[clamp(2.25rem,calc(7vw-0.5rem),6rem)] font-bold mb-6 text-text-primary font-mono tracking-tight"
+            className="text-[clamp(2.25rem,calc(13vw-0.5rem),9rem)] leading-[1.02] font-bold mb-6 text-text-primary font-mono tracking-tight"
           >
-            Buy once. Keep forever.
+            <span className="block">Buy once. </span>
+            <span className="block">Keep forever.</span>
           </h1>
           <p className="text-lg sm:text-2xl max-w-[70ch] mx-auto text-text-muted font-sans">
             Each world is a separate ML specialization. Deep Orbit is the one

@@ -73,7 +73,9 @@ export default async function WorldsPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-page px-6 py-20 relative overflow-hidden">
+    // pt-24: the 96px header-to-title gap is shared with /pricing and
+    // /blog (owner, 2026-09-01).
+    <main className="min-h-screen bg-page px-6 pt-24 pb-20 relative overflow-hidden">
       <AmbientBackground count={240} />
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Hero. Fluid one-liner (owner: "spread across the grid",
