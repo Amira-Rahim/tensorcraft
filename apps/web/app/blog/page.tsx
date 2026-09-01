@@ -25,24 +25,28 @@ export default function BlogIndexPage() {
     <main className="min-h-screen relative px-8 md:px-20 pt-24 pb-28">
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
 
-      <div className="max-w-3xl relative z-10">
+      {/* Redesign pass (owner, 2026-09-01, same family as landing//learn//
+          pricing//worlds): fluid title, wider grid, md+ type bumps. */}
+      <div className="max-w-6xl relative z-10">
         <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-6 flex items-center gap-3">
           <span className="inline-block w-[7px] h-[7px] bg-primary" />
           Blog
         </div>
 
-        <h1 className="text-4xl md:text-[56px] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-4 uppercase">
+        {/* Fluid one-liner: 10 mono chars at 0.555em per char; the family
+            clamp (shared with the landing wall) lands 128px at 1440. */}
+        <h1 className="text-[clamp(3rem,calc(10vw-1rem),8.5rem)] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-5 uppercase">
           The Bridge
         </h1>
 
-        <p className="text-lg font-mono text-text-muted leading-relaxed max-w-[560px] mb-16">
+        <p className="text-lg md:text-2xl font-mono text-text-muted leading-relaxed max-w-[70ch] mb-16">
           Weekly browser-ML news, mapped to the lessons that teach the
           underlying concepts.
         </p>
 
         {posts.length === 0 ? (
           <div className="border border-border bg-surface p-10">
-            <p className="text-sm text-text-muted">
+            <p className="text-base text-text-muted">
               First post drops once the curator shortlists this week's items.
             </p>
           </div>
@@ -51,19 +55,19 @@ export default function BlogIndexPage() {
             {posts.map((post) => (
               <li
                 key={post.slug}
-                className="border border-border bg-surface p-6"
+                className="border border-border bg-surface p-6 md:p-8"
               >
-                <p className="font-mono text-xs text-text-muted tracking-wider uppercase mb-2">
+                <p className="font-mono text-xs md:text-sm text-text-muted tracking-wider uppercase mb-2">
                   {new Date(post.publishedAt).toISOString().slice(0, 10)}
                   {post.weekIso ? ` · ${post.weekIso}` : ""}
                   {post.worldSlug ? ` · ${post.worldSlug}` : ""}
                 </p>
-                <h2 className="text-xl md:text-2xl font-mono font-bold mb-2">
+                <h2 className="text-xl md:text-3xl font-mono font-bold mb-2">
                   <Link href={`/blog/${post.slug}`} className="hover:underline">
                     {post.title}
                   </Link>
                 </h2>
-                <p className="text-sm text-text-muted leading-relaxed">
+                <p className="text-sm md:text-base text-text-muted leading-relaxed">
                   {post.summary}
                 </p>
                 {post.tags.length > 0 && (
