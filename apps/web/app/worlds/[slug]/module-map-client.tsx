@@ -213,7 +213,7 @@ function ModuleRow({
               {moduleLabel}
             </span>
             <span
-              className="font-sans text-sm font-bold"
+              className="font-sans text-sm md:text-lg font-bold"
               style={{ color: "var(--tc-muted)" }}
             >
               {mod.title}
@@ -251,7 +251,7 @@ function ModuleRow({
             )}
           </div>
           <p
-            className="mt-1 font-sans text-xs"
+            className="mt-1 font-sans text-xs md:text-sm"
             style={{ color: "var(--tc-muted)" }}
           >
             {mod.description}
@@ -359,7 +359,7 @@ function ModuleRow({
                 {moduleLabel}
               </span>
               <span
-                className="font-sans text-sm font-bold"
+                className="font-sans text-sm md:text-lg font-bold"
                 style={{ color: "var(--tc-text)" }}
               >
                 {mod.title}
@@ -387,7 +387,7 @@ function ModuleRow({
               )}
             </div>
             <p
-              className="mt-1 font-sans text-xs"
+              className="mt-1 font-sans text-xs md:text-sm"
               style={{ color: "var(--tc-muted)" }}
             >
               {mod.description}
@@ -524,7 +524,7 @@ function LessonCard({
             the "Lesson NN" label beside it), the visible text stays in AA
             tokens at full opacity. */}
         <span
-          className="font-mono text-base font-bold"
+          className="font-mono text-base md:text-xl font-bold"
           style={{
             color: done || current ? "var(--tc-primary)" : "var(--tc-muted)",
             opacity: locked ? 0.5 : 1,
@@ -570,7 +570,7 @@ function LessonCard({
               {locationLabel}
             </div>
             <div
-              className="mt-0.5 truncate font-sans text-sm font-semibold"
+              className="mt-0.5 truncate font-sans text-sm md:text-base font-semibold"
               style={{
                 color: locked ? "var(--tc-muted)" : "var(--tc-text)",
               }}

@@ -344,30 +344,38 @@ export default async function WorldDetailPage({ params }: Props) {
             a generic "MODULE MAP" h1). The old world-name eyebrow went with
             it: the same words directly above the h1 read as a stutter. The
             module count survives in the subline and the stats strip. */}
+        {/* Fluid one-liner (owner: bigger, 2026-09-01; same family as the
+            landing//learn//pricing//worlds-index walls). Sized so the
+            longest world name (13 mono chars at 0.58em per char) still
+            fits one line inside the px-12 gutters at every width; shorter
+            names simply spread less. */}
         <h1
-          className="font-mono text-3xl font-bold uppercase mb-2.5"
+          className="font-mono text-[clamp(2.5rem,calc(9vw-0.5rem),8rem)] leading-[1.02] font-bold uppercase mb-3"
           style={{ color: "var(--tc-text)", letterSpacing: "-0.02em" }}
         >
           {world.displayName}
         </h1>
-        <p className="text-sm" style={{ color: "var(--tc-muted)" }}>
+        <p
+          className="text-base md:text-xl"
+          style={{ color: "var(--tc-muted)" }}
+        >
           {/* "first" holds while one world is launched; this header only
               renders for launched worlds, so reword when world 2 opens. */}
           {worldModules.length} modules stand between you and your first machine
           learning model.
         </p>
 
-        <div className="flex gap-8 mt-6">
+        <div className="flex gap-8 md:gap-12 mt-6">
           {worldStats.map(({ value, label }) => (
             <div key={label}>
               <div
-                className="font-mono text-xl font-bold"
+                className="font-mono text-xl md:text-3xl font-bold"
                 style={{ color: "var(--tc-primary)" }}
               >
                 {value}
               </div>
               <div
-                className="font-mono text-xs mt-0.5"
+                className="font-mono text-xs md:text-sm mt-0.5"
                 style={{ color: "var(--tc-muted)" }}
               >
                 {label}
@@ -393,14 +401,14 @@ export default async function WorldDetailPage({ params }: Props) {
           scheme-native, so their own position on or off the plate is
           free. */}
       {trailerAboveMap && trailerPanel && (
-        <div className="relative z-10 max-w-[900px] mx-auto px-8 pt-10">
+        <div className="relative z-10 max-w-6xl mx-auto px-8 pt-10">
           {trailerPanel}
         </div>
       )}
 
       {/* Capstone banner */}
       {isWorldComplete && (
-        <div className="max-w-[900px] mx-auto px-8 relative z-10 mt-6">
+        <div className="max-w-6xl mx-auto px-8 relative z-10 mt-6">
           <Link
             href={`/worlds/${slug}/capstone`}
             className="flex items-center justify-between p-5 border-2 brutalist-hover"
@@ -443,7 +451,7 @@ export default async function WorldDetailPage({ params }: Props) {
       )}
 
       {/* Module List */}
-      <div className="relative z-10 max-w-[900px] mx-auto px-8 pt-10 pb-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-8 pt-10 pb-20">
         {!user && moduleMapItems[0] && (
           <GuestModuleBanner
             worldSlug={slug}
