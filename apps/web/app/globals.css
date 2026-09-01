@@ -163,7 +163,9 @@ body {
 }
 
 /* ===== Lesson Prose Styles ===== */
-/* Applied to MDX-rendered content inside lessons for readable typography */
+/* Applied to MDX-rendered content inside lessons for readable typography.
+   Desktop sizes stepped up 2026-09-01 (owner redesign pass: bigger fonts
+   across the funnel); mobile keeps the 1rem base. */
 .lesson-prose p {
   margin-bottom: 1.5em;
   line-height: 1.8;
@@ -184,6 +186,24 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--tc-text);
+}
+
+@media (min-width: 768px) {
+  .lesson-prose p {
+    font-size: 1.125rem;
+  }
+
+  .lesson-prose h2 {
+    font-size: 1.875rem;
+  }
+
+  .lesson-prose h3 {
+    font-size: 1.5rem;
+  }
+
+  .lesson-prose li {
+    font-size: 1.0625rem;
+  }
 }
 
 /* XS renderer slice (fresh-eyes rerun §4/T1-16): on Briefing/Concept/Code the

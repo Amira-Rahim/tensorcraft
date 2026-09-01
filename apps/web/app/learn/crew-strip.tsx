@@ -27,11 +27,11 @@ export function CrewStrip() {
             size={72}
           />
           <div className="flex flex-col">
-            <span className="font-mono text-sm text-text-primary">
+            <span className="font-mono text-sm md:text-base text-text-primary">
               {c.name}
             </span>
             {c.role && (
-              <span className="font-mono text-xs text-text-muted">
+              <span className="font-mono text-xs md:text-sm text-text-muted">
                 {c.role}
               </span>
             )}

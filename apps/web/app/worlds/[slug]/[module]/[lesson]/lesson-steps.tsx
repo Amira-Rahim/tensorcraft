@@ -843,7 +843,7 @@ function LessonStepsInner({
           rightKind={rightKind}
           paneOpenOnMobile={paneOpen}
           chrome={
-            <div className="mx-auto w-full max-w-[1200px] px-6 md:px-12">
+            <div className="mx-auto w-full max-w-7xl px-6 md:px-12">
               <ChromeBar
                 lessons={lessons}
                 lessonSlug={lessonSlug}
@@ -1366,7 +1366,7 @@ function StepBriefing({
       </div>
 
       <h1
-        className="text-4xl md:text-5xl font-bold mb-5 leading-[1.1] tracking-tight"
+        className="text-4xl md:text-6xl font-bold mb-5 leading-[1.1] tracking-tight"
         style={{ color: "var(--tc-text)" }}
       >
         {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}

@@ -122,7 +122,7 @@ export default function LearnPage() {
           modules aboard a station in deep orbit. Every lesson is TypeScript
           that runs in your browser.
         </p>
-        <p className="text-base md:text-lg text-text-muted font-sans leading-relaxed mb-10 max-w-[70ch] mx-auto">
+        <p className="text-base md:text-xl text-text-muted font-sans leading-relaxed mb-10 max-w-[70ch] mx-auto">
           Module 1 of{" "}
           <Link
             href="/worlds/deep-orbit"
@@ -139,7 +139,7 @@ export default function LearnPage() {
 
       {/* Close: the one symmetric moment on the page. */}
       <section className="px-10 md:px-20 py-20 md:py-24 text-center">
-        <p className="text-base text-text-muted font-sans leading-relaxed mb-8 max-w-[560px] mx-auto">
+        <p className="text-base md:text-xl text-text-muted font-sans leading-relaxed mb-8 max-w-[70ch] mx-auto">
           Module 1 is free. After that, a course is a one-time purchase.
         </p>
         <div className="flex gap-4 flex-wrap justify-center">
