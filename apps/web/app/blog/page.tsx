@@ -35,14 +35,13 @@ export default function BlogIndexPage() {
 
         {/* Fluid one-liner: 10 mono chars at 0.555em per char; the family
             clamp (shared with the landing wall) lands 128px at 1440. */}
-        <h1 className="text-[clamp(3rem,calc(10vw-1rem),8.5rem)] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-5 uppercase">
+        {/* The intro line ("Weekly browser-ML news...") was removed
+            2026-09-01 (owner request); the metadata/RSS descriptions keep
+            theirs, those are search-register surfaces. The h1 takes the
+            gap it left. */}
+        <h1 className="text-[clamp(3rem,calc(10vw-1rem),8.5rem)] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-16 uppercase">
           The Bridge
         </h1>
-
-        <p className="text-lg md:text-2xl font-mono text-text-muted leading-relaxed max-w-[70ch] mb-16">
-          Weekly browser-ML news, mapped to the lessons that teach the
-          underlying concepts.
-        </p>
 
         {posts.length === 0 ? (
           <div className="border border-border bg-surface p-10">

@@ -206,10 +206,10 @@ export function PricingTiers() {
   return (
     <section className="px-6 pb-16" data-testid="pricing-tiers">
       {/* Two cards, so the row narrows with them. At max-w-7xl a two-card
-          grid stretches each card to ~40rem of mostly empty space; 4xl
-          matches the refund badge above and still gives the feature lists
+          grid stretches each card to ~40rem of mostly empty space; 5xl
+          matches the refund badge above (both widened 2026-09-01) and gives the feature lists
           room to breathe, which a fifth of a row never did. */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <p className="text-[13px] uppercase tracking-[0.15em] mb-6 text-text-muted font-mono">
           Choose your plan
         </p>
@@ -218,20 +218,20 @@ export function PricingTiers() {
           <article
             data-testid="tier-card-free"
             data-plan-id="free"
-            className="relative flex flex-col border border-border bg-surface rounded-none p-6 transition-all hover:border-primary hover:brutalist-shadow"
+            className="relative flex flex-col border border-border bg-surface rounded-none p-6 md:p-8 transition-all hover:border-primary hover:brutalist-shadow"
           >
             <div className="mb-4">
-              <span className="block text-4xl font-bold leading-none text-text-primary font-mono">
+              <span className="block text-4xl md:text-6xl font-bold leading-none text-text-primary font-mono">
                 $0
               </span>
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
                 no card required
               </p>
             </div>
-            <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
+            <h3 className="text-base md:text-lg font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
               Free Preview
             </h3>
-            <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
+            <p className="text-xs md:text-sm mb-5 leading-relaxed text-text-muted font-sans">
               Module 1 of Deep Orbit. {lessonsPerModule} lessons, full code
               editor, JS-to-ML bridges, graded exercises.
             </p>
@@ -247,7 +247,7 @@ export function PricingTiers() {
               ].map((f) => (
                 <li
                   key={f}
-                  className="flex items-center gap-2 text-xs text-text-muted font-mono"
+                  className="flex items-center gap-2 text-xs md:text-sm text-text-muted font-mono"
                 >
                   <span className="text-primary font-bold" aria-hidden="true">
                     &#10003;
@@ -272,7 +272,7 @@ export function PricingTiers() {
             data-testid="tier-card-single"
             data-plan-id="single"
             data-recommended={launchedWorldCount < 5 ? "true" : undefined}
-            className={`relative flex flex-col border-2 ${launchedWorldCount < 5 ? "border-primary" : "border-border"} bg-surface rounded-none p-6 transition-all hover:border-primary hover:brutalist-shadow`}
+            className={`relative flex flex-col border-2 ${launchedWorldCount < 5 ? "border-primary" : "border-border"} bg-surface rounded-none p-6 md:p-8 transition-all hover:border-primary hover:brutalist-shadow`}
           >
             {launchedWorldCount < 5 && (
               <span
@@ -283,7 +283,7 @@ export function PricingTiers() {
               </span>
             )}
             <div className="mb-4">
-              <span className="block text-4xl font-bold leading-none text-text-primary font-mono">
+              <span className="block text-4xl md:text-6xl font-bold leading-none text-text-primary font-mono">
                 ${PRICING.single.price}
               </span>
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
@@ -294,7 +294,7 @@ export function PricingTiers() {
                 singleWorld ? [singleWorld] : [],
               )}
             </div>
-            <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
+            <h3 className="text-base md:text-lg font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
               Single World
             </h3>
             {/* The "Complete one world: N lessons, N modules." line was
@@ -316,7 +316,7 @@ export function PricingTiers() {
               ].map((f) => (
                 <li
                   key={f}
-                  className="flex items-center gap-2 text-xs text-text-muted font-mono"
+                  className="flex items-center gap-2 text-xs md:text-sm text-text-muted font-mono"
                 >
                   <span className="text-primary font-bold" aria-hidden="true">
                     &#10003;

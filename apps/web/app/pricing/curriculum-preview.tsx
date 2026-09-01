@@ -25,7 +25,7 @@ export function CurriculumPreview() {
       className="px-6 pb-20 scroll-mt-24"
       data-testid="curriculum-preview"
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {LAUNCHED_WORLDS.map((slug) => {
           const world = worlds[slug];
           const modules = getModules(slug);
@@ -40,10 +40,10 @@ export function CurriculumPreview() {
                 {/* The world name lives in the HEADING (owner, 2026-09-01):
                     with more worlds coming, "What's Inside" alone read as if
                     the list covered every purchase, not this one world. */}
-                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-text-primary font-mono tracking-tight">
+                <h2 className="text-3xl md:text-5xl font-bold text-center mb-3 text-text-primary font-mono tracking-tight">
                   What&rsquo;s Inside {world.displayName}
                 </h2>
-                <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
+                <p className="text-center text-sm md:text-base text-text-muted font-mono uppercase tracking-wider mb-10">
                   every module, lesson by lesson
                 </p>
                 <ol className="border border-border divide-y divide-border list-none m-0 p-0">
@@ -93,7 +93,7 @@ export function CurriculumPreview() {
                         {/* Title + free badge, then description beneath */}
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                            <h3 className="font-mono text-base font-bold text-text-primary leading-snug">
+                            <h3 className="font-mono text-base md:text-xl font-bold text-text-primary leading-snug">
                               <span className="sr-only">Module {i + 1}: </span>
                               {mod.title}
                             </h3>
@@ -103,7 +103,7 @@ export function CurriculumPreview() {
                               </span>
                             )}
                           </div>
-                          <p className="mt-2 font-sans text-sm text-text-muted leading-relaxed">
+                          <p className="mt-2 font-sans text-sm md:text-base text-text-muted leading-relaxed">
                             {/* Plain-language summary: this preview is shown
                                 before purchase, so it cannot lean on the
                                 story (pre-lesson copy audit 2026-08-19). */}
@@ -113,10 +113,10 @@ export function CurriculumPreview() {
 
                         {/* Meta: stacked, right-aligned on desktop; under title on mobile */}
                         <div className="col-start-2 sm:col-start-3 font-mono whitespace-nowrap sm:text-right self-center">
-                          <div className="text-sm font-semibold text-text-primary tabular-nums">
+                          <div className="text-sm md:text-base font-semibold text-text-primary tabular-nums">
                             {lessons.length} lessons
                           </div>
-                          <div className="text-xs text-text-muted tabular-nums">
+                          <div className="text-xs md:text-sm text-text-muted tabular-nums">
                             ~{minutes} min
                           </div>
                         </div>
@@ -124,7 +124,7 @@ export function CurriculumPreview() {
                     );
                   })}
                 </ol>
-                <p className="mt-4 text-center text-sm text-text-muted font-sans">
+                <p className="mt-4 text-center text-sm md:text-base text-text-muted font-sans">
                   Module 1 is free, no account needed.{" "}
                   <Link
                     href={`/worlds/${slug}`}

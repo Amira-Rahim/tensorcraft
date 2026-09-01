@@ -109,10 +109,10 @@ export default function PricingPage() {
           className="px-6 pt-2 pb-8"
           data-testid="refund-guarantee-section"
         >
-          <div className="max-w-4xl mx-auto min-w-0">
+          <div className="max-w-5xl mx-auto min-w-0">
             <div
               data-testid="refund-guarantee-badge"
-              className="flex items-center gap-3 border border-border bg-surface/60 px-5 py-4 font-mono text-[13px] text-text-muted rounded-none"
+              className="flex items-center gap-3 border border-border bg-surface/60 px-5 py-4 font-mono text-[13px] md:text-[15px] text-text-muted rounded-none"
             >
               <span
                 aria-hidden="true"
