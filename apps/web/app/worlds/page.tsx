@@ -76,16 +76,20 @@ export default async function WorldsPage() {
     <main className="min-h-screen bg-page px-6 py-20 relative overflow-hidden">
       <AmbientBackground count={240} />
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Hero */}
-        <h1 className="text-4xl md:text-5xl font-mono font-bold text-text-primary mb-3 tracking-tight">
+        {/* Hero. Fluid one-liner (owner: "spread across the grid",
+            2026-08-31, same pattern as landing//learn//pricing): 17 mono
+            chars at 0.575em per char (0.6em advance minus tracking-tight's
+            0.025em) track the max-w-7xl container, whose 1280px cap sets
+            the 8rem ceiling; the 2.25rem floor keeps the old mobile size. */}
+        <h1 className="text-[clamp(2.25rem,calc(10vw-0.25rem),8rem)] font-mono font-bold text-text-primary mb-4 tracking-tight">
           Choose Your World
         </h1>
-        <p className="text-lg text-text-muted mb-6 max-w-2xl">
+        <p className="text-lg md:text-2xl text-text-muted mb-6 max-w-[70ch]">
           Five ML specializations, each told through its own story universe.
           Deep Orbit is live. The other four have no release dates yet; join a
           waitlist below and we will email you when one opens.
         </p>
-        <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
+        <p className="text-base md:text-lg text-text-muted mb-14 max-w-[70ch] leading-relaxed">
           Pick the world that maps to the ML problem you actually want to solve.
           Each one teaches a complete specialization through JavaScript and
           TensorFlow.js. No Python.
