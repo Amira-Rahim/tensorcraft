@@ -120,3 +120,34 @@ describe("FiveWorldsSection coming-soon interactivity", () => {
     expect(scrim!.className).toContain("tc-art-scrim-read");
   });
 });
+
+describe("FiveWorldsSection (one-section redesign, spec 2026-09-01)", () => {
+  it("promotes Choose Your World to the section h2", () => {
+    render(<FiveWorldsSection />);
+    expect(screen.getByRole("heading", { level: 2 }).textContent).toBe(
+      "Choose Your World",
+    );
+  });
+
+  it("renders none of the cut furniture", () => {
+    // Cut per the spec: eyebrow row, intro paragraph, LIVE NOW badge,
+    // per-card COMING SOON badges, the old "Five Worlds" h2.
+    const { container } = render(<FiveWorldsSection />);
+    expect(screen.queryByText(/live now/i)).toBeNull();
+    expect(screen.queryByText(/coming soon/i)).toBeNull();
+    expect(screen.queryByText("Five Worlds")).toBeNull();
+    expect(container.textContent).not.toMatch(/foundations track/i);
+  });
+
+  it("keeps the flagship link and all four Notify me waitlist entries", () => {
+    render(<FiveWorldsSection />);
+    expect(screen.getByText("Deep Orbit").closest("a")).toHaveAttribute(
+      "href",
+      "/worlds/deep-orbit",
+    );
+    expect(screen.getByText(/start module 1/i)).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /notify me/i })).toHaveLength(
+      4,
+    );
+  });
+});
