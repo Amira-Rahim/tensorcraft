@@ -157,16 +157,16 @@ export default function PricingPage() {
         {/* CTA Footer */}
         <section className="py-24 px-6 text-center border-t border-border">
           <p className="text-[13px] uppercase tracking-[0.15em] mb-4 text-text-muted font-mono">
-            your javascript is the foundation
+            your javascript knowledge is the foundation
           </p>
           {/* The "Start with the free module..." line was removed
               2026-09-01 (owner request); the h2 takes its bottom margin so
               the CTA keeps its breathing room. Fluid one-liner (same family
-              as the page h1): 35 mono chars at 0.575em per char fit the
-              px-6 gutters from ~700px up; the 5rem ceiling keeps this h2
+              as the page h1): 23 mono chars at 0.575em per char fit the
+              px-6 gutters from ~720px up; the 5.5rem ceiling keeps this h2
               subordinate to the 6rem-capped page h1. */}
-          <h2 className="text-[clamp(1.5rem,calc(5vw-0.25rem),5rem)] font-bold mb-10 text-text-primary font-mono tracking-tight">
-            Add ML to your engineering toolkit.
+          <h2 className="text-[clamp(1.5rem,calc(7.5vw-0.25rem),5.5rem)] font-bold mb-10 text-text-primary font-mono tracking-tight">
+            Add ML to your toolkit.
           </h2>
           {/* The close does what the sentence above says: the free start.
               Was "See All 5 Worlds" pointing at /worlds, four of which are

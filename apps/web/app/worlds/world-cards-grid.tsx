@@ -91,17 +91,15 @@ export function WorldCardsGrid({ cards }: WorldCardsGridProps) {
 
       {/* Newsletter CTA */}
       <div className="mt-16 flex flex-col items-center text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.15em] text-text-muted mb-3">
-          stay in the loop
-        </p>
+        {/* Eyebrow + heading collapsed into one line (owner, 2026-09-01). */}
         <h3 className="text-xl sm:text-2xl font-mono font-bold text-text-primary mb-3 tracking-tight">
-          New worlds, launch discounts.
+          Stay updated with new world releases and discounts.
         </h3>
         <button
           type="button"
           onClick={() => setModalOpen(true)}
           data-testid="open-newsletter-modal"
-          className="inline-flex items-center font-mono px-6 py-3 text-sm font-medium uppercase tracking-wider transition-all bg-transparent text-text-primary border-2 border-border rounded-none brutalist-hover hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          className="inline-flex items-center font-mono px-8 py-4 text-base font-bold uppercase tracking-wider transition-all bg-transparent text-text-primary border-2 border-border rounded-none brutalist-hover hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
         >
           Get updates
         </button>

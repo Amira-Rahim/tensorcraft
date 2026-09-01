@@ -74,7 +74,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
           ref={panelRef}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="newsletter-modal-title"
+          aria-label="Get updates"
           data-testid="newsletter-modal"
           className="relative w-full max-w-md border-2 border-border bg-surface-raised rounded-none brutalist-shadow"
         >
@@ -93,17 +93,10 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
           </div>
 
           <div className="px-6 py-6">
-            <h2
-              id="newsletter-modal-title"
-              className="text-2xl font-mono font-bold text-text-primary mb-2 tracking-tight"
-            >
-              Launch updates
-            </h2>
-            <p className="text-sm text-text-muted mb-5 leading-relaxed">
-              Get an email when the next course goes live, with its launch
-              discount. Unsubscribe anytime.
-            </p>
-
+            {/* The "Launch updates" title and its explainer paragraph were
+                removed 2026-09-01 (owner request); the dialog's accessible
+                name is now aria-label="Get updates", matching the button
+                that opens it. */}
             {status === "done" ? (
               <div
                 role="status"

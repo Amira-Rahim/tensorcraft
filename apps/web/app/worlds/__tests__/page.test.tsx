@@ -243,9 +243,12 @@ describe("WorldsPage (Deep Orbit launch + 4 coming-soon)", () => {
     expect(dialog).toBeInTheDocument();
     expect(dialog).toHaveAttribute("role", "dialog");
     expect(dialog).toHaveAttribute("aria-modal", "true");
-    // Launch-updates framing, not the retired weekly-newsletter promise:
-    // the modal must only promise what actually ships.
-    expect(dialog.textContent).toContain("Launch updates");
+    // The "Launch updates" title and explainer were cut 2026-09-01 (owner
+    // request); the accessible name now comes from aria-label, matching
+    // the "Get updates" button that opens the dialog. The modal still must
+    // not promise the retired weekly newsletter.
+    expect(dialog).toHaveAttribute("aria-label", "Get updates");
+    expect(dialog.textContent).not.toContain("Launch updates");
     expect(dialog.textContent).not.toMatch(/weekly|one email a week/i);
   });
 
