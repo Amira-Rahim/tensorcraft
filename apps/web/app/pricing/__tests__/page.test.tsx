@@ -117,6 +117,17 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     expect(h1).toHaveTextContent(/Buy once\. Keep forever\./i);
   });
 
+  it("no longer renders the Common Questions FAQ block (removed 2026-09-01)", () => {
+    // Owner request; the landing page keeps the shared FaqSection and the
+    // FAQPage JSON-LD it emits. Objection copy here is the refund badge.
+    render(<PricingPage />);
+    expect(screen.queryByTestId("pricing-faq")).not.toBeInTheDocument();
+    expect(screen.queryByText(/common questions/i)).toBeNull();
+    // Cut the same day: the footer's "Start with the free module. Buy when
+    // you want the other ten." line.
+    expect(screen.queryByText(/start with the free module/i)).toBeNull();
+  });
+
   it("renders only the buyable tiers, with no future bundle pricing", () => {
     // 2026-08-09: the three bundle cards left the grid (dead CTAs anchoring
     // $59 as a stripped entry tier). 2026-08-14, owner directive: the

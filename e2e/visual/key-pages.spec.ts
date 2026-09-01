@@ -97,16 +97,22 @@ for (const scheme of ["dark", "light"] as const) {
         // backdrop's first draw. Same wait and rationale as
         // responsive.spec.ts (self-fail caught 2026-08-31).
         if (path === "/pricing") {
-          await page
+          const scene = page
             .locator('[data-testid="curriculum-scene"][data-mode="settled"]')
-            .first()
-            .waitFor();
+            .first();
+          await scene.waitFor();
+          // Fire the backdrop canvas's IntersectionObserver BEFORE the
+          // capture: a fullPage screenshot expands the viewport inside
+          // toHaveScreenshot, racing the first draw. Same recipe and
+          // rationale as responsive.spec.ts (pricing@768, 2026-09-01).
+          await scene.scrollIntoViewIfNeeded();
           await page.evaluate(
             () =>
               new Promise((resolve) =>
                 requestAnimationFrame(() => requestAnimationFrame(resolve)),
               ),
           );
+          await page.evaluate(() => window.scrollTo(0, 0));
         }
         await expect(page).toHaveScreenshot(`${base}${suffix}.png`, {
           fullPage: true,

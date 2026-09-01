@@ -297,10 +297,9 @@ export function PricingTiers() {
             <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
               Single World
             </h3>
-            <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Complete one world: {totalLessons} lessons, {modulesPerWorld}{" "}
-              modules.
-            </p>
+            {/* The "Complete one world: N lessons, N modules." line was
+                removed 2026-09-01 (owner request); the feature list below
+                carries the tier's contents. */}
             <ul className="flex-1 mb-4 space-y-2">
               {[
                 `${totalLessons} lessons`,

@@ -9,7 +9,6 @@ import { PricingAnalytics } from "./pricing-analytics";
 import { PricingTiers } from "./pricing-tiers";
 import { buildPricingOffers } from "./pricing-jsonld";
 import { AmbientBackground } from "@/app/components/ambient-background";
-import { FaqSection } from "@/app/components/faq-section";
 
 // 2026-08-14 (owner directive, screenshot feedback): future product plans are
 // not shown to users. The bundle ladder left this page entirely: the
@@ -150,28 +149,25 @@ export default function PricingPage() {
         {/* Curriculum preview, what a purchase unlocks */}
         <CurriculumPreview />
 
-        {/* FAQ. Objections peak here, not on the landing page, so the same
-            answers render on both. Shared component, single-sourced with the
-            FAQPage JSON-LD via app/faq-data.ts. */}
-        <FaqSection
-          testId="pricing-faq"
-          eyebrow="Before you buy"
-          heading="Common Questions"
-          containerClassName="px-6 max-w-4xl mx-auto w-full"
-          className="border-t border-border"
-        />
+        {/* The Common Questions FAQ block was removed from this page
+            2026-09-01 (owner request); the landing page keeps the shared
+            FaqSection and its FAQPage JSON-LD. Objection copy on /pricing
+            is now the refund badge plus the tier cards themselves. */}
 
         {/* CTA Footer */}
         <section className="py-24 px-6 text-center border-t border-border">
           <p className="text-[13px] uppercase tracking-[0.15em] mb-4 text-text-muted font-mono">
             your javascript is the foundation
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
+          {/* The "Start with the free module..." line was removed
+              2026-09-01 (owner request); the h2 takes its bottom margin so
+              the CTA keeps its breathing room. Fluid one-liner (same family
+              as the page h1): 35 mono chars at 0.575em per char fit the
+              px-6 gutters from ~700px up; the 5rem ceiling keeps this h2
+              subordinate to the 6rem-capped page h1. */}
+          <h2 className="text-[clamp(1.5rem,calc(5vw-0.25rem),5rem)] font-bold mb-10 text-text-primary font-mono tracking-tight">
             Add ML to your engineering toolkit.
           </h2>
-          <p className="text-base mb-10 text-text-muted font-sans max-w-130 mx-auto">
-            Start with the free module. Buy when you want the other ten.
-          </p>
           {/* The close does what the sentence above says: the free start.
               Was "See All 5 Worlds" pointing at /worlds, four of which are
               coming-soon and unbuyable (future plans are not user-facing,

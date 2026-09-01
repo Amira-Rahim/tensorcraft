@@ -68,16 +68,25 @@ test.describe("Visual: Responsive Breakpoints", () => {
         // means the emulation broke, so fail loudly via timeout. The double
         // rAF lets the settled frame actually paint.
         if (pageDef.name === "pricing") {
-          await page
+          const scene = page
             .locator('[data-testid="curriculum-scene"][data-mode="settled"]')
-            .first()
-            .waitFor();
+            .first();
+          await scene.waitFor();
+          // The backdrop canvas draws only once its IntersectionObserver
+          // fires. A fullPage capture expands the viewport INSIDE
+          // toHaveScreenshot, firing the IO mid-capture and racing the
+          // first draw (pricing@768 flaked exactly this way on 2026-09-01,
+          // after the settle-wait alone had seemed sufficient). Fire it
+          // deliberately: scroll the scene into view, let the static frame
+          // commit, scroll back. The canvas keeps its pixels.
+          await scene.scrollIntoViewIfNeeded();
           await page.evaluate(
             () =>
               new Promise((resolve) =>
                 requestAnimationFrame(() => requestAnimationFrame(resolve)),
               ),
           );
+          await page.evaluate(() => window.scrollTo(0, 0));
         }
         await expect(page).toHaveScreenshot(`${pageDef.name}-${bp.label}.png`, {
           fullPage: true,

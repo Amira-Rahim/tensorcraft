@@ -37,11 +37,14 @@ export function CurriculumPreview() {
                 primary={world.palette.primary}
                 primaryLight={world.paletteLight?.primary}
               >
+                {/* The world name lives in the HEADING (owner, 2026-09-01):
+                    with more worlds coming, "What's Inside" alone read as if
+                    the list covered every purchase, not this one world. */}
                 <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-text-primary font-mono tracking-tight">
-                  What&rsquo;s Inside
+                  What&rsquo;s Inside {world.displayName}
                 </h2>
                 <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
-                  every module in {world.displayName}, lesson by lesson
+                  every module, lesson by lesson
                 </p>
                 <ol className="border border-border divide-y divide-border list-none m-0 p-0">
                   {modules.map((mod, i) => {

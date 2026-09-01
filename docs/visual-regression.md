@@ -133,12 +133,19 @@ The same family includes PAINT races with stable dimensions: /pricing's
 curriculum scene resolves its mode client-side after mount and only then
 draws the orbit backdrop, so a fullPage capture can land before or after
 the first draw (self-failed pricing@768 on 2026-08-31 as a rosette-shaped
-12k-pixel diff with identical image dimensions). Both visual specs wait
-for `[data-testid="curriculum-scene"][data-mode="settled"]` plus a double
-requestAnimationFrame before capturing /pricing. The general recipe: a
-component that decides what to draw after mount must expose the decision
-as a DOM attribute, and the spec waits for the terminal value plus one
-painted frame.
+12k-pixel diff with identical image dimensions). The settle-wait alone
+turned out to be INSUFFICIENT (re-failed 2026-09-01): the backdrop canvas
+draws only when its IntersectionObserver fires, and a fullPage capture
+expands the viewport INSIDE toHaveScreenshot, firing below-fold observers
+mid-capture, after any wait you wrote has already passed. Both visual
+specs therefore wait for
+`[data-testid="curriculum-scene"][data-mode="settled"]`, then
+scrollIntoViewIfNeeded (firing the IO deliberately), double
+requestAnimationFrame (the static frame commits; the canvas keeps its
+pixels), then scroll back to the top before capturing /pricing. The
+general recipe: expose the component's draw decision as a DOM attribute,
+wait for the terminal value, and fire any IO gate yourself by scrolling
+the element into view before a fullPage capture.
 
 Note when re-minting landing baselines: they cannot verify hero content
 at all. `maskCanvas` masks every canvas and `ParticleField` spans the
