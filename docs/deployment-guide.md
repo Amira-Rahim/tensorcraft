@@ -24,7 +24,6 @@ Set these in Vercel Environment Variables dashboard or `.env.local` for local de
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | PostHog project API key for product analytics |
 | `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog instance URL - **must be EU** (`https://eu.posthog.com`) for GDPR residency |
 | `NEXT_PUBLIC_SENTRY_DSN` | No | Sentry DSN for client + server + edge error tracking (EU-region project) |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | No | Domain registered in Plausible (e.g., `tensorcraft.app`) |
 
 ### API (`apps/api`)
 

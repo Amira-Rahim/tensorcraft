@@ -63,8 +63,7 @@ export function CookieConsent() {
       >
         <p className="text-sm text-text-muted leading-relaxed mb-4 font-mono">
           Essential cookies keep you signed in and remember your world choice.
-          Analytics (PostHog, Plausible, Vercel Analytics) runs only if you
-          accept. See our{" "}
+          Analytics (PostHog, Vercel Analytics) runs only if you accept. See our{" "}
           <Link
             href="/privacy"
             className="text-primary rounded-none underline underline-offset-2 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"

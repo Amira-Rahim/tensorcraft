@@ -41,10 +41,6 @@ const WARN_IF_UNSET: ReadonlyArray<{ name: string; consequence: string }> = [
   },
   { name: "NEXT_PUBLIC_SENTRY_DSN", consequence: "error reporting is OFF" },
   {
-    name: "NEXT_PUBLIC_PLAUSIBLE_DOMAIN",
-    consequence: "traffic analytics is OFF",
-  },
-  {
     name: "SENTRY_AUTH_TOKEN",
     consequence:
       "source maps are not uploaded; production stack traces stay minified (build-time var, set in Vercel)",

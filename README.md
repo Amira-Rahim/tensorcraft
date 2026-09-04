@@ -25,7 +25,7 @@ Each world contains 11 modules × 5 lessons (~22 hours of content) with hands-on
 - **Styling:** Tailwind CSS 4 with `@world` directive (CSS custom properties); no CSS Modules in use. Dark and light schemes: follows the OS, with a manual toggle.
 - **Auth & DB:** Supabase (Postgres + Auth)
 - **Payments:** Stripe (one-time per-world purchases)
-- **Analytics:** PostHog + Plausible
+- **Analytics:** PostHog + Vercel Web Analytics (both consent-gated)
 - **Testing:** Vitest (unit), Playwright (e2e), axe-core (a11y)
 
 ## Project Structure

@@ -105,10 +105,11 @@ and reads `completed`. If Stripe shows the charge and the row is missing,
 resend the `checkout.session.completed` event from Stripe rather than
 inserting a row by hand.
 
-**"I cannot buy from here."** Purchases are gated to the United States while
-the business registration is outstanding. EU and UK visitors keep full free
-access and can leave an email on the pricing page to be told when paid access
-opens. Say that plainly; it is not a bug and they should not be told to retry.
+**"I cannot buy from here."** Purchases are open worldwide; the EU/UK
+geo-gate was removed 2026-08-31, so region is not the cause. Check the
+Stripe dashboard for a declined charge first: the decline code names the
+real reason (card blocked, 3DS failed, currency refused). If Stripe shows
+no attempt at all, ask for a screenshot of what the checkout button does.
 
 **GitHub connection refused.** The token endpoint now rejects a token whose
 GitHub account is not the caller's. If a learner hits this, they are almost

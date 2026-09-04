@@ -49,7 +49,7 @@ tensorcraft/
 | Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with custom async test runner and TF.js mock (295 exercises) |
 | Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
 | Email | Kit (ConvertKit) | Waitlist, per-world segmented lists, nurture sequences |
-| Analytics | PostHog + Plausible | PostHog (product analytics, consent-gated) with user identification on sign-in. Plausible (marketing analytics, consent-gated via `tc-cookie-consent` localStorage key). 8 domain events tracked: lesson_started, lesson_completed, exercise_submitted, paywall_shown, checkout_started, checkout_completed, world_selected, streak_achieved. |
+| Analytics | PostHog + Vercel Web Analytics | PostHog (product analytics, consent-gated) with user identification on sign-in. Vercel Web Analytics (pageviews, consent-gated via the same `tc-cookie-consent` localStorage key). Plausible was removed 2026-09-02: never wired in prod, redundant with Vercel Analytics. 8 domain events tracked: lesson_started, lesson_completed, exercise_submitted, paywall_shown, checkout_started, checkout_completed, world_selected, streak_achieved. |
 | Fonts | Inter + JetBrains Mono | Clean UI + monospace for code/technical content |
 
 ## World System

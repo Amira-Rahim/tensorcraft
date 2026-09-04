@@ -9,7 +9,7 @@ function subscribe(onStoreChange: () => void): () => void {
 }
 
 /**
- * Vercel Web Analytics behind the SAME consent gate as PostHog/Plausible.
+ * Vercel Web Analytics behind the SAME consent gate as PostHog.
  *
  * The bare `<Analytics />` used to render unconditionally in the root layout
  * - outside every consent gate - beaconing pageviews (URL + referrer, with a

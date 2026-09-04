@@ -157,10 +157,10 @@ export default function PrivacyPage() {
               No analytics run until you choose &quot;Accept all&quot; on the
               cookie banner. With your consent: PostHog (EU servers) records
               pageviews and product events keyed to a random account ID, never
-              your name or email; Plausible and Vercel Analytics count pageviews
-              without cookies; Vercel Speed Insights measures page load times,
-              also without cookies. Declining the banner, or ignoring it, keeps
-              all four off. You can change your answer any time via &quot;Cookie
+              your name or email; Vercel Analytics counts pageviews without
+              cookies; Vercel Speed Insights measures page load times, also
+              without cookies. Declining the banner, or ignoring it, keeps all
+              three off. You can change your answer any time via &quot;Cookie
               settings&quot; in the footer.
             </p>
             <p>
@@ -200,10 +200,6 @@ export default function PrivacyPage() {
               <li>
                 <strong className="text-text-primary">PostHog</strong>: product
                 analytics on EU servers, consent-gated
-              </li>
-              <li>
-                <strong className="text-text-primary">Plausible</strong>:
-                cookie-free pageview analytics, consent-gated
               </li>
               <li>
                 <strong className="text-text-primary">Vercel</strong>: web
@@ -256,10 +252,10 @@ export default function PrivacyPage() {
             </h2>
             <p>
               Some of our providers, including Stripe, Vercel, Fly.io, Sentry,
-              Resend, and Kit, process data in the United States. PostHog and
-              Plausible stay on EU servers. Where your data leaves the EU, it
-              moves under each provider&apos;s EU-approved safeguards: Data
-              Privacy Framework certification or standard contractual clauses.
+              Resend, and Kit, process data in the United States. PostHog stays
+              on EU servers. Where your data leaves the EU, it moves under each
+              provider&apos;s EU-approved safeguards: Data Privacy Framework
+              certification or standard contractual clauses.
             </p>
           </section>
 

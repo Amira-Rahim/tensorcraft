@@ -19,7 +19,6 @@ Processing Agreements (DPAs) required before production launch.
 | Kit (ConvertKit) | Marketing email | US (SCCs in place) | Yes - standard Kit DPA |
 | **PostHog** | Product analytics | **EU (`eu.posthog.com`)** | **Yes - standard PostHog DPA** |
 | **Sentry** | Error tracking | EU (DSN pointed at EU region project) | **Yes - standard Sentry DPA** |
-| Plausible | Privacy-friendly web analytics | EU | Yes - standard Plausible DPA (cookie-less, no personal data) |
 
 ## Monitoring & analytics choices (Phase 6 §6g)
 

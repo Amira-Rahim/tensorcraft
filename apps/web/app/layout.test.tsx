@@ -26,9 +26,6 @@ vi.mock("./components/analytics-provider", () => ({
     <>{children}</>
   ),
 }));
-vi.mock("./components/plausible-script", () => ({
-  PlausibleScript: () => null,
-}));
 vi.mock("../lib/supabase/session-listener", () => ({
   SessionListener: () => null,
 }));

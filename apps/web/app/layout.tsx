@@ -11,7 +11,6 @@ import { CookieConsent } from "./components/cookie-consent";
 import { ReportIssueButton } from "./components/report-issue-button";
 import { SiteFooter } from "./components/site-footer";
 import { AnalyticsProvider } from "./components/analytics-provider";
-import { PlausibleScript } from "./components/plausible-script";
 import { SessionListener } from "../lib/supabase/session-listener";
 import { SessionToast } from "./components/session-toast";
 import { GithubNudgeToast } from "./components/github-nudge-toast";
@@ -177,7 +176,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col font-sans">
-        <PlausibleScript />
         {/* Consent-gated (Tier 1-LEGAL): renders nothing pre-consent and
             drops queued events via beforeSend after a withdrawal. The bare
             <Analytics /> that sat here beaconed before consent and after

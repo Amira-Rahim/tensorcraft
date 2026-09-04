@@ -164,7 +164,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
         <p
           class="mb-3"
         >
-          No analytics run until you choose "Accept all" on the cookie banner. With your consent: PostHog (EU servers) records pageviews and product events keyed to a random account ID, never your name or email; Plausible and Vercel Analytics count pageviews without cookies; Vercel Speed Insights measures page load times, also without cookies. Declining the banner, or ignoring it, keeps all four off. You can change your answer any time via "Cookie settings" in the footer.
+          No analytics run until you choose "Accept all" on the cookie banner. With your consent: PostHog (EU servers) records pageviews and product events keyed to a random account ID, never your name or email; Vercel Analytics counts pageviews without cookies; Vercel Speed Insights measures page load times, also without cookies. Declining the banner, or ignoring it, keeps all three off. You can change your answer any time via "Cookie settings" in the footer.
         </p>
         <p>
           Sentry, our error monitor, runs without consent so we can see crashes: our legitimate interest in a working product. Before an error report leaves your browser, Sentry strips emails, user IDs, IP addresses, and auth headers. Session recording is off.
@@ -229,14 +229,6 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
               PostHog
             </strong>
             : product analytics on EU servers, consent-gated
-          </li>
-          <li>
-            <strong
-              class="text-text-primary"
-            >
-              Plausible
-            </strong>
-            : cookie-free pageview analytics, consent-gated
           </li>
           <li>
             <strong
@@ -308,7 +300,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
           7. International Transfers
         </h2>
         <p>
-          Some of our providers, including Stripe, Vercel, Fly.io, Sentry, Resend, and Kit, process data in the United States. PostHog and Plausible stay on EU servers. Where your data leaves the EU, it moves under each provider's EU-approved safeguards: Data Privacy Framework certification or standard contractual clauses.
+          Some of our providers, including Stripe, Vercel, Fly.io, Sentry, Resend, and Kit, process data in the United States. PostHog stays on EU servers. Where your data leaves the EU, it moves under each provider's EU-approved safeguards: Data Privacy Framework certification or standard contractual clauses.
         </p>
       </section>
       <section>

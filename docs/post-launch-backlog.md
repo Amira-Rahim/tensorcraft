@@ -2224,20 +2224,23 @@ $50 / $90 / $135 / $225 (bundles flat 10% off retail, owner pick). The
 audit's verdict: $50 is the correct list price; trust, not price, is the
 binding constraint.
 
-- [ ] **B0: re-mint the visual baselines for the $50 price text.** Price
-  renders on landing, /pricing, world module maps ("From $50 · Module 1
-  free"), and /paywall, so `e2e/visual/*-snapshots` will diff. Procedure
-  per the standing traps: build prod and serve via `next start` (dev-over-
-  prod `.next` silently serves unstyled pages that pass fresh baselines),
-  delete the affected PNGs before minting (diffs sit at the 0.001
-  tolerance), run with `RUN_VISUAL=1`, never pipe playwright through
-  `tail` (masks exit codes), then eyeball every minted PNG.
-- [ ] **B0: terms still say purchases are US-only.**
-  `apps/web/app/terms/page.tsx:99-103` tells EU/UK buyers they cannot
-  purchase, contradicting the 2026-08-31 geo-gate removal (see the
-  purchases-open memory/decision). This is the one gate layer the removal
-  missed. Note the standing caveat: STRIPE_TAX_ENABLED is still off, so
-  EU sales collect no VAT until Stripe Tax is configured.
+- [x] **B0: re-mint the visual baselines for the $50 price text.** Done
+  2026-09-02: the price-text drift was already absorbed by an earlier
+  mint (a pre-mint check run passed 28/30), and all 30 chromium baselines
+  were force-re-minted (`--update-snapshots=all`) to also pick up the
+  cookie-banner copy change from the Plausible removal, which sat under
+  the 0.001 tolerance on tall pages. Verified with a clean check run
+  (30/30) plus a per-pixel old-vs-new diff of all 24 changed PNGs: every
+  visible delta is the banner text band, except a theme-toggle
+  micro-shift on auth (reproducible) and 97 px of canvas-edge
+  antialiasing on worlds-index.
+- [x] **B0: terms still say purchases are US-only.** Fixed 2026-09-02:
+  the US-only paragraph at `apps/web/app/terms/page.tsx:98-103` is
+  deleted, and the matching stale answer in `docs/support-runbook.md`
+  ("I cannot buy from here.") now points support at Stripe decline codes
+  instead of the removed geo-gate. The standing caveat still holds:
+  STRIPE_TAX_ENABLED is off, so EU sales collect no VAT until Stripe Tax
+  is configured (Tier 1-LEGAL).
 - [ ] **B0: fix `public/llms.txt` overclaims.** It ships publicly and says
   55 lessons / ~22 hours / 295 exercises / "Module 1 of every world is
   free"; disk says 56 lessons, ~29 hours (matches the FAQ), 65 live
@@ -2312,3 +2315,35 @@ connection; the still-art silhouette law stays still-only).
 - [ ] **Other worlds** repeat this per world at launch (their scene bibles
   and masters do not exist yet; each world needs its Gate C masters
   first).
+
+## Production log review follow-ups (2026-09-02)
+
+Source: a ~3-hour Vercel log-drain CSV reviewed 2026-09-02. Verdict: no
+5xx, no incidents; ~95% of volume is the three BetterStack uptime
+monitors (HEAD to /, /pricing, /blog every 5 minutes) plus crawlers.
+Real human traffic in the window: 2-3 visitors, one of whom walked
+/pricing to the free intro-to-tensors lesson. The one defect found, the
+`NEXT_PUBLIC_PLAUSIBLE_DOMAIN is unset; traffic analytics is OFF`
+warning firing on live renders, was resolved the same day by removing
+the Plausible integration entirely (never wired in prod, redundant with
+consent-gated Vercel Web Analytics, confirmed live via its beacon, and
+PostHog). Removal touched the component, layout mount, env guard, CSP,
+privacy policy, cookie banner, terms of the processor list, and docs.
+
+- [ ] (OPERATOR) **B9: dedupe the BetterStack log drain.** Every request
+  line lands 2-4 times in the drain: the proxy line appears to be
+  delivered under both the `edge` and `external` sources, on top of the
+  separate `lambda` line. Narrow the drain's sources (drop `external` or
+  `edge`, keep `lambda`), then confirm in Live tail that one HEAD probe
+  produces one proxy line. The drain API calls, ids, and the
+  15-competing-drains history are in `docs/observability.md` §Log
+  Drains. Cosmetic, but it doubles the volume against the capped free
+  tier and makes every future log review noisier.
+- [ ] (OPERATOR) **B9: downsize Vercel function memory.** Functions run
+  at 2048 MB while peak observed usage is ~293 MB (REPORT lines,
+  2026-09-02 window). Flip the project's Function Memory setting in the
+  Vercel dashboard to the 1024 MB tier; GB-hour billing halves whenever
+  traffic arrives. Dashboard only, on purpose: a `vercel.json`
+  `functions` block with a glob that matches nothing hard-fails the
+  deploy, and this project already has deploy-gate history
+  (`vercel_project_settings_deploy_gate`).

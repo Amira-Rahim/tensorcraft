@@ -95,12 +95,6 @@ export default function TermsPage() {
               available within 5 days of purchase, no questions asked: email
               support@tensorcraft.app.
             </p>
-            <p className="mt-3">
-              Purchases are currently available to buyers in the United States
-              only. If you are in the European Union or the United Kingdom you
-              can still create a free account and read the free module, and you
-              can ask us to email you when paid access opens in your region.
-            </p>
           </section>
 
           <section>
