@@ -9,7 +9,7 @@ scene:
   location: "Archimedes, Lab"
   time: "Five hours to the window"
   portraitAlt: "Farah marks up a structured prompt diagram on the lab whiteboard while Demir reviews her failed first attempt from the workbench."
-estimatedMinutes: 25
+estimatedMinutes: 12
 difficulty: intermediate
 context:
   narrative: "Farah discovers that the quality of LLM output depends entirely on the quality of the prompt. She refines her prompts iteratively, like debugging search queries until they return the right results."
@@ -50,7 +50,7 @@ Do the review before reading on. What would the model have needed to produce som
 My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report. Your review probably found three of the four. Format is the one people skip, because output without it still reads like English right up until you try to parse it.
 </Dialogue>
 
-Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. It's `git log` versus `git log --oneline --graph --all`: specificity and structure decide what you get back.
+Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. A search for `error` returns the whole index; a search for the exact string `Error when checking : expected dense_Dense1_input to have shape [null,3]` returns the one answer. Specificity and structure decide what you get back, and a prompt is a query.
 
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Parse the model's JSON reply back into an object your code can use", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging: refine until results match expectations"]} />
 
@@ -147,7 +147,7 @@ Write a prompt template that produces structured signal analysis.
     "Requesting structured output (JSON) makes LLM responses programmatically reliable; always parse and validate the schema before use.",
     "Prompts should be iterated like debugging: test, inspect output, identify the missing constraint, refine, and repeat until results are consistent."
   ]}
-  bridge="Crafting a prompt is like writing a precise search query: specificity and structure determine what you get back. A vague query (`git log`) returns noise; a precise one (`git log --oneline --graph --all`) returns signal. The same principle applies to prompts (`analyze signal` vs. a structured role-context-data-format prompt)."
+  bridge="Crafting a prompt is like writing a precise search query: specificity and structure determine what you get back. A vague query (`error`) returns thousands of results; a precise one (the exact error string) returns the answer. The same principle applies to prompts (`analyze signal` vs. a structured role-context-data-format prompt)."
   youCanNow="Write reusable prompt templates with role, context, data, and format sections that produce structured, parseable output suitable for programmatic processing."
 />
 

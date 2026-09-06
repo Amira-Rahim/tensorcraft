@@ -66,10 +66,13 @@ model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
 // Training data: 100 labeled readings, three features each:
-// [band energy, spectral stability, phase coherence]. Flagged windows
-// run hot on energy and coherence and LOW on stability; calm periods
-// are the mirror image. The seeds make the DATA reproducible; a net
-// trained on pure noise would sit at loss 0.693 forever, and deserve to.
+// [amplitude, frequency, phase]. Flagged windows run hot on amplitude
+// and phase and LOW on frequency (frequency here is a zero-crossing
+// count, and a clean tone crosses zero far less often than broadband
+// noise); calm periods are the mirror image. The seeds make the DATA
+// reproducible. A net trained on pure noise could still memorize it:
+// its training loss would fall while the held-out loss sat at 0.693,
+// the coin-flip number, which is the tell this lesson teaches you to read.
 const calm = tf.concat([
   tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
   tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),

@@ -1,65 +1,96 @@
 slug: generate-report
 lessonSlug: report-generation
-title: "Assemble a Report"
-instructions: "Write a function that takes an array of report sections (each with a heading and content) and assembles them into a single markdown document with section headings and horizontal rules between sections."
+title: "Assemble a Report, Cut What Failed"
+instructions: "Each generated section arrives with the validator's verdict attached: `{ heading, content, validated }`. Write `assembleReport(title, sections)`. Validated sections ship in order as markdown blocks ('## ' heading, blank line, content), joined by a '---' rule padded with blank lines, under '# ' title. Sections that failed validation do not ship their content at all; instead, when at least one was withheld, the document ends with one more block, '## Withheld', listing each withheld heading as a '- ' bullet. A report with nothing withheld carries no Withheld section. This is the cut Farah made at twenty-two minutes, written as a rule: Earth gets what the crew can stand behind, and an honest gap where the guess was."
 starterCode: |
-  interface Section { heading: string; content: string; }
+  interface Section { heading: string; content: string; validated: boolean; }
 
   function assembleReport(title: string, sections: Section[]): string {
-    // Create a markdown document with:
     // # title
-    // ## heading1
-    // content1
+    //
+    // ## heading (validated only)
+    //
+    // content
+    //
     // ---
-    // ## heading2
-    // content2
+    //
+    // ## Withheld            (only when something was withheld)
+    //
+    // - heading of each withheld section
     return null; // your code here
   }
 solutionCode: |
-  interface Section { heading: string; content: string; }
+  interface Section { heading: string; content: string; validated: boolean; }
 
   function assembleReport(title: string, sections: Section[]): string {
-    const parts = sections.map(s => `## ${s.heading}\n\n${s.content}`);
+    const shipped = sections.filter(s => s.validated);
+    const withheld = sections.filter(s => !s.validated);
+    const parts = shipped.map(s => `## ${s.heading}\n\n${s.content}`);
+    if (withheld.length > 0) {
+      parts.push(`## Withheld\n\n${withheld.map(s => `- ${s.heading}`).join('\n')}`);
+    }
     return `# ${title}\n\n${parts.join('\n\n---\n\n')}`;
   }
 testCode: |
   describe('assembleReport', () => {
-    const sections = [
-      { heading: 'Summary', content: 'Brief overview.' },
-      { heading: 'Analysis', content: 'Detailed analysis.' },
+    const clean = [
+      { heading: 'Summary', content: 'Brief overview.', validated: true },
+      { heading: 'Analysis', content: 'Detailed analysis.', validated: true },
     ];
-    it('includes title', () => {
-      expect(assembleReport('Report', sections)).toContain('# Report');
-    });
-    it('includes all sections', () => {
-      const report = assembleReport('R', sections);
-      expect(report).toContain('## Summary');
-      expect(report).toContain('## Analysis');
-    });
-    it('includes separators', () => {
-      expect(assembleReport('R', sections)).toContain('---');
-    });
-    it('includes content', () => {
-      const report = assembleReport('R', sections);
+    const mixed = [
+      { heading: 'Executive Summary', content: '12,001 events catalogued.', validated: true },
+      { heading: 'Hypotheses', content: 'The pulse train is a reply.', validated: false },
+      { heading: 'Results', content: '153 anomalous, 1 unclassified.', validated: true },
+    ];
+    it('ships validated sections under the title, in order, with one separator between blocks', () => {
+      const report = assembleReport('Report', clean);
+      expect(report.startsWith('# Report')).toBe(true);
+      expect(report.indexOf('## Summary')).toBeLessThan(report.indexOf('## Analysis'));
       expect(report).toContain('Brief overview.');
       expect(report).toContain('Detailed analysis.');
+      expect(report.split('---').length - 1).toBe(1);
+    });
+    it('a clean report carries no Withheld section', () => {
+      expect(assembleReport('Report', clean)).not.toContain('Withheld');
+    });
+    it('a failed section is cut, its content never ships, and its heading is listed as withheld', () => {
+      const report = assembleReport('Relay Report', mixed);
+      expect(report).not.toContain('The pulse train is a reply.');
+      expect(report).toContain('## Withheld');
+      expect(report).toContain('- Hypotheses');
+      expect(report).toContain('153 anomalous, 1 unclassified.');
+    });
+    it('the withheld list is one block at the end: separators equal blocks minus one', () => {
+      const report = assembleReport('Relay Report', mixed);
+      // 2 shipped blocks + 1 Withheld block = 3 blocks, 2 separators
+      expect(report.split('---').length - 1).toBe(2);
+      expect(report.trim().endsWith('- Hypotheses')).toBe(true);
+    });
+    it('when nothing validates, the document is the title and the withheld list alone', () => {
+      const report = assembleReport('Held', [
+        { heading: 'A', content: 'x', validated: false },
+        { heading: 'B', content: 'y', validated: false },
+      ]);
+      expect(report).not.toContain('x');
+      expect(report).toContain('- A');
+      expect(report).toContain('- B');
+      expect(report.split('---').length - 1).toBe(0);
     });
     it('assembles whatever sections it is given, not a memorized document', () => {
       const other = [
-        { heading: 'Telemetry', content: 'Pulse interval now 31 seconds.' },
-        { heading: 'Recommendation', content: 'Hold the relay window.' },
-        { heading: 'Risks', content: 'Bandwidth budget is tight.' },
+        { heading: 'Telemetry', content: 'Pulse interval now 31 seconds.', validated: true },
+        { heading: 'Recommendation', content: 'Hold the relay window.', validated: false },
+        { heading: 'Risks', content: 'Bandwidth budget is tight.', validated: true },
       ];
       const report = assembleReport('Relay Briefing', other);
       expect(report).toContain('# Relay Briefing');
-      expect(report).toContain('## Telemetry');
       expect(report).toContain('Pulse interval now 31 seconds.');
-      expect(report).toContain('## Risks');
-      const separators = report.split('---').length - 1;
-      expect(separators).toBe(2);
+      expect(report).not.toContain('Hold the relay window.');
+      expect(report).toContain('- Recommendation');
+      expect(report.split('---').length - 1).toBe(2);
     });
   });
-estimatedMinutes: 8
-difficulty: beginner
+estimatedMinutes: 10
+difficulty: intermediate
 mlContent: arithmetic
 skillAxis: js_integration

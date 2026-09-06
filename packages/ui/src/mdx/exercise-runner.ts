@@ -24,6 +24,14 @@ export interface ConsoleEntry {
 export interface TestRunOutcome {
   results: TestResult[];
   logs: ConsoleEntry[];
+  /**
+   * True when the run never produced graded results: execution timeout,
+   * runtime-load failure, or a crash before grading. The runner RESOLVES
+   * in every failure mode (never rejects), so callers that want to count
+   * crashed runs must read this flag rather than a catch branch
+   * (2026-09-04 re-audit: the analytics errored branch was dead code).
+   */
+  errored?: boolean;
 }
 
 const HARNESS = `
@@ -1110,6 +1118,7 @@ export async function parseAndRunTestsWith(
             },
           ],
           logs: [],
+          errored: true,
         });
       }, timeoutMs);
     };
@@ -1128,6 +1137,7 @@ export async function parseAndRunTestsWith(
           },
         ],
         logs: [],
+        errored: true,
       });
     }, RUNTIME_LOAD_TIMEOUT_MS);
 
@@ -1151,6 +1161,7 @@ export async function parseAndRunTestsWith(
             { name: "Code execution", passed: false, error: reply.error },
           ],
           logs: reply.logs,
+          errored: true,
         });
       }
     });

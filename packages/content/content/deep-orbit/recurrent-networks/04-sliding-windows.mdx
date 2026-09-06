@@ -26,11 +26,11 @@ consequence:
   narrative: "Perfectly shaped windows stream into the LSTM, and Demir can finally process the continuous signal feed in real time."
 hints:
   - level: nudge
-    content: "A sliding window turns one continuous signal into supervised pairs: the window is the input, the very next reading is the label."
+    content: "Split first, window second. A window is a slice of windowSize readings labelled by its last reading; the only question per window is which side of the boundary it lies on, and a window that touches both sides lies on neither."
   - level: guidance
-    content: "createTrainingPairs must return { inputs, labels } with those exact keys. Loop i from 0 while i <= signal.length - windowSize - 1: inputs gets signal.slice(i, i + windowSize), and labels gets signal[i + windowSize], the reading immediately AFTER the window, never inside it; that would let the model read the answer."
+    content: "One loop over every start index i where i + windowSize <= series.length. end = i + windowSize; the window is series.slice(i, end) and its label is labels[end - 1]. If end <= splitAt the window is entirely before the boundary: push it to train. Else if i >= splitAt it is entirely after: push it to eval. Anything else straddles and is dropped. Return { train, eval } with { xs, ys } inside each."
   - level: solution
-    content: "const inputs: number[][][] = []; const labels: number[][] = []; for (let i = 0; i <= signal.length - windowSize - 1; i++) { inputs.push(signal.slice(i, i + windowSize)); labels.push(signal[i + windowSize]); } return { inputs, labels };"
+    content: "const train = { xs: [], ys: [] }; const evalSet = { xs: [], ys: [] }; for (let i = 0; i + windowSize <= series.length; i++) { const end = i + windowSize; const window = series.slice(i, end); const label = labels[end - 1]; if (end <= splitAt) { train.xs.push(window); train.ys.push(label); } else if (i >= splitAt) { evalSet.xs.push(window); evalSet.ys.push(label); } } return { train, eval: evalSet };"
 keywords:
   - sliding-window
   - batching
@@ -165,7 +165,7 @@ signalFeed.addEventListener('reading', (event: CustomEvent) => {
 
 ## Challenge
 
-Build a sliding window function for sequential data.
+The mirror scored 97.4 because the stream was windowed before it was split. Build the honest version: cut the stream at a boundary first, then window each side, and prove that no reading crosses over. The grader hands you a series whose values are their own indices, so a leak shows up as a number on the wrong side.
 
 <Exercise slug="sliding-window" />
 

@@ -49,3 +49,15 @@ signal-ward, nova-canvas, terra-grid.
 If the plan is to sell bundles before world 2 meets this bar, re-price the
 bundles instead (fresh-eyes rerun T3-31): the checkout for 2/3/5-world tiers
 is already `disabled` in source until enough worlds launch.
+
+## Prose-partition reconciliation (added 2026-09-04, do before ANY world-2 launch)
+
+The lesson renderer now partitions steps via visibility sets plus
+CSS zone rules (see `docs/audits/lesson-format-audit-2026-09-04.md`).
+Deep Orbit's content satisfies the partition's contract and
+`apps/web/app/worlds/[slug]/[module]/[lesson]/__tests__/content-partition-contract.test.ts`
+enforces it in CI, but ONLY for deep-orbit. Before launching another
+world: extend that contract test to the new world's directory and fix
+what it finds. Known today for neon-protocol: `<Quiz>` blocks appear in
+no visibility set (they would render on no step), and the world was
+authored before the partition existed.

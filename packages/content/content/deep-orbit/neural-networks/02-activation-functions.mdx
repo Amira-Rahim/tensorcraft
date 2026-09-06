@@ -84,7 +84,7 @@ tf.sigmoid(board).print();            // [0.0000167, 1]
 // Two unbounded scores in, two board-ready verdicts out.`}
 </CodeBlock>
 
-Placement falls out of the ranges. ReLU stays in the hidden layers, where speed matters and the outputs feed more math. Sigmoid takes the output slot when the question is yes/no, because (0, 1) reads as a probability. Tanh takes it when values need to swing negative.
+Placement falls out of the ranges. ReLU stays in the hidden layers, where the outputs feed more math: its slope is exactly 1 for every positive input, so the learning signal you meet in module 3 passes through it undiminished, and it is also the cheapest of the three to compute. Sigmoid takes the output slot when the question is yes/no, because (0, 1) reads as a probability. Tanh takes it when values need to swing negative.
 
 <DerivationDrawer summary="Sigmoid's math, and the classical model built from it">
 **Why sigmoid lands strictly inside (0, 1).** The formula is `sigmoid(z) = 1 / (1 + Math.exp(-z))`, where `z` is the raw pre-activation score. `Math.exp(-z)` is positive for every `z`, so the denominator is always bigger than 1 and the division always lands strictly between 0 and 1. At `z = 0`, `Math.exp(0) = 1` and the output is exactly 0.5, which is why the sigmoid line in the code above shows 0.5 in the middle slot. Push `z` positive and `Math.exp(-z)` shrinks toward zero, pulling the output toward 1; push `z` negative and the denominator blows up, pushing the output toward 0. The endpoints are approached, never reached: 600 printed as exactly 1 above only because float32 ran out of digits, not because the math got there.

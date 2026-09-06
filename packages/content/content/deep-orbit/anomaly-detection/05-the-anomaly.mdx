@@ -64,7 +64,7 @@ Something the training data has never contained, Commander. That is the one clai
 
 In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on.
 
-<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Read a 2-of-3 majority vote as a confidence number, and state what three agreeing detectors can and cannot claim"]} />
+<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means more independent evidence", "Read a 2-of-3 majority vote as an agreement level, and state what three agreeing detectors can and cannot claim"]} />
 
 ## Ensemble Detection
 
@@ -75,7 +75,7 @@ In JavaScript terms, the bridge just watched a throw reach `process.on('uncaught
 
 interface DetectionResult {
   isAnomaly: boolean;
-  confidence: number;
+  agreement: number;   // detectors that fired, out of 3: evidence, not a probability
   detectors: {
     statistical: { triggered: boolean; zScore: number };
     autoencoder: { triggered: boolean; error: number };
@@ -124,7 +124,7 @@ function detectAnomaly(
 
   return {
     isAnomaly: votes >= 2,  // majority vote
-    confidence: votes / 3,
+    agreement: votes / 3,   // 2 of 3 is not "67% likely"; it is two independent yeses
     detectors: {
       statistical: { triggered: statTriggered, zScore },
       autoencoder: { triggered: aeTriggered, error: reconError },
@@ -135,7 +135,7 @@ function detectAnomaly(
 
 // The anomalous signal:
 // statistical: z=8.7 ✓, autoencoder: error=0.062 ✓, lstm: predError=0.041 ✓
-// Confidence: 3/3 = 100%: all detectors agree`}
+// Agreement: 3 of 3. Every detector fired; none of them says how likely.`}
 </CodeBlock>
 
 ## The Discovery
@@ -150,7 +150,7 @@ const anomalyResult = detectAnomaly(
 
 console.log('=== DEEP SCAN ALERT ===');
 console.log('Anomaly detected:', anomalyResult.isAnomaly);      // true
-console.log('Confidence:', anomalyResult.confidence);             // 1.0
+console.log('Agreement:', anomalyResult.agreement);               // 1.0: 3 of 3 fired
 console.log('Z-score:', anomalyResult.detectors.statistical.zScore.toFixed(1));  // 8.7
 console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)); // 0.0620
 console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(4)); // 0.0410
@@ -177,9 +177,9 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <LessonRecap
   whatYouLearned={[
-    "Ensemble detection combines multiple independent methods (statistical, learned, and temporal) so that majority agreement raises confidence and reduces false alerts from any single detector.",
+    "Ensemble detection combines multiple independent methods (statistical, learned, and temporal) so that a majority vote, not any single detector, decides; agreement is a count of independent evidence, not a calibrated probability.",
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
-    "A model's job is detection and quantification; ensemble agreement tells you how confident the system is, but interpretation of what was detected remains a human decision."
+    "A model's job is detection and quantification; ensemble agreement tells you how much independent evidence fired, and interpretation of what was detected remains a human decision."
   ]}
   bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, an anomaly alert (`if (error > 12 * baseline) alert('UNKNOWN SIGNAL DETECTED')`) fires when every detector agrees the input falls outside anything the system was trained to handle."
   youCanNow="Build an ensemble anomaly detection pipeline that combines statistical, autoencoder, and temporal detectors using majority voting for high-confidence flagging."

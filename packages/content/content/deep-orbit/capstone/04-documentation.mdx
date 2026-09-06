@@ -7,7 +7,7 @@ order: 4
 scene:
   location: "Archimedes, Lab"
   portraitAlt: "Demir drafts the DEEP SCAN handover at the lab workbench, a model card taking shape on the whiteboard as Farah watches from the glass wall."
-estimatedMinutes: 20
+estimatedMinutes: 13
 difficulty: intermediate
 context:
   narrative: "Dr. Farah insists on documentation. 'If this crew cannot operate DEEP SCAN without Demir, then it is not a production system. Document everything.' Demir writes docs the way he would write a good README."
@@ -129,7 +129,7 @@ const deepScanCard: ModelCard = {
   ],
 
   usage: {
-    inputFormat: 'Float32Array of 80 signal samples, normalized to [-1, 1]',
+    inputFormat: 'Float32Array of 80 raw signal samples; the pipeline extracts the 11 features and applies the saved training statistics itself',
     outputFormat: '{ label: string, confidence: number, isAnomaly: boolean }',
     exampleCode: 'const result = await deepScan.classify(signalData);',
   },
@@ -152,9 +152,10 @@ const deepScanCard: ModelCard = {
 
 /**
  * Classify a raw signal sample.
- * @param signal - Float32Array of 80 samples, normalized to [-1, 1]
+ * @param signal - Float32Array of 80 raw samples; feature extraction and
+ *   normalization with the saved training statistics happen inside
  * @returns Classification result with label, confidence, and anomaly flag
- * @throws {ValidationError} If signal length !== 80 or values outside [-1, 1]
+ * @throws {ValidationError} If signal length !== 80 or any sample is not finite
  */
 async function classify(signal: Float32Array): Promise<Classification> {
   // 1. Validate input dimensions and range

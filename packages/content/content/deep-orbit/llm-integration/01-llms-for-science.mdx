@@ -8,7 +8,7 @@ scene:
   location: "Archimedes, Bridge"
   time: "Six hours to the transmission window"
   portraitAlt: "Farah pitches an AI-drafted report at the bridge holo table while Nazari watches from the command tier, a countdown ring glowing between them."
-estimatedMinutes: 25
+estimatedMinutes: 15
 difficulty: intermediate
 context:
   narrative: "Mirza needs a report for Earth Command in 6 hours. 47 days of data. Farah suggests using an LLM to draft the report: not to replace analysis, but to accelerate it."
@@ -114,6 +114,14 @@ Focus on the single unclassified signal and its significance.
 \`);`}
 </CodeBlock>
 
+## What You Are Actually Calling
+
+Strip the HTTP away and the thing on the other end is a model you have already built the parts of. A language model is a classifier. Given a sequence of tokens (word pieces, roughly three quarters of a word each), it emits one score per possible next token, softmax turns the scores into a probability distribution, and one token is sampled from it. Append the sample, run again, repeat until a stop token. Six hundred words of report is about eight hundred forward passes, one per token, each a next-token prediction: the shape of module 6's next-value prediction, except the output is one of tens of thousands of classes instead of three continuous numbers, which is what makes it classification.
+
+Inside each pass, the mechanism that reads the prompt is the attention you built in module 8, stacked dozens of layers deep and run with many heads at once: every token scores every other token, softmax spends the budget, and the weighted sum becomes the next layer's input. The prompt is the window. The context limit is the sequence length, the same T you windowed at 80. And `temperature` is a knob on module 8's softmax: divide the scores by it before the exponentials, and a low value sharpens the distribution toward the single likeliest token while a high value flattens it toward a coin toss. That is why the client above sets 0.3 for a factual draft, and why lesson 4 insists that a sharpened distribution is a more repeatable one, not a more truthful one.
+
+What is new is only scale. The weights were trained on more text than any crew could read, which is why the model writes fluent paragraphs about instruments the Archimedes does not carry. Fluency is what next-token prediction optimizes. Truth was never in the loss.
+
 ## The Human-AI Workflow
 
 <CodeBlock language="typescript" title="workflow.ts">
@@ -180,6 +188,7 @@ Set up an LLM client and generate a structured analysis.
 <LessonRecap
   whatYouLearned={[
     "LLMs are augmentation tools. The safe workflow is generate, review, correct, approve: the draft arrives faster than writing from scratch, and nothing ships until a human who knows the data has checked every factual claim against it and signed off.",
+    "An LLM is next-token prediction: a stack of module 8's attention over a window of tokens, with softmax choosing the next one. Fluency is the objective; truth is not in the loss.",
     "Temperature controls how random the next-token pick is: low values (0.1-0.3) make a factual analysis repeatable, higher values suit creative tasks. Repeatable is not the same as true, so temperature is a knob for consistency and never a defense against fabrication."
   ]}
   bridge="Just as AI code completion (Copilot) suggests code you still review before merging, LLM analysis (`llm.complete(prompt)`) generates prose you must verify against your data before trusting."

@@ -122,7 +122,7 @@ const forecast = await forecastMultiStep(model, recentWindow, 47);
 // The LSTM predicts a spike at step 47 of this one-second-step demo horizon.`}
 </CodeBlock>
 
-One unit check before anyone trusts a display: the demo above walks 47 one-second steps, under a minute of horizon. The forecast the bridge will run tonight speaks in minutes because it runs on a different series: the interval sequence, one value per pulse. At the current 73-second spacing, 47 minutes is only about 38 steps. Its target is the 47-minute macro-cycle that has sat in Farah's residue plots since module 5. If the forecast lands close, credit the signal's regularity and the short step count before you credit the model.
+One unit check before anyone trusts a display. The demo above walks 47 one-second steps, under a minute of horizon. The bridge's 47-minute countdown runs on a different series, the pulse intervals, one value per pulse, where 47 minutes is about 38 steps at the current spacing. Read what one step means before you read a forecast, and when a short forecast lands, credit the signal's regularity before you credit the model.
 
 ## Challenge
 

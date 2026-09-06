@@ -44,6 +44,20 @@ function AnalyticsInner() {
       initialized.current = true;
       posthog.opt_in_capturing();
 
+      // Opt-in numerator, once per browser, at the first moment consent
+      // makes capture possible. The decline side deliberately emits
+      // nothing (the banner promises analytics only on accept); the
+      // denominator is log-drain unique visitors. Guarded by its own key
+      // so re-inits on later visits do not re-count this browser.
+      try {
+        if (!localStorage.getItem("tc-consent-reported")) {
+          localStorage.setItem("tc-consent-reported", "1");
+          track(EVENTS.CONSENT_GRANTED, { source: "banner" });
+        }
+      } catch {
+        // localStorage unavailable: skip rather than risk double-counting.
+      }
+
       // The route effect below only fires on navigation, so without this the
       // page consent was granted on would never be counted.
       const url = searchParamsRef.current

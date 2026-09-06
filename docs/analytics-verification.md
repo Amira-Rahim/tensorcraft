@@ -43,12 +43,18 @@ production release.
 | `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
 | `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `yearsExperience?` |
 | `lesson_started` | Open any lesson (step 1 auto-fires) | `worldId`, `moduleId`, `lessonId` |
+| `lesson_step_viewed` | Every step entry: mount, Continue, back-nav, step-bar jump | `step` (0-5), `stepName`, `prevStep?`, `prevStepMs?`, `revisit` |
+| `script_skipped` | Skip intro button; Continue past a playing scene; the remembered preference suppressing playback | `step=0`, `elapsedMs`, `via` (`button`/`continue`/`auto`) |
+| `script_finished` | Let the Briefing scene play to its natural end | `step=0`, `elapsedMs`, `run` (`auto`/`replay`), `briefingVariant` |
+| `scene_clip_played` | Briefing scene clip starts (autoplay or the play control), clip-variant browsers on lessons with an approved clip | `trigger` (`auto`/`manual`) |
+| `scene_clip_completed` | The clip reaches its natural end | `watchedMs` |
 | `hint_requested` | On a lesson step with hints: click "Reveal Nudge" | `hintLevel=1`, plus context ids |
-| `exercise_attempted` | Submit an exercise (any outcome) | `passed`, `score`, `exerciseSlug` |
+| `exercise_attempted` | Submit an exercise (any outcome, including a crashed or timed-out run) | `passed`, `score`, `exerciseSlug`, `durationMs`, `hintsUsed`, `errored?` |
 | `exercise_completed` | Submit a passing exercise | `score`, `exerciseSlug` |
 | `checkpoint_submitted` | Answer an in-lesson quiz | `passed`, `attempts` |
-| `recall_answered` | Click "Reveal Answer" on a RecallPrompt | `action="revealed"` |
-| `lesson_completed` | Reach step 6 (Consequence) of a lesson | `worldId`, `moduleId`, `lessonId` |
+| `recall_answered` | Click "Reveal Answer" (`action="revealed"`), then rate (`got-it`/`review`) | `action` |
+| `lesson_completed` | Reach step 6 (Consequence) of a lesson | `worldId`, `moduleId`, `lessonId`, `durationMs`, `hintsUsed` |
+| `consent_granted` | Accept the cookie banner in a fresh browser profile (fires once per browser) | `source="banner"` |
 | `module_completed` | Finish the last lesson of a module | `lessonsCount` |
 | `paywall_hit` | Visit a Module 2+ lesson without access | `worldId`, `moduleId` |
 | `pricing_page_viewed` | Land on `/pricing` (any path) | `source` |
@@ -56,7 +62,7 @@ production release.
 | `payment_completed` | Server-side: Stripe `checkout.session.completed` | `planId`, `worldIds`, `amount`, `sessionId` |
 | `payment_failed` | Server-side: Stripe `async_payment_failed` (use a test card) | `sessionId`, `reason` |
 | `payment_refunded` | Server-side: issue a refund in Stripe dashboard | `paymentIntentId`, `isFullRefund` |
-| `streak_achieved` | Complete a lesson after 24h of prior completion | `streakDays` |
+| `streak_achieved` | Complete a lesson after 24h of prior completion | `streakDays` (read back from the streaks table since 2026-09-04; previously hardcoded 1) |
 | `session_started` | App load / route into any page (fires from `AnalyticsProvider`) | `sessionId` |
 | `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
 | `upgrade_cta_shown` | `/pricing?locked=<slug>` banner renders, OR `/paywall` mounts | `source="paywall"`, `worldId?` |
@@ -66,6 +72,45 @@ production release.
 | `world_trailer_played` | World-page trailer band opens the lightbox cut (only once `/media/<slug>-trailer.mp4` ships; prospects only, no loop mode on this surface) | `worldId`, `mode="full"` |
 | `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `worldId` |
 | `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `worldId`, `lessonId`, `exerciseSlug`, `commitSha` |
+
+## In-lesson instrumentation (added 2026-09-04)
+
+Shipped as step 1 of `docs/audits/lesson-format-audit-2026-09-04.md`,
+which found the funnel between `lesson_started` and `lesson_completed`
+unmeasurable. How to read the new metrics:
+
+- **Step funnel / dropoff**: `lesson_step_viewed` per step, filtered
+  `revisit=false` for first-view survival curves. Dwell per step is the
+  NEXT view's `prevStepMs`; the final step's dwell is deliberately
+  unmeasured (unload handlers lose to tab close often enough that a
+  partial number would mislead). Interpretation note: the prose
+  partition shipped the same day, so from this deploy on the Concept
+  step is where reading happens (Briefing is the story zone only, Code
+  is the isolated worked example, Challenge is brief + hints); compare
+  dwell only within the post-partition era. Baseline capture:
+  `scripts/analytics/module1-baseline.mjs` +
+  `docs/audits/module1-baseline-template.md`.
+- **Honest narrative skip rate** (the >40% redesign rule, and the video
+  investment gate): `script_skipped` (all `via` values) divided by
+  (`script_skipped` + `script_finished` where `run="auto"`).
+  Reduced-motion visitors emit neither and are correctly excluded.
+  History note: before 2026-09-04 the rate was biased low by
+  construction; skip counts from before that date are not comparable.
+- **Time on lesson**: `lesson_completed.durationMs` is mount-to-step-5
+  for the completing session; cross-session truth is the sum of
+  `prevStepMs`.
+- **Earned-pass rate** (the learning-evidence query): exercise passes
+  with `solutionViewed=false` and `hintsUsed < 3`, from
+  `exercise_attempts` (now also carrying `duration_ms` and `hints_used`)
+  or the `exercise_attempted` event. Crashed/timed-out runs now record
+  with `errored=true`, `passed=false`.
+- **Consent opt-in rate**: `consent_granted` unique persons divided by
+  log-drain unique visitors over the same window. The decline side
+  emits nothing on purpose: the banner promises analytics only on
+  accept. (A cookieless server-side decline counter was considered and
+  left as an owner decision, since it needs a privacy-policy judgment.)
+- **world_progress.hints_used / .attempts** now populate on genuine
+  completions (max-across-sessions for hints, sum for attempts).
 
 ## Stripe server-side events
 

@@ -53,10 +53,11 @@ export function buildCourseJsonLd(world: WorldManifest) {
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
-      // Sum of lesson + exercise estimatedMinutes frontmatter (1,729 min
-      // as of 2026-07-19: 975 lesson + 754 exercise). Recompute when
-      // minutes change: sum lesson+exercise estimatedMinutes / 60, round.
-      courseWorkload: "PT29H",
+      // Sum of lesson + exercise estimatedMinutes frontmatter (1,590 min
+      // as of 2026-09-05: 812 lesson + 778 exercise, after the content
+      // quality audit re-paced modules 9-11). Recompute when minutes
+      // change: sum lesson+exercise estimatedMinutes / 60, round.
+      courseWorkload: "PT27H",
     },
   };
 }

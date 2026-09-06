@@ -71,9 +71,18 @@ vi.mock("@/lib/progress-client", () => ({
 vi.mock("@/lib/analytics", () => ({
   trackLessonStarted: vi.fn(),
   trackLessonCompleted: vi.fn(),
+  trackModuleCompleted: vi.fn(),
   trackCheckpointSubmitted: vi.fn(),
   trackExerciseSubmitted: vi.fn(),
   trackHintRequested: vi.fn(),
+  // The step machine emits step views and script skip/finish through the
+  // typed helper (2026-09-04 instrumentation).
+  track: vi.fn(),
+  EVENTS: {
+    LESSON_STEP_VIEWED: "lesson_step_viewed",
+    SCRIPT_SKIPPED: "script_skipped",
+    SCRIPT_FINISHED: "script_finished",
+  },
 }));
 
 // Final step fires a lazy import chain (api-url → supabase client → getSession
@@ -152,6 +161,9 @@ function shownBeatCount(): number {
 
 beforeEach(() => {
   localStorage.clear();
+  // Reset the step hash like localStorage: jsdom keeps `location` across
+  // tests and a stale #step-N reads as a deep link on the next mount.
+  window.history.replaceState(null, "", window.location.pathname);
   vi.useFakeTimers();
 });
 
@@ -345,5 +357,49 @@ describe("structure-variety machinery (P2 gate)", () => {
       </StrictMode>,
     );
     expect(screen.queryByTestId("pattern-format-tag")).toBeNull();
+  });
+});
+
+describe("LessonSteps, script telemetry (2026-09-04 instrumentation)", () => {
+  it("emits script_finished with run=auto when the timeline completes, and run=replay after Replay", async () => {
+    const { track } = await import("@/lib/analytics");
+    vi.mocked(track).mockClear();
+    renderReal();
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    expect(track).toHaveBeenCalledWith(
+      "script_finished",
+      expect.objectContaining({ run: "auto", step: 0 }),
+    );
+
+    act(() => {
+      screen.getByRole("button", { name: /replay/i }).click();
+    });
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    expect(track).toHaveBeenCalledWith(
+      "script_finished",
+      expect.objectContaining({ run: "replay" }),
+    );
+  });
+
+  it("counts the remembered skip preference as script_skipped via=auto", async () => {
+    const { track } = await import("@/lib/analytics");
+    vi.mocked(track).mockClear();
+    // One prior manual skip anywhere arms the forever preference; before
+    // 2026-09-04 this path emitted nothing and the skip rate was biased
+    // low by construction.
+    localStorage.setItem("tc-script-skip", "1");
+    renderReal();
+    expect(track).toHaveBeenCalledWith(
+      "script_skipped",
+      expect.objectContaining({ via: "auto", elapsedMs: 0 }),
+    );
+    expect(track).not.toHaveBeenCalledWith(
+      "script_finished",
+      expect.anything(),
+    );
   });
 });

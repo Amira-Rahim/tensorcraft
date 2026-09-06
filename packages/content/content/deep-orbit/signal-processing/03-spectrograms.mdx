@@ -160,12 +160,6 @@ const balanced = stft(signal, 256, 128);
 // Window span 1s (time blur), 1 Hz per bin`}
 </CodeBlock>
 
-## Challenge
-
-Compute a spectrogram and identify when a frequency appears.
-
-<Exercise slug="build-spectrogram" />
-
 <DerivationDrawer summary="Short-time Fourier transform (STFT) math">
 A spectrogram is a sequence of FFTs computed on overlapping windows of the signal:
 
@@ -185,6 +179,12 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
 
 **Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Each column blurs events across the window's span, `W / fs`; consecutive columns advance by `hop / fs`.
 </DerivationDrawer>
+
+## Challenge
+
+Compute a spectrogram and identify when a frequency appears.
+
+<Exercise slug="build-spectrogram" />
 
 <RecallPrompt
   question="If you increase the STFT window size, what happens to frequency resolution and time resolution, and why can't you improve both at once?"

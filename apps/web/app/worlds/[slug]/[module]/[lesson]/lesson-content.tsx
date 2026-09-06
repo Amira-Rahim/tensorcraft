@@ -81,6 +81,21 @@ interface LessonContentProps {
   visibleComponents?: Set<string>;
   storyRegister?: boolean;
   onExerciseComplete?: (exerciseSlug: string, score: number) => void;
+  /**
+   * Fires on EVERY graded run (pass, fail, crash, timeout), unlike
+   * onExerciseComplete which fires only on a pass. The step machine
+   * counts these into world_progress.attempts.
+   */
+  onExerciseAttempt?: (result: ExerciseSubmitResult) => void;
+  /** Mirrors hint reveals up to the step machine's per-lesson counter. */
+  onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
+  /**
+   * Reads the step machine's distinct-hint-levels count at submit time,
+   * so the attempts POST can carry it. A callback, not a number: hints
+   * reveal in the LEFT column instance while the exercise submits from
+   * the RIGHT pane instance, and a prop value would be stale.
+   */
+  getHintsUsed?: () => number;
   glossaryTerms?: Array<{ term: string; definition: string }>;
   /**
    * XS renderer slice (fresh-eyes rerun §4/T1-16): prose visibility is a
@@ -92,6 +107,26 @@ interface LessonContentProps {
    * counter-argument; the last structural renderer change was reverted).
    */
   hideChallengeOnward?: boolean;
+  /**
+   * Prose partition (2026-09-04 audit step 2): hides the teaching body
+   * (first top-level heading onward) so the Briefing renders the story
+   * zone only. CSS-anchored like hideChallengeOnward.
+   */
+  hideTeaching?: boolean;
+  /**
+   * The Concept-step mirror of hideTeaching: hides the story zone
+   * (everything before the first top-level heading) so the opening scene
+   * does not double-render on the read step, while mid-lesson story
+   * beats after headings stay (re-audit 2026-09-04).
+   */
+  hideStoryZone?: boolean;
+  /**
+   * Consequence only: re-reveals the post-recap story zone (the
+   * paragraphs and DISPATCH blockquotes after LessonRecap), anchored on
+   * the marker the hidden LessonRecap leaves behind. Without it those
+   * beats rendered mid-Challenge or nowhere (re-audit 2026-09-04).
+   */
+  showPostRecap?: boolean;
 }
 
 /**
@@ -139,8 +174,14 @@ export function LessonContent({
   visibleComponents,
   storyRegister,
   onExerciseComplete,
+  onExerciseAttempt,
+  onHintRevealed,
+  getHintsUsed,
   glossaryTerms,
   hideChallengeOnward,
+  hideTeaching,
+  hideStoryZone,
+  showPostRecap,
 }: LessonContentProps) {
   const { activeTerm, setActiveTerm } = useGlossary();
 
@@ -165,6 +206,9 @@ export function LessonContent({
     (result: ExerciseSubmitResult) => {
       if (!worldId || !lessonId) return;
 
+      onExerciseAttempt?.(result);
+      const hintsUsed = getHintsUsed?.();
+
       // Fire-and-forget, don't block the UI on persistence
       // Dynamic import to avoid making this callback async
       import("@/lib/api-fetch").then(({ apiFetch }) => {
@@ -178,6 +222,8 @@ export function LessonContent({
             passed: result.passed,
             score: result.score,
             solutionViewed: result.solutionViewed,
+            hintsUsed,
+            durationMs: result.durationMs,
           }),
         }).catch(() => {
           // Silently ignore, attempt recording is best-effort.
@@ -213,16 +259,20 @@ export function LessonContent({
         result.passed,
         result.score,
         result.exerciseSlug,
+        hintsUsed,
+        result.durationMs,
+        result.errored,
       );
     },
-    [worldId, lessonId, moduleId],
+    [worldId, lessonId, moduleId, onExerciseAttempt, getHintsUsed],
   );
 
   const handleHintRevealed = useCallback(
     (hintLevel: 1 | 2 | 3) => {
+      onHintRevealed?.(hintLevel);
       trackHintRequested(hintLevel, { worldId, lessonId });
     },
-    [worldId, lessonId],
+    [worldId, lessonId, onHintRevealed],
   );
 
   // Visibility helpers for step-based rendering
@@ -237,6 +287,10 @@ export function LessonContent({
     !visibleComponents ||
     visibleComponents.size === 0 ||
     visibleComponents.has("prose");
+  // "challenge" re-reveals the challenge zone when prose is hidden (the
+  // Challenge step's left column: brief + hints without the re-read).
+  const showChallenge =
+    !showProse && (visibleComponents?.has("challenge") ?? false);
 
   // Build MDX components with the onSubmit handler and framework wired in
   const components = useMemo(() => {
@@ -315,7 +369,20 @@ export function LessonContent({
       DeepScanDemo: wrapVisibility("DeepScanDemo", DeepScanDemo),
       DerivationDrawer: wrapVisibility("DerivationDrawer", DerivationDrawer),
       KeyTakeaways: wrapVisibility("KeyTakeaways", KeyTakeaways),
-      LessonRecap: wrapVisibility("LessonRecap", LessonRecap),
+      // LessonRecap leaves a marker when hidden: it is the structural
+      // boundary between the challenge zone and the post-recap story
+      // (DISPATCH blockquotes, closing codas), and the CSS that scopes
+      // the Challenge reveal and the Consequence post-recap reveal
+      // anchors on it. Every built lesson carries exactly one LessonRecap
+      // (style bible, lesson close).
+      LessonRecap: (props: React.ComponentProps<typeof LessonRecap>) => {
+        const insideEpilogue = useContext(EpilogueContext);
+        return insideEpilogue || shouldShow("LessonRecap") ? (
+          <LessonRecap {...props} />
+        ) : (
+          <span data-post-recap-marker hidden />
+        );
+      },
       LearningObjectives: wrapVisibility(
         "LearningObjectives",
         LearningObjectives,
@@ -484,8 +551,12 @@ export function LessonContent({
       <div
         className="max-w-none lesson-prose lesson-step-content"
         data-show-prose={showProse ? "true" : "false"}
+        data-show-challenge={showChallenge ? "true" : undefined}
+        data-show-postrecap={showPostRecap ? "true" : undefined}
         data-story-register={storyRegister ? "true" : undefined}
         data-hide-challenge-onward={hideChallengeOnward ? "true" : undefined}
+        data-hide-teaching={hideTeaching ? "true" : undefined}
+        data-hide-story-zone={hideStoryZone ? "true" : undefined}
       >
         <Content />
         {shouldShow("HintPanel") && lesson.hints && (

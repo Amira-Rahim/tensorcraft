@@ -7,7 +7,7 @@ order: 2
 scene:
   location: "Archimedes, Engineering"
   portraitAlt: "Nazari faces an engineering display where four stacked blocks shrink to one and a weight histogram snaps onto coarse levels."
-estimatedMinutes: 25
+estimatedMinutes: 17
 difficulty: advanced
 context:
   narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Uint16 uses 2. Uint8 uses 1. Do the math: that's a 4x size reduction.'"
@@ -43,7 +43,27 @@ skillAxes: [deployment]
 Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference; the runtime decodes them back to floats at load. Promise me a file that fits.
 </Dialogue>
 
-The uint8 pass makes one cut, and it lands on two different ledgers. The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier. Its number has a history. The spectrogram re-annotation knocked it to 78; the FFT features earned it back to 87; five modules of sequence features and a retrain this week carried it to 94.2. That same retrain is when the head widened: Farah's catalog labels finally landed, and the old binary anomaly-or-noise gate became five classes (pulsar, quasar, noise, interference, anomaly). Quantize the whole bundle, and the scoreboard reports what the knife took in the one place the loss can be measured.
+Two ledgers, one knife. The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The uint8 pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier, at 94.2 after this week's retrain (78 after the spectrogram re-annotation, 87 with the FFT features, 94.2 with five modules of sequence features).
+
+That retrain also changed the classifier's shape, and the change deserves a paragraph rather than a footnote. Farah's catalog labels finally landed, and the binary anomaly-or-noise gate became a five-way sort: pulsar, quasar, noise, interference, anomaly. Two things move when a classifier grows past two classes. The output layer becomes five units under a softmax, module 8's arithmetic, so the five scores become five probabilities that sum to 1 and the verdict is whichever is largest. And the loss becomes categorical cross-entropy: module 3's log of the probability the model gave the right answer, read from whichever of the five columns holds the true label, with labels one-hot encoded so each reading's target is four zeros and a one.
+
+<CodeBlock language="typescript" title="five-class-head.ts">
+{`// The binary head, module 2:
+//   model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+//   model.compile({ loss: 'binaryCrossentropy', ... });
+
+// The five-class head, this week. Same hidden stack; only the door changes.
+model.add(tf.layers.dense({ units: 5, activation: 'softmax' }));
+model.compile({ optimizer: 'adam', loss: 'categoricalCrossentropy', metrics: ['accuracy'] });
+
+// Labels go from a 0/1 column to one-hot rows. Class index 4 (anomaly):
+const ys = tf.oneHot(tf.tensor1d(labelIndices, 'int32'), 5);  // [0, 0, 0, 0, 1]
+
+// Accuracy still means "the largest probability landed on the true column",
+// which is what makes 94.2 on this scoreboard comparable to the binary 94.`}
+</CodeBlock>
+
+Quantize the whole bundle, and the scoreboard reports what the knife took in the one place the loss can be measured.
 
 The technique runs exactly as deep as Nazari's arithmetic. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0249 has 512 MB of RAM and went down parsing a 340 MB weight file; cutting that file to 85 MB is the first and largest payment on the debt.
 

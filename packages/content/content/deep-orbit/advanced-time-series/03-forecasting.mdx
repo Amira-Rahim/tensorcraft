@@ -58,14 +58,16 @@ Then someone (or something) is sending it.
 <CodeBlock language="typescript" title="forecasting.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
+// The rolling loop from module 6, lesson 5: predict one step, append it,
+// slide the window, repeat. Nothing here is new; the drift check below
+// needs its output.
 async function forecast(
   model: tf.LayersModel,
   seed: number[][],
   horizon: number,
-): Promise<{ predictions: number[][]; trustHeuristic: number[] }> {
+): Promise<number[][]> {
   const window = [...seed];
   const predictions: number[][] = [];
-  const trustHeuristic: number[] = [];
 
   for (let step = 0; step < horizon; step++) {
     const nextValue = tf.tidy(() => {
@@ -76,21 +78,17 @@ async function forecast(
 
     predictions.push(nextValue);
     window.push(nextValue);
-
-    // Placeholder heuristic, NOT a real confidence interval: a hand-tuned
-    // linear decay that encodes "trust later steps less." A measured
-    // interval would come from the model's error distribution.
-    trustHeuristic.push(Math.max(0, 1 - step * 0.015));
   }
 
-  return { predictions, trustHeuristic };
+  return predictions;
 }
 
-// Forecast 100 steps ahead
-const result = await forecast(model, recentWindow, 100);
-console.log('Step 1 trust:', result.trustHeuristic[0]);    // 1.0 (decay starts from full trust)
-console.log('Step 50 trust:', result.trustHeuristic[49]);  // 0.265
-console.log('Step 100 trust:', result.trustHeuristic[99]); // 0.0: too far ahead`}
+// Forecast 100 steps ahead. Step 1 is one model call from real data; step
+// 100 is one model call from 99 of the model's own guesses. There is no
+// trust number in this function because the model does not have one. A
+// real interval comes from measuring the error distribution, which is what
+// the drift detector below starts doing.
+const predictions = await forecast(model, recentWindow, 100);`}
 </CodeBlock>
 
 ## Non-Stationarity: When Predictions Fail

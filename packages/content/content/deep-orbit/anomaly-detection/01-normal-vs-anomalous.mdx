@@ -136,31 +136,21 @@ console.log(isAnomaly(1.82, baseline));  // true: 8.7 sigmas away!`}
 
 ## Precision vs Recall
 
+The sigma count is a dial between two kinds of error, both of which you met in module 3's evaluation drawer: false positives (calm readings flagged, the wolf cried) and false negatives (real anomalies missed, the watch asleep). Loosen the dial to 2 sigma and you catch more anomalies at the price of more false alarms; tighten it to 4 and the alarms go quiet along with some of the real events. Nazari wants zero false positives, because each one is investigation time. Farah wants zero false negatives, because the signal is the mission. A threshold that satisfies both does not exist. The right one depends on which error costs more, and lesson 4 works that trade through with numbers. The two ratios that score any threshold are module 3's:
+
 <CodeBlock language="typescript" title="precision-recall.ts">
-{`// The threshold is a dial between two types of errors:
-// - False positives: normal signals flagged as anomalies (crying wolf)
-// - False negatives: real anomalies missed (sleeping on duty)
-
-// Low threshold (2 sigma): catches more anomalies, but more false alarms
-// High threshold (4 sigma): fewer false alarms, but might miss subtle anomalies
-
-// Nazari wants zero false positives; she hates wasting time investigating nothing
-// Farah wants zero false negatives; she can't afford to miss the signal
-
-// The right threshold depends on the cost of each error type
-// For DEEP SCAN: missing an alien signal is worse than a few false alarms
-// So we bias toward lower thresholds (higher recall)
-
-interface DetectionResult {
-  truePositives: number;   // correctly flagged anomalies
-  falsePositives: number;  // normal signals wrongly flagged
-  falseNegatives: number;  // anomalies we missed
+{`interface DetectionResult {
+  truePositives: number;   // real anomalies, flagged
+  falsePositives: number;  // calm readings, flagged anyway
+  falseNegatives: number;  // real anomalies, missed
 }
 
+// Of everything flagged, how much was real?
 function precision(r: DetectionResult): number {
   return r.truePositives / (r.truePositives + r.falsePositives);
 }
 
+// Of everything real, how much was flagged?
 function recall(r: DetectionResult): number {
   return r.truePositives / (r.truePositives + r.falseNegatives);
 }`}

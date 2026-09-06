@@ -79,12 +79,21 @@ export async function markLessonStarted(
   return null;
 }
 
-/** Mark a lesson as completed and update streak */
+/**
+ * Mark a lesson as completed and update streak.
+ *
+ * `extras` carries the session's hint/attempt counters (audit 2026-09-04:
+ * world_progress.hints_used and .attempts were permanently zero because
+ * their only writer had no callers). Pass it ONLY on a genuine walk to the
+ * final step, never on a restored mount: the write re-runs on every reload
+ * of a finished lesson and session counters must not re-accumulate.
+ */
 export async function markLessonCompleted(
   worldId: string,
   moduleId: string,
   lessonId: string,
   score?: number | null,
+  extras?: { hintsUsed?: number; attempts?: number },
 ) {
   const supabase = getSupabaseBrowserClient();
   const {
@@ -112,8 +121,14 @@ export async function markLessonCompleted(
         lesson_id: lessonId,
         status: "completed" as const,
         score: score ?? existingProgress?.score ?? null,
-        hints_used: existingProgress?.hints_used ?? 0,
-        attempts: existingProgress?.attempts ?? 0,
+        // Hints: distinct levels revealed, so max across sessions is the
+        // honest aggregate. Attempts: every graded run counts, so sessions
+        // sum.
+        hints_used: Math.max(
+          existingProgress?.hints_used ?? 0,
+          extras?.hintsUsed ?? 0,
+        ),
+        attempts: (existingProgress?.attempts ?? 0) + (extras?.attempts ?? 0),
         started_at: existingProgress?.started_at ?? new Date().toISOString(),
         completed_at: new Date().toISOString(),
       },
@@ -137,8 +152,22 @@ export async function markLessonCompleted(
   Promise.resolve(
     supabase.rpc("record_streak_activity", { p_world_id: worldId }),
   )
-    .then(() => {
-      trackStreakAchieved(1);
+    .then(async () => {
+      // The event fires only on a genuine completion walk (extras
+      // present): the write re-runs on every reload of a finished lesson
+      // and the event was refiring with it (re-audit 2026-09-04). The rpc
+      // itself stays unconditional; it is same-day idempotent.
+      if (!extras) return;
+      // The rpc RETURNS void, so read the streak back rather than emit a
+      // hardcoded 1 (audit 2026-09-04: streak_achieved reported
+      // streakDays:1 on every completion since it shipped).
+      const { data: streak } = await supabase
+        .from("streaks")
+        .select("current_streak")
+        .eq("user_id", user.id)
+        .eq("world_id", worldId)
+        .single();
+      trackStreakAchieved(streak?.current_streak ?? 1);
     })
     .catch(() => {});
 

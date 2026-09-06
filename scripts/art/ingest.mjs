@@ -248,9 +248,15 @@ async function seals() {
 const OG_PLATE = { width: 1200, height: 630, quality: 70, budget: 150 * 1024 };
 const OG_SEAL = { size: 256, budget: 60 * 1024 };
 
+// Only the plate the /api/og route consumes: OG_PLATE in
+// apps/web/app/api/og/og-assets.ts maps deep-orbit to bridge. Looping every
+// LOCATION shipped three JPEGs nothing loaded (removed 2026-09-04); keep this
+// list in step with OG_PLATE.
+const OG_LOCATIONS = ["bridge"];
+
 async function og() {
   const locDir = path.join(ROOT, "apps/web/public/locations", WORLD);
-  for (const location of LOCATIONS) {
+  for (const location of OG_LOCATIONS) {
     const src = path.join(locDir, `${location}.webp`);
     if (!fs.existsSync(src)) {
       results.missing.push(`${location}.webp (shipped plate)`);

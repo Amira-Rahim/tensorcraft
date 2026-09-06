@@ -62,8 +62,15 @@ export function trackLessonCompleted(
   moduleId: string,
   lessonId: string,
   durationMs?: number,
+  hintsUsed?: number,
 ) {
-  track(EVENTS.LESSON_COMPLETED, { worldId, moduleId, lessonId, durationMs });
+  track(EVENTS.LESSON_COMPLETED, {
+    worldId,
+    moduleId,
+    lessonId,
+    durationMs,
+    hintsUsed,
+  });
 }
 
 /**
@@ -78,6 +85,8 @@ export function trackExerciseSubmitted(
   score: number,
   exerciseSlug: string = "unknown",
   hintsUsed?: number,
+  durationMs?: number,
+  errored?: boolean,
 ) {
   track(EVENTS.EXERCISE_ATTEMPTED, {
     worldId,
@@ -86,6 +95,8 @@ export function trackExerciseSubmitted(
     passed,
     score,
     hintsUsed,
+    durationMs,
+    errored,
   });
   if (passed) {
     track(EVENTS.EXERCISE_COMPLETED, {

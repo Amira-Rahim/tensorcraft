@@ -63,6 +63,14 @@ export interface ExerciseSubmitResult {
   passed: boolean;
   score: number;
   solutionViewed: boolean;
+  /** Ms from the editor becoming interactive to this graded run. */
+  durationMs?: number;
+  /**
+   * True when the run crashed or timed out instead of grading. Added
+   * 2026-09-04: these runs previously produced no attempt record at all,
+   * so the most-stuck learners were the least measured.
+   */
+  errored?: boolean;
 }
 
 export interface ExerciseBridge {
@@ -475,6 +483,10 @@ function ExerciseControls({
   const hasAttempted = useRef(false);
   const stashedCodeRef = useRef<string | null>(null);
   const [hasStash, setHasStash] = useState(false);
+  // Anchor for the attempt's durationMs: when the editor became
+  // interactive, not when the run button was pressed - "how long did the
+  // learner work before this attempt" is the question the data answers.
+  const openedAtRef = useRef<number>(Date.now());
 
   // Restore the learner's last-run code once on mount. Without this,
   // leaving mid-lesson reset the editor to starterCode and erased the
@@ -508,7 +520,7 @@ function ExerciseControls({
       // 30s: each run spawns a fresh worker that importScripts CDN TFJS
       // (~1.4 MB); a cold cache plus model-training exercises can blow a
       // 10s budget, which surfaced as "Timed out" on learners' first run.
-      const { results, logs } = await parseAndRunTests(
+      const { results, logs, errored } = await parseAndRunTests(
         code,
         exercise.testCode,
         30_000,
@@ -532,6 +544,11 @@ function ExerciseControls({
           passed,
           score,
           solutionViewed: showSolution,
+          durationMs: Date.now() - openedAtRef.current,
+          // The runner resolves in every failure mode, so crashes and
+          // timeouts arrive HERE with outcome.errored set, not in the
+          // catch branch below (re-audit 2026-09-04).
+          errored: errored || undefined,
         });
       }
     } catch (err) {
@@ -544,6 +561,20 @@ function ExerciseControls({
       ]);
       onLogs([]);
       hasAttempted.current = true;
+      // A crashed or timed-out run is still an attempt. Without this
+      // branch, the learners who hit the wall hardest left no record
+      // anywhere (no event, no exercise_attempts row).
+      if (onAttempt) {
+        onAttempt({
+          exerciseSlug: exercise.slug,
+          code,
+          passed: false,
+          score: 0,
+          solutionViewed: showSolution,
+          durationMs: Date.now() - openedAtRef.current,
+          errored: true,
+        });
+      }
     } finally {
       tfjsRuntimeWarm = true;
       setRunning(false);

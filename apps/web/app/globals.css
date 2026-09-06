@@ -217,6 +217,127 @@ body {
   display: none;
 }
 
+/* Prose partition (2026-09-04, lesson-format audit step 2). The Briefing is
+   the story zone only: the first top-level heading opens the teaching body,
+   which now belongs to the Concept step. Same CSS-anchor technique as the
+   challenge rule above. NOTE (re-audit): 9 lessons carry story beats AFTER
+   the first heading; this rule hides them here, and they render on the
+   Concept step instead (Dialogue is in CONCEPT_LEFT). */
+.lesson-step-content[data-hide-teaching="true"] > h2,
+.lesson-step-content[data-hide-teaching="true"] > h3,
+.lesson-step-content[data-hide-teaching="true"] > h2 ~ *,
+.lesson-step-content[data-hide-teaching="true"] > h3 ~ * {
+  display: none;
+}
+
+/* The Concept step's mirror (re-audit 2026-09-04): hide the story zone
+   (everything BEFORE the first heading) so the opening scene does not
+   double-render on the read step, then reveal the teaching body. The
+   higher-specificity challenge re-hide below keeps the challenge zone off
+   this step even though the reveal outranks the generic
+   hide-challenge-onward rule. */
+.lesson-step-content[data-hide-story-zone="true"] > * {
+  display: none;
+}
+.lesson-step-content[data-hide-story-zone="true"] > h2,
+.lesson-step-content[data-hide-story-zone="true"] > h3,
+.lesson-step-content[data-hide-story-zone="true"] > h2 ~ *,
+.lesson-step-content[data-hide-story-zone="true"] > h3 ~ * {
+  display: revert;
+}
+.lesson-step-content[data-hide-story-zone="true"] > [data-heading="challenge"],
+.lesson-step-content[data-hide-story-zone="true"]
+  > [data-heading="challenge"]
+  ~ * {
+  display: none;
+}
+
+/* The Challenge step's left column shows the challenge zone WITHOUT the
+   full teaching prose above it (which the learner already read on Concept,
+   and which buried the hint ladder under ~1,000 re-served words). With
+   data-show-prose="false" hiding all top-level prose, this re-reveals the
+   "## Challenge" heading and everything after it, UP TO the recap boundary
+   (the re-hide below). `revert` restores the user-agent display per
+   element type. */
+.lesson-step-content[data-show-challenge="true"] > [data-heading="challenge"],
+.lesson-step-content[data-show-challenge="true"]
+  > [data-heading="challenge"]
+  ~ p,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-heading="challenge"]
+  ~ h3,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-heading="challenge"]
+  ~ ul,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-heading="challenge"]
+  ~ ol,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-heading="challenge"]
+  ~ table,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-heading="challenge"]
+  ~ pre,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-heading="challenge"]
+  ~ blockquote:not([style]) {
+  display: revert;
+}
+
+/* ...but never past the recap boundary: the hidden LessonRecap leaves a
+   marker, and everything after it (DISPATCH archive blockquotes, closing
+   codas) belongs to the Consequence step, not between the challenge brief
+   and the hint ladder (re-audit 2026-09-04). Same specificity as the
+   reveal above; source order decides. */
+.lesson-step-content[data-show-challenge="true"] > [data-post-recap-marker] ~ p,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-post-recap-marker]
+  ~ h3,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-post-recap-marker]
+  ~ ul,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-post-recap-marker]
+  ~ ol,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-post-recap-marker]
+  ~ table,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-post-recap-marker]
+  ~ pre,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-post-recap-marker]
+  ~ hr,
+.lesson-step-content[data-show-challenge="true"]
+  > [data-post-recap-marker]
+  ~ blockquote:not([style]) {
+  display: none;
+}
+
+/* Consequence: the post-recap story renders HERE, after the exercise is
+   earned, alongside the Epilogue it introduces. */
+.lesson-step-content[data-show-postrecap="true"] > [data-post-recap-marker] ~ p,
+.lesson-step-content[data-show-postrecap="true"]
+  > [data-post-recap-marker]
+  ~ ul,
+.lesson-step-content[data-show-postrecap="true"]
+  > [data-post-recap-marker]
+  ~ ol,
+.lesson-step-content[data-show-postrecap="true"]
+  > [data-post-recap-marker]
+  ~ table,
+.lesson-step-content[data-show-postrecap="true"]
+  > [data-post-recap-marker]
+  ~ pre,
+.lesson-step-content[data-show-postrecap="true"]
+  > [data-post-recap-marker]
+  ~ hr,
+.lesson-step-content[data-show-postrecap="true"]
+  > [data-post-recap-marker]
+  ~ blockquote:not([style]) {
+  display: revert;
+}
+
 .lesson-prose ul,
 .lesson-prose ol {
   margin-bottom: 1.5em;
@@ -297,6 +418,11 @@ body {
 .lesson-step-content[data-show-prose="false"] > h3,
 .lesson-step-content[data-show-prose="false"] > ul,
 .lesson-step-content[data-show-prose="false"] > ol,
+/* table/pre/hr joined 2026-09-04 (re-audit): GFM tables, raw ``` fences,
+   and rules leaked context-free onto prose-hidden columns. */
+.lesson-step-content[data-show-prose="false"] > table,
+.lesson-step-content[data-show-prose="false"] > pre,
+.lesson-step-content[data-show-prose="false"] > hr,
 .lesson-step-content[data-show-prose="false"] > blockquote:not([style]) {
   display: none;
 }

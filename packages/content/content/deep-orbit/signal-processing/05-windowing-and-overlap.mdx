@@ -181,12 +181,6 @@ console.log('Windows:', spec.length);          // 3
 console.log('Frequency bins:', spec[0].length); // 33`}
 </CodeBlock>
 
-## Challenge
-
-Apply a Hann window to a signal before computing the FFT.
-
-<Exercise slug="apply-window" />
-
 <DerivationDrawer summary="Why window + overlap matters">
 **Windowing:** multiplying the signal segment by a window function (Hann, Hamming, ...) before FFT reduces **spectral leakage**: energy from real frequencies smearing into adjacent FFT bins. Without windowing, a sinusoid that doesn't fit perfectly in the window produces a wide smeared response.
 
@@ -202,6 +196,12 @@ One form-of-the-formula subtlety: the Hann formula above is the **symmetric** fo
 
 For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
 </DerivationDrawer>
+
+## Challenge
+
+Apply a Hann window to a signal before computing the FFT.
+
+<Exercise slug="apply-window" />
 
 <RecallPrompt
   question="Why apply a Hann window before computing the FFT?"

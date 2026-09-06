@@ -8,8 +8,13 @@ interface RecallPromptProps {
   children?: ReactNode;
   /** Package-level API: plain string answer */
   answer?: string;
-  /** Called when the learner rates their recall */
-  onAnswer?: (result: "got-it" | "review") => void;
+  /**
+   * Called when the learner reveals the answer or rates their recall.
+   * "revealed" was in the analytics schema from day one but never fired
+   * (audit 2026-09-04), so reveal-without-rating - the likeliest signal
+   * of a learner who did NOT retrieve first - was invisible.
+   */
+  onAnswer?: (result: "revealed" | "got-it" | "review") => void;
 }
 
 export function RecallPrompt({
@@ -60,6 +65,7 @@ export function RecallPrompt({
           type="button"
           onClick={() => {
             setRevealed(true);
+            onAnswer?.("revealed");
             // After paint: the button that was pressed no longer exists, so
             // without this focus resets to <body>.
             requestAnimationFrame(() => answerRef.current?.focus());

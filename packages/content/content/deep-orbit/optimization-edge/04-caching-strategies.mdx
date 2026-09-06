@@ -7,7 +7,7 @@ order: 4
 scene:
   location: "Bridge, Dashboard Station"
   portraitAlt: "In the dashboard alcove Demir leans back from monitors stacked with identical repeated waveform snippets, one highlighted."
-estimatedMinutes: 25
+estimatedMinutes: 13
 difficulty: intermediate
 context:
   narrative: "Many signals repeat similar patterns. Demir implements inference caching: skip the model entirely for inputs we've seen before."
@@ -86,9 +86,8 @@ DEEP SCAN spent last night reclassifying cosmic background it had already classi
       return null;
     }
     // True LRU: a Map iterates in insertion order, so delete + re-set
-    // moves this key to the back of the eviction line. This is the trick
-    // interviewers fish for; without it you've built FIFO, which evicts
-    // your hottest entry just because it arrived first.
+    // moves this key to the back of the eviction line. Without it you have
+    // built FIFO, which evicts your hottest entry because it arrived first.
     this.cache.delete(key);
     this.cache.set(key, entry);
     this.hits++;

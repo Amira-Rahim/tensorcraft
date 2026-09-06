@@ -76,6 +76,8 @@ const perfectLoss = tf.losses.meanSquaredError(labels, perfect);
 console.log('Perfect MSE:', perfectLoss.dataSync()); // 0`}
 </CodeBlock>
 
+One naming trap before the rest of the module builds on this. A **logit** is the number a neuron emits before any sigmoid touches it: unbounded, positive or negative, the raw weighted sum from module 2. `tf.losses.sigmoidCrossEntropy` takes logits and applies the sigmoid itself. The compile option you will use in lesson 4, `loss: 'binaryCrossentropy'`, takes probabilities, the numbers a sigmoid output layer has already produced. They are the same loss reached from two ends, and the rule for picking one is the shape of your model: a sigmoid on the last layer means `binaryCrossentropy`; no sigmoid on the last layer means `sigmoidCrossEntropy` on the logits. Mix them up and nothing throws; the network learns the wrong thing quietly, which is the category of bug this course hunts hardest.
+
 The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
 
 <DerivationDrawer summary="MSE and cross-entropy from first principles">
@@ -107,7 +109,7 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
 
 <RecallPrompt
   question="For binary classification, why is binary cross-entropy preferred over mean squared error?"
-  answer="Careful with the usual answer. It is not that MSE's own gradient goes flat: at a label of 1 and a prediction of 0.01, MSE's slope with respect to the prediction is -1.98, the largest it gets. The killer is the sigmoid in front of it, whose slope there is 0.0099. Backprop multiplies the two and the weights receive -0.0196. Binary cross-entropy's log derivative cancels that sigmoid factor exactly, leaving prediction minus label, -0.99: fifty times more signal for the same mistake. That is what decides whether the model converges or stalls."
+  answer="Not because MSE's own slope goes flat: at a label of 1 and a prediction of 0.01 it is -1.98, the largest it gets. The sigmoid in front of it is the problem, with a slope of 0.0099 there, and backprop multiplies the two. Binary cross-entropy's derivative cancels the sigmoid's exactly, so the weights receive prediction minus label: about fifty times more signal for the same mistake."
 />
 
 <LessonRecap

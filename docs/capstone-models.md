@@ -13,10 +13,10 @@ This doc documents the I/O contract per capstone. Treat it as the spec a learner
 | Deep Orbit | `/models/deep-scan-v1` | 3 → 16 → 8 → 1 sigmoid | 98.9% acc |
 | Neon Protocol | `/models/sentinel-v1` | conv 8 → pool → conv 16 → flatten → 32 → 4 softmax | 100% acc |
 | Signal Ward | `/models/diagnostic-one-v1` | embed 16 → globalAvgPool → 16 → 3 softmax | 100% acc |
-| Nova Canvas | `/models/studio-one-v1` | dense 64 → 16 (bottleneck) → 64 → 768 sigmoid → reshape | MSE 0.083 |
+| Nova Canvas | `/models/nova-canvas-full` | dense 64 → 16 (bottleneck) → 64 → 768 sigmoid → reshape | MSE 0.083 |
 | Terra Grid | `/models/meteor-v1` | dense 16 → 8 (bottleneck) → 16 → 24 linear | MSE 0.009 |
 
-**Aliases shipped:** lessons reference multiple paths (`/models/sentinel`, `/models/classifier`, `/models/detector`, `/models/nova-canvas-full`, `/models/terra-grid`, `/models/tgi-2`, `/models/sentinel-q8`, `/models/sentinel-q16`, `/models/audio-synth`, `/models/nova-canvas-optimized`). All resolved to the appropriate v1 artifact via duplicated dirs so every lesson code block becomes runnable in-browser without dataset curation.
+**Aliases shipped:** lessons reference multiple paths (`/models/sentinel`, `/models/classifier`, `/models/detector`, `/models/terra-grid`, `/models/sentinel-q8`, `/models/sentinel-q16`, `/models/audio-synth`, `/models/nova-canvas-optimized`). All resolved to the appropriate v1 artifact via duplicated dirs so every lesson code block becomes runnable in-browser without dataset curation. Removed 2026-09-04: `/models/studio-one-v1` and `/models/tgi-2`. No lesson or code ever loaded either path, and their bytes were identical to `/models/nova-canvas-full` and `/models/terra-grid`, which now stand as the Nova Canvas and Terra Grid artifacts.
 
 **Note on synthetic data:** Models train on synthetic distributions for reproducibility, not labelled production data. They demonstrate the architecture + I/O contract end-to-end. Real deployment requires retraining on domain data - see "Building your own" below.
 
@@ -51,7 +51,7 @@ This doc documents the I/O contract per capstone. Treat it as the spec a learner
 
 ### Nova Canvas - STUDIO-ONE generative (β-VAE)
 
-- **URL:** `/models/studio-one-v1/model.json` (alias: `/models/nova-canvas-optimized/model.json`, `/models/nova-canvas-full/model.json`, `/models/audio-synth/model.json`)
+- **URL:** `/models/nova-canvas-full/model.json` (alias: `/models/nova-canvas-optimized/model.json`, `/models/audio-synth/model.json`)
 - **Shipped architecture (v1):** convolutional β-VAE
   - **Encoder** (`vae_encoder`): `Conv2D(8, 3×3, stride 2, relu) → Conv2D(16, 3×3, stride 2, relu) → Flatten → [μ-head Dense(8), logVar-head Dense(8)]`
   - **Reparameterization layer** (`ReparamLayer`, registered with `tf.serialization`): `z = μ + exp(0.5·logVar) · ε`, `ε ~ N(0, I)`

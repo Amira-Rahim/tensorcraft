@@ -48,6 +48,8 @@ One neuron cleared two calibration tones; the live stream is sixty-four channels
 
 Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage that reads the raw sensor values, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
 
+Say exactly what a stage is, because "finds patterns" describes the result, not the mechanism. A dense layer with 32 units is 32 copies of the lesson-1 neuron, every one reading the same 3 inputs through its own weights and bias, so the layer emits 32 weighted sums. The 16-unit stage is 16 more neurons whose inputs are those 32 numbers: they vote on combinations of the first stage's votes, and the verdict neuron votes on combinations of theirs. That is the whole trick of depth. Lesson 2 already told you why the activation between stages is not optional: without it, three stages of weighted sums multiply out to one weighted sum, and the stack would know exactly as much as a single neuron.
+
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="layer-architecture.ts">

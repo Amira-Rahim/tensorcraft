@@ -40,10 +40,15 @@ test.describe("Lesson script playback", () => {
     expect(await page.locator("[data-beat-shown]").count()).toBe(6);
     expect(Math.max(...counts)).toBeGreaterThanOrEqual(3);
 
-    // Auto-scroll brought the explanation into view.
-    await page.waitForTimeout(1200);
-    const scrollY = await page.evaluate(() => window.scrollY);
-    expect(scrollY).toBeGreaterThan(200);
+    // Prose partition (2026-09-04): the Briefing ends at the story zone, so
+    // there is no auto-scroll and the teaching body must NOT be readable
+    // here. The first teaching heading exists in the DOM but stays hidden;
+    // the read happens once, on the Concept step.
+    await page.waitForTimeout(600);
+    expect(await page.evaluate(() => window.scrollY)).toBeLessThan(200);
+    await expect(
+      page.getByRole("heading", { name: "What Is a Tensor?" }),
+    ).toBeHidden();
 
     // Replay resets and replays.
     await page.getByRole("button", { name: /replay/i }).click();

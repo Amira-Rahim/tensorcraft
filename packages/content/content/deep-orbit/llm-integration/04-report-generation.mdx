@@ -8,7 +8,7 @@ scene:
   location: "Archimedes, Lab"
   time: "The last hours before the window"
   portraitAlt: "Farah works alone in the late-lit lab, six report sections framed on the whiteboard, each one awaiting its own validation check."
-estimatedMinutes: 20
+estimatedMinutes: 12
 difficulty: intermediate
 context:
   narrative: "Farah needs a full scientific report for Earth Command: structured, cited, and professionally formatted. She builds a report generation pipeline using the LLM."
@@ -26,11 +26,11 @@ consequence:
   narrative: "One section fails its own validator with twenty-two minutes left before the window."
 hints:
   - level: nudge
-    content: "This one is deterministic assembly, not generation: the LLM's work already sits inside each section's content, and your job is to lay the markdown out exactly."
+    content: "Two filters and one join: sections whose validated flag is true ship as markdown blocks; the rest ship only as a list of headings under a Withheld section, and that section exists only when something was withheld. The cut is the decision the BossBeat priced."
   - level: guidance
-    content: "Map each entry of sections to a block: '## ' plus its heading, a blank line, then its content. Join the blocks with a '---' horizontal rule padded by blank lines on both sides, and put '# ' plus title on top. The last test counts separators and demands exactly sections.length - 1 of them, so join BETWEEN sections rather than appending one after every section."
+    content: "shipped = sections.filter(s => s.validated); withheld = the others. Map shipped to '## ' plus heading, blank line, content. If withheld is non-empty, push one more block: '## Withheld', a blank line, then '- ' plus each withheld heading joined by newlines. Join every block with a '---' rule padded by blank lines, under '# ' plus title. The grader counts separators as blocks minus one, so join between blocks, never after each one."
   - level: solution
-    content: "const parts = sections.map(s => `## ${s.heading}\\n\\n${s.content}`); return `# ${title}\\n\\n${parts.join('\\n\\n---\\n\\n')}`;"
+    content: "const shipped = sections.filter(s => s.validated); const withheld = sections.filter(s => !s.validated); const parts = shipped.map(s => `## ${s.heading}\\n\\n${s.content}`); if (withheld.length > 0) { parts.push(`## Withheld\\n\\n${withheld.map(s => `- ${s.heading}`).join('\\n')}`); } return `# ${title}\\n\\n${parts.join('\\n\\n---\\n\\n')}`;"
 keywords:
   - report-generation
   - template
@@ -137,7 +137,7 @@ const report = await generateReport(reportSections, llm);`}
 
 ## Challenge
 
-The model has written the sections. Assemble them into one markdown document a human can sign.
+The model has written the sections and the validator has marked each one. Assemble the document a human can sign: the validated sections in order, and an honest list of what was withheld.
 
 <Exercise slug="generate-report" />
 

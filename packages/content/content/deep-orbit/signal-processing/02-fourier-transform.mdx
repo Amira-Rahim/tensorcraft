@@ -197,12 +197,6 @@ analyzeSignal(anomalousSignal, 256);
 // name: spectral leakage.`}
 </CodeBlock>
 
-## Challenge
-
-Compute the FFT of a signal and find its dominant frequency.
-
-<Exercise slug="compute-fft" />
-
 <DerivationDrawer summary="Discrete Fourier Transform (DFT)">
 The DFT decomposes a length-N signal into N complex coefficients, one per frequency:
 
@@ -220,6 +214,12 @@ A signal is fully reconstructible from its DFT: no information is lost.
 
 **Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT algorithm computes the same result in O(N log N), which is what makes real-time spectrograms (next lesson) possible. This course uses the FFT through `tf.spectral.rfft` and never derives the algorithm itself; if you want the recursion, look up Cooley-Tukey.
 </DerivationDrawer>
+
+## Challenge
+
+Compute the FFT of a signal and find its dominant frequency.
+
+<Exercise slug="compute-fft" />
 
 <RecallPrompt
   question="Given an FFT of 128 samples taken at 128 Hz, what frequency does bin 20 correspond to, and why can't you detect anything above 64 Hz?"

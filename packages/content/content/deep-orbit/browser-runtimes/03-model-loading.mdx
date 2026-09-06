@@ -69,9 +69,12 @@ console.log('Input shape:', model.inputs[0].shape);   // [null, 3]
 console.log('Output shape:', model.outputs[0].shape);  // [null, 1]
 model.summary();
 // Layer (type)              Output shape       Param #
-// dense_Dense1 (Dense)      [null, 16]         64
-// dense_Dense2 (Dense)      [null, 8]          136
-// dense_Dense3 (Dense)      [null, 1]          9`}
+// dense_Dense1 (Dense)      [null, 32]         128
+// dense_Dense2 (Dense)      [null, 16]         528
+// dense_Dense3 (Dense)      [null, 1]          17
+// Total params: 673. The architecture taped to the engineering board in
+// module 2, carrying the weights module 3 trained: the same network,
+// now an asset the dashboard fetches instead of a variable in a notebook.`}
 </CodeBlock>
 
 Under the hood, `tf.loadLayersModel()` does exactly what you'd do manually:

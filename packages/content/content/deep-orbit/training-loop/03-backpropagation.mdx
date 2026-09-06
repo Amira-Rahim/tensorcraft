@@ -108,12 +108,6 @@ console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
 
 No magic involved: `tf.variableGrads()` records every operation during the forward pass, then computes gradients for all variables by applying the chain rule backwards. The drawer below walks the exact multiplication chain by hand. You never have to implement it manually, but you can.
 
-## Challenge
-
-Run the marquee algorithm yourself: one call to `tf.variableGrads()`, and prove the gradient tracks the variable, not a memorized answer.
-
-<Exercise slug="backprop-chain" />
-
 <DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand">
 **The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a 2-layer network:
 
@@ -136,6 +130,12 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 
 **Vanishing gradients = the chain product collapsing.** If `σ'(z₂) ≈ 0.1`, `ReLU'(z₁) ∈ {0,1}`, and you have 20 layers, the product can be `0.1²⁰ ≈ 10⁻²⁰`. The early-layer weights stop updating. Residual connections add `+1` to each link in the chain to prevent this collapse.
 </DerivationDrawer>
+
+## Challenge
+
+Run the marquee algorithm yourself: one call to `tf.variableGrads()`, and prove the gradient tracks the variable, not a memorized answer.
+
+<Exercise slug="backprop-chain" />
 
 <RecallPrompt
   question="What does tf.variableGrads() return, and what do you do with the result?"

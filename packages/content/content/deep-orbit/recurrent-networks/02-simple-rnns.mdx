@@ -105,6 +105,8 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 const x = tf.randomNormal([32, 5, 3]);
 const y = tf.randomUniform([32, 1]).round();
 
+// Shape drill only: the labels are random, so do not expect this loss to
+// fall. Nothing can learn noise. The real run is tonight's, in the epilogue.
 await model.fit(x, y, { epochs: 10 });
 
 x.dispose();
@@ -143,29 +145,9 @@ modelAllSteps.add(tf.layers.simpleRNN({
 
 ## The Vanishing Gradient Problem
 
-<CodeBlock language="typescript" title="vanishing-gradient.ts">
-{`// Simple RNNs have a critical flaw: vanishing gradients
-// As information passes through many time steps, gradients shrink exponentially
-// Like a game of telephone: the message degrades with each relay
+Backpropagation through time is module 3's backward pass unrolled along the sequence. Every step it walks back through the cell, it multiplies the gradient by the recurrent weight and by the slope of `tanh` at that step. The slope of `tanh` never exceeds 1 and usually sits well below it, so the product shrinks geometrically: by the time the learning signal from step eighty reaches step twenty it is a rounding error, and the weights that would have to change to catch a long pattern never receive an instruction to. In practice a simple RNN learns dependencies of roughly ten to twenty steps.
 
-// For DEEP SCAN: the anomaly pattern repeats every ~73 seconds
-// On the live dashboard feed's 1 sample/second (not the archive's
-// 33-second integrations), that's a 73-step dependency
-// A simple RNN "forgets" information after ~10-20 steps
-
-// Demo: training on short vs long sequences
-const shortModel = tf.sequential();
-shortModel.add(tf.layers.simpleRNN({ units: 32, inputShape: [5, 3] }));    // 5 steps: works
-shortModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-
-const longModel = tf.sequential();
-longModel.add(tf.layers.simpleRNN({ units: 32, inputShape: [100, 3] }));   // 100 steps: fails
-longModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-
-// Short sequence: loss converges nicely
-// Long sequence: loss plateaus; gradients vanish before reaching early time steps
-// Solution: LSTM (next lesson)`}
-</CodeBlock>
+The pattern DEEP SCAN needs repeats about every 73 seconds, which on the dashboard's one-sample-per-second feed is a 73-step dependency (the archive's 33-second integration rows are far too coarse to carry it at all). The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
 
 ## Challenge
 

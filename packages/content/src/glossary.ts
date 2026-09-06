@@ -358,6 +358,40 @@ export const GLOSSARY: GlossaryEntry[] = [
     aliases: ["overfit", "overfits"],
     scope: "global",
   },
+  {
+    term: "logit",
+    definition:
+      "The raw number a neuron emits before any sigmoid or softmax touches it: unbounded, positive or negative. Losses that take logits apply the squashing function themselves; losses that take probabilities expect it already applied.",
+    aliases: ["logits"],
+    scope: "global",
+  },
+  {
+    term: "hyperparameter",
+    definition:
+      "A setting you choose by hand before training rather than a weight the model learns: learning rate, batch size, epoch count, layer width. Training never changes it; you do, between runs.",
+    aliases: ["hyperparameters"],
+    scope: "global",
+  },
+  {
+    term: "regularization",
+    definition:
+      "Any training-time penalty or constraint that discourages a model from memorizing its training data, such as an L2 weight penalty, dropout, or early stopping. It trades a little training accuracy for better held-out accuracy.",
+    aliases: ["regularize", "regularized"],
+    scope: "global",
+  },
+  {
+    term: "validation split",
+    definition:
+      "The fraction of training data held back from weight updates and scored after every epoch, so overfitting shows up as validation loss rising while training loss keeps falling. In TensorFlow.js, validationSplit takes the last rows, so shuffle first.",
+    aliases: ["validation set", "validationSplit"],
+    scope: "global",
+  },
+  {
+    term: "confusion matrix",
+    definition:
+      "A two-by-two (or class-by-class) table counting true positives, false positives, true negatives, and false negatives. Accuracy, precision, and recall are all ratios read off it.",
+    scope: "global",
+  },
 
   // Sequence models and memory
   {

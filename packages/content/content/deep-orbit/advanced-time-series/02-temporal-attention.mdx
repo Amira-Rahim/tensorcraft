@@ -148,6 +148,41 @@ console.log(clipped.weights.sum().dataSync()[0].toFixed(3));
 
 Read the two sums together: 1.000 and 1.000. Softmax spends its entire budget on whatever the buffer kept, every time, so the truncated window produces a heatmap exactly as normalized and exactly as confident as the full one. The pooled outputs match too, [1, 3] from both windows, so nothing downstream can tell an 80-step capture from a 48-step one by shape. The weights map where the model looked; a step the buffer virtualized away is simply off the map, with no residual mass, no warning, no NaN. When a capture comes back missing its onset, the model will attend beautifully to what remains and never once complain.
 
+## Putting the Position Back
+
+Lesson 1 left a debt. The scorer above reads feature values and nothing else, so two windows holding the same readings in a different order get identical weights. On this crew's data that is the difference between a spike that precedes a frequency shift and one that follows it, and the model cannot see it. The fix production transformers use is a positional encoding, a vector added to each step that says where it sits. The cheapest honest version is one extra feature: the step's position, scaled to [0, 1], concatenated onto the readings before scoring.
+
+<CodeBlock language="typescript" title="positional-feature.ts">
+{`// [batch, T, 3] -> [batch, T, 4]: the fourth feature is position / (T - 1)
+function withPosition(sequence: tf.Tensor3D): tf.Tensor3D {
+  return tf.tidy(() => {
+    const [batch, T] = sequence.shape;
+    const pos = tf.linspace(0, 1, T).reshape([1, T, 1]).tile([batch, 1, 1]);
+    return tf.concat([sequence, pos], 2) as tf.Tensor3D;
+  });
+}
+
+// A dense layer builds its weight matrix on first call, so the 3-input
+// scorer above cannot be handed 4 inputs. Positional attention gets its own.
+const positionalScorer = tf.layers.dense({ units: 1 });
+
+function positionalAttention(sequence: tf.Tensor3D): { attended: tf.Tensor2D; weights: tf.Tensor2D } {
+  return tf.tidy(() => {
+    // Position informs WHERE to look; the pooled value is still the readings.
+    const scores = (positionalScorer.apply(withPosition(sequence)) as tf.Tensor).squeeze([2]) as tf.Tensor2D;
+    const weights = tf.softmax(scores, 1);                                  // [batch, T]
+    const attended = tf.sum(tf.mul(sequence, weights.expandDims(2)), 1) as tf.Tensor2D;  // [batch, 3]
+    return { attended, weights };
+  });
+}
+
+// Before: a window and its reversal scored identically.
+// After: the scorer can learn "late steps matter more" (or early ones),
+// because lateness is now a number it multiplies by a weight.`}
+</CodeBlock>
+
+Transformers use sines and cosines at several frequencies instead of one ramp, so that the distance between two steps is readable as well as their absolute positions, but the contract is the same. Attention only knows what you hand it, and position is a feature like any other.
+
 ## Challenge
 
 Build a temporal attention mechanism and identify the focused time steps.

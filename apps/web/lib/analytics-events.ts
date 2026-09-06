@@ -27,6 +27,11 @@ import { capture } from "./posthog";
 export const EVENTS = {
   // Learning
   LESSON_STARTED: "lesson_started",
+  // Added 2026-09-04 (lesson-format audit): the funnel between
+  // lesson_started and lesson_completed was invisible - no way to know
+  // whether anyone reads any step or where readers quit. Fires on every
+  // step entry, including the initial mount and back-navigation.
+  LESSON_STEP_VIEWED: "lesson_step_viewed",
   LESSON_COMPLETED: "lesson_completed",
   EXERCISE_ATTEMPTED: "exercise_attempted",
   EXERCISE_COMPLETED: "exercise_completed",
@@ -75,8 +80,28 @@ export const EVENTS = {
 
   // Story pacing. The content-QA rule ">40% skip triggers narrative redesign"
   // (post-launch-backlog §2, dev-plan §10c risk #1) was uncomputable until
-  // this event existed.
+  // this event existed. 2026-09-04: `via` added because the 2026-08-23
+  // skip-preference change made the metric structurally biased low - the
+  // remembered preference auto-skipped every later scene with no event, and
+  // paging past a playing scene with Continue was never counted. Skip rate =
+  // skipped(all vias) / (skipped + finished).
   SCRIPT_SKIPPED: "script_skipped",
+  // The denominator: the scene played to its natural end. Absent for
+  // reduced-motion visitors, whose scenes never play - exclude them from
+  // skip-rate math rather than counting them either way.
+  SCRIPT_FINISHED: "script_finished",
+
+  // Scene clips (2026-09-04 owner ruling: launch ships with video).
+  // Played fires per playback start; completed fires when the clip
+  // reaches its natural end. Both scoped to the Briefing's art slot.
+  SCENE_CLIP_PLAYED: "scene_clip_played",
+  SCENE_CLIP_COMPLETED: "scene_clip_completed",
+
+  // Consent. Fired once per browser at the moment analytics first becomes
+  // active after acceptance. The decline side deliberately emits nothing
+  // (the banner promises analytics only on accept); read the opt-in rate as
+  // consent_granted uniques over log-drain unique visitors.
+  CONSENT_GRANTED: "consent_granted",
 
   // Engagement
   CODE_PUSHED: "code_pushed",
@@ -103,13 +128,37 @@ export interface EventProperties {
     moduleId: string;
     lessonId: string;
   };
+  [EVENTS.LESSON_STEP_VIEWED]: {
+    worldId: string;
+    moduleId: string;
+    lessonId: string;
+    /** 0-based step index (0 Briefing … 5 Consequence). */
+    step: number;
+    stepName: string;
+    /** The step just left; absent on the first view after mount. */
+    prevStep?: number;
+    /** Dwell on the step just left, ms; absent on the first view. */
+    prevStepMs?: number;
+    /** True when this step was already visited (back-nav, or a restored
+     *  position revisiting ground covered in an earlier session). */
+    revisit: boolean;
+    /**
+     * Which Briefing this lesson serves this browser: clip (scene video
+     * in the art slot) or text (still + text reveal, the holdback
+     * control or a lesson with no shipped clip). Launch-window analysis
+     * splits on it.
+     */
+    briefingVariant?: "clip" | "text";
+  };
   [EVENTS.LESSON_COMPLETED]: {
     worldId: string;
     moduleId: string;
     lessonId: string;
-    /** Optional time-on-lesson (ms). Absent when not instrumented. */
+    /** Ms from this session's lesson mount to the step-5 transition.
+     *  Sessions that resume mid-lesson under-report total lesson time;
+     *  sum lesson_step_viewed.prevStepMs across sessions for the truth. */
     durationMs?: number;
-    /** Number of hints revealed before completion, if tracked. */
+    /** Distinct hint levels revealed this session (0-3). */
     hintsUsed?: number;
   };
   [EVENTS.EXERCISE_ATTEMPTED]: {
@@ -119,6 +168,10 @@ export interface EventProperties {
     passed: boolean;
     score: number;
     hintsUsed?: number;
+    /** Ms from the editor becoming interactive to this graded run. */
+    durationMs?: number;
+    /** True when the run crashed or timed out instead of grading. */
+    errored?: boolean;
   };
   [EVENTS.EXERCISE_COMPLETED]: {
     worldId: string;
@@ -253,6 +306,40 @@ export interface EventProperties {
     step: number;
     /** How long the learner watched before skipping, in milliseconds. */
     elapsedMs: number;
+    /**
+     * button = the Skip intro control; continue = paged past a playing
+     * scene with Continue (or swipe); auto = the remembered skip
+     * preference suppressed playback before it began (elapsedMs 0).
+     */
+    via: "button" | "continue" | "auto";
+    briefingVariant?: "clip" | "text";
+  };
+  [EVENTS.SCRIPT_FINISHED]: {
+    worldId: string;
+    lessonId: string;
+    step: number;
+    /** Full playback duration, ms. */
+    elapsedMs: number;
+    /** auto = the once-per-visit autoplay; replay = the Replay control. */
+    run: "auto" | "replay";
+    briefingVariant?: "clip" | "text";
+  };
+
+  [EVENTS.SCENE_CLIP_PLAYED]: {
+    worldId: string;
+    lessonId: string;
+    /** auto = eligible autoplay on the Briefing; manual = the play control. */
+    trigger: "auto" | "manual";
+  };
+  [EVENTS.SCENE_CLIP_COMPLETED]: {
+    worldId: string;
+    lessonId: string;
+    /** Playback position at the ended event, ms. */
+    watchedMs: number;
+  };
+
+  [EVENTS.CONSENT_GRANTED]: {
+    source: "banner";
   };
 
   [EVENTS.CODE_PUSHED]: {

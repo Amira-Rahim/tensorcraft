@@ -3,6 +3,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { LessonContent } from "./lesson-content";
+import { SceneClip } from "./scene-clip";
+import { sceneClipFor } from "@/lib/scene-clips";
+import {
+  getAssignedBriefingVariant,
+  type BriefingVariant,
+} from "@/lib/briefing-variant";
 import {
   markLessonStarted,
   markLessonCompleted,
@@ -127,7 +133,15 @@ const TOTAL_STEPS = 6;
    memoized MDX component, which remounts the whole MDX DOM subtree on every
    parent re-render (breaking the script-playback timeline's element refs
    and recompiling the MDX body needlessly). */
-const BRIEFING_COMPONENTS = new Set(["Dialogue", "BossBeat", "prose"]);
+/* CodeBlock joined 2026-09-04 (re-audit): two cold-open lessons carry a
+   pre-heading CodeBlock the Briefing narrated but nulled; post-heading code
+   stays hidden via hideTeaching regardless. */
+const BRIEFING_COMPONENTS = new Set([
+  "Dialogue",
+  "BossBeat",
+  "CodeBlock",
+  "prose",
+]);
 
 /* Each non-story step splits into a LEFT (reading column) and RIGHT (rail or
    work pane) partition. The two LessonContent instances per step receive
@@ -135,30 +149,48 @@ const BRIEFING_COMPONENTS = new Set(["Dialogue", "BossBeat", "prose"]);
    components with side effects live in exactly one partition: Exercise only
    in CHALLENGE_RIGHT, RecallPrompt only in TAKEAWAYS_COMPONENTS. */
 
-// Concept: prose + concept visuals on the left; objectives on the right rail
-// (the glossary rail itself is an app component rendered directly, not MDX).
+/* Prose partition (2026-09-04, lesson-format audit step 2). The teaching
+   prose used to render on FOUR consecutive steps (Briefing after the scene,
+   Concept, Code, Challenge left), so the designed path re-served the same
+   700-1,100 words up to four times, and the Concept step narrated code it
+   hid ("Two tools fix this:" over an invisible block). Now each step owns a
+   disjoint slice: Briefing = story zone only (hideTeaching), Concept = THE
+   one full read with code and tables inline, Code = the worked example
+   isolated in the work pane (no prose re-read), Challenge = the challenge
+   zone + hints only ("challenge" re-reveals it under data-show-prose=false). */
+
+// Concept: the complete teaching read. Code blocks render INLINE here so
+// prose that narrates code has the code beside it on every viewport, and
+// Dialogue is included because 9 lessons carry mid-lesson story beats
+// AFTER the first heading (re-audit 2026-09-04: those beats rendered on no
+// step at all without this). The opening scene does not duplicate here:
+// hideStoryZone hides everything before the first heading on this step.
 const CONCEPT_LEFT = new Set([
   "BridgeCallout",
   "Concept",
+  "Dialogue",
   "InteractiveDemo",
+  "CodeBlock",
+  "MathBlock",
+  "DerivationDrawer",
   "prose",
   "code-tensors",
 ]);
 const CONCEPT_RIGHT = new Set(["LearningObjectives"]);
 
-// Code: walkthrough prose + math/inline tensors on the left; runnable code
-// and demos in the right work pane.
+// Code: the runnable/copyable worked example in the right pane, with the
+// derivation drawers (where a lesson has them) on the left. No prose.
 const CODE_LEFT = new Set([
   "MathBlock",
   "DerivationDrawer",
-  "prose",
   "code-tensors",
   "code-shapes",
 ]);
 const CODE_RIGHT = new Set(["CodeBlock", "InteractiveDemo"]);
 
-// Challenge: brief/hints on the left; the Exercise editor in the right pane.
-const CHALLENGE_LEFT = new Set(["challenge", "prose", "HintPanel"]);
+// Challenge: challenge zone + hints on the left; the Exercise editor in the
+// right pane. The hint ladder no longer sits below a full prose re-copy.
+const CHALLENGE_LEFT = new Set(["challenge", "HintPanel"]);
 const CHALLENGE_RIGHT = new Set(["Exercise"]);
 
 // Takeaways: the lesson close on the left (RecallPrompt + LessonRecap +
@@ -171,6 +203,22 @@ const TAKEAWAYS_COMPONENTS = new Set([
 ]);
 const CONSEQUENCE_COMPONENTS = new Set(["Epilogue", "DispatchTease"]);
 
+/* Exported for the content-partition contract test only: the test sweeps
+   every lesson MDX against these sets so a component that would render on
+   no step (the re-audit's silent-deletion class of bug) fails CI instead
+   of shipping. */
+export const STEP_VISIBILITY = {
+  BRIEFING_COMPONENTS,
+  CONCEPT_LEFT,
+  CONCEPT_RIGHT,
+  CODE_LEFT,
+  CODE_RIGHT,
+  CHALLENGE_LEFT,
+  CHALLENGE_RIGHT,
+  TAKEAWAYS_COMPONENTS,
+  CONSEQUENCE_COMPONENTS,
+} as const;
+
 const STEP_NAMES = [
   "Briefing",
   "Concept",
@@ -179,6 +227,12 @@ const STEP_NAMES = [
   "Takeaways",
   "Consequence",
 ] as const;
+
+/** #step-N (1-based, matching the on-screen numbering) → 0-based index. */
+function parseStepHash(hash: string): number | null {
+  const m = /^#step-([1-6])$/.exec(hash);
+  return m ? parseInt(m[1], 10) - 1 : null;
+}
 
 function getStorageKey(worldSlug: string, lessonSlug: string): string {
   return `tc_step_${worldSlug}_${lessonSlug}`;
@@ -251,6 +305,44 @@ function LessonStepsInner({
     scriptPlayedRef.current = true;
   }, []);
 
+  // ── In-lesson telemetry (2026-09-04 lesson-format audit) ──
+  // Everything between lesson_started and lesson_completed used to be
+  // invisible: no step views, no durations, and skip intent measurable only
+  // on the first-ever manual skip. These refs feed lesson_step_viewed,
+  // lesson_completed.durationMs/hintsUsed, script_skipped(via:"continue"),
+  // and the world_progress hints/attempts columns that were permanently 0.
+  const lessonStartedAtRef = useRef<number>(Date.now());
+  const stepEnteredAtRef = useRef<number>(Date.now());
+  const prevViewedStepRef = useRef<number | null>(null);
+  // Steps this browser has ever seen for this lesson: seeded from the
+  // persisted maxStepReached so a restored session reports revisits
+  // honestly instead of as first views.
+  const visitedStepsRef = useRef<Set<number>>(new Set());
+  const hintsRevealedRef = useRef<Set<1 | 2 | 3>>(new Set());
+  const exerciseAttemptsRef = useRef(0);
+  // Shared with StepBriefing so goNext can tell "paged past a playing
+  // scene" (a skip in all but name) from a normal Continue.
+  const scriptStatusRef = useRef<{ playing: boolean; startedAt: number }>({
+    playing: false,
+    startedAt: 0,
+  });
+
+  // Which Briefing this browser gets (owner ruling 2026-09-04: launch
+  // ships with video). "text" until mount so SSR and the first client
+  // render agree; flips to "clip" only when a manifest entry exists AND
+  // the sticky holdback assignment says so. Tagged onto the script/step
+  // events so the launch window reads as a concurrent experiment.
+  const [briefingVariant, setBriefingVariant] =
+    useState<BriefingVariant>("text");
+
+  const handleHintLevelRevealed = useCallback((level: 1 | 2 | 3) => {
+    hintsRevealedRef.current.add(level);
+  }, []);
+  const handleExerciseAttempt = useCallback(() => {
+    exerciseAttemptsRef.current += 1;
+  }, []);
+  const getHintsUsed = useCallback(() => hintsRevealedRef.current.size, []);
+
   const storageKey = getStorageKey(worldSlug, lesson.slug);
   const maxStorageKey = getMaxStorageKey(worldSlug, lesson.slug);
 
@@ -258,6 +350,26 @@ function LessonStepsInner({
   // (and cleared) by the completion effect so a restored arrival never
   // fires the emit-once completion signals (diff review D1).
   const restoredAtFinalStepRef = useRef(false);
+
+  // URL-addressable steps (2026-09-04 audit step 2): browser Back steps
+  // back through the lesson instead of exiting it, and a step is linkable.
+  // Hash-based on purpose: a query param would update the app router and
+  // fire a $pageview per step; the hash keeps navigation native. One-way
+  // flow per gesture: user navigation pushes a hash entry; popstate
+  // (Back/Forward) sets the step with the push suppressed.
+  const popNavRef = useRef(false);
+  const maxStepRef = useRef(0);
+  // Mirror for the popstate listener: a pop that clamps to the CURRENT
+  // step causes no state change, so the push effect would never consume
+  // popNavRef and the next genuine navigation's push would be swallowed
+  // (re-audit 2026-09-04).
+  const currentStepRef = useRef(0);
+  useEffect(() => {
+    currentStepRef.current = currentStep;
+  }, [currentStep]);
+  useEffect(() => {
+    maxStepRef.current = maxStepReached;
+  }, [maxStepReached]);
 
   // Read persisted step + furthest step reached on mount
   useEffect(() => {
@@ -306,7 +418,54 @@ function LessonStepsInner({
     } catch {
       // localStorage unavailable
     }
+    // A #step-N deep link wins over the stored position when that ground
+    // was already covered; a link into unvisited territory clamps away.
+    const fromHash = parseStepHash(window.location.hash);
+    if (fromHash !== null && fromHash <= Math.max(step, maxStep)) {
+      if (fromHash === 5) restoredAtFinalStepRef.current = true;
+      step = fromHash;
+      setCurrentStep(fromHash);
+    }
+    // Normalize the entry so Back from the next step returns here.
+    try {
+      window.history.replaceState({ tcStep: step }, "", `#step-${step + 1}`);
+    } catch {
+      // History API unavailable (some embedded contexts): steps still work.
+    }
     setMaxStepReached(Math.max(step, maxStep));
+    // Seed the visited set for revisit-honest step views. Preference
+    // order: the persisted visited list (exact); else, when storage
+    // proves an earlier visit, 0..max (approximation for sessions from
+    // before the list existed). A brand-new visit seeds NOTHING: the
+    // re-audit (2026-09-04) proved the old unconditional seed made every
+    // first Briefing view fire revisit:true, zeroing the baseline
+    // funnel's step-0 first views.
+    try {
+      const savedVisited = localStorage.getItem(`${storageKey}-visited`);
+      if (savedVisited !== null) {
+        for (const s of JSON.parse(savedVisited) as number[]) {
+          if (Number.isInteger(s) && s >= 0 && s < TOTAL_STEPS) {
+            visitedStepsRef.current.add(s);
+          }
+        }
+      } else if (
+        localStorage.getItem(storageKey) !== null ||
+        localStorage.getItem(maxStorageKey) !== null
+      ) {
+        for (let s = 0; s <= Math.max(step, maxStep); s++) {
+          visitedStepsRef.current.add(s);
+        }
+      }
+    } catch {
+      // localStorage unavailable: treat every view as a first view.
+    }
+    if (
+      lesson.scene &&
+      sceneClipFor(worldSlug, moduleSlug, lesson.slug) &&
+      getAssignedBriefingVariant() === "clip"
+    ) {
+      setBriefingVariant("clip");
+    }
     setMounted(true);
     // exercises identity is stable per lesson page load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -346,11 +505,111 @@ function LessonStepsInner({
     }
   }, [currentStep, maxStepReached, storageKey, maxStorageKey, mounted]);
 
+  // Push a history entry per user step change (skip pop-driven ones and
+  // the already-normalized mount position).
+  useEffect(() => {
+    if (!mounted) return;
+    if (popNavRef.current) {
+      popNavRef.current = false;
+      return;
+    }
+    if (parseStepHash(window.location.hash) === currentStep) return;
+    try {
+      window.history.pushState(
+        { tcStep: currentStep },
+        "",
+        `#step-${currentStep + 1}`,
+      );
+    } catch {
+      // History API unavailable
+    }
+  }, [currentStep, mounted]);
+
+  // Back/Forward walk the step history. Forward into never-reached ground
+  // clamps to the furthest step (the exercise gate is not bypassable by
+  // URL), and the hash is re-normalized when the clamp bites.
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      const state = e.state as { tcStep?: unknown } | null;
+      const fromState = typeof state?.tcStep === "number" ? state.tcStep : null;
+      const target = fromState ?? parseStepHash(window.location.hash);
+      if (target === null) return;
+      const clamped = Math.min(Math.max(target, 0), maxStepRef.current);
+      if (clamped !== target) {
+        try {
+          window.history.replaceState(
+            { tcStep: clamped },
+            "",
+            `#step-${clamped + 1}`,
+          );
+        } catch {
+          // History API unavailable
+        }
+      }
+      // A clamp landing on the current step changes no state: do not arm
+      // the push suppression, there will be no push to suppress.
+      if (clamped === currentStepRef.current) return;
+      popNavRef.current = true;
+      setCurrentStep(clamped);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   // Mark lesson as started on mount
   useEffect(() => {
+    lessonStartedAtRef.current = Date.now();
     markLessonStarted(worldSlug, moduleSlug, lesson.slug).catch(() => {});
     trackLessonStarted(worldSlug, moduleSlug, lesson.slug);
   }, [worldSlug, moduleSlug, lesson.slug]);
+
+  // Per-step funnel. Fires on every step entry once the mount-restore has
+  // settled (so a resumed session reports its restored step, not a
+  // phantom step 0). prevStepMs is the dwell on the step just left; the
+  // final step's dwell is intentionally unmeasured (tab close beats any
+  // unload handler often enough that a partial number would mislead).
+  useEffect(() => {
+    if (!mounted) return;
+    const now = Date.now();
+    const prevStep = prevViewedStepRef.current;
+    const prevStepMs =
+      prevStep === null ? undefined : now - stepEnteredAtRef.current;
+    stepEnteredAtRef.current = now;
+    prevViewedStepRef.current = currentStep;
+    const revisit = visitedStepsRef.current.has(currentStep);
+    visitedStepsRef.current.add(currentStep);
+    // Persist the exact visited set so later sessions stay revisit-honest
+    // (jumped-over steps must NOT read as visited; re-audit 2026-09-04).
+    try {
+      localStorage.setItem(
+        `${storageKey}-visited`,
+        JSON.stringify(Array.from(visitedStepsRef.current)),
+      );
+    } catch {
+      // localStorage unavailable
+    }
+    track(EVENTS.LESSON_STEP_VIEWED, {
+      worldId: worldSlug,
+      moduleId: moduleSlug,
+      lessonId: lesson.slug,
+      step: currentStep,
+      stepName: STEP_NAMES[currentStep],
+      prevStep: prevStep ?? undefined,
+      prevStepMs,
+      revisit,
+      briefingVariant,
+    });
+    // briefingVariant settles in the same commit as mounted, so it never
+    // changes after the first fire and cannot double-fire a view.
+  }, [
+    currentStep,
+    mounted,
+    worldSlug,
+    moduleSlug,
+    lesson.slug,
+    storageKey,
+    briefingVariant,
+  ]);
 
   // Tracks the previous step so the completion effect can distinguish an
   // in-session TRANSITION into step 5 from a mount that merely restored a
@@ -387,7 +646,21 @@ function LessonStepsInner({
       // The completion WRITE always runs: it is an idempotent upsert, and the
       // guest fallback below is what GuestProgressBridge replays after
       // signup. Only the emit-once signals live behind the transition guard.
-      markLessonCompleted(worldSlug, moduleSlug, lesson.slug, avgScore)
+      // Hint/attempt counters ride along ONLY on a genuine walk to step 5:
+      // the write re-runs on every reload of a finished lesson, and session
+      // counters must not re-accumulate on restores.
+      const extras = enteredThisSession
+        ? {
+            hintsUsed: hintsRevealedRef.current.size,
+            attempts: exerciseAttemptsRef.current,
+          }
+        : undefined;
+      // Zero the session attempt counter once it rides along: attempts SUM
+      // server-side, and a 4-to-5 oscillation in the same session must not
+      // re-add the same runs (re-audit 2026-09-04). Hints keep max
+      // semantics, so re-sending the same size is naturally idempotent.
+      if (extras) exerciseAttemptsRef.current = 0;
+      markLessonCompleted(worldSlug, moduleSlug, lesson.slug, avgScore, extras)
         .then((result) => {
           // Null = no signed-in user (or a failed write): keep local
           // evidence so the map can stage the guest end-of-module moment
@@ -420,7 +693,13 @@ function LessonStepsInner({
           setAwardSrc(patch);
         }
 
-        trackLessonCompleted(worldSlug, moduleSlug, lesson.slug);
+        trackLessonCompleted(
+          worldSlug,
+          moduleSlug,
+          lesson.slug,
+          Date.now() - lessonStartedAtRef.current,
+          hintsRevealedRef.current.size,
+        );
         if (completedModule) {
           trackModuleCompleted(worldSlug, moduleSlug, lessons?.length ?? 1);
         }
@@ -529,11 +808,41 @@ function LessonStepsInner({
       ? exercises.length === 0 || passedExercises.size >= exercises.length
       : currentStep < TOTAL_STEPS - 1;
 
+  // Paging away from a still-playing scene is a skip in all but name; it
+  // used to be invisible, biasing the >40% skip-rate rule low. Counted
+  // only, deliberately not remembered: an eager Continue is weaker
+  // evidence of opt-out than the Skip button, so it must not arm the
+  // forever auto-skip preference.
+  const markSceneSkippedByNav = useCallback(() => {
+    if (!scriptStatusRef.current.playing) return;
+    scriptStatusRef.current.playing = false;
+    track(EVENTS.SCRIPT_SKIPPED, {
+      worldId: worldSlug,
+      lessonId: lesson.slug,
+      step: 0,
+      elapsedMs: scriptStatusRef.current.startedAt
+        ? Date.now() - scriptStatusRef.current.startedAt
+        : 0,
+      via: "continue",
+      briefingVariant,
+    });
+  }, [worldSlug, lesson.slug, briefingVariant]);
+
   const goNext = useCallback(() => {
     if (canContinue && currentStep < TOTAL_STEPS - 1) {
+      if (currentStep === 0) markSceneSkippedByNav();
       setCurrentStep((s) => s + 1);
     }
-  }, [canContinue, currentStep]);
+  }, [canContinue, currentStep, markSceneSkippedByNav]);
+
+  // The skimmer's path (audit step 2): a confident engineer's first visit
+  // had no route to the editor except three Continues and two reading
+  // steps. Jumping unlocks the step bar back to the skipped ground; the
+  // exercise gate itself is untouched.
+  const jumpToChallenge = useCallback(() => {
+    markSceneSkippedByNav();
+    setCurrentStep(3);
+  }, [markSceneSkippedByNav]);
 
   const goBack = useCallback(() => {
     if (currentStep > 0) {
@@ -624,6 +933,17 @@ function LessonStepsInner({
         >
           &larr; Back
         </button>
+      ) : exercises.length > 0 && maxStepReached < 3 ? (
+        // First-visit fast path to the editor; hidden once the Challenge
+        // step is reachable from the step bar anyway.
+        <button
+          type="button"
+          onClick={jumpToChallenge}
+          className="text-sm font-mono px-6 py-3 transition-colors hover:opacity-80"
+          style={{ color: "var(--tc-muted)" }}
+        >
+          Skip to the challenge &rarr;
+        </button>
       ) : (
         <span aria-hidden="true" />
       )}
@@ -688,6 +1008,13 @@ function LessonStepsInner({
         lessonSlug={lessonSlug}
         scriptAutoPlay={!scriptPlayedRef.current}
         onScriptPlayed={handleScriptPlayed}
+        scriptStatusRef={scriptStatusRef}
+        briefingVariant={briefingVariant}
+        clipUrl={
+          briefingVariant === "clip"
+            ? (sceneClipFor(worldSlug, moduleSlug, lesson.slug)?.url ?? null)
+            : null
+        }
       />
     );
     shellRight = (
@@ -734,7 +1061,12 @@ function LessonStepsInner({
     );
   } else if (currentStep === 3) {
     rightKind = "pane";
-    shellLeft = <StepChallenge {...sharedContentProps} />;
+    shellLeft = (
+      <StepChallenge
+        {...sharedContentProps}
+        onHintRevealed={handleHintLevelRevealed}
+      />
+    );
     shellRight = (
       <div>
         <LessonContent
@@ -746,6 +1078,8 @@ function LessonStepsInner({
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CHALLENGE_RIGHT}
           onExerciseComplete={handleExerciseComplete}
+          onExerciseAttempt={handleExerciseAttempt}
+          getHintsUsed={getHintsUsed}
         />
         <ChallengePassedBanner
           passed={canContinue}
@@ -1216,6 +1550,9 @@ function StepBriefing({
   lessonSlug,
   scriptAutoPlay,
   onScriptPlayed,
+  scriptStatusRef,
+  briefingVariant = "text",
+  clipUrl = null,
 }: {
   lesson: LessonStepsProps["lesson"];
   moduleSlug: string;
@@ -1224,6 +1561,16 @@ function StepBriefing({
   lessonSlug: string;
   scriptAutoPlay: boolean;
   onScriptPlayed: () => void;
+  /** Shared with the step machine so Continue-past-a-playing-scene can be
+   *  counted as a skip (goNext reads it). Optional for test harnesses. */
+  scriptStatusRef?: React.MutableRefObject<{
+    playing: boolean;
+    startedAt: number;
+  }>;
+  /** Which Briefing this browser serves; tags the script telemetry. */
+  briefingVariant?: BriefingVariant;
+  /** Approved clip URL, only when the variant is "clip". */
+  clipUrl?: string | null;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const timeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
@@ -1231,6 +1578,9 @@ function StepBriefing({
   // When the current playback run started; feeds script_skipped's elapsedMs
   // so the ">40% skip triggers narrative redesign" QA rule is computable.
   const playStartedAtRef = useRef<number>(0);
+  // Which control launched the current run; script_finished carries it so
+  // the skip-rate denominator can exclude replays.
+  const runKindRef = useRef<"auto" | "replay">("auto");
   const [scriptState, setScriptState] = useState<"playing" | "done">(
     scriptAutoPlay ? "playing" : "done",
   );
@@ -1264,11 +1614,12 @@ function StepBriefing({
   const finish = useCallback(
     (scrollToExplanation: boolean) => {
       clearTimeline();
+      if (scriptStatusRef) scriptStatusRef.current.playing = false;
       scrollPendingRef.current = scrollToExplanation;
       setScriptState("done");
       onScriptPlayed();
     },
-    [clearTimeline, onScriptPlayed],
+    [clearTimeline, onScriptPlayed, scriptStatusRef],
   );
 
   const play = useCallback(() => {
@@ -1283,6 +1634,9 @@ function StepBriefing({
       return;
     }
     playStartedAtRef.current = Date.now();
+    if (scriptStatusRef) {
+      scriptStatusRef.current = { playing: true, startedAt: Date.now() };
+    }
     setBeatsShown(0);
     setScriptState("playing");
     let at = 350;
@@ -1290,8 +1644,32 @@ function StepBriefing({
       timeoutsRef.current.push(setTimeout(() => setBeatsShown(i + 1), at));
       at += beatHoldMs(b);
     });
-    timeoutsRef.current.push(setTimeout(() => finish(true), at + 200));
-  }, [clearTimeline, collectBeats, finish]);
+    timeoutsRef.current.push(
+      setTimeout(() => {
+        // The skip-rate denominator (audit 2026-09-04): before this event
+        // existed, script_skipped had no "watched it all" counterpart, so
+        // the >40% rule had a numerator and nothing to divide by.
+        track(EVENTS.SCRIPT_FINISHED, {
+          worldId: worldSlug,
+          lessonId: lessonSlug,
+          step: 0,
+          elapsedMs: Date.now() - playStartedAtRef.current,
+          run: runKindRef.current,
+          briefingVariant,
+        });
+        // finish(false): since the prose partition the Briefing ends at the
+        // story zone, so there is no explanation below to auto-scroll into.
+        finish(false);
+      }, at + 200),
+    );
+  }, [
+    clearTimeline,
+    collectBeats,
+    finish,
+    scriptStatusRef,
+    worldSlug,
+    lessonSlug,
+  ]);
 
   // Re-assert beat attributes after every commit. The beat list is driven
   // by state (beatsShown) instead of one-shot imperative setAttribute calls
@@ -1340,8 +1718,21 @@ function StepBriefing({
   // "Replay scene" control below stays, so the scene is never unreachable.
   useEffect(() => {
     if (scriptAutoPlay && !prefersSkippedScript()) {
+      runKindRef.current = "auto";
       play();
     } else if (scriptAutoPlay) {
+      // The remembered preference suppressed playback. Since 2026-08-23
+      // this path was silent, so every skip after the first-ever manual
+      // one vanished from the metric and the skip rate was biased low by
+      // construction (audit 2026-09-04).
+      track(EVENTS.SCRIPT_SKIPPED, {
+        worldId: worldSlug,
+        lessonId: lessonSlug,
+        step: 0,
+        elapsedMs: 0,
+        via: "auto",
+        briefingVariant,
+      });
       finish(false);
     }
     return clearTimeline;
@@ -1399,6 +1790,8 @@ function StepBriefing({
                 elapsedMs: playStartedAtRef.current
                   ? Date.now() - playStartedAtRef.current
                   : 0,
+                via: "button",
+                briefingVariant,
               });
               rememberScriptSkipped();
               finish(false);
@@ -1419,7 +1812,10 @@ function StepBriefing({
         ) : (
           <button
             type="button"
-            onClick={play}
+            onClick={() => {
+              runKindRef.current = "replay";
+              play();
+            }}
             className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
             style={{
               color: "var(--tc-muted)",
@@ -1444,16 +1840,31 @@ function StepBriefing({
       )}
 
       {/* Establishing shot: its own playback beat, slugline then picture
-          then stage direction, screenplay order. The src is speculative
-          (art ships incrementally per docs/scene-bible.md); on 404 the
-          component removes itself and the timeline matches today's. */}
-      {lesson.scene && (
+          then stage direction, screenplay order. With an approved clip
+          and the "clip" variant this is the scene VIDEO (owner ruling
+          2026-09-04: launch ships with video), poster = the same still;
+          otherwise the still exactly as before. The still's src stays
+          speculative (art ships incrementally per docs/scene-bible.md);
+          on 404 the component removes itself and the timeline matches
+          today's. */}
+      {lesson.scene && briefingVariant === "clip" && clipUrl ? (
+        <SceneClip
+          clipUrl={clipUrl}
+          posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
+          alt={lesson.scene.portraitAlt}
+          autoPlayEligible={
+            scriptAutoPlay && !prefersSkippedScript() && !prefersReducedMotion()
+          }
+          worldId={worldSlug}
+          lessonId={lessonSlug}
+        />
+      ) : lesson.scene ? (
         <ScenePortrait
           beat
           src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
           alt={lesson.scene.portraitAlt}
         />
-      )}
+      ) : null}
 
       {/* Narrative as stage direction */}
       <p
@@ -1464,7 +1875,9 @@ function StepBriefing({
         {lesson.context.narrative}
       </p>
 
-      {/* Dialogue, screenplay beats from MDX */}
+      {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
+          the story zone only since the 2026-09-04 prose partition; the
+          teaching body reads once, on the Concept step. */}
       <LessonContent
         lesson={lesson}
         exercises={exercises}
@@ -1475,6 +1888,7 @@ function StepBriefing({
         visibleComponents={BRIEFING_COMPONENTS}
         storyRegister
         hideChallengeOnward
+        hideTeaching
       />
     </div>
   );
@@ -1515,6 +1929,7 @@ function StepConcept({
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONCEPT_LEFT}
           hideChallengeOnward
+          hideStoryZone
         />
       </div>
     </div>
@@ -1540,6 +1955,17 @@ function StepCode({
   return (
     <div>
       <PhaseChip label="Code" icon={"\u2318"} />
+      {/* The prose read lives on the Concept step since the 2026-09-04
+          partition; this step isolates the worked example. The line below
+          gives the left column a purpose on the 42 lessons that carry no
+          DerivationDrawer. */}
+      <p
+        className="text-base leading-[1.85] mb-6"
+        style={{ color: "var(--tc-muted)" }}
+      >
+        The lesson&apos;s code, gathered in one place. Read it top to bottom;
+        the exercise on the next step starts from these patterns.
+      </p>
       <div className="lesson-prose">
         <LessonContent
           lesson={lesson}
@@ -1565,19 +1991,22 @@ function StepChallenge({
   worldSlug,
   moduleSlug,
   lessonSlug,
+  onHintRevealed,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   worldSlug: string;
   moduleSlug: string;
   lessonSlug: string;
+  onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
 }) {
   return (
     <div>
       <PhaseChip label="Challenge" icon={"\u26A1"} />
       {/* Left column: brief + hints only. The Exercise editor itself renders
           in the right work pane (CHALLENGE_RIGHT) so its submit handler runs
-          exactly once. */}
+          exactly once. Hint reveals happen HERE, so this instance carries
+          the counter callback; the right pane reads the count at submit. */}
       <div className="lesson-prose">
         <LessonContent
           lesson={lesson}
@@ -1587,6 +2016,7 @@ function StepChallenge({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CHALLENGE_LEFT}
+          onHintRevealed={onHintRevealed}
         />
       </div>
     </div>
@@ -1741,6 +2171,7 @@ function StepConsequence({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONSEQUENCE_COMPONENTS}
+          showPostRecap
         />
       </div>
 

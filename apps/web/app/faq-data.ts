@@ -25,7 +25,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "How long does Deep Orbit take?",
-    a: "Deep Orbit is 56 lessons across 11 modules, about 29 hours of lessons and exercises. Since it's story-based, it's meant to be tackled in order. Per-module estimates are on the pricing page and the Deep Orbit course page.",
+    a: "Deep Orbit is 56 lessons across 11 modules, about 27 hours of lessons and exercises. Since it's story-based, it's meant to be tackled in order. Per-module estimates are on the pricing page and the Deep Orbit course page.",
   },
   {
     q: "Is Tensorcraft free?",

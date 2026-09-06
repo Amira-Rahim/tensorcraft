@@ -1,33 +1,147 @@
 slug: deep-scan-eval
 lessonSlug: evaluating-deep-scan
-title: "Evaluate and Predict with DEEP SCAN"
-instructions: "Wire up the two calls every evaluation needs. Score the compiled model on held-out test data with model.evaluate(), then run it forward on one new signal with model.predict(). The model here has not been trained, so the numbers it returns mean nothing yet; what you are practicing is the shape of the call. Store the results in 'evalResult' and 'prediction'."
-starterCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 8, activation: 'relu', inputShape: [4] }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));\nmodel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });\n\nconst testX = tf.tensor2d([[0.5, 0.3, 0.8, 0.1], [0.2, 0.9, 0.4, 0.7]]);\nconst testY = tf.tensor2d([[1], [0]]);\nconst newSignal = tf.tensor2d([[0.6, 0.4, 0.7, 0.3]]);\n\n// Evaluate the model on test data\nconst evalResult = null; // your code here\n\n// Predict on the new signal\nconst prediction = null; // your code here"
-solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 8, activation: 'relu', inputShape: [4] }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));\nmodel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });\n\nconst testX = tf.tensor2d([[0.5, 0.3, 0.8, 0.1], [0.2, 0.9, 0.4, 0.7]]);\nconst testY = tf.tensor2d([[1], [0]]);\nconst newSignal = tf.tensor2d([[0.6, 0.4, 0.7, 0.3]]);\n\nconst evalResult = model.evaluate(testX, testY);\n\nconst prediction = model.predict(newSignal);"
+title: "Train DEEP SCAN, Then Read the Gap"
+instructions: "The first training run you grade yourself. `trainX`/`trainY` are 100 seeded archive readings (the calm and flagged clusters from lesson 4); `testX`/`testY` are 40 held-out readings drawn with fresh seeds, never seen in training. (1) Train `model` with model.fit for 30 epochs at batchSize 16 and store the result in `history`. (2) Score the held-out slice with model.evaluate into `evalResult` ([loss, accuracy]). (3) Write `diagnose(trainAcc, testAcc)`: 'overfitting' when trainAcc - testAcc exceeds 0.15, 'underfitting' when both sit below 0.7, else 'healthy'. (4) Read your own run: `verdict` = diagnose(final training accuracy from history, held-out accuracy from evalResult). The grader checks that the model really learned, that the held-out number came from model.evaluate, and that diagnose is a function of its arguments rather than a memorized string."
+starterCode: |
+  // Seeded archive readings, one row each: [amplitude, frequency, phase].
+  // Flagged windows run hot on amplitude and phase and low on frequency.
+  const calm = tf.concat([
+    tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
+    tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
+    tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
+  ], 1);
+  const flagged = tf.concat([
+    tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
+    tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
+    tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
+  ], 1);
+  const order = Array.from(tf.util.createShuffledIndices(100));
+  const trainX = tf.concat([calm, flagged]).gather(order);
+  const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+
+  // Held-out slice: fresh seeds, never trained on. 20 calm, 20 flagged.
+  const testX = tf.concat([
+    tf.concat([
+      tf.randomNormal([20, 1], 0.17, 0.10, 'float32', 204),
+      tf.randomNormal([20, 1], 0.81, 0.10, 'float32', 205),
+      tf.randomNormal([20, 1], 0.23, 0.10, 'float32', 206),
+    ], 1),
+    tf.concat([
+      tf.randomNormal([20, 1], 0.84, 0.10, 'float32', 201),
+      tf.randomNormal([20, 1], 0.18, 0.10, 'float32', 202),
+      tf.randomNormal([20, 1], 0.78, 0.10, 'float32', 203),
+    ], 1),
+  ]);
+  const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1])]);
+
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
+  model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+  model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+  // 1. Train: 30 epochs, batchSize 16 (fit needs await)
+  const history = null; // your code here
+
+  // 2. Score the held-out slice: [loss, accuracy]
+  const evalResult = null; // your code here
+
+  // 3. Read any train/test pair into a verdict
+  function diagnose(trainAcc, testAcc) {
+    // 'overfitting' when trainAcc - testAcc > 0.15
+    // 'underfitting' when both are below 0.7
+    // 'healthy' otherwise
+    return null; // your code here
+  }
+
+  // 4. Your run: final training accuracy (history.history.acc, last entry)
+  //    against held-out accuracy (evalResult[1])
+  const verdict = null; // your code here
+solutionCode: |
+  const calm = tf.concat([
+    tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
+    tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
+    tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
+  ], 1);
+  const flagged = tf.concat([
+    tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
+    tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
+    tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
+  ], 1);
+  const order = Array.from(tf.util.createShuffledIndices(100));
+  const trainX = tf.concat([calm, flagged]).gather(order);
+  const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+
+  const testX = tf.concat([
+    tf.concat([
+      tf.randomNormal([20, 1], 0.17, 0.10, 'float32', 204),
+      tf.randomNormal([20, 1], 0.81, 0.10, 'float32', 205),
+      tf.randomNormal([20, 1], 0.23, 0.10, 'float32', 206),
+    ], 1),
+    tf.concat([
+      tf.randomNormal([20, 1], 0.84, 0.10, 'float32', 201),
+      tf.randomNormal([20, 1], 0.18, 0.10, 'float32', 202),
+      tf.randomNormal([20, 1], 0.78, 0.10, 'float32', 203),
+    ], 1),
+  ]);
+  const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1])]);
+
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
+  model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+  model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+  const history = await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 });
+
+  const evalResult = model.evaluate(testX, testY);
+
+  function diagnose(trainAcc, testAcc) {
+    if (trainAcc - testAcc > 0.15) return 'overfitting';
+    if (trainAcc < 0.7 && testAcc < 0.7) return 'underfitting';
+    return 'healthy';
+  }
+
+  const trainAcc = history.history.acc[history.history.acc.length - 1];
+  const testAcc = evalResult[1].dataSync()[0];
+  const verdict = diagnose(trainAcc, testAcc);
 testCode: |
-  describe('Evaluation', () => {
-    it('evalResult is [loss, accuracy]: two scalar tensors with real values', () => {
+  describe('Train DEEP SCAN, Then Read the Gap', () => {
+    it('trained for exactly 30 epochs', () => {
+      expect(history).toBeDefined();
+      expect(history.history.loss).toHaveLength(30);
+    });
+    it('the loss actually fell across training', () => {
+      const losses = history.history.loss;
+      expect(losses[losses.length - 1]).toBeLessThan(losses[0]);
+    });
+    it('the model learned the archive: held-out accuracy above 0.85 (the clusters are 6 sigma apart)', () => {
+      const fresh = model.evaluate(testX, testY);
+      expect(fresh[1].dataSync()[0]).toBeGreaterThan(0.85);
+    });
+    it('evalResult is [loss, accuracy] from model.evaluate on the held-out slice', () => {
       expect(Array.isArray(evalResult)).toBe(true);
       expect(evalResult.length).toBe(2);
-      const lossVal = evalResult[0].dataSync()[0];
-      const accVal = evalResult[1].dataSync()[0];
-      expect(Number.isFinite(lossVal)).toBe(true);
-      expect(accVal).toBeGreaterThanOrEqual(0);
-      expect(accVal).toBeLessThanOrEqual(1);
+      const fresh = model.evaluate(testX, testY);
+      expect(evalResult[0].dataSync()[0]).toBeCloseTo(fresh[0].dataSync()[0], 4);
+      expect(evalResult[1].dataSync()[0]).toBeCloseTo(fresh[1].dataSync()[0], 4);
     });
-    it('evalResult matches a fresh model.evaluate on the same data', () => {
-      const again = model.evaluate(testX, testY);
-      expect(evalResult[0].dataSync()[0]).toBeCloseTo(again[0].dataSync()[0], 4);
+    it('diagnose reads its arguments, not a memorized string', () => {
+      expect(diagnose(0.95, 0.60)).toBe('overfitting');
+      expect(diagnose(0.55, 0.52)).toBe('underfitting');
+      expect(diagnose(0.93, 0.91)).toBe('healthy');
+      expect(diagnose(0.99, 0.83)).toBe('overfitting');
+      expect(diagnose(0.69, 0.68)).toBe('underfitting');
     });
-    it('prediction is the sigmoid output for newSignal', () => {
-      expect(prediction.shape).toEqual([1, 1]);
-      const p = prediction.dataSync()[0];
-      expect(p).toBeGreaterThan(0);
-      expect(p).toBeLessThan(1);
-      expect(p).toBeCloseTo(model.predict(newSignal).dataSync()[0], 4);
+    it('verdict is diagnose applied to THIS run, and this run is healthy', () => {
+      const acc = history.history.acc;
+      const finalTrainAcc = acc[acc.length - 1];
+      const heldOutAcc = evalResult[1].dataSync()[0];
+      expect(verdict).toBe(diagnose(finalTrainAcc, heldOutAcc));
+      expect(verdict).toBe('healthy');
     });
   });
-estimatedMinutes: 15
-difficulty: beginner
-mlContent: evaluation
+estimatedMinutes: 20
+difficulty: intermediate
+mlContent: training
 skillAxis: evaluation

@@ -280,3 +280,71 @@ describe("LessonContent, MDX component roster coverage", () => {
     expect(screen.queryByTestId("derivation-drawer")).toBeNull();
   });
 });
+
+describe("LessonContent, prose partition attributes (2026-09-04 audit step 2)", () => {
+  it("stamps data-hide-teaching for the Briefing's story-zone-only render", () => {
+    const { container } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["Dialogue", "prose"])}
+        storyRegister
+        hideTeaching
+      />,
+    );
+    expect(
+      container.querySelector("[data-hide-teaching='true']"),
+    ).toBeInTheDocument();
+  });
+
+  it("stamps data-show-challenge when the challenge zone renders without prose", () => {
+    const { container } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["challenge", "HintPanel"])}
+      />,
+    );
+    const root = container.querySelector(".lesson-step-content");
+    expect(root).toHaveAttribute("data-show-prose", "false");
+    expect(root).toHaveAttribute("data-show-challenge", "true");
+  });
+
+  it("never stamps data-show-challenge while prose is visible", () => {
+    const { container } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["challenge", "prose"])}
+      />,
+    );
+    expect(
+      container.querySelector("[data-show-challenge]"),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe("LessonContent, re-audit fixes (2026-09-04)", () => {
+  it("stamps data-hide-story-zone for the Concept step's scene-free read", () => {
+    const { container } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["Dialogue", "CodeBlock", "prose"])}
+        hideStoryZone
+      />,
+    );
+    expect(
+      container.querySelector("[data-hide-story-zone='true']"),
+    ).toBeInTheDocument();
+  });
+
+  it("stamps data-show-postrecap for the Consequence step", () => {
+    const { container } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["Epilogue", "DispatchTease"])}
+        showPostRecap
+      />,
+    );
+    expect(
+      container.querySelector("[data-show-postrecap='true']"),
+    ).toBeInTheDocument();
+  });
+});

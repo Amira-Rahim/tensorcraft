@@ -23,10 +23,22 @@ vi.mock("next/link", () => ({
 // Step content is exercised in lesson-content.test.tsx; stub it here so the
 // suite focuses on step navigation chrome.
 vi.mock("./lesson-content", () => ({
-  LessonContent: ({ storyRegister }: { storyRegister?: boolean }) => (
+  LessonContent: ({
+    storyRegister,
+    hideTeaching,
+    visibleComponents,
+  }: {
+    storyRegister?: boolean;
+    hideTeaching?: boolean;
+    visibleComponents?: Set<string>;
+  }) => (
     <div
       data-testid="lesson-content"
       data-story-register={storyRegister ? "true" : undefined}
+      data-hide-teaching={hideTeaching ? "true" : undefined}
+      data-visible={
+        visibleComponents ? Array.from(visibleComponents).sort().join(",") : ""
+      }
     />
   ),
 }));
@@ -59,9 +71,24 @@ vi.mock("@/lib/analytics", () => ({
   trackLessonStarted: vi.fn(),
   trackLessonCompleted: vi.fn(),
   trackModuleCompleted: vi.fn(),
-  // The Skip control now emits script_skipped through the typed helper.
+  // The Skip control now emits script_skipped through the typed helper;
+  // 2026-09-04 added step views and the script_finished denominator.
   track: vi.fn(),
-  EVENTS: { SCRIPT_SKIPPED: "script_skipped" },
+  EVENTS: {
+    LESSON_STEP_VIEWED: "lesson_step_viewed",
+    SCRIPT_SKIPPED: "script_skipped",
+    SCRIPT_FINISHED: "script_finished",
+  },
+}));
+
+// Scene-clip plumbing (owner ruling 2026-09-04: launch ships with video).
+// Default: no clip in the manifest, so every existing test runs the
+// pre-video Briefing unchanged; individual tests override sceneClipFor.
+vi.mock("@/lib/scene-clips", () => ({
+  sceneClipFor: vi.fn(() => null),
+}));
+vi.mock("@/lib/briefing-variant", () => ({
+  getAssignedBriefingVariant: vi.fn(() => "clip"),
 }));
 
 // Reaching the final step fires a lazy import chain (api-url → supabase
@@ -110,6 +137,10 @@ function renderSteps() {
 
 beforeEach(() => {
   localStorage.clear();
+  // Steps are URL-addressable (#step-N) since 2026-09-04, and jsdom keeps
+  // `location` across tests: a hash left by one test reads as a deep link
+  // in the next mount. Reset it like localStorage.
+  window.history.replaceState(null, "", window.location.pathname);
 });
 
 describe("LessonSteps, segmented progress bar", () => {
@@ -544,5 +575,271 @@ jsx(Dialogue, {speaker: "Instructor", children: "z"});`,
     const instructor = stubs.find((s) => s.dataset.name === "Instructor");
     expect(instructor).toBeDefined();
     expect(instructor?.dataset.src).toBe("");
+  });
+});
+
+describe("LessonSteps, prose partition (2026-09-04 audit step 2)", () => {
+  const visibleSets = () =>
+    screen
+      .getAllByTestId("lesson-content")
+      .map((s) => (s.dataset.visible ?? "").split(",").filter(Boolean));
+
+  it("keeps the Briefing to the story zone via hideTeaching", () => {
+    renderSteps();
+    const briefing = screen
+      .getAllByTestId("lesson-content")
+      .find((s) => s.dataset.hideTeaching === "true");
+    expect(briefing).toBeDefined();
+  });
+
+  it("renders code inline on the Concept step (the one full read)", () => {
+    localStorage.setItem(STEP_KEY, "1");
+    localStorage.setItem(MAX_KEY, "1");
+    renderSteps();
+    const withProse = visibleSets().find((v) => v.includes("prose"));
+    expect(withProse).toBeDefined();
+    expect(withProse).toContain("CodeBlock");
+  });
+
+  it("drops the prose re-read from the Code step", () => {
+    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(MAX_KEY, "2");
+    renderSteps();
+    for (const v of visibleSets()) {
+      expect(v).not.toContain("prose");
+    }
+  });
+
+  it("drops the prose re-read from the Challenge left column, keeping the challenge zone + hints", () => {
+    localStorage.setItem(STEP_KEY, "3");
+    localStorage.setItem(MAX_KEY, "3");
+    renderSteps();
+    const sets = visibleSets();
+    expect(sets.some((v) => v.includes("challenge"))).toBe(true);
+    for (const v of sets) {
+      expect(v).not.toContain("prose");
+    }
+  });
+});
+
+describe("LessonSteps, URL-addressable steps (2026-09-04 audit step 2)", () => {
+  it("pushes a #step-N hash entry per forward step", () => {
+    renderSteps();
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    expect(window.location.hash).toBe("#step-2");
+    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+  });
+
+  it("steps back (not out) on popstate", () => {
+    renderSteps();
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    act(() => {
+      window.dispatchEvent(
+        new PopStateEvent("popstate", { state: { tcStep: 0 } }),
+      );
+    });
+    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+  });
+
+  it("honors a #step-N deep link into already-covered ground", () => {
+    localStorage.setItem(MAX_KEY, "3");
+    window.history.replaceState(null, "", "#step-3");
+    renderSteps();
+    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+  });
+
+  it("clamps a deep link into never-reached ground", () => {
+    window.history.replaceState(null, "", "#step-5");
+    renderSteps();
+    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, skip to the challenge (2026-09-04 audit step 2)", () => {
+  const exercise = {
+    slug: "create-a-tensor",
+    estimatedMinutes: 6,
+  } as unknown as React.ComponentProps<typeof LessonSteps>["exercises"][number];
+
+  function renderWithExercise() {
+    return render(
+      <LessonSteps
+        lesson={lesson}
+        exercises={[exercise]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+  }
+
+  it("jumps a first visit straight to the Challenge step and unlocks the bar behind it", () => {
+    renderWithExercise();
+    fireEvent.click(
+      screen.getByRole("button", { name: /skip to the challenge/i }),
+    );
+    expect(screen.getByText("4 / 6")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^Step 2/ })).not.toBeDisabled();
+  });
+
+  it("hides the fast path once the Challenge step is reachable from the bar", () => {
+    localStorage.setItem(STEP_KEY, "0");
+    localStorage.setItem(MAX_KEY, "3");
+    renderWithExercise();
+    expect(
+      screen.queryByRole("button", { name: /skip to the challenge/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("offers no fast path on exercise-less lessons", () => {
+    renderSteps();
+    expect(
+      screen.queryByRole("button", { name: /skip to the challenge/i }),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, revisit-honest step views (re-audit 2026-09-04)", () => {
+  it("fires the very first step view of a brand-new visit with revisit:false", async () => {
+    const { track } = await import("@/lib/analytics");
+    vi.mocked(track).mockClear();
+    renderSteps();
+    const stepViews = vi
+      .mocked(track)
+      .mock.calls.filter(([name]) => name === "lesson_step_viewed");
+    expect(stepViews.length).toBeGreaterThan(0);
+    // The old unconditional visited-seed made this fire revisit:true and
+    // zeroed the baseline funnel's step-0 first views.
+    expect(stepViews[0][1]).toMatchObject({ step: 0, revisit: false });
+  });
+
+  it("marks a restored session's landing step as a revisit", async () => {
+    const { track } = await import("@/lib/analytics");
+    vi.mocked(track).mockClear();
+    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(MAX_KEY, "2");
+    renderSteps();
+    const stepViews = vi
+      .mocked(track)
+      .mock.calls.filter(([name]) => name === "lesson_step_viewed");
+    expect(stepViews[0][1]).toMatchObject({ step: 2, revisit: true });
+  });
+
+  it("does not mark jumped-over steps as visited", async () => {
+    const { track } = await import("@/lib/analytics");
+    // First session: jump straight to the challenge (steps 1-2 never seen).
+    const exercise = { slug: "e1", estimatedMinutes: 5 } as never;
+    const first = render(
+      <LessonSteps
+        lesson={lesson}
+        exercises={[exercise]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: /skip to the challenge/i }),
+    );
+    first.unmount();
+    // A fresh browser session carries no step hash; without this reset the
+    // jump's #step-4 deep link would win over the seeded position.
+    window.history.replaceState(null, "", window.location.pathname);
+
+    // Second session: walking back to step 1 must read as a FIRST view.
+    localStorage.setItem(STEP_KEY, "1");
+    vi.mocked(track).mockClear();
+    renderSteps();
+    const stepViews = vi
+      .mocked(track)
+      .mock.calls.filter(([name]) => name === "lesson_step_viewed");
+    expect(stepViews[0][1]).toMatchObject({ step: 1, revisit: false });
+  });
+});
+
+describe("LessonSteps, briefing clip variant (owner ruling 2026-09-04)", () => {
+  afterEach(async () => {
+    // Reset here, not at test tails: a thrown assertion must not leak a
+    // manifest entry into the next test.
+    const { sceneClipFor } = await import("@/lib/scene-clips");
+    const { getAssignedBriefingVariant } =
+      await import("@/lib/briefing-variant");
+    vi.mocked(sceneClipFor).mockReturnValue(null);
+    vi.mocked(getAssignedBriefingVariant).mockReturnValue("clip");
+  });
+
+  const sceneLesson = {
+    ...lesson,
+    scene: {
+      location: "Archimedes, Bridge",
+      portraitAlt: "A holo column of noise.",
+    },
+  };
+
+  function renderWithScene() {
+    return render(
+      <LessonSteps
+        lesson={sceneLesson}
+        exercises={[]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+  }
+
+  it("renders the SceneClip and tags step views briefingVariant=clip when a clip is approved", async () => {
+    const { sceneClipFor } = await import("@/lib/scene-clips");
+    const { track } = await import("@/lib/analytics");
+    vi.mocked(sceneClipFor).mockReturnValue({
+      url: "https://cdn.example/clip.mp4",
+      durationMs: 10000,
+      bytes: 1,
+      ingestedAt: "2026-09-05",
+    });
+    vi.mocked(track).mockClear();
+    renderWithScene();
+    expect(screen.getByTestId("scene-clip")).toBeInTheDocument();
+    const stepViews = vi
+      .mocked(track)
+      .mock.calls.filter(([name]) => name === "lesson_step_viewed");
+    expect(stepViews[0][1]).toMatchObject({ briefingVariant: "clip" });
+    vi.mocked(sceneClipFor).mockReturnValue(null);
+  });
+
+  it("keeps the pre-video Briefing and tags briefingVariant=text when no clip is shipped", async () => {
+    const { track } = await import("@/lib/analytics");
+    vi.mocked(track).mockClear();
+    renderWithScene();
+    expect(screen.queryByTestId("scene-clip")).not.toBeInTheDocument();
+    expect(screen.getByTestId("scene-portrait-stub")).toBeInTheDocument();
+    const stepViews = vi
+      .mocked(track)
+      .mock.calls.filter(([name]) => name === "lesson_step_viewed");
+    expect(stepViews[0][1]).toMatchObject({ briefingVariant: "text" });
+  });
+
+  it("keeps the pre-video Briefing for the holdback cohort even when a clip exists", async () => {
+    const { sceneClipFor } = await import("@/lib/scene-clips");
+    const { getAssignedBriefingVariant } =
+      await import("@/lib/briefing-variant");
+    vi.mocked(sceneClipFor).mockReturnValue({
+      url: "https://cdn.example/clip.mp4",
+      durationMs: 10000,
+      bytes: 1,
+      ingestedAt: "2026-09-05",
+    });
+    vi.mocked(getAssignedBriefingVariant).mockReturnValue("text");
+    renderWithScene();
+    expect(screen.queryByTestId("scene-clip")).not.toBeInTheDocument();
+    expect(screen.getByTestId("scene-portrait-stub")).toBeInTheDocument();
+    vi.mocked(sceneClipFor).mockReturnValue(null);
+    vi.mocked(getAssignedBriefingVariant).mockReturnValue("clip");
   });
 });

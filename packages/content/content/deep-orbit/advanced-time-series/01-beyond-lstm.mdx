@@ -43,7 +43,7 @@ skillAxes: [model_arch]
 The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the post-mortem finds the reason inside the window: a warning ripple at step 4 that the LSTM had all but forgotten by step 80. The information was there. The architecture diluted it.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-That ripple entered the hidden state at step 4 and got averaged into seventy-six steps of noise before the pulse formed. Sequential is the problem: the LSTM cannot skip ahead, and it cannot hold step 4 at full strength while it walks to step 80. What we need is a direct connection between any two steps: attention. It looks at all steps simultaneously and spends its focus where the evidence is.
+That ripple entered the hidden state at step 4 and got averaged into seventy-six steps of noise before the pulse formed. Sequential is the problem: the LSTM cannot skip ahead, and whatever the gates permit on paper, in practice it holds step 4 at nowhere near full strength by the time it has walked to step 80. What we need is a direct connection between any two steps: attention. It looks at all steps simultaneously and spends its focus where the evidence is.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -159,6 +159,8 @@ function predictWithAttention(window: tf.Tensor3D): tf.Tensor {
 // same idea, and it is all this module's problem needs.`}
 </CodeBlock>
 
+One property of the mechanism you just built deserves its own paragraph, because module 6 spent five lessons on the opposite instinct. Nothing in `simpleAttention` knows which step came first. Shuffle the 80 rows of `steps` and the scores, the softmax, and the weighted sum all come out the same, only reordered: attention treats a window as a bag of steps, and rise-fall-rise and fall-rise-rise are the same bag. The hybrid above still tells them apart only because the LSTM encoder in front of it ran in order and baked position into every hidden state. Drop the recurrent encoder, as production transformers do, and you have to put the position back yourself. Transformers add a positional encoding, a vector that says "this is step 4", to every input before attention sees it. Lesson 2 shows the cheapest version of that trick on this crew's data.
+
 ## Challenge
 
 Implement a simple attention mechanism over a sequence.
@@ -171,7 +173,8 @@ Implement a simple attention mechanism over a sequence.
   whatYouLearned={[
     "Attention scores every time step simultaneously with a Query-Key-Value computation, then uses softmax weights to focus capacity on the most relevant positions.",
     "Processing the full sequence in parallel means attention scales much faster on GPUs than LSTM's sequential step-by-step approach.",
-    "Attention weights are directly interpretable: inspecting them tells you which time steps the model relied on for each prediction."
+    "Attention weights are directly interpretable: inspecting them tells you which time steps the model relied on for each prediction.",
+    "Attention is order-blind on its own: a window and its shuffle produce the same weights. Order comes from a recurrent encoder in front of it, or from a positional encoding added to every step."
   ]}
   bridge="Like CSS `:focus` highlighting the active element, attention learns soft relevance weights across all `timeSteps` and spends model capacity where `softmax(Q * K^T)` scores are highest."
   youCanNow="Implement a simple attention mechanism in TensorFlow.js and read its weights to understand which time steps drove a prediction."
