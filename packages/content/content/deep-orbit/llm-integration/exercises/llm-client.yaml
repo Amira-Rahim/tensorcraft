@@ -54,6 +54,17 @@ testCode: |
       const missingClassification = async () => '{"confidence":0.95,"reasoning":"High amplitude"}';
       await expect(analyzeSignal('test', missingClassification)).rejects.toThrow();
     });
+    it('finds the JSON block in a reply wrapped in prose', async () => {
+      const chatty = async () =>
+        'Here is my analysis:\n{"classification":"anomaly","confidence":0.95,"reasoning":"High amplitude"}\nLet me know if you need more detail.';
+      const result = await analyzeSignal('test', chatty);
+      expect(result.classification).toBe('anomaly');
+      expect(result.confidence).toBe(0.95);
+    });
+    it('throws when confidence is the only field missing', async () => {
+      const noConfidence = async () => '{"classification":"anomaly","reasoning":"High amplitude"}';
+      await expect(analyzeSignal('test', noConfidence)).rejects.toThrow();
+    });
   });
 estimatedMinutes: 10
 difficulty: intermediate

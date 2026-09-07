@@ -2,7 +2,7 @@ slug: inference-cache
 lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
-instructions: "Build a cache that hashes input tensors (after quantization) so near-identical inputs hit the same cache entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`; predict runs `model.predict` on a miss and caches the result under a hash of the input values rounded to `decimals` places."
+instructions: "Build a cache that hashes input tensors (after quantization) so near-identical inputs hit the same cache entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`; predict runs `model.predict` on a miss, reads the output back with `dataSync()`, disposes that tensor, and caches the numbers under a hash of the input values rounded to `decimals` places. Cache values, not tensor handles: a stored handle stays resident until the tab closes, and the first caller to dispose it breaks every later hit on that key."
 starterCode: |
   function makeInferenceCache(model, decimals = 2) {
     return { predict(input) { return model.predict(input); }, stats: { hits: 0, misses: 0 } };
@@ -12,6 +12,9 @@ solutionCode: |
     const cache = new Map();
     const stats = { hits: 0, misses: 0 };
     const factor = Math.pow(10, decimals);
+    // predict returns numbers on both paths, so a hit and a miss are
+    // interchangeable to the caller, and nothing the cache holds is a
+    // tensor anyone else can dispose.
     return {
       stats,
       predict(input) {
@@ -23,8 +26,10 @@ solutionCode: |
         }
         stats.misses++;
         const out = model.predict(input);
-        cache.set(key, out);
-        return out;
+        const scores = Array.from(out.dataSync());
+        out.dispose();
+        cache.set(key, scores);
+        return scores;
       },
     };
   }
@@ -57,6 +62,19 @@ testCode: |
       cache.predict(tf.tensor2d([[0.1, 0.1]]));
       cache.predict(tf.tensor2d([[0.9, 0.9]]));
       expect(cache.stats.misses).toBe(2);
+    });
+    it('stores values, not tensor handles', () => {
+      const m = makeModel();
+      const cache = makeInferenceCache(m);
+      const before = tf.memory().numTensors;
+      const miss = cache.predict(tf.tensor2d([[0.2, 0.3]]));
+      const hit = cache.predict(tf.tensor2d([[0.2, 0.3]]));
+      expect(miss instanceof tf.Tensor).toBe(false);
+      expect(Array.from(hit)).toEqual(Array.from(miss));
+      // The two input tensors made above are still live. A cached
+      // prediction handle would make this 3 instead of 2, and it would
+      // never be released.
+      expect(tf.memory().numTensors - before).toBe(2);
     });
   });
 estimatedMinutes: 18

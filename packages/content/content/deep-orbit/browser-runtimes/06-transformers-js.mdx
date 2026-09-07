@@ -119,10 +119,11 @@ Aboard the Archimedes the download comes from the ship's mirrored model archive,
 - **Bandwidth-sensitive users.** A 200MB model on a 3G connection is a UX failure. Inspect model sizes at [huggingface.co/models](https://huggingface.co/models) before committing.
 - **Strict latency budgets on cold start.** First-call latency includes model download. Pre-warm via service worker if you need cold-start guarantees.
 - **You need fine-tuning.** Transformers.js runs models, it doesn't train them. Fine-tune in Python, export to ONNX, ship via Transformers.js.
+- **Your text does not look like the model's training text.** `pipeline('sentiment-analysis')` defaults to `Xenova/distilbert-base-uncased-finetuned-sst-2-english`, fine-tuned on SST-2 review sentences, and the crew's reports are operational logs. The batch above already shows the cost: the neutral line `Signal classification: anomalous.` came back NEGATIVE at 0.852, and nothing threw. It is the failure mode lesson 4 gave you for mismatched preprocessing, arriving through the text instead. Label twenty real reports by hand and compare before you put the pipeline in front of Mirza.
 
 ## Challenge
 
-Build a sentiment classifier for the crew's status reports using Transformers.js.
+Rank the crew's status reports by classifier confidence. The harness stands in for the Transformers.js pipeline, so what you write is the wiring around it: load the pipeline once, classify the whole batch in one call, sort by score.
 
 <Exercise slug="load-pretrained-pipeline" />
 

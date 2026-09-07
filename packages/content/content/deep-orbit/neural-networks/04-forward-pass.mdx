@@ -61,7 +61,7 @@ model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
 model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
-// Forward pass: push sensor data through the network
+// Forward pass: push one normalized reading through the network
 const sensorReading = tf.tensor2d([[0.5, 0.8, 0.2]]);  // shape: [1, 3]
 
 // predict() runs the full forward pass

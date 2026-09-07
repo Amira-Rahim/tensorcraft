@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir trains the LSTM to predict the next signal values. Prediction error on the anomalous pattern: under 3%. It recognizes the shape it learned three days ago."
+  narrative: "Demir trains the LSTM to predict the next signal values. Prediction error on the anomalous pattern: under 3%. It recognizes the shape it learned from the archive replay."
   speaker: "Ensign Demir"
 concept:
   explanation: "Sequence prediction forecasts the next values in a series. If the model can call the next reading, the series has structure worth interrogating."
@@ -59,7 +59,8 @@ Autocomplete is everywhere in JavaScript work: search suggestions, code completi
 <CodeBlock language="typescript" title="prediction-model.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Prediction model: given 80 time steps, predict the next one
+// Prediction model: given 80 time steps, predict the next one.
+// trainX and trainY carry per-channel z-scores, not raw counts and radians.
 const model = tf.sequential();
 model.add(tf.layers.lstm({
   units: 64,
@@ -90,7 +91,9 @@ const history = await model.fit(trainX, trainY, {
 });`}
 </CodeBlock>
 
-MAE is mean absolute error: the average of `Math.abs(predicted - actual)` across the batch, in the same units as the reading. MSE squares each error first, so one large miss moves it more than several small ones do, while MAE weights every miss the same. Train on MSE, because the squaring pushes the optimizer at the worst misses first. Report MAE, because it reads in the units on the instrument.
+Scale the three channels before any of this runs. Amplitude is a count that saturates at 2048, the zero-crossing count stops at 63, and phase is an angle in radians. One MSE over all three is a weighted sum whose weights nobody chose: a 100-count amplitude miss adds 10,000 to the squared error, while a full radian of phase adds 1. On raw rows the model does not fit at all. Ten epochs on 1,120 windows of a three-channel series in those units left the amplitude error at 994 counts, on a channel whose own spread was 283. The same run on per-column z-scores landed at 2.1 counts, so use the tool from module 1: `tf.moments(batch, 0)` for one mean and standard deviation per channel, saved and reused at inference. Raw values in the thousands also flatten the gates' sigmoid and the cell's `tanh`, which leaves the weights behind them with almost no gradient.
+
+MAE is mean absolute error: the average of `Math.abs(predicted - actual)` across the batch, in the same units as the reading. MSE squares each error first, so one large miss moves it more than several small ones do, while MAE weights every miss the same. Train on MSE, because the squaring pushes the optimizer at the worst misses first. Report MAE, because it reads in the units on the instrument. With three outputs on one head, `metrics: ['mae']` averages the error over all three channels, so it only reads as a signal error once those channels share a scale.
 
 ## Multi-Step Forecasting
 
@@ -107,8 +110,15 @@ const LIMITS = [
   { min: -Math.PI, max: Math.PI },  // phase
 ];
 
+// The model reads and writes the z-scores it was trained on, so the
+// limits move into that space with the same saved MEAN and STD.
+const bounds = LIMITS.map((lim, j) => ({
+  min: (lim.min - MEAN[j]) / STD[j],
+  max: (lim.max - MEAN[j]) / STD[j],
+}));
+
 const clamp = (reading: number[]) =>
-  reading.map((v, j) => Math.min(Math.max(v, LIMITS[j].min), LIMITS[j].max));
+  reading.map((v, j) => Math.min(Math.max(v, bounds[j].min), bounds[j].max));
 
 // Predict multiple steps ahead by feeding predictions back as input
 async function forecastMultiStep(
@@ -127,8 +137,8 @@ async function forecastMultiStep(
     });
     // Clamp before the row goes back into the window. A fed-back forecast
     // is the one place an out-of-range value poisons every later step.
-    // Step i + 1 reads this row as history, so an amplitude of -40 or
-    // 3000 counts becomes the model's own input for the rest of the run.
+    // Step i + 1 reads this row as history, so an amplitude the sensors
+    // cannot produce becomes the model's own input for the rest of the run.
     const bounded = clamp(nextValue);
     predictions.push(bounded);
     window.push(bounded);
@@ -158,6 +168,7 @@ Train a prediction model and forecast the next signal value.
 <LessonRecap
   whatYouLearned={[
     "Next-value prediction is regression: the output is a continuous vector of signal values, so the loss is `meanSquaredError` and the diagnostic metric is MAE; accuracy has no meaning for continuous outputs.",
+    "Scale every channel before training a multi-output regressor. An MSE summed over mixed units is dominated by whichever channel has the largest numbers, and an MAE averaged over them has no unit at all.",
     "Multi-step forecasting feeds each prediction back as the next input, extending the horizon one step at a time; error compounds with each step, so confidence degrades with distance.",
     "A forecast horizon is measured in steps, not minutes: 47 steps means 47 seconds on a 1 Hz stream and 47 pulses on the interval series, so check what one step means before you read a prediction off a display."
   ]}

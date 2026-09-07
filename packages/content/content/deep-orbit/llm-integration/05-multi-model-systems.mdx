@@ -170,7 +170,7 @@ Generate a brief alert summary in 2-3 sentences. Use only the numbers above.
 
 ## Error Handling and Fallbacks
 
-Two of those four checks stop the run: processSignal has no in-place substitute for a confidence outside 0..1 or a NaN reconstruction error. The other two log a warning and return a stand-in, so the run continues. resilience.ts runs the same four stages one level up. Its classifier call has no catch, so a throw there still ends the run. The other three sit in try blocks, where a throw is caught and a stand-in takes its place. For the autoencoder that stand-in is a z-score check.
+Two of those four checks stop the run: processSignal has no in-place substitute for a confidence outside 0..1 or a NaN reconstruction error. The other two log a warning and return a stand-in, so the run continues. resilience.ts runs the same four stages one level up. Its classifier call has no catch, so a throw there still ends the run. The other three sit in try blocks, where a throw is caught and a stand-in takes its place. For the autoencoder that stand-in is module 7's amplitude z-score.
 
 <CodeBlock language="typescript" title="resilience.ts">
 {`// Like micro-service circuit breakers: degrade around the stages that have a stand-in
@@ -189,8 +189,10 @@ async function resilientPipeline(
   try {
     anomaly = await detectAnomaly(signal, models.autoencoder, thresholds);
   } catch {
-    // Fallback: simple z-score check
-    const zScore = computeZScore(signal);
+    // Fallback: module 7's statistical check on the amplitude alone. Reduce
+    // to one number first, or there is nothing to compare against 3: how far
+    // this reading sits from the window's mean, in standard deviations.
+    const zScore = amplitudeZScore(signal[0], window.map((step) => step[0]));
     anomaly = { isAnomaly: zScore > 3, score: zScore };
   }
 
@@ -232,7 +234,7 @@ PAGER, 02:40: the claim checker is down and reports are queueing for the next re
   whatYouLearned={[
     "Combining probabilistic models compounds error: four stages that are each right 95% of the time are right 81% of the time together, so validate every stage's output before passing it on.",
     "Define clear interfaces between stages (the classifier's class and confidence become part of the reporter's input contract) so each model has predictable inputs and outputs.",
-    "Degrade where a stand-in is honest, and stop the run where it is not. A short prediction vector or a fabricated draft has a usable fallback. A confidence outside 0..1 or a NaN score does not."
+    "Degrade where a stand-in is honest, and stop the run where it is not. A short prediction vector or a fabricated draft has a usable fallback. A confidence outside 0..1 or a NaN score has no in-place substitute, so that check stops the run."
   ]}
   bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and returns a typed result the orchestrator checks before passing it on. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."
   youCanNow="Design and wire a multi-model pipeline with typed interfaces between stages, per-stage output validation, and a fallback for the stages that have an honest one."

@@ -104,6 +104,8 @@ function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequen
 }`}
 </CodeBlock>
 
+Min-max fixes the range, so whatever the hull sensor reports, the amplitude the model sees lands between 0 and 1. Later modules quote amplitudes on a different scale: module 9's prompt gives the normal range as 0.1 to 1.0 and quotes an anomaly at 1.82. That number is neither a raw count nor this normalized feature, so do not read it against the ranges above.
+
 Phase is bounded too, but it is circular: it wraps at pi, so -pi and +pi are the same angle and min-max tears that seam, sending near-identical readings to 0 and 1. The clean encoding is two features, `sin(phase)` and `cos(phase)`. This model was trained on the 3-input min-max contract, so inference has to match training, seam included.
 
 ## Memory Management with tf.tidy()

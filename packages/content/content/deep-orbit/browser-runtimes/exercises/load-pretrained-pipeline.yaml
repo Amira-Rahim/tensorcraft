@@ -1,7 +1,7 @@
 slug: load-pretrained-pipeline
 lessonSlug: transformers-js
 title: "Sentiment Classifier via Transformers.js"
-instructions: "Build a function `classifyReports(reports)` that takes an array of report strings, classifies each via a (mocked) Transformers.js sentiment pipeline, and returns an array of `{ text, label, score }` objects ordered by score descending. Treat `pipeline()` as a no-arg async function that returns a callable classifier; the test harness provides a stub. Sort results so the most-confident classification appears first regardless of label."
+instructions: "Build a function `classifyReports(reports)` that takes an array of report strings, classifies them via a (mocked) Transformers.js sentiment pipeline, and returns an array of `{ text, label, score }` objects ordered by score descending. Treat `pipeline()` as a no-arg async function that returns a callable classifier; the test harness provides a stub. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both. Sort results so the most-confident classification appears first regardless of label."
 starterCode: |
   async function classifyReports(reports, pipelineFactory) {
     // 1. Load the sentiment-analysis pipeline (await pipelineFactory())
@@ -63,6 +63,26 @@ testCode: |
       const out = await classifyReports(reports, stub);
       expect(out[0].text).toBe('Diagnostic flagged the interaction.');
       expect(out[0].label).toBe('POS');
+    });
+
+    it('loads the pipeline once and classifies the whole batch in one call', async () => {
+      const reports = ['a', 'b', 'c'];
+      let factoryCalls = 0;
+      let classifierCalls = 0;
+      let batchSize = -1;
+      const countingStub = async () => {
+        factoryCalls++;
+        return async (batch) => {
+          classifierCalls++;
+          batchSize = batch.length;
+          return batch.map((r, i) => ({ label: 'POS', score: 0.9 - i * 0.1 }));
+        };
+      };
+      const out = await classifyReports(reports, countingStub);
+      expect(out).toHaveLength(3);
+      expect(factoryCalls).toBe(1);
+      expect(classifierCalls).toBe(1);
+      expect(batchSize).toBe(3);
     });
 
     it('handles empty input', async () => {

@@ -42,6 +42,10 @@ describe("em dash ban (CLAUDE.md, repo-wide)", () => {
       root,
       "grep",
       "-I", // text files only; binary art can contain the bytes by chance
+      // NOTE: -I is why the companion test below exists. A tracked text file
+      // that git has decided is binary (one stray NUL byte is enough) is
+      // skipped here silently, so the ban can report clean over 137 literal
+      // em dashes. Found 2026-09-07 in a July audit document.
       "-n",
       "--fixed-strings",
       EM_DASH,
@@ -55,6 +59,50 @@ describe("em dash ban (CLAUDE.md, repo-wide)", () => {
         `the character uses an escape sequence, never the glyph.\n` +
         hits.slice(0, 40).join("\n") +
         (hits.length > 40 ? `\n...and ${hits.length - 40} more` : ""),
+    ).toEqual([]);
+  });
+
+  /*
+   * The gate above greps with -I, which skips any file git classifies as
+   * binary. A single NUL byte in an otherwise ordinary text file is enough
+   * to earn that classification, and the em dashes inside it then become
+   * invisible to a ban CI reports as clean. So: no tracked file with a text
+   * extension may be binary to git. If this fails, strip the stray byte
+   * rather than relaxing the rule, then expect the ban itself to start
+   * reporting whatever the file was hiding.
+   */
+  it("has no tracked text file that git treats as binary", () => {
+    const TEXT_EXT =
+      /\.(md|mdx|ts|tsx|js|jsx|mjs|cjs|json|ya?ml|css|sql|txt|html|sh)$/i;
+    const tracked = execFileSync("git", ["-C", root, "ls-files", "-z"], {
+      encoding: "utf-8",
+      maxBuffer: 64 * 1024 * 1024,
+    })
+      .split("\0")
+      .filter((f) => f && TEXT_EXT.test(f));
+
+    // `git diff --numstat` against the empty tree prints "-\t-\t<path>" for
+    // every file it considers binary, which is the same judgement -I makes.
+    const EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
+    const numstat = execFileSync(
+      "git",
+      ["-C", root, "diff", "--numstat", "-z", EMPTY_TREE],
+      { encoding: "utf-8", maxBuffer: 256 * 1024 * 1024 },
+    );
+    const binary = new Set<string>();
+    // -z output for a binary file is "-\t-\t" then the NUL-terminated path.
+    for (const chunk of numstat.split("\0")) {
+      if (chunk.startsWith("-\t-\t")) binary.add(chunk.slice(4));
+    }
+    const offenders = tracked.filter((f) => binary.has(f));
+
+    expect(
+      offenders,
+      `Tracked text file(s) that git treats as binary. The em dash gate ` +
+        `greps with -I and skips these, so any banned character inside is ` +
+        `invisible. Strip the stray NUL byte (perl -i -pe 's/\\0//g' <file>) ` +
+        `and re-run.\n` +
+        offenders.join("\n"),
     ).toEqual([]);
   });
 });

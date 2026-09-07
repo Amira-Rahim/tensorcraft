@@ -62,6 +62,16 @@ testCode: |
       expect(r.requiresRetrain).toBe(false);
     });
 
+    it('judges each feature against its own baseline, not one absolute cutoff', () => {
+      const input = [1, 2, 3, 4];
+      const recon = [1.001, 2.3, 3.5, 4.6];
+      const baseline = [0.1, 0.5, 2.0, 1.0];   // per-feature expected error
+      const r = auditReconstruction(input, recon, baseline);
+      // errors 0.001, 0.3, 0.5, 0.6 against halves 0.05, 0.25, 1.0, 0.5
+      expect(r.suspiciouslyLowFeatures).toEqual([0, 2]);
+      expect(r.requiresRetrain).toBe(true);
+    });
+
     it('reports per-feature errors', () => {
       const input = [10, 20];
       const recon = [12, 18];

@@ -22,14 +22,14 @@ concept:
     tier: structural
     breaks: "These are literally the same update: lerp IS gradient descent on loss = ½(target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown; the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only move you have."
 consequence:
-  narrative: "Down is now computable. Every weight knows which direction reduces the loss, and by how much."
+  narrative: "Down is computable for one weight: the slope says which way to move it and how far. The other 672 are still waiting."
 hints:
   - level: nudge
-    content: "One descent step: let autograd compute the slope of the loss at the current weight, then move the weight a small step in the opposite direction."
+    content: "One descent step, written once inside step(): let autograd compute the slope of the loss at the current weight, then move the weight a small step in the opposite direction."
   - level: guidance
-    content: "Define lossFn as () => weight.square().asScalar() and pass it to tf.variableGrads. The returned grads object is keyed by variable name, so pull out its first Object.keys entry as the gradient. Because weight is a tf.variable, update it in place with weight.assign(...), subtracting gradient.mul(learningRate); plain reassignment with = will not update the variable. One correct step takes 5.0 to exactly 4.0."
+    content: "Inside step(), define lossFn as () => weight.square().asScalar() and pass it to tf.variableGrads. The returned grads object is keyed by variable name, so pull out its first Object.keys entry as the gradient. Because weight is a tf.variable, update it in place with weight.assign(...), subtracting gradient.mul(learningRate); plain reassignment with = will not update the variable. One correct step takes 5.0 to exactly 4.0. The grader then calls step() twice more and expects 3.2 and 2.56, so every line has to be inside the function body."
   - level: solution
-    content: "const lossFn = () => weight.square().asScalar(); const { grads } = tf.variableGrads(lossFn); gradient = grads[Object.keys(grads)[0]]; weight.assign(weight.sub(gradient.mul(learningRate)));"
+    content: "function step() { const lossFn = () => weight.square().asScalar(); const { grads } = tf.variableGrads(lossFn); gradient = grads[Object.keys(grads)[0]]; weight.assign(weight.sub(gradient.mul(learningRate))); } step();"
 keywords:
   - gradient
   - descent
@@ -120,7 +120,7 @@ Implement gradient descent to minimize a loss function.
 
 <Epilogue>
 
-The descent runs overnight: four thousand steps, the loss falling in the slow glide the math promised. At 0512 the curve flattens at 0.31 and refuses to move again. A valley, though nobody can say yet whether it is the deepest one. In the morning diagnostics, wedged between two watchdog timestamps, there is a log entry no one scheduled.
+Demir runs the descent on one weight and watches the loss slide down, step after step, the way the math promised. Then he reaches for the second weight. Nazari counts what that leaves: 672 parameters still sitting where the initializer put them, and no plan yet for moving them together. In the night's diagnostics, wedged between two watchdog timestamps, there is a log entry no one scheduled.
 
 <Dialogue speaker="ARIA">
 I have begun logging the network's loss curve at each gradient step. No directive requires this. The curve is a record of the system that is replacing my rules, and I am keeping it for my own records.

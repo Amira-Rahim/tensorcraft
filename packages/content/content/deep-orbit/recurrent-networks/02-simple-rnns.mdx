@@ -145,7 +145,9 @@ modelAllSteps.add(tf.layers.simpleRNN({
 
 ## The Vanishing Gradient Problem
 
-Backpropagation through time is module 3's backward pass unrolled along the sequence. Every step it walks back through the cell, it multiplies the gradient by the recurrent weight and by the slope of `tanh` at that step. The slope of `tanh` never exceeds 1 and usually sits well below it, so the product shrinks geometrically: by the time the learning signal from step eighty reaches step twenty it is a rounding error, and the weights that would have to change to catch a long pattern never receive an instruction to. In practice a simple RNN learns dependencies of roughly ten to twenty steps.
+Backpropagation through time is module 3's backward pass unrolled along the sequence. Every step it walks back through the cell, it multiplies the gradient by the recurrent weight and by the slope of `tanh` at that step. Whether the learning signal survives the trip depends on that one product, not on either factor alone. Below 1 it decays geometrically, which is the ordinary case: the slope of `tanh` is at most 1, and it falls to 0.42 at an input of 1 and 0.07 at an input of 2, so a saturated cell passes back almost nothing. Run the drill's cell with its 0.8 recurrent weight and readings near zero, and the gradient arriving 60 steps back is 1.5e-6 of the one that left the loss. The weights that would have to change to catch a long pattern never receive a usable instruction. In practice a simple RNN learns dependencies of roughly ten to twenty steps.
+
+Nothing bounds the recurrent weight, though, so the product can also land above 1. Raise that 0.8 to 1.5 and the same 60-step walk multiplies the gradient by 3.7e10 instead of shrinking it. A step that size throws the weights somewhere useless, and the loss comes back spiking or NaN rather than flat. The standard guard is gradient clipping: cap the norm of the gradient before the optimizer applies it. TF.js 4.22 has no clipping option on its optimizers, so that cap is one you write yourself. Vanishing is the quieter failure, and it is the one this window has.
 
 The pattern DEEP SCAN needs repeats about every 73 seconds, which on the dashboard's one-sample-per-second feed is a 73-step dependency (the archive's 33-second integration rows are far too coarse to carry it at all). The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
 
@@ -157,14 +159,14 @@ Build a simple RNN that processes sequential signal data.
 
 <RecallPrompt
   question="A simple RNN trains on long windows, but the dependency it must learn spans dozens of time steps. After many epochs the loss is stuck at 0.693. What is happening, and what fixes it?"
-  answer="Vanishing gradients. Backpropagation through time multiplies the gradient by the recurrent weight and the tanh derivative at every step, so across dozens of steps it shrinks toward zero and the earliest steps never learn. A loss pinned at 0.693 is ln 2, the binary cross-entropy of a coin flip: the network has learned nothing at all. Raising the batch size or switching on returnSequences changes neither the number of steps the gradient has to travel nor what it gets multiplied by on the way. The fix is an LSTM, whose gated cell state carries gradient across long spans."
+  answer="Vanishing gradients. Backpropagation through time multiplies the gradient by the recurrent weight and the tanh derivative at every step, and here that product sits below 1, so across dozens of steps the signal shrinks toward zero and the earliest steps never learn. A loss pinned at 0.693 is ln 2, the binary cross-entropy of a coin flip: the network has learned nothing at all. Raising the batch size or switching on returnSequences changes neither the number of steps the gradient has to travel nor what it gets multiplied by on the way. The fix is an LSTM, where the gradient walking back along the cell state picks up one factor per step, the learned forget gate, so a gate that stays near 1 carries it across long spans."
 />
 
 <LessonRecap
   whatYouLearned={[
     "An RNN is a learned reducer: at each time step it takes the previous hidden state and the new input, runs them through a trained weight matrix and tanh, and emits updated hidden state.",
     "Setting `returnSequences: true` yields hidden state at every time step (shape [batch, timeSteps, units]); the default false yields only the final hidden state (shape [batch, units]).",
-    "Simple RNNs suffer from vanishing gradients: the error signal shrinks exponentially as it propagates backward through time, making patterns beyond ~10-20 steps unlearnable."
+    "Backpropagation through time multiplies the gradient by the recurrent weight times the tanh slope at every step. Below 1, that product shrinks the error signal exponentially and patterns beyond ~10-20 steps stop being learnable; above 1 the gradient explodes instead, which is what gradient clipping caps."
   ]}
   bridge="Replaying an event log runs a reducer you wrote: same log, same final state, every time. An RNN cell learns that reducer from data, so the same input produces different outputs depending on what came before, and the transition logic is encoded in weights rather than readable code."
   youCanNow="Build a simple RNN with `tf.layers.simpleRNN` and explain why vanishing gradients prevent it from learning long-range dependencies."

@@ -2600,6 +2600,128 @@ numbers are in the audit's "What I checked by running it" section. Note
 that three OTHER items, which I wrote up from reading alone before their
 verifiers finished, were then refuted; see the withdrawal list below.
 
+## The 76 mediums: fixed (2026-09-07)
+
+Eleven editors, one per module, each required to confirm the defect still
+existed before touching it and to measure any number it wrote. 77 items
+handled: **69 fixed, 7 already resolved by earlier sweeps, 1 blocked.**
+64 claim enumerations reported and 27 hand-offs raised.
+
+All gates green: content 414/414, exercises 65/65 with starters and
+cheats, web contract 20/20, interval canon byte-identical, zero em
+dashes in any tracked file.
+
+The confirm-first rule paid for itself: seven of the 76 had already been
+closed as side effects of the retrieval-surface pass or the high-finding
+fixes, so those editors reported and moved on instead of re-editing
+correct text.
+
+### The one blocked item is an owner decision
+
+- [ ] **`browser-runtimes/03-model-loading.mdx:75` prints a
+  `model.summary()` for a model the product does not ship.** The lesson
+  prints the 673-parameter DEEP SCAN stack, 128 / 528 / 17. The asset
+  actually served from `apps/web/public/models/deep-scan/` is a
+  16 / 8 / 1 network totalling 209 parameters in an 836-byte
+  `weights.bin`, and `docs/capstone-models.md` records it as
+  `deep-scan-v1`. Both were verified by parsing the served asset and by
+  rebuilding the canon network in TensorFlow.js.
+  Two ways out, and they are not equivalent. Shipping a real
+  673-parameter asset keeps the lesson and the 673 canon that runs
+  through modules 2, 3 and 4, but it replaces a live product asset that
+  the landing demo also loads. Changing the printed summary to 209 keeps
+  the product untouched and puts the lesson at odds with that canon. The
+  editor built a deployable 673-parameter pair but correctly declined to
+  install it, because `apps/web/` was outside its ownership. Your call.
+
+### Hand-offs from this batch
+
+11 land on Deep Orbit files or the glossary and are queued for
+routing. 6 land in the unlaunched worlds (signal-ward,
+neon-protocol) and join the inherited-claim list below rather than being
+fixed now.
+
+## The six high regressions: fixed, every number measured (2026-09-07)
+
+All nine items closed, the six high regressions plus the three defects
+that had been edited into a different wrong statement. Four editors, one
+per owning file, with a rule that no number may be written unless it was
+observed and the command reported. All gates green: content 414/414,
+exercises 65/65 with starters and cheats, web 20/20, canon
+byte-identical, zero em dashes anywhere in the repo's own files.
+
+The measurement standard is what made the difference, so it is worth
+recording what it looked like:
+
+- The capstone editor pulled the deploy action's own source to settle
+  whether it waits for GitHub Pages. It does not: there is no such input
+  and no polling code, and the only push path returns on `git push`.
+  Then it built a local origin that flips artifacts after a delay and
+  showed the no-wait smoke test grading the PREVIOUS build. It also
+  found that two different artifacts had identical byte length (836) and
+  different digests, which is why the fix identifies bytes by digest
+  rather than by size. And it demonstrated that
+  `tf.loadLayersModel` does not check the HTTP status of a weight shard:
+  a 404 page of the right length loads as a model and predicts a
+  constant, so "the model loaded" was never evidence of a good deploy.
+- The 42 MB claim turned out to sit on twelve surfaces, all inside the
+  capstone, including a GRADED assertion in `write-model-card.yaml`.
+  Module 10 says the weight file is 85 MB on disk and 42 MB is the
+  gzipped download; all twelve now say that.
+- The backend fallback claim was reproduced before rewriting: register a
+  throwing backend above a working one and the engine settles on the
+  next working registered backend, not on cpu.
+- The training lesson's overfitting run was measured rather than
+  asserted, which is what exposed it in the first place.
+
+## The 12 high findings: fixed, then verified (2026-09-07)
+
+Seven editors fixed the 12 remaining high-severity findings, and found
+three more surfaces of the same claims along the way, so 15 were closed.
+Then seven blind readers checked the result. All gates green throughout:
+content 414/414, exercises 65/65 with starters and cheats, web 20/20,
+interval canon byte-identical, zero em dashes.
+
+**9 of the 12 are closed and the replacement text is true.** The
+anomaly-detection pair is worth noting as the standard to aim for: the
+reader reproduced every number in the rewritten threshold argument
+(2,618 readings a day, 183 flags a week at a 1% rate, the 99.98th
+percentile the two-alert budget really implies) and confirmed the
+ensemble's coupling claim by tracing all three detectors to the same
+amplitude channel in code.
+
+**3 were edited into a different wrong statement, and 6 high regressions
+came with them.** Three of the six are new false claims my own batch
+introduced:
+
+- [ ] **`optimization-edge/05-webgpu-acceleration.mdx:103`** now claims
+  a failed backend leaves the engine on cpu. Measured: register a
+  throwing backend above a working one and `tf.ready()` settles on the
+  next working REGISTERED backend, not cpu.
+- [ ] **`training-loop/04-training-loop.mdx:138` and `:250`** rest on a
+  run that does not exist. The reader measured the clean 100-row block
+  16 times: training loss lands at 0.0001 to 0.0005 and validation loss
+  does not turn upward near epoch 97, so the 500-epoch run is the best
+  generalizing model in the lesson rather than the one labelled
+  MEMORIZING.
+- [ ] **`capstone/05-launch.mdx:175`** was not brought along by module
+  10's 42 MB reframing and now contradicts it: module 10 says the weight
+  file is 85 MB and 42 MB is the gzipped download, the capstone still
+  calls the shipped weights 42 MB.
+- [ ] **`glossary.ts:754`** still says pruning removes weights and makes
+  a model smaller and faster, which lesson 03 was corrected to deny
+  twice ("Pruning deletes nothing").
+- [ ] **`capstone/02-ci-cd-pipeline.mdx:183`** asserts the smoke test
+  measures the new deployment; the step it describes curls a URL that
+  GitHub Pages has not finished propagating.
+- [ ] Plus 20 medium regressions, 31 places a corrected claim survives
+  elsewhere, and 14 rubric violations.
+
+**Five consecutive fix batches have now introduced high-severity
+problems that only blind readers caught: 6, 7, 5, 2, and 6.** The rate
+is not falling. Treat fix-verify-correct as the unit of work and never
+quote a batch without its verification.
+
 ## Step 1 correction pass (2026-09-07)
 
 The fresh readers' findings are applied. Thirteen editors, one per owning

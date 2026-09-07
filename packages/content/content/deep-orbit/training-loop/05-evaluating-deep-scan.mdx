@@ -137,10 +137,10 @@ results.forEach((prob, i) => {
 // of archive, exactly one reading does that.`}
 </CodeBlock>
 
-One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Nobody explained it then and nobody explains it now. But notice what training did: the certain machine became an uncertain one. Untrained, it had an opinion; trained, it refuses to commit at 51.8 on the one reading the crew cannot label.
+One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Untrained networks of this shape do not do that. Build this same 3-32-16-1 stack 200 times without training it, ask each build about a reading that sits at 0.5 on all three features, and the answers cluster on the fence: median 0.500, none past 0.60, none anywhere near 0.99. Nobody explained 7741 then and nobody explains it now. Trained, the network still will not commit on it, at 51.8 on the one reading the crew cannot label.
 
 **Interpreting results:**
-- **Training accuracy far above test accuracy** → The model is memorizing (overfitting). A small gap is normal, since the model saw those rows; this course draws the line at a gap of 0.15. You need more data, less complexity, or regularization: a training-time penalty that discourages memorizing.
+- **Training accuracy far above test accuracy** → The model is memorizing (overfitting). A small gap is normal, since the model saw those rows; this course draws the line at a gap of 0.15. You need more data, less complexity, or regularization: a training-time penalty or constraint that discourages memorizing.
 - **Both accuracies low** → The model can't learn the pattern (underfitting). You need more layers, more units, or more training.
 - **Both accuracies high** → You have ruled out these two failures and nothing else. Slice the eval by class and by cohort before anyone signs a deployment.
 
@@ -201,7 +201,7 @@ Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it h
 
 <RecallPrompt
   question="A model has 95% training accuracy and 60% test accuracy. What is the diagnosis and what are the fixes?"
-  answer="This is overfitting. The model memorized the training data rather than learning a generalizable pattern. Fixes include: more training data, regularization (dropout, L2), reduced model capacity, or early stopping. Underfitting looks different: both training and test accuracy are low."
+  answer="This is overfitting. The model memorized the training data rather than learning a generalizable pattern. The fixes this world gives you are more training data, early stopping from lesson 4, and less model capacity. Two others are dropout, which zeroes a random subset of units on every training batch, and an L2 penalty on the weight values; both are constraints of the same kind, and dropout returns in later worlds. Underfitting looks different: both training and test accuracy are low."
 />
 
 <LessonRecap

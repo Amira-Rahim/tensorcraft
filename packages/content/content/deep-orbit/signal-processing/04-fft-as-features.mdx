@@ -129,11 +129,19 @@ FFT magnitudes can be far larger than raw signal values. Without normalization, 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Module 1's rule at eleven features instead of two: a gradient step on
-// a weight scales with the input that weight multiplies, so an unscaled
-// 60.0 in an FFT bin drags its weight about 200x further per step than
-// a 0.3 amplitude drags its own. The louder feature does not "matter
-// more"; it just gets updated more violently.
+// Module 1's rule at eleven features instead of two, plus one correction
+// for the optimizer below. Under plain gradient descent, the step on a
+// weight scales with the input that weight multiplies. An unscaled 60.0
+// in an FFT bin then moves its weight 200x further per step than a 0.3
+// amplitude moves its own. This model compiles with adam, which divides
+// each step by that weight's own gradient history. Those two weights end
+// up taking steps of the same size, so the 200x story does not apply.
+//
+// Scale still costs you. With Glorot weights and features on these two
+// scales, roughly 97% of the first layer's pre-activation comes from the
+// eight FFT bins. The three raw features barely move a hidden unit until
+// training has reweighted them. Normalizing gives all eleven the same
+// say from the first step.
 
 function normalizeFeatures(features: number[][]): { normalized: number[][]; stats: { mean: number; std: number }[] } {
   // Z-score normalization: (value - mean) / std
@@ -171,9 +179,12 @@ function normalizeWithStats(features: number[], stats: { mean: number; std: numb
 
 // Original model: 3 inputs → 32 → 16 → 1 (78% accuracy)
 // Enhanced model: 11 inputs → 32 → 16 → 1 (87% accuracy)
-// Same hidden stack, same optimizer, same epoch count. The only thing
-// that changed is the input width, which is what lets the nine points
-// be credited to the features instead of to a bigger network.
+// Same hidden stack, same optimizer, same epoch count. It is still a
+// bigger network, exactly as Nazari said: countParams() reports 673
+// parameters for the 3-input stack and 929 for the 11-input one, 38%
+// more. All 256 added weights sit in the first layer, one per new input
+// per unit. Nothing was added behind it, so the nine points come from
+// what the new inputs say and not from a deeper or wider stack.
 
 const enhancedModel = tf.sequential();
 enhancedModel.add(tf.layers.dense({
@@ -205,9 +216,17 @@ const history = await enhancedModel.fit(trainX, trainY, {
 // Epoch 0:  acc=0.523, val_acc=0.510
 // Epoch 10: acc=0.712, val_acc=0.698
 // Epoch 30: acc=0.853, val_acc=0.841
-// Epoch 40: acc=0.871, val_acc=0.862  ← 87% with FFT features!
+// Epoch 40: acc=0.871, val_acc=0.862
 // (epoch 40 is the last line the % 10 callback prints: epochs count
-// from 0, so an epochs: 50 run ends after epoch 49)`}
+// from 0, so an epochs: 50 run ends after epoch 49)
+
+// Neither column is the 87.0% in the evaluation log. acc is scored on the
+// rows the model just trained on. val_acc is scored on the 20% that
+// validationSplit held back, which every tuning decision has already
+// seen. The log's number comes from a separate scoring pass:
+const [, testAcc] = enhancedModel.evaluate(testX, testY) as tf.Tensor[];
+console.log('Held-out accuracy:', testAcc.dataSync()[0].toFixed(3));
+// Module 3's evaluation lesson calls that the honest number.`}
 </CodeBlock>
 
 ## Challenge

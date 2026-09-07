@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "A fan-out gives you three different answers to three different questions, and one rejection fails the whole batch. An ensemble asks every member the same question, keeps no member's answer on its own, and has nothing to reject: a wrong member still returns a number, and it drags the average instead of throwing. The payoff is conditional too. Three services are worth their bill because they do different work; three models are worth theirs only when their mistakes land in different places."
 consequence:
-  narrative: "The blend beats its best single member on the held-out week, 0.028 against 0.038. Demir keeps all three models and still fits the compression line by hand."
+  narrative: "The blend beats its best single member on the held-out week, 0.036 against 0.038. Demir keeps all three models and still fits the compression line by hand."
 hints:
   - level: nudge
     content: "There is no new formula here. Mean absolute error, computed once per member and once for the averaged predictions. The only judgement call is which number you compare the ensemble against."
@@ -140,9 +140,9 @@ A forecaster has no trust number of its own, as lesson 3 said, so the `confidenc
 
 ## Why Ensembles Work
 
-Each member fails in its own place. The LSTM reads short patterns and misses long-range drift. The attention model reads long range and can overfit a small archive. The Kalman filter smooths noise off the level and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.028.
+Each member fails in its own place. The LSTM reads short patterns and misses long-range drift. The attention model reads long range and can overfit a small archive. The Kalman filter smooths noise off the level and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.036. Uncorrelated errors would have bought 0.028. The attention member runs on an LSTM encoder of its own, so part of its error is the LSTM's error.
 
-That 0.028 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members did worse than one member would have done alone, at three times the inference cost. You only see that if you score every member on the same held-out week. That is the challenge below.
+That 0.036 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members did worse than one member would have done alone, at three times the inference cost. You only see that if you score every member on the same held-out week. That is the challenge below.
 
 <DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor">
 **The sqrt(N) claim above has fine print, and the fine print is one formula.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.

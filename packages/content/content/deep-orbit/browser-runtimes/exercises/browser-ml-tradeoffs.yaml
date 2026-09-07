@@ -1,7 +1,7 @@
 slug: browser-ml-tradeoffs
 lessonSlug: why-the-browser
 title: "Evaluate Browser ML Tradeoffs"
-instructions: "Complete the function that decides whether a given ML use case should run inference in the browser or on the server. Consider latency requirements, data sensitivity, model size, and offline needs."
+instructions: "Complete the function that decides whether a given ML use case should run inference in the browser or on the server. Consider latency requirements, data sensitivity, model size, and offline needs. The 50MB ceiling is this dashboard's cold-load budget, not a hard browser limit: lesson 6 ships 50-500MB models on purpose, where the download is the product."
 starterCode: |
   interface UseCase {
     latencyBudgetMs: number;
@@ -17,8 +17,8 @@ starterCode: |
     // - Latency budget is tight (< 50ms) OR
     // - Data is sensitive (must stay on device) OR
     // - Offline support is needed
-    // BUT server-side is required when:
-    // - Model is too large for the browser (> 50MB)
+    // BUT the server takes it back when the model blows the budget:
+    // - Over 50MB exceeds this dashboard's cold-load budget
 
     return null; // your code here
   }
@@ -43,8 +43,8 @@ solutionCode: |
   }
 testCode: |
   describe('recommendDeployment', () => {
-    it('recommends server for large models', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 10, dataSensitive: true, modelSizeMB: 100, needsOffline: true })).toBe('server');
+    it('sends a model over the cold-load budget to the server even when latency is tight', () => {
+      expect(recommendDeployment({ latencyBudgetMs: 10, dataSensitive: false, modelSizeMB: 100, needsOffline: false })).toBe('server');
     });
     it('recommends client for low latency', () => {
       expect(recommendDeployment({ latencyBudgetMs: 20, dataSensitive: false, modelSizeMB: 10, needsOffline: false })).toBe('client');
@@ -54,6 +54,9 @@ testCode: |
     });
     it('recommends client for offline needs', () => {
       expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 20, needsOffline: true })).toBe('client');
+    });
+    it('keeps a model just under the budget on the client when data is sensitive', () => {
+      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 40, needsOffline: false })).toBe('client');
     });
     it('recommends server when no client advantages', () => {
       expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 30, needsOffline: false })).toBe('server');

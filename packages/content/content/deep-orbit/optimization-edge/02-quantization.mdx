@@ -60,7 +60,10 @@ model.compile({ optimizer: 'adam', loss: 'categoricalCrossentropy', metrics: ['a
 const ys = tf.oneHot(tf.tensor1d(labelIndices, 'int32'), 5);  // [0, 0, 0, 0, 1]
 
 // Accuracy still means "the largest probability landed on the true column",
-// which is what makes 94.2 on this scoreboard comparable to the binary 94.`}
+// so the formula carries over. The task does not: five classes put blind
+// guessing at 20%, where the binary gate sat at 50%. Read 94.2 as a harder
+// scoreboard scored the same way, not as 0.2 points past the binary gate's
+// 94.0 in module 3.`}
 </CodeBlock>
 
 Quantize the whole bundle, and the scoreboard reports what the knife took in the one place the loss can be measured.

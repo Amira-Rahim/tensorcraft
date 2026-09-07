@@ -1,7 +1,7 @@
 slug: build-layer
 lessonSlug: layers-and-architecture
 title: "Build a 3-Layer Sequential Model"
-instructions: "Build a sequential model with three dense layers: an input layer with 16 units and ReLU activation (inputShape [4]), a hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. The grader checks the units, the activations, and the parameter count, the same numbers Nazari would ask for."
+instructions: "Build a sequential model with three dense layers: a first hidden layer with 16 units and ReLU activation (it declares inputShape [4]), a second hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. The grader checks the units, the activations, and the parameter count, the same numbers Nazari would ask for."
 starterCode: "// Build a 3-layer sequential model\nconst model = tf.sequential();\n\n// Add layers here"
 solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] }));\nmodel.add(tf.layers.dense({ units: 8, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));"
 testCode: |

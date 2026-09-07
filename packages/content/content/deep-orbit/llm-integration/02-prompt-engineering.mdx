@@ -31,7 +31,7 @@ hints:
   - level: guidance
     content: "Assemble an array of lines and join them with newlines. Line one carries the role string containing DEEP SCAN and none of the signal numbers. Next the reference context: known natural frequencies 5, 12, 23, 47 Hz. Then one line per value, each holding its label (Amplitude, Frequency, Phase) and the number read off the argument. Last the request for JSON with classification, confidence, and reasoning fields. The grader checks those line positions, and it builds prompts from three different signals, so no value can be hardcoded."
   - level: solution
-    content: "const lines = [ 'You are DEEP SCAN, a signal classifier for deep space signals.', '', 'Known natural frequencies: 5, 12, 23, 47 Hz.', 'Normal amplitude range: 0.1 to 1.0.', '', 'Signal data:', '- Amplitude: ' + signal.amplitude, '- Frequency: ' + signal.frequency + ' Hz', '- Phase: ' + signal.phase + ' rad', '', 'Classify this signal. Respond in JSON with fields: classification (normal or anomalous), confidence (0.0-1.0), reasoning (explanation).', ]; return lines.join('\\n');"
+    content: "const lines = [ 'You are DEEP SCAN, a signal classifier for deep space signals.', '', 'Known natural frequencies: 5, 12, 23, 47 Hz.', 'Normal amplitude range: 0.1 to 1.0.', '', 'Signal data:', '- Amplitude: ' + signal.amplitude, '- Frequency: ' + signal.frequency + ' Hz', '- Phase: ' + signal.phase + ' rad', '', 'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).', ]; return lines.join('\\n');"
 keywords:
   - prompt-engineering
   - system-prompt
@@ -65,7 +65,7 @@ const vaguePrompt = "Analyze this signal data.";
 
 // Level 2: Specific role + context
 const betterPrompt = \`You are a deep space signal analyst aboard a research vessel.
-Analyze the following signal reading and classify it as normal or anomalous.
+Analyze the following signal reading and classify it as noise or anomaly.
 Signal: amplitude=1.82, frequency=73.4Hz, phase=0.23rad\`;
 // Output: decent analysis but unstructured
 
@@ -79,7 +79,7 @@ Signal reading:
 
 Classify this signal. Respond with:
 {
-  "classification": "normal" | "anomalous",
+  "classification": "noise" | "anomaly",
   "confidence": 0.0-1.0,
   "reasoning": "brief explanation",
   "anomalous_features": ["list of unusual features"]
@@ -87,15 +87,17 @@ Classify this signal. Respond with:
 // Output: parseable JSON with clear reasoning`}
 </CodeBlock>
 
+One of those lines is not a model input. The classifier's second feature is a zero-crossing count over the 64-sample window, and the prompt reports the FFT's dominant peak in hertz instead, because that is the number a scientist reading the draft can check.
+
 ## Prompt Templates
 
 <CodeBlock language="typescript" title="templates.ts">
 {`// Reusable prompt templates, like React component templates
 
 interface SignalData {
-  amplitude: number;
-  frequency: number;
-  phase: number;
+  amplitude: number;   // the reading module 7 baselined at mean 0.52, std 0.15
+  frequency: number;   // dominant FFT peak in Hz, not the model's zero-crossing count
+  phase: number;       // radians
   fftPeaks: { hz: number; magnitude: number }[];
 }
 
@@ -118,7 +120,7 @@ Classify this signal and explain your reasoning.
 
 ## Output Format (JSON)
 {
-  "classification": "normal" | "anomalous" | "unknown",
+  "classification": "noise" | "anomaly" | "unknown",
   "confidence": <0.0 to 1.0>,
   "reasoning": "<2-3 sentences>",
   "risk_level": "low" | "medium" | "high"

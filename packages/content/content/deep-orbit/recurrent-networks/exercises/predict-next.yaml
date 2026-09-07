@@ -45,6 +45,11 @@ testCode: |
       expect(model.loss).toBe('meanSquaredError');
       expect(model.optimizer).toBeDefined();
     });
+    it('uses a linear output head, not the sigmoid habit from the classifier exercises', () => {
+      const model = buildPredictor();
+      expect(model.layers[1].getConfig().activation).toBe('relu');
+      expect(model.layers[2].getConfig().activation).toBe('linear');
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

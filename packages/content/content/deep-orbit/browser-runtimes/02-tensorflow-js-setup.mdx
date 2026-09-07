@@ -126,10 +126,14 @@ async function benchmarkBackend(backendName: string) {
   await tf.setBackend(backendName);
   await tf.ready();
 
-  // Warm up: first operation is always slow (shader compilation for WebGL)
-  const warmup = tf.randomNormal([100, 100]);
-  tf.matMul(warmup, warmup.transpose()).dispose();
-  warmup.dispose();
+  // Warm up: first operation is always slow (shader compilation for WebGL).
+  // tf.tidy() frees everything the callback allocated, transpose included.
+  // Disposing the matMul result and the input by hand misses that
+  // intermediate: 1 tensor and 40,000 bytes still live afterwards.
+  tf.tidy(() => {
+    const w = tf.randomNormal([100, 100]);
+    tf.matMul(w, w.transpose());
+  });
 
   // Benchmark: matrix multiply (the core ML operation)
   const a = tf.randomNormal([256, 256]);

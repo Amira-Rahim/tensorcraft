@@ -14,15 +14,16 @@ context:
   narrative: "Nazari's directive is three sentences long and lands on Demir's queue flagged FOR REVIEW. Every sentence hides an assumption, and signing off without finding them is how models break quietly."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Pruning deletes the weights that contribute almost nothing, and 'almost' is the word this lesson teaches you to measure."
+  explanation: "Pruning zeros the weights that contribute almost nothing, and 'almost' is the word this lesson teaches you to measure."
   bridge:
     jsTitle: "Tree-Shaking"
     jsCode: "// Webpack removes unused exports → smaller bundle"
     mlTitle: "Pruning"
-    mlCode: "// Remove near-zero weights → smaller model"
+    mlCode: "// Zero near-zero weights → same file, smaller download"
     tier: structural
+    breaks: "Tree-shaking deletes code, so the bundle really does get smaller and the output is byte-identical. Pruning deletes nothing. A TensorFlow.js weights manifest stores dense arrays with no sparse or index encoding, so the file keeps every slot and the zeros are written at full width; what changes is how well the file compresses. The output moves too, because the zeroed weights were contributing a little."
 consequence:
-  narrative: "Pruning removes 60% of weights while holding accuracy at 92.1%. Combined with quantization: 340 MB → 42 MB. Demir's 80% experiment costs three hours."
+  narrative: "Pruning zeros 60% of weights while holding accuracy at 92.1%. The 85 MB quantized file stays 85 MB; what drops is the download, to 42 MB gzipped. Demir's 80% experiment costs three hours."
 hints:
   - level: nudge
     content: "Weights near zero contribute almost nothing: find a cutoff from the sorted absolute values and silence everything below it."
@@ -48,7 +49,7 @@ Tree-shaking. Webpack drops the exports nothing imports; we drop the weights not
 
 Before anyone signs that draft, run the operation it proposes and let the console vote first. The block below prunes eight weights, then holds the result to the analogy's central promise: that nobody notices the difference.
 
-<LearningObjectives objectives={["Understand pruning as tree-shaking for neural networks: remove near-zero weights", "Implement magnitude-based pruning with a configurable sparsity level", "Measure the accuracy-size tradeoff at different pruning levels", "Combine pruning with quantization for maximum compression"]} />
+<LearningObjectives objectives={["Understand pruning as tree-shaking for neural networks: zero the near-zero weights", "Implement magnitude-based pruning with a configurable sparsity level", "Measure the accuracy-size tradeoff at different pruning levels", "Separate what pruning changes on disk from what it changes on the wire"]} />
 
 ## Tree-Shaking Weights
 
@@ -88,9 +89,9 @@ console.log(dot(pruned).toFixed(3));    // 1.000
 // 90% pruned: 71.2% accuracy, model is broken`}
 </CodeBlock>
 
-0.994 against 1.000. A tree-shaken bundle would print the same number both times; that is what "provably unreachable" buys, and it is the exact clause the console just struck from Demir's sign-off. The four weights that went to zero were contributing a combined -0.006 to this output, and now they contribute nothing. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight moves the output a little. The craft is in measuring how much all those littles add up to, which is what the sparsity ladder at the bottom of the block does at model scale.
+0.994 against 1.000. A tree-shaken bundle would print the same number both times; that is what "provably unreachable" buys, and it is the exact clause the console just struck from Demir's sign-off. The four weights that went to zero were contributing a combined -0.006 to this output, and now they contribute nothing. Pruning zeros weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight moves the output a little. The craft is in measuring how much all those littles add up to, which is what the sparsity ladder at the bottom of the block does at model scale.
 
-Demir reads that ladder, does the arithmetic, and gets ambitious: at 80 percent sparsity the combined build would land near 28 MB, headroom to spare, and 87.5 percent accuracy sounds survivable when it is only a number on a screen. He pushes it to the staging dashboard before dinner, without waiting for the replay suite to tell him what the missing 6.7 points actually contain.
+Demir reads that ladder, does the arithmetic, and gets ambitious: at 80 percent sparsity the download would land near 25 MB, headroom to spare, and 87.5 percent accuracy sounds survivable when it is only a number on a screen. He pushes it to the staging dashboard before dinner, without waiting for the replay suite to tell him what the missing 6.7 points actually contain.
 
 <Dialogue speaker="Chief Nazari">
 Staging replay, overnight: 87.5 percent accuracy. Your 80-percent build classified the 0247 salvage fragment as cosmic background. The one fragment we have left from that night, and your model threw it away. Revert to 60. The revalidation costs us three hours, and I'm logging them.
@@ -98,7 +99,7 @@ Staging replay, overnight: 87.5 percent accuracy. Your 80-percent build classifi
 
 He reverts. The "almost nothing" in those extra weights turned out to be the anomaly itself: rare signals live in small weights, and aggressive pruning deletes the model's memory of exactly the things it has seen least.
 
-And the directive's second assumption resolves the unglamorous way: nothing was ever "removed." A dense weight matrix has no delete operation; pruning zeroes weights in place, and the megabytes only leave when the storage format encodes the sparsity instead of writing the zeros out longhand.
+And the directive's second assumption resolves the unglamorous way: nothing was ever "removed." A dense weight matrix has no delete operation, so pruning zeroes weights in place and the file keeps every slot. TensorFlow.js has nothing that changes that. A weight entry in the manifest carries a name, a shape, a dtype, and for a quantized weight a scale and a min. There is no index list of nonzero positions anywhere in it, so all 51 million zeros get written out at full width and the file does not shrink by a byte. What pruning buys in this runtime is compressibility, and that shows up on the wire rather than on disk.
 
 <DerivationDrawer summary="Why magnitude is the saliency proxy, and when the proxy lies">
 What pruning actually wants to know is each weight's saliency: how much the loss moves if this weight becomes zero. Taylor-expand the loss around the trained weights:
@@ -119,24 +120,30 @@ Magnitude pruning keeps the |wᵢ| factor and quietly assumes the curvature hᵢ
 ## Combined Optimization
 
 <CodeBlock language="typescript" title="combined.ts">
-{`// Pruning + Quantization = maximum compression
+{`// Pruning and quantization, counted on a real TF.js artifact.
 
-// Step 1: Prune 60% of weights → 60% smaller (effective)
-// Step 2: Quantize remaining to uint8 storage → 4x smaller
+// Quantization changes how wide a slot is: 4 bytes down to 1.
+// Pruning changes what sits in the slots. There are still 85M of them.
 
-// Original: 85M params × 4 bytes = 340 MB
-// After pruning: 34M non-zero params (60% zeros can be stored efficiently)
-// After quantization: 34M × 1 byte ≈ 34 MB + sparse index ≈ 42 MB
+// Original:             85M params  × 4 bytes = 340 MB
+// Quantized to uint8:   85M params  × 1 byte  =  85 MB
+// Pruned to 60% zeros:  85M entries × 1 byte  =  85 MB, unchanged
 
-// Combined result: 340 MB → 42 MB (8x compression!)
+// The zeros pay on the wire instead, because 51M repeated bytes
+// compress and 34M varied ones do not. gzip -9 over that same file:
+//   unpruned:      70 MB served
+//   60% pruned:    42 MB served
 // Accuracy: 94.2% → 91.8% (2.4% drop, Nazari approves)
 
 console.log('=== DEEP SCAN Optimization Results ===');
-console.log('Original:               340 MB, 94.2% accuracy');
-console.log('Quantized (uint8):       85 MB, 93.0% accuracy');
-console.log('Pruned (60%):           136 MB, 92.1% accuracy');
-console.log('Pruned + Quantized:      42 MB, 91.8% accuracy');
-console.log('Fits in 512 MB dashboard: YES ✓');`}
+console.log('                       file    gzipped   accuracy');
+console.log('float32:              340 MB   315 MB     94.2%');
+console.log('uint8:                 85 MB    70 MB     93.0%');
+console.log('float32, pruned 60%:  340 MB   148 MB     92.1%');
+console.log('uint8, pruned 60%:     85 MB    42 MB     91.8%');
+console.log('');
+console.log('The 85 MB file peaks near 425 MB at load, inside the');
+console.log('512 MB dashboard budget. The 340 MB file peaked near 680.');`}
 </CodeBlock>
 
 <DerivationDrawer summary="The third compression axis: low-rank structure and SVD">
@@ -153,25 +160,27 @@ Prune weights and measure the accuracy impact.
 
 <Exercise slug="prune-weights" />
 
+<RecallPrompt question="You prune 60% of a model's weights and re-export it with the TensorFlow.js converter. Why is the weight file the same size as before?" answer="Because the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. The zeros do make the bytes highly repetitive, so the win arrives after compression: DEEP SCAN's 85 MB uint8 file gzips to 70 MB unpruned and 42 MB at 60% sparsity." />
+
 <RecallPrompt question="Why does aggressive pruning hurt rare-class accuracy more than common-class accuracy?" answer="Near-zero weights often encode the model's memory of infrequent patterns. Common classes reinforce many weights during training; rare classes leave only a few small-magnitude weights. Pruning by magnitude removes those small weights first, erasing the rare-class signal while common-class accuracy stays intact." />
 
 <LessonRecap
   whatYouLearned={[
     "Magnitude-based pruning zeros out the smallest-absolute-value weights first; sparsity has a non-linear cliff where a small increase in pruning rate causes a large accuracy drop.",
     "Rare and anomalous classes are disproportionately harmed by aggressive pruning because their learned signal concentrates in low-magnitude weights.",
-    "Combining pruning (60% sparsity) with uint8 quantization took DEEP SCAN from 340 MB to 42 MB, roughly 8x total compression, at a cost of 2.4 accuracy points (94.2% to 91.8%).",
+    "Quantization is what shrinks a TensorFlow.js weight file: 340 MB to 85 MB. Pruning leaves that file exactly as large, because the weights manifest has no sparse encoding and every zero is stored at full width. The 60% zeros pay on the wire instead. gzip takes the 85 MB file to 42 MB served, against 70 MB unpruned. Both passes together cost 2.4 accuracy points (94.2% to 91.8%).",
     "A compression pass does not have to cover every layer: quantize flags take weight-name patterns, and a pruning pass takes whatever weight list you hand it. When the accuracy number comes from one small classifier, exempting that classifier from both passes is a real option, so part of a measured cost reflects what you chose to include."
   ]}
-  bridge="Just as webpack tree-shaking removes unused exports to shrink a bundle, magnitude-based pruning removes near-zero weights to shrink a model; but unlike dead code, pruned weights still contributed a little, so the model changes."
-  youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and combine pruning with quantization for maximum model compression."
+  bridge="Just as webpack tree-shaking removes unused exports to shrink a bundle, magnitude-based pruning zeros the weights that contribute least. The analogy breaks twice: pruned weights were still contributing a little, and the file keeps every slot they sat in, so what you gain is a smaller download rather than a smaller model."
+  youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and say which of the two compression passes changes the file and which changes only the download."
 />
 
 <Epilogue>
 
-42 MB. The combined build sits on the staging dashboard next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
+85 megabytes on disk, 42 over the wire. The combined build sits on the staging dashboard next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-We chose to buy 298 megabytes for 2.4 points of accuracy. The classifier spending those points carries none of the megabytes, and both passes could have skipped it: a converter pattern for the quantizing, our own code for the pruning. Before I trust the trade, I want to know which signals live in those 2.4 points. Run every rejected classification back through the full model overnight.
+We chose to buy 255 megabytes for 2.4 points of accuracy. The classifier spending those points carries none of the megabytes, and both passes could have skipped it: a converter pattern for the quantizing, our own code for the pruning. Before I trust the trade, I want to know which signals live in those 2.4 points. Run every rejected classification back through the full model overnight.
 </Dialogue>
 
 Seventeen days to the relay slot. The pulse interval in the evening readings: 55.1 seconds. Both numbers are getting smaller, and only one of them is on purpose.

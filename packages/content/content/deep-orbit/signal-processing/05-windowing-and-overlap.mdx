@@ -139,12 +139,22 @@ console.log('Bin 20:', rawFFT[20].toFixed(1));  // ~1.6
 console.log('Bin 30:', rawFFT[30].toFixed(1));  // ~0.6, leakage all the way out
 
 console.log('--- With Hann window ---');
-console.log('Bin 9:', windowedFFT[9].toFixed(1));    // ~5.6, main lobe slightly wider
+console.log('Bin 9:', windowedFFT[9].toFixed(1));    // ~5.6, down from ~14.5
 console.log('Bin 20:', windowedFFT[20].toFixed(1));  // ~0.0
 console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
-// The trade: Hann spreads the peak over a slightly wider main lobe
-// (bins 10-11 read ~27.0 instead of ~41.7) but crushes the sidelobe
-// leakage that was smearing across the entire spectrum.`}
+
+// The first cost is not spreading. Every one of the 65 bins got smaller,
+// so nothing moved outward here. A 128-point Hann's values average
+// 0.4961, and multiplying by it scales the whole spectrum by about that
+// factor. On a 10 Hz tone that fits the window exactly, the peak goes
+// 64.00 to 31.75, a ratio of 0.4961: the window mean itself. Windowed and
+// unwindowed magnitudes are therefore never comparable. Lesson 4 extracts
+// its fixed-bin features with no window at all.
+//
+// The second cost is the wider main lobe, and that same 10 Hz tone is
+// where you see it: bins 9 and 11 read 0.00 raw and 16.06 windowed. Here
+// at 10.5 Hz the two peak bins read ~27.0 instead of ~41.7, both costs
+// at once.`}
 </CodeBlock>
 
 ## Overlapping Windows
@@ -219,7 +229,7 @@ Apply a Hann window to a signal before computing the FFT.
 <LessonRecap
   whatYouLearned={[
     "Spectral leakage occurs when a signal slice does not fit an integer number of cycles in the window. The abrupt edge is interpreted as a discontinuity, spreading energy from real peaks into neighboring frequency bins.",
-    "Windowing functions such as Hann and Hamming taper signal edges down before the FFT, suppressing leakage. The cost is that the tone now spreads over a few more bins, its main lobe, which is a loss of frequency resolution. Hann reaches zero at both ends, while Hamming stops at 0.08, so Hamming leaks more into distant bins.",
+    "Windowing functions such as Hann and Hamming taper signal edges down before the FFT, suppressing leakage. One cost is that the tone now spreads over a few more bins, its main lobe, which is a loss of frequency resolution. The other is that every magnitude shrinks by roughly the window's average value (0.4961 for a 128-point Hann), so windowed and unwindowed magnitudes are not comparable. Hann reaches zero at both ends, while Hamming stops at 0.08, so Hamming leaks more into distant bins.",
     "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the symmetric Hann here comes close."
   ]}
   bridge="Cutting a byte stream mid-character decodes to a replacement character that was never in the data, which is why `StringDecoder` holds the split bytes back. Cutting a signal mid-cycle produces frequencies that were never in the signal, and the fix is a taper: the decoder's boundary fix is lossless, the taper's is a trade."

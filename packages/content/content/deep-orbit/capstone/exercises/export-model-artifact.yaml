@@ -1,9 +1,9 @@
 slug: export-model-artifact
 lessonSlug: ci-cd-pipeline
 title: "Export the Artifact CI Pins"
-instructions: "Nazari's hash-pin order has a quiet prerequisite: bytes to hash. model.save() produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the real 42 MB build; the byte math is identical, every float32 weight is four bytes. (1) Save the model with model.save(tf.io.withSaveHandler(...)): the handler is an async function that receives the serialized artifacts, so stash them in `artifacts` and return { modelArtifactsInfo }. (2) Write `describeArtifact(a)` returning { tensors, totalParams, weightBytes }: the count of named weight tensors in a.weightSpecs, the total parameter count (each spec's shape multiplied out), and a.weightData.byteLength. (3) Build `manifest` by describing what you exported."
+instructions: "Nazari's hash-pin order has a quiet prerequisite: bytes to hash. model.save() produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the real 85 MB build; the export path is the same, and on this bench copy every float32 weight is four bytes. (1) Save the model with model.save(tf.io.withSaveHandler(...)): the handler is an async function that receives the serialized artifacts, so stash them in `artifacts` and return { modelArtifactsInfo }. (2) Write `describeArtifact(a)` returning { tensors, totalParams, weightBytes }: the count of named weight tensors in a.weightSpecs, the total parameter count (each spec's shape multiplied out), and a.weightData.byteLength. (3) Build `manifest` by describing what you exported."
 starterCode: |
-  // The 42 MB artifact that CI restores from cache had to come from
+  // The 85 MB artifact that CI restores from cache had to come from
   // somewhere: model.save(). Prove the export path on the bench copy of DEEP SCAN
   // before anyone points it at the real weights.
   const model = tf.sequential();

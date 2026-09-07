@@ -751,7 +751,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "pruning",
     definition:
-      "Removing weights or neurons that contribute little, making a model smaller and faster.",
+      "Zeroing the weights that contribute little. Unstructured pruning changes no shapes, so in TensorFlow.js the weight file stays the same size and inference does the same arithmetic. What improves is how well the file compresses. Structured pruning drops whole neurons or channels, so the file does get smaller and each call does less work.",
     aliases: ["prune", "pruned"],
     scope: "global",
   },
@@ -772,7 +772,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sparsity",
     definition:
-      "The fraction of a model's weights that are zero. Higher sparsity can mean smaller, faster models.",
+      "The fraction of a model's weights that are zero. High sparsity compresses well, but a dense storage format still writes every zero and still multiplies it.",
     aliases: ["sparse"],
     scope: "global",
   },

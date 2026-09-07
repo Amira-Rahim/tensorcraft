@@ -39,14 +39,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Chief Nazari">
-One neuron cleared two calibration tones; the live stream is sixty-four channels and you're reading three of them. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
+One neuron cleared two calibration tones; the live stream is sixty-four channels and you've squeezed all of them into three numbers. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
 </Dialogue>
 
 <LearningObjectives objectives={["Build multi-layer neural networks using tf.sequential()", "Understand how layers compose like a middleware chain", "Configure layer sizes (units) and activations", "Count a network's parameters before you build it"]} />
 
 ## Stages All the Way Down
 
-Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage that reads the raw sensor values, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
+Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage that reads the three normalized features from module 1, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
 
 Say exactly what a stage is, because "finds patterns" describes the result, not the mechanism. A dense layer with 32 units is 32 copies of the lesson-1 neuron, plus the activation lesson 1 left out. Every one of them reads the same 3 inputs through its own weights and bias. That gives 32 weighted sums, and the layer's relu runs on each one before the next stage sees it. The 16-unit stage is 16 more neurons, and its inputs are those 32 relu outputs. They vote on combinations of the first stage's votes, and the verdict neuron votes on combinations of theirs. Lesson 2 already told you why the activation between stages is not optional. Without it, three stages of weighted sums multiply out to one weighted sum, and the stack would know exactly as much as a single neuron.
 
@@ -63,14 +63,14 @@ Say exactly what a stage is, because "finds patterns" describes the result, not 
 // ML: compose layers
 const model = tf.sequential();
 
-// Input layer: accepts 3 sensor readings
+// First hidden stage: 3 features in, 32 units out
 model.add(tf.layers.dense({
   units: 32,
   activation: 'relu',
   inputShape: [3],     // 3 features in
 }));
 
-// Hidden layer: finds patterns
+// Second hidden stage: 32 in, 16 out
 model.add(tf.layers.dense({
   units: 16,
   activation: 'relu',
@@ -85,9 +85,9 @@ model.add(tf.layers.dense({
 model.summary(); // prints layer shapes and parameter counts`}
 </CodeBlock>
 
-`units` is the only knob here with a price tag. A dense layer holds one weight for every incoming value on every unit, plus one bias per unit: `(inputs * units) + units`. Run that down the three stages above and you get Nazari's 673. Nothing else in the config moves that number.
+Two numbers price a dense layer: how many values arrive, and how many units read them. The layer holds one weight for every incoming value on every unit, plus one bias per unit: `(inputs * units) + units`. Run that down the three stages above and you get Nazari's 673. On the first layer the arriving width is whatever `inputShape` declares, so that setting carries a price too. Every later layer inherits its width from the stage before it, which is why only the first one declares anything. Leave the units at 32/16/1 and change `inputShape` to `[8]`, and the same stack quotes 833.
 
-Demir's first stack quoted 2,369 parameters, on a 64-unit stage he picked because 64 looked like a serious number. Nazari read the quote, said nothing, and went back to her console. The 32/16/1 above is the third version he brought her.
+Demir's first stack ran 64, then 32, then 1: 2,369 parameters, on a 64-unit first stage he picked because 64 looked like a serious number. Nazari read the quote, said nothing, and went back to her console. The 32/16/1 above is the third version he brought her.
 
 ## Challenge
 
@@ -97,7 +97,7 @@ Build a 3-layer network for signal classification.
 
 <RecallPrompt
   question="A dense layer's parameter count comes from two numbers. Which two, and why does only the first layer need an inputShape?"
-  answer="units sets the number of neurons (output features) in a layer. Parameters for a dense layer equal (input_size * units) + units for the bias. Only the first layer needs inputShape; TFJS infers subsequent input sizes from the previous layer's units, so the full count follows from those two values."
+  answer="The incoming width and units. units sets the number of neurons (output features) in a layer, and parameters for a dense layer equal (input_size * units) + units for the bias. Only the first layer needs inputShape, which is where its incoming width comes from; TFJS infers every later input size from the previous layer's units."
 />
 
 <LessonRecap

@@ -170,8 +170,8 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 //           replaces the tf.tensor2d call inside tf.tidy
 //   run:    await session.run({ input }) replaces model.predict plus the
 //           explicit readback await; session.run resolves when compute
-//           finishes, and ORT Web's JS tensors are garbage-collected,
-//           so the dispose bookkeeping goes too
+//           finishes, and these CPU-located ort.Tensors are
+//           garbage-collected, so the dispose bookkeeping goes too
 //   memory: ORT Web keeps no tensor ledger, so weightKB comes off the
 //           model's initializers instead of tf.memory().numBytes. Same
 //           673 floats either way
@@ -209,8 +209,10 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 | **Python interop** | Export from TF/Keras | Any framework via ONNX export |
 | **Cold start on WASM, measured to the first prediction** | 210ms on this laptop: small runtime binary, then the model, then one call | 260ms on this laptop: multi-MB runtime binary to fetch and compile before the model loads |
 | **Sustained speed on WASM, 673 params** | 0.9ms per call | 0.7ms per call |
-| **Memory management** | Manual (tf.tidy/dispose) | Automatic (GC) |
-| **Bundle size** | ~800KB JS | ~600KB JS + multi-MB `ort-wasm*.wasm` fetched at runtime |
+| **Memory management** | Manual (tf.tidy/dispose) | Split: CPU tensors are garbage-collected, the session and GPU tensors are freed by hand |
+| **Bundle size, minified / gzipped** | 1.47MB / 368KB (`dist/tf.min.js`, tfjs 4.22.0) | 368KB / 98KB (`dist/ort.min.js`, onnxruntime-web 1.29.0), plus `ort-wasm-simd-threaded.wasm` at 14.0MB / 3.6MB fetched on first use |
+
+The memory row splits three ways. ORT Web's CPU-located tensors are garbage-collected, which is why the loop above carries no dispose bookkeeping. An `InferenceSession` holds its WASM heap allocation until you `await session.release()`. A tensor whose data sits on the GPU is freed by `tensor.dispose()`. So a dashboard that opens a session per model version and releases none leaks the same way lesson 4's pipeline did.
 
 The two runtimes sit two tenths of a millisecond apart. Switching backends moved the same model by 1.5ms. So the backend is the decision here, and 673 parameters settles it: WASM, on the dashboard and on the backup system both.
 

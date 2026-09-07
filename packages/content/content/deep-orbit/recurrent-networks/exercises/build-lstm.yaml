@@ -1,53 +1,108 @@
 slug: build-lstm
 lessonSlug: lstm-gates
-title: "Build an LSTM Model"
-instructions: "Create a sequential model with an LSTM layer (32 units, inputShape [80, 3]) followed by a Dense output layer (1 unit, sigmoid activation). Compile with adam optimizer and binaryCrossentropy loss."
+title: "One LSTM Step by Hand"
+instructions: "Write `lstmStep(prevHidden, prevCell, x, weights)`: one time step of an LSTM cell, computed per dimension. `weights` holds a `forget`, `input`, `output` and `candidate` array, each with one row `[wHidden, wInput, bias]` per dimension, so dimension j's pre-activation is `wHidden * prevHidden[j] + wInput * x[j] + bias`. The forget, input and output gates pass their pre-activation through `sigmoid`; the candidate passes through `Math.tanh`. Then `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]` and `newHidden[j] = output[j] * Math.tanh(newCell[j])`. Return `{ newCell, newHidden }`. A real cell mixes every dimension through a weight matrix; this one keeps the dimensions independent so you can read the arithmetic. One test runs your step 100 times to check what the cell state does with the forget gate held open."
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
+  const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
-  function buildLSTM(): tf.Sequential {
-    const model = tf.sequential();
-    // Add an LSTM layer with 32 units and inputShape [80, 3]
-    // Add a Dense output layer with 1 unit and sigmoid activation
-    // Compile with adam and binaryCrossentropy
+  function lstmStep(prevHidden, prevCell, x, weights) {
+    // weights.forget[j] = [wHidden, wInput, bias] for dimension j, and the
+    // same shape for weights.input, weights.output and weights.candidate.
+    //
+    // 1. pre-activation for dimension j:
+    //      row[0] * prevHidden[j] + row[1] * x[j] + row[2]
+    // 2. forget, input and output rows go through sigmoid;
+    //    the candidate row goes through Math.tanh
+    // 3. newCell[j]   = forget[j] * prevCell[j] + input[j] * candidate[j]
+    // 4. newHidden[j] = output[j] * Math.tanh(newCell[j])
     return null; // your code here
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
+  const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
-  function buildLSTM(): tf.Sequential {
-    const model = tf.sequential();
-    model.add(tf.layers.lstm({ units: 32, inputShape: [80, 3] }));
-    model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-    model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
-    return model;
+  function lstmStep(prevHidden, prevCell, x, weights) {
+    const preact = (row, j) => row[0] * prevHidden[j] + row[1] * x[j] + row[2];
+    const newCell = prevCell.map((c, j) => {
+      const forget = sigmoid(preact(weights.forget[j], j));
+      const store = sigmoid(preact(weights.input[j], j));
+      const candidate = Math.tanh(preact(weights.candidate[j], j));
+      return forget * c + store * candidate;
+    });
+    const newHidden = newCell.map((c, j) => sigmoid(preact(weights.output[j], j)) * Math.tanh(c));
+    return { newCell, newHidden };
   }
 testCode: |
-  describe('buildLSTM', () => {
-    it('returns a model', () => {
-      const model = buildLSTM();
-      expect(model).toBeDefined();
+  const sig = (z) => 1 / (1 + Math.exp(-z));
+  const rows = (n, row) => Array.from({ length: n }, () => row.slice());
+  // Every gate flat at a zero pre-activation; tests override one at a time.
+  const flat = (n) => ({
+    forget: rows(n, [0, 0, 0]),
+    input: rows(n, [0, 0, 0]),
+    output: rows(n, [0, 0, 0]),
+    candidate: rows(n, [0, 0, 0]),
+  });
+
+  describe('lstmStep', () => {
+    it('gates are sigmoids, so a zero pre-activation opens each one halfway', () => {
+      const { newCell, newHidden } = lstmStep([0, 0], [2, -1], [0, 0], flat(2));
+      expect(newCell[0]).toBeCloseTo(1, 6);
+      expect(newCell[1]).toBeCloseTo(-0.5, 6);
+      expect(newHidden[0]).toBeCloseTo(0.5 * Math.tanh(1), 6);
+      expect(newHidden[1]).toBeCloseTo(0.5 * Math.tanh(-0.5), 6);
     });
-    it('has 2 layers, and the first is a real LSTM (not Flatten+Dense)', () => {
-      const model = buildLSTM();
-      expect(model.layers.length).toBe(2);
-      expect(model.layers[0].getClassName()).toBe('LSTM');
+
+    it('the candidate is a tanh, so a zero pre-activation stores nothing', () => {
+      const w = flat(1);
+      w.input = [[0, 0, 30]];
+      const { newCell } = lstmStep([0], [0], [0], w);
+      expect(newCell[0]).toBeCloseTo(0, 6);
     });
-    it('accepts the full 80-step window', () => {
-      const model = buildLSTM();
-      const input = tf.randomNormal([1, 80, 3]);
-      const output = model.predict(input) as tf.Tensor;
-      expect(output.shape).toEqual([1, 1]);
-      input.dispose();
-      output.dispose();
+
+    it('a closed forget gate wipes the cell; an open one keeps it', () => {
+      const shut = flat(1);
+      shut.forget = [[0, 0, -30]];
+      expect(lstmStep([0], [4], [0], shut).newCell[0]).toBeCloseTo(0, 6);
+      const open = flat(1);
+      open.forget = [[0, 0, 30]];
+      expect(lstmStep([0], [4], [0], open).newCell[0]).toBeCloseTo(4, 6);
     });
-    it('is compiled with binaryCrossentropy and an optimizer (predict works uncompiled; training would not)', () => {
-      const model = buildLSTM();
-      expect(model.loss).toBe('binaryCrossentropy');
-      expect(model.optimizer).toBeDefined();
+
+    it('across 100 steps the cell decays by the forget gate and nothing else', () => {
+      const w = flat(1);
+      w.forget = [[0, 0, 5]];
+      w.input = [[0, 0, -30]];
+      let cell = [2];
+      let hidden = [0];
+      for (let t = 0; t < 100; t++) {
+        const out = lstmStep(hidden, cell, [0], w);
+        cell = out.newCell;
+        hidden = out.newHidden;
+      }
+      expect(cell[0]).toBeCloseTo(2 * Math.pow(sig(5), 100), 6);
+    });
+
+    it('the output gate decides what leaves the cell, and the cell keeps its value', () => {
+      const w = flat(1);
+      w.forget = [[0, 0, 30]];
+      w.output = [[0, 0, -30]];
+      const { newCell, newHidden } = lstmStep([0], [4], [0], w);
+      expect(newCell[0]).toBeCloseTo(4, 6);
+      expect(newHidden[0]).toBeCloseTo(0, 6);
+    });
+
+    it('each dimension reads its own row, and both inputs reach the candidate', () => {
+      const w = {
+        forget: [[0, 0, 30], [0, 0, -30]],
+        input: [[0, 0, -30], [0, 0, 30]],
+        output: [[0, 0, 30], [0, 0, 30]],
+        candidate: [[0, 0, 0], [1, 2, 0]],
+      };
+      const { newCell } = lstmStep([0.5, 0.5], [1, 1], [0.25, 0.25], w);
+      expect(newCell[0]).toBeCloseTo(1, 6);
+      expect(newCell[1]).toBeCloseTo(Math.tanh(1 * 0.5 + 2 * 0.25), 6);
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 12
 difficulty: intermediate
 mlContent: model
 skillAxis: model_arch

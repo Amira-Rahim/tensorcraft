@@ -54,9 +54,12 @@ The attention weights are like a heatmap over time. I can see exactly WHERE the 
 <CodeBlock language="typescript" title="temporal-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// The scoring function is MODULE STATE, created once: it trains as part
-// of the model. A fresh layer inside the function would score every call
-// with brand-new random weights, and the heatmap below would be noise.
+// The scoring function is MODULE STATE, created once. Its weights come
+// from training the surrounding model: an encoder, this scorer and a
+// prediction head, compiled and fitted together. Everything below is the
+// forward pass, so the weights it reads out mean something only after
+// that training has happened. A fresh layer inside the function would
+// score every call with brand-new random weights and never learn at all.
 const scorer = tf.layers.dense({ units: 1 });
 
 // Temporal attention: score each time step's importance
@@ -112,7 +115,7 @@ function topAttentionSteps(
     .slice(0, topK);
 }
 
-// For the anomalous signal:
+// For the anomalous signal, read off the trained model:
 // Step 77: weight=0.15, reading=[0.31, 40, 1.57]  ← frequency shift
 // Step 4:  weight=0.12, reading=[1.82, 37, 0.23]  ← amplitude spike
 // Step 40: weight=0.09, reading=[0.95, 37, 0.89]  ← mid-pattern
@@ -210,7 +213,7 @@ Build a temporal attention mechanism and identify the focused time steps.
 Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record around each predicted re-entry (the 47-minute clock) and discards the rest. By the third re-entry the onset is shaved off every capture; the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
 
 <Dialogue speaker="Chief Nazari">
-Seven captures, six hours, all missing their first four hundred milliseconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.
+Seven captures, six hours, all missing their first thirty-two seconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.
 </Dialogue>
 
 He re-records with wide windows and the captures come back clean. The pulses keep landing early anyway. Early every cycle, by a little more each time.

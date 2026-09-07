@@ -103,31 +103,32 @@ A lookup table with no learning in it scores 97.4 on the first split: 38 of 39 h
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="sliding-window.ts">
-{`// The createSequences from 'Sequences Matter' gave you the windows.
-// Training pairs are a two-line delta on it:
-function createWindows(
-  signal: number[][],
+{`// The makeWindows you wrote in 'Sequences Matter'. Both of its moving
+// parts came from that exercise: the stride, and the label taken from
+// the reading right after the window.
+function makeWindows(
+  data: number[][],
   windowSize: number,
-  stride: number = 1,        // NEW: how far the window jumps per step
-): { inputs: number[][][]; labels: number[][] } {
-  const inputs: number[][][] = [];
-  const labels: number[][] = [];
+  stride: number = 1,
+): { xs: number[][][]; ys: number[][] } {
+  const xs: number[][][] = [];
+  const ys: number[][] = [];
 
-  // stop one position earlier than createSequences did: the last
-  // window still needs a future reading to point at
-  for (let i = 0; i <= signal.length - windowSize - 1; i += stride) {
-    inputs.push(signal.slice(i, i + windowSize));
-    labels.push(signal[i + windowSize]);  // NEW: the reading AFTER the window
+  // the loop stops one position early, because the last window still
+  // needs a future reading to point at
+  for (let i = 0; i + windowSize < data.length; i += stride) {
+    xs.push(data.slice(i, i + windowSize));
+    ys.push(data[i + windowSize]);
   }
 
-  return { inputs, labels };
+  return { xs, ys };
 }
 
 // Window 0: [s0, s1, s2, s3] → predict s4
 // Window 1: [s1, s2, s3, s4] → predict s5   (stride 1: windows overlap)`}
 </CodeBlock>
 
-Which reading labels a window depends on the task, and this lesson shows both cases. Forecasting takes its target from the reading after the window. The label has to sit outside the window, because including it would let the model read its own answer. Per-window classification takes its label from an external log, at the window's last reading, and leaks nothing, because that label was never a feature. The mirror above and the graded exercise are classification, so they label by `labels[end - 1]`. `createWindows` here is forecasting, so it labels by `signal[i + windowSize]`.
+Which reading labels a window depends on the task, and this lesson shows both cases. Forecasting takes its target from the reading after the window. The label has to sit outside the window, because including it would let the model read its own answer. Per-window classification takes its label from an external log, at the window's last reading, and leaks nothing, because that label was never a feature. The mirror above and the graded exercise are classification, so they label by `labels[end - 1]`. `makeWindows` here is forecasting, so it labels by `data[i + windowSize]`.
 
 Window size is the only history the model gets. Lesson 2 put the pattern DEEP SCAN needs at a 73-step dependency on the one-sample-per-second feed, so an 80-step window holds it with seven steps to spare. Set `windowSize` to 30 and no single sample ever contains the whole pattern, and no amount of training gets it back.
 

@@ -99,18 +99,31 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
   callbacks: {
     onEpochEnd: (epoch, logs) => {
       if (epoch % 20 === 0) {
-        console.log(\`Epoch \${epoch}: loss=\${logs?.loss.toFixed(6)}\`);
+        console.log(
+          \`Epoch \${epoch}: loss=\${logs?.loss.toFixed(6)} \` +
+          \`val_loss=\${logs?.val_loss.toFixed(6)}\`
+        );
       }
     },
   },
 });
-// Epoch 0:  loss=1.147057
-// Epoch 20: loss=0.016598
-// Epoch 40: loss=0.004075
-// Epoch 60: loss=0.002568
-// Epoch 80: loss=0.002007  ← very low; it reconstructs normal data well
+// Epoch 0:  loss=0.097510 val_loss=0.073691
+// Epoch 20: loss=0.001187 val_loss=0.001267
+// Epoch 40: loss=0.000760 val_loss=0.000727
+// Epoch 60: loss=0.000656 val_loss=0.000651
+// Epoch 80: loss=0.000647 val_loss=0.000664
 // (the % 20 callback prints epochs 0 through 80; with epochs: 100 the
-// loop ends after epoch 99, so no line for 100 ever appears)`}
+// loop ends after epoch 99, so no line for 100 ever appears)
+
+// Read the val_loss column. validationSplit holds back the last 200 of
+// these readings and the model never fits them, so val_loss is the only
+// number here that says anything about readings it has not seen. Above,
+// the two columns track each other within 7% from epoch 20 on, which is
+// what a model that learned the structure looks like. Loss falling while
+// val_loss stalls several times higher is the other outcome: the model
+// memorized the 800 rows it trained on. That autoencoder scores its own
+// training normals low and every unseen calm reading high, so it
+// manufactures false alarms instead of finding anomalies.`}
 </CodeBlock>
 
 ## Challenge

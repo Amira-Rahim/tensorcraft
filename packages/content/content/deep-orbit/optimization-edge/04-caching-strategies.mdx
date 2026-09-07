@@ -27,9 +27,9 @@ hints:
   - level: nudge
     content: "A cache only earns hits if similar inputs produce the same key: round the tensor's values to a fixed number of decimals before building the key, so near-identical signals collide on purpose."
   - level: guidance
-    content: "Keep a Map and a stats object ({ hits: 0, misses: 0 }) in the closure of makeInferenceCache. Inside predict(input): read the values with input.dataSync(), round each to `decimals` places via factor = Math.pow(10, decimals), and join them into a key string. On a hit, increment stats.hits and return the cached output; on a miss, increment stats.misses, run model.predict(input), and cache.set the result under the key."
+    content: "Keep a Map and a stats object ({ hits: 0, misses: 0 }) in the closure of makeInferenceCache. Inside predict(input): read the values with input.dataSync(), round each to `decimals` places via factor = Math.pow(10, decimals), and join them into a key string. On a hit, increment stats.hits and return the cached entry; on a miss, increment stats.misses, run model.predict(input), read the output into an array with out.dataSync(), dispose that tensor, and cache.set the array under the key. Store numbers rather than the tensor: a cached handle is never released, and the first caller to dispose it breaks every later hit."
   - level: solution
-    content: "const cache = new Map(); const stats = { hits: 0, misses: 0 }; const factor = Math.pow(10, decimals); return { stats, predict(input) { const data = Array.from(input.dataSync()); const key = data.map(v => Math.round(v * factor) / factor).join(','); if (cache.has(key)) { stats.hits++; return cache.get(key); } stats.misses++; const out = model.predict(input); cache.set(key, out); return out; }, };"
+    content: "const cache = new Map(); const stats = { hits: 0, misses: 0 }; const factor = Math.pow(10, decimals); return { stats, predict(input) { const data = Array.from(input.dataSync()); const key = data.map(v => Math.round(v * factor) / factor).join(','); if (cache.has(key)) { stats.hits++; return cache.get(key); } stats.misses++; const out = model.predict(input); const scores = Array.from(out.dataSync()); out.dispose(); cache.set(key, scores); return scores; }, };"
 keywords:
   - caching
   - memoization
@@ -140,6 +140,8 @@ console.log(effectiveMs.toFixed(1));  // 27.0
 // 0.01 ms, the served P95 is the 91.7th percentile of inference time, so it
 // sits under 112.`}
 </CodeBlock>
+
+Notice what `InferenceCache<string>` holds: the verdict, not the tensor it came out of. Cache the tensor instead and 50 cached predictions leave 50 tensors resident with nothing to release them, in the module that opened on a dashboard running out of memory. Sharing the handle is the other half of it. Whoever disposes the returned tensor first turns every later hit on that key into `Tensor is disposed.`
 
 ## Challenge
 

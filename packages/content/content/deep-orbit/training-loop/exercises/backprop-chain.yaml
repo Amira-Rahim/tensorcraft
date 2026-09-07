@@ -1,9 +1,9 @@
 slug: backprop-chain
 lessonSlug: backpropagation
 title: "Automatic Backpropagation"
-instructions: "Use tf.variableGrads() to automatically compute gradients for a simple loss function. Define a variable 'w' with value 3.0, compute loss as w squared, and use tf.variableGrads() to get the gradients automatically."
-starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// Use tf.variableGrads to compute gradients of w^2\nconst { value: loss, grads } = { value: null, grads: null }; // your code here"
-solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nconst { value: loss, grads } = tf.variableGrads(() => w.square());"
+instructions: "Use tf.variableGrads() to automatically compute gradients for a simple loss function. Define a variable 'w' with value 3.0, then fill in gradOf() so it returns tf.variableGrads() called on w squared, and destructure one call to it into loss and grads. The grader reassigns w and calls gradOf() a second time, so the gradient has to be computed on each call rather than written down once."
+starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// Return the tf.variableGrads(...) result for w^2, so the grader can call\n// gradOf() again after changing w.\nfunction gradOf() {\n  return { value: null, grads: null }; // your code here\n}\n\nconst { value: loss, grads } = gradOf();"
+solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nfunction gradOf() {\n  return tf.variableGrads(() => w.square());\n}\n\nconst { value: loss, grads } = gradOf();"
 testCode: |
   describe('Backprop', () => {
     it('computes loss w^2 = 9 in the forward pass', () => {
@@ -19,11 +19,19 @@ testCode: |
     it('the gradient is registered under the trained variable itself', () => {
       expect(Object.keys(grads)).toContain(w.name);
     });
-    it('the gradient tracks the variable, not a constant (recompute after w changes)', () => {
+    it('gradOf recomputes: after w = 5, it returns loss 25 and gradient 10', () => {
       w.assign(tf.scalar(5.0));
-      const second = tf.variableGrads(() => w.square());
+      const second = gradOf();
+      expect(second.value.dataSync()[0]).toBeCloseTo(25.0, 4);
       const g = second.grads[Object.keys(second.grads)[0]];
       expect(g.dataSync()[0]).toBeCloseTo(10.0, 4);
+    });
+    it('gradOf recomputes again: after w = 0.5, gradient 1.0 and loss 0.25', () => {
+      w.assign(tf.scalar(0.5));
+      const third = gradOf();
+      expect(third.value.dataSync()[0]).toBeCloseTo(0.25, 4);
+      const g = third.grads[Object.keys(third.grads)[0]];
+      expect(g.dataSync()[0]).toBeCloseTo(1.0, 4);
     });
   });
 estimatedMinutes: 15

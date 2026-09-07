@@ -37,7 +37,7 @@ solutionCode: |
       '- Frequency: ' + signal.frequency + ' Hz',
       '- Phase: ' + signal.phase + ' rad',
       '',
-      'Classify this signal. Respond in JSON with fields: classification (normal or anomalous), confidence (0.0-1.0), reasoning (explanation).',
+      'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).',
     ];
     return lines.join('\n');
   }

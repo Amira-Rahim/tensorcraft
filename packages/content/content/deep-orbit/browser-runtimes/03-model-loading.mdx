@@ -50,7 +50,7 @@ So the model is not one file at all. That's... exactly like a web font or a spri
 
 The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the network leg of the trip, and only for that leg.
 
-<LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
+<LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
 
 ## The Fetch Pattern You Already Know
 
@@ -99,6 +99,26 @@ const weightData = await fetch('/models/deep-scan/weights.bin')
 <Dialogue speaker="ARIA">
 The fetch is like a font. What resolves is not. A font resolves to bytes the renderer consumes once. tf.loadLayersModel resolves to a live LayersModel: a compute graph with predict and evaluate methods that holds GPU memory until you dispose it. You download it like an asset. You manage it like a process.
 </Dialogue>
+
+## Where the Two Files Come From
+
+Module 3 trained this network in memory. `model.save()` is the step that turns it into the two files the loader fetches.
+
+<CodeBlock language="typescript" title="export.ts">
+{`// Node, with @tensorflow/tfjs-node installed: writes model.json and
+// weights.bin into ./models/deep-scan/, the exact pair the loader wants.
+await model.save('file://./models/deep-scan');
+
+// Browser: this downloads two files, named off the prefix you pass.
+// 'downloads://deep-scan' gives you deep-scan.json and
+// deep-scan.weights.bin, so rename them before serving them at the URL
+// above, or the loader hands you the same 404 this lesson opened with.
+await model.save('downloads://deep-scan');
+
+// Either route, weights.bin holds 673 float32 values: 2,692 bytes.`}
+</CodeBlock>
+
+A model trained in Python arrives by a different route. `tensorflowjs_converter` turns a Keras or SavedModel export into the same model.json plus shard layout, and `tf2onnx` produces the `.onnx` file lesson 5 loads.
 
 ## Caching with IndexedDB
 

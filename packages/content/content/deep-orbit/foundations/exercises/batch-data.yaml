@@ -18,16 +18,23 @@ testCode: |
     it('read all 16 samples through the lazy reader', () => {
       expect(readCount).toBe(16);
     });
-    it('dataset is a real re-drainable pipeline whose batches are not frozen blocks', async () => {
+    it('reads lazily and re-drains: batches are not frozen blocks', async () => {
       const drain = async () => {
         const shapes = [];
         const groups = [];
+        const startCount = readCount;
+        let readsAtFirstBatch = -1;
         await dataset.forEachAsync((b) => {
+          if (readsAtFirstBatch < 0) readsAtFirstBatch = readCount - startCount;
           shapes.push({ xs: b.xs.shape, ys: b.ys.shape });
           const ids = b.xs.arraySync().map((row) => row[0]);
           groups.push(ids.slice().sort((x, y) => x - y).join(','));
         });
-        return { shapes, membership: groups.slice().sort().join(' | ') };
+        return {
+          shapes,
+          readsAtFirstBatch,
+          membership: groups.slice().sort().join(' | '),
+        };
       };
       const first = await drain();
       expect(first.shapes.length).toBe(4);
@@ -35,6 +42,13 @@ testCode: |
         expect(s.xs).toEqual([4, 2]);
         expect(s.ys).toEqual([4, 1]);
       });
+      // Laziness is only visible MID-drain: a count taken after the drain
+      // reads 16 either way. On tfjs 4.22.0 a lazy generator has read 14
+      // rows when batch one arrives (shuffle(10) fills its buffer, then
+      // batch(4) pulls four more). A generator that pushes all 16 rows
+      // into an array before its first yield reads 16.
+      expect(first.readsAtFirstBatch).toBeGreaterThan(0);
+      expect(first.readsAtFirstBatch).toBeLessThan(16);
       expect(readCount).toBe(32);
       // Shuffle BEFORE batch: every drain reshuffles, so a second pass
       // deals different batch membership. batch().shuffle() and a bare

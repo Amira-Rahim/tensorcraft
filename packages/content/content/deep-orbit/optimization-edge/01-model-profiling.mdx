@@ -76,7 +76,9 @@ interface ModelProfile {
   layerBreakdown: { name: string; params: number; outputShape: number[] }[];
 }
 
-async function profileModel(model: tf.LayersModel, inputShape: number[]): Promise<ModelProfile> {
+// createInput is a callback, not a shape: a profiler that builds its own
+// tf.randomNormal only works on models whose first layer takes floats.
+async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor): Promise<ModelProfile> {
   // Live tensor memory the backend is holding right now. Not the same
   // number as the weight bytes below: tf.memory() counts every tensor
   // currently allocated, including the ones a sloppy loop forgets to
@@ -102,7 +104,7 @@ async function profileModel(model: tf.LayersModel, inputShape: number[]): Promis
   // one-off compilation cost, and it runs outside the loop below, so that
   // cost does not land in the average. Read its result back the same way
   // the timed calls do, then throw the result away.
-  const warmupInput = tf.randomNormal([1, ...inputShape]);
+  const warmupInput = createInput();
   const warmupOutput = model.predict(warmupInput) as tf.Tensor;
   await warmupOutput.data();
   warmupOutput.dispose();
@@ -110,7 +112,7 @@ async function profileModel(model: tf.LayersModel, inputShape: number[]): Promis
 
   const times: number[] = [];
   for (let i = 0; i < 100; i++) {
-    const input = tf.randomNormal([1, ...inputShape]);
+    const input = createInput();
     const start = performance.now();
     const output = model.predict(input) as tf.Tensor;
     // Module 4's benchmarking rule applies to profiles too: read the
@@ -139,7 +141,13 @@ async function profileModel(model: tf.LayersModel, inputShape: number[]): Promis
   };
 }
 
-const profile = await profileModel(model, [80, 11]);
+// The 340 MB here is the pretrained language component from the bundle
+// audit. It opens with an embedding lookup, so it takes token ids, not the
+// [80, 11] float window the signal classifier reads. Hand it randomNormal
+// and the lookup throws: "GatherV2: the index value -2 is not in [0, 49999]".
+// 50,000 is the tokenizer vocabulary, 256 dims wide, which is the 12,800,000
+// row below.
+const profile = await profileModel(model, () => tf.randomUniform([1, 80], 0, 50000, 'int32'));
 console.log('Model size:', profile.memorySizeMB.toFixed(1), 'MB');
 console.log('Parameters:', profile.parameterCount.toLocaleString());
 console.log('Inference mean:', profile.inferenceMeanMs.toFixed(1), 'ms');

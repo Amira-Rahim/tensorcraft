@@ -1,31 +1,37 @@
 slug: write-model-card
 lessonSlug: documentation
 title: "Write a Model Card"
-instructions: "Create a function that generates a formatted Model Card string from structured model metadata. The card should include sections for Overview, Performance, Limitations, and Usage."
+instructions: "Render a Model Card from structured model metadata: a title line, then Performance, Limitations, and Usage sections. Two of the lines carry what an operator has to be told. Accuracy is a past measurement, so it renders with the benchmark it came from, and the lowest-recall class renders as the first limitation."
 starterCode: |
   interface ModelMetadata {
     name: string;
     version: string;
     accuracy: number;
+    benchmarkedOn: string;
     sizeMB: number;
     inferenceMs: number;
+    recallByClass: Record<string, number>;
     limitations: string[];
     inputFormat: string;
     outputFormat: string;
   }
 
   function generateModelCard(meta: ModelMetadata): string {
-    // Return a formatted string with these sections:
+    // Return a formatted string with these sections, in this order:
     // # {name} v{version}
     // ## Performance
-    // - Accuracy: {accuracy as percentage}%
+    // - Accuracy: {accuracy as percentage}% (measured at {benchmarkedOn})
     // - Size: {sizeMB} MB
     // - Inference: {inferenceMs}ms
     // ## Limitations
-    // - {each limitation on its own line}
+    // - Lowest recall: {lowest-recall class} at {its recall as percentage}%
+    // - {each entry of limitations on its own line}
     // ## Usage
     // - Input: {inputFormat}
     // - Output: {outputFormat}
+    //
+    // Percentages are one decimal place. Every bullet sits under its
+    // own heading.
     return null; // your code here
   }
 solutionCode: |
@@ -33,23 +39,31 @@ solutionCode: |
     name: string;
     version: string;
     accuracy: number;
+    benchmarkedOn: string;
     sizeMB: number;
     inferenceMs: number;
+    recallByClass: Record<string, number>;
     limitations: string[];
     inputFormat: string;
     outputFormat: string;
   }
 
   function generateModelCard(meta: ModelMetadata): string {
+    const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+    const [worstClass, worstRecall] = Object.entries(meta.recallByClass).sort(
+      (a, b) => a[1] - b[1],
+    )[0];
+
     const lines = [
       `# ${meta.name} v${meta.version}`,
       '',
       '## Performance',
-      `- Accuracy: ${(meta.accuracy * 100).toFixed(1)}%`,
+      `- Accuracy: ${pct(meta.accuracy)} (measured at ${meta.benchmarkedOn})`,
       `- Size: ${meta.sizeMB} MB`,
       `- Inference: ${meta.inferenceMs}ms`,
       '',
       '## Limitations',
+      `- Lowest recall: ${worstClass} at ${pct(worstRecall)}`,
       ...meta.limitations.map(l => `- ${l}`),
       '',
       '## Usage',
@@ -64,10 +78,18 @@ testCode: |
       name: 'DEEP SCAN',
       version: '1.0.0',
       accuracy: 0.918,
-      sizeMB: 42,
+      benchmarkedOn: 'the pruning review',
+      sizeMB: 85,
       inferenceMs: 5,
-      limitations: ['Only tested on Sector 7-G data', 'Requires 80-sample window'],
-      inputFormat: 'Float32Array(80)',
+      recallByClass: {
+        pulsar: 0.96,
+        noise: 0.95,
+        quasar: 0.94,
+        interference: 0.9,
+        anomaly: 0.84,
+      },
+      limitations: ['Only tested on Sector 7-G data', 'Requires 64-sample capture window'],
+      inputFormat: 'Float32Array(64)',
       outputFormat: '{ label, confidence }',
     };
 
@@ -76,27 +98,50 @@ testCode: |
       expect(card).toContain('# DEEP SCAN v1.0.0');
     });
 
-    it('includes accuracy as percentage', () => {
+    it('dates the accuracy number instead of stating it bare', () => {
       const card = generateModelCard(meta);
-      expect(card).toContain('91.8%');
+      expect(card).toContain('- Accuracy: 91.8% (measured at the pruning review)');
     });
 
     it('includes size and inference speed', () => {
       const card = generateModelCard(meta);
-      expect(card).toContain('42 MB');
-      expect(card).toContain('5ms');
+      expect(card).toContain('- Size: 85 MB');
+      expect(card).toContain('- Inference: 5ms');
+    });
+
+    it('names the lowest-recall class as a limitation', () => {
+      const card = generateModelCard(meta);
+      expect(card).toContain('- Lowest recall: anomaly at 84.0%');
     });
 
     it('lists all limitations', () => {
       const card = generateModelCard(meta);
       expect(card).toContain('- Only tested on Sector 7-G data');
-      expect(card).toContain('- Requires 80-sample window');
+      expect(card).toContain('- Requires 64-sample capture window');
     });
 
     it('includes usage information', () => {
       const card = generateModelCard(meta);
-      expect(card).toContain('Float32Array(80)');
-      expect(card).toContain('{ label, confidence }');
+      expect(card).toContain('- Input: Float32Array(64)');
+      expect(card).toContain('- Output: { label, confidence }');
+    });
+
+    it('carries all three section headings', () => {
+      const card = generateModelCard(meta);
+      expect(card).toContain('## Performance');
+      expect(card).toContain('## Limitations');
+      expect(card).toContain('## Usage');
+    });
+
+    it('files every bullet under its own heading', () => {
+      const card = generateModelCard(meta);
+      const at = (s) => card.indexOf(s);
+      expect(at('## Performance')).toBeGreaterThan(at('# DEEP SCAN v1.0.0'));
+      expect(at('- Accuracy: 91.8% (measured at the pruning review)')).toBeGreaterThan(at('## Performance'));
+      expect(at('## Limitations')).toBeGreaterThan(at('- Size: 85 MB'));
+      expect(at('- Lowest recall: anomaly at 84.0%')).toBeGreaterThan(at('## Limitations'));
+      expect(at('## Usage')).toBeGreaterThan(at('- Only tested on Sector 7-G data'));
+      expect(at('- Input: Float32Array(64)')).toBeGreaterThan(at('## Usage'));
     });
 
     it('renders the metadata it is given, not a memorized card', () => {
@@ -104,20 +149,23 @@ testCode: |
         name: 'SENTINEL',
         version: '2.3.1',
         accuracy: 0.874,
+        benchmarkedOn: 'the v2.3 handover',
         sizeMB: 7,
         inferenceMs: 12,
+        recallByClass: { clear: 0.91, storm: 0.62 },
         limitations: ['Drifts on unseen bands'],
-        inputFormat: 'Float32Array(64)',
+        inputFormat: 'Float32Array(256)',
         outputFormat: '{ score }',
       };
       const card = generateModelCard(other);
       expect(card).toContain('# SENTINEL v2.3.1');
-      expect(card).toContain('87.4%');
-      expect(card).toContain('7 MB');
+      expect(card).toContain('- Accuracy: 87.4% (measured at the v2.3 handover)');
+      expect(card).toContain('- Size: 7 MB');
+      expect(card).toContain('- Lowest recall: storm at 62.0%');
       expect(card).toContain('- Drifts on unseen bands');
     });
   });
-estimatedMinutes: 8
+estimatedMinutes: 10
 difficulty: beginner
 mlContent: arithmetic
 skillAxis: deployment

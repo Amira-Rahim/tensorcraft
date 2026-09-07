@@ -49,6 +49,41 @@ testCode: |
       expect(info.inputShape[info.inputShape.length - 1]).toBeGreaterThan(0);
       expect(info.outputShape[info.outputShape.length - 1]).toBeGreaterThan(0);
     });
+    it('reads the architecture off the model it loaded, whatever that model is', async () => {
+      // Rebind tf for the duration of this call so the sentinel url resolves
+      // to a 7 -> 5 -> 3 -> 2 model this test builds. No shape triple can be
+      // hardcoded past it. Only the sentinel url is diverted, so the sibling
+      // tests' own loads (tests run concurrently) still get the normal model.
+      const sentinel = '/models/spy-check/model.json';
+      const realTf = tf;
+      let seen = null;
+      tf = new Proxy(realTf, {
+        get(target, prop) {
+          if (prop === 'loadLayersModel') {
+            return async function (url) {
+              if (url !== sentinel) return realTf.loadLayersModel(url);
+              seen = url;
+              const m = realTf.sequential();
+              m.add(realTf.layers.dense({ units: 5, activation: 'relu', inputShape: [7] }));
+              m.add(realTf.layers.dense({ units: 3, activation: 'relu' }));
+              m.add(realTf.layers.dense({ units: 2, activation: 'softmax' }));
+              return m;
+            };
+          }
+          return target[prop];
+        },
+      });
+      let info;
+      try {
+        info = await loadAndInspect(sentinel);
+      } finally {
+        tf = realTf;
+      }
+      expect(seen).toBe(sentinel);
+      expect(info.layerCount).toBe(3);
+      expect(info.inputShape[info.inputShape.length - 1]).toBe(7);
+      expect(info.outputShape[info.outputShape.length - 1]).toBe(2);
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

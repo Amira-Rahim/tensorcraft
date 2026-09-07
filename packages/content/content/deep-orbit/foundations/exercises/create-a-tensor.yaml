@@ -9,10 +9,25 @@ testCode: |
     it('captured the correct shape', () => {
       expect(shape).toEqual([5]);
     });
+    it('reading is a rank-1 float tensor holding five numbers', () => {
+      // A shape array and a values array can both be typed out by hand, so
+      // the tensor itself gets checked. Rank, size and dtype survive
+      // dispose(); only the numbers go away.
+      expect(reading.rank).toBe(1);
+      expect(reading.size).toBe(5);
+      expect(reading.dtype).toBe('float32');
+    });
     it('captured the correct values', () => {
       expect(values.length).toBe(5);
       expect(values[0]).toBeCloseTo(0.12, 5);
       expect(values[4]).toBeCloseTo(0.47, 5);
+    });
+    it('values came back through dataSync, not off the page', () => {
+      // float32 storage rounds 0.12 to 0.11999999731779099 and 0.47 to
+      // 0.4699999988079071. A value that is EXACTLY 0.12 was copied from
+      // the instructions instead of read back out of the tensor.
+      expect(values[0]).not.toBe(0.12);
+      expect(values[4]).not.toBe(0.47);
     });
     it('disposed the tensor: no GPU leak', () => {
       expect(reading.isDisposed).toBe(true);

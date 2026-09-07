@@ -91,6 +91,15 @@ testCode: |
       expect(r.isAnomaly).toBe(true);
     });
 
+    it('any two detectors are enough: statistical + prediction, autoencoder quiet', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 2.5, 0.001, 0.02, 1.0, 0.5);
+      expect(r.verdicts.statistical).toBe(true);
+      expect(r.verdicts.lstm).toBe(true);
+      expect(r.verdicts.autoencoder).toBe(false);
+      expect(r.votes).toBe(2);
+      expect(r.isAnomaly).toBe(true);
+    });
+
     it('the 73.4 Hz signature trips all three detectors', () => {
       const r = detectAnomalyEnsemble(calmWindow, 2.5, 0.062, 0.02, 1.0, 0.5);
       expect(r.votes).toBe(3);

@@ -95,7 +95,7 @@ jobs:
           node-version: 20
       - run: npm ci
 
-      # Model artifact: 42 MB of weights, too big for git. Restored from
+      # Model artifact: 85 MB of weights, too big for git. Restored from
       # the CI cache; the training rig seeds it after every retrain.
       - name: Restore model artifact
         uses: actions/cache@v4
@@ -107,17 +107,22 @@ jobs:
       - name: Validate model accuracy
         run: |
           node scripts/validate-model.js \\
-            --model models/deep-scan-v1.json \\
+            --model models/deep-scan-v1/model.json \\
             --test-data data/holdout.json \\
             --min-accuracy 0.90
 
-      # ML-specific: benchmark inference speed
+      # ML-specific: benchmark inference speed and weight footprint.
+      # A hosted runner has no GPU, so this pins the wasm backend, where
+      # the optimization profile put DEEP SCAN at 45 ms mean, 112 ms P95.
+      # Gate the P95: the tail is what took the bridge dashboard down.
+      # The footprint budget covers the float32 tensors the runtime keeps
+      # resident once the model is loaded, which is 340 MB for this graph.
       - name: Benchmark inference
         run: |
           node scripts/benchmark.js \\
-            --model models/deep-scan-v1.json \\
-            --max-inference-ms 20 \\
-            --max-memory-mb 50
+            --model models/deep-scan-v1/model.json \\
+            --max-p95-ms 150 \\
+            --max-resident-weights-mb 400
 
   deploy:
     runs-on: ubuntu-latest
@@ -134,38 +139,99 @@ jobs:
         with:
           path: models/
           key: deep-scan-model
+
+      # Rollback needs bytes to roll back TO, and the cache only holds the
+      # candidate. Copy whatever is live right now, before we overwrite it.
+      - name: Snapshot the live artifact
+        run: |
+          base=https://\${{ github.repository_owner }}.github.io/deep-scan-signal-classifier
+          mkdir -p models/previous/deep-scan-v1
+          for f in model.json weights.bin; do
+            curl -fsSL "$base/models/deep-scan-v1/$f" -o "models/previous/deep-scan-v1/$f" || {
+              echo "Nothing live yet; this run has no rollback target"
+              rm -rf models/previous
+              break
+            }
+          done
+
       - run: npm run build
+
+      # The digest of the weight file this run is shipping. Every check
+      # below compares against this, never against a file name or a URL.
+      - name: Digest the candidate artifact
+        id: candidate
+        run: |
+          sum=$(sha256sum models/deep-scan-v1/weights.bin | cut -d' ' -f1)
+          echo "sha256=$sum" >> "$GITHUB_OUTPUT"
+          echo "Publishing weights.bin sha256=$sum"
+
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: \${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
 
-      # Rollback on failure: re-run the accuracy gate against the LIVE
-      # deployment. If it fails, restore the previous model artifact,
-      # republish, and keep the run red so the failure pages someone.
+      # That action returns once its push to gh-pages lands. Pages builds
+      # and propagates afterward, so the public URL keeps serving the old
+      # weights for a while. Poll until the live bytes are the bytes we
+      # published, and fail this step if they never are.
+      - name: Wait for the candidate to go live
+        id: propagate
+        continue-on-error: true
+        run: |
+          url=https://\${{ github.repository_owner }}.github.io/deep-scan-signal-classifier/models/deep-scan-v1/weights.bin
+          for i in $(seq 1 60); do
+            if curl -fsSL "$url" -o live.bin; then
+              live=$(sha256sum live.bin | cut -d' ' -f1)
+            else
+              live=unavailable
+            fi
+            if [ "$live" = "\${{ steps.candidate.outputs.sha256 }}" ]; then
+              echo "Live bytes match the candidate after $i checks"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Pages never served the candidate digest; not grading a stale artifact"
+          exit 1
+
+      # Only now is there an identified artifact to grade. --expect-digest
+      # re-reads the live weights and exits non-zero on a mismatch, so an
+      # edge that flips back mid-run fails the gate instead of passing it.
       - name: Smoke-test live deployment
         id: smoke
+        if: steps.propagate.outcome == 'success'
         continue-on-error: true
         run: |
           node scripts/validate-model.js \\
-            --model https://\${{ github.repository_owner }}.github.io/deep-scan-signal-classifier/models/deep-scan-v1.json \\
+            --model https://\${{ github.repository_owner }}.github.io/deep-scan-signal-classifier/models/deep-scan-v1/model.json \\
             --test-data data/holdout.json \\
-            --min-accuracy 0.90
+            --min-accuracy 0.90 \\
+            --expect-digest \${{ steps.candidate.outputs.sha256 }}
+
+      # A stalled propagation and a failed gate both roll back.
       - name: Roll back model artifact
-        if: steps.smoke.outcome == 'failure'
+        if: steps.propagate.outcome == 'failure' || steps.smoke.outcome == 'failure'
         run: |
-          cp models/previous/deep-scan-v1.json models/deep-scan-v1.json
+          test -d models/previous/deep-scan-v1 || {
+            echo "Bad model is live and there is no snapshot to restore"
+            exit 1
+          }
+          rm -rf models/deep-scan-v1
+          cp -r models/previous/deep-scan-v1 models/deep-scan-v1
           npm run build
           npx gh-pages -d dist
           exit 1`}
 </CodeBlock>
 
-The last two steps are the rollback objective made concrete: the smoke test re-runs the accuracy gate against what actually deployed, and on failure the previous model artifact is restored and republished while the workflow stays red. A rollback that goes green in silence tells nobody a bad model ever shipped.
+Four steps in that file carry the rollback objective. The snapshot copies the artifact that is live, before the publish overwrites it. The digest step records the sha256 of the bytes about to go up. The wait step then polls the public URL until it serves those exact bytes, and only after that does the smoke test re-run the accuracy gate. On failure the snapshot goes back up and the run stays red, because a rollback that goes green in silence tells nobody a bad model ever shipped. Restore the directory, not one file: `model.json` holds only the topology, and the weights sit in `weights.bin` beside it, so copying the JSON alone would leave the bad weights serving under an older graph.
+
+The order is doing real work there. `peaceiris/actions-gh-pages@v4` finishes when its push to the gh-pages branch returns, and the Pages build that serves those files runs afterward. A curl fired the instant the publish step ends will usually read the previous artifact, score it, and pass. Hang rollback on that pass alone and the new weights stay live, never graded. Comparing digests is what closes the hole. File size will not do it: two builds of one architecture produce weight files of identical length.
 
 ## Validation Scripts
 
 <CodeBlock language="typescript" title="validate-model.ts">
 {`// Model accuracy gate: blocks deployment if accuracy drops
+import { createHash } from 'node:crypto';
 
 interface ValidationResult {
   accuracy: number;
@@ -173,11 +239,40 @@ interface ValidationResult {
   details: { total: number; correct: number; failures: string[] };
 }
 
+// Hash the weight shards model.json names, in the order it names them.
+// A file name and a URL cannot say which artifact is live. The bytes can.
+async function fetchWeightDigest(modelUrl: string): Promise<string> {
+  const manifest = await (await fetch(modelUrl)).json();
+  const dir = modelUrl.slice(0, modelUrl.lastIndexOf('/'));
+  const hash = createHash('sha256');
+  for (const group of manifest.weightsManifest) {
+    for (const file of group.paths) {
+      const res = await fetch(\`\${dir}/\${file}\`);
+      if (!res.ok) throw new Error(\`weight shard \${file}: HTTP \${res.status}\`);
+      hash.update(Buffer.from(await res.arrayBuffer()));
+    }
+  }
+  return hash.digest('hex');
+}
+
 async function validateModel(
   modelPath: string,
   testDataPath: string,
-  minAccuracy: number
+  minAccuracy: number,
+  expectedDigest?: string
 ): Promise<ValidationResult> {
+  // Identify the bytes before scoring them. tf.loadLayersModel() does not
+  // check the HTTP status of a weight shard, so a 404 page of the right
+  // length loads as a model and predicts a constant.
+  if (expectedDigest) {
+    const live = await fetchWeightDigest(modelPath);
+    if (live !== expectedDigest) {
+      throw new Error(
+        \`Digest mismatch: expected \${expectedDigest}, live is \${live}\`
+      );
+    }
+  }
+
   const model = await loadModel(modelPath);
   const testData = await loadTestData(testDataPath);
 
@@ -204,10 +299,16 @@ async function validateModel(
 }
 
 // Usage in CI
+function flag(name: string): string | undefined {
+  const i = process.argv.indexOf(name);
+  return i === -1 ? undefined : process.argv[i + 1];
+}
+
 const result = await validateModel(
-  'models/deep-scan-v1.json',
+  'models/deep-scan-v1/model.json',
   'data/holdout.json',
-  0.90
+  0.90,
+  flag('--expect-digest')
 );
 
 console.log(\`Accuracy: \${(result.accuracy * 100).toFixed(1)}%\`);
@@ -231,12 +332,17 @@ Before anyone answers him, scroll the log of the step that mattered:
 {`▸ Restore model artifact
     Cache restored from key: deep-scan-model
 ▸ Validate model accuracy
-    Loaded models/deep-scan-v1.json (340 MB)
+    Loaded models/deep-scan-v1/model.json + weights.bin (340 MB)
     Holdout accuracy: 94.2% (min 0.90)
+    Gate: PASSED ✓
+▸ Benchmark inference
+    wasm backend pinned (no GPU on the runner)
+    Inference: 45 ms mean, 112 ms P95 (max 150)
+    Resident weights: 340 MB decoded float32 (max 400)
     Gate: PASSED ✓`}
 </CodeBlock>
 
-Read the two numbers the gate is proudest of. The artifact this merge request ships is 42 MB and scores 91.8 percent on that same holdout; those figures have been on the engineering board since the pruning review. The model the pipeline just blessed is 340 MB at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
+Read the two numbers the accuracy gate is proudest of. The artifact this merge request ships is 85 MB and scores 91.8 percent on that same holdout; those figures have been on the engineering board since the pruning review. The model the pipeline just blessed is 340 MB at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. Neither of the other two gates could have caught it. Quantization changed the file on disk, not the arithmetic a call does. It did not change the decoded tensors either, so latency and footprint read the same on both artifacts. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
 
 <Dialogue speaker="Chief Nazari">
 Your lockfile pins code. Nothing in this file pins weights. Commit the digest the training rig prints, key the cache on that file, and rerun. That's 40 minutes, and I'm adding them to the ledger next to the three hours your 80-percent prune cost us.
@@ -248,11 +354,11 @@ Write a model validation gate for CI/CD.
 
 <Exercise slug="ci-cd-gate" />
 
-The gate checks the artifact. Now produce one. Nazari's hash-pin order has a quiet prerequisite: bytes to hash, and `model.save()` is where they come from. It will save to anything that implements a handler, including plain memory. Nothing touches a filesystem or a network, and you end up holding the serialized model: topology, weight specs, and the weight bytes the digest is computed over. Prove the export path on the bench copy of DEEP SCAN before anyone points it at the real 42 MB build.
+The gate checks the artifact. Now produce one. Nazari's hash-pin order has a quiet prerequisite: bytes to hash, and `model.save()` is where they come from. It will save to anything that implements a handler, including plain memory. Nothing touches a filesystem or a network, and you end up holding the serialized model: topology, weight specs, and the weight bytes the digest is computed over. Prove the export path on the bench copy of DEEP SCAN before anyone points it at the real 85 MB build.
 
 <Exercise slug="export-model-artifact" />
 
-<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin cannot be a hash of the artifact itself. hashFiles() runs when the step starts, over files already checked out, and the 42 MB weight file is not there until the restore finishes. So pin something the repo carries. Have the training rig commit a small digest file next to the model reference, then key the cache on hashFiles of that file. The other route is to skip the cache and pull a versioned artifact whose version string is the pin." />
+<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin cannot be a hash of the artifact itself. hashFiles() runs when the step starts, over files already checked out, and the 85 MB weight file is not there until the restore finishes. So pin something the repo carries. Have the training rig commit a small digest file next to the model reference, then key the cache on hashFiles of that file. The other route is to skip the cache and pull a versioned artifact whose version string is the pin." />
 
 <RecallPrompt
   question="What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"
@@ -263,10 +369,10 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
   whatYouLearned={[
     "Standard CI/CD pipelines extend naturally to ML by adding model-specific gate steps (accuracy thresholds and inference benchmarks) that block the merge the same way failing unit tests do.",
     "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately. A cache key cannot hash the artifact it is about to restore, because hashFiles() only sees files already in the workspace. Commit the digest the training run produced and key the cache on that file instead.",
-    "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on.",
+    "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on. A post-deploy smoke test also has to prove which artifact it fetched, because the publish step returns before the host serves the new file.",
     "model.save() serializes to whatever save handler it is given: tf.io.withSaveHandler captures the artifacts in memory, where modelTopology, weightSpecs, and weightData.byteLength (four bytes per float32 parameter) are exactly the bytes the committed digest is computed over."
   ]}
-  bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed; the workflow shape is identical, but `model.json` must be hash-pinned the way a `package-lock.json` pins dependencies."
+  bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed; the workflow shape is identical, but the weight bytes must be hash-pinned the way a `package-lock.json` pins dependencies, since `model.json` names the weight files without fixing their contents."
   youCanNow="Extend a GitHub Actions workflow with ML accuracy gates and performance benchmarks that block deployment on model regression, and export the model artifact itself with model.save() into an in-memory handler."
 />
 

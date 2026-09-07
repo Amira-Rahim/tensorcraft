@@ -18,18 +18,40 @@ concept:
     jsTitle: "README + JSDoc"
     jsCode: "/** @param input - Signal array */ function classify(input) {} // API docs"
     mlTitle: "Model Card"
-    mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Size: 42MB */ // model docs"
+    mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Size: 85MB */ // model docs"
     tier: structural
     breaks: "JSDoc comments describe deterministic functions whose behavior is verifiable from the source. A model card describes statistical performance over a held-out distribution that the production data may not match. Reading the docs tells you how the function behaves; reading the model card tells you how the model performed yesterday on a benchmark that may already be stale. Documentation discipline transfers; verifiability does not."
 consequence:
   narrative: "Demir writes the handover: a Model Card, an API reference, and a runbook. It goes to exactly one reviewer, and she does not have intuitions."
 hints:
   - level: nudge
-    content: "A Model Card is a README for a model: render the metadata you are given into fixed sections, never hardcode the values."
+    content: "A Model Card is a README for a model: render the metadata you are given into fixed sections, never hardcode the values. Two lines are computed rather than copied, the dated accuracy line and the lowest-recall limitation."
   - level: guidance
-    content: "Build an array of lines and join it with a newline. The graded strings are exact: a '# {name} v{version}' heading, accuracy rendered as (meta.accuracy * 100).toFixed(1) followed by a percent sign, '- Size: {sizeMB} MB' and '- Inference: {inferenceMs}ms' under '## Performance', one '- ' bullet per entry of meta.limitations, and '- Input:' / '- Output:' lines under '## Usage'."
+    content: "Build an array of lines and join it with a newline. The graded strings are exact. First a '# {name} v{version}' heading. Under '## Performance': '- Accuracy: {(meta.accuracy * 100).toFixed(1)}% (measured at {meta.benchmarkedOn})', then '- Size: {sizeMB} MB' and '- Inference: {inferenceMs}ms'. Under '## Limitations': '- Lowest recall: {class} at {recall as a one-decimal percent}', then one '- ' bullet per entry of meta.limitations. Under '## Usage': '- Input:' and '- Output:'. Sort Object.entries(meta.recallByClass) by value to find the lowest-recall class."
   - level: solution
-    content: "const lines = [ `# ${meta.name} v${meta.version}`, '', '## Performance', `- Accuracy: ${(meta.accuracy * 100).toFixed(1)}%`, `- Size: ${meta.sizeMB} MB`, `- Inference: ${meta.inferenceMs}ms`, '', '## Limitations', ...meta.limitations.map(l => `- ${l}`), '', '## Usage', `- Input: ${meta.inputFormat}`, `- Output: ${meta.outputFormat}`, ]; return lines.join('\\n');"
+    content: |
+      const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+      const [worstClass, worstRecall] = Object.entries(meta.recallByClass).sort(
+        (a, b) => a[1] - b[1],
+      )[0];
+
+      const lines = [
+        `# ${meta.name} v${meta.version}`,
+        '',
+        '## Performance',
+        `- Accuracy: ${pct(meta.accuracy)} (measured at ${meta.benchmarkedOn})`,
+        `- Size: ${meta.sizeMB} MB`,
+        `- Inference: ${meta.inferenceMs}ms`,
+        '',
+        '## Limitations',
+        `- Lowest recall: ${worstClass} at ${pct(worstRecall)}`,
+        ...meta.limitations.map(l => `- ${l}`),
+        '',
+        '## Usage',
+        `- Input: ${meta.inputFormat}`,
+        `- Output: ${meta.outputFormat}`,
+      ];
+      return lines.join('\n');
 keywords:
   - documentation
   - model-card
@@ -78,6 +100,7 @@ interface ModelCard {
   // Performance metrics
   performance: {
     accuracy: number;
+    benchmarkedOn: string;   // which evaluation produced the number above
     precision: number;
     recall: number;
     f1Score: number;
@@ -113,23 +136,24 @@ const deepScanCard: ModelCard = {
 
   performance: {
     accuracy: 0.918,
+    benchmarkedOn: 'the pruning review holdout',
     precision: 0.92,
     recall: 0.91,
     f1Score: 0.915,
     inferenceMs: 5,
-    modelSizeMB: 42,
+    modelSizeMB: 85,   // weights.bin on disk; 42 MB gzipped over the wire
   },
 
   limitations: [
     'Trained on Sector 7-G captures only; accuracy may drop in other sectors',
     'Anomaly class has lowest recall (84%); rare signals may be misclassified as noise',
-    'Requires minimum 80-sample window; cannot classify very short bursts',
+    'Requires exactly 64 samples per capture; the 8 FFT bins and the zero-crossing scale are defined at that length, so shorter bursts cannot be classified',
     'WebGPU backend required for <10ms inference; falls back to 15ms on WebGL',
     'Not validated on signals below -20 dB SNR (signal-to-noise ratio; the signal is one tenth the amplitude of the noise)',
   ],
 
   usage: {
-    inputFormat: 'Float32Array of 80 raw signal samples; the pipeline extracts the 11 features and applies the saved training statistics itself',
+    inputFormat: 'Float32Array of exactly 64 raw signal samples; the pipeline extracts the 11 features and applies the saved training statistics itself',
     outputFormat: '{ label: string, confidence: number, isAnomaly: boolean }',
     exampleCode: 'const result = await deepScan.classify(signalData);',
   },
@@ -152,10 +176,10 @@ const deepScanCard: ModelCard = {
 
 /**
  * Classify a raw signal sample.
- * @param signal - Float32Array of 80 raw samples; feature extraction and
+ * @param signal - Float32Array of exactly 64 raw samples; feature extraction and
  *   normalization with the saved training statistics happen inside
  * @returns Classification result with label, confidence, and anomaly flag
- * @throws {ValidationError} If signal length !== 80 or any sample is not finite
+ * @throws {ValidationError} If signal length !== 64 or any sample is not finite
  */
 async function classify(signal: Float32Array): Promise<Classification> {
   // 1. Validate input dimensions and range

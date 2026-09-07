@@ -125,12 +125,44 @@ const analysis = featureErrors(autoencoder, anomalyTensor, [
 ]);
 
 console.log('Top contributors:');
-// fft_5: 0.6412  ← the 73.4 Hz bin: the anomalous frequency!
+// fft_5: 0.6412  ← the 73.4 Hz bin, 90x the amplitude row
 // fft_6: 0.0289
 // amplitude: 0.0071
 // Everything else: < 0.001
-// (mean over all 11 = the 0.062 anomaly score from the last block)`}
+// (mean over all 11 = the 0.062 anomaly score from the last block)
+
+// That ranking is not yet an answer. Raw squared error also ranks by how
+// hard each feature is to rebuild. Module 5 z-normalizes all eleven
+// features to mean 0 and std 1, so their INPUT scales match, but their
+// reconstruction errors on NORMAL data still spread by more than an order
+// of magnitude: the bins the autoencoder rebuilds worst sit near the top
+// of a calm reading's map too. Divide each feature's error by its own
+// normal error before reading the ranking.
+function relativeFeatureErrors(
+  autoencoder: tf.LayersModel,
+  signal: tf.Tensor2D,
+  normalData: tf.Tensor2D,
+  featureNames: string[],
+): { feature: string; ratio: number }[] {
+  return tf.tidy(() => {
+    const perFeature = tf.square(
+      tf.sub(signal, autoencoder.predict(signal) as tf.Tensor2D),
+    );
+    const normalPerFeature = tf.mean(
+      tf.square(tf.sub(normalData, autoencoder.predict(normalData) as tf.Tensor2D)),
+      0,
+    );
+    const ratios = tf.div(perFeature, normalPerFeature).arraySync()[0] as number[];
+    return featureNames
+      .map((name, i) => ({ feature: name, ratio: ratios[i] }))
+      .sort((a, b) => b.ratio - a.ratio);
+  });
+}
+// The ratio is what the incident exercise below grades: error against that
+// feature's own baseline error, never in the raw.`}
 </CodeBlock>
+
+A raw per-feature map tells you which feature the model rebuilt worst, which is not the same as which feature carries the anomaly. Rank the ratios, not the raw errors.
 
 ## Challenge
 

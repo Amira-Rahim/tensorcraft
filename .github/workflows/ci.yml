@@ -177,7 +177,7 @@ jobs:
         run: pnpm test
 
       - name: Validate exercises (starter compiles + solution passes + starter must NOT pass)
-        run: node scripts/validate-exercises.mjs --starters
+        run: node scripts/validate-exercises.mjs --starters --cheats
 
       - name: Upload test results
         if: failure()

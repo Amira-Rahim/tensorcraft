@@ -142,7 +142,7 @@ Any app that compiles down to a folder of files ships the same way: `npm run bui
   ]}
 />
 
-The mission record keeps one version of that call. At 0157, DEEP SCAN went to a single bridge console on a live pulse; all thirty verdicts matched the shadow model, and fleet-wide followed two minutes later with the window still open. Before the hour closed, ARIA ran the three nights that did not happen and filed the transcripts, unrequested, under `deploy/counterfactuals`. Her index line reads: simulations, three; deploys, one.
+The mission record keeps one version of that call. At 0157, DEEP SCAN went to a single bridge console on a live pulse. The classifier it replaces kept scoring the same captures beside it, its verdicts going to the log and nowhere else; that parallel run is the shadow model. The canary's thirty verdicts all matched it, and fleet-wide followed two minutes later with the window still open. Before the hour closed, ARIA ran the three nights that did not happen and filed the transcripts, unrequested, under `deploy/counterfactuals`. Her index line reads: simulations, three; deploys, one.
 
 ## Production Build
 
@@ -172,7 +172,7 @@ const config: BuildConfig = {
   assets: {
     models: [
       'models/deep-scan-v1/model.json',      // 2 KB: model topology
-      'models/deep-scan-v1/weights.bin',      // 42 MB: quantized + pruned
+      'models/deep-scan-v1/weights.bin',      // 85 MB on disk: quantized + pruned
     ],
     smokeData: [
       'data/validation-sample.json',          // 100 samples for smoke test
@@ -191,9 +191,9 @@ const config: BuildConfig = {
 // ├── app.js                  (~150 KB gzipped)
 // ├── models/
 // │   ├── model.json          (~2 KB)
-// │   └── weights.bin         (~42 MB)
+// │   └── weights.bin         (~85 MB, 42 MB gzipped on the wire)
 // └── data/
-//     └── validation.json     (~50 KB)`}
+//     └── validation-sample.json  (~50 KB)`}
 </CodeBlock>
 
 ## Deploy and Verify
@@ -217,21 +217,35 @@ async function verifyDeployment(baseUrl: string): Promise<boolean> {
   }
   console.log('✓ Model loaded successfully');
 
-  // 2. Check inference works
-  console.log('2. Running test inference...');
-  const testSignal = new Float32Array(80).fill(0).map(() => Math.random() * 2 - 1);
-  const result = await pipeline.classify(testSignal);
-  if (!result.label || result.confidence < 0) {
-    console.error('✗ Inference returned invalid result');
+  // 2. Score the labeled probe that shipped with the build. Random input
+  // would only prove the file parses: a mangled preprocessing path still
+  // returns a label and a confidence for noise. Known inputs with known
+  // answers are the only check that can see the input path is wrong.
+  console.log('2. Scoring the labeled probe...');
+  const probe: { input: number[]; label: string }[] = await (
+    await fetch(\`\${baseUrl}/data/validation-sample.json\`)
+  ).json();
+  let correct = 0;
+  for (const sample of probe) {
+    const { label } = await pipeline.classify(new Float32Array(sample.input));
+    if (label === sample.label) correct++;
+  }
+  // A floor, not the benchmark. The card claims 91.8% and the probe is
+  // 100 rows, so a healthy deploy falls under 80 about five times in a
+  // hundred thousand runs; five-way chance on mangled input lands near 20.
+  const FLOOR = 80;
+  if (correct < FLOOR) {
+    console.error(\`✗ Probe accuracy \${correct}/\${probe.length}, floor \${FLOOR}\`);
     return false;
   }
-  console.log(\`✓ Inference works: \${result.label} (\${(result.confidence * 100).toFixed(1)}%)\`);
+  console.log(\`✓ Probe accuracy: \${correct}/\${probe.length}\`);
 
-  // 3. Check performance
+  // 3. Check performance. Random input is fine here; nothing reads the
+  // labels, only the clock.
   console.log('3. Benchmarking...');
   const times: number[] = [];
   for (let i = 0; i < 20; i++) {
-    const input = new Float32Array(80).fill(0).map(() => Math.random() * 2 - 1);
+    const input = new Float32Array(64).fill(0).map(() => Math.random() * 2 - 1);
     const t0 = performance.now();
     await pipeline.classify(input);
     times.push(performance.now() - t0);
@@ -276,9 +290,11 @@ Correlation: 0.9987
 Two forecasters and the hand-fit trend: three curves. Since
 deployment data landed, they agree on the date for the first time.
 Zero-crossing: eleven days, four hours.
-Rate model: nonlinear. The shrink rate refuses to hold still:
-near 3 s/day some weeks, near 1 s/day others. Each earlier curve
-trusted a different week. That is why they disagreed.
+Rate model: nonlinear, and still steepening. The shrink rate held
+near a sixth of a second per day in the week the three curves were
+fit. The last two nightly readings sit 1.9 s apart, and the date
+above needs 2.7 s/day averaged from here. Each earlier curve was
+fit on a slower week, so every one of them read the date late.
 
 --- Archive Re-score, full pipeline ---
 Sample 7741, the first reading DEEP SCAN ever flagged:
@@ -320,11 +336,11 @@ And then the one the whole season was for. The console transcript above is what 
 <LessonRecap
   whatYouLearned={[
     "An ML-powered web app deploys exactly like a static site (`npm run build`, model files in the dist folder as static assets, served from a CDN) because the model runs entirely in the browser.",
-    "Deployment verification must confirm three things independently: the model file loads from the deployed URL, inference returns valid results, and latency meets the performance budget.",
+    "Deployment verification must confirm three things independently: the model file loads from the deployed URL, a labeled probe still scores above its floor, and latency meets the performance budget. Random input can only prove the file parses; it cannot see a mangled preprocessing path.",
     "Model rollback restores weights but not the training distribution; drift accumulates from the training cutoff, so a rolled-back model may perform worse on current data than it did when first deployed."
   ]}
   bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time and no deploy ever resets it."
-  youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, and run a verification script that confirms load, inference, and performance in the live environment."
+  youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, and run a verification script that confirms load, labeled-probe accuracy, and performance in the live environment."
 />
 
 <Epilogue>

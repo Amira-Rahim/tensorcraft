@@ -62,9 +62,9 @@ What am I looking at, Dr. Farah?
 Something the training data has never contained, Commander. That is the one claim three agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
 </Dialogue>
 
-In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: this signal is unlike anything the model was taught on, and all three detectors said so independently. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked 99th-percentile number, about 0.0048, and this reading came back at 0.062, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
+In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: this signal is unlike anything the model was taught on, and all three detectors said so by different routes. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 0.010, and this reading came back at 0.062, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
 
-<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means more independent evidence", "Read a 2-of-3 majority vote as an agreement level, and state what three agreeing detectors can and cannot claim"]} />
+<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what three agreeing detectors can and cannot claim"]} />
 
 ## Ensemble Detection
 
@@ -124,7 +124,7 @@ function detectAnomaly(
 
   return {
     isAnomaly: votes >= 2,  // majority vote
-    agreement: votes / 3,   // 2 of 3 is not "67% likely"; it is two independent yeses
+    agreement: votes / 3,   // 2 of 3 is not "67% likely"; it is two yeses from two methods
     detectors: {
       statistical: { triggered: statTriggered, zScore },
       autoencoder: { triggered: aeTriggered, error: reconError },
@@ -137,6 +137,10 @@ function detectAnomaly(
 // statistical: z=8.7 ✓, autoencoder: error=0.062 ✓, lstm: predError=0.041 ✓
 // Agreement: 3 of 3. Every detector fired; none of them says how likely.`}
 </CodeBlock>
+
+Separately computed is not the same as independent. All three detectors score the same reading, and the z-score detector reads `signal[0]`, one of the eleven features the autoencoder is trying to rebuild. The autoencoder and the LSTM were fitted on the same eleven days of telemetry. The votes can therefore fail together, which is why a majority is not three odds multiplied.
+
+Lesson 2's first run shows the shape of it. 412 contaminated rows taught the autoencoder the 73.4 Hz component, so it rebuilt the anomalous signal at 1.4x baseline and the reading walked past the threshold. The same eleven days sit under the LSTM's training windows. One bad archive takes two votes out at once, and the third is reading a channel one of them already saw. Sample 7741's replay was carried by exactly that pair. Lesson 1's drawer made the point about sensors bolted to one hull, which share their noise. Read 2 of 3 as two checks that failed.
 
 ## The Discovery
 
@@ -172,14 +176,15 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <RecallPrompt
   question="How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?"
-  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Thresholding the reconstruction error (high error signals anomaly) makes the detection unsupervised: you only need clean normal data to train, no anomaly labels required."
+  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Training needs no anomaly labels at all, only clean normal data. The cutoff is where labels come back. Lesson 4's F1 sweep scored candidates against a labeled validation slice and peaked at 0.004. The label-free alternative is the percentile route, which put the 99th percentile at 0.0048. The two routes give different numbers, and the cutoff Demir locked, 0.010, came from the cost of a false alarm rather than from either. That split is why the technique is usually called semi-supervised rather than unsupervised."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Ensemble detection combines multiple independent methods (statistical, learned, and temporal) so that a majority vote, not any single detector, decides; agreement is a count of independent evidence, not a calibrated probability.",
+    "Ensemble detection combines methods with different assumptions (statistical, learned, and temporal) so that a majority vote, not any single detector, decides; agreement counts how many checks failed and is not a calibrated probability.",
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
-    "A model's job is detection and quantification; ensemble agreement tells you how much independent evidence fired, and interpretation of what was detected remains a human decision."
+    "The three detectors are separately computed, not independent: they score the same input vector and two of them were fitted on the same archive, so one contaminated training set can silence two votes at once.",
+    "A model's job is detection and quantification; ensemble agreement tells you how many checks fired, and interpretation of what was detected remains a human decision."
   ]}
   bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, the ensemble alert (`if (votes >= 2) alert('UNKNOWN SIGNAL DETECTED')`) fires when two of the three detectors agree the input falls outside anything the system was trained to handle."
   youCanNow="Build an ensemble anomaly detection pipeline that combines statistical, autoencoder, and temporal detectors using majority voting for high-confidence flagging."

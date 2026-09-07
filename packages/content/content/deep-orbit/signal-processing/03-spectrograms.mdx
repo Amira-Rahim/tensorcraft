@@ -103,6 +103,8 @@ console.log('Time steps:', spec.length);          // 7
 console.log('Frequency bins:', spec[0].length);   // 129`}
 </CodeBlock>
 
+That `stft` cuts rectangular slices: `signal.slice` and nothing else. A hard cut at a slice's edges invents frequency content the signal never had, and lesson 5 builds the taper that fixes it. Leave it out here. The challenge grades unwindowed magnitudes, so tapering this code drops the 10 Hz peak it checks from 32.0 to 15.7 and the test fails.
+
 ## Reading a Spectrogram
 
 <CodeBlock language="typescript" title="reading-spectrogram.ts">
@@ -130,9 +132,17 @@ function findAnomalyWindows(
 // The 73.4 Hz anomaly in hull-array data (sampleRate=256, windowSize=256):
 // bin = Math.round(73.4 * windowSize / sampleRate) = 73
 const anomalyBin = Math.round(73.4 * 256 / 256);
+
+// 2.0 is a magnitude floor picked by eye off this capture's quiet windows.
+// It is not a constant. rfft magnitudes scale with window size and signal
+// amplitude, so a floor that works here is wrong for the next capture.
 const activeWindows = findAnomalyWindows(spec, anomalyBin, 2.0);
 console.log('Anomaly appears at windows:', activeWindows);
-// Shows the anomaly pulses: it's not constant, it's periodic`}
+// The log names the windows where bin 73 clears the floor. If some windows
+// are listed and some are missing, the tone is intermittent rather than
+// steady. That is all this capture can say. spec spans 4 seconds end to
+// end: 7 windows, each 1 s wide, hopping 0.5 s. That is shorter than one
+// gap between pulses, so timing the gaps needs a capture minutes long.`}
 </CodeBlock>
 
 ## Window Size Tradeoff
@@ -175,7 +185,7 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
 **Parameters:**
 - **W (window size):** larger W = better frequency resolution, worse time resolution. Heisenberg uncertainty for signal processing.
 - **Hop (stride between windows):** smaller hop = more overlap, smoother spectrogram, more compute. Common: hop = W/4 (75% overlap).
-- **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W.
+- **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W. The `stft` above skips it. Lesson 5 builds one.
 
 **Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Each row blurs events across the window's span, `W / fs`; consecutive rows advance by `hop / fs`.
 </DerivationDrawer>

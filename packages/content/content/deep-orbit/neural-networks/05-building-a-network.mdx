@@ -99,7 +99,7 @@ console.log('Initial prediction:', prediction.dataSync());`}
 
 ## Challenge
 
-Assemble and compile the complete DEEP SCAN signal classifier. One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 raw channels and totals 673 parameters. Farah has specced a wider front door, 8 features per reading, which puts her build at 833 parameters. Same architecture, five more inputs. Build hers.
+Assemble and compile the complete DEEP SCAN signal classifier. One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 normalized features and totals 673 parameters. Farah has specced a wider front door, 8 features per reading, which puts her build at 833 parameters. Same architecture, five more inputs. Build hers. Then note what happens to the spec: five of Farah's eight features have no source in the stream yet, so the front door gets cut back to the three that do. 673 is the count module 3 trains.
 
 <Exercise slug="simple-network" />
 

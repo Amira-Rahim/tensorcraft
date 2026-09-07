@@ -7,7 +7,7 @@ description: |
   frequency domain. The Fourier Transform, spectrograms, and windowing turn
   raw time-series data into features, and DEEP SCAN's accuracy climbs from
   78% to 87%.
-summary: "Use the Fourier Transform (which frequencies a signal contains), spectrograms (those frequencies pictured over time), and windowing (slicing the stream into chunks) to turn raw readings into inputs a model learns from."
+summary: "Use the Fourier Transform (which frequencies a signal contains), spectrograms (those frequencies pictured over time), and windowing (tapering each slice's edges) to turn raw readings into inputs a model learns from."
 lessonCount: 5
 prerequisites:
   - foundations

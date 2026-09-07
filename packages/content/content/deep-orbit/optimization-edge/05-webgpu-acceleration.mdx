@@ -62,36 +62,32 @@ Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it t
 // import '@tensorflow/tfjs-backend-wasm';
 
 async function initBestBackend(): Promise<string> {
-  // Try WebGPU first (fastest)
-  if ('gpu' in navigator) {
+  // tf.setBackend RESOLVES FALSE when a registered backend fails to
+  // initialize. It throws only when the name is not registered at all.
+  // Read the return value, or this function reports a backend that
+  // is not running.
+  const tryBackend = async (name: string) => {
     try {
-      await tf.setBackend('webgpu');
-      await tf.ready();
-      return 'webgpu';
+      if (!(await tf.setBackend(name))) return false;
     } catch {
-      console.log('WebGPU not available, falling back');
+      return false;  // name not registered: its package was not imported
     }
-  }
-
-  // Fall back to WebGL (widely supported)
-  try {
-    await tf.setBackend('webgl');
     await tf.ready();
-    return 'webgl';
-  } catch {
-    console.log('WebGL not available, falling back');
-  }
+    return true;
+  };
 
-  // Last resort: WASM (always works)
-  await tf.setBackend('wasm');
+  if ('gpu' in navigator && await tryBackend('webgpu')) return 'webgpu';
+  if (await tryBackend('webgl')) return 'webgl';
+  if (await tryBackend('wasm')) return 'wasm';
+
   await tf.ready();
-  return 'wasm';
+  return tf.getBackend();  // whatever the engine settled on, usually cpu
 }
 
 const backend = await initBestBackend();
 console.log('Using backend:', backend);
 
-// Benchmark results for DEEP SCAN (42MB optimized model), as measured
+// Benchmark results for DEEP SCAN (the 85 MB uint8 build), as measured
 // at the bridge console with the readback pattern below; your hardware
 // will print different absolutes:
 // WebGPU:  ~5ms per inference   (3x faster than WebGL)
@@ -99,10 +95,12 @@ console.log('Using backend:', backend);
 // WASM:    ~45ms per inference  (CPU, SIMD optimized)
 // CPU:     ~120ms per inference (pure JavaScript)
 // The wasm row is the same 45 ms the 340 MB build profiled at in this
-// module's first lesson. Quantization and pruning changed how many bytes
-// the model stores, not how much arithmetic each call does, so the
-// fallback time never moved.`}
+// module's first lesson. Quantization cut the bytes on disk and pruning
+// cut the bytes on the wire; neither changed how much arithmetic a call
+// does, so the fallback time never moved.`}
 </CodeBlock>
+
+The `if` around `setBackend` is the part people leave out, and leaving it out is how a fallback chain lies to you. `setBackend` resolves to a boolean. A backend that is registered but fails to initialize logs `Initialization of backend webgl failed` and resolves `false`; nothing is thrown, so a bare `try`/`catch` never fires. Only an unregistered name throws, which is what you get when you forgot the import at the top of the file. Skip the return value and this function reports `webgl` on the 0249 dashboard, the one with no working WebGL context. `tf.ready()` then settles the engine on the next registered backend that does initialize. The imports at the top of this file leave wasm registered, so the function says `webgl` while every inference runs at 45 ms. Drop the wasm import and there is nothing left but cpu, at 120 ms.
 
 <Dialogue speaker="Dr. Farah">
 Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both: new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
@@ -147,9 +145,12 @@ The millisecond figures in this lesson are what the crew measured at that consol
 // profiled on the wasm fallback, since the dashboard had no working WebGL
 // context that night; the context came back on its own once the smaller
 // build stopped exhausting memory. So 45 to 15 is WebGL restored, and
-// 15 to 5 is the WebGPU swap. Steps 2 and 3 shrink stored bytes, not the
-// arithmetic each call does; what they buy is a load peak the dashboard
-// survives. Step 4 cuts how many calls happen, not what one call costs.
+// 15 to 5 is the WebGPU swap. Step 2 shrinks stored bytes, which is what
+// buys a load peak the dashboard survives. Step 3 shrinks nothing on
+// disk, because TF.js writes dense weights; its zeros only make the file
+// compress, so it buys a smaller download. Neither touches the
+// arithmetic a call does. Step 4 cuts how many calls happen, not what
+// one call costs.
 //
 // 45 to 15 is 3x, and module 4 measured WebGL at 6x over wasm. Both hold.
 // That 6x came off a bare 256x256 matmul, which is nothing but the kernel
@@ -162,20 +163,21 @@ The millisecond figures in this lesson are what the crew measured at that consol
 console.log('=== DEEP SCAN Optimization Stack ===');
 console.log('');
 console.log('1. PROFILING:      Identified bottleneck layers');
-console.log('2. QUANTIZATION:   340 MB → 85 MB (uint8)');
-console.log('3. PRUNING:        85 MB → 42 MB (60% sparsity)');
+console.log('2. QUANTIZATION:   340 MB → 85 MB file (uint8)');
+console.log('3. PRUNING:        85 MB file unchanged, 70 → 42 MB served');
 console.log('4. CACHING:        40% fewer inference calls');
 console.log('5. WebGPU:         15ms → 5ms inference');
 console.log('');
 console.log('Result:');
-console.log('  Size:     340 MB → 42 MB (8x smaller)');
+console.log('  File:     340 MB → 85 MB (4x smaller on disk)');
+console.log('  Served:   315 MB → 42 MB gzipped (7x less to download)');
 console.log('  Speed:    45ms → 5ms (9x, all of it from the backend)');
 console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
 console.log('  Fits in dashboard: YES ✓');`}
 </CodeBlock>
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
-42 megabytes, 5 milliseconds, and 2.4 points of accuracy gone until someone retrains. Every classification from here on carries that trade, so keep all three numbers in view whenever you read the first two. It's good work, Ensign. Full stop.
+42 megabytes over the wire, 5 milliseconds, and 2.4 points of accuracy gone until someone retrains. Every classification from here on carries that trade, so keep all three numbers in view whenever you read the first two. It's good work, Ensign. Full stop.
 </Dialogue>
 
 ## Challenge
@@ -189,8 +191,8 @@ Set up the best available GPU backend and benchmark inference speed.
 <LessonRecap
   whatYouLearned={[
     "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders. On DEEP SCAN's matmul-heavy inference workload that measured 3x faster at the bridge console; another GPU will give another ratio.",
-    "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in browser feature detection.",
-    "The optimization stack works on three separate axes: quantization and pruning cut stored bytes, caching cuts the number of calls, and the backend cuts per-call time. Nothing about a smaller file makes one call faster, so each axis has to be measured on its own. The axes still couple through the hardware. Shrinking DEEP SCAN dropped the load peak enough that the dashboard's WebGL context came back, and that swap is where 45 ms became 15."
+    "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in browser feature detection. `tf.setBackend` resolves `false` when a registered backend fails to initialize and throws only on an unregistered name, so the chain has to read the return value rather than only catch.",
+    "The optimization stack works on separate axes: quantization cuts stored bytes, pruning cuts only the compressed download because TF.js writes dense weights, caching cuts the number of calls, and the backend cuts per-call time. Nothing about a smaller file makes one call faster, so each axis has to be measured on its own. The axes still couple through the hardware. Shrinking DEEP SCAN dropped the load peak enough that the dashboard's WebGL context came back, and that swap is where 45 ms became 15."
   ]}
   bridge="Switching `canvas.getContext('webgl2')` for `navigator.gpu.requestAdapter()` moves GPU access from a graphics-oriented API to a compute-oriented one, the same shift as moving rendering logic off the main thread into a dedicated Worker."
   youCanNow="Configure TensorFlow.js to use the WebGPU backend with graceful fallback to WebGL and WASM, and benchmark inference speed across backends."

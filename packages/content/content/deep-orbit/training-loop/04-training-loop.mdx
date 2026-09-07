@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "One setImmediate turn costs microseconds and hands the event loop back between passes, so pending I/O still runs. One epoch is a full sweep of the dataset that can hold the device for minutes and yields to nothing. The exit test differs more: your loop stops when a flag you set flips, and training stops when the validation loss stops improving, which is a judgment call rather than a boolean."
 consequence:
-  narrative: "The loop now decides for itself when to stop. \"Trained longer\" stopped meaning \"trained better.\""
+  narrative: "The loop now decides for itself when to stop, reading the validation curve instead of an epoch count Demir picked in advance."
 hints:
   - level: nudge
     content: "model.fit() runs the whole loop for you: forward pass, loss, backprop, and weight update, once per batch, with the whole dataset swept once per epoch."
@@ -47,7 +47,7 @@ The number Farah wrote on the glass wall is finally moving. Every line of that l
 Training sequence initiated. I have run this loop by hand twice this week: forward, loss, backward, step. Tonight model.fit runs it so I don't have to, and I find out whether I actually trust it.
 </Dialogue>
 
-<LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Recognize overfitting from the divergence between training and validation loss"]} />
+<LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Read the training and validation curves together to tell a plateau from overfitting"]} />
 
 ## The Learning Loop
 
@@ -135,7 +135,7 @@ const history = await model.fit(trainX, trainY, {
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.
 - **validationSplit**: Fraction of data held out to check for overfitting.
 
-"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from drain loops, where another pass always means less backlog, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had bottomed out near epoch 97 and climbed for the four hundred epochs after it, and a model worse on real signals than the four-minute version. The 500-epoch model had stopped learning the pattern and started memorizing the dataset. A drain loop that runs longer gets closer to an empty queue; a network that trains longer gets closer to its training data, which is not the same place.
+"Up to a point" is the whole problem: nothing in the loop tells you where the point is. Demir's first run was not the curve above. Reasoning from drain loops, where another pass always means less backlog, he set `epochs: 500` to be safe and went for coffee. Forty minutes later both curves read about 0.0004, down from a validation loss near 0.14 at epoch 50. That run is the better model, and he could not have known it would be. Ten times the compute bought a gain nobody was watching for, on an epoch count picked before the first epoch ran. A drain loop can run to exhaustion because the queue length is the exit test. Training has no queue to empty, so 500 stays a guess until something reads the curve and decides.
 
 The fix is a callback that watches the validation loss and halts when it stops improving, so the loop stops itself instead of trusting your epoch guess:
 
@@ -149,12 +149,15 @@ rerun.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 rerun.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 rerun.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Second, something to overfit TO. On the clean synthetic clusters above,
-// validation loss just keeps creeping down and a 500-epoch run never
-// halts. The archive is not that clean: its labels come from the flag
-// log, and a few are wrong. Flip six of the first eighty labels to
-// simulate that (validationSplit takes the LAST 20 rows, which stay
-// clean, so what you watch is pure memorization of the bad rows).
+// Second, something for the callback to fire ON. On the clean synthetic
+// clusters above, validation loss just keeps creeping down (under 0.001
+// after 500 epochs) and the run never halts. The archive is not that clean:
+// its labels come from the flag log, and a few are wrong. Flip six of
+// the first eighty labels to simulate that. Six contradictory rows put a
+// floor under both curves, since no setting of the weights can satisfy
+// them and their neighbors at once. validationSplit takes the LAST 20
+// rows, which stay clean, so that floor on val_loss is the price of the
+// bad rows rather than a broken split.
 const labels = trainY.arraySync();
 for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
 
@@ -166,23 +169,29 @@ await rerun.fit(trainX, tf.tensor2d(labels), {
     patience: 5,          // give it 5 epochs of no improvement first
   }),
 });
-// The halt epoch is data- and init-dependent. Thirteen runs of this
-// block halted anywhere from epoch 71 to 164, most between 70 and 125,
-// each with validation loss in the 0.07-0.11 band and turning upward.
-// The archive rerun stopped at epoch 102 on val_loss 0.081. One warning:
-// with only 20 validation rows, patience: 5 can also trip in the first
-// few epochs, while the model is still at chance, if the early curve
-// happens to stall. A halt in single-digit epochs is a small-split
-// artifact, not convergence: seed the shuffle or enlarge the split
-// before trusting it.`}
+// The halt epoch is data- and init-dependent. Across 420 runs of this
+// block the callback fired between epoch 61 and epoch 181, median 101,
+// on a val_loss that was usually 0.05 to 0.15. The archive rerun
+// stopped at epoch 102 on val_loss 0.081. Now read WHAT tripped it. The
+// validation curve here does not climb, it flattens: at the halt,
+// val_loss sat a median 0.001 above its own best, and 0.004 above it at
+// the 90th percentile, while the training loss was still around 0.25,
+// which is nowhere near memorized.
+// patience counts epochs that fail to BEAT the best score so far, and a
+// plateau fails that test the same way a climb does. So the callback
+// only tells you the run stopped improving. Whether that is convergence
+// or overfitting is a question the gap between the two curves answers,
+// which is why you read both.`}
 </CodeBlock>
 
+Early stopping ends the run without rewinding it. The weights left in the model are the halt-epoch weights, `patience` epochs past the best val_loss. Across eight runs of this block the halt landed exactly five epochs past the best score, on a val_loss 0.0006 to 0.0029 above it. TFJS 4.22 has no undo for that: `tf.callbacks.earlyStopping({ restoreBestWeights: true })` throws `restoreBestWeights = True is not implemented in EarlyStopping yet`. If you want the best weights and not just the halt, clone `model.getWeights()` in `onEpochEnd` whenever val_loss improves and set them back after `fit` resolves.
+
 <Dialogue speaker="Chief Nazari">
-Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
+Forty minutes of compute and you cannot tell me what it bought. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
 </Dialogue>
 
-<DerivationDrawer summary="The 7-step loop that fit() hides (SGD)">
-**`model.fit()` is a wrapper around this loop**, called SGD, stochastic gradient descent: "stochastic" because each mini-batch is a random sample of the data, so each gradient is only an estimate of the true one. The inner update (steps 1-4) runs `epochs × (datasetSize / batchSize)` times:
+<DerivationDrawer summary="The 7-step loop that fit() hides, and what Adam changes in step 4">
+**`model.fit()` is a wrapper around this loop.** Sampling mini-batches instead of the whole dataset is what makes it stochastic gradient descent: each batch is a random sample, so each gradient is only an estimate of the true one. The inner update (steps 1-4) runs `epochs × (datasetSize / batchSize)` times:
 
 ```
 for epoch in 1..N:
@@ -208,6 +217,10 @@ for epoch in 1..N:
       break
 ```
 
+**Step 4 is the one line `optimizer` swaps out.** Under `optimizer: 'sgd'`, which is what the exercise below compiles with, that line is exactly the rule above. Under `optimizer: 'adam'`, which both networks in this lesson use, it is not. The learning rate lives on the optimizer, so it belongs to `compile()`, and `fit()` silently ignores a `learningRate` option. Both nets here pass the optimizer as a bare string, so each takes its default rate. That is why lesson 2's most important knob appears nowhere in this lesson's code.
+
+**What Adam puts in step 4 instead.** Adam keeps two running averages per weight: `m` over recent gradients and `v` over recent squared gradients. The step is `m` divided by the square root of `v`, scaled by the learning rate. The `m` term is momentum, so a weight whose gradient keeps pointing one way builds speed and coasts over the flats around saddles. The `sqrt(v)` division sizes each weight's step against that weight's own recent gradients, so a parameter with tiny gradients still moves and one with huge gradients does not bolt. Both averages start at zero and get rescaled early to correct that bias, which leaves the first step roughly one learning rate wide whatever the gradient measures. On `L = w²` at `w = 3` the gradient is 6, and one default Adam step moves `w` by 0.00100; the plain rule at the same rate would move it 0.006. TensorFlow.js defaults Adam to a learning rate of 0.001, and `tf.train.adam(lr)` is how you set your own.
+
 **Why mini-batch (not full-batch or single-sample)?** Full-batch is exact but uses too much memory and takes one step per epoch. Single-sample (true SGD) is noisy and underuses GPU parallelism. Mini-batches of 32-512 are the empirical sweet spot: enough samples for a smooth gradient estimate, small enough to fit in memory, large enough to saturate the GPU.
 
 **Why shuffle each epoch?** Without shuffling, the model sees batches in the same order every epoch, which biases learning toward whatever pattern is in the file order. Shuffle breaks the correlation between adjacent batches.
@@ -227,7 +240,7 @@ Practise the call itself on a four-row linear model: ten epochs, batch size 2, a
 <LessonRecap
   whatYouLearned={[
     "`model.fit()` encapsulates the complete training loop: forward pass, loss computation, backpropagation, and weight update, repeated for every batch of every epoch.",
-    "Training loss decreasing while validation loss rises is the signature of overfitting. The model is memorizing its training data rather than learning a generalizable pattern.",
+    "Training loss falling while validation loss rises is the signature of overfitting: the model is fitting its training rows rather than the pattern. A halt is not proof of it, since early stopping fires on any run that stops improving, plateau included.",
     "Mini-batches balance gradient quality against memory and compute: too large strains memory, too small introduces noise. Shuffling each epoch breaks ordering bias."
   ]}
   bridge="A `setImmediate(loop)` chain runs because each callback queues the next one: do a pass, check, repeat. `model.fit()` runs the same shape over batches and epochs, with one addition a drain loop never needs: a rule for when to stop."
@@ -238,6 +251,6 @@ Practise the call itself on a four-row linear model: ten epochs, batch size 2, a
 
 <Epilogue>
 
-The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 102-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained parameters. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
+The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console, labeled with what each one cost rather than with a verdict: the 500-epoch run spent forty minutes on a number he guessed, and the rerun stopped itself the moment val_loss quit improving. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained parameters. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
 
 </Epilogue>

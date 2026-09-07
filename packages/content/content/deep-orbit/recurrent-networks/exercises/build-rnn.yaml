@@ -46,6 +46,10 @@ testCode: |
       expect(model.loss).toBe('binaryCrossentropy');
       expect(model.optimizer).toBeDefined();
     });
+    it('squashes the output with sigmoid, which binaryCrossentropy needs', () => {
+      const model = buildRNN();
+      expect(model.layers[1].getConfig().activation).toBe('sigmoid');
+    });
   });
 estimatedMinutes: 10
 difficulty: intermediate
