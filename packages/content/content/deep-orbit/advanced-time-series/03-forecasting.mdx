@@ -181,7 +181,7 @@ Build the rolling loop that turns a one-step model into a 100-step forecast.
     "Drift detection runs on one-step errors measured along the clock: re-seed the window from real readings, then compare this period's error against an earlier period's. Feed it a rollout and it reports drift that is not there."
   ]}
   bridge="Like `<link rel='prefetch'>` predicting the next navigation and preloading it, `model.predict(pastWindow)` learns past patterns to predict `future` values, but unlike prefetch there is no cache hit, only a widening probability cone."
-  youCanNow="Build a multi-step forecast, and run a drift check on one-step errors without mistaking a rollout's compounding error for drift."
+  youCanNow="Build a multi-step forecast that feeds each prediction back into the window, and say why its error grows even on a signal that never changes."
 />
 
 <Epilogue>

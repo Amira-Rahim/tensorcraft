@@ -160,9 +160,14 @@ function analyzeSignal(signal: number[], sampleRate: number) {
     // Known natural frequencies from cosmic background
     const naturalFrequencies = new Set([5, 12, 23, 47]);
 
-    // Find all significant peaks (above noise floor)
-    const noiseFloor = magnitudes.reduce((sum, m) => sum + m, 0) / magnitudes.length;
-    const threshold = noiseFloor * 5;  // 5x average = significant
+    // Find all significant peaks (above the noise floor). Do not estimate
+    // that floor with the mean over every bin: the four strong lines carry
+    // 93% of this spectrum's mean, so it climbs with the peaks it is meant
+    // to separate out. The median bin is 0.045 here, 48 times lower, and a
+    // handful of loud bins cannot move it.
+    const sorted = [...magnitudes].sort((a, b) => a - b);
+    const noiseFloor = sorted[Math.floor(sorted.length / 2)];  // ~0.045
+    const threshold = noiseFloor * 100;  // ~4.5, above the leakage shoulders
 
     const peaks: { frequency: number; magnitude: number; natural: boolean }[] = [];
     for (let i = 1; i < magnitudes.length; i++) {
@@ -231,7 +236,7 @@ Compute the FFT of a signal and find its dominant frequency.
     "The FFT decomposes a signal into a fixed mathematical basis of sinusoids and returns a complex coefficient for each frequency bin, giving both a magnitude (how much of that frequency is present) and a phase (its offset).",
     "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz.",
     "The highest frequency a sample rate can report honestly is the Nyquist frequency, sampleRate / 2. A faster component still shows up, folded down into a lower bin at the wrong frequency. That folding is aliasing.",
-    "Peaks are only meaningful relative to a noise floor. Flagging bins above a threshold relative to the average magnitude separates real signal components from noise."
+    "Peaks are only meaningful relative to a noise floor, and the floor has to be estimated from the quiet bins. A mean over every bin is pulled up by the peaks themselves, so estimate the floor with a median or a low percentile instead."
   ]}
   bridge="Where `@keyframes` decomposes an animation into authored timeline steps, `tf.spectral.rfft(signal)` decomposes a signal into a universal fixed basis of sinusoids. The basis is the same for every signal, not authored per-signal."
   youCanNow="Compute the FFT of a real-valued signal with `tf.spectral.rfft`, read the frequency and magnitude from a bin index, and identify peaks above a noise floor."

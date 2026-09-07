@@ -21,7 +21,7 @@ concept:
     mlTitle: "Tensor"
     mlCode: "const t = tf.tensor([1, 2, 3])"
     tier: structural
-    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), gradient information for training, and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not: you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
+    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not: you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
 consequence:
   narrative: "The signal begins to take shape as structured data."
 hints:
@@ -112,7 +112,7 @@ const result = tf.tidy(() => {
 // outside a tidy() and never disposing them.`}
 </CodeBlock>
 
-If `tf.tidy()` reminds you of a `useEffect` cleanup function, good. Same contract: you acquired a resource the runtime can't track, so you say when it's done. We'll lean on `tidy()` in every lesson that touches real data.
+If `tf.tidy()` reminds you of a `useEffect` cleanup function, good. Same contract: you acquired a resource the runtime can't track, so you say when it's done. Reach for `tidy()` whenever you create tensors inside a loop, which is where the leak actually shows up.
 
 ## Challenge
 
@@ -133,7 +133,7 @@ Now it's your turn. Create your first tensor from a JavaScript array.
     "The JavaScript GC cannot see GPU memory: dispose() tensors you keep explicitly, and use tf.tidy() for everything intermediate. tf.memory().numTensors is your leak detector."
   ]}
   bridge="Just as a `Float32Array` holds numbers in flat contiguous memory, a `tf.tensor` wraps that same layout with shape metadata, GPU dispatch, and a manual disposal contract."
-  youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and manage their GPU memory with dispose() and tf.tidy() without leaking."
+  youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and release their GPU memory with dispose() instead of waiting for a collector that cannot see it."
 />
 
 One more thing lands in the archive between lessons, starting now: DISPATCH intercepts, relay chatter from other crews working the same band on other missions. This is the first.

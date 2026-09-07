@@ -26,11 +26,20 @@ consequence:
   narrative: "Now we can quantify exactly how wrong the network is. The rest of training exists to make that number smaller."
 hints:
   - level: nudge
-    content: "MSE is the mean of the squared differences between the true labels and the model's predictions, and TFJS ships it as a built-in loss."
+    content: "TFJS ships both losses. MSE is the mean of the squared differences between the true labels and the model's predictions. Binary cross-entropy over logits is tf.losses.sigmoidCrossEntropy, which applies the sigmoid for you. The third function is the picking rule from this lesson, written out."
   - level: guidance
-    content: "Inside mseLoss, replace the null return with a call to tf.losses.meanSquaredError, passing labels first and predictions second. It already reduces to the scalar tensor (shape []) that the tests expect, so no extra mean() step is needed."
+    content: "In mseLoss, replace the null return with tf.losses.meanSquaredError(labels, predictions); in bceLoss, with tf.losses.sigmoidCrossEntropy(labels, logits). Both already reduce to the scalar tensor (shape []) the tests expect, so no extra mean() step is needed. pickLoss returns a string, not a tensor: 'binaryCrossentropy' for a sigmoid last layer, 'sigmoidCrossEntropy' for anything else."
   - level: solution
-    content: "return tf.losses.meanSquaredError(labels, predictions);"
+    content: |
+      function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
+        return tf.losses.meanSquaredError(labels, predictions);
+      }
+      function bceLoss(labels: tf.Tensor, logits: tf.Tensor): tf.Tensor {
+        return tf.losses.sigmoidCrossEntropy(labels, logits);
+      }
+      function pickLoss(lastLayerActivation: string): string {
+        return lastLayerActivation === 'sigmoid' ? 'binaryCrossentropy' : 'sigmoidCrossEntropy';
+      }
 keywords:
   - loss
   - mse
@@ -103,7 +112,7 @@ Note where the advantage lives, because the intuition runs backwards from most e
 
 ## Challenge
 
-Calculate the loss for the DEEP SCAN classifier's initial predictions.
+Score the DEEP SCAN classifier's first predictions with both losses, then write down the rule that picks between them.
 
 <Exercise slug="mse-loss" />
 

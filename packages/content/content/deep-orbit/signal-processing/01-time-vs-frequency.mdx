@@ -22,7 +22,7 @@ concept:
     mlTitle: "Time vs Frequency"
     mlCode: "fft(signal) // frequency view of the signal"
     tier: intuition
-    breaks: "DOM and CSSOM are two views of the same authored markup. Time and frequency representations are mathematically dual but information-equivalent only when the full signal is observed; windowing and finite sample rate distort the frequency view."
+    breaks: "DOM and CSSOM are two views of the same authored markup. Time and frequency are two views of the samples you captured, and the transform between them loses nothing either way. What a finite sample rate and a finite window threw away was already missing from those samples before the transform ran."
 consequence:
   narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
@@ -53,7 +53,7 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-As a first sketch. But the DOM and CSSOM are both lossless views of markup someone wrote. The frequency view is only a complete description if you observe the entire signal, and we never do. We sample at a finite rate and cut finite windows, and both of those distort it. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, through that distortion.
+As a first sketch. But the DOM and CSSOM are both lossless views of markup someone wrote. The frequency view is a lossless view of the samples we captured, and the samples are not the whole signal. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
 </Dialogue>
 
 The rest of this lesson is learning to read that second view.
@@ -151,7 +151,7 @@ Identify which domain reveals a hidden pattern in signal data.
 <LessonRecap
   whatYouLearned={[
     "Every signal has two representations: the time domain shows amplitude at each moment, and the frequency domain shows which periodic components are present and how strong they are.",
-    "On a complete, perfectly observed signal the two views carry the same information. On real captures a finite sample rate and a finite window distort the frequency view, and each view still hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
+    "Both views of one capture carry the same information, because the transform loses nothing the samples hold. What a finite sample rate and a finite window threw away was gone before the transform ran. Each view still hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
     "The frequency domain is useful for detection tasks because periodic components accumulate into a single frequency bin rather than being spread across many time samples."
   ]}
   bridge="Just as `document.querySelector` gives a structural view of a page while `getComputedStyle` gives a computed-value view, `fft(signal)` gives a frequency view of the same samples that the time-domain array already contains."

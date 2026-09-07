@@ -249,6 +249,13 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "global",
   },
   {
+    term: "mae",
+    definition:
+      "Mean absolute error, the average size of the gap between predictions and targets, in the same units as the target. MSE squares each gap, so one large miss dominates the number. MAE weights every miss the same.",
+    aliases: ["MAE", "mean absolute error"],
+    scope: "global",
+  },
+  {
     term: "binary-crossentropy",
     definition:
       "A loss for two-class problems. It penalizes confident wrong predictions of a yes or no label.",
@@ -417,7 +424,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gru",
     definition:
-      "A gated recurrent unit, a streamlined RNN cell with fewer gates than an LSTM.",
+      "A gated recurrent unit, an RNN cell with two gates instead of the LSTM's three. The update gate is one number that keeps some fraction of the previous hidden state and takes the rest from a new candidate, doing the forget and input gates' work at once, and the reset gate sets how much of the previous hidden state that candidate can see. There is no separate cell state, so there is no output gate.",
     aliases: ["GRU"],
     scope: "global",
   },
@@ -781,6 +788,20 @@ export const GLOSSARY: GlossaryEntry[] = [
     definition:
       "Cleaning and transforming raw data into the form a model expects before training or inference.",
     aliases: ["preprocess"],
+    scope: "global",
+  },
+  {
+    term: "feature",
+    definition:
+      "One input number a model reads about a single example, such as one channel's value in a sensor reading. A tf.data pipeline names the features xs.",
+    aliases: ["features"],
+    scope: "global",
+  },
+  {
+    term: "label",
+    definition:
+      "The value you want a model to predict for one example, supplied alongside the features during training. A tf.data pipeline names the labels ys.",
+    aliases: ["labels"],
     scope: "global",
   },
   {

@@ -1,19 +1,38 @@
 slug: mse-loss
 lessonSlug: loss-functions
-title: "Calculate MSE Loss"
-instructions: "Write a function `mseLoss(labels, predictions)` that returns the Mean Squared Error between any pair of label/prediction tensors as a scalar tensor. Use tf.losses.meanSquaredError()."
+title: "Two Losses, and the Rule for Picking One"
+instructions: "Three functions. (1) `mseLoss(labels, predictions)` returns the mean squared error as a scalar tensor: use tf.losses.meanSquaredError(). (2) `bceLoss(labels, logits)` returns binary cross-entropy as a scalar tensor, reading its second argument as raw logits: use tf.losses.sigmoidCrossEntropy(), which applies the sigmoid itself. (3) `pickLoss(lastLayerActivation)` returns 'binaryCrossentropy' when the last layer is 'sigmoid', because that layer has already produced probabilities, and 'sigmoidCrossEntropy' for any other last layer, because it emits logits. The grader calls all three on inputs of its own."
 starterCode: |
   function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
     // Mean of the squared differences, as a scalar tensor
+    return null; // your code here
+  }
+
+  function bceLoss(labels: tf.Tensor, logits: tf.Tensor): tf.Tensor {
+    // Binary cross-entropy over RAW LOGITS, as a scalar tensor
+    return null; // your code here
+  }
+
+  function pickLoss(lastLayerActivation: string): string {
+    // 'sigmoid' last layer -> the compile option that takes probabilities
+    // any other last layer -> the tf.losses call that takes logits
     return null; // your code here
   }
 solutionCode: |
   function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
     return tf.losses.meanSquaredError(labels, predictions);
   }
+
+  function bceLoss(labels: tf.Tensor, logits: tf.Tensor): tf.Tensor {
+    return tf.losses.sigmoidCrossEntropy(labels, logits);
+  }
+
+  function pickLoss(lastLayerActivation: string): string {
+    return lastLayerActivation === 'sigmoid' ? 'binaryCrossentropy' : 'sigmoidCrossEntropy';
+  }
 testCode: |
-  describe('mseLoss', () => {
-    it('is a scalar', () => {
+  describe('two losses and the rule for picking one', () => {
+    it('mseLoss is a scalar', () => {
       const loss = mseLoss(tf.tensor([3.0, -0.5, 2.0, 1.0]), tf.tensor([2.5, 0.0, 2.1, 1.3]));
       expect(loss.shape).toEqual([]);
     });
@@ -25,8 +44,33 @@ testCode: |
       const loss = mseLoss(tf.tensor([1, 2]), tf.tensor([3, 2]));
       expect(loss.dataSync()[0]).toBeCloseTo(2.0, 5);
     });
+    it('bceLoss reads argument two as logits: a logit of 0 is a probability of 0.5, so the loss is ln(2)', () => {
+      const loss = bceLoss(tf.tensor([1, 0]), tf.tensor([0, 0]));
+      expect(loss.shape).toEqual([]);
+      expect(loss.dataSync()[0]).toBeCloseTo(0.6931, 3);
+    });
+    it('bceLoss tracks its inputs: confident and right scores far below confident and wrong', () => {
+      const right = bceLoss(tf.tensor([1, 0]), tf.tensor([3, -3])).dataSync()[0];
+      const wrong = bceLoss(tf.tensor([1, 0]), tf.tensor([-3, 3])).dataSync()[0];
+      expect(right).toBeLessThan(0.1);
+      expect(wrong).toBeGreaterThan(3);
+    });
+    it('the two losses disagree on the same tensors, so the one you pick decides what counts as wrong', () => {
+      const labels = tf.tensor([1, 0, 1, 0, 1]);
+      const logits = tf.tensor([0.4, -0.4, -0.8, 0.8, 1.4]);
+      const mse = mseLoss(labels, logits).dataSync()[0];
+      const bce = bceLoss(labels, logits).dataSync()[0];
+      expect(mse).toBeCloseTo(0.912, 2);
+      expect(bce).toBeCloseTo(0.7177, 3);
+      expect(Math.abs(mse - bce)).toBeGreaterThan(0.1);
+    });
+    it('pickLoss follows the last layer it is given, not a memorized string', () => {
+      expect(pickLoss('sigmoid')).toBe('binaryCrossentropy');
+      expect(pickLoss('linear')).toBe('sigmoidCrossEntropy');
+      expect(pickLoss('none')).toBe('sigmoidCrossEntropy');
+    });
   });
-estimatedMinutes: 10
+estimatedMinutes: 12
 difficulty: beginner
 mlContent: data
 skillAxis: training

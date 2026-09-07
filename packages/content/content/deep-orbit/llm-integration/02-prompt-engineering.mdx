@@ -27,9 +27,9 @@ consequence:
   narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
 hints:
   - level: nudge
-    content: "A prompt template is a function, not a memorized paragraph: role, reference context, the live signal values, and the output contract, rebuilt on every call."
+    content: "Four parts, each on its own line, in this order: role, reference context, the live signal values, then the output contract. Every call rebuilds them from the argument it was handed."
   - level: guidance
-    content: "Assemble an array of lines and join them with newlines. The graded pieces: the exact role string containing DEEP SCAN, the known natural frequencies 5, 12, 23, 47 Hz, the actual signal.amplitude, signal.frequency, and signal.phase concatenated into the text (the last test builds two different signals and requires the prompts to differ), and a closing request for JSON with classification, confidence, and reasoning fields."
+    content: "Assemble an array of lines and join them with newlines. Line one carries the role string containing DEEP SCAN and none of the signal numbers. Next the reference context: known natural frequencies 5, 12, 23, 47 Hz. Then one line per value, each holding its label (Amplitude, Frequency, Phase) and the number read off the argument. Last the request for JSON with classification, confidence, and reasoning fields. The grader checks those line positions, and it builds prompts from three different signals, so no value can be hardcoded."
   - level: solution
     content: "const lines = [ 'You are DEEP SCAN, a signal classifier for deep space signals.', '', 'Known natural frequencies: 5, 12, 23, 47 Hz.', 'Normal amplitude range: 0.1 to 1.0.', '', 'Signal data:', '- Amplitude: ' + signal.amplitude, '- Frequency: ' + signal.frequency + ' Hz', '- Phase: ' + signal.phase + ' rad', '', 'Classify this signal. Respond in JSON with fields: classification (normal or anomalous), confidence (0.0-1.0), reasoning (explanation).', ]; return lines.join('\\n');"
 keywords:

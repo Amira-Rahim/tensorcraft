@@ -135,8 +135,21 @@ y.dispose();`}
 {`import * as tf from '@tensorflow/tfjs';
 
 // GRU (Gated Recurrent Unit): fewer parameters, often similar performance
-// Two gates instead of three: reset gate + update gate
-// No separate cell state: simpler architecture
+// Two gates instead of three: update gate + reset gate
+
+// 1. UPDATE GATE: one number doing the forget gate's job and the input
+//    gate's job at once
+//    update = sigmoid(W_z · [prevHidden, input])
+//    newHidden = update * prevHidden + (1 - update) * candidate
+//    Keeping 70% of the old state means taking 30% of the new candidate
+
+// 2. RESET GATE: how much of the previous hidden state the candidate
+//    is allowed to see
+//    reset = sigmoid(W_r · [prevHidden, input])
+//    candidate = tanh(W_c · [reset * prevHidden, input])
+
+// There is no separate cell state, so there is no output gate: the hidden
+// state is the only thing the cell carries, and it leaves the cell whole
 
 const gruModel = tf.sequential();
 gruModel.add(tf.layers.gru({

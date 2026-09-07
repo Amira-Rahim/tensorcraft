@@ -1,7 +1,7 @@
 slug: quantize-weights
 lessonSlug: quantization
 title: "Quantize Weights to Uint8"
-instructions: "Implement uint8 quantization: map float32 weights to the 0-255 range using min-max scaling. Return the quantized array, scale factor, and zero point so the values can be dequantized back."
+instructions: "Implement uint8 quantization: map float32 weights to the 0-255 range using min-max scaling. Every stored value has to be a whole number, so dequantize gives you back approximations rather than the original floats. Return the quantized array, scale factor, and zero point so the values can be mapped back."
 starterCode: |
   interface QuantizedResult {
     quantized: number[];
@@ -64,6 +64,23 @@ testCode: |
       expect(result.quantized[3]).toBeGreaterThan(result.quantized[1]);
       expect(result.quantized[2]).toBeLessThan(result.quantized[0]);
     });
+
+    it('stores whole numbers, because a uint8 holds no fraction', () => {
+      const result = quantize([0.13, -0.42, 0.77, -0.91, 0.05, 0.6]);
+      result.quantized.forEach(q => {
+        expect(Number.isInteger(q)).toBe(true);
+      });
+    });
+
+    it('puts the same weight in a different bucket when the range changes', () => {
+      // 0.37 is the same float in both sets. The bucket it lands in depends on
+      // the range around it, so one memorised answer cannot satisfy both.
+      const narrow = quantize([0, 0.37, 1]);
+      const wide = quantize([0, 0.37, 2]);
+      expect(narrow.quantized).toEqual([0, 94, 255]);
+      expect(wide.quantized).toEqual([0, 47, 255]);
+      expect(wide.scale).toBeCloseTo(2 * narrow.scale, 8);
+    });
   });
 
   describe('dequantize', () => {
@@ -85,6 +102,32 @@ testCode: |
       original.forEach((w, i) => {
         expect(recovered[i]).toBeCloseTo(w, 1);
       });
+    });
+
+    it('lands on a bucket, not back on the original weight', () => {
+      const original = [0, 0.37, 0.61, 1];
+      const result = quantize(original);
+      const recovered = dequantize(result);
+      const errors = original.map((w, i) => Math.abs(recovered[i] - w));
+      // No value drifts by more than half a bucket.
+      errors.forEach(e => {
+        expect(e).toBeLessThanOrEqual(result.scale / 2 + 1e-12);
+      });
+      // At least one value does drift. 256 buckets cannot hold an arbitrary
+      // float, and that error is the price uint8 storage charges.
+      expect(Math.max(...errors)).toBeGreaterThan(result.scale / 100);
+    });
+
+    it('reads scale and zeroPoint off the result it is handed', () => {
+      const a = dequantize({ quantized: [0, 128, 255], scale: 0.01, zeroPoint: 128 });
+      expect(a[0]).toBeCloseTo(-1.28, 6);
+      expect(a[1]).toBeCloseTo(0, 6);
+      expect(a[2]).toBeCloseTo(1.27, 6);
+
+      const b = dequantize({ quantized: [0, 128, 255], scale: 0.02, zeroPoint: 0 });
+      expect(b[0]).toBeCloseTo(0, 6);
+      expect(b[1]).toBeCloseTo(2.56, 6);
+      expect(b[2]).toBeCloseTo(5.1, 6);
     });
   });
 estimatedMinutes: 10

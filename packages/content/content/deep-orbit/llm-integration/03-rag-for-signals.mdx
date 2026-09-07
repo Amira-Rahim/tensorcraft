@@ -51,7 +51,7 @@ That's Server Components! Fetch data on the server, then render with it. RAG fet
 
 Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: a component can't contradict its props. A generator can.
 
-<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a simple signal retrieval system using text and metadata matching", "Ground LLM responses in actual data to prevent hallucination", "Enable natural language queries over the DEEP SCAN signal database"]} />
+<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a simple signal retrieval system using text and metadata matching", "Ground LLM responses in retrieved rows, then check every claim against those rows, since grounding narrows fabrication without preventing it", "Enable natural language queries over the DEEP SCAN signal database"]} />
 
 ## The RAG Pipeline
 
@@ -99,9 +99,9 @@ async function retrieveSignals(
 // works here because the catalogue is 12,001 STRUCTURED rows with named
 // fields you can match on. Production RAG over prose replaces this
 // function with embeddings: every document and every query mapped to a
-// vector, retrieval = cosine similarity, top-k. Different machinery,
-// identical contract: retrieve -> ground -> verify. When your corpus
-// stops having fields, swap this one function and keep the contract.
+// vector, retrieval = the k nearest by cosine similarity (top-k). Different
+// machinery, identical contract: retrieve -> ground -> verify. When your
+// corpus stops having fields, swap this one function and keep the contract.
 
 // Step 2: AUGMENT: inject retrieved data into prompt
 function buildRAGPrompt(query: string, signals: Signal[]): string {
@@ -150,7 +150,7 @@ The retrieval half is above. Build the other half: the checker that holds every 
 <LessonRecap
   whatYouLearned={[
     "RAG follows a retrieve-then-generate contract: query your data store for relevant records, inject them into the prompt, then generate a response grounded in those records rather than the model's memory.",
-    "Limiting retrieved context to the top-K most relevant records keeps you within token limits and focuses the model on what matters.",
+    "The filters narrow the candidate set and a hard cap of 20 rows keeps the prompt inside the token limit. Nothing is ranked, so the 21st matching row is dropped for being late rather than for being irrelevant.",
     "Generated answers can contradict the retrieved passages they cite; always verify quantitative claims against the actual retrieved rows before trusting the output."
   ]}
   bridge="RAG mirrors the Server Component pattern (`async function Page() { const data = await db.query(...); return <View data={data} />; }`); data access happens before rendering. The key difference: a component cannot contradict its props, but a generator can contradict its context."

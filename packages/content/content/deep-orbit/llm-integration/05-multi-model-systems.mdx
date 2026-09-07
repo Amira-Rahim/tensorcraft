@@ -124,14 +124,14 @@ async function processSignal(
     const pred = (models.lstm.predict(input) as tf.Tensor).dataSync();
     return { nextValues: Array.from(pred) };
   });
-  // The model's own output width is the promise: outputShape is [null, horizon].
-  // A short forecast is a broken contract, not a shorter forecast; the report
-  // reads fine without one, so this stage gets a fallback.
-  const horizon = (models.lstm.outputShape as number[])[1];
+  // The model's own output width is the promise: outputShape is
+  // [null, featureCount]. A short vector is a broken contract, not a shorter
+  // forecast; the report reads fine without one, so this stage gets a fallback.
+  const featureCount = (models.lstm.outputShape as number[])[1];  // 3 features of one step, not a horizon
   const prediction = validateStage(
     'lstm',
     predicted,
-    (p) => p.nextValues.length === horizon && p.nextValues.every(Number.isFinite),
+    (p) => p.nextValues.length === featureCount && p.nextValues.every(Number.isFinite),
     { nextValues: [] },
   );
 

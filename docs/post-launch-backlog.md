@@ -2600,6 +2600,137 @@ numbers are in the audit's "What I checked by running it" section. Note
 that three OTHER items, which I wrote up from reading alone before their
 verifiers finished, were then refuted; see the withdrawal list below.
 
+## Round 4 remediation, steps 1 to 3 (2026-09-07)
+
+Three things were asked for and done in order. All gates green after
+each: content 413/413, exercises 65/65, web contract 20/20, pulse
+interval canon byte-identical, zero em dashes in project files.
+
+### Step 1: retrieval surfaces now agree with their bodies
+
+Fifty seven findings across 39 files, fixed by eleven editors with one
+module each and exclusive file ownership. 136 edits. Every editor swept
+the whole world for siblings of the claim it corrected, which is how the
+last three rounds failed, and the sweeps paid: one found that the
+promise "we lean on tidy() in every lesson that touches real data" is
+false in eight modules, and that the finding's own suggested wording
+would have been wrong too.
+
+Highlights: module 1's recall answer and recap bullet no longer give a
+false reason for shuffling before batching; the first definition of a
+tensor no longer claims tensors carry gradients; feature and label are
+now defined at first use and in the glossary, with xs and ys named.
+
+### Step 2: the profiling grader hole is closed
+
+My own regression. Last night's fix rejected a solution that measures
+nothing and reports zero; a solution that called predict the right
+number of times and returned numbers memorised from the lesson prose
+still passed 4 of 4. The grader now hands the solution two mocks whose
+costs differ sixfold and requires the reported averages to differ, so no
+constant can satisfy both. Real solution passes, cheat rejected.
+
+### Step 3: five weak graders hardened, cheat-first
+
+Each of build-spectrogram, apply-window, prompt-template, prune-weights
+and quantize-weights had a cheat written FIRST, proven to pass the
+shipped tests, and only then a discriminating test built to stop it.
+Twenty five tests added in total. Every cheat passed before and fails
+now, and every real solution still passes.
+
+I had doubted the prune-weights finding, because the specific cheat it
+described does not pass. It was right anyway: a different ignorant
+solution did pass, and the editor found it.
+
+### The durable part: a cheat gate
+
+`scripts/exercise-cheats/<slug>.js` holds a deliberately ignorant
+solution per exercise, and `node scripts/validate-exercises.mjs --cheats`
+fails the build if any of them passes every test. Eight are registered
+and all eight are rejected. The default validator path is unchanged, so
+nothing slows down.
+
+- [ ] **Turn the cheat gate on in CI**, next to `--starters`. It is
+  opt-in today, which is the same shape as the problem it was built to
+  catch.
+- [ ] **Write cheats for the remaining 57 exercises.** Eight of 65 are
+  covered. The rule worth adopting: an exercise is not finished until a
+  solution that understands nothing fails it.
+
+### Found while verifying, and NOT fixed: the em dash gate has a blind spot
+
+`docs/audits/fresh-eyes-evaluation-2026-07-13.md` is tracked and contains
+137 literal em dashes, and the repo-wide ban reports zero. The file holds
+one stray NUL byte, so git classifies it as binary, and the gate greps
+with `-I`, which skips binary files. One accidental byte makes a tracked
+text file invisible to a ban CI reports as clean.
+
+- [ ] Decide the two halves separately. The gate should refuse to skip a
+  tracked file with a text extension that git thinks is binary, rather
+  than passing silently. Whether a July audit record should then be
+  rewritten to satisfy a ban adopted in August is a call about
+  historical documents, so I left the file alone.
+
+## Content quality audit round 4 (2026-09-07)
+
+Source: `docs/audits/content-quality-audit-round4-2026-09-07.md`. 49
+blind readers on Opus, none shown any earlier audit or told what had
+been edited, produced 701 raw findings; merging cut them to 165 (capped
+at 15 per module, roughly 230 dropped); adversarial skeptics refuted 14.
+151 stand: 32 high, 119 medium.
+
+**Grade of record stays B+.** Ten modules median B+, training-loop is now
+A-. In eight of eleven modules the lowest of the four letters is the
+exercise reader, and the exercise reader produced both C grades.
+
+**The 20 Tier 1 fixes HELD.** Not one came back and no reader
+rediscovered any of them. Two graders that used to pass a do-nothing
+solution now reject one. What this round found is a layer underneath.
+
+**Read the count with care.** This round's skeptics refuted 8.5% against
+last round's 89%, because last round was too strict (65 of its kills had
+a dissenting skeptic). The list is longer and less filtered by design.
+Nine findings carry a recorded dissent.
+
+### The three themes
+
+- [ ] **Retrieval surfaces contradict correct bodies.** A body explains a
+  mechanism right and the RecallPrompt, recap bullet, objective or hint
+  states it wrong. These are the surfaces built for recall, so they are
+  what a learner keeps. Start here: `foundations/04:146` and `:152` give
+  a false reason for shuffling before batching that the body gets right
+  at line 99; `training-loop/04:29` says weights update once per epoch
+  and its own drawer contradicts it 156 lines later;
+  `training-loop/05:143` states overfitting as a bare inequality, which
+  flags every healthy model; `signal-processing/05:214` says Hamming
+  tapers to zero when its own formula gives 0.08.
+- [ ] **Six exercise graders are beaten by solutions showing no
+  understanding**, each executed to prove it: `profile-model` (mine, see
+  below), `build-spectrogram` (an STFT that never advances in time),
+  `apply-window` (a boxcar with two samples zeroed), `prompt-template`
+  (bare substring checks), `prune-weights` (sparsity read as keep
+  fraction), `quantize-weights` (never rounds). This is the exercise-mix
+  project arriving with named instances.
+- [ ] **Three basics named and never taught**: feature and label (used in
+  code the learner writes, absent from every lesson and from the
+  glossary), MAE (an objective, a recap bullet and a capability line in
+  module 6, never expanded), and attention's learned projections (module
+  8 teaches Q, K and V as the raw hidden states and never says a real
+  head learns three matrices).
+
+### My own regression, confirmed by execution
+
+- [ ] **`optimization-edge/exercises/profile-model.yaml` is still
+  beatable.** Last night's fix closed the cheat that measures nothing and
+  reports zero. A solution that calls predict runs+1 times and returns
+  the numbers memorised from the lesson prose still passes 4 of 4. I ran
+  it. The timing assertion needs to compare against the mock's known
+  cost rather than a floor.
+
+The full 32 high and 119 medium findings, with file and line, are in the
+audit document. Roughly 230 lower-severity findings were dropped by the
+merge cap and are recoverable from the run journal.
+
 ### VISUAL BASELINES 2026-09-07: GREEN, 30/30, and a CI gap
 
 Ran the visual suite for the first time since the September 5th re-pace.

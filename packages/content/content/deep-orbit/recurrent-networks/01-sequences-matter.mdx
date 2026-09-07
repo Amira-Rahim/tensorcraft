@@ -25,7 +25,7 @@ consequence:
   narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
-    content: "Training on a stream means pairing each window of past readings with the single reading that comes immediately after it."
+    content: "Forecasting from a stream means pairing each window of past readings with the single reading that comes immediately after it."
   - level: guidance
     content: "Loop start from 0 while start + windowSize < data.length, stepping by stride (window i starts at i * stride). Each xs entry is data.slice(start, start + windowSize); each ys entry is data[start + windowSize]. The strict < is the drop rule: a window whose answer would be past the end never enters the set. Return { xs, ys }."
   - level: solution
@@ -138,7 +138,7 @@ sequentialInput.dispose();`}
 
 ## Challenge
 
-`createSequences` above stops at the windows. Training needs two more things out of the same loop: a stride, so you choose how far the window jumps between samples, and a target for every window, the single reading that arrives immediately after it. That target also moves the boundary. A window whose next reading falls past the end of the archive has no answer to train against, so it never enters the set.
+`createSequences` above stops at the windows. Training needs two more things out of the same loop: a stride, so you choose how far the window jumps between samples, and a forecasting target for every window, the single reading that arrives immediately after it. That target also moves the boundary. A window whose next reading falls past the end of the archive has no answer to train against, so it never enters the set.
 
 <Exercise slug="create-sequences" />
 

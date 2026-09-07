@@ -20,7 +20,7 @@ concept:
     jsTitle: "uncaughtException"
     jsCode: "process.on('uncaughtException', (err) => { report(err); process.exit(1) })"
     mlTitle: "Anomaly Alert"
-    mlCode: "if (error > 12 * baseline) { alert('UNKNOWN SIGNAL DETECTED') }"
+    mlCode: "if (reconstructionError > threshold) { alert('UNKNOWN SIGNAL DETECTED') }"
     tier: intuition
     breaks: "The uncaughtException handler fires on a real throw: deterministic, after the fact, always right that something broke. An anomaly alert fires on a statistical threshold over inputs that are all perfectly valid. Nothing threw, nothing is corrupt, and you chose where weird begins, so the alert can fire on healthy data and stay silent through a real failure."
 consequence:
@@ -62,7 +62,7 @@ What am I looking at, Dr. Farah?
 Something the training data has never contained, Commander. That is the one claim three agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
 </Dialogue>
 
-In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on.
+In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on. The alert rule itself is the one from the last lesson, unchanged: reconstruction error over the locked 99th-percentile cutoff of about 0.0048. This reading came back at 0.062, twelve times the highest error any normal signal produced.
 
 <LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means more independent evidence", "Read a 2-of-3 majority vote as an agreement level, and state what three agreeing detectors can and cannot claim"]} />
 
@@ -181,7 +181,7 @@ Build an ensemble anomaly detector combining multiple methods.
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
     "A model's job is detection and quantification; ensemble agreement tells you how much independent evidence fired, and interpretation of what was detected remains a human decision."
   ]}
-  bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, an anomaly alert (`if (error > 12 * baseline) alert('UNKNOWN SIGNAL DETECTED')`) fires when every detector agrees the input falls outside anything the system was trained to handle."
+  bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, an anomaly alert (`if (reconstructionError > threshold) alert('UNKNOWN SIGNAL DETECTED')`) fires when every detector agrees the input falls outside anything the system was trained to handle."
   youCanNow="Build an ensemble anomaly detection pipeline that combines statistical, autoencoder, and temporal detectors using majority voting for high-confidence flagging."
 />
 

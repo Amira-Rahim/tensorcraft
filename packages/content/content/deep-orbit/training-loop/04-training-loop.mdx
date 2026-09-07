@@ -26,9 +26,9 @@ consequence:
   narrative: "The loop now decides for itself when to stop. \"Trained longer\" stopped meaning \"trained better.\""
 hints:
   - level: nudge
-    content: "model.fit() runs the whole training loop for you: forward pass, loss, backprop, and weight update, repeated once per epoch."
+    content: "model.fit() runs the whole loop for you: forward pass, loss, backprop, and weight update, once per batch, with the whole dataset swept once per epoch."
   - level: guidance
-    content: "Await model.fit(xs, ys, options) and store its result in history. The grader checks the exact settings: epochs: 10 and batchSize: 2, so history.history.loss must end up with exactly 10 entries, and the loss should fall from the first epoch to the last."
+    content: "Await model.fit(xs, ys, options) and store its result in history. The grader checks that history.history.loss has exactly 10 entries and that the loss fell from the first epoch to the last. batchSize 2 is what makes that fall visible on four rows: it buys two weight updates per epoch instead of one."
   - level: solution
     content: "const history = await model.fit(xs, ys, { epochs: 10, batchSize: 2 });"
 keywords:
@@ -47,7 +47,7 @@ The number Farah wrote on the glass wall is finally moving. Every line of that l
 Training sequence initiated. I have run this loop by hand twice this week: forward, loss, backward, step. Tonight model.fit runs it so I don't have to, and I find out whether I actually trust it.
 </Dialogue>
 
-<LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Recognize overfitting vs underfitting from the loss curve"]} />
+<LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Recognize overfitting from the divergence between training and validation loss"]} />
 
 ## The Learning Loop
 
@@ -215,7 +215,7 @@ for epoch in 1..N:
 
 ## Challenge
 
-Train the DEEP SCAN network and watch the loss decrease.
+Practise the call itself on a four-row linear model: ten epochs, batch size 2, and watch the loss fall.
 
 <Exercise slug="training-loop-exercise" />
 
@@ -231,7 +231,7 @@ Train the DEEP SCAN network and watch the loss decrease.
     "Mini-batches balance gradient quality against memory and compute: too large strains memory, too small introduces noise. Shuffling each epoch breaks ordering bias."
   ]}
   bridge="A `setImmediate(loop)` chain runs because each callback queues the next one: do a pass, check, repeat. `model.fit()` runs the same shape over batches and epochs, with one addition a drain loop never needs: a rule for when to stop."
-  youCanNow="Configure and run `model.fit()` with appropriate epoch count, batch size, validation split, and epoch callbacks to monitor training progress."
+  youCanNow="Configure and run `model.fit()` with an epoch count and a batch size, and read the per-epoch loss out of the history it returns."
 />
 
 > **DISPATCH archive · field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation curve had told them everything for six days; nobody was assigned to read it. Escalation cost: one recall, four weeks. Read your second curve.

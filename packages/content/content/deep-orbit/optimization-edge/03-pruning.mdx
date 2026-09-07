@@ -29,7 +29,7 @@ hints:
   - level: guidance
     content: "In pruneWeights, sort the absolute values ascending with weights.map(Math.abs).sort, take threshold = sorted[Math.floor(length * sparsity)] (use the sparsity parameter, not a hardcoded percentage), and zero out weights whose Math.abs(w) < threshold; strict less-than keeps everything at sparsity 0. calculateSparsity is separate and also graded: the fraction of entries that are exactly 0."
   - level: solution
-    content: "const sorted = weights.map(Math.abs).sort((a, b) => a - b); const threshold = sorted[Math.floor(sorted.length * sparsity)]; return weights.map(w => Math.abs(w) < threshold ? 0 : w); const zeros = weights.filter(w => w === 0).length; return zeros / weights.length;"
+    content: "function pruneWeights(weights: number[], sparsity: number): number[] { const sorted = weights.map(Math.abs).sort((a, b) => a - b); const threshold = sorted[Math.floor(sorted.length * sparsity)]; return weights.map(w => Math.abs(w) < threshold ? 0 : w); } function calculateSparsity(weights: number[]): number { const zeros = weights.filter(w => w === 0).length; return zeros / weights.length; }"
 keywords:
   - pruning
   - tree-shaking

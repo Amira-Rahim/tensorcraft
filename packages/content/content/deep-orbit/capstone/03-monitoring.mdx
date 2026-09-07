@@ -103,6 +103,9 @@ class ModelMonitor {
     // Assumes features are z-scored first (the foundations rule):
     // on raw scales the 73-Hz frequency term would drown the phase
     // term and this one number would mean nothing.
+    // A mean vector only sees a shift in level. Two windows with the
+    // same means and twice the spread score 0.0 here, and so does one
+    // that split into two modes at the same average.
     let sumSqDiff = 0;
     for (let i = 0; i < baselineMean.length; i++) {
       sumSqDiff += (baselineMean[i] - recentMean[i]) ** 2;
@@ -162,6 +165,11 @@ interface DriftReport {
 function detectDrift(
   baseline: number[][],
   current: number[][],
+  // 0.5 is not a universal number. It is the 99th percentile of this
+  // detector's own score over 200 known-calm 500-sample windows, the same
+  // way module 7 read its reconstruction threshold off normal data. It is
+  // only valid at that window size: the distance between two sample means
+  // shrinks as the windows grow, so re-derive it if you change the window.
   threshold: number = 0.5
 ): DriftReport {
   // The model's REAL input vector (module 5's fixed-bin design): 3 raw
@@ -181,6 +189,11 @@ function detectDrift(
     };
   });
 
+  // This is a distance between means, not a comparison of distributions.
+  // Production drift monitors score each feature with a
+  // Kolmogorov-Smirnov statistic (the largest gap between the two
+  // cumulative distributions) or a population stability index; both see a
+  // change in spread or shape that the mean vector above misses.
   const driftScore = Math.sqrt(features.reduce((s, f) => s + f.shift ** 2, 0));
 
   return {
@@ -201,6 +214,12 @@ if (drift.isSignificant) {
 }`}
 </CodeBlock>
 
+Accuracy is missing from that dashboard, and it is missing for a reason. A production prediction arrives with no label attached. The monitor records that DEEP SCAN called a window `pulsar` at 0.94 confidence, and nothing in the stream says whether that was right. Confidence and drift are proxies for an accuracy nobody can read live. The lag between a prediction and the label that would grade it is the label feedback delay, and here a label means Nazari at a console working through the capture by hand.
+
+That also bounds what "retrain" can mean. Retraining on drifted inputs needs labels for the drifted inputs, so the first real step after a drift alert is somebody hand-labeling a sample of recent captures. A drift score tells you the training set is out of date. It does not produce the replacement.
+
+The other distribution worth watching sits on the output side. `this.logs` already holds a label and a confidence for every prediction, so two counts fall out of it for free: the share of verdicts landing in each of the five classes, and the histogram of confidences. When `noise` climbs from 60 percent of verdicts to 85, or the confidence histogram slides down a tenth, the model's behavior has moved even if every input feature mean sat still. Prediction-side drift needs no labels either, which is the reason to keep it next to the input-side check.
+
 ## Challenge
 
 Build a model monitor with drift detection.
@@ -209,10 +228,14 @@ Build a model monitor with drift detection.
 
 <RecallPrompt question="What category of model failure does standard app monitoring miss entirely?" answer="Data drift: when production input distributions diverge from the training distribution, predictions quietly become wrong without throwing an exception, changing latency, or triggering any observable system metric. App monitoring tracks errors and throughput; model monitoring must separately track input feature distributions and compare them against training-time baselines." />
 
+<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="Because production predictions arrive without labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Confidence and drift are the proxies you get instead. A real accuracy number, or a retrain on the drifted data, means somebody labels a sample of recent inputs first, and the delay before those labels exist is why the proxies are there at all." />
+
 <LessonRecap
   whatYouLearned={[
-    "ML observability extends app monitoring with three additional signals: prediction confidence trends, input distribution drift, and model-specific latency percentiles. Many model failures produce no exception and no latency spike, so these signals need separate instrumentation.",
-    "Data drift detection compares the statistical distribution of live inputs against training-time baselines; a significant drift score is a signal to retrain, not just to alert.",
+    "ML observability extends app monitoring with signals an app has no reason to collect: prediction confidence trends, input distribution drift, prediction distribution drift, and latency percentiles measured on inference. Many model failures produce no exception and no latency spike, so these signals need separate instrumentation.",
+    "Drift detection compares live inputs against a training-time baseline. The version built here is a distance between per-feature means, which catches a shift in level and scores 0.0 when the spread changes or a feature splits into two modes at the same average; a per-feature Kolmogorov-Smirnov statistic or a population stability index is what sees those.",
+    "A drift score is not an accuracy measurement. Production predictions arrive unlabeled, so confidence and drift stand in for an accuracy nobody can read live, and acting on a drift alert still requires someone to label a sample of the drifted inputs before any retraining happens.",
+    "The prediction side has a distribution too: the share of verdicts per class and the histogram of confidence scores both move when model behavior changes, and neither needs labels to compute.",
     "Latency percentiles (P50/P95/P99) apply directly to inference monitoring just as they do to API response time tracking."
   ]}
   bridge="Sentry captures exceptions and response times for a web app; `monitor.trackPrediction({ confidence, latency, drift })` adds the ML-specific layer. Confidence decay and input distribution shift are failures that never throw, so they require dedicated instrumentation."

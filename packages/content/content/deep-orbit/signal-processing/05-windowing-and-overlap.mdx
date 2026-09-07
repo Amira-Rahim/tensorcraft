@@ -14,7 +14,7 @@ context:
   narrative: "Demir's FFT results show spurious frequencies that shouldn't exist. Farah diagnoses the problem: spectral leakage from abrupt signal edges. The fix is a windowing function."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Windowing tapers a slice's edges to zero before the FFT, so the transform never mistakes your cut for a cliff in the signal."
+  explanation: "Windowing tapers a slice's edges down before the FFT, so the transform never mistakes your cut for a cliff in the signal."
   bridge:
     jsTitle: "StringDecoder"
     jsCode: "decoder.write(chunk) // a character split across chunks is held back, not mangled"
@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "A Hann window tapers both ends of a chunk to zero so the FFT never mistakes your cut for a cliff in the signal."
   - level: guidance
-    content: "Two separate functions are graded. hannWindow(n) returns w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))) for i = 0..n-1; Array.from with Math.cos works, or tf.range(0, n) on the tensor route. applyWindow(signal, window) returns the element-wise product signal[i] * window[i] as a plain number array, e.g. tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync()."
+    content: "Two separate functions are graded. hannWindow(n) returns w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))) for i = 0..n-1; Array.from with Math.cos works, or tf.range(0, n) on the tensor route. applyWindow(signal, window) returns the element-wise product signal[i] * window[i] as a plain number array, e.g. tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync(). The grader then windows a tone that does not fit its window and compares the two FFTs, so every sample has to carry its own weight from the formula. Zeroing the first and last samples of a flat window tapers nothing and leaks about as much as no window at all."
   - level: solution
     content: "function hannWindow(n) { return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1)))); } function applyWindow(signal, window) { return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync(); }"
 keywords:
@@ -91,8 +91,10 @@ console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from
 ## The Fix: Window Functions
 
 <CodeBlock language="typescript" title="window-functions.ts">
-{`// A window function smoothly tapers the signal to zero at the edges
-// The slice ends where it started, at zero, so the cut is never a cliff
+{`// A window function smoothly tapers the signal down at the edges, so the
+// slice ends near the level it started at and the cut is never a cliff.
+// Hann reaches exactly zero at both ends. Hamming stops at 0.08, and that
+// leftover step is why its far sidelobes fall off more slowly (see below).
 
 // Hann window: the most common choice (good all-around)
 function hannWindow(n: number): number[] {
@@ -100,6 +102,12 @@ function hannWindow(n: number): number[] {
     0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))
   );
 }
+
+// Terms for the comparison below. The main lobe is the cluster of bins the
+// tone itself occupies. The sidelobes are the smaller ripples further out.
+// dB is a log ratio: -31 dB is about 1/35 of the peak height, -43 dB about
+// 1/141. A dB/octave figure says how fast the ripples shrink as you move
+// away from the peak, per doubling of that distance.
 
 // Hamming window: main lobe as narrow as Hann's or slightly narrower,
 // and a lower FIRST sidelobe (about -43 dB vs Hann's -31), but its far
@@ -141,7 +149,7 @@ console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
 
 ## Overlapping Windows
 
-Windowing tapers the signal to zero at the edges, which means you lose information there. Overlap the windows and the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight. The weights it picks up across the windows containing it add up to a near-constant total, so no sample stays discounted overall. Keeping that total constant is what the constant-overlap-add condition asks for. The symmetric Hann used here comes close, and the drawer below shows how close.
+Windowing tapers the signal down at the edges, which means you lose information there. Overlap the windows and the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight. The weights it picks up across the windows containing it add up to a near-constant total, so no sample stays discounted overall. Keeping that total constant is what the constant-overlap-add condition asks for. The symmetric Hann used here comes close, and the drawer below shows how close.
 
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
@@ -211,7 +219,7 @@ Apply a Hann window to a signal before computing the FFT.
 <LessonRecap
   whatYouLearned={[
     "Spectral leakage occurs when a signal slice does not fit an integer number of cycles in the window. The abrupt edge is interpreted as a discontinuity, spreading energy from real peaks into neighboring frequency bins.",
-    "Windowing functions such as Hann and Hamming taper signal edges to zero before the FFT, suppressing leakage. The tradeoff is a slight widening of the main lobe, reducing frequency resolution.",
+    "Windowing functions such as Hann and Hamming taper signal edges down before the FFT, suppressing leakage. The cost is that the tone now spreads over a few more bins, its main lobe, which is a loss of frequency resolution. Hann reaches zero at both ends, while Hamming stops at 0.08, so Hamming leaks more into distant bins.",
     "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the symmetric Hann here comes close."
   ]}
   bridge="Cutting a byte stream mid-character decodes to a replacement character that was never in the data, which is why `StringDecoder` holds the split bytes back. Cutting a signal mid-cycle produces frequencies that were never in the signal, and the fix is a taper: the decoder's boundary fix is lossless, the taper's is a trade."

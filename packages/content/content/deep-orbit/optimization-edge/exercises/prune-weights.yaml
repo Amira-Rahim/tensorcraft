@@ -1,7 +1,7 @@
 slug: prune-weights
 lessonSlug: pruning
 title: "Prune Weights by Magnitude"
-instructions: "Implement magnitude-based pruning: zero out the smallest weights based on a sparsity ratio (0 to 1). A sparsity of 0.6 means 60% of weights are set to zero (the ones with the smallest absolute values)."
+instructions: "Implement magnitude-based pruning: zero out the smallest weights based on a sparsity ratio (0 to 1). A sparsity of 0.6 means 60% of weights are set to zero, the ones with the smallest absolute values. Take the cutoff from the sorted absolute values, not from a fixed magnitude, and let the cutoff index round down. Then calculateSparsity reports the fraction of entries that are exactly zero, which is how the pruned result gets checked against the sparsity requested."
 starterCode: |
   function pruneWeights(weights: number[], sparsity: number): number[] {
     // 1. Sort absolute values to find the threshold
@@ -50,6 +50,29 @@ testCode: |
       const pruned = pruneWeights(weights, 0);
       expect(pruned).toEqual(weights);
     });
+
+    it('zeros the requested fraction of the weights', () => {
+      const w = [0.5, -0.01, 0.002, -0.8, 0.003, 0.7, -0.001, 0.6];
+      expect(calculateSparsity(pruneWeights(w, 0.25))).toBe(0.25);
+      expect(calculateSparsity(pruneWeights(w, 0.5))).toBe(0.5);
+      expect(calculateSparsity(pruneWeights(w, 0.75))).toBe(0.75);
+    });
+
+    it('keeps only the two largest weights at 75% sparsity', () => {
+      const pruned = pruneWeights([0.5, -0.01, 0.002, -0.8, 0.003, 0.7, -0.001, 0.6], 0.75);
+      expect(pruned).toEqual([0, 0, 0, -0.8, 0, 0.7, 0, 0]);
+    });
+
+    it('takes the threshold from the sorted values, so the same sparsity works at any scale', () => {
+      const big = [3, -5, 8, -13, 21, -34, 55, -89];
+      const tiny = [0.004, -0.001, 0.003, -0.002];
+
+      expect(pruneWeights(big, 0.5)).toEqual([0, 0, 0, 0, 21, -34, 55, -89]);
+      expect(calculateSparsity(pruneWeights(big, 0.5))).toBe(0.5);
+
+      expect(pruneWeights(tiny, 0.5)).toEqual([0.004, 0, 0.003, 0]);
+      expect(calculateSparsity(pruneWeights(tiny, 0.5))).toBe(0.5);
+    });
   });
 
   describe('calculateSparsity', () => {
@@ -63,6 +86,15 @@ testCode: |
 
     it('returns 1 for all zeros', () => {
       expect(calculateSparsity([0, 0, 0])).toBe(1);
+    });
+
+    it('counts exact zeros only, not near-zero weights', () => {
+      expect(calculateSparsity([0.001, -0.002, 0, 0.5])).toBe(0.25);
+      expect(calculateSparsity([0.001, -0.002, 0.003, 0.5])).toBe(0);
+    });
+
+    it('finds zeros anywhere in the array', () => {
+      expect(calculateSparsity([0, 1, 0, 2, 0, 3, 0, 4])).toBe(0.5);
     });
   });
 estimatedMinutes: 10

@@ -21,7 +21,7 @@ concept:
     mlTitle: "Sliding Window"
     mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
     tier: structural
-    breaks: "A framer consumes what it emits: every byte lands in exactly one frame, and the buffer advances by the full frame length. A sliding window advances by a stride smaller than the window, so one reading turns up in windowSize / stride different samples and the pipeline emits far more data than the stream handed it. Frames are self-contained too; a window's label sits outside it, in the reading immediately after, which is the one place an off-by-one lets the model read its own answer."
+    breaks: "A framer consumes what it emits: every byte lands in exactly one frame, and the buffer advances by the full frame length. A sliding window advances by a stride smaller than the window, so one reading turns up in windowSize / stride different samples and the pipeline emits far more data than the stream handed it. Frames are self-contained too. A forecasting window's label sits outside it, in the reading immediately after, which is the one place an off-by-one lets the model read its own answer."
 consequence:
   narrative: "Perfectly shaped windows stream into the LSTM, and Demir can finally process the continuous signal feed in real time."
 hints:
@@ -47,7 +47,7 @@ That's stream framing, more or less. Buffer until you have a full frame, emit it
 
 A framer drops every byte it emits, which would put each reading in exactly one chunk and never in another. The window steps forward by one and keeps the other seventy-nine, so a single reading turns up in dozens of samples, and that reuse is where the training data comes from.
 
-<LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Create input/label pairs for sequence prediction (next-value forecasting)", "Configure window size and stride for different temporal resolutions", "Build a streaming buffer that feeds the LSTM in real time"]} />
+<LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout hides", "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying", "Configure window size and stride for different temporal resolutions", "Build a streaming buffer that feeds the LSTM in real time"]} />
 
 ## Ninety-Seven Percent, Briefly
 
@@ -127,6 +127,10 @@ function createWindows(
 // Window 1: [s1, s2, s3, s4] → predict s5   (stride 1: windows overlap)`}
 </CodeBlock>
 
+Which reading labels a window depends on the task, and this lesson shows both cases. Forecasting takes its target from the reading after the window. The label has to sit outside the window, because including it would let the model read its own answer. Per-window classification takes its label from an external log, at the window's last reading, and leaks nothing, because that label was never a feature. The mirror above and the graded exercise are classification, so they label by `labels[end - 1]`. `createWindows` here is forecasting, so it labels by `signal[i + windowSize]`.
+
+Window size is the only history the model gets. Lesson 2 put the pattern DEEP SCAN needs at a 73-step dependency on the one-sample-per-second feed, so an 80-step window holds it with seven steps to spare. Set `windowSize` to 30 and no single sample ever contains the whole pattern, and no amount of training gets it back.
+
 ## Real-Time Streaming Buffer
 
 <CodeBlock language="typescript" title="streaming-buffer.ts">
@@ -170,13 +174,18 @@ The mirror scored 97.4 because the stream was windowed before it was split. Buil
 <Exercise slug="sliding-window" />
 
 <RecallPrompt
+  question="The stride-1 pipeline scored 97.4 on a held-out fifth of the windows and 60.6 after the stream was split by time. Which score is wrong, and what produced it?"
+  answer="97.4 is wrong, and near-copy neighbors produced it. With stride 1, window i and window i+1 share seven of their eight readings, so every held-out window sits between two training windows that are near-duplicates of it, labels included. The lookup found the copy. That score measures the overlap between the two sets, which is why a model with no learning in it could post it. Split the stream first and the copies are gone: 60.6 is what is left."
+/>
+
+<RecallPrompt
   question="You set windowSize to 30 but the pattern you need to detect spans 50 time steps. What happens, and what should you change?"
   answer="The model never sees the full pattern in any single window, so it cannot learn the dependency that spans 50 steps. Increase windowSize to at least 50 (and likely a bit larger to give the model enough context around the pattern)."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "A sliding window converts a continuous stream into fixed-size overlapping samples: each position along the signal yields one input/label pair, with the label being the value immediately after the window.",
+    "A sliding window converts a continuous stream into fixed-size overlapping samples: each position along the signal yields one input/label pair. Forecasting labels a window with the reading immediately after it, so the target stays outside the input; per-window classification labels it from an external log at the window's last reading.",
     "Windowing the whole stream before splitting it leaks: with stride 1, neighboring windows are near-copies, so a random or every-Nth holdout scores the model on data it has already seen. Split the stream by time first, then window each side.",
     "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
     "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."

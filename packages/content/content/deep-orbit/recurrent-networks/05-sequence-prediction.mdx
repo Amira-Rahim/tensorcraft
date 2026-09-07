@@ -50,7 +50,7 @@ If it can predict the timing, the signal has structure. And if it has structure.
 
 Autocomplete is everywhere in JavaScript work: search suggestions, code completion, the email composer finishing your sentence. Each predicts the next token from the sequence so far. Our LSTM does the same: given the last 80 signal readings, predict the next one.
 
-<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the MAE metric", "Generate multi-step forecasts by feeding predictions back as input", "Sanity-check a forecast's horizon, units, and step size before it reaches the DEEP SCAN dashboard"]} />
+<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric", "Generate multi-step forecasts by feeding predictions back as input", "Sanity-check a forecast's horizon, units, and step size before it reaches the DEEP SCAN dashboard"]} />
 
 ## Next-Value Prediction
 
@@ -90,10 +90,25 @@ const history = await model.fit(trainX, trainY, {
 });`}
 </CodeBlock>
 
+MAE is mean absolute error: the average of `Math.abs(predicted - actual)` across the batch, in the same units as the reading. MSE squares each error first, so one large miss moves it more than several small ones do, while MAE weights every miss the same. Train on MSE, because the squaring pushes the optimizer at the worst misses first. Report MAE, because it reads in the units on the instrument.
+
 ## Multi-Step Forecasting
 
 <CodeBlock language="typescript" title="multi-step.ts">
 {`import * as tf from '@tensorflow/tfjs';
+
+// Physical limits of the three features, the same sensor spec the
+// module-4 pipeline normalizes against: the hull sensors saturate at
+// 2048 counts, "frequency" is a zero-crossing count over a 64-sample
+// window, and phase is an angle in radians.
+const LIMITS = [
+  { min: 0, max: 2048 },            // amplitude
+  { min: 0, max: 63 },              // frequency
+  { min: -Math.PI, max: Math.PI },  // phase
+];
+
+const clamp = (reading: number[]) =>
+  reading.map((v, j) => Math.min(Math.max(v, LIMITS[j].min), LIMITS[j].max));
 
 // Predict multiple steps ahead by feeding predictions back as input
 async function forecastMultiStep(
@@ -110,8 +125,13 @@ async function forecastMultiStep(
       const pred = model.predict(input) as tf.Tensor;
       return Array.from(pred.dataSync());
     });
-    predictions.push(nextValue);
-    window.push(nextValue);
+    // Clamp before the row goes back into the window. A fed-back forecast
+    // is the one place an out-of-range value poisons every later step:
+    // step i + 1 reads this row as history, so an amplitude of -40 or
+    // 3000 counts becomes the model's own input for the rest of the run.
+    const bounded = clamp(nextValue);
+    predictions.push(bounded);
+    window.push(bounded);
   }
 
   return predictions;

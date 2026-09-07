@@ -48,7 +48,7 @@ Many signals are similar: cosmic background with minor variations. If I've alrea
 
 DEEP SCAN spent last night reclassifying cosmic background it had already classified, at full GPU cost each time. The playbook is the one that sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss.
 
-<LearningObjectives objectives={["Implement an LRU cache for inference results", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
+<LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
 
 ## Inference Caching
 
@@ -124,12 +124,24 @@ function cachedClassify(signal: number[]): string {
   const result = classify(model, signal);
   cache.set(signal, result);
   return result;
-}`}
+}
+
+// Hit rate, read after the overnight run:
+console.log(cache.hitRate.toFixed(2));  // 0.40
+
+// Mean cost per call = hitRate * lookup + (1 - hitRate) * inference.
+// The profile put inference at 45 ms mean and 112 ms P95; a Map lookup on
+// a few hundred entries is about 0.01 ms.
+const effectiveMs = 0.4 * 0.01 + 0.6 * 45;
+console.log(effectiveMs.toFixed(1));  // 27.0
+
+// 45 ms to 27 on the mean, and the P95 does not move: a miss still runs the
+// whole model. A cache changes how often you pay, not what one call costs.`}
 </CodeBlock>
 
 ## Challenge
 
-Build an LRU inference cache with TTL expiry.
+Cache inference results behind a rounded input hash, and count the hits.
 
 <Exercise slug="inference-cache" />
 
@@ -143,10 +155,11 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
   whatYouLearned={[
     "An LRU inference cache uses a cache-first pattern: hash the input, return a stored result on hit, run the model and store on miss. The delete + re-set trick on get() is required for true LRU behavior.",
     "Quantizing inputs before hashing means near-identical inputs land on the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
-    "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data."
+    "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data.",
+    "At a 40 percent hit rate the mean cost per call falls from 45 ms to about 27, because a hit costs a Map lookup and a miss still runs the model. The P95 stays at 112 ms, so a cache cuts how often you pay and not what one call costs."
   ]}
   bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."
-  youCanNow="Build an LRU inference cache with input hashing and TTL expiry, and measure the resulting reduction in model inference calls."
+  youCanNow="Wrap a model in a cache-first predict keyed on a rounded input hash, count the inference calls it saves, and audit cached entries for model-version and TTL staleness."
 />
 
 <Epilogue>

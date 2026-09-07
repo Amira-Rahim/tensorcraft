@@ -46,7 +46,7 @@ The calibration bench holds the ship's two reference tones, the cleanest labeled
 ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron. Think of it as a function that can adjust its own parameters, and we will teach it on the only labeled data we have: the calibration tones.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for how much the input matters"]} />
+<LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for sensitivity per unit of input"]} />
 
 ## The Simplest Learning Machine
 
@@ -73,7 +73,7 @@ const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
 console.log(jsOutput); // 0.26: identical!`}
 </CodeBlock>
 
-Weights encode how much each input matters: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold, the baseline the weighted sum has to clear.
+Each weight scales its own input: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold, the baseline the weighted sum has to clear.
 
 ## Reading the Weights
 
@@ -81,7 +81,9 @@ Those three numbers are hand-picked so the arithmetic stays followable; training
 
 Sign is direction. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency says this neuron treats higher frequency as mild evidence AGAINST. Run the flip to feel it: change `-0.2` to `+0.2` in the code above and the same reading scores 0.58 instead of 0.26, identical evidence now arguing for the other side.
 
-Magnitude is volume. Weight 0.6 on phase is the loudest vote in the row, for now, and "for now" is the point. A weight near zero means the network learned to ignore something you thought mattered. When Nazari eventually tapes a parameter count to the engineering board, each of those parameters will be one of these votes; sign and size are the entire vocabulary.
+Magnitude is sensitivity, not importance. A weight says how much the output moves per unit of that input, so the vote an input casts is weight times input. Run the row: amplitude contributes `0.5 * 0.4 = 0.20`, frequency `0.8 * -0.2 = -0.16`, phase `0.2 * 0.6 = 0.12`. Per unit of phase, 0.6 is the loudest coefficient here, and phase still cast the smallest vote, because it read low on this sample. Weight sizes rank inputs against each other only once the inputs share a scale, which is what module 1's z-scoring bought.
+
+A weight near zero means the network learned to ignore something you thought mattered. When Nazari eventually tapes a parameter count to the engineering board, each of those parameters will be one of these numbers; sign and size are the entire vocabulary.
 
 ## Challenge
 
@@ -97,7 +99,7 @@ Build your first neuron to classify signal readings.
 <LessonRecap
   whatYouLearned={[
     "A neuron computes a weighted sum of its inputs plus a bias, producing a single number.",
-    "Weights encode how much each input matters; bias shifts the output threshold.",
+    "A weight scales its own input, so what an input contributes is weight times input; bias shifts the output threshold.",
     "Array.reduce() over inputs is the JavaScript equivalent of tf.dot(), making the operation intuitive to read and reason about."
   ]}
   bridge="The JS pattern `inputs.reduce((sum, x, i) => sum + x * weights[i], bias)` maps directly to the ML operation `tf.dot(inputs, weights).add(bias)`, so every neuron is just a reduce you've written before."

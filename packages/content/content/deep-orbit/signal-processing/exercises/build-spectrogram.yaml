@@ -34,6 +34,15 @@ solutionCode: |
 testCode: |
   describe('stft', () => {
     const signal = Array.from({ length: 256 }, (_, i) => Math.sin(2 * Math.PI * 10 * i / 128));
+    // Sample rate 128, so window 64 puts a tone of f Hz in bin f / 2.
+    // 10 Hz for the first half, 30 Hz for the second half.
+    const twoTone = Array.from({ length: 256 }, (_, i) =>
+      i < 128 ? Math.sin(2 * Math.PI * 10 * i / 128) : Math.sin(2 * Math.PI * 30 * i / 128));
+    // A 20 Hz burst that exists only in samples 64 to 127. Silence elsewhere.
+    const burst = Array.from({ length: 256 }, (_, i) =>
+      i >= 64 && i < 128 ? Math.sin(2 * Math.PI * 20 * i / 128) : 0);
+    const rowMax = (row) => Math.max(...row);
+    const loudestRow = (spec) => spec.reduce((best, row, i) => rowMax(row) > rowMax(spec[best]) ? i : best, 0);
     it('returns a 2D array', () => {
       const result = stft(signal, 64, 32);
       expect(Array.isArray(result)).toBe(true);
@@ -60,6 +69,32 @@ testCode: |
       const result = stft(signal, 128, 64);
       expect(result.length).toBe(3);
       expect(result[0].length).toBe(65);
+    });
+    it('a tone that changes halfway gives rows with different peak bins', () => {
+      const result = stft(twoTone, 64, 64);
+      expect(result.length).toBe(4);
+      const peaks = result.map(row => row.indexOf(Math.max(...row)));
+      expect(peaks).toEqual([5, 5, 15, 15]);
+      expect(result[0][5]).toBeCloseTo(32, 0);
+      expect(result[3][15]).toBeCloseTo(32, 0);
+    });
+    it('a burst leaves the rows before and after it silent', () => {
+      const result = stft(burst, 64, 64);
+      expect(result.length).toBe(4);
+      expect(rowMax(result[0])).toBeLessThan(1e-6);
+      expect(rowMax(result[2])).toBeLessThan(1e-6);
+      expect(rowMax(result[3])).toBeLessThan(1e-6);
+      expect(result[1].indexOf(rowMax(result[1]))).toBe(10);
+      expect(result[1][10]).toBeCloseTo(32, 0);
+    });
+    it('rows advance by hopSize, so the loud row moves when hopSize changes', () => {
+      const hop64 = stft(burst, 64, 64);
+      const hop32 = stft(burst, 64, 32);
+      expect(hop32.length).toBe(7);
+      expect(loudestRow(hop64)).toBe(1);
+      expect(loudestRow(hop32)).toBe(2);
+      expect(rowMax(hop32[0])).toBeLessThan(1e-6);
+      expect(rowMax(hop32[6])).toBeLessThan(1e-6);
     });
   });
 estimatedMinutes: 15

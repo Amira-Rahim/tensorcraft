@@ -171,9 +171,39 @@ testCode: |
       expect(isFibonacciTrain(decomposeIntervals([1, 1, 1, 1, 1, 1, 1]))).toBe(false);
     });
 
+    it('aligns from the tail, rejects a wrong-length train, and holds the 2% tolerance', () => {
+      // A train that omits the 1:1 opener: 5 ratios against the last 5 expected.
+      expect(isFibonacciTrain(decomposeIntervals([1, 2, 3, 5, 8, 13]))).toBe(true);
+      // More ratios than the succession list has slots: no alignment exists.
+      expect(isFibonacciTrain([1, 2, 1.5, 5 / 3, 1.6, 1.625, 1.615])).toBe(false);
+      // 1.71 against the 5/3 slot is 2.6% off, just outside tolerance.
+      expect(isFibonacciTrain([1, 2, 1.5, 1.71, 1.6, 1.625])).toBe(false);
+    });
+
     it('all three detectors fire on the zero-hour reading', () => {
       expect(result.votes).toBe(3);
       expect(result.isAnomaly).toBe(true);
+    });
+
+    it('a noisy window keeps the statistical detector quiet (the z-score is measured, not assumed)', () => {
+      // Same `actual` as zero hour, but the window's own spread is 20x
+      // wider, so 0.62 sits 1.8 standard deviations out instead of 36.
+      const noisyWindow = [
+        0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57,
+        0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57,
+      ];
+      const stillFires = classifyAnomaly({ ...zeroHourReading, window: noisyWindow });
+      expect(stillFires.votes).toBe(2);
+      expect(stillFires.isAnomaly).toBe(true);
+
+      const quiet = classifyAnomaly({
+        ...zeroHourReading,
+        window: noisyWindow,
+        reconstructionError: 0.001,
+      });
+      expect(quiet.votes).toBe(1);
+      expect(quiet.isAnomaly).toBe(false);
+      expect(quiet.classification).toBe('noise');
     });
 
     it('majority vote is 2-of-3, not unanimity', () => {

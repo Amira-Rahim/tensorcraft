@@ -20,11 +20,21 @@ testCode: |
       expect(vals[3]).toBeCloseTo(1.5);
       expect(vals[4]).toBeCloseTo(3.0);
     });
-    it('is a function, not a lookup: works on a second tensor too', () => {
+    it('works on a second tensor of a different length', () => {
       const vals = applyRelu(tf.tensor([4.2, -7.0, 0.1])).dataSync();
       expect(vals[0]).toBeCloseTo(4.2);
       expect(vals[1]).toBe(0);
       expect(vals[2]).toBeCloseTo(0.1);
+    });
+    it('is a function, not a lookup: matches Math.max(0, x) on a tensor drawn at grade time', () => {
+      const len = 5 + Math.floor(Math.random() * 8);
+      const probe = tf.randomNormal([len]);
+      const input = probe.dataSync();
+      const output = applyRelu(probe).dataSync();
+      expect(output).toHaveLength(len);
+      for (let i = 0; i < len; i++) {
+        expect(output[i]).toBeCloseTo(Math.max(0, input[i]));
+      }
     });
   });
 estimatedMinutes: 8

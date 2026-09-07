@@ -108,11 +108,12 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
 }
 
 // DEEP SCAN ensemble. Confidences are measured, not self-reported: each
-// one comes from that member's error on last week's held-out readings.
+// one is the inverse-variance weight of that member's error on last week's
+// held-out readings, by the formula below this block.
 const predictions: ModelPrediction[] = [
-  { modelName: 'LSTM', prediction: [0.82, 37.4, 0.45], confidence: 0.85 },
-  { modelName: 'Attention', prediction: [0.79, 36.9, 0.51], confidence: 0.90 },
-  { modelName: 'Kalman', prediction: [0.80, 37.6, 0.48], confidence: 0.75 },
+  { modelName: 'LSTM', prediction: [0.82, 37.4, 0.45], confidence: 0.333 },
+  { modelName: 'Attention', prediction: [0.79, 36.9, 0.51], confidence: 0.467 },
+  { modelName: 'Kalman', prediction: [0.80, 37.6, 0.48], confidence: 0.200 },
 ];
 
 const avg = averageEnsemble(predictions);
@@ -135,11 +136,11 @@ await metaModel.fit(metaX, metaY, { epochs: 20 });
 // report its score on a further slice neither it nor the members have seen.`}
 </CodeBlock>
 
-A forecaster has no trust number of its own, as lesson 3 said, so the `confidence` field is not something the member reports. You measure it: score each member on a week of held-out readings it never trained on, then set its confidence so that the larger error gets the smaller number. Rescore it after the signal drifts, or you are weighting today's blend by who was right last month.
+A forecaster has no trust number of its own, as lesson 3 said, so the `confidence` field is not something the member reports. You measure it: score each member on a week of held-out readings it never trained on, then weight by inverse variance. For a member whose held-out error is `e_i`, `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. When member errors are independent, that is the weighting with the lowest blend variance, and it falls out of the same algebra as the drawer below. Held-out errors of 0.045, 0.038 and 0.058 give `1 / e^2` values of 494, 693 and 297, so the three confidences above are 0.333, 0.467 and 0.200. Rescore them after the signal drifts, or you are weighting today's blend by who was right last month.
 
 ## Why Ensembles Work
 
-Each member fails in its own place. The LSTM reads short patterns and misses long-range drift; the attention model reads long range and can overfit a small archive; the Kalman filter smooths noise off the level with a principled gain and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On the crew's held-out week the three members scored MAE 0.045, 0.038, and 0.058, and the plain average scored 0.028.
+Each member fails in its own place. The LSTM reads short patterns and misses long-range drift; the attention model reads long range and can overfit a small archive; the Kalman filter smooths noise off the level with a principled gain and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.028.
 
 That 0.028 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members has spent three inference calls to do worse than one of them would alone, and you see that only if you score each member on the same held-out week. That is the challenge below.
 
@@ -170,7 +171,7 @@ Score each member, score their average, and decide whether the ensemble earned t
 <LessonRecap
   whatYouLearned={[
     "An ensemble runs all member models on every input and combines their predictions; errors partially cancel when the members make uncorrelated mistakes.",
-    "Weighted averaging assigns each member influence proportional to its confidence, and that confidence is a number you measure from the member's error on recent held-out data, not one the model reports.",
+    "Weighted averaging assigns each member influence proportional to its confidence, and that confidence is a number you measure rather than one the model reports: weight by inverse variance, w_i proportional to 1 / e_i^2, from each member's error on recent held-out data.",
     "Architectural diversity, using models with different built-in assumptions like LSTM, attention, and Kalman, is the main driver of uncorrelated errors and ensemble gain.",
     "An ensemble is judged against its best single member. Beating the mean of the member scores is automatic, so it proves nothing."
   ]}

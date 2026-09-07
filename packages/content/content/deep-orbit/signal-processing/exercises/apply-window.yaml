@@ -2,10 +2,12 @@ slug: apply-window
 lessonSlug: windowing-and-overlap
 title: "Build and Apply a Hann Window"
 mlContent: data
-instructions: "Build `hannWindow(n)` returning a JS number array: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))). Plain JS (Array.from + Math.cos, like the lesson) or tensors, your choice; the grader only checks the numbers. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map)."
+instructions: "Build `hannWindow(n)` returning a JS number array: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))). Plain JS (Array.from + Math.cos, like the lesson) or tensors, your choice; the grader checks the returned numbers, not how you produced them. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map). The grader runs your two functions on a tone that does not fit its window. It takes the FFT of both the raw and the windowed slice. Energy in bins away from the peak has to drop by more than 20x. Only a real taper does that: zeroing the two end samples of a rectangular window will not."
 starterCode: |
   function hannWindow(n) {
     // w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))) for i = 0..n-1
+    // Every sample tapers, not just the two ends: the grader takes an FFT
+    // and checks that leakage into far bins collapses.
     return [];
   }
   function applyWindow(signal, window) {
@@ -36,6 +38,18 @@ testCode: |
       const w = hannWindow(65);
       expect(w[32]).toBeCloseTo(1, 4);
     });
+    it('tapers through the interior instead of jumping to full weight', () => {
+      const w = hannWindow(9);
+      expect(w[1]).toBeCloseTo(0.14644661, 4);
+      expect(w[2]).toBeCloseTo(0.5, 4);
+      expect(w[3]).toBeCloseTo(0.85355339, 4);
+    });
+    it('scales the taper with n', () => {
+      // One index, two lengths, two different correct answers. A window
+      // that ignores n cannot match both.
+      expect(hannWindow(9)[2]).toBeCloseTo(0.5, 4);
+      expect(hannWindow(17)[2]).toBeCloseTo(0.14644661, 4);
+    });
   });
   describe('applyWindow (tf element-wise mul)', () => {
     it('returns same length', () => {
@@ -46,6 +60,56 @@ testCode: |
       expect(out[0]).toBeCloseTo(1, 4);
       expect(out[1]).toBeCloseTo(4, 4);
       expect(out[3]).toBeCloseTo(4, 4);
+    });
+    it('uses the window it is handed', () => {
+      // Same signal, a different window, a different correct answer.
+      const out = applyWindow([2, 4, 6, 8], [1, 0.25, 2, 0]);
+      expect(out[0]).toBeCloseTo(2, 4);
+      expect(out[1]).toBeCloseTo(1, 4);
+      expect(out[2]).toBeCloseTo(12, 4);
+      expect(out[3]).toBeCloseTo(0, 4);
+    });
+    it('keeps sample order with an asymmetric window', () => {
+      const out = applyWindow([1, 1, 1, 1], [0, 0.25, 0.75, 1]);
+      expect(out[1]).toBeCloseTo(0.25, 4);
+      expect(out[2]).toBeCloseTo(0.75, 4);
+    });
+  });
+  describe('the window suppresses spectral leakage', () => {
+    // Grade the effect, not three sample positions. A tone with half a
+    // cycle left over does not fit its window, so the raw FFT smears
+    // energy across the whole spectrum. A real taper collapses it.
+    const leakage = (n, cycles) => {
+      const signal = [];
+      for (let i = 0; i < n; i++) {
+        signal.push(Math.sin((2 * Math.PI * cycles * i) / n));
+      }
+      const spectrum = (samples) => tf.tidy(() =>
+        tf.abs(tf.spectral.rfft(tf.tensor1d(Array.from(samples)))).arraySync());
+      const raw = spectrum(signal);
+      const windowed = spectrum(applyWindow(signal, hannWindow(n)));
+      const peakBin = Math.round(cycles);
+      const awayFromPeak = (bins) => bins.reduce(
+        (sum, mag, i) => (Math.abs(i - peakBin) > 3 ? sum + mag : sum), 0);
+      return {
+        raw: awayFromPeak(raw),
+        windowed: awayFromPeak(windowed),
+        windowedPeak: windowed.reduce((a, b) => Math.max(a, b), 0),
+      };
+    };
+    it('cuts far-bin energy by more than 20x, 10.5 cycles in 128 samples', () => {
+      const l = leakage(128, 10.5);
+      expect(l.raw / l.windowed).toBeGreaterThan(20);
+    });
+    it('cuts far-bin energy by more than 20x, 20.5 cycles in 64 samples', () => {
+      // A second length and a second tone: the window has to be built from
+      // n, and the taper has to work on both.
+      const l = leakage(64, 20.5);
+      expect(l.raw / l.windowed).toBeGreaterThan(20);
+    });
+    it('leaves far bins far below the windowed peak', () => {
+      const l = leakage(128, 10.5);
+      expect(l.windowed / l.windowedPeak).toBeLessThan(0.15);
     });
   });
 estimatedMinutes: 10

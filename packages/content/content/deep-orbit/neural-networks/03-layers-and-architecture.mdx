@@ -20,7 +20,7 @@ concept:
     mlTitle: "Layer Composition"
     mlCode: "model.add(tf.layers.dense({ units: 64 }))"
     tier: structural
-    breaks: "Middleware passes one shared request object down the chain, mutating it in place, and any handler may skip the rest or answer outright. A sequential model is a straight pipe: every layer returns a new tensor whose shape the next layer's weights already expect, no stage opts out, and during training the data moves both ways, activations forward and gradients backward. Nothing ever travels backward through a middleware stack."
+    breaks: "Middleware passes one shared request object down the chain, mutating it in place, and any handler may skip the rest or answer outright. A sequential model is a straight pipe: every layer returns a new tensor whose shape the next layer's weights already expect, no stage opts out, and during training the data moves both ways, activations forward and gradients backward. Middleware does get a return trip: code after next() runs once the downstream handlers finish. What that trip carries is the same request object, not gradients that rewrite the stage's own weights."
 consequence:
   narrative: "Nazari reads the parameter quote twice: 673. Nothing is trained, so the stack knows nothing yet. What the count buys is room for patterns a single neuron could never hold."
 hints:

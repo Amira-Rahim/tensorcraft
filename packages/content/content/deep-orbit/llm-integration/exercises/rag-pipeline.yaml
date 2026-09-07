@@ -52,6 +52,16 @@ testCode: |
       expect(r.verified).toEqual([0.99]);
       expect(r.fabricated).toEqual([12.5]);
     });
+    it('draws the boundary at 0.05: against the row value 0.9987, 0.96 is in and 0.94 is out', () => {
+      const r = verifyClaims('Correlation 0.96 in one pass, 0.94 in the next.', rows);
+      expect(r.verified).toEqual([0.96]);
+      expect(r.fabricated).toEqual([0.94]);
+    });
+    it('compares numbers, not text: a claimed 9 does not trace to a row holding 29.7', () => {
+      const r = verifyClaims('The cluster repeats 9 times.', [[29.7]]);
+      expect(r.verified).toEqual([]);
+      expect(r.fabricated).toEqual([9]);
+    });
     it('handles an answer with no numbers at all', () => {
       const r = verifyClaims('The signal repeats and accelerates.', rows);
       expect(r.verified).toEqual([]);

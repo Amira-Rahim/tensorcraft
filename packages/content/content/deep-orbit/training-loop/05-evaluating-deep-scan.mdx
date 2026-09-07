@@ -26,7 +26,7 @@ consequence:
   narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment, but one archived sample refuses to pick a side."
 hints:
   - level: nudge
-    content: "Four moves: fit on the training tensors, evaluate on the held-out ones, write a three-way rule for the gap, then apply that rule to your own numbers. Nothing here is memorizable; the grader reruns the evaluation itself."
+    content: "Four moves: fit on the training tensors, evaluate on the held-out ones, write a three-way rule for the gap, then apply that rule to your own numbers. The diagnose rule is not memorizable: the grader calls it on five pairs of its own, and it reruns the held-out evaluation itself."
   - level: guidance
     content: "history = await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 }); fit is the one call that needs await. evalResult = model.evaluate(testX, testY) returns [loss, accuracy] as two scalar tensors. In diagnose, check the gap first (trainAcc - testAcc > 0.15 is 'overfitting'), then both-low (each below 0.7 is 'underfitting'), else 'healthy'. TFJS records the accuracy metric under history.history.acc; its last entry is the final training accuracy, and evalResult[1].dataSync()[0] is the held-out accuracy. Pass those two into diagnose for verdict."
   - level: solution
@@ -140,7 +140,7 @@ results.forEach((prob, i) => {
 One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Nobody explained it then and nobody explains it now. But notice what training did: the certain machine became an uncertain one. Untrained, it had an opinion; trained, it refuses to commit at 51.8 on the one reading the crew cannot label.
 
 **Interpreting results:**
-- **Training accuracy > Test accuracy** → The model is memorizing (overfitting). You need more data, less complexity, or regularization: a training-time penalty that discourages memorizing.
+- **Training accuracy far above test accuracy** → The model is memorizing (overfitting). A small gap is normal, since the model saw those rows; this course draws the line at a gap of 0.15. You need more data, less complexity, or regularization: a training-time penalty that discourages memorizing.
 - **Both accuracies low** → The model can't learn the pattern (underfitting). You need more layers, more units, or more training.
 - **Both accuracies high** → You have ruled out these two failures and nothing else. Slice the eval by class and by cohort before anyone signs a deployment.
 
@@ -195,7 +195,7 @@ An alarm on the live stream is about a 4% bet that something is really there, fr
 
 ## Challenge
 
-The lesson above ran the evaluation for you. Now run it yourself: train DEEP SCAN on the seeded archive, evaluate it on a held-out slice it has never seen, and read the train-versus-test gap. The grader reruns the evaluation and refuses a memorized verdict.
+The lesson above ran the evaluation for you. Now run it yourself: train DEEP SCAN on the seeded archive, evaluate it on a held-out slice it has never seen, and read the train-versus-test gap. The grader reruns the evaluation and calls your gap rule on five pairs of its own.
 
 <Exercise slug="deep-scan-eval" />
 

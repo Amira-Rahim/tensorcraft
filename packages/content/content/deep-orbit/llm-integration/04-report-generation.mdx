@@ -45,7 +45,7 @@ Six sections, one prompt, one draft: eleven hundred words back in nine seconds, 
 
 Generating a full report in one shot is the monolithic-component mistake: mediocre output and nothing you can verify in isolation. Sections are components: each gets its own data, its own prompt, and its own review.
 
-<LearningObjectives objectives={["Structure report generation as section-by-section assembly rather than monolithic generation", "Build a report pipeline: template → data retrieval → generation → validation → assembly", "Implement quality checks between sections for consistency", "Produce a formatted, citable scientific report from signal data"]} />
+<LearningObjectives objectives={["Structure report generation as section-by-section assembly rather than monolithic generation", "Build a report pipeline: template → data retrieval → generation → validation → assembly", "Cut a section that fails its check, and record the gap instead of shipping the guess", "Produce a formatted, citable scientific report from signal data"]} />
 
 <BossBeat
   beatId="deep-orbit-llm-cut-call"
@@ -79,7 +79,9 @@ Generating a full report in one shot is the monolithic-component mistake: medioc
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="report-pipeline.ts">
-{`interface ReportSection {
+{`import { verifyClaims } from './verify-claims';  // the checker from lesson 3
+
+interface ReportSection {
   heading: string;
   prompt: string;
   data: string;
@@ -90,9 +92,7 @@ Generating a full report in one shot is the monolithic-component mistake: medioc
 async function generateReport(
   sections: ReportSection[],
   llm: LLMClient,
-): Promise<string> {
-  const completedSections: string[] = [];
-
+): Promise<ReportSection[]> {
   for (const section of sections) {
     const prompt = \`## Task
 Write the "\${section.heading}" section of a scientific signal analysis report.
@@ -111,10 +111,14 @@ Write the "\${section.heading}" section of a scientific signal analysis report.
 
     const content = await llm.complete(prompt, { temperature: 0.2 });
     section.generated = content;
-    completedSections.push(\`## \${section.heading}\\n\\n\${content}\`);
+    // This is where section.validated comes from: lesson 3's checker, run over
+    // the numbers in THIS section's own data. Both sides tokenize the same way,
+    // so "12,001" splits into 12 and 001 on each side and still traces.
+    const rows = [(section.data.match(/-?\\d+(\\.\\d+)?/g) ?? []).map(parseFloat)];
+    section.validated = verifyClaims(content, rows).fabricated.length === 0;
   }
 
-  return completedSections.join('\\n\\n---\\n\\n');
+  return sections;
 }
 
 // Define the report template
@@ -132,7 +136,8 @@ const reportSections: ReportSection[] = [
   // ... additional sections
 ];
 
-const report = await generateReport(reportSections, llm);`}
+const marked = await generateReport(reportSections, llm);
+// Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
 ## Challenge

@@ -1627,6 +1627,7 @@ async function main() {
   const args = process.argv.slice(2);
   const strict = args.includes("--strict");
   const checkStarters = args.includes("--starters");
+  const checkCheats = args.includes("--cheats");
   const positional = args.filter((a) => !a.startsWith("--"));
   const filterSlug = positional[0];
 
@@ -1735,6 +1736,44 @@ async function main() {
           "unmodified starterCode passes every test; the exercise grades nothing",
         );
         continue;
+      }
+    }
+
+    // 5. Cheat gate: an exercise may register a deliberately ignorant
+    //    solution at scripts/exercise-cheats/<slug>.js. That solution MUST
+    //    fail at least one test. A grader a cheat can clear is grading the
+    //    API surface rather than the lesson's point, which is how six of
+    //    them shipped (audit round 4, 2026-09-07). Only runs with --cheats
+    //    so the default path stays fast.
+    if (checkCheats) {
+      const cheatPath = resolve(
+        repoRoot,
+        "scripts/exercise-cheats",
+        `${ex.slug}.js`,
+      );
+      if (existsSync(cheatPath)) {
+        const cheatSrc = readFileSync(cheatPath, "utf8");
+        const cheatRun = await runSolutionTests(cheatSrc, ex.testCode);
+        const cheatPassedAll =
+          cheatRun.ok &&
+          Array.isArray(cheatRun.results) &&
+          cheatRun.results.length > 0 &&
+          cheatRun.results.every((r) => r.passed);
+        if (cheatPassedAll) {
+          record(
+            ex,
+            "cheat-passes",
+            `scripts/exercise-cheats/${ex.slug}.js passes every test; the grader does not grade the lesson's point`,
+          );
+          continue;
+        }
+        const caught = Array.isArray(cheatRun.results)
+          ? cheatRun.results.filter((r) => !r.passed).map((r) => r.name)
+          : [];
+        console.log(
+          `  CHEAT-OK ${ex.slug}: ignorant solution rejected by ${caught.length} test(s)` +
+            (caught.length ? ` (${caught[0]})` : ""),
+        );
       }
     }
 

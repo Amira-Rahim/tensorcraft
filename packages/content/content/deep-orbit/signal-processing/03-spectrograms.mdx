@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "A spectrogram is many FFTs stacked in time: slice a window, take its magnitude spectrum, hop forward, repeat."
   - level: guidance
-    content: "numWindows is Math.floor((signal.length - windowSize) / hopSize) + 1. Window i starts at i * hopSize: slice windowSize samples, run tf.spectral.rfft then tf.abs, arraySync the magnitudes into a row, and push it. Each row has windowSize/2 + 1 bins (33 for windowSize 64), and both dimensions must follow the parameters, not constants."
+    content: "numWindows is Math.floor((signal.length - windowSize) / hopSize) + 1. Window i starts at i * hopSize: slice windowSize samples, run tf.spectral.rfft then tf.abs, arraySync the magnitudes into a row, and push it. Each row has windowSize/2 + 1 bins (33 for windowSize 64), and both dimensions must follow the parameters, not constants. The grader feeds a signal whose tone changes partway through, so row i must come from the samples at i * hopSize rather than from one reused spectrum."
   - level: solution
     content: "const spectrogram: number[][] = []; const numWindows = Math.floor((signal.length - windowSize) / hopSize) + 1; for (let i = 0; i < numWindows; i++) { const start = i * hopSize; const chunk = signal.slice(start, start + windowSize); const magnitudes = tf.tidy(() => { const fft = tf.spectral.rfft(tf.tensor1d(chunk)); return tf.abs(fft).arraySync() as number[]; }); spectrogram.push(magnitudes); } return spectrogram;"
 keywords:
@@ -55,7 +55,7 @@ Demir has the layout right: time on the x-axis, the second quantity on the y-axi
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A single FFT gives you one column of the spectrogram: all frequencies at one moment. To see how frequencies change over time, you slide a window across the signal and compute the FFT at each position.
+A single FFT gives you one row of the spectrogram array: all frequencies at one moment. To see how frequencies change over time, you slide a window across the signal and compute the FFT at each position.
 
 <CodeBlock language="typescript" title="stft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -177,7 +177,7 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
 - **Hop (stride between windows):** smaller hop = more overlap, smoother spectrogram, more compute. Common: hop = W/4 (75% overlap).
 - **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W.
 
-**Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Each column blurs events across the window's span, `W / fs`; consecutive columns advance by `hop / fs`.
+**Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Each row blurs events across the window's span, `W / fs`; consecutive rows advance by `hop / fs`.
 </DerivationDrawer>
 
 ## Challenge

@@ -1,7 +1,7 @@
 slug: prompt-template
 lessonSlug: prompt-engineering
 title: "Build a Prompt Template"
-instructions: "Write a function that takes signal data (amplitude, frequency, phase) and returns a structured prompt string that includes: role definition, signal data, known natural frequencies for reference, and a request for JSON output with classification, confidence, and reasoning fields."
+instructions: "Write a function that takes signal data (amplitude, frequency, phase) and returns a multi-line prompt with the four parts on separate lines, in order. First the role, a line naming DEEP SCAN and carrying no signal values. Then the reference context: known natural frequencies 5, 12, 23, 47 Hz. Then the signal data, one line per value, each next to its label (Amplitude, Frequency, Phase) and read off the argument. Then the output request: JSON with classification, confidence, and reasoning fields. The grader checks position as well as presence, and rebuilds the prompt from a second signal."
 starterCode: |
   interface SignalInput {
     amplitude: number;
@@ -10,10 +10,11 @@ starterCode: |
   }
 
   function buildPrompt(signal: SignalInput): string {
-    // Build a structured prompt with:
-    // 1. Role: "You are DEEP SCAN, a signal classifier"
-    // 2. Context: known natural frequencies [5, 12, 23, 47] Hz
-    // 3. Signal data
+    // Build a multi-line prompt with one part per line, in this order:
+    // 1. Role: "You are DEEP SCAN, a signal classifier" (no values here)
+    // 2. Context: known natural frequencies 5, 12, 23, 47 Hz
+    // 3. Signal data: one line each for Amplitude, Frequency and Phase,
+    //    using the numbers on `signal` rather than a hardcoded sample
     // 4. Output format: JSON with classification, confidence, reasoning
     return null; // your code here
   }
@@ -43,24 +44,79 @@ solutionCode: |
 testCode: |
   describe('buildPrompt', () => {
     const signal = { amplitude: 1.82, frequency: 73.4, phase: 0.23 };
+    const lines = (prompt) =>
+      prompt.split('\n').map((line) => line.trim()).filter((line) => line.length > 0);
+
     it('includes the signal data', () => {
       const prompt = buildPrompt(signal);
       expect(prompt).toContain('1.82');
       expect(prompt).toContain('73.4');
     });
-    it('includes natural frequencies', () => {
+
+    it('includes all four natural frequencies', () => {
       const prompt = buildPrompt(signal);
       expect(prompt).toContain('5');
+      expect(prompt).toContain('12');
+      expect(prompt).toContain('23');
       expect(prompt).toContain('47');
     });
-    it('requests JSON output', () => {
-      const prompt = buildPrompt(signal);
-      expect(prompt.toLowerCase()).toContain('json');
+
+    it('requests JSON output and names all three fields', () => {
+      const lower = buildPrompt(signal).toLowerCase();
+      expect(lower).toContain('json');
+      expect(lower).toContain('classification');
+      expect(lower).toContain('confidence');
+      expect(lower).toContain('reasoning');
     });
-    it('includes a role', () => {
+
+    it('opens with the role on a line of its own', () => {
       const prompt = buildPrompt(signal);
       expect(prompt).toContain('DEEP SCAN');
+      const first = lines(prompt)[0];
+      expect(first).toContain('DEEP SCAN');
+      expect(first).not.toContain('1.82');
+      expect(first).not.toContain('73.4');
+      expect(first.toLowerCase()).not.toContain('json');
     });
+
+    it('orders the parts role, context, data, format', () => {
+      const prompt = buildPrompt(signal);
+      const role = prompt.indexOf('DEEP SCAN');
+      const context = prompt.indexOf('47');
+      const data = prompt.indexOf('73.4');
+      const format = prompt.toLowerCase().indexOf('json');
+      expect(role).toBeGreaterThan(-1);
+      expect(context).toBeGreaterThan(role);
+      expect(data).toBeGreaterThan(context);
+      expect(format).toBeGreaterThan(data);
+    });
+
+    it('puts each value on its own line beside its label, for any signal', () => {
+      const check = (input) => {
+        const parts = lines(buildPrompt(input));
+        const carrying = (value) =>
+          parts.filter((line) => line.includes(String(value)));
+        const amp = carrying(input.amplitude);
+        const freq = carrying(input.frequency);
+        const phase = carrying(input.phase);
+        expect(amp).toHaveLength(1);
+        expect(freq).toHaveLength(1);
+        expect(phase).toHaveLength(1);
+        expect(amp[0].toLowerCase()).toContain('amplitude');
+        expect(freq[0].toLowerCase()).toContain('frequency');
+        expect(phase[0].toLowerCase()).toContain('phase');
+        expect(amp[0]).not.toBe(freq[0]);
+        expect(freq[0]).not.toBe(phase[0]);
+        expect(amp[0]).not.toBe(phase[0]);
+        for (const line of [amp[0], freq[0], phase[0]]) {
+          expect(line).not.toContain('DEEP SCAN');
+          expect(line.toLowerCase()).not.toContain('json');
+        }
+      };
+      check(signal);
+      check({ amplitude: 2.9, frequency: 118.6, phase: 0.05 });
+    });
+
     it('templates the input, not a memorized string (different signal, different prompt)', () => {
       const other = buildPrompt({ amplitude: 0.34, frequency: 12.0, phase: 1.57 });
       expect(other).toContain('0.34');
@@ -68,6 +124,12 @@ testCode: |
       expect(other).toContain('1.57');
       expect(other).not.toContain('1.82');
       expect(other).not.toContain('73.4');
+      const third = buildPrompt({ amplitude: 2.9, frequency: 118.6, phase: 0.05 });
+      expect(third).toContain('2.9');
+      expect(third).toContain('118.6');
+      expect(third).toContain('0.05');
+      expect(third).not.toContain('0.34');
+      expect(third).not.toContain('1.57');
     });
   });
 estimatedMinutes: 10

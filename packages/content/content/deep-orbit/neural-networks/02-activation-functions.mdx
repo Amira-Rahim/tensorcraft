@@ -12,7 +12,7 @@ difficulty: beginner
 context:
   narrative: "The neuron's raw output runs from negative eleven to six hundred. Nazari's alert board takes yes or no."
 concept:
-  explanation: "Activation functions bend a network's straight lines: they transform raw neuron output into bounded, useful ranges that downstream layers can build on."
+  explanation: "Activation functions bend a network's straight lines. ReLU clips the negative half away, and sigmoid and tanh squash the whole range into fixed bounds."
   bridge:
     jsTitle: "Math.max(0, x)"
     jsCode: "const clamped = Math.max(0, rawValue)"
@@ -26,7 +26,7 @@ hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
   - level: guidance
-    content: "applyRelu(preActivation) is a single call: every tensor has a .relu() method (tf.relu(preActivation) also works), which applies Math.max(0, x) elementwise. Return the activated tensor; the grader runs your function on two different tensors, so no hardcoded values."
+    content: "applyRelu(preActivation) is a single call: every tensor has a .relu() method (tf.relu(preActivation) also works), which applies Math.max(0, x) elementwise. Return the activated tensor; the grader also runs it on a random tensor built at grade time, so no hardcoded values."
   - level: solution
     content: "return preActivation.relu();"
 keywords:
@@ -43,7 +43,7 @@ Your neuron scored one reading at negative eleven and another at six hundred. Is
 
 <LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "Choose the right activation for different situations"]} />
 
-## From Unbounded to Useful
+## Breaking the Collapse
 
 Without activation functions, a neural network is stacked linear transformations, and stacked linear maps multiply out to a single matrix: ten layers of pure matrix math collapse into one. Activations break the collapse. They are the only place the network gets to bend.
 

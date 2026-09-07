@@ -60,12 +60,13 @@ solutionCode: |
   }
 testCode: |
   describe('profileModel', () => {
-    const INFERENCE_MS = 8;
     const createInput = () => [1, 2, 3];
 
     // predict() hands back a handle immediately; the cost sits in the
-    // readback, exactly where it sits on a GPU backend.
-    function makeModel(parameterCount: number) {
+    // readback, exactly where it sits on a GPU backend. costMs is a
+    // parameter so the suite can hand out two models of different speed:
+    // a returned constant can match one of them, never both.
+    function makeModel(parameterCount: number, costMs: number) {
       const calls = { predict: 0 };
       const model = {
         countParams: () => parameterCount,
@@ -74,7 +75,7 @@ testCode: |
           return {
             data: () =>
               new Promise((resolve) =>
-                setTimeout(() => resolve(new Float32Array([0])), INFERENCE_MS)
+                setTimeout(() => resolve(new Float32Array([0])), costMs)
               ),
           };
         },
@@ -83,23 +84,32 @@ testCode: |
     }
 
     it('returns correct parameter count', async () => {
-      const profile = await profileModel(makeModel(85_000_000).model, createInput, 5);
+      const profile = await profileModel(makeModel(85_000_000, 6).model, createInput, 5);
       expect(profile.parameterCount).toBe(85_000_000);
     });
 
     it('calculates memory size in true MB (params * 4 / 1e6, not MiB)', async () => {
-      const profile = await profileModel(makeModel(85_000_000).model, createInput, 5);
+      const profile = await profileModel(makeModel(85_000_000, 6).model, createInput, 5);
       expect(profile.memorySizeMB).toBeCloseTo(340.0, 1);
     });
 
     it('times the awaited readback, not the enqueue', async () => {
-      const profile = await profileModel(makeModel(100).model, createInput, 5);
+      const profile = await profileModel(makeModel(100, 6).model, createInput, 5);
       expect(typeof profile.avgInferenceMs).toBe('number');
-      expect(profile.avgInferenceMs).toBeGreaterThanOrEqual(INFERENCE_MS / 2);
+      expect(profile.avgInferenceMs).toBeGreaterThanOrEqual(3);
+    });
+
+    it('reports a slow model as slower than a fast one', async () => {
+      const fast = await profileModel(makeModel(100, 4).model, createInput, 5);
+      const slow = await profileModel(makeModel(100, 24).model, createInput, 5);
+      // A measured average tracks the model it was handed; the two mocks
+      // are 6x apart, so anything reporting a remembered constant fails
+      // here even when the constant is plausible.
+      expect(slow.avgInferenceMs).toBeGreaterThan(fast.avgInferenceMs * 2);
     });
 
     it('warms up once, then runs the timed loop exactly `runs` times', async () => {
-      const { model, calls } = makeModel(100);
+      const { model, calls } = makeModel(100, 6);
       await profileModel(model, createInput, 7);
       expect(calls.predict).toBe(8);
     });
