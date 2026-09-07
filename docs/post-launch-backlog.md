@@ -2600,6 +2600,47 @@ numbers are in the audit's "What I checked by running it" section. Note
 that three OTHER items, which I wrote up from reading alone before their
 verifiers finished, were then refuted; see the withdrawal list below.
 
+### VISUAL BASELINES 2026-09-07: GREEN, 30/30, and a CI gap
+
+Ran the visual suite for the first time since the September 5th re-pace.
+All 30 baselines match, in both schemes, so the re-mint that has been
+carried as an open item since then is NOT needed. Closing it.
+
+- [ ] **The visual suite never runs in CI.** All three specs under
+  `e2e/visual/` are gated on `RUN_VISUAL=1`, and nothing sets it, so
+  every CI run skips 30 tests and reports green. A visual regression can
+  therefore ship unnoticed; the baselines only protect anything when
+  someone remembers to run them by hand. Either set `RUN_VISUAL=1` in
+  the e2e job or drop the gate, which was added while the baselines were
+  still being generated and has outlived its reason.
+
+### E2E RUN 2026-09-07: GREEN, 132/132
+
+First end-to-end run since the 2026-09-04 lesson-format work. Two tests
+were broken, both by that work rather than by any content change, and
+both are fixed. The suite now passes 132 of 132 with retries disabled.
+Only two spec files changed; no content and no app code.
+
+- `e2e/script-playback.spec.ts`: the locator `/skip/i` matched two
+  buttons once "Skip to the challenge" shipped. Now names "Skip intro".
+- `e2e/worlds.spec.ts`: the glossary click test took the first term in
+  DOM order, which the step partition renders at zero size inside a
+  hidden paragraph. Measured: three prose containers, six terms, one
+  visible. Now takes the first visible term, and waits for the visible
+  set to stop changing, because glossary buttons are injected on the
+  client and the partition lands after them.
+
+To run it the way CI does, which is not what the local config does by
+default: build the web app with the placeholder env from ci.yml, then
+run with CI=1 and PW_PORT set to a free port, since the local config
+otherwise starts `next dev` and port 3000 is usually taken.
+
+- [ ] **Worth a look, not a test bug.** The lesson page renders two
+  identical `.lesson-prose` containers, both 2616 pixels tall, so the
+  prose sits in the DOM twice. Nothing fails because of it and it is
+  invisible to a reader, but it doubles the prose payload on every
+  lesson page. Check `lesson-steps.tsx` and `lesson-content.tsx`.
+
 ### BATCH TWO APPLIED 2026-09-06 (all 20 Tier 1 items now closed)
 
 The remaining seven Tier 1 items are done, plus the owner's three

@@ -245,16 +245,50 @@ test.describe("Lesson reading experience", () => {
   test("clicking a glossary term activates its rail entry", async ({
     page,
   }) => {
+    let lastSignature = "";
     await page.addInitScript(
       ({ stepKey, maxKey }) => {
         localStorage.setItem(stepKey, "1");
         localStorage.setItem(maxKey, "1");
+        // Every sibling spec declines consent; without this the banner
+        // covers the prose and the click below never lands.
+        localStorage.setItem("tc-cookie-consent", "declined");
       },
       { stepKey: STEP_KEY, maxKey: MAX_KEY },
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
 
-    const term = page.locator(".lesson-prose [data-glossary-term]").first();
+    await expect(page.getByTestId("lesson-right")).toHaveAttribute(
+      "data-kind",
+      /.+/,
+    );
+
+    // Glossary buttons are injected on the client, and the step partition
+    // then hides every paragraph that does not belong to the current step,
+    // so the visible set keeps changing for a moment after load. A term
+    // caught mid-settle is about to be hidden, and clicking it leaves the
+    // rail untouched. Wait until the visible set stops moving.
+    const visibleTerms = page.locator(
+      ".lesson-prose [data-glossary-term]:visible",
+    );
+    await expect
+      .poll(
+        async () => {
+          const count = await visibleTerms.count();
+          const first =
+            count > 0
+              ? await visibleTerms.first().getAttribute("data-glossary-term")
+              : null;
+          const signature = `${count}:${first ?? ""}`;
+          const settled = count > 0 && signature === lastSignature;
+          lastSignature = signature;
+          return settled;
+        },
+        { timeout: 15000, intervals: [250] },
+      )
+      .toBe(true);
+
+    const term = visibleTerms.first();
     await expect(term).toBeVisible({ timeout: 15000 });
 
     // Read the term value off the clicked element, then assert the rail

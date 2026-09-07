@@ -56,7 +56,9 @@ test.describe("Lesson script playback", () => {
     expect(await page.locator("[data-beat-shown]").count()).toBeLessThanOrEqual(
       1,
     );
-    await page.getByRole("button", { name: /skip/i }).click();
+    // /skip/i also matches "Skip to the challenge" since the lesson-format
+    // rework added it, so name the intro control exactly.
+    await page.getByRole("button", { name: /skip intro/i }).click();
     await expect(page.locator("[data-script-state='done']")).toBeAttached();
   });
 });
