@@ -51,7 +51,7 @@ A model can post ninety-five percent training accuracy and sixty percent on sign
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A validation set is data the training loop is allowed to read in order to make decisions: when to stop in lesson 4, where to put a threshold later, which settings to keep. Because those decisions were made to look good on it, its score is slightly flattered and is no longer a clean estimate. A test set is data no decision ever touched, scored once and reported. Lesson 4's val_loss of 0.081 was spent on the stopping decision, which is exactly why this lesson holds out a fresh slice the loop never saw. That run split coarsely: `validationSplit: 0.2` carved one twenty percent slice and no test slice at all. The capstone's model card records the three-way version, an 80/10/10 split of the archive.
+A validation set is data the training loop is allowed to read so it can make decisions. Those decisions include when to stop in lesson 4, where to put a threshold later, and which settings to keep. Because those decisions were made to look good on it, its score is slightly flattered and is no longer a clean estimate. A test set is data no decision ever touched, scored once and reported. Lesson 4's val_loss of 0.081 was spent on the stopping decision, which is exactly why this lesson holds out a fresh slice the loop never saw. That run split coarsely: `validationSplit: 0.2` carved one twenty percent slice and no test slice at all. The capstone's model card records the three-way version, an 80/10/10 split of the archive.
 
 <CodeBlock language="typescript" title="evaluation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -195,7 +195,7 @@ An alarm on the live stream is about a 4% bet that something is really there, fr
 
 ## Challenge
 
-The lesson above ran the evaluation for you. Now run it yourself: train DEEP SCAN on the seeded archive, evaluate it on a held-out slice it has never seen, and read the train-versus-test gap. The grader reruns the evaluation and calls your gap rule on five pairs of its own.
+Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it has never seen. This time you read the train-versus-test gap. The grader reruns the evaluation and calls your gap rule on five pairs of its own.
 
 <Exercise slug="deep-scan-eval" />
 

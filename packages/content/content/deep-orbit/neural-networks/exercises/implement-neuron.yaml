@@ -25,7 +25,7 @@ solutionCode: |
   );
 testCode: |
   describe('Neuron', () => {
-    it('computes the lesson example: 0.2 + 1.6 - 1.5 + 0.1', () => {
+    it('computes the starter example: 0.2 + 1.6 - 1.5 + 0.1', () => {
       expect(output.dataSync()[0]).toBeCloseTo(0.4, 4);
     });
     it('tracks different weights, not a memorized answer', () => {

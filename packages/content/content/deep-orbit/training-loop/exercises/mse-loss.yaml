@@ -1,7 +1,7 @@
 slug: mse-loss
 lessonSlug: loss-functions
-title: "Two Losses, and the Rule for Picking One"
-instructions: "Three functions. (1) `mseLoss(labels, predictions)` returns the mean squared error as a scalar tensor: use tf.losses.meanSquaredError(). (2) `bceLoss(labels, logits)` returns binary cross-entropy as a scalar tensor, reading its second argument as raw logits: use tf.losses.sigmoidCrossEntropy(), which applies the sigmoid itself. (3) `pickLoss(lastLayerActivation)` returns 'binaryCrossentropy' when the last layer is 'sigmoid', because that layer has already produced probabilities, and 'sigmoidCrossEntropy' for any other last layer, because it emits logits. The grader calls all three on inputs of its own."
+title: "Two Losses, and Cross-Entropy's Two Forms"
+instructions: "Three functions. (1) `mseLoss(labels, predictions)` returns the mean squared error as a scalar tensor: use tf.losses.meanSquaredError(). (2) `bceLoss(labels, logits)` returns binary cross-entropy as a scalar tensor, reading its second argument as raw logits: use tf.losses.sigmoidCrossEntropy(), which applies the sigmoid itself. (3) `pickBceForm(lastLayerActivation)` starts from a loss you have already chosen, binary cross-entropy, and picks which of its two forms to call. A sigmoid last layer hands you probabilities, so return 'binaryCrossentropy'. A last layer with no sigmoid hands you logits, so return 'sigmoidCrossEntropy'. The task type picks the loss; the last layer only picks the form. The grader calls all three on inputs of its own."
 starterCode: |
   function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
     // Mean of the squared differences, as a scalar tensor
@@ -13,7 +13,8 @@ starterCode: |
     return null; // your code here
   }
 
-  function pickLoss(lastLayerActivation: string): string {
+  function pickBceForm(lastLayerActivation: string): string {
+    // Binary cross-entropy is already the loss. Pick which form to call.
     // 'sigmoid' last layer -> the compile option that takes probabilities
     // any other last layer -> the tf.losses call that takes logits
     return null; // your code here
@@ -27,11 +28,11 @@ solutionCode: |
     return tf.losses.sigmoidCrossEntropy(labels, logits);
   }
 
-  function pickLoss(lastLayerActivation: string): string {
+  function pickBceForm(lastLayerActivation: string): string {
     return lastLayerActivation === 'sigmoid' ? 'binaryCrossentropy' : 'sigmoidCrossEntropy';
   }
 testCode: |
-  describe('two losses and the rule for picking one', () => {
+  describe('two losses and the form rule', () => {
     it('mseLoss is a scalar', () => {
       const loss = mseLoss(tf.tensor([3.0, -0.5, 2.0, 1.0]), tf.tensor([2.5, 0.0, 2.1, 1.3]));
       expect(loss.shape).toEqual([]);
@@ -64,10 +65,10 @@ testCode: |
       expect(bce).toBeCloseTo(0.7177, 3);
       expect(Math.abs(mse - bce)).toBeGreaterThan(0.1);
     });
-    it('pickLoss follows the last layer it is given, not a memorized string', () => {
-      expect(pickLoss('sigmoid')).toBe('binaryCrossentropy');
-      expect(pickLoss('linear')).toBe('sigmoidCrossEntropy');
-      expect(pickLoss('none')).toBe('sigmoidCrossEntropy');
+    it('pickBceForm follows the last layer it is given, not a memorized string', () => {
+      expect(pickBceForm('sigmoid')).toBe('binaryCrossentropy');
+      expect(pickBceForm('linear')).toBe('sigmoidCrossEntropy');
+      expect(pickBceForm('none')).toBe('sigmoidCrossEntropy');
     });
   });
 estimatedMinutes: 12

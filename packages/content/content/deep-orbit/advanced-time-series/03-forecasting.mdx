@@ -58,9 +58,22 @@ Then someone (or something) is sending it.
 <CodeBlock language="typescript" title="forecasting.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// The rolling loop from module 6, lesson 5: predict one step, append it,
-// slide the window, repeat. Nothing here is new. What matters this time is
-// what its error does as the horizon grows.
+// The rolling loop from module 6, lesson 5: predict one step, clamp it to
+// the sensor's range, append it, slide the window, repeat. The loop is the
+// same. What matters this time is what its error does as the horizon grows.
+
+// Same sensor spec module 6 clamped against: amplitude in counts,
+// "frequency" as a zero-crossing count over a 64-sample window, phase in
+// radians.
+const LIMITS = [
+  { min: 0, max: 2048 },
+  { min: 0, max: 63 },
+  { min: -Math.PI, max: Math.PI },
+];
+
+const clamp = (reading: number[]) =>
+  reading.map((v, j) => Math.min(Math.max(v, LIMITS[j].min), LIMITS[j].max));
+
 async function forecast(
   model: tf.LayersModel,
   seed: number[][],
@@ -76,8 +89,11 @@ async function forecast(
       return Array.from(pred.dataSync());
     });
 
-    predictions.push(nextValue);
-    window.push(nextValue);
+    // Clamp before the row re-enters the window. Step + 1 reads it as
+    // history, so one out-of-range value rides the rest of the run.
+    const bounded = clamp(nextValue);
+    predictions.push(bounded);
+    window.push(bounded);
   }
 
   return predictions;

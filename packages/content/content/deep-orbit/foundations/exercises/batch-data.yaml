@@ -1,7 +1,7 @@
 slug: batch-data
 lessonSlug: data-loading
 title: "Build the Lazy Pipeline"
-instructions: "The archive exposes readSample(i): it returns { features: number[2], label: number } for reading i, and it counts how many times it's called. Build a LAZY generator that yields { xs, ys } tensors one sample at a time for all 16 samples (no pre-loading them into an array!), then build `dataset` = generator → shuffle(10) → batch(4). The buffer shuffle goes before batch, never after, and it is the tool for records that arrive as a stream you cannot index by id. Finally, drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`."
+instructions: "The archive exposes readSample(i): it returns { features: number[2], label: number } for reading i, and it counts how many times it's called. Build a LAZY generator that yields { xs, ys } tensors one sample at a time for all 16 samples (no pre-loading them into an array!), then build `dataset` = generator → shuffle(10) → batch(4). The buffer shuffle goes before batch, never after: batching first would freeze each batch's membership. Finally, drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`."
 starterCode: "// Provided: lazy archive access (do NOT modify)\nlet readCount = 0;\nfunction readSample(i) {\n  readCount++;\n  return { features: [i, i * 2], label: i % 2 };\n}\n\n// 1. A generator that yields one sample per iteration, lazily\nfunction* sensorGen() {\n  // your code here (16 samples, use readSample(i))\n}\n\n// 2. Pipeline: generator -> shuffle(10) -> batch(4)\nconst dataset = null;\n\n// 3. Drain it, collecting xs shapes\nconst batchShapes = [];\n// await dataset.forEachAsync(...)"
 solutionCode: "let readCount = 0;\nfunction readSample(i) {\n  readCount++;\n  return { features: [i, i * 2], label: i % 2 };\n}\n\nfunction* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    const row = readSample(i);\n    yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };\n  }\n}\n\nconst dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);\n\nconst batchShapes = [];\nawait dataset.forEachAsync((b) => {\n  batchShapes.push(b.xs.shape);\n});"
 testCode: |
@@ -18,17 +18,30 @@ testCode: |
     it('read all 16 samples through the lazy reader', () => {
       expect(readCount).toBe(16);
     });
-    it('dataset is a real re-drainable tf.data pipeline, not a hardcoded shape list', async () => {
-      const shapes = [];
-      await dataset.forEachAsync((b) => {
-        shapes.push({ xs: b.xs.shape, ys: b.ys.shape });
-      });
-      expect(shapes.length).toBe(4);
-      shapes.forEach((s) => {
+    it('dataset is a real re-drainable pipeline whose batches are not frozen blocks', async () => {
+      const drain = async () => {
+        const shapes = [];
+        const groups = [];
+        await dataset.forEachAsync((b) => {
+          shapes.push({ xs: b.xs.shape, ys: b.ys.shape });
+          const ids = b.xs.arraySync().map((row) => row[0]);
+          groups.push(ids.slice().sort((x, y) => x - y).join(','));
+        });
+        return { shapes, membership: groups.slice().sort().join(' | ') };
+      };
+      const first = await drain();
+      expect(first.shapes.length).toBe(4);
+      first.shapes.forEach((s) => {
         expect(s.xs).toEqual([4, 2]);
         expect(s.ys).toEqual([4, 1]);
       });
       expect(readCount).toBe(32);
+      // Shuffle BEFORE batch: every drain reshuffles, so a second pass
+      // deals different batch membership. batch().shuffle() and a bare
+      // batch() both hand back the same four frozen blocks every time.
+      const second = await drain();
+      expect(second.membership).not.toBe(first.membership);
+      expect(readCount).toBe(48);
     });
   });
 estimatedMinutes: 12

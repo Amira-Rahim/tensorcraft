@@ -27,7 +27,7 @@ consequence:
   narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
 hints:
   - level: nudge
-    content: "Four parts, each on its own line, in this order: role, reference context, the live signal values, then the output contract. Every call rebuilds them from the argument it was handed."
+    content: "Four parts in this order: role, reference context, the live signal values, then the output contract. The role gets a line of its own and each signal value gets its own labelled line. Every call rebuilds them from the argument it was handed."
   - level: guidance
     content: "Assemble an array of lines and join them with newlines. Line one carries the role string containing DEEP SCAN and none of the signal numbers. Next the reference context: known natural frequencies 5, 12, 23, 47 Hz. Then one line per value, each holding its label (Amplitude, Frequency, Phase) and the number read off the argument. Last the request for JSON with classification, confidence, and reasoning fields. The grader checks those line positions, and it builds prompts from three different signals, so no value can be hardcoded."
   - level: solution

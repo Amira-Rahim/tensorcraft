@@ -59,7 +59,7 @@ A neuron takes inputs, multiplies each by a weight, sums the products, adds a bi
 
 // A neuron with 3 inputs
 const inputs = tf.tensor([0.5, 0.8, 0.2]);   // sensor readings
-const weights = tf.tensor([0.4, -0.2, 0.6]);  // learned importance
+const weights = tf.tensor([0.4, -0.2, 0.6]);  // hand-picked weights
 const bias = tf.scalar(0.1);                   // threshold offset
 
 // The neuron computation: weighted sum + bias
@@ -81,7 +81,7 @@ Those three numbers are hand-picked so the arithmetic stays followable; training
 
 Sign is direction. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency says this neuron treats higher frequency as mild evidence AGAINST. Run the flip to feel it: change `-0.2` to `+0.2` in the code above and the same reading scores 0.58 instead of 0.26, identical evidence now arguing for the other side.
 
-Magnitude is sensitivity, not importance. A weight says how much the output moves per unit of that input, so the vote an input casts is weight times input. Run the row: amplitude contributes `0.5 * 0.4 = 0.20`, frequency `0.8 * -0.2 = -0.16`, phase `0.2 * 0.6 = 0.12`. Per unit of phase, 0.6 is the loudest coefficient here, and phase still cast the smallest vote, because it read low on this sample. Weight sizes rank inputs against each other only once the inputs share a scale, which is what module 1's z-scoring bought.
+Magnitude is sensitivity, not importance. A weight says how much the output moves per unit of that input, so the vote an input casts is weight times input. Run the row: amplitude contributes `0.5 * 0.4 = 0.20`, frequency `0.8 * -0.2 = -0.16`, phase `0.2 * 0.6 = 0.12`. Per unit of phase, 0.6 is the loudest coefficient here, and phase still cast the smallest vote, because it read low on this sample. On a shared scale, weight sizes are comparable as per-unit sensitivities, which is what module 1's z-scoring bought. They still do not tell you which input drove a particular reading. That is the vote, and the vote depends on the sample.
 
 A weight near zero means the network learned to ignore something you thought mattered. When Nazari eventually tapes a parameter count to the engineering board, each of those parameters will be one of these numbers; sign and size are the entire vocabulary.
 

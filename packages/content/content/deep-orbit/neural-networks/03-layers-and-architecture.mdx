@@ -20,7 +20,7 @@ concept:
     mlTitle: "Layer Composition"
     mlCode: "model.add(tf.layers.dense({ units: 64 }))"
     tier: structural
-    breaks: "Middleware passes one shared request object down the chain, mutating it in place, and any handler may skip the rest or answer outright. A sequential model is a straight pipe: every layer returns a new tensor whose shape the next layer's weights already expect, no stage opts out, and during training the data moves both ways, activations forward and gradients backward. Middleware does get a return trip: code after next() runs once the downstream handlers finish. What that trip carries is the same request object, not gradients that rewrite the stage's own weights."
+    breaks: "Middleware passes one shared request object down the chain, mutating it in place, and any handler may skip the rest or answer outright. A sequential model is a straight pipe. Every layer returns a new tensor whose shape the next layer's weights already expect, and no stage opts out. During training the data moves both ways: activations forward, gradients backward. Middleware does get a return trip: code after next() runs once the downstream handlers finish. What that trip carries is the same request object, not gradients that rewrite the stage's own weights."
 consequence:
   narrative: "Nazari reads the parameter quote twice: 673. Nothing is trained, so the stack knows nothing yet. What the count buys is room for patterns a single neuron could never hold."
 hints:
@@ -48,7 +48,7 @@ One neuron cleared two calibration tones; the live stream is sixty-four channels
 
 Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage that reads the raw sensor values, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
 
-Say exactly what a stage is, because "finds patterns" describes the result, not the mechanism. A dense layer with 32 units is 32 copies of the lesson-1 neuron, every one reading the same 3 inputs through its own weights and bias, so the layer emits 32 weighted sums. The 16-unit stage is 16 more neurons whose inputs are those 32 numbers: they vote on combinations of the first stage's votes, and the verdict neuron votes on combinations of theirs. That is the whole trick of depth. Lesson 2 already told you why the activation between stages is not optional: without it, three stages of weighted sums multiply out to one weighted sum, and the stack would know exactly as much as a single neuron.
+Say exactly what a stage is, because "finds patterns" describes the result, not the mechanism. A dense layer with 32 units is 32 copies of the lesson-1 neuron, plus the activation lesson 1 left out. Every one of them reads the same 3 inputs through its own weights and bias. That gives 32 weighted sums, and the layer's relu runs on each one before the next stage sees it. The 16-unit stage is 16 more neurons, and its inputs are those 32 relu outputs. They vote on combinations of the first stage's votes, and the verdict neuron votes on combinations of theirs. Lesson 2 already told you why the activation between stages is not optional. Without it, three stages of weighted sums multiply out to one weighted sum, and the stack would know exactly as much as a single neuron.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

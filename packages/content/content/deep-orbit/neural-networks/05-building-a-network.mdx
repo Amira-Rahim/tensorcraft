@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "A complete network is layers plus compile: compiling attaches the optimizer and loss so the model can train."
   - level: guidance
-    content: "Stack three dense layers (units 32 with relu and inputShape [8], units 16 with relu, units 1 with sigmoid), then call model.compile with optimizer 'adam', loss 'binaryCrossentropy', and metrics ['accuracy']. The grader reads model.loss and counts 833 parameters, so both the layer stack and the compile config must match."
+    content: "Stack three dense layers (units 32 with relu and inputShape [8], units 16 with relu, units 1 with sigmoid), then call model.compile with optimizer 'adam', loss 'binaryCrossentropy', and metrics ['accuracy']. The grader counts 833 parameters and reads the compile config back: optimizer class Adam, loss binaryCrossentropy, accuracy in metrics. Match all of it."
   - level: solution
     content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });"
 keywords:
@@ -95,10 +95,7 @@ const prediction = model.predict(testInput) as tf.Tensor;
 console.log('Initial prediction:', prediction.dataSync());`}
 </CodeBlock>
 
-**Compilation options explained:**
-- **optimizer** (`'adam'`): The algorithm that adjusts weights during training. Adam is the default choice; it adapts the learning rate automatically.
-- **loss** (`'binaryCrossentropy'`): Measures how wrong the predictions are. Binary crossentropy for yes/no classification, MSE for continuous values.
-- **metrics** (`['accuracy']`): What to display during training. Accuracy = percentage of correct predictions.
+`optimizer: 'adam'` names the algorithm that adjusts weights during training, and Adam is the usual first pick because it adapts the learning rate as it goes. `loss: 'binaryCrossentropy'` sets how error gets measured. Binary crossentropy fits a yes/no output, and MSE fits continuous values. `metrics: ['accuracy']` only adds a number to the training log, the share of predictions that came out correct. It does not change what the model learns.
 
 ## Challenge
 

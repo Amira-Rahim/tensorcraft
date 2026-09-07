@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 14
 difficulty: intermediate
 context:
-  narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled; the error is 12x the normal baseline. Farah: 'That is our anomaly score.'"
+  narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled; the error is 12x the normal maximum. Farah: 'That is our anomaly score.'"
   speaker: "Dr. Farah"
 concept:
   explanation: "Reconstruction error scores each sample by how badly the autoencoder rebuilds it: one number, high when the input doesn't fit the learned patterns."
@@ -24,7 +24,7 @@ concept:
     tier: intuition
     breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
-  narrative: "Twelve times the normal error, and the per-feature map names the source: fft_5, the 73.4 Hz bin, carrying almost all of it alone."
+  narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the source: fft_5, the 73.4 Hz bin, carrying almost all of it alone."
 hints:
   - level: nudge
     content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"

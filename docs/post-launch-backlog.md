@@ -2600,6 +2600,94 @@ numbers are in the audit's "What I checked by running it" section. Note
 that three OTHER items, which I wrote up from reading alone before their
 verifiers finished, were then refuted; see the withdrawal list below.
 
+## Step 1 correction pass (2026-09-07)
+
+The fresh readers' findings are applied. Thirteen editors, one per owning
+file group, 116 edits. Then six file owners judged the cross-file
+hand-offs those editors raised, applying 8 of 14 and rejecting 6 with
+reasons. All gates green after both: content 413/413, exercises 65/65
+with all 8 cheats still rejected, web contract 20/20, interval canon
+byte-identical, zero em dashes.
+
+**The enumeration rule worked.** Editors were required to grep every
+world plus the glossary for each claim, write down every surface, and
+report the list before editing. They produced detailed per-claim surface
+inventories and 35 hand-offs for files they did not own. Compare that to
+the previous batch, which was told to "sweep" and left 31 gaps.
+
+**Owners rejecting hand-offs is the other half of it.** Six were
+declined on inspection: one quoted text that no longer exists, one
+misread a line that says "floats" rather than "weights", and one would
+have left both of a lesson's recall prompts drilling the same
+discrimination. A hand-off from someone who does not own the file is a
+lead, not an instruction.
+
+### Inherited claims in the unlaunched worlds, NOT fixed
+
+The enumeration found that other worlds carry Deep Orbit's corrected
+claims. Those worlds are unlaunched, so this was left out of scope
+deliberately rather than missed. Fix them before any of these ships.
+
+- [ ] packages/content/content/terra-grid/edge-deployment/03-runtime-environments.mdx:20 and :49 (also :38, :46, :51, :162). CLAIM: the same op-gap claim in TFLite/ONNX/Core ML terms ("an unsupported op does not run slowly, it fails the load. So targeting a runtime starts with an op-set audit rather than 
+- [ ] /Users/amira.salah/Desktop/tensorcraft/packages/content/content/signal-ward/transformers-bert/05-medis-mistake.mdx:65. Claim: "the model's attention weights didn't give it enough importance." This reads the weights as causal importance, the exact claim retired in deep-orbit. Should say the weight on
+- [ ] /Users/amira.salah/Desktop/tensorcraft/packages/content/content/signal-ward/attention-mechanisms/04-attention-visualization.mdx:13 (concept.explanation). Claim: "Attention weights can be visualized as heatmaps, revealing which words the model connects." "Revealing which words the model connects" out
+- [ ] /Users/amira.salah/Desktop/tensorcraft/packages/content/content/terra-grid/capstone/01-system-architecture-review.mdx:157 :: KeyTakeaways bullet 2 states the unconditional fallback rule as a general principle: "Every component needs a defined fallback strategy: the system must degrade gracefully". T
+- [ ] /Users/amira.salah/Desktop/tensorcraft/packages/content/content/neon-protocol/capstone/01-system-architecture.mdx:52 :: LearningObjectives objective 4 promises "Map failure modes and design graceful degradation for each stage", i.e. a fallback for every stage without exception. Same shape as the dee
+- [ ] /Users/amira.salah/Desktop/tensorcraft/packages/content/content/terra-grid/mlops-pipelines/05-automated-retraining.mdx:73. Claim: `return driftScore > 0.3` picks a drift threshold with no derivation shown. This is terra-grid's own detector, not the Deep Orbit claim I corrected, so it is not a sweep 
+- [ ] packages/content/content/nova-canvas/creative-deployment/03-caching-precomputation.mdx:125 :: CLAIM: `console.log('Cache HIT: 0ms generation')`. Same defect class as the fake annotation removed from deep-orbit 04-caching-strategies.mdx:130: a printed latency the code cannot produce. A Map lookup plu
+- [ ] packages/content/content/nova-canvas/creative-deployment/03-caching-precomputation.mdx:201 :: CLAIM (KeyTakeaway 2): "LRU eviction ensures the cache holds the most relevant outputs without unbounded growth". LRU holds the most recently USED entries, which is a proxy for relevance and not the same th
+- [ ] packages/content/content/nova-canvas/creative-deployment/03-caching-precomputation.mdx:201 :: CLAIM (KeyTakeaway 3): "Pre-computing popular outputs during off-peak hours eliminates generation latency for common requests". "Eliminates" overclaims: pre-computation removes the generation cost, not the 
+- [ ] /Users/amira.salah/Desktop/tensorcraft/packages/content/content/terra-grid/quantization/01-number-formats.mdx:81 :: Claim/pattern: the same slogan formula I removed from my own file, inside a code-block comment: '// BYTES_PER_ELEMENT is 4 and 1. That ratio is the whole trick.' Rubric section 1 (slog
+- [ ] /Users/amira.salah/Desktop/tensorcraft/packages/content/content/nova-canvas/creative-deployment/04-concurrent-users.mdx:25 :: Claim/pattern: same formula, in a hint: 'GenerationQueue(maxConcurrent: 4) is the whole trick: 4 inferences run, everyone else holds a live WebSocket and a queue position'. R
+
+## Step 1 fresh-reader verification (2026-09-07)
+
+Eleven readers, one per module, told only the defects originally reported
+there and never what had been changed. They read the current files, ran
+code to check claims, and independently swept the whole world for
+siblings of every corrected claim.
+
+**55 of 57 defects are closed and the new statements check out.** No em
+dashes anywhere. Interval canon unchanged.
+
+**What the pass caught, and this is why it runs:**
+
+- **2 high regressions.** `foundations/03-tensor-operations.mdx:126` still
+  asserts, verbatim in the body, the claim that was corrected in the
+  recap 22 lines below it: every layer is matMul plus bias, which is
+  false for the conv and recurrent layers this course teaches later. And
+  `training-loop/exercises/mse-loss.yaml:4` now states and GRADES a new
+  loss-selection rule as an unconditional layer-type rule, which is
+  false outside binary classification and is refuted later in the same
+  world. The second one is a false claim that step 1 introduced.
+- **25 medium regressions**, spread across every module, most in
+  llm-integration.
+- **6 defects not properly closed**: two in training-loop, two in
+  recurrent-networks, one in anomaly-detection, one in capstone. Four of
+  those were edited but now state something untrue.
+- **31 sweep gaps.** The editors were told to sweep the world for
+  sibling surfaces and mostly did, but the readers found 31 places a
+  corrected claim still lives. The instructive ones: the glossary's
+  "ensemble" entry still carries the pre-edit claim that pooling beats
+  any single member; `advanced-time-series/01` and `/02` keep the
+  causal-importance reading of attention weights that was corrected
+  elsewhere; and one gap is in a DIFFERENT WORLD, `nova-canvas`, which
+  carries the corrected autoencoder objective verbatim.
+- **55 rubric violations** in new or adjacent prose.
+
+- [ ] **Run the correction pass.** Order: the 2 high regressions, then
+  the 6 unclosed defects, then the 31 sweep gaps (per claim, not per
+  file), then the 25 mediums, then the rubric list.
+- [ ] **The sweep instruction needs teeth.** Telling an editor to sweep
+  produced a 31-gap miss rate. The reliable version is what the readers
+  did: grep for the claim, enumerate every surface, and report the list
+  before editing. Consider making that the required first step of any
+  claim fix.
+- [ ] **Other worlds inherit these claims.** nova-canvas is unlaunched
+  and already carries at least one corrected Deep Orbit claim. A claim
+  fix should sweep `packages/content/content/` entirely, not just
+  `deep-orbit/`.
+
 ## Round 4 remediation, steps 1 to 3 (2026-09-07)
 
 Three things were asked for and done in order. All gates green after

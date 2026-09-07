@@ -33,6 +33,7 @@ hints:
 keywords:
   - temporal-attention
   - time-step-focus
+  - positional-encoding
   - interpretability
   - scrollIntoView
 skillAxes: [model_arch]
@@ -67,7 +68,7 @@ function temporalAttention(
     const scores = scorer.apply(sequence) as tf.Tensor;
     const squeezed = scores.squeeze([2]) as tf.Tensor2D;  // [batch, timeSteps]
 
-    // Softmax over time axis: which steps matter most?
+    // Softmax over time axis: which steps take the weight?
     const weights = tf.softmax(squeezed, 1);  // [batch, timeSteps]
 
     // Weighted sum: combine time steps by importance
@@ -117,7 +118,8 @@ function topAttentionSteps(
 // Step 40: weight=0.09, reading=[0.95, 37, 0.89]  ← mid-pattern
 // (middle feature is the zero-crossing count over the 64-sample capture:
 //  37 is the 73.4 Hz line, and step 77's 40 is the shift itself, near
-//  80 Hz, which is why the model spent its top weight there)`}
+//  80 Hz. The top weight sits on that reading. Whether the shift is what
+//  drove the prediction takes an ablation, not a heatmap.)`}
 </CodeBlock>
 
 ## Applied: Attention Over a Live Ring Buffer

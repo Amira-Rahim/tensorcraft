@@ -41,7 +41,7 @@ skillAxes: [training]
 If you've ever written an easing loop, you have already written this lesson. Every loop that runs `pos += (target - pos) * 0.1` is doing gradient descent on the loss `(target - pos)² / 2`. The derivative of that loss with respect to `pos` is `-(target - pos)`, and stepping opposite the derivative, scaled by 0.1, reproduces the lerp line character for character. Run both from `pos = 2` toward `target = 10` and each lands on 2.8: the easing line because it was written that way, `tf.variableGrads` because it measured the slope (-8) and subtracted a tenth of it. What this lesson adds is only the part lerp never needed: where the slope comes from when nobody can tell you the target.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-An easing loop knows where it is going. This has 673 weights and no target to ease toward. Tell me which of the 673 go up, which go down, and by how much.
+An easing loop knows where it is going. This has 673 parameters and no target to ease toward. Tell me which of the 673 go up, which go down, and by how much.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand gradients as the direction of steepest ascent", "Implement a single gradient descent step", "Tune the learning rate: too high overshoots, too low crawls", "Visualize loss decreasing over multiple steps"]} />

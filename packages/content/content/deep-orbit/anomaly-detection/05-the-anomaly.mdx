@@ -12,7 +12,7 @@ scene:
   time: "The alert"
   portraitAlt: "Under alert lighting four crew silhouettes cluster at the holo table as a jagged unknown signal towers on the forward display."
 context:
-  narrative: "Before the ship's loudest alert, a replay of its quietest moment: sample 7741, logged in the calm period, back when nothing aboard could see it. Then the live feed does the same thing at twelve times the baseline error."
+  narrative: "Before the ship's loudest alert, a replay of its quietest moment: sample 7741, logged in the calm period, back when nothing aboard could see it. Then the live feed does the same thing at twelve times the highest error any normal signal produced."
   speaker: "Chief Nazari"
 concept:
   explanation: "When a throw reaches the last handler in the process, something genuinely new happened: the system hit a case nobody wrote a branch for."
@@ -20,9 +20,9 @@ concept:
     jsTitle: "uncaughtException"
     jsCode: "process.on('uncaughtException', (err) => { report(err); process.exit(1) })"
     mlTitle: "Anomaly Alert"
-    mlCode: "if (reconstructionError > threshold) { alert('UNKNOWN SIGNAL DETECTED') }"
+    mlCode: "const votes = [statistical, autoencoder, lstm].filter(Boolean).length;\nif (votes >= 2) alert('UNKNOWN SIGNAL DETECTED')"
     tier: intuition
-    breaks: "The uncaughtException handler fires on a real throw: deterministic, after the fact, always right that something broke. An anomaly alert fires on a statistical threshold over inputs that are all perfectly valid. Nothing threw, nothing is corrupt, and you chose where weird begins, so the alert can fire on healthy data and stay silent through a real failure."
+    breaks: "The uncaughtException handler fires on a real throw: deterministic, after the fact, always right that something broke. An anomaly alert fires on statistical thresholds over inputs that are all perfectly valid. Nothing threw, nothing is corrupt, and you chose where weird begins, so the alert can fire on healthy data and stay silent through a real failure."
 consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
@@ -42,7 +42,7 @@ skillAxes: [model_arch, evaluation]
 
 > **ARIA ARCHIVE · PLAYBACK: SAMPLE 7741** · Logged mid-calm-period. Rule-engine assessment at the time: nominal. Human assessment at the time: none; nobody was looking. End of frame.
 
-Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. The z-score gate still clears it, exactly as it did in the archive; the autoencoder and the LSTM both flag it on the first pass, and two votes out of three is all the ensemble needs. Demir is still staring at that, mid-morning, when the live feed does the same thing at twelve times the baseline reconstruction error, and the bridge lights up with the loudest alert DEEP SCAN has ever fired.
+Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. The z-score gate still clears it, exactly as it did in the archive; the autoencoder and the LSTM both flag it on the first pass, and two votes out of three is all the ensemble needs. Demir is still staring at that, mid-morning, when the live feed does the same thing at twelve times the highest reconstruction error any normal signal has produced, and the bridge lights up with the loudest alert DEEP SCAN has ever fired.
 
 By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite.
 
@@ -51,7 +51,7 @@ I've checked the sensor calibration twice. This is not instrument noise. The mod
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-The reconstruction error is twelve times the normal baseline. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM predicted its arrival within three seconds. All three systems agree.
+The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM predicted its arrival within three seconds. All three systems agree.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
@@ -62,7 +62,7 @@ What am I looking at, Dr. Farah?
 Something the training data has never contained, Commander. That is the one claim three agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
 </Dialogue>
 
-In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: every detector agrees this signal is unlike anything the model was taught on. The alert rule itself is the one from the last lesson, unchanged: reconstruction error over the locked 99th-percentile cutoff of about 0.0048. This reading came back at 0.062, twelve times the highest error any normal signal produced.
+In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: this signal is unlike anything the model was taught on, and all three detectors said so independently. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked 99th-percentile number, about 0.0048, and this reading came back at 0.062, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
 
 <LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means more independent evidence", "Read a 2-of-3 majority vote as an agreement level, and state what three agreeing detectors can and cannot claim"]} />
 
@@ -181,7 +181,7 @@ Build an ensemble anomaly detector combining multiple methods.
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
     "A model's job is detection and quantification; ensemble agreement tells you how much independent evidence fired, and interpretation of what was detected remains a human decision."
   ]}
-  bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, an anomaly alert (`if (reconstructionError > threshold) alert('UNKNOWN SIGNAL DETECTED')`) fires when every detector agrees the input falls outside anything the system was trained to handle."
+  bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, the ensemble alert (`if (votes >= 2) alert('UNKNOWN SIGNAL DETECTED')`) fires when two of the three detectors agree the input falls outside anything the system was trained to handle."
   youCanNow="Build an ensemble anomaly detection pipeline that combines statistical, autoencoder, and temporal detectors using majority voting for high-confidence flagging."
 />
 

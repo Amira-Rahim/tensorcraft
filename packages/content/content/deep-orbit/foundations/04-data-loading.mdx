@@ -50,7 +50,7 @@ The post-mortem arithmetic is short. Each reading drags its 33-second raw captur
 Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.
 </Dialogue>
 
-What keeps this pipeline alive on real sensor data is where the readings come from. A lazy source hands over one reading per turn and never assembles the archive, so memory stays flat however long the run is. `.batch(32)` sits after that source and sets the model's step size. The model sees 32 readings at a time and asks for the next group when it finishes this one. Demir's instinct wasn't wrong about scrolling; it was wrong about what a well-built infinite scroll actually does. A good list never holds every page. It holds a window, and that's the discipline this lesson installs: load chunks, never everything.
+What keeps this pipeline alive on real sensor data is where the readings come from. A lazy source hands over one reading per turn and never assembles the archive, so memory stays flat however long the run is. `.batch(32)` sits after that source and sets the model's step size. The model sees 32 readings at a time and asks for the next group when it finishes this one. Demir picked the right analogy and the wrong version of it. A well-built infinite-scroll list keeps the pages it is showing and drops the rest, and a tf.data pipeline does the same with readings.
 
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle data to prevent ordering bias", "Split data into training and validation sets"]} />
 
@@ -89,7 +89,7 @@ function* sensorDataGenerator() {
 
 // Create a dataset pipeline
 const dataset = tf.data.generator(sensorDataGenerator)
-  .shuffle(100)   // shuffle buffer of 100 items
+  .shuffle(100)   // shuffle buffer of 100 items: local mixing only
   .batch(32);     // group into batches of 32
 
 // Iterate through batches (like paginated API calls)
@@ -98,7 +98,9 @@ await dataset.forEachAsync((batch) => {
 });`}
 </CodeBlock>
 
-The key difference from paginated fetching: ML shuffles the data before batching. The reason is mechanical. The model adjusts its weights after every batch, and an archive is stored in the order it was recorded. Without a shuffle each batch is one stretch of one day, so consecutive adjustments all pull the same way. A buffer shuffle only reorders inside a sliding window the size of the buffer, so `shuffle(100)` then `batch(32)` still draws each batch from roughly 400 consecutive readings, a few hours of one day. 100 is a demo number. A buffer sized to the whole archive would sample fairly, but a shuffle buffer fills before it yields anything. The first batch would wait for all 28,800 readings to be read, and the pipeline would stop being a stream. So the rule: a shuffle buffer is for records arriving as a stream you cannot index, and shuffling a list of indices up front is for anything you can read by id. The archive can be read by id, which is what the split section below does.
+The key difference from paginated fetching: ML shuffles the data before batching. The reason is mechanical. The model adjusts its weights after every batch, and an archive is stored in the order it was recorded. Without a shuffle each batch is one stretch of one day, so consecutive adjustments all pull the same way. A buffer shuffle only reorders inside a sliding window the size of the buffer. `shuffle(100)` then `batch(32)` still draws each batch from roughly 400 consecutive readings, a few hours of one day. 100 is a demo number.
+
+Sizing the buffer to the whole archive would sample fairly, but a shuffle buffer fills before it yields anything. The first batch would wait for all 28,800 readings, and the pipeline would stop being a stream. So a buffer shuffle is what you are left with when records arrive as a stream you cannot index. This archive can be read by id, so it has a better option: shuffle a list of indices once, up front, and read in that order. That is a full shuffle with no buffer at all, and the split section below builds it.
 
 ## Why Batching Matters
 
@@ -134,8 +136,11 @@ function* splitGenerator(idx: Uint32Array) {
 const trainData = tf.data.generator(() => splitGenerator(trainIdx)).batch(32);
 const valData = tf.data.generator(() => splitGenerator(valIdx)).batch(32);
 // Disjoint by construction, the same split on every epoch, and no tensor is
-// built for a reading this side skips.`}
+// built for a reading this side skips. The index shuffle above is a full
+// shuffle, so neither pipeline needs a shuffle buffer.`}
 </CodeBlock>
+
+One condition rides under all of this. A random split is the right split when the rows are independent. These 28,800 readings are recorded in time order, so a reading is not independent of the one before it. It still works here, because the classifier you build in module 2 reads one reading at a time and nothing about its neighbors. Module 6 makes each sample a window of consecutive readings, and there a random split leaks: neighboring windows overlap, so validation rows arrive half seen. That module splits by time instead.
 
 ## Challenge
 
@@ -151,7 +156,7 @@ Build the lazy pipeline yourself: generator, shuffle, batch, without ever holdin
 <LessonRecap
   whatYouLearned={[
     "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
-    "Shuffle before you batch, never after: batching first freezes each batch's membership, so every batch stays a block of consecutive readings. A shuffle buffer suits a stream you cannot index. When you can read a record by id, shuffle the indices up front instead.",
+    "Shuffle before you batch, never after: batching first freezes each batch's membership, so every batch stays a block of consecutive readings. A shuffle buffer mixes only inside its own window, which is all you get when records arrive as a stream you cannot index. When you can read a record by id, shuffle the indices up front for a full shuffle.",
     "Split train/validation by dealing the deck once: shuffle the indices yourself and read only the ones this side owns, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets."
   ]}
   bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it. Node streams call that backpressure: the consumer sets the pace."

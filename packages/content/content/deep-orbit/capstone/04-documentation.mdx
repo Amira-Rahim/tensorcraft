@@ -125,7 +125,7 @@ const deepScanCard: ModelCard = {
     'Anomaly class has lowest recall (84%); rare signals may be misclassified as noise',
     'Requires minimum 80-sample window; cannot classify very short bursts',
     'WebGPU backend required for <10ms inference; falls back to 15ms on WebGL',
-    'Not validated on signals below -20 dB SNR',
+    'Not validated on signals below -20 dB SNR (signal-to-noise ratio; the signal is one tenth the amplitude of the noise)',
   ],
 
   usage: {
@@ -178,7 +178,11 @@ function getHealthMetrics(): HealthSnapshot {
   };
 }
 
-// Runbook: common operational scenarios
+// Runbook: common operational scenarios. First draft, before review.
+// Review note on the first entry: "if high" is not a threshold, and a
+// retrain needs labels nobody has collected yet. It now reads 'Drift
+// above 0.5 on a 100-sample window → hand-label 100 recent captures
+// → retrain on them'.
 const runbook = {
   'Low confidence trend': 'Check drift score → if high, retrain on recent data',
   'High latency spike': 'Check backend → WebGPU may have fallen back to WebGL',
@@ -200,7 +204,7 @@ Write a Model Card for the DEEP SCAN classifier.
     "A Model Card is structured documentation for an ML model covering purpose, training data, performance metrics, and known limitations: the same documentation discipline as a README, applied to a statistical artifact rather than deterministic code.",
     "Documenting limitations honestly is load-bearing: what the model cannot do (low recall on rare classes, training distribution boundaries, hardware requirements) is as operationally important as what it can do.",
     "Runbooks turn documentation into step-by-step procedures: replace each judgment call with a number, so anyone can operate the system without the original author.",
-    "That number has to be derived, not chosen. Read it off a high percentile of the metric measured on known-calm data, and record the window size it was measured at, because a threshold on a windowed statistic means something different at a different window size."
+    "That number has to be derived, not chosen. Read it off a high percentile of the metric measured on known-calm data. Record the window size you measured at, because the same threshold means something different on a longer window."
   ]}
   bridge="JSDoc comments describe a TypeScript function's inputs, outputs, and exceptions; a Model Card describes a model's training data, accuracy metrics, and known failure modes. The format is the same, but the model card's accuracy numbers describe a past benchmark, not a verifiable contract."
   youCanNow="Write a Model Card and operational runbook that document an ML model's performance characteristics, limitations, and failure recovery procedures."
@@ -214,6 +218,6 @@ The runbook's first draft comes together in the dead hours of the night watch, a
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-Demir does not pick a number. He goes and measures one, the way module 7 set its detection threshold: score drift over 200 fixed 500-sample windows from the calm week before deployment, then read the 99th percentile off that distribution. It lands at 0.5. The rewritten procedure carries the window size with it, because the distance between two sample means shrinks as the windows grow: drift above 0.5 on a 500-sample window, hand-label a hundred recent captures, retrain. The finished document reads less like documentation and more like a will, which he supposes is the point: if he is not here to run DEEP SCAN, this is the part of him that is. He signs it at an interval reading of 31.6 seconds, because ARIA timestamps reviews in pulses now, the way other systems use dates. Tomorrow they deploy.
+Demir does not pick a number. He goes and measures one, the way module 7 set its detection threshold: score drift over 180 fixed 100-sample windows from the calm week before deployment, then read the 99th percentile off that distribution. It lands at 0.5. The rewritten procedure carries the window size with it. On calm data the distance between two sample means shrinks as the windows grow, and the same detector sits near 0.22 on a 500-sample window. The entry reads: drift above 0.5 on a 100-sample window, hand-label a hundred recent captures, retrain. The finished document reads less like documentation and more like a will, which he supposes is the point: if he is not here to run DEEP SCAN, this is the part of him that is. He signs it at an interval reading of 31.6 seconds, because ARIA timestamps reviews in pulses now, the way other systems use dates. Tomorrow they deploy.
 
 </Epilogue>

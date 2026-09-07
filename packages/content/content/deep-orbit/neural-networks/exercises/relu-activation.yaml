@@ -26,6 +26,15 @@ testCode: |
       expect(vals[1]).toBe(0);
       expect(vals[2]).toBeCloseTo(0.1);
     });
+    it('works on a rank-2 tensor, not only a 1-D one', () => {
+      const out = applyRelu(tf.tensor2d([[-1.0, 2.0], [0.5, -0.25]]));
+      expect(out.shape).toEqual([2, 2]);
+      const vals = out.dataSync();
+      expect(vals[0]).toBe(0);
+      expect(vals[1]).toBeCloseTo(2.0);
+      expect(vals[2]).toBeCloseTo(0.5);
+      expect(vals[3]).toBe(0);
+    });
     it('is a function, not a lookup: matches Math.max(0, x) on a tensor drawn at grade time', () => {
       const len = 5 + Math.floor(Math.random() * 8);
       const probe = tf.randomNormal([len]);

@@ -22,11 +22,11 @@ consequence:
   narrative: "Samir has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns, only reproduce existing ones. That limitation sets the stage for the variational part."
 hints:
   - level: nudge
-    content: "Wire encoder.apply(input) into the decoder, then call autoencoder.fit(data, data): the same tensor serves as both input and target"
+    content: "The starter already wires the encoder into the decoder and compiles the model. Your part is the dense layers: the encoder shrinks 784 down to 16, the decoder grows 16 back to 784."
   - level: guidance
     content: "Build an encoder (shrink) and decoder (expand) with a bottleneck in the middle"
   - level: solution
-    content: "Encoder: 784→256→128→16. Decoder: 16→128→256→784. Train to minimize reconstruction error."
+    content: "const encoder = tf.sequential(); encoder.add(tf.layers.dense({ inputShape: [784], units: 256, activation: 'relu' })); encoder.add(tf.layers.dense({ units: 128, activation: 'relu' })); encoder.add(tf.layers.dense({ units: 16, activation: 'relu' })); const decoder = tf.sequential(); decoder.add(tf.layers.dense({ inputShape: [16], units: 128, activation: 'relu' })); decoder.add(tf.layers.dense({ units: 256, activation: 'relu' })); decoder.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));"
 keywords:
   - autoencoder
   - compression
@@ -44,7 +44,7 @@ Stripe frequency survived. Edge jitter didn't. That's what came back when one of
 
 You use compression every day. Brotli compresses your JavaScript bundles. JPEG compresses your images. gzip compresses your API responses. An autoencoder is a neural network that learns its own compression algorithm, customized for the specific data it sees.
 
-<LearningObjectives objectives={["Build and train a complete autoencoder in TensorFlow.js", "Understand the encoder-bottleneck-decoder pipeline", "Measure reconstruction quality with MSE loss", "Recognize the autoencoder's limitation: it cannot generate new data"]} />
+<LearningObjectives objectives={["Build and compile a complete autoencoder in TensorFlow.js", "Understand the encoder-bottleneck-decoder pipeline", "Measure reconstruction quality with MSE loss", "Recognize the autoencoder's limitation: it cannot generate new data"]} />
 
 ## The Compression Pipeline
 

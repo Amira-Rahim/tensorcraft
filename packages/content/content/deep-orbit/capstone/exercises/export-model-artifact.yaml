@@ -18,12 +18,13 @@ starterCode: |
   let artifacts = null;
   // your code here
 
-  // 2. Summarize what the cache would hash.
+  // 2. Summarize what the committed digest covers.
   function describeArtifact(a) {
     // return { tensors, totalParams, weightBytes }
     //   tensors:     how many named weight tensors (a.weightSpecs.length)
     //   totalParams: sum over a.weightSpecs of each spec's shape product
-    //   weightBytes: a.weightData.byteLength (four bytes per float32)
+    //   weightBytes: a.weightData.byteLength (four bytes per float32),
+    //                the bytes the committed digest is computed over
     return null; // your code here
   }
 

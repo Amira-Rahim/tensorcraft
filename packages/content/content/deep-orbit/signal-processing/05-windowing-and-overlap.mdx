@@ -45,14 +45,14 @@ Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy sme
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT doesn't know where your signal ends and where an artifact begins. We need to taper the edges to zero with a windowing function.
+Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT doesn't know where your signal ends and where an artifact begins. We need to taper the edges down with a windowing function.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
 Before you fix it: the dashboard filed two anomaly reports overnight against frequencies that do not exist. I spent eighty minutes standing down phantom contacts. Fix the edges before the next archive replay.
 </Dialogue>
 
-The smear has already cost the mission something countable. Cut a byte stream at an arbitrary offset and a multi-byte character splits in half, and decoding that chunk on its own produces a replacement character that was in nobody's data. Node ships `StringDecoder` for exactly that: it holds the split bytes back until the rest of the character arrives. Samples cut the same way behave worse. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is false frequency content. The fix has the decoder's shape: handle the boundary instead of cutting through it. Taper the edges to zero and the transform never sees a cliff.
+The smear has already cost the mission something countable. Cut a byte stream at an arbitrary offset and a multi-byte character splits in half, and decoding that chunk on its own produces a replacement character that was in nobody's data. Node ships `StringDecoder` for exactly that: it holds the split bytes back until the rest of the character arrives. Samples cut the same way behave worse. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is false frequency content. The fix has the decoder's shape: handle the boundary instead of cutting through it. Taper the edges down and the transform never sees a cliff.
 
 <LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 

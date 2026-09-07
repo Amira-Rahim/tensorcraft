@@ -126,8 +126,7 @@ function cachedClassify(signal: number[]): string {
   return result;
 }
 
-// Hit rate, read after the overnight run:
-console.log(cache.hitRate.toFixed(2));  // 0.40
+// After the overnight run: 4,110 lookups, 1,644 hits. cache.hitRate reads 0.40.
 
 // Mean cost per call = hitRate * lookup + (1 - hitRate) * inference.
 // The profile put inference at 45 ms mean and 112 ms P95; a Map lookup on
@@ -135,8 +134,11 @@ console.log(cache.hitRate.toFixed(2));  // 0.40
 const effectiveMs = 0.4 * 0.01 + 0.6 * 45;
 console.log(effectiveMs.toFixed(1));  // 27.0
 
-// 45 ms to 27 on the mean, and the P95 does not move: a miss still runs the
-// whole model. A cache changes how often you pay, not what one call costs.`}
+// 45 ms to 27 on the mean, and one miss still costs the same 112 ms it always
+// did. What a cache changes is how often you pay the model. Watch which
+// population a percentile belongs to, though: with 40% of served calls at
+// 0.01 ms, the served P95 is the 91.7th percentile of inference time, so it
+// sits under 112.`}
 </CodeBlock>
 
 ## Challenge
@@ -153,10 +155,10 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <LessonRecap
   whatYouLearned={[
-    "An LRU inference cache uses a cache-first pattern: hash the input, return a stored result on hit, run the model and store on miss. The delete + re-set trick on get() is required for true LRU behavior.",
+    "A cache-first predict hashes the input, returns a stored result on a hit, and runs the model and stores the result on a miss. Bounding the cache is a second decision on top of that: the delete + re-set trick in get() is what makes eviction true LRU instead of FIFO.",
     "Quantizing inputs before hashing means near-identical inputs land on the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
     "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data.",
-    "At a 40 percent hit rate the mean cost per call falls from 45 ms to about 27, because a hit costs a Map lookup and a miss still runs the model. The P95 stays at 112 ms, so a cache cuts how often you pay and not what one call costs."
+    "At a 40 percent hit rate the mean cost per call falls from 45 ms to about 27. A hit costs a Map lookup and a miss still runs the whole model, so one miss costs the full 112 ms it always did. The served P95 does drop: it is the 91.7th percentile of inference time once 40 percent of served calls cost almost nothing."
   ]}
   bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."
   youCanNow="Wrap a model in a cache-first predict keyed on a rounded input hash, count the inference calls it saves, and audit cached entries for model-version and TTL staleness."

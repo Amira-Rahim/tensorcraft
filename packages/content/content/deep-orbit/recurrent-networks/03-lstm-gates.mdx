@@ -137,8 +137,8 @@ y.dispose();`}
 // GRU (Gated Recurrent Unit): fewer parameters, often similar performance
 // Two gates instead of three: update gate + reset gate
 
-// 1. UPDATE GATE: one number doing the forget gate's job and the input
-//    gate's job at once
+// 1. UPDATE GATE: one value per dimension, doing the forget gate's job
+//    and the input gate's job at once
 //    update = sigmoid(W_z · [prevHidden, input])
 //    newHidden = update * prevHidden + (1 - update) * candidate
 //    Keeping 70% of the old state means taking 30% of the new candidate
@@ -186,7 +186,7 @@ Build an LSTM that handles long signal sequences.
   whatYouLearned={[
     "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that smoothly scale information flow.",
     "The cell state acts as a direct gradient highway through time, preventing the exponential decay that breaks simple RNNs on long sequences.",
-    "GRUs use two gates instead of three, dropping one of the LSTM's four weight sets (roughly 25% fewer parameters), and often match LSTM accuracy: training both and comparing is a standard first step.",
+    "GRUs carry three weight sets where the LSTM carries four: update, reset and candidate against forget, input, output and candidate. That is roughly 25% fewer parameters, and GRUs often match LSTM accuracy, so training both and comparing is a standard first step.",
     "A flatlined loss at 0.693 on a binary task is the coin-flip signature: the model is learning nothing, and on long sequences with a simple RNN, vanishing gradients are the first suspect."
   ]}
   bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context instead of a timer."

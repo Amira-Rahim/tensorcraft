@@ -7,7 +7,7 @@ description: |
   Attention, multi-step forecasts, Kalman filters, and confidence-weighted
   ensembles are what the crew builds to chase that miss, and what finally
   shows that the interval is shrinking.
-summary: "Forecast data that will not keep a schedule: attention (which past readings matter most), multi-step forecasts, Kalman filters (blending noisy readings with predictions), and ensembles (models voting by confidence)."
+summary: "Forecast data that will not keep a schedule: attention (where the model puts its weight), multi-step forecasts, Kalman filters (blending noisy readings with predictions), and ensembles (models voting by confidence)."
 lessonCount: 5
 prerequisites:
   - foundations

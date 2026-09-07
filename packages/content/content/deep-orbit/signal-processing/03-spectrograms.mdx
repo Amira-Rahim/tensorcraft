@@ -138,7 +138,7 @@ console.log('Anomaly appears at windows:', activeWindows);
 ## Window Size Tradeoff
 
 <CodeBlock language="typescript" title="window-tradeoff.ts">
-{`// Window size creates a fundamental tradeoff:
+{`// Window size trades the two resolutions against each other:
 // - Large window → better frequency resolution, worse time resolution
 // - Small window → better time resolution, worse frequency resolution
 // This is the "Heisenberg uncertainty" of signal processing.
@@ -194,7 +194,7 @@ Compute a spectrogram and identify when a frequency appears.
 <LessonRecap
   whatYouLearned={[
     "A spectrogram is built by sliding a window across the signal and computing one FFT per position. The result is a 2D array where each row is a time step and each column is a frequency bin.",
-    "Window size creates a fundamental tradeoff: larger windows give finer frequency resolution but coarser time resolution; smaller windows give finer time resolution but coarser frequency resolution.",
+    "Window size trades the two resolutions against each other: larger windows give finer frequency resolution but coarser time resolution; smaller windows give finer time resolution but coarser frequency resolution.",
     "To track how a signal's frequency content changes over time, a spectrogram is necessary because a single FFT shows only which frequencies exist somewhere in the signal; it cannot say when they appear."
   ]}
   bridge="A spectrogram shares the layout of a DevTools performance waterfall: time on the x-axis, frequency (or event type) on the y-axis, and intensity (or duration) as color. The difference is that every pixel in the spectrogram carries computed energy, while the waterfall marks discrete events."

@@ -424,7 +424,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gru",
     definition:
-      "A gated recurrent unit, an RNN cell with two gates instead of the LSTM's three. The update gate is one number that keeps some fraction of the previous hidden state and takes the rest from a new candidate, doing the forget and input gates' work at once, and the reset gate sets how much of the previous hidden state that candidate can see. There is no separate cell state, so there is no output gate.",
+      "A gated recurrent unit, an RNN cell with two gates instead of the LSTM's three. The update gate emits one value per dimension. Each value keeps that much of the previous hidden state and takes the rest from a new candidate, doing the forget and input gates' work at once. The reset gate sets how much of the previous hidden state that candidate can see. There is no separate cell state, so there is no output gate.",
     aliases: ["GRU"],
     scope: "global",
   },
@@ -468,7 +468,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "attention",
     definition:
-      "A mechanism that lets a model weigh which parts of the input matter most for each output.",
+      "A mechanism that scores every part of the input and blends it in proportion to those scores, so the model can put most of its weight on a few positions.",
     scope: "global",
   },
   {
@@ -483,6 +483,13 @@ export const GLOSSARY: GlossaryEntry[] = [
     definition:
       "The three projections attention uses: a query asks what to look for, keys advertise content, values carry it.",
     aliases: ["query key value", "QKV"],
+    scope: "global",
+  },
+  {
+    term: "positional-encoding",
+    definition:
+      "A vector added to each input position so attention, which is order-blind on its own, can tell step 4 from step 77.",
+    aliases: ["positional encoding", "positional encodings"],
     scope: "global",
   },
   {
@@ -637,6 +644,27 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "deep-orbit",
   },
   {
+    term: "main lobe",
+    definition:
+      "The cluster of adjacent frequency bins a single tone occupies after windowing. A wider main lobe means coarser frequency resolution.",
+    aliases: ["main lobes", "mainlobe"],
+    scope: "deep-orbit",
+  },
+  {
+    term: "sidelobe",
+    definition:
+      "The smaller ripples a window leaves outside the main lobe. Their height, quoted in dB below the peak, says how far leakage reaches.",
+    aliases: ["sidelobes", "side lobe", "side lobes"],
+    scope: "deep-orbit",
+  },
+  {
+    term: "dB",
+    definition:
+      "A logarithmic ratio between two amplitudes. Every 20 dB is a factor of ten, so -20 dB is one tenth of the reference.",
+    aliases: ["decibel", "decibels"],
+    scope: "deep-orbit",
+  },
+  {
     term: "aliasing",
     definition:
       "A frequency above half the sample rate folds down and appears at a lower, wrong one. Sampled at 128 Hz, a 73.4 Hz tone peaks near 54.6 Hz.",
@@ -689,7 +717,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "ensemble",
     definition:
-      "Combining several models so their pooled prediction beats any single one.",
+      "Running several models on the same input and using their combined prediction instead of any one member's. The blend beats the best single member only when the members are wrong in different places.",
     aliases: ["ensembles"],
     scope: "global",
   },
@@ -777,10 +805,31 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "global",
   },
   {
+    term: "opset",
+    definition:
+      "A numbered version of the ONNX operator set. Each number fixes which operators exist and how they behave, so an operator the target runtime lacks is fixed by exporting at a lower opset, not by the runtime.",
+    aliases: ["op-set", "operator set", "operator-set"],
+    scope: "global",
+  },
+  {
     term: "data-drift",
     definition:
       "When the statistics of incoming data shift away from what a model was trained on, degrading its accuracy.",
     aliases: ["data drift"],
+    scope: "global",
+  },
+  {
+    term: "population stability index",
+    definition:
+      "A drift score that buckets the baseline window and the current window the same way, then compares the two sets of bucket shares. By convention, below 0.1 is stable, 0.1 to 0.25 is worth watching, above 0.25 is major drift.",
+    aliases: ["PSI", "population-stability-index"],
+    scope: "global",
+  },
+  {
+    term: "Kolmogorov-Smirnov",
+    definition:
+      "A drift statistic that reads the largest gap between two cumulative distributions, so it catches a change in spread or shape that a difference of means misses.",
+    aliases: ["Kolmogorov-Smirnov statistic", "KS statistic"],
     scope: "global",
   },
   {

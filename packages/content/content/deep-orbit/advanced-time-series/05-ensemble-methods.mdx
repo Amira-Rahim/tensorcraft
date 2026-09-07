@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "A fan-out gives you three different answers to three different questions, and one rejection fails the whole batch. An ensemble asks every member the same question, keeps no member's answer on its own, and has nothing to reject: a wrong member still returns a number, and it drags the average instead of throwing. The payoff is conditional too. Three services are worth their bill because they do different work; three models are worth theirs only when their mistakes land in different places."
 consequence:
-  narrative: "Three architectures, one verdict: the ensemble catches the timing drift the LSTM alone missed."
+  narrative: "The blend beats its best single member on the held-out week, 0.028 against 0.038. Demir keeps all three models and still fits the compression line by hand."
 hints:
   - level: nudge
     content: "There is no new formula here. Mean absolute error, computed once per member and once for the averaged predictions. The only judgement call is which number you compare the ensemble against."
@@ -140,9 +140,9 @@ A forecaster has no trust number of its own, as lesson 3 said, so the `confidenc
 
 ## Why Ensembles Work
 
-Each member fails in its own place. The LSTM reads short patterns and misses long-range drift; the attention model reads long range and can overfit a small archive; the Kalman filter smooths noise off the level with a principled gain and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.028.
+Each member fails in its own place. The LSTM reads short patterns and misses long-range drift. The attention model reads long range and can overfit a small archive. The Kalman filter smooths noise off the level and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.028.
 
-That 0.028 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members has spent three inference calls to do worse than one of them would alone, and you see that only if you score each member on the same held-out week. That is the challenge below.
+That 0.028 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members did worse than one member would have done alone, at three times the inference cost. You only see that if you score every member on the same held-out week. That is the challenge below.
 
 <DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor">
 **The sqrt(N) claim above has fine print, and the fine print is one formula.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.
@@ -171,7 +171,7 @@ Score each member, score their average, and decide whether the ensemble earned t
 <LessonRecap
   whatYouLearned={[
     "An ensemble runs all member models on every input and combines their predictions; errors partially cancel when the members make uncorrelated mistakes.",
-    "Weighted averaging assigns each member influence proportional to its confidence, and that confidence is a number you measure rather than one the model reports: weight by inverse variance, w_i proportional to 1 / e_i^2, from each member's error on recent held-out data.",
+    "Weighted averaging gives each member influence proportional to its confidence. That confidence is a number you measure, not one the model reports. Weight by inverse variance: w_i proportional to 1 / e_i^2, from each member's error on recent held-out data.",
     "Architectural diversity, using models with different built-in assumptions like LSTM, attention, and Kalman, is the main driver of uncorrelated errors and ensemble gain.",
     "An ensemble is judged against its best single member. Beating the mean of the member scores is automatic, so it proves nothing."
   ]}
@@ -189,6 +189,6 @@ Farah leaves the forecasters extrapolating overnight from 72.4 seconds, the leve
 I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to four significant figures; I can supply eleven. You did not request this precision. I had it available.
 </Dialogue>
 
-Four significant figures of agreement, three architectures, one conclusion: the thing in Sector 7-G is not repeating itself; it is counting down. The curves still disagree on the date, and not one of them says what arrives when the count runs out.
+Two forecasters and a line drawn by hand, agreeing to four significant figures. The thing in Sector 7-G is not repeating itself. It is counting down. The curves still disagree on the date, and not one of them says what arrives when the count runs out.
 
 </Epilogue>

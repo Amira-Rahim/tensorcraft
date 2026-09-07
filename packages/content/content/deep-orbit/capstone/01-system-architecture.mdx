@@ -183,7 +183,7 @@ console.log('Graph valid:', validateGraph(manifest)); // true`}
 
 The manifest and the runner do not describe the same shape. `run()` carries one `data` value from stage to stage, which is exactly a chain: preprocessor, extractor, classifier, reporter. The manifest declares something wider. Two stages depend on `fft-extractor`, and `reporter` lists two dependencies of its own, so `reporter` needs two upstream values at the same time. A single carried variable can only ever hand it one, which is why the anomaly detector is missing from the assembled chain above.
 
-Running the declared graph takes a scheduler instead of a loop: walk the manifest in dependency order, keep each stage's output in a map keyed by stage name, then pass `reporter` both of the inputs it asked for. The exercise below builds the chain runner, because the chain is what this lesson's `run()` can express. The manifest is the design record, and it is ahead of the runner by one branch.
+Running the declared graph takes a scheduler instead of a loop. It walks the manifest in dependency order and keeps each stage's output in a map keyed by stage name. `reporter` then reads both of the inputs it asked for by name. The exercise below builds the chain runner, because the chain is what this lesson's `run()` can express. The manifest is the design record, and it is ahead of the runner by one branch.
 
 ## Challenge
 
@@ -198,7 +198,7 @@ Design a typed pipeline and validate the dependency graph.
     "Modeling an ML pipeline as a dependency graph of typed stages documents the contract between stages. Do not mistake that for compile-time safety: the stage list is PipelineStage<any, any>[], so the types erase at exactly the boundary you care about. The check that actually fires is the runtime validate() throw. TypeScript records what you meant; only validate() knows what arrived.",
     "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
     "A component manifest with declared dependencies lets you prove every stage's inputs exist before any inference runs; catching a cycle takes a second walk over the same manifest.",
-    "A loop that carries one value per stage runs a chain, not a graph. A stage with two declared dependencies needs a scheduler that walks the manifest in dependency order and keeps every stage's output addressable by name, so check which of the two your runner actually is."
+    "A loop that carries one value per stage runs a chain, not a graph. A stage with two declared dependencies needs a scheduler instead. It walks the manifest in dependency order and keeps every stage's output addressable by name. Check which of the two your runner is."
   ]}
   bridge="Just as `package.json` declares dependencies between npm packages, a pipeline config declares data-shape contracts between ML stages; but unlike npm, a contract violation in ML is silent and shows up as accuracy drift instead of a resolution error."
   youCanNow="Design a multi-stage ML inference pipeline as a typed dependency graph and validate its component contracts before runtime."

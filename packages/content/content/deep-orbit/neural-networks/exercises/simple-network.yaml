@@ -18,6 +18,12 @@ testCode: |
       expect(model.optimizer).toBeDefined();
       expect(model.loss).toBe('binaryCrossentropy');
     });
+    it('is compiled with the Adam optimizer specifically', () => {
+      expect(model.optimizer.getClassName()).toBe('Adam');
+    });
+    it('tracks accuracy as a metric', () => {
+      expect(model.metrics || []).toContain('accuracy');
+    });
   });
 estimatedMinutes: 15
 difficulty: intermediate

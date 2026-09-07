@@ -166,10 +166,12 @@ function detectDrift(
   baseline: number[][],
   current: number[][],
   // 0.5 is not a universal number. It is the 99th percentile of this
-  // detector's own score over 200 known-calm 500-sample windows, the same
-  // way module 7 read its reconstruction threshold off normal data. It is
-  // only valid at that window size: the distance between two sample means
-  // shrinks as the windows grow, so re-derive it if you change the window.
+  // detector's own score over 180 known-calm 100-sample windows, the same
+  // way module 7 read its reconstruction threshold off normal data.
+  // It is only valid at that window size. On calm data the distance
+  // between two sample means shrinks as the windows grow: the same
+  // detector sits near 0.22 on a 500-sample window. Change the window
+  // and you have to measure the number again.
   threshold: number = 0.5
 ): DriftReport {
   // The model's REAL input vector (module 5's fixed-bin design): 3 raw
@@ -192,8 +194,9 @@ function detectDrift(
   // This is a distance between means, not a comparison of distributions.
   // Production drift monitors score each feature with a
   // Kolmogorov-Smirnov statistic (the largest gap between the two
-  // cumulative distributions) or a population stability index; both see a
-  // change in spread or shape that the mean vector above misses.
+  // cumulative distributions) or a population stability index (both
+  // windows bucketed the same way, then compared bucket by bucket).
+  // Both read a change in spread or shape that the mean vector misses.
   const driftScore = Math.sqrt(features.reduce((s, f) => s + f.shift ** 2, 0));
 
   return {
@@ -228,13 +231,13 @@ Build a model monitor with drift detection.
 
 <RecallPrompt question="What category of model failure does standard app monitoring miss entirely?" answer="Data drift: when production input distributions diverge from the training distribution, predictions quietly become wrong without throwing an exception, changing latency, or triggering any observable system metric. App monitoring tracks errors and throughput; model monitoring must separately track input feature distributions and compare them against training-time baselines." />
 
-<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="Because production predictions arrive without labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Confidence and drift are the proxies you get instead. A real accuracy number, or a retrain on the drifted data, means somebody labels a sample of recent inputs first, and the delay before those labels exist is why the proxies are there at all." />
+<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="Because production predictions arrive without labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Confidence and drift are the proxies you get instead. A real accuracy number means somebody labels a sample of recent inputs first, and so does a retrain on the drifted data. The proxies are there because those labels take days to arrive." />
 
 <LessonRecap
   whatYouLearned={[
     "ML observability extends app monitoring with signals an app has no reason to collect: prediction confidence trends, input distribution drift, prediction distribution drift, and latency percentiles measured on inference. Many model failures produce no exception and no latency spike, so these signals need separate instrumentation.",
-    "Drift detection compares live inputs against a training-time baseline. The version built here is a distance between per-feature means, which catches a shift in level and scores 0.0 when the spread changes or a feature splits into two modes at the same average; a per-feature Kolmogorov-Smirnov statistic or a population stability index is what sees those.",
-    "A drift score is not an accuracy measurement. Production predictions arrive unlabeled, so confidence and drift stand in for an accuracy nobody can read live, and acting on a drift alert still requires someone to label a sample of the drifted inputs before any retraining happens.",
+    "Drift detection compares live inputs against a training-time baseline. The version built here is a distance between per-feature means, so it catches a shift in level and nothing else. Two windows with the same means score 0.0 whether the spread doubled or the feature split into two modes. A per-feature Kolmogorov-Smirnov statistic reads those, because it compares the whole distributions instead of their averages.",
+    "A drift score is not an accuracy measurement. Production predictions arrive unlabeled, so confidence and drift stand in for an accuracy nobody can read live. Acting on a drift alert still starts with someone hand-labeling a sample of the drifted inputs.",
     "The prediction side has a distribution too: the share of verdicts per class and the histogram of confidence scores both move when model behavior changes, and neither needs labels to compute.",
     "Latency percentiles (P50/P95/P99) apply directly to inference monitoring just as they do to API response time tracking."
   ]}

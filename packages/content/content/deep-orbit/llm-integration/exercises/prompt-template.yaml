@@ -10,7 +10,7 @@ starterCode: |
   }
 
   function buildPrompt(signal: SignalInput): string {
-    // Build a multi-line prompt with one part per line, in this order:
+    // Build a multi-line prompt with the four parts in this order:
     // 1. Role: "You are DEEP SCAN, a signal classifier" (no values here)
     // 2. Context: known natural frequencies 5, 12, 23, 47 Hz
     // 3. Signal data: one line each for Amplitude, Frequency and Phase,

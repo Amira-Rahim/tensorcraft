@@ -257,7 +257,8 @@ The bridge console at zero hour, as the mission record kept it:
 Signal source: 4.2 light-years, bearing 127.3
 Pulse interval: 29.7s, down from 73.4s at first measurement
 
-Pipeline: preprocess -> extractFeatures -> classify -> detectAnomalies -> analyzeSequence
+Graph: preprocess -> extractFeatures -> (classify, detectAnomalies) -> report
+Sequence analysis runs beside it, on the interval history, not on this window
 Input: anomaly-prx-cen-001, the signal the crew has tracked across eleven modules
 
 --- Classification Result ---

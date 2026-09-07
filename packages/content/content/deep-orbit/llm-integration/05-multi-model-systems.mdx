@@ -47,7 +47,7 @@ Four models, four contracts: a class and a confidence from the classifier, a rec
 
 Four stages that are each right 95% of the time are right 81% of the time together. A stage that is wrong rather than broken raises no exception, so the check has to sit between stages, while you still know what the stage promised.
 
-<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate signal classifier, anomaly detector, LSTM predictor, and LLM reporter", "Validate each stage's output against its contract, and fall back when a model breaks it", "Build the complete DEEP SCAN end-to-end processing pipeline"]} />
+<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate signal classifier, anomaly detector, LSTM predictor, and LLM reporter", "Validate each stage's output against its contract, then decide per stage: substitute a fallback, or stop the run when there is no honest substitute", "Build the complete DEEP SCAN end-to-end processing pipeline"]} />
 
 ## The DEEP SCAN Pipeline
 
@@ -170,10 +170,10 @@ Generate a brief alert summary in 2-3 sentences. Use only the numbers above.
 
 ## Error Handling and Fallbacks
 
-Two of those four checks stop the run: a confidence outside 0..1 and a NaN score have no honest substitute. The other two log a warning and return a stand-in, so the run continues. The catch blocks below fire only for the stages that throw.
+Two of those four checks stop the run: processSignal has no in-place substitute for a confidence outside 0..1 or a NaN reconstruction error. The other two log a warning and return a stand-in, so the run continues. resilience.ts runs the same four stages one level up. Its classifier call has no catch, so a throw there still ends the run. The other three sit in try blocks, where a throw is caught and a stand-in takes its place. For the autoencoder that stand-in is a z-score check.
 
 <CodeBlock language="typescript" title="resilience.ts">
-{`// Like micro-service circuit breakers: if one model fails, degrade gracefully
+{`// Like micro-service circuit breakers: degrade around the stages that have a stand-in
 
 async function resilientPipeline(
   signal: number[],
@@ -226,16 +226,16 @@ PAGER, 02:40: the claim checker is down and reports are queueing for the next re
 
 <Exercise slug="incident-checker-down" />
 
-<RecallPrompt question="Why does a pipeline of four models need validation between stages when every model passes its own tests?" answer="Errors compound: four stages at 95% reliability each leave 81% end to end, and a model that is merely wrong raises no exception. The classifier's verdict and the detector's score both become the reporter's evidence, so one bad value reaches the report as a confident one. Check each stage's output shape and range before passing it on, and fall back to a simpler method when a stage fails outright." />
+<RecallPrompt question="Why does a pipeline of four models need validation between stages when every model passes its own tests?" answer="Errors compound: four stages at 95% reliability each leave 81% end to end, and a model that is merely wrong raises no exception. The classifier's verdict and the detector's score both become the reporter's evidence, so one bad value reaches the report as a confident one. Check each stage's output shape and range before passing it on, and fall back to a simpler method only where a stand-in is honest." />
 
 <LessonRecap
   whatYouLearned={[
     "Combining probabilistic models compounds error: four stages that are each right 95% of the time are right 81% of the time together, so validate every stage's output before passing it on.",
     "Define clear interfaces between stages (the classifier's class and confidence become part of the reporter's input contract) so each model has predictable inputs and outputs.",
-    "Graceful degradation keeps the pipeline running: if one model fails, fall back to a simpler method rather than failing the entire chain."
+    "Degrade where a stand-in is honest, and stop the run where it is not. A short prediction vector or a fabricated draft has a usable fallback. A confidence outside 0..1 or a NaN score does not."
   ]}
   bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and returns a typed result the orchestrator checks before passing it on. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."
-  youCanNow="Design and wire a multi-model pipeline with typed interfaces between stages, per-stage output validation, and graceful fallbacks when individual models fail."
+  youCanNow="Design and wire a multi-model pipeline with typed interfaces between stages, per-stage output validation, and a fallback for the stages that have an honest one."
 />
 
 <Epilogue>

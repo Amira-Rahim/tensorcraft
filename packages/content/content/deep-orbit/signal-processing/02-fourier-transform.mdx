@@ -146,7 +146,7 @@ console.log('Dominant frequency:', dominant, 'Hz');  // 5`}
 
 ## The FFT for DEEP SCAN
 
-One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more, which caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. That is why you pick a sample rate above twice the highest frequency you care about, and why an under-sampled capture can plant a line that was never there.
+One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more. That caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. That is why you pick a sample rate above twice the highest frequency you care about, and why an under-sampled capture can plant a line that was never there.
 
 <CodeBlock language="typescript" title="deep-scan-fft.ts">
 {`import * as tf from '@tensorflow/tfjs';

@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "model.fit() runs the whole loop for you: forward pass, loss, backprop, and weight update, once per batch, with the whole dataset swept once per epoch."
   - level: guidance
-    content: "Await model.fit(xs, ys, options) and store its result in history. The grader checks that history.history.loss has exactly 10 entries and that the loss fell from the first epoch to the last. batchSize 2 is what makes that fall visible on four rows: it buys two weight updates per epoch instead of one."
+    content: "Await model.fit(xs, ys, options) and store its result in history. The grader checks that history.history.loss has exactly 10 entries and that the loss fell from the first epoch to the last. The loss falls without batchSize 2, but batchSize 2 buys two weight updates per epoch instead of one."
   - level: solution
     content: "const history = await model.fit(xs, ys, { epochs: 10, batchSize: 2 });"
 keywords:
@@ -70,9 +70,9 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 // and phase and LOW on frequency (frequency here is a zero-crossing
 // count, and a clean tone crosses zero far less often than broadband
 // noise); calm periods are the mirror image. The seeds make the DATA
-// reproducible. A net trained on pure noise could still memorize it:
-// its training loss would fall while the held-out loss sat at 0.693,
-// the coin-flip number, which is the tell this lesson teaches you to read.
+// reproducible. A net trained on pure noise could still memorize it.
+// Its training loss would fall while the held-out loss sat at 0.693,
+// the coin-flip number. Reading that pair is what this lesson teaches.
 const calm = tf.concat([
   tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
   tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
@@ -238,6 +238,6 @@ Practise the call itself on a four-row linear model: ten epochs, batch size 2, a
 
 <Epilogue>
 
-The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 102-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
+The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 102-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained parameters. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
 
 </Epilogue>

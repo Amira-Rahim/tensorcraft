@@ -252,7 +252,7 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
 
 <Exercise slug="export-model-artifact" />
 
-<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin cannot be a hash of the artifact itself: hashFiles() runs when the step starts, over files already checked out, and the 42 MB weight file is not there until the restore finishes. So pin something the repo carries. Have the training rig commit a small digest file next to the model reference, key the cache on hashFiles of that file, or skip the cache and pull a versioned artifact whose version string is the pin." />
+<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin cannot be a hash of the artifact itself. hashFiles() runs when the step starts, over files already checked out, and the 42 MB weight file is not there until the restore finishes. So pin something the repo carries. Have the training rig commit a small digest file next to the model reference, then key the cache on hashFiles of that file. The other route is to skip the cache and pull a versioned artifact whose version string is the pin." />
 
 <RecallPrompt
   question="What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"
@@ -262,7 +262,7 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
 <LessonRecap
   whatYouLearned={[
     "Standard CI/CD pipelines extend naturally to ML by adding model-specific gate steps (accuracy thresholds and inference benchmarks) that block the merge the same way failing unit tests do.",
-    "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately. A cache key cannot hash the artifact it is about to restore, because hashFiles() only sees files already in the workspace; commit the digest the training run produced and key on that file instead.",
+    "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately. A cache key cannot hash the artifact it is about to restore, because hashFiles() only sees files already in the workspace. Commit the digest the training run produced and key the cache on that file instead.",
     "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on.",
     "model.save() serializes to whatever save handler it is given: tf.io.withSaveHandler captures the artifacts in memory, where modelTopology, weightSpecs, and weightData.byteLength (four bytes per float32 parameter) are exactly the bytes the committed digest is computed over."
   ]}

@@ -97,9 +97,9 @@ MAE is mean absolute error: the average of `Math.abs(predicted - actual)` across
 <CodeBlock language="typescript" title="multi-step.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Physical limits of the three features, the same sensor spec the
-// module-4 pipeline normalizes against: the hull sensors saturate at
-// 2048 counts, "frequency" is a zero-crossing count over a 64-sample
+// Physical limits of the three features, from the same sensor spec the
+// module-4 pipeline normalizes against. The hull sensors saturate at
+// 2048 counts. "Frequency" is a zero-crossing count over a 64-sample
 // window, and phase is an angle in radians.
 const LIMITS = [
   { min: 0, max: 2048 },            // amplitude
@@ -126,8 +126,8 @@ async function forecastMultiStep(
       return Array.from(pred.dataSync());
     });
     // Clamp before the row goes back into the window. A fed-back forecast
-    // is the one place an out-of-range value poisons every later step:
-    // step i + 1 reads this row as history, so an amplitude of -40 or
+    // is the one place an out-of-range value poisons every later step.
+    // Step i + 1 reads this row as history, so an amplitude of -40 or
     // 3000 counts becomes the model's own input for the rest of the run.
     const bounded = clamp(nextValue);
     predictions.push(bounded);

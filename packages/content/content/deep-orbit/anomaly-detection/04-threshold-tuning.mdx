@@ -134,15 +134,15 @@ console.log(\`t=\${chosen} held out: P=\${held.precision.toFixed(2)} R=\${held.r
 
 The sweep and the report read different slices on purpose. Six candidates scored on the validation slice are six decisions charged to it, and module 3's rule holds: the test slice stays out of reach until the cutoff is locked. Sweep on the test slice instead and the winning F1 is part measurement, part luck about which candidate suited those particular rows.
 
-## Same Curve, Opposite Costs
+## When the Cost Asymmetry Moves the Cutoff
 
 The table above has one F1 peak, at t=0.004, and it is tempting to read that row as the answer. It is the answer only when a false alarm and a missed anomaly cost the same. They almost never do. Run the same curve through two deployments and watch the threshold move in opposite directions.
 
-**When the miss costs the mission.** Suppose the detector gates the capture pipeline: every real event it sleeps through is data the ship never records again. Take t=0.002, recall 1.00 at precision 0.34. At last week's rate of two real events, that is roughly six flags (2 / 0.34 = 5.9), four of them noise. Four wasted checks a week is the entire price of missing nothing, and the threshold belongs low.
+In the first deployment the detector gates the capture pipeline, so a miss costs the mission: every real event it sleeps through is data the ship never records again. Take t=0.002, recall 1.00 at precision 0.34. At last week's rate of two real events, that is roughly six flags (2 / 0.34 = 5.9), four of them noise. Four wasted checks a week is the entire price of missing nothing, and the threshold belongs low.
 
-**When the false alarm costs the detector.** Nazari's week is the second deployment. Fourteen alerts, twelve of them cosmic background: precision 0.14 (2 of 14), and the real cost was never the twelve wasted checks. It was the reflex they were training. A bridge crew that learns the alert is usually noise stops standing up for it, and the miss that finally matters arrives pre-ignored. On the same curve, t=0.010 buys precision 1.00 at recall 0.72: zero wasted checks, and 28 percent of real anomalies missed (1 - 0.72). For the capture pipeline that trade is malpractice; for an alert channel whose one failure mode is being tuned out, it can be exactly right.
+Nazari's week is the second deployment, the one where a false alarm costs the detector its standing with the crew. Fourteen alerts, twelve of them cosmic background: precision 0.14 (2 of 14), and the real cost was never the twelve wasted checks. It was the reflex they were training. A bridge crew that learns the alert is usually noise stops standing up for it, and the miss that finally matters arrives pre-ignored. On the same curve, t=0.010 buys precision 1.00 at recall 0.72: zero wasted checks, and 28 percent of real anomalies missed (1 - 0.72). For the capture pipeline that trade is malpractice; for an alert channel whose one failure mode is being tuned out, it can be exactly right.
 
-Same model, same errors, same F1 peak. The threshold moved down in the first deployment and up in the second, and nothing on the F1 table can tell you which way to push it. The costs live outside the dataset.
+Both deployments run the same model on the same errors, and the F1 peak sits in the same place. The threshold went down in the first and up in the second. The F1 table cannot tell you which way to move it, because what decides is the cost of a miss against the cost of a false alarm, and neither number is in the error data.
 
 ## Challenge
 
