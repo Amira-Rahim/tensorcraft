@@ -26,7 +26,7 @@ consequence:
   narrative: "Demir leaves a run going overnight on the strength of an analogy. The analogy does not survive the log."
 hints:
   - level: nudge
-    content: "A SimpleRNN layer reads the sequence step by step, carrying a hidden state forward, so the model sees order, not just values."
+    content: "A SimpleRNN layer reads the sequence step by step, carrying a hidden state forward, so one learned rule covers every step instead of a separate weight per position."
   - level: guidance
     content: "In buildRNN(), add tf.layers.simpleRNN with units: 16 and inputShape: [5, 3] (5 time steps of 3 features), then tf.layers.dense with 1 unit and sigmoid activation, compile with adam and binaryCrossentropy, and return the model. The grader checks the first layer's class is 'SimpleRNN', so Flatten plus Dense will not pass."
   - level: solution

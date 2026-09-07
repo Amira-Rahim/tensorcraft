@@ -24,11 +24,20 @@ consequence:
   narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added no information the samples did not already contain; it added access, and a network this small was never going to find the frequency basis on its own."
 hints:
   - level: nudge
-    content: "The K strongest magnitude bins summarize what a signal is made of; bin 0 is excluded because a DC offset is not a tone."
+    content: "Every bin has a fixed center, at bin index times bin width, and bin width is the sample rate over the number of samples. Work out which bin indices the band covers, then read those bins out of the magnitude array without reordering them."
   - level: guidance
-    content: "Compute tf.abs(tf.spectral.rfft(tf.tensor1d(signal))), arraySync() to a plain array, drop bin 0 with slice(1), sort descending with sort((a, b) => b - a), then keep the first k with slice(0, k). The grader expects magnitudes 64 and 32 for the two-tone test signal, in that order."
+    content: "Bin width is sampleRate / signal.length, so 64 samples at 256 Hz gives 4 Hz. The lowest bin you keep is Math.ceil(loHz / binWidth), the highest is Math.floor(hiHz / binWidth), which makes 50 to 82 Hz bins 13 through 20. Take tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync(), slice(loBin, hiBin + 1), and spread the result after the amplitude and the zero-crossing count. The grader expects 10 values for that band, with 32 at index 2 and 16 at index 7."
   - level: solution
-    content: "const fft = tf.spectral.rfft(tf.tensor1d(signal)); const magnitudes = tf.abs(fft).arraySync() as number[]; const sorted = magnitudes .slice(1) .sort((a, b) => b - a) .slice(0, k); return sorted;"
+    content: |
+      const amplitude = Math.max(...signal.map(Math.abs));
+      const zeroCrossings = signal.reduce((sum, v, i) =>
+        i > 0 && Math.sign(v) !== Math.sign(signal[i - 1]) ? sum + 1 : sum, 0
+      );
+      const binWidth = sampleRate / signal.length;
+      const loBin = Math.ceil(loHz / binWidth);
+      const hiBin = Math.floor(hiHz / binWidth);
+      const magnitudes = tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync() as number[];
+      return [amplitude, zeroCrossings, ...magnitudes.slice(loBin, hiBin + 1)];
 keywords:
   - feature-engineering
   - derived-features
@@ -57,7 +66,7 @@ Access is not free either. Eleven inputs instead of three means a bigger first w
 
 He writes 85 on the board and signs it. He's wrong, but in the direction nobody minds. Strip the story out and what he proposed is the move behind every `useMemo`: raw inputs arrive, and the sorted list, the filtered array, the aggregated count get computed once, because the derived form is what the consumer actually needs. Feature engineering is the same move, aimed at a model instead of a render.
 
-<LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Extract FFT magnitudes and use them as model features", "Normalize and combine raw features with frequency-domain features", "Measure the impact of better features on model accuracy"]} />
+<LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Convert a hertz band into fixed FFT bins and use their magnitudes as model features", "Normalize and combine raw features with frequency-domain features", "Measure the impact of better features on model accuracy"]} />
 
 ## Derived State for Models
 
@@ -203,7 +212,7 @@ const history = await enhancedModel.fit(trainX, trainY, {
 
 ## Challenge
 
-Extract FFT features from a signal and combine them with raw features.
+Build the feature vector DEEP SCAN 2.0 trains on: peak amplitude, zero-crossing count, then the fixed bins that cover a band given in hertz.
 
 <Exercise slug="fft-features" />
 
@@ -220,7 +229,7 @@ Extract FFT features from a signal and combine them with raw features.
     "A model's score is only as honest as the labels behind it. Re-annotating the archive against spectrogram ground truth is what turned the deployment review's 94 into a real 78, before features earned it back to 87."
   ]}
   bridge="Just as `useMemo(() => items.sort(compare), [items])` derives a sorted array from props so the render function does not have to sort on every access, `tf.concat([rawSignal, fftMagnitudes], 1)` derives frequency features from the raw signal so the model does not have to learn frequency extraction from scratch."
-  youCanNow="Extract fixed FFT magnitude bins from a signal, normalize them alongside raw features, and concatenate everything into a combined feature vector for a classifier."
+  youCanNow="Turn a hertz band into fixed bin indices, read those bins out of a signal's spectrum, and return them behind the raw features as one vector a classifier can train on."
 />
 
 <Epilogue>

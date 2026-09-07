@@ -13,7 +13,7 @@ context:
   narrative: "No single model handles all aspects of the signal. Demir combines the LSTM, attention model, and Kalman filter into an ensemble: multiple models, one prediction."
   speaker: "Ensign Demir"
 concept:
-  explanation: "An ensemble runs several models on every input and combines their answers; their individual errors partially cancel, and the blend beats any single member."
+  explanation: "An ensemble runs several models on every input and combines their answers. Their errors partly cancel where the members are wrong in different places. Where the members share a mistake, the blend keeps it."
   bridge:
     jsTitle: "Promise.all fan-out"
     jsCode: "const [a, b, c] = await Promise.all([svcA(x), svcB(x), svcC(x)])"
@@ -25,11 +25,25 @@ consequence:
   narrative: "Three architectures, one verdict: the ensemble catches the timing drift the LSTM alone missed."
 hints:
   - level: nudge
-    content: "An ensemble votes, but the votes are not worth the same. Each model hands you a confidence next to its prediction, and the grader is watching what you do with it."
+    content: "There is no new formula here. Mean absolute error, computed once per member and once for the averaged predictions. The only judgement call is which number you compare the ensemble against."
   - level: guidance
-    content: "Weight every prediction by its own confidence, then divide by the TOTAL confidence, not by the number of models. Equal confidences collapse back to a plain average, which is why the equal-confidence test passes either way and the 0.9/0.1 test does not."
+    content: "Average the members position by position first, then score that averaged series exactly the way you scored a member. beatsBest compares the ensemble error against the LOWEST member error, not against the average of the member errors, and a tie is not a win. Three members that are each off by 1 in the same direction average to a prediction off by 1, so that test expects false."
   - level: solution
-    content: "const stacked = tf.tensor2d(predictions.map(p => p.prediction)); const conf = tf.tensor1d(predictions.map(p => p.confidence)); const total = conf.sum(); const weights = conf.div(total).expandDims(1); return stacked.mul(weights).sum(0).arraySync();"
+    content: |
+      const mae = (values) =>
+        values.reduce((sum, v, i) => sum + Math.abs(v - actual[i]), 0) /
+        actual.length;
+      const perMember = {};
+      for (const member of members) {
+        perMember[member.name] = mae(member.predictions);
+      }
+      const blended = actual.map(
+        (_, i) =>
+          members.reduce((sum, m) => sum + m.predictions[i], 0) / members.length,
+      );
+      const ensemble = mae(blended);
+      const best = Math.min(...Object.values(perMember));
+      return { perMember, ensemble, beatsBest: ensemble < best };
 keywords:
   - ensemble
   - model-averaging
@@ -40,7 +54,7 @@ skillAxes: [model_arch, evaluation]
 ---
 
 <Dialogue speaker="Ensign Demir">
-The LSTM is great at short-range patterns. The attention model catches long-range dependencies. The Kalman filter tracks drift. Why choose one when we can combine all three?
+The LSTM is great at short-range patterns. The attention model catches long-range dependencies. The Kalman filter smooths the noise off the level. Why choose one when we can combine all three?
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -49,7 +63,7 @@ Because all three run on every input. An ensemble isn't a router that picks the 
 
 `Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Three services hand back three different pieces of an answer. Three models hand back three answers to the same question, and the only thing that makes the third one worth paying for is that it is wrong in places the other two are right.
 
-<LearningObjectives objectives={["Combine multiple models using averaging, weighted averaging, and stacking", "Understand why ensembles reduce error: averaging out individual model mistakes", "Build an ensemble of LSTM, attention, and Kalman filter for signal forecasting", "Evaluate ensemble performance vs individual models"]} />
+<LearningObjectives objectives={["Combine multiple models using averaging, weighted averaging, and stacking", "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places", "Build an ensemble of LSTM, attention, and Kalman filter for signal forecasting", "Score an ensemble against its best single member, not against the average member"]} />
 
 ## Combining Models
 
@@ -78,7 +92,7 @@ function averageEnsemble(predictions: ModelPrediction[]): number[] {
   return result;
 }
 
-// Weighted averaging: trust better models more
+// Weighted averaging: trust the members that scored better last week
 function weightedEnsemble(predictions: ModelPrediction[]): number[] {
   const totalConf = predictions.reduce((s, p) => s + p.confidence, 0);
   const dim = predictions[0].prediction.length;
@@ -93,7 +107,8 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
   return result;
 }
 
-// DEEP SCAN ensemble
+// DEEP SCAN ensemble. Confidences are measured, not self-reported: each
+// one comes from that member's error on last week's held-out readings.
 const predictions: ModelPrediction[] = [
   { modelName: 'LSTM', prediction: [0.82, 37.4, 0.45], confidence: 0.85 },
   { modelName: 'Attention', prediction: [0.79, 36.9, 0.51], confidence: 0.90 },
@@ -115,42 +130,18 @@ metaModel.add(tf.layers.dense({ units: 1, inputShape: [3] }));  // learned blend
 metaModel.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
 await metaModel.fit(metaX, metaY, { epochs: 20 });
 // Fit the meta-model on HELD-OUT predictions, never on the members' own
-// training windows, or it learns to trust whichever member memorized them.`}
+// training windows, or it learns to trust whichever member memorized them.
+// Fitting spends that slice: the stack carries weights of its own now, so
+// report its score on a further slice neither it nor the members have seen.`}
 </CodeBlock>
+
+A forecaster has no trust number of its own, as lesson 3 said, so the `confidence` field is not something the member reports. You measure it: score each member on a week of held-out readings it never trained on, then set its confidence so that the larger error gets the smaller number. Rescore it after the signal drifts, or you are weighting today's blend by who was right last month.
 
 ## Why Ensembles Work
 
-Each member fails in its own place. The LSTM reads short patterns and misses long-range drift; the attention model reads long range and can overfit a small archive; the Kalman filter tracks drift and assumes the dynamics are linear. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On the crew's held-out week the three members scored MAE 0.045, 0.038, and 0.052; the plain average scored 0.028, better than the best member. The function that produced those four numbers:
+Each member fails in its own place. The LSTM reads short patterns and misses long-range drift; the attention model reads long range and can overfit a small archive; the Kalman filter smooths noise off the level with a principled gain and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On the crew's held-out week the three members scored MAE 0.045, 0.038, and 0.058, and the plain average scored 0.028.
 
-<CodeBlock language="typescript" title="why-ensembles.ts">
-{`function evaluateEnsemble(
-  models: { name: string; predictions: number[][] }[],
-  actual: number[][],
-): { individual: Record<string, number>; ensemble: number } {
-  const individual: Record<string, number> = {};
-
-  for (const model of models) {
-    let totalError = 0;
-    for (let i = 0; i < actual.length; i++) {
-      for (let j = 0; j < actual[i].length; j++) {
-        totalError += Math.abs(model.predictions[i][j] - actual[i][j]);
-      }
-    }
-    individual[model.name] = totalError / (actual.length * actual[0].length);
-  }
-
-  // Ensemble prediction
-  let ensembleError = 0;
-  for (let i = 0; i < actual.length; i++) {
-    for (let j = 0; j < actual[i].length; j++) {
-      const avg = models.reduce((s, m) => s + m.predictions[i][j], 0) / models.length;
-      ensembleError += Math.abs(avg - actual[i][j]);
-    }
-  }
-
-  return { individual, ensemble: ensembleError / (actual.length * actual[0].length) };
-}`}
-</CodeBlock>
+That 0.028 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members has spent three inference calls to do worse than one of them would alone, and you see that only if you score each member on the same held-out week. That is the challenge below.
 
 <DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor">
 **The sqrt(N) claim above has fine print, and the fine print is one formula.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.
@@ -168,27 +159,30 @@ Each member fails in its own place. The LSTM reads short patterns and misses lon
 
 ## Challenge
 
-Build a weighted ensemble from multiple model predictions.
+Score each member, score their average, and decide whether the ensemble earned the extra inference calls.
 
 <Exercise slug="weighted-ensemble" />
 
 <RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated, and averaging cancels part of them. The factor-N variance cut (typical error shrinking by sqrt(N)) holds only for fully uncorrelated errors. With average pairwise correlation rho between member errors of variance sigma^2, ensemble variance is rho*sigma^2 + (1 - rho)*sigma^2/N: it floors at rho*sigma^2 no matter how many members you add." />
 
+<RecallPrompt question="Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?" answer="No. The best member scored 0.036, so the ensemble is worse than the model you already had, and the two other members are what dragged it there. Beating 0.046, the mean of the member scores, means nothing, because averaging clears that bar every time. The comparison worth making is against the best single member." />
+
 <LessonRecap
   whatYouLearned={[
     "An ensemble runs all member models on every input and combines their predictions; errors partially cancel when the members make uncorrelated mistakes.",
-    "Weighted averaging assigns each member influence proportional to its measured confidence, letting better-performing models contribute more to the final output.",
-    "Architectural diversity, using models with different built-in assumptions like LSTM, attention, and Kalman, is the main driver of uncorrelated errors and ensemble gain."
+    "Weighted averaging assigns each member influence proportional to its confidence, and that confidence is a number you measure from the member's error on recent held-out data, not one the model reports.",
+    "Architectural diversity, using models with different built-in assumptions like LSTM, attention, and Kalman, is the main driver of uncorrelated errors and ensemble gain.",
+    "An ensemble is judged against its best single member. Beating the mean of the member scores is automatic, so it proves nothing."
   ]}
   bridge="`Promise.all([svcA(x), svcB(x), svcC(x)])` runs every call on the same input and hands back all three results; `prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))` runs the same fan-out and then collapses the three into one, so a weak member is not a failed call, it is a worse average."
-  youCanNow="Build a weighted ensemble from multiple model predictions and evaluate whether it outperforms the best individual member."
+  youCanNow="Measure each member's error and the ensemble's on the same data, and say whether the blend beat its best single member."
 />
 
 > **DISPATCH archive · field intercept #16-C:** Hassan's multimodal detour, filed from the edge cell: averaged three models, celebrated the agreement. All three had trained on the same mislabeled batch; the ensemble was three copies of one mistake voting unanimously. The fix was not a fourth model. It was a second dataset.
 
 <Epilogue>
 
-Farah leaves the ensemble extrapolating overnight: LSTM, attention, Kalman, all three projecting the interval forward from 72.4 seconds. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
+Farah leaves the forecasters extrapolating overnight from 72.4 seconds, the level the Kalman filter holds for them: the LSTM on short range, the attention model on long. Demir fits the third line by hand off the interval log, a straight sixth of a second per day. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to four significant figures; I can supply eleven. You did not request this precision. I had it available.

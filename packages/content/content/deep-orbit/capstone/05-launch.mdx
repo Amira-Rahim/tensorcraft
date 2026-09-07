@@ -144,7 +144,7 @@ interface BuildConfig {
   output: string;
   assets: {
     models: string[];    // model.json + weight shards
-    testData: string[];  // holdout data for validation
+    smokeData: string[];  // sample rows for the post-deploy smoke test
   };
   optimization: {
     minify: boolean;
@@ -161,7 +161,7 @@ const config: BuildConfig = {
       'models/deep-scan-v1/model.json',      // 2 KB: model topology
       'models/deep-scan-v1/weights.bin',      // 42 MB: quantized + pruned
     ],
-    testData: [
+    smokeData: [
       'data/validation-sample.json',          // 100 samples for smoke test
     ],
   },
@@ -259,8 +259,8 @@ Match: Archimedes sensor calibration harmonics
 Correlation: 0.9987
 
 --- Interval Extrapolation ---
-Three architectures, three curves. Since deployment data landed,
-they agree on the date for the first time.
+Two forecasters and the hand-fit trend: three curves. Since
+deployment data landed, they agree on the date for the first time.
 Zero-crossing: eleven days, four hours.
 Rate model: nonlinear. The shrink rate refuses to hold still:
 near 3 s/day some weeks, near 1 s/day others. Each earlier curve
@@ -285,7 +285,7 @@ Recommendation: Transmit all data to Earth for independent verification.
 DEEP SCAN v1.0: Signal Classified. Mission Continues.`}
 </CodeBlock>
 
-Two lines in that output settle old debts. Nazari asked when the interval hits zero back when the number was 72.4 seconds, and three curves gave three different dates. The curves have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. A third debt, the oldest, stays open on purpose. An untrained build once scored that same reading 0.998, a reinitialization on fresh random weights scored it 0.997, and since module 2 nobody aboard has been able to say why. The harmonics overlay explains half of it. Every reading of Sector 7-G passes through sensors calibrated in the exact ratios the signal pulses in, so in the sensors' own coordinates 7741 is an outlier so extreme that any projection, hand-wired or random, throws it to one far end of the scale. Which end is the half nothing explains. Random weights have no preferred sign; two fresh draws should have thrown it to opposite ends as readily as the same one, and ARIA said as much the night it happened. Only a trained model ever learned to hesitate about it, and the hesitation is what training bought. Untrained networks know nothing; that lesson stands. The instrument that pointed before anyone built it was the ship, and the direction it pointed goes in the ledger next to the other coincidence nobody aboard resolves.
+Two lines in that output settle old debts. Nazari asked when the interval hits zero back when the number was 72.4 seconds, and three curves gave three different dates. The curves have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. A third debt, the oldest, stays open on purpose. An untrained build once scored that same reading 0.998, a reinitialization on fresh random weights scored it 0.997, and since module 2 nobody aboard has been able to say why. Both landed at the same end of the scale. Random weights have no preferred sign; two fresh draws should have thrown it to opposite ends as readily as the same one, and ARIA said as much the night it happened. Only a trained model ever learned to hesitate about it, and the hesitation is what training bought. Untrained networks know nothing; that lesson stands. Which end those two draws chose goes in the ledger next to the other coincidence nobody aboard resolves.
 
 ## Challenge
 

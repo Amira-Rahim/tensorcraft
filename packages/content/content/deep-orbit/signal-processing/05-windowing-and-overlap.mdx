@@ -21,7 +21,7 @@ concept:
     mlTitle: "Windowing"
     mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
     tier: structural
-    breaks: "The decoder's fix is lossless: the bytes it holds back arrive intact with the next chunk, and the decoded text is what a single read would have produced. A taper cannot promise that. It attenuates real samples at both edges, trading false frequencies for a wider, blurrier peak, and the only way to recover the discarded edge energy is to overlap the windows (50-75%) so every sample sits mid-window somewhere. Chunk size costs a decoder nothing either; window length is what sets your frequency resolution."
+    breaks: "The decoder's fix is lossless: the bytes it holds back arrive intact with the next chunk, and the decoded text is what a single read would have produced. A taper cannot promise that. It attenuates real samples at both edges, trading false frequencies for a wider, blurrier peak. Recover the discarded edge energy by overlapping the windows (50-75%). A sample the taper weakens in one window is weighted more in the next, and the weights sum to a near-constant total. Chunk size costs a decoder nothing either; window length is what sets your frequency resolution."
 consequence:
   narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
 hints:
@@ -141,12 +141,12 @@ console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
 
 ## Overlapping Windows
 
-Windowing tapers the signal to zero at the edges, which means you lose information there. The solution: overlap your windows so every sample gets full weight in at least one window.
+Windowing tapers the signal to zero at the edges, which means you lose information there. Overlap the windows and the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight. The weights it picks up across the windows containing it add up to a near-constant total, so no sample stays discounted overall. Keeping that total constant is what the constant-overlap-add condition asks for. The symmetric Hann used here comes close, and the drawer below shows how close.
 
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
-// With 50% overlap: every sample is fully weighted in at least one window
-// Overlap so every sample sits mid-window somewhere, never only at an edge
+// With 50% overlap: the tapers interlock, so the weights a sample picks up
+// across the windows containing it add up to a near-constant total
 
 function stftWithWindowing(
   signal: number[],
@@ -212,7 +212,7 @@ Apply a Hann window to a signal before computing the FFT.
   whatYouLearned={[
     "Spectral leakage occurs when a signal slice does not fit an integer number of cycles in the window. The abrupt edge is interpreted as a discontinuity, spreading energy from real peaks into neighboring frequency bins.",
     "Windowing functions such as Hann and Hamming taper signal edges to zero before the FFT, suppressing leakage. The tradeoff is a slight widening of the main lobe, reducing frequency resolution.",
-    "Overlapping windows (typically 50% hop) ensure that every sample contributes with full weight in at least one window, compensating for the energy lost at tapered edges."
+    "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the symmetric Hann here comes close."
   ]}
   bridge="Cutting a byte stream mid-character decodes to a replacement character that was never in the data, which is why `StringDecoder` holds the split bytes back. Cutting a signal mid-cycle produces frequencies that were never in the signal, and the fix is a taper: the decoder's boundary fix is lossless, the taper's is a trade."
   youCanNow="Apply a Hann window to a signal slice before computing the FFT, choose an appropriate overlap ratio, and explain why windowing reduces spectral leakage."

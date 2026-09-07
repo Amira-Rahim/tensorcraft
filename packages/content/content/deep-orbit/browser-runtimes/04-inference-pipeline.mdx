@@ -28,9 +28,9 @@ hints:
   - level: nudge
     content: "The whole preprocess-predict-read sequence belongs inside one tf.tidy() callback so intermediate tensors get cleaned up, and the raw signal must be normalized before the model ever sees it."
   - level: guidance
-    content: "Inside tf.tidy(), normalize amplitude, frequency, and phase each as (value - min) / (max - min) using RANGES, build the [1, 3] input with tf.tensor2d([normalized]), run model.predict(), pull the number out with dataSync()[0], and return class 'anomaly' when that number exceeds 0.5, else 'noise', with the same number as the confidence."
+    content: "Inside tf.tidy(), normalize amplitude, frequency, and phase each as (value - min) / (max - min) using RANGES, build the [1, 3] input with tf.tensor2d([normalized]), run model.predict(), and pull the number out with dataSync()[0]. Call it p: return class 'anomaly' when p exceeds 0.5, else 'noise'. The confidence goes with the verdict, so return p for 'anomaly' and 1 - p for 'noise'."
   - level: solution
-    content: "return tf.tidy(() => { const normalized = [ (signal.amplitude - RANGES.amplitude.min) / (RANGES.amplitude.max - RANGES.amplitude.min), (signal.frequency - RANGES.frequency.min) / (RANGES.frequency.max - RANGES.frequency.min), (signal.phase - RANGES.phase.min) / (RANGES.phase.max - RANGES.phase.min), ]; const input = tf.tensor2d([normalized]); const output = model.predict(input) as tf.Tensor; const confidence = output.dataSync()[0]; return { class: confidence > 0.5 ? 'anomaly' as const : 'noise' as const, confidence, }; });"
+    content: "return tf.tidy(() => { const normalized = [ (signal.amplitude - RANGES.amplitude.min) / (RANGES.amplitude.max - RANGES.amplitude.min), (signal.frequency - RANGES.frequency.min) / (RANGES.frequency.max - RANGES.frequency.min), (signal.phase - RANGES.phase.min) / (RANGES.phase.max - RANGES.phase.min), ]; const input = tf.tensor2d([normalized]); const output = model.predict(input) as tf.Tensor; const p = output.dataSync()[0]; return { class: p > 0.5 ? 'anomaly' as const : 'noise' as const, confidence: p > 0.5 ? p : 1 - p, }; });"
 keywords:
   - inference
   - predict

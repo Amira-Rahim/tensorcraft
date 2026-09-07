@@ -96,8 +96,12 @@ console.log('Using backend:', backend);
 // will print different absolutes:
 // WebGPU:  ~5ms per inference   (3x faster than WebGL)
 // WebGL:   ~15ms per inference  (GPU via graphics API)
-// WASM:    ~35ms per inference  (CPU, SIMD optimized)
-// CPU:     ~120ms per inference (pure JavaScript)`}
+// WASM:    ~45ms per inference  (CPU, SIMD optimized)
+// CPU:     ~120ms per inference (pure JavaScript)
+// The wasm row is the same 45 ms the 340 MB build profiled at in this
+// module's first lesson. Quantization and pruning changed how many bytes
+// the model stores, not how much arithmetic each call does, so the
+// fallback time never moved.`}
 </CodeBlock>
 
 <Dialogue speaker="Dr. Farah">
@@ -137,7 +141,23 @@ The millisecond figures in this lesson are what the crew measured at that consol
 ## The Complete Optimization Stack
 
 <CodeBlock language="typescript" title="optimization-stack.ts">
-{`// DEEP SCAN optimization stack:
+{`// DEEP SCAN optimization stack.
+//
+// Both halves of the speed win are backend changes. The 45 ms baseline was
+// profiled on the wasm fallback, since the dashboard had no working WebGL
+// context that night; the context came back on its own once the smaller
+// build stopped exhausting memory. So 45 to 15 is WebGL restored, and
+// 15 to 5 is the WebGPU swap. Steps 2 and 3 shrink stored bytes, not the
+// arithmetic each call does; what they buy is a load peak the dashboard
+// survives. Step 4 cuts how many calls happen, not what one call costs.
+//
+// 45 to 15 is 3x, and module 4 measured WebGL at 6x over wasm. Both hold.
+// That 6x came off a bare 256x256 matmul, which is nothing but the kernel
+// a GPU is built for. A real model also marshals inputs, walks layers,
+// applies activations and reads one small result back per call, and none
+// of that runs faster on a GPU, so the end-to-end gain comes in under
+// the kernel gain. A kernel benchmark is an upper bound on what a real
+// model will see.
 
 console.log('=== DEEP SCAN Optimization Stack ===');
 console.log('');
@@ -149,12 +169,7 @@ console.log('5. WebGPU:         15ms → 5ms inference');
 console.log('');
 console.log('Result:');
 console.log('  Size:     340 MB → 42 MB (8x smaller)');
-console.log('  Speed:    45ms → 5ms (9x, in two parts. 45 → 15: the');
-console.log('            340 MB build was fighting the dashboard for');
-console.log('            memory, and a 42 MB build is not. 15 → 5: the');
-console.log('            backend swap. Steps 2-3 shrink stored bytes,');
-console.log('            not FLOPs; step 4 cuts call count, not');
-console.log('            per-call time)');
+console.log('  Speed:    45ms → 5ms (9x, all of it from the backend)');
 console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
 console.log('  Fits in dashboard: YES ✓');`}
 </CodeBlock>
@@ -169,13 +184,13 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Exercise slug="gpu-backend" />
 
-<RecallPrompt question="Why does WebGPU outperform WebGL for ML inference on compute-heavy operations?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; on DEEP SCAN's matmul-heavy workload WebGPU measured 2-3x faster." />
+<RecallPrompt question="Why does WebGPU outperform WebGL for ML inference on compute-heavy operations?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; on DEEP SCAN's matmul-heavy workload WebGPU measured 3x faster at the bridge console, and another GPU will give another ratio." />
 
 <LessonRecap
   whatYouLearned={[
-    "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders; on DEEP SCAN's matmul-heavy inference workload that measured 2-3x faster.",
+    "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders. On DEEP SCAN's matmul-heavy inference workload that measured 3x faster at the bridge console; another GPU will give another ratio.",
     "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in browser feature detection.",
-    "The optimization stack works on three separate axes: quantization and pruning cut stored bytes, caching cuts the number of calls, and the backend swap cuts per-call time. They add up because they do not overlap, which also means each one has to be measured on its own axis."
+    "The optimization stack works on three separate axes: quantization and pruning cut stored bytes, caching cuts the number of calls, and the backend cuts per-call time. Nothing about a smaller file makes one call faster, so each axis has to be measured on its own. The axes still couple through the hardware. Shrinking DEEP SCAN dropped the load peak enough that the dashboard's WebGL context came back, and that swap is where 45 ms became 15."
   ]}
   bridge="Switching `canvas.getContext('webgl2')` for `navigator.gpu.requestAdapter()` moves GPU access from a graphics-oriented API to a compute-oriented one, the same shift as moving rendering logic off the main thread into a dedicated Worker."
   youCanNow="Configure TensorFlow.js to use the WebGPU backend with graceful fallback to WebGL and WASM, and benchmark inference speed across backends."
@@ -183,7 +198,7 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Epilogue>
 
-They run the rehearsal at 0247 on purpose, full telemetry suite and live feeds, on the bridge dashboard where the 340 MB build died four nights ago. The first load comes up on WebGL at 15 milliseconds: the dashboard's GPU is hiding behind a disabled flag, and Demir spends twenty minutes finding it before the second load lands on WebGPU at 5. The dashboard holds. Nazari runs the rehearsal from the engineering panel, the wasm seat, stopwatch out, and closes her oldest open ledger line herself: six times slower per op, and still nothing a human eye could catch. Now they know exactly what that station misses. The capture from that night is still gone, and stays gone; the rehearsal only proves the next one doesn't have to be.
+They run the rehearsal at 0247 on purpose, full telemetry suite and live feeds, on the bridge dashboard where the 340 MB build died four nights ago. The first load comes up on WebGL at 15 milliseconds: the dashboard's GPU is hiding behind a disabled flag, and Demir spends twenty minutes finding it before the second load lands on WebGPU at 5. The dashboard holds. Nazari runs the rehearsal from the engineering panel, the wasm seat, stopwatch out, and closes her oldest open ledger line herself. 45 milliseconds at that seat against 5 on the bridge's WebGPU, nine times slower end to end, and still nothing a human eye could catch. Now they know exactly what that station misses. The capture from that night is still gone, and stays gone; the rehearsal only proves the next one doesn't have to be.
 
 <Dialogue speaker="Commander Mirza">
 The relay slot opens in fifteen days. Can you assemble the rest of the system in fourteen?

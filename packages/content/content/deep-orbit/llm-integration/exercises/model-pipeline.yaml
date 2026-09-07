@@ -1,7 +1,7 @@
 slug: model-pipeline
 lessonSlug: multi-model-systems
 title: "Wire a Model Pipeline"
-instructions: "Write a pipeline function that chains three processing stages: classify (returns class string), detectAnomaly (returns boolean), and generateAlert (returns message string). Each stage receives the output of the previous. If the signal is not anomalous, skip the alert stage and return null for the message."
+instructions: "Write a pipeline function that runs three stages over one signal: classify (returns a class string), detectAnomaly (returns a boolean), and generateAlert (returns a message string). Every stage reads the raw signal, and the classification rides along as context. The classifier is contracted to return 'noise' or 'anomaly'. Anything else is a broken contract: fall back to 'unknown' instead of passing it on. If the signal is not anomalous, skip the alert stage and return null for the message."
 starterCode: |
   interface PipelineResult {
     classification: string;
@@ -16,8 +16,9 @@ starterCode: |
     generateAlert: (s: number[], cls: string) => Promise<string>,
   ): Promise<PipelineResult> {
     // 1. Classify the signal
-    // 2. Check for anomaly
-    // 3. Generate alert only if anomalous
+    // 2. Reject a class outside 'noise' and 'anomaly'; use 'unknown' instead
+    // 3. Check for anomaly
+    // 4. Generate alert only if anomalous
     return null; // your code here
   }
 solutionCode: |
@@ -33,7 +34,10 @@ solutionCode: |
     detectAnomaly: (s: number[], cls: string) => Promise<boolean>,
     generateAlert: (s: number[], cls: string) => Promise<string>,
   ): Promise<PipelineResult> {
-    const classification = await classify(signal);
+    const reported = await classify(signal);
+    const classification = ['noise', 'anomaly'].includes(reported)
+      ? reported
+      : 'unknown';
     const isAnomaly = await detectAnomaly(signal, classification);
     const alert = isAnomaly ? await generateAlert(signal, classification) : null;
     return { classification, isAnomaly, alert };
@@ -45,12 +49,31 @@ testCode: |
       expect(r.classification).toBe('noise');
     });
     it('skips alert for normal signals', async () => {
-      const r = await pipeline([1], async () => 'noise', async () => false, async () => 'ALERT');
+      let alertCalls = 0;
+      const r = await pipeline(
+        [1],
+        async () => 'noise',
+        async () => false,
+        async () => { alertCalls += 1; return 'ALERT'; },
+      );
       expect(r.alert).toBeNull();
+      expect(alertCalls).toBe(0);
     });
     it('generates alert for anomalies', async () => {
       const r = await pipeline([1], async () => 'anomaly', async () => true, async () => 'ALERT!');
       expect(r.isAnomaly).toBe(true);
+      expect(r.alert).toBe('ALERT!');
+    });
+    it('falls back to unknown when the classifier breaks its contract', async () => {
+      const seen = [];
+      const r = await pipeline(
+        [1],
+        async () => 'garbled',
+        async (s, cls) => { seen.push(cls); return true; },
+        async () => 'ALERT!',
+      );
+      expect(r.classification).toBe('unknown');
+      expect(seen).toEqual(['unknown']);
       expect(r.alert).toBe('ALERT!');
     });
   });

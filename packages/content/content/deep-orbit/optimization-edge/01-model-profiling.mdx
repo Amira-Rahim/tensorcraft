@@ -20,7 +20,7 @@ concept:
     jsTitle: "DevTools Performance"
     jsCode: "performance.mark('start'); doWork(); performance.measure('task', 'start')"
     mlTitle: "Model Profiling"
-    mlCode: "const t0 = performance.now(); model.predict(x); const ms = performance.now() - t0;"
+    mlCode: "const t0 = performance.now(); const y = model.predict(x); await y.data(); const ms = performance.now() - t0;"
     tier: structural
     breaks: "performance.mark API is identical for both, and identical again in Node, where the same pair ships in `node:perf_hooks`. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
 consequence:
@@ -29,9 +29,9 @@ hints:
   - level: nudge
     content: "profileModel is three separate measurements: how many parameters the model has, how many megabytes they occupy at 4 bytes per float32, and how long one predict() call takes on average."
   - level: guidance
-    content: "parameterCount comes from model.countParams(); memorySizeMB is parameterCount * 4 bytes divided by 1e6 (the lesson's units rule: 1024 * 1024 would give you MiB wearing an MB label, and the tests check the true-MB number); then loop exactly `runs` times, timing each model.predict(createInput()) with performance.now() and averaging the durations. Return { parameterCount, memorySizeMB, avgInferenceMs }; the tests count the predict calls, so the loop bound must be runs."
+    content: "parameterCount comes from model.countParams(); memorySizeMB is parameterCount * 4 bytes divided by 1e6 (the lesson's units rule: 1024 * 1024 would give you MiB wearing an MB label, and the tests check the true-MB number). Timing has two parts. First one warmup call outside the clock, awaited and thrown away. That call pays the one-off compilation cost, and because it is not timed, the cost does not land in the average. Then exactly `runs` timed calls: read performance.now(), call model.predict(input), await output.data(), and only then read the clock again. The clock has to cover the readback. Stop it before the await and you have timed the enqueue instead of the work. Return { parameterCount, memorySizeMB, avgInferenceMs }; the tests count predict calls and expect runs + 1, and they check that the average reflects real work."
   - level: solution
-    content: "const parameterCount = model.countParams(); const memorySizeMB = (parameterCount * 4) / 1e6; const times: number[] = []; for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); model.predict(input); times.push(Math.max(0, performance.now() - start)); } const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length; return { parameterCount, memorySizeMB, avgInferenceMs };"
+    content: "const parameterCount = model.countParams(); const memorySizeMB = (parameterCount * 4) / 1e6; await model.predict(createInput()).data(); const times: number[] = []; for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); const output = model.predict(input); await output.data(); times.push(Math.max(0, performance.now() - start)); } const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length; return { parameterCount, memorySizeMB, avgInferenceMs };"
 keywords:
   - profiling
   - performance
@@ -98,9 +98,14 @@ async function profileModel(model: tf.LayersModel, inputShape: number[]): Promis
     outputShape: layer.outputShape as number[],
   }));
 
-  // Inference timing (warm up + 100 iterations)
+  // Inference timing (warm up + 100 iterations). The warmup call pays the
+  // one-off compilation cost, and it runs outside the loop below, so that
+  // cost does not land in the average. Read its result back the same way
+  // the timed calls do, then throw the result away.
   const warmupInput = tf.randomNormal([1, ...inputShape]);
-  (model.predict(warmupInput) as tf.Tensor).dispose();
+  const warmupOutput = model.predict(warmupInput) as tf.Tensor;
+  await warmupOutput.data();
+  warmupOutput.dispose();
   warmupInput.dispose();
 
   const times: number[] = [];
@@ -157,6 +162,9 @@ for (const layer of profile.layerBreakdown) {
 //     embedding       12,800,000  15.1%
 //     dense_Dense1    68,000,000  80.0%
 //     dense_Dense2     4,200,000   4.9%
+//
+// Both timings are wasm-backend numbers: the dashboard had no working
+// WebGL context that night, so the profile ran on the fallback.
 //
 // Read the shares, not the total. 80% of this model is one Dense layer, and
 // the tail is 2.5x the mean: the dashboard did not die at 45 ms, it died at

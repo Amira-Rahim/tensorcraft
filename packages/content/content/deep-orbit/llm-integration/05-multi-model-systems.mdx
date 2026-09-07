@@ -7,30 +7,30 @@ order: 5
 scene:
   location: "Archimedes, Bridge"
   time: "After hours"
-  portraitAlt: "Demir sits alone in the dimmed bridge comms alcove after hours while the holo table chains four models from raw waveform to report."
+  portraitAlt: "Demir sits alone in the dimmed bridge comms alcove after hours while the holo table runs four models from raw waveform to report."
 estimatedMinutes: 12
 difficulty: advanced
 context:
-  narrative: "Demir orchestrates the full DEEP SCAN system: the signal classifier feeds the anomaly detector, which feeds the LLM reporter. Multiple models, one pipeline."
+  narrative: "Demir orchestrates the full DEEP SCAN system: classifier, autoencoder and LSTM each read the raw signal, and the LLM reporter reads all three. Multiple models, one pipeline."
   speaker: "Ensign Demir"
 concept:
-  explanation: "A multi-model system chains specialists: each model handles its stage, and an orchestrator moves the signal from raw bytes to finished report."
+  explanation: "A multi-model system splits the work across specialists: each model handles one stage, and an orchestrator moves the signal from raw bytes to finished report."
   bridge:
     jsTitle: "Micro-Services"
     jsCode: "// API gateway routes to auth, products, payments services"
     mlTitle: "Model Orchestration"
-    mlCode: "// Pipeline: classifier → anomaly detector → LLM reporter"
+    mlCode: "// Pipeline: classifier + autoencoder + LSTM → LLM reporter"
     tier: structural
     breaks: "Microservices have stable contracts and explicit error responses. Model orchestration passes outputs (often natural-language) between probabilistic models; errors compound silently and one weak model degrades the entire chain without raising an exception."
 consequence:
   narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
 hints:
   - level: nudge
-    content: "Each stage consumes the previous stage's output, and the expensive final stage is conditional: no anomaly, no alert."
+    content: "Every stage reads the raw signal, and the classification rides along as context. Check that class string against the known classes before the next stage sees it. The expensive last stage is conditional: no anomaly, no alert."
   - level: guidance
-    content: "Await classify(signal) to get the class string, pass the signal plus that classification into detectAnomaly, and call generateAlert only when the detector returned true; a normal signal gets alert null, never an empty string. Return an object carrying classification, isAnomaly, and alert."
+    content: "Await classify(signal), then check the class string against the two known classes before anything else uses it. An unknown class becomes 'unknown' rather than being passed on. Pass the signal plus the checked classification into detectAnomaly, and call generateAlert only when the detector returned true. A normal signal gets alert null, never an empty string. Return an object carrying classification, isAnomaly, and alert."
   - level: solution
-    content: "const classification = await classify(signal); const isAnomaly = await detectAnomaly(signal, classification); const alert = isAnomaly ? await generateAlert(signal, classification) : null; return { classification, isAnomaly, alert };"
+    content: "const reported = await classify(signal); const classification = ['noise', 'anomaly'].includes(reported) ? reported : 'unknown'; const isAnomaly = await detectAnomaly(signal, classification); const alert = isAnomaly ? await generateAlert(signal, classification) : null; return { classification, isAnomaly, alert };"
 keywords:
   - orchestration
   - pipeline
@@ -43,9 +43,11 @@ skillAxes: [deployment, js_integration]
 Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together, like an API gateway routing to micro-services.
 </Dialogue>
 
-Four models, four contracts: a class and a confidence from the classifier, a reconstruction error from the autoencoder, predicted next values from the LSTM, and prose from the LLM that consumes the other three. Orchestration is the discipline of wiring those contracts together so one weak stage can't silently poison the chain.
+Four models, four contracts: a class and a confidence from the classifier, a reconstruction error from the autoencoder, predicted next values from the LSTM, and prose from the LLM that consumes the other three. Orchestration is the discipline of wiring those contracts together so one weak stage can't silently poison the report.
 
-<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate signal classifier, anomaly detector, LSTM predictor, and LLM reporter", "Handle errors and fallbacks when individual models fail", "Build the complete DEEP SCAN end-to-end processing pipeline"]} />
+Four stages that are each right 95% of the time are right 81% of the time together. A stage that is wrong rather than broken raises no exception, so the check has to sit between stages, while you still know what the stage promised.
+
+<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate signal classifier, anomaly detector, LSTM predictor, and LLM reporter", "Validate each stage's output against its contract, and fall back when a model breaks it", "Build the complete DEEP SCAN end-to-end processing pipeline"]} />
 
 ## The DEEP SCAN Pipeline
 
@@ -53,12 +55,28 @@ Four models, four contracts: a class and a confidence from the classifier, a rec
 
 <CodeBlock language="typescript" title="pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
+import { verifyClaims } from './verify-claims';  // the checker from lesson 3
 
 interface PipelineResult {
   classification: { class: string; confidence: number };
   anomaly: { isAnomaly: boolean; score: number };
   prediction: { nextValues: number[] };
   report: string | null;
+}
+
+// A stage that is merely wrong throws nothing. Check what it promised before
+// the next stage treats it as fact: pass the value on, swap in the fallback,
+// or stop the run.
+function validateStage<T>(
+  stage: string,
+  value: T,
+  ok: (v: T) => boolean,
+  fallback?: T,
+): T {
+  if (ok(value)) return value;
+  if (fallback === undefined) throw new Error(\`\${stage} broke its contract\`);
+  console.warn(\`\${stage} broke its contract; using the fallback\`);
+  return fallback;
 }
 
 async function processSignal(
@@ -73,7 +91,7 @@ async function processSignal(
   thresholds: { anomaly: number },
 ): Promise<PipelineResult> {
   // Stage 1: Classify the signal
-  const classification = tf.tidy(() => {
+  const classified = tf.tidy(() => {
     const input = tf.tensor2d([signal]);
     const output = (models.classifier.predict(input) as tf.Tensor).dataSync()[0];
     // Confidence is confidence IN THE VERDICT: a 0.2 sigmoid output means
@@ -83,33 +101,67 @@ async function processSignal(
       confidence: output > 0.5 ? output : 1 - output,
     };
   });
+  // Every later stage quotes this number, so there is no useful fallback
+  // for a confidence outside 0..1. Stop the run instead.
+  const classification = validateStage('classifier', classified, (c) =>
+    Number.isFinite(c.confidence) && c.confidence >= 0 && c.confidence <= 1);
 
   // Stage 2: Check for anomalies (autoencoder)
-  const anomaly = tf.tidy(() => {
+  const detected = tf.tidy(() => {
     const input = tf.tensor2d([signal]);
     const reconstructed = models.autoencoder.predict(input) as tf.Tensor;
     const error = tf.losses.meanSquaredError(input, reconstructed).dataSync()[0];
     return { isAnomaly: error > thresholds.anomaly, score: error };
   });
+  // NaN > threshold is false, so a NaN reconstruction error reports "normal"
+  // and no alert ever fires. Nothing throws. This is the check that catches it.
+  const anomaly = validateStage('autoencoder', detected, (a) =>
+    Number.isFinite(a.score));
 
   // Stage 3: Predict next values (LSTM)
-  const prediction = tf.tidy(() => {
+  const predicted = tf.tidy(() => {
     const input = tf.tensor3d([window]);
     const pred = (models.lstm.predict(input) as tf.Tensor).dataSync();
     return { nextValues: Array.from(pred) };
   });
+  // The model's own output width is the promise: outputShape is [null, horizon].
+  // A short forecast is a broken contract, not a shorter forecast; the report
+  // reads fine without one, so this stage gets a fallback.
+  const horizon = (models.lstm.outputShape as number[])[1];
+  const prediction = validateStage(
+    'lstm',
+    predicted,
+    (p) => p.nextValues.length === horizon && p.nextValues.every(Number.isFinite),
+    { nextValues: [] },
+  );
 
   // Stage 4: Generate report if anomaly detected (LLM)
   let report: string | null = null;
   if (anomaly.isAnomaly) {
-    report = await models.llm.complete(\`
+    const handed = [
+      classification.confidence,
+      anomaly.score,
+      thresholds.anomaly,
+      ...prediction.nextValues,
+    ];
+    const draft = await models.llm.complete(\`
 Signal anomaly detected:
 - Classification: \${classification.class} (confidence: \${classification.confidence.toFixed(3)})
 - Anomaly score: \${anomaly.score.toFixed(4)} (threshold: \${thresholds.anomaly})
 - Predicted next values: \${prediction.nextValues.map(v => v.toFixed(3)).join(', ')}
 
-Generate a brief alert summary in 2-3 sentences.
+Generate a brief alert summary in 2-3 sentences. Use only the numbers above.
     \`);
+    // verifyClaims is lesson 3's checker: every number in the draft has to
+    // trace to one we handed it. That works only because the prompt forbids
+    // new ones; even a label like "Band-7" comes back as a claim of -7.
+    const { fabricated } = verifyClaims(draft, [handed]);
+    report = validateStage(
+      'llm',
+      draft,
+      () => fabricated.length === 0,
+      \`ALERT: anomaly score \${anomaly.score.toFixed(4)} over threshold \${thresholds.anomaly}. Draft held: \${fabricated.length} number(s) traced to nothing.\`,
+    );
   }
 
   return { classification, anomaly, prediction, report };
@@ -117,6 +169,8 @@ Generate a brief alert summary in 2-3 sentences.
 </CodeBlock>
 
 ## Error Handling and Fallbacks
+
+Two of those four checks stop the run: a confidence outside 0..1 and a NaN score have no honest substitute. The other two log a warning and return a stand-in, so the run continues. The catch blocks below fire only for the stages that throw.
 
 <CodeBlock language="typescript" title="resilience.ts">
 {`// Like micro-service circuit breakers: if one model fails, degrade gracefully
@@ -164,7 +218,7 @@ async function resilientPipeline(
 
 ## Challenge
 
-Wire together a multi-model pipeline with error handling.
+Wire together a multi-model pipeline that checks the classifier's output before the next stage uses it.
 
 <Exercise slug="model-pipeline" />
 
@@ -172,15 +226,15 @@ PAGER, 02:40: the claim checker is down and reports are queueing for the next re
 
 <Exercise slug="incident-checker-down" />
 
-<RecallPrompt question="Why does a chain of four models need validation between stages when every model passes its own tests?" answer="Errors compound: four stages at 95% reliability each leave 81% end to end, and a model that is merely wrong raises no exception. The classifier's label becomes the detector's input and the detector's score becomes the reporter's evidence, so one bad value travels the chain as a confident one. Check each stage's output shape and range before passing it on, and fall back to a simpler method when a stage fails outright." />
+<RecallPrompt question="Why does a pipeline of four models need validation between stages when every model passes its own tests?" answer="Errors compound: four stages at 95% reliability each leave 81% end to end, and a model that is merely wrong raises no exception. The classifier's verdict and the detector's score both become the reporter's evidence, so one bad value reaches the report as a confident one. Check each stage's output shape and range before passing it on, and fall back to a simpler method when a stage fails outright." />
 
 <LessonRecap
   whatYouLearned={[
-    "Chained probabilistic models compound error: validate output between every stage rather than letting silent failures degrade the whole pipeline.",
-    "Define clear interfaces between stages (classifier output format becomes the anomaly detector's input contract) so each model has predictable inputs and outputs.",
+    "Combining probabilistic models compounds error: four stages that are each right 95% of the time are right 81% of the time together, so validate every stage's output before passing it on.",
+    "Define clear interfaces between stages (the classifier's class and confidence become part of the reporter's input contract) so each model has predictable inputs and outputs.",
     "Graceful degradation keeps the pipeline running: if one model fails, fall back to a simpler method rather than failing the entire chain."
   ]}
-  bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and passes a typed result to the next. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."
+  bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and returns a typed result the orchestrator checks before passing it on. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."
   youCanNow="Design and wire a multi-model pipeline with typed interfaces between stages, per-stage output validation, and graceful fallbacks when individual models fail."
 />
 

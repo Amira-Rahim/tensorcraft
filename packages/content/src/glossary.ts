@@ -82,6 +82,12 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "global",
   },
   {
+    term: "broadcasting",
+    definition:
+      "Shapes align from the last axis backwards, stretching any size-1 or missing axis to match. A [2] tensor subtracts from every row of a [5, 2] batch.",
+    scope: "global",
+  },
+  {
     term: "weighted-sum",
     definition:
       "Adding up inputs after multiplying each by its own weight. It is the basic computation inside a neuron.",
@@ -621,6 +627,13 @@ export const GLOSSARY: GlossaryEntry[] = [
     definition:
       "Smearing of a signal's energy across nearby frequencies that happens when a window cuts off mid-cycle.",
     aliases: ["spectral leakage"],
+    scope: "deep-orbit",
+  },
+  {
+    term: "aliasing",
+    definition:
+      "A frequency above half the sample rate folds down and appears at a lower, wrong one. Sampled at 128 Hz, a 73.4 Hz tone peaks near 54.6 Hz.",
+    aliases: ["aliased"],
     scope: "deep-orbit",
   },
 

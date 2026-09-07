@@ -20,9 +20,9 @@ concept:
     mlTitle: "Model Compilation"
     mlCode: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' })"
     tier: structural
-    breaks: "createServer() holds a handler that already knows how to answer; one listen() call later it is doing the job it was written for. A compiled model knows nothing yet. Its weights are random, and the thing that makes it useful is not a switch you flip but hours of fit() rewriting every one of those numbers."
+    breaks: "createServer() holds a handler that already knows how to answer; one listen() call later it is doing the job it was written for. A compiled model knows nothing yet. Its connection weights are random, and the thing that makes it useful is not a switch you flip but hours of fit() rewriting every one of those numbers."
 consequence:
-  narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the weights are still random numbers. Mostly."
+  narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the connection weights are still random numbers. Mostly."
 hints:
   - level: nudge
     content: "A complete network is layers plus compile: compiling attaches the optimizer and loss so the model can train."
@@ -42,11 +42,13 @@ skillAxes: [model_arch]
 Assemble it. I want the classifier compiled and ready for training by end of watch.
 </Dialogue>
 
-<LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network with a summary and test prediction"]} />
+<LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network with a summary and test prediction", "Explain why a new layer starts with random weights and zero biases"]} />
 
 ## Assembly Required
 
-Compile the network below, then call `model.predict()` immediately. It runs. It returns a probability. And the number is meaningless, because compilation wires up the optimizer and loss without ever touching the weights, which are still random. Assembly and training are separate steps, the way `http.createServer(handler)` and the `listen()` call that puts it to work are separate steps.
+Compile the network below, then call `model.predict()` immediately. It runs. It returns a probability. And the number is meaningless, because compilation wires up the optimizer and loss without ever touching the connection weights, which are still random. Assembly and training are separate steps, the way `http.createServer(handler)` and the `listen()` call that puts it to work are separate steps.
+
+If every connection weight in a layer started at zero, every unit in that layer would compute the same output and receive the same gradient. They would update in lockstep and never come to represent different features. Random values break that symmetry. TensorFlow.js draws only the connection weights at random and starts every bias at zero, which is safe because the random weights already make the units differ. The scale of the draw matters too. A dense layer defaults to Glorot initialization, which sizes the random draw by the layer's input and output counts together. The signal then neither grows nor shrinks much as it passes through. The sigmoid output unit starts on the sloped middle of its curve rather than the flat tails lesson 2 called saturation, and TensorFlow.js applies the same default to the relu layers. TensorFlow.js calls a layer's weight matrix its kernel, and `kernelInitializer` is the option that controls the choice.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -106,29 +108,30 @@ Assemble and compile the complete DEEP SCAN signal classifier. One difference fr
 
 <RecallPrompt
   question="What does model.compile() actually do, and what does it NOT do?"
-  answer="compile() is configuration only: it attaches the optimizer, loss function, and metrics that fit() will use during training. It does not run a forward pass, initialize weights specially, or train the model. A compiled-but-untrained model still has random weights."
+  answer="compile() is configuration only: it attaches the optimizer, loss function, and metrics that fit() will use during training. It does not run a forward pass, initialize weights specially, or train the model. A compiled-but-untrained model still has random connection weights."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Building a sequential network follows four steps: create the model, add layers, compile with optimizer and loss, then call predict() or fit().",
     "model.compile() is configuration, not training: it wires up the optimizer, loss function, and metrics for the later fit() call.",
-    "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for classification, MSE for regression."
+    "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for classification, MSE for regression.",
+    "A new layer starts with random connection weights and zero biases. The random draw stops every unit in the layer from computing the same thing, and Glorot scaling keeps the signal from growing or shrinking as it moves through."
   ]}
   bridge="`http.createServer(handler)` wires a server that has not served a request yet; `model.compile()` wires optimizer and loss onto a model that has not learned anything yet. In both cases the real work happens after assembly."
-  youCanNow="Assemble, compile, and verify a complete sequential neural network, then run an initial prediction to confirm the pipeline is wired correctly."
+  youCanNow="Assemble, compile, and verify a complete sequential neural network, run an initial prediction to confirm the pipeline is wired correctly, and say where its starting weights come from."
 />
 
 <Epilogue>
 
-End of watch, as ordered. The compiled network sits untrained on the bridge feed, predictions pinned near 0.5 like a coin nobody has flipped. Farah runs a final sanity sweep against the archive: two hundred readings, every one scoring noise, exactly what random weights should produce, except sample 7741, which comes back at 0.998. She reinitializes the weights, a brand-new network with brand-new random numbers, and sweeps again. 0.997.
+End of watch, as ordered. The compiled network sits untrained on the bridge feed, predictions pinned near 0.5 like a coin nobody has flipped. Farah runs a final sanity sweep against the archive: two hundred readings, every one scoring noise, exactly what random connection weights should produce, except sample 7741, which comes back at 0.998. She reinitializes the weights, a brand-new network with brand-new random numbers, and sweeps again. 0.997.
 
 <Dialogue speaker="Dr. Farah">
 An untrained network has no opinions. So why does it keep having this one?
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-For the record, Doctor: that question is correct as stated. Two independent initializations are two fresh draws of all 673 weights; the probability that both draws push one specific reading past 0.99 is as near zero as anything I am permitted to log. Untrained networks do not hold stable opinions. In any terrestrial system I would report this as a defect in the test harness. I have checked the harness twice. It is not the harness.
+For the record, Doctor: that question is correct as stated. Two independent initializations are two fresh draws of every connection weight in the network; the probability that both draws push one specific reading past 0.99 is as near zero as anything I am permitted to log. Untrained networks do not hold stable opinions. In any terrestrial system I would report this as a defect in the test harness. I have checked the harness twice. It is not the harness.
 </Dialogue>
 
 </Epilogue>

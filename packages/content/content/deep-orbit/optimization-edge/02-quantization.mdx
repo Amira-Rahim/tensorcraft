@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Lossy image formats decide what to discard using a model of human eyes, and you judge the damage by looking. Quantization rounds weights onto a coarser grid with no perceptual model protecting anything: one outlier weight can stretch the grid and quietly wreck accuracy. You measure after; you never assume."
 consequence:
-  narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops 1.2%. Nazari writes both numbers on the board and leaves them there."
+  narrative: "Quantization shrinks the DEEP SCAN weight file from 340 MB to 85 MB. Accuracy drops 1.2%. Nazari writes both numbers on the board and leaves them there."
 hints:
   - level: nudge
     content: "Uint8 quantization is min-max mapping: squeeze the float range onto the 256 integer buckets 0 to 255, and remember scale and zeroPoint so dequantize can map back."
@@ -65,13 +65,15 @@ const ys = tf.oneHot(tf.tensor1d(labelIndices, 'int32'), 5);  // [0, 0, 0, 0, 1]
 
 Quantize the whole bundle, and the scoreboard reports what the knife took in the one place the loss can be measured.
 
+The converter does not force that. `--quantize_uint8` takes a value, a comma-separated list of weight-name patterns, which is why you often see it written as `--quantize_uint8='*'` when you mean every layer. Narrow the pattern and the language weights go to uint8 while the whole classifier stays at float32. The classifier is under a megabyte, so holding it out costs under a megabyte of the 255 MB the pass takes off the bundle. The crew did not narrow it. The classifier was mid-retrain that week, with its layer names still moving, so any pattern they wrote would have gone stale by the next build.
+
 The technique runs exactly as deep as Nazari's arithmetic. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0249 has 512 MB of RAM and went down parsing a 340 MB weight file; cutting that file to 85 MB is the first and largest payment on the debt.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 The WebP comparison stops at the file size, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure the accuracy-size tradeoff of different quantization levels", "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)"]} />
+<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure the accuracy-size tradeoff of different quantization levels", "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)", "Apply quantization to some layers and not others using the converter's weight-name patterns"]} />
 
 ## Precision Reduction
 
@@ -143,7 +145,7 @@ tensorflowjs_converter \\
 # uint8   (--quantize_uint8):   85 MB, accuracy: 93.0% (-1.2%)`}
 </CodeBlock>
 
-One thing to be clear about before Nazari makes you be clear about it: TensorFlow.js decodes quantized weights back to float32 when the model loads. The math of inference runs at the same speed as before; nothing in the browser executes on integer hardware. What you bought is a 4x smaller download, a smaller disk cache, and a load spike the dashboard can survive. Runtimes like TFLite do run int8 kernels on integer silicon; in the browser, quantization is a storage format, not an execution mode.
+One thing to be clear about before Nazari makes you be clear about it: TensorFlow.js decodes quantized weights back to float32 when the model loads. Loading is where the size shows up: the runtime holds the downloaded file buffer and the decoded float32 tensors at the same time, so a 340 MB file peaks near 680 MB, over the dashboard's 512 MB budget, while an 85 MB file peaks near 425 MB and survives. Once the load finishes, the resident weights are 340 MB either way, so nothing about the running model got smaller. The math of inference runs at the same speed as before; nothing in the browser executes on integer hardware. What you bought is a 4x smaller download, a smaller disk cache, and a load spike the dashboard can survive. Runtimes like TFLite do run int8 kernels on integer silicon; in the browser, quantization is a storage format, not an execution mode.
 
 ## Challenge
 
@@ -151,16 +153,17 @@ Quantize model weights and measure the precision loss.
 
 <Exercise slug="quantize-weights" />
 
-<RecallPrompt question="What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 stored as uint16 or uint8), shrinking the saved model 2x or 4x at the cost of a measurable accuracy drop. In TFJS the weights decode back to float32 at load, so the win is download, disk, and load spike; inference speed is unchanged. The trade is acceptable when the accuracy loss is evenly distributed across classes and within tolerance for the use case; it is unacceptable when the loss concentrates in rare or high-stakes classes." />
+<RecallPrompt question="What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 stored as uint16 or uint8), shrinking the saved model 2x or 4x at the cost of a measurable accuracy drop. In TFJS the weights decode back to float32 at load, so the win is download, disk, and load spike; inference speed is unchanged. The trade is acceptable when the accuracy loss is evenly distributed across classes and within tolerance for the use case; it is unacceptable when the loss concentrates in rare or high-stakes classes. When it concentrates, the quantize flags take weight-name patterns, so you can leave that part of the model at float32 and shrink the rest." />
 
 <LessonRecap
   whatYouLearned={[
     "Quantization stores each float32 weight (4 bytes) as uint16 (2 bytes) or uint8 (1 byte), shrinking the saved model by 2x or 4x respectively.",
     "Accuracy loss from quantization is usually small on average but can concentrate in rare classes, so per-class breakdown matters more than aggregate accuracy.",
-    "Quantization is applied at export time by the tensorflowjs_converter's --quantize_uint8/--quantize_uint16 flags (model.save() itself always writes float32); TFJS decodes weights back to float32 at load, so the savings are download and storage; inference speed does not change."
+    "Quantization is applied at export time by the tensorflowjs_converter's --quantize_uint8/--quantize_uint16 flags; model.save() itself always writes float32. TFJS decodes the weights back to float32 at load, so what shrinks is the download, the disk cache, and the load-time memory peak. The resident weights and the inference speed do not change.",
+    "The quantize flags take weight-name patterns, so a pass can cover some layers and skip others. A small high-stakes classifier can stay at float32 while the bulk of the weights go to uint8; for DEEP SCAN that would have cost under a megabyte of the 255 MB saved."
   ]}
   bridge="Just as converting a PNG to WebP trades lossless fidelity for a smaller file, quantizing from `float32` to `uint8` trades weight precision for a 4x smaller file."
-  youCanNow="Quantize a TensorFlow.js model's weights to reduce its size, measure the resulting accuracy loss per class, and choose the precision level appropriate for your deployment constraints."
+  youCanNow="Quantize a TensorFlow.js model's weights to reduce its size, measure the resulting accuracy loss per class, and choose which layers get which precision level for your deployment constraints."
 />
 
 > **DISPATCH archive · field intercept #18-Q:** Hassan's edge cell quantizes everything before deploy. They hit 1.2% accuracy loss and called it a win. Operator Jin pushed back: "On a 50-million-row table that's 600,000 wrong calls per quarter." Hassan's reply: "We monitor for it. That is why we have drift detection." Both true.

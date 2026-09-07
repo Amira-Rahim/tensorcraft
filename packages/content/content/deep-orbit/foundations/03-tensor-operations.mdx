@@ -48,7 +48,7 @@ Raw data is useless to me. Clean it, combine the feeds, amplify what matters. An
 
 This lesson starts where you are standing: at the bug. You'll read the error, meet the two multiplication ops the broken line mixed up, and repair the pipeline.
 
-<LearningObjectives objectives={["Read a shape-mismatch error and identify which op it comes from", "Perform element-wise tensor operations (add, multiply, subtract)", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose to make shapes compatible"]} />
+<LearningObjectives objectives={["Read a shape-mismatch error and identify which op it comes from", "Perform element-wise tensor operations (add, multiply, subtract)", "Combine tensors of different shapes using broadcasting", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose to make shapes compatible"]} />
 
 ## Read the Error First
 
@@ -80,7 +80,8 @@ When you write `arr.map((x, i) => x + arr2[i])`, you're doing element-wise addit
 {`import * as tf from '@tensorflow/tfjs';
 
 // The amplifier from amplify-broken.ts, repaired: matching positions,
-// no shape rule to trip.
+// so matMul's inner-dimension rule does not apply. The shapes still
+// have to be broadcast-compatible.
 const amplified = gains.mul(window);      // [1, 64], gain[i] * reading[i]
 
 const sensor1 = tf.tensor([1, 2, 3]);
@@ -95,6 +96,8 @@ const diff = tf.sub(sensor2, sensor1);    // [3, 3, 3]
 const result = sensor1.add(sensor2).mul(tf.scalar(2));
 // [10, 14, 18]`}
 </CodeBlock>
+
+The shapes do not have to be identical. When they differ, TensorFlow.js lines the two tensors up from the last axis backwards and stretches any axis of size 1, or any axis the smaller tensor does not have at all, until it matches the larger one. That is why `.mul(tf.scalar(2))` reaches every element, and why subtracting a `[2]` tensor of column means from a `[5, 2]` batch takes each column's mean down its own column. This is called broadcasting, and it is why an element-wise op forgives a shape difference that `matMul` will not.
 
 ## When You DO Want matMul
 
@@ -140,12 +143,12 @@ Add two tensors together to combine sensor readings.
 <LessonRecap
   whatYouLearned={[
     "mul multiplies matching positions; matMul multiplies rows into columns. Reaching for the wrong one is the classic first tensor bug, and the error message names the op that threw it.",
-    "Element-wise operations (add, mul, sub) apply the same computation to each matching position across tensors of any rank, equivalent to a GPU-accelerated map+zip.",
+    "Element-wise operations (add, mul, sub) apply the same computation to each matching position across tensors of any rank, equivalent to a GPU-accelerated map+zip. The two shapes do not have to be identical: broadcasting stretches axes of size 1 to fit.",
     "Matrix multiplication (matMul) follows the [m,n] x [n,p] = [m,p] shape rule: inner dimensions must match. Use transpose() to fix mismatches.",
     "Every neural network layer computes matMul(input, weights) + bias, making the matMul shape rule the most common source of dimension errors in ML code."
   ]}
   bridge="Where `Array.map()` applies a function element by element on the CPU, `tf.add()` and friends operate on entire tensors in parallel using hardware-accelerated kernels, covering millions of elements in a single op."
-  youCanNow="Perform element-wise and matrix operations on tensors, chain operations with method syntax, and diagnose inner-dimension mismatches using transpose()."
+  youCanNow="Perform element-wise and matrix operations on tensors, combine mismatched shapes with broadcasting, chain operations with method syntax, and diagnose inner-dimension mismatches using transpose()."
 />
 
 <Epilogue>

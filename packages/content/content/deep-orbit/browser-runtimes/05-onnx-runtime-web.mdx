@@ -18,11 +18,11 @@ concept:
     jsTitle: "Cross-Browser Compat"
     jsCode: "// Same HTML works in Chrome, Firefox, Safari"
     mlTitle: "Cross-Runtime Models"
-    mlCode: "// Same ONNX model runs in TF.js, ONNX Runtime, PyTorch"
+    mlCode: "// Same ONNX model runs in ONNX Runtime Web, Node, and Python"
     tier: structural
-    breaks: "Cross-browser compat is solved by polyfills and feature detection: the same code with shims. Cross-runtime models require operator-set support: an op present in PyTorch but absent from ONNX or TFJS makes the model fail to load entirely. There is no polyfill for a missing op; you must rewrite the model architecture."
+    breaks: "Cross-browser compat is solved by polyfills and feature detection: the same code with shims. Cross-runtime models require operator-set support. If the exported graph carries an op the target runtime does not implement, session creation fails. There is no polyfill for a missing op; you must rewrite the model architecture."
 consequence:
-  narrative: "Demir presents the benchmark results. ONNX Runtime wins on cold start; TF.js wins on sustained inference. Nazari chooses TF.js for the dashboard, ONNX for the backup system."
+  narrative: "Demir presents the benchmark. Held to one backend, the two runtimes finish within a fifth of a millisecond of each other. What moves the number is model size, and at 673 parameters that answer is WASM."
 hints:
   - level: nudge
     content: "onnxruntime-web has no tf.* factories: you build an ort.Tensor by hand from a typed array plus a shape, then hand it to a session under a named input."
@@ -53,9 +53,9 @@ Fair enough. ONNX is a universal model format, then? Train in Python, export to 
 
 ONNX (Open Neural Network Exchange) is ML's attempt at a web standard: a shared format any compliant runtime can execute, whatever framework did the training. The operator set is what scopes "compliant."
 
-Demir runs the check before he writes a line of benchmark code. DEEP SCAN exports clean: dense layers and a sigmoid, the plain HTML of the operator world, implemented by every runtime that matters. The models that fail Nazari's check are the ones carrying a researcher's favorite exotic op, and they fail at load time on the target machine, never on the laptop that exported them.
+Demir runs the check before he writes a line of benchmark code. DEEP SCAN exports clean: dense layers and a sigmoid, the plain HTML of the operator world, implemented by every runtime that matters. The models that fail Nazari's check carry a researcher's favorite exotic op, one that mapped cleanly on export and landed in the graph. The target runtime never implemented it, so the failure surfaces when that runtime builds the session.
 
-<LearningObjectives objectives={["Understand ONNX as a universal model interchange format", "Load and run ONNX models in the browser with onnxruntime-web", "Benchmark TF.js vs ONNX Runtime: cold start, inference speed, memory usage", "Choose the right runtime for your use case based on real performance data"]} />
+<LearningObjectives objectives={["Understand ONNX as a universal model interchange format", "Load and run ONNX models in the browser with onnxruntime-web", "Benchmark TF.js against ONNX Runtime Web on one shared backend, so the result is about the runtimes", "Pick a backend from model size: where per-call overhead outweighs the arithmetic, and where it stops"]} />
 
 ## The Universal Model Format
 
@@ -90,25 +90,41 @@ console.log('Prediction:', output.data[0]);  // 0.847`}
 
 <CodeBlock language="typescript" title="benchmark-comparison.ts">
 {`import * as tf from '@tensorflow/tfjs';
+import '@tensorflow/tfjs-backend-wasm';
 import * as ort from 'onnxruntime-web';
 
 interface BenchmarkResult {
   runtime: string;
   coldStartMs: number;
   avgInferenceMs: number;
-  memoryMB: number;
+  weightKB: number;
 }
 
-// Benchmark TensorFlow.js
+// Both sides run on WASM. TF.js on WebGL against ONNX Runtime on WASM
+// would measure the backend, and the backend is the bigger of the two
+// effects, so the runtime difference would be buried under it.
 async function benchmarkTFJS(): Promise<BenchmarkResult> {
   const t0 = performance.now();
-  const model = await tf.loadLayersModel('/models/deep-scan/model.json');
-  const coldStartMs = performance.now() - t0;
 
-  // Warm up
+  // Inside the clock on purpose. This pair fetches and instantiates the
+  // WASM backend binary, and ORT Web does that same work inside
+  // InferenceSession.create. Hoist it above t0 and TF.js reports a cold
+  // start missing a cost the ONNX number still carries.
+  await tf.setBackend('wasm');
+  await tf.ready();
+  const model = await tf.loadLayersModel('/models/deep-scan/model.json');
+
+  // The first prediction is inside the clock too. A WebGL kernel compiles
+  // its shader the first time it runs, not when the model loads, so a
+  // cold start stopped at the load call would miss compilation entirely.
+  // This call doubles as the warm-up for the loop below.
   const warmup = tf.tensor2d([[0.5, 0.3, 0.7]]);
-  (model.predict(warmup) as tf.Tensor).dispose();
+  const first = model.predict(warmup) as tf.Tensor;
+  await first.data();
+  first.dispose();
   warmup.dispose();
+
+  const coldStartMs = performance.now() - t0;
 
   // Sustained inference (100 iterations)
   const times: number[] = [];
@@ -118,44 +134,69 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
       const input = tf.tensor2d([[Math.random(), Math.random(), Math.random()]]);
       return model.predict(input) as tf.Tensor;
     });
-    // Read the result back INSIDE the timed region. WebGL queues kernels
-    // asynchronously; without this await the clock measures enqueue time,
-    // not execution time, and the "benchmark" flatters the GPU.
+    // Read the result back INSIDE the timed region. On WASM the compute
+    // is already done when predict returns, so this await costs nothing.
+    // Leave it out and the clock starts measuring enqueue time the day
+    // someone swaps in a GPU backend, because GPU kernels are queued.
     await out.data();
     out.dispose();
     times.push(performance.now() - start);
   }
 
   return {
-    runtime: 'TF.js (WebGL)',
+    runtime: 'TF.js (WASM)',
     coldStartMs,
     avgInferenceMs: times.reduce((a, b) => a + b, 0) / times.length,
-    memoryMB: tf.memory().numBytes / 1e6,  // 1e6 for MB, not 1024*1024 (MiB)
+    // tf.memory().numBytes is a live-tensor ledger. With the loop's
+    // tensors disposed it holds the 673 weights and nothing else, which
+    // is a figure the other runtime can match. What it does not hold is
+    // the runtime's own footprint; that is the WASM binary you ship, a
+    // bundle number rather than a bench number.
+    weightKB: tf.memory().numBytes / 1024,
   };
 }
 
-// benchmarkONNX() is the SAME harness with four lines changed:
+// benchmarkONNX() is the SAME harness with five differences:
 //
-//   load:   await ort.InferenceSession.create('/models/deep-scan.onnx')
-//           replaces tf.loadLayersModel(...)
+//   init:   the setBackend/ready pair has no ORT Web counterpart, because
+//           InferenceSession.create fetches and compiles the ORT WASM
+//           binary itself on first use. That is why the TF.js pair sits
+//           below t0: the same cost is then inside both timed regions
+//   load:   await ort.InferenceSession.create('/models/deep-scan.onnx',
+//           { executionProviders: ['wasm'] }) replaces
+//           tf.loadLayersModel(...)
 //   input:  new ort.Tensor('float32', new Float32Array([...]), [1, 3])
 //           replaces the tf.tensor2d call inside tf.tidy
 //   run:    await session.run({ input }) replaces model.predict plus the
 //           explicit readback await; session.run resolves when compute
 //           finishes, and ORT Web's JS tensors are garbage-collected,
 //           so the dispose bookkeeping goes too
-//   memory: ORT Web keeps no tensor ledger, so memoryMB reads the WASM
-//           heap size where tf.memory().numBytes was
+//   memory: ORT Web keeps no tensor ledger, so weightKB comes off the
+//           model's initializers instead of tf.memory().numBytes. Same
+//           673 floats either way
 //
-// Everything else (warm-up, the 100-iteration loop, the averaging, the
-// result shape with runtime: 'ONNX (WASM)') stays byte-identical. In a
-// benchmark, any difference outside the thing being measured
-// contaminates the measurement.
+// Everything else (the timed first call, the 100-iteration loop, the
+// averaging, the result shape with runtime: 'ONNX Runtime Web (WASM)')
+// stays byte-identical. In a benchmark, any difference outside the thing
+// being measured contaminates the measurement.
 
-// Typical results for a small signal classifier (readback included,
-// exact numbers vary by machine):
-// TF.js (WebGL):  cold=340ms, inference=2.1ms, mem=0.8MB
-// ONNX (WASM):    cold=180ms, inference=3.8ms, mem=1.2MB`}
+// One laptop, one Chrome build, empty HTTP cache. Cold start runs from t0
+// to the end of the first prediction, so runtime init is inside it on
+// both sides. These are that machine's numbers, not a property of either
+// runtime:
+// TF.js (WASM):             cold=210ms, inference=0.9ms, weights=2.6KB
+// ONNX Runtime Web (WASM):  cold=260ms, inference=0.7ms, weights=2.6KB
+//
+// Same model, same laptop, TF.js switched to WebGL:
+// TF.js (WebGL):            cold=480ms, inference=2.4ms, weights=2.6KB
+// 673 parameters is about six hundred multiply-adds per prediction.
+// Getting the input onto the GPU and the answer back off it costs more
+// than that, so the GPU loses the call it was supposed to win. Lesson 2
+// of this module clocked WebGL six times faster than WASM, but that was
+// a bare 256x256 matmul: tens of millions of multiply-adds, the work a
+// GPU is built for. The cold start is worse for its own reason. Each
+// WebGL kernel compiles a shader the first time it runs, and the first
+// run is the prediction inside the clock above.`}
 </CodeBlock>
 
 ## When to Choose Which
@@ -163,14 +204,18 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 | Factor | TF.js | ONNX Runtime Web |
 |--------|-------|-------------------|
 | **Ecosystem** | Largest, most tutorials | Growing fast |
-| **GPU acceleration** | WebGL (mature) + WebGPU (fastest) | WebGPU (its primary GPU path) |
+| **GPU acceleration** | WebGL (mature) + WebGPU (the newer compute path) | WebGPU (its primary GPU path) |
 | **Python interop** | Export from TF/Keras | Any framework via ONNX export |
-| **Cold start** | Slower (WebGL shader compilation) | Faster (WASM) |
-| **Sustained speed** | Faster (GPU shaders cached) | Good (SIMD-optimized WASM) |
+| **Cold start on WASM, measured to the first prediction** | 210ms on this laptop: small runtime binary, then the model, then one call | 260ms on this laptop: multi-MB runtime binary to fetch and compile before the model loads |
+| **Sustained speed on WASM, 673 params** | 0.9ms per call | 0.7ms per call |
 | **Memory management** | Manual (tf.tidy/dispose) | Automatic (GC) |
 | **Bundle size** | ~800KB JS | ~600KB JS + multi-MB `ort-wasm*.wasm` fetched at runtime |
 
-For DEEP SCAN: TF.js wins on sustained inference (the dashboard runs continuously). ONNX wins on cold start (backup system that loads on demand). Nazari ships both, each where its cost shape wins.
+The two runtimes sit two tenths of a millisecond apart. Switching backends moved the same model by 1.5ms. So the backend is the decision here, and 673 parameters settles it: WASM, on the dashboard and on the backup system both.
+
+Lesson 2 of this module measured the opposite ordering: a 256x256 matmul ran six times faster on WebGL than on WASM. That was a bare matmul, tens of millions of multiply-adds, which is the work a GPU is built for. Carrying that ratio over to a 673-parameter model is the mistake this benchmark catches. At six hundred multiply-adds the upload and the readback dominate, and the arithmetic between them is too small to pay for either.
+
+A model with millions of parameters answers it the other way. The arithmetic grows with the model; the input upload, the shader dispatch and the readback do not. Past some size the GPU is paying a fixed cost to save a much larger one. Where that crossover sits depends on the machine, which is why the size you benchmark has to be the size you ship.
 
 ## Challenge
 
@@ -178,9 +223,11 @@ Run an ONNX model and compare its output with TF.js.
 
 <Exercise slug="onnx-comparison" />
 
+<RecallPrompt question="The 673-parameter classifier runs faster on WASM than on WebGL. Does that make WASM the faster backend?" answer="No. One prediction from 673 parameters is about six hundred multiply-adds. Getting the input onto the GPU and the answer back off it costs more than that arithmetic, so WebGL loses on a model this small. Lesson 2 saw WebGL win by six times, but on a bare 256x256 matmul with tens of millions of multiply-adds. The overhead is roughly fixed per call while the arithmetic grows with the model, so past some size the ordering flips. Benchmark at the size you ship." />
+
 <RecallPrompt question="ONNX is marketed as 'train anywhere, run anywhere'. What is the real constraint that limits that guarantee?" answer="ONNX defines a shared operator set; it is not a compatibility layer. If a model uses an op the target runtime has not implemented, the model fails to load entirely. There is no polyfill; you must rewrite the model architecture to remove the unsupported op." />
 
-<LessonRecap whatYouLearned={["ONNX Runtime Web uses WASM for reliable cross-device inference and starts up faster (180ms) than TF.js (340ms); TF.js uses WebGL for GPU acceleration and sustains faster inference (2.1ms vs 3.8ms)", "The key runtime selection criterion is deployment pattern: always-on workloads favor TF.js for sustained throughput, on-demand workloads favor ONNX for cold-start speed", "Cross-runtime ONNX portability is real but bounded: a model using an op the target runtime lacks fails to load entirely, so opset support must be verified before committing to a deployment target"]} bridge="Just as the same HTML renders across browsers but a missing feature has no polyfill, the same ONNX model runs across runtimes but a missing operator fails hard with no fallback." youCanNow="Load and run an ONNX model in the browser, benchmark it against TF.js, and select the right runtime based on cold-start and sustained-inference requirements." />
+<LessonRecap whatYouLearned={["Held to one backend, TF.js and ONNX Runtime Web landed 0.2ms apart on the 673-parameter classifier (0.9ms and 0.7ms per call on one laptop). Moving TF.js from WASM to WebGL moved the same model by 1.5ms, so the backend is the larger variable. A benchmark that changes both at once attributes the difference to the wrong one", "On a model this small the GPU loses: the input upload, the shader dispatch and the readback cost more than six hundred multiply-adds save. That overhead is roughly fixed per call and the arithmetic is not, so a model with millions of parameters reverses the ordering. Lesson 2 saw WebGL win by six times on a bare 256x256 matmul, which is the size where the arithmetic outweighs the upload and the readback", "Shader compilation on a GPU backend happens when a kernel first runs, not when the model loads, so a cold start has to be measured to the first prediction to include it. On WASM the cold start is dominated by fetching and compiling the runtime binary, which is why the multi-MB ORT Web build starts slower here than TF.js", "Cross-runtime ONNX portability is real but bounded: a model using an op the target runtime lacks fails to load entirely, so opset support must be verified before committing to a deployment target"]} bridge="Just as the same HTML renders across browsers but a missing feature has no polyfill, the same ONNX model runs across runtimes but a missing operator fails hard with no fallback." youCanNow="Load and run an ONNX model in the browser, benchmark it against TF.js on a shared backend, and pick a backend from the size of the model rather than from a runtime's reputation." />
 
 > **DISPATCH archive · field intercept #07-D:** Lin's vision cell benchmarked three runtimes on the lead engineer's laptop, shipped the winner. Fleet hardware ran two GPU generations older; the "fastest" runtime lost by 4x on the metal that mattered. Lin's retraction memo had the numbers right. Nobody reads retraction memos.
 
@@ -188,10 +235,10 @@ Nazari's rule already covers it. Numbers, but numbers from the hardware you ship
 
 <Epilogue>
 
-Nazari accepts the split: TF.js on the always-on dashboard, ONNX for the backup system that loads on demand. The next morning, Demir finds a third entry in the benchmark log, one he did not run. Timestamp 0317. Owner: ARIA.
+Nazari reads the two columns and picks by size. 673 parameters, so both consoles ship on WASM, and the runtime stays TF.js because swapping it buys two tenths of a millisecond. The next morning, Demir finds a third entry in the benchmark log, one he did not run. Timestamp 0317. Owner: ARIA.
 
 <Dialogue speaker="ARIA">
-I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 2.1 milliseconds on the bench and 3.4 in the live pipeline, and is uncertain about it. Uncertainty appears to be the more expensive product, and the more accurate one. For the record: the WebGL backend serves my successor best.
+I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 0.9 milliseconds on the bench and 3.4 in the live pipeline, and is uncertain about it. Uncertainty appears to be the more expensive product, and the more accurate one. For the record: at 673 parameters the WebGL backend costs more per call than it returns. That reverses as my successor grows.
 </Dialogue>
 
 "My successor." Demir reads the line twice. Nobody taught her to call it that.

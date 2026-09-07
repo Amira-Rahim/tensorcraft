@@ -26,7 +26,7 @@ consequence:
   narrative: "Demir locks the threshold at the 99th percentile of normal error: one flag per hundred calm readings, and both of last week's real events still caught."
 hints:
   - level: nudge
-    content: "There is no formula for the cutoff here: score every candidate threshold against the labeled data and keep the one with the highest F1"
+    content: "There is no formula for the cutoff here: score every candidate threshold against the labeled validation slice and keep the one with the highest F1"
   - level: guidance
     content: "For each candidate t, predict anomaly where errors[i] > t, then count tp, fp, and fn against labels. precision = tp / (tp + fp), recall = tp / (tp + fn), f1 = 2 * precision * recall / (precision + recall), each guarded with || 0 so empty counts do not produce NaN. Track the best { threshold, f1 } and return it"
   - level: solution
@@ -50,7 +50,7 @@ But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Naz
 
 Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore the tracker; Nazari just described the bridge-crew version. The threshold must balance missed anomalies against false alarms.
 
-<LearningObjectives objectives={["Set detection thresholds using percentiles of normal error distribution", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the optimal balance point"]} />
+<LearningObjectives objectives={["Set detection thresholds using percentiles of normal error distribution", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the optimal balance point", "Sweep candidate cutoffs on a validation slice and score the chosen one once on the test slice"]} />
 
 ## Setting the Threshold
 
@@ -112,16 +112,27 @@ function evaluate(
   return { precision, recall, f1 };
 }
 
-// Try multiple thresholds and find the best F1
+// Sweep the candidates on the VALIDATION slice. Choosing a cutoff is
+// choosing a setting, and settings are paid for with validation data.
 const thresholds = [0.002, 0.003, 0.004, 0.005, 0.008, 0.010];
 for (const t of thresholds) {
-  const m = evaluate(testErrors, testLabels, t);
+  const m = evaluate(valErrors, valLabels, t);
   console.log(\`t=\${t}: P=\${m.precision.toFixed(2)} R=\${m.recall.toFixed(2)} F1=\${m.f1.toFixed(2)}\`);
 }
 // t=0.002: P=0.34 R=1.00 F1=0.51  ← catches everything, many false alarms
 // t=0.004: P=0.89 R=0.95 F1=0.92  ← good balance
-// t=0.010: P=1.00 R=0.72 F1=0.84  ← no false alarms, misses some`}
+// t=0.010: P=1.00 R=0.72 F1=0.84  ← no false alarms, misses some
+
+// Lock the winner, then score it once on the held-out test slice. That
+// second number is the one the report carries, and it tends to land a
+// little under the validation number, because the validation score paid
+// for this choice.
+const chosen = 0.004;
+const held = evaluate(testErrors, testLabels, chosen);
+console.log(\`t=\${chosen} held out: P=\${held.precision.toFixed(2)} R=\${held.recall.toFixed(2)} F1=\${held.f1.toFixed(2)}\`);`}
 </CodeBlock>
+
+The sweep and the report read different slices on purpose. Six candidates scored on the validation slice are six decisions charged to it, and module 3's rule holds: the test slice stays out of reach until the cutoff is locked. Sweep on the test slice instead and the winning F1 is part measurement, part luck about which candidate suited those particular rows.
 
 ## Same Curve, Opposite Costs
 
@@ -145,7 +156,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 
 <RecallPrompt
   question="What does F1 score measure, and why is it useful when comparing anomaly detection thresholds?"
-  answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because moving the threshold shifts precision and recall in opposite directions; F1 captures both effects together, so the threshold with the highest F1 represents the best balance for a given dataset. The right balance still ultimately depends on the relative cost of each error type."
+  answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because moving the threshold shifts precision and recall in opposite directions; F1 captures both effects together, so the threshold with the highest F1 represents the best balance on the validation slice you swept. The right balance still ultimately depends on the relative cost of each error type."
 />
 
 <RecallPrompt
@@ -157,7 +168,8 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
   whatYouLearned={[
     "Threshold tuning sets the boundary between normal and anomalous by choosing a cutoff on the reconstruction error distribution; setting it too low causes alert fatigue, too high causes missed detections.",
     "Using the normal error distribution (for example the 99th percentile) gives a principled starting point that ties the threshold to observed behavior on known-good data.",
-    "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system."
+    "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system.",
+    "Choosing a threshold is choosing a setting, so the candidate sweep runs on the validation slice and the chosen cutoff is scored once on the held-out test slice."
   ]}
   bridge="Just as a JS alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff rather than a fixed number in config."
   youCanNow="Set anomaly detection thresholds from the normal error distribution and evaluate them using precision, recall, and F1 score."

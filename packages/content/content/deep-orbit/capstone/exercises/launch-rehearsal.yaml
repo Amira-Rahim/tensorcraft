@@ -6,9 +6,9 @@ instructions: |
   Assemble the whole system once, end to end. Build `runLaunchRehearsal(model, readings, config)`: normalize each reading's features to [0, 1] using `config.ranges` (module 4's pipeline), batch-predict all readings inside `tf.tidy()`, then judge the run the way module 11 gates a deploy. Return:
 
     {
-      confidences: number[],   // model output per reading, input order
-      canaryAccuracy: number,  // fraction where (confidence > 0.5) matches reading.label
-      drift: boolean,          // |mean(confidences) - config.baselineMeanConfidence| > config.driftTolerance
+      scores: number[],        // raw model output per reading, input order
+      canaryAccuracy: number,  // fraction where (score > 0.5) matches reading.label
+      drift: boolean,          // |mean(scores) - config.baselineMeanScore| > config.driftTolerance
       launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
     }
 
@@ -20,12 +20,12 @@ starterCode: |
   interface Range { min: number; max: number; }
   interface RehearsalConfig {
     ranges: { amplitude: Range; frequency: Range; phase: Range };
-    baselineMeanConfidence: number;
+    baselineMeanScore: number;
     driftTolerance: number;
     minAccuracy: number;
   }
   interface RehearsalVerdict {
-    confidences: number[];
+    scores: number[];
     canaryAccuracy: number;
     drift: boolean;
     launch: boolean;
@@ -46,13 +46,13 @@ starterCode: |
     //     Array.from(...) from the tidy so plain numbers escape, never a
     //     tensor. A leaked tensor fails the rehearsal (the grader
     //     compares tf.memory().numTensors before and after).
-    //  3. canaryAccuracy: a confidence predicts (confidence > 0.5 ? 1 : 0);
+    //  3. canaryAccuracy: a score predicts (score > 0.5 ? 1 : 0);
     //     count where that equals readings[i].label, divide by
     //     readings.length.
-    //  4. drift: Math.abs(mean of confidences - config.baselineMeanConfidence)
+    //  4. drift: Math.abs(mean of scores - config.baselineMeanScore)
     //     > config.driftTolerance.
     //  5. launch: canaryAccuracy >= config.minAccuracy AND no drift.
-    // Return { confidences, canaryAccuracy, drift, launch }.
+    // Return { scores, canaryAccuracy, drift, launch }.
     return null; // your code here
   }
 solutionCode: |
@@ -62,12 +62,12 @@ solutionCode: |
   interface Range { min: number; max: number; }
   interface RehearsalConfig {
     ranges: { amplitude: Range; frequency: Range; phase: Range };
-    baselineMeanConfidence: number;
+    baselineMeanScore: number;
     driftTolerance: number;
     minAccuracy: number;
   }
   interface RehearsalVerdict {
-    confidences: number[];
+    scores: number[];
     canaryAccuracy: number;
     drift: boolean;
     launch: boolean;
@@ -79,7 +79,7 @@ solutionCode: |
     config: RehearsalConfig,
   ): RehearsalVerdict {
     const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
-    const confidences = tf.tidy(() => {
+    const scores = tf.tidy(() => {
       const rows = readings.map((r) => [
         norm(r.amplitude, config.ranges.amplitude),
         norm(r.frequency, config.ranges.frequency),
@@ -88,19 +88,19 @@ solutionCode: |
       const out = model.predict(tf.tensor2d(rows)) as tf.Tensor;
       return Array.from(out.dataSync());
     });
-    const correct = confidences.filter(
-      (c, i) => (c > 0.5 ? 1 : 0) === readings[i].label,
+    const correct = scores.filter(
+      (s, i) => (s > 0.5 ? 1 : 0) === readings[i].label,
     ).length;
     const canaryAccuracy = correct / readings.length;
-    const mean = confidences.reduce((a, b) => a + b, 0) / confidences.length;
-    const drift = Math.abs(mean - config.baselineMeanConfidence) > config.driftTolerance;
+    const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const drift = Math.abs(mean - config.baselineMeanScore) > config.driftTolerance;
     const launch = canaryAccuracy >= config.minAccuracy && !drift;
-    return { confidences, canaryAccuracy, drift, launch };
+    return { scores, canaryAccuracy, drift, launch };
   }
 testCode: |
   describe('runLaunchRehearsal', () => {
     // Identity probe (module 4's trick): output = normalized amplitude,
-    // so every confidence below is hand-checkable.
+    // so every score below is hand-checkable.
     let probe;
     beforeAll(() => {
       probe = tf.sequential();
@@ -113,22 +113,22 @@ testCode: |
       phase: { min: -Math.PI, max: Math.PI },
     };
     const readings = [
-      { amplitude: 1536, frequency: 0, phase: -Math.PI, label: 1 },  // conf 0.75
-      { amplitude: 512, frequency: 0, phase: -Math.PI, label: 0 },   // conf 0.25
-      { amplitude: 1024, frequency: 0, phase: -Math.PI, label: 0 },  // conf 0.50 -> pred 0
+      { amplitude: 1536, frequency: 0, phase: -Math.PI, label: 1 },  // score 0.75
+      { amplitude: 512, frequency: 0, phase: -Math.PI, label: 0 },   // score 0.25
+      { amplitude: 1024, frequency: 0, phase: -Math.PI, label: 0 },  // score 0.50 -> pred 0
     ];
     const greenConfig = {
       ranges,
-      baselineMeanConfidence: 0.5,
+      baselineMeanScore: 0.5,
       driftTolerance: 0.1,
       minAccuracy: 0.9,
     };
 
-    it('confidences are the normalized amplitudes, in input order', () => {
+    it('scores are the normalized amplitudes, in input order', () => {
       const v = runLaunchRehearsal(probe, readings, greenConfig);
-      expect(v.confidences[0]).toBeCloseTo(0.75, 4);
-      expect(v.confidences[1]).toBeCloseTo(0.25, 4);
-      expect(v.confidences[2]).toBeCloseTo(0.5, 4);
+      expect(v.scores[0]).toBeCloseTo(0.75, 4);
+      expect(v.scores[1]).toBeCloseTo(0.25, 4);
+      expect(v.scores[2]).toBeCloseTo(0.5, 4);
     });
 
     it('all-green rehearsal launches: accuracy 1.0, no drift', () => {
@@ -141,7 +141,7 @@ testCode: |
     it('a mislabeled canary drops accuracy and blocks launch', () => {
       const flipped = [
         readings[0],
-        { ...readings[1], label: 1 },  // conf 0.25 -> pred 0, label 1: miss
+        { ...readings[1], label: 1 },  // score 0.25 -> pred 0, label 1: miss
         readings[2],
       ];
       const v = runLaunchRehearsal(probe, flipped, greenConfig);
@@ -150,7 +150,7 @@ testCode: |
     });
 
     it('drift blocks launch even at perfect accuracy', () => {
-      const drifted = { ...greenConfig, baselineMeanConfidence: 0.75 };
+      const drifted = { ...greenConfig, baselineMeanScore: 0.75 };
       const v = runLaunchRehearsal(probe, readings, drifted);
       expect(v.canaryAccuracy).toBeCloseTo(1.0, 5);
       expect(v.drift).toBe(true);

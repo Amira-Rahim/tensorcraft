@@ -49,7 +49,7 @@ Then someone (or something) is sending it.
 
 `<link rel="prefetch">` predicts which page a user will navigate to next and preloads it. Forecasting is the same idea applied to time series: based on past patterns, predict what the signal will look like in the future.
 
-<LearningObjectives objectives={["Build a multi-step forecasting system using rolling predictions", "Understand non-stationarity, when past patterns stop predicting the future", "Detect drift by comparing recent prediction errors to a historical baseline"]} />
+<LearningObjectives objectives={["Build a multi-step forecasting system using rolling predictions", "Understand non-stationarity, when past patterns stop predicting the future", "Detect drift by comparing one-step errors from this period against an earlier period, since a rollout's error grows on its own"]} />
 
 ## Multi-Step Forecasting
 
@@ -59,8 +59,8 @@ Then someone (or something) is sending it.
 {`import * as tf from '@tensorflow/tfjs';
 
 // The rolling loop from module 6, lesson 5: predict one step, append it,
-// slide the window, repeat. Nothing here is new; the drift check below
-// needs its output.
+// slide the window, repeat. Nothing here is new. What matters this time is
+// what its error does as the horizon grows.
 async function forecast(
   model: tf.LayersModel,
   seed: number[][],
@@ -86,14 +86,16 @@ async function forecast(
 // Forecast 100 steps ahead. Step 1 is one model call from real data; step
 // 100 is one model call from 99 of the model's own guesses. There is no
 // trust number in this function because the model does not have one. A
-// real interval comes from measuring the error distribution, which is what
-// the drift detector below starts doing.
+// real interval comes from replaying old forecasts and measuring, at each
+// horizon separately, how far they landed from what actually arrived.
 const predictions = await forecast(model, recentWindow, 100);`}
 </CodeBlock>
 
 ## Non-Stationarity: When Predictions Fail
 
-A forecasting model assumes one thing above all: that the statistics it learned still hold. Non-stationary means they do not. The mean, the variance, or in this case the period drifts while the model keeps predicting from the shape it fit last week, so its error grows in one direction instead of scattering around zero. You cannot see that in a single prediction. You see it by tracking error across a moving window and comparing it against what the model used to cost you.
+A forecasting model assumes one thing above all: that the statistics it learned still hold. Non-stationary means they do not. The mean, the variance, or in this case the period drifts while the model keeps predicting from the shape it fit last week, so its error grows in one direction instead of scattering around zero.
+
+Two different things make forecast error grow, and it is easy to read one as the other. Along a horizon, error compounds because step 100 stands on 99 of the model's own guesses. That happens on a signal that never changes at all. Drift is a change in the series itself between one week and the next. To measure drift, hold the horizon fixed at one step. Re-seed the window from the readings that actually arrived and score each prediction against the next real one. Then compare this period's errors against an earlier period's.
 
 <CodeBlock language="typescript" title="non-stationary.ts">
 {`// The forecast says the anomaly repeats at step 50
@@ -104,21 +106,49 @@ A forecasting model assumes one thing above all: that the statistics it learned 
 // The signal's timing is DRIFTING; it's not perfectly periodic
 // Like a website's traffic patterns shifting after a redesign
 
-// Detection: compare predicted vs actual over a moving window
-function detectDrift(
-  predicted: number[][],
-  actual: number[][],
+// One prediction per reading that actually arrived. The window is re-seeded
+// from real data every step, so no prediction ever feeds back into the next
+// one and every error below costs exactly one model call.
+function predictOneStepAhead(
+  model: tf.LayersModel,
+  observed: number[][],
   windowSize: number,
+): number[][] {
+  const predictions: number[][] = [];
+
+  for (let t = windowSize; t < observed.length; t++) {
+    predictions.push(tf.tidy(() => {
+      const input = tf.tensor3d([observed.slice(t - windowSize, t)]);
+      const pred = model.predict(input) as tf.Tensor;
+      return Array.from(pred.dataSync());
+    }));
+  }
+
+  return predictions;
+}
+
+// Detection: score those one-step errors along the clock, then compare the
+// most recent stretch against the errors before it.
+// Never pass a rollout in here. A rollout's error grows with the horizon by
+// construction, so this function would report drift on a signal that has not
+// changed at all.
+function detectDrift(
+  oneStepPredicted: number[][],
+  actual: number[][],
+  recentPeriod: number,
 ): { driftDetected: boolean; driftMagnitude: number } {
   const errors: number[] = [];
   for (let i = 0; i < actual.length; i++) {
-    const err = actual[i].reduce((sum, v, j) => sum + (v - predicted[i][j]) ** 2, 0);
+    const err = actual[i].reduce(
+      (sum, v, j) => sum + (v - oneStepPredicted[i][j]) ** 2,
+      0,
+    );
     errors.push(err);
   }
 
-  // Compare recent errors to historical errors
-  const recent = errors.slice(-windowSize);
-  const historical = errors.slice(0, -windowSize);
+  // This period's errors against the earlier ones
+  const recent = errors.slice(-recentPeriod);
+  const historical = errors.slice(0, -recentPeriod);
   const recentMean = recent.reduce((a, b) => a + b, 0) / recent.length;
   const histMean = historical.reduce((a, b) => a + b, 0) / historical.length;
 
@@ -126,25 +156,32 @@ function detectDrift(
     driftDetected: recentMean > histMean * 2,  // errors doubled
     driftMagnitude: recentMean / histMean,
   };
-}`}
+}
+
+// Observations only, never a forecast. The last 200 errors are this period;
+// everything before them is the baseline they are judged against.
+const oneStep = predictOneStepAhead(model, observedReadings, 80);
+const drift = detectDrift(oneStep, observedReadings.slice(80), 200);`}
 </CodeBlock>
 
 ## Challenge
 
-Build a forecasting system and detect when predictions start drifting.
+Build the rolling loop that turns a one-step model into a 100-step forecast.
 
 <Exercise slug="forecast-signal" />
 
 <RecallPrompt question="Why does multi-step forecasting become less reliable the further ahead you predict?" answer="Each step uses the previous prediction as input, so errors compound: a small error at step 1 gets fed back into step 2, and so on. The uncertainty cone grows with horizon, and if the underlying data is non-stationary, the learned patterns may no longer apply at all." />
 
+<RecallPrompt question="You run the drift check on a 100-step rollout and it reports that error has tripled. What did you actually measure?" answer="Compounding, not drift. Step 100 stands on 99 of the model's own guesses while step 1 stands on real data, so the late errors are larger even when the signal has not changed. Drift shows up only when the horizon is held at one step and this period's errors are compared against an earlier period's." />
+
 <LessonRecap
   whatYouLearned={[
     "Rolling prediction (feed each forecast back as the next input) extends a single-step model to arbitrary horizons, but error compounds with every step.",
     "Non-stationarity means the statistical properties of the series change over time, causing a model trained on past patterns to drift from reality.",
-    "Drift detection compares recent prediction error against a historical baseline; a large ratio signals that the model needs to adapt or retrain."
+    "Drift detection runs on one-step errors measured along the clock: re-seed the window from real readings, then compare this period's error against an earlier period's. Feed it a rollout and it reports drift that is not there."
   ]}
   bridge="Like `<link rel='prefetch'>` predicting the next navigation and preloading it, `model.predict(pastWindow)` learns past patterns to predict `future` values, but unlike prefetch there is no cache hit, only a widening probability cone."
-  youCanNow="Build a multi-step forecasting system and detect when its predictions start drifting from incoming observations."
+  youCanNow="Build a multi-step forecast, and run a drift check on one-step errors without mistaking a rollout's compounding error for drift."
 />
 
 <Epilogue>

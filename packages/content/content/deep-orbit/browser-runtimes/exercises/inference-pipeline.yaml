@@ -1,7 +1,7 @@
 slug: inference-pipeline
 lessonSlug: inference-pipeline
 title: "Build an Inference Pipeline"
-instructions: "Write a classify function that takes a model and raw signal data (amplitude, frequency, phase). Normalize each feature to [0, 1] using the provided ranges, then run model.predict() inside tf.tidy(). Return the classification ('anomaly' if the model's output exceeds 0.5, else 'noise') along with that raw output as the confidence value."
+instructions: "Write a classify function that takes a model and raw signal data (amplitude, frequency, phase). Normalize each feature to [0, 1] using the provided ranges, then run model.predict() inside tf.tidy(). Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. Confidence belongs to the verdict you returned, so report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -18,7 +18,8 @@ starterCode: |
     // 1. Normalize each feature to [0, 1] using RANGES
     // 2. Use tf.tidy() to prevent memory leaks
     // 3. Create a [1, 3] tensor and run model.predict()
-    // 4. Return class and confidence
+    // 4. Return the class, and confidence in that class:
+    //    p when p > 0.5, otherwise 1 - p
     return null; // your code here
   }
 solutionCode: |
@@ -42,10 +43,10 @@ solutionCode: |
       ];
       const input = tf.tensor2d([normalized]);
       const output = model.predict(input) as tf.Tensor;
-      const confidence = output.dataSync()[0];
+      const p = output.dataSync()[0];
       return {
-        class: confidence > 0.5 ? 'anomaly' as const : 'noise' as const,
-        confidence,
+        class: p > 0.5 ? 'anomaly' as const : 'noise' as const,
+        confidence: p > 0.5 ? p : 1 - p,
       };
     });
   }
@@ -59,21 +60,22 @@ testCode: |
       probe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
       probe.layers[0].setWeights([tf.tensor2d([[1], [0], [0]])]);
     });
-    it('confidence equals the normalized amplitude (1536 / 2048 = 0.75, anomaly)', () => {
+    it('p above 0.5 is anomaly, reported at p (1536 / 2048 = 0.75)', () => {
       const r = classify(probe, { amplitude: 1536, frequency: 0, phase: -Math.PI });
-      expect(r.confidence).toBeCloseTo(0.75, 4);
       expect(r.class).toBe('anomaly');
+      expect(r.confidence).toBeCloseTo(0.75, 4);
     });
-    it('low amplitude normalizes low (512 / 2048 = 0.25, noise)', () => {
+    it('p below 0.5 is noise, reported at 1 - p (512 / 2048 = 0.25 -> 0.75)', () => {
       const r = classify(probe, { amplitude: 512, frequency: 0, phase: -Math.PI });
-      expect(r.confidence).toBeCloseTo(0.25, 4);
       expect(r.class).toBe('noise');
+      expect(r.confidence).toBeCloseTo(0.75, 4);
     });
-    it('phase is normalized from [-pi, pi] to [0, 1] (phase 0 -> 0.5)', () => {
+    it('phase 0 normalizes to p = 0.5, the tie. 0.5 is not above 0.5, so the verdict is noise, and 1 - p is 0.5 either way', () => {
       const phaseProbe = tf.sequential();
       phaseProbe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
       phaseProbe.layers[0].setWeights([tf.tensor2d([[0], [0], [1]])]);
       const r = classify(phaseProbe, { amplitude: 0, frequency: 0, phase: 0 });
+      expect(r.class).toBe('noise');
       expect(r.confidence).toBeCloseTo(0.5, 4);
     });
     it('does not leak tensors (tf.tidy is doing its job)', () => {

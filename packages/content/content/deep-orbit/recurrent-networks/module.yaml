@@ -4,7 +4,9 @@ worldId: deep-orbit
 order: 6
 description: |
   The signals show temporal patterns: a rhythm spanning dozens of time steps.
-  Feedforward networks see snapshots; recurrent networks see sequences. You'll
+  The deployed classifier is fed one reading at a time, so the order never
+  reaches it. A recurrent cell reads the steps in order and applies one
+  learned rule at every one of them, whatever the window length. You'll
   build RNNs and LSTMs that carry state across time, meet the lighter GRU, and
   forecast the next reading. You already have the instincts: a reducer folds
   each step into the state it carries, and a cached value expires when it

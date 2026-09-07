@@ -78,7 +78,10 @@ async function clientInference(signalData: number[]) {
   const result = await prediction.array();
   inputTensor.dispose();
   prediction.dispose();
-  return { class: result[0][0] > 0.5 ? 'anomaly' : 'noise', confidence: result[0][0] };
+  const p = result[0][0];   // sigmoid output: P(anomaly)
+  // Confidence reports the verdict, not the raw sigmoid: p = 0.12 is
+  // "noise, 0.88 confident". Lesson 4 builds this pipeline properly.
+  return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
 }`}
 </CodeBlock>
 

@@ -2600,39 +2600,168 @@ numbers are in the audit's "What I checked by running it" section. Note
 that three OTHER items, which I wrote up from reading alone before their
 verifiers finished, were then refuted; see the withdrawal list below.
 
+### BATCH TWO APPLIED 2026-09-06 (all 20 Tier 1 items now closed)
+
+The remaining seven Tier 1 items are done, plus the owner's three
+decisions. All gates green after every pass: content 413/413, exercises
+65/65, web contract 20/20, and all twenty pinned pulse-interval mentions
+byte-identical.
+
+OWNER DECISIONS APPLIED
+- The 0249 profile ran on the WASM fallback, so 45 to 15 ms is WebGL
+  restored and 15 to 5 ms is the WebGPU swap. Recorded where the 45 ms is
+  established.
+- The quantization trade stays and is named a choice. No accuracy number
+  changed anywhere.
+- The ONNX verdict follows model size. The benchmark now holds the
+  backend constant and the character's decision follows the measurement.
+
+WHAT VERIFICATION COST AND BOUGHT. Four passes, each checked by fresh
+readers told only the original defect. Pass 1 introduced 6 high
+problems, pass 2 introduced 7, pass 3 introduced 5. Every one was caught
+before it shipped. Highlights of what the readers caught:
+- I put a FALSE FACT in a fix instruction: Glorot sizes by fan-average in
+  TensorFlow.js, not fan-in. Measured on real kernels to settle it.
+- My own ONNX fix re-introduced the exact contamination the lesson
+  forbids, by leaving TensorFlow.js backend init outside the timed region
+  while ONNX paid it inside.
+- The backend decision collided with a 6x ratio established in module 4.
+  Reconciled honestly: the 6x came from a bare matmul, and end-to-end
+  gain is bounded below kernel gain. That is now taught.
+- A correction claimed a full-archive shuffle buffer reproduces the
+  opening crash. Measured, it peaks at 57,500 tensors, four orders of
+  magnitude off. Replaced with the real reason (the buffer must fill
+  before the first batch yields).
+
+THE LESSON THAT CHANGES METHOD. Fixes were applied per file, and the
+final sweep proved that a corrected claim survives in OTHER lessons. The
+Kalman claim lived on in module 8 lesson 5's body, dialogue and epilogue
+and in the capstone's console output; the feedforward claim in a module
+description a learner reads before any lesson; the validation-versus-test
+rule was being broken in module 7's threshold sweep, which tuned on the
+test set. A closing pass fixed those by sweeping PER CLAIM across all 56
+lessons. Do it that way from the start next time.
+
+STILL OPEN after batch two, none blocking, all in module 10 or 11 unless
+noted:
+- [ ] `optimization-edge/02:63`: a five-class 94.2 is presented as
+  comparable to a binary 94. Chance moves from 50 to 20 percent, so it is
+  a new baseline rather than the next rung of the 78 to 87 ladder.
+- [ ] `optimization-edge/03:139`: the 512 MB fit is credited to pruning,
+  but lesson 2 already cleared the budget at 85 MB, and the line still
+  reads file size as memory footprint.
+- [ ] `optimization-edge/03:93`: the 80 percent build's accuracy is the
+  pruning-only figure applied to a build whose size requires quantization
+  too.
+- [ ] `optimization-edge/03:174`: the module says why the crew did not
+  exempt the classifier from quantization, but not from pruning.
+- [ ] `optimization-edge/01:171`: promises the 45 ms and 112 ms survive
+  into module 11. Neither appears there.
+- [ ] `capstone/04:120`: the model card is titled as the classifier and
+  reports 42 MB, which is the whole bundle. Collapses the two ledgers
+  module 10 spent a lesson separating.
+- [ ] `capstone/02:225`: the CI gate sets a 50 MB and 20 ms cap, then
+  passes an artifact its own log identifies as 340 MB and 45 ms.
+- [ ] `capstone/exercises/launch-rehearsal.yaml`: the identity probe has
+  weights [[1],[0],[0]] and no bias, so a solution that never calls
+  predict passes, and two of the three normalization channels are never
+  observed by any test.
+- [ ] The Tier 2 and Tier 3 lists in the audit, roughly 60 medium and 40
+  low, are largely untouched.
+- [ ] The exercise mix remains the largest single lever on the grade.
+
+### BATCH ONE APPLIED 2026-09-06 (13 of the 20, plus the profile-model grader)
+
+Fixed and verified: T1.1 broadcasting, T1.2 shuffle buffer, T1.3 tensor
+leak, T1.4 weight initialization, T1.5 validation versus test, T1.6 ONNX
+cross-runtime, T1.9 aliasing, T1.10 overlap rule, T1.11 compute-fft
+grader, T1.13 feedforward framing, T1.16 Kalman attribution, T1.20
+file-size-as-memory, T1.23 finale, and the profile-model grader. Their
+checkboxes below are ticked.
+
+Still open from Tier 1: T1.7 benchmark confound, T1.8 confidence
+contradiction, T1.12 fft-features grader, T1.14 LLM stage validation,
+T1.15 drift detector, T1.19 quantization economics. (T1.17
+weighted-ensemble closed 2026-09-06.)
+
+Verification, and it mattered. Fourteen editors applied the fixes, then
+fourteen fresh readers who were told only the original defect checked
+the current files. They found 6 high and 20 medium problems in that
+first pass, including one where the instruction itself was wrong: the
+text claimed Glorot sizes the draw by fan-in, and TensorFlow.js 4.22.0
+dense actually defaults to VarianceScaling with mode fanAvg (measured:
+kernel [3, 32] observed sd 0.218 against fanAvg's 0.239 and fan-in's
+0.577). Three other fixes were incomplete, leaving the false claim alive
+in a LessonRecap bullet, a frontmatter breaks string, and the third line
+of a code comment whose first two lines had been corrected. A second
+pass of 13 correctors applied 36 further edits. All gates green after:
+content 413/413, exercises 65/65, web contract 20/20, interval canon
+intact in every pinned file.
+
+Both fixed graders were checked by running a cheating solution against
+them. compute-fft: the shortcut that returns the raw bin index now fails
+1 of 5 (it passed 4 of 4 before). profile-model: the solution reporting
+avgInferenceMs 0 with no warmup and no readback now fails 2 of 4.
+
+RESIDUALS from batch one, none blocking:
+- [ ] `optimization-edge/05` line 152: the 45 ms to 15 ms half of the
+  speedup still has no cause the module can support. The module never
+  names the backend the 45 ms baseline ran on, so closing this needs a
+  story decision (was the 0249 profile on the WASM fallback?) rather
+  than an edit. OWNER DECISION.
+- [ ] `foundations/04` line 161: the epilogue's "numTensors hold steady
+  at 70" matches no pipeline in the file. Measured on the lesson's own
+  code: 202 while streaming through the shuffle buffer, 2 for the split
+  pipelines. Pick one or drop the number.
+- [ ] `foundations/03` youCanNow does not name broadcasting, though the
+  objectives and recap now do.
+- [ ] `foundations/04` line 99 says "a sliding window of that size" and
+  the antecedent was removed by the correction.
+- [ ] `glossary.ts`: the aliasing entry is 51 words and broadcasting is
+  33, against a file median of 17. The file's header calls for one or
+  two plain sentences.
+- [ ] `neural-networks/05`: five surfaces still say "weights" where they
+  mean all 673 parameters, now that the body distinguishes the 624 drawn
+  connection weights from the 49 zeroed biases.
+- [ ] Found while editing, different world: Neon Protocol
+  `03-performance-budgets.mdx` and `04-webgl-acceleration.mdx` time
+  `model.predict()` with no readback inside the clock, the same defect
+  the Deep Orbit profiling lesson calls fiction. That world is
+  unlaunched, so it is not urgent, but it will need the same fix.
+
 ### Tier 1, wrong beliefs and missing basics (20 items)
 
 Wrong mechanisms a learner carries out of the world:
-- [ ] **T1.9 `signal-processing/02:149`** teaches that above Nyquist is
+- [x] **T1.9 `signal-processing/02:149`** teaches that above Nyquist is
   invisible; measured, a 73.4 Hz tone at 128 Hz plants a peak of
   magnitude 49 in bin 55. The recap says "aliases" and the term is
   defined nowhere in the course.
-- [ ] **T1.10 `signal-processing/05:144`, 148, recap 215** say every
+- [x] **T1.10 `signal-processing/05:144`, 148, recap 215** say every
   sample gets full weight in at least one window; measured with the
   lesson's own Hann window the worst interior sample reaches 0.512. The
   drawer already states the correct COLA property.
-- [ ] **T1.2 `foundations/04:99`** says `shuffle(100)` makes every batch
+- [x] **T1.2 `foundations/04:99`** says `shuffle(100)` makes every batch
   a fair sample of the archive; measured span is about 371 readings of
   an in-order stream, roughly 3.4 hours of one day.
-- [ ] **T1.15 `advanced-time-series/03:63`** feeds the 100-step rollout
+- [x] **T1.15 `advanced-time-series/03:63`** feeds the 100-step rollout
   to the drift detector; run on a pure stationary sine the lesson's own
   detector reports drift at magnitude 2.84 (one-step-ahead: 1.13).
-- [ ] **T1.16 `advanced-time-series/04:125`** credits the 1D filter with
+- [x] **T1.16 `advanced-time-series/04:125`** credits the 1D filter with
   tracking the drift at a sixth of a second per day; its own run slopes
   at 0.092 and ends 0.44 behind. Only the collapsed drawer admits it.
-- [ ] **T1.13 `recurrent-networks/01:70`** blames "feedforward"; measured,
+- [x] **T1.13 `recurrent-networks/01:70`** blames "feedforward"; measured,
   a dense layer over the flattened window scores 100% on an order-only
   task while a true per-step model scores chance. Two graders reject
   Flatten+Dense with no lesson saying why.
-- [ ] **T1.20 `optimization-edge/05:153`** treats file size as runtime
+- [x] **T1.20 `optimization-edge/05:153`** treats file size as runtime
   memory; by the module's own mechanics the weights are 340 MB after
   load either way, and the load-peak arithmetic is never given.
-- [ ] **T1.6 `browser-runtimes/05:21`** says an ONNX model runs in TF.js
+- [x] **T1.6 `browser-runtimes/05:21`** says an ONNX model runs in TF.js
   and PyTorch. Neither executes ONNX, and lesson 6 says so.
-- [ ] **T1.7 `browser-runtimes/05:183`** turns a backend-vs-runtime
+- [x] **T1.7 `browser-runtimes/05:183`** turns a backend-vs-runtime
   confound into a runtime selection rule, breaking the lesson's own
   measurement rule two sections earlier.
-- [ ] **T1.23 `capstone/05:288`** (CONTESTED, 2 of 3 skeptics refuted)
+- [x] **T1.23 `capstone/05:288`** (CONTESTED, 2 of 3 skeptics refuted)
   explains the untrained 0.998 by saying any projection throws 7741 to a
   far end; measured, 300 fresh inits with the default initializer span
   0.397 to 0.631. The refuters argue the sentence scopes its claim to
@@ -2644,41 +2773,46 @@ Wrong mechanisms a learner carries out of the world:
   N5.
 
 Graders that certify what they do not test:
-- [ ] **T1.11 `signal-processing/exercises/compute-fft.yaml`**: all four
+- [x] **T1.11 `signal-processing/exercises/compute-fft.yaml`**: all four
   tests use length == sampleRate, so a solution returning the raw bin
   index passes 4/4 (verified by running it).
-- [ ] **T1.8 `browser-runtimes/exercises/inference-pipeline.yaml`**
+- [x] **T1.8 `browser-runtimes/exercises/inference-pipeline.yaml`**
   grades the raw sigmoid as confidence, the definition the lesson body
   calls wrong twice. Pick one and make body, hints, solution and tests
   agree.
-- [ ] **T1.12 `signal-processing/exercises/fft-features.yaml`** grades
+- [x] **T1.12 `signal-processing/exercises/fft-features.yaml`** grades
   sorting by magnitude, which the lesson forbids, while the Challenge,
   nudge and youCanNow describe fixed-bin extraction nothing grades.
-- [ ] **T1.17 `advanced-time-series/exercises/weighted-ensemble.yaml`**
-  is copyable from the function printed in the lesson body, and the
-  instructions point at it.
-- [ ] **profile-model** (`optimization-edge`): a solution reporting
+- [x] **T1.17 `advanced-time-series/exercises/weighted-ensemble.yaml`**
+  was copyable from the function printed in the lesson body, and the
+  instructions pointed at it. Regraded 2026-09-06 as
+  `ensembleGain(members, actual)`: per-member MAE, ensemble MAE, and
+  whether the blend beat its best member, with a shared-offset test that
+  ties and a strong-member test that loses. The lesson's
+  `evaluateEnsemble` block (the giveaway) is gone; `weightedEnsemble`
+  stays and no longer overlaps the exercise.
+- [x] **profile-model** (`optimization-edge`): a solution reporting
   `avgInferenceMs: 0` with no timing, warmup or readback passes 4/4
   (verified). It rehearses the exact pattern lesson 1 calls fiction.
 
 Basics named and never taught:
-- [ ] **T1.1 broadcasting** (`foundations/02:22` and recap): two
+- [x] **T1.1 broadcasting** (`foundations/02:22` and recap): two
   mentions, no definition anywhere, no glossary entry, then required by
   code in lessons 3 and 5.
-- [ ] **T1.4 weight initialization** (`neural-networks/05:49`): no
+- [x] **T1.4 weight initialization** (`neural-networks/05:49`): no
   symmetry breaking, no Glorot, no `kernelInitializer` anywhere, though
   five lessons and the 7741 mystery lean on "random weights".
-- [ ] **T1.5 validation versus test** (`training-loop/05:59`). Same as
+- [x] **T1.5 validation versus test** (`training-loop/05:59`). Same as
   N1, still open, now graded high.
-- [ ] **T1.14 `llm-integration/05:179`**: validating between stages is
+- [x] **T1.14 `llm-integration/05:179`**: validating between stages is
   asserted in bridge, recap, RecallPrompt and youCanNow, and shown in
   no code.
-- [ ] **T1.19 quantization economics** (`optimization-edge/02:46`): the
+- [x] **T1.19 quantization economics** (`optimization-edge/02:46`): the
   megabytes come from the language component and the accuracy points
   come from the sub-megabyte classifier, so the 2.4 points were a choice
   (exempt the classifier) rather than a price. Selective quantization is
   never mentioned.
-- [ ] **T1.3 tensor leak** (`foundations/04:126`): the split generator
+- [x] **T1.3 tensor leak** (`foundations/04:126`): the split generator
   leaks two tensors per skipped reading (measured 1,600 per 1,000
   readings) in the module that teaches leak detection, and the epilogue
   claims memory held flat.

@@ -1,7 +1,7 @@
 slug: find-threshold
 lessonSlug: threshold-tuning
 title: "Find the Optimal Threshold"
-instructions: "Given parallel arrays of reconstruction errors and ground-truth boolean labels (true = anomaly), return the threshold value (from the candidate list) that yields the highest F1 score on the dataset."
+instructions: "Given parallel arrays of reconstruction errors and ground-truth boolean labels (true = anomaly) from the validation slice, return the threshold value (from the candidate list) that yields the highest F1 score on that slice. The sweep never reads the test slice; the winning cutoff is scored there once, afterwards."
 starterCode: |
   function findBestThreshold(
     errors: number[],

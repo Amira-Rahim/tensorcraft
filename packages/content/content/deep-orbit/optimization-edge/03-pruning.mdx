@@ -159,7 +159,8 @@ Prune weights and measure the accuracy impact.
   whatYouLearned={[
     "Magnitude-based pruning zeros out the smallest-absolute-value weights first; sparsity has a non-linear cliff where a small increase in pruning rate causes a large accuracy drop.",
     "Rare and anomalous classes are disproportionately harmed by aggressive pruning because their learned signal concentrates in low-magnitude weights.",
-    "Combining pruning (60% sparsity) with uint8 quantization took DEEP SCAN from 340 MB to 42 MB, roughly 8x total compression, at a cost of 2.4 accuracy points (94.2% to 91.8%)."
+    "Combining pruning (60% sparsity) with uint8 quantization took DEEP SCAN from 340 MB to 42 MB, roughly 8x total compression, at a cost of 2.4 accuracy points (94.2% to 91.8%).",
+    "A compression pass does not have to cover every layer: quantize flags take weight-name patterns, and a pruning pass takes whatever weight list you hand it. When the accuracy number comes from one small classifier, exempting that classifier from both passes is a real option, so part of a measured cost reflects what you chose to include."
   ]}
   bridge="Just as webpack tree-shaking removes unused exports to shrink a bundle, magnitude-based pruning removes near-zero weights to shrink a model; but unlike dead code, pruned weights still contributed a little, so the model changes."
   youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and combine pruning with quantization for maximum model compression."
@@ -170,7 +171,7 @@ Prune weights and measure the accuracy impact.
 42 MB. The combined build sits on the staging dashboard next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-We bought 298 megabytes for 2.4 points of accuracy. Before I trust the trade, I want to know which signals live in those 2.4 points. Run every rejected classification back through the full model overnight.
+We chose to buy 298 megabytes for 2.4 points of accuracy. The classifier spending those points carries none of the megabytes, and both passes could have skipped it: a converter pattern for the quantizing, our own code for the pruning. Before I trust the trade, I want to know which signals live in those 2.4 points. Run every rejected classification back through the full model overnight.
 </Dialogue>
 
 Seventeen days to the relay slot. The pulse interval in the evening readings: 55.1 seconds. Both numbers are getting smaller, and only one of them is on purpose.

@@ -117,11 +117,11 @@ function binToFrequency(binIndex: number, sampleRate: number, fftSize: number): 
 // bin 1  → 1 Hz
 // bin 5  → 5 Hz   ← our first sine wave
 // bin 20 → 20 Hz  ← our second sine wave
-// bin 64 → 64 Hz  (Nyquist frequency: maximum detectable)
+// bin 64 → 64 Hz  (Nyquist frequency: the last honest bin)
 
-// Nyquist frequency: the highest frequency you can detect
+// Nyquist frequency: the highest frequency this rate reports truthfully
 // = sampleRate / 2
-// Like a display's pixel grid: nothing finer than one pixel survives, no matter what you draw
+// A faster component still shows up, folded down into a lower bin (aliasing)
 const nyquist = sampleRate / 2;  // 64 Hz
 console.log('Nyquist frequency:', nyquist, 'Hz');
 
@@ -146,7 +146,7 @@ console.log('Dominant frequency:', dominant, 'Hz');  // 5`}
 
 ## The FFT for DEEP SCAN
 
-One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more, which caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. Anything between 64 and 128 Hz is invisible to the demo and plainly visible to the ship.
+One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more, which caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. That is why you pick a sample rate above twice the highest frequency you care about, and why an under-sampled capture can plant a line that was never there.
 
 <CodeBlock language="typescript" title="deep-scan-fft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -222,15 +222,15 @@ Compute the FFT of a signal and find its dominant frequency.
 <Exercise slug="compute-fft" />
 
 <RecallPrompt
-  question="Given an FFT of 128 samples taken at 128 Hz, what frequency does bin 20 correspond to, and why can't you detect anything above 64 Hz?"
-  answer="Bin 20 corresponds to 20 Hz because each bin maps to binIndex x (sampleRate / fftSize) = 20 x (128 / 128) = 20 Hz. Nothing above 64 Hz is detectable because the Nyquist frequency, sampleRate / 2, is the highest frequency that can be represented without aliasing from a signal sampled at that rate."
+  question="Given an FFT of 128 samples taken at 128 Hz, what frequency does bin 20 correspond to, and what does a 73.4 Hz tone in that same capture read as?"
+  answer="Bin 20 corresponds to 20 Hz because each bin maps to binIndex x (sampleRate / fftSize) = 20 x (128 / 128) = 20 Hz. A 73.4 Hz tone sits above the 64 Hz Nyquist frequency, sampleRate / 2, so it does not vanish from the spectrum. It folds down and reads as a peak near 54.6 Hz, which is 128 minus 73.4, and nothing in the output marks that peak as false."
 />
 
 <LessonRecap
   whatYouLearned={[
     "The FFT decomposes a signal into a fixed mathematical basis of sinusoids and returns a complex coefficient for each frequency bin, giving both a magnitude (how much of that frequency is present) and a phase (its offset).",
     "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz.",
-    "The highest detectable frequency is the Nyquist frequency, sampleRate / 2. Components faster than that cannot be represented at the given sample rate without aliasing into lower bins.",
+    "The highest frequency a sample rate can report honestly is the Nyquist frequency, sampleRate / 2. A faster component still shows up, folded down into a lower bin at the wrong frequency. That folding is aliasing.",
     "Peaks are only meaningful relative to a noise floor. Flagging bins above a threshold relative to the average magnitude separates real signal components from noise."
   ]}
   bridge="Where `@keyframes` decomposes an animation into authored timeline steps, `tf.spectral.rfft(signal)` decomposes a signal into a universal fixed basis of sinusoids. The basis is the same for every signal, not authored per-signal."

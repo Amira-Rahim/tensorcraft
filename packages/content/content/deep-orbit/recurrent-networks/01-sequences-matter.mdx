@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "The signals show a rhythm: a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Farah says they need a model with memory."
+  narrative: "The signals show a rhythm: a pattern that spans dozens of time steps. The classifier on the dashboard is fed one reading at a time, so the order never reaches it. Farah says they need a model with memory."
   speaker: "Dr. Farah"
 concept:
   explanation: "In sequences, order is part of the meaning: shuffle the readings and the values survive but the signal dies."
@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "A stream only has to preserve order; nothing inside the pipe reads it. Reassemble the chunks in the wrong order and the file is corrupt, and a checksum catches it. A sequence model has to use the order instead of preserving it: it learns which arrangements mean what, so a shuffled window is not corrupt, it is a valid sample that means something else, and no checksum will ever flag it."
 consequence:
-  narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation; the model has no memory of what came before."
+  narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
     content: "Training on a stream means pairing each window of past readings with the single reading that comes immediately after it."
@@ -39,7 +39,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-This isn't random noise. Something is repeating. The pattern spans dozens of time steps, but our feedforward network only sees one snapshot at a time. We need a model with memory.
+This isn't random noise. Something is repeating. The pattern spans dozens of time steps, but we hand our network one reading at a time. We need a model with memory.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -48,9 +48,9 @@ Memory? You mean like... state that persists between inputs? That's just a reduc
 
 Hold the reducer thought; it is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
 
-<LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals"]} />
+<LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from raw signals"]} />
 
-## Why Feedforward Networks Fail at Sequences
+## Why One Reading At A Time Fails
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -67,10 +67,10 @@ Hold the reducer thought; it is the next lesson's answer. Today's problem comes 
 // t=2: [0.3, 0.1, 0.4]  (falling)
 // t=3: [0.5, 0.3, 0.7]  (rising again) ← THE PATTERN REPEATS
 
-// A feedforward network processes each time step in isolation
+// Hand the model one reading at a time and each row is scored alone
 // It cannot detect: "the signal rises, falls, then rises again"
 
-// What we need: a model that sees multiple time steps at once
+// What we need: a model that reads the steps in order, reusing one rule at every step
 // Input shape changes from [features] to [timeSteps, features]
 
 // Preparing sequential input: create sliding windows
@@ -98,6 +98,8 @@ console.log(sequences[0]);
 // [[0.5, 0.3, 0.7], [0.8, 0.2, 0.9], [0.3, 0.1, 0.4]]
 // ^ This IS the pattern: rise-rise-fall`}
 </CodeBlock>
+
+Flatten that window into one long vector and a dense layer does see the order, which makes it the baseline worth beating. What it learns is a separate weight for every (time step, feature) slot, so the same shape arriving two steps later lands on weights that never saw it, and one window length is baked into the layer. A recurrent cell applies the same transition rule at every step, so a shape that shifts in time is still the same shape to it, and lengthening the window does not add parameters.
 
 <Dialogue speaker="Dr. Farah">
 Look at what the slicing bought you. Row for row, nothing changed. The pattern only exists across rows, in the order they arrive: [rising, falling, rising] and [falling, rising, rising] are the same three values telling two different stories. Order carries information, and the model we have throws it away at the door.
@@ -147,7 +149,7 @@ sequentialInput.dispose();`}
 
 <LessonRecap
   whatYouLearned={[
-    "Feedforward networks score every time step independently: shuffling the order of inputs costs them nothing and loses all temporal information.",
+    "Fed one reading at a time, the deployed classifier scores each reading in isolation, so shuffling the order of the readings changes none of its scores. Flattening a whole window into a dense layer does see the order, but it learns a separate weight per position and fixes the window length. A recurrent cell reuses one rule at every step, which fixes both.",
     "Sequential data requires a third tensor dimension for time, giving inputs shape [batch, timeSteps, features] instead of [batch, features].",
     "Sliding windows convert a continuous signal stream into discrete fixed-size sequences suitable for model input."
   ]}

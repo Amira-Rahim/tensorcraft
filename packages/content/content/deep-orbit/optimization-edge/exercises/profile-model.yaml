@@ -1,7 +1,7 @@
 slug: profile-model
 lessonSlug: model-profiling
 title: "Profile a Model"
-instructions: "Write a function that profiles a model: parameter count, memory size in MB, and average inference time over N runs. For memory, assume float32 (4 bytes per param) and divide by 1e6, per the lesson's units rule; 1024*1024 would give MiB."
+instructions: "Write a function that profiles a model: parameter count, memory size in MB, and average inference time over N runs. For memory, assume float32 (4 bytes per param) and divide by 1e6, per the lesson's units rule; 1024*1024 would give MiB. For timing, do one untimed warmup call first, then time exactly `runs` calls, awaiting `output.data()` inside the timed region so you measure the work rather than the enqueue."
 starterCode: |
   interface ModelProfile {
     parameterCount: number;
@@ -10,13 +10,17 @@ starterCode: |
   }
 
   async function profileModel(
-    model: { countParams: () => number; predict: (x: any) => any },
+    model: {
+      countParams: () => number;
+      predict: (x: any) => { data: () => Promise<unknown> };
+    },
     createInput: () => any,
     runs: number
   ): Promise<ModelProfile> {
     // 1. Get parameter count from model.countParams()
     // 2. Calculate memory: params * 4 bytes, / 1e6 for MB (1024*1024 is MiB)
-    // 3. Run inference `runs` times, measure average time
+    // 3. Warm up once, untimed, and throw the result away
+    // 4. Run inference `runs` times, awaiting output.data() inside the clock
     return null; // your code here
   }
 solutionCode: |
@@ -27,18 +31,26 @@ solutionCode: |
   }
 
   async function profileModel(
-    model: { countParams: () => number; predict: (x: any) => any },
+    model: {
+      countParams: () => number;
+      predict: (x: any) => { data: () => Promise<unknown> };
+    },
     createInput: () => any,
     runs: number
   ): Promise<ModelProfile> {
     const parameterCount = model.countParams();
     const memorySizeMB = (parameterCount * 4) / 1e6;
 
+    // The warmup call pays the one-off compilation cost. It is not timed,
+    // so that cost does not land in the average below.
+    await model.predict(createInput()).data();
+
     const times: number[] = [];
     for (let i = 0; i < runs; i++) {
       const input = createInput();
       const start = performance.now();
-      model.predict(input);
+      const output = model.predict(input);
+      await output.data();
       times.push(Math.max(0, performance.now() - start));
     }
 
@@ -48,36 +60,48 @@ solutionCode: |
   }
 testCode: |
   describe('profileModel', () => {
-    const mockModel = {
-      countParams: () => 85_000_000,
-      predict: (x: any) => x,
-    };
+    const INFERENCE_MS = 8;
     const createInput = () => [1, 2, 3];
 
+    // predict() hands back a handle immediately; the cost sits in the
+    // readback, exactly where it sits on a GPU backend.
+    function makeModel(parameterCount: number) {
+      const calls = { predict: 0 };
+      const model = {
+        countParams: () => parameterCount,
+        predict: (_x: any) => {
+          calls.predict++;
+          return {
+            data: () =>
+              new Promise((resolve) =>
+                setTimeout(() => resolve(new Float32Array([0])), INFERENCE_MS)
+              ),
+          };
+        },
+      };
+      return { model, calls };
+    }
+
     it('returns correct parameter count', async () => {
-      const profile = await profileModel(mockModel, createInput, 5);
+      const profile = await profileModel(makeModel(85_000_000).model, createInput, 5);
       expect(profile.parameterCount).toBe(85_000_000);
     });
 
     it('calculates memory size in true MB (params * 4 / 1e6, not MiB)', async () => {
-      const profile = await profileModel(mockModel, createInput, 5);
+      const profile = await profileModel(makeModel(85_000_000).model, createInput, 5);
       expect(profile.memorySizeMB).toBeCloseTo(340.0, 1);
     });
 
-    it('measures average inference time', async () => {
-      const profile = await profileModel(mockModel, createInput, 10);
-      expect(profile.avgInferenceMs).toBeGreaterThanOrEqual(0);
+    it('times the awaited readback, not the enqueue', async () => {
+      const profile = await profileModel(makeModel(100).model, createInput, 5);
       expect(typeof profile.avgInferenceMs).toBe('number');
+      expect(profile.avgInferenceMs).toBeGreaterThanOrEqual(INFERENCE_MS / 2);
     });
 
-    it('runs the correct number of iterations', async () => {
-      let count = 0;
-      const countingModel = {
-        countParams: () => 100,
-        predict: () => { count++; },
-      };
-      await profileModel(countingModel, createInput, 7);
-      expect(count).toBe(7);
+    it('warms up once, then runs the timed loop exactly `runs` times', async () => {
+      const { model, calls } = makeModel(100);
+      await profileModel(model, createInput, 7);
+      expect(calls.predict).toBe(8);
     });
   });
 estimatedMinutes: 10

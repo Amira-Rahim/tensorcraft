@@ -47,9 +47,13 @@ testCode: |
       const signal = Array.from({ length: 128 }, (_, i) => 5.0 + Math.sin(2 * Math.PI * 7 * i / 128));
       expect(findDominantFrequency(signal, 128)).toBeCloseTo(7, 1);
     });
-    it('tracks the input, not a memorized answer (different length and rate)', () => {
+    it('tracks the input, not a memorized answer (12 Hz in a 64-sample, 64 Hz signal)', () => {
       const signal = Array.from({ length: 64 }, (_, i) => Math.sin(2 * Math.PI * 12 * i / 64));
       expect(findDominantFrequency(signal, 64)).toBeCloseTo(12, 1);
+    });
+    it('converts the bin to hertz instead of returning the bin index (256 samples at 128 Hz)', () => {
+      const signal = Array.from({ length: 256 }, (_, i) => Math.sin(2 * Math.PI * 5 * i / 128));
+      expect(findDominantFrequency(signal, 128)).toBeCloseTo(5, 1);
     });
   });
 estimatedMinutes: 12
