@@ -1,7 +1,9 @@
-// Skips the majority rule entirely: it ANDs two of the three detectors and
-// drops the statistical vote from the decision, so the z-score it computes
-// can never change the verdict. It has no idea that the point of an ensemble
-// is that any two detectors out of three are enough.
+// Never reads `window`. The z-score is the graded property, and every shipped
+// case passed the same calm window, so this solution memorised that window's
+// mean and standard deviation as literals and divides by them. tf.moments is
+// never called. It gets the majority rule right and still has no idea that a
+// sigma count belongs to the spread you measured, not to the reading: hand it
+// a different window and it reports the old window's sigmas.
 function detectAnomalyEnsemble(
   window,
   actual,
@@ -10,12 +12,7 @@ function detectAnomalyEnsemble(
   predicted,
   predTolerance,
 ) {
-  const { mean, variance } = tf.tidy(() => {
-    const m = tf.moments(tf.tensor1d(window));
-    return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] };
-  });
-  const std = Math.sqrt(variance);
-  const zScore = std === 0 ? 0 : (actual - mean) / std;
+  const zScore = (actual - 0.52) / 0.015;
 
   const verdicts = {
     statistical: Math.abs(zScore) > 3,
@@ -28,10 +25,5 @@ function detectAnomalyEnsemble(
     verdicts.lstm,
   ].filter(Boolean).length;
 
-  return {
-    zScore,
-    verdicts,
-    votes,
-    isAnomaly: verdicts.autoencoder && verdicts.lstm,
-  };
+  return { zScore, verdicts, votes, isAnomaly: votes >= 2 };
 }

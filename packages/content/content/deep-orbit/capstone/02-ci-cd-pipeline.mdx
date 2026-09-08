@@ -114,7 +114,8 @@ jobs:
       # ML-specific: benchmark inference speed and weight footprint.
       # A hosted runner has no GPU, so this pins the wasm backend, where
       # the optimization profile put DEEP SCAN at 45 ms mean, 112 ms P95.
-      # Gate the P95: the tail is what took the bridge dashboard down.
+      # Gate the P95, not the mean: one call in twenty runs that slow and
+      # the mean hides it. The operator on watch sees the slow one.
       # The footprint budget covers the float32 tensors the runtime keeps
       # resident once the model is loaded, which is 340 MB for this graph.
       - name: Benchmark inference

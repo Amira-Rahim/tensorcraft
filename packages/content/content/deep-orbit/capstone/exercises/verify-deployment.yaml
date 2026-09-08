@@ -18,7 +18,9 @@ starterCode: |
   async function verifyDeployment(
     checks: (() => Promise<CheckResult>)[]
   ): Promise<DeploymentResult> {
-    // 1. Run all checks (in order, not parallel)
+    // 1. Run all checks IN ORDER: await each one before starting the
+    //    next. Not Promise.all. A later check may depend on an earlier
+    //    one having finished (load the model, THEN score a probe).
     // 2. Collect results
     // 3. passed = all checks passed
     // 4. summary = "{passed}/{total} checks passed"
@@ -98,15 +100,41 @@ testCode: |
 
     it('runs checks in order and collects every result', async () => {
       const order = [];
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      // Descending waits, so a runner that fires all three at once records
+      // them fastest-first: accuracy, latency, shape. Without a real await
+      // in here, an async body finishes synchronously and parallel and
+      // sequential are indistinguishable.
       const checks = [
-        async () => { order.push('shape'); return { name: 'shape', passed: true, message: '' }; },
-        async () => { order.push('latency'); return { name: 'latency', passed: true, message: '' }; },
-        async () => { order.push('accuracy'); return { name: 'accuracy', passed: false, message: 'below gate' }; },
+        async () => { await sleep(30); order.push('shape'); return { name: 'shape', passed: true, message: '' }; },
+        async () => { await sleep(20); order.push('latency'); return { name: 'latency', passed: true, message: '' }; },
+        async () => { await sleep(10); order.push('accuracy'); return { name: 'accuracy', passed: false, message: 'below gate' }; },
       ];
       const result = await verifyDeployment(checks);
       expect(order).toEqual(['shape', 'latency', 'accuracy']);
       expect(result.checks).toHaveLength(3);
       expect(result.checks[2].name).toBe('accuracy');
+    });
+
+    it('a later check sees the work an earlier one finished', async () => {
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      let modelLoaded = false;
+      const checks = [
+        async () => {
+          await sleep(20);
+          modelLoaded = true;
+          return { name: 'load', passed: true, message: 'weights in memory' };
+        },
+        async () => ({
+          name: 'probe',
+          passed: modelLoaded,
+          message: modelLoaded ? 'probe scored' : 'model not loaded yet',
+        }),
+      ];
+      const result = await verifyDeployment(checks);
+      expect(result.checks[1].passed).toBe(true);
+      expect(result.passed).toBe(true);
+      expect(result.summary).toBe('2/2 checks passed');
     });
   });
 estimatedMinutes: 10

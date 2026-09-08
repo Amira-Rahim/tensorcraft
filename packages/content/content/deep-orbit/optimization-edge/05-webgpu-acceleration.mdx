@@ -56,10 +56,13 @@ Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it t
 
 <CodeBlock language="typescript" title="webgpu-setup.ts">
 {`import * as tf from '@tensorflow/tfjs';
-// The bundled package registers only the cpu and webgl backends.
-// 'webgpu' and 'wasm' each need their backend package imported first:
-// import '@tensorflow/tfjs-backend-webgpu';
-// import '@tensorflow/tfjs-backend-wasm';
+// The bundled package registers only cpu and webgl. The two imports below
+// are what put 'webgpu' and 'wasm' in the registry: drop one and setBackend
+// throws on that name instead of resolving false. The 0249 dashboard had
+// the wasm line and not the webgpu line, which is why its fallback landed
+// on wasm at 45 ms and never on anything faster.
+import '@tensorflow/tfjs-backend-webgpu';
+import '@tensorflow/tfjs-backend-wasm';
 
 async function initBestBackend(): Promise<string> {
   // tf.setBackend RESOLVES FALSE when a registered backend fails to

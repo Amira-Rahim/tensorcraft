@@ -1,6 +1,10 @@
-// Judges the ensemble against the MEAN of the member errors instead of
-// against the BEST member, which is the misconception the lesson exists
-// to kill. Every ensemble clears the mean by construction.
+// Has no notion of "best" at all: it judges the blend against whichever
+// member happens to be listed first, which is the misconception the lesson
+// exists to kill. Until 2026-09-08 every fixture listed its best member
+// first, so this cleared the whole grader. The fixture that stops it is the
+// one whose worst member is listed first ("loses to the best member even
+// when it beats the one listed first"); the separate mean-of-members
+// shortcut is pinned by the fixture above it.
 function ensembleGain(members, actual) {
   const mae = (v) =>
     v.reduce((s, x, i) => s + Math.abs(x - actual[i]), 0) / actual.length;
@@ -11,7 +15,9 @@ function ensembleGain(members, actual) {
       members.reduce((s, m) => s + m.predictions[i], 0) / members.length,
   );
   const ensemble = mae(blended);
-  const meanOfMembers =
-    Object.values(perMember).reduce((a, b) => a + b, 0) / members.length;
-  return { perMember, ensemble, beatsBest: ensemble < meanOfMembers };
+  return {
+    perMember,
+    ensemble,
+    beatsBest: ensemble < perMember[members[0].name],
+  };
 }

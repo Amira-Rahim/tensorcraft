@@ -2,13 +2,14 @@ slug: classify-anomaly
 lessonSlug: launch
 title: "Zero Hour: Classify the Anomaly"
 mlContent: systems
-instructions: "The season's final inference, run by you. Sample 7741's zero-hour readout is on the console: the deployed ensemble scores it 0.999 where the module-3 classifier managed 0.518. Your job is the decision layer the bridge crew signs their names to. Implement decomposeIntervals(intervals): successive ratios of the pulse sub-intervals (ratios[i] = intervals[i+1] / intervals[i]). Implement isFibonacciTrain(ratios): true when every ratio matches the Fibonacci-succession ratios ([1, 2, 1.5, 1.667, 1.6, 1.625], aligned from the tail because a train may omit the 1:1 opener) within 2%. Then classifyAnomaly(reading): run the three-detector vote exactly as module 7 built it (statistical fires on |z| > 3 computed from reading.window vs reading.actual, autoencoder fires on reconstructionError > reconThreshold, lstm fires on |predicted - actual| > predTolerance) and take the 2-of-3 majority. Return { votes, isAnomaly, ratios, fibonacciTrain, classification, scoreDelta }: classification is 'confirmed-anomaly' only when the vote passes AND the interval train is Fibonacci, and scoreDelta = ensembleScore - module3Score. The decomposition must be scale-invariant: the ratios care about proportion, not units. That property is the whole reason the calibration overlay worked."
+instructions: "The season's final inference, run by you. Sample 7741's zero-hour readout is on the console: the deployed ensemble scores it 0.999 where the module-3 classifier managed 0.518. Your job is the decision layer the bridge crew signs their names to. Implement decomposeIntervals(intervals): successive ratios of the pulse sub-intervals (ratios[i] = intervals[i+1] / intervals[i]). Implement isFibonacciTrain(ratios): true when every ratio matches the Fibonacci-succession ratios ([1, 2, 1.5, 1.667, 1.6, 1.625], aligned from the tail because a train may omit the 1:1 opener) within 2%. Then classifyAnomaly(reading): run the three-detector vote exactly as module 7 built it (statistical fires on |z| > 3 computed from reading.window vs reading.actual, autoencoder fires on reconstructionError > reconThreshold, lstm fires on |predicted - actualForecast| > predTolerance) and take the 2-of-3 majority. Module 7's canon holds: on sample 7741 the amplitude dial reads normal, so the statistical gate clears and two votes carry the verdict. Return { votes, isAnomaly, ratios, fibonacciTrain, classification, scoreDelta }: classification is 'confirmed-anomaly' only when the vote passes AND the interval train is Fibonacci, and scoreDelta = ensembleScore - module3Score. The decomposition must be scale-invariant: the ratios care about proportion, not units. That property is the whole reason the calibration overlay worked."
 starterCode: |
   // Zero hour. The readout for sample 7741, tonight:
   //
   //   deployed ensemble score : 0.999
   //   module-3 classifier     : 0.518  (the score that started everything)
   //   pulse sub-intervals (s) : proportional to 1, 1, 2, 3, 5, 8, 13
+  //   amplitude               : normal, as it has read since module 7
   //
   // Recipe, exactly as the modules taught it:
   //  1. decomposeIntervals: ratios[i] = intervals[i+1] / intervals[i]
@@ -53,15 +54,18 @@ starterCode: |
 
   // Tonight's reading, as the bridge sees it.
   const zeroHourReading = {
+    // Twenty normalized amplitudes from the archive's calm slice. Their
+    // spread is the one lesson 1 measured over eleven days: tf.moments
+    // returns mean 0.520 and std 0.150 on this window.
     window: [
-      0.508, 0.512, 0.503, 0.51, 0.507, 0.514, 0.505, 0.509, 0.511, 0.506,
-      0.513, 0.504, 0.509, 0.51, 0.507, 0.512, 0.508, 0.505, 0.511, 0.509,
+      0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
+      0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
     ],
-    actual: 0.62,
+    actual: 0.61,             // 0.6 sigma off the mean: the dial reads normal
     reconstructionError: 0.062,
-    reconThreshold: 0.005,
+    reconThreshold: 0.01,     // module 7's locked cutoff
     predicted: 0.55,
-    actualForecast: 0.62,
+    actualForecast: 0.61,
     predTolerance: 0.02,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
@@ -131,15 +135,18 @@ solutionCode: |
   }
 
   const zeroHourReading = {
+    // Twenty normalized amplitudes from the archive's calm slice. Their
+    // spread is the one lesson 1 measured over eleven days: tf.moments
+    // returns mean 0.520 and std 0.150 on this window.
     window: [
-      0.508, 0.512, 0.503, 0.51, 0.507, 0.514, 0.505, 0.509, 0.511, 0.506,
-      0.513, 0.504, 0.509, 0.51, 0.507, 0.512, 0.508, 0.505, 0.511, 0.509,
+      0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
+      0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
     ],
-    actual: 0.62,
+    actual: 0.61,             // 0.6 sigma off the mean: the dial reads normal
     reconstructionError: 0.062,
-    reconThreshold: 0.005,
+    reconThreshold: 0.01,     // module 7's locked cutoff
     predicted: 0.55,
-    actualForecast: 0.62,
+    actualForecast: 0.61,
     predTolerance: 0.02,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
@@ -180,47 +187,105 @@ testCode: |
       expect(isFibonacciTrain([1, 2, 1.5, 1.71, 1.6, 1.625])).toBe(false);
     });
 
-    it('all three detectors fire on the zero-hour reading', () => {
-      expect(result.votes).toBe(3);
+    it('the z-score gate clears sample 7741, and two votes carry it', () => {
+      // Module 7's reading of this sample, unchanged: every dial normal.
+      // 0.61 against the window's measured mean 0.520 and std 0.150 is
+      // 0.6 sigma, so the statistical detector abstains and the
+      // autoencoder and the LSTM decide it between them.
+      expect(result.votes).toBe(2);
       expect(result.isAnomaly).toBe(true);
+
+      // Silence those two and nothing is left. The statistical verdict is
+      // measured false here, not assumed true.
+      const dialsOnly = classifyAnomaly({
+        ...zeroHourReading,
+        reconstructionError: 0.001,
+        predicted: 0.61,
+      });
+      expect(dialsOnly.votes).toBe(0);
+      expect(dialsOnly.isAnomaly).toBe(false);
+      expect(dialsOnly.classification).toBe('noise');
     });
 
-    it('a noisy window keeps the statistical detector quiet (the z-score is measured, not assumed)', () => {
-      // Same `actual` as zero hour, but the window's own spread is 20x
-      // wider, so 0.62 sits 1.8 standard deviations out instead of 36.
-      const noisyWindow = [
-        0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57,
-        0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57, 0.45, 0.57,
-      ];
-      const stillFires = classifyAnomaly({ ...zeroHourReading, window: noisyWindow });
-      expect(stillFires.votes).toBe(2);
-      expect(stillFires.isAnomaly).toBe(true);
+    it('a full-scale amplitude does fire it: 1.00 is 3.2 sigma off this spread', () => {
+      // The live-feed reading module 7 caught: amplitude pegged at the
+      // hull sensor's 1.00 ceiling. Against mean 0.520 and std 0.150 that
+      // is 3.2 sigma, the loudest this feature can ever read.
+      const pegged = classifyAnomaly({ ...zeroHourReading, actual: 1.0 });
+      expect(pegged.votes).toBe(3);
+      expect(pegged.isAnomaly).toBe(true);
 
-      const quiet = classifyAnomaly({
+      const peggedAlone = classifyAnomaly({
         ...zeroHourReading,
-        window: noisyWindow,
+        actual: 1.0,
         reconstructionError: 0.001,
+        predicted: 0.61,
       });
-      expect(quiet.votes).toBe(1);
-      expect(quiet.isAnomaly).toBe(false);
-      expect(quiet.classification).toBe('noise');
+      expect(peggedAlone.votes).toBe(1);
+      expect(peggedAlone.isAnomaly).toBe(false);
+    });
+
+    it('the gate reads |z|, so a dead channel at 0.00 trips it too', () => {
+      // 3.47 sigma below the mean. A gate written `z > 3` misses this.
+      const dead = classifyAnomaly({
+        ...zeroHourReading,
+        actual: 0.0,
+        reconstructionError: 0.001,
+        predicted: 0.61,
+      });
+      expect(dead.votes).toBe(1);
+
+      const deadPlusRecon = classifyAnomaly({
+        ...zeroHourReading,
+        actual: 0.0,
+        predicted: 0.61,
+      });
+      expect(deadPlusRecon.votes).toBe(2);
+      expect(deadPlusRecon.isAnomaly).toBe(true);
     });
 
     it('majority vote is 2-of-3, not unanimity', () => {
-      const oneDetectorDown = classifyAnomaly({
+      // Drop one of the two that fired and the alarm goes quiet.
+      const oneVote = classifyAnomaly({
         ...zeroHourReading,
         reconstructionError: 0.001,
       });
-      expect(oneDetectorDown.votes).toBe(2);
-      expect(oneDetectorDown.isAnomaly).toBe(true);
+      expect(oneVote.votes).toBe(1);
+      expect(oneVote.isAnomaly).toBe(false);
+      expect(oneVote.classification).toBe('noise');
 
-      const twoDetectorsDown = classifyAnomaly({
+      // Any two are enough, including a pair the autoencoder sits out.
+      const statPlusLstm = classifyAnomaly({
         ...zeroHourReading,
+        actual: 1.0,
         reconstructionError: 0.001,
-        predicted: 0.62,
       });
-      expect(twoDetectorsDown.votes).toBe(1);
-      expect(twoDetectorsDown.isAnomaly).toBe(false);
+      expect(statPlusLstm.votes).toBe(2);
+      expect(statPlusLstm.isAnomaly).toBe(true);
+    });
+
+    it('a calm night with a Fibonacci train is still noise: the vote gates it', () => {
+      // A different reading entirely, on its own numbers.
+      const calmNight = {
+        window: [
+          0.474, 0.556, 0.512, 0.398, 0.601, 0.489, 0.533, 0.462, 0.578, 0.507,
+        ],
+        actual: 0.55,
+        reconstructionError: 0.003,
+        reconThreshold: 0.01,
+        predicted: 0.542,
+        actualForecast: 0.55,
+        predTolerance: 0.02,
+        intervals: [2, 2, 4, 6, 10, 16, 26],
+        ensembleScore: 0.114,
+        module3Score: 0.093,
+      };
+      const calm = classifyAnomaly(calmNight);
+      expect(calm.votes).toBe(0);
+      expect(calm.isAnomaly).toBe(false);
+      expect(calm.fibonacciTrain).toBe(true);
+      expect(calm.classification).toBe('noise');
+      expect(calm.scoreDelta).toBeCloseTo(0.021, 3);
     });
 
     it('settles the season: confirmed anomaly, and the 51.8 -> 99.9 delta', () => {

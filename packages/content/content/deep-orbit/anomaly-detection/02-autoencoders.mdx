@@ -107,18 +107,25 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
     },
   },
 });
-// Epoch 0:  loss=0.097510 val_loss=0.073691
-// Epoch 20: loss=0.001187 val_loss=0.001267
-// Epoch 40: loss=0.000760 val_loss=0.000727
-// Epoch 60: loss=0.000656 val_loss=0.000651
-// Epoch 80: loss=0.000647 val_loss=0.000664
+// Epoch 0:  loss=0.985944 val_loss=0.890378
+// Epoch 20: loss=0.001636 val_loss=0.001601
+// Epoch 40: loss=0.001304 val_loss=0.001248
+// Epoch 60: loss=0.001208 val_loss=0.001175
+// Epoch 80: loss=0.001161 val_loss=0.001164
 // (the % 20 callback prints epochs 0 through 80; with epochs: 100 the
 // loop ends after epoch 99, so no line for 100 ever appears)
+
+// Epoch 0 is the no-information baseline, not a first guess that happens
+// to be poor. Module 5 z-normalized all eleven features to mean 0 and
+// std 1, so a model answering zero for every feature scores a squared
+// error near 1.0, and an untrained network 25 batches into its first
+// epoch has not moved far off that. Every row below it is the model
+// beating the baseline.
 
 // Read the val_loss column. validationSplit holds back the last 200 of
 // these readings and the model never fits them, so val_loss is the only
 // number here that says anything about readings it has not seen. Above,
-// the two columns track each other within 7% from epoch 20 on, which is
+// the two columns track each other within 5% from epoch 20 on, which is
 // what a model that learned the structure looks like. Loss falling while
 // val_loss stalls several times higher is the other outcome: the model
 // memorized the 800 rows it trained on. That autoencoder scores its own
@@ -144,14 +151,14 @@ Build and compile an autoencoder for normal signal data.
     "Anomalous inputs cannot be accurately encoded or decoded, so they produce high reconstruction error, which becomes the anomaly signal."
   ]}
   bridge="Like `gzip` exploiting repeated patterns to compress and restore data losslessly, an autoencoder compresses by learning patterns in normal data; but unlike gzip, it is lossy: inputs unlike anything it was trained on come back distorted, and that distortion is the detection mechanism."
-  youCanNow="Build and compile an autoencoder with a bottleneck, and explain why reconstruction error works as an unsupervised anomaly score when the training data is normal only."
+  youCanNow="Build and compile an autoencoder with a bottleneck, and explain why reconstruction error works as a label-free anomaly score when the training data is normal only."
 />
 
 <Epilogue>
 
-First run: the loss curve is beautiful and the result is useless. Demir stripped every flagged reading, but the FFT features are computed over a surrounding window, so readings up to a minute on either side of the anomaly still carried its spectrum into the training set. The model learned the 73.4 Hz component obediently, like everything else it was shown, and now reconstructs the anomalous signal at 1.4x baseline. Close enough to normal to walk straight past any threshold. Farah finds the leak by cross-checking row timestamps against the flag log.
+First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but the flag log only holds what ARIA's rules tripped on, and the pulse comes back on its 73.4-second clock. The same 73.4 Hz component therefore sits in rows nothing ever flagged, and those rows stayed in the training set. The model learned that component obediently, like everything else it was shown, and now reconstructs the anomalous signal at 1.4x baseline. Close enough to normal to walk straight past any threshold. Farah finds the leak by running the FFT over the training rows: the 73.4 Hz bin is lit in rows the flag log never names.
 
-Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows. The fix she dictates is one sentence long: pad the exclusion margin by a full FFT window on each side, and make the margin a number in the config instead of a hope.
+Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows. The fix she dictates is one sentence long: screen every training row on the 73.4 Hz bin itself instead of trusting the flag log, and make the cutoff a number in the config instead of a hope.
 
 The second run starts at 0115.
 

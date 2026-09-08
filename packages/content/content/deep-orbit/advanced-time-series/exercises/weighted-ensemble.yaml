@@ -2,7 +2,7 @@ slug: weighted-ensemble
 lessonSlug: time-series-ensemble-methods
 title: "Ensemble Gain Over the Best Member"
 mlContent: evaluation
-instructions: "Write `ensembleGain(members, actual)` and report whether the ensemble was worth running. `members` is an array of `{ name, predictions }`; `actual` holds the true values at the same positions. Return `{ perMember, ensemble, beatsBest }`. `perMember` maps each member name to that member's mean absolute error. `ensemble` is the MAE of the plain average of the members' predictions at each position. `beatsBest` is true only when `ensemble` is lower than every member's error. A tie is not a win: one test hands you three members that are all wrong by the same amount in the same direction, and one hands you a strong member with two weak ones. A third hands you members whose errors partly cancel, so the blend beats the average member and still loses to the best one."
+instructions: "Write `ensembleGain(members, actual)` and report whether the ensemble was worth running. `members` is an array of `{ name, predictions }`; `actual` holds the true values at the same positions. Return `{ perMember, ensemble, beatsBest }`. `perMember` maps each member name to that member's mean absolute error. `ensemble` is the MAE of the plain average of the members' predictions at each position. `beatsBest` is true only when `ensemble` is lower than every member's error. A tie is not a win: one test hands you three members that are all wrong by the same amount in the same direction, and one hands you a strong member with two weak ones. A third hands you members whose errors partly cancel, so the blend beats the average member and still loses to the best one. A fourth lists the worst member first: the blend beats that one and still loses to the best."
 starterCode: |
   function ensembleGain(members, actual) {
     // Mean absolute error of one prediction series against `actual`.
@@ -101,6 +101,27 @@ testCode: |
       // ensemble against that mean returns true here. The best member scored
       // 0.25, and 0.5 is worse than 0.25.
       expect(result.ensemble).toBeCloseTo(0.5, 4);
+      expect(result.beatsBest).toBe(false);
+    });
+    // Member order is the point of this one. The worst member is listed
+    // first and the best is listed last, so comparing the ensemble against
+    // members[0] returns true here. All three overshoot position 1 by 6 and
+    // the blend keeps every bit of that; they disagree at position 0 and
+    // partly cancel there. Comparing against the mean member error (3.75) or
+    // the worst (6) also returns true. The best member scored 2.25.
+    it('loses to the best member even when it beats the one listed first', () => {
+      const result = ensembleGain(
+        [
+          { name: 'Kalman', predictions: [78, 70, 68, 72] },
+          { name: 'Attention', predictions: [66, 70, 68, 72] },
+          { name: 'LSTM', predictions: [57, 70, 68, 72] },
+        ],
+        [60, 64, 68, 72],
+      );
+      expect(result.perMember.Kalman).toBeCloseTo(6, 4);
+      expect(result.perMember.Attention).toBeCloseTo(3, 4);
+      expect(result.perMember.LSTM).toBeCloseTo(2.25, 4);
+      expect(result.ensemble).toBeCloseTo(3.25, 4);
       expect(result.beatsBest).toBe(false);
     });
   });

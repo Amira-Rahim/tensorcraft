@@ -39,14 +39,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Chief Nazari">
-One neuron cleared two calibration tones; the live stream is sixty-four channels and you've squeezed all of them into three numbers. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
+One neuron cleared two calibration tones; Sector 7-G is sixty-four channels and neither tone. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
 </Dialogue>
 
 <LearningObjectives objectives={["Build multi-layer neural networks using tf.sequential()", "Understand how layers compose like a middleware chain", "Configure layer sizes (units) and activations", "Count a network's parameters before you build it"]} />
 
 ## Stages All the Way Down
 
-Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage that reads the three normalized features from module 1, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
+Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage reading the three features from lesson 1, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. Those three are amplitude, frequency, and phase, each mapped to 0-1 against the range its own sensor can physically produce. Module 4 quotes those ranges when the browser pipeline has to apply them. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
 
 Say exactly what a stage is, because "finds patterns" describes the result, not the mechanism. A dense layer with 32 units is 32 copies of the lesson-1 neuron, plus the activation lesson 1 left out. Every one of them reads the same 3 inputs through its own weights and bias. That gives 32 weighted sums, and the layer's relu runs on each one before the next stage sees it. The 16-unit stage is 16 more neurons, and its inputs are those 32 relu outputs. They vote on combinations of the first stage's votes, and the verdict neuron votes on combinations of theirs. Lesson 2 already told you why the activation between stages is not optional. Without it, three stages of weighted sums multiply out to one weighted sum, and the stack would know exactly as much as a single neuron.
 

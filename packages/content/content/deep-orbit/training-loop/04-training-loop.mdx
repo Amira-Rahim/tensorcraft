@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "model.fit() runs the whole loop for you: forward pass, loss, backprop, and weight update, once per batch, with the whole dataset swept once per epoch."
   - level: guidance
-    content: "Await model.fit(xs, ys, options) and store its result in history. The grader checks that history.history.loss has exactly 10 entries and that the loss fell from the first epoch to the last. The loss falls without batchSize 2, but batchSize 2 buys two weight updates per epoch instead of one."
+    content: "Await model.fit(xs, ys, options) and store its result in history. The grader reads the record fit returns, so both settings have to be in the call: it checks history.params.epochs is 10 and history.params.batchSize is 2. With four rows, batchSize 2 buys two weight updates per epoch where the default of 32 buys one. It also checks that the loss fell from the first epoch to the last and that the trained model now predicts the four rows to a mean squared error under 2.0."
   - level: solution
     content: "const history = await model.fit(xs, ys, { epochs: 10, batchSize: 2 });"
 keywords:
@@ -66,13 +66,18 @@ model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
 // Training data: 100 labeled readings, three features each:
-// [amplitude, frequency, phase]. Flagged windows run hot on amplitude
-// and phase and LOW on frequency (frequency here is a zero-crossing
-// count, and a clean tone crosses zero far less often than broadband
-// noise); calm periods are the mirror image. The seeds make the DATA
-// reproducible. A net trained on pure noise could still memorize it.
-// Its training loss would fall while the held-out loss sat at 0.693,
-// the coin-flip number. Reading that pair is what this lesson teaches.
+// [amplitude, frequency, phase], each min-max normalized against the
+// range its own sensor can produce, so amplitude 1.00 means the hull
+// sensor pegged at its full 2048 counts. These 100 rows are hand-picked
+// clean examples from the flag log, 50 per label, which is why every
+// channel arrives as two tight clusters rather than one spread.
+// Flagged windows run hot on amplitude and phase and LOW on frequency
+// (frequency here is a zero-crossing count, and a clean tone crosses
+// zero far less often than broadband noise); calm periods are the
+// mirror image. The seeds make the DATA reproducible. A net trained on
+// pure noise could still memorize it. Its training loss would fall
+// while the held-out loss sat at 0.693, the coin-flip number. Reading
+// that pair is what this lesson teaches.
 const calm = tf.concat([
   tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
   tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
@@ -119,6 +124,8 @@ const history = await model.fit(trainX, trainY, {
 // boundary first, then spends the remaining epochs getting confident
 // about it.`}
 </CodeBlock>
+
+Two clean ends of the flag log are not a sample of the stream, and the amplitude column is where that shows. No training row lands between 0.37 and 0.66. Module 7 measures the archive's normal amplitude at mean 0.52 with a standard deviation of 0.15, which puts about two thirds of calm readings inside that empty band. Frequency and phase carry the label anyway. Across 200 runs of this block, a reading at amplitude 0.52 with calm frequency and phase came back at a median 0.22 anomalous, the same amplitude with flagged frequency and phase at 0.84, and an amplitude pegged at full scale on an otherwise calm reading at 0.46, still under the 0.5 line. The empty band costs something exactly once, on the reading in lesson 5 that sits mid-scale on all three channels at once.
 
 <DerivationDrawer summary="Why identical code lands on different losses: the loss landscape">
 **Loss is a surface over weight space.** A network with n weights defines `L(w)`: one loss value for every point in n-dimensional weight space. Training is descent on that surface, and the epoch trace above is an altitude log.

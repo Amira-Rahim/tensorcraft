@@ -105,8 +105,11 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 const x = tf.randomNormal([32, 5, 3]);
 const y = tf.randomUniform([32, 1]).round();
 
-// Shape drill only: the labels are random, so do not expect this loss to
-// fall. Nothing can learn noise. The real run is tonight's, in the epilogue.
+// Shape drill only: this proves the [5, 3] pipeline runs, nothing more.
+// The labels are random and the loss still falls every epoch, because
+// 1,185 parameters against 32 samples can memorize noise. Run it to 100
+// epochs and training accuracy reaches 1.00 on labels with no pattern in
+// them. None of that generalizes. The real run is tonight's, in the epilogue.
 await model.fit(x, y, { epochs: 10 });
 
 x.dispose();
@@ -147,7 +150,9 @@ modelAllSteps.add(tf.layers.simpleRNN({
 
 Backpropagation through time is module 3's backward pass unrolled along the sequence. Every step it walks back through the cell, it multiplies the gradient by the recurrent weight and by the slope of `tanh` at that step. Whether the learning signal survives the trip depends on that one product, not on either factor alone. Below 1 it decays geometrically, which is the ordinary case: the slope of `tanh` is at most 1, and it falls to 0.42 at an input of 1 and 0.07 at an input of 2, so a saturated cell passes back almost nothing. Run the drill's cell with its 0.8 recurrent weight and readings near zero, and the gradient arriving 60 steps back is 1.5e-6 of the one that left the loss. The weights that would have to change to catch a long pattern never receive a usable instruction. In practice a simple RNN learns dependencies of roughly ten to twenty steps.
 
-Nothing bounds the recurrent weight, though, so the product can also land above 1. Raise that 0.8 to 1.5 and the same 60-step walk multiplies the gradient by 3.7e10 instead of shrinking it. A step that size throws the weights somewhere useless, and the loss comes back spiking or NaN rather than flat. The standard guard is gradient clipping: cap the norm of the gradient before the optimizer applies it. TF.js 4.22 has no clipping option on its optimizers, so that cap is one you write yourself. Vanishing is the quieter failure, and it is the one this window has.
+Nothing bounds the recurrent weight, though, so the product can sit above 1 for a stretch of steps. Raise that 0.8 to 1.5, start the cell at zero and feed it readings near 0.001. The gradient grows on the way back instead of shrinking: at step 14 it is 173 times the one that left the loss. A spike like that is what gradient clipping is for. Cap the norm of the gradient before the optimizer applies it. TF.js 4.22 has no clipping option on its optimizers, so that cap is one you write yourself.
+
+The growth does not last, and what stops it is the same `tanh`. At a recurrent weight of 1.5 the cell state settles at 0.8586, and there the per-step factor is `1.5 * (1 - 0.8586 * 0.8586)`, which is 0.394. Past step fifteen this walk shrinks again, and by step 60 the gradient is 2.7e-16 of the one that left the loss. A one-unit cell does that for every weight above 1: the settled factor is 0.82 at 1.1, 0.39 at 1.5, 0.17 at 2. Explosion here is a burst of a dozen steps, not a sustained run. It also needs a state near zero to start from. With the recurrent weight at 1.5 and readings drawn anywhere in plus or minus 0.01, twenty trials all arrived at step 60 below 1e-11. Vanishing is the quieter failure, and it is the one this window has.
 
 The pattern DEEP SCAN needs repeats about every 73 seconds, which on the dashboard's one-sample-per-second feed is a 73-step dependency (the archive's 33-second integration rows are far too coarse to carry it at all). The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
 
@@ -166,7 +171,7 @@ Build a simple RNN that processes sequential signal data.
   whatYouLearned={[
     "An RNN is a learned reducer: at each time step it takes the previous hidden state and the new input, runs them through a trained weight matrix and tanh, and emits updated hidden state.",
     "Setting `returnSequences: true` yields hidden state at every time step (shape [batch, timeSteps, units]); the default false yields only the final hidden state (shape [batch, units]).",
-    "Backpropagation through time multiplies the gradient by the recurrent weight times the tanh slope at every step. Below 1, that product shrinks the error signal exponentially and patterns beyond ~10-20 steps stop being learnable; above 1 the gradient explodes instead, which is what gradient clipping caps."
+    "Backpropagation through time multiplies the gradient by the recurrent weight times the tanh slope at every step. Below 1, that product shrinks the error signal exponentially and patterns beyond ~10-20 steps stop being learnable. Above 1 the same product explodes the gradient instead, in bursts that end once the cell saturates and the slope collapses, and gradient clipping is the cap on those bursts."
   ]}
   bridge="Replaying an event log runs a reducer you wrote: same log, same final state, every time. An RNN cell learns that reducer from data, so the same input produces different outputs depending on what came before, and the transition logic is encoded in weights rather than readable code."
   youCanNow="Build a simple RNN with `tf.layers.simpleRNN` and explain why vanishing gradients prevent it from learning long-range dependencies."

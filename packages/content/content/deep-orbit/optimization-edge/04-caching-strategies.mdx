@@ -46,7 +46,7 @@ That log line is 213 model runs the dashboard never needed. Demir has seen this 
 Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? Round the features, key on the rounded values, and the second identical signal costs a Map lookup instead of a forward pass.
 </Dialogue>
 
-DEEP SCAN spent last night reclassifying cosmic background it had already classified, at full GPU cost each time. The playbook is the one that sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss.
+DEEP SCAN spent last night reclassifying cosmic background it had already classified, at the full 45 ms this module's first lesson profiled. The consoles still had no working WebGL context, so that 45 ms is wasm time on the CPU, and every repeat paid all of it. The playbook is the one that sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss.
 
 <LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
 

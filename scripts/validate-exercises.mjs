@@ -5,17 +5,29 @@
  * Reads the velite-compiled exercises.json and verifies for each exercise:
  *   1. Starter code parses as JavaScript (after TS/import stripping).
  *   2. Solution code, run against testCode, passes every assertion within 10s.
+ *   3. testCode makes at least one value-level assertion.
+ *   4. With --starters, the untouched starter does NOT pass.
+ *   5. With --cheats, the registered ignorant solution at
+ *      scripts/exercise-cheats/<slug>.js clears at least one test and fails
+ *      at least one. See that directory's README for why both halves matter.
+ *
+ * Before any of that it runs assertHarnessParity(), which checks that the
+ * stubs this file shares with the browser worker
+ * (packages/ui/src/mdx/exercise-runner.ts) still derive the same answers from
+ * the same inputs. If they drift, a submission can pass in one harness and
+ * fail in the other.
  *
  * Mirrors the test harness in packages/ui/src/mdx/exercise.tsx (parseAndRunTests)
  * but is dependency-free so it runs on a fresh CI worker without building UI.
  *
  * Exit codes:
  *   0 - every exercise validated.
- *   1 - at least one exercise failed.
+ *   1 - at least one exercise failed, or the harness stubs have drifted.
  *
  * Usage:
- *   node scripts/validate-exercises.mjs               # validates all
- *   node scripts/validate-exercises.mjs <slug>        # single exercise by slug
+ *   node scripts/validate-exercises.mjs                     # validates all
+ *   node scripts/validate-exercises.mjs <slug>              # one by slug
+ *   node scripts/validate-exercises.mjs --starters --cheats # full gate
  *
  * CI invokes via the root `test:exercises` script.
  */
@@ -59,27 +71,101 @@ if (
 // Build a thin wrapper around the frozen ESM namespace so the validator can
 // override `loadLayersModel` / `loadGraphModel`. Real tfjs tries to fetch
 // `model.json` over HTTP, which never resolves in CI. The overrides return a
-// small synthetic LayersModel that satisfies typical exercise assertions
-// (`inputs[0].shape`, `outputs[0].shape`, `.layers`). Exercises that need a
-// specific architecture can still build one explicitly via `tf.sequential()`.
+// synthetic model whose architecture is DERIVED FROM THE URL, so that
+// `inputs[0].shape`, `outputs[0].shape` and `.layers` differ per url and no
+// solution can clear a loading exercise by hardcoding one memorised triple
+// (2026-09-08: the old stub returned a fixed 10 -> 8 -> 4 stack here and a
+// fixed 4 -> 8 -> 1 stack in the browser worker, so the two harnesses
+// disagreed about which hardcoded answer passed). Exercises that
+// need a specific architecture can still build one explicitly via
+// `tf.sequential()`.
+
+// --- stub-arch-derivation: kept byte-identical (modulo whitespace) with the
+// copy in packages/ui/src/mdx/exercise-runner.ts. The parity is CI-enforced
+// by assertHarnessParity() below: the two harnesses MUST agree, or a
+// learner's solution can pass in the browser and fail in CI. ---
+function stubArchFromUrl(url) {
+  // FNV-1a over the url, via Math.imul so the 32-bit multiply stays exact.
+  var h = 0x811c9dc5;
+  var s = String(url == null ? "" : url);
+  for (var i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  var inputDim = 4 + (h % 13);
+  var hidden = 4 + ((h >>> 5) % 13);
+  var outputUnits = 1 + ((h >>> 11) % 4);
+  var deep = (h >>> 17) % 2 === 1;
+  return {
+    inputDim: inputDim,
+    hidden: hidden,
+    outputUnits: outputUnits,
+    hiddenTwo: deep ? Math.max(2, hidden >> 1) : 0,
+    layerCount: deep ? 3 : 2,
+  };
+}
+// --- end stub-arch-derivation ---
+
+// --- stub-onnx-derivation: kept byte-identical (modulo whitespace) with the
+// copy in packages/ui/src/mdx/exercise-runner.ts, and checked by
+// assertHarnessParity() below. ---
+function stubOnnxScore(feeds) {
+  // Squash a position-weighted sum of the feed values into (0, 1). Any
+  // deterministic function of the input works; what matters is that it IS a
+  // function of the input, so returning a memorised constant is a wrong
+  // answer. Before 2026-09-08 both shims returned 0.5 for every feed, which
+  // made a plain "return 0.5" indistinguishable from running the session.
+  var key = feeds ? Object.keys(feeds)[0] : null;
+  var t = key ? feeds[key] : null;
+  var data = t && t.data ? t.data : [];
+  var acc = 0;
+  for (var i = 0; i < data.length; i++) acc += (i + 1) * Number(data[i]);
+  return 1 / (1 + Math.exp(-acc));
+}
+// --- end stub-onnx-derivation ---
+
+function buildStubLayersModel(tfns, url) {
+  const a = stubArchFromUrl(url);
+  const m = tfns.sequential();
+  m.add(
+    tfns.layers.dense({
+      units: a.hidden,
+      activation: "relu",
+      inputShape: [a.inputDim],
+    }),
+  );
+  if (a.hiddenTwo) {
+    m.add(tfns.layers.dense({ units: a.hiddenTwo, activation: "relu" }));
+  }
+  m.add(
+    tfns.layers.dense({
+      units: a.outputUnits,
+      activation: a.outputUnits === 1 ? "sigmoid" : "softmax",
+    }),
+  );
+  return m;
+}
+
 const tfWithOverrides = new Proxy(realTf, {
   get(target, prop) {
     if (prop === "loadLayersModel") {
-      return async function () {
-        const m = realTf.sequential();
-        m.add(realTf.layers.dense({ inputShape: [10], units: 8 }));
-        m.add(realTf.layers.dense({ units: 4 }));
-        return m;
+      return async function (url) {
+        return buildStubLayersModel(realTf, url);
       };
     }
     if (prop === "loadGraphModel") {
-      return async function () {
+      return async function (url) {
+        const a = stubArchFromUrl(url);
+        const layers = [];
+        for (let i = 0; i < a.layerCount; i++) layers.push({});
+        const out = (x) =>
+          realTf.zeros([(x && x.shape && x.shape[0]) || 1, a.outputUnits]);
         return {
-          inputs: [{ shape: [null, 10] }],
-          outputs: [{ shape: [null, 4] }],
-          layers: [{}, {}],
-          predict: (x) => realTf.zeros(x.shape),
-          execute: (x) => realTf.zeros(x.shape),
+          inputs: [{ shape: [null, a.inputDim] }],
+          outputs: [{ shape: [null, a.outputUnits] }],
+          layers,
+          predict: out,
+          execute: out,
           dispose: () => {},
         };
       };
@@ -1548,13 +1634,20 @@ async function runSolutionTests(userCode, testCode) {
         text: () => Promise.resolve(""),
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
       }),
-    // ONNX runtime-web shim.
+    // ONNX runtime-web shim. The session output is a function of the feed
+    // (see stubOnnxScore), not a constant, so an exercise can grade the
+    // number a solution returns instead of only spying on the call.
     ort: {
       InferenceSession: {
         create: () =>
           Promise.resolve({
-            run: () =>
-              Promise.resolve({ output: { data: new Float32Array([0.5]) } }),
+            run: (feeds) =>
+              Promise.resolve({
+                output: {
+                  data: new Float32Array([stubOnnxScore(feeds)]),
+                  dims: [1, 1],
+                },
+              }),
           }),
       },
       Tensor: function (type, data, dims) {
@@ -1615,7 +1708,90 @@ function loadAllowlist() {
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Harness-stub parity with the browser worker                         */
+/* ------------------------------------------------------------------ */
+
+// The browser worker (packages/ui/src/mdx/exercise-runner.ts) stubs the same
+// model loaders and the same ONNX session for the same reason, and it MUST
+// derive the same answers from the same inputs. When the two disagreed, a
+// learner's solution could pass in the browser and fail in CI, or the
+// reverse. Pull each marked derivation out of the worker source and compare
+// it to this file's copy, ignoring comments and whitespace so only the
+// arithmetic has to match.
+const SHARED_STUB_FNS = ["stubArchFromUrl", "stubOnnxScore"];
+
+function extractFn(src, name) {
+  const start = src.indexOf("function " + name + "(");
+  if (start === -1) return null;
+  const open = src.indexOf("{", start);
+  if (open === -1) return null;
+  let depth = 0;
+  for (let i = open; i < src.length; i++) {
+    if (src[i] === "{") depth++;
+    else if (src[i] === "}") {
+      depth--;
+      if (depth === 0) return src.slice(start, i + 1);
+    }
+  }
+  return null;
+}
+
+function normalizeCode(block) {
+  return block
+    .replace(/\/\/[^\n]*/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function assertHarnessParity() {
+  const runnerPath = resolve(
+    repoRoot,
+    "packages/ui/src/mdx/exercise-runner.ts",
+  );
+  if (!existsSync(runnerPath)) {
+    console.error(
+      `  [advisory] ${runnerPath} not found; skipped the harness-stub parity check.`,
+    );
+    return;
+  }
+  const mineSrc = readFileSync(__filename, "utf8");
+  const theirsSrc = readFileSync(runnerPath, "utf8");
+  for (const name of SHARED_STUB_FNS) {
+    const mine = extractFn(mineSrc, name);
+    const theirs = extractFn(theirsSrc, name);
+    if (!mine || !theirs) {
+      console.error(
+        `\n  [validate-exercises] harness-parity: could not find ${name} in ` +
+          (!mine
+            ? "this validator"
+            : "packages/ui/src/mdx/exercise-runner.ts") +
+          ". The two harnesses' stubs can no longer be compared, so restore the\n" +
+          "  marked derivation block in both files.\n",
+      );
+      process.exit(1);
+    }
+    if (normalizeCode(mine) !== normalizeCode(theirs)) {
+      console.error(
+        `\n  [validate-exercises] harness-parity: ${name} differs between the CI\n` +
+          "  harness and the browser worker, so the same submission can pass in one\n" +
+          "  and fail in the other. Make the marked derivation block identical in\n" +
+          "  scripts/validate-exercises.mjs and\n" +
+          "  packages/ui/src/mdx/exercise-runner.ts.\n\n" +
+          `  validator: ${normalizeCode(mine)}\n\n` +
+          `  worker:    ${normalizeCode(theirs)}\n`,
+      );
+      process.exit(1);
+    }
+  }
+}
+
 async function main() {
+  // Cheap and unconditional: if the two harnesses' stubs have drifted apart,
+  // every exercise that loads a model or runs an ONNX session below is being
+  // graded against answers the browser will not reproduce.
+  assertHarnessParity();
+
   if (!existsSync(exercisesJsonPath)) {
     console.error(
       `\n  [validate-exercises] exercises.json not found at ${exercisesJsonPath}.\n` +
@@ -1767,11 +1943,27 @@ async function main() {
           );
           continue;
         }
-        const caught = Array.isArray(cheatRun.results)
-          ? cheatRun.results.filter((r) => !r.passed).map((r) => r.name)
-          : [];
+        const results = Array.isArray(cheatRun.results) ? cheatRun.results : [];
+        const caught = results.filter((r) => !r.passed).map((r) => r.name);
+        const cleared = results.filter((r) => r.passed);
+        // A cheat that fails EVERY test has almost certainly gone stale: the
+        // exercise was rewritten and renamed its functions, so the cheat
+        // throws a reference error before any assertion runs and the gate
+        // reports a pass while certifying nothing. Demand that it clear at
+        // least one test, which proves it is still a plausible submission
+        // against THIS exercise, and fail at least one, which proves the
+        // grader discriminates. Found 2026-09-08: build-lstm's cheat still
+        // defined buildLSTM after the exercise moved to lstmStep.
+        if (!cleared.length) {
+          record(
+            ex,
+            "cheat-stale",
+            `scripts/exercise-cheats/${ex.slug}.js fails all ${results.length} test(s), so it never ran as a submission (the exercise's function names have probably changed). Rewrite the cheat against the current exercise.`,
+          );
+          continue;
+        }
         console.log(
-          `  CHEAT-OK ${ex.slug}: ignorant solution rejected by ${caught.length} test(s)` +
+          `  CHEAT-OK ${ex.slug}: ignorant solution cleared ${cleared.length}, rejected by ${caught.length}` +
             (caught.length ? ` (${caught[0]})` : ""),
         );
       }

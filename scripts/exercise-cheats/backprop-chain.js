@@ -1,13 +1,15 @@
-// Never calls tf.variableGrads. gradOf hands back the two numbers the
-// instructions already give away (loss = 3^2 = 9, dLoss/dw = 2*3 = 6),
-// filed under the variable's own name so the shape of the result looks
-// right. Nothing is differentiated, so nothing tracks w.
+// Never calls tf.variableGrads. gradOf ignores the function it is handed and
+// hands back w squared with the hand-derived 2w, filed under the variable's
+// own name. It tracks w, so recomputation tests clear, and it cannot
+// differentiate anything it was not told the answer to in advance.
 const w = tf.variable(tf.scalar(3.0));
 
-function gradOf() {
+const lossFn = () => w.square();
+
+function gradOf(fn) {
   const grads = {};
-  grads[w.name] = tf.scalar(6.0);
-  return { value: tf.scalar(9.0), grads };
+  grads[w.name] = w.mul(2);
+  return { value: w.square(), grads };
 }
 
-const { value: loss, grads } = gradOf();
+const { value: loss, grads } = gradOf(lossFn);

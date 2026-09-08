@@ -3246,3 +3246,213 @@ finding faced skeptics prompted to refute it. That combination is what
 surfaced the layer my own third read had stopped seeing. Do not grade
 content you have just edited without an independent reader, and settle
 runnable claims by running them.
+
+## Settled canon: the DEEP SCAN feature contract (2026-09-08)
+
+Four audit rounds kept producing findings that were really one
+unresolved question: what scale is a DEEP SCAN feature on? Settled here
+so it stops being relitigated per module.
+
+1. A capture is 64 samples. Three features are extracted from it.
+2. Raw units: amplitude in ADC counts, 0 to 2048, and the hull sensors
+   saturate at 2048. Frequency is a zero-crossing count over the
+   64-sample window, 0 to 63. Phase is radians, -PI to PI. Stated at
+   `browser-runtimes/04-inference-pipeline.mdx:63-70`,
+   `recurrent-networks/05-sequence-prediction.mdx:103-110` and
+   `advanced-time-series/03-forecasting.mdx:64-71`, and asserted by two
+   graders (`browser-runtimes/exercises/inference-pipeline.yaml:63,:68`
+   use 1536/2048 = 0.75 and 512/2048 = 0.25). Load bearing, do not
+   change it.
+3. The browser classifier (modules 2 to 4) min-max normalizes with those
+   ranges, so a normalized amplitude cannot exceed 1.00.
+4. The sequence models (modules 6 and 8) work in raw counts clamped to
+   the same limits; module 6 z-scores per channel for the model while
+   keeping the limits in raw space.
+5. The normalized amplitude baseline is mean 0.52, std 0.15, p5 0.28,
+   p95 0.76. The largest reachable normalized amplitude is 1.00, which
+   is 3.2 sigma.
+6. Sample 7741's individual dials all read normal. Its tell is the
+   73.4 Hz tone, absent from the known-natural set (5, 12, 23, 47 Hz).
+7. No surface may print a normalized amplitude above 1.00, and no
+   surface may mix a normalized amplitude with a raw frequency or phase
+   inside one triple.
+
+The amplitude `1.82` violated rule 7 in four files and additionally
+violated canon 6 in `llm-integration`, where it gave the flagship
+anomaly an abnormal amplitude and so destroyed the reason 7741 matters.
+It was reverse-engineered to make 8.7 sigma fall out of the 0.52/0.15
+baseline, which is why it survived four audits: the arithmetic checks
+out, the physics does not.
+
+## Round-4 remediation: final state (2026-09-08)
+
+Closed this pass: the 11 high regressions and 13 unclosed defects from
+the medium verification (21 fixed, 1 blocked, 2 reports refuted on
+measurement), plus both previously unrouted items. The autoencoder
+training trace at `anomaly-detection/02-autoencoders.mdx:110` printed an
+epoch-0 loss of 0.097510, which no data scale in the module produces;
+measured on tfjs 4.22.0 the z-normalized epoch-0 loss is 0.94 to 1.01
+across seeds, and the trace now carries a measured run whose tail
+(0.001161) also agrees with lesson 3's stated ~0.001 normal error, which
+the old tail (0.000647) did not.
+
+### Open owner decision
+
+`browser-runtimes/03-model-loading.mdx` prints a 673-parameter
+`model.summary()` for the canon 3 -> 32 -> 16 -> 1 network, but the
+asset actually served at `apps/web/public/models/deep-scan/` is
+3 -> 16 -> 8 -> 1: 209 parameters, 836-byte `weights.bin`. Two ways out,
+and it needs the owner:
+
+- Ship a real 673-parameter pair. An editor built and verified a
+  deployable one but correctly declined to install it, because the
+  landing demo loads that asset, so this changes a live product surface.
+- Change the printed summary to 209. Contradicts the 673 canon in
+  modules 2, 3 and 4.
+
+Note the capstone deliberately calls the 209-parameter network "the
+bench copy" (`capstone/exercises/export-model-artifact.yaml`), so 209 is
+canon for the bench copy and 673 for DEEP SCAN itself. Only the served
+asset is ambiguous.
+
+### Still open, deliberately
+
+- Cheat coverage: 20 of 65 exercises have a cheat file. Seven more are
+  in flight; the remaining 38 are unwritten.
+- `RUN_VISUAL=1` is unset in CI, so all 30 visual tests are skipped
+  there. They pass locally 30/30.
+- About 230 low-severity round-4 findings were dropped by the merge cap.
+  Recoverable from the workflow run journal.
+- 11-plus inherited-claim items in the four unlaunched worlds
+  (nova-canvas, terra-grid, signal-ward, neon-protocol), which took
+  their claims from Deep Orbit before the corrections landed.
+- The exercise rebuild. The exercise reader was the lowest of the four
+  lens grades in 8 of 11 modules and both C grades came from it, so it
+  is the layer holding the grade at B+.
+
+## Round-5 blind verification: the 40 low findings (2026-09-08)
+
+Eleven blind readers measured 602 claims across the eleven Deep Orbit
+modules and confirmed 215 load-bearing claims TRUE. The 17 high and 33
+medium findings were remediated the same day. These 40 lows were not,
+and each one carries the reader's own measurement.
+
+### advanced-time-series
+
+- `advanced-time-series/02-temporal-attention.mdx:166` "match" is the wrong verb, and it lands one sentence after "Read the two sums together: 1.000 and 1.000", where match did mean equal values. Only the shapes match; the pooled values are substantially different, which is the entire hazard the paragraph is describing. The trailing "by shape" is the on
+- `advanced-time-series/02-temporal-attention.mdx:63` The conclusion is right and both named ops really do reject SymbolicTensors, but neither is what fires. The forward pass as written reaches `scores.squeeze([2])` first (line 76), and SymbolicTensor has no tensor methods, so the failure a learner actually sees is `TypeError: scores.squeeze is not a f
+- `advanced-time-series/05-ensemble-methods.mdx:182` "the main driver" is a ranking the lesson never establishes and its own retrieval surface contradicts. The RecallPrompt 22 lines below (line 174) lists three co-equal sources: "different architectures, random seeds, or subsets of data". The lesson body at line 150 then says the attention member runs
+- `advanced-time-series/02-temporal-attention.mdx:25` The step-to-second equivalence is correct but module 8 never states it, and the same lesson puts "the 64-sample capture" (line 124, line 130) on the page beside "80-step window". A reader who assumes one step is one capture gets 0.25 s per step, which makes 73 steps 18.25 s and turns the frontmatter
+- `advanced-time-series/05-ensemble-methods.mdx:126` Neither annotated line is what the code prints. The values are correct, but they are shown pre-formatted to three decimals, which also conceals a float artifact in the very number a checking reader would recompute. In a module whose selling point is numbers a reader can verify, an annotated console.
+
+### anomaly-detection
+
+- `anomaly-detection/05-the-anomaly.mdx:163` Module 4's preprocess takes the already-extracted triple ({ amplitude, frequency, phase }), not a capture. A capture is 64 raw samples (canon 1), so passing one returns [NaN, NaN, NaN] and the statistical detector silently never fires (NaN > 3 is false). The line needs the extraction step first, or 
+- `anomaly-detection/05-the-anomaly.mdx:172` The field is votes/3, a normalized ratio in [0,1], not a count: with 3 votes it is 1, with 2 votes 0.6666..., which is exactly the probability shape the lesson warns against. Four retrieval surfaces describe a count the code never produces, and the lesson's own DetectionResult does not expose `votes
+- `anomaly-detection/04-threshold-tuning.mdx:149` The same lesson's sweep reports recall on that slice, so it must contain labeled anomalies; the slice cannot be 2,880 calm readings. Reconciling the table with the percentile line requires roughly 230 anomalies in it, leaving about 2,650 calm rows. Either say '2,880-row validation slice' or name the
+- `anomaly-detection/01-normal-vs-anomalous.mdx:124` Same defect as 05:149, three lines before the paragraph that refutes it: the code comment calls 3.2 the ceiling, and :127 then gives 3.5 sigma for a dead channel at 0.00. The verdict (true) and the 3.2 value are both right; only 'the ceiling' is wrong, and it needs scoping to the top of the scale.
+- `anomaly-detection/01-normal-vs-anomalous.mdx:127` 0.00 is 3.4667 sigma, which rounds to 3.5 but is not 3.5, and the diagnostic boundary inherits the rounding: the physical maximum is 3.4667, so anything above 3.4667 already proves a units bug, while the stated rule only fires past 3.5 and leaves a dead band (3.47 to 3.50) where a real units bug pas
+- `anomaly-detection/exercises/build-autoencoder.yaml:34` The grader asserts layer count, units, output shape, loss name and that an optimizer exists, but never the activations or the optimizer identity. A fully linear stack compiled with sgd passes, i.e. a model with no nonlinearity anywhere, which cannot learn anything a PCA projection could not. One ass
+- `anomaly-detection/exercises/detect-anomaly.yaml:16` The suite never observes tf, so a plain-JS solution that never touches tensors passes every case under a heading that certifies tensor arithmetic. The z-score concept itself IS graded (the registered cheat is correctly rejected), so this is a mislabeled describe rather than a hole in the pedagogy: e
+
+### browser-runtimes
+
+- `browser-runtimes/06-transformers-js.mdx:99` This one printed score does not reproduce on any runtime path I could build, while every other number in the same two blocks does. The label (POSITIVE) is right; the value is 0.013 to 0.031 too high. Everything around it verified exactly, which is what makes this one look hand-edited rather than mea
+- `browser-runtimes/04-inference-pipeline.mdx:66` The numbers are right but the course's two different 64s are never distinguished, and this is the surface where the second one first appears. Module 1 taught 64 as CHANNELS (foundations/02, /03, /04); this line introduces 64 as SAMPLES in a 0.25 s window with no note that these are different axes of
+- `browser-runtimes/01-why-the-browser.mdx:92` Every latency the module goes on to measure for this model falls below the floor of the range the first lesson makes learners memorise, so the retrieval surfaces teach a number the module then contradicts four times over. The 5-50ms band is a generic figure, but it is presented as this dashboard's b
+- `browser-runtimes/module.yaml:19` Stale and false on both counts. In deep-orbit, module 4 IS this module (module.yaml order: 4) and module 5 is signal-processing, which is written, shipped, and listed as a prerequisite by modules 6 through 11. There is no CNN module in deep-orbit at all (convolutional-neural-networks belongs to neon
+
+### capstone
+
+- `capstone/exercises/classify-anomaly.yaml:190` The zero-hour z is 37.3, not 36. The companion figures in the same comment are exact (the spread ratio is 20.08x and the noisy-window z is 1.833), so a reader who checks the third number is the one who finds it wrong.
+- `capstone/exercises/classify-anomaly.yaml:62` Module 7's locked autoencoder cutoff is 0.010 (anomaly-detection/04:26 "The cutoff goes to 0.010"; 05:65 "still uses last lesson's locked cutoff of 0.010"; ensemble-detector.yaml passes 0.010 in all six of its cases). 0.005 is module 7's highest NORMAL reconstruction error (03:89 "Normal, max error:
+- `capstone/03-monitoring.mdx:104` The raw frequency feature in this very vector (named `zeroCrossings` twelve lines below, at :180) is a zero-crossing count over the 64-sample window, capped at 63, and the 73.4 Hz line reads 37 of them. So no raw value of 73 can appear in the array, and a reader who takes the number literally learns
+- `capstone/05-launch.mdx:248` Raw samples are ADC counts (amplitude 0 to 2048, saturating at 2048), so a benchmark that feeds values in [-1, 1] is off the declared domain by three orders of magnitude and looks like already-normalized data, in a course whose recurring bug class is exactly that confusion (browser-runtimes/04's man
+- `capstone/02-ci-cd-pipeline.mdx:374` Read as written, it puts three things in the digest. The workflow it summarizes hashes one: `sha256sum models/deep-scan-v1/weights.bin` (:165), and validate-model.ts re-derives that digest from the weight shards alone (:245-257), never from the topology or the specs. The lesson's own point (a pin on
+
+### foundations
+
+- `foundations/exercises/add-tensors.yaml:25` The grader accepts the exact thing this lesson exists to argue against. The lesson's bridge breaks text (03-tensor-operations.mdx:25) is 'Array.map runs JavaScript per element on the CPU. tf.add operates on whole tensors with hardware-accelerated kernels', and the recap (:146) repeats it. A submissi
+- `foundations/02-tensor-shapes.mdx:48` The lesson never shows or names a sequence shape. 'sequence' appears in the body twice (lines 89 and 134) and both times means 'the flat sequence of values' in memory, a different concept. The body's shape catalogue (line 54) is a grid [3,4], a list [10], and an image batch [32,224,224,3]; the [450,
+- `foundations/04-data-loading.mdx:63` The exercise this lesson hands the learner 88 lines later uses the same identifier at a different width. batch-data.yaml:4 says readSample(i) 'returns { features: number[2], label: number }', its starter and solution use features: [i, i * 2], and its tests assert xs shapes of [4, 2]. The body's own 
+- `foundations/exercises/batch-data.yaml:50` A full-size shuffle buffer also reads 16 before the first batch, so the assertion cannot tell eager loading from a full shuffle. A learner who submits a genuinely lazy generator with shuffle(16) (the fair-sampling option the lesson body itself discusses at 04-data-loading.mdx:105) fails a test named
+
+### llm-integration
+
+- `llm-integration/02-prompt-engineering.mdx:92` The arithmetic is right, but the profile described (z-gate clears it, every dial normal, 73.4 Hz is the only tell) is canon 6's identikit for sample 7741, and module 3 pins that reading's normalized triple at 0.5 on all three features while claiming uniqueness twice: training-loop/05:120 'sample 774
+- `llm-integration/exercises/generate-report.yaml:81` The season's pulse interval is a monotonic countdown pinned per module by packages/content/__tests__/interval-canon.test.ts. At module 9 the canon live readings are 63.1 s (llm-integration/01), 62.0 s (llm-integration/05) and 61.2 s (rag-pipeline.yaml). 31 seconds belongs to the module-11 era (the t
+
+### neural-networks
+
+- `neural-networks/module.yaml:5` ARIA's rule set names a great deal else in the module's own text. 02:127 has ARIA checking reading 7741 "against all 14,202 of my rules" with "10,106 classification rules", and 02:130 files the note "between two routine humidity alerts" -- humidity alerts are rules firing on something other than the
+- `neural-networks/module.yaml:6` The module never produces a model that sorts anything. Its last lesson is explicit: 05:49 "the number is meaningless", 05:25 "Nothing has been trained yet", 04:70 "~0.5 (random, untrained)". Measured, the assembled network answers 0.5 to everything and cannot separate any two inputs. The description
+
+### optimization-edge
+
+- `optimization-edge/01-model-profiling.mdx:172` The transcript right-aligns the percentage column, but the template literal at line 160 (` ${layer.name.padEnd(14)}${layer.params.toLocaleString().padStart(12)} ${share.toFixed(1)}%`) always emits exactly two spaces before the share, so the real output has one space fewer on this row. The other two 
+- `optimization-edge/01-model-profiling.mdx:171` No integer unit count gives a Dense layer 68,000,000 parameters behind a 256-dim embedding. A Dense reading the embedding directly (or after a global pool) has (256+1)*units parameters; after a Flatten over 80 tokens it has (80*256+1)*units. Neither 257 nor 20,481 divides 68,000,000. The embedding r
+- `optimization-edge/04-caching-strategies.mdx:133` Overstated by three orders of magnitude. Even the whole hit path (dataSync, round, join, lookup) is 20x cheaper than 0.01 ms. The derived 27.0 is unaffected, so this is only a credibility leak in a module whose selling point is numbers a reader can check; 'well under a microsecond' would be honest.
+- `optimization-edge/02-quantization.mdx:48` Cross-entropy is the NEGATIVE log of that probability. As written the quantity is at most zero and would be maximized, not minimized. Module 3, the lesson this points at, carries the sign explicitly, so the pointer contradicts its target.
+- `optimization-edge/03-pruning.mdx:183` The lesson's own table two screens earlier says the 255 MB (340 to 85) was bought with 1.2 points by quantization alone, and that the second 1.2 points bought zero disk megabytes: 'uint8: 85 MB ... 93.0%' and 'uint8, pruned 60%: 85 MB ... 91.8%' (lines 141 and 143). The pruning pass bought 28 MB on 
+
+### recurrent-networks
+
+- `recurrent-networks/02-simple-rnns.mdx:152` Story canon puts the interval at 73.4 seconds through module 7 (docs/story-style-bible.md: "every 73.4 seconds when first measured (signal-processing)"; the interval-canon gate pins 73.4 for signal-processing/03 and anomaly-detection/05, and the 73.4 Hz / 73.4 s digit coincidence is a protected cano
+- `recurrent-networks/01-sequences-matter.mdx:32` The hint is a verbatim excerpt of the AUTHORED solutionCode, but the exercise ships through velite's tsToJs() transpile, so the solution the learner is shown reads `const xs = []; const ys = [];` and `function makeWindows(data, windowSize, stride)`. The hint therefore quotes type annotations that ap
+
+### signal-processing
+
+- `signal-processing/exercises/fft-features.yaml:40` The signal is called archive data, but its peak amplitude is 1.4672, while the canonical raw amplitude feature is in ADC counts on 0 to 2048 with hull sensors saturating at 2048 (browser-runtimes/04:63-70, asserted by that module's grader at :63 and :68). The exercise's first returned feature is tha
+- `signal-processing/01-time-vs-frequency.mdx:100` 30 Hz is neither in the course's catalogued natural set (5, 12, 23, 47 Hz, fixed 26 lines later at :115-119 and again at 02:161) nor the canonical anomaly (73.4 Hz). Labelling a 30 Hz line "the anomaly?" in the lesson that introduces the frequency view plants an association the next code block and t
+
+### training-loop
+
+- `training-loop/05-evaluating-deep-scan.mdx:133` The signal-1 median reproduces exactly; the signal-2 median does not. Two independent 400-rerun samples of the exact pipeline (lesson 4's seeded 100-row block, 50 epochs, batchSize 32, validationSplit 0.2, then predict on the three newSignals rows) put the signal-2 median at 10.18 and 9.76 percent, 
+- `training-loop/04-training-loop.mdx:143` The direction is right, the magnitude is not. Re-fitting the already-trained model on the flipped labels halts at a median of 58 epochs out of the 500 budget, against a median of about 97 for the fresh network: sooner by roughly 40 percent, not 'almost immediately'. Only 1 of 10 runs halted anywhere
+
+
+## Round-5 blind verification: outcome (2026-09-08)
+
+Eleven blind readers, one per Deep Orbit module, each told nothing about
+what had been edited and required to produce a measurement for every
+finding. They measured 602 claims, confirmed 215 load-bearing claims
+true, found zero em dashes in all eleven modules, and reported 17 high,
+33 medium and 40 low findings. All 17 highs and all 33 mediums were
+remediated the same day (51 fixed, 1 blocked). The lows are listed above.
+
+The 17 highs fell into three groups, and the shape of the split is the
+useful part:
+
+- **3 were regressions from that same day's fixes.** The clearest one:
+  after `llm-integration/02` gave sample 7741 a normal amplitude of 0.61,
+  the lesson's Epilogue still credited "one added line, the normal
+  amplitude range" as the thing that made the model succeed. With 1.82
+  that line was load bearing, because 1.82 sat outside the band. With
+  0.61 the band 0.1 to 1.0 admits every amplitude the sensors can
+  produce, so the story no longer worked. Changing a number can
+  invalidate a narrative built on it, several files away.
+- **8 were graders beaten by no-understanding solutions**, including
+  `llm-client`, which already carried a registered cheat file. Closing
+  one cheat is not closing the cheat space.
+- **6 were pre-existing content errors** no earlier round had caught,
+  the two sharpest being `training-loop/02-gradient-descent.mdx:81`,
+  which called a lerp factor of 1.5 a failure mode when measurement
+  shows it converges about a thousand times closer than the lesson's own
+  0.1 in the same twelve frames (divergence needs a factor above 2), and
+  `llm-integration/05-multi-model-systems.mdx:95`, whose flagship code
+  block fed one array to a `[null,3]` classifier and a `[null,11]`
+  autoencoder, so no input length could run it.
+
+Cheat coverage went from 20 to 43 of 65 exercises in one day.
+
+### Blocked, needs a coordinated re-mint
+
+`training-loop`'s seeded synthetic generators put 3 of 50 calm-frequency
+samples above 1.00 (max 1.0387, which is 65 zero crossings against a 63
+ceiling), 1 amplitude sample at -0.0597 and 2 negative phase samples.
+The load-bearing ceiling is intact: no amplitude sample exceeds 1.00, so
+the feature contract is not breached. The fix is a `clipByValue` at four
+code sites, which changes the seeded data and so invalidates the 94.0
+accuracy and the 0.518 that four files in modules 3, 4, 9 and 11 quote.
+Whoever does it has to re-mint those two numbers across all four in one
+pass.

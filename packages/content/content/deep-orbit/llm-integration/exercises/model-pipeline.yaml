@@ -1,7 +1,7 @@
 slug: model-pipeline
 lessonSlug: multi-model-systems
 title: "Wire a Model Pipeline"
-instructions: "Write a pipeline function that runs three stages over one signal: classify (returns a class string), detectAnomaly (returns a boolean), and generateAlert (returns a message string). Every stage reads the raw signal, and the classification rides along as context. The classifier is contracted to return 'noise' or 'anomaly'. Anything else is a broken contract: fall back to 'unknown' instead of passing it on. If the signal is not anomalous, skip the alert stage and return null for the message."
+instructions: "Write a pipeline function that runs three stages over one signal: classify (returns a class string), detectAnomaly (returns a boolean), and generateAlert (returns a message string). Every stage is handed the raw capture and does its own preprocessing, and the classification rides along as context. The classifier is contracted to return 'noise' or 'anomaly'. Anything else is a broken contract: fall back to 'unknown' instead of passing it on. If the signal is not anomalous, skip the alert stage and return null for the message."
 starterCode: |
   interface PipelineResult {
     classification: string;
@@ -75,6 +75,32 @@ testCode: |
       expect(r.classification).toBe('unknown');
       expect(seen).toEqual(['unknown']);
       expect(r.alert).toBe('ALERT!');
+    });
+    it('allows the two contracted classes and nothing else (not one blacklisted string)', async () => {
+      for (const reported of ['ANOMALY', 'Noise', 'anomaly ', 'signal', 'undefined', '', undefined, null]) {
+        const seen = [];
+        const r = await pipeline(
+          [7, 8, 9],
+          async () => reported,
+          async (s, cls) => { seen.push(cls); return false; },
+          async () => 'ALERT!',
+        );
+        expect(r.classification).toBe('unknown');
+        expect(seen).toEqual(['unknown']);
+      }
+    });
+    it('passes both contracted classes through untouched', async () => {
+      for (const reported of ['noise', 'anomaly']) {
+        const seen = [];
+        const r = await pipeline(
+          [7, 8, 9],
+          async () => reported,
+          async (s, cls) => { seen.push(cls); return false; },
+          async () => 'ALERT!',
+        );
+        expect(r.classification).toBe(reported);
+        expect(seen).toEqual([reported]);
+      }
     });
   });
 estimatedMinutes: 10

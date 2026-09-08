@@ -36,11 +36,13 @@ testCode: |
       expect(result).toBeLessThanOrEqual(1);
     });
     it('runs the [1, 3] float32 input through the session it created', async () => {
-      // The harness session returns a constant, so comparing return values
-      // cannot tell a real solution from `return 0.5`. This wraps the
-      // session's own run() and inspects the feeds instead. Sentinel path:
-      // only calls made with THIS path count, so the sibling test's own
-      // create call (tests run concurrently) cannot satisfy the spy.
+      // The session output is a function of the feed, so the value test above
+      // already rejects a memorised `return 0.5`. What it cannot see is a
+      // solution that computes a number without ever running the session, so
+      // this test wraps the session's own run() and inspects the feeds.
+      // Sentinel path: only calls made with THIS path count, so the sibling
+      // test's own create call (tests run concurrently) cannot satisfy the
+      // spy.
       const sentinel = '/models/spy-check.onnx';
       const orig = ort.InferenceSession.create;
       let sentinelCalls = 0;

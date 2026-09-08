@@ -79,6 +79,31 @@ testCode: |
       expect(r.ship).toEqual(['b', 'd']);
       expect(r.hold).toEqual(['a', 'c']);
     });
+    it('splits the same queue two different ways: the outage changes the rule, not the ids', () => {
+      const queue = [
+        { id: 'q7', numericClaims: 0, unverifiedClaims: 0 },
+        { id: 'q8', numericClaims: 6, unverifiedClaims: 0 },
+        { id: 'q9', numericClaims: 2, unverifiedClaims: 2 },
+      ];
+      const up = triageQueue(queue, true);
+      expect(up.ship).toEqual(['q7', 'q8']);
+      expect(up.hold).toEqual(['q9']);
+      const down = triageQueue(queue, false);
+      expect(down.ship).toEqual(['q7']);
+      expect(down.hold).toEqual(['q8', 'q9']);
+    });
+    it('reads the counts, not the position in the queue', () => {
+      const queue = [
+        { id: 'z1', numericClaims: 3, unverifiedClaims: 3 },
+        { id: 'z2', numericClaims: 0, unverifiedClaims: 0 },
+        { id: 'z3', numericClaims: 1, unverifiedClaims: 0 },
+      ];
+      expect(triageQueue(queue, true).ship).toEqual(['z2', 'z3']);
+      expect(triageQueue(queue, false).ship).toEqual(['z2']);
+      const swapped = [queue[2], queue[0], queue[1]];
+      expect(triageQueue(swapped, true).ship).toEqual(['z3', 'z2']);
+      expect(triageQueue(swapped, false).hold).toEqual(['z3', 'z1']);
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

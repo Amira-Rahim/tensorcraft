@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "A forward pass is model.predict(input): data flows through the layers and comes out as a prediction tensor."
   - level: guidance
-    content: "Add one dense layer with units: 3 and inputShape: [2], matching the provided input batch of 2 samples with 2 features each, then assign prediction = model.predict(input). The grader checks the kernel shape [2, 3], that prediction has shape [2, 3], and that it really came from the model."
+    content: "Add one dense layer with units: 3 and inputShape: [2], matching the provided input batch of 2 samples with 2 features each, then assign prediction = model.predict(input). The grader checks the kernel shape [2, 3], that prediction has shape [2, 3], and that it equals input times kernel plus bias recomputed from the random weights your layer starts with."
   - level: solution
     content: "model.add(tf.layers.dense({ units: 3, inputShape: [2] })); const prediction = model.predict(input);"
 keywords:

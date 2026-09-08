@@ -96,11 +96,11 @@ interface SignalStats {
   p95: number;  // 95th percentile
 }
 
-function computeBaseline(normalSignals: number[]): SignalStats {
-  const sorted = [...normalSignals].sort((a, b) => a - b);
+function computeBaseline(normalAmplitudes: number[]): SignalStats {
+  const sorted = [...normalAmplitudes].sort((a, b) => a - b);
   const n = sorted.length;
-  const mean = normalSignals.reduce((s, v) => s + v, 0) / n;
-  const std = Math.sqrt(normalSignals.reduce((s, v) => s + (v - mean) ** 2, 0) / n);
+  const mean = normalAmplitudes.reduce((s, v) => s + v, 0) / n;
+  const std = Math.sqrt(normalAmplitudes.reduce((s, v) => s + (v - mean) ** 2, 0) / n);
 
   return {
     mean,
@@ -116,13 +116,16 @@ function isAnomaly(value: number, baseline: SignalStats, sigmas: number = 3): bo
   return zScore > sigmas;  // beyond 3 standard deviations = anomaly
 }
 
-const baseline = computeBaseline(normalReadings);
+const baseline = computeBaseline(normalAmplitudes);
 console.log('Baseline:', baseline);
 // { mean: 0.52, std: 0.15, p5: 0.28, p95: 0.76 }
 
 console.log(isAnomaly(0.55, baseline));  // false: normal
-console.log(isAnomaly(1.82, baseline));  // true: 8.7 sigmas away!`}
+console.log(isAnomaly(1.00, baseline));  // true: 3.2 sigmas, the most a spike can score
+console.log(isAnomaly(0.00, baseline));  // true: 3.47 sigmas, the far end of the scale`}
 </CodeBlock>
+
+Amplitude arrives here already normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so no reading can come in above 1.00. Against mean 0.52 and std 0.15, a channel pegged at full scale is 3.2 sigma out. A dead channel reading 0.00 is 3.47 sigma, and nothing on this feature reads past those two ends. The gate at 3 sigma therefore fires on amplitudes above 0.97 or below 0.07, the top 3% and the bottom 7% of the scale, and the sigma count stays small however loud the event is. If a sigma count past 3.5 turns up on this feature, look for a units bug before you believe the reading.
 
 <DerivationDrawer summary="What the 3-sigma rule assumes, and when it lies">
 **The z-score recipe is a stack of probability claims.** Dividing by the standard deviation and comparing to 3 asserts: readings follow a distribution, that distribution is roughly Gaussian (the bell curve), and its tails put probability 0.0027 beyond 3 sigma. The recipe works exactly as far as those claims hold.

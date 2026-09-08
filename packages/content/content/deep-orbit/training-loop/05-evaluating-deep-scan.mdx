@@ -26,9 +26,9 @@ consequence:
   narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment, but one archived sample refuses to pick a side."
 hints:
   - level: nudge
-    content: "Four moves: fit on the training tensors, evaluate on the held-out ones, write a three-way rule for the gap, then apply that rule to your own numbers. The diagnose rule is not memorizable: the grader calls it on five pairs of its own, and it reruns the held-out evaluation itself."
+    content: "Four moves: fit on the training tensors, evaluate on the held-out ones, write a three-way rule for the gap, then apply that rule to your own numbers. The diagnose rule is not memorizable: the grader calls it on eleven pairs of its own, two of them straddling the 0.15 gap, and it reruns the held-out evaluation itself."
   - level: guidance
-    content: "history = await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 }); fit is the one call that needs await. evalResult = model.evaluate(testX, testY) returns [loss, accuracy] as two scalar tensors. In diagnose, check the gap first (trainAcc - testAcc > 0.15 is 'overfitting'), then both-low (each below 0.7 is 'underfitting'), else 'healthy'. TFJS records the accuracy metric under history.history.acc; its last entry is the final training accuracy, and evalResult[1].dataSync()[0] is the held-out accuracy. Pass those two into diagnose for verdict."
+    content: "history = await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 }); fit is the one call that needs await. evalResult = model.evaluate(testX, testY) returns [loss, accuracy] as two scalar tensors. In diagnose, check the gap first (trainAcc - testAcc > 0.15 is 'overfitting'), then both-low (each below 0.7 is 'underfitting'), else 'healthy'. TFJS records the accuracy metric under history.history.acc; its last entry is the final training accuracy, and evalResult[1].dataSync()[0] is the held-out accuracy. Store those two as trainAcc and testAcc, which is where the grader reads them, then pass them into diagnose for verdict."
   - level: solution
     content: "const history = await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 }); const evalResult = model.evaluate(testX, testY); function diagnose(trainAcc, testAcc) { if (trainAcc - testAcc > 0.15) return 'overfitting'; if (trainAcc < 0.7 && testAcc < 0.7) return 'underfitting'; return 'healthy'; } const trainAcc = history.history.acc[history.history.acc.length - 1]; const testAcc = evalResult[1].dataSync()[0]; const verdict = diagnose(trainAcc, testAcc);"
 keywords:
@@ -130,14 +130,16 @@ results.forEach((prob, i) => {
 //   Signal 2: 11.7% anomalous
 //   Signal 3: 51.8% anomalous  ← neither normal nor alarm.
 // Same tolerance rule as the evaluate above: across 400 reruns, signals
-// 1 and 2 stay decisive in nearly every run (medians 92 and 12), while
-// signal 3 never settles, landing anywhere from the high 20s to the mid
+// 1 and 2 stay decisive in nearly every run (medians 92 and 10), while
+// signal 3 never settles, landing anywhere from the high 20s to the high
 // 70s and centering on the fence. A reading that lands mid-scale on
-// every feature gives the boundary nothing to resolve. In eleven days
-// of archive, exactly one reading does that.`}
+// every feature gives the boundary nothing to resolve: lesson 4 trained
+// it on the two clean ends of each channel and nothing in between, and
+// no training row carried an amplitude between 0.37 and 0.66. In eleven
+// days of archive, exactly one reading sits mid-scale on all three.`}
 </CodeBlock>
 
-One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Untrained networks of this shape do not do that. Build this same 3-32-16-1 stack 200 times without training it, ask each build about a reading that sits at 0.5 on all three features, and the answers cluster on the fence: median 0.500, none past 0.60, none anywhere near 0.99. Nobody explained 7741 then and nobody explains it now. Trained, the network still will not commit on it, at 51.8 on the one reading the crew cannot label.
+One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Untrained networks of this shape do not do that. Build this same 3-32-16-1 stack 5,000 times without training it, ask each build about a reading that sits at 0.5 on all three features, and the answers pile onto the fence: median 0.500, nine in ten inside 0.45 to 0.55, and about one build in six hundred past 0.60. The widest answer across three runs of 5,000 was 0.648. None came near 0.99. Nobody explained 7741 then and nobody explains it now. Trained, the network still will not commit on it, at 51.8 on the one reading the crew cannot label.
 
 **Interpreting results:**
 - **Training accuracy far above test accuracy** → The model is memorizing (overfitting). A small gap is normal, since the model saw those rows; this course draws the line at a gap of 0.15. You need more data, less complexity, or regularization: a training-time penalty or constraint that discourages memorizing.
@@ -195,7 +197,7 @@ An alarm on the live stream is about a 4% bet that something is really there, fr
 
 ## Challenge
 
-Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it has never seen. This time you read the train-versus-test gap. The grader reruns the evaluation and calls your gap rule on five pairs of its own.
+Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it has never seen. This time you read the train-versus-test gap. The grader reruns the evaluation and calls your gap rule on eleven pairs of its own.
 
 <Exercise slug="deep-scan-eval" />
 

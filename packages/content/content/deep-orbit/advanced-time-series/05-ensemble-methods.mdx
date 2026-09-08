@@ -107,19 +107,26 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
   return result;
 }
 
-// DEEP SCAN ensemble. Confidences are measured, not self-reported: each
-// one is the inverse-variance weight of that member's error on last week's
-// held-out readings, by the formula below this block.
+// DEEP SCAN ensemble. Each prediction is one next reading in raw sensor
+// values, on the three ranges lesson 3 clamps against: amplitude in hull
+// counts, frequency as a zero-crossing count over the 64-sample capture,
+// phase in radians.
+// Confidences are measured, not self-reported: each one is the
+// inverse-variance weight of that member's error on last week's held-out
+// readings, by the formula below this block.
 const predictions: ModelPrediction[] = [
-  { modelName: 'LSTM', prediction: [0.82, 37.4, 0.45], confidence: 0.333 },
-  { modelName: 'Attention', prediction: [0.79, 36.9, 0.51], confidence: 0.467 },
-  { modelName: 'Kalman', prediction: [0.80, 37.6, 0.48], confidence: 0.200 },
+  { modelName: 'LSTM', prediction: [1140, 37.4, 0.45], confidence: 0.333 },
+  { modelName: 'Attention', prediction: [1100, 36.9, 0.51], confidence: 0.467 },
+  { modelName: 'Kalman', prediction: [1120, 37.6, 0.48], confidence: 0.200 },
 ];
 
 const avg = averageEnsemble(predictions);
 const weighted = weightedEnsemble(predictions);
-console.log('Average:', avg);    // [0.803, 37.300, 0.480]
-console.log('Weighted:', weighted); // attention contributes most
+console.log('Average:', avg);       // [1120.000, 37.300, 0.480]
+console.log('Weighted:', weighted); // [1117.320, 37.206, 0.484]
+// On all three channels the weighted blend sits closer to Attention's row
+// than the plain average does, because Attention carries 0.467 of the
+// weight against 0.333 and 0.200.
 
 // Stacking: the third rung. Instead of hand-picking weights, TRAIN a
 // meta-model on the members' outputs: each meta-feature row is the three
@@ -136,7 +143,7 @@ await metaModel.fit(metaX, metaY, { epochs: 20 });
 // report its score on a further slice neither it nor the members have seen.`}
 </CodeBlock>
 
-A forecaster has no trust number of its own, as lesson 3 said, so the `confidence` field is not something the member reports. You measure it: score each member on a week of held-out readings it never trained on, then weight by inverse variance. For a member whose held-out error is `e_i`, `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. When member errors are independent, that is the weighting with the lowest blend variance, and it falls out of the same algebra as the drawer below. Held-out errors of 0.045, 0.038 and 0.058 give `1 / e^2` values of 494, 693 and 297, so the three confidences above are 0.333, 0.467 and 0.200. Rescore them after the signal drifts, or you are weighting today's blend by who was right last month.
+A forecaster has no trust number of its own, as lesson 3 said, so the `confidence` field is not something the member reports. You measure it: score each member on a week of held-out readings it never trained on, then weight by inverse variance. Every error below is a fraction of its channel's range rather than a raw figure, so a miss in counts and a miss in radians can go into one score. For a member whose held-out error is `e_i`, `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. When member errors are independent, that is the weighting with the lowest blend variance, and it falls out of the same algebra as the drawer below. Held-out errors of 0.045, 0.038 and 0.058 give `1 / e^2` values of 494, 693 and 297, so the three confidences above are 0.333, 0.467 and 0.200. Rescore them after the signal drifts, or you are weighting today's blend by who was right last month.
 
 ## Why Ensembles Work
 

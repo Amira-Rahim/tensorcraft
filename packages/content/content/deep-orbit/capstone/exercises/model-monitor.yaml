@@ -96,6 +96,28 @@ testCode: |
       const drift = monitor.computeDrift([[1, 0, 0]]);
       expect(drift).toBeCloseTo(1, 5);
     });
+
+    it('averages the window first: the rows differ, so the column means matter', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      // Column means are 1 and 2. Distance from the baseline is sqrt(5).
+      // Reading row 0 alone would score 0 and report no drift at all.
+      const drift = monitor.computeDrift([[0, 0], [2, 4]]);
+      expect(drift).toBeCloseTo(Math.sqrt(5), 5);
+    });
+
+    it('one loud reading moves the mean by its share, not the whole way', () => {
+      const monitor = new ModelMonitor([0.5, 0.5, 0.5]);
+      const window = [[0.8, 0.8, 0.8], [0.5, 0.5, 0.5], [0.5, 0.5, 0.5]];
+      // Column means are 0.6, so each feature sits 0.1 off baseline and
+      // the distance is sqrt(3 * 0.01). Scoring the loud row on its own
+      // would treble that.
+      const drift = monitor.computeDrift(window);
+      expect(drift).toBeCloseTo(Math.sqrt(0.03), 5);
+
+      // A mean does not care about row order.
+      const reordered = monitor.computeDrift([window[1], window[2], window[0]]);
+      expect(reordered).toBeCloseTo(drift, 10);
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

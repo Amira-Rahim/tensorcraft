@@ -48,7 +48,7 @@ Memory? You mean like... state that persists between inputs? That's just a reduc
 
 Hold the reducer thought; it is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
 
-<LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from raw signals"]} />
+<LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from a stream of readings"]} />
 
 ## Why One Reading At A Time Fails
 
@@ -82,7 +82,10 @@ function createSequences(data: number[][], windowSize: number): number[][][] {
   return sequences;
 }
 
-// Raw signal readings (each row = one time step with 3 features)
+// The rows the deployed classifier already scores: amplitude, frequency
+// and phase min-max normalized into [0, 1] by module 4's pipeline, one
+// row per time step. Lesson 5 works in the raw counts behind them, where
+// amplitude runs to 2048 and the zero-crossing count to 63.
 const readings = [
   [0.5, 0.3, 0.7],
   [0.8, 0.2, 0.9],

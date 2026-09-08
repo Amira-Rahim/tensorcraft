@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "Three of the four weight rows are gates and go through sigmoid; only the candidate goes through Math.tanh. The cell update scales the old cell by the forget gate, then adds the input gate's share of the candidate."
   - level: guidance
-    content: "In lstmStep(), start with a preact(row, j) helper returning row[0] * prevHidden[j] + row[1] * x[j] + row[2]. Map over prevCell: the forget and input gates are sigmoid(preact(...)), the candidate is Math.tanh(preact(...)), and the new value is forget * c + store * candidate. Then map over the new cell for the hidden state, taking sigmoid of the output row times Math.tanh of the cell value. One test runs 100 steps and checks the cell against 2 * Math.pow(sigmoid(5), 100), so nothing may reach the cell except through the input gate."
+    content: "In lstmStep(), start with a preact(row, j) helper returning row[0] * prevHidden[j] + row[1] * x[j] + row[2]. Map over prevCell: the forget and input gates are sigmoid(preact(...)), the candidate is Math.tanh(preact(...)), and the new value is forget * c + store * candidate. Then map over the new cell for the hidden state, taking sigmoid of the output row times Math.tanh of the cell value. One test runs 100 steps with the forget gate near 1, the input gate shut and a candidate that is not zero, and checks the cell against 2 * Math.pow(sigmoid(5), 100), so the candidate reaches the cell only through the input gate."
   - level: solution
     content: "const preact = (row, j) => row[0] * prevHidden[j] + row[1] * x[j] + row[2]; const newCell = prevCell.map((c, j) => { const forget = sigmoid(preact(weights.forget[j], j)); const store = sigmoid(preact(weights.input[j], j)); const candidate = Math.tanh(preact(weights.candidate[j], j)); return forget * c + store * candidate; }); const newHidden = newCell.map((c, j) => sigmoid(preact(weights.output[j], j)) * Math.tanh(c)); return { newCell, newHidden };"
 keywords:
@@ -110,10 +110,13 @@ model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
 // Shape drill with placeholder tensors: prove the [80, 3] pipeline runs
-// end to end. Placeholder labels are random, so do NOT expect this loss
-// to converge; nothing can learn noise. The real evidence that gates beat
-// plain recurrence on this window is the previous lesson's failed run and
-// tonight's archive replay below.
+// end to end. The labels are random, so watch both numbers rather than
+// one. Training loss falls, from about 0.69 to 0.63 over the 20 epochs,
+// while val_loss climbs from about 0.69 to 0.80. That is what memorizing
+// looks like: 17,473 parameters against 80 training rows, and the held-out
+// fifth getting worse as the training loss falls. The real evidence that
+// gates beat plain recurrence on this window is the previous lesson's
+// failed run and tonight's archive replay below.
 const x = tf.randomNormal([100, 80, 3]);  // 100 samples, 80 time steps
 const y = tf.randomUniform([100, 1]).round();
 

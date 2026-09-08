@@ -58,7 +58,9 @@ What keeps this pipeline alive on real sensor data is where the readings come fr
 
 You already know half of this pattern. A paginated fetch pulls page 1, hands it off, and never touches page 2 until something asks for it. A tf.data pipeline works the same way, except the thing asking is a model: **nothing is loaded until it's asked for.**
 
-A reading's 64 channel numbers are its **features**: the input the model gets. What you want predicted about that reading is its **label**, here a 0 or 1 for whether the reading is worth flagging. TensorFlow.js names the pair `xs` and `ys`, features and labels, and every `tf.data` example you meet uses those two keys.
+A **feature** is one number the model reads about a single example. A **label** is what you want predicted about that example, here a 0 or 1 for whether the reading is worth flagging. TensorFlow.js names the pair `xs` and `ys`, features and labels, and every `tf.data` example you meet uses those two keys.
+
+Picking which numbers become features is a decision, and on this ship it is already made. A reading's raw capture is 64 channels of samples, about two megabytes per reading, and none of it reaches the model. Three summary values come off each capture instead: amplitude, frequency (a zero-crossing count, not hertz), and phase. The extraction reads a 64-sample window, a quarter second of one channel at 256 Hz, which is a different 64 from the row's 64 channels. Module 5 writes it and then widens the feature set with FFT bins measured over that same window. The classifier you start building in module 2 reads those three, so `row.features` holds three numbers per reading, not 64 channel values, and `xs` is three wide. Reading a record still touches its two-megabyte capture block, which is why the source has to hand them over one at a time.
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -81,7 +83,7 @@ function* sensorDataGenerator() {
   for (let i = 0; i < TOTAL_READINGS; i++) {
     const row = readArchivedSample(i);  // one record from IndexedDB/fetch
     yield {
-      xs: tf.tensor(row.features),   // [64]: one reading, 64 channels
+      xs: tf.tensor(row.features),   // [3]: amplitude, frequency, phase
       ys: tf.tensor([row.label]),
     };
   }
@@ -94,7 +96,7 @@ const dataset = tf.data.generator(sensorDataGenerator)
 
 // Iterate through batches (like paginated API calls)
 await dataset.forEachAsync((batch) => {
-  console.log('Batch shape:', batch.xs.shape); // [32, 64]
+  console.log('Batch shape:', batch.xs.shape); // [32, 3]
 });`}
 </CodeBlock>
 
@@ -106,7 +108,7 @@ Sizing the buffer to the whole archive would sample fairly, but a shuffle buffer
 
 Batching is virtual-list rendering for model input. A virtual list doesn't render 10,000 DOM nodes at once; it renders a window of visible items. ML models likewise process a window (batch) of data at a time, updating their understanding incrementally.
 
-Memory is only half the reason 32 is the number. The other half is training. The model updates its weights once per batch, using that batch as its estimate of the whole archive: a batch of 1 gives a noisy estimate and a jittery update, and a batch of the full archive gives an exact estimate but one update per pass. Module 3 shows what that tradeoff does to a loss curve. For now, know that batch size is a knob you set on purpose, not a number the memory limit hands you.
+Memory is only half the reason 32 is the number. The other half is training. The model updates its weights once per batch, using that batch as its estimate of the whole archive: a batch of 1 gives a noisy estimate and a jittery update, and a batch of the full archive gives an exact estimate but one update per pass. Module 3 passes this number to `model.fit()` and gives the reasoning for a middle value. For now, know that batch size is a knob you set on purpose, not a number the memory limit hands you.
 
 ## Splitting Without Leaking
 

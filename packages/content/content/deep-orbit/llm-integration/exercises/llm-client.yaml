@@ -65,6 +65,22 @@ testCode: |
       const noConfidence = async () => '{"classification":"anomaly","reasoning":"High amplitude"}';
       await expect(analyzeSignal('test', noConfidence)).rejects.toThrow();
     });
+    it('reports what the model actually said, not a memorized answer', async () => {
+      const quiet = async () =>
+        '{"classification":"noise","confidence":0.37,"reasoning":"Zero crossings sit inside the natural band"}';
+      const result = await analyzeSignal('test', quiet);
+      expect(result.classification).toBe('noise');
+      expect(result.confidence).toBe(0.37);
+      expect(result.reasoning).toBe('Zero crossings sit inside the natural band');
+    });
+    it('reads a third reply, wrapped in prose, field for field', async () => {
+      const wrapped = async () =>
+        'Assessment follows.\n{"classification":"unknown","confidence":0.08,"reasoning":"Two channels dropped mid-capture"}\nHappy to revise.';
+      const result = await analyzeSignal('test', wrapped);
+      expect(result.classification).toBe('unknown');
+      expect(result.confidence).toBe(0.08);
+      expect(result.reasoning).toBe('Two channels dropped mid-capture');
+    });
   });
 estimatedMinutes: 10
 difficulty: intermediate

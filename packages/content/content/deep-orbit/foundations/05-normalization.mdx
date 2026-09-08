@@ -29,9 +29,9 @@ hints:
   - level: nudge
     content: "Stats first, verdict second. Per COLUMN: each feature gets its own mean and std. Then one dense neuron with sigmoid activation reads each normalized row."
   - level: guidance
-    content: "tf.moments(batch, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature; without the 0 you get one global mean that mixes temperature with signal strength. Standard deviation is variance.sqrt(). Build the neuron with tf.sequential() plus one dense layer (units 1, activation 'sigmoid', inputShape [2]), then setWeights takes kernel first and bias second: tf.tensor2d(KERNEL) is [2, 1], tf.tensor1d(BIAS) is [1]. Inside scoreReading, normalize with the SAVED mean and std, reshape to [1, 2] because predict expects a batch, and return the prediction; never recompute stats at inference time"
+    content: "Inside fitStats, tf.moments(rows, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature; without the 0 you get one global mean that mixes temperature with signal strength, 11.75 for this batch. Standard deviation is variance.sqrt(), so return { mean, std: variance.sqrt() } and read the argument, never the four rows above it: the grader fits fitStats to a three-row batch and a five-row batch too. Build the neuron with tf.sequential() plus one dense layer (units 1, activation 'sigmoid', inputShape [2]), then setWeights takes kernel first and bias second: tf.tensor2d(KERNEL) is [2, 1], tf.tensor1d(BIAS) is [1]. Inside scoreReading, normalize with the SAVED mean and std, reshape to [1, 2] because predict expects a batch, and return the prediction; never recompute stats at inference time"
   - level: solution
-    content: "const moments = tf.moments(batch, 0); const mean = moments.mean; const std = moments.variance.sqrt(); const normalized = batch.sub(mean).div(std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]); const scores = previewModel.predict(normalized); function scoreReading(reading) { const z = reading.sub(mean).div(std); return previewModel.predict(z.reshape([1, 2])); }"
+    content: "function fitStats(rows) { const { mean, variance } = tf.moments(rows, 0); return { mean, std: variance.sqrt() }; } const { mean, std } = fitStats(batch); const normalized = batch.sub(mean).div(std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]); const scores = previewModel.predict(normalized); function scoreReading(reading) { const z = reading.sub(mean).div(std); return previewModel.predict(z.reshape([1, 2])); }"
 keywords:
   - normalization
   - z-score
@@ -151,7 +151,7 @@ The neuron multiplies each normalized feature by its weight and adds the bias. I
 
 The numbers below come from the exercise's four-reading batch, not the five readings above: its per-column mean is `[23, 0.5]` and its std is `[2.24, 0.224]`. Against those stats, reading `[20, 0.2]` z-scores to `[-1.34, -1.34]`. The total is `0.9 * -1.34 + -1.4 * -1.34 - 0.3`, or `0.37`, and sigmoid of that is `0.59`. Reading `[22, 0.8]` z-scores to `[-0.45, 1.34]`, total `-2.58`, verdict `0.07`. Both are worth checking on a calculator. `predict()` runs that arithmetic for a whole batch, one row in, one score out.
 
-Module 2 builds these layers and trains their weights. Tonight one of them is a fixed function you feed.
+Module 2 builds these layers and module 3 trains their weights. Tonight one of them is a fixed function you feed.
 
 ## Challenge
 

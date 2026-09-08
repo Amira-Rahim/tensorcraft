@@ -694,6 +694,13 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "deep-orbit",
   },
   {
+    term: "semi-supervised",
+    definition:
+      "Training that needs no labels, plus one decision that does. An autoencoder learns from clean normal data alone, but choosing its error cutoff needs either a labeled slice to score candidates on or an assumed false-alarm rate.",
+    aliases: ["semi-supervised learning"],
+    scope: "global",
+  },
+  {
     term: "outlier",
     definition: "An observation far from the bulk of the data.",
     aliases: ["outliers"],
@@ -833,6 +840,25 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "global",
   },
   {
+    term: "shadow model",
+    definition:
+      "A model that scores the same inputs as the one in service, with its verdicts logged and never acted on. Keeping the old model in shadow after a new one goes live gives every new verdict something to be checked against.",
+    aliases: [
+      "shadow models",
+      "shadow inference",
+      "shadow deployment",
+      "shadow deployments",
+    ],
+    scope: "global",
+  },
+  {
+    term: "canary",
+    definition:
+      "A first deploy to a small slice of the fleet, watched on live traffic while everything else keeps running the old version. A bad build then reaches that slice instead of every user, at the cost of the time the watch takes.",
+    aliases: ["canaries", "canary deployment", "canary deployments"],
+    scope: "global",
+  },
+  {
     term: "preprocessing",
     definition:
       "Cleaning and transforming raw data into the form a model expects before training or inference.",
@@ -842,7 +868,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "feature",
     definition:
-      "One input number a model reads about a single example, such as one channel's value in a sensor reading. A tf.data pipeline names the features xs.",
+      "One input number a model reads about a single example, such as the amplitude extracted from a sensor capture. A tf.data pipeline names the features xs.",
     aliases: ["features"],
     scope: "global",
   },

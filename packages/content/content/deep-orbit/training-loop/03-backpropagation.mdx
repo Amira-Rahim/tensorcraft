@@ -27,9 +27,9 @@ hints:
   - level: nudge
     content: "You never write the backward pass yourself: tf.variableGrads records the forward computation and applies the chain rule backwards for you."
   - level: guidance
-    content: "Have gradOf() return tf.variableGrads called with a zero-argument function that computes the loss, () => w.square(). The starter's last line destructures that return as { value: loss, grads }: value is the forward-pass loss (9 when w is 3.0), and grads maps each variable's name to its gradient (dLoss/dw = 2w = 6). Return the call, not the numbers, since the grader reassigns w and calls gradOf() again."
+    content: "Write lossFn as () => w.square(), and have gradOf(fn) return tf.variableGrads called on fn. The starter's last line destructures that return as { value: loss, grads }: value is the forward-pass loss (9 when w is 3.0), and grads maps each variable's name to its gradient (dLoss/dw = 2w = 6). Return the call, not the numbers: the grader reassigns w, calls gradOf() again, and then hands it a loss function you never saw."
   - level: solution
-    content: "function gradOf() { return tf.variableGrads(() => w.square()); } const { value: loss, grads } = gradOf();"
+    content: "const w = tf.variable(tf.scalar(3.0)); const lossFn = () => w.square(); function gradOf(fn) { return tf.variableGrads(fn); } const { value: loss, grads } = gradOf(lossFn);"
 keywords:
   - backpropagation
   - chain-rule
@@ -133,7 +133,7 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 
 ## Challenge
 
-Run the marquee algorithm yourself: one call to `tf.variableGrads()`, behind a function the grader can call again, and prove the gradient tracks the variable rather than a memorized answer.
+Run the marquee algorithm yourself: one call to `tf.variableGrads()`, behind a function the grader can call again with a loss of its own. A memorized answer, or a derivative you worked out by hand, has nothing to say when the loss changes.
 
 <Exercise slug="backprop-chain" />
 

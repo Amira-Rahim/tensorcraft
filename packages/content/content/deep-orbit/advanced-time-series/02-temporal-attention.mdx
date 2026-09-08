@@ -56,10 +56,14 @@ The attention weights are like a heatmap over time. I can see exactly WHERE the 
 
 // The scoring function is MODULE STATE, created once. Its weights come
 // from training the surrounding model: an encoder, this scorer and a
-// prediction head, compiled and fitted together. Everything below is the
-// forward pass, so the weights it reads out mean something only after
-// that training has happened. A fresh layer inside the function would
-// score every call with brand-new random weights and never learn at all.
+// prediction head, updated together under one loss. That update runs as
+// a manual optimizer.minimize loop over this whole forward pass. It
+// cannot go through model.compile and model.fit as written, because
+// tf.softmax and tf.sum reject the symbolic tensors a compiled graph
+// hands them. Everything below is the forward pass, so the weights it
+// reads out mean something only after that training has happened. A
+// fresh layer inside the function would score every call with brand-new
+// random weights and never learn at all.
 const scorer = tf.layers.dense({ units: 1 });
 
 // Temporal attention: score each time step's importance
@@ -115,14 +119,22 @@ function topAttentionSteps(
     .slice(0, topK);
 }
 
-// For the anomalous signal, read off the trained model:
-// Step 77: weight=0.15, reading=[0.31, 40, 1.57]  ← frequency shift
-// Step 4:  weight=0.12, reading=[1.82, 37, 0.23]  ← amplitude spike
-// Step 40: weight=0.09, reading=[0.95, 37, 0.89]  ← mid-pattern
-// (middle feature is the zero-crossing count over the 64-sample capture:
-//  37 is the 73.4 Hz line, and step 77's 40 is the shift itself, near
-//  80 Hz. The top weight sits on that reading. Whether the shift is what
-//  drove the prediction takes an ablation, not a heatmap.)`}
+// For the anomalous signal, read off the trained model. Readings are raw
+// sensor values, not normalized ones: amplitude in hull counts (0 to
+// 2048), frequency as a zero-crossing count over the 64-sample capture
+// (0 to 63), phase in radians.
+// Step 77: weight=0.15, reading=[635, 40, 1.57]   ← frequency shift
+// Step 4:  weight=0.12, reading=[1980, 37, 0.23]  ← amplitude spike
+// Step 40: weight=0.09, reading=[1065, 37, 0.89]  ← mid-pattern
+// (37 crossings is the 73.4 Hz line: at the array's 256 Hz rate that tone
+//  puts 36.7 crossings in a 64-sample capture, and a count is a whole
+//  number. Step 77's 40 crossings is the shift itself, 80 Hz exactly.
+//  Module 7 baselined normal amplitude between 0.28 and 0.76 of the 2048
+//  ceiling, roughly 570 to 1560 counts, so step 4's 1980 is the spike,
+//  high enough to stand out and still short of clipping. The other two
+//  rows sit inside the band. The top weight sits on the frequency row.
+//  Whether the shift is what drove the prediction takes an ablation, not
+//  a heatmap.)`}
 </CodeBlock>
 
 ## Applied: Attention Over a Live Ring Buffer

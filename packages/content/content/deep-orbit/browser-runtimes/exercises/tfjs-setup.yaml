@@ -27,11 +27,31 @@ testCode: |
       const result = await initTF();
       expect(result).toBeDefined();
     });
-    it('reports the real runtime, not hardcoded strings', async () => {
-      const result = await initTF();
-      expect(result.backend).toBe(tf.getBackend());
-      expect(result.version).toBe(tf.version.tfjs);
-      expect(result.backend.length).toBeGreaterThan(0);
+    it('reads the backend name off the runtime, and only after ready() resolves', async () => {
+      // The grader's runtime is already warm, so tf.getBackend() answers even
+      // for code that never awaited tf.ready(). This test swaps in a cold
+      // runtime instead: it behaves like a fresh tab and has no backend name
+      // to give until ready() has resolved. Both strings are randomized per
+      // run, so a memorized pair cannot pass either.
+      const tag = 'probe-' + Math.floor(Math.random() * 1e9);
+      const ver = '4.' + Math.floor(Math.random() * 1000) + '.0-probe';
+      const warm = tf;
+      let initialized = false;
+      const cold = {
+        ready: () => Promise.resolve().then(() => { initialized = true; }),
+        getBackend: () => (initialized ? tag : null),
+        version: { tfjs: ver },
+      };
+      let result = null;
+      try {
+        tf = cold;
+        result = await initTF();
+      } finally {
+        tf = warm;
+      }
+      expect(initialized).toBe(true);
+      expect(result.backend).toBe(tag);
+      expect(result.version).toBe(ver);
     });
   });
 estimatedMinutes: 8

@@ -166,8 +166,11 @@ function detectDrift(
   baseline: number[][],
   current: number[][],
   // 0.5 is not a universal number. It is the 99th percentile of this
-  // detector's own score over 180 known-calm 100-sample windows, the same
-  // way module 7 read its reconstruction threshold off normal data.
+  // detector's own score over 180 known-calm 100-sample windows. Module 7
+  // computed that percentile too and then walked away from it: it had
+  // labeled anomalies, so its cutoff came from an F1 sweep and the cost of
+  // a false alarm. Drift has no labels to sweep, so here the percentile is
+  // where the number stops.
   // It is only valid at that window size. On calm data the distance
   // between two sample means shrinks as the windows grow: the same
   // detector sits near 0.22 on a 500-sample window. Change the window

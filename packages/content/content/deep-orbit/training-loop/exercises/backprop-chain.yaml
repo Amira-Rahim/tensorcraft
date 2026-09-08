@@ -1,9 +1,9 @@
 slug: backprop-chain
 lessonSlug: backpropagation
 title: "Automatic Backpropagation"
-instructions: "Use tf.variableGrads() to automatically compute gradients for a simple loss function. Define a variable 'w' with value 3.0, then fill in gradOf() so it returns tf.variableGrads() called on w squared, and destructure one call to it into loss and grads. The grader reassigns w and calls gradOf() a second time, so the gradient has to be computed on each call rather than written down once."
-starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// Return the tf.variableGrads(...) result for w^2, so the grader can call\n// gradOf() again after changing w.\nfunction gradOf() {\n  return { value: null, grads: null }; // your code here\n}\n\nconst { value: loss, grads } = gradOf();"
-solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nfunction gradOf() {\n  return tf.variableGrads(() => w.square());\n}\n\nconst { value: loss, grads } = gradOf();"
+instructions: "Use tf.variableGrads() to compute gradients automatically. The starter declares the variable w at 3.0. Write lossFn so it returns w squared, then fill in gradOf(fn) so it returns tf.variableGrads() called on the function it was handed. The grader reassigns w and calls gradOf() again, and its last call hands gradOf a loss function the exercise never shows you, so the gradient has to come out of the function rather than off the page."
+starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// 1. lossFn: the forward pass. Return w squared.\nconst lossFn = () => null; // your code here\n\n// 2. gradOf: differentiate whatever loss function it is handed. The grader\n// calls it again after changing w, and once on a loss of its own.\nfunction gradOf(fn) {\n  return { value: null, grads: null }; // your code here\n}\n\nconst { value: loss, grads } = gradOf(lossFn);"
+solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nconst lossFn = () => w.square();\n\nfunction gradOf(fn) {\n  return tf.variableGrads(fn);\n}\n\nconst { value: loss, grads } = gradOf(lossFn);"
 testCode: |
   describe('Backprop', () => {
     it('computes loss w^2 = 9 in the forward pass', () => {
@@ -21,17 +21,17 @@ testCode: |
     });
     it('gradOf recomputes: after w = 5, it returns loss 25 and gradient 10', () => {
       w.assign(tf.scalar(5.0));
-      const second = gradOf();
+      const second = gradOf(lossFn);
       expect(second.value.dataSync()[0]).toBeCloseTo(25.0, 4);
       const g = second.grads[Object.keys(second.grads)[0]];
       expect(g.dataSync()[0]).toBeCloseTo(10.0, 4);
     });
-    it('gradOf recomputes again: after w = 0.5, gradient 1.0 and loss 0.25', () => {
+    it('gradOf differentiates a loss the grader wrote: 3w^2 + 2w at w = 0.5 gives loss 1.75 and gradient 5.0', () => {
       w.assign(tf.scalar(0.5));
-      const third = gradOf();
-      expect(third.value.dataSync()[0]).toBeCloseTo(0.25, 4);
+      const third = gradOf(() => w.square().mul(3).add(w.mul(2)));
+      expect(third.value.dataSync()[0]).toBeCloseTo(1.75, 4);
       const g = third.grads[Object.keys(third.grads)[0]];
-      expect(g.dataSync()[0]).toBeCloseTo(1.0, 4);
+      expect(g.dataSync()[0]).toBeCloseTo(5.0, 4);
     });
   });
 estimatedMinutes: 15

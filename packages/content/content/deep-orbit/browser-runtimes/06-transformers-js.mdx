@@ -76,15 +76,17 @@ import { pipeline } from '@huggingface/transformers';
 // Storage (the Cache API). Size depends on dtype: v3 defaults to a
 // quantized model in the browser (tens of MB), and forcing fp32 means 4
 // bytes per weight, about 268MB for this ~67M-parameter sentiment model.
-// Note the contrast with two lessons ago: TFJS saves models to IndexedDB
-// via the indexeddb:// scheme; Transformers.js uses a different browser
-// store entirely.
+// Note the contrast with lesson 3 of this module: TFJS saves models to
+// IndexedDB via the indexeddb:// scheme; Transformers.js uses a different
+// browser store entirely.
 // Subsequent calls: instant from cache.
 const classifier = await pipeline('sentiment-analysis');
 
 const result = await classifier('Starboard array cleared diagnostics ahead of schedule.');
 console.log(result);
-// [{ label: 'POSITIVE', score: 0.9991 }]
+// [{ label: 'NEGATIVE', score: 0.9759 }]
+// Good news, labeled NEGATIVE at high confidence. That is not a bug,
+// and the last section of this lesson says what it is.
 
 // Batch inference: pass an array.
 const reports = [
@@ -94,10 +96,13 @@ const reports = [
 ];
 const batched = await classifier(reports);
 // [
-//   { label: 'POSITIVE', score: 0.987 },
-//   { label: 'NEGATIVE', score: 0.999 },
-//   { label: 'NEGATIVE', score: 0.852 },
-// ]`}
+//   { label: 'POSITIVE', score: 0.9592 },
+//   { label: 'NEGATIVE', score: 0.9997 },
+//   { label: 'NEGATIVE', score: 0.9987 },
+// ]
+// Those are the quantized scores. Forcing fp32 gives 0.9117, 0.9997
+// and 0.9984 on the same three lines: the scores move, the labels
+// do not.`}
 </CodeBlock>
 
 ## Tasks the Pipeline Handles Out of the Box
@@ -119,7 +124,7 @@ Aboard the Archimedes the download comes from the ship's mirrored model archive,
 - **Bandwidth-sensitive users.** A 200MB model on a 3G connection is a UX failure. Inspect model sizes at [huggingface.co/models](https://huggingface.co/models) before committing.
 - **Strict latency budgets on cold start.** First-call latency includes model download. Pre-warm via service worker if you need cold-start guarantees.
 - **You need fine-tuning.** Transformers.js runs models, it doesn't train them. Fine-tune in Python, export to ONNX, ship via Transformers.js.
-- **Your text does not look like the model's training text.** `pipeline('sentiment-analysis')` defaults to `Xenova/distilbert-base-uncased-finetuned-sst-2-english`, fine-tuned on SST-2 review sentences, and the crew's reports are operational logs. The batch above already shows the cost: the neutral line `Signal classification: anomalous.` came back NEGATIVE at 0.852, and nothing threw. It is the failure mode lesson 4 gave you for mismatched preprocessing, arriving through the text instead. Label twenty real reports by hand and compare before you put the pipeline in front of Mirza.
+- **Your text does not look like the model's training text.** `pipeline('sentiment-analysis')` defaults to `Xenova/distilbert-base-uncased-finetuned-sst-2-english`, fine-tuned on SST-2 review sentences, and the crew's reports are operational logs. The runs above already show the cost. `Signal classification: anomalous.` came back NEGATIVE at 0.9987, and `Starboard array cleared diagnostics ahead of schedule.` came back NEGATIVE at 0.9759. One neutral line, one report of good news, both NEGATIVE above 0.97, and nothing threw. It is the failure mode lesson 4 gave you for mismatched preprocessing, arriving through the text instead. Label twenty real reports by hand and compare before you put the pipeline in front of Mirza.
 
 ## Challenge
 

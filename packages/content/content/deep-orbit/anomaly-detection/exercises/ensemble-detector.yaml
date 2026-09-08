@@ -1,7 +1,7 @@
 slug: ensemble-detector
 lessonSlug: the-anomaly
 title: "Build the DEEP SCAN Ensemble"
-instructions: "Assemble the real ensemble the module built, three detectors, one verdict. Given a window of recent amplitudes for the statistical check, plus the autoencoder's and the LSTM's raw outputs, compute each verdict yourself: (1) statistical: z-score of `actual` against the window using tf.moments (flag when |z| > 3); (2) autoencoder: flag when reconstructionError > reconThreshold; (3) LSTM: flag when |predicted - actual| > predTolerance. Majority vote (at least 2 of 3) decides. Return { zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }."
+instructions: "Assemble the real ensemble the module built, three detectors, one verdict. Given a window of recent normalized amplitudes for the statistical check, plus the autoencoder's and the LSTM's raw outputs, compute each verdict yourself: (1) statistical: z-score of `actual` against the window using tf.moments (flag when |z| > 3); (2) autoencoder: flag when reconstructionError > reconThreshold; (3) LSTM: flag when |predicted - actual| > predTolerance. Majority vote (at least 2 of 3) decides. Return { zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }."
 starterCode: |
   interface EnsembleVerdict {
     zScore: number;
@@ -11,7 +11,7 @@ starterCode: |
   }
 
   function detectAnomalyEnsemble(
-    window: number[],            // recent amplitudes from the stream
+    window: number[],            // recent normalized amplitudes, 0 to 1
     actual: number,              // the latest reading
     reconstructionError: number, // autoencoder MSE for the latest reading
     reconThreshold: number,
@@ -56,25 +56,46 @@ solutionCode: |
     return { zScore, verdicts, votes, isAnomaly: votes >= 2 };
   }
 testCode: |
-  const calmWindow = [1.0, 1.1, 0.9, 1.0, 1.05, 0.95, 1.0, 1.0];
-  // mean = 1.0, population std = sqrt(0.025 / 8) ≈ 0.0559
+  // Eight consecutive normalized amplitudes from the calm stream: mean 0.52,
+  // population std 0.015. Lesson 1's baseline covers eleven days and its std
+  // is 0.15, ten times wider, so a reading pegged at the sensor's full scale
+  // (1.00, the highest the feature can report) scores 3.2 sigma against the
+  // archive and 32 against this window. The sigma count belongs to the
+  // spread you divide by, not to the reading.
+  const calmWindow = [0.50, 0.54, 0.51, 0.53, 0.52, 0.52, 0.50, 0.54];
 
   describe('detectAnomalyEnsemble', () => {
     it('stays quiet on a calm reading (0 votes)', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 1.0, 0.001, 0.02, 1.02, 0.5);
+      const r = detectAnomalyEnsemble(calmWindow, 0.52, 0.001, 0.010, 0.53, 0.10);
       expect(r.votes).toBe(0);
       expect(r.isAnomaly).toBe(false);
       expect(Math.abs(r.zScore)).toBeLessThan(1);
     });
 
-    it('computes the real z-score from the window (amplitude spike -> z ≈ 26.8)', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 2.5, 0.001, 0.02, 2.4, 0.5);
-      expect(r.zScore).toBeCloseTo(26.8, 0);
+    it('computes the real z-score from the window (amplitude pegged at 1.00 -> z = 32)', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.001, 0.010, 0.98, 0.10);
+      expect(r.zScore).toBeCloseTo(32, 0);
       expect(r.verdicts.statistical).toBe(true);
     });
 
+    // Same reading, different spread. This window is a quieter stretch that
+    // drifted low: mean 0.30, population std 0.05. Against it, 0.52 (the
+    // archive's own mean, a reading lesson 1 calls dead normal) is 4.4 sigma
+    // and trips the gate. Against lesson 1's std of 0.15 the same reading is
+    // 1.5 sigma and trips nothing. Measure the window you were handed.
+    it('reads the window it is given: 0.52 is 4.4 sigma against a drifted one', () => {
+      const driftedWindow = [0.25, 0.35, 0.25, 0.35, 0.25, 0.35, 0.25, 0.35];
+      const r = detectAnomalyEnsemble(driftedWindow, 0.52, 0.001, 0.010, 0.53, 0.10);
+      expect(r.zScore).toBeCloseTo(4.4, 2);
+      expect(r.verdicts.statistical).toBe(true);
+      expect(r.verdicts.autoencoder).toBe(false);
+      expect(r.verdicts.lstm).toBe(false);
+      expect(r.votes).toBe(1);
+      expect(r.isAnomaly).toBe(false);
+    });
+
     it('one detector alone does not fire the alarm (autoencoder-only)', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 1.0, 0.05, 0.02, 1.02, 0.5);
+      const r = detectAnomalyEnsemble(calmWindow, 0.52, 0.062, 0.010, 0.53, 0.10);
       expect(r.verdicts.autoencoder).toBe(true);
       expect(r.verdicts.statistical).toBe(false);
       expect(r.verdicts.lstm).toBe(false);
@@ -83,7 +104,7 @@ testCode: |
     });
 
     it('two of three agreeing fires the alarm (reconstruction + prediction error)', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 1.0, 0.062, 0.02, 0.2, 0.5);
+      const r = detectAnomalyEnsemble(calmWindow, 0.52, 0.062, 0.010, 0.20, 0.10);
       expect(r.verdicts.autoencoder).toBe(true);
       expect(r.verdicts.lstm).toBe(true);
       expect(r.verdicts.statistical).toBe(false);
@@ -92,7 +113,7 @@ testCode: |
     });
 
     it('any two detectors are enough: statistical + prediction, autoencoder quiet', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 2.5, 0.001, 0.02, 1.0, 0.5);
+      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.001, 0.010, 0.52, 0.10);
       expect(r.verdicts.statistical).toBe(true);
       expect(r.verdicts.lstm).toBe(true);
       expect(r.verdicts.autoencoder).toBe(false);
@@ -101,7 +122,7 @@ testCode: |
     });
 
     it('the 73.4 Hz signature trips all three detectors', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 2.5, 0.062, 0.02, 1.0, 0.5);
+      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.062, 0.010, 0.52, 0.10);
       expect(r.votes).toBe(3);
       expect(r.isAnomaly).toBe(true);
     });

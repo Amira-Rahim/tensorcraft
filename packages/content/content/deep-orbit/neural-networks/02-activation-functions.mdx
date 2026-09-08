@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 13
 difficulty: beginner
 context:
-  narrative: "The neuron's raw output runs from negative eleven to six hundred. Nazari's alert board takes yes or no."
+  narrative: "The neuron's raw output came back at minus 0.06 on one reading and 1.04 on another. Nazari's alert board takes yes or no."
 concept:
   explanation: "Activation functions bend a network's straight lines. ReLU clips the negative half away, and sigmoid and tanh squash the whole range into fixed bounds."
   bridge:
@@ -21,7 +21,7 @@ concept:
     tier: identity
     breaks: "At inference these are literally the same arithmetic. Training is where they part: tf.relu applies elementwise across whole tensors and carries a gradient definition, and a neuron whose input stays negative stops learning entirely (the dying ReLU). Math.max has no story about any of that."
 consequence:
-  narrative: "Every score now lands between 0 and 1, which is all Nazari's board ever wanted. The night shift produces one number nobody expected."
+  narrative: "Every score now lands between 0 and 1 whatever the sum behind it, which is what Nazari's board wanted. The night shift ends with the neuron and ARIA disagreeing about one archived reading."
 hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
@@ -38,7 +38,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-Your neuron scored one reading at negative eleven and another at six hundred. Is negative eleven a yes or a no, Ensign? The alert board takes yes or no. It does not take "depends on the scale."
+Your neuron scored one reading at minus 0.06 and another at 1.04. Is minus 0.06 a yes or a no, Ensign? The alert board takes yes or no, and a weighted sum has no fixed ends to set a threshold against.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "Choose the right activation for different situations"]} />
@@ -70,18 +70,26 @@ const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
 
 ## Answering the Board
 
+Her two numbers are not a bug in the neuron. With the lesson-1 weights `[0.4, -0.2, 0.6]` and a bias of 0.1, three features between 0 and 1 can only score between -0.10 and 1.10, so both of her readings sit near the edges of what that neuron can say. The trouble is that those edges belong to those three weights. Change one weight and the edges move, and training in module 3 rewrites every one of them.
+
 Run Nazari's two readings through the sigmoid and her question answers itself:
 
-<CodeBlock language="typescript" title="negative-eleven.ts">
+<CodeBlock language="typescript" title="board-verdicts.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-const board = tf.tensor([-11, 600]);  // the two scores Nazari read out
-tf.sigmoid(board).print();            // [0.0000167, 1]
+const board = tf.tensor([-0.06, 1.04]);  // the two scores Nazari read out
+tf.sigmoid(board).print();               // [0.4850045, 0.73885]
+
+// Both land inside (0, 1), where a 0.5 threshold means something.
+// Minus 0.06 comes back 0.485, a no. 1.04 comes back 0.739, a yes.
+// Those two started near the range on the luck of hand-picked
+// weights. The bound owes nothing to that luck and holds for any
+// score at all:
+tf.sigmoid(tf.tensor([-11, 600])).print();  // [0.0000167, 1]
 
 // -11 squashes to 0.0000167: a no, four zeros deep.
 // 600 comes back as exactly 1: the curve is so flat out there that
-// float32 has no digits left to hedge with. A yes.
-// Two unbounded scores in, two board-ready verdicts out.`}
+// float32 has no digits left to hedge with. A yes.`}
 </CodeBlock>
 
 Placement falls out of the ranges. ReLU stays in the hidden layers, where the outputs feed more math: its slope is exactly 1 for every positive input, so the learning signal you meet in module 3 passes through it undiminished, and it is also the cheapest of the three to compute. Sigmoid takes the output slot when the question is yes/no, because (0, 1) reads as a probability. Tanh takes it when values need to swing negative.
@@ -121,10 +129,10 @@ Apply ReLU activation to neuron outputs.
 
 <Epilogue>
 
-Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing screaming off toward infinity anymore. At 0316 the neuron reaches archived reading 7741, the one the crew flagged and kept last module, and scores it 0.91. Hand-picked weights, no training, and the highest number the little instrument has produced all night. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
+Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing running off the ends anymore. The two calibration tones come back at 0.69 and 0.53. At 0316 the neuron reaches archived reading 7741, the one the crew flagged and kept last module. All three of its features sit at 0.5, and the sigmoid answers 0.62, which lands between the two reference tones and resembles neither. Hand-picked weights, no training, and nothing in that number worth a second look. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
 
 <Dialogue speaker="ARIA">
-I have checked reading 7741 against all 14,202 of my rules. My 4,096 parsers failed on this stream and continue to fail. Not one of the remaining 10,106 classification rules fires. The neuron is responding to something I do not have a rule for. I am still running, and I am noting that.
+I have checked reading 7741 against all 14,202 of my rules. My 4,096 parsers failed on this stream and continue to fail. Not one of the remaining 10,106 classification rules fires. The neuron returns 0.62 on this reading, which reads as a yes. I hold nominal. I am still running, and I am noting the disagreement.
 </Dialogue>
 
 The note files itself between two routine humidity alerts.

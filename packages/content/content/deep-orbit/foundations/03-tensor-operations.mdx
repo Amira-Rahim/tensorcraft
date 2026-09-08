@@ -123,7 +123,7 @@ output.print();
 //  [12]]    ← 2+4+6: second column`}
 </CodeBlock>
 
-Why care? Every dense layer you'll build is essentially `matMul(input, weights) + bias`, and the shape rule above is the most common source of dimension errors in ML code. The convolution layers in module 5 and the recurrent cells in module 6 reuse the same rows-into-columns rule, wrapped in more machinery. The error that opened this lesson will find you again the day you build your first network layer; next time you'll read it in one pass.
+Why care? Every dense layer you'll build is essentially `matMul(input, weights) + bias`, and the shape rule above is the most common source of dimension errors in ML code. The recurrent cells in module 6 reuse the same rows-into-columns rule, wrapped in more machinery. The error that opened this lesson will find you again the day you build your first network layer; next time you'll read it in one pass.
 
 <DerivationDrawer summary="Why rows into columns: matMul as composed linear maps">
 **The shape rule is not a convention; it is what composing linear maps looks like.** A matrix is a linear map, and its columns record where each input direction lands. Chaining two maps only makes sense when the first outputs exactly as many coordinates as the second expects, and that handoff is the inner dimension of `[m, n] × [n, p]`.

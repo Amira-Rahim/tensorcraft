@@ -1,9 +1,9 @@
 slug: gradient-step
 lessonSlug: gradient-descent
 title: "Perform a Gradient Descent Step"
-instructions: "Write step(): one descent step on loss = weight². Use tf.variableGrads() to compute the gradient automatically (don't derive it by hand; the whole point is that TFJS does calculus for you), store it in gradient, then update the weight by subtracting learningRate × gradient. Starting at weight = 5.0 with learningRate = 0.1, the first call lands the weight at exactly 4.0. The grader calls step() twice more, so the body has to recompute the gradient rather than restate 4.0."
-starterCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\nlet gradient;\n\n// 1. Define the loss as a function: () => weight.square().asScalar()\n// 2. Get gradients with tf.variableGrads(lossFn)\n// 3. Pull this weight's gradient out of the returned grads object into gradient\n// 4. weight.assign(...) the updated value\nfunction step() {\n  // your code here\n}\n\nstep();"
-solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\nlet gradient;\n\nfunction step() {\n  const lossFn = () => weight.square().asScalar();\n  const { grads } = tf.variableGrads(lossFn);\n  gradient = grads[Object.keys(grads)[0]];\n  weight.assign(weight.sub(gradient.mul(learningRate)));\n}\n\nstep();"
+instructions: "Write step(fn): one descent step on the loss function it is handed. Define lossFn as () => weight.square().asScalar(), then inside step use tf.variableGrads(fn) to get the gradient (don't derive it by hand; the whole point is that TFJS does calculus for you), store it in gradient, and update the weight by subtracting learningRate × gradient. Starting at weight = 5.0 with learningRate = 0.1, the first call lands the weight at exactly 4.0. The grader calls step() twice more on your loss, then once on a loss of its own, so the body has to differentiate the function it receives."
+starterCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\nlet gradient;\n\n// 1. lossFn: the loss as a function, () => weight.square().asScalar()\nconst lossFn = null; // your code here\n\n// 2. Inside step(fn): get gradients with tf.variableGrads(fn), pull this\n//    weight's gradient out of the returned grads object into gradient,\n//    then weight.assign(...) the updated value. The grader hands step() a\n//    loss of its own later, so differentiate fn rather than weight squared.\nfunction step(fn) {\n  // your code here\n}\n\nstep(lossFn);"
+solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\nlet gradient;\n\nconst lossFn = () => weight.square().asScalar();\n\nfunction step(fn) {\n  const { grads } = tf.variableGrads(fn);\n  gradient = grads[Object.keys(grads)[0]];\n  weight.assign(weight.sub(gradient.mul(learningRate)));\n}\n\nstep(lossFn);"
 testCode: |
   describe('Gradient Step', () => {
     it('gradient was computed by autograd and equals 2×weight = 10', () => {
@@ -14,12 +14,17 @@ testCode: |
       expect(weight.dataSync()[0]).toBeCloseTo(4.0, 4);
     });
     it('two more calls to step() keep descending: 4.0 to 3.2 to 2.56', () => {
-      step();
+      step(lossFn);
       expect(gradient.dataSync()[0]).toBeCloseTo(8.0, 4);
       expect(weight.dataSync()[0]).toBeCloseTo(3.2, 4);
-      step();
+      step(lossFn);
       expect(gradient.dataSync()[0]).toBeCloseTo(6.4, 4);
       expect(weight.dataSync()[0]).toBeCloseTo(2.56, 4);
+    });
+    it('step() differentiates the loss it is handed: on 3 × weight squared at 2.56 the gradient is 15.36', () => {
+      step(() => weight.square().mul(3).asScalar());
+      expect(gradient.dataSync()[0]).toBeCloseTo(15.36, 4);
+      expect(weight.dataSync()[0]).toBeCloseTo(1.024, 4);
     });
   });
 estimatedMinutes: 10

@@ -40,6 +40,23 @@ testCode: |
       m.add(tf.layers.dense({ units: 1, inputShape: [2] }));
       return m;
     }
+    // Wraps predict so a test can count forward passes, and exposes the
+    // model's own answer for an input. The weights are a fresh random
+    // initialization per model, so the numbers a working cache returns
+    // cannot be written into a submission as literals.
+    function countingModel() {
+      const m = makeModel();
+      const real = m.predict.bind(m);
+      const counter = { calls: 0 };
+      m.predict = function (x) { counter.calls++; return real(x); };
+      const truth = function (values) {
+        const out = real(tf.tensor2d([values]));
+        const scores = Array.from(out.dataSync());
+        out.dispose();
+        return scores;
+      };
+      return { model: m, counter: counter, truth: truth };
+    }
     it('caches identical inputs', () => {
       const m = makeModel();
       const cache = makeInferenceCache(m);
@@ -75,6 +92,31 @@ testCode: |
       // prediction handle would make this 3 instead of 2, and it would
       // never be released.
       expect(tf.memory().numTensors - before).toBe(2);
+    });
+    it("a miss returns the model's own output and a hit skips the forward pass", () => {
+      const probe = countingModel();
+      const cache = makeInferenceCache(probe.model);
+      const miss = cache.predict(tf.tensor2d([[0.37, 0.81]]));
+      expect(probe.counter.calls).toBe(1);
+      const hit = cache.predict(tf.tensor2d([[0.37, 0.81]]));
+      // Still 1: the hit is the saved answer, not a second forward pass.
+      expect(probe.counter.calls).toBe(1);
+      const expected = probe.truth([0.37, 0.81]);
+      expect(Array.from(miss)).toEqual(expected);
+      expect(Array.from(hit)).toEqual(expected);
+    });
+    it("a new key runs the model again, on that key's own values", () => {
+      const probe = countingModel();
+      const cache = makeInferenceCache(probe.model);
+      const first = cache.predict(tf.tensor2d([[0.64, 0.12]]));
+      const second = cache.predict(tf.tensor2d([[-0.53, 0.29]]));
+      expect(probe.counter.calls).toBe(2);
+      const expectedFirst = probe.truth([0.64, 0.12]);
+      const expectedSecond = probe.truth([-0.53, 0.29]);
+      expect(Array.from(first)).toEqual(expectedFirst);
+      expect(Array.from(second)).toEqual(expectedSecond);
+      // Two different signals cannot share one stored verdict.
+      expect(expectedFirst).not.toEqual(expectedSecond);
     });
   });
 estimatedMinutes: 18

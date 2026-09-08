@@ -142,11 +142,11 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
 }
 
 // The 340 MB here is the pretrained language component from the bundle
-// audit. It opens with an embedding lookup, so it takes token ids, not the
-// [80, 11] float window the signal classifier reads. Hand it randomNormal
-// and the lookup throws: "GatherV2: the index value -2 is not in [0, 49999]".
-// 50,000 is the tokenizer vocabulary, 256 dims wide, which is the 12,800,000
-// row below.
+// audit. It opens with an embedding lookup, so it takes 80 token ids, not
+// the eleven-feature float vector the signal classifier reads. Hand it
+// randomNormal and the lookup throws: "GatherV2: the index value -2 is not
+// in [0, 49999]". 50,000 is the tokenizer vocabulary, 256 dims wide, which
+// is the 12,800,000 row below.
 const profile = await profileModel(model, () => tf.randomUniform([1, 80], 0, 50000, 'int32'));
 console.log('Model size:', profile.memorySizeMB.toFixed(1), 'MB');
 console.log('Parameters:', profile.parameterCount.toLocaleString());
@@ -174,9 +174,13 @@ for (const layer of profile.layerBreakdown) {
 // Both timings are wasm-backend numbers: the dashboard had no working
 // WebGL context that night, so the profile ran on the fallback.
 //
-// Read the shares, not the total. 80% of this model is one Dense layer, and
-// the tail is 2.5x the mean: the dashboard did not die at 45 ms, it died at
-// 112. Both numbers survive into module 11; neither was a guess.`}
+// Read the shares, not the total. 80% of this model is one Dense layer, so
+// that layer holds most of the 340 MB. The 45 ms mean and the 112 ms P95 are
+// the latency baseline, not an explanation of the crash: the dashboard died
+// with the free-memory line at zero, 340 MB of weights loading into a 512 MB
+// budget. In that baseline the tail is the number to gate on. It is 2.5x the
+// mean, so a budget written against the mean alone misses one call in twenty.
+// Both numbers survive into module 11; neither was a guess.`}
 </CodeBlock>
 
 ## Challenge

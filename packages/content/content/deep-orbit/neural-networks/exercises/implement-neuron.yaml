@@ -1,7 +1,7 @@
 slug: implement-neuron
 lessonSlug: first-neuron
 title: "Implement a Neuron"
-instructions: "Implement neuron(inputs, weights, bias): the weighted sum of inputs plus bias, as a scalar tensor. Use tf.dot() for the weighted sum. The grader calls your function with several different input sets, so compute, don't memorize."
+instructions: "Implement neuron(inputs, weights, bias): the weighted sum of inputs plus bias, as a scalar tensor. Use tf.dot() for the weighted sum. The grader draws its own inputs, weights and bias at grade time and checks your result against the reduce() equivalent, so compute from the arguments."
 starterCode: |
   function neuron(inputs: tf.Tensor, weights: tf.Tensor, bias: tf.Scalar): tf.Tensor {
     // weighted sum of inputs, plus bias
@@ -35,6 +35,30 @@ testCode: |
     it('handles a different input width entirely', () => {
       const out = neuron(tf.tensor([1, 1, 1, 1]), tf.tensor([0.1, 0.2, 0.3, 0.4]), tf.scalar(-1.0));
       expect(out.dataSync()[0]).toBeCloseTo(0.0, 4);
+    });
+    it('matches the reduce() equivalent on inputs, weights and a bias drawn at grade time', () => {
+      for (let trial = 0; trial < 3; trial++) {
+        const width = 2 + Math.floor(Math.random() * 5);
+        const inputs = tf.randomUniform([width], -3, 3);
+        const weights = tf.randomUniform([width], -1, 1);
+        const bias = Math.random() * 2 - 1;
+        const xs = Array.from(inputs.dataSync());
+        const ws = Array.from(weights.dataSync());
+        const expected = xs.reduce((sum, x, i) => sum + x * ws[i], bias);
+        const out = neuron(inputs, weights, tf.scalar(bias));
+        expect(out.dataSync()[0]).toBeCloseTo(expected, 3);
+      }
+    });
+    it('pairs each weight with its own input: raising one weight by 0.5 moves the output by half that input', () => {
+      const inputs = tf.randomUniform([3], -2, 2);
+      const xs = Array.from(inputs.dataSync());
+      const base = [0.1, 0.1, 0.1];
+      const index = Math.floor(Math.random() * 3);
+      const raised = base.slice();
+      raised[index] = raised[index] + 0.5;
+      const before = neuron(inputs, tf.tensor(base), tf.scalar(0)).dataSync()[0];
+      const after = neuron(inputs, tf.tensor(raised), tf.scalar(0)).dataSync()[0];
+      expect(after - before).toBeCloseTo(0.5 * xs[index], 3);
     });
   });
 estimatedMinutes: 10

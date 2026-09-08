@@ -51,7 +51,7 @@ I've checked the sensor calibration twice. This is not instrument noise. The mod
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM predicted its arrival within three seconds. All three systems agree.
+The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM did not see this reading coming: its forecast for the next three channels missed by 0.041, past its gate. All three detectors agree.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
@@ -84,18 +84,23 @@ interface DetectionResult {
 }
 
 function detectAnomaly(
-  signal: number[],
-  baseline: { mean: number; std: number },
+  signal: number[],     // the 11 features module 5 z-scored, for the autoencoder
+  amplitude: number,    // the same capture's min-max amplitude, 0 to 1
+  baseline: { mean: number; std: number },  // amplitude's normal-period mean/std
   autoencoder: tf.LayersModel,
   lstm: tf.LayersModel,
   recentWindow: number[][],
   thresholds: { zScore: number; reconstruction: number; prediction: number },
 ): DetectionResult {
-  // Detector 1: Statistical z-score on the amplitude feature (signal[0]).
-  // baseline is amplitude's mean/std over normal-period data, the module's
-  // opening lesson. A max over the whole 11-dim vector would fold in the
-  // FFT bins' scale and stop measuring amplitude.
-  const amplitude = signal[0];
+  // Detector 1: Statistical z-score on the amplitude channel.
+  // Two arrays describe this one capture and they are on different scales.
+  // amplitude is what module 4's preprocess hands the classifier: the raw
+  // count divided by the sensor's 2048-count full scale, so 0 to 1. signal
+  // is what module 5 hands the autoencoder: eleven features z-normalized to
+  // mean 0 and std 1. This detector takes the min-max one as its own
+  // argument, because baseline is amplitude's mean and std in min-max
+  // units, measured over the normal period in this module's first lesson.
+  // Passing signal[0] here would divide a z-score by a min-max spread.
   const zScore = Math.abs(amplitude - baseline.mean) / baseline.std;
   const statTriggered = zScore > thresholds.zScore;
 
@@ -110,12 +115,14 @@ function detectAnomaly(
   // Detector 3: LSTM prediction deviation
   const predError = tf.tidy(() => {
     const input = tf.tensor3d([recentWindow]);
-    // The LSTM (module 6) forecasts the next RAW reading: 3 values.
-    // Compare against the raw slice of the live feature vector, not all
-    // 11 features; the 8 FFT bins have no forecast to be wrong about.
+    // The LSTM (module 6) forecasts the next reading's three sensor
+    // channels, and it reads and writes the per-channel z-scores it was
+    // trained on. Compare its forecast against those three channels on
+    // that same scale, not against all 11 features; the 8 FFT bins have
+    // no forecast to be wrong about.
     const predicted = (lstm.predict(input) as tf.Tensor).dataSync();
-    const rawNext = signal.slice(0, 3);
-    return rawNext.reduce((sum, v, i) => sum + (v - predicted[i]) ** 2, 0) / rawNext.length;
+    const nextChannels = signal.slice(0, 3);
+    return nextChannels.reduce((sum, v, i) => sum + (v - predicted[i]) ** 2, 0) / nextChannels.length;
   });
   const lstmTriggered = predError > thresholds.prediction;
 
@@ -134,11 +141,16 @@ function detectAnomaly(
 }
 
 // The anomalous signal:
-// statistical: z=8.7 ✓, autoencoder: error=0.062 ✓, lstm: predError=0.041 ✓
-// Agreement: 3 of 3. Every detector fired; none of them says how likely.`}
+// statistical: z=3.2 ✓, autoencoder: error=0.062 ✓, lstm: predError=0.041 ✓
+// Agreement: 3 of 3. Every detector fired; none of them says how likely.
+// The statistical vote only just clears its gate: amplitude came in pegged
+// at its full-scale 1.00, which is 3.2 sigma off lesson 1's baseline of
+// mean 0.52, std 0.15. That is as high as the count goes on a spike,
+// because the sensor saturates at 1.00. The low end of the scale reaches
+// further: a dead channel reading 0.00 is 3.47 sigma.`}
 </CodeBlock>
 
-Separately computed is not the same as independent. All three detectors score the same reading, and the z-score detector reads `signal[0]`, one of the eleven features the autoencoder is trying to rebuild. The autoencoder and the LSTM were fitted on the same eleven days of telemetry. The votes can therefore fail together, which is why a majority is not three odds multiplied.
+Separately computed is not the same as independent. All three detectors score the same capture. The statistical gate reads its amplitude channel min-max normalized, and the autoencoder reads that same channel z-scored, as one of the eleven features it is trying to rebuild. That is one hull sensor read twice through two different scalings. If the sensor drifts, both detectors get the drifted number, and neither can tell that the other got it too. The autoencoder and the LSTM were fitted on the same eleven days of telemetry. The votes can therefore fail together, which is why a majority is not three odds multiplied.
 
 Lesson 2's first run shows the shape of it. 412 contaminated rows taught the autoencoder the 73.4 Hz component, so it rebuilt the anomalous signal at 1.4x baseline and the reading walked past the threshold. The same eleven days sit under the LSTM's training windows. One bad archive takes two votes out at once, and the third is reading a channel one of them already saw. Sample 7741's replay was carried by exactly that pair. Lesson 1's drawer made the point about sensors bolted to one hull, which share their noise. Read 2 of 3 as two checks that failed.
 
@@ -147,15 +159,19 @@ Lesson 2's first run shows the shape of it. 412 contaminated rows taught the aut
 While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome; the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the gaps between them run in Fibonacci proportion: 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it. The carrier keeps its clock. The freight it carries keeps a different one.
 
 <CodeBlock language="typescript" title="the-discovery.ts">
-{`// Run the full ensemble on the flagged signal
+{`// Two views of the same capture: the z-scored eleven the autoencoder
+// rebuilds, and the min-max amplitude the statistical gate measures.
+const anomalousAmplitude = preprocess(rawCapture)[0];  // module 4's normalizer
+
 const anomalyResult = detectAnomaly(
-  anomalousSignal, baseline, autoencoder, lstm, recentWindow, thresholds,
+  anomalousSignal, anomalousAmplitude, baseline,
+  autoencoder, lstm, recentWindow, thresholds,
 );
 
 console.log('=== DEEP SCAN ALERT ===');
 console.log('Anomaly detected:', anomalyResult.isAnomaly);      // true
 console.log('Agreement:', anomalyResult.agreement);               // 1.0: 3 of 3 fired
-console.log('Z-score:', anomalyResult.detectors.statistical.zScore.toFixed(1));  // 8.7
+console.log('Z-score:', anomalyResult.detectors.statistical.zScore.toFixed(1));  // 3.2
 console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)); // 0.0620
 console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(4)); // 0.0410
 
@@ -183,7 +199,7 @@ Build an ensemble anomaly detector combining multiple methods.
   whatYouLearned={[
     "Ensemble detection combines methods with different assumptions (statistical, learned, and temporal) so that a majority vote, not any single detector, decides; agreement counts how many checks failed and is not a calibrated probability.",
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
-    "The three detectors are separately computed, not independent: they score the same input vector and two of them were fitted on the same archive, so one contaminated training set can silence two votes at once.",
+    "The three detectors are separately computed, not independent: they score the same capture, and two of them were fitted on the same archive, so one contaminated training set can silence two votes at once. The statistical gate and the autoencoder also share the amplitude channel, each reading it through its own normalization.",
     "A model's job is detection and quantification; ensemble agreement tells you how many checks fired, and interpretation of what was detected remains a human decision."
   ]}
   bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, the ensemble alert (`if (votes >= 2) alert('UNKNOWN SIGNAL DETECTED')`) fires when two of the three detectors agree the input falls outside anything the system was trained to handle."

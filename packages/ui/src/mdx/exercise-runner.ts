@@ -882,29 +882,67 @@ const WORKER_BODY = `
       sampleSeq.dispose && sampleSeq.dispose();
     } catch (e) { /* ignore */ }
 
-    // 2. tf.loadLayersModel can't reach the network from a worker. Stub
-    //    it to return a small inferable model so lessons that load saved
-    //    models still pass shape and metadata assertions.
-    var origLoadLayers = tf.loadLayersModel;
-    var origLoadGraph = tf.loadGraphModel;
-    function stubLoadLayers() {
+    // 2. tf.loadLayersModel can't reach the network from a worker. Stub it
+    //    to return a model whose architecture is DERIVED FROM THE URL, so
+    //    lessons that load a saved model still pass shape and metadata
+    //    assertions while no submission can clear one by hardcoding a
+    //    memorised shape triple. Before 2026-09-08 this returned a fixed
+    //    4 -> 8 -> 1 stack while the CI validator returned a fixed
+    //    10 -> 8 -> 4 one, so the same hardcode passed in one harness and
+    //    failed in the other.
+
+    // --- stub-arch-derivation: kept byte-identical (modulo whitespace) with
+    // the copy in scripts/validate-exercises.mjs, whose assertHarnessParity()
+    // reads this block out of this file and fails CI if the two drift. ---
+    function stubArchFromUrl(url) {
+      // FNV-1a over the url, via Math.imul so the 32-bit multiply stays exact.
+      var h = 0x811c9dc5;
+      var s = String(url == null ? "" : url);
+      for (var i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 0x01000193) >>> 0;
+      }
+      var inputDim = 4 + (h % 13);
+      var hidden = 4 + ((h >>> 5) % 13);
+      var outputUnits = 1 + ((h >>> 11) % 4);
+      var deep = (h >>> 17) % 2 === 1;
+      return {
+        inputDim: inputDim,
+        hidden: hidden,
+        outputUnits: outputUnits,
+        hiddenTwo: deep ? Math.max(2, hidden >> 1) : 0,
+        layerCount: deep ? 3 : 2,
+      };
+    }
+    // --- end stub-arch-derivation ---
+
+    function stubLoadLayers(url) {
+      var a = stubArchFromUrl(url);
       var stub = tf.sequential();
-      stub.add(tf.layers.dense({ units: 8, activation: 'relu', inputShape: [4] }));
-      stub.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+      stub.add(tf.layers.dense({ units: a.hidden, activation: 'relu', inputShape: [a.inputDim] }));
+      if (a.hiddenTwo) {
+        stub.add(tf.layers.dense({ units: a.hiddenTwo, activation: 'relu' }));
+      }
+      stub.add(tf.layers.dense({
+        units: a.outputUnits,
+        activation: a.outputUnits === 1 ? 'sigmoid' : 'softmax',
+      }));
       return Promise.resolve(stub);
     }
-    function stubLoadGraph() {
+    function stubLoadGraph(url) {
+      var a = stubArchFromUrl(url);
+      var layers = [];
+      for (var i = 0; i < a.layerCount; i++) layers.push({});
+      function out(x) {
+        var batch = (x && x.shape && x.shape[0]) || 1;
+        return tf.zeros([batch, a.outputUnits]);
+      }
       return Promise.resolve({
-        predict: function(x) {
-          var s = (x && x.shape) ? [x.shape[0] || 1, 1] : [1, 1];
-          return tf.zeros(s);
-        },
-        execute: function(x) {
-          var s = (x && x.shape) ? [x.shape[0] || 1, 1] : [1, 1];
-          return tf.zeros(s);
-        },
-        inputs: [{ shape: [null, 4] }],
-        outputs: [{ shape: [null, 1] }],
+        predict: out,
+        execute: out,
+        inputs: [{ shape: [null, a.inputDim] }],
+        outputs: [{ shape: [null, a.outputUnits] }],
+        layers: layers,
         dispose: function() {},
       });
     }
@@ -922,17 +960,41 @@ const WORKER_BODY = `
     // layer.inputSpec[0].shape[N] are corrected at the lesson level via
     // the tests-fix script instead.)
 
-    // ONNX runtime global stub for lessons that compare TFJS vs ORT.
+    // ONNX runtime global stub for lessons that compare TFJS vs ORT. The
+    // session output is a function of the feed, not a constant, so an
+    // exercise can grade the number a solution returns instead of only
+    // spying on the call.
+
+    // --- stub-onnx-derivation: kept byte-identical (modulo whitespace) with
+    // the copy in scripts/validate-exercises.mjs, whose assertHarnessParity()
+    // reads this block out of this file and fails CI if the two drift. ---
+    function stubOnnxScore(feeds) {
+      // Squash a position-weighted sum of the feed values into (0, 1). Any
+      // deterministic function of the input works; what matters is that it IS a
+      // function of the input, so returning a memorised constant is a wrong
+      // answer. Before 2026-09-08 both shims returned 0.5 for every feed, which
+      // made a plain "return 0.5" indistinguishable from running the session.
+      var key = feeds ? Object.keys(feeds)[0] : null;
+      var t = key ? feeds[key] : null;
+      var data = t && t.data ? t.data : [];
+      var acc = 0;
+      for (var i = 0; i < data.length; i++) acc += (i + 1) * Number(data[i]);
+      return 1 / (1 + Math.exp(-acc));
+    }
+    // --- end stub-onnx-derivation ---
+
     if (typeof globalThis.ort === 'undefined') {
       globalThis.ort = {
         InferenceSession: {
           create: function() {
             return Promise.resolve({
               run: function(feeds) {
-                var key = Object.keys(feeds)[0];
-                var input = feeds[key];
-                var size = input.dims ? input.dims.reduce(function(a,b){return a*b;},1) : 1;
-                return Promise.resolve({ output: { data: new Float32Array(size).fill(0.5) } });
+                return Promise.resolve({
+                  output: {
+                    data: new Float32Array([stubOnnxScore(feeds)]),
+                    dims: [1, 1],
+                  },
+                });
               },
             });
           },

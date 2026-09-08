@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "Two signals can be near-identical sample by sample in time yet clearly different in one frequency bin; compareViews makes that claim executable."
   - level: guidance
-    content: "timeTwin is an every() check: |timeA[i] - timeB[i]| <= tolerance for all i. divergentBin scans magsA against magsB in order and records the FIRST index whose gap exceeds tolerance (break as soon as you find it; the grader rejects the largest-gap answer), staying -1 if none does. Return { timeTwin, divergentBin }."
+    content: "timeTwin is an every() check: |timeA[i] - timeB[i]| <= tolerance for all i. divergentBin scans magsA against magsB in order and records the FIRST index whose gap exceeds tolerance (break as soon as you find it; the grader rejects the largest-gap answer), staying -1 if none does. Return { timeTwin, divergentBin }. Both verdicts read the tolerance argument: the grader calls compareViews at 0.5 and at 0.005 as well as the lesson's 0.05, so a hardcoded threshold gets two cases wrong."
   - level: solution
     content: "const timeTwin = timeA.every((v, i) => Math.abs(v - timeB[i]) <= tolerance); let divergentBin = -1; for (let i = 0; i < magsA.length; i++) { if (Math.abs(magsA[i] - magsB[i]) > tolerance) { divergentBin = i; break; } } return { timeTwin, divergentBin };"
 keywords:
@@ -42,7 +42,7 @@ skillAxes: [data_prep]
 
 > **ARIA ARCHIVE · PLAYBACK REQUEST: DR. FARAH** · Lab display, first week of contact. The stream reshaped to `[450, 64]`, mush snapping into stripes, and down every column a slow, regular swell, like something breathing. End of frame.
 
-Farah has kept that frame pinned to the corner of her display since the day she found it. The swell has never gotten a name. Today she drags the old capture to the center of the screen and puts the live plot beside it.
+Farah has kept that frame pinned to the corner of her display since the day she found it: 450 readings down, one column for each of the 64 hull channels. The swell has never gotten a name. Today she drags the old capture to the center of the screen and puts the live plot beside it.
 
 <Dialogue speaker="Dr. Farah">
 Same swell, Demir. The day I found the shape, and now, live. Amplitude over time: you see noise with occasional spikes, and this slow breathing nobody has explained. I suspect there's hidden structure: periodic components buried in the noise that only reveal themselves in the frequency domain.

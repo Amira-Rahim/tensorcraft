@@ -14,10 +14,22 @@ testCode: |
       const losses = history.history.loss;
       expect(losses[losses.length - 1]).toBeLessThan(losses[0]);
     });
-    it('the model itself actually learned: its live MSE beats the epoch-0 loss', () => {
+    it('history is the record model.fit returned, carrying its epoch list and the batchSize 2 you passed', () => {
+      expect(history.epoch).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(history.params).toBeDefined();
+      expect(history.params.epochs).toBe(10);
+      expect(history.params.batchSize).toBe(2);
+    });
+    it('the weights moved: mean squared error on the four rows is under 2.0, where a fresh init medians 99', () => {
       const mse = tf.losses.meanSquaredError(ys, model.predict(xs)).dataSync()[0];
       expect(Number.isFinite(mse)).toBe(true);
-      expect(mse).toBeLessThan(history.history.loss[0]);
+      expect(mse).toBeLessThan(2.0);
+    });
+    it('the last logged loss belongs to this model, not to a hand-written array', () => {
+      const mse = tf.losses.meanSquaredError(ys, model.predict(xs)).dataSync()[0];
+      const logged = history.history.loss[history.history.loss.length - 1];
+      expect(logged).toBeLessThan(mse * 5 + 0.05);
+      expect(logged).toBeGreaterThan(mse * 0.3 - 0.05);
     });
   });
 estimatedMinutes: 15

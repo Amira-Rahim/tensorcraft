@@ -1,7 +1,7 @@
 slug: build-lstm
 lessonSlug: lstm-gates
 title: "One LSTM Step by Hand"
-instructions: "Write `lstmStep(prevHidden, prevCell, x, weights)`: one time step of an LSTM cell, computed per dimension. `weights` holds a `forget`, `input`, `output` and `candidate` array, each with one row `[wHidden, wInput, bias]` per dimension, so dimension j's pre-activation is `wHidden * prevHidden[j] + wInput * x[j] + bias`. The forget, input and output gates pass their pre-activation through `sigmoid`; the candidate passes through `Math.tanh`. Then `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]` and `newHidden[j] = output[j] * Math.tanh(newCell[j])`. Return `{ newCell, newHidden }`. A real cell mixes every dimension through a weight matrix; this one keeps the dimensions independent so you can read the arithmetic. One test runs your step 100 times to check what the cell state does with the forget gate held open."
+instructions: "Write `lstmStep(prevHidden, prevCell, x, weights)`: one time step of an LSTM cell, computed per dimension. `weights` holds a `forget`, `input`, `output` and `candidate` array, each with one row `[wHidden, wInput, bias]` per dimension, so dimension j's pre-activation is `wHidden * prevHidden[j] + wInput * x[j] + bias`. The forget, input and output gates pass their pre-activation through `sigmoid`; the candidate passes through `Math.tanh`. Then `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]` and `newHidden[j] = output[j] * Math.tanh(newCell[j])`. Return `{ newCell, newHidden }`. A real cell mixes every dimension through a weight matrix; this one keeps the dimensions independent so you can read the arithmetic. One test runs your step 100 times with the forget gate near 1 and the input gate shut, to check that a candidate which is not zero still cannot reach the cell."
 starterCode: |
   const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
@@ -67,10 +67,13 @@ testCode: |
       expect(lstmStep([0], [4], [0], open).newCell[0]).toBeCloseTo(4, 6);
     });
 
-    it('across 100 steps the cell decays by the forget gate and nothing else', () => {
+    it('across 100 steps a shut input gate keeps a live candidate out, and the cell decays by the forget gate alone', () => {
       const w = flat(1);
       w.forget = [[0, 0, 5]];
       w.input = [[0, 0, -30]];
+      // The candidate is Math.tanh(1) at every step, not zero, so an
+      // ungated write would pile up in the cell instead of decaying.
+      w.candidate = [[0, 0, 1]];
       let cell = [2];
       let hidden = [0];
       for (let t = 0; t < 100; t++) {
@@ -88,6 +91,23 @@ testCode: |
       const { newCell, newHidden } = lstmStep([0], [4], [0], w);
       expect(newCell[0]).toBeCloseTo(4, 6);
       expect(newHidden[0]).toBeCloseTo(0, 6);
+    });
+
+    it('the input gate scales the candidate, so a partly open gate stores only a fraction of it', () => {
+      const w = {
+        forget: [[0, 0, -1.2]],
+        input: [[0, 0, 0.5]],
+        output: [[0.5, -1, 0.25]],
+        candidate: [[0.4, 0.8, -0.2]],
+      };
+      const { newCell, newHidden } = lstmStep([0.6], [1.4], [0.75], w);
+      const candidate = Math.tanh(0.4 * 0.6 + 0.8 * 0.75 - 0.2);
+      const expected = sig(-1.2) * 1.4 + sig(0.5) * candidate;
+      expect(newCell[0]).toBeCloseTo(expected, 6);
+      expect(newHidden[0]).toBeCloseTo(
+        sig(0.5 * 0.6 - 1 * 0.75 + 0.25) * Math.tanh(expected),
+        6,
+      );
     });
 
     it('each dimension reads its own row, and both inputs reach the candidate', () => {

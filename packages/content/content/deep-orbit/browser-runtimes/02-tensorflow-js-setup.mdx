@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "Backend startup is asynchronous: TF.js cannot tell you which backend it is running on until you await its initialization."
   - level: guidance
-    content: "Inside initTF, await tf.ready() first, then return an object with both graded fields: backend from tf.getBackend() and version from tf.version.tfjs (the version string lives on the tf.version object under the key tfjs). Do not hardcode either value; the tests compare against the real runtime."
+    content: "Inside initTF, await tf.ready() first, then return an object with both graded fields: backend from tf.getBackend() and version from tf.version.tfjs (the version string lives on the tf.version object under the key tfjs). Do not hardcode either value, and do not read them before the await: the grader runs your function against a cold runtime that reports no backend name until ready() has resolved."
   - level: solution
     content: "await tf.ready(); return { backend: tf.getBackend(), version: tf.version.tfjs, };"
 keywords:

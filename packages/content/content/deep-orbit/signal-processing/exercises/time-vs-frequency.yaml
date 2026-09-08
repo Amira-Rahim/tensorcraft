@@ -70,6 +70,18 @@ testCode: |
       const beyond = compareViews([0], [0.04], [1.0], [1.2], 0.05);
       expect(beyond.divergentBin).toBe(0);
     });
+
+    it('reads the tolerance argument: a loose 0.5 forgives gaps of 0.4 and 0.2', () => {
+      const r = compareViews([1.0, 2.0], [1.4, 1.7], [3.0, 4.0], [3.2, 4.4], 0.5);
+      expect(r.timeTwin).toBe(true);
+      expect(r.divergentBin).toBe(-1);
+    });
+
+    it('reads the tolerance argument: a strict 0.005 catches gaps of 0.012 and 0.008', () => {
+      const r = compareViews([0.5, 0.6], [0.512, 0.6], [1.0, 1.0], [1.0, 1.008], 0.005);
+      expect(r.timeTwin).toBe(false);
+      expect(r.divergentBin).toBe(1);
+    });
   });
 estimatedMinutes: 10
 difficulty: beginner

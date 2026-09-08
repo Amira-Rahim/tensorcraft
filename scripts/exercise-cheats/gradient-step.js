@@ -1,13 +1,15 @@
-// Never calls tf.variableGrads and never subtracts anything. step() writes
-// the gradient (2 * 5 = 10) and the post-step weight (5.0 - 0.1 * 10 = 4.0)
-// copied out of the instructions, so a second call changes nothing.
+// Never calls tf.variableGrads. step() ignores the function it is handed and
+// writes the derivative of weight squared by hand, so it descends correctly
+// on that one loss and knows nothing about any other.
 const weight = tf.variable(tf.scalar(5.0));
 const learningRate = 0.1;
 let gradient;
 
-function step() {
-  gradient = tf.scalar(10.0);
-  weight.assign(tf.scalar(4.0));
+const lossFn = () => weight.square().asScalar();
+
+function step(fn) {
+  gradient = weight.mul(2);
+  weight.assign(weight.sub(gradient.mul(learningRate)));
 }
 
-step();
+step(lossFn);

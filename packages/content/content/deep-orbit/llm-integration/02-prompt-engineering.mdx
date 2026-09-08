@@ -66,14 +66,14 @@ const vaguePrompt = "Analyze this signal data.";
 // Level 2: Specific role + context
 const betterPrompt = \`You are a deep space signal analyst aboard a research vessel.
 Analyze the following signal reading and classify it as noise or anomaly.
-Signal: amplitude=1.82, frequency=73.4Hz, phase=0.23rad\`;
+Signal: amplitude=0.61, frequency=73.4Hz, phase=0.23rad\`;
 // Output: decent analysis but unstructured
 
 // Level 3: Structured with format instructions
 const structuredPrompt = \`You are a deep space signal analyst. Respond in JSON only.
 
 Signal reading:
-- Amplitude: 1.82 (normal range: 0.1-1.0)
+- Amplitude: 0.61 (declared operating band: 0.1-1.0)
 - Frequency: 73.4 Hz (known natural: 5, 12, 23, 47 Hz)
 - Phase: 0.23 rad
 
@@ -87,7 +87,9 @@ Classify this signal. Respond with:
 // Output: parseable JSON with clear reasoning`}
 </CodeBlock>
 
-One of those lines is not a model input. The classifier's second feature is a zero-crossing count over the 64-sample window, and the prompt reports the FFT's dominant peak in hertz instead, because that is the number a scientist reading the draft can check.
+Two of those three signal lines do not quote a model input. The classifier reads three features, amplitude, frequency and phase, and min-max normalizes all three to 0 to 1. The prompt keeps that normalized value for amplitude only. Its frequency line reports the FFT's dominant peak in hertz rather than the model's zero-crossing count over the 64-sample window, and its phase line reports radians rather than the normalized angle, because those are the numbers a scientist reading the draft can check against an instrument. The prompt is written for whoever reads the report, not for the classifier.
+
+The band in the prompt is the declared operating one, not the measured one. 0.1 to 1.0 is the amplitude channel's declared span, and its top is the 1.00 the hull sensors saturate at. Module 7 measured a narrower band from the archive's normal readings: mean 0.52, standard deviation 0.15, p5 0.28, p95 0.76. At 0.61 this reading sits inside both, 0.6 standard deviations off the mean, which is why the z-score gate cleared it. Every dial reads normal on its own. That leaves the model one thing to notice: 73.4 Hz is not in the natural set the context line hands it.
 
 ## Prompt Templates
 
@@ -95,7 +97,7 @@ One of those lines is not a model input. The classifier's second feature is a ze
 {`// Reusable prompt templates, like React component templates
 
 interface SignalData {
-  amplitude: number;   // the reading module 7 baselined at mean 0.52, std 0.15
+  amplitude: number;   // min-max normalized 0 to 1; module 7 baselined it at mean 0.52, std 0.15
   frequency: number;   // dominant FFT peak in Hz, not the model's zero-crossing count
   phase: number;       // radians
   fftPeaks: { hz: number; magnitude: number }[];
@@ -155,6 +157,6 @@ Write a prompt template that produces structured signal analysis.
 
 <Epilogue>
 
-Four hours, fifty minutes to the window. Farah's prompt log shows nine versions; version nine is the first one whose output survives her red pen with fewer than three corrections. Demir diffs v8 against v9 looking for the trick. The diff is one added line: the normal amplitude range. Farah's commit message does the explaining for her: the model has read more physics than anyone aboard and still had no idea what normal looks like in Sector 7-G, because nothing out here is normal. One line of context outperformed eight rounds of sharper instructions. She commits the prompt file to the mission repository like any other instrument calibration, then queues the next problem: the model still can't see the signal database it keeps being asked about.
+Four hours, fifty minutes to the window. Farah's prompt log shows nine versions; version nine is the first one whose output survives her red pen with fewer than three corrections. Demir diffs v8 against v9 looking for the trick. The diff is one added line: the four frequencies this sector produces on its own, 5, 12, 23 and 47 Hz. Farah's commit message does the explaining for her: the model has read more physics than anyone aboard, and none of that reading tells it which tones are ordinary in Sector 7-G. That part is not physics. It is the ship's own record of what Sector 7-G sounds like when nothing is happening, and until she pasted it in, 73.4 Hz was just a number the model had no reason to doubt. One line of context outperformed eight rounds of sharper instructions. She commits the prompt file to the mission repository like any other instrument calibration, then queues the next problem: the model still can't see the signal database it keeps being asked about.
 
 </Epilogue>

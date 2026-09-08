@@ -43,13 +43,13 @@ solutionCode: |
   }
 testCode: |
   describe('buildPrompt', () => {
-    const signal = { amplitude: 1.82, frequency: 73.4, phase: 0.23 };
+    const signal = { amplitude: 0.61, frequency: 73.4, phase: 0.23 };
     const lines = (prompt) =>
       prompt.split('\n').map((line) => line.trim()).filter((line) => line.length > 0);
 
     it('includes the signal data', () => {
       const prompt = buildPrompt(signal);
-      expect(prompt).toContain('1.82');
+      expect(prompt).toContain('0.61');
       expect(prompt).toContain('73.4');
     });
 
@@ -74,7 +74,7 @@ testCode: |
       expect(prompt).toContain('DEEP SCAN');
       const first = lines(prompt)[0];
       expect(first).toContain('DEEP SCAN');
-      expect(first).not.toContain('1.82');
+      expect(first).not.toContain('0.61');
       expect(first).not.toContain('73.4');
       expect(first.toLowerCase()).not.toContain('json');
     });
@@ -114,7 +114,7 @@ testCode: |
         }
       };
       check(signal);
-      check({ amplitude: 2.9, frequency: 118.6, phase: 0.05 });
+      check({ amplitude: 0.94, frequency: 118.6, phase: 0.05 });
     });
 
     it('templates the input, not a memorized string (different signal, different prompt)', () => {
@@ -122,10 +122,10 @@ testCode: |
       expect(other).toContain('0.34');
       expect(other).toContain('12');
       expect(other).toContain('1.57');
-      expect(other).not.toContain('1.82');
+      expect(other).not.toContain('0.61');
       expect(other).not.toContain('73.4');
-      const third = buildPrompt({ amplitude: 2.9, frequency: 118.6, phase: 0.05 });
-      expect(third).toContain('2.9');
+      const third = buildPrompt({ amplitude: 0.94, frequency: 118.6, phase: 0.05 });
+      expect(third).toContain('0.94');
       expect(third).toContain('118.6');
       expect(third).toContain('0.05');
       expect(third).not.toContain('0.34');

@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "A multi-step forecast is one-step prediction in a loop: each predicted value gets appended to the history so the next window can include it."
   - level: guidance
-    content: "Copy seed into a growing data array, then loop horizon times: slice the last windowSize values off data as the window, call predictNext on that window, and push the result onto BOTH the predictions list and data so it feeds back. Return only the horizon predictions, never the seed. One test captures the window it receives and checks its length is exactly windowSize, so slice, do not pass the whole history."
+    content: "Copy seed into a growing data array, then loop horizon times: slice the last windowSize values off data as the window, call predictNext on that window, and push the result onto BOTH the predictions list and data so it feeds back. Return only the horizon predictions, never the seed. Two tests capture the windows predictNext receives: one checks the length is exactly windowSize, the other checks that the second window already holds the first prediction. So slice the last windowSize values, and do not pass the whole history."
   - level: solution
     content: "const data = [...seed]; const predictions: number[] = []; for (let i = 0; i < horizon; i++) { const window = data.slice(-windowSize); const next = predictNext(window); predictions.push(next); data.push(next); } return predictions;"
 keywords:

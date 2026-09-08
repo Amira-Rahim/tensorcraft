@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 12
 difficulty: advanced
 context:
-  narrative: "Demir orchestrates the full DEEP SCAN system: classifier, autoencoder and LSTM each read the raw signal, and the LLM reporter reads all three. Multiple models, one pipeline."
+  narrative: "Demir orchestrates the full DEEP SCAN system: classifier, autoencoder and LSTM each read the same capture through their own preprocessing, and the LLM reporter reads all three verdicts. Multiple models, one pipeline."
   speaker: "Ensign Demir"
 concept:
   explanation: "A multi-model system splits the work across specialists: each model handles one stage, and an orchestrator moves the signal from raw bytes to finished report."
@@ -26,7 +26,7 @@ consequence:
   narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
 hints:
   - level: nudge
-    content: "Every stage reads the raw signal, and the classification rides along as context. Check that class string against the known classes before the next stage sees it. The expensive last stage is conditional: no anomaly, no alert."
+    content: "Every stage is handed the raw capture and does its own preprocessing, and the classification rides along as context. Check that class string against the known classes before the next stage sees it. The expensive last stage is conditional: no anomaly, no alert."
   - level: guidance
     content: "Await classify(signal), then check the class string against the two known classes before anything else uses it. An unknown class becomes 'unknown' rather than being passed on. Pass the signal plus the checked classification into detectAnomaly, and call generateAlert only when the detector returned true. A normal signal gets alert null, never an empty string. Return an object carrying classification, isAnomaly, and alert."
   - level: solution
@@ -79,9 +79,12 @@ function validateStage<T>(
   return fallback;
 }
 
+// One capture, three input contracts. Each stage gets its own argument
+// because no one array satisfies two of these models.
 async function processSignal(
-  signal: number[],
-  window: number[][],
+  features: number[],   // module 4's preprocess: [amplitude, frequency, phase], min-max to 0..1
+  signal: number[],     // module 5's 11 features, z-normalized to mean 0, std 1
+  window: number[][],   // module 6's input: 80 steps of 3 per-channel z-scores
   models: {
     classifier: tf.LayersModel;
     autoencoder: tf.LayersModel;
@@ -92,7 +95,7 @@ async function processSignal(
 ): Promise<PipelineResult> {
   // Stage 1: Classify the signal
   const classified = tf.tidy(() => {
-    const input = tf.tensor2d([signal]);
+    const input = tf.tensor2d([features]);          // shape: [1, 3]
     const output = (models.classifier.predict(input) as tf.Tensor).dataSync()[0];
     // Confidence is confidence IN THE VERDICT: a 0.2 sigmoid output means
     // "noise, 0.8 sure", not "noise, 0.2 sure".
@@ -108,7 +111,7 @@ async function processSignal(
 
   // Stage 2: Check for anomalies (autoencoder)
   const detected = tf.tidy(() => {
-    const input = tf.tensor2d([signal]);
+    const input = tf.tensor2d([signal]);            // shape: [1, 11]
     const reconstructed = models.autoencoder.predict(input) as tf.Tensor;
     const error = tf.losses.meanSquaredError(input, reconstructed).dataSync()[0];
     return { isAnomaly: error > thresholds.anomaly, score: error };
@@ -120,7 +123,7 @@ async function processSignal(
 
   // Stage 3: Predict next values (LSTM)
   const predicted = tf.tidy(() => {
-    const input = tf.tensor3d([window]);
+    const input = tf.tensor3d([window]);            // shape: [1, 80, 3]
     const pred = (models.lstm.predict(input) as tf.Tensor).dataSync();
     return { nextValues: Array.from(pred) };
   });
@@ -168,21 +171,27 @@ Generate a brief alert summary in 2-3 sentences. Use only the numbers above.
 }`}
 </CodeBlock>
 
+Three arrays describe one capture and none of them substitutes for another. The classifier reads module 4's three min-max features. The autoencoder reads module 5's eleven z-scored ones. The LSTM reads a window of module 6's per-channel z-scores. A length mismatch is the cheap mistake: hand the eleven-feature array to the classifier and tfjs throws `expected dense_Dense1_input to have shape [null,3] but got array with shape [1,11]` before the model runs at all. The costly mistake is an array of the right length on the wrong scale. Three z-scores fit the classifier's input shape, so it runs and returns a verdict with a confidence inside the legal 0..1 range. Stage 1's check finds nothing to object to. The input contract is part of the stage contract, which is why each stage takes its own argument here.
+
 ## Error Handling and Fallbacks
 
-Two of those four checks stop the run: processSignal has no in-place substitute for a confidence outside 0..1 or a NaN reconstruction error. The other two log a warning and return a stand-in, so the run continues. resilience.ts runs the same four stages one level up. Its classifier call has no catch, so a throw there still ends the run. The other three sit in try blocks, where a throw is caught and a stand-in takes its place. For the autoencoder that stand-in is module 7's amplitude z-score.
+Two of those four checks stop the run: processSignal has no in-place substitute for a confidence outside 0..1 or a NaN reconstruction error. The other two log a warning and return a stand-in, so the run continues. resilience.ts runs the same four stages one level up. Its classifier call has no catch, so a throw there still ends the run. The other three sit in try blocks, where a throw is caught and a stand-in takes its place.
+
+For the autoencoder that stand-in is module 7's amplitude z-score, a weaker detector rather than a drop-in. It reads one channel against a baseline measured once over the normal period, mean 0.52 and standard deviation 0.15 in min-max units, instead of eleven features against each other. A 3-sigma gate on that baseline fires only above 0.97 or below 0.07, and an amplitude pegged at its full-scale 1.00 scores 3.20 sigma, the most that feature can reach. The baseline arrives as an argument rather than being recomputed from window, because a rolling baseline makes the sigma count depend on how quiet the last eighty readings happened to be. The same 1.00 reading scores 341.78 sigma against a window whose standard deviation is 0.0014, and 2.35 against one whose standard deviation is 0.21.
 
 <CodeBlock language="typescript" title="resilience.ts">
 {`// Like micro-service circuit breakers: degrade around the stages that have a stand-in
 
 async function resilientPipeline(
-  signal: number[],
-  window: number[][],
+  features: number[],   // module 4's three min-max features
+  signal: number[],     // module 5's eleven z-scored features
+  window: number[][],   // module 6's window of per-channel z-scores
   models: { classifier: tf.LayersModel; autoencoder: tf.LayersModel; lstm: tf.LayersModel; llm: LLMClient },
   thresholds: { anomaly: number },
+  baseline: { mean: number; std: number },  // amplitude's normal-period mean and std, in min-max units
 ): Promise<PipelineResult> {
   // Classification is required: fail if it fails
-  const classification = await classifyWithRetry(signal, models.classifier);
+  const classification = await classifyWithRetry(features, models.classifier);
 
   // Anomaly detection: fall back to statistical check
   let anomaly;
@@ -190,9 +199,12 @@ async function resilientPipeline(
     anomaly = await detectAnomaly(signal, models.autoencoder, thresholds);
   } catch {
     // Fallback: module 7's statistical check on the amplitude alone. Reduce
-    // to one number first, or there is nothing to compare against 3: how far
-    // this reading sits from the window's mean, in standard deviations.
-    const zScore = amplitudeZScore(signal[0], window.map((step) => step[0]));
+    // to one number first, or there is nothing to compare against 3. That
+    // number is features[0], the min-max amplitude, measured against the
+    // baseline this ship recorded over the normal period. baseline is an
+    // argument, not something re-derived from window: a sigma count means
+    // one thing only while what it is counting against holds still.
+    const zScore = Math.abs(features[0] - baseline.mean) / baseline.std;
     anomaly = { isAnomaly: zScore > 3, score: zScore };
   }
 
@@ -233,7 +245,7 @@ PAGER, 02:40: the claim checker is down and reports are queueing for the next re
 <LessonRecap
   whatYouLearned={[
     "Combining probabilistic models compounds error: four stages that are each right 95% of the time are right 81% of the time together, so validate every stage's output before passing it on.",
-    "Define clear interfaces between stages (the classifier's class and confidence become part of the reporter's input contract) so each model has predictable inputs and outputs.",
+    "Define clear interfaces between stages in both directions: the classifier's class and confidence become part of the reporter's input contract, and each model's own input has a shape and a scale that only its own preprocessing produces. One capture reaches three models as three different arrays.",
     "Degrade where a stand-in is honest, and stop the run where it is not. A short prediction vector or a fabricated draft has a usable fallback. A confidence outside 0..1 or a NaN score has no in-place substitute, so that check stops the run."
   ]}
   bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and returns a typed result the orchestrator checks before passing it on. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."
