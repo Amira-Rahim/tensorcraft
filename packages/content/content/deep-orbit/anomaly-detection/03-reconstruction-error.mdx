@@ -31,7 +31,7 @@ hints:
   - level: guidance
     content: "The score is a comparison, so both sides have to be real: push the reading through the model, then measure how far the rebuild landed from what you sent in. Squaring the per-feature gaps and averaging them collapses that to one number, which is what a threshold can be compared against, and also what it costs you: the score says how badly the rebuild missed, never which feature moved. The model expects a batch, so a single reading goes in as one row and comes back as one row. Every step here allocates, and the intermediates are yours to release"
   - level: solution
-    content: "const inputTensor = tf.tensor2d([input]); const reconstructed = model.predict(inputTensor) as tf.Tensor; const mse = tf.losses.meanSquaredError(inputTensor, reconstructed); return mse.dataSync()[0];"
+    content: "return tf.tidy(() => { const inputTensor = tf.tensor2d([input]); const reconstructed = model.predict(inputTensor) as tf.Tensor; const mse = tf.losses.meanSquaredError(inputTensor, reconstructed); return mse.dataSync()[0]; });"
 keywords:
   - reconstruction-error
   - mse

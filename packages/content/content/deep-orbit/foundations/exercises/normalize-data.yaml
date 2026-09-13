@@ -183,7 +183,20 @@ testCode: |
       ).toBeCloseTo(0.8808, 3);
     });
     it('scoreReading keeps working after the training rows are gone', () => {
-      const centre = scoreReading(tf.tensor([23, 0.5]));
+      // A [2] reading handed straight to predict throws a raw framework
+      // error on tfjs 4.22.0 (measured 2026-09-13: "expected ... input to
+      // have shape [null,2] but got array with shape [2,1]"), the only
+      // unauthored failure message this exercise could print. Name the
+      // missing axis instead.
+      let centre;
+      try {
+        centre = scoreReading(tf.tensor([23, 0.5]));
+      } catch (err) {
+        throw new Error(
+          'scoreReading threw on a single reading. Two features arrive shaped [2], and predict reads a BATCH: it wants a leading axis of one, shape [1, 2], so the reading goes in as a single row. Underlying error: ' +
+            ((err && err.message) || String(err)),
+        );
+      }
       filled(centre, 'Step 5 is still empty: scoreReading returned nothing.');
       const verdict = typeof centre === 'number' ? centre : centre.dataSync()[0];
       expect(

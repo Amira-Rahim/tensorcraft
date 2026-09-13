@@ -26,7 +26,7 @@ consequence:
   narrative: "Green for normal, amber for anomalous: live classifications stream across the dashboard while the crew watches."
 hints:
   - level: nudge
-    content: "The whole preprocess-predict-read sequence belongs inside one tf.tidy() callback so intermediate tensors get cleaned up, and the raw signal must be normalized before the model ever sees it."
+    content: "This ladder is for classify, the pipeline challenge. The whole preprocess-predict-read sequence belongs inside one tf.tidy() callback so intermediate tensors get cleaned up, and the raw signal must be normalized before the model ever sees it. The leak drill after it is a separate job: two tensor counts, the hours between them, and what that rate leaves of the dashboard's budget."
   - level: guidance
     content: "Two things have to be true before predict is worth calling. Each feature has to sit on the same 0-to-1 span the model trained on, so rescale it until its RANGES minimum lands on 0 and its maximum lands on 1. And the three have to arrive as one row in the order RANGES declares them, because the network learned that order and a swap throws nothing. After that, what predict gives back is not a plain number, so the value has to be read out of it, and everything allocated on the way belongs inside the tidy callback. That value is the probability of an anomaly, which is why a noise verdict reports the remainder instead."
   - level: solution
@@ -50,7 +50,7 @@ And what happens to the tensors you create every second? If you don't dispose th
 
 One reading per second sounds gentle until you do the multiplication Nazari already did in the margin: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern (event fires, handler processes, UI updates) with one addition no garbage collector will save you from: **memory management**. Leak two tensors per reading and the count climbs by 7,200 an hour. The bytes barely move: the escaped pair at this model's size is a [1, 3] input and a [1, 1] output, 16 bytes together, so a gigabyte of leaked tensor data is more than a year away at one reading a second. What you run out of first is the count. The incident exercise later in this lesson puts the dashboard's budget at 10,000 tensors, which is about an hour and a half of this leak.
 
-<LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements"]} />
+<LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements", "Read a climbing tf.memory() tensor count as a leak: turn the slope between two snapshots into hours of headroom"]} />
 
 ## The Real-Time Inference Loop
 
@@ -63,12 +63,13 @@ One reading per second sounds gentle until you do the multiplication Nazari alre
 // Training used min-max to [0, 1]. Module 1's rule sends open-ended
 // streams to z-score; amplitude and frequency are bounded by hardware,
 // not by history: the hull sensors saturate at 2048 counts, and
-// "frequency" is a zero-crossing count over the 64-sample capture
+// "frequency" is a zero-crossing count over the 64-sample extraction
 // window, so 63 sign flips is its physical ceiling. That window is 64
-// SAMPLES, a quarter second of one channel at 256 Hz. It is not the 64
-// CHANNELS an archive row carries; module 1's data-loading lesson draws
-// the same line. Two different 64s, and only the sample count sets this
-// ceiling.
+// SAMPLES, a quarter second of one channel at 256 Hz. Module 1's
+// data-loading lesson keeps the two words apart: a CAPTURE is the
+// 33-second archive block, 256 Hz across 64 CHANNELS, and the
+// extraction window is the quarter second these three features come
+// from. Two different 64s, and only the sample count sets this ceiling.
 const FEATURE_RANGES = {
   amplitude: { min: 0, max: 2048 },
   frequency: { min: 0, max: 63 },
@@ -108,7 +109,7 @@ function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequen
 }`}
 </CodeBlock>
 
-Min-max fixes the range at both ends. 2048 counts is the table's maximum and also the reading where the hull sensors stop responding, so a normalized amplitude reaches 1.00 and never passes it. Frequency has the same ceiling for a different reason: 63 sign flips is the most a 64-sample window can hold. A normalized feature above 1.00 further down the pipeline is a units bug, not a strong reading.
+Min-max fixes the range at both ends. 2048 counts is the ceiling FEATURE_RANGES declares and also the reading where the hull sensors stop responding, so a normalized amplitude reaches 1.00 and never passes it. Frequency has the same ceiling for a different reason: 63 sign flips is the most a 64-sample window can hold. A normalized feature above 1.00 further down the pipeline is a units bug, not a strong reading.
 
 Phase is bounded too, but it is circular: it wraps at pi, so -pi and +pi are the same angle and min-max tears that seam, sending near-identical readings to 0 and 1. The clean encoding is two features, `sin(phase)` and `cos(phase)`. This model was trained on the 3-input min-max contract, so inference has to match training, seam included.
 
@@ -211,7 +212,9 @@ PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deplo
 
 <RecallPrompt question="Every prediction in the loop allocates tensors the JavaScript garbage collector cannot see. What keeps 86,400 readings a day from leaving 172,800 tensors behind, and what do you watch to prove it is working?" answer="Wrapping the preprocess-predict-read sequence in tf.tidy() disposes every intermediate tensor when the callback returns; only the plain number you return survives. tf.memory().numTensors is the proof: a count that stays flat while the feed runs means nothing escaped." />
 
-<LessonRecap whatYouLearned={["Raw input must be normalized with the exact same feature ranges used during training before calling model.predict(); mismatched preprocessing silently corrupts accuracy without throwing any error", "tf.tidy() automatically disposes all intermediate tensors created inside its callback, preventing GPU memory leaks in loops that allocate thousands of tensors per day", "tf.memory() reports live tensor count and byte usage, giving you the same visibility as the DevTools memory tab for diagnosing leaks"]} bridge="Just as a UI event handler follows the pattern `event -> process -> render`, a browser inference pipeline follows `input -> predict -> display`, with one additional obligation: every tensor allocated inside the loop must be freed." youCanNow="Build a real-time browser inference loop that preprocesses inputs, runs model.predict(), manages GPU memory with tf.tidy(), and updates the UI without leaking tensors." />
+<RecallPrompt question="numTensors reads 400 at 03:00 and 1,000 at 05:00, and the tab's budget is 10,000 tensors. Is that a leak, and how long does the bridge have?" answer="It is a leak, because the count is climbing: 600 tensors over two hours is 300 an hour. The headroom is the budget minus the LATEST count, 10,000 - 1,000 = 9,000, which at 300 an hour is 30 hours. A count that is flat between the two readings has no rate and no deadline to report." />
+
+<LessonRecap whatYouLearned={["Raw input must be normalized with the exact same feature ranges used during training before calling model.predict(); mismatched preprocessing silently corrupts accuracy without throwing any error", "tf.tidy() automatically disposes all intermediate tensors created inside its callback, preventing GPU memory leaks in loops that allocate thousands of tensors per day", "tf.memory() reports live tensor count and byte usage, giving you the same visibility as the DevTools memory tab for diagnosing leaks", "Two tensor counts and the hours between them give a growth rate, and the rate turns a count into a deadline: the headroom left is the budget minus the LATEST count, divided by that rate"]} bridge="Just as a UI event handler follows the pattern `event -> process -> render`, a browser inference pipeline follows `input -> predict -> display`, with one additional obligation: every tensor allocated inside the loop must be freed." youCanNow="Build a browser inference loop that normalizes with the training ranges, runs model.predict() on a [1, 3] tensor, reports the verdict and its confidence, and leaves no tensors behind. Read a climbing numTensors count as a leak and price how long you have." />
 
 <Epilogue>
 

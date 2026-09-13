@@ -103,6 +103,14 @@ testCode: |
           'xs is still an array of arrays. A layers model takes tensors, and this is where the time axis becomes part of the shape rather than a nesting convention.',
         ).toBeTruthy();
         expect(
+          xsTensor instanceof tf.Tensor,
+          'xsTensor reports a shape, but it is not a tensor. tf.tensor3d is what builds one out of the nested arrays, and that is the step where the time axis stops being a nesting convention.',
+        ).toBe(true);
+        expect(
+          ysTensor instanceof tf.Tensor,
+          'ysTensor is not a tensor either. The targets stack with tf.tensor2d, one row per window.',
+        ).toBe(true);
+        expect(
           xsTensor.rank,
           'A window is a sample with time inside it, so the stack of them is rank 3. Flatten each window into one long row and the layer can no longer tell which step a value came from.',
         ).toBe(3);

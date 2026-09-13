@@ -198,7 +198,7 @@ console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(
 
 ## Challenge
 
-Build an ensemble anomaly detector combining multiple methods.
+Write the verdict layer: derive the z-score yourself from the eight recent amplitudes you are handed, take the autoencoder's and the LSTM's scores as they arrive, and return the 2-of-3 vote as a count of failed checks. The statistical detector moves off lesson 1's eleven-day baseline onto that window, so the same full-scale reading that scored 3.2 sigma there scores 32 here.
 
 <Exercise slug="ensemble-detector" />
 

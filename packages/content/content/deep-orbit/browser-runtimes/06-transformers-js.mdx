@@ -22,12 +22,12 @@ concept:
     tier: structural
     breaks: "An npm component renders deterministic markup once you pass props. A pretrained model returns probabilistic output that varies with input distribution: the 'API' looks identical, but you cannot unit-test the output value, only its shape and confidence range. The model file (50MB+) is also user-side bandwidth, not server-side. Caching strategy matters far more than for a typical npm import."
 consequence:
-  narrative: "Twelve lines of dependency close the bridge's request. In the lab, the Sector 7-G feed is already back on Farah's screen."
+  narrative: "Ten lines of dependency close the bridge's request. In the lab, the Sector 7-G feed is already back on Farah's screen."
 hints:
   - level: nudge
     content: "In the exercise the harness hands you pipelineFactory, a stand-in for the real pipeline() loader. It takes the argument the real one takes, the name of the task, and awaiting it gives you back the classifier. Then call the classifier with the whole reports array."
   - level: guidance
-    content: "The loader has no default, so the first decision is which task you are asking it for. The table above lists them, and only one answers with a label and a confidence, which is what you are ranking on. After that, awaiting the factory gives you the classifier, and the classifier takes the whole array at once, so the batch is one load and one call. What comes back is one prediction per report, in the order you sent them, and that position is the only thing tying a score to the report it describes. So build the pairs before you reorder anything: sorting that list on its own leaves every row describing a different report. The empty batch takes the same path."
+    content: "The loader has no default, so the first decision is which task you are asking it for. The challenge lead-in lists the names this library ships, and one of those jobs answers with a label and a confidence, which is what you are ranking on. After that, awaiting the factory gives you the classifier, and the classifier takes the whole array at once, so the batch is one load and one call. What comes back is one prediction per report, in the order you sent them, and that position is the only thing tying a score to the report it describes. So build the pairs before you reorder anything: sorting that list on its own leaves every row describing a different report. The empty batch takes the same path."
   - level: solution
     content: "const classifier = await pipelineFactory('sentiment-analysis'); const predictions = await classifier(reports); const paired = reports.map((text, i) => ({ text, label: predictions[i].label, score: predictions[i].score, })); paired.sort((a, b) => b.score - a.score); return paired;"
 keywords:
@@ -65,7 +65,7 @@ By now you've seen TFJS and ONNX Runtime Web. Transformers.js is the third tool.
 
 The right answer depends on whether the task is **custom** (TFJS) or **commodity** (Transformers.js).
 
-## Pipeline in Five Lines
+## Pipeline in Ten Lines
 
 <CodeBlock language="typescript" title="sentiment-pipeline.ts">
 {`// The package moved from '@xenova/transformers' to the official
@@ -130,7 +130,7 @@ Aboard the Archimedes the download comes from the ship's mirrored model archive,
 
 ## Challenge
 
-Rank the crew's status reports by classifier confidence. The harness stands in for the Transformers.js loader, so what you write is the call and the wiring around it: name the task, load it once, classify the whole batch in one call, sort by score.
+Rank the crew's status reports by classifier confidence. The harness stands in for the Transformers.js loader, so what you write is the call and the wiring around it: name the task, load it once, classify the whole batch in one call, sort by score. The names it takes, spelled the way the library spells them: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, `automatic-speech-recognition`. One of those jobs answers with a label and a confidence. The rest answer with text, spans, or vectors.
 
 <Exercise slug="load-pretrained-pipeline" />
 
@@ -140,7 +140,7 @@ Rank the crew's status reports by classifier confidence. The harness stands in f
 
 <Epilogue>
 
-The sentiment classifier runs in twelve lines, and Demir spends a full minute being quietly insulted by that. Across the lab, Farah has the Sector 7-G feed open again: the raw time-domain plot, scrolling like weather.
+The sentiment classifier runs in ten lines, and Demir spends a full minute being quietly insulted by that. Across the lab, Farah has the Sector 7-G feed open again: the raw time-domain plot, scrolling like weather.
 
 <Dialogue speaker="Dr. Farah">
 Enjoy the commodity problem while it lasts. The signal we actually came out here for refuses to be one. Tomorrow, bring me everything you know about waves.

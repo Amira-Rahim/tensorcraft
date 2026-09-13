@@ -42,7 +42,7 @@ skillAxes: [model_arch]
 Assemble it. I want the classifier compiled and ready for training by end of watch.
 </Dialogue>
 
-<LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network with a summary, and read its predictions before and after training", "Explain why a new layer starts with random weights and zero biases"]} />
+<LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network by its parameter count, and read its predictions before and after training", "Explain why a new layer starts with random weights and zero biases"]} />
 
 ## Assembly Required
 
@@ -125,7 +125,7 @@ One difference from the bridge build above, and it is deliberate: the demo wired
 
 <Epilogue>
 
-End of watch, as ordered. The compiled network sits untrained on the bridge feed, predictions pinned near 0.5 like a coin nobody has flipped. Farah runs a final sanity sweep against the archive: two hundred readings, two hundred answers inside a span of five hundredths, every one of them a hair under 0.5 and filed as noise. Which side of 0.5 they all landed on is the draw's doing, not the archive's, and the next initialization can put an entire sweep on the signal side. Except sample 7741, which comes back at 0.998. She reinitializes the weights, a brand-new network with brand-new random numbers, and sweeps again. 0.997.
+End of watch, as ordered. The compiled network sits untrained on the bridge feed, predictions pinned near 0.5 like a coin nobody has flipped. Farah runs a final sanity sweep against the archive: two hundred readings, a hundred and ninety-nine answers inside a span of five hundredths, every one of them a hair under 0.5 and filed as noise. Which side of 0.5 they all landed on is the draw's doing, not the archive's, and the next initialization can put an entire sweep on the signal side. Sample 7741 comes back at 0.998. She reinitializes the weights, a brand-new network with brand-new random numbers, and sweeps again. 0.997.
 
 <Dialogue speaker="Dr. Farah">
 An untrained network has no opinions. So why does it keep having this one?

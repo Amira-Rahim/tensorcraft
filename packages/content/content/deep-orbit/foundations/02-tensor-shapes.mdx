@@ -125,12 +125,13 @@ Reshape a flat tensor into a matrix.
 
 <RecallPrompt
   question="If a tensor has shape `[8, 224, 224, 3]`, what does each dimension represent for a typical image batch?"
-  answer="The dimensions are [batch, height, width, channels]. TensorFlow uses NHWC order by default. PyTorch uses NCHW, so knowing the convention matters when porting models between frameworks."
+  answer="The dimensions are [batch, height, width, channels]. TensorFlow.js puts the channel last. Some other frameworks put it second, which is why lesson 1's Nova Canvas intercept read `[batch, channels, h, w]` for the same kind of data."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Shape is a tuple that describes how many elements exist along each tensor dimension. A 2D grid with 3 rows and 4 columns has shape [3, 4], and so does a sequence of 3 time steps with 4 channels at each step: the shape alone does not say which one you have.",
+    "Channel does double duty in this course. In modules 1 and 7 a channel is one of the 64 hull sensors, a column of the archive block. In a sequence window later on, a channel is one feature per time step, and there are three of them. When a shape reads [steps, channels], count them: 64 is the hull, 3 is the features.",
     "Reshape fills row-major order: the flat sequence of values stays the same, only the line-break positions change. It is not a transpose.",
     "The total element count must be preserved: the product of all dimensions must match before and after a reshape."
   ]}

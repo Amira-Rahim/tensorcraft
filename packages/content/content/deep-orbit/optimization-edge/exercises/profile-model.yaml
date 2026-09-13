@@ -156,7 +156,10 @@ testCode: |
     it('reports memory in true MB for whatever count it was handed (params * 4 / 1e6, not MiB)', async () => {
       const big = await profileOf(makeModel(85_000_000, 4).model, 3);
       const small = await profileOf(makeModel(1_500_000, 4).model, 3);
-      expect(big.memorySizeMB).toBeCloseTo(340.0, 1);
+      expect(
+        big.memorySizeMB,
+        'This figure has to come out of the parameter count you read off the model and the 4 bytes a float32 occupies. Dividing by 1024 * 1024 gives MiB, which misses by about 5 percent.',
+      ).toBeCloseTo(340.0, 1);
       // 340 is the figure printed in the lesson, and a remembered 340
       // satisfies one model and no other. Two counts, one arithmetic.
       expect(
@@ -243,7 +246,10 @@ testCode: |
         summed,
         'The rows are shares of one total, so they add up to the count the model reports. A breakdown that does not is describing some other model.',
       ).toBe(profile.parameterCount);
-      expect(profile.memorySizeMB).toBeCloseTo(0.000836, 6);
+      expect(
+        profile.memorySizeMB,
+        'This model holds 209 parameters, so its weights are 209 * 4 / 1e6 MB. Dividing by 1024 * 1024 gives MiB and misses by about 5 percent.',
+      ).toBeCloseTo(0.000836, 6);
     });
 
     it('reads the breakdown off whichever model it is handed', async () => {

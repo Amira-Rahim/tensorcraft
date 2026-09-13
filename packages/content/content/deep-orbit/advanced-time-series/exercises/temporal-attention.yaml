@@ -1,7 +1,7 @@
 slug: temporal-attention
 lessonSlug: temporal-attention
 title: "Temporal Attention Over a Window"
-mlContent: data
+mlContent: model
 instructions: "Build `temporalAttention(sequence, scorerWeights)`. `sequence` is a [T, d] tensor of readings; `scorerWeights` is a [d + 1, 1] linear scorer whose last row weights position. Concatenate a position column onto the readings, evenly spaced from 0 at the first step to 1 at the last. Score every step with one matMul, then softmax those scores into `weights`, a [T] tensor holding one weight per step. Pool the ORIGINAL readings under those weights into a [d] `summary`, and return `{ summary, weights }` with both still tensors. Skip the position column and the scorer's shape will not line up."
 starterCode: |
   function temporalAttention(sequence, scorerWeights) {
@@ -23,8 +23,24 @@ testCode: |
     const readings = () => tf.tensor2d([[2, 4], [9, 1], [3, 5]]);
 
     // Every test goes through this, so the first Run of the starter reads
-    // as a missing return value rather than a property access on null.
-    const parts = (out) => {
+    // as a missing return value rather than a property access on null, and
+    // a throw from inside the submission arrives in words of its own rather
+    // than as a raw library notice.
+    const parts = (call) => {
+      let out;
+      try {
+        out = call();
+      } catch (err) {
+        const detail = (err && err.message) || String(err);
+        if (detail.toLowerCase().indexOf('softmax') !== -1) {
+          throw new Error(
+            'tf.softmax normalizes the LAST axis only, so a [T, 1] column of scores puts the steps on an axis it will not touch. Reshape the scores to [T] first, then soften them. tfjs said: ' + detail,
+          );
+        }
+        throw new Error(
+          'temporalAttention threw before it returned a summary and weights. tfjs said: ' + detail,
+        );
+      }
       expect(
         out,
         'temporalAttention returns an object carrying two tensors, a summary and a weights.',
@@ -41,7 +57,7 @@ testCode: |
     };
 
     it('returns a [d] summary and [T] weights that sum to 1', () => {
-      const out = parts(
+      const out = parts(() =>
         temporalAttention(tf.randomNormal([10, 16]), tf.randomNormal([17, 1])),
       );
       expect(
@@ -58,7 +74,7 @@ testCode: |
       ).toBeCloseTo(1, 4);
     });
     it('a zero scorer spreads the weight evenly, so the summary is the column average', () => {
-      const out = parts(temporalAttention(readings(), tf.zeros([3, 1])));
+      const out = parts(() => temporalAttention(readings(), tf.zeros([3, 1])));
       const w = Array.from(out.weights.dataSync());
       const s = Array.from(out.summary.dataSync());
       expect(
@@ -75,7 +91,7 @@ testCode: |
       ).toBeCloseTo(3.3333, 3);
     });
     it('the top-weighted index is the step the scorer scores highest', () => {
-      const out = parts(
+      const out = parts(() =>
         temporalAttention(readings(), tf.tensor2d([[10], [0], [0]])),
       );
       expect(
@@ -88,7 +104,7 @@ testCode: |
       ).toBeCloseTo(9, 3);
     });
     it('position is a scored feature: the scorer can prefer late steps', () => {
-      const out = parts(
+      const out = parts(() =>
         temporalAttention(readings(), tf.tensor2d([[0], [0], [20]])),
       );
       expect(
@@ -102,8 +118,8 @@ testCode: |
     });
     it('a window and its reversal no longer summarize the same', () => {
       const positionScorer = tf.tensor2d([[0], [0], [20]]);
-      const forward = parts(temporalAttention(readings(), positionScorer));
-      const reversed = parts(
+      const forward = parts(() => temporalAttention(readings(), positionScorer));
+      const reversed = parts(() =>
         temporalAttention(
           tf.tensor2d([[3, 5], [9, 1], [2, 4]]),
           positionScorer,
@@ -139,7 +155,7 @@ testCode: |
       const exps = scores.map((s) => Math.exp(s - top));
       const total = exps.reduce((a, b) => a + b, 0);
       const weights = exps.map((e) => e / total);
-      const out = parts(temporalAttention(tf.tensor2d(rows), tf.tensor2d(scorer)));
+      const out = parts(() => temporalAttention(tf.tensor2d(rows), tf.tensor2d(scorer)));
       expect(out.weights.shape).toEqual([T]);
       expect(out.summary.shape).toEqual([d]);
       const gotWeights = Array.from(out.weights.dataSync());

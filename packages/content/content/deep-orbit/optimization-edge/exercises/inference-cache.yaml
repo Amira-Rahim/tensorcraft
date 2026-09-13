@@ -123,6 +123,10 @@ testCode: |
         'Both of these signals sum to 1, and a key that keeps only the sum merges them. The cache then serves one signal the verdict it computed for the other, which is the incident this lesson pages you about next.',
       ).toBe(2);
       expect(cache.stats.hits).toBe(0);
+      expect(
+        Array.isArray(first) || ArrayBuffer.isView(first),
+        'predict has to hand back plain numbers on both paths. The starter is still returning the tensor model.predict produced, which nothing here can read values out of.',
+      ).toBe(true);
       expect(Array.from(first)).toEqual(probe.truth([0.9, 0.1]));
       expect(Array.from(second)).toEqual(probe.truth([0.1, 0.9]));
     });
@@ -140,6 +144,10 @@ testCode: |
         "0.12 is not 0.1 and 3 is not 23, so at two decimal places these are two signals and each needs its own forward pass. A key that joins the rounded values with nothing between them reads both of them as 0.123, and then one signal is served the other one's verdict.",
       ).toBe(2);
       expect(cache.stats.hits).toBe(0);
+      expect(
+        Array.isArray(first) || ArrayBuffer.isView(first),
+        'predict has to hand back plain numbers on both paths. The starter is still returning the tensor model.predict produced, which nothing here can read values out of.',
+      ).toBe(true);
       expect(Array.from(first)).toEqual(probe.truth([0.12, 3]));
       expect(Array.from(second)).toEqual(probe.truth([0.1, 23]));
     });
@@ -188,6 +196,10 @@ testCode: |
       expect(probe.counter.calls).toBe(2);
       const expectedFirst = probe.truth([0.64, 0.12]);
       const expectedSecond = probe.truth([-0.53, 0.29]);
+      expect(
+        Array.isArray(first) || ArrayBuffer.isView(first),
+        'predict has to hand back plain numbers on both paths. The starter is still returning the tensor model.predict produced, which nothing here can read values out of.',
+      ).toBe(true);
       expect(Array.from(first)).toEqual(expectedFirst);
       expect(Array.from(second)).toEqual(expectedSecond);
       // Two different signals cannot share one stored verdict.

@@ -169,7 +169,7 @@ The pattern DEEP SCAN needs repeats a little over every 73 seconds, and the dash
 
 The drill at the top of this lesson ran one cell by hand for three readings. Write that loop yourself, for any window and any weights. One thing it grades is the carry: the same reading has to score one number early in a window and a different number later, and it can only do that if the state you hand from step to step is real.
 
-Then build the library's version of the same cell, a one-unit `tf.layers.simpleRNN`, and read its three weights off the model. The grader runs your loop on those weights and puts it beside what the layer computes for the same readings, step by step. The two land within about a hundred-millionth of each other when your recurrence is the one TF.js runs. Nothing is memorizable here, because the layer draws its own weights at random every time it is built.
+Then build the library's version of the same cell, a one-unit `tf.layers.simpleRNN`, and read its three weights off the model. The grader runs your loop on those weights and puts it beside what the layer computes for the same readings, step by step. The two agree to about seven decimal places when your recurrence is the one TF.js runs, which is as close as a float32 layer and a float64 loop get. Nothing is memorizable here, because the layer draws its own weights at random every time it is built.
 
 <Exercise slug="build-rnn" />
 

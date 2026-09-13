@@ -13,9 +13,10 @@ starterCode: |
   type Recommendation = 'client' | 'server';
 
   function recommendDeployment(useCase: UseCase): Recommendation {
-    // One of these four fields can overrule the other three, so the order
-    // your checks run in is the whole decision. A case with nothing arguing
-    // either way still needs a verdict.
+    // latencyBudgetMs, dataSensitive, modelSizeMB, needsOffline: one of the
+    // four can overrule the other three, so the order your checks run in is
+    // the whole decision. A case with nothing arguing either way still needs
+    // a verdict.
     return null; // your code here
   }
 solutionCode: |

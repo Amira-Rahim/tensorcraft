@@ -3787,6 +3787,66 @@ the line will name the exercise; the stochastic set is the 34 slugs in
 `scripts/exercise-cheats/` that train or draw random numbers. ~224 files
 uncommitted (the owner commits).
 
+## Item 2 verified twice (2026-09-13): the fix batch blind-read, 16 highs closed, 128 more fixes
+
+The 23-high plus 140-medium/low batch from item 2 was itself blind-verified the
+next morning: eleven module readers plus a cross-cutting lens over the retrieval
+surfaces (objectives, youCanNow, recaps, RecallPrompts, the 65 hint ladders, the
+65 Challenge lead-ins), told only that everything in front of them had been
+edited in the last 24 hours. 142 findings, 250 claims confirmed true, 16 high,
+57 medium, 69 low. Grades moved: eight A- (foundations, training-loop,
+browser-runtimes, signal-processing, recurrent-networks, anomaly-detection,
+advanced-time-series, optimization-edge), three B+ (neural-networks,
+llm-integration, capstone), retrieval-surfaces lens B+. Before the batch the same
+modules read six A-, four B+ and a B.
+
+**The 16 highs, all closed by hand and proven by the reader's own probe.** Six
+were regressions from the batch itself, which is why it was read: the sgd
+sentence in `training-loop/04` pointed at the retired exercise; the ln 2
+epilogue in `training-loop/01` contradicted itself (Farah now writes the
+coin-flip mark, not the run's number); the LSTM drill's held-out band in
+`recurrent-networks/03` could be broken in one rerun (now 0.30 to 0.80, landing
+near a coin flip, with the twenty-row reason); `signal-processing/03` still
+called the relabelled test tone 10 Hz (it is 20); `anomaly-detection/03`'s
+solution rung had lost `tf.tidy` and failed its own grader (now the whole class,
+a real multi-line block); `capstone/03`'s guidance rung lost its conditional
+frame and ordered the wrong algorithm, and its solution rung lacked the
+empty-window guard. The rest were pre-existing and load-bearing:
+`neural-networks/03`'s depth demo collapsed one run in eight at 8 hidden units
+(now 16, measured 0 of 60, prose re-based); the module named the positive class
+three ways (now stated once in lesson 2, with both calibration tones above 0.5
+explained as hand-picked weights); `foundations/05` gave the name "preview build"
+to two models; `browser-runtimes/05` paired `ort.min.js` with the wrong wasm
+binary (measured on a fresh npm pack of onnxruntime-web 1.29.0: that build fetches
+the 27.8 MB / 6.6 MB jsep binary); `advanced-time-series/02` called module 6's
+74-step dependency its window; `llm-integration/03`'s prompt promised any number
+in a row while the checker admits four readings; `incident-false-alarm-storm`
+graded two input fields no learner surface named; the cross lens caught
+`training-loop/04`'s youCanNow promising the epoch-count habit the lesson
+retires and `foundations/05`'s recap turning "keep it off open-ended streams"
+into a rule the shipped classifier breaks.
+
+**128 medium and low findings fixed by eleven module-exclusive editors, 13
+skipped with reasons** (already fixed, out of module, structural). The two
+cross-module leftovers were done by hand: the foundations recaps now say once
+each that "capture" and "channel" carry two referents in this course.
+
+**Gates on the final tree (2026-09-13 11:16):** content 561 of 561, exercises
+65 of 65 twice, starters 65 with no STARTER-CREDIT line, cheats 65 CHEAT-OK
+twice, ui 405 of 405 (32 files, corpus parity on), web 730 of 730 (113 files),
+prettier clean on every changed file, zero em dashes, interval canon unchanged.
+84 files changed since the last commit (the owner commits).
+
+**What the second reading says about the method.** The batch-verification
+loop converges: 23 highs became 16, of which 6 were the batch's own; 140
+mediums and lows became 128 with most of the second set on the one surface the
+first set did not target (the closing youCanNow line, which nine lessons
+still overstate against their grader and the editors have now rewritten). The
+two words doing double duty ("capture", "channel") and the 5 ms / 15 ms pair
+that two different calls land on (module 10's bundle benchmark and the
+capstone's classify() pipeline) are now stated on their pages rather than left
+for the reader to reconcile.
+
 ### Deferred from item 2 (structural, logged here only)
 
 - Keep type declarations in the delivered starter (make tsToJs preserve

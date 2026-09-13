@@ -6,9 +6,9 @@ starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   async function initTF(): Promise<{ backend: string; version: string }> {
-    // Both values live on the runtime. One of them has nothing to say until
-    // the runtime has finished starting up, which a warm page hides and a
-    // fresh tab does not.
+    // The backend name and the version both live on the runtime. The backend
+    // has nothing to say until the runtime has finished starting up, which a
+    // warm page hides and a fresh tab does not.
     return null; // your code here
   }
 solutionCode: |

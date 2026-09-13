@@ -28,9 +28,9 @@ consequence:
   narrative: "The crew asks for Band-7 anomalies from the last 72 hours, the pipeline matches those three terms against the catalogue, and the model answers from the rows it retrieved."
 hints:
   - level: nudge
-    content: "Two challenges here, and the rungs under this one follow the retrieval. For the retrieval: three reads off the question, each applied only when the question carries it, then the cap that keeps the prompt inside its token budget, then the two numbers that say what the cap cost. For the checker: every number in the answer is a claim, the retrieved readings are the only evidence you may admit, and the retrieval that came back empty is the case that settles the rule."
+    content: "Two challenges here, and the rungs under this one follow the retrieval. For the retrieval: three reads off the question, each applied only when the question carries it, then the cap that keeps the prompt inside its token budget, then the count and the flag that say what the cap cost. For the checker: every number in the answer is a claim, the retrieved readings are the only evidence you may admit, and the retrieval that came back empty is the case that settles the rule."
   - level: guidance
-    content: "Four decisions here, and three of them are about absence. A question that names no band, no age and no anomalies still has an answer: the whole catalogue. A condition the question never raised drops out of the pipeline rather than rejecting rows. When the question names two of them, both hold, so this reads as one list narrowed in turn rather than three candidate sets merged at the end. Measure the age window against the clock reading you were handed rather than the wall clock, or the same question answered twice covers two different windows and tomorrow's run cannot reproduce today's. The fourth decision is the one the prompt cannot show. Only the capped list travels, so the number the caller needs comes off the list before the cap trims it, and the flag has to say whether the trim dropped a row, not whether the limit was reached."
+    content: "Four decisions here, and three of them are about absence. A question that names no band, no age and no anomalies still has an answer: the whole catalogue. A condition the question never raised drops out of the pipeline rather than rejecting rows. When the question names two of them, both hold, so this reads as one list narrowed in turn rather than three candidate sets merged at the end. Measure the age window against the clock reading you were handed rather than the wall clock, or the same question answered twice covers two different windows and tomorrow's run cannot reproduce today's. The fourth decision is the one the prompt cannot show. Only the capped list travels, so the number the caller needs comes off the list before the cap trims it, and the flag has to say whether the trim dropped a row, not whether the limit was reached. The checker is its own set of decisions, and the instructions state all three. Absolute tolerance rather than a percentage, because a model reprinting a logged reading rounds it by a little while a model inventing one misses by a lot, and a percentage forgives the large readings most. Compare magnitudes rather than characters, or a 9 in the answer finds a row holding 29.7 and every digit in a timestamp becomes evidence. And an empty retrieval decides the rest: no evidence was in hand, so nothing the answer says traces to anything, which puts every number in it on the same list."
   - level: solution
     content: |
       const bandMatch = query.match(/band[- ]?(\w+)/i);
@@ -75,7 +75,7 @@ That's Server Components! Fetch data on the server, then render with it. RAG fet
 
 Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: a component can't contradict its props. A generator can.
 
-<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many matching rows the cap left out", "Ground LLM responses in retrieved rows, then check every claim against those rows, since grounding narrows fabrication without preventing it", "Name what this retrieval really is, keyword-and-metadata matching over structured rows, and the point where a corpus without fields forces embedding search instead"]} />
+<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many rows matched before the cap and whether the cap dropped any", "Ground LLM responses in retrieved rows, then check every claim against those rows, since grounding narrows fabrication without preventing it", "Name what this retrieval really is, keyword-and-metadata matching over structured rows, and the point where a corpus without fields forces embedding search instead"]} />
 
 ## The RAG Pipeline
 
@@ -136,7 +136,7 @@ If the data doesn't contain the answer, say "insufficient data."
 
 ## Instructions
 - Cite each signal by copying its bracketed timestamp from the rows above
-- Every number you write has to be one of the numbers in those rows. Do not add them up, average them, or count them
+- Every number you write has to be one of the readings in those rows: a confidence, an amplitude, a frequency or an anomaly score. Do not add them up, average them, or count them
 - Say plainly when the rows do not answer the question\`;
 }
 
@@ -180,11 +180,11 @@ if (unsourced.length > 0 || fabricated.length > 0) {
 }`}
 </CodeBlock>
 
-Two of those instructions exist to keep the answer inside what the checker can admit. The checker compares numbers, and the only numbers it admits are the readings in the retrieved rows. A sum, an average or a count is a number the model worked out rather than read, so the checker calls it fabricated unless it happens to land within the tolerance of some reading. When the report needs a count of matching rows, `matched` already holds it and JavaScript can print it exactly. Ask the model for that count instead and you have bought a number somebody now has to verify.
+Two of those instructions exist to keep the answer inside what the checker can admit. The checker compares numbers, and the only numbers it admits are the readings in the retrieved rows. The band and the timestamp are labels, not readings, so the checker admits neither, and a sentence that quotes "Band-7" as a number would be turned away: that is why the citation strip runs before the number check, and why the prompt names the four readings and nothing else. A sum, an average or a count is a number the model worked out rather than read, so the checker calls it fabricated unless it happens to land within the tolerance of some reading. When the report needs a count of matching rows, `matched` already holds it and JavaScript can print it exactly. Ask the model for that count instead and you have bought a number somebody now has to verify.
 
 ## Challenge
 
-Retrieval runs first. Build the step that decides which rows reach the model, and have it report how many it left behind.
+Retrieval runs first. Build the step that decides which rows reach the model, and have it report how many matched before the cap trimmed the list.
 
 <Exercise slug="retrieve-signals" />
 

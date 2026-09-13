@@ -52,7 +52,7 @@ My first prompt was 'Analyze this signal data.' The output was useless: generic,
 
 Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. A search for `error` returns the whole index; a search for the exact string `Error when checking : expected dense_Dense1_input to have shape [null,3]` returns the one answer. Specificity and structure decide what you get back, and a prompt is a query.
 
-<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Parse the model's JSON reply back into an object your code can use", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
+<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
 
 ## From Vague to Precise
 
@@ -100,7 +100,6 @@ interface SignalData {
   amplitude: number;   // hull counts against the sensor's 2048-count full scale
   frequency: number;   // the FFT line under review, in Hz, not the zero-crossing count
   phase: number;       // radians
-  fftPeaks: { hz: number; magnitude: number }[];
 }
 
 function classificationPrompt(signal: SignalData): string {
@@ -115,7 +114,6 @@ Normal amplitude range: 570 to 1560 counts.
 - Amplitude: \${signal.amplitude} counts
 - Frequency: \${signal.frequency} Hz
 - Phase: \${signal.phase} rad
-- FFT Peaks: \${signal.fftPeaks.map(p => \`\${p.hz}Hz (\${p.magnitude.toFixed(2)})\`).join(', ')}
 
 ## Task
 Classify this signal and explain your reasoning.
@@ -148,7 +146,7 @@ Write a prompt template that produces structured signal analysis.
 <LessonRecap
   whatYouLearned={[
     "Effective prompts have four parts: role, context, data, and format. Each missing part is a source of vague or unparseable output.",
-    "Requesting structured output (JSON) makes LLM responses programmatically reliable; always parse and validate the schema before use.",
+    "Requesting structured output (JSON) makes a reply parseable, not true: parse it, then check every field your caller depends on before anything downstream sees it.",
     "Prompts should be iterated like debugging: test, inspect output, identify the missing constraint, refine, and repeat until results are consistent."
   ]}
   bridge="Crafting a prompt is like writing a precise search query: specificity and structure determine what you get back. A vague query (`error`) returns thousands of results; a precise one (the exact error string) returns the answer. The same principle applies to prompts (`analyze signal` vs. a structured role-context-data-format prompt)."

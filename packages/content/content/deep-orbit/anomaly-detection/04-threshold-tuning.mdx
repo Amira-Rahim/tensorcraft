@@ -182,10 +182,11 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
     "Threshold tuning sets the boundary between normal and anomalous by choosing a cutoff on the reconstruction error distribution; setting it too low causes alert fatigue, too high causes missed detections.",
     "A percentile of the normal error distribution ties the cutoff to known-good data, but it fixes a false-alarm rate: the alert count is that rate times the reading volume, so 1% of 2,618 readings a day is 26 flags a day.",
     "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system.",
-    "Choosing a threshold is choosing a setting, so the candidate sweep runs on the validation slice and the chosen cutoff is scored once on the held-out test slice."
+    "Choosing a threshold is choosing a setting, so the candidate sweep runs on the validation slice and the chosen cutoff is scored once on the held-out test slice.",
+    "An alert storm gets triaged before the cutoff is touched: read the sensor audit log first, then the model's age, then the ratio, and file the storm under the first signature that matches. A storm that matches none of them goes to a human."
   ]}
   bridge="Just as a JS alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff rather than a fixed number in config."
-  youCanNow="Sweep candidate cutoffs against a labeled slice, score each one with precision, recall and F1, and say why a deployment may ship a cutoff away from the F1 peak."
+  youCanNow="Sweep candidate cutoffs against a labeled slice, score each one with precision, recall and F1, say why a deployment may ship a cutoff away from the F1 peak, and triage an alert storm against the known signatures before touching the cutoff, escalating to a human when it matches none of them."
 />
 
 <Epilogue>

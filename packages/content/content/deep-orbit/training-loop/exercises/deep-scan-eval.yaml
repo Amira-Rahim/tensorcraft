@@ -131,7 +131,7 @@ testCode: |
       expect(history.params.samples, 'This is the row count model.fit was given. More than the archive holds means the held-out slice went into training, and every number you report afterwards is then measured on rows the gradients already saw. Fewer means part of the archive was held back inside fit (a validationSplit, say), and this exercise scores its held-out slice itself.').toBe(100);
       expect(model.optimizer.iterations, 'This is how many weight updates the optimizer applied to this model: one per batch, so 30 sweeps over 100 rows in batches of 16. Zero means fit never ran on this model at all.').toBe(210);
     });
-    it('the model learned the archive: held-out accuracy above 0.85 and a loss that shows it (the clusters are 6 sigma apart)', () => {
+    it('the model learned the archive: held-out accuracy above 0.85 and a loss that shows it (the calm and flagged clusters sit far apart on every channel)', () => {
       // Accuracy alone did not settle this. The clusters are separable enough
       // that an untrained net clears 0.85 on the held-out slice by luck in 30 of
       // 300 fresh inits, one of them at 1.000 (measured 2026-09-08), which is

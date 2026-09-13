@@ -42,11 +42,7 @@ skillAxes: [model_arch]
 This isn't random noise. Something is repeating. The pattern spans dozens of time steps, but we hand our network one reading at a time. We need a model with memory.
 </Dialogue>
 
-<Dialogue speaker="Ensign Demir">
-Memory? You mean like... state that persists between inputs? That's just a reducer: previous state plus new input produces updated state.
-</Dialogue>
-
-Hold the reducer thought; it is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
+Memory in a network is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
 
 <LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from a stream of readings"]} />
 

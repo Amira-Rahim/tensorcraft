@@ -142,10 +142,10 @@ Decide whether one use case belongs in the browser or on the server, and watch w
 
 <Epilogue>
 
-Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one snapshot a second, live. The archive records the same stream more slowly, one row per 33 seconds, which is where its 28,800 rows over eleven days come from. At 180 milliseconds of round-trip to the ship's own compute bay, the server plan spends 4.3 hours of every day waiting on interdeck fiber, aboard a vessel eleven light-minutes from anything resembling a CDN.
+Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one snapshot a second, live. The archive records the same stream more slowly, one row per 33 seconds, which is where its 28,800 rows over eleven days come from. On the server plan all 86,400 of those verdicts cross one interdeck run to the compute bay, aboard a vessel eleven light-minutes from anything resembling a CDN. Each hop costs 180 milliseconds, which the budget covers. What the budget cannot cover is the run going down.
 
 <Dialogue speaker="Chief Nazari">
-Four hours a day of waiting, or a one-time download per crew station. Buy the download.
+Every verdict on this ship through one cable, 86,400 times a day. Or one download per crew station and no cable at all. Buy the download.
 </Dialogue>
 
 Demir opens a terminal and types `npm install`; the model is going to live where the crew lives. While the package downloads, he starts a survey of the ship's consoles, oldest chair first.

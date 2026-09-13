@@ -146,6 +146,8 @@ const marked = await generateReport(reportSections, llm);
 // Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
+The pipeline passes `temperature: 0.2` on every section call. Temperature divides the scores before the last softmax, the one that picks the next token, so a low value sharpens that distribution toward the likeliest token and the same prompt returns close to the same draft twice. A sharpened distribution is a more repeatable one, not a more truthful one: at temperature zero the model takes its likeliest token every time, and an instrument it invented once is the likeliest token again on the next run. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. What catches a claim like that is the validation line under the generate call. Temperature has no part in it.
+
 ## Challenge
 
 The model has written the sections and the validator has marked each one. Assemble the document a human can sign: the validated sections in order, and an honest list of what was withheld.
@@ -157,7 +159,7 @@ The model has written the sections and the validator has marked each one. Assemb
 <LessonRecap
   whatYouLearned={[
     "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
-    "Low temperature (0.1-0.3) reduces VARIABILITY, not hallucination: it narrows which token gets sampled, and even at temperature zero (always picking the likeliest token) the model invents just as confidently, only reproducibly. Farah's very first draft, back in lesson 1, fabricated a Band-3 cluster at temperature 0.3. The only thing that catches a fabricated claim is validating it against the data.",
+    "Low temperature (0.1-0.3) buys repeatable output rather than truthful output: at temperature zero the model invents just as confidently, word for word on every run. Validating each section against its own data is what catches a fabricated claim.",
     "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
   ]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."

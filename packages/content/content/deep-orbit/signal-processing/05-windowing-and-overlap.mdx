@@ -41,18 +41,18 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum instead of sitting at the expected peaks.
-</Dialogue>
-
-<Dialogue speaker="Dr. Farah">
-Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT doesn't know where your signal ends and where an artifact begins. We need to taper the edges down with a windowing function.
+Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum instead of sitting at the expected peaks. It has to be where I cut the slice. Node hits the same thing on byte streams: cut a chunk mid-character and you decode a replacement character nobody sent, so `StringDecoder` holds the split bytes back until the rest arrives and the text comes out whole. Handle the boundary the same way here and the false frequencies go, and the real peaks stay exactly where they are.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-Before you fix it: the dashboard filed two anomaly reports overnight against frequencies that do not exist. I spent eighty minutes standing down phantom contacts. Fix the edges before the next archive replay.
+Your decoder did not file anything overnight. The dashboard did: two anomaly reports against frequencies that do not exist, and eighty minutes of my watch spent standing down phantom contacts. Before you run your fix, tell me what it does to the magnitudes I read off that display.
 </Dialogue>
 
-The smear has already cost the mission something countable. Cut a byte stream at an arbitrary offset and a multi-byte character splits in half, and decoding that chunk on its own produces a replacement character that was in nobody's data. Node ships `StringDecoder` for exactly that: it holds the split bytes back until the rest of the character arrives. Samples cut the same way behave worse. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is false frequency content. The fix has the decoder's shape: handle the boundary instead of cutting through it. Taper the edges down and the transform never sees a cliff.
+<Dialogue speaker="Dr. Farah">
+Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper cannot: it attenuates real samples at both edges so the cut is never a cliff. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.0, and every other magnitude shrinks with it. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
+</Dialogue>
+
+Demir has the shape of the fix right. The FFT treats your slice as one period of an infinitely repeating signal, so a hard edge is a real discontinuity in that repeating version, and a discontinuity is frequency content that was never in the sky. Handling the boundary beats cutting through it, in a byte stream and in a capture. The price is where the two part company. `StringDecoder` returns the held-back bytes with the next chunk and the decoded text is what a single read would have produced. A taper spends real signal to buy a clean spectrum, and the rest of this lesson is what it spends.
 
 <LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
@@ -233,7 +233,7 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
     "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the symmetric Hann here comes close."
   ]}
   bridge="Cutting a byte stream mid-character decodes to a replacement character that was never in the data, which is why `StringDecoder` holds the split bytes back. Cutting a signal mid-cycle produces frequencies that were never in the signal, and the fix is a taper: the decoder's boundary fix is lossless, the taper's is a trade."
-  youCanNow="Apply a Hann window to a signal slice before computing the FFT, choose an appropriate overlap ratio, and explain why windowing reduces spectral leakage."
+  youCanNow="Apply a Hann window to a signal slice before computing the FFT, measure what the taper does to the leakage, and say what it costs in resolution and magnitude."
 />
 
 > **DISPATCH archive · field intercept #09-F:** Jin's speech cell spent nine days chasing a phantom tone that appeared in every capture. It was their own rectangular window: the instrument, not the sky. Window first. Then believe your peaks.

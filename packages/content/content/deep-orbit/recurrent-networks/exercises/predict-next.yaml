@@ -6,7 +6,7 @@ instructions: |
 
   1. Build a `tf.sequential()` with `tf.layers.lstm({ units: 8, inputShape: [windowSize, 3] })` (read `windowSize` off `xs.shape`) followed by `tf.layers.dense({ units: 3 })`, one output per channel.
   2. Compile it with `{ optimizer: tf.train.adam(0.01), loss: 'meanSquaredError', metrics: ['mae'] }`: MSE is the loss because this is regression, and MAE rides along as the diagnostic that reads in the units on the instrument.
-  3. Then `await model.fit(xs, ys, { epochs, batchSize: 32 })` and return `{ model, history }`, the model and the object `fit` resolved to. The grader reads `model.optimizer.iterations`, which the optimizer increments once per batch and nothing can assign to, and checks it against the number of epochs your history reports, so the trace and the weights have to come from the same run. It trains on a series with real structure in it, so it also expects the last epoch's loss to sit well under the first one's, and it scores the model you hand back on that same data and expects the answer to land beside the loss your history reports.
+  3. Then `await model.fit(xs, ys, { epochs, batchSize: 32 })` and return `{ model, history }`, the model and the object `fit` resolved to. That object is a `tf.History`, and the grader treats it as one: it checks that your `history` is an instance of it and carries the epoch indices the run walked through, then reads `model.optimizer.iterations`, the counter the optimizer raises once per batch and nothing can assign to, against the epochs that history reports. A trace assembled by hand is not a History, so it fails even when a real fit happened beside it. It trains on a series with real structure in it, so it also expects the last epoch's loss to sit well under the first one's, and it scores the model you hand back on that same data and expects the answer to land beside the loss your history reports.
   4. Then `forecastMultiStep(model, seed, windowSize, steps, scaler)`: predict `steps` readings one at a time, feeding each prediction back in as history. `seed` holds at least `windowSize` rows of the per-channel z-scores the model was trained on, each row [amplitude, frequency, phase], and `scaler` holds the `mean` and `std` arrays those z-scores were made with.
   5. `LIMITS` in the starter is the raw sensor range per channel, so move each one into the model's space first: `(limit - mean[j]) / std[j]`.
   6. At every step, take the LAST `windowSize` rows of the history, hand them to the model as one rank-3 tensor of shape [1, windowSize, 3] (`model.predict` returns a [1, 3] tensor), clamp the predicted row into the converted bounds, and push the CLAMPED row onto the history and onto the forecast. Clamping only what you return is a different function: step i + 1 reads this row as history, so an amplitude the sensors cannot produce becomes the model's own input for the rest of the run.
@@ -239,8 +239,20 @@ testCode: |
       ).toContain('eanSquared');
     });
 
-    it('really ran the fit: the optimizer counted one update per batch, epoch after epoch', async () => {
+    it('really ran the fit: the trace is the one fit resolved to, and the optimizer counted its updates', async () => {
       const { model, history } = await trained();
+      // The identity checks come first: model.fit resolves to a tf.History,
+      // which carries the epoch indices the run walked through. An object
+      // built by hand around a list of losses is neither, however plausible
+      // the numbers on it look.
+      expect(
+        history instanceof tf.History,
+        'The object model.fit resolves to is a tf.History, and this is not one. Return what the fit handed back rather than an object assembled to look like it.',
+      ).toBe(true);
+      expect(
+        history.epoch,
+        'A History carries the epoch indices the run walked through, 0 up to epochs - 1. This trace does not have them, so it did not come out of a fit.',
+      ).toEqual(Array.from({ length: TRAIN_EPOCHS }, (unused, epoch) => epoch));
       expect(
         history.history.loss.length,
         'One loss per epoch, for as many epochs as you were asked for.',

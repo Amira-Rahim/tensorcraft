@@ -12,8 +12,10 @@ instructions: |
   contracted to be 'noise' or 'anomaly', and a class outside the contract has
   an honest stand-in: pass 'unknown' to the next stage instead of the value you
   do not believe. The confidence has no stand-in, because every later stage
-  quotes it, so a confidence that is not a number from 0 to 1 inclusive stops
-  the run. Throw, before `detectAnomaly` is called.
+  quotes it, so a confidence that is not a finite number from 0 to 1 inclusive
+  stops the run. NaN is the case to watch: `typeof NaN` reports 'number', and
+  every comparison against NaN is false, so it clears a type check and a range
+  check both. Throw, before `detectAnomaly` is called.
 
   If the signal is not anomalous, skip the alert stage and leave the alert
   field null rather than empty. Return `{ classification, confidence, isAnomaly, alert }`.

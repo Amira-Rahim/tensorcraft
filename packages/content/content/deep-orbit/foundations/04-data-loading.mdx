@@ -44,7 +44,7 @@ The raw sensor data comes in faster than we can process it in one pass. But this
 
 > `RangeError: Array buffer allocation failed`. Engineering rig, overnight: the loop dies 19,204 readings into a 28,800-reading archive and takes ARIA's diagnostic queue down with it.
 
-The post-mortem arithmetic is short. Each reading drags its 33-second raw capture along: 256 Hz across 64 channels, about two megabytes apiece, forty gigabytes accumulated before the loop was two-thirds done. Cost of the lesson: a four-hour queue rebuild, logged against Ensign Demir.
+The post-mortem arithmetic is short. Each reading drags its 33-second raw capture along: 256 Hz across 64 channels, about two megabytes apiece. Two-thirds of the way through the archive, that is forty gigabytes sitting in one array. Cost of the lesson: a four-hour queue rebuild, logged against Ensign Demir.
 
 <Dialogue speaker="ARIA">
 Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.
@@ -159,15 +159,16 @@ Build the lazy pipeline yourself, on a 16-row stand-in for the archive: generato
   whatYouLearned={[
     "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
     "Shuffle before you batch, never after: batching first freezes each batch's membership, so every batch stays a block of consecutive readings. A shuffle buffer mixes only inside its own window, which is all you get when records arrive as a stream you cannot index. When you can read a record by id, shuffle the indices up front for a full shuffle.",
-    "Split train/validation by dealing the deck once: shuffle the indices yourself and read only the ones this side owns, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets."
+    "Split train/validation by dealing the deck once: shuffle the indices yourself and read only the ones this side owns, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets.",
+    "One word, two sizes. In this module a capture is the archive row: 33 seconds of 64 channels at 256 Hz, about two megabytes. From module 4 on, a capture is the 64-sample, quarter-second window the classifier reads three features off. Same word, different object; the number beside it tells you which."
   ]}
   bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it. Node streams call that backpressure: the consumer sets the pace."
-  youCanNow="Build a tf.data pipeline that reads lazily with a generator, shuffles and batches records correctly, and splits data into training and validation sets."
+  youCanNow="Build a tf.data pipeline that reads lazily with a generator and shuffles records before it batches them, and recognize a train/validation split that does not leak."
 />
 
 <Epilogue>
 
-The rebuilt pipeline chews through eleven days of archived telemetry in four minutes: twenty-eight thousand readings, batch by batch, memory flat the whole way. Demir watches `numTensors` hold steady at 202 (the shuffle buffer's hundred readings at two tensors each, plus the batch in flight). He allows himself exactly one fist pump, four hours later than he'd planned to.
+The rebuilt pipeline chews through eleven days of archived telemetry in four minutes: twenty-eight thousand readings, batch by batch, memory flat the whole way. On the buffered version he wrote first, Demir watches `numTensors` hold steady at 202: the shuffle buffer's hundred readings at two tensors each, plus the batch in flight. The index shuffle he swaps in after that holds two, the batch in flight and nothing behind it. He allows himself exactly one fist pump, four hours later than he'd planned to.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 Pipeline nominal. For reference: I processed this archive in nine seconds. I simply could not tell you what any of it meant.

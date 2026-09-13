@@ -122,7 +122,10 @@ testCode: |
         r.rows.map((s) => s.id),
         'No filter in the question is not the same as no rows. Returning an empty context here is the failure the DISPATCH note describes: the model that confabulates is the one that retrieved nothing.',
       ).toEqual(['a', 'b', 'c']);
-      expect(r.matched).toBe(3);
+      expect(
+        r.matched,
+        'matched counts the rows that passed the filters, before the cap trims anything. Three rows passed here and the cap dropped none of them. Report what the cap left out instead and the caller has no way to tell a full context from a trimmed one.',
+      ).toBe(3);
       expect(r.truncated).toBe(false);
     });
 

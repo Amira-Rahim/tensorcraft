@@ -31,7 +31,7 @@ hints:
   - level: guidance
     content: "The first two steps stay element-wise, one op each, and every op hands back a tensor, so the next call can chain off the result instead of a new variable. Where the two passes differ in shape, the op lines them up on its own. The mix is the other multiplication, and the only place the inner-dimension rule applies: read both shapes, decide which tensor is holding its axes the wrong way round, and turn it before the multiply. The averaged pass and the amplified pass are separate values, and the caller reads both."
   - level: solution
-    content: "const merged = pass1.add(pass2).div(2); const boosted = merged.mul(gain); return { merged, boosted }; function mixChannels(block: tf.Tensor, mix: tf.Tensor): tf.Tensor { return block.matMul(mix.transpose()); }"
+    content: "const merged = pass1.add(pass2).div(2); const boosted = merged.mul(gain); return { merged, boosted }; function mixChannels(block, mix) { return block.matMul(mix.transpose()); }"
 keywords:
   - operations
   - add
@@ -101,7 +101,7 @@ The shapes do not have to be identical. When they differ, TensorFlow.js lines th
 
 ## When You DO Want matMul
 
-So why does `matMul` exist at all? Because "every row dot-producted with every column" (multiply matching entries, then sum) is the operation neural networks are made of, and no element-wise op reaches it on its own: it needs a reduction, a sum across an axis, which is the piece map plus zip does not have. matMul is that pair fused into one hardware kernel. It comes with the one inflexible shape rule the error message was enforcing:
+So why does `matMul` exist at all? Neural networks are built on one operation: multiply matching entries, then sum them. Element-wise ops do the multiply. They cannot do the sum, because a sum reduces an axis and map plus zip never reduces anything. `matMul` fuses the multiply and the sum into one hardware kernel, run for every row of the left tensor against every column of the right. It comes with the one inflexible shape rule the error message was enforcing:
 
 **`[m, n] × [n, p] → [m, p]`: the inner dimensions must match.**
 

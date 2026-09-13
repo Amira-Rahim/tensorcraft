@@ -41,22 +41,31 @@ testCode: |
     return out;
   };
   describe('hannWindow builds the taper', () => {
-    it('returns correct length', () => {
+    it('returns one weight per sample of the slice', () => {
       expect(
         hannWindow(64).length,
         'One weight per sample of the slice, so the returned list is exactly n long.',
       ).toBe(64);
     });
-    it('starts at zero', () => {
-      expect(windowOf(64)[0]).toBeCloseTo(0, 4);
+    it('gives the first sample no weight', () => {
+      expect(
+        windowOf(64)[0],
+        'The taper opens at zero: index 0 puts cos(0) in the formula, which leaves 0.5 * (1 - 1).',
+      ).toBeCloseTo(0, 4);
     });
-    it('ends at zero', () => {
+    it('gives the last sample no weight, in the symmetric form this exercise grades', () => {
       const w = windowOf(64);
-      expect(w[63]).toBeCloseTo(0, 4);
+      expect(
+        w[63],
+        'This is the symmetric Hann, the one with n - 1 underneath, and it reaches exactly zero at both ends. The periodic form in the lesson drawer divides by n instead and leaves a step of 0.0024 at the last sample. That form is for resynthesis, where the shifted windows have to sum to a constant. This taper is for one slice, so use the instruction formula.',
+      ).toBeCloseTo(0, 4);
     });
-    it('peaks at center', () => {
+    it('reaches full weight at the middle sample', () => {
       const w = windowOf(65);
-      expect(w[32]).toBeCloseTo(1, 4);
+      expect(
+        w[32],
+        'An odd length has one middle sample and the curve peaks there at 1. A window that peaks somewhere else is not centered on the slice it weights.',
+      ).toBeCloseTo(1, 4);
     });
     it('tapers through the interior instead of jumping to full weight', () => {
       const w = windowOf(9);

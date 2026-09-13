@@ -80,7 +80,13 @@ for (let step = 0; step < 20; step++) {
 
 That slope arrives without anyone writing a derivative. `tf.variableGrads` records the operations your loss function runs and replays that recording backwards to get it. The name for the trick is autograd, short for automatic differentiation. The next lesson takes it apart.
 
-**Learning rate** is a hyperparameter: a setting you pick by hand rather than a weight the model learns, and the one that matters most. Lerp factors carry the same intuition, and the easing loop is small enough to check the numbers on. Each frame leaves `|1 - r|` of the distance still to cover, so running `pos = 2` toward `target = 10` at 0.001 takes 6,682 frames to close the gap to 0.01, while 1.5 takes 10: it overshoots to 14 on the first frame, then halves its error on every frame after. Divergence starts at 2.0, which leaves the element bouncing between 18 and 2 forever, and 2.5 grows the error by half again per frame: 22, then -8, then 37. The threshold belongs to the loss rather than to the rate. The descent above minimizes `(x - 3)²` instead of half of it, so every slope it reads is twice as steep and its own threshold sits at 1.0: the 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
+Read that trace as distances rather than positions. Each row sits five steps after the one before it, and the distance covered shrinks: 1.614, then 0.528, then 0.174. Nothing in the loop asks it to slow down. The slope of `(x - 3)²` shrinks as x nears 3, and each step is a tenth of the slope, so descent slows near the minimum instead of overshooting it.
+
+**Learning rate** is a hyperparameter: a setting you pick by hand rather than a weight the model learns, and the one that matters most. Lerp factors carry the same intuition, and the easing loop is small enough to check the numbers on. Each frame leaves `|1 - r|` of the distance still to cover, so `pos = 2` running toward `target = 10` at 0.001 needs 6,682 frames to close the gap to 0.01.
+
+Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error on every frame after and arrives in ten. Divergence starts at 2.0, which leaves the element bouncing between 18 and 2 forever, and 2.5 grows the error by half again per frame: 22, then -8, then 37.
+
+The threshold belongs to the loss rather than to the rate. The descent above minimizes `(x - 3)²` instead of half of it, so every slope it reads is twice as steep and its own threshold sits at 1.0. The 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
 
 <DerivationDrawer summary="Why the gradient is the steepest-ascent direction">
 **The gradient is a vector of partial derivatives.** For loss `L(w₁, w₂, ..., wₙ)`:

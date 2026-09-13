@@ -1,7 +1,7 @@
 slug: forward-pass
 lessonSlug: forward-pass
 title: "Run a Forward Pass"
-instructions: "Create a sequential model with one dense layer (3 units, inputShape [2], activation left at its default, which is linear: the grader recomputes the pass as input times kernel plus bias), then write forward(batch) so a single model.predict() call carries the whole batch, and assign prediction = forward(input). The provided input is a stack of 2 readings with 2 features each. Leave the layer's weight initialization at the default: the grader recomputes the forward pass from the random weights your layer starts with, so the output cannot be written by hand. It also calls forward() with taller stacks of its own and counts the predict calls each one costs."
+instructions: "Create a sequential model with one dense layer (3 units, inputShape [2], activation left at its default, which is linear: the grader recomputes the pass as input times kernel plus bias), then write forward(batch) so a single model.predict() call carries the whole batch, and assign prediction = forward(input). The provided input is a stack of 2 readings with 2 features each. Leave the layer's weight initialization at the default: the grader recomputes the forward pass from the random weights your layer starts with, so the output cannot be written by hand. It also calls forward() with taller stacks of its own and counts the predict calls each one costs. Then fix the shape that ended Demir's demo: singleReading arrives flat, shape [2] rather than [1, 2]. Write asBatch(reading) so it hands back that same reading with a batch axis in front, and assign batched = asBatch(singleReading). The grader calls asBatch() with readings of its own width, so the axis goes on whatever arrives rather than on a width written into the body."
 starterCode: |
   const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);
 
@@ -14,6 +14,15 @@ starterCode: |
   }
 
   const prediction = forward(input);
+
+  // The feed also hands over one reading at a time, flat.
+  const singleReading = tf.tensor1d([5.0, 6.0]);
+
+  function asBatch(reading) {
+    return null; // your code here
+  }
+
+  const batched = asBatch(singleReading);
 solutionCode: |
   const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);
 
@@ -25,6 +34,14 @@ solutionCode: |
   }
 
   const prediction = forward(input);
+
+  const singleReading = tf.tensor1d([5.0, 6.0]);
+
+  function asBatch(reading) {
+    return reading.expandDims(0);
+  }
+
+  const batched = asBatch(singleReading);
 testCode: |
   describe('Forward Pass', () => {
     const firstLayer = () => {
@@ -74,7 +91,7 @@ testCode: |
       for (let i = 0; i < expected.length; i++) {
         expect(
           actual[i],
-          'This is not what the model answers for this input. Run the batch through the model rather than writing the numbers out.',
+          'This is not what the model answers for this input. Either the numbers were written out by hand instead of run through the model, or the layer is bending its output: this check recomputes input times kernel plus bias, so the layer has to keep its default linear activation. relu belongs on a hidden stage whose output feeds more math.',
         ).toBeCloseTo(expected[i], 3);
       }
     });
@@ -113,6 +130,49 @@ testCode: |
         calls,
         'The batch axis is free: one predict call answers a stack of any height. Feeding the rows in one at a time and stitching the answers together gets the same numbers and misses the point of the lesson.',
       ).toBe(1);
+    });
+    it('gives one flat reading the batch axis the layer expects', () => {
+      expect(
+        typeof asBatch,
+        'asBatch is not defined. The grader hands it readings of its own, so keep the function the starter handed you.',
+      ).toBe('function');
+      expect(
+        batched,
+        'batched is still empty. asBatch() has to hand the starter reading back with its batch axis in place.',
+      ).toBeDefined();
+      expect(
+        batched.shape,
+        'A single reading reaches the layer as a stack of one: two features go in as shape [2] and have to come out as [1, 2], the row count first.',
+      ).toEqual([1, 2]);
+      const drawn = tf.randomUniform([4], -1, 1);
+      let wider;
+      try {
+        wider = asBatch(drawn);
+      } catch (err) {
+        throw new Error(
+          'asBatch() threw on a reading of 4 values: ' +
+            err.message +
+            '. The axis goes on whatever arrives, so the body cannot be built around the starter width.',
+        );
+      }
+      expect(
+        wider.shape,
+        'asBatch() answered the starter reading but not the one the grader drew. Add the axis to the reading it was handed rather than writing a new tensor out.',
+      ).toEqual([1, 4]);
+      const before = Array.from(drawn.dataSync());
+      const after = Array.from(wider.dataSync());
+      for (let i = 0; i < before.length; i++) {
+        expect(
+          after[i],
+          'The values changed on the way through. Adding the batch axis rewraps the reading; it leaves every number where it was.',
+        ).toBeCloseTo(before[i], 5);
+      }
+      const reading = tf.randomUniform([2], -1, 1);
+      const answer = forwardFn()(asBatch(reading));
+      expect(
+        answer.shape,
+        'The model would not answer one batched reading. One reading in means one row of predictions out, shape [1, 3].',
+      ).toEqual([1, 3]);
     });
   });
 estimatedMinutes: 12

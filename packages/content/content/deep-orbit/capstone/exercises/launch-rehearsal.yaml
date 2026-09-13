@@ -318,9 +318,12 @@ testCode: |
       expect(Number.isFinite(v.losses[0])).toBe(true);
       expect(
         v.losses[v.losses.length - 1],
-        'Twelve epochs on this archive slice takes binary cross-entropy from around 0.65 to under 0.07. A trace that does not fall is a fit that did not happen.',
+        'Twelve epochs on this archive slice takes binary cross-entropy from about 0.70, the ln 2 coin-flip mark, down to about 0.003. A trace that does not fall is a fit that did not happen.',
       ).toBeLessThan(v.losses[0]);
-      expect(v.losses[v.losses.length - 1]).toBeLessThan(0.25);
+      expect(
+        v.losses[v.losses.length - 1],
+        'The floor is loose next to the 0.003 this fixture lands on, because a browser backend will not reproduce the last digits. A run still above 0.05 after twelve epochs did not separate this archive.',
+      ).toBeLessThan(0.05);
       model.dispose();
     });
 
@@ -423,7 +426,7 @@ testCode: |
       ).toBe(96);
       expect(
         second.losses[0],
-        'The second rehearsal starts from where the first one finished, so its opening loss sits near the first one closing loss rather than back at 0.65.',
+        'The second rehearsal starts from where the first one finished, so its opening loss sits near the first one\'s closing loss rather than back near 0.70.',
       ).toBeLessThan(first.losses[0]);
       model.dispose();
     });

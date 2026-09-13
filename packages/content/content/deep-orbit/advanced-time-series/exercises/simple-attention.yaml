@@ -20,8 +20,24 @@ solutionCode: |
 testCode: |
   describe('simpleAttention (real tf.matMul + softmax)', () => {
     // Every test goes through this, so the first Run of the starter reads
-    // as a missing return value rather than a property access on null.
-    const blend = (out) => {
+    // as a missing return value rather than a property access on null, and
+    // a throw from inside the submission arrives in words of its own rather
+    // than as a raw library notice.
+    const blend = (call) => {
+      let out;
+      try {
+        out = call();
+      } catch (err) {
+        const detail = (err && err.message) || String(err);
+        if (detail.toLowerCase().indexOf('softmax') !== -1) {
+          throw new Error(
+            'tf.softmax normalizes the LAST axis only, so a column of scores puts the steps on an axis it will not touch. Score the query against the keys so the scores arrive as one row of T numbers, then soften that row. tfjs said: ' + detail,
+          );
+        }
+        throw new Error(
+          'simpleAttention threw before it returned a blend, so no weights were scored. tfjs said: ' + detail,
+        );
+      }
       expect(
         out,
         'simpleAttention has to return the blended vector itself, one rank-1 tensor.',
@@ -34,7 +50,7 @@ testCode: |
     };
 
     it('the blend is one value row wide, not one key row wide', () => {
-      const out = blend(
+      const out = blend(() =>
         simpleAttention(
           tf.randomNormal([8]),
           tf.randomNormal([5, 8]),
@@ -48,7 +64,7 @@ testCode: |
     });
 
     it('a zero query scores every key the same, so the blend is the average value row', () => {
-      const out = blend(
+      const out = blend(() =>
         simpleAttention(
           tf.zeros([4]),
           tf.tensor2d([[9, 9, 9, 9], [-9, -9, -9, -9]]),
@@ -63,7 +79,7 @@ testCode: |
     });
 
     it('the matching key takes most of the weight and the other keeps a real share', () => {
-      const out = blend(
+      const out = blend(() =>
         simpleAttention(
           tf.tensor1d([1, 0]),
           tf.tensor2d([[1, 0], [0, 1]]),
@@ -95,7 +111,7 @@ testCode: |
       // The same read, on a score gap drawn at run time. 0.7311 is a number
       // an answer can carry around; this one is not.
       const gap = 0.5 + Math.random() * 2;
-      const drawn = blend(
+      const drawn = blend(() =>
         simpleAttention(
           tf.tensor1d([gap, 0]),
           tf.tensor2d([[1, 0], [0, 1]]),
@@ -109,7 +125,7 @@ testCode: |
     });
 
     it('a strong query concentrates the weight, still without erasing the other step', () => {
-      const out = blend(
+      const out = blend(() =>
         simpleAttention(
           tf.tensor1d([10, 0]),
           tf.tensor2d([[1, 0], [0, 1]]),
@@ -151,7 +167,7 @@ testCode: |
       const exps = scores.map((s) => Math.exp(s - top));
       const total = exps.reduce((a, b) => a + b, 0);
       const weights = exps.map((e) => e / total);
-      const out = blend(
+      const out = blend(() =>
         simpleAttention(
           tf.tensor1d(query),
           tf.tensor2d(keys),

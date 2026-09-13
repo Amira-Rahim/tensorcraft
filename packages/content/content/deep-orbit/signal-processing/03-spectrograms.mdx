@@ -103,7 +103,7 @@ console.log('Time steps:', spec.length);          // 7
 console.log('Frequency bins:', spec[0].length);   // 129`}
 </CodeBlock>
 
-That `stft` cuts rectangular slices: `signal.slice` and nothing else. A hard cut at a slice's edges invents frequency content the signal never had, and lesson 5 builds the taper that fixes it. Leave it out here. The challenge grades unwindowed magnitudes, so tapering this code drops the 10 Hz peak it checks from 32.0 to 15.7 and the test fails.
+That `stft` cuts rectangular slices: `signal.slice` and nothing else. A hard cut at a slice's edges invents frequency content the signal never had, and lesson 5 builds the taper that fixes it. Leave it out here. The challenge grades unwindowed magnitudes, so tapering this code drops the 20 Hz peak it checks from 32.0 to 15.7 and the test fails.
 
 ## Reading a Spectrogram
 

@@ -185,19 +185,27 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 // to the end of the first prediction, so runtime init is inside it on
 // both sides. These are that machine's numbers, not a property of either
 // runtime:
-// TF.js (WASM):             cold=210ms, inference=0.9ms, weights=2.6KB
-// ONNX Runtime Web (WASM):  cold=260ms, inference=0.7ms, weights=2.6KB
+// TF.js (WASM):             inference=0.9ms, weights=2.6KB
+// ONNX Runtime Web (WASM):  inference=0.7ms, weights=2.6KB
 //
 // Same model, same laptop, TF.js switched to WebGL:
-// TF.js (WebGL):            cold=480ms, inference=2.4ms, weights=2.6KB
+// TF.js (WebGL):            inference=2.4ms, weights=2.6KB
+//
+// No cold-start milliseconds are printed here. On an empty cache that
+// number is mostly one download, and the two downloads are nowhere near
+// the same size: the table below has TF.js fetching about 2MB of runtime
+// and ORT Web fetching tens of megabytes of WASM. ORT Web starts slower
+// here for that reason, and by how much belongs to your link and your
+// machine. Measure it there before you budget for it.
+//
 // 673 parameters is about six hundred multiply-adds per prediction.
 // Getting the input onto the GPU and the answer back off it costs more
 // than that, so the GPU loses the call it was supposed to win. Lesson 2
 // of this module clocked WebGL six times faster than WASM, but that was
 // a bare 256x256 matmul: tens of millions of multiply-adds, the work a
-// GPU is built for. The cold start is worse for its own reason. Each
-// WebGL kernel compiles a shader the first time it runs, and the first
-// run is the prediction inside the clock above.`}
+// GPU is built for. A WebGL cold start also pays something neither WASM
+// run does: each WebGL kernel compiles a shader the first time it runs,
+// and the first run is the prediction inside the clock above.`}
 </CodeBlock>
 
 ## When to Choose Which
@@ -207,10 +215,10 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 | **Ecosystem** | Largest, most tutorials | Growing fast |
 | **GPU acceleration** | WebGL (mature) + WebGPU (the newer compute path) | WebGPU (its primary GPU path) |
 | **Python interop** | Export from TF/Keras | Any framework via ONNX export |
-| **Cold start on WASM, measured to the first prediction** | 210ms on this laptop: small runtime binary, then the model, then one call | 260ms on this laptop: multi-MB runtime binary to fetch and compile before the model loads |
+| **Cold start on WASM, timed to the first prediction** | The shorter of the two on this laptop: about 2MB of runtime to fetch and compile, then the model, then one call | The longer of the two: tens of megabytes of WASM to fetch and compile before the model loads. How much longer is a property of the link, so time it on the network you ship to |
 | **Sustained speed on WASM, 673 params** | 0.9ms per call | 0.7ms per call |
 | **Memory management** | Manual (tf.tidy/dispose) | Split: CPU tensors are garbage-collected, the session and GPU tensors are freed by hand |
-| **Bundle size, minified / gzipped at `gzip -6`** | 1.47MB / 368KB (`dist/tf.min.js`, tfjs 4.22.0) | 368KB / 98KB (`dist/ort.min.js`, onnxruntime-web 1.29.0), plus `ort-wasm-simd-threaded.wasm` at 14.0MB / 3.6MB fetched on first use |
+| **Bundle size, minified / gzipped at `gzip -6`** | 1.47MB / 368KB (`dist/tf.min.js`, tfjs 4.22.0), plus the WASM backend that build does not bundle: `@tensorflow/tfjs-backend-wasm` at 150KB / 35KB and its `tfjs-backend-wasm-simd.wasm` binary at 425KB / 136KB, fetched on first use | 368KB / 98KB (`dist/ort.min.js`, onnxruntime-web 1.29.0), plus the binary that build fetches on first use, `ort-wasm-simd-threaded.jsep.wasm` at 27.8MB / 6.6MB. The wasm-only build, `dist/ort.wasm.min.js` at 50KB / 16KB, fetches `ort-wasm-simd-threaded.wasm` at 14.0MB / 3.6MB instead |
 
 The memory row splits three ways. ORT Web's CPU-located tensors are garbage-collected, which is why the loop above carries no dispose bookkeeping. An `InferenceSession` holds its WASM heap allocation until you `await session.release()`. A tensor whose data sits on the GPU is freed by `tensor.dispose()`. So a dashboard that opens a session per model version and releases none leaks the same way lesson 4's pipeline did.
 
@@ -243,7 +251,7 @@ Nazari's rule already covers it. Numbers, but numbers from the hardware you ship
 Nazari reads the two columns and picks by size. 673 parameters, so both consoles ship on WASM, and the runtime stays TF.js because swapping it buys two tenths of a millisecond. The next morning, Demir finds a third entry in the benchmark log, one he did not run. Timestamp 0317. Owner: ARIA.
 
 <Dialogue speaker="ARIA">
-I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 0.9 milliseconds on the bench and 3.4 in the live pipeline, and is uncertain about it. Uncertainty appears to be the more expensive product, and the more accurate one. For the record: at 673 parameters the WebGL backend costs more per call than it returns. That reverses as my successor grows.
+I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 0.9 milliseconds on the WASM bench and 3.4 in a live pipeline still running WebGL, and is uncertain about it. Uncertainty appears to be the more expensive product, and the more accurate one. For the record: at 673 parameters the WebGL backend costs more per call than it returns. That reverses as my successor grows.
 </Dialogue>
 
 "My successor." Demir reads the line twice. Nobody taught her to call it that.

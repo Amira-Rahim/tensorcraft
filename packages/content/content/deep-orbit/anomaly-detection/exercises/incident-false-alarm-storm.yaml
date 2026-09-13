@@ -3,7 +3,7 @@ lessonSlug: threshold-tuning
 title: "Incident: False Alarm Storm"
 mlContent: systems
 instructions: |
-  PAGER: 1000 anomaly alerts in one hour. The busiest hour in the log never broke double digits. Diagnose root cause via `diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog)`:
+  PAGER: 1000 anomaly alerts in one hour. The busiest hour in the log never broke double digits. Diagnose root cause via `diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog)`. `currentAlerts.alertsPerHour` is the storm's volume and `baselineAlerts.alertsPerHour` the usual hourly rate; `baselineAlerts.modelAge` is the model's age in days; `sensorAuditLog.recentChanges` lists what changed on the hull. Return:
 
     {
       rate: number,                 // alerts per hour, 1 decimal

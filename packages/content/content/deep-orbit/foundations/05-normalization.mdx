@@ -149,13 +149,15 @@ The exercise ends at a model, so here is all of it. `tf.sequential()` holds an o
 
 The neuron multiplies each normalized feature by its weight and adds the bias. It passes the total through sigmoid, `1 / (1 + Math.exp(-x))`, which squashes any number into the range 0 to 1.
 
-The numbers below come from the exercise's four-reading batch, not the five readings above: its per-column mean is `[23, 0.5]` and its std is `[2.24, 0.224]`. Against those stats, reading `[20, 0.2]` z-scores to `[-1.34, -1.34]`. The total is `0.9 * -1.34 + -1.4 * -1.34 - 0.3`, or `0.37`, and sigmoid of that is `0.59`. Reading `[22, 0.8]` z-scores to `[-0.45, 1.34]`, total `-2.58`, verdict `0.07`. Both are worth checking on a calculator. `predict()` runs that arithmetic for a whole batch, one row in, one score out.
+The numbers below come from the exercise's four-reading batch, not the five readings above: its per-column mean is `[23, 0.5]` and its std is `[2.24, 0.224]`. Against those stats, reading `[20, 0.2]` z-scores to `[-1.34, -1.34]`. The total is `0.9 * -1.34 + -1.4 * -1.34 - 0.3`, or `0.37`, and sigmoid of that is `0.59`. Reading `[22, 0.8]` z-scores to `[-0.45, 1.34]`, total `-2.58`, verdict `0.07`. Both are worth checking on a calculator. `predict()` runs that arithmetic for a whole batch, one row in, one score out. It always wants a batch, so a single reading goes in as one row of a `[1, 2]` tensor rather than the bare `[2]` you are holding.
+
+Now run those same four readings through the same neuron raw, without normalizing, and every verdict comes back 1.000000. The temperature term alone gets there: `0.9 * 20` is 18, and sigmoid is flat at the top long before signal strength contributes its `-1.4 * 0.2`. Normalized, the same neuron answers 0.59, 0.07, 0.67 and 0.57, and the lowest of the four belongs to `[22, 0.8]`, the reading with the strongest signal. Same weights, same bias, both times. Only the scales changed.
 
 Module 2 builds these layers and module 3 trains their weights. Tonight one of them is a fixed function you feed.
 
 ## Challenge
 
-Normalized data exists to be fed to a model, so this challenge ends at one. Farah lends you a neuron out of her preview build, weights frozen: two features in, one verdict out. That is enough to show why the saved statistics matter. Feed it a reading normalized with different stats and it answers a different question.
+Normalized data exists to be fed to a model, so this challenge ends at one. Farah hands you one frozen neuron off her scratch pad, weights fixed: two features in, one verdict out. That is enough to show why the saved statistics matter. Feed it a reading normalized with different stats and it answers a different question.
 
 Normalize the Archimedes sensor data using z-score normalization, then run every reading through the preview neuron.
 
@@ -170,12 +172,12 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
   whatYouLearned={[
     "Unnormalized scales let whichever feature has the largest raw numbers dominate what the model learns. Normalization gives every feature comparable numerical influence during training.",
     "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call.",
-    "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds like pixel values. Live sensor streams have no such bounds, which is why z-score wins there.",
+    "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds. One outlier crushes everything else into a corner, so keep it off open-ended streams. A stream whose sensors saturate is not open-ended, which is why module 4's classifier min-max normalizes this one.",
     "Save the training-time mean and standard deviation, computed on the training rows only. Inference data must be normalized with those same statistics; never recompute them from the new batch.",
     "A normalization pipeline is proven at a model's front door: a single dense sigmoid neuron (tf.sequential, tf.layers.dense, setWeights) turns normalized readings into verdicts via predict()."
   ]}
   bridge="Min-max normalization is the same formula as scroll-progress: `scrollY / (docHeight - viewportHeight)` maps pixels to 0-1, and `data.sub(min).div(max.sub(min))` maps sensor readings to 0-1 the same way."
-  youCanNow="Apply z-score and min-max normalization to tensor data using TensorFlow.js, preserve training statistics for consistent inference, and run normalized readings through a real dense layer to get a prediction."
+  youCanNow="Apply z-score normalization with tf.moments, preserve the training statistics for inference, and run normalized readings through a real dense layer to get a prediction."
 />
 
 <Epilogue>

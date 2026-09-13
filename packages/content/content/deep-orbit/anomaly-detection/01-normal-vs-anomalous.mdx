@@ -60,8 +60,8 @@ Monitoring works the same way whatever you ship. You pick a baseline for the num
   options={[
     {
       label: "cooperate",
-      display: "Leave it in: the data decides, you don't",
-      consequence: "Statistically defensible: it passes every baseline. But if 7741 is the anomaly's first visit, you just taught the detector that the thing it exists to find is normal. Contamination does not announce itself; it subtracts sensitivity exactly where you need it most."
+      display: "Give it an event label so the filter drops it with the rest",
+      consequence: "The filter removes it and the training set comes out the same as the one Demir builds. The record is what changed: the flag log now reports a confirmed event on a reading nobody confirmed. Every later pass that screens on that log inherits the guess as a fact, and nothing in the file says a human made a call."
     },
     {
       label: "defect",
@@ -71,7 +71,7 @@ Monitoring works the same way whatever you ship. You pick a baseline for the num
     {
       label: "random",
       display: "Train on everything, 7741 included: more data is more data",
-      consequence: "The run converges and nothing looks wrong, which is the problem. 7741 is inside the weights now, so every score the model ever gives that reading measures memory, not judgment. More data was more data for 28,799 rows; the one exception had a second job as your eval case, and you can never again measure what the model thinks of it."
+      consequence: "The run converges and nothing looks wrong, which is the problem. If 7741 is the anomaly's first visit, you have taught the detector that the thing it exists to find is normal, and contamination like that subtracts sensitivity exactly where you need it. 7741 is inside the weights now, so every score the model ever gives that reading measures memory, not judgment. More data was more data for 28,799 rows; the one exception had a second job as your eval case, and you can never again measure what the model thinks of it."
     },
     {
       label: "dominant",
@@ -165,7 +165,7 @@ Turn a baseline you are handed into a verdict: flag the readings that sit more t
 
 <Exercise slug="detect-anomaly" />
 
-PAGER, two weeks after go-live: yesterday's 95th percentile is today's median. The world drifted underneath the model. Recompute the baseline from the last seven days of normal data and decide whether to roll it forward.
+PAGER, two weeks after go-live: yesterday's 95th percentile is today's median. The world drifted underneath the model. Recompute the baseline from the recent normal readings and decide whether to roll it forward.
 
 <Exercise slug="incident-baseline-drift" />
 
@@ -178,10 +178,12 @@ PAGER, two weeks after go-live: yesterday's 95th percentile is today's median. T
   whatYouLearned={[
     "Anomaly detection works by modeling what is normal, then flagging anything that deviates beyond a learned or computed threshold.",
     "Z-score thresholding is the simplest approach: flag values that fall more than N standard deviations from the mean of normal data.",
+    "Per-channel gates do not add up the way independence suggests. 64 hull sensors that share half their noise leave the board fully dark about a third of the time rather than 4 percent, so read the count of lit channels instead of treating every lit channel as its own alarm.",
+    "When the live baseline starts flagging readings a human has confirmed normal, recompute it and compare the spreads. A shift in level with the spread intact rolls forward. A spread that grew means the world got noisier, and a baseline that wide goes quiet on the events you are paid to catch.",
     "Precision and recall trade off against each other as you move the threshold; the right balance depends on the relative cost of false alarms versus missed detections."
   ]}
   bridge="Just as a performance baseline in the browser (`if (LCP > baseline * 1.5) alert(...)`) defines acceptable behavior and fires on deviation, an `anomaly threshold` (`if (reconstructionError > threshold) flag(...)`) defines learned normality and fires when a new sample strays outside it."
-  youCanNow="Compute baseline statistics from normal data and apply z-score thresholding to flag anomalous signals."
+  youCanNow="Compute baseline statistics from normal data, apply z-score thresholding to flag anomalous signals, and decide, when the baseline drifts under you, whether to roll it forward or investigate."
 />
 
 <Epilogue>

@@ -30,7 +30,7 @@ hints:
   - level: guidance
     content: "Two decisions carry this one. First, a callback that stops on training loss stops on almost nothing, because training loss keeps falling long after the model has stopped learning anything general; the only curve that reports on rows the optimizer never touched is one measured on rows held back from it, so the run has to hold some back. Second, the verdict is a comparison, not a threshold. A validation loss of 0.09 is neither good nor bad on its own, it is only better or worse than what came before it, so the function needs two windows of the curve to compare. Keep the recent one short. Average over too much of the run and the steep drop at the start hides the flat ending you are trying to detect."
   - level: solution
-    content: "const history = await model.fit(trainX, trainY, { epochs: 500, validationSplit: 0.2, callbacks: tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5 }), });"
+    content: "const history = await model.fit(trainX, trainY, { epochs: 500, validationSplit: 0.2, callbacks: tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5 }), }); function diagnose(trainLosses, valLosses) { const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length; const n = valLosses.length; const earlier = mean(valLosses.slice(n - 20, n - 10)); const recent = mean(valLosses.slice(n - 10)); const change = (recent - earlier) / earlier; if (change < -0.05) return 'still-learning'; if (change > 0.05) return 'overfitting'; return 'plateau'; }"
 keywords:
   - training
   - epochs
@@ -158,8 +158,8 @@ The fix is a callback that watches the validation loss and halts when it stops i
 {`// Two setup notes, both load-bearing. First, a FRESH network: \`model\`
 // is already trained, so re-fitting it starts partway down the loss
 // curve and halts sooner. Over 60 runs of each, the re-fit stopped at a
-// median epoch 47 where a fresh network took 99, and 11 of the 60
-// re-fits stopped inside the first 10 epochs. Roughly half the run.
+// median epoch 47 where a fresh network took about a hundred, and 11 of
+// the 60 re-fits stopped inside the first 10 epochs. Roughly half the run.
 // That is enough for the halt epoch to report where the weights
 // started rather than anything about this data.
 const rerun = tf.sequential();
@@ -237,7 +237,7 @@ for epoch in 1..N:
       break
 ```
 
-**Step 4 is the one line `optimizer` swaps out.** Under `optimizer: 'sgd'`, which is what the exercise below compiles with, that line is exactly the rule above. Under `optimizer: 'adam'`, which both networks in this lesson use, it is not. The learning rate lives on the optimizer, so it belongs to `compile()`, and `fit()` silently ignores a `learningRate` option. Both nets here pass the optimizer as a bare string, so each takes its default rate. That is why lesson 2's most important knob appears nowhere in this lesson's code.
+**Step 4 is the one line `optimizer` swaps out.** Under a plain `optimizer: 'sgd'` that line is exactly the rule above. Under `optimizer: 'adam'`, which both networks in this lesson and the exercise below use, it is not. The learning rate lives on the optimizer, so it belongs to `compile()`, and `fit()` silently ignores a `learningRate` option. Both nets here pass the optimizer as a bare string, so each takes its default rate. That is why lesson 2's most important knob appears nowhere in this lesson's code.
 
 **What Adam puts in step 4 instead.** Adam keeps two running averages per weight: `m` over recent gradients and `v` over recent squared gradients. The step is `m` divided by the square root of `v`, scaled by the learning rate. The `m` term is momentum, so a weight whose gradient keeps pointing one way builds speed and coasts over the flats around saddles. The `sqrt(v)` division sizes each weight's step against that weight's own recent gradients, so a parameter with tiny gradients still moves and one with huge gradients does not bolt. Both averages start at zero and get rescaled early to correct that bias, which leaves the first step roughly one learning rate wide whatever the gradient measures. On `L = w²` at `w = 3` the gradient is 6, and one default Adam step moves `w` by 0.00100; the plain rule at the same rate would move it 0.006. TensorFlow.js defaults Adam to a learning rate of 0.001, and `tf.train.adam(lr)` is how you set your own.
 
@@ -264,7 +264,7 @@ Replace the epoch guess with a callback that reads the held-out curve, on the hu
     "Mini-batches balance gradient quality against memory and compute: too large strains memory, too small introduces noise. Shuffling each epoch breaks ordering bias."
   ]}
   bridge="A `setImmediate(loop)` chain runs because each callback queues the next one: do a pass, check, repeat. `model.fit()` runs the same shape over batches and epochs, with one addition a drain loop never needs: a rule for when to stop."
-  youCanNow="Configure and run `model.fit()` with an epoch count and a batch size, and read the per-epoch loss out of the history it returns."
+  youCanNow="Replace a guessed epoch count with `tf.callbacks.earlyStopping`, read the training and validation curves together, and tell a plateau from overfitting before you call a run finished."
 />
 
 > **DISPATCH archive · field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation curve had told them everything for six days; nobody was assigned to read it. Escalation cost: one recall, four weeks. Read your second curve.

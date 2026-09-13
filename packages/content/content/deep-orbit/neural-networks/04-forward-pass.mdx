@@ -28,9 +28,9 @@ hints:
   - level: nudge
     content: "A forward pass is model.predict(input): data flows through the layers and comes out as a prediction tensor."
   - level: guidance
-    content: "What the layer has to be told is how many features one reading carries, never how many readings are stacked up. The row count is the free axis, which is why the same layer answers a stack of any height. forward() has to hold that open: hand the whole stack over in one go, because the grader counts the calls your function makes and runs it on stacks taller than the starter's."
+    content: "What the layer has to be told is how many features one reading carries, never how many readings are stacked up. The row count is the free axis, which is why the same layer answers a stack of any height. forward() has to hold that open: hand the whole stack over in one go, because the grader counts the calls your function makes and runs it on stacks taller than the starter's. The last step is the shape that ended the demo: a reading that arrives flat has to reach the layer as a stack of one row, at whatever width the grader hands over."
   - level: solution
-    content: "model.add(tf.layers.dense({ units: 3, inputShape: [2] })); function forward(batch) { return model.predict(batch); } const prediction = forward(input);"
+    content: "model.add(tf.layers.dense({ units: 3, inputShape: [2] })); function forward(batch) { return model.predict(batch); } const prediction = forward(input); const singleReading = tf.tensor1d([5.0, 6.0]); function asBatch(reading) { return reading.expandDims(0); } const batched = asBatch(singleReading);"
 keywords:
   - forward-pass
   - predict
@@ -39,13 +39,13 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-`Error: Error when checking : expected dense_Dense1_input to have shape [null,3] but got array with shape [3,1].` The orphaned colon is TFJS's own, an empty slot where the layer name should be; the leading `Error:` is the console printing an Error object. This is the string the runtime actually prints. So is the `[3,1]`, which is not the shape Demir passed. The bridge display, 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values, shape `[3]`. TFJS pads any rank-1 input to rank 2 by adding the new axis on the right, so three features became three samples of one feature, and that is the shape the error quotes back. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
+`Error: Error when checking : expected dense_Dense1_input to have shape [null,3] but got array with shape [3,1].` The orphaned colon is TFJS's own, an empty slot where the layer name should be; the leading `Error:` is the console printing an Error object. This is the string the runtime actually prints. So is the `[3,1]`, which is not the shape Demir passed. The error hit the bridge display at 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values, shape `[3]`. TFJS pads any rank-1 input to rank 2 by adding the new axis on the right, so three features became three samples of one feature, and that is the shape the error quotes back. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
 
 <Dialogue speaker="Dr. Farah">
 The architecture is fine. The demo wasn't. Run it again, properly this time. Even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
 </Dialogue>
 
-<LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Debug shape mismatches, the most common neural network error"]} />
+<LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Give a flat reading the batch axis the layer expects, which is the mismatch that killed the demo"]} />
 
 ## Data Flows Forward
 
@@ -73,10 +73,15 @@ console.log(prediction.dataSync()); // ~0.5 (random, untrained)
 // Input:   [1, 3]  → 3 sensor values
 // Layer 1: [1, 32] → 32 features detected
 // Layer 2: [1, 16] → 16 higher-level patterns
-// Output:  [1, 1]  → probability of anomaly`}
+// Output:  [1, 1]  → probability of anomaly
+
+// The feed hands over one reading at a time, flat. Give it the axis:
+const flat = tf.tensor1d([0.5, 0.8, 0.2]); // shape: [3], which predict() rejects
+const batched = flat.expandDims(0);        // shape: [1, 3]: a stack of one
+model.predict(batched);                    // runs`}
 </CodeBlock>
 
-Every input carries a batch dimension, even a batch of one: `[1, 3]`, not `[3]`. The network is built to process stacked readings in parallel, and a single reading is a stack of height one. Shape mismatches are the most common error in ML. Unlike a wrong prop, they fail loudly and, as Demir can now attest, they wait for an audience.
+Every input carries a batch dimension, even a batch of one: `[1, 3]`, not `[3]`. The network is built to process stacked readings in parallel, and a single reading is a stack of height one. `expandDims(0)` adds that axis to a flat reading, and `reshape([1, 3])` does the same job when you already know the width. Shape mismatches are the error you will hit most while you are learning this. Unlike a wrong prop, they fail loudly and, as Demir can now attest, they wait for an audience.
 
 <Dialogue speaker="Ensign Demir">
 Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
@@ -84,7 +89,7 @@ Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
 
 ## Challenge
 
-Run a forward pass, and watch what the batch axis does to the shapes.
+Run a forward pass, then give one flat reading the batch axis the layer wants.
 
 <Exercise slug="forward-pass" />
 
@@ -97,10 +102,10 @@ Run a forward pass, and watch what the batch axis does to the shapes.
   whatYouLearned={[
     "The forward pass flows data through each layer in order; model.predict() runs this in one call and returns the output tensor.",
     "Every input requires a batch dimension even for a single sample: shape [1, features] instead of [features].",
-    "Shape mismatches are the most common neural network error. They fail loudly, and the message names both the shape the layer wanted and the shape it got."
+    "A shape mismatch fails loudly, and the message names both the shape the layer wanted and the shape it got. expandDims(0) gives a flat reading the batch axis the layer asked for."
   ]}
   bridge="DOM event propagation and the forward pass both carry the word 'propagation,' but event handlers run independently and can stop bubbling, while layer outputs feed directly into the next layer's weights and cannot be interrupted."
-  youCanNow="Run a forward pass with model.predict(), trace tensor shapes through each layer, and diagnose shape mismatch errors."
+  youCanNow="Run a forward pass with model.predict(), read the shapes it produces, and give a single flat reading the batch axis the layer expects."
 />
 
 <Epilogue>

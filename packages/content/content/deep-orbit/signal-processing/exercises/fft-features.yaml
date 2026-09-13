@@ -72,7 +72,10 @@ testCode: |
     };
 
     it('returns the two raw features followed by one magnitude per bin in the band', () => {
-      expect(featuresOf(signal, 256, 50, 82)).toHaveLength(10);
+      expect(
+        featuresOf(signal, 256, 50, 82),
+        'Bin width is 256 / 64 = 4 Hz here, so the 50 to 82 Hz band covers bins 13 through 20 with both endpoints in. That is eight magnitudes behind the two raw features. A slice that stops at the top bin instead of including it returns nine.',
+      ).toHaveLength(10);
     });
 
     it('leads with peak amplitude and the zero-crossing count', () => {

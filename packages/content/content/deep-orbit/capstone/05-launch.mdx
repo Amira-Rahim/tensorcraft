@@ -10,7 +10,7 @@ scene:
   epilogueLocation: "Bridge, All Displays"
   portraitAlt: "Demir's hand hovers over the deploy control on the bridge, a pulse ring counting down on the holo table as Mirza and Nazari stand by."
   epiloguePortraitAlt: "Every bridge display carries the same mirrored waveform as the whole crew stands in silhouette, watching the signal answer in their own harmonics."
-estimatedMinutes: 70
+estimatedMinutes: 25
 difficulty: advanced
 context:
   narrative: "Everything is ready. Mirza gives the final order: 'Deploy DEEP SCAN. Classify the anomalous signal. Let's find out what we've been chasing across the galaxy.' Demir deploys. The signal is classified."
@@ -30,7 +30,10 @@ hints:
   - level: nudge
     content: "This ladder covers classify-anomaly, the finale, and carries a note on launch-rehearsal at the end. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote. verify-deployment states its whole contract in its own instructions. For launch-rehearsal, the one number worth checking before you write anything is the update count: it belongs to the optimizer, not to your own arithmetic."
   - level: guidance
-    content: "The expected ratios are not a table to memorize, they are the sub-interval train divided through, and the section on the interval train works them out. Two consequences to notice there. A capture can start late and carry no 1:1 opener, so a shorter ratio list is compared against the end of the full list rather than its front. And measured seconds never divide into exact ratios, so a match means a relative band around each expected value, the width the instructions name. In the vote, the part worth getting right is where the sigma comes from: a mean and a spread are properties of the window on the console, not constants you carry from one channel to the next, and a reading that is unremarkable against one window is extreme against a tighter one. Then the majority, two of three: any one detector can be blind without silencing the alarm, and no one detector can raise one by itself. launch-rehearsal shares this rung, and three decisions carry it. The limits a reading is scaled against belong to the instrument, so they are read off the argument that carries them rather than off the batch in front of you. The candidate arrives compiled, and compiling it again throws away the training state CI handed over. And the update count in the verdict is a property of the optimizer that nothing outside it can assign, which is why it has to agree with the loss trace reported beside it."
+    content: |
+      classify-anomaly first. The expected ratios are not a table to memorize, they are the sub-interval train divided through, and the section on the interval train works them out. Two consequences to notice there. A capture can start late and carry no 1:1 opener, so a shorter ratio list is compared against the end of the full list rather than its front. And measured seconds never divide into exact ratios, so a match means a relative band around each expected value, the width the instructions name. In the vote, the part worth getting right is where the sigma comes from. A mean and a spread are properties of the window on the console, not constants you carry from one channel to the next. A reading that is unremarkable against one window is extreme against a tighter one. Then the majority, two of three: any one detector can be blind without silencing the alarm, and no one detector can raise one by itself.
+
+      launch-rehearsal, the other exercise this rung covers. Three decisions carry it. The limits a reading is scaled against belong to the instrument, so they are read off the argument that carries them rather than off the batch in front of you. The candidate arrives compiled, and compiling it again throws away the training state CI handed over. And the update count in the verdict is a property of the optimizer that nothing outside it can assign, which is why it has to agree with the loss trace reported beside it.
   - level: solution
     content: |
       function decomposeIntervals(intervals) {
@@ -382,7 +385,7 @@ And then the one the whole season was for. The console transcript above is what 
     "A rehearsal is only evidence if its record can be checked. A loss trace is a value the submitting code returns and can be written by hand; model.optimizer.iterations belongs to the optimizer, counts one per batch, and takes no assignment. Tie them together (batches per epoch times epochs in the trace) and the training record cannot be produced without the training."
   ]}
   bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time and no deploy ever resets it."
-  youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, run a verification script that confirms load, labeled-probe accuracy and performance in the live environment, and rehearse the full chain end to end: preprocess with the saved ranges, train the candidate with model.fit, score a canary set, and gate the launch on accuracy and drift."
+  youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, run a verification script that confirms load, labeled-probe accuracy and performance in the live environment, and rehearse the full chain end to end: preprocess with the saved ranges, train the candidate with model.fit, score a canary set, and gate the launch on accuracy and drift. Then run the decision layer itself: the 2-of-3 detector vote, the interval decomposition that identifies the Fibonacci train, and the classification record the crew signs."
 />
 
 <Epilogue>

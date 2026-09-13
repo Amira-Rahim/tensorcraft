@@ -119,7 +119,7 @@ Focus on the single unclassified signal and its significance.
 
 ## What You Are Actually Calling
 
-Strip the HTTP away and the thing on the other end is a model you have already built the parts of. A language model is a classifier. Given a sequence of tokens (word pieces, roughly three quarters of a word each), it emits one score per possible next token, softmax turns the scores into a probability distribution, and one token is sampled from it. Append the sample, run again, repeat until a stop token. Six hundred words of report is about eight hundred forward passes, one per token, each a next-token prediction: the shape of module 6's next-value prediction, except the output is one of tens of thousands of classes instead of three continuous numbers, which is what makes it classification.
+Strip the HTTP away and the thing on the other end is a model you have already built the parts of. A language model is a classifier. Given a sequence of tokens (word pieces, roughly three quarters of a word each), it emits one score per possible next token, softmax turns the scores into a probability distribution, and one token is sampled from it. Append the sample, run again, repeat until a stop token. Six hundred words of report is about eight hundred forward passes, one per token. Each one is the shape of module 6's next-value prediction, with one difference: the output is one of tens of thousands of classes rather than three continuous numbers. That difference is what makes it classification.
 
 Inside each pass, the mechanism that reads the prompt is attention, stacked dozens of layers deep and run with many heads at once. Module 8's scorer emitted one score per step against a single query, then pooled the whole window into one summary vector. A transformer gives every token its own query, so the scores form a T-by-T matrix: 80 steps means 6,400 scores rather than 80. That is the self-attention module 8 named and left to the transformers, and it is why context length costs what it does. Softmax still spends the budget, and the weighted sum still becomes the next layer's input. The prompt is the window. The context limit is the sequence length, the same T you windowed at 80.
 
@@ -178,13 +178,14 @@ const check = validateClaims(
 );
 console.log(check.valid);    // ['12001', '153', '1']
 console.log(check.invalid);  // ['9']  ← no such cluster in the data
-// Module 9 lesson 3 hardens this checker against retrieved RAG rows;
-// the contract is already here: extract, compare, refuse to trust prose.`}
+// Lesson 3 of this module rebuilds this checker as verifyClaims, against
+// retrieved RAG rows rather than a flat record; the contract is already
+// here: extract, compare, refuse to trust prose.`}
 </CodeBlock>
 
 ## Challenge
 
-The client above is a fetch wrapper, and the reply it returns is not. Turn one reply into a typed analysis, or into a thrown error.
+The client above is typed all the way to its edge. What comes back over that edge is not: a string with no schema and no guarantees. Turn one reply into a typed analysis, or into a thrown error.
 
 <Exercise slug="llm-client" />
 

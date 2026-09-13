@@ -109,7 +109,7 @@ testCode: |
       expect(lower).toContain('json');
       expect(
         lower,
-        'Output the model cannot be parsed is output you cannot use. Name every field you intend to read.',
+        'Output you cannot parse is output you cannot use. Name every field you intend to read.',
       ).toContain('classification');
       expect(lower).toContain('confidence');
       expect(lower).toContain('reasoning');

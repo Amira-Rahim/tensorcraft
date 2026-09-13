@@ -153,6 +153,8 @@ One entry for the strangest page in the ship's records: back before this network
 
 While you are still changing the model, read that gap against the validation score. The test slice is scored once, after the settings are frozen.
 
+Accuracy hides the shape of the error. The crew's 94.0% splits into four counts on that 50-row slice: 23 of the 26 anomalous rows caught, 3 missed, all 24 calm rows left alone, no false alarms. The three misses are exactly the late-confirmed rows, the ones that read almost calm in these three features. Those four counts are the confusion matrix, and the drawer below turns them into precision, recall and F1.
+
 <DerivationDrawer summary="Why accuracy alone is not enough: precision, recall, F1">
 **Every prediction lands in one of four buckets:** true positive (TP: real anomaly, flagged), false positive (FP: calm reading, flagged anyway), true negative (TN: calm reading, left alone), false negative (FN: real anomaly, missed). Every metric below is a ratio of these four counts.
 
@@ -178,7 +180,7 @@ Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26
 **ROC and PR curves.** Sweep the threshold and plot the results: a precision-recall (PR) curve shows precision against recall, and an ROC (receiver operating characteristic) curve shows the true-positive rate (the recall you just computed) against the false-positive rate, the fraction of calm rows falsely flagged. One accuracy number from one threshold hides both curves.
 </DerivationDrawer>
 
-One number in that table deserves suspicion before anyone celebrates: precision 1.000 was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. An eval set built to be balanced instead of drawn from production is selection bias in miniature.
+One of those four counts deserves suspicion before anyone celebrates: the empty false-alarm cell (precision 1.000, in the drawer above) was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. An eval set built to be balanced instead of drawn from production is selection bias in miniature.
 
 <DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates">
 **Precision belongs to the detector plus the world it runs in.** Sensitivity and false-positive rate are properties of the model alone. Precision also depends on how common anomalies are in the data you run it on, and the held-out slice (26 anomalous, 24 calm) was assembled to be near balanced. Live hull telemetry is overwhelmingly calm.

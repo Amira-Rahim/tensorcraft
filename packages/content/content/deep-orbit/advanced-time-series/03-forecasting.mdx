@@ -221,7 +221,7 @@ const replay = predictOneStepAhead(model, [...past.slice(-10), ...arrived], 10);
 //   16       0.270     0.013`}
 </CodeBlock>
 
-The replay column does not move. Every prediction in it starts from readings that arrived, so the error it reports at horizon 16 is the one-step error it reported at horizon 1. The rollout column starts on that same number and then grows by about half again per step, because the model is reading its own output back in and this series pulls small differences apart. It levels off near 0.3, since 0.336 is the average distance between any two unrelated readings here and a rollout that has lost the signal cannot be more wrong than that. Nothing about the model changed between the two columns, only what it read before each prediction.
+The replay column has no trend. Every prediction in it starts from readings that arrived, so what it reports at horizon 16 is still a one-step error, the same kind of number it reported at horizon 1. The rollout column starts on that same number and then grows by about half again per step, because the model is reading its own output back in and this series pulls small differences apart. It levels off near 0.3, since 0.336 is the average distance between any two unrelated readings here and a rollout that has lost the signal cannot be more wrong than that. Nothing about the model changed between the two columns, only what it read before each prediction.
 
 ## Challenge
 
@@ -229,7 +229,7 @@ Train the one-step model yourself, then cover the same stretch twice: once feedi
 
 <Exercise slug="forecast-signal" />
 
-<RecallPrompt question="Why does multi-step forecasting become less reliable the further ahead you predict?" answer="Each step uses the previous prediction as input, so errors compound: a small error at step 1 gets fed back into step 2, and so on. The uncertainty cone grows with horizon, and if the underlying data is non-stationary, the learned patterns may no longer apply at all." />
+<RecallPrompt question="Why does multi-step forecasting become less reliable the further ahead you predict?" answer="Each step uses the previous prediction as input, so errors compound whenever the model's own output moves the next window somewhere new: a small error at step 1 gets fed back into step 2, and so on. A forecaster that has learned only the level settles onto that level instead and stops compounding, which is a flat forecast rather than a safe one. Non-stationarity is the other failure: if the series changes, the learned patterns may stop applying at any horizon." />
 
 <RecallPrompt question="You run the drift check on a 100-step rollout and it reports that error has tripled. What did you actually measure?" answer="Compounding, not drift. Step 100 stands on 99 of the model's own guesses while step 1 stands on real data, so the late errors are larger even when the signal has not changed. Drift shows up only when the horizon is held at one step and this period's errors are compared against an earlier period's." />
 

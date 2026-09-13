@@ -169,10 +169,22 @@ testCode: |
 
     it('enforces the input shape contract at the named stage', async () => {
       const pipeline = chained(normalizeStage, fftStage);
-      await expect(
-        pipeline.run([1, 2, 3, 4, 5, 6]),
-        'validate is a precondition: a six-sample window never reaches process, and the error says which stage refused it. run is async, so the refusal arrives as a rejected promise.',
-      ).rejects.toThrow('Validation failed at: normalize');
+      const refusal = await pipeline.run([1, 2, 3, 4, 5, 6]).then(
+        () => null,
+        (error) => error,
+      );
+      expect(
+        refusal,
+        'validate is a precondition: a six-sample window never reaches process, so this run has to refuse. run is async, so the refusal arrives as a rejected promise.',
+      ).toBeDefined();
+      expect(
+        refusal,
+        'The refusal came back as a thrown string. A string has no name and no stack, so the CI log shows the operator the message and nothing about where the pipeline gave up. Throw an Error.',
+      ).toBeInstanceOf(Error);
+      expect(
+        refusal.message,
+        'The message names the stage that refused the data. Without it the operator has a failed run and no place to look.',
+      ).toContain('Validation failed at: normalize');
     });
 
     it('catches a mid-pipeline contract break (FFT emits 5 bins, next stage demands 8)', async () => {

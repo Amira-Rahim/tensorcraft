@@ -89,7 +89,7 @@ The technique runs exactly as deep as Nazari's arithmetic. If you've ever conver
 The WebP comparison stops at the file size, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it", "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)", "Apply quantization to some layers and not others using the converter's weight-name patterns"]} />
+<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it", "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)", "Know that the quantize flags take weight-name patterns, so a pass can cover some layers and skip others"]} />
 
 ## Precision Reduction
 
@@ -144,7 +144,8 @@ function dequantize(quantized: number[], scale: number, zeroPoint: number): numb
 {`# Quantization happens at EXPORT time, in the converter, not in
 # model.save(). TFJS's save() writes float32, full stop; there is no
 # quantization option on it. The tensorflowjs_converter (a one-time
-# Python CLI step, the only Python in this course) rewrites the weight
+# Python CLI step, alongside the tf2onnx export module 4 mentioned;
+# nothing else in this course leaves JavaScript) rewrites the weight
 # files and records the scheme in the weights manifest:
 
 tensorflowjs_converter \\
@@ -164,7 +165,7 @@ tensorflowjs_converter \\
 # uint8   (--quantize_uint8):   85 MB, accuracy: 94.2%`}
 </CodeBlock>
 
-Read that accuracy column twice, because it is a measurement and not a rounding. The score sits at 94.2 before the pass and 94.2 after it, at both precisions. The width of one bucket is why. The widest weight tensor in this classifier spans 2.96, so uint8 lays 255 steps across that and one step comes out 0.0116 wide; the largest gap between a trained weight and the float the runtime decodes back measured 0.0058. uint16 puts the step at 0.000045 and that largest gap at 0.000023. Nothing this classifier decides turns on a difference that small. Score 10,000 held-out captures instead of the usual slice and uint16 still moves no verdict at all, while uint8 moves three.
+Read that accuracy column twice, because it is a measurement and not a rounding. The score sits at 94.2 before the pass and 94.2 after it, at both precisions. The width of one bucket is why. The widest weight tensor in this classifier spans 2.29, so uint8 lays 255 steps across that and one step comes out 0.0090 wide; the largest gap between a trained weight and the float the runtime decodes back measured 0.0069. uint16 puts the step at 0.000035 and that largest gap at 0.000026. Nothing this classifier decides turns on a difference that small. Score 10,000 held-out captures instead of the usual slice and uint16 still moves no verdict at all, while uint8 moves three.
 
 <Dialogue speaker="Dr. Farah">
 Then write it the narrow way. Quantization cost this classifier nothing on this holdout. That is not a property of quantization, and the sentence stops being true the week the model changes.
@@ -178,12 +179,12 @@ Quantize a model's kernels to uint8, load the decoded floats back onto it, and c
 
 <Exercise slug="quantize-weights" />
 
-<RecallPrompt question="What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 stored as uint16 or uint8), shrinking the saved model 2x or 4x. In TFJS the weights decode back to float32 at load, so the win is download, disk, and load spike; inference speed is unchanged. What it costs in accuracy is a measurement on your model rather than a fixed price: score the decoded build against the trained one and read what moved. On DEEP SCAN nothing did, because one uint8 step across that classifier is 0.0116 wide and no verdict turns on a difference that small. Where a pass does cost something, the cost can sit in one rare class that an aggregate hides, and the quantize flags take weight-name patterns, so you can leave that part of the model at float32 and shrink the rest." />
+<RecallPrompt question="What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 stored as uint16 or uint8), shrinking the saved model 2x or 4x. In TFJS the weights decode back to float32 at load, so the win is download, disk, and load spike; inference speed is unchanged. What it costs in accuracy is a measurement on your model rather than a fixed price: score the decoded build against the trained one and read what moved. On DEEP SCAN uint16 moved nothing and uint8 moved three verdicts in ten thousand, which is below what the scoreboard prints: one uint8 step across that classifier is 0.0090 wide, and next to nothing it decides turns on a difference that small. Where a pass does cost something, the cost can sit in one rare class that an aggregate hides, and the quantize flags take weight-name patterns, so you can leave that part of the model at float32 and shrink the rest." />
 
 <LessonRecap
   whatYouLearned={[
     "Quantization stores each float32 weight (4 bytes) as uint16 (2 bytes) or uint8 (1 byte), shrinking the saved model by 2x or 4x respectively.",
-    "What quantization costs in accuracy belongs to the model, not to the scheme, so it is measured by scoring the decoded build against the trained one. It can come out at zero: on a classifier whose widest weight tensor puts one uint8 step at 0.0116, neither precision moved a verdict. Where a pass does cost something, the cost can sit in one rare class, so the per-class breakdown matters more than the aggregate.",
+    "What quantization costs in accuracy belongs to the model, not to the scheme, so it is measured by scoring the decoded build against the trained one. It can come out at zero: on a classifier whose widest weight tensor puts one uint8 step at 0.0090, neither precision moved a verdict on the usual holdout, and at ten thousand captures uint16 still moved none while uint8 moved three. Where a pass does cost something, the cost can sit in one rare class, so the per-class breakdown matters more than the aggregate.",
     "Quantization is applied at export time by the tensorflowjs_converter's --quantize_uint8/--quantize_uint16 flags; model.save() itself always writes float32. TFJS decodes the weights back to float32 at load, so what shrinks is the download, the disk cache, and the load-time memory peak. The resident weights and the inference speed do not change.",
     "The quantize flags take weight-name patterns, so a pass can cover some layers and skip others. A small high-stakes classifier can stay at float32 while the bulk of the weights go to uint8; for DEEP SCAN that would have cost under a megabyte of the 255 MB saved."
   ]}

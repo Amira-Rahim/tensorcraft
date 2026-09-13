@@ -2,11 +2,11 @@ slug: ensemble-detector
 lessonSlug: the-anomaly
 title: "Build the DEEP SCAN Ensemble"
 instructions: |
-  Assemble the module's three detectors into one verdict, with the statistical one moved onto a rolling window. The reading that scored 3.2 sigma against eleven days of archive scores 32 against the eight recent readings you get here, because the sigma count belongs to the spread you divide by. That window of recent normalized amplitudes is what the statistical check gets; the autoencoder's and the LSTM's raw outputs for the latest reading come in beside it. Compute all three verdicts yourself.
+  Assemble the module's three detectors into one verdict, with the statistical one moved onto a rolling window. The reading that scored 3.2 sigma against eleven days of archive scores 32 against the eight recent readings you get here, because the sigma count belongs to the spread you divide by. That window of recent normalized amplitudes is what the statistical check gets; the autoencoder's and the LSTM's scores for the latest reading come in beside it. Compute all three verdicts yourself.
 
   1. Statistical. Take the z-score of `actual` against the window, using `tf.moments` for the window's center and spread. Report it signed, so a reading below the center comes back negative, and flag when |z| > 3.
   2. Autoencoder. Flag when `reconstructionError` > `reconThreshold`.
-  3. LSTM. Flag when |`predicted` - `actual`| > `predTolerance`, which is quoted in raw amplitude units.
+  3. LSTM. Flag when |`predicted` - `actual`| > `predTolerance`, which is quoted on the same 0-to-1 amplitude scale as `actual`, not in sigmas.
 
   `votes` is how many of the three flagged, and a majority (at least 2 of 3) sets `isAnomaly`. Return `{ zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }`.
 starterCode: |
@@ -100,8 +100,9 @@ testCode: |
     // Same reading, different spread. This window is a quieter stretch that
     // drifted low: mean 0.30, population std 0.05. Against it, 0.52 (the
     // archive's own mean, a reading lesson 1 calls dead normal) is 4.4 sigma
-    // and trips the gate. Against lesson 1's std of 0.15 the same reading is
-    // 1.5 sigma and trips nothing. Measure the window you were handed.
+    // and trips the gate. Against lesson 1's own baseline the same reading
+    // is 0 sigma, dead center of it, and trips nothing. Measure the window
+    // you were handed.
     it('reads the window it is given: one reading, two spreads, two verdicts', () => {
       const driftedWindow = [0.25, 0.35, 0.25, 0.35, 0.25, 0.35, 0.25, 0.35];
       const r = detectAnomalyEnsemble(driftedWindow, 0.52, 0.001, 0.010, 0.53, 0.10);
@@ -140,11 +141,12 @@ testCode: |
       expect(withRecon.isAnomaly, why2).toBe(true);
     });
 
-    // predTolerance is quoted in raw amplitude units, so the forecast miss has
-    // to be compared in those units too. A miss of 0.15 against a tolerance of
-    // 0.10 is over the line; the SQUARE of that miss is 0.0225, which is under
-    // it. Squaring a deviation smaller than 1 shrinks it, so a squared
-    // comparison against a raw tolerance answers correctly only by accident.
+    // predTolerance is quoted on the same 0-to-1 amplitude scale as the
+    // readings, so the forecast miss has to be compared on that scale too.
+    // A miss of 0.15 against a tolerance of 0.10 is over the line; the
+    // SQUARE of that miss is 0.0225, which is under it. Squaring a deviation
+    // smaller than 1 shrinks it, so a squared comparison against an
+    // unsquared tolerance answers correctly only by accident.
     it('compares the forecast miss in the units the tolerance is quoted in', () => {
       const over = detectAnomalyEnsemble(calmWindow, 0.52, 0.001, 0.010, 0.67, 0.10);
       expect(over, SHAPE).toBeDefined();

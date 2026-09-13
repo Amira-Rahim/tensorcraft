@@ -2,7 +2,7 @@ slug: weighted-ensemble
 lessonSlug: time-series-ensemble-methods
 title: "Ensemble Gain Over the Best Member"
 mlContent: evaluation
-instructions: "Write `ensembleGain(members, actual)` and report whether the ensemble was worth running. `members` is an array of `{ name, predictions, heldOutError }`, where `heldOutError` is that member's error on LAST week's held-out readings; `actual` holds the true values at the same positions as `predictions`. Return `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-variance weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the three weights on a scale that totals 1. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win. One test hands you three members that are all wrong by the same amount in the same direction, one hands you a strong member with two weak ones, and one hands you members whose errors partly cancel, so the blend beats the average member and still loses to the best one. A fourth lists the worst member first. Two more are about the weights: on one window last week's ranking still holds and the weighted blend scores better than the plain average, and on the next the ranking has flipped, last week's best member is this week's worst, and weighting by a stale score makes the blend worse than the plain average. A last window is drawn fresh on every run, so every number it checks has to be computed rather than recognised."
+instructions: "Write `ensembleGain(members, actual)` and report whether the ensemble was worth running. `members` is an array of `{ name, predictions, heldOutError }`, where `heldOutError` is that member's error on LAST week's held-out readings; `actual` holds the true values at the same positions as `predictions`. Return `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-variance weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the three weights on a scale that totals 1. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win. One test hands you three members that are all wrong by the same amount in the same direction. Another hands you a strong member with two weak ones. A third hands you members whose errors partly cancel, so the blend beats the average member and still loses to the best one. A fourth lists the worst member first. Two more are about the weights. On one window last week's ranking still holds, and the weighted blend scores better than the plain average. On the next the ranking has flipped, last week's best member is this week's worst, and weighting by a stale score makes the blend worse than the plain average. A last window is drawn fresh on every run, so every number it checks has to be computed rather than recognised."
 starterCode: |
   function ensembleGain(members, actual) {
     // The verdict is a comparison, so every member and both blends have to
@@ -227,7 +227,10 @@ testCode: |
         ],
         [10, 20, 30, 40],
       );
-      expect(result.ensemble).toBeCloseTo(1.75, 4);
+      expect(
+        result.ensemble,
+        'This is the equal-share blend of the three series, scored with the same mean absolute error every member is scored with.',
+      ).toBeCloseTo(1.75, 4);
       expect(
         result.weighted,
         'The strongest member carries about six sevenths of this blend, so the weighted series sits close to it and scores far better than the equal-share average.',
@@ -253,7 +256,10 @@ testCode: |
         ],
         [10, 20, 30, 40],
       );
-      expect(result.perMember.LSTM).toBeCloseTo(6, 4);
+      expect(
+        result.perMember.LSTM,
+        "Last week's best member is this week's worst, and it misses by 6 at every position here. Score each member on its own window before any weight is applied.",
+      ).toBeCloseTo(6, 4);
       expect(result.ensemble).toBeCloseTo(2.5, 4);
       expect(
         result.weighted,

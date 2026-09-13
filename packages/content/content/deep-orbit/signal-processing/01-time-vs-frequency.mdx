@@ -22,14 +22,14 @@ concept:
     mlTitle: "Time vs Frequency"
     mlCode: "fft(signal) // frequency view of the signal"
     tier: intuition
-    breaks: "DOM and CSSOM are two views of the same authored markup. Time and frequency are two views of the samples you captured, and the transform between them loses nothing either way. What a finite sample rate and a finite window threw away was already missing from those samples before the transform ran."
+    breaks: "DOM and CSSOM are two views of the same authored markup. Time and frequency are two views of the samples you captured, and the transform between them loses nothing either way."
 consequence:
   narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
   - level: nudge
     content: "Two captures can be near-identical sample by sample and still disagree in one frequency bin. Nothing is transformed for you here, so the disagreement does not exist until both captures have been turned into magnitudes."
   - level: guidance
-    content: "Nothing is precomputed this time, so the first decision is what goes into the transform and what you do with what comes back: two captures go in, two arrays of bin magnitudes come out, and the verdict lives in the comparison BETWEEN those arrays. Reading one spectrum on its own answers a different question, because the loudest bin in this capture belongs to a catalogued component. The second decision is what counts as a gap. A bin can differ because energy arrived in it or because energy drained out of it, and a hull channel that has gone dead is the second kind, so decide which of those your comparison catches before you trust its verdict. The third is scale: the two limits you were handed measure different things, and a magnitude grows with how much capture went into it."
+    content: "Nothing is precomputed this time, so the first decision is what goes into the transform and what you do with what comes back: two captures go in, two arrays of bin magnitudes come out, and the verdict lives in the comparison BETWEEN those arrays. Reading one spectrum on its own answers a different question, because the loudest bin in this capture belongs to a catalogued component. The second decision is what counts as a gap. A bin can differ because energy arrived in it or because energy drained out of it, and a hull channel that has gone dead is the second kind, so decide which of those your comparison catches before you trust its verdict."
   - level: solution
     content: "const timeTwin = baseline.every((v, i) => Math.abs(v - suspect[i]) <= tolerance); const spectrumOf = (samples: number[]) => tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync() as number[]); const magsA = spectrumOf(baseline); const magsB = spectrumOf(suspect); let divergentBin = -1; for (let i = 0; i < magsA.length; i++) { if (Math.abs(magsA[i] - magsB[i]) > threshold) { divergentBin = i; break; } } return { timeTwin, divergentBin };"
 keywords:
@@ -67,11 +67,16 @@ The rest of this lesson is learning to read that second view.
 <CodeBlock language="typescript" title="dual-representation.ts">
 {`// TIME DOMAIN: amplitude at each sample
 // Like reading the DOM: what is the value at each point in time?
+// Twelve samples at 12 Hz, so this is one second holding exactly one cycle.
 const timeDomain = [0.5, 0.87, 1.0, 0.87, 0.5, 0.0, -0.5, -0.87, -1.0, -0.87, -0.5, 0.0];
 // ^ This looks like... a wave? Hard to tell from raw numbers.
 
 // FREQUENCY DOMAIN: which frequencies are present and how strong
 // Like reading the CSSOM: what styles (patterns) are applied?
+// Magnitude here is the sketch's own convention: the amplitude of the tone.
+// A transform reports something larger. Run rfft on the array above and
+// bin 1 comes back at 6.0, the amplitude times half the sample count, and
+// that is the unit lesson 2 onward reads its peaks in.
 const frequencyDomain = [
   { frequency: 1, magnitude: 1.0 },   // a 1 Hz sine wave, full strength
   { frequency: 2, magnitude: 0.0 },   // no 2 Hz component
@@ -154,7 +159,7 @@ Transform both captures yourself, then say whether they are twins in time and na
 <LessonRecap
   whatYouLearned={[
     "Every signal has two representations: the time domain shows amplitude at each moment, and the frequency domain shows which periodic components are present and how strong they are.",
-    "Both views of one capture carry the same information, because the transform loses nothing the samples hold. What a finite sample rate and a finite window threw away was gone before the transform ran. Each view still hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
+    "Both views of one capture carry the same information, because the transform loses nothing the samples hold. Each view still hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
     "The frequency domain is useful for detection tasks because periodic components accumulate into a single frequency bin rather than being spread across many time samples."
   ]}
   bridge="Just as `document.querySelector` gives a structural view of a page while `getComputedStyle` gives a computed-value view, `fft(signal)` gives a frequency view of the same samples that the time-domain array already contains."

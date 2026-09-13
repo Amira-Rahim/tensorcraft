@@ -138,7 +138,7 @@ Magnitude pruning keeps the |wᵢ| factor and quietly assumes the curvature hᵢ
 // compress and 34M varied ones do not. gzip -9 over that same file:
 //   unpruned:      70 MB served
 //   60% pruned:    42 MB served
-// Accuracy: 94.2% → 91.8% (2.4% drop, all of it charged to the pruning
+// Accuracy: 94.2% → 91.8% (2.4-point drop, all of it charged to the pruning
 // pass, Nazari approves)
 
 console.log('=== DEEP SCAN Optimization Results ===');
@@ -166,7 +166,7 @@ console.log('512 MB dashboard budget. The 340 MB file peaked near 680.');`}
 
 ## Challenge
 
-Prune the classifier at the four levels you are handed, the first of which prunes nothing, and report what each one costs, one class at a time.
+Prune the classifier at each sparsity level you are handed, where a level of zero has to leave the model untouched, and report what each one costs, one class at a time.
 
 <Exercise slug="prune-weights" />
 

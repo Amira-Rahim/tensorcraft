@@ -34,6 +34,10 @@ testCode: |
         typeof (result && result.dataSync),
         'neuron() handed back a plain number. The arithmetic can be right and the type still wrong: keep the bias on the tensor, so the result is a scalar tensor the rest of a network could go on computing with rather than a value that has already left the graph.',
       ).toBe('function');
+      expect(
+        result.rank,
+        'neuron() handed back a tensor of rank 1 or higher, which is the number quoted below. A scalar tensor is rank 0, a single value: the products are still sitting side by side, so total them and offset that total by the bias.',
+      ).toBe(0);
       return result.dataSync()[0];
     };
     const callNeuron = (inputs, weights, bias) => {
@@ -44,15 +48,24 @@ testCode: |
       return readScalar(neuron(inputs, weights, bias));
     };
     it('computes the starter example from the inputs and weights the starter declares', () => {
-      expect(readScalar(output)).toBeCloseTo(0.4, 4);
+      expect(
+        readScalar(output),
+        'The starter calls neuron() with inputs [1, 2, 3], weights [0.2, 0.8, -0.5] and a bias of 0.1. Each input meets the weight at its own index, the three products are totalled, and the bias offsets that total. Leaving the bias off lands 0.1 short.',
+      ).toBeCloseTo(0.4, 4);
     });
     it('tracks different weights, not a memorized answer', () => {
       const out = callNeuron(tf.tensor([2, 1, 0]), tf.tensor([0.5, -0.5, 1.0]), tf.scalar(0.25));
-      expect(out).toBeCloseTo(0.75, 4);
+      expect(
+        out,
+        'Same function, different numbers: the grader called neuron() again with inputs [2, 1, 0], weights [0.5, -0.5, 1.0] and a bias of 0.25. The body has to work from the arguments it was handed, not from the starter example.',
+      ).toBeCloseTo(0.75, 4);
     });
     it('handles a different input width entirely', () => {
       const out = callNeuron(tf.tensor([1, 1, 1, 1]), tf.tensor([0.1, 0.2, 0.3, 0.4]), tf.scalar(-1.0));
-      expect(out).toBeCloseTo(0.0, 4);
+      expect(
+        out,
+        'This call carries four inputs rather than three. One tensor operation pairs up however many values arrive, so nothing in the body should be counting on a width.',
+      ).toBeCloseTo(0.0, 4);
     });
     it('matches the reduce() equivalent on inputs, weights and a bias drawn at grade time', () => {
       for (let trial = 0; trial < 3; trial++) {

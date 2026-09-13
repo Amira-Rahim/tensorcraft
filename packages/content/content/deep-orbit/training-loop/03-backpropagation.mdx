@@ -68,7 +68,7 @@ const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; a run that takes minutes with the backward pass stretches past thirty hours. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
 
 <Dialogue speaker="ARIA" expression="deadpan">
-Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a cost of roughly two forward passes. It has a name.
+Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a total cost of about three forward passes. It has a name.
 </Dialogue>
 
 ## Working Backwards
@@ -95,7 +95,7 @@ const { value: loss, grads } = tf.variableGrads(() => {
   // sigmoidCrossEntropy applies the sigmoid itself, so feed it logits
   const hidden = tf.relu(input.matMul(w1).add(b1));
   const logits = hidden.matMul(w2).add(b2);
-  return tf.losses.sigmoidCrossEntropy(label, logits).mean() as tf.Scalar;
+  return tf.losses.sigmoidCrossEntropy(label, logits) as tf.Scalar;
 });
 
 // grads now contains gradients for ALL 4 variables
@@ -144,7 +144,7 @@ Run backpropagation yourself: one call to `tf.variableGrads()`, behind a functio
 
 <RecallPrompt
   question="Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it's correct?"
-  answer="It costs one full forward pass per parameter per training step: 673 parameters means 673 extra forward passes for a single update. Backpropagation gets all 673 derivatives exactly, in one backward sweep costing roughly two forward passes."
+  answer="It costs one full forward pass per parameter per training step: 673 parameters means 673 extra forward passes for a single update. Backpropagation gets all 673 derivatives exactly in one backward sweep, and the forward pass plus that sweep costs about three forward passes in total."
 />
 
 <LessonRecap

@@ -238,7 +238,12 @@ The order is doing real work there. `peaceiris/actions-gh-pages@v4` finishes whe
 
 <CodeBlock language="typescript" title="validate-model.ts">
 {`// Model accuracy gate: blocks deployment if accuracy drops
+import * as tf from '@tensorflow/tfjs';
 import { createHash } from 'node:crypto';
+
+// The five classes in the order the training labels were encoded, so an
+// index off the score vector reads back as the name the holdout uses.
+const CLASSES = ['pulsar', 'quasar', 'noise', 'interference', 'anomaly'];
 
 interface ValidationResult {
   accuracy: number;
@@ -280,19 +285,26 @@ async function validateModel(
     }
   }
 
-  const model = await loadModel(modelPath);
+  const model = await tf.loadLayersModel(modelPath);
   const testData = await loadTestData(testDataPath);
 
   let correct = 0;
   const failures: string[] = [];
 
   for (const sample of testData) {
-    const prediction = await model.predict(sample.input);
-    if (prediction.label === sample.expectedLabel) {
+    // predict() is synchronous and hands back a tensor of five class
+    // scores, not a verdict. Read the winning index off it, and read it
+    // inside tidy: the row, the scores and the argMax are three tensors
+    // per sample, so a 100-row holdout otherwise leaves 300 behind.
+    const label = tf.tidy(() => {
+      const scores = model.predict(tf.tensor2d([sample.input])) as tf.Tensor;
+      return CLASSES[scores.argMax(-1).dataSync()[0]];
+    });
+    if (label === sample.expectedLabel) {
       correct++;
     } else {
       failures.push(
-        \`Expected \${sample.expectedLabel}, got \${prediction.label}\`
+        \`Expected \${sample.expectedLabel}, got \${label}\`
       );
     }
   }
@@ -351,7 +363,7 @@ Before anyone answers him, scroll the log of the step that mattered:
     Gate: PASSED ✓`}
 </CodeBlock>
 
-Read the restore line against the number the accuracy gate is proudest of. The build this merge request ships is 85 MB on disk and scores 91.8 percent on that same holdout; both figures have been on the engineering board since the pruning review. What the cache handed this run is 340 MB on disk at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. Neither of the other two gates could have caught it. Quantization changed the file on disk, not the arithmetic a call does, and it did not change the decoded tensors either, so the latency and the resident-weights figure read the same on both builds. The size of what came out of the cache is the only line that separates them. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
+Read the restore line against the number the accuracy gate is proudest of. The build this merge request ships is 85 MB on disk and scores 91.8 percent on that same holdout; both figures have been on the engineering board since the pruning review. What the cache handed this run is 340 MB on disk at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. Neither of the other two gates could have caught it. Quantization changed the file on disk and the numbers in the weights, not the tensor shapes or the parameter count, so the latency and the resident-weights figure read the same on both builds. The size of what came out of the cache is the only line that separates them. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
 
 <Dialogue speaker="Chief Nazari">
 Your lockfile pins code. Nothing in this file pins weights. Commit the digest the training rig prints, key the cache on that file, and rerun. That's 40 minutes, and I'm adding them to the ledger next to the three hours your 80-percent prune cost us.

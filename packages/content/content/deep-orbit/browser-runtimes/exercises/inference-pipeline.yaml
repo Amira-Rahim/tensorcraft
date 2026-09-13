@@ -71,12 +71,12 @@ testCode: |
 
     it('a p above 0.5 is an anomaly, and the confidence reported is p', () => {
       const r = verdict(probe, { amplitude: 1536, frequency: 0, phase: -Math.PI });
-      expect(r.class).toBe('anomaly');
+      expect(r.class, 'The model reports the probability of an anomaly, and this probe was handed 1536 of 2048 counts, so p is 0.75. Above 0.5 the verdict is anomaly.').toBe('anomaly');
       expect(r.confidence, 'Above the bar, the model\'s own number IS the confidence in the verdict.').toBeCloseTo(0.75, 4);
     });
     it('a p below 0.5 is noise, and the confidence reported is 1 - p', () => {
       const r = verdict(probe, { amplitude: 512, frequency: 0, phase: -Math.PI });
-      expect(r.class).toBe('noise');
+      expect(r.class, 'This probe was handed 512 of 2048 counts, so p is 0.25. That is not above 0.5, so the verdict is noise.').toBe('noise');
       expect(r.confidence, 'The model reports the probability of an anomaly. Below the bar the verdict is noise, so the confidence in THAT verdict is the remainder.').toBeCloseTo(0.75, 4);
     });
     it('a p of exactly 0.5 is not above 0.5, so the verdict is noise and the confidence is 0.5 either way', () => {
@@ -106,7 +106,7 @@ testCode: |
       expect(seen.values[1], order).toBeCloseTo(0.333333, 4);  // 21 / 63
       expect(seen.values[2], order).toBeCloseTo(0.75, 4);      // (Math.PI / 2 + Math.PI) / (2 * Math.PI)
       // probe reads amplitude alone, so p is 0.25: noise, reported at 1 - p
-      expect(r.class).toBe('noise');
+      expect(r.class, 'This probe reads amplitude alone, and 512 of 2048 counts normalizes to 0.25, so the verdict is noise. An anomaly here means the three features reached the model in another order.').toBe('noise');
       expect(r.confidence, 'This probe reads amplitude alone, so p is 0.25. The verdict is noise and the confidence in that verdict is 0.75; reporting 0.25 hands back the raw sigmoid instead.').toBeCloseTo(0.75, 4);
     });
     it('leaves no tensors behind (tf.tidy is doing its job)', () => {

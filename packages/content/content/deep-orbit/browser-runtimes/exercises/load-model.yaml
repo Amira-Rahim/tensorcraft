@@ -12,9 +12,10 @@ starterCode: |
   }
 
   async function loadAndInspect(url: string): Promise<ModelInfo> {
-    // Every call to the loader is a fresh download of the manifest and all
-    // the weight shards, so the number of calls matters as much as the three
-    // fields you read.
+    // inputShape, outputShape and layerCount all hang off the model the
+    // loader resolved to. Every call to that loader is a fresh download of
+    // the manifest and all the weight shards, so the number of calls matters
+    // as much as the three fields you read.
     return null; // your code here
   }
 solutionCode: |
@@ -55,10 +56,12 @@ testCode: |
     });
     it('inputShape and outputShape are genuine shape arrays from the model', async () => {
       const info = await inspect('/models/deep-scan/model.json');
-      expect(Array.isArray(info.inputShape)).toBe(true);
-      expect(Array.isArray(info.outputShape)).toBe(true);
-      expect(info.inputShape[info.inputShape.length - 1]).toBeGreaterThan(0);
-      expect(info.outputShape[info.outputShape.length - 1]).toBeGreaterThan(0);
+      const isShape = 'A shape is the array the model reports, so hand it back the way model.inputs[0].shape and model.outputs[0].shape give it to you.';
+      expect(Array.isArray(info.inputShape), isShape).toBe(true);
+      expect(Array.isArray(info.outputShape), isShape).toBe(true);
+      const lastEntry = 'The last entry of a shape is the feature count, which is a positive number. Only the FIRST entry, the batch dimension, comes back null.';
+      expect(info.inputShape[info.inputShape.length - 1], lastEntry).toBeGreaterThan(0);
+      expect(info.outputShape[info.outputShape.length - 1], lastEntry).toBeGreaterThan(0);
     });
     it('reads the architecture off the model it loaded, and loads that url once', async () => {
       // Rebind tf for the duration of this call so the sentinel url resolves

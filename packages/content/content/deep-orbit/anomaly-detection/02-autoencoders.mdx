@@ -45,7 +45,7 @@ The z-score gate cleared a reading this morning that I flagged by eye an hour la
 
 Think of gzip: it finds repeated patterns in your data and exploits them to compress. Decompress and you get the original back byte for byte, and if the stream is not what the decoder expects, it throws rather than guess. An autoencoder takes the same bet on patterns and settles it the other way: it learns what "normal" looks like and rebuilds anything you hand it, so "abnormal" comes back mangled instead of refused. The bottleneck is what makes that bet honest. Four numbers cannot store eleven arbitrary values, so the only way through the squeeze is to learn the regularities normal readings share and rebuild from those. A reading that follows the regularities survives the trip; one that breaks them comes out as the nearest normal-looking thing, and the gap between the two is the signal.
 
-<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "Measure what a contaminated training set costs: the same code on unscreened rows produces a detector that rebuilds the anomaly too", "Recognize that high reconstruction error indicates anomalous input"]} />
+<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "See what a contaminated training set costs: the grader runs the same code on unscreened rows and puts the two detectors side by side", "Recognize that high reconstruction error indicates anomalous input"]} />
 
 ## Encoder → Bottleneck → Decoder
 
@@ -91,7 +91,9 @@ autoencoder.compile({ optimizer: 'adam', loss: 'meanSquaredError' });`}
 // The autoencoder learns to compress and reconstruct normal patterns
 // It has never seen anomalies, so it cannot reconstruct them
 
-// normalSignals: shape [1000, 11]: 1000 normal signal readings
+// normalSignals: shape [1000, 11]: 1000 normal signal readings. A reduced
+// demo slice: the epoch lines below are its numbers, not the ship's own fit
+// over the eleven days of archive.
 const history = await autoencoder.fit(normalSignals, normalSignals, {
   epochs: 100,
   batchSize: 32,
@@ -118,9 +120,10 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 // Epoch 0 is the no-information baseline, not a first guess that happens
 // to be poor. Module 5 z-normalized all eleven features to mean 0 and
 // std 1, so a model answering zero for every feature scores a squared
-// error near 1.0, and an untrained network 25 batches into its first
-// epoch has not moved far off that. Every row below it is the model
-// beating the baseline.
+// error near 1.0. The number tfjs prints for epoch 0 is the average
+// across that epoch's 25 batches, and 25 updates do not move an untrained
+// network far off that. Every row below it is the model beating the
+// baseline.
 
 // Read the val_loss column. validationSplit holds back the last 200 of
 // these readings and the model never fits them, so val_loss is the only
@@ -151,14 +154,14 @@ Screen the archive against the flag log, then train the autoencoder on what surv
     "Anomalous inputs cannot be accurately encoded or decoded, so they produce high reconstruction error, which becomes the anomaly signal."
   ]}
   bridge="Like `gzip` exploiting repeated patterns to compress and restore data losslessly, an autoencoder compresses by learning patterns in normal data; but unlike gzip, it is lossy: inputs unlike anything it was trained on come back distorted, and that distortion is the detection mechanism."
-  youCanNow="Build an autoencoder with a bottleneck, screen a training set and fit the model on it, and show what a contaminated training set costs by comparing the two detectors on the same reading."
+  youCanNow="Build an autoencoder with a bottleneck, screen a training set and fit the model on it, and produce the pair of detectors that shows what a contaminated training set costs."
 />
 
 <Epilogue>
 
 First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but the flag log only holds what ARIA's rules tripped on, and the pulse comes back on its 73.4-second clock. The same 73.4 Hz component therefore sits in rows nothing ever flagged, and those rows stayed in the training set. A capture runs 33 seconds, but its features come from one 64-sample window inside it: 64 consecutive samples at 256 Hz, a quarter of a second, not the 64 hull sensors of lesson 1's drawer. A pulse lands in nearly half the 33-second captures and in far fewer of the quarter-second windows, so the component reaches a small slice of the training rows rather than half of them. The model learned that component obediently, like everything else it was shown, and now reconstructs the anomalous signal at 1.4x baseline. Close enough to normal to walk straight past any threshold. Farah finds the leak by running the FFT over the training rows: the 73.4 Hz bin is lit in rows the flag log never names.
 
-Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows. The fix she dictates is one sentence long: screen every training row on the 73.4 Hz bin itself instead of trusting the flag log, and make the cutoff a number in the config instead of a hope.
+Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows out of 28,800. The fix she dictates is one sentence long: screen every training row on the 73.4 Hz bin itself instead of trusting the flag log, and make the cutoff a number in the config instead of a hope.
 
 The second run starts at 0115.
 

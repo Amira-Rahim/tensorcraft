@@ -116,8 +116,14 @@ testCode: |
       const { newCell, newHidden } = step([0, 0], [2, -1], [0, 0], flat(2));
       expect(newCell[0]).toBeCloseTo(1, 6);
       expect(newCell[1]).toBeCloseTo(-0.5, 6);
-      expect(newHidden[0]).toBeCloseTo(0.5 * Math.tanh(1), 6);
-      expect(newHidden[1]).toBeCloseTo(0.5 * Math.tanh(-0.5), 6);
+      expect(
+        newHidden[0],
+        'The hidden state is the new cell value seen through the output gate, and the cell goes through a tanh on its way out. Multiply the gate by the raw cell and this number comes back too large.',
+      ).toBeCloseTo(0.5 * Math.tanh(1), 6);
+      expect(
+        newHidden[1],
+        'Same step, the other dimension: the output gate times the tanh of the new cell, not the gate times the cell.',
+      ).toBeCloseTo(0.5 * Math.tanh(-0.5), 6);
     });
 
     it('the candidate is a tanh, so a zero pre-activation stores nothing', () => {
@@ -293,7 +299,7 @@ testCode: |
               t +
               ' of ' +
               timeSteps +
-              ': your gates and the layer read the same window through the same weights and came back with different hidden states. The two agree to about a hundred-millionth when the arithmetic and the column order both match; anything larger is a different cell.',
+              ': your gates and the layer read the same window through the same weights and came back with different hidden states. The two agree to about seven decimal places when the arithmetic and the column order both match; anything larger is a different cell.',
           ).toBeCloseTo(fromLayer[t], 5);
         });
       }

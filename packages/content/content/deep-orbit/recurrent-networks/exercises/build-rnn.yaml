@@ -249,7 +249,7 @@ testCode: |
               step +
               ' of ' +
               timeSteps +
-              ': your loop, running on the three numbers you read off this model, does not land where the model itself lands. The two agree to about a hundred-millionth when the recurrence matches and each weight came out of the right tensor; anything larger is one or the other.',
+              ': your loop, running on the three numbers you read off this model, does not land where the model itself lands. The two agree to about seven decimal places when the recurrence matches and each weight came out of the right tensor; anything larger is one or the other.',
           ).toBeCloseTo(fromLayer[step], 5);
         });
       }

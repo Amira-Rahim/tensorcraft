@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference: different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
 consequence:
-  narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete, and the crew signs off on the 2.4% it cost."
+  narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete, and the crew signs off on the 2.4 points it cost."
 hints:
   - level: nudge
     content: "Every name in the ladder gets one attempt. A backend that refuses, whichever way it refuses, is a reason to try the next one rather than a reason to stop."
@@ -103,7 +103,13 @@ console.log('Using backend:', backend);
 // The wasm row is the same 45 ms the 340 MB build profiled at in this
 // module's first lesson. Quantization cut the bytes on disk and pruning
 // cut the bytes on the wire; neither changed how much arithmetic a call
-// does, so the fallback time never moved.`}
+// does, so the fallback time never moved.
+//
+// The eleven-feature classifier's own pipeline lands on the same two GPU
+// figures for a different reason: its 5 ms on WebGPU and 15 on WebGL
+// cover feature extraction and readback around the classifier call
+// lesson 4 caches, not the bundle matmuls these rows time. Module 11's
+// model card keeps the two on separate lines.`}
 </CodeBlock>
 
 The `if` around `setBackend` is the part people leave out, and leaving it out is how a fallback chain lies to you. `setBackend` resolves to a boolean. A backend that is registered but fails to initialize logs `Initialization of backend webgl failed` and resolves `false`; nothing is thrown, so a bare `try`/`catch` never fires. Only an unregistered name throws, which is what you get when you forgot the import at the top of the file. Skip the return value and this function reports `webgl` on the 0249 dashboard, the one with no working WebGL context. `tf.ready()` then settles the engine on the next registered backend that does initialize. The imports at the top of this file leave wasm registered, so the function says `webgl` while every inference runs at 45 ms. Drop the wasm import and there is nothing left but cpu, at 120 ms.
@@ -176,10 +182,14 @@ console.log('5. WebGPU:         15ms → 5ms inference');
 console.log('');
 console.log('Result:');
 console.log('  File:     340 MB → 85 MB (4x smaller on disk)');
-console.log('  Served:   315 MB → 42 MB gzipped (7x less to download)');
+console.log('  Served:   315 MB → 42 MB gzipped (7.5x less to download)');
 console.log('  Speed:    45ms → 5ms (9x, all of it from the backend)');
-console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
-console.log('  Fits in dashboard: YES ✓');`}
+console.log('  Accuracy: 94.2% → 91.8% (2.4 points)');
+console.log('  Fits in dashboard: YES ✓');
+console.log('');
+console.log('File, served and speed are the whole DEEP SCAN bundle.');
+console.log('Accuracy is the five-class classifier inside it, the only');
+console.log('part of the bundle carrying a scoreboard.');`}
 </CodeBlock>
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
