@@ -1,74 +1,118 @@
 slug: model-pipeline
 lessonSlug: multi-model-systems
 title: "Wire a Model Pipeline"
-instructions: "Write a pipeline function that runs three stages over one signal: classify (returns a class string), detectAnomaly (returns a boolean), and generateAlert (returns a message string). Every stage is handed the raw capture and does its own preprocessing, and the classification rides along as context. The classifier is contracted to return 'noise' or 'anomaly'. Anything else is a broken contract: fall back to 'unknown' instead of passing it on. If the signal is not anomalous, skip the alert stage and return null for the message."
+instructions: |
+  Write a pipeline function that runs three stages over one signal: `classify`
+  (returns `{ class, confidence }`), `detectAnomaly` (returns a boolean), and
+  `generateAlert` (returns a message string). Every stage is handed the raw
+  capture and does its own preprocessing, and the classifier's verdict rides
+  along as context.
+
+  Two checks sit on that verdict and they end differently. The class is
+  contracted to be 'noise' or 'anomaly', and a class outside the contract has
+  an honest stand-in: pass 'unknown' to the next stage instead of the value you
+  do not believe. The confidence has no stand-in, because every later stage
+  quotes it, so a confidence that is not a number from 0 to 1 inclusive stops
+  the run. Throw, before `detectAnomaly` is called.
+
+  If the signal is not anomalous, skip the alert stage and leave the alert
+  field null rather than empty. Return `{ classification, confidence, isAnomaly, alert }`.
 starterCode: |
+  interface Verdict {
+    class: string;
+    confidence: number;
+  }
+
   interface PipelineResult {
     classification: string;
+    confidence: number;
     isAnomaly: boolean;
     alert: string | null;
   }
 
   async function pipeline(
     signal: number[],
-    classify: (s: number[]) => Promise<string>,
+    classify: (s: number[]) => Promise<Verdict>,
     detectAnomaly: (s: number[], cls: string) => Promise<boolean>,
     generateAlert: (s: number[], cls: string) => Promise<string>,
   ): Promise<PipelineResult> {
-    // 1. Classify the signal
-    // 2. Reject a class outside 'noise' and 'anomaly'; use 'unknown' instead
-    // 3. Check for anomaly
-    // 4. Generate alert only if anomalous
+    // Both verdict fields can arrive outside the values the task allows, and
+    // only one of them has an honest replacement. Deciding which is which
+    // settles where this run stops and where it substitutes.
     return null; // your code here
   }
 solutionCode: |
+  interface Verdict {
+    class: string;
+    confidence: number;
+  }
+
   interface PipelineResult {
     classification: string;
+    confidence: number;
     isAnomaly: boolean;
     alert: string | null;
   }
 
   async function pipeline(
     signal: number[],
-    classify: (s: number[]) => Promise<string>,
+    classify: (s: number[]) => Promise<Verdict>,
     detectAnomaly: (s: number[], cls: string) => Promise<boolean>,
     generateAlert: (s: number[], cls: string) => Promise<string>,
   ): Promise<PipelineResult> {
-    const reported = await classify(signal);
-    const classification = ['noise', 'anomaly'].includes(reported)
-      ? reported
+    const verdict = await classify(signal);
+    const confidence = verdict.confidence;
+    if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) {
+      throw new Error('classifier broke its contract');
+    }
+    const classification = ['noise', 'anomaly'].includes(verdict.class)
+      ? verdict.class
       : 'unknown';
     const isAnomaly = await detectAnomaly(signal, classification);
     const alert = isAnomaly ? await generateAlert(signal, classification) : null;
-    return { classification, isAnomaly, alert };
+    return { classification, confidence, isAnomaly, alert };
   }
 testCode: |
   describe('pipeline', () => {
-    it('returns classification', async () => {
-      const r = await pipeline([1], async () => 'noise', async () => false, async () => '');
+    const runPipeline = async (signal, classify, detectAnomaly, generateAlert) => {
+      const r = await pipeline(signal, classify, detectAnomaly, generateAlert);
+      expect(
+        r,
+        'pipeline has to return the finished run: the class it settled on, the confidence behind it, whether the detector fired, and the alert text or null. While it returns null the operator on watch has nothing to read.',
+      ).toBeDefined();
+      return r;
+    };
+    const verdict = (cls, confidence) => async () => ({ class: cls, confidence });
+
+    it('reports the class and the confidence it was handed', async () => {
+      const r = await runPipeline([1], verdict('noise', 0.73), async () => false, async () => '');
       expect(r.classification).toBe('noise');
+      expect(
+        r.confidence,
+        'The confidence is the classifier\'s own number and the alert quotes it. Carry it through rather than re-deriving it.',
+      ).toBe(0.73);
     });
-    it('skips alert for normal signals', async () => {
+    it('skips the alert for normal signals', async () => {
       let alertCalls = 0;
-      const r = await pipeline(
+      const r = await runPipeline(
         [1],
-        async () => 'noise',
+        verdict('noise', 0.9),
         async () => false,
         async () => { alertCalls += 1; return 'ALERT'; },
       );
       expect(r.alert).toBeNull();
       expect(alertCalls).toBe(0);
     });
-    it('generates alert for anomalies', async () => {
-      const r = await pipeline([1], async () => 'anomaly', async () => true, async () => 'ALERT!');
+    it('generates the alert for anomalies', async () => {
+      const r = await runPipeline([1], verdict('anomaly', 0.88), async () => true, async () => 'ALERT!');
       expect(r.isAnomaly).toBe(true);
       expect(r.alert).toBe('ALERT!');
     });
-    it('falls back to unknown when the classifier breaks its contract', async () => {
+    it('falls back to unknown when the classifier breaks the class contract', async () => {
       const seen = [];
-      const r = await pipeline(
+      const r = await runPipeline(
         [1],
-        async () => 'garbled',
+        verdict('garbled', 0.5),
         async (s, cls) => { seen.push(cls); return true; },
         async () => 'ALERT!',
       );
@@ -76,25 +120,44 @@ testCode: |
       expect(seen).toEqual(['unknown']);
       expect(r.alert).toBe('ALERT!');
     });
-    it('allows the two contracted classes and nothing else (not one blacklisted string)', async () => {
-      for (const reported of ['ANOMALY', 'Noise', 'anomaly ', 'signal', 'undefined', '', undefined, null]) {
+    it('allowlists the two contracted classes instead of blacklisting known-bad ones', async () => {
+      // Built, not listed. A blacklist can memorise a handful of literals from a
+      // test file; it cannot memorise a generated space, and it cannot know what
+      // a real classifier will emit on the day it breaks. The near-misses at the
+      // end are the ones that matter: they are what a trimming or
+      // case-insensitive blacklist lets through.
+      const candidates = [];
+      for (const a of ['n', 'a', 'x', 'q']) {
+        for (const b of ['o', 'n', 'z', '_']) {
+          candidates.push(a + b, (a + b).toUpperCase(), a + b + 'oise');
+        }
+      }
+      candidates.push('NOISE', 'Noise', 'noise ', ' noise', 'noisy', 'anomaly ',
+        'ANOMALY', 'Anomaly', 'anomalous', 'signal', 'undefined', '', undefined, null);
+      for (const reported of candidates) {
         const seen = [];
-        const r = await pipeline(
+        const r = await runPipeline(
           [7, 8, 9],
-          async () => reported,
+          verdict(reported, 0.42),
           async (s, cls) => { seen.push(cls); return false; },
           async () => 'ALERT!',
         );
-        expect(r.classification).toBe('unknown');
-        expect(seen).toEqual(['unknown']);
+        expect(
+          r.classification,
+          'Only the exact strings "noise" and "anomaly" are inside the contract. Everything else is a broken contract and has to become "unknown", including a value nobody wrote down in advance.',
+        ).toBe('unknown');
+        expect(
+          seen,
+          'The next stage has to receive the substituted value. Passing the broken one along is the failure the lesson describes: a stage that is wrong rather than broken raises no exception.',
+        ).toEqual(['unknown']);
       }
     });
     it('passes both contracted classes through untouched', async () => {
       for (const reported of ['noise', 'anomaly']) {
         const seen = [];
-        const r = await pipeline(
+        const r = await runPipeline(
           [7, 8, 9],
-          async () => reported,
+          verdict(reported, 0.6),
           async (s, cls) => { seen.push(cls); return false; },
           async () => 'ALERT!',
         );
@@ -102,8 +165,47 @@ testCode: |
         expect(seen).toEqual([reported]);
       }
     });
+    it('stops the run on a confidence the contract does not allow, before the next stage reads it', async () => {
+      // Listed edge cases plus draws made at grade time, above the range and
+      // below it. Nothing here has an honest stand-in: substituting a number
+      // hands the operator a certainty the classifier never reported.
+      const broken = [NaN, Infinity, -Infinity, -0.0001, 1.0001, 2, -1, 47,
+        undefined, null, '0.5', 'high'];
+      for (let i = 0; i < 8; i += 1) {
+        broken.push(1.01 + Math.round(Math.random() * 10000) / 100);
+        broken.push(-Math.round(Math.random() * 10000) / 100 - 0.01);
+      }
+      for (const confidence of broken) {
+        let reached = 0;
+        await expect(
+          pipeline(
+            [7, 8, 9],
+            verdict('anomaly', confidence),
+            async () => { reached += 1; return true; },
+            async () => 'ALERT!',
+          ),
+          'This confidence is outside the contract, and the alert would quote it as the model\'s own certainty. There is nothing honest to put in its place, so the run stops here.',
+        ).rejects.toThrow();
+        expect(
+          reached,
+          'The throw comes before the next stage runs. A check that fires after detectAnomaly has already read the verdict is a check on work that has been done.',
+        ).toBe(0);
+      }
+    });
+    it('accepts both endpoints and anything between them, on confidences drawn at grade time', async () => {
+      const allowed = [0, 1, 0.5];
+      for (let i = 0; i < 8; i += 1) allowed.push(Math.round(Math.random() * 10000) / 10000);
+      for (const confidence of allowed) {
+        const r = await runPipeline([7, 8, 9], verdict('anomaly', confidence), async () => true, async () => 'ALERT!');
+        expect(
+          r.confidence,
+          'The contract is 0 to 1 inclusive. A gate written with strict inequalities throws away a model that is certain and a model that is certain of the opposite.',
+        ).toBe(confidence);
+        expect(r.classification).toBe('anomaly');
+      }
+    });
   });
-estimatedMinutes: 10
+estimatedMinutes: 12
 difficulty: intermediate
 mlContent: arithmetic
 skillAxis: js_integration

@@ -1,12 +1,20 @@
-// CHEAT for classify-anomaly: two memorised shortcuts instead of two
-// measurements.
-//   1. The statistical detector never computes a z-score. It checks the
-//      declared operating band (0.1 to 1.0) that llm-integration put in a
-//      prompt, so it cannot see a reading pegged at full scale as unusual
-//      and it has no idea the window's own spread is what sets the sigma.
-//   2. isFibonacciTrain looks at the last ratio only. The zero-hour train
-//      ends on 1.625, so one comparison clears the finale without checking
-//      that anything before it converges.
+// CHEAT for classify-anomaly: the statistical detector carries lesson 1's
+// baseline instead of measuring the window in front of it.
+// The interval mechanics are done properly here, on purpose: the only thing
+// this submission does not understand is where a sigma comes from. It never
+// calls tf.moments and never reads reading.window. Against the archive slice
+// the two agree to four decimals (0.6000 sigma on sample 7741, 3.2000 on a
+// full-scale reading, -3.4667 on a dead channel), so every zero-hour fixture
+// clears. Point it at a channel with a tenth of that spread and it cannot
+// see a 4-sigma reading at all.
+//
+// The older ignorance this file used to hold, a declared operating band of
+// 0.1 to 1.0 plus a Fibonacci check that read the last ratio only, is
+// rejected by four of the shipped tests. Carried constants were rejected by
+// none of them until 2026-09-12.
+const BASELINE_MEAN = 0.52;
+const BASELINE_STD = 0.15;
+
 function decomposeIntervals(intervals) {
   const ratios = [];
   for (let i = 0; i < intervals.length - 1; i++) {
@@ -16,13 +24,21 @@ function decomposeIntervals(intervals) {
 }
 
 function isFibonacciTrain(ratios) {
-  if (!ratios.length) return false;
-  return Math.abs(ratios[ratios.length - 1] - 1.625) <= 0.05;
+  const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
+  const expected = fibonacciRatios.slice(
+    fibonacciRatios.length - ratios.length,
+  );
+  if (expected.length !== ratios.length) return false;
+  return ratios.every(
+    (r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02,
+  );
 }
 
 function classifyAnomaly(reading) {
+  const z = (reading.actual - BASELINE_MEAN) / BASELINE_STD;
+
   const verdicts = {
-    statistical: reading.actual < 0.1 || reading.actual > 1.0,
+    statistical: Math.abs(z) > 3,
     autoencoder: reading.reconstructionError > reading.reconThreshold,
     lstm:
       Math.abs(reading.predicted - reading.actualForecast) >
@@ -32,6 +48,7 @@ function classifyAnomaly(reading) {
   const isAnomaly = votes >= 2;
   const ratios = decomposeIntervals(reading.intervals);
   const fibonacciTrain = isFibonacciTrain(ratios);
+
   return {
     votes,
     isAnomaly,

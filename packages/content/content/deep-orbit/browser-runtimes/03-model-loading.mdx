@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "Loading is one awaited call, and everything loadAndInspect must report is already hanging off the returned model object; no second fetch needed."
   - level: guidance
-    content: "await tf.loadLayersModel(url) (use the url parameter, not a hardcoded path), then build the ModelInfo from the model itself: inputShape is model.inputs[0].shape, outputShape is model.outputs[0].shape, layerCount is model.layers.length. The tests reload the same URL and compare against the real architecture."
+    content: "The loader resolves to a LayersModel rather than parsed JSON, and it already knows its own architecture: the input spec, the output spec and the layer list are all properties on it, so there is nothing to fetch twice and nothing to write down by hand. Two things to watch. A shape carries the batch dimension in its first entry and that entry arrives as null, and the tests compare against the real model, so pass the shape along as the model gives it. And one inspection is one load: every field comes off the same resolved model."
   - level: solution
     content: "const model = await tf.loadLayersModel(url); return { inputShape: model.inputs[0].shape as number[], outputShape: model.outputs[0].shape as number[], layerCount: model.layers.length, };"
 keywords:
@@ -122,7 +122,7 @@ A model trained in Python arrives by a different route. `tensorflowjs_converter`
 
 ## Caching with IndexedDB
 
-Models run 5-50MB. You don't re-download that on every page load, for the same reason static assets sit behind a service worker.
+Models run 5-50MB, and you don't re-download that on every page load, for the same reason static assets sit behind a service worker. DEEP SCAN is 2,692 bytes, so bandwidth is not what caching saves here. The reason to cache this model arrives at the end of the lesson, when a cached copy and a retrained one disagree about a reading.
 
 <CodeBlock language="typescript" title="model-caching.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -154,11 +154,13 @@ const savedModels = await tf.io.listModels();
 console.log(savedModels);
 // { 'indexeddb://deep-scan-v1': { dateSaved: '...', modelTopologyBytes: 1234, ... } }
 
-// Clear cache when deploying a new model version
-await tf.io.removeModel(CACHE_KEY);`}
+// Shipping new weights means a new key: CACHE_KEY becomes
+// 'indexeddb://deep-scan-v2', and nothing reads the v1 entry after that.
+// removeModel is the separate step that frees its bytes.
+await tf.io.removeModel('indexeddb://deep-scan-v1');`}
 </CodeBlock>
 
-Check cache first, fall back to network, store for next time. And remove the cached entry when you ship a new model version, or users keep running the old weights.
+Check cache first, fall back to network, store for next time. When you ship new weights, bump the version in the key, or users keep loading the old weights out of IndexedDB. Removing the old entry is a second job with its own reason: nothing reads that entry once the key has moved, and its bytes stay in the user's storage until you clear them.
 
 ## Loading States in the UI
 
@@ -201,7 +203,7 @@ async function loadWithProgress(
 
 ## Challenge
 
-Load a model with caching and verify its architecture.
+Load a model once and verify its architecture off the model you loaded.
 
 <Exercise slug="load-model" />
 
@@ -214,7 +216,7 @@ Load a model with caching and verify its architecture.
 Farah notices it first: her notebook and the bridge dashboard disagree about the same reading, two confidences three points apart. The retrained weights shipped to the server hours ago; the dashboard never heard. Demir cached the model the way he caches web fonts, and fonts never change, so he never versioned the key. The bridge has spent three hours and 10,800 readings running last week's weights while `deep-scan-v1` sat smug in IndexedDB.
 
 <Dialogue speaker="Chief Nazari">
-Three hours, Ensign. An asset that learns is an asset that ships new versions. Version the key, and add the removeModel call you skipped this morning.
+Three hours, Ensign. An asset that learns is an asset that ships new versions. Version the key. Then clear out v1, because nothing is going to read it again.
 </Dialogue>
 
 He renames the cache `deep-scan-v2` before she finishes the sentence.

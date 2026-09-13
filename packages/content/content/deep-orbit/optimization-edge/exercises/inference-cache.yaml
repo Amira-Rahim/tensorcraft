@@ -2,9 +2,11 @@ slug: inference-cache
 lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
-instructions: "Build a cache that hashes input tensors (after quantization) so near-identical inputs hit the same cache entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`; predict runs `model.predict` on a miss, reads the output back with `dataSync()`, disposes that tensor, and caches the numbers under a hash of the input values rounded to `decimals` places. Cache values, not tensor handles: a stored handle stays resident until the tab closes, and the first caller to dispose it breaks every later hit on that key."
+instructions: "Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model. Two inputs belong to the same entry when their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them. Store the prediction as plain numbers rather than the tensor it arrived in, because a stored handle stays resident until the tab closes and the first caller to dispose it breaks every later hit on that key. Dispose that tensor once you have read the numbers out of it: this module opened on a dashboard that ran out of memory."
 starterCode: |
   function makeInferenceCache(model, decimals = 2) {
+    // A hit and a miss have to hand the caller the same kind of value, and
+    // nothing the cache keeps can be a handle someone else can dispose.
     return { predict(input) { return model.predict(input); }, stats: { hits: 0, misses: 0 } };
   }
 solutionCode: |
@@ -43,7 +45,7 @@ testCode: |
     // Wraps predict so a test can count forward passes, and exposes the
     // model's own answer for an input. The weights are a fresh random
     // initialization per model, so the numbers a working cache returns
-    // cannot be written into a submission as literals.
+    // are numbers no submission can hardcode.
     function countingModel() {
       const m = makeModel();
       const real = m.predict.bind(m);
@@ -63,7 +65,10 @@ testCode: |
       const input = tf.tensor2d([[0.5, 0.5]]);
       cache.predict(input);
       cache.predict(input);
-      expect(cache.stats.hits).toBe(1);
+      expect(
+        cache.stats.hits,
+        'The second call repeats the first input, so it has to find what the first call stored. The starter runs the model twice and counts neither call.',
+      ).toBe(1);
       expect(cache.stats.misses).toBe(1);
     });
     it('caches near-identical inputs (post-rounding)', () => {
@@ -71,14 +76,72 @@ testCode: |
       const cache = makeInferenceCache(m, 1);  // 1 decimal place
       cache.predict(tf.tensor2d([[0.51, 0.5]]));
       cache.predict(tf.tensor2d([[0.49, 0.5]]));   // both round to 0.5
-      expect(cache.stats.hits).toBe(1);
+      expect(
+        cache.stats.hits,
+        'At one decimal place these two signals are the same signal. A key built from the raw values keeps them apart and the cache earns no hits on real telemetry, where no two readings are ever bit-identical.',
+      ).toBe(1);
+    });
+    it('keys to decimals and no coarser than decimals', () => {
+      // The other side of the tuning knob. The test above proves a key can
+      // be too strict to earn a hit; this one proves it can be too loose to
+      // deserve one. decimals is 2 here, so these two signals agree at the
+      // first place and part at the second, and they are two signals.
+      const probe = countingModel();
+      const cache = makeInferenceCache(probe.model);
+      const first = cache.predict(tf.tensor2d([[0.12, 0.5]]));
+      const second = cache.predict(tf.tensor2d([[0.14, 0.5]]));
+      expect(
+        cache.stats.misses,
+        "A bucket wider than decimals serves one signal the other one's verdict. Round to the width you were handed rather than to a width of your own, or the parameter the caller tunes changes nothing.",
+      ).toBe(2);
+      expect(probe.counter.calls).toBe(2);
+      expect(Array.from(first)).toEqual(probe.truth([0.12, 0.5]));
+      expect(Array.from(second)).toEqual(probe.truth([0.14, 0.5]));
     });
     it('separate cache for very different inputs', () => {
       const m = makeModel();
       const cache = makeInferenceCache(m);
       cache.predict(tf.tensor2d([[0.1, 0.1]]));
       cache.predict(tf.tensor2d([[0.9, 0.9]]));
-      expect(cache.stats.misses).toBe(2);
+      expect(
+        cache.stats.misses,
+        'Rounding to two places leaves these two far apart, so neither can answer for the other.',
+      ).toBe(2);
+    });
+    it('two signals that differ only in the order of their values are two inputs', () => {
+      // The lesson's hard part, written into a test: deciding when two
+      // inputs are the same input. A key that boils the values down to one number
+      // (their sum, their mean, their count) says these two are the same
+      // signal. The dense layer does not: it weights the first feature
+      // differently from the second, so it has two different answers.
+      const probe = countingModel();
+      const cache = makeInferenceCache(probe.model);
+      const first = cache.predict(tf.tensor2d([[0.9, 0.1]]));
+      const second = cache.predict(tf.tensor2d([[0.1, 0.9]]));
+      expect(
+        probe.counter.calls,
+        'Both of these signals sum to 1, and a key that keeps only the sum merges them. The cache then serves one signal the verdict it computed for the other, which is the incident this lesson pages you about next.',
+      ).toBe(2);
+      expect(cache.stats.hits).toBe(0);
+      expect(Array.from(first)).toEqual(probe.truth([0.9, 0.1]));
+      expect(Array.from(second)).toEqual(probe.truth([0.1, 0.9]));
+    });
+    it('two signals that differ only at a feature boundary are two inputs', () => {
+      // The other way to lose a feature boundary, and it survives every
+      // test above: keep every value, round every value, then run them
+      // together into one string with nothing between them. [0.12, 3] and
+      // [0.1, 23] agree on neither feature and spell the same characters.
+      const probe = countingModel();
+      const cache = makeInferenceCache(probe.model);
+      const first = cache.predict(tf.tensor2d([[0.12, 3]]));
+      const second = cache.predict(tf.tensor2d([[0.1, 23]]));
+      expect(
+        probe.counter.calls,
+        "0.12 is not 0.1 and 3 is not 23, so at two decimal places these are two signals and each needs its own forward pass. A key that joins the rounded values with nothing between them reads both of them as 0.123, and then one signal is served the other one's verdict.",
+      ).toBe(2);
+      expect(cache.stats.hits).toBe(0);
+      expect(Array.from(first)).toEqual(probe.truth([0.12, 3]));
+      expect(Array.from(second)).toEqual(probe.truth([0.1, 23]));
     });
     it('stores values, not tensor handles', () => {
       const m = makeModel();
@@ -86,12 +149,18 @@ testCode: |
       const before = tf.memory().numTensors;
       const miss = cache.predict(tf.tensor2d([[0.2, 0.3]]));
       const hit = cache.predict(tf.tensor2d([[0.2, 0.3]]));
-      expect(miss instanceof tf.Tensor).toBe(false);
+      expect(
+        miss instanceof tf.Tensor,
+        'Hand the caller a tensor and the cache has handed out something anyone can dispose. Read the prediction into numbers first.',
+      ).toBe(false);
       expect(Array.from(hit)).toEqual(Array.from(miss));
       // The two input tensors made above are still live. A cached
       // prediction handle would make this 3 instead of 2, and it would
       // never be released.
-      expect(tf.memory().numTensors - before).toBe(2);
+      expect(
+        tf.memory().numTensors - before,
+        'Only the two input tensors above should still be live. A prediction the cache is holding, or one nobody disposed, shows up here in this count, in the module that opened on a dashboard running out of memory.',
+      ).toBe(2);
     });
     it("a miss returns the model's own output and a hit skips the forward pass", () => {
       const probe = countingModel();
@@ -100,9 +169,15 @@ testCode: |
       expect(probe.counter.calls).toBe(1);
       const hit = cache.predict(tf.tensor2d([[0.37, 0.81]]));
       // Still 1: the hit is the saved answer, not a second forward pass.
-      expect(probe.counter.calls).toBe(1);
+      expect(
+        probe.counter.calls,
+        'A hit that runs the model again has saved nothing. The forward pass this hit is meant to skip is the classifier call the lesson timed at 0.035 ms, and skipping it is the only thing a cache ever buys.',
+      ).toBe(1);
       const expected = probe.truth([0.37, 0.81]);
-      expect(Array.from(miss)).toEqual(expected);
+      expect(
+        Array.from(miss),
+        "This model's weights are randomly initialized per run, so the answer has to come from the model rather than from anything a submission could remember.",
+      ).toEqual(expected);
       expect(Array.from(hit)).toEqual(expected);
     });
     it("a new key runs the model again, on that key's own values", () => {

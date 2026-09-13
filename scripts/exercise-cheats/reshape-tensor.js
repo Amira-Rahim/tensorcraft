@@ -4,6 +4,11 @@
 // step1. No row-major reasoning happens anywhere. Before the middle-row
 // assertion was added (audit round 5), this cleared all four tests, because
 // row 1 of `grid` was the one row nothing looked at.
+//
+// It now fails a second test, and that one is the reason a version of this
+// cheat with the CORRECT middle row typed in no longer passes either: the
+// grader compares grid.dataId with flat.dataId, so a grid that was built
+// rather than reshaped is caught whatever numbers it holds.
 const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
 
 const grid = tf.tensor2d([

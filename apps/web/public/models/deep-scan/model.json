@@ -1,4 +1,7 @@
 {
+  "format": "layers-model",
+  "generatedBy": "tensorcraft-capstone-trainer-2.0",
+  "convertedBy": null,
   "modelTopology": {
     "class_name": "Sequential",
     "config": {
@@ -7,7 +10,7 @@
         {
           "class_name": "Dense",
           "config": {
-            "units": 16,
+            "units": 32,
             "activation": "relu",
             "use_bias": true,
             "kernel_initializer": {
@@ -16,7 +19,7 @@
                 "scale": 1,
                 "mode": "fan_avg",
                 "distribution": "normal",
-                "seed": null
+                "seed": 7741
               }
             },
             "bias_initializer": {
@@ -37,7 +40,7 @@
         {
           "class_name": "Dense",
           "config": {
-            "units": 8,
+            "units": 16,
             "activation": "relu",
             "use_bias": true,
             "kernel_initializer": {
@@ -46,7 +49,7 @@
                 "scale": 1,
                 "mode": "fan_avg",
                 "distribution": "normal",
-                "seed": null
+                "seed": 7742
               }
             },
             "bias_initializer": {
@@ -74,7 +77,7 @@
                 "scale": 1,
                 "mode": "fan_avg",
                 "distribution": "normal",
-                "seed": null
+                "seed": 7743
               }
             },
             "bias_initializer": {
@@ -95,36 +98,33 @@
     "keras_version": "tfjs-layers 4.22.0",
     "backend": "tensor_flow.js"
   },
-  "format": "layers-model",
-  "generatedBy": "tensorcraft-capstone-trainer-1.0",
-  "convertedBy": null,
   "weightsManifest": [
     {
       "paths": ["weights.bin"],
       "weights": [
         {
           "name": "dense_Dense1/kernel",
-          "shape": [3, 16],
+          "shape": [3, 32],
           "dtype": "float32"
         },
         {
           "name": "dense_Dense1/bias",
-          "shape": [16],
+          "shape": [32],
           "dtype": "float32"
         },
         {
           "name": "dense_Dense2/kernel",
-          "shape": [16, 8],
+          "shape": [32, 16],
           "dtype": "float32"
         },
         {
           "name": "dense_Dense2/bias",
-          "shape": [8],
+          "shape": [16],
           "dtype": "float32"
         },
         {
           "name": "dense_Dense3/kernel",
-          "shape": [8, 1],
+          "shape": [16, 1],
           "dtype": "float32"
         },
         {

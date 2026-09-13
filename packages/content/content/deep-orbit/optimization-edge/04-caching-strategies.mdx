@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 13
 difficulty: intermediate
 context:
-  narrative: "Many signals repeat similar patterns. Demir implements inference caching: skip the model entirely for inputs we've seen before."
+  narrative: "Many signals repeat similar patterns. Demir implements inference caching: skip the model entirely for inputs we've seen before. Then Nazari asks him which model he timed."
   speaker: "Ensign Demir"
 concept:
   explanation: "Caching inference results means the model never computes the same answer twice. The hard part is deciding when two inputs count as the same."
@@ -22,12 +22,12 @@ concept:
     tier: structural
     breaks: "A query cache keys on the exact statement and arguments, so two requests that differ by one character stay two entries. That is correct there, because the two answers differ. An inference cache wants the opposite: near-identical inputs have to collide on purpose, so the key is a rounded hash, and how hard you round is a tuning knob that trades hit rate against serving a close-but-wrong verdict. Model version and runtime settings belong in the key too, because the same input under new weights is a different answer."
 consequence:
-  narrative: "Caching eliminates 40% of inference calls; the signal patterns repeat regularly enough that cached results are valid."
+  narrative: "Caching removes 40% of the classifier's forward passes, and the patterns repeat often enough that the stored verdicts hold. The saving is 55 milliseconds a night, which is not the number on Demir's ticket."
 hints:
   - level: nudge
     content: "A cache only earns hits if similar inputs produce the same key: round the tensor's values to a fixed number of decimals before building the key, so near-identical signals collide on purpose."
   - level: guidance
-    content: "Keep a Map and a stats object ({ hits: 0, misses: 0 }) in the closure of makeInferenceCache. Inside predict(input): read the values with input.dataSync(), round each to `decimals` places via factor = Math.pow(10, decimals), and join them into a key string. On a hit, increment stats.hits and return the cached entry; on a miss, increment stats.misses, run model.predict(input), read the output into an array with out.dataSync(), dispose that tensor, and cache.set the array under the key. Store numbers rather than the tensor: a cached handle is never released, and the first caller to dispose it breaks every later hit."
+    content: "Two decisions and one habit. The first decision is what counts as the same input, which is the sentence this lesson opens with. Near-identical signals have to collide on purpose, so the key is built from the input's own values after they are rounded, and `decimals` is how wide you make the bucket. Watch what you put in the key: anything that boils the values down to one number, their sum or their mean, hands [0.9, 0.1] and [0.1, 0.9] the same key, and then one signal is served the other one's verdict. The second decision is what you store under the key. A cached tensor stays resident until the tab closes, and whoever disposes it first turns every later hit into 'Tensor is disposed', so read the prediction into plain numbers and store those. The habit is that a hit and a miss have to be indistinguishable to the caller: the same kind of value out of both paths, and the counters kept in the closure where the caller can still read them."
   - level: solution
     content: "const cache = new Map(); const stats = { hits: 0, misses: 0 }; const factor = Math.pow(10, decimals); return { stats, predict(input) { const data = Array.from(input.dataSync()); const key = data.map(v => Math.round(v * factor) / factor).join(','); if (cache.has(key)) { stats.hits++; return cache.get(key); } stats.misses++; const out = model.predict(input); const scores = Array.from(out.dataSync()); out.dispose(); cache.set(key, scores); return scores; }, };"
 keywords:
@@ -46,7 +46,13 @@ That log line is 213 model runs the dashboard never needed. Demir has seen this 
 Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? Round the features, key on the rounded values, and the second identical signal costs a Map lookup instead of a forward pass.
 </Dialogue>
 
-DEEP SCAN spent last night reclassifying cosmic background it had already classified, at the full 45 ms this module's first lesson profiled. The consoles still had no working WebGL context, so that 45 ms is wasm time on the CPU, and every repeat paid all of it. The playbook is the one that sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss.
+Demir files the ticket with a saving on it: 213 repeats at the 45 ms this module's first lesson profiled, which is nearly ten seconds of compute given away overnight. Nazari reads the ticket and asks him which model he timed.
+
+<Dialogue speaker="Chief Nazari">
+That 45 milliseconds is the bundle, Ensign. The bundle's time is the language component behind the report pipeline: 85 million parameters, 80 token ids going into a table of 50,000 words. You do not run that to sort a signal. You run the classifier. Go and time the call you are actually caching, then come back and tell me what the cache is worth.
+</Dialogue>
+
+He times both, with the readback inside the clock the way module 4 insists. On the wasm fallback the first lesson profiled, the language component's forward pass runs 45 ms and the classifier's runs 0.035, a ratio over a thousand to one. The ticket overstated the saving by that factor, and the cache is the same cache either way: it still removes the same 40 percent of forward passes. What changed is the size of the prize. The playbook is worth learning regardless, because it sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss. Finding out whether this call is the expensive one is the step the ticket skipped.
 
 <LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
 
@@ -128,20 +134,31 @@ function cachedClassify(signal: number[]): string {
 
 // After the overnight run: 4,110 lookups, 1,644 hits. cache.hitRate reads 0.40.
 
-// Mean cost per call = hitRate * lookup + (1 - hitRate) * inference.
-// The profile put inference at 45 ms mean and 112 ms P95; a Map lookup on
-// a few hundred entries is about 0.01 ms.
-const effectiveMs = 0.4 * 0.01 + 0.6 * 45;
-console.log(effectiveMs.toFixed(1));  // 27.0
+// Mean cost per served call = hitRate * hit + (1 - hitRate) * classify.
+// Both terms are measured on one backend, readback inside the clock. A
+// classification on the eleven-feature classifier ran 0.035 ms across 20
+// batches of 200 calls. A hit is the whole cheap path: dataSync, round the
+// values, join the key, read the Map, and over 200,000 hits against a
+// 500-entry cache that path ran 0.0013 ms, of which the Map read itself
+// was 0.00004.
+const effectiveMs = 0.4 * 0.0013 + 0.6 * 0.035;
+console.log(effectiveMs.toFixed(4));  // 0.0215
 
-// 45 ms to 27 on the mean, and one miss still costs the same 112 ms it always
-// did. What a cache changes is how often you pay the model. Watch which
-// population a percentile belongs to, though: with 40% of served calls at
-// 0.01 ms, the served P95 is the 91.7th percentile of inference time, so it
-// sits under 112.`}
+// 0.035 ms to 0.0215 is the hit rate and nothing more. A cache never makes
+// a call faster; it removes calls. Put the night through it and the whole
+// saving is 1,644 hits at 0.034 ms each, which is 55 milliseconds between
+// midnight and morning.
+//
+// The 45 ms in this module's first lesson is not this call. It belongs to
+// the 85-million-parameter language component behind the report pipeline,
+// and the 0.035 above was timed on that same wasm fallback. A cache in
+// front of THAT call is worth building. The pattern was never wrong here;
+// the call it was pointed at was.`}
 </CodeBlock>
 
 Notice what `InferenceCache<string>` holds: the verdict, not the tensor it came out of. Cache the tensor instead and 50 cached predictions leave 50 tensors resident with nothing to release them, in the module that opened on a dashboard running out of memory. Sharing the handle is the other half of it. Whoever disposes the returned tensor first turns every later hit on that key into `Tensor is disposed.`
+
+Keep the ledger honest on both sides while you read that. On the credit side this cache removes 40 percent of the classifier's forward passes, worth 55 milliseconds a night. On the debit side it creates a second copy of every verdict the model has ever given, with its own expiry rules and its own ways of being wrong, and the next page you get will be about that copy. A cache earns its place when the call behind it costs enough to pay for the invalidation you just signed up for. Time the call first.
 
 ## Challenge
 
@@ -160,7 +177,7 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
     "A cache-first predict hashes the input, returns a stored result on a hit, and runs the model and stores the result on a miss. Bounding the cache is a second decision on top of that: the delete + re-set trick in get() is what makes eviction true LRU instead of FIFO.",
     "Quantizing inputs before hashing means near-identical inputs land on the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
     "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data.",
-    "At a 40 percent hit rate the mean cost per call falls from 45 ms to about 27. A hit costs a Map lookup and a miss still runs the whole model, so one miss costs the full 112 ms it always did. The served P95 does drop: it is the 91.7th percentile of inference time once 40 percent of served calls cost almost nothing."
+    "A cache removes calls rather than making one faster, so what it is worth is the hit rate times what that call costs. Look the cost up on the call you are wrapping, not on the bundle it ships inside: a five-class signal classifier ran 0.035 ms per call on the same wasm fallback where an 85-million-parameter language component ran 45 ms. At a 40 percent hit rate the classifier cache takes the mean served call from 0.035 ms to 0.0215, which came to 55 milliseconds across a night of 4,110 lookups."
   ]}
   bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."
   youCanNow="Wrap a model in a cache-first predict keyed on a rounded input hash, count the inference calls it saves, and audit cached entries for model-version and TTL staleness."
@@ -168,7 +185,7 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <Epilogue>
 
-Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin, and the freed cycles clear the two jobs that have been queuing behind the mission. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. ARIA reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
+Overnight the cache absorbs 40 percent of DEEP SCAN's classification calls: cosmic background, classified once, served from memory ever after. It saves 55 milliseconds. What clears the queue is the 85 MB build, which leaves the dashboard enough memory to run the two jobs that have been waiting behind the mission since the anomaly sprint. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. ARIA reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
 
 > Reconstruction error, 4.1 times the baseline my first hundred records set. Every threshold aboard was tuned for hull telemetry; no one has ever needed one for me, so there is no number at which this becomes a finding. The measurement is now on record. No procedure requires me to act on it.
 

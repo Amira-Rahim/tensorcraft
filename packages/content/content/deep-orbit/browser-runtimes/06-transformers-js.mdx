@@ -25,11 +25,11 @@ consequence:
   narrative: "Twelve lines of dependency close the bridge's request. In the lab, the Sector 7-G feed is already back on Farah's screen."
 hints:
   - level: nudge
-    content: "In the exercise the harness hands you pipelineFactory (a stand-in for the real pipeline() loader): await it to get the classifier, then call the classifier with the whole reports array."
+    content: "In the exercise the harness hands you pipelineFactory, a stand-in for the real pipeline() loader. It takes the argument the real one takes, the name of the task, and awaiting it gives you back the classifier. Then call the classifier with the whole reports array."
   - level: guidance
-    content: "Three steps: classifier = await pipelineFactory(); predictions = await classifier(reports); then pair each report with its prediction as { text, label: predictions[i].label, score: predictions[i].score } and sort the paired array by score descending before returning it."
+    content: "The loader has no default, so the first decision is which task you are asking it for. The table above lists them, and only one answers with a label and a confidence, which is what you are ranking on. After that, awaiting the factory gives you the classifier, and the classifier takes the whole array at once, so the batch is one load and one call. What comes back is one prediction per report, in the order you sent them, and that position is the only thing tying a score to the report it describes. So build the pairs before you reorder anything: sorting that list on its own leaves every row describing a different report. The empty batch takes the same path."
   - level: solution
-    content: "const classifier = await pipelineFactory(); const predictions = await classifier(reports); const paired = reports.map((text, i) => ({ text, label: predictions[i].label, score: predictions[i].score, })); paired.sort((a, b) => b.score - a.score); return paired;"
+    content: "const classifier = await pipelineFactory('sentiment-analysis'); const predictions = await classifier(reports); const paired = reports.map((text, i) => ({ text, label: predictions[i].label, score: predictions[i].score, })); paired.sort((a, b) => b.score - a.score); return paired;"
 keywords:
   - transformers-js
   - pretrained
@@ -84,7 +84,7 @@ const classifier = await pipeline('sentiment-analysis');
 
 const result = await classifier('Starboard array cleared diagnostics ahead of schedule.');
 console.log(result);
-// [{ label: 'NEGATIVE', score: 0.9759 }]
+// [{ label: 'NEGATIVE', score: 0.9790 }]
 // Good news, labeled NEGATIVE at high confidence. That is not a bug,
 // and the last section of this lesson says what it is.
 
@@ -96,13 +96,15 @@ const reports = [
 ];
 const batched = await classifier(reports);
 // [
-//   { label: 'POSITIVE', score: 0.9592 },
+//   { label: 'POSITIVE', score: 0.9300 },
 //   { label: 'NEGATIVE', score: 0.9997 },
 //   { label: 'NEGATIVE', score: 0.9987 },
 // ]
 // Those are the quantized scores. Forcing fp32 gives 0.9117, 0.9997
 // and 0.9984 on the same three lines: the scores move, the labels
-// do not.`}
+// do not. Every score here was recorded on @huggingface/transformers
+// 3.8.1 with the default model, run at dtype 'q8' (what the browser
+// picks) and at 'fp32'.`}
 </CodeBlock>
 
 ## Tasks the Pipeline Handles Out of the Box
@@ -124,11 +126,11 @@ Aboard the Archimedes the download comes from the ship's mirrored model archive,
 - **Bandwidth-sensitive users.** A 200MB model on a 3G connection is a UX failure. Inspect model sizes at [huggingface.co/models](https://huggingface.co/models) before committing.
 - **Strict latency budgets on cold start.** First-call latency includes model download. Pre-warm via service worker if you need cold-start guarantees.
 - **You need fine-tuning.** Transformers.js runs models, it doesn't train them. Fine-tune in Python, export to ONNX, ship via Transformers.js.
-- **Your text does not look like the model's training text.** `pipeline('sentiment-analysis')` defaults to `Xenova/distilbert-base-uncased-finetuned-sst-2-english`, fine-tuned on SST-2 review sentences, and the crew's reports are operational logs. The runs above already show the cost. `Signal classification: anomalous.` came back NEGATIVE at 0.9987, and `Starboard array cleared diagnostics ahead of schedule.` came back NEGATIVE at 0.9759. One neutral line, one report of good news, both NEGATIVE above 0.97, and nothing threw. It is the failure mode lesson 4 gave you for mismatched preprocessing, arriving through the text instead. Label twenty real reports by hand and compare before you put the pipeline in front of Mirza.
+- **Your text does not look like the model's training text.** `pipeline('sentiment-analysis')` defaults to `Xenova/distilbert-base-uncased-finetuned-sst-2-english`, fine-tuned on SST-2 review sentences, and the crew's reports are operational logs. The runs above already show the cost. `Signal classification: anomalous.` came back NEGATIVE at 0.9987, and `Starboard array cleared diagnostics ahead of schedule.` came back NEGATIVE at 0.9790. One neutral line, one report of good news, both NEGATIVE above 0.97, and nothing threw. It is the failure mode lesson 4 gave you for mismatched preprocessing, arriving through the text instead. Label twenty real reports by hand and compare before you put the pipeline in front of Mirza.
 
 ## Challenge
 
-Rank the crew's status reports by classifier confidence. The harness stands in for the Transformers.js pipeline, so what you write is the wiring around it: load the pipeline once, classify the whole batch in one call, sort by score.
+Rank the crew's status reports by classifier confidence. The harness stands in for the Transformers.js loader, so what you write is the call and the wiring around it: name the task, load it once, classify the whole batch in one call, sort by score.
 
 <Exercise slug="load-pretrained-pipeline" />
 

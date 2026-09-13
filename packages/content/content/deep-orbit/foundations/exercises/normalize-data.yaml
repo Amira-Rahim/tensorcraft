@@ -1,7 +1,14 @@
 slug: normalize-data
 lessonSlug: normalization
 title: "Normalize, Then Ask the Preview Neuron"
-instructions: "Real normalization is two jobs: scale the training data AND keep the statistics so future readings get the identical treatment. This time the pipeline ends where every pipeline should: at a model. Given a [4, 2] batch (4 readings × 2 features: temperature, signal strength), (1) write `fitStats(rows)` so it returns `{ mean, std }` for any [n, 2] batch, computed per column with tf.moments and axis 0, and fit it to `batch` (the grader fits it to two other batches as well, so read the rows you are handed), (2) z-score the batch into `normalized`, (3) build `previewModel`: one dense neuron with sigmoid activation (tf.sequential + tf.layers.dense, inputShape [2]), then load Farah's frozen weights with setWeights, (4) score the whole normalized batch in one predict() call into `scores`, (5) write `scoreReading(reading)` that applies THOSE SAVED STATS to any new 1D reading and returns the neuron's verdict; at inference time there is no batch to recompute from."
+instructions: |
+  Real normalization is two jobs: scale the training data AND keep the statistics so future readings get the identical treatment. This time the pipeline ends where every pipeline should, at a model. You are handed a [4, 2] batch (4 readings × 2 features: temperature, signal strength) and Farah's frozen neuron weights.
+
+  1. Write `fitStats(rows)` so it returns `{ mean, std }` for any [n, 2] batch: one mean and one std per FEATURE, not one pair for the whole batch, both measured over the rows the function was handed, `std` taken over n (population), and both returned as tensors, the way `tf.moments` hands them to you, so steps 2 and 5 can broadcast them across a batch. The grader fits it to two batches you have never seen, one of three rows and one of five, so a statistic typed in by hand or a divisor pinned to four rows lands wrong. Fit it to `batch`.
+  2. Z-score the batch into `normalized` with those statistics: every column centred on its own mean and measured in its own standard deviations.
+  3. Build `previewModel`: one dense unit reading two features, sigmoid activation, carrying Farah's frozen `KERNEL` and `BIAS`. The grader reads the weights back off the model and expects the kernel first, shaped [2, 1], and the bias second.
+  4. Score the whole normalized batch in one call into `scores`, one verdict per reading, so `scores` comes out [4, 1].
+  5. Write `scoreReading(reading)` for any new 1D reading of two features: normalize it with THE STATISTICS YOU ALREADY FITTED, hand it to the neuron the way the neuron expects its input, and return the verdict: the tensor `predict` hands back, or the number inside it. The grader releases the training batch before its last call, because a model in production has no training rows left to measure.
 starterCode: |
   const batch = tf.tensor2d([
     [20, 0.2],
@@ -10,11 +17,13 @@ starterCode: |
     [26, 0.6],
   ]);
 
-  // Farah's preview neuron, frozen: one weight per feature, one bias.
+  // Farah's preview neuron, frozen: one weight per feature, one bias. Both
+  // arrive as plain JS arrays rather than tensors.
   const KERNEL = [[0.9], [-1.4]];
   const BIAS = [-0.3];
 
-  // 1. Per-column stats (axis 0). std = variance.sqrt()
+  // Two features on two different scales, so a reduction that takes the
+  // whole batch at once mixes them. Each column needs its own numbers.
   function fitStats(rows) {
     // your code here
     return { mean: null, std: null };
@@ -22,19 +31,15 @@ starterCode: |
 
   const { mean, std } = fitStats(batch);
 
-  // 2. Z-score the batch with those stats
   const normalized = null;
 
-  // 3. One dense neuron: tf.sequential(), add a dense layer
-  //    (units 1, activation 'sigmoid', inputShape [2]), then
-  //    setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)])
   const previewModel = null;
 
-  // 4. The whole normalized batch, scored in one predict() call
   const scores = null;
 
-  // 5. Same treatment for any future reading: normalize with the
-  //    SAVED stats, reshape to [1, 2], return the neuron's verdict
+  // Nothing is measured again in here. A deployed model has no training
+  // rows to measure from, and the neuron still expects a batch for one
+  // reading.
   function scoreReading(reading) {
     // your code here
   }
@@ -70,10 +75,25 @@ solutionCode: |
   }
 testCode: |
   describe('Normalize, Then Ask the Preview Neuron', () => {
-    it('per-column mean is [23, 0.5]', () => {
-      const m = Array.from(mean.dataSync());
-      expect(m[0]).toBeCloseTo(23, 4);
-      expect(m[1]).toBeCloseTo(0.5, 4);
+    const filled = (value, what) => expect(value, what).toBeDefined();
+    // Statistics come back as tensors (or arrays); anything else is not a
+    // statistic the batch can broadcast against.
+    const values = (value, what) => {
+      filled(value, what);
+      const raw = typeof value.dataSync === 'function' ? value.dataSync() : value;
+      expect(
+        Array.isArray(raw) || ArrayBuffer.isView(raw),
+        'fitStats has to return its statistics as tensors, the way tf.moments hands them back, so the batch can broadcast against them.',
+      ).toBe(true);
+      return Array.from(raw);
+    };
+    it('fitStats returns one statistic per feature, not one for the batch', () => {
+      const m = values(mean, 'Step 1 has not run yet: fitStats still returns nulls.');
+      const why =
+        'Temperature and signal strength live on different scales, so each column needs its own mean. Reducing the whole batch at once averages the two together.';
+      expect(m.length, 'Two features in, two statistics out.').toBe(2);
+      expect(m[0], why).toBeCloseTo(23, 4);
+      expect(m[1], why).toBeCloseTo(0.5, 4);
     });
     it('fitStats reads the rows it is handed, not a memorized answer', () => {
       // A three-row batch that appears nowhere else in this exercise. Its
@@ -81,12 +101,17 @@ testCode: |
       // [1.6329932, 2.4494898]. Hand-typed constants fitted to the
       // four-row batch above cannot clear this.
       const other = fitStats(tf.tensor2d([[10, 1], [12, 4], [14, 7]]));
-      const m = Array.from(other.mean.dataSync());
-      const sd = Array.from(other.std.dataSync());
-      expect(m[0]).toBeCloseTo(12, 4);
-      expect(m[1]).toBeCloseTo(4, 4);
-      expect(sd[0]).toBeCloseTo(1.63299, 4);
-      expect(sd[1]).toBeCloseTo(2.44949, 4);
+      const m = values(other && other.mean, 'fitStats returned no mean for this batch.');
+      const sd = values(other && other.std, 'fitStats returned no std for this batch.');
+      const why =
+        'These rows are not the ones printed in the starter, so anything typed in by hand misses them. Compute both statistics from the argument.';
+      const stdWhy =
+        why +
+        ' A std that comes out larger than this by a factor of sqrt(n / (n - 1)) was divided by n - 1: step 1 asks for the population standard deviation, the one divided by n.';
+      expect(m[0], why).toBeCloseTo(12, 4);
+      expect(m[1], why).toBeCloseTo(4, 4);
+      expect(sd[0], stdWhy).toBeCloseTo(1.63299, 4);
+      expect(sd[1], stdWhy).toBeCloseTo(2.44949, 4);
     });
     it('fitStats holds up on a five-row slice with untidy numbers', () => {
       // Five rows, none of them round: mean [26.9, 0.43], std
@@ -95,47 +120,101 @@ testCode: |
       const other = fitStats(
         tf.tensor2d([[31.5, 0.05], [18.25, 0.93], [27, 0.41], [22.75, 0.62], [35, 0.14]]),
       );
-      const m = Array.from(other.mean.dataSync());
-      const sd = Array.from(other.std.dataSync());
-      expect(m[0]).toBeCloseTo(26.9, 3);
-      expect(m[1]).toBeCloseTo(0.43, 4);
-      expect(sd[0]).toBeCloseTo(5.98038, 3);
-      expect(sd[1]).toBeCloseTo(0.32094, 4);
+      const m = values(other && other.mean, 'fitStats returned no mean for this batch.');
+      const sd = values(other && other.std, 'fitStats returned no std for this batch.');
+      const why =
+        'Five rows this time. A row count baked into the arithmetic, or a divisor of four, lands off here.';
+      const stdWhy =
+        why +
+        ' So does dividing by n - 1 instead of n, which lands high by a factor of sqrt(n / (n - 1)) on any row count.';
+      expect(m[0], why).toBeCloseTo(26.9, 3);
+      expect(m[1], why).toBeCloseTo(0.43, 4);
+      expect(sd[0], stdWhy).toBeCloseTo(5.98038, 3);
+      expect(sd[1], stdWhy).toBeCloseTo(0.32094, 4);
     });
     it('normalized columns have mean ~0 and std ~1', () => {
+      filled(normalized, 'Step 2 is still empty. Z-score the batch with the statistics from step 1.');
       const colMeans = Array.from(normalized.mean(0).dataSync());
-      expect(Math.abs(colMeans[0])).toBeLessThan(1e-5);
-      expect(Math.abs(colMeans[1])).toBeLessThan(1e-5);
+      const why =
+        'A z-scored column is centred on its own mean and measured in its own standard deviations, which is what puts both features on one scale.';
+      expect(Math.abs(colMeans[0]), why).toBeLessThan(1e-5);
+      expect(Math.abs(colMeans[1]), why).toBeLessThan(1e-5);
       const stds = Array.from(tf.moments(normalized, 0).variance.sqrt().dataSync());
-      expect(stds[0]).toBeCloseTo(1, 4);
-      expect(stds[1]).toBeCloseTo(1, 4);
+      const stdWhy =
+        'A column divided by its population std comes out at exactly 1 here. Divided by a sample std, the n - 1 divisor, it lands near 0.87 instead.';
+      expect(stds[0], stdWhy).toBeCloseTo(1, 4);
+      expect(stds[1], stdWhy).toBeCloseTo(1, 4);
     });
     it('previewModel is a real dense layer carrying the frozen weights', () => {
+      filled(previewModel, 'Step 3 is still empty. Build the one-neuron model, then load the frozen weights into it.');
       const w = previewModel.getWeights();
-      expect(w).toHaveLength(2);
-      expect(w[0].shape).toEqual([2, 1]);
+      expect(w, 'A dense layer keeps two weight tensors: the kernel and the bias.').toHaveLength(2);
+      expect(
+        w[0].shape,
+        'The kernel is one weight per input feature, arranged as a column because the layer has one unit.',
+      ).toEqual([2, 1]);
       const k = Array.from(w[0].dataSync());
-      expect(k[0]).toBeCloseTo(0.9, 5);
-      expect(k[1]).toBeCloseTo(-1.4, 5);
-      expect(w[1].dataSync()[0]).toBeCloseTo(-0.3, 5);
+      const why =
+        'setWeights is positional: the kernel goes first, the bias second, and swapping them or reshaping the kernel changes the neuron Farah handed you.';
+      expect(k[0], why).toBeCloseTo(0.9, 5);
+      expect(k[1], why).toBeCloseTo(-1.4, 5);
+      expect(w[1].dataSync()[0], why).toBeCloseTo(-0.3, 5);
     });
     it('scores = predict(normalized): one sigmoid verdict per reading', () => {
-      expect(scores.shape).toEqual([4, 1]);
+      filled(scores, 'Step 4 is still empty. Score the whole normalized batch in one call.');
+      expect(
+        scores.shape,
+        'One row of output per row of input, and one column because the layer has a single unit.',
+      ).toEqual([4, 1]);
       const s = Array.from(scores.dataSync());
-      expect(s[0]).toBeCloseTo(0.5917, 3);
-      expect(s[1]).toBeCloseTo(0.0704, 3);
-      expect(s[2]).toBeCloseTo(0.6745, 3);
-      expect(s[3]).toBeCloseTo(0.5699, 3);
+      const why =
+        'Each verdict is the sigmoid of the two normalized features weighted and offset by the bias. Scoring the raw batch instead of the normalized one lands far from this, and statistics fitted with the n - 1 divisor land just beside it.';
+      expect(s[0], why).toBeCloseTo(0.5917, 3);
+      expect(s[1], why).toBeCloseTo(0.0704, 3);
+      expect(s[2], why).toBeCloseTo(0.6745, 3);
+      expect(s[3], why).toBeCloseTo(0.5699, 3);
     });
     it('the neuron computes on inputs it has never seen', () => {
+      filled(previewModel, 'Step 3 is still empty.');
       const out = previewModel.predict(tf.tensor2d([[1, -1]]));
-      expect(out.dataSync()[0]).toBeCloseTo(0.8808, 3);
+      expect(
+        out.dataSync()[0],
+        'These two numbers are not in the batch. The layer has to do the arithmetic rather than return a stored answer.',
+      ).toBeCloseTo(0.8808, 3);
     });
-    it('scoreReading applies the SAVED stats, then asks the neuron', () => {
+    it('scoreReading keeps working after the training rows are gone', () => {
       const centre = scoreReading(tf.tensor([23, 0.5]));
-      expect(centre.dataSync()[0]).toBeCloseTo(0.4256, 3);
-      const archived = scoreReading(tf.tensor([24, 0.51]));
-      expect(archived.dataSync()[0]).toBeCloseTo(0.51, 3);
+      filled(centre, 'Step 5 is still empty: scoreReading returned nothing.');
+      const verdict = typeof centre === 'number' ? centre : centre.dataSync()[0];
+      expect(
+        verdict,
+        'A reading sitting exactly at the training mean normalizes to zeros, so this verdict is the bias alone.',
+      ).toBeCloseTo(0.4256, 3);
+      // PROVENANCE, and the only route to it. Refitting the statistics off
+      // `batch` at call time returns numerically IDENTICAL values, so no
+      // assertion on the RESULT can separate saved stats from recomputed
+      // ones: a submission that reran fitStats(batch) inside scoreReading
+      // passed all eight tests (measured 2026-09-08). Releasing the training
+      // batch settles it, and it is also the situation the lesson describes,
+      // since a deployed model has no training rows to reach for. Measured
+      // 2026-09-08 on tfjs 4.22.0: a scoreReading that refits throws
+      // "Cannot read properties of undefined (reading 'backend')" from the
+      // next line, and one that uses the saved statistics returns
+      // 0.5099692940711975.
+      batch.dispose();
+      let archived;
+      try {
+        archived = scoreReading(tf.tensor([24, 0.51]));
+      } catch (err) {
+        throw new Error(
+          'The training rows have been released here, and scoreReading reached for them anyway. Fit the statistics once, hold on to them, and normalize each new reading with those. A model in production has no training batch to recompute from. Underlying error: ' +
+            ((err && err.message) || String(err)),
+        );
+      }
+      expect(
+        typeof archived === 'number' ? archived : archived.dataSync()[0],
+        'Normalized with the SAVED statistics, the archived sample scores just over a half. Statistics refitted from anything else move this number, and so does a std taken over n - 1 rather than n.',
+      ).toBeCloseTo(0.51, 3);
     });
   });
 estimatedMinutes: 15

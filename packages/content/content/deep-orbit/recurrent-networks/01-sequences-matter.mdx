@@ -27,9 +27,9 @@ hints:
   - level: nudge
     content: "Forecasting from a stream means pairing each window of past readings with the single reading that comes immediately after it."
   - level: guidance
-    content: "Loop start from 0 while start + windowSize < data.length, stepping by stride (window i starts at i * stride). Each xs entry is data.slice(start, start + windowSize); each ys entry is data[start + windowSize]. The strict < is the drop rule: a window whose answer would be past the end never enters the set. Return { xs, ys }."
+    content: "Both moving parts sit in the loop header. The window's first index advances by the stride rather than by a single reading, so consecutive windows overlap by windowSize minus stride, and stop overlapping once the stride is as wide as the window. The stop condition is where the drop rule lives: the loop has to end while the archive still holds the reading each window is paired with, which means the last window you keep is not the last one that fits. The pair of tensors is that same data with one axis made explicit: a window is a sample, and inside it time comes before features. Build them out of the two lists you just filled, and when nothing survived the drop rule there is nothing to stack."
   - level: solution
-    content: "const xs: number[][][] = []; const ys: number[][] = []; for (let start = 0; start + windowSize < data.length; start += stride) { xs.push(data.slice(start, start + windowSize)); ys.push(data[start + windowSize]); } return { xs, ys };"
+    content: "const xs = []; const ys = []; for (let start = 0; start + windowSize < data.length; start += stride) { xs.push(data.slice(start, start + windowSize)); ys.push(data[start + windowSize]); } const xsTensor = xs.length ? tf.tensor3d(xs) : null; const ysTensor = ys.length ? tf.tensor2d(ys) : null; return { xs, ys, xsTensor, ysTensor };"
 keywords:
   - sequence
   - temporal
@@ -142,6 +142,8 @@ sequentialInput.dispose();`}
 ## Challenge
 
 `createSequences` above stops at the windows. Training needs two more things out of the same loop: a stride, so you choose how far the window jumps between samples, and a forecasting target for every window, the single reading that arrives immediately after it. That target also moves the boundary. A window whose next reading falls past the end of the archive has no answer to train against, so it never enters the set.
+
+Then stack what survives. The arrays are nested lists to JavaScript and nothing more; the model reads shapes, so the windows go in as one tensor of [batch, timeSteps, features] and the targets as one tensor of [batch, features]. That third axis is the whole difference between this module and the four before it, and this is where you put it.
 
 <Exercise slug="create-sequences" />
 

@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "An LLM response is untrusted text: the client's job is to parse it and validate every required field before anything downstream sees it."
   - level: guidance
-    content: "await apiCall(prompt), then pull the JSON block out of the raw response with a regex match before parsing (JSON.parse on the whole reply dies on surrounding prose). Validate the parsed object: classification and reasoning must be present and confidence must not be undefined, and throw when the JSON is missing or a field is absent. The tests feed you 'not json' and objects missing reasoning or classification, and expect a rejection each time."
+    content: "Nothing here is a parsing problem until you decide what to parse. The model was asked for JSON and models answer in sentences, so what arrives is text with the object somewhere inside it. That is the first failure to handle. The second is a reply that parses cleanly and is still not an analysis, which is why the client checks the three fields an analysis carries before it hands anything downstream. Check the object, not the reply: a model that mentions a field in a sentence has not sent you that field. One decision is left after that, which is what it means for a field to be there. Two replies in the task settle it. One reports a confidence of zero, so a truthiness test throws out a real reading. One volunteers fields nobody asked for, so a key count throws out a valid reply. Test for absence, field by field."
   - level: solution
     content: "const response = await apiCall(prompt); const jsonMatch = response.match(/\\{[\\s\\S]*\\}/); if (!jsonMatch) throw new Error('No JSON in response'); const parsed = JSON.parse(jsonMatch[0]); if (!parsed.classification || parsed.confidence === undefined || !parsed.reasoning) { throw new Error('Missing required fields'); } return parsed as Analysis;"
 keywords:
@@ -59,7 +59,7 @@ Then we run it with a ledger. Every fabricated claim you catch goes on the board
 
 Nazari's skepticism is the right default. A language model will happily invent a confident paragraph about an anomaly that never happened, and a fabricated number in a report to Earth Command is worse than no report at all. What makes Farah's plan sound is the workflow, not the model: nothing ships until the one person aboard who knows the data has checked every claim against it.
 
-<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Set up an LLM API client for programmatic access", "Define the human-AI workflow: generate → review → correct → approve"]} />
+<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on", "Define the human-AI workflow: generate → review → correct → approve"]} />
 
 ## LLMs as Developer Tools
 
@@ -184,7 +184,7 @@ console.log(check.invalid);  // ['9']  ← no such cluster in the data
 
 ## Challenge
 
-Set up an LLM client and generate a structured analysis.
+The client above is a fetch wrapper, and the reply it returns is not. Turn one reply into a typed analysis, or into a thrown error.
 
 <Exercise slug="llm-client" />
 
@@ -197,7 +197,7 @@ Set up an LLM client and generate a structured analysis.
     "Temperature controls how random the next-token pick is: low values (0.1-0.3) make a factual analysis repeatable, higher values suit creative tasks. Repeatable is not the same as true, so temperature is a knob for consistency and never a defense against fabrication."
   ]}
   bridge="Just as AI code completion (Copilot) suggests code you still review before merging, LLM analysis (`llm.complete(prompt)`) generates prose you must verify against your data before trusting."
-  youCanNow="Set up an LLM API client and integrate it into a human-in-the-loop review workflow for structured analysis tasks."
+  youCanNow="Write the boundary between a language model and the code that uses it: parse the reply, check every field your caller depends on, and refuse what did not arrive. What survives that goes into a workflow where a human checks the claims before anything ships."
 />
 
 <Epilogue>

@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "Two filters and one join: sections whose validated flag is true ship as markdown blocks; the rest ship only as a list of headings under a Withheld section, and that section exists only when something was withheld. The cut is the decision the BossBeat priced."
   - level: guidance
-    content: "shipped = sections.filter(s => s.validated); withheld = the others. Map shipped to '## ' plus heading, blank line, content. If withheld is non-empty, push one more block: '## Withheld', a blank line, then '- ' plus each withheld heading joined by newlines. Join every block with a '---' rule padded by blank lines, under '# ' plus title. The grader counts separators as blocks minus one, so join between blocks, never after each one."
+    content: "Sort the sections into two piles by their own verdict, not by their heading and not by where they sit in the list. One pile goes out as markdown blocks in the order it arrived. The other contributes headings and nothing else, gathered into a single block at the end, and that block exists only when something was actually held back. Then the boring detail that decides whether the document renders: a horizontal rule sits between two blocks, so a document of one block carries none at all, which is a different count from one rule per block."
   - level: solution
     content: "const shipped = sections.filter(s => s.validated); const withheld = sections.filter(s => !s.validated); const parts = shipped.map(s => `## ${s.heading}\\n\\n${s.content}`); if (withheld.length > 0) { parts.push(`## Withheld\\n\\n${withheld.map(s => `- ${s.heading}`).join('\\n')}`); } return `# ${title}\\n\\n${parts.join('\\n\\n---\\n\\n')}`;"
 keywords:
@@ -40,12 +40,12 @@ skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">
-Six sections, one prompt, one draft: eleven hundred words back in nine seconds, and the Methodology section cites an instrument this ship does not carry. I'm not reading the other five to find out what else it invented. We generate them one at a time, each with its own data and its own check.
+Six sections, one prompt, one draft: eleven hundred words back in twenty seconds, and the Methodology section cites an instrument this ship does not carry. I'm not reading the other five to find out what else it invented. We generate them one at a time, each with its own data and its own check.
 </Dialogue>
 
 Generating a full report in one shot is the monolithic-component mistake: mediocre output and nothing you can verify in isolation. Sections are components: each gets its own data, its own prompt, and its own review.
 
-<LearningObjectives objectives={["Structure report generation as section-by-section assembly rather than monolithic generation", "Build a report pipeline: template → data retrieval → generation → validation → assembly", "Cut a section that fails its check, and record the gap instead of shipping the guess", "Produce a formatted, citable scientific report from signal data"]} />
+<LearningObjectives objectives={["Structure report generation as section-by-section assembly rather than monolithic generation", "Follow a report pipeline from template to data to generation to validation to assembly, and build the assembly step that decides what ships", "Cut a section that fails its check, and record the gap instead of shipping the guess", "Produce a formatted report a human can sign, with the withheld sections named rather than quietly missing"]} />
 
 <BossBeat
   beatId="deep-orbit-llm-cut-call"
@@ -105,17 +105,23 @@ Write the "\${section.heading}" section of a scientific signal analysis report.
 
 ## Format
 - Use markdown
-- Cite specific data points with timestamps
+- Every number you write has to appear in the Data block above, copied from it exactly
 - Keep to 200-300 words
 - Be precise and factual\`;
 
     const content = await llm.complete(prompt, { temperature: 0.2 });
     section.generated = content;
     // This is where section.validated comes from: lesson 3's checker, run over
-    // the numbers in THIS section's own data. Both sides tokenize the same way,
-    // so "12,001" splits into 12 and 001 on each side and still traces.
-    const rows = [(section.data.match(/-?\\d+(\\.\\d+)?/g) ?? []).map(parseFloat)];
-    section.validated = verifyClaims(content, rows).fabricated.length === 0;
+    // the numbers in THIS section's own data. Strip the thousands separators
+    // on both sides first. Leave them in and "12,001" tokenizes as 12 and 001.
+    // The evidence set then reads 12, 1, 11, 847, 153, 1. Neither total the
+    // report stated survives that split, and three of the numbers standing in
+    // for them (12, 11 and 847) were never in the report at all. A section
+    // claiming 847 anomalies would validate. One quoting the real 12001
+    // would not.
+    const plain = (text: string) => text.replace(/(\\d),(?=\\d)/g, '$1');
+    const rows = [(plain(section.data).match(/-?\\d+(\\.\\d+)?/g) ?? []).map(parseFloat)];
+    section.validated = verifyClaims(plain(content), rows).fabricated.length === 0;
   }
 
   return sections;
@@ -155,7 +161,7 @@ The model has written the sections and the validator has marked each one. Assemb
     "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
   ]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."
-  youCanNow="Build a section-by-section report generation pipeline that retrieves data per section, generates content at low temperature, validates claims against source data, and assembles a complete citable output."
+  youCanNow="Assemble a generated report from the validator's per-section verdicts: ship the sections that passed, name the ones that did not, and leave nothing in the document the data does not support."
 />
 
 <Epilogue>

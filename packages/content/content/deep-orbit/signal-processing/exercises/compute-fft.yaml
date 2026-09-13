@@ -1,15 +1,13 @@
 slug: compute-fft
 lessonSlug: fourier-transform
 title: "Compute FFT and Find Dominant Frequency"
-instructions: "Write a function that takes a signal array and sample rate, computes the FFT using tf.spectral.rfft(), and returns the dominant frequency (the frequency with the highest magnitude, excluding the DC component at bin 0)."
+instructions: "Write a function that takes a signal array and a sample rate, computes the FFT with tf.spectral.rfft(), and returns the dominant frequency in hertz: the frequency of the highest-magnitude bin, with the DC component at bin 0 excluded. A spectrum only has bin centers to offer, so the answer is the center of the winning bin. A tone sitting between two centers reads as the nearer one, and that quantization is the resolution the transform gave you."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function findDominantFrequency(signal: number[], sampleRate: number): number {
-    // 1. Compute FFT with tf.spectral.rfft()
-    // 2. Get magnitudes with tf.abs()
-    // 3. Skip bin 0 (DC) and find the bin with highest magnitude
-    // 4. Convert bin index to frequency: bin * sampleRate / signal.length
+    // Two decisions live here: which bins are eligible to win the search, and
+    // what a winning index is worth in hertz.
     return null; // your code here
   }
 solutionCode: |
@@ -32,28 +30,61 @@ solutionCode: |
   }
 testCode: |
   describe('findDominantFrequency', () => {
-    it('finds a 5 Hz tone in a 1-second, 128 Hz signal', () => {
+    it('finds the one tone in a 1-second, 128 Hz capture', () => {
       const signal = Array.from({ length: 128 }, (_, i) => Math.sin(2 * Math.PI * 5 * i / 128));
       const freq = findDominantFrequency(signal, 128);
-      expect(Number.isFinite(freq)).toBe(true);
+      expect(
+        Number.isFinite(freq),
+        'The return value here is a number of hertz. The starter returns null, so nothing has been computed yet.',
+      ).toBe(true);
       expect(freq).toBeCloseTo(5, 1);
     });
-    it('picks the stronger of two components (1.0x 20 Hz over 0.3x 3 Hz)', () => {
+    it('picks the stronger of two components, not the slower one', () => {
       const signal = Array.from({ length: 256 }, (_, i) =>
         0.3 * Math.sin(2 * Math.PI * 3 * i / 256) + 1.0 * Math.sin(2 * Math.PI * 20 * i / 256));
-      expect(findDominantFrequency(signal, 256)).toBeCloseTo(20, 1);
+      expect(
+        findDominantFrequency(signal, 256),
+        'Both components are really there. The winner is the one with the largest magnitude, which is not the one that repeats most slowly.',
+      ).toBeCloseTo(20, 1);
     });
-    it('skips the DC component: a +5.0 offset must not win over the 7 Hz tone', () => {
+    it('skips the DC component, so a constant offset cannot win', () => {
       const signal = Array.from({ length: 128 }, (_, i) => 5.0 + Math.sin(2 * Math.PI * 7 * i / 128));
-      expect(findDominantFrequency(signal, 128)).toBeCloseTo(7, 1);
+      expect(
+        findDominantFrequency(signal, 128),
+        'A +5.0 offset puts far more energy in bin 0 than the tone puts anywhere else. Bin 0 counts how much the whole slice sits away from zero, which is not a frequency.',
+      ).toBeCloseTo(7, 1);
     });
-    it('tracks the input, not a memorized answer (12 Hz in a 64-sample, 64 Hz signal)', () => {
+    it('tracks the input rather than a memorized answer (a second tone at a second length)', () => {
       const signal = Array.from({ length: 64 }, (_, i) => Math.sin(2 * Math.PI * 12 * i / 64));
-      expect(findDominantFrequency(signal, 64)).toBeCloseTo(12, 1);
+      expect(
+        findDominantFrequency(signal, 64),
+        'A different tone at a different capture length, so nothing that worked above can be carried over by hand.',
+      ).toBeCloseTo(12, 1);
     });
     it('converts the bin to hertz instead of returning the bin index (256 samples at 128 Hz)', () => {
       const signal = Array.from({ length: 256 }, (_, i) => Math.sin(2 * Math.PI * 5 * i / 128));
       expect(findDominantFrequency(signal, 128)).toBeCloseTo(5, 1);
+    });
+    it('answers with a bin center, so a tone between two centers reads like the nearer one', () => {
+      // 128 samples at 128 Hz spaces the bin centers 1 Hz apart, and this
+      // tone sits between two of them. The spectrum has nothing finer to
+      // report, so the answer is quantized.
+      const signal = Array.from({ length: 128 }, (_, i) => Math.sin(2 * Math.PI * 7.3 * i / 128));
+      expect(
+        findDominantFrequency(signal, 128),
+        'This answer has to come out of a bin. Timing the wave in the time domain, by its zero crossings or its period, lands closer to the true tone than this spectrum can resolve, and that extra precision is the tell that no transform was involved.',
+      ).toBeCloseTo(7, 1);
+    });
+    it('magnitude decides the winner, not how often the wave crosses zero', () => {
+      // A strong slow tone with a weaker fast one riding on it. The slow
+      // component owns the largest magnitude; the fast one owns the zero
+      // crossings.
+      const signal = Array.from({ length: 128 }, (_, i) =>
+        Math.sin(2 * Math.PI * 4 * i / 128) + 0.55 * Math.sin(2 * Math.PI * 29 * i / 128));
+      expect(
+        findDominantFrequency(signal, 128),
+        'Counting how often this signal changes sign answers a different question: it crosses zero far more often than its strongest component repeats.',
+      ).toBeCloseTo(4, 1);
     });
   });
 estimatedMinutes: 12

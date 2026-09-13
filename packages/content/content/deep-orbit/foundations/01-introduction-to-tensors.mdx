@@ -26,11 +26,11 @@ consequence:
   narrative: "The signal begins to take shape as structured data."
 hints:
   - level: nudge
-    content: "Three moves: create the tensor from the plain array, copy its shape and values out, then release the GPU memory yourself with dispose"
+    content: "Three moves: create the tensor from the plain array, copy out everything the grader asks for while it is still alive, then release the GPU memory yourself"
   - level: guidance
-    content: "tf.tensor(streamValues) builds the 1D tensor. Its .shape property is already a plain array; for the values wrap dataSync() in Array.from to get a real JS array, and only after both are captured call .dispose() on the tensor"
+    content: "Only one of the three steps is real work. `reading.shape` is already a plain JS array, so capturing it is a property read. The numbers are what has to cross a boundary. They live on the backend, and the synchronous reader from the lesson body hands them back in a Float32Array, which is not the plain JS list asked for here. The total is one more question for the same tensor, and adding the readings up on the backend leaves an intermediate behind, which the second cleanup tool in the lesson body handles for you. Order is the other decision. Release the memory last, because after that the numbers are unreachable, while rank, size and dtype still answer."
   - level: solution
-    content: "const reading = tf.tensor(streamValues); const shape = reading.shape; const values = Array.from(reading.dataSync()); reading.dispose();"
+    content: "const reading = tf.tensor(streamValues); const shape = reading.shape; const values = Array.from(reading.dataSync()); const total = tf.tidy(() => reading.sum().dataSync()[0]); reading.dispose();"
 keywords:
   - tensor
   - array
@@ -57,7 +57,7 @@ You've worked with arrays your entire career: API responses, byte buffers, pixel
 
 ## What Is a Tensor?
 
-A tensor is a multi-dimensional array with opinions. The numbers sit in contiguous memory exactly like a `Float32Array`; what's new is everything wrapped around them.
+A tensor is a multi-dimensional array with opinions. On the CPU backend its numbers sit in a `Float32Array`, flat and typed. On WebGL the same values live in a GPU texture instead, which is where the memory rules further down come from. Either way, what's new is everything wrapped around them.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

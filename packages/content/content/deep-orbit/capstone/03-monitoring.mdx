@@ -26,11 +26,11 @@ consequence:
   narrative: "Confidence scores, inference latency, drift detection, all streaming in real time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
 hints:
   - level: nudge
-    content: "A monitor is two running measurements: the average confidence of logged predictions, and drift as the distance between recent feature means and the baseline."
+    content: "A monitor is three running measurements: the average confidence of logged predictions, a percentile read off the sorted inference times, and drift as the distance between recent feature means and the baseline."
   - level: guidance
-    content: "logPrediction just pushes onto this.confidences. avgConfidence averages that array with reduce and returns 0 when nothing is logged. For computeDrift, average each feature column of recentInputs into a recentMean array the same length as this.baselineMean, then return the Euclidean distance: square each baselineMean-minus-recentMean difference, sum them, Math.sqrt the sum."
+    content: "Three measurements here, and the traps sit in the last two. Average confidence is the mean of everything logged so far, so the case worth thinking about is the one where nothing has been logged yet, because the mean of an empty list is not a number and a monitor still has to answer. The percentile has two of its own, both about indexing a sorted copy: the ordering has to be numeric, since the default comparison is textual and puts a four-hundred-millisecond call among the forties, and the top of the range lands one place past the last element unless something holds it back. The code block further up this lesson works the index out. Drift is a distance between two points in feature space, and both points are means: the baseline vector the monitor was constructed with, and one vector you collapse the recent window into, column by column. Collapse first, measure once. Measure each row against the baseline and average those distances instead. Deviations that would have cancelled in a mean cannot cancel once each row is already a distance, so a window that is merely noisy reports drift. The note further up this lesson, about a mean vector reading a shift in level and nothing else, is the other half of the same property."
   - level: solution
-    content: "this.confidences.push(confidence); if (this.confidences.length === 0) return 0; return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length; const featureCount = this.baselineMean.length; const recentMean = new Array(featureCount).fill(0); for (const row of recentInputs) { for (let i = 0; i < featureCount; i++) { recentMean[i] += row[i] / recentInputs.length; } } let sumSqDiff = 0; for (let i = 0; i < featureCount; i++) { sumSqDiff += (this.baselineMean[i] - recentMean[i]) ** 2; } return Math.sqrt(sumSqDiff);"
+    content: "this.confidences.push(confidence); if (this.confidences.length === 0) return 0; return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length; this.latencies.push(ms); if (this.latencies.length === 0) return 0; const sorted = [...this.latencies].sort((a, b) => a - b); const index = Math.min( sorted.length - 1, Math.floor((sorted.length * p) / 100), ); return sorted[index]; const featureCount = this.baselineMean.length; const recentMean = new Array(featureCount).fill(0); for (const row of recentInputs) { for (let i = 0; i < featureCount; i++) { recentMean[i] += row[i] / recentInputs.length; } } let sumSqDiff = 0; for (let i = 0; i < featureCount; i++) { sumSqDiff += (this.baselineMean[i] - recentMean[i]) ** 2; } return Math.sqrt(sumSqDiff);"
 keywords:
   - monitoring
   - observability
@@ -62,7 +62,9 @@ So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set,
 {`interface PredictionLog {
   timestamp: number;
   confidence: number;
-  latencyMs: number;
+  latencyMs: number;      // the whole classify() call, end to end: on the
+                          // bridge's WebGPU path about 5 ms, 15 on WebGL.
+                          // The classifier inside it answers in microseconds.
   inputFeatures: number[];
   label: string;
 }
@@ -83,6 +85,9 @@ class ModelMonitor {
   // Confidence tracking, like error rate monitoring
   get avgConfidence(): number {
     const recent = this.logs.slice(-100);
+    // Before the first prediction there is nothing to average, and the
+    // mean of an empty list is NaN. A dashboard cannot plot NaN.
+    if (recent.length === 0) return 0;
     return recent.reduce((sum, p) => sum + p.confidence, 0) / recent.length;
   }
 
@@ -90,18 +95,26 @@ class ModelMonitor {
   getLatencyPercentile(p: number): number {
     const sorted = this.logs.slice(-1000)
       .map(l => l.latencyMs)
-      .sort((a, b) => a - b);
-    return sorted[Math.floor(sorted.length * p / 100)];
+      .sort((a, b) => a - b);           // numeric: the default sort
+    if (sorted.length === 0) return 0;  // compares strings, and "400" < "41"
+    // length * 100 / 100 is the length itself, one index past the end.
+    const index = Math.min(sorted.length - 1, Math.floor(sorted.length * p / 100));
+    return sorted[index];
   }
 
   // Data drift detection, unique to ML monitoring
   computeDrift(recentInputs: number[][]): number {
+    // No traffic is not drift. computeMean below reads data[0], and an
+    // empty window has no row 0 and no recent mean to compare.
+    if (recentInputs.length === 0) return 0;
     const baselineMean = this.computeMean(this.baselineFeatures);
     const recentMean = this.computeMean(recentInputs);
 
     // Simple drift: Euclidean distance between feature means.
-    // Assumes features are z-scored first (the foundations rule):
-    // on raw scales the 73-Hz frequency term would drown the phase
+    // Assumes features are z-scored first (the foundations rule): raw,
+    // the frequency term is a zero-crossing count over the 64-sample
+    // window (37 of them on the 73.4 Hz line) and phase is radians
+    // (0.23 on that same reading), so the count would drown the phase
     // term and this one number would mean nothing.
     // A mean vector only sees a shift in level. Two windows with the
     // same means and twice the spread score 0.0 here, and so does one
@@ -128,7 +141,7 @@ class ModelMonitor {
     if (prediction.confidence < 0.5) {
       console.warn('⚠ Low confidence prediction:', prediction.label);
     }
-    if (prediction.latencyMs > 50) {
+    if (prediction.latencyMs > 50) {  // ten times the pipeline's WebGPU figure
       console.warn('⚠ Slow inference:', prediction.latencyMs, 'ms');
     }
   }
@@ -228,7 +241,7 @@ The other distribution worth watching sits on the output side. `this.logs` alrea
 
 ## Challenge
 
-Build a model monitor with drift detection.
+Build the monitor: confidence average, latency percentiles off the recorded inference times, and a drift score against the baseline.
 
 <Exercise slug="model-monitor" />
 
@@ -245,7 +258,7 @@ Build a model monitor with drift detection.
     "Latency percentiles (P50/P95/P99) apply directly to inference monitoring just as they do to API response time tracking."
   ]}
   bridge="Sentry captures exceptions and response times for a web app; `monitor.trackPrediction({ confidence, latency, drift })` adds the ML-specific layer. Confidence decay and input distribution shift are failures that never throw, so they require dedicated instrumentation."
-  youCanNow="Implement a model health monitor that tracks confidence trends, inference latency percentiles, and data drift against a training-time baseline."
+  youCanNow="Implement a model health monitor that averages prediction confidence, reads a latency percentile off the recorded inference times, and scores data drift as the distance between the recent feature means and a training-time baseline."
 />
 
 > **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. Last quarter it paged his cell for three straight days, every feature mean shifted at once, score pinned above threshold. Nothing in the world had changed: their own maintenance rotation had recalibrated the camera rig, and the detector was faithfully reporting the distance between the old sensors and the new ones. The check compares two means; it cannot tell you which side moved. They rebuilt the baseline from post-calibration data and the paging stopped. The line Hassan then added to the runbook travels well: when drift fires, read the maintenance log before you read the sky.

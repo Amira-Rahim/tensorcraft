@@ -1,86 +1,304 @@
 slug: forecast-signal
 lessonSlug: forecasting
-title: "Multi-Step Forecast"
-instructions: "Write a function that generates a multi-step forecast. Given a prediction function (that takes a window of values and returns the next value), a seed array of historical values, a window size, and a horizon (number of steps to predict), generate the forecast by feeding each prediction back as input. Every call to the prediction function must receive exactly windowSize values, not the whole history. The prediction function is called once per step, and from step 2 on the window it receives already holds the values you predicted."
+title: "Roll Forward, Then Replay One Step at a Time"
+instructions: |
+  Train a one-step model, then run it twice over the same stretch: once as a rollout that feeds itself, once re-seeded from the readings that actually arrived.
+
+  What you are given. `trainX` is a [windows, windowSize, 1] tensor of past readings, and `trainY` is the [windows, 1] tensor holding the reading that followed each window. Both are built for you, and `windowSize` is `trainX.shape[1]`. `past` holds every reading up to now, oldest first, and `arrived` holds the ones that turned up afterwards, so this is a forecast being replayed against what really happened. `epochs` is how many passes to train for. Read it from the arguments, because the grader runs this twice with different values.
+
+  What to build. Stack `tf.sequential()` with `tf.layers.lstm({ units: 8, inputShape: [windowSize, 1] })` and then `tf.layers.dense({ units: 1 })`. Compile it with the adam optimizer and meanSquaredError loss, then `await model.fit(trainX, trainY, { epochs, batchSize: 8 })` and keep what fit resolves to. Every prediction goes in the same way: the LAST `windowSize` values of a history, handed to `model.predict` as one [1, windowSize, 1] tensor, with the single number read out of the [1, 1] result. `rollout` is `arrived.length` predictions where each one is appended to the history before the next step, so from step 2 on the model is reading its own output. `oneStep` is `arrived.length` predictions where the history is `past` followed by the arrived readings BEFORE that step. Step 1 reads `past` alone, step 2 reads `past` plus the first arrived reading, and no prediction ever re-enters it. Leave `past` and `arrived` as you found them, and return `{ model, history, rollout, oneStep }` with both series plain arrays of numbers, oldest first.
+
+  What the grader ties together. It recomputes both arms beside you out of your own model and compares them step by step. It also reads `model.optimizer.iterations` against the length of the loss trace you hand back. The optimizer increments that counter once per batch and refuses to be assigned, so a trace built by hand does not agree with a real fit. It reads the first and last entries of that trace too, and checks the loss fell over the run, since weights that never moved are not a forecaster.
 starterCode: |
-  function forecast(
-    predictNext: (window: number[]) => number,
-    seed: number[],
-    windowSize: number,
-    horizon: number,
-  ): number[] {
-    // For each step in horizon:
-    //   1. Take the last windowSize values
-    //   2. Predict the next value
-    //   3. Append to the data
-    // Return only the predicted values
+  async function forecastTwoWays(trainX, trainY, past, arrived, epochs) {
+    // One training run, then the same stretch covered twice. The two passes
+    // differ only in which numbers the network reads before each guess.
     return null; // your code here
   }
 solutionCode: |
-  function forecast(
-    predictNext: (window: number[]) => number,
-    seed: number[],
-    windowSize: number,
-    horizon: number,
-  ): number[] {
-    const data = [...seed];
-    const predictions: number[] = [];
-    for (let i = 0; i < horizon; i++) {
-      const window = data.slice(-windowSize);
-      const next = predictNext(window);
-      predictions.push(next);
-      data.push(next);
+  async function forecastTwoWays(trainX, trainY, past, arrived, epochs) {
+    const windowSize = trainX.shape[1];
+    const model = tf.sequential();
+    model.add(tf.layers.lstm({ units: 8, inputShape: [windowSize, 1] }));
+    model.add(tf.layers.dense({ units: 1 }));
+    model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+    const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 });
+
+    const predictFrom = (readings) =>
+      tf.tidy(() => {
+        const window = readings.slice(-windowSize).map((value) => [value]);
+        return model.predict(tf.tensor3d([window])).dataSync()[0];
+      });
+
+    const fedBack = [...past];
+    const rollout = [];
+    for (let step = 0; step < arrived.length; step++) {
+      const next = predictFrom(fedBack);
+      rollout.push(next);
+      fedBack.push(next);
     }
-    return predictions;
+
+    const oneStep = [];
+    for (let step = 0; step < arrived.length; step++) {
+      oneStep.push(predictFrom([...past, ...arrived.slice(0, step)]));
+    }
+
+    return { model, history, rollout, oneStep };
   }
 testCode: |
-  describe('forecast', () => {
-    const identity = (w: number[]) => w[w.length - 1];
-    it('returns correct number of predictions', () => {
-      expect(forecast(identity, [1, 2, 3], 3, 5).length).toBe(5);
+  // A calm stretch of one DEEP SCAN channel: min-max normalized amplitude,
+  // one reading per second, inside the band module 7 baselined as normal.
+  // Period, phase and swing are drawn at run time, so the weights this model
+  // trains to are different on every run and neither arm can be memorised.
+  const buildCase = (windowSize, length, horizon) => {
+    const period = 6 + Math.floor(Math.random() * 5);
+    const phase = Math.random() * Math.PI * 2;
+    const swing = 0.12 + Math.random() * 0.1;
+    const readings = [];
+    for (let t = 0; t < length + horizon; t++) {
+      readings.push(0.5 + swing * Math.sin(phase + (2 * Math.PI * t) / period));
+    }
+    const past = readings.slice(0, length);
+    const arrived = readings.slice(length);
+    const windows = [];
+    const targets = [];
+    for (let i = 0; i + windowSize < past.length; i++) {
+      windows.push(past.slice(i, i + windowSize).map((v) => [v]));
+      targets.push([past[i + windowSize]]);
+    }
+    return {
+      past,
+      arrived,
+      windowSize,
+      trainX: tf.tensor3d(windows),
+      trainY: tf.tensor2d(targets),
+      batchesPerEpoch: Math.ceil(windows.length / 8),
+    };
+  };
+
+  const CASE_A = buildCase(6 + Math.floor(Math.random() * 5), 48, 8);
+  const EPOCHS_A = 20;
+  const pastA = CASE_A.past.slice();
+  const arrivedA = CASE_A.arrived.slice();
+
+  // A second width and a second epoch count, so a submission that pins either
+  // one to what it saw the first time is caught.
+  const CASE_B = buildCase(CASE_A.windowSize + 3, 40, 4);
+  const EPOCHS_B = 5;
+
+  // Training runs once per case, no matter how many tests read it.
+  let runA = null;
+  let runB = null;
+  const caseA = () => {
+    if (!runA) {
+      runA = forecastTwoWays(CASE_A.trainX, CASE_A.trainY, pastA, arrivedA, EPOCHS_A);
+    }
+    return runA;
+  };
+  const caseB = () => {
+    if (!runB) {
+      runB = forecastTwoWays(
+        CASE_B.trainX,
+        CASE_B.trainY,
+        CASE_B.past.slice(),
+        CASE_B.arrived.slice(),
+        EPOCHS_B,
+      );
+    }
+    return runB;
+  };
+
+  // One place to say what is missing, so the first Run on the untouched
+  // starter names the task instead of reading a property off null.
+  const outcome = async (run) => {
+    const out = await run;
+    expect(
+      out,
+      'forecastTwoWays hands back nothing. Train the model, run both arms over the arrived stretch, and return the model, the fit result and the two series.',
+    ).toBeTruthy();
+    expect(
+      out.model && typeof out.model.predict,
+      'model is the tf.LayersModel you trained. The grader runs both arms through it itself, so it has to be the model that did the fitting.',
+    ).toBe('function');
+    expect(
+      !!(out.history && out.history.history && Array.isArray(out.history.history.loss)),
+      'history is what model.fit resolved to, and its history.loss is the per-epoch trace.',
+    ).toBe(true);
+    expect(
+      Array.isArray(out.rollout) && Array.isArray(out.oneStep),
+      'rollout and oneStep both come back as plain arrays of numbers, oldest first.',
+    ).toBe(true);
+    return out;
+  };
+
+  const predictBeside = (model, readings, windowSize) =>
+    tf.tidy(() => {
+      const window = readings.slice(-windowSize).map((value) => [value]);
+      return model.predict(tf.tensor3d([window])).dataSync()[0];
     });
-    // The prediction here doubles the window's last value, so a fed-back
-    // forecast grows geometrically and an arithmetic ramp cannot fake it.
-    // The captured windows are the real check: window 2 and window 3 have
-    // to contain the values predicted at steps 1 and 2.
-    it('feeds each prediction back into the next window', () => {
-      const windows: number[][] = [];
-      const doubleLast = (w: number[]) => {
-        windows.push([...w]);
-        return w[w.length - 1] * 2;
-      };
-      const result = forecast(doubleLast, [3, 4, 5], 3, 3);
-      expect(result).toEqual([10, 20, 40]);
-      expect(windows).toEqual([
-        [3, 4, 5],
-        [4, 5, 10],
-        [5, 10, 20],
-      ]);
+
+  const rollBeside = (model, past, steps, windowSize) => {
+    const history = past.slice();
+    const rows = [];
+    for (let step = 0; step < steps; step++) {
+      const next = predictBeside(model, history, windowSize);
+      rows.push(next);
+      history.push(next);
+    }
+    return rows;
+  };
+
+  const replayBeside = (model, past, arrived, windowSize) => {
+    const rows = [];
+    for (let step = 0; step < arrived.length; step++) {
+      rows.push(
+        predictBeside(model, past.concat(arrived.slice(0, step)), windowSize),
+      );
+    }
+    return rows;
+  };
+
+  describe('forecastTwoWays', () => {
+    it('returns one prediction per arrived reading in each arm, and leaves its inputs alone', async () => {
+      const out = await outcome(caseA());
+      expect(
+        out.rollout.length,
+        'The rollout runs for as many steps as there are arrived readings, so the two can be compared position by position.',
+      ).toBe(CASE_A.arrived.length);
+      expect(
+        out.oneStep.length,
+        'The replay runs over the same stretch, one prediction per arrived reading.',
+      ).toBe(CASE_A.arrived.length);
+      out.rollout.concat(out.oneStep).forEach((value) => {
+        expect(
+          typeof value,
+          'Every entry is one number. A [1, 1] tensor or a one-element array means the prediction was never read out of the result.',
+        ).toBe('number');
+        expect(
+          Number.isFinite(value),
+          'A NaN here means the window went in the wrong shape or a history picked up something that is not a number.',
+        ).toBe(true);
+      });
+      expect(
+        pastA.length,
+        'The past readings belong to the caller. Copy that array before you append to it, or the caller gets its own history back with your rollout written onto the end.',
+      ).toBe(CASE_A.past.length);
+      expect(
+        arrivedA.length,
+        'The arrived readings are evidence, not scratch space.',
+      ).toBe(CASE_A.arrived.length);
     });
-    it('calls the prediction function once per horizon step', () => {
-      let calls = 0;
-      const counted = (w: number[]) => {
-        calls += 1;
-        return w[w.length - 1];
-      };
-      forecast(counted, [7, 7, 7], 3, 6);
-      expect(calls).toBe(6);
+
+    it('builds the recurrent stack the instructions describe', async () => {
+      const out = await outcome(caseA());
+      expect(
+        out.model.layers.length,
+        'Two layers: the recurrent layer that reads the window, and the one-unit dense head that turns its output into a single reading.',
+      ).toBe(2);
+      expect(
+        out.model.layers[0].getClassName(),
+        'The first layer is the one named in the instructions. A dense layer here would flatten the window into unordered features.',
+      ).toBe('LSTM');
+      expect(
+        out.model.layers[0].getConfig().units,
+        'The instructions fix the width of the recurrent layer.',
+      ).toBe(8);
+      expect(
+        out.model.inputs[0].shape,
+        'A recurrent layer reads [batch, timeSteps, features], and this channel is one feature wide, so inputShape is [windowSize, 1] with windowSize read off trainX.',
+      ).toEqual([null, CASE_A.windowSize, 1]);
+      expect(
+        out.model.outputs[0].shape,
+        'One reading comes out per window, so the head is one unit wide.',
+      ).toEqual([null, 1]);
     });
-    // windowSize 2 against a 4-value seed: by step 3 the window holds
-    // nothing but predictions, so a solution that keeps re-reading the seed
-    // diverges here even if it calls the model every step.
-    it('slides the window off the seed and onto the predictions', () => {
-      const sumWindow = (w: number[]) => w.reduce((a, b) => a + b, 0);
-      expect(forecast(sumWindow, [1, 1, 1, 1], 2, 5)).toEqual([2, 3, 5, 8, 13]);
+
+    it('the loss trace and the model come from the same fit', async () => {
+      const out = await outcome(caseA());
+      expect(
+        out.history.history.loss.length,
+        'One loss per epoch, and the epoch count is an argument. A trace of another length did not come from this run.',
+      ).toBe(EPOCHS_A);
+      expect(
+        out.model.optimizer.iterations,
+        'The optimizer counts one iteration per batch of training, and assigning to that counter does nothing. It has to equal the batches in one epoch times the epochs in your trace, which is what ties the trace you return to the model you return. A history object built by hand lands somewhere else, and so does a fit at another batch size.',
+      ).toBe(CASE_A.batchesPerEpoch * EPOCHS_A);
+      const losses = out.history.history.loss;
+      expect(
+        losses[losses.length - 1] / losses[0],
+        'The loss barely moved across the run. A model whose weights never changed is not a forecaster, and this check wants the last epoch under three fifths of the first.',
+      ).toBeLessThan(0.6);
     });
-    it('uses correct window size', () => {
-      let lastWindow: number[] = [];
-      const capture = (w: number[]) => { lastWindow = w; return 0; };
-      forecast(capture, [1, 2, 3, 4, 5], 3, 1);
-      expect(lastWindow.length).toBe(3);
+
+    it('the rollout feeds itself: every prediction re-enters the window', async () => {
+      const out = await outcome(caseA());
+      const beside = rollBeside(out.model, CASE_A.past, CASE_A.arrived.length, CASE_A.windowSize);
+      out.rollout.forEach((value, step) => {
+        expect(
+          value,
+          'Step ' + step + ' is adrift from the same step rolled out of your own model here. Two mistakes land here: re-reading the same window every step, which predicts one reading over and over, and appending the prediction to the answer but not to the history the next window is cut from.',
+        ).toBeCloseTo(beside[step], 6);
+      });
+    });
+
+    it('the replay never reads its own output: the window is re-seeded from what arrived', async () => {
+      const out = await outcome(caseA());
+      const beside = replayBeside(out.model, CASE_A.past, CASE_A.arrived, CASE_A.windowSize);
+      out.oneStep.forEach((value, step) => {
+        expect(
+          value,
+          'Step ' + step + ' of the replay is adrift from the same step recomputed off your own model. Each prediction here reads real readings only: everything up to now, plus the arrived readings before this step, and none of your own output.',
+        ).toBeCloseTo(beside[step], 6);
+      });
+    });
+
+    it('the two arms start together and then separate', async () => {
+      const out = await outcome(caseA());
+      expect(
+        out.rollout[0] - out.oneStep[0],
+        'Both arms read the same history on the first step, so the first prediction is the same number in each. A difference here means one of the arms started from the wrong place.',
+      ).toBeCloseTo(0, 6);
+      let widest = 0;
+      for (let step = 1; step < out.rollout.length; step++) {
+        widest = Math.max(widest, Math.abs(out.rollout[step] - out.oneStep[step]));
+      }
+      expect(
+        widest,
+        'After the first step the two arms are reading different histories, one its own output and one the real readings, so the series have to come apart. Two identical series mean the same loop was run twice, and a drift check reading that copy is measuring compounding.',
+      ).toBeGreaterThan(0.002);
+    });
+
+    it('reads the window width and the epoch count from its arguments', async () => {
+      const out = await outcome(caseB());
+      expect(
+        out.model.inputs[0].shape,
+        'This case trains on a wider window than the first one, and the width comes from trainX rather than from what the last call used.',
+      ).toEqual([null, CASE_B.windowSize, 1]);
+      expect(
+        out.history.history.loss.length,
+        'This case asks for a different number of epochs. A pinned epoch count returns the wrong length here.',
+      ).toBe(EPOCHS_B);
+      expect(
+        out.model.optimizer.iterations,
+        'Same tie as before, on a case with fewer epochs and a different number of windows: the optimizer counter has to match the trace this run returned.',
+      ).toBe(CASE_B.batchesPerEpoch * EPOCHS_B);
+      const rolled = rollBeside(out.model, CASE_B.past, CASE_B.arrived.length, CASE_B.windowSize);
+      const replayed = replayBeside(out.model, CASE_B.past, CASE_B.arrived, CASE_B.windowSize);
+      out.rollout.forEach((value, step) => {
+        expect(
+          value,
+          'Step ' + step + ' of the second rollout does not match the same step rolled out of your own model. A window width fixed at whatever the first case used slices the history in the wrong place here.',
+        ).toBeCloseTo(rolled[step], 6);
+      });
+      out.oneStep.forEach((value, step) => {
+        expect(
+          value,
+          'Step ' + step + ' of the second replay does not match either, for the same reason.',
+        ).toBeCloseTo(replayed[step], 6);
+      });
     });
   });
-estimatedMinutes: 12
-difficulty: intermediate
-mlContent: arithmetic
-skillAxis: evaluation
+estimatedMinutes: 18
+difficulty: advanced
+mlContent: model
+skillAxis: model_arch

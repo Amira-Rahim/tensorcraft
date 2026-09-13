@@ -29,9 +29,9 @@ hints:
   - level: nudge
     content: "Four parts in this order: role, reference context, the live signal values, then the output contract. The role gets a line of its own and each signal value gets its own labelled line. Every call rebuilds them from the argument it was handed."
   - level: guidance
-    content: "Assemble an array of lines and join them with newlines. Line one carries the role string containing DEEP SCAN and none of the signal numbers. Next the reference context: known natural frequencies 5, 12, 23, 47 Hz. Then one line per value, each holding its label (Amplitude, Frequency, Phase) and the number read off the argument. Last the request for JSON with classification, confidence, and reasoning fields. The grader checks those line positions, and it builds prompts from three different signals, so no value can be hardcoded."
+    content: "Each of the four parts does a different job, and the job tells you what to write. The role says who is answering and what kind of answer is wanted. The reference context is the one part the model cannot supply for itself: it has read more physics than anyone aboard, and none of that reading says which tones this sector makes on its own, so the reference set has to arrive as a statement the model can act on rather than a row of digits. The signal section is the only part that reads the argument. The output request has to be specific enough that your parser can rely on it. Rebuild all four on every call: a template that remembers one reading is just a string."
   - level: solution
-    content: "const lines = [ 'You are DEEP SCAN, a signal classifier for deep space signals.', '', 'Known natural frequencies: 5, 12, 23, 47 Hz.', 'Normal amplitude range: 0.1 to 1.0.', '', 'Signal data:', '- Amplitude: ' + signal.amplitude, '- Frequency: ' + signal.frequency + ' Hz', '- Phase: ' + signal.phase + ' rad', '', 'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).', ]; return lines.join('\\n');"
+    content: "const lines = [ 'You are DEEP SCAN, a signal classifier for deep space signals.', '', 'Known natural frequencies: 5, 12, 23, 47 Hz.', 'Normal amplitude range: 570 to 1560 counts.', '', 'Signal data:', '- Amplitude: ' + signal.amplitude + ' counts', '- Frequency: ' + signal.frequency + ' Hz', '- Phase: ' + signal.phase + ' rad', '', 'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).', ]; return lines.join('\\n');"
 keywords:
   - prompt-engineering
   - system-prompt
@@ -52,7 +52,7 @@ My first prompt was 'Analyze this signal data.' The output was useless: generic,
 
 Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. A search for `error` returns the whole index; a search for the exact string `Error when checking : expected dense_Dense1_input to have shape [null,3]` returns the one answer. Specificity and structure decide what you get back, and a prompt is a query.
 
-<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Parse the model's JSON reply back into an object your code can use", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging: refine until results match expectations"]} />
+<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Parse the model's JSON reply back into an object your code can use", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
 
 ## From Vague to Precise
 
@@ -66,14 +66,14 @@ const vaguePrompt = "Analyze this signal data.";
 // Level 2: Specific role + context
 const betterPrompt = \`You are a deep space signal analyst aboard a research vessel.
 Analyze the following signal reading and classify it as noise or anomaly.
-Signal: amplitude=0.61, frequency=73.4Hz, phase=0.23rad\`;
+Signal: amplitude=1024 counts, frequency=73.4Hz, phase=0.23rad\`;
 // Output: decent analysis but unstructured
 
 // Level 3: Structured with format instructions
 const structuredPrompt = \`You are a deep space signal analyst. Respond in JSON only.
 
-Signal reading:
-- Amplitude: 0.61 (declared operating band: 0.1-1.0)
+Signal reading (archive sample 7741):
+- Amplitude: 1024 counts (normal band: 570-1560)
 - Frequency: 73.4 Hz (known natural: 5, 12, 23, 47 Hz)
 - Phase: 0.23 rad
 
@@ -87,9 +87,9 @@ Classify this signal. Respond with:
 // Output: parseable JSON with clear reasoning`}
 </CodeBlock>
 
-Two of those three signal lines do not quote a model input. The classifier reads three features, amplitude, frequency and phase, and min-max normalizes all three to 0 to 1. The prompt keeps that normalized value for amplitude only. Its frequency line reports the FFT's dominant peak in hertz rather than the model's zero-crossing count over the 64-sample window, and its phase line reports radians rather than the normalized angle, because those are the numbers a scientist reading the draft can check against an instrument. The prompt is written for whoever reads the report, not for the classifier.
+None of those three signal lines quotes a model input. The classifier reads amplitude, frequency and phase after module 4 min-max normalizes all three to 0 to 1, and the prompt reports what the instruments logged instead. Amplitude is the hull sensor's own count against its 2048-count full scale, so the 0.50 the classifier saw goes into the prompt as 1024. Frequency is the line the transform found, in hertz, rather than the model's zero-crossing count. That count is taken over a 64-sample window, which is a quarter second of tape at the array's 256 Hz rate. Phase is radians rather than the normalized angle. Those are the numbers a scientist reading the draft can check against an instrument, and this prompt is written for that reader.
 
-The band in the prompt is the declared operating one, not the measured one. 0.1 to 1.0 is the amplitude channel's declared span, and its top is the 1.00 the hull sensors saturate at. Module 7 measured a narrower band from the archive's normal readings: mean 0.52, standard deviation 0.15, p5 0.28, p95 0.76. At 0.61 this reading sits inside both, 0.6 standard deviations off the mean, which is why the z-score gate cleared it. Every dial reads normal on its own. That leaves the model one thing to notice: 73.4 Hz is not in the natural set the context line hands it.
+The band in the prompt is the one module 7 measured, converted into the counts a scientist can check against an instrument. Its normal-period readings, in normalized units, give mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Against the sensor's 2048-count full scale that p5 to p95 span is roughly 570 to 1560 counts, and the hull sensors saturate at 2048, so no capture reads above it. 1024 counts normalizes to 0.50, inside the normal band and 0.13 standard deviations below the mean, which is why the z-score gate cleared it. The other two dials sit near mid-scale rather than on it. 73.4 Hz is 37 zero crossings in that quarter-second window, 0.59 of the 63-crossing ceiling. 0.23 rad is 0.54 of the way across the minus-pi-to-pi span. Module 3's trained network scored this reading 51.8 percent, unwilling to commit either way. Every dial reads normal on its own. That leaves the model one thing to notice: 73.4 Hz is not in the natural set the context line hands it.
 
 ## Prompt Templates
 
@@ -97,8 +97,8 @@ The band in the prompt is the declared operating one, not the measured one. 0.1 
 {`// Reusable prompt templates, like React component templates
 
 interface SignalData {
-  amplitude: number;   // min-max normalized 0 to 1; module 7 baselined it at mean 0.52, std 0.15
-  frequency: number;   // dominant FFT peak in Hz, not the model's zero-crossing count
+  amplitude: number;   // hull counts against the sensor's 2048-count full scale
+  frequency: number;   // the FFT line under review, in Hz, not the zero-crossing count
   phase: number;       // radians
   fftPeaks: { hz: number; magnitude: number }[];
 }
@@ -109,10 +109,10 @@ function classificationPrompt(signal: SignalData): string {
 ## Context
 You are analyzing signals from deep space Sector 7-G.
 Known natural frequencies: 5, 12, 23, 47 Hz.
-Normal amplitude range: 0.1 to 1.0.
+Normal amplitude range: 570 to 1560 counts.
 
 ## Signal Data
-- Amplitude: \${signal.amplitude}
+- Amplitude: \${signal.amplitude} counts
 - Frequency: \${signal.frequency} Hz
 - Phase: \${signal.phase} rad
 - FFT Peaks: \${signal.fftPeaks.map(p => \`\${p.hz}Hz (\${p.magnitude.toFixed(2)})\`).join(', ')}
@@ -152,7 +152,7 @@ Write a prompt template that produces structured signal analysis.
     "Prompts should be iterated like debugging: test, inspect output, identify the missing constraint, refine, and repeat until results are consistent."
   ]}
   bridge="Crafting a prompt is like writing a precise search query: specificity and structure determine what you get back. A vague query (`error`) returns thousands of results; a precise one (the exact error string) returns the answer. The same principle applies to prompts (`analyze signal` vs. a structured role-context-data-format prompt)."
-  youCanNow="Write reusable prompt templates with role, context, data, and format sections that produce structured, parseable output suitable for programmatic processing."
+  youCanNow="Write a prompt template that rebuilds role, context, data and format from the reading it was handed, and asks for the JSON your parser will read."
 />
 
 <Epilogue>

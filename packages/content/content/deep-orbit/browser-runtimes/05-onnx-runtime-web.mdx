@@ -25,11 +25,11 @@ consequence:
   narrative: "Demir presents the benchmark. Held to one backend, the two runtimes finish within a fifth of a millisecond of each other. What moves the number is model size, and at 673 parameters that answer is WASM."
 hints:
   - level: nudge
-    content: "onnxruntime-web has no tf.* factories: you build an ort.Tensor by hand from a typed array plus a shape, then hand it to a session under a named input."
+    content: "onnxruntime-web has no tf.* factories: you build an ort.Tensor by hand from a typed array plus a shape, then hand it to a session under a named input. The TF.js model arrives already loaded, so the only thing you build on that side is the input."
   - level: guidance
-    content: "Four steps inside runONNX: await ort.InferenceSession.create(modelPath); wrap the values [0.5, 0.3, 0.7] in a Float32Array; construct new ort.Tensor('float32', data, [1, 3]); then await session.run({ input: tensor }) and return the first element of results.output.data."
+    content: "Two runtimes, one input. Each side takes that input in its own shape, and the clock goes around the call that runs the model, not the one that opens it. The session options are where you hold the backend still, and without that the benchmark says nothing about either runtime. Whether the two agree is a question about the numbers they handed back, so read each one out of its own result rather than working it out a second time. The backend at the end is not the answer the lesson printed for DEEP SCAN. It is whatever this model's own size says, and the size is on the model you were given."
   - level: solution
-    content: "const session = await ort.InferenceSession.create(modelPath); const inputData = new Float32Array([0.5, 0.3, 0.7]); const inputTensor = new ort.Tensor('float32', inputData, [1, 3]); const results = await session.run({ input: inputTensor }); const output = results.output; return output.data[0] as number;"
+    content: "const input = tf.tensor2d([signal]); const tfStart = performance.now(); const prediction = model.predict(input); const tfjsValue = (await prediction.data())[0]; const tfjsMs = performance.now() - tfStart; prediction.dispose(); input.dispose(); const session = await ort.InferenceSession.create(modelPath, { executionProviders: ['wasm'], }); const feed = new ort.Tensor('float32', new Float32Array(signal), [1, 3]); const onnxStart = performance.now(); const results = await session.run({ input: feed }); const onnxValue = results.output.data[0]; const onnxMs = performance.now() - onnxStart; return { tfjsMs, onnxMs, outputsAgree: Math.abs(tfjsValue - onnxValue) <= 0.0001, pick: model.countParams() < 1000000 ? 'wasm' : 'gpu', };"
 keywords:
   - onnx
   - runtime-comparison
@@ -210,7 +210,7 @@ async function benchmarkTFJS(): Promise<BenchmarkResult> {
 | **Cold start on WASM, measured to the first prediction** | 210ms on this laptop: small runtime binary, then the model, then one call | 260ms on this laptop: multi-MB runtime binary to fetch and compile before the model loads |
 | **Sustained speed on WASM, 673 params** | 0.9ms per call | 0.7ms per call |
 | **Memory management** | Manual (tf.tidy/dispose) | Split: CPU tensors are garbage-collected, the session and GPU tensors are freed by hand |
-| **Bundle size, minified / gzipped** | 1.47MB / 368KB (`dist/tf.min.js`, tfjs 4.22.0) | 368KB / 98KB (`dist/ort.min.js`, onnxruntime-web 1.29.0), plus `ort-wasm-simd-threaded.wasm` at 14.0MB / 3.6MB fetched on first use |
+| **Bundle size, minified / gzipped at `gzip -6`** | 1.47MB / 368KB (`dist/tf.min.js`, tfjs 4.22.0) | 368KB / 98KB (`dist/ort.min.js`, onnxruntime-web 1.29.0), plus `ort-wasm-simd-threaded.wasm` at 14.0MB / 3.6MB fetched on first use |
 
 The memory row splits three ways. ORT Web's CPU-located tensors are garbage-collected, which is why the loop above carries no dispose bookkeeping. An `InferenceSession` holds its WASM heap allocation until you `await session.release()`. A tensor whose data sits on the GPU is freed by `tensor.dispose()`. So a dashboard that opens a session per model version and releases none leaks the same way lesson 4's pipeline did.
 
@@ -220,9 +220,11 @@ Lesson 2 of this module measured the opposite ordering: a 256x256 matmul ran six
 
 A model with millions of parameters answers it the other way. The arithmetic grows with the model; the input upload, the shader dispatch and the readback do not. Past some size the GPU is paying a fixed cost to save a much larger one. Where that crossover sits depends on the machine, which is why the size you benchmark has to be the size you ship.
 
+For a model nobody has benchmarked yet, Nazari's standing rule is a million parameters. Below that, ship WASM. At or above it, benchmark the GPU before ruling it out. The two sizes this course has measured sit on either side of that line: DEEP SCAN's 673 parameters cost 1.5ms more per call on WebGL than on WASM, and lesson 2's 256x256 matmul, 16,777,216 multiply-adds per call, ran six times faster there. The line is where to start on hardware you have no numbers for, not a property of either backend.
+
 ## Challenge
 
-Run an ONNX model and compare its output with TF.js.
+Run one signal through both runtimes on the same backend, check that the two answer with the same number, and let the size of the model pick the backend.
 
 <Exercise slug="onnx-comparison" />
 

@@ -1,7 +1,10 @@
 slug: add-tensors
 lessonSlug: tensor-operations
 title: "Merge the Sensor Passes"
-instructions: "Nazari ran the same scan twice to cancel noise. Write `mergePasses(pass1, pass2, gain)` that combines any two passes: (1) average them element-wise into `merged` (add, then divide by 2), (2) the signal is faint, so amplify the average by `gain` into `boosted`. Return `{ merged, boosted }`. Chain the ops or use separate calls; the grader only cares that the numbers are right, on any input."
+instructions: |
+  Nazari ran the same scan twice to cancel noise. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a [2] row of per-channel offsets, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves.
+
+  Then write `mixChannels(block, mix)`. `block` is [readings, channels]; `mix` is [banks, channels], one row per output bank and one weight per channel inside it. Hand back every reading scored against every bank, shaped [readings, banks], where each score is one reading's channels weighted by one bank's row and summed. The two tensors arrive with their axes in the wrong order for that, and the error at the top of the lesson is what ignoring it prints.
 starterCode: |
   function mergePasses(
     pass1: tf.Tensor,
@@ -10,6 +13,11 @@ starterCode: |
   ): { merged: tf.Tensor; boosted: tf.Tensor } {
     // 1. Element-wise average of the two passes
     // 2. Amplify the average by gain
+    return null; // your code here
+  }
+
+  function mixChannels(block: tf.Tensor, mix: tf.Tensor): tf.Tensor {
+    // The two axis orders do not line up for this multiply.
     return null; // your code here
   }
 solutionCode: |
@@ -22,41 +30,169 @@ solutionCode: |
     const boosted = merged.mul(gain);
     return { merged, boosted };
   }
+
+  function mixChannels(block: tf.Tensor, mix: tf.Tensor): tf.Tensor {
+    return block.matMul(mix.transpose());
+  }
 testCode: |
   describe('mergePasses', () => {
+    // The naive route (dataSync plus Array.map) is what the [3, 2] against
+    // [2] pair below catches: on tfjs 4.22.0 it reads past the end of the
+    // shorter pass and returns a flat [6] of NaN. What no assertion on the
+    // RETURNED values can settle is which execution model produced them,
+    // since a JS loop that implements broadcast semantics by hand arrives at
+    // the same numbers and the same shape (measured 2026-09-08). That
+    // submission has learned the broadcasting rule the hard way, so it is not
+    // what this grader is hunting for.
+    //
+    // mixChannels is the lesson's headline op made load-bearing (added
+    // 2026-09-12). Before it, three of the lesson's five objectives, matMul
+    // and transpose included, were graded nowhere: every test in this file
+    // passed for a submission that never wrote a matrix multiply, which is
+    // also true of the reference solution the lesson opened on.
+    const merge = (pass1, pass2, gain) => {
+      const out = mergePasses(pass1, pass2, gain);
+      expect(
+        Boolean(out),
+        'mergePasses has to hand back an object carrying both passes. The starter returns null until you fill it in.',
+      ).toBe(true);
+      expect(
+        out.merged,
+        'The averaged pass is missing from what came back. Step 1 is the element-wise average of the two passes.',
+      ).toBeDefined();
+      expect(
+        out.boosted,
+        'The amplified pass is missing from what came back. Step 2 scales the average by gain.',
+      ).toBeDefined();
+      return out;
+    };
+    const scored = (block, mix) => {
+      const out = mixChannels(block, mix);
+      expect(
+        Boolean(out && typeof out.arraySync === 'function'),
+        'mixChannels has to hand back a tensor of scores. The starter returns null until you fill it in.',
+      ).toBe(true);
+      return out;
+    };
     it('merged is the element-wise average', () => {
-      const { merged } = mergePasses(
+      const { merged } = merge(
         tf.tensor([0.2, 0.6, 0.4, 0.8]),
         tf.tensor([0.4, 0.2, 0.6, 0.6]),
         2.5,
       );
       const v = Array.from(merged.dataSync());
-      expect(v[0]).toBeCloseTo(0.3, 5);
-      expect(v[1]).toBeCloseTo(0.4, 5);
-      expect(v[2]).toBeCloseTo(0.5, 5);
-      expect(v[3]).toBeCloseTo(0.7, 5);
+      const why = 'Averaging pairs each position with the matching position in the other pass, then halves it.';
+      expect(v[0], why).toBeCloseTo(0.3, 5);
+      expect(v[1], why).toBeCloseTo(0.4, 5);
+      expect(v[2], why).toBeCloseTo(0.5, 5);
+      expect(v[3], why).toBeCloseTo(0.7, 5);
     });
     it('boosted applies the gain', () => {
-      const { boosted } = mergePasses(
+      const { boosted } = merge(
         tf.tensor([0.2, 0.6, 0.4, 0.8]),
         tf.tensor([0.4, 0.2, 0.6, 0.6]),
         2.5,
       );
       const v = Array.from(boosted.dataSync());
-      expect(v[0]).toBeCloseTo(0.75, 5);
-      expect(v[3]).toBeCloseTo(1.75, 5);
+      const why = 'boosted is the average scaled by gain, so it amplifies the merged pass rather than either raw pass.';
+      expect(v[0], why).toBeCloseTo(0.75, 5);
+      expect(v[3], why).toBeCloseTo(1.75, 5);
     });
     it('works on a different pair of passes and gain (no memorized outputs)', () => {
-      const { merged, boosted } = mergePasses(
-        tf.tensor([1, 2]),
-        tf.tensor([3, 6]),
-        10,
+      const { merged, boosted } = merge(tf.tensor([1, 2]), tf.tensor([3, 6]), 10);
+      expect(
+        Array.from(merged.dataSync()),
+        'Same function, different readings. Anything pinned to the numbers in the first case fails here.',
+      ).toEqual([2, 4]);
+      expect(
+        Array.from(boosted.dataSync()),
+        'And the gain is whatever the caller passed, not the 2.5 from the case above.',
+      ).toEqual([20, 40]);
+    });
+    it('broadcasts a [3, 2] block against a [2] row of offsets and keeps the shape', () => {
+      // The shapes differ, so this pair only merges if the op broadcasts.
+      // dataSync() plus Array.map reads past the end of the shorter pass and
+      // returns a flat [6] of NaN (measured on tfjs 4.22.0).
+      const { merged, boosted } = merge(
+        tf.tensor2d([
+          [0, 2],
+          [4, 6],
+          [8, 10],
+        ]),
+        tf.tensor([2, 4]),
+        3,
       );
-      expect(Array.from(merged.dataSync())).toEqual([2, 4]);
-      expect(Array.from(boosted.dataSync())).toEqual([20, 40]);
+      const shapeWhy =
+        'A block of readings merged with one row of per-channel offsets keeps the block shape: the row is reused down every row of the block. A flat result means the two passes were zipped as flat lists instead.';
+      expect(merged.shape, shapeWhy).toEqual([3, 2]);
+      expect(
+        merged.arraySync(),
+        'Each offset lines up with its own channel, which is the column it sits in.',
+      ).toEqual([
+        [1, 3],
+        [3, 5],
+        [5, 7],
+      ]);
+      expect(boosted.shape, shapeWhy).toEqual([3, 2]);
+      expect(
+        boosted.arraySync(),
+        'The gain reaches every element of the block, so the shape survives step 2 as well.',
+      ).toEqual([
+        [3, 9],
+        [9, 15],
+        [15, 21],
+      ]);
+    });
+    it('mixChannels scores every reading against every bank', () => {
+      // Three readings of two channels against three banks of two weights.
+      // Left columns 2, right rows 3: the multiply refuses to run until one
+      // of the two tensors is turned, which is the rule the error at the top
+      // of the lesson was enforcing. Element-wise ops cannot reach this
+      // result without a sum across an axis.
+      const out = scored(
+        tf.tensor2d([
+          [1, 2],
+          [3, 4],
+          [5, 6],
+        ]),
+        tf.tensor2d([
+          [1, 0],
+          [0, 1],
+          [1, 1],
+        ]),
+      );
+      expect(
+        out.shape,
+        'One row per reading and one column per bank. A [3, 3] holding the banks down the rows instead is the same multiply run the other way round.',
+      ).toEqual([3, 3]);
+      expect(
+        out.arraySync(),
+        'Each score is one reading weighted by one bank: multiply each channel by that bank weight and sum the results. Bank 0 keeps channel 0, bank 1 keeps channel 1, bank 2 adds the two.',
+      ).toEqual([
+        [1, 2, 3],
+        [3, 4, 7],
+        [5, 6, 11],
+      ]);
+    });
+    it('mixChannels holds up on a different bank count (no memorized outputs)', () => {
+      const out = scored(
+        tf.tensor2d([
+          [2, 0.5],
+          [0, 1],
+        ]),
+        tf.tensor2d([[2, 4]]),
+      );
+      expect(
+        out.shape,
+        'Two readings and one bank this time. The bank count is whatever the caller hands in, so a shape pinned to the case above lands wrong here.',
+      ).toEqual([2, 1]);
+      expect(
+        Array.from(out.dataSync()),
+        'Reading one is 2 and 0.5 against weights 2 and 4. Reading two is 0 and 1 against the same pair.',
+      ).toEqual([6, 4]);
     });
   });
-estimatedMinutes: 8
+estimatedMinutes: 10
 difficulty: beginner
 mlContent: data
 skillAxis: data_prep

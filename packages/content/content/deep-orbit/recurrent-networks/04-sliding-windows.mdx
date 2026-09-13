@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "Split first, window second. A window is a slice of windowSize readings labelled by its last reading; the only question per window is which side of the boundary it lies on, and a window that touches both sides lies on neither."
   - level: guidance
-    content: "One loop over every start index i where i + windowSize <= series.length. end = i + windowSize; the window is series.slice(i, end) and its label is labels[end - 1]. If end <= splitAt the window is entirely before the boundary: push it to train. Else if i >= splitAt it is entirely after: push it to eval. Anything else straddles and is dropped. Return { train, eval } with { xs, ys } inside each."
+    content: "One pass over the possible window positions is enough; there is no second pass over finished windows. For each position, ask where BOTH edges of the window fall relative to splitAt: wholly on one side and it belongs to that side, one edge on each side and it belongs to neither. That comparison is the whole exercise, so write it from the window's own first and last index, not from its position in the output list."
   - level: solution
     content: "const train = { xs: [], ys: [] }; const evalSet = { xs: [], ys: [] }; for (let i = 0; i + windowSize <= series.length; i++) { const end = i + windowSize; const window = series.slice(i, end); const label = labels[end - 1]; if (end <= splitAt) { train.xs.push(window); train.ys.push(label); } else if (i >= splitAt) { evalSet.xs.push(window); evalSet.ys.push(label); } } return { train, eval: evalSet };"
 keywords:
@@ -47,7 +47,7 @@ That's stream framing, more or less. Buffer until you have a full frame, emit it
 
 A framer drops every byte it emits, which would put each reading in exactly one chunk and never in another. The window steps forward by one and keeps the other seventy-nine, so a single reading turns up in dozens of samples, and that reuse is where the training data comes from.
 
-<LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces", "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying", "Configure window size and stride for different temporal resolutions", "Build a streaming buffer that feeds the LSTM in real time"]} />
+<LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces", "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying", "Configure window size and stride for different temporal resolutions", "Recognize the fixed-length buffer that turns a live feed into one model-ready window per reading"]} />
 
 ## Ninety-Seven Percent, Briefly
 
@@ -105,7 +105,9 @@ A lookup table with no learning in it scores 97.4 on the first split: 38 of 39 h
 <CodeBlock language="typescript" title="sliding-window.ts">
 {`// The makeWindows you wrote in 'Sequences Matter'. Both of its moving
 // parts came from that exercise: the stride, and the label taken from
-// the reading right after the window.
+// the reading right after the window. The tensor pair it also returns is
+// left off here; the argument in this lesson is about which reading
+// labels a window, and that is settled in the arrays.
 function makeWindows(
   data: number[][],
   windowSize: number,
@@ -130,7 +132,7 @@ function makeWindows(
 
 Which reading labels a window depends on the task, and this lesson shows both cases. Forecasting takes its target from the reading after the window. The label has to sit outside the window, because including it would let the model read its own answer. Per-window classification takes its label from an external log, at the window's last reading, and leaks nothing, because that label was never a feature. The mirror above and the graded exercise are classification, so they label by `labels[end - 1]`. `makeWindows` here is forecasting, so it labels by `data[i + windowSize]`.
 
-Window size is the only history the model gets. Lesson 2 put the pattern DEEP SCAN needs at a 73-step dependency on the one-sample-per-second feed, so an 80-step window holds it with seven steps to spare. Set `windowSize` to 30 and no single sample ever contains the whole pattern, and no amount of training gets it back.
+Window size is the only history the model gets. Lesson 2 put the pattern DEEP SCAN needs at a 74-step dependency on the one-sample-per-second feed, so an 80-step window holds it with six steps to spare. Set `windowSize` to 30 and no single sample ever contains the whole pattern, and no amount of training gets it back.
 
 ## Real-Time Streaming Buffer
 
@@ -192,7 +194,7 @@ The mirror scored 97.4 because the stream was windowed before it was split. Buil
     "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."
   ]}
   bridge="Framing a byte stream consumes each byte into exactly one fixed-size chunk; a sliding window advances by a stride smaller than the window, so each reading turns up in many samples and the pipeline emits far more windows than a framer would emit chunks."
-  youCanNow="Implement a sliding window function and a fixed-length streaming buffer that converts a live signal stream into model-ready [timeSteps, features] tensors in real time."
+  youCanNow="Split a stream by time before you window it, so no reading lands on both sides of the boundary, and take each window's label from the task: the next reading when forecasting, the window's last reading when classifying."
 />
 
 > **DISPATCH archive · field intercept #12-A:** Jin's speech cell shipped exactly this mirror at fleet scale, 97% and all. The postmortem runs one line: "we evaluated on our own reflection."

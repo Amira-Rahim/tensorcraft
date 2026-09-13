@@ -116,14 +116,97 @@ var t = tf.tensor([1, 2, 3]);`;
     expect(results[0].passed).toBe(true);
   });
 
-  it("catches syntax errors", async () => {
+  it("names a syntax error in the learner's code as the cause", async () => {
     const userCode = "function broken( { return }";
     const testCode = "it('runs', function() { expect(true).toBe(true); });";
 
     const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(false);
-    expect(results[0].name).toBe("Code execution");
+    expect(results[0].name).toBe("Your code has a syntax error");
+    expect(results[0].error).toContain("could not parse your code");
+  });
+
+  it("blames the learner's brace, not the harness, on a missing brace", async () => {
+    // The harness concatenates user code and test code into one function
+    // body, so an unclosed function used to swallow the harness's own
+    // `await __awaitPending()` and report "await is only valid in async
+    // functions" under the name "Code execution" (completeness critic,
+    // 2026-09-08).
+    const userCode = "function neuron(x) {\n  return x * 2;\n";
+    const testCode =
+      "it('doubles', function() { expect(neuron(2)).toBe(4); });";
+
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(1);
+    expect(results[0].name).toBe("Your code has a syntax error");
+    expect(results[0].error).not.toContain("await is only valid");
+    expect(results[0].error).toContain("brace");
+  });
+
+  it("prints an authored message above the discrepancy", async () => {
+    const userCode = "var loss = 0.9;";
+    const testCode =
+      "it('loss falls', function() { expect(loss, 'A rising loss means the step went uphill.').toBeLessThan(0.5); });";
+
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(1);
+    expect(results[0].passed).toBe(false);
+    const lines = String(results[0].error).split("\n");
+    expect(lines[0]).toBe("A rising loss means the step went uphill.");
+    expect(lines[1]).toContain("requires a value less than 0.5");
+  });
+
+  it("withholds a graded numeric answer from the failure text", async () => {
+    // The results panel opens on the first Run of the untouched starter, so
+    // a printed expected value is an answer key that costs one click.
+    const userCode = "var out = [0.1, 0.2, 0.3];";
+    const testCode = `
+      it('scalar', function() { expect(0.51).toBe(0.7314); });
+      it('vector', function() { expect(out).toEqual([0.1, 0.9, 0.3]); });
+      it('close', function() { expect(0.51).toBeCloseTo(0.5123456, 5); });
+    `;
+
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(3);
+    const text = results.map((r) => r.error).join(" | ");
+    expect(text).not.toContain("0.7314");
+    expect(text).not.toContain("0.9");
+    expect(text).not.toContain("0.5123456");
+    // What it does say: the learner's own value, the direction, the position.
+    expect(results[0].error).toContain("too low");
+    expect(results[1].error).toContain("index 1");
+    expect(results[2].error).toContain("at most 0.000005");
+  });
+
+  it("keeps a non-numeric expected value visible", async () => {
+    // A string names an API choice, not a computed answer; hiding it turns a
+    // typo into a guessing game.
+    const userCode = "var activation = 'relu';";
+    const testCode =
+      "it('uses sigmoid', function() { expect(activation).toBe('sigmoid'); });";
+
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results[0].error).toContain("sigmoid");
+    expect(results[0].error).toContain("relu");
+  });
+
+  it("installs the expect statics and the jest stub", async () => {
+    // Regression: the browser harness used to reassign `expect` to add a
+    // promise chain, which dropped every static set on the original
+    // function, so `expect.closeTo` existed in CI and not in the browser.
+    const userCode = "var x = 1;";
+    const testCode = `
+      it('statics', function() {
+        expect(typeof expect.closeTo).toBe('function');
+        expect(typeof expect.any).toBe('function');
+        expect(typeof jest.fn).toBe('function');
+      });
+    `;
+
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(1);
+    expect(results[0].passed).toBe(true);
   });
 
   it("times out on infinite loops", async () => {

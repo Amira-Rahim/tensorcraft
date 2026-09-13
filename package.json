@@ -17,6 +17,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:visual": "RUN_VISUAL=1 playwright test e2e/visual --project=chromium --update-snapshots=none",
+    "test:visual:update": "RUN_VISUAL=1 playwright test e2e/visual --project=chromium --update-snapshots=all",
     "test:exercises": "pnpm turbo build:content && node scripts/validate-exercises.mjs --starters --cheats",
     "gen:types": "node scripts/gen-supabase-types.mjs",
     "migrate:status": "node scripts/migration-status.mjs",

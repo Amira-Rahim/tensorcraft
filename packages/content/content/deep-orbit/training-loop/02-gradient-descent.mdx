@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "One descent step, written once inside step(fn): let autograd compute the slope of the loss function you were handed, then move the weight a small step in the opposite direction."
   - level: guidance
-    content: "Define lossFn as () => weight.square().asScalar(), and inside step(fn) pass fn straight to tf.variableGrads. The returned grads object is keyed by variable name, so pull out its first Object.keys entry as the gradient. Because weight is a tf.variable, update it in place with weight.assign(...), subtracting gradient.mul(learningRate); plain reassignment with = will not update the variable. One correct step takes 5.0 to exactly 4.0. The grader then calls step() twice more and expects 3.2 and 2.56, then calls it once on a loss of its own, so differentiate fn instead of writing 2 × weight yourself."
+    content: "The differentiation call hands back an object rather than a bare tensor: one entry per variable it differentiated, keyed by that variable's own name and not by position, so this weight's gradient has to be pulled out of it before you can use it. Then the update. The gradient points uphill, so a step of learningRate against it walks downhill. Two things bite here. A tf.variable is a container holding a tensor, so it has to be updated in place; rebinding the name leaves the variable itself untouched. And the loss you differentiate has to be the function step() received, because the grader hands step() a loss of its own later."
   - level: solution
     content: "const weight = tf.variable(tf.scalar(5.0)); const learningRate = 0.1; let gradient; const lossFn = () => weight.square().asScalar(); function step(fn) { const { grads } = tf.variableGrads(fn); gradient = grads[Object.keys(grads)[0]]; weight.assign(weight.sub(gradient.mul(learningRate))); } step(lossFn);"
 keywords:
@@ -44,7 +44,7 @@ If you've ever written an easing loop, you have already written this lesson. Eve
 An easing loop knows where it is going. This has 673 parameters and no target to ease toward. Tell me which of the 673 go up, which go down, and by how much.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand gradients as the direction of steepest ascent", "Implement a single gradient descent step", "Tune the learning rate: too high overshoots, too low crawls", "Visualize loss decreasing over multiple steps"]} />
+<LearningObjectives objectives={["Understand gradients as the direction of steepest ascent", "Implement a single gradient descent step", "Predict what a learning rate that is too high does to the loss", "Read a descent trace and say why the step shrinks near the minimum"]} />
 
 ## Finding Downhill
 
@@ -78,6 +78,8 @@ for (let step = 0; step < 20; step++) {
 // (x prints after the update, loss is measured before it)`}
 </CodeBlock>
 
+That slope arrives without anyone writing a derivative. `tf.variableGrads` records the operations your loss function runs and replays that recording backwards to get it. The name for the trick is autograd, short for automatic differentiation. The next lesson takes it apart.
+
 **Learning rate** is a hyperparameter: a setting you pick by hand rather than a weight the model learns, and the one that matters most. Lerp factors carry the same intuition, and the easing loop is small enough to check the numbers on. Each frame leaves `|1 - r|` of the distance still to cover, so running `pos = 2` toward `target = 10` at 0.001 takes 6,682 frames to close the gap to 0.01, while 1.5 takes 10: it overshoots to 14 on the first frame, then halves its error on every frame after. Divergence starts at 2.0, which leaves the element bouncing between 18 and 2 forever, and 2.5 grows the error by half again per frame: 22, then -8, then 37. The threshold belongs to the loss rather than to the rate. The descent above minimizes `(x - 3)²` instead of half of it, so every slope it reads is twice as steep and its own threshold sits at 1.0: the 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
 
 <DerivationDrawer summary="Why the gradient is the steepest-ascent direction">
@@ -99,7 +101,7 @@ To minimize the linear approximation, pick Δw opposite to ∇L. The learning ra
 
 ## Challenge
 
-Implement gradient descent to minimize a loss function.
+Implement one descent step, written so the grader can hand your step() any loss it likes, including one that is not a polynomial.
 
 <Exercise slug="gradient-step" />
 
@@ -115,7 +117,7 @@ Implement gradient descent to minimize a loss function.
     "`tf.variableGrads()` computes gradients for all tracked variables automatically in one call."
   ]}
   bridge="Lerp smoothing and gradient descent use the same update rule: `position += (target - position) * rate`. The difference is that in ML the target is unknown and the gradient gives only the local slope, not the destination."
-  youCanNow="Implement a manual gradient descent step using `tf.variableGrads()` and tune the learning rate to control convergence speed."
+  youCanNow="Implement a manual gradient descent step using `tf.variableGrads()` and predict what a rate that is too high does to the loss."
 />
 
 <Epilogue>

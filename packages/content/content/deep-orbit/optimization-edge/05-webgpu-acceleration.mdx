@@ -25,11 +25,11 @@ consequence:
   narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete, and the crew signs off on the 2.4% it cost."
 hints:
   - level: nudge
-    content: "The exercise hands selectBestBackend an ordered array of backend config objects (mocks, not real tf backends): the first one that is available and initializes cleanly wins."
+    content: "Every name in the ladder gets one attempt. A backend that refuses, whichever way it refuses, is a reason to try the next one rather than a reason to stop."
   - level: guidance
-    content: "Loop over backends in the given order (webgpu, then webgl, then wasm). Skip any whose isAvailable() returns false, await init() inside a try/catch and continue to the next on throw, return backend.name on the first success, and throw new Error('No backend available') if the loop ends with nothing working."
+    content: "Two of the three questions in this ladder have answers that surprise people, and both of them come straight from the real API. First: how does a backend say no? In two different ways, and only one of those is an exception, so a loop built out of try and catch alone reads one of the refusals as a success and reports a backend the page is not running on. That is the bug the if in the lesson exists to prevent. Second: what do you know once the ladder is exhausted? Not nothing. The engine has settled on something by then, so ask it after the switch has finished instead of naming the last thing you tried. The third question is ordering, and its rule is that the preference list belongs to the caller. Walk it as given, stop at the first success, and leave everything under the winner alone, since a GPU context you take is one the page may not get back."
   - level: solution
-    content: "for (const backend of backends) { if (!backend.isAvailable()) continue; try { await backend.init(); return backend.name; } catch { continue; } } throw new Error('No backend available');"
+    content: "async function initBestBackend( preference: BackendName[], runtime: Runtime ): Promise<BackendName> { for (const name of preference) { let started = false; try { started = await runtime.setBackend(name); } catch { started = false; } if (started) { await runtime.ready(); return name; } } await runtime.ready(); return runtime.getBackend(); }"
 keywords:
   - webgpu
   - gpu-compute
@@ -92,7 +92,10 @@ console.log('Using backend:', backend);
 
 // Benchmark results for DEEP SCAN (the 85 MB uint8 build), as measured
 // at the bridge console with the readback pattern below; your hardware
-// will print different absolutes:
+// will print different absolutes. These time the whole bundle end to end,
+// the same call lesson 1 profiled, and not the eleven-feature classifier
+// lesson 4 puts a cache in front of. That one runs in microseconds and
+// none of these rows describe it:
 // WebGPU:  ~5ms per inference   (3x faster than WebGL)
 // WebGL:   ~15ms per inference  (GPU via graphics API)
 // WASM:    ~45ms per inference  (CPU, SIMD optimized)
@@ -106,7 +109,7 @@ console.log('Using backend:', backend);
 The `if` around `setBackend` is the part people leave out, and leaving it out is how a fallback chain lies to you. `setBackend` resolves to a boolean. A backend that is registered but fails to initialize logs `Initialization of backend webgl failed` and resolves `false`; nothing is thrown, so a bare `try`/`catch` never fires. Only an unregistered name throws, which is what you get when you forgot the import at the top of the file. Skip the return value and this function reports `webgl` on the 0249 dashboard, the one with no working WebGL context. `tf.ready()` then settles the engine on the next registered backend that does initialize. The imports at the top of this file leave wasm registered, so the function says `webgl` while every inference runs at 45 ms. Drop the wasm import and there is nothing left but cpu, at 120 ms.
 
 <Dialogue speaker="Dr. Farah">
-Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both: new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
+Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both: new shader language, new memory semantics, drivers you don't control. The win is real. What the API hides is what it costs to get there.
 </Dialogue>
 
 ## Measure the Claim
@@ -119,7 +122,7 @@ const t0 = performance.now();
 const flattering = model.predict(warmInput) as tf.Tensor;
 const naive = performance.now() - t0;
 // Bridge console, webgpu backend: 0.4 ms. Too good, and it is: on a
-// GPU backend, predict() SCHEDULES kernels and returns. The clock
+// GPU backend, predict() SCHEDULES GPU kernels and returns. The clock
 // stopped while the GPU was still working.
 
 // Module 4's rule: the readback goes INSIDE the timed region, because
@@ -160,7 +163,7 @@ The millisecond figures in this lesson are what the crew measured at that consol
 // a GPU is built for. A real model also marshals inputs, walks layers,
 // applies activations and reads one small result back per call, and none
 // of that runs faster on a GPU, so the end-to-end gain comes in under
-// the kernel gain. A kernel benchmark is an upper bound on what a real
+// the kernel gain. A GPU kernel benchmark is an upper bound on what a real
 // model will see.
 
 console.log('=== DEEP SCAN Optimization Stack ===');
@@ -185,7 +188,7 @@ console.log('  Fits in dashboard: YES ✓');`}
 
 ## Challenge
 
-Set up the best available GPU backend and benchmark inference speed.
+Walk a preference order and return the backend that is actually running, reading what each attempt resolves to rather than trusting that it did not throw.
 
 <Exercise slug="gpu-backend" />
 
@@ -198,7 +201,7 @@ Set up the best available GPU backend and benchmark inference speed.
     "The optimization stack works on separate axes: quantization cuts stored bytes, pruning cuts only the compressed download because TF.js writes dense weights, caching cuts the number of calls, and the backend cuts per-call time. Nothing about a smaller file makes one call faster, so each axis has to be measured on its own. The axes still couple through the hardware. Shrinking DEEP SCAN dropped the load peak enough that the dashboard's WebGL context came back, and that swap is where 45 ms became 15."
   ]}
   bridge="Switching `canvas.getContext('webgl2')` for `navigator.gpu.requestAdapter()` moves GPU access from a graphics-oriented API to a compute-oriented one, the same shift as moving rendering logic off the main thread into a dedicated Worker."
-  youCanNow="Configure TensorFlow.js to use the WebGPU backend with graceful fallback to WebGL and WASM, and benchmark inference speed across backends."
+  youCanNow="Walk a TensorFlow.js backend preference order so the name you report is the one actually running, falling back from WebGPU to WebGL to WASM when a backend refuses, and time inference on whichever backend you land on with the readback inside the clock."
 />
 
 <Epilogue>

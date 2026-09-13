@@ -25,11 +25,11 @@ consequence:
   narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the connection weights are still random numbers. Mostly."
 hints:
   - level: nudge
-    content: "A complete network is layers plus compile: compiling attaches the optimizer and loss so the model can train."
+    content: "Compiling attaches the optimizer and the loss. It leaves the weights exactly as the initializer drew them, so predict() answers the moment the stack is assembled."
   - level: guidance
-    content: "Stack three dense layers (units 32 with relu and inputShape [8], units 16 with relu, units 1 with sigmoid), then call model.compile with optimizer 'adam', loss 'binaryCrossentropy', and metrics ['accuracy']. The grader counts 833 parameters and reads the compile config back: optimizer class Adam, loss binaryCrossentropy, accuracy in metrics. Match all of it."
+    content: "The stack and the compile settings are both spelled out in the instructions, and copying them across is not the part worth thinking about. The order is. Both networks have to be read while both are still untrained, because once the first one has trained there is no way to ask it what it used to think. The second one stays out of the training call on purpose. It is the control: a fresh draw of the same architecture, as undecided as the first one was, sitting next to the trained network for comparison."
   - level: solution
-    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });"
+    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] }); const sweepOne = Array.from(model.predict(readings).dataSync()); const sweepTwo = Array.from(second.predict(readings).dataSync()); await model.fit(readings, labels, { epochs: 50, batchSize: 16 }); const trainedSweep = Array.from(model.predict(readings).dataSync());"
 keywords:
   - compile
   - optimizer
@@ -42,7 +42,7 @@ skillAxes: [model_arch]
 Assemble it. I want the classifier compiled and ready for training by end of watch.
 </Dialogue>
 
-<LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network with a summary and test prediction", "Explain why a new layer starts with random weights and zero biases"]} />
+<LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network with a summary, and read its predictions before and after training", "Explain why a new layer starts with random weights and zero biases"]} />
 
 ## Assembly Required
 
@@ -77,6 +77,7 @@ model.compile({
 // 4. Verify with summary. TFJS names layers className + counter
 // (dense_Dense1, not dense_1) and prints four columns:
 model.summary();
+// __________________________________________________________________________________________
 // Layer (type)                Input Shape               Output shape              Param #
 // ==========================================================================================
 // dense_Dense1 (Dense)        [[null,3]]                [null,32]                 128
@@ -88,6 +89,7 @@ model.summary();
 // Total params: 673
 // Trainable params: 673
 // Non-trainable params: 0
+// __________________________________________________________________________________________
 
 // 5. Test with a prediction
 const testInput = tf.tensor2d([[0.5, 0.8, 0.2]]);
@@ -99,7 +101,9 @@ console.log('Initial prediction:', prediction.dataSync());`}
 
 ## Challenge
 
-Assemble and compile the complete DEEP SCAN signal classifier. One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 normalized features and totals 673 parameters. Farah has specced a wider front door, 8 features per reading, which puts her build at 833 parameters. Same architecture, five more inputs. Build hers. Then note what happens to the spec: five of Farah's eight features have no source in the stream yet, so the front door gets cut back to the three that do. 673 is the count module 3 trains.
+Assemble and compile the complete DEEP SCAN signal classifier, then measure what compiling bought. You build it twice, sweep both copies over the same 120 readings while both are still untrained, train one of them, and sweep that one again. The `fit()` call is written out for you in the instructions; module 3 is where it gets taken apart.
+
+One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 normalized features and totals 673 parameters. Farah has specced a wider front door, 8 features per reading, which puts her build at 833 parameters. Same architecture, five more inputs. Build hers. Then note what happens to the spec: five of Farah's eight features have no source in the stream yet, so the front door gets cut back to the three that do. 673 is the count module 3 trains.
 
 <Exercise slug="simple-network" />
 

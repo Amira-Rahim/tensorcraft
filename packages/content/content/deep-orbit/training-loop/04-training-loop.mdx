@@ -26,11 +26,11 @@ consequence:
   narrative: "The loop now decides for itself when to stop, reading the validation curve instead of an epoch count Demir picked in advance."
 hints:
   - level: nudge
-    content: "model.fit() runs the whole loop for you: forward pass, loss, backprop, and weight update, once per batch, with the whole dataset swept once per epoch."
+    content: "An epoch count is a guess about when to stop, made before the first epoch runs. A callback reads the curve after every epoch and can end the run itself, which turns that guess back into an upper bound."
   - level: guidance
-    content: "Await model.fit(xs, ys, options) and store its result in history. The grader reads the record fit returns, so both settings have to be in the call: it checks history.params.epochs is 10 and history.params.batchSize is 2. With four rows, batchSize 2 buys two weight updates per epoch where the default of 32 buys one. It also checks that the loss fell from the first epoch to the last and that the trained model now predicts the four rows to a mean squared error under 2.0."
+    content: "Two decisions carry this one. First, a callback that stops on training loss stops on almost nothing, because training loss keeps falling long after the model has stopped learning anything general; the only curve that reports on rows the optimizer never touched is one measured on rows held back from it, so the run has to hold some back. Second, the verdict is a comparison, not a threshold. A validation loss of 0.09 is neither good nor bad on its own, it is only better or worse than what came before it, so the function needs two windows of the curve to compare. Keep the recent one short. Average over too much of the run and the steep drop at the start hides the flat ending you are trying to detect."
   - level: solution
-    content: "const history = await model.fit(xs, ys, { epochs: 10, batchSize: 2 });"
+    content: "const history = await model.fit(trainX, trainY, { epochs: 500, validationSplit: 0.2, callbacks: tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5 }), });"
 keywords:
   - training
   - epochs
@@ -78,16 +78,24 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 // pure noise could still memorize it. Its training loss would fall
 // while the held-out loss sat at 0.693, the coin-flip number. Reading
 // that pair is what this lesson teaches.
-const calm = tf.concat([
+//
+// clipByValue is doing real work here. A normal draw has no bounds, and
+// on these seeds six of the 150 calm values land outside [0, 1]: one
+// negative amplitude, two negative phases, and three frequencies above
+// 1.00, the highest at 1.0387. Read back through the min-max range,
+// 1.0387 means 65 zero crossings in a window that can only hold 63.
+// Clip every column to [0, 1] and the synthetic rows obey the same
+// limits the sensors do.
+const calm = tf.clipByValue(tf.concat([
   tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
   tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
   tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
-], 1);
-const flagged = tf.concat([
+], 1), 0, 1);
+const flagged = tf.clipByValue(tf.concat([
   tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
   tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
   tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
-], 1);
+], 1), 0, 1);
 const xs = tf.concat([calm, flagged]);
 const ys = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]);
 
@@ -111,28 +119,28 @@ const history = await model.fit(trainX, trainY, {
   },
 });
 
-// One real run. Weight init is random, so reruns differ: across 400
-// reruns of this block, epoch-10 accuracy bounced anywhere from 0.46 to
-// 1.00 before settling by epoch 30, and epoch-40 loss landed anywhere
-// from 0.10 to 0.50.
-// Epoch 0:  loss=0.7382, acc=0.4875
-// Epoch 10: loss=0.6330, acc=0.9875
-// Epoch 20: loss=0.5376, acc=1.0000
-// Epoch 30: loss=0.4084, acc=1.0000
-// Epoch 40: loss=0.2672, acc=1.0000
+// One real run. Weight init is random, so reruns differ: across 800
+// reruns of this block, epoch-10 accuracy landed anywhere from 0.45 to
+// 1.00, hit 1.00 by epoch 30 in 758 of the 800, and epoch-40 loss ran
+// from 0.10 to 0.49.
+// Epoch 0:  loss=0.7384, acc=0.4625
+// Epoch 10: loss=0.6593, acc=0.9250
+// Epoch 20: loss=0.5682, acc=1.0000
+// Epoch 30: loss=0.4427, acc=1.0000
+// Epoch 40: loss=0.2954, acc=1.0000
 // Accuracy tops out before loss finishes falling: the net finds the
 // boundary first, then spends the remaining epochs getting confident
 // about it.`}
 </CodeBlock>
 
-Two clean ends of the flag log are not a sample of the stream, and the amplitude column is where that shows. No training row lands between 0.37 and 0.66. Module 7 measures the archive's normal amplitude at mean 0.52 with a standard deviation of 0.15, which puts about two thirds of calm readings inside that empty band. Frequency and phase carry the label anyway. Across 200 runs of this block, a reading at amplitude 0.52 with calm frequency and phase came back at a median 0.22 anomalous, the same amplitude with flagged frequency and phase at 0.84, and an amplitude pegged at full scale on an otherwise calm reading at 0.46, still under the 0.5 line. The empty band costs something exactly once, on the reading in lesson 5 that sits mid-scale on all three channels at once.
+Two clean ends of the flag log are not a sample of the stream, and the amplitude column is where that shows. No training row lands between 0.38 and 0.65. Module 7 measures the archive's normal amplitude at mean 0.52 with a standard deviation of 0.15, which puts about two thirds of calm readings inside that empty band. Frequency and phase carry the label anyway. Across 200 runs of this block, a reading at amplitude 0.52 with calm frequency and phase came back at a median 0.22 anomalous, and the same amplitude with flagged frequency and phase at 0.85. An amplitude pegged at full scale on an otherwise calm reading came back at a median 0.45, under the 0.5 line, though 72 of the 200 runs put it above. The empty band costs something exactly once, on the reading in lesson 5 that sits mid-scale on all three channels at once.
 
 <DerivationDrawer summary="Why identical code lands on different losses: the loss landscape">
 **Loss is a surface over weight space.** A network with n weights defines `L(w)`: one loss value for every point in n-dimensional weight space. Training is descent on that surface, and the epoch trace above is an altitude log.
 
 **Convex vs non-convex.** A convex surface is a bowl: every local minimum is the global minimum, and gradient descent converges to it from any starting point. Linear and logistic regression have convex losses, which is why they never need a rerun. Neural networks give that up: stacking layers with nonlinear activations folds the bowl into many basins separated by ridges and flats.
 
-**That is why the 400 reruns disagree.** Random initialization drops each run at a different point on the same landscape. Different basin, different descent path, different epoch-10 accuracy (the 0.46 to 1.00 bounce above). No code changed between runs; only the starting coordinates did.
+**That is why the 800 reruns disagree.** Random initialization drops each run at a different point on the same landscape. Different basin, different descent path, different epoch-10 accuracy (the 0.45 to 1.00 spread above). No code changed between runs; only the starting coordinates did.
 
 **Saddle points outnumber local minima in high dimensions.** A saddle curves up in some directions and down in others; the Hessian (the matrix of second derivatives) classifies the point by the sign of its curvature along each direction: all positive for a minimum, mixed for a saddle. A true local minimum needs upward curvature in all n directions at once, and with thousands of weights that coincidence gets rarer with every added dimension. What actually stalls training is the near-zero gradient on the plateaus around saddles. Momentum-based optimizers like Adam carry enough velocity to coast across them, which is one reason `optimizer: 'adam'` is the house default.
 </DerivationDrawer>
@@ -148,8 +156,12 @@ The fix is a callback that watches the validation loss and halts when it stops i
 
 <CodeBlock language="typescript" title="early-stopping.ts">
 {`// Two setup notes, both load-bearing. First, a FRESH network: \`model\`
-// is already trained, so re-fitting it would start at the bottom of the
-// loss curve and trip the callback almost immediately.
+// is already trained, so re-fitting it starts partway down the loss
+// curve and halts sooner. Over 60 runs of each, the re-fit stopped at a
+// median epoch 47 where a fresh network took 99, and 11 of the 60
+// re-fits stopped inside the first 10 epochs. Roughly half the run.
+// That is enough for the halt epoch to report where the weights
+// started rather than anything about this data.
 const rerun = tf.sequential();
 rerun.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
 rerun.add(tf.layers.dense({ units: 16, activation: 'relu' }));
@@ -176,14 +188,15 @@ await rerun.fit(trainX, tf.tensor2d(labels), {
     patience: 5,          // give it 5 epochs of no improvement first
   }),
 });
-// The halt epoch is data- and init-dependent. Across 420 runs of this
-// block the callback fired between epoch 61 and epoch 181, median 101,
-// on a val_loss that was usually 0.05 to 0.15. The archive rerun
-// stopped at epoch 102 on val_loss 0.081. Now read WHAT tripped it. The
-// validation curve here does not climb, it flattens: at the halt,
-// val_loss sat a median 0.001 above its own best, and 0.004 above it at
-// the 90th percentile, while the training loss was still around 0.25,
-// which is nowhere near memorized.
+// The halt epoch is data- and init-dependent. Across 150 runs of this
+// block the callback fired between epoch 66 and epoch 184, median 105,
+// on a val_loss between 0.05 and 0.30, with the middle eight tenths
+// inside 0.07 to 0.12. One of those 150 stopped at epoch 102 on
+// val_loss 0.081, and that is the run the epilogue records. Now read
+// WHAT tripped it. The validation curve here does not climb, it
+// flattens: at the halt, val_loss sat a median 0.0013 above its own
+// best, and 0.0045 above it at the 90th percentile, while the training
+// loss was still a median 0.259, which is nowhere near memorized.
 // patience counts epochs that fail to BEAT the best score so far, and a
 // plateau fails that test the same way a climb does. So the callback
 // only tells you the run stopped improving. Whether that is convergence
@@ -191,7 +204,7 @@ await rerun.fit(trainX, tf.tensor2d(labels), {
 // which is why you read both.`}
 </CodeBlock>
 
-Early stopping ends the run without rewinding it. The weights left in the model are the halt-epoch weights, `patience` epochs past the best val_loss. Across eight runs of this block the halt landed exactly five epochs past the best score, on a val_loss 0.0006 to 0.0029 above it. TFJS 4.22 has no undo for that: `tf.callbacks.earlyStopping({ restoreBestWeights: true })` throws `restoreBestWeights = True is not implemented in EarlyStopping yet`. If you want the best weights and not just the halt, clone `model.getWeights()` in `onEpochEnd` whenever val_loss improves and set them back after `fit` resolves.
+Early stopping ends the run without rewinding it. The weights left in the model are the halt-epoch weights, `patience` epochs past the best val_loss. Across 150 runs of this block the halt landed exactly five epochs past the best score every single time, on a val_loss between 0.0000 and 0.0113 above it, median 0.0013. TFJS 4.22 has no undo for that: `tf.callbacks.earlyStopping({ restoreBestWeights: true })` throws `restoreBestWeights = True is not implemented in EarlyStopping yet`. If you want the best weights and not just the halt, clone `model.getWeights()` in `onEpochEnd` whenever val_loss improves and set them back after `fit` resolves.
 
 <Dialogue speaker="Chief Nazari">
 Forty minutes of compute and you cannot tell me what it bought. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
@@ -235,7 +248,7 @@ for epoch in 1..N:
 
 ## Challenge
 
-Practise the call itself on a four-row linear model: ten epochs, batch size 2, and watch the loss fall.
+Replace the epoch guess with a callback that reads the held-out curve, on the hundred-row archive slice above. The grader reads the trace your run returns, and cross-checks it against the weight updates the optimizer actually applied, so the two have to come from the same fit.
 
 <Exercise slug="training-loop-exercise" />
 

@@ -1,57 +1,261 @@
 slug: build-rnn
 lessonSlug: simple-rnns
-title: "Build a Simple RNN"
-instructions: "Create a sequential model with a SimpleRNN layer (16 units, inputShape [5, 3]) followed by a Dense output layer (1 unit, sigmoid activation). Compile with adam optimizer and binaryCrossentropy loss."
+title: "Carry the Hidden State"
+instructions: |
+  Two halves, and the second one checks the first.
+
+  1. `runCell(readings, recurrentWeight, inputWeight, bias)` walks the readings in order carrying one number of hidden state. Start every call at `h = 0`, and at each reading set `h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias)`.
+  2. Return the states as a list, one per reading, in the order they were computed. Nothing carries between calls: `h` starts at 0 again the next time the function runs.
+  3. Run it on the lesson's drill (readings 0.5, 0.9, 0.5 with recurrentWeight 0.8, inputWeight 1 and bias 0) and the reading 0.5 comes back as 0.4621 at step 1 and 0.8284 at step 3. Same reading, two answers, because the state carries what happened in between.
+  4. Then build the same cell out of the library. `buildCellLayer(timeSteps)` returns `{ model, inputWeight, recurrentWeight, bias }`, where `model` is a `tf.sequential()` holding one layer: `tf.layers.simpleRNN({ units: 1, inputShape: [timeSteps, 1], returnSequences: true })`. One unit and one feature, because that is the cell `runCell` describes; give the layer more of either and it mixes the dimensions through matrices no single number stands in for.
+  5. `returnSequences: true` makes it report the state after every step instead of only the last, which is the same list `runCell` returns.
+  6. A layer that has not been added to a model has no weights yet, so `getWeights()` on the bare layer comes back empty: add it first, then read `model.getWeights()`. That returns three tensors, in this order: the INPUT kernel (shape [1, 1]), the RECURRENT kernel (shape [1, 1]), and the bias (shape [1]). Note the order, because the lesson writes the formula the other way round. Hand the three back as plain numbers under the names above.
+
+  The grader reads the model's own weights, drives your `runCell` with them, and checks every state against what the layer computes for the same readings.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
-  function buildRNN(): tf.Sequential {
-    const model = tf.sequential();
-    // Add a SimpleRNN layer with 16 units and inputShape [5, 3]
-    // Add a Dense output layer with 1 unit and sigmoid activation
-    // Compile with adam optimizer and binaryCrossentropy loss
+  function runCell(readings, recurrentWeight, inputWeight, bias) {
+    // One number crosses each step boundary, and it belongs to this call
+    // alone.
+    return null; // your code here
+  }
+
+  function buildCellLayer(timeSteps) {
+    // A bare layer has nothing to read off it yet.
     return null; // your code here
   }
 solutionCode: |
   import * as tf from '@tensorflow/tfjs';
 
-  function buildRNN(): tf.Sequential {
+  function runCell(readings, recurrentWeight, inputWeight, bias) {
+    const states = [];
+    let h = 0;
+    for (const reading of readings) {
+      h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias);
+      states.push(h);
+    }
+    return states;
+  }
+
+  function buildCellLayer(timeSteps) {
     const model = tf.sequential();
-    model.add(tf.layers.simpleRNN({ units: 16, inputShape: [5, 3] }));
-    model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-    model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
-    return model;
+    const cell = tf.layers.simpleRNN({ units: 1, inputShape: [timeSteps, 1], returnSequences: true });
+    model.add(cell);
+    const [kernel, recurrentKernel, biasTensor] = model.getWeights();
+    return {
+      model,
+      inputWeight: kernel.dataSync()[0],
+      recurrentWeight: recurrentKernel.dataSync()[0],
+      bias: biasTensor.dataSync()[0],
+    };
   }
 testCode: |
-  describe('buildRNN', () => {
-    it('returns a model', () => {
-      const model = buildRNN();
-      expect(model).toBeDefined();
+  // The rule, written once here so every check below is derived from the
+  // arguments it passes in rather than from a table of answers.
+  const rule = (readings, wHidden, wInput, bias) => {
+    const states = [];
+    let h = 0;
+    for (const reading of readings) {
+      h = Math.tanh(wHidden * h + wInput * reading + bias);
+      states.push(h);
+    }
+    return states;
+  };
+
+  // One place to say what is missing when nothing comes back, so the first
+  // Run on the untouched starter names the task instead of a TypeError.
+  const cell = (readings, wHidden, wInput, bias) => {
+    const states = runCell(readings, wHidden, wInput, bias);
+    expect(
+      states,
+      'runCell handed back nothing. Start h at 0, update it once per reading, and return the states you collected.',
+    ).toBeTruthy();
+    expect(
+      Array.isArray(states),
+      'The states come back as a list, one entry per reading.',
+    ).toBe(true);
+    expect(
+      states.length,
+      'Every reading updates the state, so every reading leaves a state behind.',
+    ).toBe(readings.length);
+    return states;
+  };
+
+  const built = (timeSteps) => {
+    const out = buildCellLayer(timeSteps);
+    expect(
+      out,
+      'buildCellLayer handed back nothing. Build the sequential model, add the simpleRNN layer, then read its three weights off the model.',
+    ).toBeTruthy();
+    expect(
+      out.model && typeof out.model.predict === 'function',
+      'The model comes back under the key model, and it is the tf.sequential you built.',
+    ).toBe(true);
+    return out;
+  };
+
+  // The layer's own answer for one window of readings, read back as a flat
+  // list of states so it lines up with what runCell returns.
+  const layerStates = (model, readings) =>
+    model
+      .predict(tf.tensor3d([readings.map((r) => [r])]))
+      .arraySync()[0]
+      .map((step) => step[0]);
+
+  describe('runCell', () => {
+    it('leaves one state per reading, for any length of window', () => {
+      expect(cell([0.5, 0.9, 0.5], 0.8, 1, 0).length).toBe(3);
+      expect(cell([0.1, 0.2, 0.3, 0.4, 0.5, 0.6], 0.8, 1, 0).length).toBe(6);
     });
-    it('has 2 layers, and the first is a real SimpleRNN (not Flatten+Dense)', () => {
-      const model = buildRNN();
-      expect(model.layers.length).toBe(2);
-      expect(model.layers[0].getClassName()).toBe('SimpleRNN');
+
+    it("the lesson's drill: the same 0.5 scores one number at step 1 and another at step 3", () => {
+      const states = cell([0.5, 0.9, 0.5], 0.8, 1, 0);
+      expect(states[0]).toBeCloseTo(0.4621, 4);
+      expect(states[2]).toBeCloseTo(0.8284, 4);
+      expect(
+        states[2] - states[0],
+        'These two steps read the identical 0.5. The first one meets an empty cell and the third one meets everything the window has already been through, so the second answer sits well above the first.',
+      ).toBeGreaterThan(0.3);
     });
-    it('accepts correct input shape', () => {
-      const model = buildRNN();
-      const input = tf.randomNormal([1, 5, 3]);
-      const output = model.predict(input) as tf.Tensor;
-      expect(output.shape).toEqual([1, 1]);
-      input.dispose();
-      output.dispose();
+
+    it('starts every call at zero, and carries nothing out of the last one', () => {
+      const first = cell([0.7, -0.2, 0.45], 0.9, 1.3, -0.15);
+      expect(
+        first[0],
+        'The first reading of a call meets an empty cell, so the recurrent term contributes nothing at all to that step.',
+      ).toBeCloseTo(Math.tanh(1.3 * 0.7 - 0.15), 5);
+      const again = cell([0.7, -0.2, 0.45], 0.9, 1.3, -0.15);
+      expect(
+        again,
+        'The same call twice produced two different answers, so the state is living outside the function and the second run starts where the first one stopped.',
+      ).toEqual(first);
     });
-    it('is compiled with binaryCrossentropy and an optimizer (predict works uncompiled; training would not)', () => {
-      const model = buildRNN();
-      expect(model.loss).toBe('binaryCrossentropy');
-      expect(model.optimizer).toBeDefined();
+
+    it('the previous state reaches the cell only through recurrentWeight', () => {
+      // Cut that one path and the cell is memoryless: the same reading now
+      // scores the same wherever it lands in the window.
+      const memoryless = cell([0.4, 0.9, 0.4], 0, 1.2, -0.1);
+      expect(
+        memoryless[2],
+        'With recurrentWeight at 0 nothing survives the step boundary, so two identical readings have to score identically. A cell that still separates them is carrying the state in by some other route.',
+      ).toBeCloseTo(memoryless[0], 8);
+      const carrying = cell([0.4, 0.9, 0.4], 0.8, 1.2, -0.1);
+      expect(
+        Math.abs(carrying[2] - carrying[0]),
+        'Restore the recurrent path and those same two readings must part company.',
+      ).toBeGreaterThan(0.05);
     });
-    it('squashes the output with sigmoid, which binaryCrossentropy needs', () => {
-      const model = buildRNN();
-      expect(model.layers[1].getConfig().activation).toBe('sigmoid');
+
+    it('follows its arguments, not the three numbers the lesson prints', () => {
+      // Weights, biases and window lengths the lesson never shows, each
+      // answer computed from the arguments by the rule above.
+      const cases = [
+        [[0.2, -0.4, 0.9, 0.1], 0.6, 1.4, 0.05],
+        [[1.5, -1.5, 0.75], -0.9, 0.5, -0.2],
+        [[0.05, 0.05, 0.05, 0.05, 0.05, 0.05], 1.2, 0.8, 0.1],
+      ];
+      for (const [readings, wHidden, wInput, bias] of cases) {
+        const states = cell(readings, wHidden, wInput, bias);
+        const expected = rule(readings, wHidden, wInput, bias);
+        states.forEach((value, step) => {
+          expect(
+            value,
+            'This window runs on weights the lesson never prints, so the only way to the right list is the update rule itself. Step ' +
+              step +
+              ' of ' +
+              readings.length +
+              ' does not match.',
+          ).toBeCloseTo(expected[step], 5);
+        });
+      }
+    });
+
+    it('order is information: one window read back to front ends somewhere else', () => {
+      // The same five readings, the first four swapped end for end, both
+      // windows finishing on the same 0.4.
+      const highFirst = cell([1.2, 1.2, -0.8, -0.8, 0.4], 0.8, 1, 0);
+      const lowFirst = cell([-0.8, -0.8, 1.2, 1.2, 0.4], 0.8, 1, 0);
+      expect(
+        Math.abs(highFirst[4] - lowFirst[4]),
+        'Both windows hold the same five readings and end on the same one. A cell that carries state answers them differently; a cell that scores each reading on its own returns the same final number twice.',
+      ).toBeGreaterThan(0.5);
     });
   });
-estimatedMinutes: 10
+
+  describe('buildCellLayer', () => {
+    it('is a real simpleRNN layer of one unit, reporting a state at every step', () => {
+      const { model } = built(5);
+      expect(
+        model.layers.length,
+        'One layer is the whole model here: the cell, and nothing after it.',
+      ).toBe(1);
+      expect(
+        model.layers[0].getClassName(),
+        'The layer under test is the library cell, tf.layers.simpleRNN.',
+      ).toBe('SimpleRNN');
+      const weights = model.getWeights();
+      expect(
+        weights.length,
+        'A simpleRNN carries three weight tensors: the input kernel, the recurrent kernel and the bias.',
+      ).toBe(3);
+      expect(weights[0].shape).toEqual([1, 1]);
+      expect(weights[1].shape).toEqual([1, 1]);
+      expect(weights[2].shape).toEqual([1]);
+      expect(
+        model.predict(tf.tensor3d([[[0.1], [0.2], [0.3], [0.4], [0.5]]])).shape,
+        'returnSequences true reports the state after every step, so five readings come back as five states.',
+      ).toEqual([1, 5, 1]);
+    });
+
+    it("the three numbers are the layer's own weights, in the order it stores them", () => {
+      const out = built(4);
+      const [kernel, recurrentKernel, biasTensor] = out.model.getWeights();
+      expect(
+        out.inputWeight,
+        'model.getWeights() puts the INPUT kernel first and the recurrent kernel second. The lesson writes the formula recurrent-term-first, and the library does not store it that way.',
+      ).toBeCloseTo(kernel.dataSync()[0], 9);
+      expect(
+        out.recurrentWeight,
+        'The recurrent kernel is the SECOND tensor, the one that multiplies the state the cell was already holding.',
+      ).toBeCloseTo(recurrentKernel.dataSync()[0], 9);
+      expect(
+        out.bias,
+        'The bias is the third tensor, and it is a single number for a one-unit cell.',
+      ).toBeCloseTo(biasTensor.dataSync()[0], 9);
+    });
+
+    it('your loop reproduces the layer, step for step, on weights neither of you chose', () => {
+      // The layer initializes its own weights at random, so there is no
+      // memorised list to reach for. The only way both sides agree is that
+      // the recurrence in runCell is the one the library runs.
+      for (const timeSteps of [5, 9]) {
+        const out = built(timeSteps);
+        const readings = Array.from(
+          { length: timeSteps },
+          () => Math.random() * 4 - 2,
+        );
+        const fromLayer = layerStates(out.model, readings);
+        const byHand = cell(
+          readings,
+          out.recurrentWeight,
+          out.inputWeight,
+          out.bias,
+        );
+        byHand.forEach((value, step) => {
+          expect(
+            value,
+            'Step ' +
+              step +
+              ' of ' +
+              timeSteps +
+              ': your loop, running on the three numbers you read off this model, does not land where the model itself lands. The two agree to about a hundred-millionth when the recurrence matches and each weight came out of the right tensor; anything larger is one or the other.',
+          ).toBeCloseTo(fromLayer[step], 5);
+        });
+      }
+    });
+  });
+estimatedMinutes: 14
 difficulty: intermediate
 mlContent: model
 skillAxis: model_arch

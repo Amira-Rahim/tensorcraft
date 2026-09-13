@@ -1,19 +1,23 @@
-// Reloads the pipeline inside the loop, once per report, and then classifies
-// the entire array on each pass and keeps a single row from the result. The
-// output is correct and the work is quadratic: this is exactly the load-per-
-// item anti-pattern the lesson warns about, which is why the batching test
-// counts factory calls instead of only checking the returned rows.
+// Ignores both of the lesson's rules at once, and names the task only because
+// the loader refuses to run without one. It reloads the pipeline inside the
+// loop, once per report, which is the load-per-item anti-pattern (in the real
+// library each load is a model download). And it sorts the predictions on
+// their own, then lays them back over the reports in their original order, so
+// the score column comes out correctly ranked while every row names the wrong
+// report. Nothing here knows that a prediction's position is what ties it to
+// the report it describes.
 async function classifyReports(reports, pipelineFactory) {
-  const paired = [];
+  const sorted = [];
   for (let i = 0; i < reports.length; i++) {
-    const classifier = await pipelineFactory();
+    const classifier = await pipelineFactory("sentiment-analysis");
     const predictions = await classifier(reports);
-    paired.push({
-      text: reports[i],
-      label: predictions[i].label,
-      score: predictions[i].score,
-    });
+    if (i === 0) {
+      sorted.push(...predictions.slice().sort((a, b) => b.score - a.score));
+    }
   }
-  paired.sort((a, b) => b.score - a.score);
-  return paired;
+  return reports.map((text, i) => ({
+    text,
+    label: sorted[i].label,
+    score: sorted[i].score,
+  }));
 }

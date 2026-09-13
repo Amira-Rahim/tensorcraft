@@ -1,34 +1,36 @@
 slug: export-model-artifact
 lessonSlug: ci-cd-pipeline
 title: "Export the Artifact CI Pins"
-instructions: "Nazari's hash-pin order has a quiet prerequisite: bytes to hash. model.save() produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the real 85 MB build; the export path is the same, and on this bench copy every float32 weight is four bytes. (1) Save the model with model.save(tf.io.withSaveHandler(...)): the handler is an async function that receives the serialized artifacts, so stash them in `artifacts` and return { modelArtifactsInfo }. (2) Write `describeArtifact(a)` returning { tensors, totalParams, weightBytes }: the count of named weight tensors in a.weightSpecs, the total parameter count (each spec's shape multiplied out), and a.weightData.byteLength. (3) Build `manifest` by describing what you exported."
+instructions: |
+  Nazari's hash-pin order has a quiet prerequisite: bytes to hash. `model.save()` produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the real 85 MB build. The export path is the same, and on this bench copy every float32 weight is four bytes.
+
+  1. Save the model with `model.save(tf.io.withSaveHandler(...))`. The handler is an async function that receives the serialized artifacts, so stash them in `artifacts` and return `{ modelArtifactsInfo }`.
+  2. Write `describeArtifact(a)` returning `{ tensors, totalParams, weightBytes }`: the count of named weight tensors in `a.weightSpecs`, the total parameter count (each spec's shape multiplied out), and `a.weightData.byteLength`. Read the byte count off that buffer rather than multiplying totalParams by four. Four bytes a parameter holds on this float32 bench copy, and after module 10's uint8 pass the parameter count is unchanged while the byte count is not.
+  3. Build `manifest` by describing what you exported.
+
+  The grader loads your artifact back with `tf.models.modelFromJSON` and checks that the rebuilt network predicts what this one predicts, so `artifacts` has to be what save() handed you rather than an object you assembled.
 starterCode: |
   // The 85 MB artifact that CI restores from cache had to come from
-  // somewhere: model.save(). Prove the export path on the bench copy of DEEP SCAN
-  // before anyone points it at the real weights.
+  // somewhere. Prove the export path on the bench copy of DEEP SCAN before
+  // anyone points it at the real weights.
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [3] }));
   model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
   model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
-  // 1. Capture the serialized artifacts in memory. tf.io.withSaveHandler
-  //    wraps an async function that receives them; hand the wrapped
-  //    handler to model.save() and await it. The handler must return
-  //    { modelArtifactsInfo } so save() can report what happened.
+  // The export destination is memory here. Nothing reaches a disk.
   let artifacts = null;
   // your code here
 
-  // 2. Summarize what the committed digest covers.
+  // Summarize what the committed digest covers.
   function describeArtifact(a) {
-    // return { tensors, totalParams, weightBytes }
-    //   tensors:     how many named weight tensors (a.weightSpecs.length)
-    //   totalParams: sum over a.weightSpecs of each spec's shape product
-    //   weightBytes: a.weightData.byteLength (four bytes per float32),
-    //                the bytes the committed digest is computed over
+    // Two of the three numbers are counted off what the export declares
+    // about itself. The third is the buffer, and it is measured rather than
+    // worked out from the other two.
     return null; // your code here
   }
 
-  // 3. The manifest for the artifact you just exported
+  // The manifest for the artifact you just exported.
   const manifest = null; // your code here
 solutionCode: |
   const model = tf.sequential();
@@ -58,19 +60,134 @@ solutionCode: |
 testCode: |
   describe('Export the Artifact CI Pins', () => {
     it('model.save handed the serialized artifacts to the handler', () => {
-      expect(artifacts).toBeDefined();
+      expect(
+        artifacts,
+        'artifacts is still null, so the save handler never ran. model.save() calls the function withSaveHandler wraps and passes it the serialized artifacts; stash them there.',
+      ).toBeDefined();
       expect(artifacts.modelTopology).toBeDefined();
       expect(Array.isArray(artifacts.weightSpecs)).toBe(true);
     });
+    it('every weight spec names a tensor the layers registered', () => {
+      for (const spec of artifacts.weightSpecs) {
+        expect(
+          spec.name,
+          'A weight spec carries the name the layer registered for that tensor, which ends in /kernel or /bias.',
+        ).toMatch(/\/(kernel|bias)$/);
+      }
+      const kernels = artifacts.weightSpecs.filter((spec) => spec.name.endsWith('/kernel'));
+      expect(
+        kernels,
+        'Three dense layers means three kernels and three biases.',
+      ).toHaveLength(3);
+      expect(
+        kernels.map((spec) => spec.shape.length),
+        'A dense kernel is [inputs, units], so the serializer writes a shape with two entries, not a flattened count.',
+      ).toEqual([2, 2, 2]);
+    });
+    it('the artifacts came out of model.save(), not out of a literal', async () => {
+      // Names and shapes are cheap to type out. A specs array assembled by
+      // hand reports six tensors and 209 parameters just as happily, and
+      // copying the live weights into a buffer clears the byte check below
+      // too. What a literal cannot do is rebuild the network, because that
+      // takes the full serialized config of every layer.
+      expect(
+        artifacts.format,
+        'The serializer stamps the artifact it produced. This field is not something the exercise sets.',
+      ).toBe('layers-model');
+      expect(artifacts.generatedBy).toContain('tfjs-layers');
+      expect(artifacts.modelTopology.class_name).toBe('Sequential');
+      expect(
+        artifacts.modelTopology.config.layers,
+        'The topology is the serialized Keras config: one entry per layer you added.',
+      ).toHaveLength(3);
+
+      // The proof an export is real: load it back and it is the same model.
+      // Nothing here touches the live `model` until the comparison.
+      const revived = await tf.models.modelFromJSON({
+        modelTopology: artifacts.modelTopology,
+      });
+      expect(
+        revived.layers.map((l) => l.units),
+        'Rebuilt from the topology alone, the network is 16 into 8 into 1 again.',
+      ).toEqual([16, 8, 1]);
+      const named = tf.io.decodeWeights(artifacts.weightData, artifacts.weightSpecs);
+      revived.setWeights(artifacts.weightSpecs.map((spec) => named[spec.name]));
+
+      const probe = tf.tensor2d([[0.1, 0.2, 0.3], [0.9, 0.8, 0.7], [0.5, 0.5, 0.5]]);
+      const original = Array.from(model.predict(probe).dataSync());
+      const reloaded = Array.from(revived.predict(probe).dataSync());
+      let worst = 0;
+      for (let i = 0; i < original.length; i++) {
+        worst = Math.max(worst, Math.abs(original[i] - reloaded[i]));
+      }
+      expect(
+        worst,
+        'The artifact rebuilt the model and it predicts what the original predicts. An artifact that cannot be loaded back is not an export, whatever the manifest says about it.',
+      ).toBeLessThan(1e-6);
+      probe.dispose();
+      revived.dispose();
+    });
+    it('weightData holds the weights of the model that was saved, byte for byte', () => {
+      // This buffer is what the committed digest is computed over, so it
+      // has to be the model's own weights rather than a buffer of the
+      // right size. A zero-filled ArrayBuffer matches every bias and no
+      // kernel.
+      const saved = new Float32Array(artifacts.weightData);
+      const live = [];
+      for (const w of model.getWeights()) live.push(...Array.from(w.dataSync()));
+      expect(
+        saved.length,
+        'The buffer carries every parameter of the model end to end, in weightSpecs order.',
+      ).toBe(live.length);
+      let worst = 0;
+      for (let i = 0; i < live.length; i++) {
+        worst = Math.max(worst, Math.abs(saved[i] - live[i]));
+      }
+      expect(
+        worst,
+        'Read back as float32, the saved bytes are the live weights. Any gap here means the digest pins something the model does not contain.',
+      ).toBeLessThan(1e-6);
+      expect(
+        saved.some((v) => v !== 0),
+        'Glorot initialization leaves the kernels nonzero, so an all-zero payload is not this model.',
+      ).toBe(true);
+    });
     it('six weight tensors: kernel + bias for each of the three layers', () => {
-      expect(manifest.tensors).toBe(6);
+      expect(
+        manifest,
+        'manifest is the record describeArtifact returns: { tensors, totalParams, weightBytes }.',
+      ).toBeDefined();
+      expect(
+        manifest.tensors,
+        'weightSpecs has one entry per named weight tensor, and three dense layers carry two each.',
+      ).toBe(6);
     });
     it('the bench copy carries 64 + 136 + 9 = 209 parameters', () => {
       expect(manifest.totalParams).toBe(209);
     });
     it('weightData is four bytes per float32 parameter: 836 bytes', () => {
-      expect(manifest.weightBytes).toBe(836);
+      expect(
+        manifest.weightBytes,
+        'weightBytes is the length of the buffer save() produced. On a float32 export that lands at four bytes a parameter.',
+      ).toBe(836);
       expect(manifest.weightBytes).toBe(manifest.totalParams * 4);
+    });
+    it('weightBytes is measured, not derived: a uint8 export is one byte per parameter', () => {
+      // The same six specs after module 10's uint8 pass: 209 parameters,
+      // 209 bytes on disk. describeArtifact has to read the buffer it was
+      // handed. totalParams * 4 reports 836 and pins the wrong artifact.
+      const quantized = {
+        modelTopology: artifacts.modelTopology,
+        weightSpecs: artifacts.weightSpecs.map((spec) => ({
+          ...spec,
+          quantization: { dtype: 'uint8', scale: 1, min: 0 },
+        })),
+        weightData: new ArrayBuffer(209),
+      };
+      const m = describeArtifact(quantized);
+      expect(m.tensors).toBe(6);
+      expect(m.totalParams).toBe(209);
+      expect(m.weightBytes).toBe(209);
     });
     it('describeArtifact reads the artifact it is given, not a memorized answer', async () => {
       const bench = tf.sequential();

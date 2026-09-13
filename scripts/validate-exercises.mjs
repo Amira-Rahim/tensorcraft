@@ -255,14 +255,49 @@ function hasBareTopLevelAwait(code) {
   return false;
 }
 
-function syntaxCheck(code) {
-  const stripped = stripTypeScript(code);
+// --- shared-user-syntax-check: kept byte-identical (modulo whitespace and
+// comments) between packages/ui/src/mdx/exercise-runner.ts and
+// scripts/validate-exercises.mjs, and compared by assertHarnessParity().
+//
+// Both harnesses concatenate the learner's code and the test code into ONE
+// function body. An unbalanced brace in the learner's function therefore
+// swallows the harness that follows it, and the run dies with a message
+// about code the learner never wrote: dropping one closing brace in
+// implement-neuron used to report "await is only valid in async functions
+// and the top level bodies of modules" under the name "Code execution",
+// while the results list vanished (completeness critic, 2026-09-08).
+// Parsing the learner's code ALONE, first, lets the failure name the real
+// cause. The wrapper matches how each harness runs the submission, so a
+// top-level await stays legal.
+function userCodeSyntaxError(cleanUserCode = "") {
   try {
-    new vm.Script(`(async function(){\n${stripped}\n})`);
-    return { ok: true };
+    new Function("return (async function() {\n" + cleanUserCode + "\n});");
+    return null;
   } catch (err) {
-    return { ok: false, error: err.message };
+    // Object() so the read type-checks in the .ts copy, where a catch
+    // binding is unknown.
+    const raised = Object(err);
+    return typeof raised.message === "string" ? raised.message : String(err);
   }
+}
+
+function userSyntaxErrorResult(parserMessage = "") {
+  return {
+    name: "Your code has a syntax error",
+    passed: false,
+    error:
+      "JavaScript could not parse your code, so no test ran. The parser said: " +
+      parserMessage +
+      ". An unclosed or extra brace is the usual cause: check that every opening brace has a partner.",
+  };
+}
+// --- end shared-user-syntax-check ---
+
+function syntaxCheck(code) {
+  // Delegates to the shared check so the starter-compile gate and the
+  // per-run check can never disagree about what parses.
+  const error = userCodeSyntaxError(stripTypeScript(code));
+  return error ? { ok: false, error } : { ok: true };
 }
 
 // Harness - mirrors packages/ui/src/mdx/exercise.tsx parseAndRunTests, with
@@ -274,62 +309,70 @@ const HARNESS = `
   var __results = [];
   var __pending = [];
   var __currentDescribe = '';
-  var __beforeEach = [];
-  var __afterEach = [];
-  var __beforeAll = [];
-  var __afterAll = [];
 
-  async function describe(name, fn) {
-    __currentDescribe = name;
+  function describe(name, fn) {
+    var prev = __currentDescribe;
+    // Hooks are describe-scoped (mirrors the CI grader + vitest): siblings
+    // must not inherit each other's beforeEach/afterEach registrations.
     var savedBE = __beforeEach.slice();
     var savedAE = __afterEach.slice();
-    var savedBA = __beforeAll.slice();
-    var savedAA = __afterAll.slice();
-    try { await fn(); } catch(e) {
-      // Mirror of the shipped runtime's fix (fresh-eyes rerun §6): a throw
-      // in a describe body must surface as a FAILING result, not silently
-      // drop every later it() while the survivors read as a full pass.
+    __currentDescribe = name;
+    var ret;
+    try { ret = fn(); } catch(e) {
+      // A throw in a describe BODY silently dropped every later it() and
+      // the UI then read the surviving green subset as "All tests passed!"
+      // (fresh-eyes rerun §6). Record it as a failing result so a
+      // partially-defined suite can never present as a pass.
       __results.push({
         name: name + ' > (suite body threw before defining all tests)',
         passed: false,
         error: (e && e.message) || String(e)
       });
     }
-    // beforeAll fires exactly once, at registration time (see beforeAll
-    // below) - matching the shipped runtime harness. Do NOT re-fire here:
-    // a non-idempotent setup (counter, push) must behave identically in
-    // CI grading and in the learner's browser.
-    // Let registered test() promises settle for this describe.
-    // (The top-level outer loop calls Promise.all(__pending) for the batch.)
-    __currentDescribe = '';
-    // Restore hook stacks so sibling describes don't inherit.
-    __beforeEach = savedBE;
-    __afterEach = savedAE;
-    __beforeAll = savedBA;
-    __afterAll = savedAA;
+    if (ret && typeof ret.then === 'function') {
+      __pending.push(ret.catch(function(){}).then(function(){
+        __currentDescribe = prev;
+        __beforeEach = savedBE;
+        __afterEach = savedAE;
+      }));
+    } else {
+      __currentDescribe = prev;
+      __beforeEach = savedBE;
+      __afterEach = savedAE;
+    }
   }
 
+  var __beforeEach = [];
+  var __afterEach = [];
+
+  // beforeAll runs immediately (describe bodies register it before any it()
+  // callback executes, since its run on microtasks). Async setups are queued
+  // so __awaitPending drains them before results are read.
+  function beforeAll(fn) {
+    try {
+      var r = fn && fn();
+      if (r && typeof r.then === 'function') __pending.push(Promise.resolve(r).catch(function(){}));
+    } catch (e) { /* setup errors surface as failing assertions */ }
+  }
+  function afterAll(fn) {
+    __pending.push(Promise.resolve().then(function() { return fn && fn(); }).catch(function(){}));
+  }
   function beforeEach(fn) { __beforeEach.push(fn); }
   function afterEach(fn) { __afterEach.push(fn); }
-  function beforeAll(fn) { __beforeAll.push(fn); try { fn && fn(); } catch(e) {} }
-  function afterAll(fn) { __afterAll.push(fn); }
 
   function it(name, fn) {
     var fullName = __currentDescribe ? __currentDescribe + ' > ' + name : name;
-    var beforeEachSnapshot = __beforeEach.slice();
-    var afterEachSnapshot = __afterEach.slice();
-    var p = (async function() {
-      try {
-        for (var i = 0; i < beforeEachSnapshot.length; i++) await beforeEachSnapshot[i]();
-        await fn();
-        for (var j = 0; j < afterEachSnapshot.length; j++) await afterEachSnapshot[j]();
-        __results.push({ name: fullName, passed: true });
-      } catch(e) {
-        __results.push({ name: fullName, passed: false, error: e.message || String(e) });
-      }
-    })();
+    var beSnapshot = __beforeEach.slice();
+    var aeSnapshot = __afterEach.slice();
+    var p = Promise.resolve().then(async function() {
+      for (var i = 0; i < beSnapshot.length; i++) await beSnapshot[i]();
+      await fn();
+      for (var j = 0; j < aeSnapshot.length; j++) await aeSnapshot[j]();
+    }).then(
+      function() { __results.push({ name: fullName, passed: true }); },
+      function(e) { __results.push({ name: fullName, passed: false, error: e.message || String(e) }); }
+    );
     __pending.push(p);
-    return p;
   }
   var test = it;
   it.skip = function(){};
@@ -339,119 +382,397 @@ const HARNESS = `
   describe.skip = function(){};
   describe.only = describe;
 
-  // Jest compatibility stubs.
-  var jest = {
-    fn: function(impl) {
-      var calls = [];
-      var instances = [];
-      var f = function() {
-        var args = Array.prototype.slice.call(arguments);
-        calls.push(args);
-        instances.push(this);
-        return impl ? impl.apply(this, args) : undefined;
-      };
-      f.mock = { calls: calls, instances: instances, results: [] };
-      f.mockReturnValue = function(v) { impl = function(){ return v; }; return f; };
-      f.mockResolvedValue = function(v) { impl = function(){ return Promise.resolve(v); }; return f; };
-      f.mockImplementation = function(i) { impl = i; return f; };
-      f.mockClear = function() { calls.length = 0; instances.length = 0; };
-      return f;
-    },
-    spyOn: function(obj, method) {
-      var original = obj[method];
-      var spy = jest.fn(original);
-      obj[method] = spy;
-      spy.mockRestore = function() { obj[method] = original; };
-      return spy;
-    },
-    clearAllMocks: function() {},
-    resetAllMocks: function() {},
-    useFakeTimers: function() {},
-    useRealTimers: function() {},
-  };
+  async function __awaitPending() {
+    // Drain the queue, pending it()s may schedule more work.
+    while (__pending.length > 0) {
+      var batch = __pending.splice(0, __pending.length);
+      await Promise.all(batch);
+    }
+  }
 
-  function expect(actual) {
+  /* --- shared-assertions: kept byte-identical (modulo whitespace) between
+     packages/ui/src/mdx/exercise-runner.ts, the harness a learner runs in the
+     browser, and scripts/validate-exercises.mjs, the harness CI grades with.
+     assertHarnessParity() in the validator compares every function marked
+     below, and assertAssertionParity() runs a fixture suite through both
+     harnesses and compares every resulting failure string, because a
+     divergence here lets a submission pass in one harness and fail in the
+     other.
+
+     FAILURE-TEXT RULE, which exercise authors follow when they write a
+     message of their own:
+
+     1. A failure never prints the expected side of an equality or closeness
+        check when that value is a number, or an array or object holding a
+        number. Those are graded answers. The results panel opens on the
+        first Run of the untouched starter, so printing them hands over the
+        answer for one click, and unlike the hint ladder it is not recorded
+        as a reveal.
+     2. In place of the answer the message reports three things: the value
+        the learner produced, the direction of the miss (too high, too low)
+        or the position of the first difference, and the rule the check
+        enforces (its tolerance, its required length, its required shape).
+     3. Strings, booleans, null, undefined, regexes, constructor names,
+        lengths and shapes ARE printed. They name an API choice or a
+        structure rather than a computed answer, and withholding them turns
+        a typo into a guessing game.
+     4. A threshold is a rule, not an answer, so toBeGreaterThan and its
+        siblings keep naming the bar the value has to clear.
+     5. The teaching half comes from the author: expect takes an optional
+        second argument, and whatever it says is printed above the
+        discrepancy. Write why the failure means what it means.
+            expect(loss, 'A rising loss means the step went uphill.')
+              .toBeLessThan(previous);
+  --- */
+
+  function __tcDefaultPrecision() {
+    // Deliberately tighter than the vitest default of 2, because these
+    // exercises grade numeric ML output where 2 decimals would accept a
+    // wrong answer. Authors who want a looser bar pass precision
+    // explicitly; the validator prints an advisory for every site that
+    // leaves it out.
+    return 5;
+  }
+
+  function __tcTolerance(p) {
+    // Printed, not compared: Math.pow(10, -5) / 2 is 0.0000049999999999999996
+    // in binary floating point, and that tail is noise in a failure message.
+    var limit = Math.pow(10, -p) / 2;
+    return String(Number(limit.toPrecision(2)));
+  }
+
+  function __tcMessage(why, detail) {
+    var d = detail == null ? '' : String(detail);
+    if (why === undefined || why === null || why === '') return d;
+    if (!d) return String(why);
+    return String(why) + '\\n' + d;
+  }
+
+  // Realm-safe RegExp test. Test code runs in its own realm (a vm context in
+
+  // CI, the worker body in the browser), so a regex literal written in an
+
+  // exercise is NOT an instanceof this realm's RegExp. Duck-typing via the
+
+  // toString tag is the only check that holds across both harnesses; an
+
+  // instanceof here silently degrades every regex assertion into a substring
+
+  // search for the regex's own source text.
+
+  function __tcIsRe(p) {
+
+    return Object.prototype.toString.call(p) === '[object RegExp]';
+
+  }
+
+  function __tcShow(v) {
+    // JSON.stringify turns NaN and Infinity into 'null', which would report
+    // a failed calculation as a missing value.
+    if (typeof v === 'number' && !Number.isFinite(v)) return String(v);
+    var s;
+    try {
+      s = JSON.stringify(v);
+    } catch (e) {
+      s = null;
+    }
+    if (s === undefined || s === null) s = String(v);
+    return s.length > 140 ? s.slice(0, 137) + '...' : s;
+  }
+
+  function __tcType(v) {
+    if (v === null) return 'null';
+    if (Array.isArray(v)) return 'array';
+    // v !== v is true only for NaN, and needs no global helper.
+    if (typeof v === 'number' && v !== v) return 'NaN';
+    return typeof v;
+  }
+
+  function __tcNamed(v) {
+    // 'null (null)' and 'undefined (undefined)' read as a stutter, so name
+    // the type once when the type IS the whole value.
+    var t = __tcType(v);
+    var shown = __tcShow(v);
+    return shown === t ? t : t + ' (' + shown + ')';
+  }
+
+  function __tcHasNumber(v) {
+    if (typeof v === 'number') return true;
+    if (v === null || typeof v !== 'object') return false;
+    if (Array.isArray(v)) {
+      for (var i = 0; i < v.length; i++) if (__tcHasNumber(v[i])) return true;
+      return false;
+    }
+    for (var k in v) if (__tcHasNumber(v[k])) return true;
+    return false;
+  }
+
+  function __tcListOf(v) {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === 'object' && typeof v.length === 'number') {
+      return Array.prototype.slice.call(v);
+    }
+    return null;
+  }
+
+  function __tcNumberMiss(actual, expected) {
+    if (typeof expected !== 'number') return __tcStructureMiss(actual, expected);
+    if (typeof actual !== 'number') {
+      return 'Got ' + __tcNamed(actual) + ' where a number was required.';
+    }
+    if (actual !== actual) return 'Got NaN, so the calculation produced no number.';
+    return 'Got ' + actual + ', which is too ' + (actual > expected ? 'high' : 'low') + '.';
+  }
+
+  function __tcStructureMiss(actual, expected) {
+    if (Array.isArray(expected)) {
+      var a = __tcListOf(actual);
+      if (a === null) {
+        return 'Got ' + __tcNamed(actual) + ' where a list of ' + expected.length + ' was required.';
+      }
+      if (a.length !== expected.length) {
+        return 'Your list has ' + a.length + ' entries; ' + expected.length + ' were required.';
+      }
+      var first = -1;
+      var n = 0;
+      for (var i = 0; i < expected.length; i++) {
+        if (JSON.stringify(a[i]) !== JSON.stringify(expected[i])) {
+          n++;
+          if (first < 0) first = i;
+        }
+      }
+      if (n === 0) {
+        if (!Array.isArray(actual)) {
+          return 'Your values match entry by entry, but the container is a ' + (actual && actual.constructor && actual.constructor.name ? actual.constructor.name : __tcType(actual)) + ' where a plain array was required. Array.from converts it.';
+        }
+        return 'Your list matches entry by entry but is not the same object.';
+      }
+      return 'Your list is the right length. ' + n + ' of ' + expected.length + ' entries differ, the first at index ' + first + ' (yours: ' + __tcShow(a[first]) + ').';
+    }
+    if (expected !== null && typeof expected === 'object') {
+      if (actual === null || typeof actual !== 'object') {
+        return 'Got ' + __tcNamed(actual) + ' where an object was required.';
+      }
+      var keys = Object.keys(expected);
+      var missing = [];
+      var differ = [];
+      for (var j = 0; j < keys.length; j++) {
+        var key = keys[j];
+        if (!(key in actual)) missing.push(key);
+        else if (JSON.stringify(actual[key]) !== JSON.stringify(expected[key])) differ.push(key);
+      }
+      if (missing.length) {
+        return 'Your object has no ' + missing[0] + ' key (' + missing.length + ' of the ' + keys.length + ' required keys are missing).';
+      }
+      if (differ.length) {
+        return 'Your ' + differ[0] + ' is ' + __tcShow(actual[differ[0]]) + ', which this check rejects (' + differ.length + ' of ' + keys.length + ' keys differ).';
+      }
+      return 'Your object carries the ' + keys.length + ' required keys plus extras this check rejects.';
+    }
+    return 'Got ' + __tcShow(actual) + '.';
+  }
+
+  function __tcJest() {
+    var jestStub = {
+      fn: function(impl) {
+        var calls = [];
+        var instances = [];
+        var f = function() {
+          var args = Array.prototype.slice.call(arguments);
+          calls.push(args);
+          instances.push(this);
+          return impl ? impl.apply(this, args) : undefined;
+        };
+        f.mock = { calls: calls, instances: instances, results: [] };
+        f.mockReturnValue = function(v) { impl = function() { return v; }; return f; };
+        f.mockResolvedValue = function(v) { impl = function() { return Promise.resolve(v); }; return f; };
+        f.mockImplementation = function(i) { impl = i; return f; };
+        f.mockClear = function() { calls.length = 0; instances.length = 0; };
+        return f;
+      },
+      spyOn: function(obj, method) {
+        var original = obj[method];
+        var spy = jestStub.fn(original);
+        obj[method] = spy;
+        spy.mockRestore = function() { obj[method] = original; };
+        return spy;
+      },
+      clearAllMocks: function() {},
+      resetAllMocks: function() {},
+      useFakeTimers: function() {},
+      useRealTimers: function() {},
+    };
+    return jestStub;
+  }
+
+  function __tcInstallStatics(fn) {
+    fn.closeTo = function(expected, precision) {
+      var p = precision === undefined ? 2 : precision;
+      return {
+        asymmetricMatch: function(actual) {
+          return Math.abs(actual - expected) < Math.pow(10, -p) / 2;
+        },
+      };
+    };
+    fn.any = function(ctor) {
+      return {
+        asymmetricMatch: function(a) {
+          var name = String(ctor && ctor.name).toLowerCase();
+          return a != null && (typeof a === name || a instanceof ctor);
+        },
+      };
+    };
+    fn.anything = function() {
+      return {
+        asymmetricMatch: function(a) { return a != null; },
+      };
+    };
+    fn.stringContaining = function(s) {
+      return {
+        asymmetricMatch: function(a) { return typeof a === 'string' && a.indexOf(s) !== -1; },
+      };
+    };
+    fn.stringMatching = function(re) {
+      return {
+        asymmetricMatch: function(a) {
+          return typeof a === 'string' && (__tcIsRe(re) ? re : new RegExp(re)).test(a);
+        },
+      };
+    };
+    return fn;
+  }
+
+  function __tcMatchers(actual, __why) {
+    function fail(detail) {
+      throw new Error(__tcMessage(__why, detail));
+    }
+    function contains(needle) {
+      if (typeof actual === 'string') return actual.indexOf(String(needle)) !== -1;
+      var list = __tcListOf(actual);
+      if (list === null) return null;
+      return Array.prototype.indexOf.call(list, needle) !== -1 || (needle !== needle && list.some(function(v) { return v !== v; }));
+    }
     return {
       toBe: function(expected) {
-        if (actual !== expected) throw new Error('Expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual));
+        if (actual === expected) return;
+        if (__tcHasNumber(expected)) fail(__tcNumberMiss(actual, expected));
+        fail('Expected ' + __tcShow(expected) + ' but got ' + __tcShow(actual) + '.');
       },
       toEqual: function(expected) {
-        var a = JSON.stringify(actual), b = JSON.stringify(expected);
-        if (a !== b) throw new Error('Expected ' + b + ' but got ' + a);
+        if (JSON.stringify(actual) === JSON.stringify(expected)) return;
+        if (__tcHasNumber(expected)) fail(__tcNumberMiss(actual, expected));
+        fail('Expected ' + __tcShow(expected) + ' but got ' + __tcShow(actual) + '.');
       },
       toBeDefined: function() {
-        if (actual === undefined || actual === null) throw new Error('Expected value to be defined, got ' + String(actual));
-      },
-      toBeNull: function() {
-        if (actual !== null) throw new Error('Expected null but got ' + JSON.stringify(actual));
-      },
-      toBeTruthy: function() {
-        if (!actual) throw new Error('Expected truthy value but got ' + JSON.stringify(actual));
-      },
-      toBeFalsy: function() {
-        if (actual) throw new Error('Expected falsy value but got ' + JSON.stringify(actual));
-      },
-      toBeGreaterThan: function(expected) {
-        if (!(actual > expected)) throw new Error('Expected ' + actual + ' > ' + expected);
-      },
-      toBeLessThan: function(expected) {
-        if (!(actual < expected)) throw new Error('Expected ' + actual + ' < ' + expected);
-      },
-      toBeGreaterThanOrEqual: function(expected) {
-        if (!(actual >= expected)) throw new Error('Expected ' + actual + ' >= ' + expected);
-      },
-      toBeLessThanOrEqual: function(expected) {
-        if (!(actual <= expected)) throw new Error('Expected ' + actual + ' <= ' + expected);
-      },
-      toContain: function(expected) {
-        if (Array.isArray(actual)) {
-          if (!actual.includes(expected)) throw new Error('Array does not contain ' + JSON.stringify(expected));
-        } else if (typeof actual === 'string') {
-          if (!actual.includes(expected)) throw new Error('String does not contain ' + JSON.stringify(expected));
-        } else {
-          throw new Error('toContain expects a string or array, got ' + (actual === null ? 'null' : typeof actual));
+        if (actual === undefined || actual === null) {
+          fail('Nothing came back here: the value is ' + String(actual) + '.');
         }
       },
+      toBeNull: function() {
+        if (actual !== null) fail('Expected null, got ' + __tcNamed(actual) + '.');
+      },
+      toBeTruthy: function() {
+        if (!actual) fail('Expected a truthy value, got ' + __tcShow(actual) + '.');
+      },
+      toBeFalsy: function() {
+        if (actual) fail('Expected a falsy value, got ' + __tcShow(actual) + '.');
+      },
+      toBeGreaterThan: function(expected) {
+        if (!(actual > expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires a value greater than ' + __tcShow(expected) + '.');
+        }
+      },
+      toBeLessThan: function(expected) {
+        if (!(actual < expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires a value less than ' + __tcShow(expected) + '.');
+        }
+      },
+      toBeGreaterThanOrEqual: function(expected) {
+        if (!(actual >= expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires at least ' + __tcShow(expected) + '.');
+        }
+      },
+      toBeLessThanOrEqual: function(expected) {
+        if (!(actual <= expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires at most ' + __tcShow(expected) + '.');
+        }
+      },
+      toContain: function(expected) {
+        var inside = contains(expected);
+        if (inside === null) {
+          fail('toContain needs a string or a list, got ' + __tcType(actual) + '.');
+        }
+        if (inside) return;
+        if (typeof actual === 'string') {
+          fail('Your text does not contain ' + __tcShow(expected) + '. Yours: ' + __tcShow(actual) + '.');
+        }
+        if (__tcHasNumber(expected)) {
+          fail('Your list is missing a value this check requires. Yours: ' + __tcShow(actual) + '.');
+        }
+        fail('Your list does not contain ' + __tcShow(expected) + '. Yours: ' + __tcShow(actual) + '.');
+      },
       toHaveLength: function(expected) {
-        if (actual.length !== expected) throw new Error('Expected length ' + expected + ' but got ' + actual.length);
+        if (actual == null || typeof actual.length !== 'number') {
+          fail('Got ' + __tcNamed(actual) + ', which has no length.');
+        }
+        if (actual.length !== expected) {
+          fail('Your value has length ' + actual.length + '; ' + expected + ' was required.');
+        }
       },
       toThrow: function(expected) {
-        if (typeof actual !== 'function') throw new Error('Expected a function');
+        if (typeof actual !== 'function') {
+          fail('toThrow needs a function to call, got ' + __tcType(actual) + '.');
+        }
         var threw = false;
         var caught = null;
-        try { actual(); } catch(e) { threw = true; caught = e; }
-        if (!threw) throw new Error('Expected function to throw');
+        try { actual(); } catch (e) { threw = true; caught = e; }
+        if (!threw) fail('This call was required to throw, and it returned instead.');
         if (expected !== undefined) {
           var msg = caught && caught.message ? String(caught.message) : String(caught);
-          var ok = expected instanceof RegExp ? expected.test(msg) : msg.indexOf(String(expected)) !== -1;
-          if (!ok) throw new Error('Expected error matching ' + JSON.stringify(String(expected)) + ' but got ' + JSON.stringify(msg));
+          var ok = __tcIsRe(expected) ? expected.test(msg) : msg.indexOf(String(expected)) !== -1;
+          if (!ok) {
+            fail('It threw, but the message was ' + __tcShow(msg) + ' and this check requires ' + __tcShow(String(expected)) + '.');
+          }
         }
       },
       toBeCloseTo: function(expected, precision) {
-        precision = precision === undefined ? 5 : precision;
+        var p = precision === undefined ? __tcDefaultPrecision() : precision;
+        var limit = Math.pow(10, -p) / 2;
         var diff = Math.abs(actual - expected);
-        var limit = Math.pow(10, -precision) / 2;
-        // NaN-safe: a non-numeric actual makes diff NaN, and 'NaN >= limit'
-        // is false - the negated form fails instead of silently passing.
-        if (!(diff < limit)) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
+        // NaN-safe: a non-numeric actual makes diff NaN, and NaN < limit is
+        // false, so the negated form fails instead of silently passing.
+        if (diff < limit) return;
+        if (typeof actual !== 'number') {
+          fail('Got ' + __tcNamed(actual) + ' where a number was required.');
+        }
+        if (actual !== actual) fail('Got NaN, so the calculation produced no number.');
+        fail('Got ' + actual + ', which is too ' + (actual > expected ? 'high' : 'low') + '. This check allows a difference of at most ' + __tcTolerance(p) + ' (precision ' + p + ').');
       },
-      toHaveProperty: function(key, value) {
+      toHaveProperty: function(key, expected) {
         var path = String(key).split('.');
         var cur = actual;
         for (var i = 0; i < path.length; i++) {
-          if (cur == null || !(path[i] in cur)) throw new Error('Expected property ' + key);
+          var reachable = cur !== null && (typeof cur === 'object' || typeof cur === 'function');
+          if (!reachable || !(path[i] in cur)) {
+            fail('Expected a property named ' + __tcShow(key) + ', which is not there.');
+          }
           cur = cur[path[i]];
         }
-        if (arguments.length > 1 && JSON.stringify(cur) !== JSON.stringify(value))
-          throw new Error('Property ' + key + ' expected ' + JSON.stringify(value) + ' but got ' + JSON.stringify(cur));
+        if (arguments.length > 1 && JSON.stringify(cur) !== JSON.stringify(expected)) {
+          if (__tcHasNumber(expected)) fail('Property ' + key + ': ' + __tcNumberMiss(cur, expected));
+          fail('Property ' + key + ' expected ' + __tcShow(expected) + ' but got ' + __tcShow(cur) + '.');
+        }
       },
       toMatch: function(pattern) {
-        var re = pattern instanceof RegExp ? pattern : new RegExp(pattern);
-        if (typeof actual !== 'string' || !re.test(actual)) throw new Error('Expected ' + JSON.stringify(actual) + ' to match ' + pattern);
+        var s = String(actual);
+        var ok = __tcIsRe(pattern) ? pattern.test(s) : s.indexOf(String(pattern)) !== -1;
+        if (!ok) {
+          fail('Your text does not match ' + (__tcIsRe(pattern) ? String(pattern) : __tcShow(String(pattern))) + '. Yours: ' + __tcShow(s) + '.');
+        }
       },
       toMatchObject: function(expected) {
         function match(a, e) {
-          if (e == null || typeof e !== 'object') return a === e;
+          if (e === null || typeof e !== 'object') return a === e;
           if (Array.isArray(e)) {
             if (!Array.isArray(a) || a.length < e.length) return false;
             for (var i = 0; i < e.length; i++) if (!match(a[i], e[i])) return false;
@@ -460,82 +781,142 @@ const HARNESS = `
           for (var k in e) if (!match(a && a[k], e[k])) return false;
           return true;
         }
-        if (!match(actual, expected)) throw new Error('Object does not match');
+        if (!match(actual, expected)) {
+          fail('Your object does not carry the required fields. Yours: ' + __tcShow(actual) + '.');
+        }
       },
       toBeInstanceOf: function(ctor) {
-        if (!(actual instanceof ctor)) throw new Error('Expected instanceof ' + (ctor && ctor.name));
+        if (!(actual instanceof ctor)) {
+          fail('Expected an instance of ' + String(ctor && ctor.name) + ', got ' + __tcType(actual) + '.');
+        }
       },
       toHaveBeenCalled: function() {
-        if (!actual || !actual.mock || actual.mock.calls.length === 0) throw new Error('Expected mock to have been called');
+        if (!actual || !actual.mock || actual.mock.calls.length === 0) {
+          fail('This function was never called.');
+        }
       },
       toHaveBeenCalledTimes: function(n) {
-        if (!actual || !actual.mock || actual.mock.calls.length !== n) throw new Error('Expected mock to have been called ' + n + ' times');
+        if (!actual || !actual.mock) fail('Expected a mock function here.');
+        if (actual.mock.calls.length !== n) {
+          fail('This function was called ' + actual.mock.calls.length + ' time(s); ' + n + ' was required.');
+        }
       },
       toHaveBeenCalledWith: function() {
-        if (!actual || !actual.mock) throw new Error('Expected a mock');
+        if (!actual || !actual.mock) fail('Expected a mock function here.');
         var expectedArgs = Array.prototype.slice.call(arguments);
-        var ok = actual.mock.calls.some(function(c){ return JSON.stringify(c) === JSON.stringify(expectedArgs); });
-        if (!ok) throw new Error('Expected mock call with ' + JSON.stringify(expectedArgs));
+        var ok = actual.mock.calls.some(function(c) {
+          return JSON.stringify(c) === JSON.stringify(expectedArgs);
+        });
+        if (!ok) {
+          fail('No call matched the required arguments. Calls seen: ' + __tcShow(actual.mock.calls) + '.');
+        }
       },
       resolves: {
-        toBe: async function(expected) { var v = await actual; if (v !== expected) throw new Error('Expected resolved ' + expected); },
-        toEqual: async function(expected) { var v = await actual; if (JSON.stringify(v) !== JSON.stringify(expected)) throw new Error('Expected resolved equal'); },
+        toBe: function(expected) {
+          return Promise.resolve(actual).then(function(v) {
+            return __tcMatchers(v, __why).toBe(expected);
+          });
+        },
+        toEqual: function(expected) {
+          return Promise.resolve(actual).then(function(v) {
+            return __tcMatchers(v, __why).toEqual(expected);
+          });
+        },
       },
       rejects: {
-        toThrow: async function() { try { await actual; } catch(e) { return; } throw new Error('Expected promise to reject'); },
+        toThrow: function(msgOrRegex) {
+          if (!actual || typeof actual.then !== 'function') {
+            fail('Expected a promise here, got ' + __tcType(actual) + '.');
+          }
+          return actual.then(
+            function() { fail('This promise was required to reject, and it resolved instead.'); },
+            function(err) {
+              if (msgOrRegex === undefined || msgOrRegex === null) return;
+              var msg = (err && err.message) || String(err);
+              var ok = __tcIsRe(msgOrRegex) ? msgOrRegex.test(msg) : msg.indexOf(String(msgOrRegex)) !== -1;
+              if (!ok) {
+                fail('It rejected, but the message was ' + __tcShow(msg) + ' and this check requires ' + __tcShow(String(msgOrRegex)) + '.');
+              }
+            }
+          );
+        },
+        toEqual: function(expected) {
+          if (!actual || typeof actual.then !== 'function') {
+            fail('Expected a promise here, got ' + __tcType(actual) + '.');
+          }
+          return actual.then(
+            function() { fail('This promise was required to reject, and it resolved instead.'); },
+            function(err) { return __tcMatchers(err, __why).toEqual(expected); }
+          );
+        },
       },
       not: {
         toBe: function(expected) {
-          if (actual === expected) throw new Error('Expected value to not be ' + JSON.stringify(expected));
+          if (actual === expected) fail('This value must not be ' + __tcShow(expected) + ', and it is.');
         },
         toEqual: function(expected) {
-          if (JSON.stringify(actual) === JSON.stringify(expected)) throw new Error('Expected values to not be equal');
+          if (JSON.stringify(actual) === JSON.stringify(expected)) {
+            fail('This value must not equal ' + __tcShow(expected) + ', and it does.');
+          }
         },
         toBeDefined: function() {
-          if (actual !== undefined && actual !== null) throw new Error('Expected value to be undefined');
+          if (actual !== undefined && actual !== null) {
+            fail('This value must be undefined, and it is ' + __tcShow(actual) + '.');
+          }
         },
         toBeNull: function() {
-          if (actual === null) throw new Error('Expected value to not be null');
+          if (actual === null) fail('This value must not be null, and it is.');
         },
         toBeTruthy: function() {
-          if (actual) throw new Error('Expected falsy value');
+          if (actual) fail('This value must be falsy, and it is ' + __tcShow(actual) + '.');
+        },
+        toBeFalsy: function() {
+          if (!actual) fail('This value must be truthy, and it is ' + __tcShow(actual) + '.');
         },
         toContain: function(expected) {
-          if (Array.isArray(actual) && actual.includes(expected)) throw new Error('Expected array not to contain');
-          if (typeof actual === 'string' && actual.includes(expected)) throw new Error('Expected string not to contain');
+          if (contains(expected) === true) {
+            fail('Your value must not contain ' + __tcShow(expected) + ', and it does.');
+          }
         },
         toMatch: function(pattern) {
-          var re = pattern instanceof RegExp ? pattern : new RegExp(pattern);
-          if (typeof actual === 'string' && re.test(actual)) throw new Error('Expected ' + JSON.stringify(actual) + ' not to match ' + pattern);
+          var s = String(actual);
+          var matched = __tcIsRe(pattern) ? pattern.test(s) : s.indexOf(String(pattern)) !== -1;
+          if (matched) {
+            fail('Your text must not match ' + (__tcIsRe(pattern) ? String(pattern) : __tcShow(String(pattern))) + ', and it does.');
+          }
         },
         toHaveProperty: function(key) {
           var path = String(key).split('.');
           var cur = actual;
           for (var i = 0; i < path.length; i++) {
-            if (cur == null || !(path[i] in cur)) return;
+            var reachable = cur !== null && (typeof cur === 'object' || typeof cur === 'function');
+            if (!reachable || !(path[i] in cur)) return;
             cur = cur[path[i]];
           }
-          throw new Error('Expected not to have property ' + key);
+          fail('This value must not have a property named ' + __tcShow(key) + ', and it does.');
         },
         toHaveBeenCalled: function() {
-          if (actual && actual.mock && actual.mock.calls.length > 0) throw new Error('Expected mock not called');
+          if (actual && actual.mock && actual.mock.calls.length > 0) {
+            fail('This function must not have been called, and it was called ' + actual.mock.calls.length + ' time(s).');
+          }
         },
-      }
+        toBeCloseTo: function(expected, precision) {
+          var p = precision === undefined ? __tcDefaultPrecision() : precision;
+          var limit = Math.pow(10, -p) / 2;
+          if (Math.abs(actual - expected) < limit) {
+            fail('This value must not sit within ' + __tcTolerance(p) + ' of that target, and it does.');
+          }
+        },
+      },
     };
   }
-  expect.any = function(ctor) { return { asymmetricMatch: function(a){ return a != null && (typeof a === ctor.name.toLowerCase() || a instanceof ctor); } }; };
-  expect.anything = function() { return { asymmetricMatch: function(a){ return a != null; } }; };
-  expect.stringContaining = function(s) { return { asymmetricMatch: function(a){ return typeof a === 'string' && a.includes(s); } }; };
-  expect.stringMatching = function(re) { return { asymmetricMatch: function(a){ return typeof a === 'string' && (re instanceof RegExp ? re : new RegExp(re)).test(a); } }; };
 
-  expect.closeTo = function(expected, precision) {
-    precision = precision || 2;
-    return {
-      asymmetricMatch: function(actual) {
-        return Math.abs(actual - expected) < Math.pow(10, -precision) / 2;
-      }
-    };
-  };
+  function expect(actual, why) {
+    return __tcMatchers(actual, why);
+  }
+  __tcInstallStatics(expect);
+  var jest = __tcJest();
+  /* --- end shared-assertions --- */
 `;
 
 const TF_MOCK = `
@@ -1519,6 +1900,13 @@ async function runSolutionTests(userCode, testCode) {
   const cleanCode = stripTypeScript(userCode);
   const cleanTestCode = stripTypeScript(testCode);
 
+  // Same pre-parse as the browser harness, and the same single result, so
+  // CI reports a submission with a brace typo the way a learner sees it.
+  const syntaxError = userCodeSyntaxError(cleanCode);
+  if (syntaxError) {
+    return { ok: true, results: [userSyntaxErrorResult(syntaxError)] };
+  }
+
   // Detect top-level `await` so solutions that use it still work.  Scripts
   // don't support TLA, so we fold the solution body inside the async IIFE
   // alongside the tests.  Bindings declared with `var` become visible to the
@@ -1532,8 +1920,8 @@ async function runSolutionTests(userCode, testCode) {
   // `expandDims`, transpose flags on `matMul`, etc.). Mock retained in source
   // for reference until the next round of cleanup.
   const fullCode = hasTopLevelAwait
-    ? `${HARNESS}\n(async function(){\n${cleanCode}\n${cleanTestCode}\nawait Promise.all(__pending);\nreturn __results;\n})()`
-    : `${HARNESS}\n${cleanCode}\n(async function(){\n${cleanTestCode}\nawait Promise.all(__pending);\nreturn __results;\n})()`;
+    ? `${HARNESS}\n(async function(){\n${cleanCode}\n${cleanTestCode}\nawait __awaitPending();\nreturn __results;\n})()`
+    : `${HARNESS}\n${cleanCode}\n(async function(){\n${cleanTestCode}\nawait __awaitPending();\nreturn __results;\n})()`;
 
   const context = {
     console: {
@@ -1641,6 +2029,10 @@ async function runSolutionTests(userCode, testCode) {
       InferenceSession: {
         create: () =>
           Promise.resolve({
+            // The real session exposes its feed and result keys; lesson 5
+            // reads them off the session, so the stub carries them too.
+            inputNames: ["input"],
+            outputNames: ["output"],
             run: (feeds) =>
               Promise.resolve({
                 output: {
@@ -1719,17 +2111,83 @@ function loadAllowlist() {
 // reverse. Pull each marked derivation out of the worker source and compare
 // it to this file's copy, ignoring comments and whitespace so only the
 // arithmetic has to match.
-const SHARED_STUB_FNS = ["stubArchFromUrl", "stubOnnxScore"];
+// Every function below is duplicated, on purpose, in the browser worker
+// (packages/ui/src/mdx/exercise-runner.ts): the model-loader and ONNX stubs
+// have to derive the same answers from the same inputs, and since 2026-09-08
+// the assertion machinery has to produce the same FAILURE TEXT, because that
+// text is the only explanation of a failure a learner reads. When the two
+// disagree, a submission can pass in one harness and fail in the other, or
+// the same mistake gets two different explanations.
+const SHARED_STUB_FNS = [
+  // Grading stubs.
+  "stubArchFromUrl",
+  "stubOnnxScore",
+  // Assertion machinery (shared-assertions block).
+  "__tcDefaultPrecision",
+  "__tcTolerance",
+  "__tcMessage",
+  "__tcShow",
+  "__tcType",
+  "__tcNamed",
+  "__tcHasNumber",
+  "__tcListOf",
+  "__tcNumberMiss",
+  "__tcStructureMiss",
+  "__tcJest",
+  "__tcInstallStatics",
+  "__tcMatchers",
+  // Pre-parse of the learner's own code (shared-user-syntax-check block).
+  "userCodeSyntaxError",
+  "userSyntaxErrorResult",
+];
 
+// Brace matching that skips strings, template literals, regex-free comments
+// and escapes. The naive version counted a brace inside a string literal and
+// truncated __tcMatchers mid-function, which would have made the parity check
+// compare two fragments and pass.
 function extractFn(src, name) {
   const start = src.indexOf("function " + name + "(");
   if (start === -1) return null;
   const open = src.indexOf("{", start);
   if (open === -1) return null;
   let depth = 0;
+  let quote = null;
+  let comment = null;
   for (let i = open; i < src.length; i++) {
-    if (src[i] === "{") depth++;
-    else if (src[i] === "}") {
+    const c = src[i];
+    const next = src[i + 1];
+    if (comment === "line") {
+      if (c === "\n") comment = null;
+      continue;
+    }
+    if (comment === "block") {
+      if (c === "*" && next === "/") {
+        comment = null;
+        i++;
+      }
+      continue;
+    }
+    if (quote) {
+      if (c === "\\") i++;
+      else if (c === quote) quote = null;
+      continue;
+    }
+    if (c === "/" && next === "/") {
+      comment = "line";
+      i++;
+      continue;
+    }
+    if (c === "/" && next === "*") {
+      comment = "block";
+      i++;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === "`") {
+      quote = c;
+      continue;
+    }
+    if (c === "{") depth++;
+    else if (c === "}") {
       depth--;
       if (depth === 0) return src.slice(start, i + 1);
     }
@@ -1740,15 +2198,30 @@ function extractFn(src, name) {
 function normalizeCode(block) {
   return block
     .replace(/\/\/[^\n]*/g, " ")
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
 
+// Pull a harness template literal (HARNESS) out of the worker source and let
+// the engine process its escapes, exactly as it does when the module loads.
+// Refuses a literal carrying a placeholder, which would need the worker's own
+// scope to evaluate.
+function extractTemplate(src, name) {
+  const marker = "const " + name + " = `";
+  const start = src.indexOf(marker);
+  if (start === -1) return null;
+  const from = start + marker.length;
+  const end = src.indexOf("\n`;", from);
+  if (end === -1) return null;
+  const raw = src.slice(from, end);
+  if (raw.includes("${")) return null;
+  return new Function("return `" + raw + "`;")();
+}
+
+const runnerPath = resolve(repoRoot, "packages/ui/src/mdx/exercise-runner.ts");
+
 function assertHarnessParity() {
-  const runnerPath = resolve(
-    repoRoot,
-    "packages/ui/src/mdx/exercise-runner.ts",
-  );
   if (!existsSync(runnerPath)) {
     console.error(
       `  [advisory] ${runnerPath} not found; skipped the harness-stub parity check.`,
@@ -1757,6 +2230,34 @@ function assertHarnessParity() {
   }
   const mineSrc = readFileSync(__filename, "utf8");
   const theirsSrc = readFileSync(runnerPath, "utf8");
+
+  // Whole-harness parity: describe, it, the hooks, the drain and every
+  // matcher live in one template that both files carry verbatim, so compare
+  // the entire thing rather than a hand-maintained list of functions. Before
+  // 2026-09-08 the two templates had drifted in four places nobody was
+  // watching (expect.closeTo missing in the browser, toMatch treating a
+  // string as a regex in CI only, rejects.toThrow ignoring its message in CI
+  // only, and a nested describe naming later siblings differently).
+  const theirHarnessText = extractTemplate(theirsSrc, "HARNESS");
+  if (!theirHarnessText) {
+    console.error(
+      "\n  [validate-exercises] harness-parity: could not read the HARNESS\n" +
+        "  template out of packages/ui/src/mdx/exercise-runner.ts.\n",
+    );
+    process.exit(1);
+  }
+  if (normalizeCode(theirHarnessText) !== normalizeCode(HARNESS)) {
+    console.error(
+      "\n  [validate-exercises] harness-parity: the test harness in this\n" +
+        "  validator differs from the one in packages/ui/src/mdx/exercise-runner.ts.\n" +
+        "  A learner runs one and CI grades with the other, so any difference\n" +
+        "  means a submission can pass in one and fail in the other, or the same\n" +
+        "  mistake gets two different explanations. Copy the HARNESS template\n" +
+        "  from one file to the other verbatim.\n",
+    );
+    process.exit(1);
+  }
+
   for (const name of SHARED_STUB_FNS) {
     const mine = extractFn(mineSrc, name);
     const theirs = extractFn(theirsSrc, name);
@@ -1766,8 +2267,8 @@ function assertHarnessParity() {
           (!mine
             ? "this validator"
             : "packages/ui/src/mdx/exercise-runner.ts") +
-          ". The two harnesses' stubs can no longer be compared, so restore the\n" +
-          "  marked derivation block in both files.\n",
+          ". The two harnesses' shared code can no longer be compared, so restore\n" +
+          "  the marked block in both files.\n",
       );
       process.exit(1);
     }
@@ -1775,7 +2276,7 @@ function assertHarnessParity() {
       console.error(
         `\n  [validate-exercises] harness-parity: ${name} differs between the CI\n` +
           "  harness and the browser worker, so the same submission can pass in one\n" +
-          "  and fail in the other. Make the marked derivation block identical in\n" +
+          "  and fail in the other. Make the marked block identical in\n" +
           "  scripts/validate-exercises.mjs and\n" +
           "  packages/ui/src/mdx/exercise-runner.ts.\n\n" +
           `  validator: ${normalizeCode(mine)}\n\n` +
@@ -1786,11 +2287,200 @@ function assertHarnessParity() {
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Behavioural parity of describe / it / expect                        */
+/* ------------------------------------------------------------------ */
+
+// Text parity above proves the shared blocks match. It says nothing about
+// describe, it, or the wiring around expect, which each harness owns
+// separately (hook stacks, the drain, the promise chain). This fixture runs
+// one case of every matcher the exercise corpus uses, in the failing
+// direction, through BOTH harnesses and compares the exact strings a learner
+// and CI would each see. Arrival ORDER is not compared: the two harnesses
+// drain their queues differently on purpose, so results are matched by name.
+const PARITY_FIXTURE = `
+  var scalar = 0.51;
+  var list = [1, 2, 3, 4];
+  var typed = new Float32Array([1, 2, 3]);
+  var record = { shape: [1, 5], ok: false };
+  var label = 'relu';
+  var rejected = Promise.reject(new Error('boom'));
+  describe('outer', function() {
+    it('numeric toBe', function() { expect(scalar).toBe(0.7); });
+    it('authored why', function() { expect(scalar, 'The bar has to sit under the noise floor.').toBe(0.7); });
+    it('string toBe', function() { expect(label).toBe('sigmoid'); });
+    it('array toEqual, one entry off', function() { expect(list).toEqual([1, 2, 9, 4]); });
+    it('array toEqual, wrong length', function() { expect(list).toEqual([1, 2, 3]); });
+    it('typed array container', function() { expect(typed).toEqual([1, 2, 3]); });
+    it('object toEqual', function() { expect(record).toEqual({ shape: [1, 8], ok: false }); });
+    it('closeTo default precision', function() { expect(scalar).toBeCloseTo(0.512); });
+    it('closeTo explicit precision', function() { expect(scalar).toBeCloseTo(0.7, 3); });
+    it('closeTo on a non-number', function() { expect(label).toBeCloseTo(0.5, 5); });
+    it('greater than', function() { expect(scalar).toBeGreaterThan(0.9); });
+    it('less than', function() { expect(scalar).toBeLessThan(0.1); });
+    it('at least', function() { expect(scalar).toBeGreaterThanOrEqual(0.9); });
+    it('at most', function() { expect(scalar).toBeLessThanOrEqual(0.1); });
+    it('length', function() { expect(list).toHaveLength(3); });
+    it('length of a null', function() { expect(null).toHaveLength(3); });
+    it('contain a number', function() { expect(list).toContain(7); });
+    it('contain a substring', function() { expect(label).toContain('sig'); });
+    it('not contain a substring', function() { expect(label).not.toContain('rel'); });
+    it('defined', function() { expect(undefined).toBeDefined(); });
+    it('null', function() { expect(label).toBeNull(); });
+    it('truthy', function() { expect(0).toBeTruthy(); });
+    it('property value', function() { expect(record).toHaveProperty('shape', [1, 8]); });
+    it('missing property', function() { expect(record).not.toHaveProperty('shape'); });
+    it('match', function() { expect(label).toMatch(/^sig/); });
+    it('throws nothing', function() { expect(function() { return 1; }).toThrow(); });
+    it('throws the wrong message', function() { expect(function() { throw new Error('boom'); }).toThrow('nope'); });
+    it('string where a number belongs', function() { expect('0.7').toBe(0.7); });
+    it('statics are installed', function() { expect(typeof expect.closeTo).toBe('function'); });
+    it('jest stub is installed', function() { expect(typeof jest.fn).toBe('function'); });
+    it('async passes', async function() { var v = await Promise.resolve(2); expect(v).toBe(2); });
+    it('rejects with the wrong message', async function() { await expect(rejected).rejects.toThrow('nope'); });
+    describe('inner', function() {
+      it('keeps the outer name', function() { expect(1).toBe(1); });
+    });
+    it('named after the inner describe returns', function() { expect(1).toBe(1); });
+  });
+  describe('a suite whose body throws', function() {
+    throw new Error('registration blew up');
+  });
+`;
+
+const PARITY_DRIVER = `
+(async function() {
+${PARITY_FIXTURE}
+  await __awaitPending();
+  return __results;
+})()
+`;
+
+async function runFixture(harnessSrc) {
+  const context = {
+    console: {
+      log: () => {},
+      warn: () => {},
+      error: () => {},
+      info: () => {},
+      debug: () => {},
+    },
+    Math,
+    JSON,
+    Array,
+    Object,
+    Number,
+    String,
+    Boolean,
+    Error,
+    Promise,
+    RegExp,
+    Float32Array,
+  };
+  vm.createContext(context);
+  const script = new vm.Script(harnessSrc + "\n" + PARITY_DRIVER);
+  const results = await script.runInContext(context, { timeout: TIMEOUT_MS });
+  const byName = {};
+  for (const r of results || []) {
+    byName[r.name] = { passed: !!r.passed, error: r.error ?? null };
+  }
+  return byName;
+}
+
+async function assertAssertionParity() {
+  if (!existsSync(runnerPath)) return;
+  const theirHarness = extractTemplate(
+    readFileSync(runnerPath, "utf8"),
+    "HARNESS",
+  );
+  if (!theirHarness) {
+    console.error(
+      "\n  [validate-exercises] assertion-parity: could not read the HARNESS\n" +
+        "  template out of packages/ui/src/mdx/exercise-runner.ts, so the two\n" +
+        "  harnesses cannot be compared behaviourally.\n",
+    );
+    process.exit(1);
+  }
+
+  let mine, theirs;
+  try {
+    mine = await runFixture(HARNESS);
+    theirs = await runFixture(theirHarness);
+  } catch (err) {
+    console.error(
+      `\n  [validate-exercises] assertion-parity: the fixture suite crashed: ${err.message}\n`,
+    );
+    process.exit(1);
+  }
+
+  const names = Array.from(
+    new Set(Object.keys(mine).concat(Object.keys(theirs))),
+  ).sort();
+  const diffs = [];
+  for (const name of names) {
+    const a = mine[name];
+    const b = theirs[name];
+    if (!a || !b) {
+      diffs.push(
+        `  ${name}\n    validator: ${a ? JSON.stringify(a) : "(no such result)"}\n    worker:    ${b ? JSON.stringify(b) : "(no such result)"}`,
+      );
+      continue;
+    }
+    if (a.passed !== b.passed || String(a.error) !== String(b.error)) {
+      diffs.push(
+        `  ${name}\n    validator: ${JSON.stringify(a)}\n    worker:    ${JSON.stringify(b)}`,
+      );
+    }
+  }
+  if (diffs.length) {
+    console.error(
+      `\n  [validate-exercises] assertion-parity: ${diffs.length} of ${names.length} fixture\n` +
+        "  cases behave differently in the CI harness and the browser worker. A\n" +
+        "  learner and CI would read two different explanations of the same\n" +
+        "  mistake. Reconcile scripts/validate-exercises.mjs with\n" +
+        "  packages/ui/src/mdx/exercise-runner.ts.\n\n" +
+        diffs.join("\n") +
+        "\n",
+    );
+    process.exit(1);
+  }
+  console.log(
+    `  harness parity: ${names.length} assertion fixtures produce identical text in both harnesses.`,
+  );
+}
+
+// Count toBeCloseTo calls that leave `precision` out. The shared harness
+// defaults to 5 (see __tcDefaultPrecision), which is a thousand times
+// tighter than the vitest default of 2 an author would assume from the same
+// call. Loosening the default would silently weaken every site that relies
+// on it, so the default stays and the validator names the sites instead.
+function implicitPrecisionSites(testCode) {
+  const src = String(testCode || "");
+  const needle = "toBeCloseTo(";
+  let i = 0;
+  let implicit = 0;
+  while ((i = src.indexOf(needle, i)) !== -1) {
+    let depth = 1;
+    let args = 1;
+    let j = i + needle.length;
+    for (; j < src.length && depth > 0; j++) {
+      const c = src[j];
+      if (c === "(" || c === "[" || c === "{") depth++;
+      else if (c === ")" || c === "]" || c === "}") depth--;
+      else if (c === "," && depth === 1) args++;
+    }
+    if (args === 1) implicit++;
+    i = j;
+  }
+  return implicit;
+}
+
 async function main() {
   // Cheap and unconditional: if the two harnesses' stubs have drifted apart,
   // every exercise that loads a model or runs an ONNX session below is being
   // graded against answers the browser will not reproduce.
   assertHarnessParity();
+  await assertAssertionParity();
 
   if (!existsSync(exercisesJsonPath)) {
     console.error(
@@ -1833,17 +2523,31 @@ async function main() {
   let warned = 0;
   const failures = [];
   const warnings = [];
+  // Advisories: true of the corpus today, not a reason to fail the build.
+  const starterCredit = [];
+  const implicitPrecision = [];
 
   const record = (ex, phase, error) => {
-    const entry = { slug: ex.slug, phase, error };
+    // Failure text can now carry an authored explanation on its own line
+    // (expect(value, why)), so indent continuation lines rather than letting
+    // them break the column.
+    const entry = {
+      slug: ex.slug,
+      phase,
+      error: String(error).split("\n").join("\n          "),
+    };
     if (allowlist.has(ex.slug) && !strict) {
       warned++;
       warnings.push(entry);
-      console.log(`  WARN  ${ex.slug} (${ex.lessonSlug}) - ${phase}: ${error}`);
+      console.log(
+        `  WARN  ${ex.slug} (${ex.lessonSlug}) - ${phase}: ${entry.error}`,
+      );
     } else {
       failed++;
       failures.push(entry);
-      console.log(`  FAIL  ${ex.slug} (${ex.lessonSlug}) - ${phase}: ${error}`);
+      console.log(
+        `  FAIL  ${ex.slug} (${ex.lessonSlug}) - ${phase}: ${entry.error}`,
+      );
     }
   };
 
@@ -1900,11 +2604,12 @@ async function main() {
         ex.starterCode ?? "",
         ex.testCode,
       );
+      const starterResults =
+        starterRun.ok && Array.isArray(starterRun.results)
+          ? starterRun.results
+          : [];
       const starterPassedAll =
-        starterRun.ok &&
-        Array.isArray(starterRun.results) &&
-        starterRun.results.length > 0 &&
-        starterRun.results.every((r) => r.passed);
+        starterResults.length > 0 && starterResults.every((r) => r.passed);
       if (starterPassedAll) {
         record(
           ex,
@@ -1912,6 +2617,25 @@ async function main() {
           "unmodified starterCode passes every test; the exercise grades nothing",
         );
         continue;
+      }
+
+      // Not a failure, but worth naming: a starter that already clears a
+      // test makes the first Run of code that does nothing print a score
+      // and a part-filled bar. The test that passes is usually asserting
+      // something true of the stub (a name exists, a list is empty), so it
+      // grades nothing and should assert the mechanism instead.
+      const cleared = starterResults.filter((r) => r.passed);
+      if (cleared.length) {
+        starterCredit.push({
+          slug: ex.slug,
+          cleared: cleared.length,
+          total: starterResults.length,
+          first: cleared[0].name,
+        });
+        console.log(
+          `  STARTER-CREDIT ${ex.slug}: the untouched starter already clears ` +
+            `${cleared.length} of ${starterResults.length} test(s) (${cleared[0].name})`,
+        );
       }
     }
 
@@ -1969,6 +2693,9 @@ async function main() {
       }
     }
 
+    const loose = implicitPrecisionSites(ex.testCode);
+    if (loose) implicitPrecision.push({ slug: ex.slug, count: loose });
+
     passed++;
     console.log(`  OK    ${label} (${run.results.length} tests)`);
   }
@@ -1976,6 +2703,30 @@ async function main() {
   console.log(
     `\nDone: ${passed} passed, ${failed} failed, ${warned} warned (allowlisted), ${subset.length} total.\n`,
   );
+
+  if (starterCredit.length) {
+    console.log(
+      `[advisory] ${starterCredit.length} exercise(s) hand out credit for an untouched starter:\n` +
+        starterCredit
+          .map(
+            (s2) =>
+              `  ${s2.slug}: ${s2.cleared}/${s2.total} already green (${s2.first})`,
+          )
+          .join("\n") +
+        "\nPressing Run on code that does nothing should not score. Make each of\n" +
+        "those tests assert the mechanism the lesson teaches.\n",
+    );
+  }
+
+  if (implicitPrecision.length) {
+    console.log(
+      `[advisory] ${implicitPrecision.reduce((n, e) => n + e.count, 0)} toBeCloseTo call(s) leave precision out,\n` +
+        `in ${implicitPrecision.length} exercise(s):\n` +
+        implicitPrecision.map((e) => `  ${e.slug}: ${e.count}`).join("\n") +
+        `\nThose inherit the harness default of 5, not the vitest default of 2 the\n` +
+        "same call implies. Pass the precision the assertion actually means.\n",
+    );
+  }
 
   if (failed > 0) {
     console.error("Exercise validation failed. First failures:\n");

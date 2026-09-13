@@ -1,11 +1,20 @@
 slug: pipeline-architecture
 lessonSlug: system-architecture
 title: "Build a Typed Pipeline"
-instructions: "Build a Pipeline class that chains typed stages together. Each stage has a name, a process function, and a validate function. The pipeline runs stages in order, passing output of one as input to the next. If validation fails, throw an error with the stage name. The grader wires DEEP SCAN's real feature path through your class: raw window -> z-normalize -> FFT magnitudes -> model-input tensor, with shape contracts between every stage."
+instructions: |
+  Build the Pipeline class the lesson prints. Each stage has a `name`, a `process` function and a `validate` function.
+
+  1. `addStage(stage)` appends the stage and returns the pipeline, so calls chain.
+  2. `run(input)` is async and returns a Promise, because a real stage does async work: loading weights, reading a tensor back off the GPU.
+  3. Validate the data arriving at each stage before that stage sees it. When validate returns false, throw an Error whose message is `Validation failed at: {stage.name}`. Since run is async, the caller receives that as a rejected promise.
+  4. A stage's process may hand back a value or a Promise, so await what it returns before the next stage sees it.
+  5. run hands back whatever the last stage returned.
+
+  The grader wires DEEP SCAN's real feature path through your class: raw window -> z-normalize -> FFT magnitudes -> model-input tensor, with a shape contract between every stage. Async stages appear in the middle of a chain and at the end of one.
 starterCode: |
   interface PipelineStage<TIn, TOut> {
     name: string;
-    process: (input: TIn) => TOut;
+    process: (input: TIn) => TOut | Promise<TOut>;
     validate: (input: TIn) => boolean;
   }
 
@@ -13,21 +22,19 @@ starterCode: |
     private stages: PipelineStage<any, any>[] = [];
 
     addStage(stage: PipelineStage<any, any>): Pipeline {
-      // Add stage to the pipeline
       return null; // your code here
     }
 
-    run(input: any): any {
-      // Run all stages in order
-      // Validate input before each stage
-      // Throw Error(`Validation failed at: ${stage.name}`) on failure
+    async run(input: any): Promise<any> {
+      // One value walks the chain. Decide what each stage is handed, and
+      // what has to settle before the next stage sees it.
       return null; // your code here
     }
   }
 solutionCode: |
   interface PipelineStage<TIn, TOut> {
     name: string;
-    process: (input: TIn) => TOut;
+    process: (input: TIn) => TOut | Promise<TOut>;
     validate: (input: TIn) => boolean;
   }
 
@@ -39,13 +46,13 @@ solutionCode: |
       return this;
     }
 
-    run(input: any): any {
+    async run(input: any): Promise<any> {
       let data = input;
       for (const stage of this.stages) {
         if (!stage.validate(data)) {
           throw new Error(`Validation failed at: ${stage.name}`);
         }
-        data = stage.process(data);
+        data = await stage.process(data);
       }
       return data;
     }
@@ -65,47 +72,128 @@ testCode: |
     validate: (w) => Array.isArray(w) && w.length === 8,
     process: (w) => tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(w))).arraySync()),
   };
+  // A second async stage, and this one sits in the MIDDLE of a chain. Real
+  // pipelines have them there: reading a tensor back off the GPU, fetching a
+  // calibration table, waiting on a worker.
+  const asyncNormalizeStage = {
+    name: 'normalize-async',
+    validate: (w) => Array.isArray(w) && w.length === 8,
+    process: async (w) => {
+      await new Promise((r) => setTimeout(r, 5));
+      return tf.tidy(() => {
+        const t = tf.tensor1d(w);
+        const { mean, variance } = tf.moments(t);
+        return t.sub(mean).div(variance.sqrt().add(1e-8)).arraySync();
+      });
+    },
+  };
+  // The stage that reaches the model is async too: it waits on something
+  // before it can answer.
   const tensorStage = {
     name: 'to-model-input',
     validate: (f) => Array.isArray(f) && f.length === 5,
-    process: (f) => tf.tensor2d([f]),
+    process: async (f) => {
+      await new Promise((r) => setTimeout(r, 5));
+      return tf.tensor2d([f]);
+    },
+  };
+
+  const chained = (...stages) => {
+    const pipeline = new Pipeline();
+    for (const stage of stages) {
+      expect(
+        pipeline.addStage(stage),
+        'addStage has to hand the pipeline back. The starter returns null, so the next .addStage in the chain has nothing to call.',
+      ).toBeInstanceOf(Pipeline);
+    }
+    return pipeline;
   };
 
   describe('Pipeline', () => {
-    it('runs the real DEEP SCAN feature path: window -> normalize -> FFT -> [1,5] tensor', () => {
-      const pipeline = new Pipeline()
-        .addStage(normalizeStage)
-        .addStage(fftStage)
-        .addStage(tensorStage);
-      const out = pipeline.run([1.0, 1.4, 0.6, 1.0, 1.0, 1.4, 0.6, 1.0]);
+    it('runs the real DEEP SCAN feature path: window -> normalize -> FFT -> [1,5] tensor', async () => {
+      const pipeline = chained(normalizeStage, fftStage, tensorStage);
+      const out = await pipeline.run([1.0, 1.4, 0.6, 1.0, 1.0, 1.4, 0.6, 1.0]);
+      expect(
+        out,
+        'run returns whatever the last stage returned, and the last stage here builds a tensor.',
+      ).toBeDefined();
       expect(out.shape).toEqual([1, 5]);
     });
 
-    it('stage output actually feeds the next stage (normalize: mean 0, unit spread)', () => {
-      const normalized = new Pipeline().addStage(normalizeStage).run([2, 4, 2, 4, 2, 4, 2, 4]);
+    it('awaits an async stage instead of passing its promise on', async () => {
+      // Two of these three stages wait before they answer, and the first of
+      // them is not the last stage. A run that assigns a promise straight
+      // into data hands that promise to the NEXT stage, where the shape
+      // contract reads undefined and the chain breaks one stage downstream
+      // of the one that was never awaited.
+      const settled = await chained(asyncNormalizeStage, fftStage, tensorStage)
+        .run([0.4, 1.2, 0.4, 1.2, 0.4, 1.2, 0.4, 1.2])
+        .then(
+          (value) => ({ ok: true, value }),
+          (error) => ({ ok: false, error }),
+        );
+      expect(
+        settled.ok,
+        'The chain broke at fft-features, which is the stage AFTER the async one: normalize-async handed its promise forward instead of the eight numbers it resolves to. Await what each stage returns before the next stage sees it.',
+      ).toBe(true);
+      const out = settled.value;
+      expect(
+        out,
+        'run returns whatever the last stage returned. The starter returns null until you build it.',
+      ).toBeDefined();
+      expect(
+        typeof out.then,
+        'A promise came out of run instead of the tensor. Await each stage before handing its result to the next one.',
+      ).not.toBe('function');
+      expect(out.shape).toEqual([1, 5]);
+      const values = Array.from(out.dataSync());
+      expect(
+        values.every((v) => Number.isFinite(v)),
+        'The five FFT magnitudes reached the tensor as numbers, which only happens if each stage saw a settled value.',
+      ).toBe(true);
+    });
+
+    it('stage output actually feeds the next stage (normalize: mean 0, unit spread)', async () => {
+      const normalized = await chained(normalizeStage).run([2, 4, 2, 4, 2, 4, 2, 4]);
+      expect(
+        normalized,
+        'A one-stage pipeline returns that stage output: this one hands back the eight normalized samples.',
+      ).toHaveLength(8);
       const mean = normalized.reduce((s, v) => s + v, 0) / normalized.length;
-      expect(mean).toBeCloseTo(0, 4);
+      expect(
+        mean,
+        'Subtracting the window mean is what makes the normalized window average to zero.',
+      ).toBeCloseTo(0, 4);
       expect(normalized[0]).toBeCloseTo(-1, 3);
     });
 
-    it('enforces the input shape contract at the named stage', () => {
-      const pipeline = new Pipeline().addStage(normalizeStage).addStage(fftStage);
-      expect(() => pipeline.run([1, 2, 3, 4, 5, 6])).toThrow('Validation failed at: normalize');
+    it('enforces the input shape contract at the named stage', async () => {
+      const pipeline = chained(normalizeStage, fftStage);
+      await expect(
+        pipeline.run([1, 2, 3, 4, 5, 6]),
+        'validate is a precondition: a six-sample window never reaches process, and the error says which stage refused it. run is async, so the refusal arrives as a rejected promise.',
+      ).rejects.toThrow('Validation failed at: normalize');
     });
 
-    it('catches a mid-pipeline contract break (FFT emits 5 bins, next stage demands 8)', () => {
+    it('catches a mid-pipeline contract break (FFT emits 5 bins, next stage demands 8)', async () => {
       const badStage = {
         name: 'expects-raw-window',
         validate: (w) => Array.isArray(w) && w.length === 8,
         process: (w) => w,
       };
-      const pipeline = new Pipeline().addStage(fftStage).addStage(badStage);
-      expect(() => pipeline.run([1, 0, 1, 0, 1, 0, 1, 0])).toThrow('Validation failed at: expects-raw-window');
+      const pipeline = chained(fftStage, badStage);
+      await expect(
+        pipeline.run([1, 0, 1, 0, 1, 0, 1, 0]),
+        'The input was the right length; the stage before it changed the shape. Validating each stage input is how the break gets named where it happened.',
+      ).rejects.toThrow('Validation failed at: expects-raw-window');
     });
 
     it('supports method chaining', () => {
       const pipeline = new Pipeline();
-      expect(pipeline.addStage(normalizeStage)).toBe(pipeline);
+      expect(
+        pipeline.addStage(normalizeStage),
+        'Returning this is what lets new Pipeline().addStage(a).addStage(b) parse at all.',
+      ).toBe(pipeline);
     });
   });
 estimatedMinutes: 10

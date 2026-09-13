@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "The whole preprocess-predict-read sequence belongs inside one tf.tidy() callback so intermediate tensors get cleaned up, and the raw signal must be normalized before the model ever sees it."
   - level: guidance
-    content: "Inside tf.tidy(), normalize amplitude, frequency, and phase each as (value - min) / (max - min) using RANGES, build the [1, 3] input with tf.tensor2d([normalized]), run model.predict(), and pull the number out with dataSync()[0]. Call it p: return class 'anomaly' when p exceeds 0.5, else 'noise'. The confidence goes with the verdict, so return p for 'anomaly' and 1 - p for 'noise'."
+    content: "Two things have to be true before predict is worth calling. Each feature has to sit on the same 0-to-1 span the model trained on, so rescale it until its RANGES minimum lands on 0 and its maximum lands on 1. And the three have to arrive as one row in the order RANGES declares them, because the network learned that order and a swap throws nothing. After that, what predict gives back is not a plain number, so the value has to be read out of it, and everything allocated on the way belongs inside the tidy callback. That value is the probability of an anomaly, which is why a noise verdict reports the remainder instead."
   - level: solution
     content: "return tf.tidy(() => { const normalized = [ (signal.amplitude - RANGES.amplitude.min) / (RANGES.amplitude.max - RANGES.amplitude.min), (signal.frequency - RANGES.frequency.min) / (RANGES.frequency.max - RANGES.frequency.min), (signal.phase - RANGES.phase.min) / (RANGES.phase.max - RANGES.phase.min), ]; const input = tf.tensor2d([normalized]); const output = model.predict(input) as tf.Tensor; const p = output.dataSync()[0]; return { class: p > 0.5 ? 'anomaly' as const : 'noise' as const, confidence: p > 0.5 ? p : 1 - p, }; });"
 keywords:
@@ -64,7 +64,11 @@ One reading per second sounds gentle until you do the multiplication Nazari alre
 // streams to z-score; amplitude and frequency are bounded by hardware,
 // not by history: the hull sensors saturate at 2048 counts, and
 // "frequency" is a zero-crossing count over the 64-sample capture
-// window, so 63 sign flips is its physical ceiling.
+// window, so 63 sign flips is its physical ceiling. That window is 64
+// SAMPLES, a quarter second of one channel at 256 Hz. It is not the 64
+// CHANNELS an archive row carries; module 1's data-loading lesson draws
+// the same line. Two different 64s, and only the sample count sets this
+// ceiling.
 const FEATURE_RANGES = {
   amplitude: { min: 0, max: 2048 },
   frequency: { min: 0, max: 63 },
@@ -192,6 +196,8 @@ signalFeed.addEventListener('reading', (event: CustomEvent<SignalReading>) => {
   // (raw sigmoid 0.12: an anomaly probability, inverted into noise confidence)
 });`}
 </CodeBlock>
+
+That 3.4 ms is the whole handler, not the model. `performance.now()` brackets the normalization, the tensor allocation, the `predict` call and the `dataSync()` readback together. Most of it is the predict call: lesson 5 benchmarks this model at 2.4 ms on WebGL, which is the backend five of the six bridge consoles reported in lesson 2. The rest is the wiring around it.
 
 ## Challenge
 

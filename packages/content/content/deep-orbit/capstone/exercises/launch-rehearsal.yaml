@@ -1,58 +1,81 @@
 slug: launch-rehearsal
 lessonSlug: launch
-title: "Launch Rehearsal: The Full Chain, Gated"
+title: "Launch Rehearsal: Train the Candidate, Then Gate It"
 mlContent: model
 instructions: |
-  Assemble the whole system once, end to end. Build `runLaunchRehearsal(model, readings, config)`: normalize each reading's features to [0, 1] using `config.ranges` (module 4's pipeline), batch-predict all readings inside `tf.tidy()`, then judge the run the way module 11 gates a deploy. Return:
+  The whole system, once, on your own hands. Two functions.
 
-    {
-      scores: number[],        // raw model output per reading, input order
-      canaryAccuracy: number,  // fraction where (score > 0.5) matches reading.label
-      drift: boolean,          // |mean(scores) - config.baselineMeanScore| > config.driftTolerance
-      launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
-    }
+  `scoreReadings(model, readings, ranges)` is the inference path, and it is synchronous. Every reading is raw instrument output: `amplitude` in ADC counts, `frequency` as a zero-crossing count, `phase` in radians. Turn each one into a row `[amplitude, frequency, phase]` with module 4's min-max rule, `(value - range.min) / (range.max - range.min)`, reading the limits off `ranges.amplitude`, `ranges.frequency` and `ranges.phase`. Build one `tf.tensor2d` of those rows inside `tf.tidy()`, predict, and return plain numbers in reading order. It must leave no tensor behind: the grader counts live tensors either side of the call and the two counts have to match.
 
-  A rehearsal that leaks tensors fails the rehearsal: the whole prediction pass lives inside tidy.
+  `runLaunchRehearsal(model, archive, canary, config)` is async and runs the rehearsal.
+
+  1. Train. The model arrives compiled, so do not compile it again. Build `tf.tensor2d` for the archive rows and for their labels, `await model.fit(xs, ys, { epochs: config.epochs, batchSize: config.batchSize, shuffle: false })`, then dispose both tensors.
+  2. Score the canary set with `scoreReadings` and the model you just trained.
+  3. Gate the run.
+
+  Return:
+
+      {
+        scores: number[],        // candidate score per canary reading, input order
+        losses: number[],        // history.history.loss, one entry per epoch
+        batchesRun: number,      // model.optimizer.iterations after the fit
+        canaryAccuracy: number,  // fraction where (score > 0.5) matches reading.label
+        drift: boolean,          // |mean(scores) - config.baselineMeanScore| > config.driftTolerance
+        launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
+      }
+
+  `batchesRun` reads `model.optimizer.iterations`, which the optimizer increments once per batch and nothing outside it can set. The grader checks it against the number of epochs in `losses`, and runs a second schedule with different numbers, so a loss trace and a trained model have to come from the same call.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   interface Reading { amplitude: number; frequency: number; phase: number; label: 0 | 1; }
   interface Range { min: number; max: number; }
+  interface Ranges { amplitude: Range; frequency: Range; phase: Range }
   interface RehearsalConfig {
-    ranges: { amplitude: Range; frequency: Range; phase: Range };
+    ranges: Ranges;
+    epochs: number;
+    batchSize: number;
     baselineMeanScore: number;
     driftTolerance: number;
     minAccuracy: number;
   }
   interface RehearsalVerdict {
     scores: number[];
+    losses: number[];
+    batchesRun: number;
     canaryAccuracy: number;
     drift: boolean;
     launch: boolean;
   }
 
-  function runLaunchRehearsal(
+  // The shapes this rehearsal works with, since the editor shows this file
+  // with its types already stripped:
+  //
+  //   Reading  { amplitude, frequency, phase, label }  raw instrument units
+  //   Range    { min, max }
+  //   Ranges   { amplitude: Range, frequency: Range, phase: Range }
+  //   config   { ranges, epochs, batchSize, baselineMeanScore,
+  //              driftTolerance, minAccuracy }
+  //   verdict  { scores, losses, batchesRun, canaryAccuracy, drift, launch }
+
+  function scoreReadings(
     model: tf.LayersModel,
     readings: Reading[],
+    ranges: Ranges,
+  ): number[] {
+    // Raw instrument output in, plain numbers back. The backend has to be
+    // as empty when this returns as it was when it was called.
+    return null; // your code here
+  }
+
+  async function runLaunchRehearsal(
+    model: tf.LayersModel,
+    archive: Reading[],
+    canary: Reading[],
     config: RehearsalConfig,
-  ): RehearsalVerdict {
-    // The whole system, once, end to end. Recipe:
-    //  1. Normalize each reading's features to [0, 1] with module 4's
-    //     min-max rule, (value - range.min) / (range.max - range.min),
-    //     using config.ranges.amplitude / .frequency / .phase. Each row
-    //     is [amplitude, frequency, phase], normalized, in reading order.
-    //  2. Batch-predict INSIDE tf.tidy(): build one tf.tensor2d(rows),
-    //     call model.predict(...), read it with dataSync(), and return
-    //     Array.from(...) from the tidy so plain numbers escape, never a
-    //     tensor. A leaked tensor fails the rehearsal (the grader
-    //     compares tf.memory().numTensors before and after).
-    //  3. canaryAccuracy: a score predicts (score > 0.5 ? 1 : 0);
-    //     count where that equals readings[i].label, divide by
-    //     readings.length.
-    //  4. drift: Math.abs(mean of scores - config.baselineMeanScore)
-    //     > config.driftTolerance.
-    //  5. launch: canaryAccuracy >= config.minAccuracy AND no drift.
-    // Return { scores, canaryAccuracy, drift, launch }.
+  ): Promise<RehearsalVerdict> {
+    // Train first, then judge what you trained. Every number in the verdict
+    // belongs to that one training run.
     return null; // your code here
   }
 solutionCode: |
@@ -60,156 +83,349 @@ solutionCode: |
 
   interface Reading { amplitude: number; frequency: number; phase: number; label: 0 | 1; }
   interface Range { min: number; max: number; }
+  interface Ranges { amplitude: Range; frequency: Range; phase: Range }
   interface RehearsalConfig {
-    ranges: { amplitude: Range; frequency: Range; phase: Range };
+    ranges: Ranges;
+    epochs: number;
+    batchSize: number;
     baselineMeanScore: number;
     driftTolerance: number;
     minAccuracy: number;
   }
   interface RehearsalVerdict {
     scores: number[];
+    losses: number[];
+    batchesRun: number;
     canaryAccuracy: number;
     drift: boolean;
     launch: boolean;
   }
 
-  function runLaunchRehearsal(
+  function toRows(readings: Reading[], ranges: Ranges): number[][] {
+    const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
+    return readings.map((reading) => [
+      norm(reading.amplitude, ranges.amplitude),
+      norm(reading.frequency, ranges.frequency),
+      norm(reading.phase, ranges.phase),
+    ]);
+  }
+
+  function scoreReadings(
     model: tf.LayersModel,
     readings: Reading[],
-    config: RehearsalConfig,
-  ): RehearsalVerdict {
-    const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
-    const scores = tf.tidy(() => {
-      const rows = readings.map((r) => [
-        norm(r.amplitude, config.ranges.amplitude),
-        norm(r.frequency, config.ranges.frequency),
-        norm(r.phase, config.ranges.phase),
-      ]);
-      const out = model.predict(tf.tensor2d(rows)) as tf.Tensor;
+    ranges: Ranges,
+  ): number[] {
+    return tf.tidy(() => {
+      const out = model.predict(tf.tensor2d(toRows(readings, ranges))) as tf.Tensor;
       return Array.from(out.dataSync());
     });
+  }
+
+  async function runLaunchRehearsal(
+    model: tf.LayersModel,
+    archive: Reading[],
+    canary: Reading[],
+    config: RehearsalConfig,
+  ): Promise<RehearsalVerdict> {
+    const xs = tf.tensor2d(toRows(archive, config.ranges));
+    const ys = tf.tensor2d(archive.map((r) => [r.label]));
+    const history = await model.fit(xs, ys, {
+      epochs: config.epochs,
+      batchSize: config.batchSize,
+      shuffle: false,
+    });
+    xs.dispose();
+    ys.dispose();
+
+    const losses = history.history.loss as number[];
+    const batchesRun = model.optimizer.iterations;
+
+    const scores = scoreReadings(model, canary, config.ranges);
+
     const correct = scores.filter(
-      (s, i) => (s > 0.5 ? 1 : 0) === readings[i].label,
+      (s, i) => (s > 0.5 ? 1 : 0) === canary[i].label,
     ).length;
-    const canaryAccuracy = correct / readings.length;
+    const canaryAccuracy = correct / canary.length;
     const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
     const drift = Math.abs(mean - config.baselineMeanScore) > config.driftTolerance;
     const launch = canaryAccuracy >= config.minAccuracy && !drift;
-    return { scores, canaryAccuracy, drift, launch };
+
+    return { scores, losses, batchesRun, canaryAccuracy, drift, launch };
   }
 testCode: |
-  describe('runLaunchRehearsal', () => {
-    // Identity probe (module 4's trick): output = normalized amplitude,
-    // so every score below is hand-checkable.
-    let probe;
-    beforeAll(() => {
-      probe = tf.sequential();
-      probe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
-      probe.layers[0].setWeights([tf.tensor2d([[1], [0], [0]])]);
-    });
-    const ranges = {
-      amplitude: { min: 0, max: 2048 },
-      frequency: { min: 0, max: 63 },
-      phase: { min: -Math.PI, max: Math.PI },
-    };
-    const readings = [
-      { amplitude: 1536, frequency: 0, phase: -Math.PI, label: 1 },  // score 0.75
-      { amplitude: 512, frequency: 0, phase: -Math.PI, label: 0 },   // score 0.25
-      { amplitude: 1024, frequency: 0, phase: -Math.PI, label: 0 },  // score 0.50 -> pred 0
-    ];
-    const greenConfig = {
-      ranges,
-      baselineMeanScore: 0.5,
-      driftTolerance: 0.1,
-      minAccuracy: 0.9,
-    };
+  // A fixed slice of the archive, in raw instrument units: amplitude in ADC
+  // counts on a 2048-count full scale, frequency as a zero-crossing count
+  // over the 64-sample window, phase in radians. Flagged windows run hot on
+  // amplitude and cross zero far less often, the separation module 3 trained
+  // the classifier on.
+  const makeArchive = (n, seed) => {
+    let s = seed;
+    const rnd = () => ((s = (s * 1103515245 + 12345) % 2147483648) / 2147483648);
+    const rows = [];
+    for (let i = 0; i < n; i++) {
+      rows.push(i % 2 === 1
+        ? { amplitude: 1400 + Math.round(rnd() * 600), frequency: 4 + Math.round(rnd() * 14), phase: 0.8 + rnd() * 1.8, label: 1 }
+        : { amplitude: 600 + Math.round(rnd() * 600), frequency: 36 + Math.round(rnd() * 22), phase: -2.4 + rnd() * 1.8, label: 0 });
+    }
+    return rows;
+  };
+  const ranges = {
+    amplitude: { min: 0, max: 2048 },
+    frequency: { min: 0, max: 63 },
+    phase: { min: -Math.PI, max: Math.PI },
+  };
+  const archive = makeArchive(64, 7741);
+  const canary = makeArchive(16, 991);
+  const greenConfig = {
+    ranges,
+    epochs: 12,
+    batchSize: 16,
+    baselineMeanScore: 0.5,
+    driftTolerance: 0.15,
+    minAccuracy: 0.95,
+  };
 
+  // The deploy candidate, compiled and untrained, exactly as CI hands it
+  // over. Seeded initializers so a rehearsal is reproducible: run it twice
+  // and it trains the same way both times.
+  const buildCandidate = () => {
+    const m = tf.sequential();
+    m.add(tf.layers.dense({
+      inputShape: [3], units: 8, activation: 'relu',
+      kernelInitializer: tf.initializers.glorotNormal({ seed: 7741 }),
+    }));
+    m.add(tf.layers.dense({
+      units: 1, activation: 'sigmoid',
+      kernelInitializer: tf.initializers.glorotNormal({ seed: 7742 }),
+    }));
+    m.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
+    return m;
+  };
+
+  // Module 4's identity trick: a one-unit layer with weights [1, 0, 0] and
+  // no bias returns the normalized amplitude untouched, so every score it
+  // produces is hand-checkable.
+  const columnProbe = (weights) => {
+    const m = tf.sequential();
+    m.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
+    m.layers[0].setWeights([tf.tensor2d(weights)]);
+    return m;
+  };
+
+  describe('scoreReadings', () => {
     it('scores are the normalized amplitudes, in input order', () => {
-      const v = runLaunchRehearsal(probe, readings, greenConfig);
-      expect(v.scores[0]).toBeCloseTo(0.75, 4);
-      expect(v.scores[1]).toBeCloseTo(0.25, 4);
-      expect(v.scores[2]).toBeCloseTo(0.5, 4);
-    });
-
-    it('all-green rehearsal launches: accuracy 1.0, no drift', () => {
-      const v = runLaunchRehearsal(probe, readings, greenConfig);
-      expect(v.canaryAccuracy).toBeCloseTo(1.0, 5);
-      expect(v.drift).toBe(false);
-      expect(v.launch).toBe(true);
-    });
-
-    it('a mislabeled canary drops accuracy and blocks launch', () => {
-      const flipped = [
-        readings[0],
-        { ...readings[1], label: 1 },  // score 0.25 -> pred 0, label 1: miss
-        readings[2],
+      const probe = columnProbe([[1], [0], [0]]);
+      const readings = [
+        { amplitude: 1536, frequency: 0, phase: -Math.PI, label: 1 },  // 0.75
+        { amplitude: 512, frequency: 0, phase: -Math.PI, label: 0 },   // 0.25
+        { amplitude: 1024, frequency: 0, phase: -Math.PI, label: 0 },  // 0.50
       ];
-      const v = runLaunchRehearsal(probe, flipped, greenConfig);
-      expect(v.canaryAccuracy).toBeCloseTo(2 / 3, 4);
-      expect(v.launch).toBe(false);
+      const scores = scoreReadings(probe, readings, ranges);
+      expect(
+        scores,
+        'scoreReadings returns one plain number per reading. The starter returns null until you build it.',
+      ).toHaveLength(3);
+      expect(scores[0]).toBeCloseTo(0.75, 4);
+      expect(scores[1]).toBeCloseTo(0.25, 4);
+      expect(scores[2]).toBeCloseTo(0.5, 4);
+      probe.dispose();
     });
 
-    it('drift blocks launch even at perfect accuracy', () => {
-      const drifted = { ...greenConfig, baselineMeanScore: 0.75 };
-      const v = runLaunchRehearsal(probe, readings, drifted);
-      expect(v.canaryAccuracy).toBeCloseTo(1.0, 5);
-      expect(v.drift).toBe(true);
-      expect(v.launch).toBe(false);
-    });
-
-    it('the scores come out of the model: a frequency probe scores the frequency column', () => {
-      const freqProbe = tf.sequential();
-      freqProbe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
-      freqProbe.layers[0].setWeights([tf.tensor2d([[0], [1], [0]])]);
-      const rows = [
-        { amplitude: 0, frequency: 42, phase: 0, label: 1 },     // 42/63
-        { amplitude: 2048, frequency: 21, phase: 0, label: 0 },  // 21/63
-      ];
-      const v = runLaunchRehearsal(freqProbe, rows, greenConfig);
-      expect(v.scores[0]).toBeCloseTo(2 / 3, 4);
-      expect(v.scores[1]).toBeCloseTo(1 / 3, 4);
-      expect(v.canaryAccuracy).toBeCloseTo(1.0, 5);
-      expect(v.launch).toBe(true);
-    });
-
-    it('a phase probe scores the phase column, so the row order is graded too', () => {
-      const phaseProbe = tf.sequential();
-      phaseProbe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
-      phaseProbe.layers[0].setWeights([tf.tensor2d([[0], [0], [1]])]);
-      const rows = [
+    it('the phase column is normalized too, so the row layout is graded', () => {
+      const probe = columnProbe([[0], [0], [1]]);
+      const readings = [
         // (phase + PI) / (2 * PI): 0.6 PI -> 0.80, -0.7 PI -> 0.15.
         { amplitude: 1024, frequency: 30, phase: 0.6 * Math.PI, label: 1 },
         { amplitude: 1024, frequency: 30, phase: -0.7 * Math.PI, label: 0 },
       ];
-      const v = runLaunchRehearsal(phaseProbe, rows, greenConfig);
-      expect(v.scores[0]).toBeCloseTo(0.8, 4);
-      expect(v.scores[1]).toBeCloseTo(0.15, 4);
-      expect(v.drift).toBe(false);
-      expect(v.launch).toBe(true);
+      const scores = scoreReadings(probe, readings, ranges);
+      expect(scores[0]).toBeCloseTo(0.8, 4);
+      expect(
+        scores[1],
+        'phase runs from -PI to PI, so range.min is negative and subtracting it moves the value up.',
+      ).toBeCloseTo(0.15, 4);
+      probe.dispose();
     });
 
-    it('normalizes with config.ranges, min included, not a hardcoded full scale', () => {
+    it('reads the limits off ranges, min included, not a hardcoded full scale', () => {
       // A recalibrated amplitude channel: 512 counts of offset, 1024 of span.
-      const recalibrated = {
-        ...greenConfig,
-        ranges: { ...ranges, amplitude: { min: 512, max: 1536 } },
-      };
-      const rows = [
+      const probe = columnProbe([[1], [0], [0]]);
+      const recalibrated = { ...ranges, amplitude: { min: 512, max: 1536 } };
+      const readings = [
         { amplitude: 1152, frequency: 0, phase: -Math.PI, label: 1 },  // 0.625
         { amplitude: 896, frequency: 0, phase: -Math.PI, label: 0 },   // 0.375
       ];
-      const v = runLaunchRehearsal(probe, rows, recalibrated);
-      expect(v.scores[0]).toBeCloseTo(0.625, 4);
-      expect(v.scores[1]).toBeCloseTo(0.375, 4);
-      // Read against the 0-2048 scale these would be 0.5625 and 0.4375.
-      expect(v.canaryAccuracy).toBeCloseTo(1.0, 5);
-      expect(v.launch).toBe(true);
+      const scores = scoreReadings(probe, readings, recalibrated);
+      // Read against the old 0-2048 scale these would be 0.5625 and 0.4375.
+      expect(scores[0]).toBeCloseTo(0.625, 4);
+      expect(scores[1]).toBeCloseTo(0.375, 4);
+      probe.dispose();
     });
 
-    it('does not leak tensors (the whole pass lives in tidy)', () => {
+    it('leaves no tensor behind', () => {
+      const probe = columnProbe([[1], [0], [0]]);
       const before = tf.memory().numTensors;
-      runLaunchRehearsal(probe, readings, greenConfig);
-      expect(tf.memory().numTensors).toBe(before);
+      const scores = scoreReadings(probe, canary, ranges);
+      expect(scores).toHaveLength(canary.length);
+      expect(
+        tf.memory().numTensors,
+        'The input tensor and the prediction both have to be gone by the time the numbers come back. The dashboard runs this on 512 MB, once per capture, for as long as the mission lasts.',
+      ).toBe(before);
+      probe.dispose();
+    });
+  });
+
+  describe('runLaunchRehearsal', () => {
+    it('trains the candidate: 64 rows at batch 16 is 4 batches an epoch, 12 epochs, 48 updates', async () => {
+      const model = buildCandidate();
+      const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(
+        v,
+        'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.',
+      ).toBeDefined();
+      expect(
+        v.losses,
+        'history.history.loss carries one entry per epoch, so a 12-epoch fit reports 12 losses.',
+      ).toHaveLength(12);
+      expect(
+        v.batchesRun,
+        'model.optimizer.iterations counts weight updates. 64 rows in batches of 16 is 4 batches, and 12 epochs of that is 48. The optimizer keeps this number and nothing outside it can assign to it, so it and the loss trace have to come from the same fit.',
+      ).toBe(48);
+      expect(v.batchesRun).toBe(Math.ceil(archive.length / greenConfig.batchSize) * v.losses.length);
+      model.dispose();
+
+      // Same function, a different schedule. 32 rows in batches of 8 is
+      // 4 batches, and 5 epochs of that is 20 updates. A count typed in
+      // rather than read off the optimizer reports 48 again here.
+      const shorter = buildCandidate();
+      const w = await runLaunchRehearsal(
+        shorter,
+        archive.slice(0, 32),
+        canary,
+        { ...greenConfig, epochs: 5, batchSize: 8 },
+      );
+      expect(w.losses).toHaveLength(5);
+      expect(
+        w.batchesRun,
+        'The schedule changed, so the update count changed with it.',
+      ).toBe(20);
+      shorter.dispose();
+    });
+
+    it('the loss falls: the candidate is better after the fit than before it', async () => {
+      const model = buildCandidate();
+      const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(Number.isFinite(v.losses[0])).toBe(true);
+      expect(
+        v.losses[v.losses.length - 1],
+        'Twelve epochs on this archive slice takes binary cross-entropy from around 0.65 to under 0.07. A trace that does not fall is a fit that did not happen.',
+      ).toBeLessThan(v.losses[0]);
+      expect(v.losses[v.losses.length - 1]).toBeLessThan(0.25);
+      model.dispose();
+    });
+
+    it('the scores are what THIS model predicts after the fit, not before it', async () => {
+      const model = buildCandidate();
+      const untrained = scoreReadings(model, canary, ranges);
+      const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      const trained = scoreReadings(model, canary, ranges);
+      expect(v.scores, 'One score per canary reading.').toHaveLength(canary.length);
+      for (let i = 0; i < trained.length; i++) {
+        expect(
+          v.scores[i],
+          'Score ' + i + ' does not match what the trained model returns for that reading. Score the canary set after the fit, with the model the fit updated.',
+        ).toBeCloseTo(trained[i], 6);
+      }
+      let moved = 0;
+      for (let i = 0; i < trained.length; i++) {
+        moved = Math.max(moved, Math.abs(trained[i] - untrained[i]));
+      }
+      expect(
+        moved,
+        'Training moved this model, so scoring it before the fit and after it cannot give the same answers.',
+      ).toBeGreaterThan(0.1);
+      model.dispose();
+    });
+
+    it('a clean rehearsal clears the gate and launches', async () => {
+      const model = buildCandidate();
+      const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(
+        v.canaryAccuracy,
+        'A trained candidate separates this archive slice, so every canary verdict should match its label.',
+      ).toBeGreaterThanOrEqual(0.9);
+      expect(v.drift).toBe(false);
+      expect(v.launch).toBe(true);
+      model.dispose();
+    });
+
+    it('a mislabeled canary drops the accuracy and blocks the launch', async () => {
+      const model = buildCandidate();
+      const flipped = canary.map((r, i) => (i === 3 ? { ...r, label: r.label === 1 ? 0 : 1 } : r));
+      const v = await runLaunchRehearsal(model, archive, flipped, greenConfig);
+      expect(
+        v.canaryAccuracy,
+        'Fifteen of sixteen canary verdicts match, which is 0.9375 and under the 0.95 floor.',
+      ).toBeCloseTo(15 / 16, 5);
+      expect(v.launch).toBe(false);
+      model.dispose();
+    });
+
+    it('drift blocks the launch even when every canary verdict is right', async () => {
+      const model = buildCandidate();
+      const drifted = { ...greenConfig, baselineMeanScore: 0.05 };
+      const v = await runLaunchRehearsal(model, archive, canary, drifted);
+      expect(v.canaryAccuracy).toBeGreaterThanOrEqual(0.9);
+      expect(
+        v.drift,
+        'The canary set is half flagged, so the scores average near 0.5. A deployment whose recorded baseline is 0.05 is scoring something else.',
+      ).toBe(true);
+      expect(v.launch).toBe(false);
+      model.dispose();
+    });
+
+    it('disposes the training tensors instead of leaving a pair behind per rehearsal', async () => {
+      // The two biggest tensors in the module are allocated here, and this
+      // runs again every time CI hands over a candidate. The model records
+      // what it was fitted on, so the check reads those two tensors rather
+      // than a backend-wide count that another test could move under it.
+      const model = buildCandidate();
+      const fitted = [];
+      const realFit = model.fit.bind(model);
+      model.fit = (xs, ys, options) => {
+        fitted.push(xs, ys);
+        return realFit(xs, ys, options);
+      };
+      const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(
+        v,
+        'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.',
+      ).toBeDefined();
+      expect(
+        fitted.length,
+        'One fit, handed a feature tensor and a label tensor. Build both with tf.tensor2d.',
+      ).toBe(2);
+      expect(
+        fitted.map((t) => t && t.isDisposed === true),
+        'The tensors the fit ran on are still on the backend after the rehearsal returned. Dispose both once the fit resolves: tf.tidy cannot hold an await, so nothing else frees them, and the 0249 crash was memory pressure on a console that repeats this loop for as long as the mission lasts.',
+      ).toEqual([true, true]);
+      model.dispose();
+    });
+
+    it('a second rehearsal keeps training the same model, it does not start over', async () => {
+      const model = buildCandidate();
+      const first = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      const second = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(first.batchesRun, 'The first rehearsal ran 48 updates.').toBe(48);
+      expect(
+        second.batchesRun,
+        'The same optimizer kept counting through the second rehearsal, so it reports 96. A rehearsal that compiled the model again would reset this to 48 and throw away the training state it was handed.',
+      ).toBe(96);
+      expect(
+        second.losses[0],
+        'The second rehearsal starts from where the first one finished, so its opening loss sits near the first one closing loss rather than back at 0.65.',
+      ).toBeLessThan(first.losses[0]);
+      model.dispose();
     });
   });
 estimatedMinutes: 25

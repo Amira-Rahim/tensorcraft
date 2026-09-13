@@ -1,43 +1,118 @@
 slug: forward-pass
 lessonSlug: forward-pass
 title: "Run a Forward Pass"
-instructions: "Create a simple sequential model with one dense layer (3 units, inputShape [2]), then run model.predict() on the provided input tensor. The input is a batch of 2 samples, each with 2 features. Leave the layer's weight initialization at the default: the grader recomputes the forward pass from the random weights your layer starts with, so the output cannot be written by hand."
-starterCode: "const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);\n\n// Create a model and run a forward pass\nconst model = tf.sequential();\n// Add a dense layer here\n\nconst prediction = null; // run predict on input"
-solutionCode: "const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);\n\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 3, inputShape: [2] }));\n\nconst prediction = model.predict(input);"
+instructions: "Create a sequential model with one dense layer (3 units, inputShape [2], activation left at its default, which is linear: the grader recomputes the pass as input times kernel plus bias), then write forward(batch) so a single model.predict() call carries the whole batch, and assign prediction = forward(input). The provided input is a stack of 2 readings with 2 features each. Leave the layer's weight initialization at the default: the grader recomputes the forward pass from the random weights your layer starts with, so the output cannot be written by hand. It also calls forward() with taller stacks of its own and counts the predict calls each one costs."
+starterCode: |
+  const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);
+
+  const model = tf.sequential();
+  // Add a dense layer here
+
+  // One call has to carry the whole stack, whatever its height.
+  function forward(batch) {
+    return null; // your code here
+  }
+
+  const prediction = forward(input);
+solutionCode: |
+  const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);
+
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 3, inputShape: [2] }));
+
+  function forward(batch) {
+    return model.predict(batch);
+  }
+
+  const prediction = forward(input);
 testCode: |
   describe('Forward Pass', () => {
+    const firstLayer = () => {
+      expect(
+        model.layers.length,
+        'The model has no layers yet. It needs one dense layer, told how many features a single reading carries.',
+      ).toBeGreaterThanOrEqual(1);
+      return model.layers[0];
+    };
+    const forwardFn = () => {
+      expect(
+        typeof forward,
+        'forward is not defined. The grader calls it with batches of its own, so keep the function the starter handed you.',
+      ).toBe('function');
+      return forward;
+    };
+    const readPrediction = () => {
+      expect(
+        prediction,
+        'prediction is still empty. forward() has to hand back what the model answers for the batch it was given.',
+      ).toBeDefined();
+      return prediction;
+    };
     it('model maps 2 features to 3 units', () => {
-      expect(model.layers.length).toBeGreaterThanOrEqual(1);
-      const kernel = model.layers[0].getWeights()[0];
-      expect(kernel.shape).toEqual([2, 3]);
+      const kernel = firstLayer().getWeights()[0];
+      expect(
+        kernel.shape,
+        'The weight matrix is the wrong shape. It carries one row per incoming feature and one column per unit.',
+      ).toEqual([2, 3]);
     });
-    it('prediction has shape [2, 3]: one row of 3 units per sample in the batch', () => {
-      expect(prediction.shape).toEqual([2, 3]);
+    it('prediction has one row per reading in the stack and one column per unit', () => {
+      expect(readPrediction().shape).toEqual([2, 3]);
     });
     it('the layer keeps its default random weights, so no two of them are the same number', () => {
-      const kernel = Array.from(model.layers[0].getWeights()[0].dataSync());
+      const kernel = Array.from(firstLayer().getWeights()[0].dataSync());
       const spread = Math.max.apply(null, kernel) - Math.min.apply(null, kernel);
-      expect(spread).toBeGreaterThan(1e-6);
+      expect(
+        spread,
+        'Every weight in this layer holds the same number, which only happens when the initializer was overridden. Leave it at the default so the forward pass has real weights to run through.',
+      ).toBeGreaterThan(1e-6);
     });
     it('prediction is the forward pass: input times kernel plus bias, recomputed from the weights the model holds', () => {
-      const weights = model.layers[0].getWeights();
+      const weights = firstLayer().getWeights();
       const expected = tf.matMul(input, weights[0]).add(weights[1]).dataSync();
-      const actual = prediction.dataSync();
+      const actual = readPrediction().dataSync();
       expect(actual).toHaveLength(expected.length);
       for (let i = 0; i < expected.length; i++) {
-        expect(actual[i]).toBeCloseTo(expected[i], 3);
+        expect(
+          actual[i],
+          'This is not what the model answers for this input. Run the batch through the model rather than writing the numbers out.',
+        ).toBeCloseTo(expected[i], 3);
       }
     });
-    it('the batch axis is free: 5 samples in, shape [5, 3] out', () => {
-      const batchOfFive = tf.randomUniform([5, 2], -1, 1);
-      const out = model.predict(batchOfFive);
-      expect(out.shape).toEqual([5, 3]);
-      const weights = model.layers[0].getWeights();
-      const expected = tf.matMul(batchOfFive, weights[0]).add(weights[1]).dataSync();
+    it('one predict call carries the whole stack, at any height', () => {
+      const layer = firstLayer();
+      const submitted = forwardFn();
+      const height = 3 + Math.floor(Math.random() * 6);
+      const stack = tf.randomUniform([height, 2], -1, 1);
+      const realPredict = model.predict.bind(model);
+      const realOnBatch = model.predictOnBatch ? model.predictOnBatch.bind(model) : null;
+      let calls = 0;
+      model.predict = function (x) { calls++; return realPredict(x); };
+      if (realOnBatch) model.predictOnBatch = function (x) { calls++; return realOnBatch(x); };
+      let out;
+      try {
+        out = submitted(stack);
+      } finally {
+        delete model.predict;
+        if (realOnBatch) delete model.predictOnBatch;
+      }
+      expect(
+        out,
+        'forward() handed back nothing when the grader called it with a stack of its own. It has to work for any batch, not just the one in the starter.',
+      ).toBeDefined();
+      expect(
+        out.shape,
+        'The stack that went in and the answer that came out disagree about how many rows there are. One row of predictions per reading, however many readings arrive.',
+      ).toEqual([height, 3]);
+      const weights = layer.getWeights();
+      const expected = tf.matMul(stack, weights[0]).add(weights[1]).dataSync();
       const actual = out.dataSync();
       for (let i = 0; i < expected.length; i++) {
         expect(actual[i]).toBeCloseTo(expected[i], 3);
       }
+      expect(
+        calls,
+        'The batch axis is free: one predict call answers a stack of any height. Feeding the rows in one at a time and stitching the answers together gets the same numbers and misses the point of the lesson.',
+      ).toBe(1);
     });
   });
 estimatedMinutes: 12

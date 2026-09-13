@@ -1,36 +1,103 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
 title: "First Contact: Tensor In, Memory Clean"
-instructions: "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape` and its values into `values` (a plain JS array: remember dataSync()), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you. Prove you can."
-starterCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\n// 1. Create the tensor\nconst reading = null; // your code here\n\n// 2. Capture shape and values BEFORE disposing\nconst shape = null;\nconst values = null;\n\n// 3. Release the GPU memory\n"
-solutionCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\nconst reading = tf.tensor(streamValues);\n\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\n\nreading.dispose();"
+instructions: "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape`, its values into `values` (a plain JS array: remember dataSync()) and their total into `total` (one plain number), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you. Prove you can."
+starterCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\n// 1. Create the tensor\nconst reading = null; // your code here\n\n// 2. Capture shape, values and their total BEFORE disposing\nconst shape = null;\nconst values = null;\nconst total = null;\n\n// 3. Release the GPU memory\n"
+solutionCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\nconst reading = tf.tensor(streamValues);\n\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\nconst total = tf.tidy(() => reading.sum().dataSync()[0]);\n\nreading.dispose();"
 testCode: |
   describe('First Contact', () => {
-    it('captured the correct shape', () => {
-      expect(shape).toEqual([5]);
+    // Nothing in here can read the tensor's numbers: step 3 released them
+    // before the suite ran. So the tensor is graded on what a released tensor
+    // still answers (that tf built it, its rank, size and dtype, and that a
+    // read of its data now throws), and `values` is graded on float32
+    // provenance. Measured on tfjs 4.22.0, 2026-09-08: a disposed tensor
+    // keeps rank, size and dtype, and dataSync() throws "Tensor is disposed".
+    // Before the first check below, all five tests passed for a submission
+    // that loaded no tfjs at all and set `reading` to a four-field object
+    // literal (measured 2026-09-08).
+    //
+    // `total` (added 2026-09-12) asks for a number the readings produce, so
+    // the values have to be right and not merely present. What it still
+    // cannot do is tie that number to THIS tensor: once `reading` is
+    // released, no assertion can ask it anything about its contents, so a
+    // submission that builds `reading` from the wrong numbers and reads a
+    // second tensor holding the right ones clears the file. Closing that
+    // would mean grading the tensor before step 3 runs, which is the step
+    // this exercise exists to teach. The float32 sum is 2.7200000286102295
+    // on the CPU backend and the arithmetic is not pinned tighter than 4
+    // decimals, because the browser runs WebGL and sums in a different
+    // order.
+    const source = [0.12, 0.94, 0.31, 0.88, 0.47];
+    const filled = (value, what) => expect(value, what).toBeDefined();
+    it('reading is a tensor, not an object shaped like one', () => {
+      filled(reading, 'Step 1 is still empty. Build the tensor from streamValues.');
+      expect(
+        reading instanceof tf.Tensor,
+        'rank, size and dtype are ordinary properties, so any object can carry them. This asks whether tf built the value in reading.',
+      ).toBe(true);
     });
-    it('reading is a rank-1 float tensor holding five numbers', () => {
-      // A shape array and a values array can both be typed out by hand, so
-      // the tensor itself gets checked. Rank, size and dtype survive
-      // dispose(); only the numbers go away.
-      expect(reading.rank).toBe(1);
-      expect(reading.size).toBe(5);
-      expect(reading.dtype).toBe('float32');
+    it('the tensor has one axis and holds five float32 numbers', () => {
+      filled(reading, 'Step 1 is still empty. Build the tensor from streamValues.');
+      expect(reading.rank, 'A flat list of readings has one axis.').toBe(1);
+      expect(reading.size, 'Every reading in the stream, not a slice of it.').toBe(5);
+      expect(reading.dtype, 'tf.tensor stores numbers as float32 unless you ask for another dtype.').toBe('float32');
     });
-    it('captured the correct values', () => {
-      expect(values.length).toBe(5);
-      expect(values[0]).toBeCloseTo(0.12, 5);
-      expect(values[4]).toBeCloseTo(0.47, 5);
+    it('shape carries one entry per axis', () => {
+      filled(shape, 'Step 2 is half empty: shape has not been captured. Read it off the tensor before releasing it.');
+      expect(shape, 'One axis, so one entry, and it counts the readings.').toEqual([5]);
     });
-    it('values came back through dataSync, not off the page', () => {
-      // float32 storage rounds 0.12 to 0.11999999731779099 and 0.47 to
-      // 0.4699999988079071. A value that is EXACTLY 0.12 was copied from
-      // the instructions instead of read back out of the tensor.
-      expect(values[0]).not.toBe(0.12);
-      expect(values[4]).not.toBe(0.47);
+    it('values is a plain JS array holding all five readings', () => {
+      filled(values, 'Step 2 is half empty: values has not been captured. Pull the numbers out before releasing the tensor.');
+      expect(
+        Array.isArray(values),
+        'dataSync() hands back a Float32Array, which is not a plain array yet. Array.from converts it.',
+      ).toBe(true);
+      expect(values.length, 'One entry per reading.').toBe(5);
+      const stored = Array.from(new Float32Array(source));
+      for (let i = 0; i < source.length; i++) {
+        expect(
+          values[i],
+          'Position ' + i + ' does not hold the reading that arrived at that position.',
+        ).toBeCloseTo(stored[i], 6);
+      }
     });
-    it('disposed the tensor: no GPU leak', () => {
-      expect(reading.isDisposed).toBe(true);
+    it('values are float32 numbers, not the decimals off the page', () => {
+      // This is provenance only as far as the number system reaches. float32
+      // storage rounds 0.12 to 0.11999999731779099 and 0.47 to
+      // 0.4699999988079071, so a value that is EXACTLY 0.12 was copied from
+      // the instructions. It cannot prove dataSync() was the route, because
+      // new Float32Array rounds identically with no backend involved
+      // (measured 2026-09-08), which is why the first test grades the tensor.
+      filled(values, 'Step 2 is half empty: values has not been captured.');
+      expect(
+        values[0],
+        'This is the decimal as printed, not the number float32 storage keeps.',
+      ).not.toBe(source[0]);
+      expect(
+        values[4],
+        'Same for the last reading. Exact means typed, not read back.',
+      ).not.toBe(source[4]);
+    });
+    it('total is the sum of the five readings', () => {
+      expect(
+        typeof total,
+        'Step 2 is unfinished: total has not been captured. Add the readings up while the tensor still holds them, and keep the result as a plain number.',
+      ).toBe('number');
+      expect(
+        total,
+        'This is the total of all five readings. A total that skips one, doubles one, or counts a reading that never arrived lands somewhere else.',
+      ).toBeCloseTo(2.72, 4);
+    });
+    it('the memory was released, not just flagged as released', () => {
+      filled(reading, 'Step 3 has not happened: nothing has been released.');
+      expect(
+        reading.isDisposed,
+        'The collector cannot see GPU memory. Release it yourself once you have what you need.',
+      ).toBe(true);
+      expect(
+        () => reading.dataSync(),
+        'A released tensor cannot hand its numbers back. If this call still returns, the memory is still held.',
+      ).toThrow('Tensor is disposed');
     });
   });
 estimatedMinutes: 6

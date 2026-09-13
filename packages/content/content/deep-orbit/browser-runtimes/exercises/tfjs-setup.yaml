@@ -1,14 +1,14 @@
 slug: tfjs-setup
 lessonSlug: tensorflow-js-setup
 title: "Initialize TensorFlow.js"
-instructions: "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version."
+instructions: "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version, shaped `{ backend, version }`. Read both values off the runtime rather than writing them in as literals: the backend depends on the device the page is open on, and the version on the package installed there."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   async function initTF(): Promise<{ backend: string; version: string }> {
-    // 1. Wait for TF.js to be ready
-    // 2. Get the backend name
-    // 3. Get the version
+    // Both values live on the runtime. One of them has nothing to say until
+    // the runtime has finished starting up, which a warm page hides and a
+    // fresh tab does not.
     return null; // your code here
   }
 solutionCode: |
@@ -25,7 +25,7 @@ testCode: |
   describe('initTF', () => {
     it('returns an object', async () => {
       const result = await initTF();
-      expect(result).toBeDefined();
+      expect(result, 'initTF has to resolve to an object carrying a backend and a version. The starter returns null until you build it.').toBeDefined();
     });
     it('reads the backend name off the runtime, and only after ready() resolves', async () => {
       // The grader's runtime is already warm, so tf.getBackend() answers even
@@ -49,12 +49,13 @@ testCode: |
       } finally {
         tf = warm;
       }
-      expect(initialized).toBe(true);
-      expect(result.backend).toBe(tag);
-      expect(result.version).toBe(ver);
+      expect(initialized, 'Nothing awaited the runtime, so it never picked a backend. On a warm page that still answers; on a fresh tab it does not.').toBe(true);
+      expect(result, 'initTF resolved to nothing, so there is no backend name to check.').toBeDefined();
+      expect(result.backend, 'This runtime reports a name generated for this run. A name that came from anywhere but the runtime cannot match it.').toBe(tag);
+      expect(result.version, 'Same for the version string: read it, do not type it.').toBe(ver);
     });
   });
 estimatedMinutes: 8
 difficulty: beginner
-mlContent: data
+mlContent: deployment
 skillAxis: deployment

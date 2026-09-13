@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "TFJS ships both losses. MSE is the mean of the squared differences between the true labels and the model's predictions. Binary cross-entropy over logits is tf.losses.sigmoidCrossEntropy, which applies the sigmoid for you. The third function is this lesson's form rule, written out. It picks between cross-entropy's two spellings, not between the two losses."
   - level: guidance
-    content: "In mseLoss, replace the null return with tf.losses.meanSquaredError(labels, predictions); in bceLoss, with tf.losses.sigmoidCrossEntropy(labels, logits). Both already reduce to the scalar tensor (shape []) the tests expect, so no extra mean() step is needed. pickBceForm returns a string, not a tensor: 'binaryCrossentropy' for a sigmoid last layer, 'sigmoidCrossEntropy' for anything else. Both are binary cross-entropy, so the last layer only decides which form you call."
+    content: "Both of the TFJS calls the instructions name already reduce to one number for the whole batch, so nothing is left for you to average. Spend the time on the second function instead. A logit is the raw score a last layer emits before anything squashes it, which means it can sit anywhere on the number line, negative included. The logit form of cross-entropy applies the sigmoid itself, so handing it probabilities squashes them twice and the number it reports is no longer the loss. For the third function, ask what the last layer emits rather than what the task is. Only one kind of last layer hands you probabilities, and every other one, recognized or not, hands you raw scores."
   - level: solution
     content: |
       function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
@@ -133,7 +133,7 @@ Score the DEEP SCAN classifier's first predictions with both losses, then write 
 
 <Epilogue>
 
-Farah writes the network's opening loss on the lab's glass wall in marker, dated and initialed: 0.6931. Demir asks whether the number means anything or is just where the random seed dropped them. It's ln(2) to four places, she tells him: the exact cross-entropy of a coin flip, the score of a network that knows nothing at all. He'd guessed it was a fluke of the random seed; it's arithmetic.
+Farah writes the network's opening loss on the lab's glass wall in marker, dated and initialed: 0.6931. Demir asks whether the number means anything or is just where the random seed dropped them. Half right, she tells him. A network that answers 0.5 to everything scores exactly ln(2), the cross-entropy of a coin flip, and a fresh network answers close to 0.5 on every row, so the first two digits are arithmetic. The last two are the seed: build it again and the wall reads 0.72, or 0.67. Two hundred fresh builds of this exact stack opened between 0.60 and 0.82, thirty of them rounded to 0.69, and not one printed 0.6931.
 
 <Dialogue speaker="Dr. Farah">
 That number is our honesty. We don't get to claim the network learned anything until that number moves.

@@ -1,15 +1,34 @@
 slug: rag-pipeline
 lessonSlug: rag-for-signals
 title: "Build the Claim Checker"
-instructions: "Demir's checker, for real: verifyClaims(answerText, retrievedRows) extracts every number from the generated answer and checks it against the retrieved data. A claimed number is verified if it appears in some retrieved row within a tolerance of 0.05; otherwise it is fabricated. Return { verified, fabricated } with the numbers in the order they appear in the text. This is the deterministic gate that lets a generated report ship: every number either traces to a row, or the report does not go."
+instructions: |
+  Retrieval does not make the answer true. It makes the answer checkable, and
+  this is the step that checks it: Demir's audit-hour checker, for real.
+  `verifyClaims(answerText, retrievedRows)` is the deterministic gate that
+  lets a generated report ship. Every number in it traces to a retrieved row,
+  or the report does not go.
+
+  Every number in the generated text is a claim, and the retrieved rows are
+  the only evidence you may admit. Read the numbers out of `answerText` in the
+  order they appear there. A claim is verified when some value in some
+  retrieved row sits within 0.05 of it, and fabricated when no value does.
+  Return `{ verified, fabricated }`, each list in that same text order.
+
+  Three properties of the rule decide whether the gate is worth having. The
+  tolerance is absolute rather than a percentage, because a model reprinting a
+  logged reading rounds it and a model inventing one does not. The comparison
+  is between magnitudes rather than text, so a claimed 9 does not trace to a
+  row holding 29.7. And an empty retrieval is the worst case rather than a
+  free pass: no evidence was in hand, so nothing in the answer is supported
+  and every number in it is fabricated.
 starterCode: |
   function verifyClaims(
     answerText: string,
     retrievedRows: number[][],
   ): { verified: number[]; fabricated: number[] } {
-    // 1. extract numbers: answerText.match(/-?\d+(\.\d+)?/g)
-    // 2. a claim is verified when SOME row contains a value within 0.05 of it
-    // 3. keep text order; parse with parseFloat
+    // Two lists come back, and every number in the text lands in one of
+    // them. Settle the empty retrieval before writing the comparison: it
+    // decides which list those numbers go to.
     return null; // your code here
   }
 solutionCode: |
@@ -36,41 +55,80 @@ testCode: |
       [14, 73.4, 0.9987],
       [29.7, 73.4, 8.7],
     ];
+    const check = (text, retrieved) => {
+      const r = verifyClaims(text, retrieved);
+      expect(
+        r,
+        'verifyClaims has to return the split: a verified list and a fabricated list. While it returns null the gate cannot answer whether the report ships.',
+      ).toBeDefined();
+      return r;
+    };
 
     it('verifies numbers that trace to retrieved rows', () => {
-      const r = verifyClaims('We recorded 14 events at 73.4 Hz.', rows);
+      const r = check('We recorded 14 events at 73.4 Hz.', rows);
       expect(r.verified).toEqual([14, 73.4]);
       expect(r.fabricated).toEqual([]);
     });
     it('catches the fabricated 17 the night the checker was born', () => {
-      const r = verifyClaims('Analysis of 17 events at 73.4 Hz.', rows);
-      expect(r.fabricated).toEqual([17]);
+      const r = check('Analysis of 17 events at 73.4 Hz.', rows);
+      expect(
+        r.fabricated,
+        'One number in that sentence is in no retrieved row. Retrieval narrows fabrication; it does not stop it, which is why this gate exists.',
+      ).toEqual([17]);
       expect(r.verified).toEqual([73.4]);
     });
     it('applies the 0.05 tolerance: 0.99 traces to 0.9987, 12.5 traces to nothing', () => {
-      const r = verifyClaims('Correlation 0.99; drift 12.5.', rows);
+      const r = check('Correlation 0.99; drift 12.5.', rows);
       expect(r.verified).toEqual([0.99]);
       expect(r.fabricated).toEqual([12.5]);
     });
     it('draws the boundary at 0.05: against the row value 0.9987, 0.96 is in and 0.94 is out', () => {
-      const r = verifyClaims('Correlation 0.96 in one pass, 0.94 in the next.', rows);
-      expect(r.verified).toEqual([0.96]);
+      const r = check('Correlation 0.96 in one pass, 0.94 in the next.', rows);
+      expect(
+        r.verified,
+        'The tolerance is absolute, not a percentage. A model rounding a logged value stays inside it; a model inventing one does not.',
+      ).toEqual([0.96]);
       expect(r.fabricated).toEqual([0.94]);
     });
     it('compares numbers, not text: a claimed 9 does not trace to a row holding 29.7', () => {
-      const r = verifyClaims('The cluster repeats 9 times.', [[29.7]]);
-      expect(r.verified).toEqual([]);
+      const r = check('The cluster repeats 9 times.', [[29.7]]);
+      expect(
+        r.verified,
+        'Grepping the rows for the digits would call this traced. The rule compares magnitudes.',
+      ).toEqual([]);
       expect(r.fabricated).toEqual([9]);
     });
     it('handles an answer with no numbers at all', () => {
-      const r = verifyClaims('The signal repeats and accelerates.', rows);
+      const r = check('The signal repeats and accelerates.', rows);
       expect(r.verified).toEqual([]);
       expect(r.fabricated).toEqual([]);
     });
+    it('with nothing retrieved, nothing traces', () => {
+      const none = check('Peak at 73.4 Hz across 14 events.', []);
+      expect(
+        none.fabricated,
+        'An empty retrieval is not a free pass, it is the worst case: no evidence was in hand, so no claim in the answer is supported. A checker that ships the report anyway has inverted the rule it exists for.',
+      ).toEqual([73.4, 14]);
+      expect(none.verified).toEqual([]);
+      const empty = check('Correlation 0.9987.', [[], []]);
+      expect(empty.fabricated).toEqual([0.9987]);
+      expect(empty.verified).toEqual([]);
+    });
     it('works against a different retrieval set', () => {
-      const r = verifyClaims('Detected 3 pulses of 61.2 seconds.', [[61.2], [3, 5]]);
+      const r = check('Detected 3 pulses of 61.2 seconds.', [[61.2], [3, 5]]);
       expect(r.verified).toEqual([3, 61.2]);
       expect(r.fabricated).toEqual([]);
+    });
+    it('runs the rule on a row drawn at grade time, so a memorised table fails', () => {
+      const row = 1 + Math.round(Math.random() * 9000) / 100;
+      const inside = Math.round((row + 0.04) * 100) / 100;
+      const outside = Math.round((row + 0.09) * 100) / 100;
+      const r = check(`Peak ${inside} Hz, sideband ${outside} Hz.`, [[row, row * 3]]);
+      expect(
+        r.verified,
+        'The row this ran against was drawn a moment ago, so nothing about it can be memorised. Only the rule survives.',
+      ).toEqual([inside]);
+      expect(r.fabricated).toEqual([outside]);
     });
   });
 estimatedMinutes: 15

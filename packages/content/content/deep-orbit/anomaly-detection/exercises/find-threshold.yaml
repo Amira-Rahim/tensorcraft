@@ -1,17 +1,15 @@
 slug: find-threshold
 lessonSlug: threshold-tuning
-title: "Find the Optimal Threshold"
-instructions: "Given parallel arrays of reconstruction errors and ground-truth boolean labels (true = anomaly) from the validation slice, return the threshold value (from the candidate list) that yields the highest F1 score on that slice. The sweep never reads the test slice; the winning cutoff is scored there once, afterwards."
+title: "Sweep Candidate Thresholds for the Best F1"
+instructions: "Given parallel arrays of reconstruction errors and ground-truth boolean labels (true = anomaly) from the validation slice, score every candidate threshold and return `{ threshold, f1 }`: the candidate with the highest F1 on that slice, and the F1 it scored. A reading counts as flagged when its error is strictly above the candidate, not when it equals it: readings sit exactly on a candidate in every fixture here, and in two of them `>=` picks a different winner. Accuracy is not the target and one of the tests will catch you if you use it, because anomalies are rare enough that a cutoff which flags nothing looks accurate and catches nothing. The sweep never reads the test slice; the winning cutoff is scored there once, afterwards."
 starterCode: |
   function findBestThreshold(
     errors: number[],
     labels: boolean[],
     candidates: number[],
   ): { threshold: number; f1: number } {
-    // For each candidate threshold:
-    //   classify errors > threshold as anomaly
-    //   compute precision, recall, and F1
-    // Return the threshold with highest F1
+    // Only the candidates you were handed are in play, and every one of them
+    // has to be scored on the same slice before you can pick the winner.
     return null; // your code here
   }
 solutionCode: |
@@ -42,23 +40,73 @@ testCode: |
   describe('findBestThreshold', () => {
     const errors = [0.01, 0.02, 0.01, 0.08, 0.09, 0.02, 0.07];
     const labels = [false, false, false, true, true, false, true];
+
+    // A validation slice with the class balance a real detector faces: 20
+    // normal readings, 5 anomalies, and an error distribution where the three
+    // selection rules disagree. Measured over the candidates below:
+    //
+    //   cutoff   tp fp fn tn   recall  accuracy   F1
+    //   lowest    5 20  0  0    1.00      0.20   0.333
+    //   second    4  4  1 16    0.80      0.80   0.615
+    //   third     2  0  3 20    0.40      0.88   0.571
+    //   highest   0  0  5 20    0.00      0.80   0.000
+    //
+    // Recall is maximised by the lowest cutoff, accuracy by the third, F1 by
+    // the second, and each of those three is a unique maximum, so a sweep that
+    // ranks by the wrong quantity lands on the wrong candidate whichever way
+    // it breaks ties. This is the fixture that separates knowing WHY F1 from
+    // reproducing the formula.
+    const skewedErrors = [0.025, 0.028, 0.03, 0.032, 0.04, 0.035, 0.038, 0.04, 0.042, 0.09, 0.045, 0.048, 0.05, 0.052, 0.12, 0.055, 0.058, 0.06, 0.06, 0.18, 0.07, 0.08, 0.1, 0.13, 0.22];
+    const skewedLabels = [false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true];
+
     it('returns an object with threshold and f1', () => {
       const result = findBestThreshold(errors, labels, [0.03, 0.05, 0.07]);
-      expect(result.threshold).toBeDefined();
-      expect(result.f1).toBeDefined();
+      expect(
+        result,
+        'findBestThreshold has to return the winning candidate and its score together: { threshold, f1 }.',
+      ).toBeDefined();
+      expect(result.threshold, 'The winning cutoff goes in the threshold field.').toBeDefined();
+      expect(result.f1, 'The F1 that cutoff scored goes in the f1 field.').toBeDefined();
     });
+
     it('achieves the perfect F1 this data allows, with a separating threshold', () => {
       const result = findBestThreshold(errors, labels, [0.01, 0.03, 0.05, 0.10]);
-      expect(result.f1).toBeCloseTo(1.0, 5);
-      expect(result.threshold).toBeGreaterThan(0.02);
-      expect(result.threshold).toBeLessThan(0.07);
+      expect(result, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
+      const why =
+        'The three anomalies here all sit above every normal reading, so one ' +
+        'of these candidates splits the two groups cleanly and scores the ' +
+        'highest F1 the data allows.';
+      expect(result.f1, why).toBeCloseTo(1.0, 5);
+      expect(result.threshold, why).toBeGreaterThan(0.02);
+      expect(result.threshold, why).toBeLessThan(0.07);
     });
-    it('on overlapping data picks the candidate with the max F1 (0.03 -> 0.857, not 0.06 -> 0.8)', () => {
+
+    it('on overlapping data picks the candidate with the higher F1', () => {
       const errs2 = [0.02, 0.04, 0.05, 0.07, 0.09, 0.03];
       const labs2 = [false, true, false, true, true, false];
       const r2 = findBestThreshold(errs2, labs2, [0.03, 0.06]);
-      expect(r2.f1).toBeCloseTo(0.857, 2);
-      expect(r2.threshold).toBeCloseTo(0.03, 5);
+      expect(r2, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
+      const why =
+        'The classes overlap here, so no cutoff is clean and the two ' +
+        'candidates score differently. Report the better of the two, and the ' +
+        'F1 it actually scored rather than the one you hoped for.';
+      expect(r2.f1, why).toBeCloseTo(0.857, 2);
+      expect(r2.threshold, why).toBeCloseTo(0.03, 5);
+    });
+
+    it('ranks candidates by F1, not by accuracy or recall', () => {
+      const r = findBestThreshold(skewedErrors, skewedLabels, [0.02, 0.06, 0.15, 0.3]);
+      expect(r, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
+      const why =
+        'Five of these 25 readings are anomalies. On this slice the highest ' +
+        'accuracy belongs to a cutoff that catches two of the five, and ' +
+        'perfect recall belongs to a cutoff that flags all 25 readings. ' +
+        'Neither is the F1 winner. If your sweep is ranking by the number of ' +
+        'correct calls, or by how many anomalies it caught, it lands on one of ' +
+        'those two instead. Rank by F1 and report the F1 of the candidate you ' +
+        'return.';
+      expect(r.threshold, why).toBeCloseTo(0.06, 5);
+      expect(r.f1, why).toBeCloseTo(0.6154, 3);
     });
   });
 estimatedMinutes: 12

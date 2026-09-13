@@ -1,9 +1,16 @@
-// Never reads `window`. The z-score is the graded property, and every shipped
-// case passed the same calm window, so this solution memorised that window's
-// mean and standard deviation as literals and divides by them. tf.moments is
-// never called. It gets the majority rule right and still has no idea that a
-// sigma count belongs to the spread you measured, not to the reading: hand it
-// a different window and it reports the old window's sigmas.
+// Derives the z-score honestly from the window with tf.moments, and then gets
+// two things wrong that no shipped fixture could see. The statistical verdict
+// compares the SIGNED z-score against 3, so a reading far below the window's
+// center scores a large negative number and the detector stays quiet: it has
+// no idea that a sigma count is a distance and that a dip is as far out as a
+// spike. And the LSTM verdict compares the SQUARED deviation against a
+// tolerance quoted in raw amplitude units, which is a comparison between two
+// different units that happens to answer correctly whenever the deviation is
+// far from 1.
+//
+// (The earlier cheat here memorised the calm window's mean and std as literals
+// and never called tf.moments. That one is still caught by the drifted-window
+// fixture.)
 function detectAnomalyEnsemble(
   window,
   actual,
@@ -12,12 +19,17 @@ function detectAnomalyEnsemble(
   predicted,
   predTolerance,
 ) {
-  const zScore = (actual - 0.52) / 0.015;
+  const { mean, variance } = tf.tidy(() => {
+    const m = tf.moments(tf.tensor1d(window));
+    return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] };
+  });
+  const std = Math.sqrt(variance);
+  const zScore = std === 0 ? 0 : (actual - mean) / std;
 
   const verdicts = {
-    statistical: Math.abs(zScore) > 3,
+    statistical: zScore > 3,
     autoencoder: reconstructionError > reconThreshold,
-    lstm: Math.abs(predicted - actual) > predTolerance,
+    lstm: (predicted - actual) * (predicted - actual) > predTolerance,
   };
   const votes = [
     verdicts.statistical,

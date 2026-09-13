@@ -1,14 +1,15 @@
-// Dumps every graded fragment into one unstructured line, in no particular
-// order. There is no role statement, no context section, no labelled data
-// section and no output contract: it knows which substrings the grader
-// searches for and nothing about the four parts of a prompt.
+// Keyword salad on separate lines. It knows which substrings the grader
+// searches for and which line each has to sit on, and nothing about what a
+// prompt is: no role statement (a name with no job attached), no claim about
+// the natural band (four bare digits), no instruction a model could follow.
+// Six tokens laid out in the graded order.
 function buildPrompt(signal) {
-  return (
-    "json 47 23 12 5 DEEP SCAN " +
-    signal.phase +
-    " " +
-    signal.frequency +
-    " " +
-    signal.amplitude
-  );
+  return [
+    "DEEP SCAN",
+    "5 12 23 47",
+    "amplitude " + signal.amplitude,
+    "frequency " + signal.frequency,
+    "phase " + signal.phase,
+    "json classification confidence reasoning",
+  ].join("\n");
 }

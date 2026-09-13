@@ -22,16 +22,24 @@ concept:
     mlTitle: "Model Profiling"
     mlCode: "const t0 = performance.now(); const y = model.predict(x); await y.data(); const ms = performance.now() - t0;"
     tier: structural
-    breaks: "performance.mark API is identical for both, and identical again in Node, where the same pair ships in `node:perf_hooks`. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
+    breaks: "performance.mark API is identical for both, and identical again in Node, where the same pair ships in `node:perf_hooks`. But profiling a model means measuring per-op latency, GPU kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
 consequence:
   narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
   - level: nudge
-    content: "profileModel is three separate measurements: how many parameters the model has, how many megabytes they occupy at 4 bytes per float32, and how long one predict() call takes on average."
+    content: "profileModel is four reports on one model: how many parameters it has, how many megabytes they occupy at 4 bytes per float32, where those parameters sit layer by layer, and how long one predict() call takes on average."
   - level: guidance
-    content: "parameterCount comes from model.countParams(); memorySizeMB is parameterCount * 4 bytes divided by 1e6 (the lesson's units rule: 1024 * 1024 would give you MiB wearing an MB label, and the tests check the true-MB number). Timing has two parts. First one warmup call outside the clock, awaited and thrown away. That call pays the one-off compilation cost, and because it is not timed, the cost does not land in the average. Then exactly `runs` timed calls: read performance.now(), call model.predict(input), await output.data(), and only then read the clock again. The clock has to cover the readback. Stop it before the await and you have timed the enqueue instead of the work. Return { parameterCount, memorySizeMB, avgInferenceMs }; the tests count predict calls and expect runs + 1, and they check that the average reflects real work."
+    content: "Four reports, four different sources. The parameter count you ask the model for. The megabytes are arithmetic on that count, and the only decision in them is which megabyte you mean: at 4 bytes per float32, dividing by a million and dividing by 1024 squared give answers 5 percent apart, and the report Nazari is holding is in MB, not MiB. The per-layer rows you ask each layer for, and the only decision there is which layers get a row: a model's list of layers is not the same as its list of weighted layers, and a row reading zero is what tells a reader that layer owns nothing instead of leaving them to wonder where it went. The milliseconds have to be measured, and both halves of that trap are in the CodeBlock above. A model's first call pays a one-off compilation cost, so it cannot sit inside an average of steady-state calls. And a prediction is not finished when predict() hands back a tensor: on a GPU backend the work is still queued, so a clock stopped at that line measures how fast you can ask rather than how long the work took. If your average comes back near zero, that is the second half biting."
   - level: solution
-    content: "const parameterCount = model.countParams(); const memorySizeMB = (parameterCount * 4) / 1e6; await model.predict(createInput()).data(); const times: number[] = []; for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); const output = model.predict(input); await output.data(); times.push(Math.max(0, performance.now() - start)); } const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length; return { parameterCount, memorySizeMB, avgInferenceMs };"
+    content: |
+      const parameterCount = model.countParams();
+      const memorySizeMB = (parameterCount * 4) / 1e6;
+      const layerBreakdown = model.layers.map(layer => ({ name: layer.name, params: layer.countParams() }));
+      await model.predict(createInput()).data();
+      const times: number[] = [];
+      for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); const output = model.predict(input); await output.data(); times.push(Math.max(0, performance.now() - start)); }
+      const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
+      return { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown };
 keywords:
   - profiling
   - performance
@@ -117,7 +125,7 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
     const output = model.predict(input) as tf.Tensor;
     // Module 4's benchmarking rule applies to profiles too: read the
     // result back INSIDE the timed region, or on GPU backends you are
-    // profiling how fast you can enqueue kernels, not run them, and
+    // profiling how fast you can enqueue GPU kernels, not run them, and
     // every mean and P95 below is fiction.
     await output.data();
     times.push(performance.now() - start);
@@ -146,7 +154,11 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
 // the eleven-feature float vector the signal classifier reads. Hand it
 // randomNormal and the lookup throws: "GatherV2: the index value -2 is not
 // in [0, 49999]". 50,000 is the tokenizer vocabulary, 256 dims wide, which
-// is the 12,800,000 row below.
+// is the 12,800,000 row below. The rest of the shape: a flatten over the 80
+// positions (80 * 256 = 20,480 features), a 3,320-unit hidden layer
+// ((20,480 + 1) * 3,320 = 67,996,920) and a 1,264-unit output layer
+// ((3,320 + 1) * 1,264 = 4,197,744). Every row in the breakdown is one of
+// those products, so you can check the profiler against the architecture.
 const profile = await profileModel(model, () => tf.randomUniform([1, 80], 0, 50000, 'int32'));
 console.log('Model size:', profile.memorySizeMB.toFixed(1), 'MB');
 console.log('Parameters:', profile.parameterCount.toLocaleString());
@@ -157,22 +169,30 @@ console.log('Inference P95:', profile.inferenceP95Ms.toFixed(1), 'ms');
 console.log('Layer breakdown:');
 for (const layer of profile.layerBreakdown) {
   const share = (layer.params / profile.parameterCount) * 100;
-  console.log(\`  \${layer.name.padEnd(14)}\${layer.params.toLocaleString().padStart(12)}  \${share.toFixed(1)}%\`);
+  console.log(\`  \${layer.name.padEnd(22)}\${layer.params.toLocaleString().padStart(12)}  \${share.toFixed(1)}%\`);
 }
 
 // DEEP SCAN, as it stood at 0249:
 //
 //   Model size: 340.0 MB
-//   Parameters: 85,000,000
+//   Parameters: 84,994,664
 //   Inference mean: 45.0 ms
 //   Inference P95: 112.0 ms
 //   Layer breakdown:
-//     embedding       12,800,000  15.1%
-//     dense_Dense1    68,000,000  80.0%
-//     dense_Dense2     4,200,000   4.9%
+//     embedding_Embedding1    12,800,000  15.1%
+//     flatten_Flatten1                 0  0.0%
+//     dense_Dense1            67,996,920  80.0%
+//     dense_Dense2             4,197,744  4.9%
 //
 // Both timings are wasm-backend numbers: the dashboard had no working
 // WebGL context that night, so the profile ran on the fallback.
+//
+// The flatten row is in there because the loop walks model.layers, not
+// only the layers that hold weights. It reshapes the embedding's 80 by 256
+// output into 20,480 values and owns nothing, so its share is 0.0%.
+// Rounded to millions the bundle is the 85 million weights Nazari quotes.
+// The profiler prints the exact count, and 84,994,664 float32 weights are
+// 340.0 MB.
 //
 // Read the shares, not the total. 80% of this model is one Dense layer, so
 // that layer holds most of the 340 MB. The 45 ms mean and the 112 ms P95 are
@@ -185,7 +205,7 @@ for (const layer of profile.layerBreakdown) {
 
 ## Challenge
 
-Profile a model and identify its heaviest layer.
+Profile a model: how many parameters it holds, the megabytes they occupy, which layers they sit in, and how long one inference takes.
 
 <Exercise slug="profile-model" />
 

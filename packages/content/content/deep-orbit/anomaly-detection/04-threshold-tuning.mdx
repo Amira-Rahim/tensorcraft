@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "There is no formula for the cutoff here: score every candidate threshold against the labeled validation slice and keep the one with the highest F1"
   - level: guidance
-    content: "For each candidate t, predict anomaly where errors[i] > t, then count tp, fp, and fn against labels. precision = tp / (tp + fp), recall = tp / (tp + fn), f1 = 2 * precision * recall / (precision + recall), each guarded with || 0 so empty counts do not produce NaN. Track the best { threshold, f1 } and return it"
+    content: "Accuracy is the trap here. Anomalies are rare, so a cutoff that flags nothing scores well on accuracy and catches nothing, which is why the sweep is scored on F1 instead. F1 combines two rates that pull against each other: of the alarms you raised, how many were real, and of the real anomalies, how many you caught. Both come from counting hits, false alarms and misses at each candidate cutoff, so walk the candidates, score each one, and keep the winner. Watch the empty cases: a cutoff that raises no alarm divides zero by zero, and that is not a number until you make it one"
   - level: solution
     content: "let best = { threshold: 0, f1: 0 }; for (const t of candidates) { let tp = 0, fp = 0, fn = 0; for (let i = 0; i < errors.length; i++) { const predicted = errors[i] > t; if (predicted && labels[i]) tp++; else if (predicted && !labels[i]) fp++; else if (!predicted && labels[i]) fn++; } const precision = tp / (tp + fp) || 0; const recall = tp / (tp + fn) || 0; const f1 = 2 * precision * recall / (precision + recall) || 0; if (f1 > best.f1) best = { threshold: t, f1 }; } return best;"
 keywords:
@@ -50,7 +50,7 @@ But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Naz
 
 Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore the tracker; Nazari just described the bridge-crew version. The threshold must balance missed anomalies against false alarms.
 
-<LearningObjectives objectives={["Set detection thresholds from percentiles of the normal error distribution, and turn a percentile into an expected alert count", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the optimal balance point", "Sweep candidate cutoffs on a validation slice and score the chosen one once on the test slice"]} />
+<LearningObjectives objectives={["Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the best balance point on the slice you swept", "Diagnose an alert storm against the known failure signatures before touching the cutoff"]} />
 
 ## Setting the Threshold
 
@@ -127,6 +127,8 @@ for (const t of thresholds) {
 // t=0.002: P=0.34 R=1.00 F1=0.51  ← catches everything, many false alarms
 // t=0.004: P=0.89 R=0.95 F1=0.92  ← good balance
 // t=0.010: P=1.00 R=0.72 F1=0.84  ← no false alarms, misses some
+// (three of the six rows shown; 0.003, 0.005 and 0.008 each score between
+// their neighbours, which is what makes 0.004 the single peak)
 
 // Lock the cutoff, then score it once on the held-out test slice. That
 // second number is the one the report carries, and it tends to land a
@@ -146,13 +148,13 @@ The table above has one F1 peak, at t=0.004, and it is tempting to read that row
 
 In the first deployment the detector gates the capture pipeline, so a miss costs the mission: every real event it sleeps through is data the ship never records again. Take t=0.002, recall 1.00 at precision 0.34. Read that precision carefully, because it was measured on a slice holding enough anomalies to score against. Live telemetry is far calmer, so the week's false-alarm count is the false-positive rate times 18,327 readings, and it runs well above what the slice suggests. The capture pipeline can absorb that. A machine reads every flag, and no crew is being taught to ignore anything, so the threshold belongs low here.
 
-Nazari's week is the second deployment, the one where a false alarm costs the detector its standing with the crew. Fourteen alerts, twelve of them cosmic background: precision 0.14 (2 of 14), and the real cost was never the twelve wasted checks. It was the reflex they were training. A bridge crew that learns the alert is usually noise stops standing up for it, and the miss that finally matters arrives pre-ignored. On the same curve, t=0.010 buys precision 1.00 at recall 0.72: zero wasted checks, and 28 percent of real anomalies missed (1 - 0.72). For the capture pipeline that trade is malpractice; for an alert channel whose one failure mode is being tuned out, it can be exactly right. Demir locks that one. Zero false alarms across the 2,880 calm readings he can measure is a measured result, not a promise about next week.
+Nazari's week is the second deployment, the one where a false alarm costs the detector its standing with the crew. Fourteen alerts, twelve of them cosmic background: precision 0.14 (2 of 14), and the real cost was never the twelve wasted checks. It was the reflex they were training. A bridge crew that learns the alert is usually noise stops standing up for it, and the miss that finally matters arrives pre-ignored. On the same curve, t=0.010 buys precision 1.00 at recall 0.72: zero wasted checks, and 28 percent of real anomalies missed (1 - 0.72). For the capture pipeline that trade is malpractice; for an alert channel whose one failure mode is being tuned out, it can be exactly right. Demir locks that one. Zero false alarms across the calm rows of the 2,880-reading validation slice is a measured result, not a promise about next week.
 
 Both deployments run the same model on the same errors, and the F1 peak sits in the same place. The threshold went down in the first and up in the second. The F1 table cannot tell you which way to move it, because what decides is the cost of a miss against the cost of a false alarm, and neither number is in the error data.
 
 ## Challenge
 
-Find the optimal anomaly detection threshold using F1 score.
+Sweep the candidate cutoffs against a labeled validation slice and return the one with the highest F1, together with the score it earned.
 
 <Exercise slug="find-threshold" />
 
@@ -183,7 +185,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
     "Choosing a threshold is choosing a setting, so the candidate sweep runs on the validation slice and the chosen cutoff is scored once on the held-out test slice."
   ]}
   bridge="Just as a JS alert threshold (`if (errorRate > 0.05) page('oncall')`) is a static config value, an anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) must be tuned against the error distribution, because the right cutoff depends on a continuous false-positive/false-negative tradeoff rather than a fixed number in config."
-  youCanNow="Set anomaly detection thresholds from the normal error distribution and evaluate them using precision, recall, and F1 score."
+  youCanNow="Sweep candidate cutoffs against a labeled slice, score each one with precision, recall and F1, and say why a deployment may ship a cutoff away from the F1 peak."
 />
 
 <Epilogue>

@@ -2,13 +2,12 @@ slug: weighted-ensemble
 lessonSlug: time-series-ensemble-methods
 title: "Ensemble Gain Over the Best Member"
 mlContent: evaluation
-instructions: "Write `ensembleGain(members, actual)` and report whether the ensemble was worth running. `members` is an array of `{ name, predictions }`; `actual` holds the true values at the same positions. Return `{ perMember, ensemble, beatsBest }`. `perMember` maps each member name to that member's mean absolute error. `ensemble` is the MAE of the plain average of the members' predictions at each position. `beatsBest` is true only when `ensemble` is lower than every member's error. A tie is not a win: one test hands you three members that are all wrong by the same amount in the same direction, and one hands you a strong member with two weak ones. A third hands you members whose errors partly cancel, so the blend beats the average member and still loses to the best one. A fourth lists the worst member first: the blend beats that one and still loses to the best."
+instructions: "Write `ensembleGain(members, actual)` and report whether the ensemble was worth running. `members` is an array of `{ name, predictions, heldOutError }`, where `heldOutError` is that member's error on LAST week's held-out readings; `actual` holds the true values at the same positions as `predictions`. Return `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-variance weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the three weights on a scale that totals 1. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win. One test hands you three members that are all wrong by the same amount in the same direction, one hands you a strong member with two weak ones, and one hands you members whose errors partly cancel, so the blend beats the average member and still loses to the best one. A fourth lists the worst member first. Two more are about the weights: on one window last week's ranking still holds and the weighted blend scores better than the plain average, and on the next the ranking has flipped, last week's best member is this week's worst, and weighting by a stale score makes the blend worse than the plain average. A last window is drawn fresh on every run, so every number it checks has to be computed rather than recognised."
 starterCode: |
   function ensembleGain(members, actual) {
-    // Mean absolute error of one prediction series against `actual`.
-    // Score every member with it, then score the averaged predictions.
-    // beatsBest: is the ensemble error below EVERY member's error?
-    return { perMember: {}, ensemble: 0, beatsBest: false };
+    // The verdict is a comparison, so every member and both blends have to
+    // be scored by the same error measure.
+    return { perMember: {}, ensemble: 0, weights: {}, weighted: 0, beatsBest: false };
   }
 solutionCode: |
   function ensembleGain(members, actual) {
@@ -25,83 +24,168 @@ solutionCode: |
       (_, i) =>
         members.reduce((sum, m) => sum + m.predictions[i], 0) / members.length,
     );
-
     const ensemble = mae(blended);
+
+    const inverseVariance = members.map(
+      (member) => 1 / (member.heldOutError * member.heldOutError),
+    );
+    const total = inverseVariance.reduce((sum, v) => sum + v, 0);
+    const weights = {};
+    members.forEach((member, i) => {
+      weights[member.name] = inverseVariance[i] / total;
+    });
+
+    const weightedBlend = actual.map((_, i) =>
+      members.reduce((sum, m) => sum + m.predictions[i] * weights[m.name], 0),
+    );
+    const weighted = mae(weightedBlend);
+
     const best = Math.min(...Object.values(perMember));
-    return { perMember, ensemble, beatsBest: ensemble < best };
+    return { perMember, ensemble, weights, weighted, beatsBest: ensemble < best };
   }
 testCode: |
   describe('ensembleGain scores members and the blend', () => {
     it('reports one mean absolute error per member', () => {
       const result = ensembleGain(
         [
-          { name: 'LSTM', predictions: [12, 18, 30, 40] },
-          { name: 'Attention', predictions: [8, 22, 30, 40] },
-          { name: 'Kalman', predictions: [10, 20, 33, 37] },
+          { name: 'LSTM', predictions: [12, 18, 30, 40], heldOutError: 0.045 },
+          { name: 'Attention', predictions: [8, 22, 30, 40], heldOutError: 0.038 },
+          { name: 'Kalman', predictions: [10, 20, 33, 37], heldOutError: 0.058 },
         ],
         [10, 20, 30, 40],
       );
-      expect(result.perMember.LSTM).toBeCloseTo(1, 4);
-      expect(result.perMember.Attention).toBeCloseTo(1, 4);
-      expect(result.perMember.Kalman).toBeCloseTo(1.5, 4);
+      expect(
+        result.perMember.LSTM,
+        'perMember maps each member name to the mean absolute error for that member. Absolute means an error above the truth and an error below it both count.',
+      ).toBeCloseTo(1, 4);
+      expect(
+        result.perMember.Attention,
+        'This member misses by the same amount, in the opposite direction, and scores the same. Absolute error does not care which way you missed.',
+      ).toBeCloseTo(1, 4);
+      expect(
+        result.perMember.Kalman,
+        'Two of the four predictions from this member are wrong and two are exact, so the mean runs over all four positions rather than over the misses.',
+      ).toBeCloseTo(1.5, 4);
     });
     it('beats the best member when the errors land in different places', () => {
       const result = ensembleGain(
         [
-          { name: 'LSTM', predictions: [12, 18, 30, 40] },
-          { name: 'Attention', predictions: [8, 22, 30, 40] },
-          { name: 'Kalman', predictions: [10, 20, 33, 37] },
+          { name: 'LSTM', predictions: [12, 18, 30, 40], heldOutError: 0.045 },
+          { name: 'Attention', predictions: [8, 22, 30, 40], heldOutError: 0.038 },
+          { name: 'Kalman', predictions: [10, 20, 33, 37], heldOutError: 0.058 },
         ],
         [10, 20, 30, 40],
       );
-      expect(result.ensemble).toBeCloseTo(0.5, 4);
-      expect(result.beatsBest).toBe(true);
+      expect(
+        result.ensemble,
+        'The three members disagree in different directions at each position, so averaging them cancels part of every error.',
+      ).toBeCloseTo(0.5, 4);
+      expect(
+        result.beatsBest,
+        'This is the case an ensemble is bought for: the blend scores better than every member in it.',
+      ).toBe(true);
+    });
+    // The held-out errors here are the three the lesson works through, so the
+    // weights they produce are the three confidences printed there.
+    it("builds the weights out of last week's errors, scaled to total 1", () => {
+      const result = ensembleGain(
+        [
+          { name: 'LSTM', predictions: [12, 18, 30, 40], heldOutError: 0.045 },
+          { name: 'Attention', predictions: [8, 22, 30, 40], heldOutError: 0.038 },
+          { name: 'Kalman', predictions: [10, 20, 33, 37], heldOutError: 0.058 },
+        ],
+        [10, 20, 30, 40],
+      );
+      const total =
+        result.weights.LSTM + result.weights.Attention + result.weights.Kalman;
+      expect(
+        total,
+        'The weights are shares of one blend, so they total 1. Raw 1 / e^2 values do not: they run into the hundreds here.',
+      ).toBeCloseTo(1, 6);
+      expect(
+        result.weights.Attention,
+        'This member had the smallest held-out error, so inverse variance gives it the largest share. A share equal to the others means the errors were never squared, or never used at all.',
+      ).toBeCloseTo(0.46678, 4);
+      expect(
+        result.weights.LSTM,
+        'Inverse variance, not inverse error: squaring first is what spreads these three shares as far apart as they are.',
+      ).toBeCloseTo(0.332854, 4);
+      expect(
+        result.weights.Kalman,
+        'The largest held-out error takes the smallest share, and the three shares still have to total 1.',
+      ).toBeCloseTo(0.200366, 4);
+      expect(
+        result.weighted,
+        'This is the MAE of the blend those weights produce, scored exactly the way a member is scored: blend position by position first, then take the mean absolute error of the blended series.',
+      ).toBeCloseTo(0.434474, 4);
     });
   });
   describe('ensembleGain when averaging buys nothing', () => {
     it('ties the best member when every member is off by the same amount', () => {
       const result = ensembleGain(
         [
-          { name: 'LSTM', predictions: [37, 39, 38, 40] },
-          { name: 'Attention', predictions: [37, 39, 38, 40] },
-          { name: 'Kalman', predictions: [37, 39, 38, 40] },
+          { name: 'LSTM', predictions: [37, 39, 38, 40], heldOutError: 0.04 },
+          { name: 'Attention', predictions: [37, 39, 38, 40], heldOutError: 0.05 },
+          { name: 'Kalman', predictions: [37, 39, 38, 40], heldOutError: 0.06 },
         ],
         [36, 38, 37, 39],
       );
-      expect(result.ensemble).toBeCloseTo(1, 4);
+      expect(
+        result.ensemble,
+        'Three members that agree average to themselves, so the blend inherits the whole shared error.',
+      ).toBeCloseTo(1, 4);
       expect(result.perMember.LSTM).toBeCloseTo(1, 4);
-      expect(result.beatsBest).toBe(false);
+      expect(
+        result.weighted,
+        'Weighting cannot help either when the members agree: any shares that total 1 return the same series.',
+      ).toBeCloseTo(1, 4);
+      expect(
+        result.beatsBest,
+        'The blend and the best member scored the same here. A tie is not a win, so this reports false, which means the comparison has to be strict.',
+      ).toBe(false);
     });
     it('loses to a strong member two weak ones drag down', () => {
       const result = ensembleGain(
         [
-          { name: 'LSTM', predictions: [10, 20, 30, 40] },
-          { name: 'Attention', predictions: [16, 20, 30, 40] },
-          { name: 'Kalman', predictions: [10, 26, 30, 40] },
+          { name: 'LSTM', predictions: [10, 20, 30, 40], heldOutError: 0.03 },
+          { name: 'Attention', predictions: [16, 20, 30, 40], heldOutError: 0.05 },
+          { name: 'Kalman', predictions: [10, 26, 30, 40], heldOutError: 0.05 },
         ],
         [10, 20, 30, 40],
       );
-      expect(result.perMember.LSTM).toBeCloseTo(0, 4);
+      expect(
+        result.perMember.LSTM,
+        'This member is exact on all four positions, so its error is zero and nothing can beat it.',
+      ).toBeCloseTo(0, 4);
       expect(result.ensemble).toBeCloseTo(1, 4);
-      expect(result.beatsBest).toBe(false);
+      expect(
+        result.beatsBest,
+        'Averaging a perfect member with two weak ones spoils it. An ensemble is not free.',
+      ).toBe(false);
     });
     it('still loses when the blend beats the average member but not the best one', () => {
       const result = ensembleGain(
         [
-          { name: 'LSTM', predictions: [10, 20, 30, 41] },
-          { name: 'Attention', predictions: [16, 20, 30, 41] },
-          { name: 'Kalman', predictions: [7, 20, 30, 41] },
+          { name: 'LSTM', predictions: [10, 20, 30, 41], heldOutError: 0.03 },
+          { name: 'Attention', predictions: [16, 20, 30, 41], heldOutError: 0.05 },
+          { name: 'Kalman', predictions: [7, 20, 30, 41], heldOutError: 0.04 },
         ],
         [10, 20, 30, 40],
       );
-      expect(result.perMember.LSTM).toBeCloseTo(0.25, 4);
+      expect(
+        result.perMember.LSTM,
+        'Every member is scored on its own first, before anything is blended.',
+      ).toBeCloseTo(0.25, 4);
       expect(result.perMember.Attention).toBeCloseTo(1.75, 4);
       expect(result.perMember.Kalman).toBeCloseTo(1, 4);
       // Mean of the member errors is 1, so a solution that compares the
       // ensemble against that mean returns true here. The best member scored
       // 0.25, and 0.5 is worse than 0.25.
       expect(result.ensemble).toBeCloseTo(0.5, 4);
-      expect(result.beatsBest).toBe(false);
+      expect(
+        result.beatsBest,
+        'The blend beat the average member on this window and still lost to the best one. Comparing against the mean member error reports true here, and that is the misconception this case exists to catch.',
+      ).toBe(false);
     });
     // Member order is the point of this one. The worst member is listed
     // first and the best is listed last, so comparing the ensemble against
@@ -112,19 +196,161 @@ testCode: |
     it('loses to the best member even when it beats the one listed first', () => {
       const result = ensembleGain(
         [
-          { name: 'Kalman', predictions: [78, 70, 68, 72] },
-          { name: 'Attention', predictions: [66, 70, 68, 72] },
-          { name: 'LSTM', predictions: [57, 70, 68, 72] },
+          { name: 'Kalman', predictions: [78, 70, 68, 72], heldOutError: 0.06 },
+          { name: 'Attention', predictions: [66, 70, 68, 72], heldOutError: 0.05 },
+          { name: 'LSTM', predictions: [57, 70, 68, 72], heldOutError: 0.04 },
         ],
         [60, 64, 68, 72],
       );
-      expect(result.perMember.Kalman).toBeCloseTo(6, 4);
+      expect(
+        result.perMember.Kalman,
+        'The member listed first is the worst one on this window, which is what this case is built to catch.',
+      ).toBeCloseTo(6, 4);
       expect(result.perMember.Attention).toBeCloseTo(3, 4);
       expect(result.perMember.LSTM).toBeCloseTo(2.25, 4);
       expect(result.ensemble).toBeCloseTo(3.25, 4);
-      expect(result.beatsBest).toBe(false);
+      expect(
+        result.beatsBest,
+        'The best member is listed last on this window. Comparing the blend against members[0], or against the worst member, reports true here.',
+      ).toBe(false);
     });
   });
-estimatedMinutes: 10
+  describe('ensembleGain weights by a score from another week', () => {
+    // Last week's ranking still holds this week: the member with the smallest
+    // held-out error is also the most accurate here, so leaning on it pays.
+    it("beats the plain average when last week's ranking still holds", () => {
+      const result = ensembleGain(
+        [
+          { name: 'LSTM', predictions: [10.5, 20.5, 29.5, 40.5], heldOutError: 0.02 },
+          { name: 'Attention', predictions: [12, 22, 28, 38], heldOutError: 0.06 },
+          { name: 'Kalman', predictions: [13, 23, 27, 37], heldOutError: 0.08 },
+        ],
+        [10, 20, 30, 40],
+      );
+      expect(result.ensemble).toBeCloseTo(1.75, 4);
+      expect(
+        result.weighted,
+        'The strongest member carries about six sevenths of this blend, so the weighted series sits close to it and scores far better than the equal-share average.',
+      ).toBeCloseTo(0.600592, 4);
+      expect(
+        result.weighted < result.ensemble,
+        "Weighting is supposed to help here: last week's best member is this week's best member too.",
+      ).toBe(true);
+      expect(
+        result.beatsBest,
+        "beatsBest is about the plain average, and the plain average lost to the best member on this window. The weighted blend lost to it as well.",
+      ).toBe(false);
+    });
+    // The ranking flipped: last week's best member is this week's worst. The
+    // weights know nothing about that, which is why the lesson says to
+    // rescore them after the signal drifts.
+    it('is the worse of the two blends when the ranking has flipped', () => {
+      const result = ensembleGain(
+        [
+          { name: 'LSTM', predictions: [16, 26, 36, 46], heldOutError: 0.02 },
+          { name: 'Attention', predictions: [10.5, 20.5, 30.5, 40.5], heldOutError: 0.08 },
+          { name: 'Kalman', predictions: [11, 21, 31, 41], heldOutError: 0.07 },
+        ],
+        [10, 20, 30, 40],
+      );
+      expect(result.perMember.LSTM).toBeCloseTo(6, 4);
+      expect(result.ensemble).toBeCloseTo(2.5, 4);
+      expect(
+        result.weighted,
+        "Last week's scores hand most of this blend to the member that is wrong by 6 this week, so the weighted series scores worse than the equal-share average. Weights built from THIS window's errors instead would land near the best member and miss the point of the case.",
+      ).toBeCloseTo(5.342809, 4);
+      expect(
+        result.weighted > result.ensemble,
+        'Confidence is a measurement from another week. When the ranking flips, leaning on it costs you, and the fix is to rescore rather than to stop weighting.',
+      ).toBe(true);
+    });
+    // Provenance check, added 2026-09-08 and extended 2026-09-12 to the
+    // weights. Every fixture above is a published window, so a submission
+    // that recognises one and quotes its verdict cleared the whole grader
+    // (scripts/exercise-cheats/weighted-ensemble.js is that submission).
+    // Here the truth, the members and the held-out errors are drawn at run
+    // time, and half the trials bias every member the same way, where
+    // averaging cannot help. Neither verdict can be guessed: both are
+    // recomputed beside the submission.
+    it('rederives the errors, the weights and the verdict on members drawn at random', () => {
+      const round = (x) => Math.round(x * 1000) / 1000;
+      for (let trial = 0; trial < 4; trial++) {
+        const actual = [];
+        for (let i = 0; i < 4; i++) actual.push(round(Math.random() * 40 + 10));
+        // Even trials push every member the same way, with a different
+        // error scale each, so the errors add up and the best member stays
+        // clear of the blend. Odd trials give the three members the same
+        // error size at each position and send one of them the other way,
+        // so two thirds of every error cancels in the average. One verdict
+        // of each kind per run, on values nobody can know in advance.
+        const aligned = trial % 2 === 0;
+        const sizes = actual.map(() => 0.5 + Math.random() * 2);
+        const minority = actual.map(() => Math.floor(Math.random() * 3));
+        const members = ['LSTM', 'Attention', 'Kalman'].map((name, index) => ({
+          name,
+          heldOutError: round(0.02 + Math.random() * 0.06),
+          predictions: actual.map((v, i) => {
+            const size = aligned ? sizes[i] * (1 + index * 0.6) : sizes[i];
+            const sign = aligned ? 1 : minority[i] === index ? -1 : 1;
+            return round(v + sign * size);
+          }),
+        }));
+
+        const mae = (values) =>
+          values.reduce((sum, v, i) => sum + Math.abs(v - actual[i]), 0) /
+          actual.length;
+        const expectedPer = {};
+        for (const member of members) {
+          expectedPer[member.name] = mae(member.predictions);
+        }
+        const blended = actual.map(
+          (_, i) =>
+            members.reduce((sum, m) => sum + m.predictions[i], 0) /
+            members.length,
+        );
+        const expectedEnsemble = mae(blended);
+        const inverse = members.map((m) => 1 / (m.heldOutError * m.heldOutError));
+        const total = inverse.reduce((sum, v) => sum + v, 0);
+        const expectedWeights = {};
+        members.forEach((m, i) => {
+          expectedWeights[m.name] = inverse[i] / total;
+        });
+        const expectedWeighted = mae(
+          actual.map((_, i) =>
+            members.reduce(
+              (sum, m) => sum + m.predictions[i] * expectedWeights[m.name],
+              0,
+            ),
+          ),
+        );
+        const lowest = Math.min.apply(null, Object.keys(expectedPer).map((k) => expectedPer[k]));
+
+        const result = ensembleGain(members, actual);
+        for (const member of members) {
+          expect(
+            result.perMember[member.name],
+            'These predictions are drawn at run time, so every member error has to be computed from them.',
+          ).toBeCloseTo(expectedPer[member.name], 6);
+          expect(
+            result.weights[member.name],
+            "The held-out errors are drawn at run time too, and the weight for this member is recomputed from them beside your submission. Weights read off this window's own errors land somewhere else.",
+          ).toBeCloseTo(expectedWeights[member.name], 6);
+        }
+        expect(
+          result.ensemble,
+          'The blend of a window nobody published. Average the members position by position, then score that series the way you scored a member.',
+        ).toBeCloseTo(expectedEnsemble, 6);
+        expect(
+          result.weighted,
+          'The weighted blend of the same window, scored the same way. This one uses the shares above rather than equal thirds.',
+        ).toBeCloseTo(expectedWeighted, 6);
+        expect(
+          result.beatsBest,
+          'The verdict is recomputed here from the errors above, and on half these trials every member is wrong in the same direction, where averaging cannot help. A verdict that comes from recognising the window instead of comparing the numbers lands on the wrong one.',
+        ).toBe(expectedEnsemble < lowest);
+      }
+    });
+  });
+estimatedMinutes: 14
 difficulty: intermediate
 skillAxis: evaluation

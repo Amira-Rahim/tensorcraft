@@ -1,7 +1,7 @@
 slug: load-model
 lessonSlug: model-loading
 title: "Load and Inspect a Model"
-instructions: "Write a function that loads a TensorFlow.js model from a URL, then returns an object with the model's input shape, output shape, and total number of layers."
+instructions: "Write a function that loads a TensorFlow.js model from a URL and returns an object with the model's input shape, output shape, and total number of layers, shaped `{ inputShape, outputShape, layerCount }`. Load the URL once and read all three fields off the model that one call resolved to. Each load fetches the manifest and every weight shard, so a second load of the same URL is a second download of the whole model; the tests count the calls."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -12,8 +12,9 @@ starterCode: |
   }
 
   async function loadAndInspect(url: string): Promise<ModelInfo> {
-    // 1. Load the model from the URL
-    // 2. Extract input shape, output shape, and layer count
+    // Every call to the loader is a fresh download of the manifest and all
+    // the weight shards, so the number of calls matters as much as the three
+    // fields you read.
     return null; // your code here
   }
 solutionCode: |
@@ -35,34 +36,48 @@ solutionCode: |
   }
 testCode: |
   describe('loadAndInspect', () => {
+    // The starter returns null, and reading .layerCount off null reports a
+    // property name instead of the task. Every test goes through here so the
+    // first Run says what is missing.
+    async function inspect(url) {
+      const info = await loadAndInspect(url);
+      expect(info, 'loadAndInspect has to resolve to an object carrying inputShape, outputShape and layerCount. The starter returns null until you build that object from the model you loaded.').toBeDefined();
+      return info;
+    }
+
     it('reports the loaded model\'s real architecture, not invented values', async () => {
-      const info = await loadAndInspect('/models/deep-scan/model.json');
+      const info = await inspect('/models/deep-scan/model.json');
       const ref = await tf.loadLayersModel('/models/deep-scan/model.json');
-      expect(info.layerCount).toBe(ref.layers.length);
-      expect(info.inputShape).toEqual(ref.inputs[0].shape);
-      expect(info.outputShape).toEqual(ref.outputs[0].shape);
+      const shapeNote = 'Report the shape the way the model reports it. The first entry is the batch dimension and comes back null, so a shape written out by hand will not match.';
+      expect(info.layerCount, 'This is the layer count of the model at that url, so read it off the model you loaded.').toBe(ref.layers.length);
+      expect(info.inputShape, shapeNote).toEqual(ref.inputs[0].shape);
+      expect(info.outputShape, shapeNote).toEqual(ref.outputs[0].shape);
     });
     it('inputShape and outputShape are genuine shape arrays from the model', async () => {
-      const info = await loadAndInspect('/models/deep-scan/model.json');
+      const info = await inspect('/models/deep-scan/model.json');
       expect(Array.isArray(info.inputShape)).toBe(true);
       expect(Array.isArray(info.outputShape)).toBe(true);
       expect(info.inputShape[info.inputShape.length - 1]).toBeGreaterThan(0);
       expect(info.outputShape[info.outputShape.length - 1]).toBeGreaterThan(0);
     });
-    it('reads the architecture off the model it loaded, whatever that model is', async () => {
+    it('reads the architecture off the model it loaded, and loads that url once', async () => {
       // Rebind tf for the duration of this call so the sentinel url resolves
       // to a 7 -> 5 -> 3 -> 2 model this test builds. No shape triple can be
       // hardcoded past it. Only the sentinel url is diverted, so the sibling
       // tests' own loads (tests run concurrently) still get the normal model.
+      // The same wrapper counts the calls: reading the three fields off three
+      // separate loads answers correctly and downloads the model three times.
       const sentinel = '/models/spy-check/model.json';
       const realTf = tf;
       let seen = null;
+      let loads = 0;
       tf = new Proxy(realTf, {
         get(target, prop) {
           if (prop === 'loadLayersModel') {
             return async function (url) {
               if (url !== sentinel) return realTf.loadLayersModel(url);
               seen = url;
+              loads++;
               const m = realTf.sequential();
               m.add(realTf.layers.dense({ units: 5, activation: 'relu', inputShape: [7] }));
               m.add(realTf.layers.dense({ units: 3, activation: 'relu' }));
@@ -75,7 +90,7 @@ testCode: |
       });
       let info;
       try {
-        info = await loadAndInspect(sentinel);
+        info = await inspect(sentinel);
       } finally {
         tf = realTf;
       }
@@ -83,6 +98,7 @@ testCode: |
       expect(info.layerCount).toBe(3);
       expect(info.inputShape[info.inputShape.length - 1]).toBe(7);
       expect(info.outputShape[info.outputShape.length - 1]).toBe(2);
+      expect(loads, 'One inspection is one load. Every field you report hangs off the model the first call resolved to, so awaiting the loader again per field refetches the manifest and the weight shards each time.').toBe(1);
     });
   });
 estimatedMinutes: 12

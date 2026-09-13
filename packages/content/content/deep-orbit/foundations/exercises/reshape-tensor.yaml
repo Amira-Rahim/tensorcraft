@@ -1,8 +1,17 @@
 slug: reshape-tensor
 lessonSlug: tensor-shapes
 title: "Find the Signal's Layout"
-instructions: "Twelve readings arrived flat: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]. Farah believes they're 3 time steps × 4 channels. Reshape `flat` into a [3, 4] matrix called `grid`, then extract the SECOND row (time step index 1) into `step1` as a plain JS array. Careful: row-major fill means you need to know exactly which four values land in that row. All three rows are checked against those twelve readings, so a wrong guess fails. Release `flat` when you are done with it if you like; `grid` has to still be there for the grader."
-starterCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\n// 1. Reshape to [3, 4]\nconst grid = null; // your code here\n\n// 2. Extract row index 1 as a JS array\n// Hint: tf.slice or array indexing after .arraySync()\nconst step1 = null;"
+instructions: "Twelve readings arrived flat: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]. Farah believes they're 3 time steps × 4 channels. Reshape `flat` into a [3, 4] matrix called `grid`, then extract the SECOND row (time step index 1) into `step1` as a plain JS array of four numbers. Careful: row-major fill means you need to know exactly which four values land in that row. All three rows are checked against those twelve readings, so a wrong guess fails. `grid` also has to come out of `flat` itself: the grader checks that the two share one buffer, so a [3, 4] tensor typed out by hand is rejected even when every number in it is right. Release `flat` when you are done with it if you like; `grid` has to still be there for the grader."
+starterCode: |
+  const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
+
+  // Row-major fill settles which four readings land in the row you were
+  // asked for. Work that out before you run anything.
+  const grid = null; // your code here
+
+  // step1 is a plain JS list of four numbers, which is not what a tensor
+  // hands back.
+  const step1 = null;
 solutionCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\nconst grid = flat.reshape([3, 4]);\n\nconst step1 = grid.arraySync()[1];"
 testCode: |
   describe('Signal Layout', () => {
@@ -14,23 +23,59 @@ testCode: |
     // body. It also let a submission redefine `flat` as twelve zeros and then
     // satisfy the grader's own expectations (both measured 2026-09-08).
     const source = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8];
+    const filled = (value, what) => expect(value, what).toBeDefined();
     it('grid has shape [3, 4]', () => {
-      expect(grid.shape).toEqual([3, 4]);
+      filled(grid, 'Step 1 is still empty. Reshape flat into the layout Farah proposes.');
+      expect(grid.shape, 'Three time steps, four channels in each.').toEqual([3, 4]);
+    });
+    it('grid is a view over flat, which is what makes it a reshape', () => {
+      // Provenance, not values. On tfjs 4.22.0 a reshape hands back a tensor
+      // that SHARES its source's data buffer, so grid.dataId === flat.dataId.
+      // Measured 2026-09-08: reshape(), tf.reshape(), as2D() and clone() all
+      // keep the source dataId, and the comparison still holds after `flat`
+      // is disposed, which the instructions allow. A grid typed out with
+      // tf.tensor2d, or rebuilt from arraySync(), allocates a second buffer,
+      // and that is exactly what lets it hold anything at all: before this
+      // check, a hand-typed [3, 4] grid cleared every other test in the file.
+      filled(grid, 'Step 1 is still empty.');
+      expect(
+        grid.dataId === flat.dataId,
+        'The numbers may be right, but they were not produced by reshaping flat. A reshape rewraps the same buffer under a new shape, so it cannot say anything the readings do not; a grid you build yourself allocates its own buffer and can say whatever you type. Reshape flat itself.',
+      ).toBe(true);
     });
     it('row-major fill: row 0 holds the first readings in order', () => {
+      filled(grid, 'Step 1 is still empty.');
       const rows = grid.arraySync();
-      expect(rows[0]).toEqual(source.slice(0, 4));
+      expect(
+        rows[0],
+        'A reshape fills the first row before it starts the second, so row 0 is the front of the flat list, in order.',
+      ).toEqual(source.slice(0, 4));
     });
     it('middle row lands correctly', () => {
+      filled(grid, 'Step 1 is still empty.');
       const rows = grid.arraySync();
-      expect(rows[1]).toEqual(source.slice(4, 8));
+      expect(
+        rows[1],
+        'Count four values into the flat list and read the next four. Nothing is rearranged on the way in.',
+      ).toEqual(source.slice(4, 8));
     });
     it('last row lands correctly', () => {
+      filled(grid, 'Step 1 is still empty.');
       const rows = grid.arraySync();
-      expect(rows[2]).toEqual(source.slice(8, 12));
+      expect(rows[2], 'The tail of the flat list, in the order it arrived.').toEqual(
+        source.slice(8, 12),
+      );
     });
     it('step1 holds time step index 1, not a column', () => {
-      expect(Array.from(step1)).toEqual(source.slice(4, 8));
+      filled(step1, 'Step 2 is still empty. Pull row index 1 out of the grid.');
+      expect(
+        Array.isArray(step1),
+        'step1 has to arrive as a plain JS array of four numbers, which is what create-a-tensor asked for in lesson 1 as well. tf.slice hands back another tensor and a synchronous read hands back a Float32Array, so neither counts until it has been converted.',
+      ).toBe(true);
+      expect(
+        step1,
+        'A column takes one value from every time step. This asks for one whole time step, all four of its channels.',
+      ).toEqual(source.slice(4, 8));
     });
   });
 estimatedMinutes: 8

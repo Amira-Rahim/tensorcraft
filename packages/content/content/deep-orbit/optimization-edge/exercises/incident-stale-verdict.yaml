@@ -3,7 +3,7 @@ lessonSlug: caching-strategies
 title: "Incident: Cache Served a Verdict From the Old Model"
 mlContent: systems
 instructions: |
-  PAGER: after this morning's model deploy, the dashboard showed a classification the new model disagrees with. It came from the cache. Build `auditCache(entries, currentVersion, now, ttlSeconds)`: an entry must be REFRESHED if its modelVersion differs from currentVersion (a deploy invalidates every cached verdict, no matter how fresh) OR its age (now - cachedAt, seconds) exceeds ttlSeconds. Everything else is safe to serve. Return { serve, refresh } as arrays of keys, preserving input order.
+  PAGER: after this morning's model deploy, the dashboard showed a classification the new model disagrees with. It came from the cache. Build `auditCache(entries, currentVersion, now, ttlSeconds)`: an entry must be REFRESHED if its modelVersion differs from currentVersion (a deploy invalidates every cached verdict, no matter how fresh) OR its age (now - cachedAt, seconds) exceeds ttlSeconds. An age of exactly ttlSeconds has not exceeded it, so that entry is still served. Everything else is safe to serve. Return { serve, refresh } as arrays of keys, preserving input order.
 starterCode: |
   function auditCache(
     entries: { key: string; modelVersion: string; cachedAt: number }[],
@@ -11,17 +11,8 @@ starterCode: |
     now: number,
     ttlSeconds: number,
   ): { serve: string[]; refresh: string[] } {
-    // CONCEPT: a cached verdict is only as trustworthy as the model that
-    // produced it. A deploy changes the model, so a version mismatch
-    // invalidates an entry no matter how recently it was cached; TTL expiry
-    // catches the rest.
-    // RECIPE: walk entries in order, pushing each key into one of two arrays.
-    //   1. staleModel = e.modelVersion !== currentVersion (refresh even if
-    //      the entry is seconds old)
-    //   2. expired = now - e.cachedAt > ttlSeconds (STRICTLY greater: an
-    //      entry aged exactly ttlSeconds is still served)
-    //   3. push e.key into refresh when staleModel || expired, else serve
-    //   4. return { serve, refresh }, input order preserved in each array
+    // Freshness and trust are two different questions here, and only one of
+    // them is about the clock.
     return null; // your code here
   }
 solutionCode: |
@@ -42,47 +33,112 @@ solutionCode: |
   }
 testCode: |
   describe('auditCache', () => {
+    // One guard, so the first Run of the starter reports the contract it has
+    // not met yet instead of a property read on null.
+    function auditOf(
+      entries: { key: string; modelVersion: string; cachedAt: number }[],
+      currentVersion: string,
+      now: number,
+      ttlSeconds: number,
+    ) {
+      const audited = auditCache(entries, currentVersion, now, ttlSeconds);
+      expect(
+        audited,
+        'Nothing came back from this call, so neither bucket exists. auditCache has to return { serve, refresh }; it returns null until you build it.',
+      ).toBeDefined();
+      return audited;
+    }
+    // The keys repeat across these cases on purpose, and one batch is
+    // audited twice under different current versions. Every key that
+    // appears more than once lands in a different bucket at least once,
+    // so a lookup table on the entry name cannot answer the suite: the
+    // audit has to read modelVersion and the clock. The fixtures below are
+    // all literals, though, and the last case is not: it builds its batch
+    // and its answer in the same loop, so there is no tuple to memorise
+    // either.
     it('a deploy invalidates even fresh entries', () => {
-      const r = auditCache(
+      const r = auditOf(
         [{ key: 'a', modelVersion: 'v1', cachedAt: 995 }],
         'v2', 1000, 30,
       );
       expect(r.refresh).toEqual(['a']);
       expect(r.serve).toEqual([]);
     });
-    it('current-version entries within TTL are served', () => {
-      const r = auditCache(
-        [{ key: 'b', modelVersion: 'v2', cachedAt: 980 }],
+    it('the same key is served when it carries the current version', () => {
+      const r = auditOf(
+        [{ key: 'a', modelVersion: 'v2', cachedAt: 980 }],
+        'v2', 1000, 30,
+      );
+      expect(r.serve).toEqual(['a']);
+      expect(r.refresh).toEqual([]);
+    });
+    it('TTL expiry refreshes even the current version', () => {
+      const r = auditOf(
+        [{ key: 'b', modelVersion: 'v2', cachedAt: 900 }],
+        'v2', 1000, 30,
+      );
+      expect(r.refresh).toEqual(['b']);
+      expect(r.serve).toEqual([]);
+    });
+    it('age exactly at TTL still serves (only strictly older expires)', () => {
+      const r = auditOf(
+        [{ key: 'b', modelVersion: 'v2', cachedAt: 970 }],
         'v2', 1000, 30,
       );
       expect(r.serve).toEqual(['b']);
-    });
-    it('TTL expiry refreshes even the current version', () => {
-      const r = auditCache(
-        [{ key: 'c', modelVersion: 'v2', cachedAt: 900 }],
-        'v2', 1000, 30,
-      );
-      expect(r.refresh).toEqual(['c']);
-    });
-    it('age exactly at TTL still serves (only strictly older expires)', () => {
-      const r = auditCache(
-        [{ key: 'd', modelVersion: 'v2', cachedAt: 970 }],
-        'v2', 1000, 30,
-      );
-      expect(r.serve).toEqual(['d']);
+      expect(r.refresh).toEqual([]);
     });
     it('mixed batch keeps input order within each bucket', () => {
-      const r = auditCache(
+      const r = auditOf(
         [
-          { key: 'p', modelVersion: 'v2', cachedAt: 999 },
-          { key: 'q', modelVersion: 'v1', cachedAt: 999 },
-          { key: 'r', modelVersion: 'v2', cachedAt: 100 },
-          { key: 's', modelVersion: 'v2', cachedAt: 998 },
+          { key: 'a', modelVersion: 'v2', cachedAt: 999 },
+          { key: 'b', modelVersion: 'v1', cachedAt: 999 },
+          { key: 'c', modelVersion: 'v2', cachedAt: 100 },
+          { key: 'd', modelVersion: 'v2', cachedAt: 998 },
         ],
         'v2', 1000, 60,
       );
-      expect(r.serve).toEqual(['p', 's']);
-      expect(r.refresh).toEqual(['q', 'r']);
+      expect(r.serve).toEqual(['a', 'd']);
+      expect(r.refresh).toEqual(['b', 'c']);
+    });
+    it('audits a batch that is built here rather than written down', () => {
+      // Ten entries and their expected buckets, out of one loop, against a
+      // clock that reads differently on every run. Nothing in this case is
+      // a literal a submission could have seen before, so the only way
+      // through it is to compare the version and subtract the clock.
+      const now = Math.floor(Date.now() / 1000);
+      const ttlSeconds = 30;
+      const entries: { key: string; modelVersion: string; cachedAt: number }[] = [];
+      const serve: string[] = [];
+      const refresh: string[] = [];
+      for (let i = 0; i < 10; i++) {
+        const modelVersion = i % 2 === 0 ? 'v7' : 'v1';
+        const key = 'k' + i;
+        entries.push({ key: key, modelVersion: modelVersion, cachedAt: now - i * 7 });
+        (modelVersion === 'v7' && i * 7 <= ttlSeconds ? serve : refresh).push(key);
+      }
+      const r = auditOf(entries, 'v7', now, ttlSeconds);
+      expect(
+        r.serve,
+        'Every second entry here carries the superseded version and every entry from the sixth on is past the TTL, so three of the ten survive both questions.',
+      ).toEqual(serve);
+      expect(r.refresh).toEqual(refresh);
+    });
+    it('after a rollback to v1, the v1 entry is the only one still trusted', () => {
+      // Same four entries, same clock, and a TTL wide enough that nothing
+      // has aged out. Only the current version changed, and every verdict
+      // flips except the entry cached under v1.
+      const r = auditOf(
+        [
+          { key: 'a', modelVersion: 'v2', cachedAt: 999 },
+          { key: 'b', modelVersion: 'v1', cachedAt: 999 },
+          { key: 'c', modelVersion: 'v2', cachedAt: 100 },
+          { key: 'd', modelVersion: 'v2', cachedAt: 998 },
+        ],
+        'v1', 1000, 2000,
+      );
+      expect(r.serve).toEqual(['b']);
+      expect(r.refresh).toEqual(['a', 'c', 'd']);
     });
   });
 estimatedMinutes: 12

@@ -26,11 +26,17 @@ consequence:
   narrative: "Demir leaves a run going overnight on the strength of an analogy. The analogy does not survive the log."
 hints:
   - level: nudge
-    content: "A SimpleRNN layer reads the sequence step by step, carrying a hidden state forward, so one learned rule covers every step instead of a separate weight per position."
+    content: "A step of an RNN is an ordinary loop iteration with one number carried across it. What arrives now is half of what the cell reads; the other half is what it was already holding. The second half of the exercise is the same cell with its weights chosen for you, so the work there is getting them out and naming them correctly."
   - level: guidance
-    content: "In buildRNN(), add tf.layers.simpleRNN with units: 16 and inputShape: [5, 3] (5 time steps of 3 features), then tf.layers.dense with 1 unit and sigmoid activation, compile with adam and binaryCrossentropy, and return the model. The grader checks the first layer's class is 'SimpleRNN', so Flatten plus Dense will not pass."
+    content: "The state has to outlive the loop without outliving the call. Declare it before the loop starts and reassign it at every step, so what it holds at the end depends on the whole window. Declared inside the loop, every step starts from nothing. Declared outside the function, the second call starts where the first one stopped. Two of the arguments meet inside one squashing call: one scales what the cell was already holding, the other scales what just arrived. Collect the state after every step, not only the last one. A layer has no numbers of its own until it belongs to a model, so ask the model rather than the layer, and read the three tensors it returns in the order it returns them rather than the order the formula above is written in."
   - level: solution
-    content: "model.add(tf.layers.simpleRNN({ units: 16, inputShape: [5, 3] })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] }); return model;"
+    content: |
+      const states = []; let h = 0; for (const reading of readings) { h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias); states.push(h); } return states;
+      const model = tf.sequential();
+      const cell = tf.layers.simpleRNN({ units: 1, inputShape: [timeSteps, 1], returnSequences: true });
+      model.add(cell);
+      const [kernel, recurrentKernel, biasTensor] = model.getWeights();
+      return { model, inputWeight: kernel.dataSync()[0], recurrentWeight: recurrentKernel.dataSync()[0], bias: biasTensor.dataSync()[0], };
 keywords:
   - rnn
   - recurrent
@@ -68,7 +74,7 @@ h.dispose();
 There is your answer, in the last line. The shape is right; the guarantees are gone. Your reducer is a pure function you wrote: same state, same event, same result, and you can read the logic. This one just handed the same input two different outputs, because the hidden state carries everything that came before. And the 0.8 and 1.0 were hand-picked for the demo; in a real cell they are learned from data. Nobody authors the transition function. The weights are the function, and the hidden state is the network's memory.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Process sequential signal data through a recurrent architecture"]} />
+<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a layer's learned weights off the model and check your own arithmetic against what the layer computes"]} />
 
 ## The Learned Reducer
 
@@ -108,13 +114,16 @@ const y = tf.randomUniform([32, 1]).round();
 // Shape drill only: this proves the [5, 3] pipeline runs, nothing more.
 // The labels are random and the loss still falls every epoch, because
 // 1,185 parameters against 32 samples can memorize noise. Run it to 100
-// epochs and training accuracy reaches 1.00 on labels with no pattern in
-// them. None of that generalizes. The real run is tonight's, in the epilogue.
+// epochs and training accuracy lands at exactly 1.00 in twelve runs out
+// of twenty, and at 29 to 31 of the 32 rows in the other eight. None of
+// that generalizes. The real run is tonight's, in the epilogue.
 await model.fit(x, y, { epochs: 10 });
 
 x.dispose();
 y.dispose();`}
 </CodeBlock>
+
+You can read those weights straight off the model. `model.getWeights()` hands back three tensors for that layer: the input kernel, shaped [features, units], then the recurrent kernel, shaped [units, units], then the bias, one number per unit. The order is the library's rather than the formula's, since the lesson writes the recurrent term first and TF.js stores the input kernel first. A layer that has not been added to a model has none of them yet. Build a one-unit cell over a one-feature sequence and those three tensors hold one number each: the `recurrentWeight`, `inputWeight` and `bias` of the drill at the top of this lesson, drawn at random instead of picked by hand.
 
 ## How the RNN Processes a Sequence
 
@@ -154,11 +163,13 @@ Nothing bounds the recurrent weight, though, so the product can sit above 1 for 
 
 The growth does not last, and what stops it is the same `tanh`. At a recurrent weight of 1.5 the cell state settles at 0.8586, and there the per-step factor is `1.5 * (1 - 0.8586 * 0.8586)`, which is 0.394. Past step fifteen this walk shrinks again, and by step 60 the gradient is 2.7e-16 of the one that left the loss. A one-unit cell does that for every weight above 1: the settled factor is 0.82 at 1.1, 0.39 at 1.5, 0.17 at 2. Explosion here is a burst of a dozen steps, not a sustained run. It also needs a state near zero to start from. With the recurrent weight at 1.5 and readings drawn anywhere in plus or minus 0.01, twenty trials all arrived at step 60 below 1e-11. Vanishing is the quieter failure, and it is the one this window has.
 
-The pattern DEEP SCAN needs repeats about every 73 seconds, which on the dashboard's one-sample-per-second feed is a 73-step dependency (the archive's 33-second integration rows are far too coarse to carry it at all). The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
+The pattern DEEP SCAN needs repeats a little over every 73 seconds, and the dashboard feed carries one sample per second. Reaching back 73 steps comes up just short of one full interval, so the dependency the model has to learn is 74 steps long. The archive's 33-second integration rows come 2.2 to an interval, each one an average over its own window. They can show that something repeats. What they cannot carry is the shape inside a pulse, and an 80-row window of them spans 44 minutes instead of one interval. The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
 
 ## Challenge
 
-Build a simple RNN that processes sequential signal data.
+The drill at the top of this lesson ran one cell by hand for three readings. Write that loop yourself, for any window and any weights. One thing it grades is the carry: the same reading has to score one number early in a window and a different number later, and it can only do that if the state you hand from step to step is real.
+
+Then build the library's version of the same cell, a one-unit `tf.layers.simpleRNN`, and read its three weights off the model. The grader runs your loop on those weights and puts it beside what the layer computes for the same readings, step by step. The two land within about a hundred-millionth of each other when your recurrence is the one TF.js runs. Nothing is memorizable here, because the layer draws its own weights at random every time it is built.
 
 <Exercise slug="build-rnn" />
 
@@ -174,7 +185,7 @@ Build a simple RNN that processes sequential signal data.
     "Backpropagation through time multiplies the gradient by the recurrent weight times the tanh slope at every step. Below 1, that product shrinks the error signal exponentially and patterns beyond ~10-20 steps stop being learnable. Above 1 the same product explodes the gradient instead, in bursts that end once the cell saturates and the slope collapses, and gradient clipping is the cap on those bursts."
   ]}
   bridge="Replaying an event log runs a reducer you wrote: same log, same final state, every time. An RNN cell learns that reducer from data, so the same input produces different outputs depending on what came before, and the transition logic is encoded in weights rather than readable code."
-  youCanNow="Build a simple RNN with `tf.layers.simpleRNN` and explain why vanishing gradients prevent it from learning long-range dependencies."
+  youCanNow="Run an RNN cell's hidden state forward by hand, build the same cell with `tf.layers.simpleRNN`, and explain why vanishing gradients prevent it from learning long-range dependencies."
 />
 
 <Epilogue>
@@ -185,6 +196,6 @@ Demir queues the run before he leaves: the simple RNN on 80-step windows, long e
 Six hours of compute to learn nothing. The next overnight run gets cleared through me, with a number attached for what it costs if it fails.
 </Dialogue>
 
-The gradients die out around step twenty. The pattern lives at step seventy-three.
+The gradients die out around step twenty. The pattern lives at step seventy-four.
 
 </Epilogue>

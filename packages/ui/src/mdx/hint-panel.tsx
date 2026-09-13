@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { InstructionText } from "./instruction-text";
 
 interface Hint {
   level: "nudge" | "guidance" | "solution";
@@ -102,9 +103,13 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                       <code>{hint.content}</code>
                     </pre>
                   ) : (
-                    <p className="text-sm leading-relaxed text-text-primary/80">
-                      {hint.content}
-                    </p>
+                    // Guidance hints are authored prose with the same
+                    // backticks, lists and line breaks the instructions use,
+                    // so they share the instructions' renderer (2026-09-13).
+                    <InstructionText
+                      text={hint.content}
+                      className="text-sm leading-relaxed text-text-primary/80"
+                    />
                   )}
                 </div>
               ) : isNext ? (

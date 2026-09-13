@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "A reading is anomalous when it sits too many standard deviations from the mean in either direction: the absolute z-score is what matters, so a deep dip counts as much as a spike"
   - level: guidance
-    content: "Wrap value, mean, and std with tf.scalar, chain .sub and .div to get the z-score, then call .abs() so negative deviations count too. Read the number back with .dataSync()[0] and return whether it is strictly greater than 3 (a z-score of exactly 3 is still normal)"
+    content: "A z-score counts spreads rather than measuring distance: divide the reading's deviation from the mean by the spread you were handed, and the same gap counts as a lot on a quiet baseline and almost nothing on a noisy one. Compare the size of that count and ignore its sign, since a dip below the mean is as far out as a spike above it. On the tensor route the result arrives as a tensor rather than a number, so read the value out before you compare it"
   - level: solution
     content: "const z = tf.scalar(value).sub(tf.scalar(mean)).div(tf.scalar(std)).abs(); return z.dataSync()[0] > 3;"
 keywords:
@@ -52,7 +52,7 @@ How do we know which? How do we tell a genuine anomaly from a false alarm?
 
 Monitoring works the same way whatever you ship. You pick a baseline for the numbers you care about: Largest Contentful Paint under 2.5s in a browser, p99 response time under 200ms on a Node service. Then you alert when a value drifts past it. Anomaly detection makes the same move: define what "normal" looks like, then flag whatever lands outside it.
 
-<LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute baseline statistics (mean, std, percentiles) from normal signal data", "Set detection thresholds using statistical methods (z-score, percentile cutoffs)", "Evaluate detection quality with precision and recall tradeoffs"]} />
+<LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score gate, and recompute the baseline when the world underneath it moves", "Recognize the precision and recall tradeoff a threshold sets, and why no single cutoff satisfies both"]} />
 
 <BossBeat
   beatId="deep-orbit-anomaly-7741-training-set"
@@ -125,7 +125,7 @@ console.log(isAnomaly(1.00, baseline));  // true: 3.2 sigmas, the most a spike c
 console.log(isAnomaly(0.00, baseline));  // true: 3.47 sigmas, the far end of the scale`}
 </CodeBlock>
 
-Amplitude arrives here already normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so no reading can come in above 1.00. Against mean 0.52 and std 0.15, a channel pegged at full scale is 3.2 sigma out. A dead channel reading 0.00 is 3.47 sigma, and nothing on this feature reads past those two ends. The gate at 3 sigma therefore fires on amplitudes above 0.97 or below 0.07, the top 3% and the bottom 7% of the scale, and the sigma count stays small however loud the event is. If a sigma count past 3.5 turns up on this feature, look for a units bug before you believe the reading.
+Amplitude arrives here already normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so no reading can come in above 1.00. Against mean 0.52 and std 0.15, a channel pegged at full scale is 3.2 sigma out. A dead channel reading 0.00 is 3.47 sigma, and nothing on this feature reads past those two ends. The gate at 3 sigma therefore fires on amplitudes above 0.97 or below 0.07, the top three and the bottom seven hundredths of the 0-to-1 scale. That is a slice of the scale, not a flag rate: on calm readings the gate fires about a quarter of one percent of the time. The sigma count stays small however loud the event is. If a sigma count above 3.47 turns up on this feature, look for a units bug before you believe the reading.
 
 <DerivationDrawer summary="What the 3-sigma rule assumes, and when it lies">
 **The z-score recipe is a stack of probability claims.** Dividing by the standard deviation and comparing to 3 asserts: readings follow a distribution, that distribution is roughly Gaussian (the bell curve), and its tails put probability 0.0027 beyond 3 sigma. The recipe works exactly as far as those claims hold.
@@ -134,7 +134,7 @@ Amplitude arrives here already normalized: module 4 divides the hull sensor's co
 
 **Two standard ways production data breaks it.** Heavy tails: when rare large effects dominate, 3-sigma events stop being rare and the detector cries wolf. Correlation: channels mounted on the same hull move together, so their noise does not average away and the effective spread is wider than any per-channel std reports.
 
-**Per-channel thresholds also compound.** Loosen the dial to 2 sigma and each channel trips about 5% of the time on calm data. Across 64 channels, a fully dark board then has probability 0.95⁶⁴ ≈ 0.0375: the calm state has a few channels lit. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Both numbers multiply the per-channel rate as if the channels tripped independently, which the paragraph above says hull-mounted channels do not. Correlation leaves that average alone and wrecks the spread around it. Simulate 64 channels that share half their noise and the board goes fully dark 32% of the time instead of about 4%. The median calm reading lights 1 channel rather than 3, and one reading in a hundred lights 28. So judge the count of lit channels against the expectation, rather than treating each lit channel as its own alarm, and expect that count to swing far wider than 3.2 suggests.
+**Per-channel thresholds also compound.** Loosen the dial to 2 sigma and each channel trips about 5% of the time on calm data. Across 64 channels, a fully dark board then has probability 0.95⁶⁴ ≈ 0.0375: the calm state has a few channels lit. On a calm reading, expect about 3 lit channels (64 × 0.05 = 3.2). Both numbers multiply the per-channel rate as if the channels tripped independently, which the paragraph above says hull-mounted channels do not. Correlation leaves that average alone and wrecks the spread around it. Simulate 64 channels that share half their noise variance and the board goes fully dark about a third of the time instead of about 4%. The median calm reading lights 1 channel rather than 3, and one reading in a hundred lights more than 25. So judge the count of lit channels against the expectation, rather than treating each lit channel as its own alarm, and expect that count to swing far wider than 3.2 suggests.
 </DerivationDrawer>
 
 ## Precision vs Recall
@@ -161,7 +161,7 @@ function recall(r: DetectionResult): number {
 
 ## Challenge
 
-Compute baseline statistics and detect anomalies using z-scores.
+Turn a baseline you are handed into a verdict: flag the readings that sit more than three spreads from the mean, in either direction.
 
 <Exercise slug="detect-anomaly" />
 

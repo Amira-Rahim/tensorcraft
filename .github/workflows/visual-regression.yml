@@ -1,0 +1,399 @@
+# Visual regression: a manual minting job, plus an enforcing job that is
+# switched off until Linux baselines exist.
+#
+# WHY THIS IS NOT "SET RUN_VISUAL=1 IN THE E2E JOB", measured 2026-09-08 on
+# Playwright 1.62.1.
+#
+# Playwright encodes the platform in every snapshot filename:
+# `testInfo.snapshotSuffix = process.platform` (playwright/lib/index.js:345)
+# feeds the default path template
+# `{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}{-projectName}{-snapshotSuffix}{ext}`.
+# All 30 committed baselines are `*-chromium-darwin.png`, so an ubuntu
+# runner resolves `*-chromium-linux.png`, which does not exist. Measured
+# with a scratch spec whose resolver was pointed at a `-linux` name while a
+# `-darwin` file sat next to it:
+#
+#   no snapshot flag          1 failed. The PNG is written into the runner's
+#                             workspace and thrown away with the runner.
+#   -u, --update-snapshots    1 passed. Green against a baseline invented in
+#                             the same run: the self-approving gate.
+#   --update-snapshots=none   1 failed, and nothing is written.
+#
+# So flipping the gate on in CI is either red on every run or a lie. Linux
+# baselines have to be produced by a Linux runner, reviewed by a human, and
+# committed. `docker` is not installed on the owner's machine, so minting
+# locally through the official Playwright image is not an option either.
+#
+# TURNING THE GATE ON, once, by hand:
+#   1. Actions, "Visual regression", Run workflow. That runs `mint` below.
+#   2. Download the `visual-baselines-linux` artifact and look at every PNG.
+#      A baseline minted in the run that compares against it always passes,
+#      so a green mint proves nothing. Only your eyes do.
+#   3. Unzip at the repo root so the PNGs land beside the darwin ones, and
+#      commit them.
+#   4. In that same commit set VISUAL_ENFORCE_DEFAULT below to "1".
+# Full procedure and the local commands: docs/visual-regression.md.
+name: Visual regression
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Matches ci.yml: superseded PR runs are cancelled, every commit on main
+# keeps its own verdict.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # THE SWITCH. "0" means the enforcing job never starts, which is what
+  # keeps CI green while zero Linux baselines exist. Flip to "1" in the
+  # commit that lands them. A repository variable named VISUAL_ENFORCE
+  # overrides this in both directions ("1" arms the gate with no commit,
+  # "0" disarms it with no revert); see the `guard` job.
+  VISUAL_ENFORCE_DEFAULT: "0"
+
+jobs:
+  mint:
+    name: Mint Linux baselines (manual, review then commit)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    # Same placeholder env, and the same reasons, as the e2e job in ci.yml:
+    # NEXT_PUBLIC_* inline at build time, and `next start` sets
+    # NODE_ENV=production, which arms the production tier of the boot
+    # assertion in apps/web/lib/env.ts, so the two server-side Supabase vars
+    # must exist or the server refuses to boot. Every visual spec captures a
+    # guest page; an unreachable Supabase host degrades to signed-out.
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_placeholder_anon_key
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      SUPABASE_URL: https://placeholder.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: sb_placeholder_service_role_key
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # A SEPARATE cache key namespace from the e2e job's
+      # `playwright-${{ runner.os }}-...` on purpose. That job installs
+      # chromium AND webkit (its mobile projects are webkit-engined) and
+      # skips the install entirely on a cache hit, so a chromium-only cache
+      # stored under its key, or under a prefix its restore-keys match,
+      # would resurrect R3-9: "Executable doesn't exist" on the mobile gate.
+      # Do not unify these keys. The visual specs run in the `chromium`
+      # project only, hence chromium only here.
+      - name: Cache Playwright chromium
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-visual-chromium-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            playwright-visual-chromium-${{ runner.os }}-
+
+      - name: Install Playwright chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Install Playwright deps (cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      - name: Restore turbo cache
+        uses: actions/cache@v6
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-
+            turbo-
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v6
+        with:
+          path: apps/web/.next/cache
+          key: nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      # One test writes exactly one snapshot, so the discovered test count is
+      # the number of PNGs a complete mint must produce. Fail-closed: if the
+      # count cannot be read, pipefail takes the step down rather than
+      # letting a later comparison run against an empty expectation.
+      - name: Count the visual tests
+        id: expected
+        run: |
+          set -euo pipefail
+          count=$(pnpm exec playwright test e2e/visual --project=chromium --list 2>/dev/null \
+            | grep -oE 'Total: [0-9]+ tests' | grep -oE '[0-9]+')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Visual tests discovered: $count"
+
+      # Production build, because playwright.config.ts serves the suite with
+      # `next start` under CI. Do NOT switch this to `next dev`: a dev server
+      # over an existing production .next serves unstyled pages that pass
+      # both axe and a freshly minted baseline (2026-08-24), which is the
+      # exact way a mint can certify a broken page.
+      - name: Build web app (placeholder env)
+        run: pnpm turbo build --filter @tensorcraft/web
+
+      - name: Mint the baselines on this runner
+        run: pnpm test:visual:update
+
+      - name: Check the mint is complete and touched nothing else
+        run: |
+          set -euo pipefail
+          expected="${{ steps.expected.outputs.count }}"
+          minted=$(find e2e/visual -name '*-chromium-linux.png' | wc -l | tr -d ' ')
+          echo "Expected $expected Linux baselines, minted $minted."
+          if [ "$minted" -ne "$expected" ]; then
+            echo "::error::Partial mint: $minted Linux baselines for $expected visual tests. Not safe to commit."
+            exit 1
+          fi
+          # On Linux the resolver can only ever write `-linux` names, so
+          # anything else in the diff came from somewhere this job does not
+          # control. Refuse to publish an artifact in that state.
+          unexpected=$(git status --porcelain -- e2e/visual | grep -v -- '-chromium-linux\.png$' || true)
+          if [ -n "$unexpected" ]; then
+            echo "::error::Unexpected changes under e2e/visual, refusing to upload:"
+            echo "$unexpected"
+            exit 1
+          fi
+          # Name parity with the darwin set is advisory. A mismatch means one
+          # of the two platforms is stale, which a human resolves; it does
+          # not make this mint wrong.
+          # `sed 's|.*/||'` rather than find's `-printf`, so the same
+          # snippet can be run on a mac to check it before pushing.
+          find e2e/visual -name '*-chromium-darwin.png' \
+            | sed 's|.*/||; s|-chromium-darwin\.png$||' | sort > /tmp/names-darwin.txt
+          find e2e/visual -name '*-chromium-linux.png' \
+            | sed 's|.*/||; s|-chromium-linux\.png$||' | sort > /tmp/names-linux.txt
+          if [ -s /tmp/names-darwin.txt ] && ! diff -q /tmp/names-darwin.txt /tmp/names-linux.txt >/dev/null; then
+            echo "::warning::Linux and darwin baseline names differ:"
+            diff /tmp/names-darwin.txt /tmp/names-linux.txt || true
+          fi
+          {
+            echo "### Linux baselines minted"
+            echo
+            echo "$minted PNGs, one per visual test."
+            echo
+            echo "Next: download the \`visual-baselines-linux\` artifact, LOOK AT EVERY IMAGE (a mint is always green, so green means nothing here), unzip it at the repo root, commit the PNGs, and set \`VISUAL_ENFORCE_DEFAULT\` to \`\"1\"\` in \`.github/workflows/visual-regression.yml\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload minted baselines
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-baselines-linux
+          path: e2e/visual/**/*-chromium-linux.png
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-mint-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  guard:
+    name: Baseline presence
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      enforce: ${{ steps.switch.outputs.enforce }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Read the switch and report the baseline state
+        id: switch
+        env:
+          VISUAL_ENFORCE_VAR: ${{ vars.VISUAL_ENFORCE }}
+        run: |
+          set -euo pipefail
+          # The `enforce` output depends on the SWITCH ALONE, never on
+          # whether baselines are present. If someone arms the gate without
+          # committing baselines, the enforcing job must run and fail loudly.
+          # A gate that skips itself when it finds nothing to compare is the
+          # failure mode this whole file is built against.
+          # `:-` on both, so `set -u` cannot take the job down if either
+          # name is ever removed, and a missing switch means OFF.
+          if [ -n "${VISUAL_ENFORCE_VAR:-}" ]; then
+            enforce="${VISUAL_ENFORCE_VAR:-}"
+          else
+            enforce="${VISUAL_ENFORCE_DEFAULT:-0}"
+          fi
+          [ "$enforce" = "1" ] || enforce="0"
+          echo "enforce=$enforce" >> "$GITHUB_OUTPUT"
+
+          linux=$(find e2e/visual -name '*-chromium-linux.png' | wc -l | tr -d ' ')
+          darwin=$(find e2e/visual -name '*-chromium-darwin.png' | wc -l | tr -d ' ')
+          echo "Linux baselines: $linux. Darwin baselines: $darwin. Enforcing: $enforce."
+
+          {
+            echo "### Visual gate state"
+            echo
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Linux baselines committed | $linux |"
+            echo "| Darwin baselines committed | $darwin |"
+            echo "| Enforcing job armed | $enforce |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$enforce" = "1" ]; then
+            exit 0
+          fi
+          if [ "$linux" -gt 0 ]; then
+            echo "::warning::$linux Linux baselines are committed but the visual gate is off. Set VISUAL_ENFORCE_DEFAULT to \"1\" in .github/workflows/visual-regression.yml, or set the VISUAL_ENFORCE repository variable to 1."
+            {
+              echo
+              echo "Baselines are present and the gate is OFF. Arm it: set \`VISUAL_ENFORCE_DEFAULT\` to \`\"1\"\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo
+              echo "No Linux baselines yet, so the enforcing job does not run and this workflow cannot fail. To mint them: Actions, \"Visual regression\", Run workflow. Then review, commit, and arm. See \`docs/visual-regression.md\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  enforce:
+    name: Visual regression (Playwright, prod server, Linux baselines)
+    needs: guard
+    if: needs.guard.outputs.enforce == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    # Placeholder env, same as the e2e job in ci.yml and the mint job above.
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_placeholder_anon_key
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      SUPABASE_URL: https://placeholder.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: sb_placeholder_service_role_key
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # THE GUARD, and it runs before the build so it fails in about a
+      # minute rather than after a full web build. An armed gate with no
+      # Linux baseline, or with a baseline for only some of the tests, is a
+      # FAILURE here. It is never a skip and never a pass: a visual job that
+      # goes green because it found nothing to compare is worse than no job.
+      - name: Require a complete set of Linux baselines
+        run: |
+          set -euo pipefail
+          expected=$(pnpm exec playwright test e2e/visual --project=chromium --list 2>/dev/null \
+            | grep -oE 'Total: [0-9]+ tests' | grep -oE '[0-9]+')
+          linux=$(find e2e/visual -name '*-chromium-linux.png' | wc -l | tr -d ' ')
+          echo "Visual tests: $expected. Linux baselines: $linux."
+          if [ "$linux" -eq 0 ]; then
+            echo "::error::The visual gate is armed and there are ZERO Linux baselines. Playwright would write each missing PNG and, with an update flag, pass against files it invented. Mint them: Actions, \"Visual regression\", Run workflow, review the artifact, commit the PNGs. Or disarm the gate by setting VISUAL_ENFORCE_DEFAULT back to \"0\"."
+            exit 1
+          fi
+          if [ "$linux" -ne "$expected" ]; then
+            echo "::error::$linux Linux baselines for $expected visual tests. A partial set means some tests have nothing to compare against. Re-mint and commit the full set."
+            exit 1
+          fi
+
+      # Separate cache key namespace from the e2e job; see the same step in
+      # the mint job for why they must never be unified.
+      - name: Cache Playwright chromium
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-visual-chromium-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            playwright-visual-chromium-${{ runner.os }}-
+
+      - name: Install Playwright chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Install Playwright deps (cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      - name: Restore turbo cache
+        uses: actions/cache@v6
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-
+            turbo-
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v6
+        with:
+          path: apps/web/.next/cache
+          key: nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      # `next start`, like the e2e job. Never `next dev` here: see the note
+      # in the mint job.
+      - name: Build web app (placeholder env)
+        run: pnpm turbo build --filter @tensorcraft/web
+
+      # `pnpm test:visual` carries --update-snapshots=none, so a missing or
+      # renamed baseline fails instead of being written. Keep it that way.
+      - name: Run the visual suite against the committed baselines
+        run: pnpm test:visual
+
+      # Backstop for the rule above. If any snapshot flag ever slips into
+      # the script or this job, the run will have written into e2e/visual and
+      # this step catches it, whether the suite passed or failed.
+      - name: Baselines must be untouched by an enforcing run
+        if: always()
+        run: |
+          set -euo pipefail
+          dirty=$(git status --porcelain -- e2e/visual)
+          if [ -n "$dirty" ]; then
+            echo "::error::This run wrote to e2e/visual. An enforcing run must only compare. Check for an --update-snapshots flag in package.json or this workflow."
+            echo "$dirty"
+            exit 1
+          fi
+
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-diffs
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

@@ -26,7 +26,7 @@ hints:
   - level: nudge
     content: "Every bin has a fixed center, at bin index times bin width, and bin width is the sample rate over the number of samples. Work out which bin indices the band covers, then read those bins out of the magnitude array without reordering them."
   - level: guidance
-    content: "Bin width is sampleRate / signal.length, so 64 samples at 256 Hz gives 4 Hz. The lowest bin you keep is Math.ceil(loHz / binWidth), the highest is Math.floor(hiHz / binWidth), which makes 50 to 82 Hz bins 13 through 20. Take tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync(), slice(loBin, hiBin + 1), and spread the result after the amplitude and the zero-crossing count. The grader expects 10 values for that band, with 32 at index 2 and 16 at index 7."
+    content: "The feature vector has to mean the same thing in every row, and that constraint decides the rest. Bin k sits at a fixed place in hertz, so a band in hertz picks out a fixed run of k, and the two ends of the band round in opposite directions, because a bin belongs only if its own center falls inside. Work that pair of indices out of the arguments rather than off the numbers the lesson happens to use: the grader moves both the band and the sample rate. Keep the run in the order the transform produced it, and put it after the two time-domain features."
   - level: solution
     content: |
       const amplitude = Math.max(...signal.map(Math.abs));
@@ -85,23 +85,28 @@ He writes 85 on the board and signs it. He's wrong, but in the direction nobody 
 
 function extractFeatures(signal: number[], windowSize: number = 64): number[] {
   return tf.tidy(() => {
+    // All eleven features read the SAME window, so a row means the same
+    // thing no matter how long the capture is. windowSize counts SAMPLES
+    // from one channel: 64 of them at 256 Hz is a quarter second. Module
+    // 1's archive row carried a 64 too, and that one counted channels,
+    // one per hull sensor. Two different 64s.
+    const windowSlice = signal.slice(0, windowSize);
+
     // Raw features (the original 3). The "frequency" feature is a raw
-    // zero-crossing count over the fixed window: proportional to the
-    // dominant frequency, but a count, not hertz. Name it what it is.
-    const amplitude = Math.max(...signal.map(Math.abs));
-    const zeroCrossings = signal.reduce((sum, v, i) =>
-      i > 0 && Math.sign(v) !== Math.sign(signal[i - 1]) ? sum + 1 : sum, 0
+    // zero-crossing count over that window: proportional to the dominant
+    // frequency, but a count, not hertz. Name it what it is. 64 samples
+    // can hold at most 63 crossings, which is the top of the range the
+    // classifier's normalizer assumes.
+    const amplitude = Math.max(...windowSlice.map(Math.abs));
+    const zeroCrossings = windowSlice.reduce((sum, v, i) =>
+      i > 0 && Math.sign(v) !== Math.sign(windowSlice[i - 1]) ? sum + 1 : sum, 0
     );
     // "phase" is the angle of the first two samples, atan2(s1, s0): a crude
     // stand-in for where the waveform sits in its cycle when the window
     // opens. The trained model expects it, so it stays, under its real name.
-    const phase = Math.atan2(signal[1], signal[0]);
+    const phase = Math.atan2(windowSlice[1], windowSlice[0]);
 
-    // FFT features (derived from the same signal). windowSize counts
-    // SAMPLES from one channel: 64 of them at 256 Hz is a quarter second.
-    // Module 1's archive row carried a 64 too, and that one counted
-    // channels, one per hull sensor. Two different 64s.
-    const windowSlice = signal.slice(0, windowSize);
+    // FFT features, computed from those same samples.
     const fft = tf.spectral.rfft(tf.tensor1d(windowSlice));
     const magnitudes = tf.abs(fft).arraySync() as number[];
 
@@ -209,8 +214,8 @@ enhancedModel.compile({
   metrics: ['accuracy'],
 });
 
-// Train with enhanced features
-const history = await enhancedModel.fit(trainX, trainY, {
+// Train on the normalized rows from above, not the raw feature vectors.
+const history = await enhancedModel.fit(tf.tensor2d(trainNorm), trainY, {
   epochs: 50,
   validationSplit: 0.2,
   callbacks: {
@@ -232,7 +237,9 @@ const history = await enhancedModel.fit(trainX, trainY, {
 // Neither column is the 87.0% in the evaluation log. acc is scored on the
 // rows the model just trained on. val_acc is scored on the 20% that
 // validationSplit held back, which every tuning decision has already
-// seen. The log's number comes from a separate scoring pass:
+// seen. The log's number comes from a separate scoring pass, on rows
+// normalized with the stats the training set produced and never their own:
+const testX = tf.tensor2d(testFeatures.map(row => normalizeWithStats(row, stats)));
 const [, testAcc] = enhancedModel.evaluate(testX, testY) as tf.Tensor[];
 console.log('Held-out accuracy:', testAcc.dataSync()[0].toFixed(3));
 // Module 3's evaluation lesson calls that the honest number.`}
@@ -240,7 +247,7 @@ console.log('Held-out accuracy:', testAcc.dataSync()[0].toFixed(3));
 
 ## Challenge
 
-Build the feature vector DEEP SCAN 2.0 trains on: peak amplitude, zero-crossing count, then the fixed bins that cover a band given in hertz.
+Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-crossing count, then the fixed bins that cover a band given in hertz.
 
 <Exercise slug="fft-features" />
 

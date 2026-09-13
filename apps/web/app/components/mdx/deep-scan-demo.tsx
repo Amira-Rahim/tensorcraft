@@ -33,7 +33,7 @@ const STREAM: { id: string; features: [number, number, number] }[] = [
   { id: "7718", features: [0.09, 0.9, 0.14] },
   { id: "7724", features: [0.22, 0.74, 0.25] },
   { id: "7733", features: [0.15, 0.85, 0.19] },
-  { id: "7741", features: [0.5, 0.5, 0.5] },
+  { id: "7741", features: [0.5, 0.59, 0.54] },
 ];
 
 // Minimal surface of the tfjs modules this file needs.

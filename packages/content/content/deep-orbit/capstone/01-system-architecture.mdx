@@ -28,9 +28,9 @@ hints:
   - level: nudge
     content: "A pipeline is a chain: each stage validates its input before processing, and its output becomes the next stage's input."
   - level: guidance
-    content: "In addStage, push the stage onto this.stages and return this so calls chain. In run, walk this.stages in order carrying a data variable: when stage.validate(data) is false, throw an Error whose message is exactly 'Validation failed at: ' plus stage.name; otherwise replace data with stage.process(data), and return data at the end. The grader chains an 8-sample window through normalize, FFT (5 bins), and a [1, 5] tensor stage."
+    content: "Start with the stage contract. validate is a precondition on the data arriving at that stage, so it answers before process ever sees that data, and a stage that refuses has to name itself, or a shape break in the middle of a chain is anonymous. The instructions carry the exact message text the grader matches on. Chaining is the second decision: new Pipeline().addStage(a).addStage(b) only parses if addStage hands back something that has an addStage on it. The third is the walk itself, where one value moves through and each stage's output stands in as the next stage's input, so the pipeline returns whatever the last stage returned. The grader wires an 8-sample window through normalize, then FFT, which emits 5 bins rather than 8, then a stage that demands 5. A mid-chain contract break is a real case here, not a hypothetical. That last stage waits before it answers, so what it returns is a promise until something settles it, and a walk that forgets to settle each stage hands the next one a promise instead of data."
   - level: solution
-    content: "this.stages.push(stage); return this; let data = input; for (const stage of this.stages) { if (!stage.validate(data)) { throw new Error(`Validation failed at: ${stage.name}`); } data = stage.process(data); } return data;"
+    content: "this.stages.push(stage); return this; let data = input; for (const stage of this.stages) { if (!stage.validate(data)) { throw new Error(`Validation failed at: ${stage.name}`); } data = await stage.process(data); } return data;"
 keywords:
   - architecture
   - system-design
@@ -67,7 +67,9 @@ Before anyone asks why it doesn't live on my rig: the rig outruns that dashboard
 
 interface PipelineStage<TInput, TOutput> {
   name: string;
-  process: (input: TInput) => Promise<TOutput>;
+  // A stage may answer straight away or wait: loading weights and reading
+  // a tensor back off the GPU are both async, so run() awaits either.
+  process: (input: TInput) => TOutput | Promise<TOutput>;
   validate: (input: TInput) => boolean;
 }
 
@@ -187,7 +189,7 @@ Running the declared graph takes a scheduler instead of a loop. It walks the man
 
 ## Challenge
 
-Design a typed pipeline and validate the dependency graph.
+Build the chain runner: stage contracts checked before each stage, `addStage` chaining, and one value walked from raw window to model input. The manifest walk above stays the lesson's; the runner is yours.
 
 <Exercise slug="pipeline-architecture" />
 
@@ -201,7 +203,7 @@ Design a typed pipeline and validate the dependency graph.
     "A loop that carries one value per stage runs a chain, not a graph. A stage with two declared dependencies needs a scheduler instead. It walks the manifest in dependency order and keeps every stage's output addressable by name. Check which of the two your runner is."
   ]}
   bridge="Just as `package.json` declares dependencies between npm packages, a pipeline config declares data-shape contracts between ML stages; but unlike npm, a contract violation in ML is silent and shows up as accuracy drift instead of a resolution error."
-  youCanNow="Design a multi-stage ML inference pipeline as a typed dependency graph and validate its component contracts before runtime."
+  youCanNow="Build a multi-stage ML inference pipeline whose stages declare their input and output types, and whose runner refuses bad data at the stage that received it instead of letting a shape break travel downstream, and read a component manifest closely enough to see where a chain runner stops being enough."
 />
 
 <Epilogue>

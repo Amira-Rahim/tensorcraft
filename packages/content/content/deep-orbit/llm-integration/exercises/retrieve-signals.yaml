@@ -1,0 +1,242 @@
+slug: retrieve-signals
+lessonSlug: rag-for-signals
+title: "Retrieve the Rows the Prompt Will Carry"
+instructions: |
+  Retrieval decides what the model is allowed to know. Write
+  `retrieveSignals(query, db, now)`: the step that picks the rows and counts
+  what it left behind.
+
+  Three filters, each applied only when the query carries it. Band:
+  `/band[- ]?(\w+)/i`, keep rows whose `band` equals the captured word, both
+  sides lowercased. Age: `/(\d+)\s*hours/i`, keep rows whose
+  `Date.parse(timestamp)` is strictly newer than `now - hours * 3600 * 1000`,
+  measured from the `now` you are handed rather than the wall clock.
+  Anomalies: `/anomal/i`, keep rows whose `classification` is 'anomaly'. Every
+  filter the query carries has to hold at once, and a query carrying none of
+  the three matches the whole database.
+
+  Then the cap. The prompt has a token budget, so at most 20 rows travel to
+  the model: the first 20 survivors in database order, nothing reordered.
+  Return `{ rows, matched, truncated }`. `rows` is that capped list. `matched`
+  is how many rows passed the filters, counted before the cap. `truncated` is
+  true when the cap dropped at least one matching row. Only `rows` reaches the
+  prompt, so `matched` and `truncated` are the only way anything downstream
+  can tell a complete context from a trimmed one.
+starterCode: |
+  interface Signal {
+    id: string;
+    timestamp: string;
+    band: string;
+    classification: string;
+    confidence: number;
+    amplitude: number;
+    frequency: number;
+    anomalyScore: number;
+  }
+
+  interface Retrieval {
+    rows: Signal[];
+    matched: number;
+    truncated: boolean;
+  }
+
+  const CONTEXT_ROWS = 20;
+
+  function retrieveSignals(query: string, db: Signal[], now: number): Retrieval {
+    // Three filters, and the query decides which of them exist. Only the
+    // capped list travels, so decide where the count comes from.
+    return null; // your code here
+  }
+solutionCode: |
+  interface Signal {
+    id: string;
+    timestamp: string;
+    band: string;
+    classification: string;
+    confidence: number;
+    amplitude: number;
+    frequency: number;
+    anomalyScore: number;
+  }
+
+  interface Retrieval {
+    rows: Signal[];
+    matched: number;
+    truncated: boolean;
+  }
+
+  const CONTEXT_ROWS = 20;
+
+  function retrieveSignals(query: string, db: Signal[], now: number): Retrieval {
+    const bandMatch = query.match(/band[- ]?(\w+)/i);
+    const hoursMatch = query.match(/(\d+)\s*hours/i);
+    const wantsAnomalies = /anomal/i.test(query);
+
+    let survivors = db;
+    if (bandMatch) {
+      survivors = survivors.filter(
+        (s) => s.band.toLowerCase() === bandMatch[1].toLowerCase(),
+      );
+    }
+    if (hoursMatch) {
+      const cutoff = now - parseInt(hoursMatch[1], 10) * 3600 * 1000;
+      survivors = survivors.filter((s) => Date.parse(s.timestamp) > cutoff);
+    }
+    if (wantsAnomalies) {
+      survivors = survivors.filter((s) => s.classification === 'anomaly');
+    }
+
+    const rows = survivors.slice(0, CONTEXT_ROWS);
+    return {
+      rows,
+      matched: survivors.length,
+      truncated: survivors.length > rows.length,
+    };
+  }
+testCode: |
+  describe('retrieveSignals', () => {
+    const HOUR = 3600 * 1000;
+    const CLOCK = Date.parse('2149-06-01T00:00:00Z');
+
+    const makeRow = (id, opts) => ({
+      id,
+      timestamp: new Date(CLOCK - (opts.hoursAgo ?? 1) * HOUR).toISOString(),
+      band: opts.band ?? '7',
+      classification: opts.classification ?? 'anomaly',
+      anomalyScore: opts.anomalyScore ?? 0.8,
+    });
+
+    const retrieve = (query, db, now) => {
+      const r = retrieveSignals(query, db, now ?? CLOCK);
+      expect(
+        r,
+        'retrieveSignals has to return the retrieval: the rows the prompt will carry, how many rows matched, and whether the cap dropped any. While it returns null there is no context to ground an answer in.',
+      ).toBeDefined();
+      return r;
+    };
+
+    it('a question carrying no filter matches the whole database', () => {
+      const db = [makeRow('a', {}), makeRow('b', { band: '3' }), makeRow('c', { classification: 'noise' })];
+      const r = retrieve('what did the array log overnight', db);
+      expect(
+        r.rows.map((s) => s.id),
+        'No filter in the question is not the same as no rows. Returning an empty context here is the failure the DISPATCH note describes: the model that confabulates is the one that retrieved nothing.',
+      ).toEqual(['a', 'b', 'c']);
+      expect(r.matched).toBe(3);
+      expect(r.truncated).toBe(false);
+    });
+
+    it('the band filter folds case on both sides', () => {
+      const db = [makeRow('a', { band: 'K7' }), makeRow('b', { band: 'k3' }), makeRow('c', { band: 'k7' })];
+      const r = retrieve('signals in Band-K7', db);
+      expect(r.rows.map((s) => s.id)).toEqual(['a', 'c']);
+      expect(r.matched).toBe(2);
+    });
+
+    it('the filters the question carries all hold at once', () => {
+      const db = [
+        makeRow('wrong-band', { band: '3' }),
+        makeRow('wrong-class', { classification: 'noise' }),
+        makeRow('too-old', { hoursAgo: 80 }),
+        makeRow('keeper', {}),
+      ];
+      const r = retrieve('anomalous signals in Band-7 from the last 72 hours', db);
+      expect(
+        r.rows.map((s) => s.id),
+        'Each row here fails exactly one of the three filters, except the last. A retrieval that applies only the filter it happened to parse first hands the model rows the question excluded.',
+      ).toEqual(['keeper']);
+      expect(r.matched).toBe(1);
+    });
+
+    it('the window is measured from the now it was handed', () => {
+      const db = [makeRow('inside', { hoursAgo: 71 }), makeRow('outside', { hoursAgo: 73 })];
+      expect(retrieve('anomalies in Band-7 over 72 hours', db).rows.map((s) => s.id)).toEqual(['inside']);
+      expect(
+        retrieve('anomalies in Band-7 over 24 hours', db).rows,
+        'Same rows, narrower question. A retrieval reading the wall clock instead of its now argument cannot tell these two apart, and two runs of one report would then disagree about which rows exist.',
+      ).toEqual([]);
+    });
+
+    it('the cap runs after the filters, not before', () => {
+      const db = [];
+      for (let i = 0; i < 25; i += 1) db.push(makeRow('filler-' + i, { band: '3', classification: 'noise' }));
+      for (let i = 0; i < 6; i += 1) db.push(makeRow('hit-' + i, {}));
+      const r = retrieve('anomalous signals in Band-7', db);
+      expect(
+        r.rows.map((s) => s.id),
+        'Every matching row sits past the cap in database order. Capping the database first and filtering the remainder empties the context while the question had answers.',
+      ).toEqual(['hit-0', 'hit-1', 'hit-2', 'hit-3', 'hit-4', 'hit-5']);
+      expect(r.matched).toBe(6);
+      expect(r.truncated).toBe(false);
+    });
+
+    it('counts the survivors, not the database and not what it sent', () => {
+      const db = [];
+      for (let i = 0; i < 40; i += 1) {
+        // Every row carries a different anomalyScore, and the scores run in a
+        // different order from the rows. Retrieval here is not ranked, so
+        // sorting the survivors by score before the cap ships a different
+        // twenty and the report cannot tell.
+        db.push(
+          makeRow('row-' + i, {
+            band: i % 4 === 3 ? '3' : '7',
+            anomalyScore: ((i * 13) % 40) / 100,
+          }),
+        );
+      }
+      const r = retrieve('anomalous signals in Band-7', db);
+      const expected = db.filter((s) => s.band === '7').map((s) => s.id);
+      expect(
+        r.rows.map((s) => s.id),
+        'The first twenty survivors travel, in database order. Ranking them by anomalyScore first sends a different twenty, and the 21st row is then dropped for scoring low rather than for arriving late.',
+      ).toEqual(expected.slice(0, 20));
+      expect(
+        r.matched,
+        'Three different numbers are available here: how many rows the database holds, how many passed the filters, and how many fit inside the cap. The report needs the middle one, and it is the only one the prompt cannot show.',
+      ).toBe(expected.length);
+      expect(r.truncated).toBe(true);
+    });
+
+    it('at exactly the cap nothing was dropped', () => {
+      const db = [];
+      for (let i = 0; i < 20; i += 1) db.push(makeRow('hit-' + i, {}));
+      for (let i = 0; i < 5; i += 1) db.push(makeRow('miss-' + i, { band: '3' }));
+      const r = retrieve('anomalous signals in Band-7', db);
+      expect(r.rows).toHaveLength(20);
+      expect(r.matched).toBe(20);
+      expect(
+        r.truncated,
+        'The cap was reached and nothing was lost. A flag that fires on reaching the cap sends the report chasing rows that do not exist.',
+      ).toBe(false);
+    });
+
+    it('runs against a database sized at grade time, so the counts cannot be memorised', () => {
+      const hits = 21 + Math.floor(Math.random() * 15);
+      const misses = Math.floor(Math.random() * 9);
+      const db = [];
+      for (let i = 0; i < hits; i += 1) db.push(makeRow('hit-' + i, {}));
+      for (let i = 0; i < misses; i += 1) db.push(makeRow('miss-' + i, { classification: 'noise' }));
+      const r = retrieve('anomalous signals in Band-7', db);
+      expect(r.rows).toHaveLength(20);
+      expect(
+        r.matched,
+        'The database was built a moment ago, so nothing about its size can be memorised. Only the rule survives: count what passed the filters, then cap.',
+      ).toBe(hits);
+      expect(r.truncated).toBe(true);
+    });
+
+    it('an empty retrieval is a retrieval', () => {
+      const db = [makeRow('a', { band: '3' }), makeRow('b', { band: '3' })];
+      const r = retrieve('anomalous signals in Band-9', db);
+      expect(r.rows).toEqual([]);
+      expect(
+        r.matched,
+        'Nothing matched, and the caller has to be able to see that. This is the case the checker in the next challenge treats as the worst one: no evidence in hand, so no claim in the answer is supported.',
+      ).toBe(0);
+      expect(r.truncated).toBe(false);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate
+mlContent: data
+skillAxis: data_prep

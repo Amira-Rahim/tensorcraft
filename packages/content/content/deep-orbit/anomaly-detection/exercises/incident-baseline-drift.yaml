@@ -3,82 +3,156 @@ lessonSlug: normal-vs-anomalous
 title: "Incident: Baseline Distribution Drifted"
 mlContent: systems
 instructions: |
-  PAGER, two weeks after DEEP SCAN went live: the detector now flags 30% of inputs as anomalous (the tuned rate was a fraction of a percent). Investigate whether this is real anomalies or distribution drift. Write `recomputeBaseline(recentNormalData, currentBaseline)` returning:
+  PAGER, two weeks after DEEP SCAN went live: the detector now flags 30% of inputs as anomalous, where the tuned rate was a fraction of a percent. The readings in front of you were reviewed by hand and every one of them is normal, so every flag the live baseline puts on them is a false alarm. Decide whether to roll the baseline forward.
+
+  Write `auditBaseline(recentNormalData, currentBaseline, readingsPerDay)`. The current baseline is `{ mean, std }` and the gate is this lesson's: a reading is flagged when its absolute z-score against that baseline is greater than 3. Return:
 
     {
-      newP95: number,             // new 95th percentile from recent normal data
-      oldP95: number,             // current baseline p95
-      driftMagnitude: number,     // |new - old| / old, 1 decimal
-      action: 'update-baseline' | 'investigate-real-anomaly' | 'no-action',
+      oldAlertsPerDay: number,    // rate the CURRENT baseline flags on this data, times the volume, rounded
+      newAlertsPerDay: number,    // the same, for a baseline recomputed from this data
+      promisedPerDay: number,     // what the 3-sigma rule claims: 0.0027 times the volume, rounded
+      newBaseline: { mean, std }, // recomputed from recentNormalData, std over n (population)
+      spreadRatio: number,        // newBaseline.std / currentBaseline.std
+      action: 'hold' | 'roll-forward' | 'investigate',
     }
 
-  Action: 'update-baseline' if driftMagnitude < 0.5 (gradual drift, safe to roll forward); 'investigate-real-anomaly' if driftMagnitude > 1.0 (the world moved too far, too fast, to be drift); 'no-action' in between, where the shift is too big to absorb silently and too small to call an event: the baseline stays as it is and the window stays under watch.
+  A threshold is a rate promise, and what reaches a human is that rate times the volume. Compare what the live baseline actually costs per day against what the rule promised, then decide:
+
+  `hold` when the current baseline is already at or under its promised load, because nothing has drifted. Otherwise the baseline is over-firing on readings known to be normal, and the recomputed one tells you why. `roll-forward` when the spread held steady (spreadRatio at most 1.5), which means the world shifted and the new centre is the honest one. `investigate` when the spread grew past 1.5, because then the world did not move, it got noisier: a baseline that wide would go quiet, and the readings it stops flagging include the ones you are paid to catch.
 starterCode: |
-  function recomputeBaseline(recentNormalData, currentBaseline) {
-    // Concept: when the world drifts, recompute the baseline from recent
-    // NORMAL data; a percentile resists a single outlier where a max would not.
-    // Recipe:
-    // 1. Sort a copy ascending: [...recentNormalData].sort((a, b) => a - b)
-    // 2. newP95 = the sorted value at index Math.floor(sorted.length * 0.95),
-    //    clamped with Math.min(idx95, sorted.length - 1)
-    // 3. oldP95 = currentBaseline.p95
-    // 4. driftMagnitude = Math.abs(newP95 - oldP95) / oldP95, rounded to
-    //    1 decimal via Math.round(x * 10) / 10; treat oldP95 <= 0 as drift 0
-    // 5. action: driftMagnitude > 1.0 -> 'investigate-real-anomaly';
-    //    driftMagnitude < 0.5 -> 'update-baseline'; otherwise 'no-action'
-    // 6. return { newP95, oldP95, driftMagnitude, action }
+  function auditBaseline(recentNormalData, currentBaseline, readingsPerDay) {
+    // Two numbers decide this: what the live baseline costs a day, and how
+    // much wider the recomputed one is. One of them says whether to act, the
+    // other says which way.
     return null; // your code here
   }
 solutionCode: |
-  function recomputeBaseline(recentNormalData, currentBaseline) {
-    const sorted = [...recentNormalData].sort((a, b) => a - b);
-    const idx95 = Math.floor(sorted.length * 0.95);
-    const newP95 = sorted[Math.min(idx95, sorted.length - 1)];
-    const oldP95 = currentBaseline.p95;
-    const driftMagnitude = oldP95 > 0
-      ? Math.round((Math.abs(newP95 - oldP95) / oldP95) * 10) / 10
-      : 0;
+  function auditBaseline(recentNormalData, currentBaseline, readingsPerDay) {
+    const flagged = (values, mean, std) =>
+      values.filter((v) => Math.abs(v - mean) / std > 3).length;
+
+    const n = recentNormalData.length;
+    const mean = recentNormalData.reduce((a, b) => a + b, 0) / n;
+    const variance = recentNormalData.reduce((a, v) => a + (v - mean) ** 2, 0) / n;
+    const std = Math.sqrt(variance);
+
+    const oldRate = flagged(recentNormalData, currentBaseline.mean, currentBaseline.std) / n;
+    const newRate = flagged(recentNormalData, mean, std) / n;
+
+    const oldAlertsPerDay = Math.round(oldRate * readingsPerDay);
+    const newAlertsPerDay = Math.round(newRate * readingsPerDay);
+    const promisedPerDay = Math.round(0.0027 * readingsPerDay);
+    const spreadRatio = std / currentBaseline.std;
+
     let action;
-    if (driftMagnitude > 1.0) action = 'investigate-real-anomaly';
-    else if (driftMagnitude < 0.5) action = 'update-baseline';
-    else action = 'no-action';
-    return { newP95, oldP95, driftMagnitude, action };
+    if (oldAlertsPerDay <= promisedPerDay) action = 'hold';
+    else if (spreadRatio > 1.5) action = 'investigate';
+    else action = 'roll-forward';
+
+    return {
+      oldAlertsPerDay,
+      newAlertsPerDay,
+      promisedPerDay,
+      newBaseline: { mean, std },
+      spreadRatio,
+      action,
+    };
   }
 testCode: |
-  describe('recomputeBaseline', () => {
-    it('updates baseline for small drift', () => {
-      const data = Array.from({ length: 100 }, (_, i) => i / 100 + 0.05);  // 0.05..1.04
-      const r = recomputeBaseline(data, { p95: 0.95 });
-      expect(r.action).toBe('update-baseline');
+  describe('auditBaseline', () => {
+    // Deterministic normal-ish samples: Box-Muller over a seeded LCG, so the
+    // fixtures are the same on every run and on both harnesses.
+    const sample = (n, m, s, seed) => {
+      let x = seed;
+      const rnd = () => (x = (x * 1103515245 + 12345) % 2147483648) / 2147483648;
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const u = Math.max(rnd(), 1e-9);
+        const v = rnd();
+        out.push(m + s * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v));
+      }
+      return out;
+    };
+    const LIVE = { mean: 0.52, std: 0.15 };
+    const PER_DAY = 2618;
+    // The rule, applied independently in the test, so newAlertsPerDay is
+    // graded against what a recomputed baseline REALLY flags on this data
+    // rather than against a loose bound. A verifier on 2026-09-12 passed
+    // this file with newAlertsPerDay hard-wired to 0, because the only
+    // assertion on it was "less than oldAlertsPerDay".
+    const expectedNewLoad = (data) => {
+      const mean = data.reduce((s, x) => s + x, 0) / data.length;
+      const std = Math.sqrt(data.reduce((s, x) => s + (x - mean) ** 2, 0) / data.length);
+      const flags = data.filter((v) => Math.abs(v - mean) / std > 3).length;
+      return Math.round((flags / data.length) * PER_DAY);
+    };
+
+    it('turns the promised false-alarm RATE into a daily alert count', () => {
+      const r = auditBaseline(sample(400, 0.52, 0.15, 11), LIVE, PER_DAY);
+      expect(r, 'auditBaseline returned nothing, so there is no result to read. It has to return the six-field object the instructions list, and every field below is read off that object.').toBeDefined();
+      expect(
+        r.promisedPerDay,
+        'The 3-sigma rule promises a rate, not a count: about 0.0027 of readings fall past 3 sigma. What reaches a human is that rate times the volume, and at 2,618 readings a day that is 7 alerts. Reporting the rate itself, or the count for some other volume, is the mistake this incident exists to teach.',
+      ).toBe(7);
     });
 
-    it('investigates real anomaly for large drift', () => {
-      const data = Array.from({ length: 100 }, (_, i) => i + 50);  // shifted way up
-      const r = recomputeBaseline(data, { p95: 50 });
-      expect(r.action).toBe('investigate-real-anomaly');
+    it('holds when the live baseline is already inside its promised load', () => {
+      // Measured on this fixture: the live baseline flags 0 of 400, so 0 a day
+      // against a promise of 7. Nothing has drifted.
+      const r = auditBaseline(sample(400, 0.52, 0.15, 11), LIVE, PER_DAY);
+      expect(r, 'auditBaseline returned nothing, so there is no result to read. It has to return the six-field object the instructions list, and every field below is read off that object.').toBeDefined();
+      expect(r.oldAlertsPerDay, 'These readings were drawn from the same distribution the live baseline describes, so its 3-sigma gate should barely fire on them.').toBeLessThanOrEqual(7);
+      expect(r.action, 'The live baseline is costing no more than the rule promised, so there is nothing to roll forward.').toBe('hold');
     });
 
-    it('holds steady in the dead band between drift and anomaly', () => {
-      const data = Array.from({ length: 100 }, (_, i) => i * 0.018);  // p95 lands at 1.71
-      const r = recomputeBaseline(data, { p95: 1.0 });
-      expect(r.driftMagnitude).toBe(0.7);
-      expect(r.action).toBe('no-action');
+    it('rolls forward when the world SHIFTED: over-firing, spread steady', () => {
+      // Measured: the live baseline flags 4.0% of these, 105 a day against a
+      // promise of 7, while the recomputed spread is 1.01x the old one.
+      const shifted = sample(400, 0.72, 0.15, 7);
+      const r = auditBaseline(shifted, LIVE, PER_DAY);
+      expect(r, 'auditBaseline returned nothing, so there is no result to read. It has to return the six-field object the instructions list, and every field below is read off that object.').toBeDefined();
+      expect(r.oldAlertsPerDay, 'The centre of the data moved away from the baseline mean, so the old gate should now fire far more often than its promise.').toBeGreaterThan(50);
+      expect(
+        r.newAlertsPerDay,
+        'newAlertsPerDay is the load a baseline recomputed from THIS data produces on it: count the readings the recomputed 3-sigma gate flags, divide by the sample size, multiply by the daily volume, round. On this fixture that is ' + expectedNewLoad(shifted) + ' a day. It is the whole argument for rolling forward, so it has to be computed, not asserted to be small.',
+      ).toBe(expectedNewLoad(shifted));
+      expect(r.newBaseline.mean, 'The recomputed mean should sit at the new centre of the data, near 0.72.').toBeCloseTo(0.72, 1);
+      expect(r.spreadRatio, 'The spread did not change in this scenario, only the centre, so the ratio should sit near 1.').toBeLessThan(1.5);
+      expect(r.action, 'Over-firing with a steady spread is a shift, and the recomputed centre is the honest one.').toBe('roll-forward');
     });
 
-    it('is a percentile, not a max: one spike must not move the baseline', () => {
-      const data = Array.from({ length: 99 }, (_, i) => i / 100);  // 0.00..0.98
-      data.push(10);  // single cosmic-ray outlier
-      const r = recomputeBaseline(data, { p95: 0.9 });
-      expect(r.newP95).toBeLessThan(2);
-      expect(r.driftMagnitude).toBe(0.1);
-      expect(r.action).toBe('update-baseline');
+    it('investigates when the world got NOISIER: rolling forward would go blind', () => {
+      // The case the alert count alone cannot decide. Measured: the live
+      // baseline flags 19.75% of these, 517 a day, which is 74x its promise,
+      // so the count screams roll-forward. But the recomputed spread is 2.25x
+      // wider, and a gate that wide stops flagging the events worth catching.
+      const noisier = sample(400, 0.52, 0.34, 23);
+      const r = auditBaseline(noisier, LIVE, PER_DAY);
+      expect(r, 'auditBaseline returned nothing, so there is no result to read. It has to return the six-field object the instructions list, and every field below is read off that object.').toBeDefined();
+      expect(r.oldAlertsPerDay, 'A distribution this much wider than the baseline should push far past the promised load.').toBeGreaterThan(100);
+      expect(r.newAlertsPerDay, 'Same rule as the shifted case: the recomputed load is counted from the data, and on this fixture it is ' + expectedNewLoad(noisier) + ' a day.').toBe(expectedNewLoad(noisier));
+      expect(r.spreadRatio, 'The recomputed standard deviation should come out well above the live one here: the data got noisier rather than moving.').toBeGreaterThan(1.5);
+      expect(
+        r.action,
+        'This is the case the alert count gets wrong on its own. The load says roll forward, and rolling forward would widen the gate by more than half, which quiets the detector by making more of the world count as normal. Growth in spread is the signal to investigate rather than absorb.',
+      ).toBe('investigate');
     });
 
-    it('reports both p95 values for comparison', () => {
-      const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      const r = recomputeBaseline(data, { p95: 8 });
-      expect(r.oldP95).toBe(8);
-      expect(r.newP95).toBeGreaterThanOrEqual(9);
+    it('recomputes the spread over n, not n minus 1', () => {
+      // Small, hand-checkable, and it pins the convention the rest of the
+      // module uses. For [1, 2, 3, 4, 5] the population std is sqrt(2) and the
+      // sample std is sqrt(2.5).
+      const r = auditBaseline([1, 2, 3, 4, 5], { mean: 3, std: 1 }, 1000);
+      expect(r, 'auditBaseline returned nothing, so there is no result to read. It has to return the six-field object the instructions list, and every field below is read off that object.').toBeDefined();
+      expect(r.newBaseline.mean, 'The mean of 1 through 5 is 3.').toBeCloseTo(3, 6);
+      expect(
+        r.promisedPerDay,
+        'At 1000 readings a day the 3-sigma promise is 0.0027 times 1000, which rounds to 3. Every other fixture here runs at 2618 a day, where it rounds to 7; a 7 that survives a change of volume was typed in, not computed from the rate.',
+      ).toBe(3);
+      expect(
+        r.newBaseline.std,
+        'The baseline describes the readings in hand, so the spread divides by n and comes out at sqrt(2) = 1.4142. Dividing by n-1 gives sqrt(2.5) = 1.5811, which is the estimator for a wider population this function is not describing.',
+      ).toBeCloseTo(Math.sqrt(2), 6);
     });
   });
 estimatedMinutes: 15

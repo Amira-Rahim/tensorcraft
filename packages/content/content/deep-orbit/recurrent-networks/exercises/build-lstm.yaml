@@ -1,23 +1,36 @@
 slug: build-lstm
 lessonSlug: lstm-gates
 title: "One LSTM Step by Hand"
-instructions: "Write `lstmStep(prevHidden, prevCell, x, weights)`: one time step of an LSTM cell, computed per dimension. `weights` holds a `forget`, `input`, `output` and `candidate` array, each with one row `[wHidden, wInput, bias]` per dimension, so dimension j's pre-activation is `wHidden * prevHidden[j] + wInput * x[j] + bias`. The forget, input and output gates pass their pre-activation through `sigmoid`; the candidate passes through `Math.tanh`. Then `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]` and `newHidden[j] = output[j] * Math.tanh(newCell[j])`. Return `{ newCell, newHidden }`. A real cell mixes every dimension through a weight matrix; this one keeps the dimensions independent so you can read the arithmetic. One test runs your step 100 times with the forget gate near 1 and the input gate shut, to check that a candidate which is not zero still cannot reach the cell."
+instructions: |
+  First the arithmetic, then the layer it belongs to.
+
+  1. Write `lstmStep(prevHidden, prevCell, x, weights)`: one time step of an LSTM cell, computed per dimension. `weights` holds a `forget`, `input`, `output` and `candidate` array, each with one row `[wHidden, wInput, bias]` per dimension, so dimension j's pre-activation is `wHidden * prevHidden[j] + wInput * x[j] + bias`.
+  2. The forget, input and output gates pass their pre-activation through `sigmoid`; the candidate passes through `Math.tanh`.
+  3. Then `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]` and `newHidden[j] = output[j] * Math.tanh(newCell[j])`. Return `{ newCell, newHidden }`. One test runs your step 100 times with the forget gate near 1 and the input gate shut, to check that a candidate which is not zero still cannot reach the cell.
+  4. Then `buildLstmCell(timeSteps)`: a `tf.sequential()` holding one `tf.layers.lstm({ units: 1, inputShape: [timeSteps, 1], recurrentActivation: 'sigmoid', returnSequences: true })`, returned as `{ model, weights }` with `weights` in exactly the shape `lstmStep` reads. One unit and one feature, because a wider layer mixes every dimension through a matrix and a per-dimension step stops describing it.
+  5. Pass `recurrentActivation: 'sigmoid'` yourself: TF.js defaults its gates to `hardSigmoid`, a clipped straight line rather than the curve the lesson uses.
+  6. `model.getWeights()` returns three tensors, the input kernel [1, 4], the recurrent kernel [1, 4] and the bias [4]. All four gates share those tensors: each one is 1 column wide and they sit side by side in the order INPUT, FORGET, CANDIDATE, OUTPUT, which is not the order the lesson narrates them in. So column 0 of the recurrent kernel, column 0 of the input kernel and bias[0] are the input gate's `[wHidden, wInput, bias]` row, column 1 is the forget gate's, and so on. Build the four one-row arrays that way.
+
+  The grader checks each row against the layer's own columns, then runs your `lstmStep` across a window from `prevHidden` and `prevCell` of [0] and checks its hidden state against what the layer reports at every step.
 starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
   const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
   function lstmStep(prevHidden, prevCell, x, weights) {
-    // weights.forget[j] = [wHidden, wInput, bias] for dimension j, and the
-    // same shape for weights.input, weights.output and weights.candidate.
-    //
-    // 1. pre-activation for dimension j:
-    //      row[0] * prevHidden[j] + row[1] * x[j] + row[2]
-    // 2. forget, input and output rows go through sigmoid;
-    //    the candidate row goes through Math.tanh
-    // 3. newCell[j]   = forget[j] * prevCell[j] + input[j] * candidate[j]
-    // 4. newHidden[j] = output[j] * Math.tanh(newCell[j])
+    // All four groups are read the same way. What a group is for decides
+    // which curve it comes out through.
+    return null; // your code here
+  }
+
+  function buildLstmCell(timeSteps) {
+    // Four gates share two kernels and one bias, in an order the lesson
+    // does not narrate.
     return null; // your code here
   }
 solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
   const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
   function lstmStep(prevHidden, prevCell, x, weights) {
@@ -31,6 +44,26 @@ solutionCode: |
     const newHidden = newCell.map((c, j) => sigmoid(preact(weights.output[j], j)) * Math.tanh(c));
     return { newCell, newHidden };
   }
+
+  function buildLstmCell(timeSteps) {
+    const model = tf.sequential();
+    const cell = tf.layers.lstm({ units: 1, inputShape: [timeSteps, 1], recurrentActivation: 'sigmoid', returnSequences: true });
+    model.add(cell);
+    const [kernel, recurrentKernel, biasTensor] = model.getWeights();
+    const inputColumns = Array.from(kernel.dataSync());
+    const recurrentColumns = Array.from(recurrentKernel.dataSync());
+    const biases = Array.from(biasTensor.dataSync());
+    const gateRow = (column) => [recurrentColumns[column], inputColumns[column], biases[column]];
+    return {
+      model,
+      weights: {
+        input: [gateRow(0)],
+        forget: [gateRow(1)],
+        candidate: [gateRow(2)],
+        output: [gateRow(3)],
+      },
+    };
+  }
 testCode: |
   const sig = (z) => 1 / (1 + Math.exp(-z));
   const rows = (n, row) => Array.from({ length: n }, () => row.slice());
@@ -42,9 +75,45 @@ testCode: |
     candidate: rows(n, [0, 0, 0]),
   });
 
+  // One place to say what is missing when nothing comes back, so the first
+  // Run on the untouched starter names the task instead of a TypeError.
+  const step = (prevHidden, prevCell, x, weights) => {
+    const out = lstmStep(prevHidden, prevCell, x, weights);
+    expect(
+      out,
+      'lstmStep handed back nothing, so no gate has run yet. Work out the four pre-activations for each dimension, then return { newCell, newHidden }.',
+    ).toBeTruthy();
+    expect(
+      Array.isArray(out.newCell) && Array.isArray(out.newHidden),
+      'newCell and newHidden are both lists: one entry per dimension of the cell.',
+    ).toBe(true);
+    expect(
+      out.newCell.length,
+      'The cell keeps its width, so newCell holds one new value for every value you were handed.',
+    ).toBe(prevCell.length);
+    return out;
+  };
+
+  const built = (timeSteps) => {
+    const out = buildLstmCell(timeSteps);
+    expect(
+      out,
+      'buildLstmCell handed back nothing. Build the sequential model, add the lstm layer, then cut its three tensors into the four gate rows.',
+    ).toBeTruthy();
+    expect(
+      out.model && typeof out.model.predict === 'function',
+      'The model comes back under the key model, and it is the tf.sequential you built.',
+    ).toBe(true);
+    expect(
+      out.weights && typeof out.weights === 'object',
+      'The gate rows come back under the key weights, in the same shape lstmStep reads.',
+    ).toBe(true);
+    return out;
+  };
+
   describe('lstmStep', () => {
     it('gates are sigmoids, so a zero pre-activation opens each one halfway', () => {
-      const { newCell, newHidden } = lstmStep([0, 0], [2, -1], [0, 0], flat(2));
+      const { newCell, newHidden } = step([0, 0], [2, -1], [0, 0], flat(2));
       expect(newCell[0]).toBeCloseTo(1, 6);
       expect(newCell[1]).toBeCloseTo(-0.5, 6);
       expect(newHidden[0]).toBeCloseTo(0.5 * Math.tanh(1), 6);
@@ -54,22 +123,28 @@ testCode: |
     it('the candidate is a tanh, so a zero pre-activation stores nothing', () => {
       const w = flat(1);
       w.input = [[0, 0, 30]];
-      const { newCell } = lstmStep([0], [0], [0], w);
-      expect(newCell[0]).toBeCloseTo(0, 6);
+      const { newCell } = step([0], [0], [0], w);
+      expect(
+        newCell[0],
+        'The input gate is wide open here, and the candidate pre-activation is zero. Whatever the gate lets through is a share of a candidate worth nothing.',
+      ).toBeCloseTo(0, 6);
     });
 
     it('a closed forget gate wipes the cell; an open one keeps it', () => {
       const shut = flat(1);
       shut.forget = [[0, 0, -30]];
-      expect(lstmStep([0], [4], [0], shut).newCell[0]).toBeCloseTo(0, 6);
+      expect(step([0], [4], [0], shut).newCell[0]).toBeCloseTo(0, 6);
       const open = flat(1);
       open.forget = [[0, 0, 30]];
-      expect(lstmStep([0], [4], [0], open).newCell[0]).toBeCloseTo(4, 6);
+      expect(step([0], [4], [0], open).newCell[0]).toBeCloseTo(4, 6);
     });
 
     it('across 100 steps a shut input gate keeps a live candidate out, and the cell decays by the forget gate alone', () => {
       const w = flat(1);
-      w.forget = [[0, 0, 5]];
+      // log(99) as the bias puts the gate at exactly 0.99, so the cell lands
+      // on the 0.37 the lesson prints for a hundred steps at that gate.
+      const FORGET_BIAS = Math.log(99);
+      w.forget = [[0, 0, FORGET_BIAS]];
       w.input = [[0, 0, -30]];
       // The candidate is Math.tanh(1) at every step, not zero, so an
       // ungated write would pile up in the cell instead of decaying.
@@ -77,33 +152,47 @@ testCode: |
       let cell = [2];
       let hidden = [0];
       for (let t = 0; t < 100; t++) {
-        const out = lstmStep(hidden, cell, [0], w);
+        const out = step(hidden, cell, [0], w);
         cell = out.newCell;
         hidden = out.newHidden;
       }
-      expect(cell[0]).toBeCloseTo(2 * Math.pow(sig(5), 100), 6);
+      expect(
+        cell[0],
+        'A hundred steps of a forget gate at 0.99, with the input gate shut the whole way. The cell should be a decayed copy of what it started with: 0.99 to the hundredth of the 2 it began at. A cell that grew, or that settled somewhere, is taking the candidate in past a closed gate.',
+      ).toBeCloseTo(2 * Math.pow(sig(FORGET_BIAS), 100), 6);
     });
 
     it('the output gate decides what leaves the cell, and the cell keeps its value', () => {
       const w = flat(1);
       w.forget = [[0, 0, 30]];
       w.output = [[0, 0, -30]];
-      const { newCell, newHidden } = lstmStep([0], [4], [0], w);
+      const { newCell, newHidden } = step([0], [4], [0], w);
       expect(newCell[0]).toBeCloseTo(4, 6);
-      expect(newHidden[0]).toBeCloseTo(0, 6);
+      expect(
+        newHidden[0],
+        'The output gate is shut, so nothing leaves the cell this step. That does not touch what the cell is holding.',
+      ).toBeCloseTo(0, 6);
     });
 
-    it('the input gate scales the candidate, so a partly open gate stores only a fraction of it', () => {
+    it('the input gate scales the candidate, and every gate reads the hidden state and the input, not only its bias', () => {
+      // No row here is bias-only: each of the four reads prevHidden and x
+      // through its own two weights, so a gate computed from its bias alone
+      // lands on a different number.
       const w = {
-        forget: [[0, 0, -1.2]],
-        input: [[0, 0, 0.5]],
+        forget: [[-0.9, 0.4, -1.2]],
+        input: [[1.1, -0.7, 0.5]],
         output: [[0.5, -1, 0.25]],
         candidate: [[0.4, 0.8, -0.2]],
       };
-      const { newCell, newHidden } = lstmStep([0.6], [1.4], [0.75], w);
+      const { newCell, newHidden } = step([0.6], [1.4], [0.75], w);
       const candidate = Math.tanh(0.4 * 0.6 + 0.8 * 0.75 - 0.2);
-      const expected = sig(-1.2) * 1.4 + sig(0.5) * candidate;
-      expect(newCell[0]).toBeCloseTo(expected, 6);
+      const forget = sig(-0.9 * 0.6 + 0.4 * 0.75 - 1.2);
+      const store = sig(1.1 * 0.6 - 0.7 * 0.75 + 0.5);
+      const expected = forget * 1.4 + store * candidate;
+      expect(
+        newCell[0],
+        'Each row is [wHidden, wInput, bias], and a gate opens on all three. Read the bias alone and the gate answers the same way whatever the step brings it.',
+      ).toBeCloseTo(expected, 6);
       expect(newHidden[0]).toBeCloseTo(
         sig(0.5 * 0.6 - 1 * 0.75 + 0.25) * Math.tanh(expected),
         6,
@@ -117,12 +206,100 @@ testCode: |
         output: [[0, 0, 30], [0, 0, 30]],
         candidate: [[0, 0, 0], [1, 2, 0]],
       };
-      const { newCell } = lstmStep([0.5, 0.5], [1, 1], [0.25, 0.25], w);
+      const { newCell } = step([0.5, 0.5], [1, 1], [0.25, 0.25], w);
       expect(newCell[0]).toBeCloseTo(1, 6);
       expect(newCell[1]).toBeCloseTo(Math.tanh(1 * 0.5 + 2 * 0.25), 6);
     });
   });
-estimatedMinutes: 12
+
+  describe('buildLstmCell', () => {
+    it('is a real one-unit tf.layers.lstm with sigmoid gates, reporting a state at every step', () => {
+      const { model } = built(6);
+      expect(
+        model.layers.length,
+        'One layer is the whole model here: the cell, and nothing after it.',
+      ).toBe(1);
+      expect(
+        model.layers[0].getClassName(),
+        'The layer under test is the library cell, tf.layers.lstm.',
+      ).toBe('LSTM');
+      expect(
+        model.layers[0].getConfig().recurrentActivation,
+        'Left to itself TF.js runs the gates through a clipped straight line instead of the sigmoid curve your step uses, and the two answers part company. Ask for the curve.',
+      ).toBe('sigmoid');
+      const weights = model.getWeights();
+      expect(
+        weights.map((w) => w.shape),
+        'Four gates share three tensors: an input kernel, a recurrent kernel and a bias, each four columns wide for a one-unit cell.',
+      ).toEqual([[1, 4], [1, 4], [4]]);
+      expect(
+        model.predict(tf.tensor3d([[[0.1], [0.2], [0.3], [0.4], [0.5], [0.6]]])).shape,
+        'returnSequences true reports the hidden state after every step, so six readings come back as six states.',
+      ).toEqual([1, 6, 1]);
+    });
+
+    it('cuts the packed kernels into gate rows by column, in the order the library stores them', () => {
+      const { model, weights } = built(5);
+      const [kernel, recurrentKernel, biasTensor] = model.getWeights();
+      const k = Array.from(kernel.dataSync());
+      const r = Array.from(recurrentKernel.dataSync());
+      const b = Array.from(biasTensor.dataSync());
+      const columnOf = { input: 0, forget: 1, candidate: 2, output: 3 };
+      for (const gate of ['input', 'forget', 'candidate', 'output']) {
+        const row = weights[gate] && weights[gate][0];
+        expect(
+          Array.isArray(row) && row.length === 3,
+          'weights.' + gate + ' holds one row per dimension, and each row is [wHidden, wInput, bias]: three numbers.',
+        ).toBe(true);
+        const column = columnOf[gate];
+        expect(
+          row[0],
+          'weights.' + gate + '[0][0] is the RECURRENT column for this gate. The four gates sit side by side in the order input, forget, candidate, output, which is not the order the lesson lists them in.',
+        ).toBeCloseTo(r[column], 9);
+        expect(
+          row[1],
+          'weights.' + gate + '[0][1] is the INPUT column for this gate, read out of the first tensor getWeights returns.',
+        ).toBeCloseTo(k[column], 9);
+        expect(
+          row[2],
+          'weights.' + gate + '[0][2] is this gate\'s slice of the bias, at the same column index as its two kernels.',
+        ).toBeCloseTo(b[column], 9);
+      }
+    });
+
+    it('your step reproduces the layer, step for step, on weights neither of you chose', () => {
+      // The layer initializes its own weights at random, so there is no
+      // memorised trajectory to reach for. Both halves have to be right: the
+      // gate arithmetic, and which column each gate was cut from.
+      for (const timeSteps of [4, 7]) {
+        const { model, weights } = built(timeSteps);
+        const readings = Array.from(
+          { length: timeSteps },
+          () => Math.random() * 4 - 2,
+        );
+        const fromLayer = model
+          .predict(tf.tensor3d([readings.map((v) => [v])]))
+          .arraySync()[0]
+          .map((s) => s[0]);
+        let hidden = [0];
+        let cell = [0];
+        readings.forEach((reading, t) => {
+          const out = step(hidden, cell, [reading], weights);
+          cell = out.newCell;
+          hidden = out.newHidden;
+          expect(
+            hidden[0],
+            'Step ' +
+              t +
+              ' of ' +
+              timeSteps +
+              ': your gates and the layer read the same window through the same weights and came back with different hidden states. The two agree to about a hundred-millionth when the arithmetic and the column order both match; anything larger is a different cell.',
+          ).toBeCloseTo(fromLayer[t], 5);
+        });
+      }
+    });
+  });
+estimatedMinutes: 16
 difficulty: intermediate
 mlContent: model
 skillAxis: model_arch

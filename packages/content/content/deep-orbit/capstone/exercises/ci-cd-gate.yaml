@@ -1,7 +1,19 @@
 slug: ci-cd-gate
 lessonSlug: ci-cd-pipeline
 title: "Build a CI/CD Validation Gate"
-instructions: "Write a validation gate function that checks model accuracy against a minimum threshold. Given an array of predictions (with predicted and actual labels), compute accuracy and return a result indicating whether the gate passed."
+instructions: |
+  Write the validation gate CI runs before a model ships. It takes an array of predictions, each carrying a `predicted` label and the `actual` label, and a minimum accuracy.
+
+  Return:
+
+      {
+        total: number,    // every row you were handed
+        correct: number,  // rows where the two labels match
+        accuracy: number, // correct over predictions.length
+        passed: boolean,  // accuracy at or above minAccuracy
+      }
+
+  A row scores as correct only when the two labels match, so a row that arrived without an actual label is not a correct prediction. Every row still counts in the total, that one included. A score sitting exactly on the floor clears the gate. An empty batch has nothing to report: it fails, and its accuracy reads 0 rather than NaN.
 starterCode: |
   interface Prediction {
     predicted: string;
@@ -19,11 +31,8 @@ starterCode: |
     predictions: Prediction[],
     minAccuracy: number
   ): GateResult {
-    // 1. Count correct predictions (predicted === actual)
-    // 2. Calculate accuracy = correct / total
-    // 3. Guard the empty set: an empty eval batch must FAIL the gate
-    //    with accuracy 0, never pass with NaN
-    // 4. Return result with passed = accuracy >= minAccuracy
+    // Two decisions before any arithmetic: what makes a row correct, and
+    // what an ungraded row does to the score.
     return null; // your code here
   }
 solutionCode: |
@@ -66,7 +75,14 @@ testCode: |
 
     it('calculates correct accuracy', () => {
       const result = validateModelAccuracy(predictions, 0.5);
-      expect(result.accuracy).toBe(0.8);
+      expect(
+        result,
+        'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.',
+      ).toBeDefined();
+      expect(
+        result.accuracy,
+        'One of these five rows predicted quasar where the label says pulsar.',
+      ).toBe(0.8);
       expect(result.correct).toBe(4);
       expect(result.total).toBe(5);
     });
@@ -96,6 +112,103 @@ testCode: |
       expect(result.passed).toBe(false);
       expect(result.accuracy).toBe(0);
       expect(Number.isNaN(result.accuracy)).toBe(false);
+    });
+
+    it('reads the labels, not the batch size: five rows, two correct', () => {
+      // Same length as the batch above and a different answer. Anything
+      // keyed on predictions.length reports 0.8 here.
+      const weaker = [
+        { predicted: 'pulsar', actual: 'pulsar' },
+        { predicted: 'noise', actual: 'anomaly' },
+        { predicted: 'quasar', actual: 'pulsar' },
+        { predicted: 'noise', actual: 'quasar' },
+        { predicted: 'anomaly', actual: 'anomaly' },
+      ];
+      const result = validateModelAccuracy(weaker, 0.5);
+      expect(result.correct).toBe(2);
+      expect(result.accuracy).toBe(0.4);
+      expect(result.passed).toBe(false);
+    });
+
+    it('a row whose label never loaded is not a correct prediction', () => {
+      // The holdout batch CI restores from cache can come back with its
+      // labels stripped: five verdicts and nothing to score them against.
+      // Treating those rows as correct reports a green gate on a batch
+      // that was never graded, which is the one failure a gate exists to
+      // make impossible.
+      const unlabeled = [
+        { predicted: 'pulsar' },
+        { predicted: 'noise' },
+        { predicted: 'quasar' },
+        { predicted: 'noise' },
+        { predicted: 'anomaly' },
+      ];
+      const result = validateModelAccuracy(unlabeled, 0.5);
+      expect(
+        result.correct,
+        'predicted === actual is false when there is no actual, so none of these five rows scored.',
+      ).toBe(0);
+      expect(result.accuracy).toBe(0);
+      expect(
+        result.passed,
+        'Five rows arrived and none of them could be graded. A gate that clears here merges a model nobody measured.',
+      ).toBe(false);
+    });
+
+    it('ungraded rows stay in the denominator, so a half-stripped batch scores low', () => {
+      // Generated rather than listed, so there is no batch length and no
+      // answer to special-case: 40 rows, every eighth one still carrying
+      // the label it was scored against and the rest stripped by the same
+      // cache restore. A gate that grades only the labeled rows reports
+      // 100% here and merges on five rows out of forty.
+      const labels = ['pulsar', 'noise', 'quasar', 'anomaly'];
+      const partial = Array.from({ length: 40 }, (_, i) => {
+        const predicted = labels[i % labels.length];
+        return i % 8 === 0 ? { predicted, actual: predicted } : { predicted };
+      });
+      const result = validateModelAccuracy(partial, 0.9);
+      expect(
+        result,
+        'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.',
+      ).toBeDefined();
+      expect(
+        result.total,
+        'Forty rows were handed to the gate. Five of them carry a label.',
+      ).toBe(40);
+      expect(result.correct).toBe(5);
+      expect(
+        result.accuracy,
+        'Five correct out of forty rows is 0.125. Five out of the five that could be graded is 1.0, which is the number a gate that filters the batch reports.',
+      ).toBe(0.125);
+      expect(
+        result.passed,
+        'Thirty-five of these rows were never measured, so nothing here clears a 0.9 floor.',
+      ).toBe(false);
+    });
+
+    it('a two-row batch is not automatically perfect', () => {
+      const half = [
+        { predicted: 'noise', actual: 'noise' },
+        { predicted: 'noise', actual: 'pulsar' },
+      ];
+      const result = validateModelAccuracy(half, 0.5);
+      expect(result.correct).toBe(1);
+      expect(result.accuracy).toBe(0.5);
+      expect(result.passed).toBe(true);
+    });
+
+    it('the empty guard is about the empty batch, not about a zero score', () => {
+      const allWrong = [
+        { predicted: 'noise', actual: 'pulsar' },
+        { predicted: 'noise', actual: 'quasar' },
+      ];
+      expect(validateModelAccuracy(allWrong, 0.5).accuracy).toBe(0);
+      expect(validateModelAccuracy(allWrong, 0.5).passed).toBe(false);
+      // Two rows were scored against a floor of zero, so the gate has a
+      // measurement to report and it clears.
+      expect(validateModelAccuracy(allWrong, 0).passed).toBe(true);
+      // Nothing was scored in the empty case, so no floor clears it.
+      expect(validateModelAccuracy([], 0).passed).toBe(false);
     });
   });
 estimatedMinutes: 10

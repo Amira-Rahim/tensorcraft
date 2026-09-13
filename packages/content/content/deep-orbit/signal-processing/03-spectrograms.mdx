@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "A spectrogram is many FFTs stacked in time: slice a window, take its magnitude spectrum, hop forward, repeat."
   - level: guidance
-    content: "numWindows is Math.floor((signal.length - windowSize) / hopSize) + 1. Window i starts at i * hopSize: slice windowSize samples, run tf.spectral.rfft then tf.abs, arraySync the magnitudes into a row, and push it. Each row has windowSize/2 + 1 bins (33 for windowSize 64), and both dimensions must follow the parameters, not constants. The grader feeds a signal whose tone changes partway through, so row i must come from the samples at i * hopSize rather than from one reused spectrum."
+    content: "Every row is its own transform of its own slice, which is the whole reason a spectrogram exists: one spectrum cannot say when a frequency arrived. The transform part is last lesson's work, so what is left is bookkeeping. Where does window i begin, given the hop? How many whole windows fit before the signal runs out, counting the one at the head of the capture? Both answers come out of the arguments, so a longer capture, or a smaller hop, has to change the shape of what you return."
   - level: solution
     content: "const spectrogram: number[][] = []; const numWindows = Math.floor((signal.length - windowSize) / hopSize) + 1; for (let i = 0; i < numWindows; i++) { const start = i * hopSize; const chunk = signal.slice(start, start + windowSize); const magnitudes = tf.tidy(() => { const fft = tf.spectral.rfft(tf.tensor1d(chunk)); return tf.abs(fft).arraySync() as number[]; }); spectrogram.push(magnitudes); } return spectrogram;"
 keywords:
@@ -159,7 +159,9 @@ console.log('Anomaly appears at windows:', activeWindows);
 
 // Small window: precise in time, blurry in frequency
 const fineTime = stft(signal, 64, 32);
-// Window span 0.25s (time blur), 4 Hz per bin
+// Window span 0.25s (time blur), 4 Hz per bin. That 64 counts SAMPLES
+// from one channel, a quarter second at 256 Hz. Module 1's archive row
+// carried a 64 as well, and that one counted hull channels.
 
 // Large window: precise in frequency, blurry in time
 const fineFreq = stft(signal, 512, 256);
@@ -192,7 +194,7 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
 
 ## Challenge
 
-Compute a spectrogram and identify when a frequency appears.
+Build the STFT itself: slide a window across a capture, transform each window on its own, and stack the magnitude rows.
 
 <Exercise slug="build-spectrogram" />
 

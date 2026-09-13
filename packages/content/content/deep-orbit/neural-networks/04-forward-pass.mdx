@@ -28,9 +28,9 @@ hints:
   - level: nudge
     content: "A forward pass is model.predict(input): data flows through the layers and comes out as a prediction tensor."
   - level: guidance
-    content: "Add one dense layer with units: 3 and inputShape: [2], matching the provided input batch of 2 samples with 2 features each, then assign prediction = model.predict(input). The grader checks the kernel shape [2, 3], that prediction has shape [2, 3], and that it equals input times kernel plus bias recomputed from the random weights your layer starts with."
+    content: "What the layer has to be told is how many features one reading carries, never how many readings are stacked up. The row count is the free axis, which is why the same layer answers a stack of any height. forward() has to hold that open: hand the whole stack over in one go, because the grader counts the calls your function makes and runs it on stacks taller than the starter's."
   - level: solution
-    content: "model.add(tf.layers.dense({ units: 3, inputShape: [2] })); const prediction = model.predict(input);"
+    content: "model.add(tf.layers.dense({ units: 3, inputShape: [2] })); function forward(batch) { return model.predict(batch); } const prediction = forward(input);"
 keywords:
   - forward-pass
   - predict
@@ -39,7 +39,7 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-`Error: Error when checking : expected dense_Dense1_input to have shape [null,3] but got array with shape [3,1]`. The doubled "Error" and the orphaned colon are TFJS's own: this is the string the runtime actually prints. So is the `[3,1]`, which is not the shape Demir passed. The bridge display, 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values, shape `[3]`. TFJS pads any rank-1 input to rank 2 by adding the new axis on the right, so three features became three samples of one feature, and that is the shape the error quotes back. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
+`Error: Error when checking : expected dense_Dense1_input to have shape [null,3] but got array with shape [3,1].` The orphaned colon is TFJS's own, an empty slot where the layer name should be; the leading `Error:` is the console printing an Error object. This is the string the runtime actually prints. So is the `[3,1]`, which is not the shape Demir passed. The bridge display, 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values, shape `[3]`. TFJS pads any rank-1 input to rank 2 by adding the new axis on the right, so three features became three samples of one feature, and that is the shape the error quotes back. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
 
 <Dialogue speaker="Dr. Farah">
 The architecture is fine. The demo wasn't. Run it again, properly this time. Even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
@@ -84,7 +84,7 @@ Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
 
 ## Challenge
 
-Run a forward pass through the signal classifier.
+Run a forward pass, and watch what the batch axis does to the shapes.
 
 <Exercise slug="forward-pass" />
 

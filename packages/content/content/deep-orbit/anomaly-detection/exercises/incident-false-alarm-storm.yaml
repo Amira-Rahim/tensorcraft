@@ -12,21 +12,14 @@ instructions: |
       action: 'recompute-baseline' | 'retrain' | 'recalibrate-threshold' | 'escalate',
     }
 
-  Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baselineAlerts.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive) → threshold-drift; else → real-event. Each cause carries its remedy: sensor-change → recompute-baseline, model-stale → retrain, threshold-drift → recalibrate-threshold, real-event → escalate. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch.
+  Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baselineAlerts.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive at both ends) → threshold-drift; else → real-event. The order carries the diagnosis. A logged sensor change and a four-month-old model each name a cause; the ratio only says how loud the storm is. A storm often matches more than one signature, and it is filed under the first one that matches. Each cause carries its remedy: sensor-change → recompute-baseline, model-stale → retrain, threshold-drift → recalibrate-threshold, real-event → escalate. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch. One guard: a baseline of zero alerts an hour still has to produce a ratio someone can read, so keep the divisor off zero.
 starterCode: |
   function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
-    // Concept: diagnose an alert storm by matching known failure signatures
-    // IN ORDER, with escalation to a human as the default for anything else.
-    // Recipe:
-    // 1. rate = currentAlerts.alertsPerHour to 1 decimal: Math.round(x * 10) / 10
-    // 2. ratio = currentAlerts.alertsPerHour / Math.max(baselineAlerts.alertsPerHour, 0.1),
-    //    also rounded to 1 decimal
-    // 3. Check causes in this exact order:
-    //    sensorAuditLog.recentChanges.length > 0 -> 'sensor-change' / 'recompute-baseline'
-    //    baselineAlerts.modelAge > 90            -> 'model-stale' / 'retrain'
-    //    ratio >= 5 && ratio <= 20               -> 'threshold-drift' / 'recalibrate-threshold'
-    //    anything else                           -> 'real-event' / 'escalate'
-    // 4. return { rate, ratio, cause, action }
+    // Concept: match the storm against known failure signatures IN ORDER, and
+    // escalate to a human anything that matches none. Evidence outranks
+    // volume: the audit log and the model age each name a cause, while the
+    // ratio only measures how loud the storm is. rate and ratio are both
+    // reported to 1 decimal.
     return null; // your code here
   }
 solutionCode: |
@@ -51,6 +44,10 @@ solutionCode: |
     return { rate, ratio, cause, action };
   }
 testCode: |
+  const SHAPE =
+    'diagnoseStorm has to return the diagnosis object: ' +
+    '{ rate, ratio, cause, action }.';
+
   describe('diagnoseStorm', () => {
     it('attributes to sensor change when audit has recent changes', () => {
       const r = diagnoseStorm(
@@ -58,8 +55,36 @@ testCode: |
         { alertsPerHour: 10, modelAge: 30 },
         { recentChanges: [{ sensorId: 'A1', changedAt: 0 }] },
       );
-      expect(r.cause).toBe('sensor-change');
-      expect(r.action).toBe('recompute-baseline');
+      expect(r, SHAPE).toBeDefined();
+      const why =
+        'Someone changed a sensor and the alerts started. That is the one ' +
+        'signature in the log that explains itself, and the remedy is to ' +
+        'recompute the baseline against the sensor as it is now.';
+      expect(r.cause, why).toBe('sensor-change');
+      expect(r.action, why).toBe('recompute-baseline');
+    });
+
+    it('files the storm under the first signature that matches, not the loudest', () => {
+      // Three signatures at once: a sensor was changed, the model is over six
+      // months old, and the ratio sits inside the drift band. Only the order
+      // decides here, and it is the whole content of the exercise. Every
+      // other fixture in this file makes exactly one signature true, so a
+      // submission that checks the three in any order at all clears them.
+      const r = diagnoseStorm(
+        { alertsPerHour: 80 },
+        { alertsPerHour: 10, modelAge: 200 },
+        { recentChanges: [{ sensorId: 'B4', changedAt: 0 }] },
+      );
+      expect(r, SHAPE).toBeDefined();
+      const why =
+        'A logged sensor change, a model six months old, and a ratio inside ' +
+        'the drift band, all in one storm. The audit log is checked first ' +
+        'because it names a change someone actually made, and the ratio is ' +
+        'checked last because a loud storm is a symptom rather than a cause. ' +
+        'If this comes back model-stale or threshold-drift, the branches are ' +
+        'in the wrong order and the pager will send the wrong team.';
+      expect(r.cause, why).toBe('sensor-change');
+      expect(r.action, why).toBe('recompute-baseline');
     });
 
     it('attributes to stale model after 90 days', () => {
@@ -68,8 +93,14 @@ testCode: |
         { alertsPerHour: 10, modelAge: 120 },
         { recentChanges: [] },
       );
-      expect(r.cause).toBe('model-stale');
-      expect(r.action).toBe('retrain');
+      expect(r, SHAPE).toBeDefined();
+      const why =
+        'Nothing changed on the sensors and the model is four months old, ' +
+        'so what the model calls normal is four months out of date. The ' +
+        'ratio here also sits in the drift band, and the model age is ' +
+        'checked first because it names a cause the ratio cannot.';
+      expect(r.cause, why).toBe('model-stale');
+      expect(r.action, why).toBe('retrain');
     });
 
     it('attributes to threshold drift for moderate ratios, rate to 1 decimal', () => {
@@ -78,10 +109,37 @@ testCode: |
         { alertsPerHour: 10, modelAge: 30 },
         { recentChanges: [] },
       );
-      expect(r.rate).toBe(83.3);
-      expect(r.ratio).toBe(8.3);
-      expect(r.cause).toBe('threshold-drift');
-      expect(r.action).toBe('recalibrate-threshold');
+      expect(r, SHAPE).toBeDefined();
+      const why =
+        'No sensor change, a young model, and eight times the usual alert ' +
+        'volume. Nothing in the log explains it, so the cutoff is the ' +
+        'suspect and both numbers are reported to one decimal.';
+      expect(r.rate, why).toBeCloseTo(83.3, 5);
+      expect(r.ratio, why).toBeCloseTo(8.3, 5);
+      expect(r.cause, why).toBe('threshold-drift');
+      expect(r.action, why).toBe('recalibrate-threshold');
+    });
+
+    it('treats both ends of the drift band as inside it', () => {
+      const low = diagnoseStorm(
+        { alertsPerHour: 50 },
+        { alertsPerHour: 10, modelAge: 30 },
+        { recentChanges: [] },
+      );
+      const high = diagnoseStorm(
+        { alertsPerHour: 200 },
+        { alertsPerHour: 10, modelAge: 30 },
+        { recentChanges: [] },
+      );
+      expect(low, SHAPE).toBeDefined();
+      expect(high, SHAPE).toBeDefined();
+      const why =
+        'These two storms land exactly on the edges of the drift band, and ' +
+        'the band includes both edges. A comparison that excludes them sends ' +
+        'a drifting cutoff to the escalation queue, where a human reads it ' +
+        'and files the ticket you should have filed.';
+      expect(low.cause, why).toBe('threshold-drift');
+      expect(high.cause, why).toBe('threshold-drift');
     });
 
     it('escalates to real-event for extreme ratio', () => {
@@ -90,9 +148,14 @@ testCode: |
         { alertsPerHour: 10, modelAge: 30 },
         { recentChanges: [] },
       );
-      expect(r.rate).toBe(1000);
-      expect(r.cause).toBe('real-event');
-      expect(r.action).toBe('escalate');
+      expect(r, SHAPE).toBeDefined();
+      const why =
+        'A hundred times the usual volume with nothing in the log to ' +
+        'explain it matches no known failure signature, and the default ' +
+        'branch sends it to a person.';
+      expect(r.rate, why).toBeCloseTo(1000, 5);
+      expect(r.cause, why).toBe('real-event');
+      expect(r.action, why).toBe('escalate');
     });
 
     it('escalates ratios above the drift band (20 < ratio < 50) rather than guessing', () => {
@@ -101,8 +164,32 @@ testCode: |
         { alertsPerHour: 10, modelAge: 30 },
         { recentChanges: [] },
       );
-      expect(r.ratio).toBeCloseTo(30, 1);
-      expect(r.cause).toBe('real-event');
+      expect(r, SHAPE).toBeDefined();
+      const why =
+        'Thirty times the usual volume is past the drift band. There is no ' +
+        'second band above it: everything outside the known signatures goes ' +
+        'to a human, whatever the ratio.';
+      expect(r.ratio, why).toBeCloseTo(30, 1);
+      expect(r.cause, why).toBe('real-event');
+    });
+
+    it('survives a baseline of zero alerts an hour', () => {
+      const r = diagnoseStorm(
+        { alertsPerHour: 1000 },
+        { alertsPerHour: 0, modelAge: 30 },
+        { recentChanges: [] },
+      );
+      expect(r, SHAPE).toBeDefined();
+      const why =
+        'This sensor was quiet for the whole baseline window, so the ' +
+        'divisor is zero. An unguarded divide reports Infinity, and a pager ' +
+        'that prints Infinity tells the person reading it nothing about how ' +
+        'far from normal this hour is. Keep the divisor off zero and the ' +
+        'ratio stays a number someone can act on.';
+      expect(Number.isFinite(r.ratio), why).toBe(true);
+      expect(r.ratio, why).toBeGreaterThan(20);
+      expect(r.cause, why).toBe('real-event');
+      expect(r.action, why).toBe('escalate');
     });
   });
 estimatedMinutes: 18

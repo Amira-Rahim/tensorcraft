@@ -1,54 +1,127 @@
 slug: create-sequences
 lessonSlug: sequences-matter
 title: "Window a Stream for Prediction"
-instructions: "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Return { xs, ys }. Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain."
+instructions: "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors."
 starterCode: |
-  function makeWindows(
-    data: number[][],
-    windowSize: number,
-    stride: number,
-  ): { xs: number[][][]; ys: number[][] } {
-    // window i starts at index i * stride
-    // xs[i] = windowSize consecutive readings
-    // ys[i] = the single reading immediately after the window
-    // drop any window that has no following reading
+  import * as tf from '@tensorflow/tfjs';
+
+  function makeWindows(data, windowSize, stride) {
+    // data holds one array of feature values per reading. A window is only
+    // usable if the archive also holds the reading that answers it.
     return null; // your code here
   }
 solutionCode: |
-  function makeWindows(
-    data: number[][],
-    windowSize: number,
-    stride: number,
-  ): { xs: number[][][]; ys: number[][] } {
-    const xs: number[][][] = [];
-    const ys: number[][] = [];
+  import * as tf from '@tensorflow/tfjs';
+
+  function makeWindows(data, windowSize, stride) {
+    const xs = [];
+    const ys = [];
     for (let start = 0; start + windowSize < data.length; start += stride) {
       xs.push(data.slice(start, start + windowSize));
       ys.push(data[start + windowSize]);
     }
-    return { xs, ys };
+    const xsTensor = xs.length ? tf.tensor3d(xs) : null;
+    const ysTensor = ys.length ? tf.tensor2d(ys) : null;
+    return { xs, ys, xsTensor, ysTensor };
   }
 testCode: |
+  // One place to say what is missing when nothing comes back, so the first
+  // Run on the untouched starter names the task instead of a TypeError.
+  const windows = (data, windowSize, stride) => {
+    const out = makeWindows(data, windowSize, stride);
+    expect(
+      out,
+      'makeWindows handed back nothing. Collect the windows and their targets, then return them together as { xs, ys, xsTensor, ysTensor }.',
+    ).toBeTruthy();
+    expect(
+      Array.isArray(out.xs) && Array.isArray(out.ys),
+      'Both xs and ys are lists, and they hold one entry each per window you kept.',
+    ).toBe(true);
+    return out;
+  };
+
   describe('makeWindows', () => {
     it('pairs each window with the reading after it (stride 1)', () => {
-      const { xs, ys } = makeWindows([[1], [2], [3], [4], [5]], 3, 1);
+      const { xs, ys } = windows([[1], [2], [3], [4], [5]], 3, 1);
       expect(xs).toEqual([[[1], [2], [3]], [[2], [3], [4]]]);
-      expect(ys).toEqual([[4], [5]]);
+      expect(
+        ys,
+        'A target is the reading that arrives after its window, so it is never one of the readings inside it.',
+      ).toEqual([[4], [5]]);
     });
     it('advances by stride (stride 2)', () => {
-      const { xs, ys } = makeWindows([[1], [2], [3], [4], [5], [6], [7]], 2, 2);
+      const { xs, ys } = windows([[1], [2], [3], [4], [5], [6], [7]], 2, 2);
       expect(xs).toEqual([[[1], [2]], [[3], [4]], [[5], [6]]]);
       expect(ys).toEqual([[3], [5], [7]]);
     });
-    it('drops the final window when nothing follows it', () => {
-      const { xs, ys } = makeWindows([[1], [2], [3]], 3, 1);
-      expect(xs).toEqual([]);
+    it('drops the final window when nothing follows it, and builds no tensor out of nothing', () => {
+      const { xs, ys, xsTensor, ysTensor } = windows([[1], [2], [3]], 3, 1);
+      expect(
+        xs,
+        'This call has room for exactly one window, and the reading that would answer it is past the end of the data. A window with no target cannot be trained on, so it does not enter the set.',
+      ).toEqual([]);
       expect(ys).toEqual([]);
+      expect(
+        xsTensor,
+        'An empty set has no windows to stack, and a rank-3 tensor cannot be inferred from an empty array. Hand back null instead.',
+      ).toBeNull();
+      expect(ysTensor).toBeNull();
     });
     it('keeps multi-feature readings intact', () => {
-      const { xs, ys } = makeWindows([[1, 10], [2, 20], [3, 30]], 2, 1);
+      const { xs, ys } = windows([[1, 10], [2, 20], [3, 30]], 2, 1);
       expect(xs).toEqual([[[1, 10], [2, 20]]]);
       expect(ys).toEqual([[3, 30]]);
+    });
+    it('follows the parameters, not memorized shapes', () => {
+      // Three shapes the lesson never prints, each with its answer derived
+      // from the arguments, so a table of the fixtures above cannot reach
+      // them: only the loop can.
+      for (const [length, windowSize, stride] of [[12, 4, 3], [17, 5, 4], [9, 2, 1]]) {
+        const series = Array.from({ length }, (_, i) => [i, i * 10]);
+        const starts = [];
+        for (let s = 0; s + windowSize < length; s += stride) starts.push(s);
+        const { xs, ys } = windows(series, windowSize, stride);
+        expect(xs.length).toBe(starts.length);
+        expect(ys.length).toBe(starts.length);
+        starts.forEach((start, k) => {
+          expect(xs[k]).toEqual(series.slice(start, start + windowSize));
+          expect(ys[k]).toEqual(series[start + windowSize]);
+        });
+      }
+    });
+    it('stacks the windows into [batch, timeSteps, features], for any window and stride', () => {
+      // Two settings, neither of them square: the window length, the feature
+      // count and the number of windows are three different numbers here, so
+      // an axis in the wrong order lands on a shape this check rejects.
+      for (const [length, windowSize, stride, features] of [[12, 4, 3, 2], [17, 5, 4, 3]]) {
+        const series = Array.from({ length }, (_, i) =>
+          Array.from({ length: features }, (_, f) => i * 10 + f),
+        );
+        const { xs, ys, xsTensor, ysTensor } = windows(series, windowSize, stride);
+        expect(
+          xsTensor,
+          'xs is still an array of arrays. A layers model takes tensors, and this is where the time axis becomes part of the shape rather than a nesting convention.',
+        ).toBeTruthy();
+        expect(
+          xsTensor.rank,
+          'A window is a sample with time inside it, so the stack of them is rank 3. Flatten each window into one long row and the layer can no longer tell which step a value came from.',
+        ).toBe(3);
+        expect(
+          xsTensor.shape,
+          'The axes run [batch, timeSteps, features]: how many windows, how long each one is, how many values a reading carries.',
+        ).toEqual([xs.length, windowSize, features]);
+        expect(
+          ysTensor.shape,
+          'Each target is one reading, not a window, so the targets stack one axis lower than the inputs.',
+        ).toEqual([ys.length, features]);
+        expect(
+          xsTensor.arraySync(),
+          'The tensor holds the windows you collected, in the order you collected them.',
+        ).toEqual(xs);
+        expect(ysTensor.arraySync()).toEqual(ys);
+        xsTensor.dispose();
+        ysTensor.dispose();
+      }
     });
   });
 estimatedMinutes: 12

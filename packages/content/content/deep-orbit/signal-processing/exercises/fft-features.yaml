@@ -1,16 +1,14 @@
 slug: fft-features
 lessonSlug: fft-as-features
 title: "Extract Fixed-Bin FFT Features"
-instructions: "Build the feature vector DEEP SCAN 2.0 trains on. extractFeatures(signal, sampleRate, loHz, hiHz) returns the peak amplitude, then the zero-crossing count, then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. The lesson's version carries phase as a third raw feature. This one stops at amplitude and zero crossings."
+instructions: "Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns the peak amplitude (the largest sample size in the capture, whichever side of zero it falls on), then the zero-crossing count (how many times consecutive samples land on opposite sides of zero), then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function extractFeatures(signal: number[], sampleRate: number, loHz: number, hiHz: number): number[] {
-    // 1. Peak amplitude: the largest absolute sample
-    // 2. Zero crossings: how often consecutive samples change sign
-    // 3. Bin width is sampleRate / signal.length
-    // 4. Keep every bin whose center sits inside loHz to hiHz, in bin order
-    // 5. Return [amplitude, zeroCrossings, ...those magnitudes]
+    // The row has to mean the same thing in every capture, so the band in
+    // hertz has to come out of the arguments, not off the numbers the lesson
+    // happens to use.
     return null; // your code here
   }
 solutionCode: |
@@ -37,54 +35,97 @@ solutionCode: |
   }
 testCode: |
   describe('extractFeatures', () => {
-    // 0.25 s of archive: 64 samples at 256 Hz, a 52 Hz tone at 1.0 and a
-    // 72 Hz tone at 0.5. Both land on bin centers, so the magnitudes are
-    // exactly amplitude * 64 / 2. The 0.45 radian offset only shifts where
-    // the window opens, which leaves those magnitudes alone and keeps every
+    // A synthetic quarter second: 64 samples at 256 Hz, a 52 Hz tone at 1.0
+    // and a 72 Hz tone at 0.5. These are unit amplitudes, not the archive's
+    // ADC counts on 0 to 2048, so every magnitude below stays checkable by
+    // hand. Both tones land on bin centers, so the magnitudes are exactly
+    // amplitude * 64 / 2. The 0.45 radian offset only shifts where the
+    // window opens, which leaves those magnitudes alone and keeps every
     // sample off exact zero, so any sign test counts the same crossings.
     const signal = Array.from({ length: 64 }, (_, i) =>
       1.0 * Math.sin(2 * Math.PI * 52 * i / 256 + 0.45) +
       0.5 * Math.sin(2 * Math.PI * 72 * i / 256 + 0.45)
     );
 
+    // A second capture with nothing in common with the first: a quieter
+    // 22 Hz tone, sampled at 128 Hz, read over a different band. Its two raw
+    // features and its magnitudes all differ from the first capture's, so a
+    // pair of remembered numbers cannot satisfy both.
+    const slower = Array.from({ length: 64 }, (_, i) =>
+      0.75 * Math.sin(2 * Math.PI * 22 * i / 128 + 0.45)
+    );
+
+    // Every probe goes through here. The starter returns null, and indexing
+    // null reports a JavaScript error about a property name instead of
+    // saying anything about the task.
+    const featuresOf = (samples, sampleRate, loHz, hiHz) => {
+      const out = extractFeatures(samples, sampleRate, loHz, hiHz);
+      expect(
+        out,
+        'extractFeatures returned nothing to read. It has to hand back one flat row: the two raw features first, then one magnitude per bin in the band.',
+      ).toBeDefined();
+      expect(
+        Array.isArray(out),
+        'The row is what the model trains on, so it has to be a flat array of numbers.',
+      ).toBe(true);
+      return out;
+    };
+
     it('returns the two raw features followed by one magnitude per bin in the band', () => {
-      expect(extractFeatures(signal, 256, 50, 82)).toHaveLength(10);
+      expect(featuresOf(signal, 256, 50, 82)).toHaveLength(10);
     });
 
     it('leads with peak amplitude and the zero-crossing count', () => {
-      const features = extractFeatures(signal, 256, 50, 82);
+      const features = featuresOf(signal, 256, 50, 82);
       expect(features[0]).toBeCloseTo(1.467, 2);
       expect(features[1]).toBe(25);
     });
 
-    it('50 to 82 Hz over 64 samples at 256 Hz is bins 13 to 20', () => {
-      const features = extractFeatures(signal, 256, 50, 82);
-      // bin 13 (center 52 Hz) is the first magnitude, bin 18 (center 72 Hz) the sixth
+    it('the band picks out fixed bin indices, and each tone lands on its own', () => {
+      const features = featuresOf(signal, 256, 50, 82);
+      // The first magnitude is the lowest bin in the band, and the two tones
+      // sit at known offsets from it.
       expect(features[2]).toBeCloseTo(32, 0);
       expect(features[7]).toBeCloseTo(16, 0);
     });
 
     it('keeps the bins in bin order instead of sorting by magnitude', () => {
-      const features = extractFeatures(signal, 256, 50, 82);
+      const features = featuresOf(signal, 256, 50, 82);
       const quiet = [3, 4, 5, 6, 8, 9].map((i) => features[i]);
       quiet.forEach((magnitude) => {
         expect(magnitude).toBeLessThan(1);
       });
     });
 
-    it('a narrower band moves the window: 68 to 76 Hz is bins 17 to 19', () => {
-      const features = extractFeatures(signal, 256, 68, 76);
+    it('a narrower band moves the window and returns fewer magnitudes', () => {
+      const features = featuresOf(signal, 256, 68, 76);
       expect(features).toHaveLength(5);
       expect(features[2]).toBeLessThan(1);
       expect(features[3]).toBeCloseTo(16, 0);
       expect(features[4]).toBeLessThan(1);
     });
 
-    it('bin width follows the sample rate, not a hardcoded 4 Hz', () => {
-      const slow = Array.from({ length: 64 }, (_, i) => Math.sin(2 * Math.PI * 26 * i / 128));
-      const features = extractFeatures(slow, 128, 24, 28);
+    it('bin width follows the sample rate instead of a constant', () => {
+      const features = featuresOf(slower, 128, 20, 24);
       expect(features).toHaveLength(5);
-      expect(features[3]).toBeCloseTo(32, 0);
+      expect(features[3]).toBeCloseTo(24, 0);
+      expect(features[2]).toBeLessThan(1);
+      expect(features[4]).toBeLessThan(1);
+    });
+
+    it('measures the two raw features on whatever capture it is handed', () => {
+      // Same two features, a different capture. A row that remembers the
+      // numbers from the first one gets both of these wrong, and a feature
+      // that ignores its input is worth nothing to the model downstream.
+      const features = featuresOf(slower, 128, 20, 24);
+      expect(
+        features[0],
+        'Peak amplitude is a property of these samples. This capture is quieter than the one above.',
+      ).toBeCloseTo(0.749, 2);
+      expect(
+        features[1],
+        'The crossing count is a property of these samples too. This tone repeats at a different rate over the same number of samples.',
+      ).toBe(21);
     });
   });
 estimatedMinutes: 12

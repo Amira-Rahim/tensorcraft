@@ -20,7 +20,7 @@ hints:
   - level: nudge
     content: "Keep it lazy: the generator yields one sample per loop turn, and the tf.data pipeline does the shuffling and batching for you"
   - level: guidance
-    content: "Make sensorGen loop i from 0 to 15, call readSample(i) inside the loop, and yield { xs, ys } tensors built with tf.tensor. Then dataset = tf.data.generator(sensorGen).shuffle(10).batch(4), and drain it with await dataset.forEachAsync, pushing each batch's xs.shape into batchShapes"
+    content: "The whole thing turns on the generator: one record per turn of the loop, with nothing collected into a list first. Two details decide the rest. The first is the label. It is a single number, and it still yields with an axis of its own, the way the split generator in the lesson body yields it, because the batcher stacks whatever it is handed and training reads a column of labels. The second is order. The stages after the generator run left to right, in the order records pass through them, which is why shuffling before batching and batching before shuffling are different pipelines."
   - level: solution
     content: |
       for (let i = 0; i < 16; i++) {
@@ -146,7 +146,7 @@ One condition rides under all of this. A random split is the right split when th
 
 ## Challenge
 
-Build the lazy pipeline yourself: generator, shuffle, batch, without ever holding the archive in memory. The grader counts your reads.
+Build the lazy pipeline yourself, on a 16-row stand-in for the archive: generator, shuffle, batch, without ever holding it in memory. The grader counts your reads, and it drains your generator a second time asking for one sample at a time.
 
 <Exercise slug="batch-data" />
 

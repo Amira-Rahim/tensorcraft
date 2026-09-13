@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "A Kalman filter alternates predict and correct: widen the variance by the process noise, then pull the estimate toward the measurement by exactly the Kalman gain."
   - level: guidance
-    content: "Inside update(measurement), four assignments in order: predictedVariance is this.variance plus this.processNoise; the gain divides predictedVariance by (predictedVariance + this.measureNoise); this.estimate moves toward the measurement by gain times (measurement - this.estimate); the stored this.variance shrinks to (1 - gain) times predictedVariance. The grader checks the exact arithmetic: with processNoise 0.1 and measureNoise 1, the first update(10) must return 5.238, so a fixed-alpha EMA fails."
+    content: "A fixed blend factor matches a Kalman filter on the first measurement and drifts off it by the third. The difference is the variance. It has to survive the call, widen before the next measurement arrives, and shrink again once that measurement is folded in. The weight on the measurement is then recomputed from it every call, which is why it changes step to step instead of holding still."
   - level: solution
     content: "const predictedVariance = this.variance + this.processNoise; const gain = predictedVariance / (predictedVariance + this.measureNoise); this.estimate = this.estimate + gain * (measurement - this.estimate); this.variance = (1 - gain) * predictedVariance; return this.estimate;"
 keywords:

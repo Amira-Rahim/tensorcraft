@@ -24,9 +24,9 @@ consequence:
   narrative: "The layout hunt ends on a grid that does not look accidental."
 hints:
   - level: nudge
-    content: "reshape([3, 4]) refills the same 12 values row by row: the first 4 become row 0, the next 4 row 1"
+    content: "Nothing is rearranged on the way in, so the row you want is already sitting in the flat list. The decision is where its four values start."
   - level: guidance
-    content: "Two steps: flat.reshape([3, 4]) gives the grid; grid.arraySync() gives nested JS arrays you can index into with [1] for the second row"
+    content: "Reshaping moves no numbers. It only changes where the row breaks fall, so read the flat list in its printed order and cut it into rows as wide as the layout Farah proposes. Do that on paper and you know which four values sit in the row you were asked for before you run anything. Getting them out is then ordinary JS indexing, once the grid has handed you its rows as nested JS lists."
   - level: solution
     content: "const grid = flat.reshape([3, 4]); const step1 = grid.arraySync()[1];"
 keywords:
@@ -51,7 +51,7 @@ Every tensor has a **shape**: a tuple of numbers describing how many elements ex
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Shapes are already everywhere in the data you handle. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`.
+Shapes are already everywhere in the data you handle. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`. That same `[3, 4]` is a sequence when its rows are ordered in time: 3 time steps, 4 channels read at each step, which is the layout the challenge below hands you. Module 6 puts a batch axis in front of the time axis and works in `[32, 5, 3]`: 32 windows, 5 time steps each, 3 features per step.
 
 ## Where Does Each Value Land?
 
@@ -130,12 +130,12 @@ Reshape a flat tensor into a matrix.
 
 <LessonRecap
   whatYouLearned={[
-    "Shape is a tuple that describes how many elements exist along each tensor dimension. A 2D grid with 3 rows and 4 columns has shape [3, 4].",
+    "Shape is a tuple that describes how many elements exist along each tensor dimension. A 2D grid with 3 rows and 4 columns has shape [3, 4], and so does a sequence of 3 time steps with 4 channels at each step: the shape alone does not say which one you have.",
     "Reshape fills row-major order: the flat sequence of values stays the same, only the line-break positions change. It is not a transpose.",
     "The total element count must be preserved: the product of all dimensions must match before and after a reshape."
   ]}
   bridge="Just as `Array.length` gives one number for a 1D structure, `tensor.shape` returns the full dimension tuple, enabling multi-axis operations like broadcasting that depend on the complete shape vector."
-  youCanNow="Read and interpret tensor shapes, predict where each value lands after a reshape using row-major order, and recognize the common image batch shape [batch, height, width, channels]."
+  youCanNow="Read and interpret tensor shapes, predict where each value lands after a reshape using row-major order, and recognize the shapes ML keeps handing you: an image batch [batch, height, width, channels] and a sequence window [time steps, channels]."
 />
 
 <Epilogue>

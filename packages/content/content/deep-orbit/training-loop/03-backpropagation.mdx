@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "You never write the backward pass yourself: tf.variableGrads records the forward computation and applies the chain rule backwards for you."
   - level: guidance
-    content: "Write lossFn as () => w.square(), and have gradOf(fn) return tf.variableGrads called on fn. The starter's last line destructures that return as { value: loss, grads }: value is the forward-pass loss (9 when w is 3.0), and grads maps each variable's name to its gradient (dLoss/dw = 2w = 6). Return the call, not the numbers: the grader reassigns w, calls gradOf() again, and then hands it a loss function you never saw."
+    content: "One call does both halves of the run, and gradOf's job is to hand that call's result straight back. The forward pass produces the loss. The backward pass then walks the recording of that same forward pass and reports, for every variable it touched, how much the loss moves when that variable moves. Both arrive together, the loss under one key and a map of gradients under the other, which is what the starter's last line destructures. Notice what you never write: no derivative appears anywhere in your code. Return the call rather than its numbers, because the grader changes the weight and calls gradOf again, then hands it a loss you never saw. Numbers frozen into an object are right once, for the weight they were copied from."
   - level: solution
     content: "const w = tf.variable(tf.scalar(3.0)); const lossFn = () => w.square(); function gradOf(fn) { return tf.variableGrads(fn); } const { value: loss, grads } = gradOf(lossFn);"
 keywords:
@@ -133,7 +133,7 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 
 ## Challenge
 
-Run the marquee algorithm yourself: one call to `tf.variableGrads()`, behind a function the grader can call again with a loss of its own. A memorized answer, or a derivative you worked out by hand, has nothing to say when the loss changes.
+Run backpropagation yourself: one call to `tf.variableGrads()`, behind a function the grader can call again with a loss of its own, the last one over three variables at once. A memorized answer, a derivative you worked out by hand, and a slope estimated by nudging each variable in turn all have nothing to say when the loss changes. The grader counts the forward passes, so the third one is out too.
 
 <Exercise slug="backprop-chain" />
 
@@ -152,7 +152,7 @@ Run the marquee algorithm yourself: one call to `tf.variableGrads()`, behind a f
     "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the cost backpropagation was invented to remove.",
     "Backpropagation computes gradients for every weight in one backward pass by applying the chain rule from output to input, making it orders of magnitude faster than computing each gradient individually.",
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
-    "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, keeps a 1 in every link of that product so it cannot collapse to zero."
+    "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which is what keeps the product from collapsing."
   ]}
   bridge="A throw deep in a call chain travels back the way the calls came, frame by frame, and the stack trace records the path. Backpropagation runs those same two directions: forward from input to output for the loss, backward from output to input for every gradient."
   youCanNow="Use `tf.variableGrads()` to compute gradients for a multi-layer network in a single backward pass and read the gradient shapes for each variable."

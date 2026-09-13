@@ -1,56 +1,257 @@
 slug: build-autoencoder
 lessonSlug: autoencoders
-title: "Build an Autoencoder"
-instructions: "Build a simple autoencoder with TensorFlow.js: encoder (inputShape [8], Dense 4 relu), bottleneck (Dense 2 relu), decoder (Dense 4 relu, Dense 8 linear). Compile with adam and meanSquaredError."
+title: "Train an Autoencoder on Normal Data Only"
+instructions: |
+  An autoencoder detects anomalies because of what it was trained on, so this time you run the fit. Write `trainNormalityModel(archive, flagged)`.
+
+  `archive` is 72 readings of 8 features each. `flagged[i]` is true where the flag log names a confirmed event. Keep the rows the flag log did NOT name and train on those only.
+
+  Build the stack the lesson describes: encoder (inputShape [8], Dense 4 relu), bottleneck (Dense 2 relu), decoder (Dense 4 relu, Dense 8 linear). Build it either as one Sequential of four Dense layers or the way the lesson recommends, an encoder Sequential and a decoder Sequential stacked into a third; the grader reads the Dense layers either way. Compile with adam and meanSquaredError. Fit the kept rows against themselves with the `FIT_OPTIONS` the starter declares, and return `{ model, history }`.
+
+  Two things the grader reads. It counts your training rows through `model.optimizer.iterations`, which the optimizer increments once per batch and which cannot be assigned, so the history you return and the model you return have to come from the same fit: 48 kept rows at batchSize 16 is 3 batches an epoch. And it calls your function a second time on the SAME 72 rows with a flag log that names nothing, then scores both detectors on one held-out calm reading and one held-out tainted reading. The second detector is the one whose training set the tainted rows leaked into.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
-  function buildAutoencoder(): tf.Sequential {
-    const model = tf.sequential();
-    // Encoder: 8 → 4 (relu)
-    // Bottleneck: 4 → 2 (relu)
-    // Decoder: 2 → 4 (relu) → 8 (linear)
+  // Fixed so every submission trains the same way. Pass it to fit.
+  const FIT_OPTIONS = { epochs: 400, batchSize: 16, verbose: 0 };
+
+  async function trainNormalityModel(
+    archive: number[][],
+    flagged: boolean[],
+  ): Promise<{ model: tf.Sequential; history: tf.History }> {
+    // Only one of these two arguments decides what this model is allowed to
+    // learn. Everything else about the stack is in the instructions.
     return null; // your code here
   }
 solutionCode: |
   import * as tf from '@tensorflow/tfjs';
 
-  function buildAutoencoder(): tf.Sequential {
+  const FIT_OPTIONS = { epochs: 400, batchSize: 16, verbose: 0 };
+
+  async function trainNormalityModel(
+    archive: number[][],
+    flagged: boolean[],
+  ): Promise<{ model: tf.Sequential; history: tf.History }> {
+    const trainingRows = archive.filter((_, i) => !flagged[i]);
     const model = tf.sequential();
     model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] }));
     model.add(tf.layers.dense({ units: 2, activation: 'relu' }));
     model.add(tf.layers.dense({ units: 4, activation: 'relu' }));
     model.add(tf.layers.dense({ units: 8 }));
     model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
-    return model;
+    const xs = tf.tensor2d(trainingRows);
+    const history = await model.fit(xs, xs, FIT_OPTIONS);
+    xs.dispose();
+    return { model, history };
   }
 testCode: |
-  describe('buildAutoencoder', () => {
-    it('returns a 4-layer model', () => {
-      const model = buildAutoencoder();
-      expect(model).toBeDefined();
-      expect(model.layers.length).toBe(4);
+  // The archive both calls train on: 72 readings, 8 features each, every value
+  // between 0.00 and 1.00. Eight features rather than module 5's eleven, and a
+  // plain 0-to-1 scale rather than its z-scores, so the two fits below stay
+  // inside a grader's time budget. The shape of the problem is what carries.
+  //
+  // A calm row is a step profile, 0.5 + depth * [+ + + + - - - -], with the
+  // depth sweeping the range. A tainted row is the SAME step profile with one
+  // extra component laid over it, the alternating one: this fixture's stand-in
+  // for the 73.4 Hz bin. Two out of every three rows are calm.
+  //
+  // Only the flag log changes between the two calls. FLAG_LOG_COMPLETE names
+  // all 24 tainted rows. FLAG_LOG_EMPTY names none of them, which is the
+  // realistic case: a flag log holds what some earlier rule tripped on, so a
+  // tainted row nobody ever flagged stays in the training set.
+  const CALM_BASIS = [1, 1, 1, 1, -1, -1, -1, -1];
+  const EXTRA_COMPONENT = [1, -1, 1, -1, 1, -1, 1, -1];
+  const calmRow = (depth) => CALM_BASIS.map((s) => 0.5 + depth * s);
+  const taintedRow = (depth) => CALM_BASIS.map((s, i) => 0.5 + depth * s + 0.25 * EXTRA_COMPONENT[i]);
+
+  const ARCHIVE = [];
+  const FLAG_LOG_COMPLETE = [];
+  let calmSoFar = 0;
+  let eventsSoFar = 0;
+  for (let i = 0; i < 72; i++) {
+    if (i % 3 === 2) {
+      ARCHIVE.push(taintedRow(0.1 + (0.15 * eventsSoFar) / 23));
+      FLAG_LOG_COMPLETE.push(true);
+      eventsSoFar++;
+    } else {
+      ARCHIVE.push(calmRow(0.1 + (0.15 * calmSoFar) / 47));
+      FLAG_LOG_COMPLETE.push(false);
+      calmSoFar++;
+    }
+  }
+  const FLAG_LOG_EMPTY = ARCHIVE.map(() => false);
+
+  // Five held-out depths, none of which is an archive row. Scoring a single
+  // reading would make the verdict a sample of one: on one calm reading the
+  // unscreened detector now and then lands a near-perfect rebuild, and the
+  // ratio below reads high for a reason that has nothing to do with
+  // screening. Measured on the reference solution, one held-out row put that
+  // ratio at 80 once in 160 runs; averaged over these five it stayed under
+  // 4.4 across 120.
+  const HELD_OUT_DEPTHS = [0.108, 0.138, 0.168, 0.192, 0.222];
+  const HELD_OUT_CALM = HELD_OUT_DEPTHS.map(calmRow);
+  const HELD_OUT_TAINTED = HELD_OUT_DEPTHS.map(taintedRow);
+
+  const EXPECTED_EPOCHS = 400;
+  const BATCHES_WITH_FLAGS = 3;   // ceil(48 / 16)
+  const BATCHES_WITHOUT = 5;      // ceil(72 / 16)
+
+  const SHAPE =
+    'trainNormalityModel has to return { model, history }: the trained model ' +
+    'and the History object fit resolves with.';
+
+  const errorOn = (model, row) =>
+    tf.tidy(() => {
+      const x = tf.tensor2d([row]);
+      return tf.losses.meanSquaredError(x, model.predict(x)).dataSync()[0];
     });
-    it('compresses through a 2-unit bottleneck: 8 -> 4 -> 2 -> 4 -> 8 (no bottleneck, no autoencoder)', () => {
-      const model = buildAutoencoder();
-      const units = model.layers.map((l) => l.getConfig().units);
-      expect(units).toEqual([4, 2, 4, 8]);
+
+  const meanErrorOn = (model, rows) =>
+    rows.reduce((total, row) => total + errorOn(model, row), 0) / rows.length;
+
+  // Each archive is trained once and the result shared, so the suite runs two
+  // fits rather than twelve.
+  let screenedRun = null;
+  let unscreenedRun = null;
+  const trainScreened = () => {
+    if (!screenedRun) screenedRun = trainNormalityModel(ARCHIVE, FLAG_LOG_COMPLETE);
+    return screenedRun;
+  };
+  const trainUnscreened = () => {
+    if (!unscreenedRun) unscreenedRun = trainNormalityModel(ARCHIVE, FLAG_LOG_EMPTY);
+    return unscreenedRun;
+  };
+
+  describe('trainNormalityModel', () => {
+    it('returns the trained model and the history the fit produced', async () => {
+      const run = await trainScreened();
+      expect(run, SHAPE).toBeDefined();
+      expect(run && run.model, SHAPE).toBeDefined();
+      expect(
+        run && run.history && run.history.history && run.history.history.loss,
+        'The history has to be the one model.fit resolved with, so it carries ' +
+          'a loss entry per epoch under history.history.loss.',
+      ).toBeDefined();
     });
-    it('reconstructs the input shape', () => {
-      const model = buildAutoencoder();
-      const input = tf.randomNormal([3, 8]);
-      const output = model.predict(input) as tf.Tensor;
-      expect(output.shape).toEqual([3, 8]);
-      input.dispose();
-      output.dispose();
+
+    it('compresses through a 2-unit bottleneck: 8 -> 4 -> 2 -> 4 -> 8 (no bottleneck, no autoencoder)', async () => {
+      const run = await trainScreened();
+      expect(run && run.model, SHAPE).toBeDefined();
+      // A model is a layer in TFJS, and the lesson recommends stacking an
+      // encoder model and a decoder model. Walk INTO nested models so that
+      // form is graded on its Dense layers rather than failed for having two
+      // layers with no units. (Fairness defect found 2026-09-12: a learner who
+      // built exactly what the lesson shows failed this test.)
+      const denseLayers = (m) => m.layers.flatMap((l) => (l.layers ? denseLayers(l) : [l]));
+      const units = denseLayers(run.model).map((l) => l.getConfig().units);
+      expect(
+        units,
+        'The widths have to narrow to the bottleneck and widen back. A stack ' +
+          'that never narrows can copy its input through and learns nothing ' +
+          'about normal.',
+      ).toEqual([4, 2, 4, 8]);
     });
-    it('is compiled for reconstruction training (mse loss, optimizer set)', () => {
-      const model = buildAutoencoder();
-      expect(model.loss).toBe('meanSquaredError');
-      expect(model.optimizer).toBeDefined();
+
+    it('keeps a nonlinearity in every stage but the output (all-linear layers collapse to one projection, which is PCA, not an autoencoder)', async () => {
+      const run = await trainScreened();
+      expect(run && run.model, SHAPE).toBeDefined();
+      const denseLayers = (m) => m.layers.flatMap((l) => (l.layers ? denseLayers(l) : [l]));
+      const activations = denseLayers(run.model).map((l) => l.getConfig().activation);
+      expect(
+        activations,
+        'relu on the three inner stages, and the output stage left linear so ' +
+          'a reconstruction can reach any value the input can.',
+      ).toEqual(['relu', 'relu', 'relu', 'linear']);
+    });
+
+    it('fits the rows the flag log cleared, and only those', async () => {
+      const run = await trainScreened();
+      expect(run && run.model, SHAPE).toBeDefined();
+      expect(
+        run.model.loss,
+        'The target is the input itself, so this trains against a regression loss.',
+      ).toBe('meanSquaredError');
+      const losses = run.history.history.loss;
+      expect(
+        losses.length,
+        'One loss entry per epoch, and FIT_OPTIONS asks for 400 of them.',
+      ).toBe(EXPECTED_EPOCHS);
+      expect(
+        run.model.optimizer.iterations,
+        'The optimizer counts batches, one per weight update, and the count ' +
+          'is not assignable, so it reports how many rows really went through ' +
+          'fit. The flag log names 24 of these 72 readings, which leaves 48 ' +
+          'training rows and 3 batches an epoch at batchSize 16. Training on ' +
+          'all 72 gives 5 batches an epoch and lands here. A hand-built ' +
+          'history with no fit behind it lands here too.',
+      ).toBe(BATCHES_WITH_FLAGS * EXPECTED_EPOCHS);
+      expect(
+        losses[losses.length - 1] / losses[0],
+        'The loss barely moved over 400 epochs of the input against itself. ' +
+          'Weights pinned at their starting values (a zeros initializer, or ' +
+          'trainable left off) make a model that returns the same thing ' +
+          'forever, and an autoencoder that never fit has learned no notion ' +
+          'of normal. Measured on the reference solution over 160 runs, this ' +
+          'ratio came in between 0.00005 and 0.009; the check asks for under 0.5.',
+      ).toBeLessThan(0.5);
+    });
+
+    it('keeps every row when the flag log names nothing', async () => {
+      const run = await trainUnscreened();
+      expect(run && run.model, SHAPE).toBeDefined();
+      expect(
+        run.model.optimizer.iterations,
+        'Same 72 readings, and this flag log names none of them, so all 72 ' +
+          'are training rows: 5 batches an epoch at batchSize 16. Filtering ' +
+          'on anything other than the flag log you were handed shows up here.',
+      ).toBe(BATCHES_WITHOUT * EXPECTED_EPOCHS);
+    });
+
+    it('trained on screened rows, it scores the tainted readings far above the calm ones', async () => {
+      const run = await trainScreened();
+      expect(run && run.model, SHAPE).toBeDefined();
+      const calmError = meanErrorOn(run.model, HELD_OUT_CALM);
+      const taintedError = meanErrorOn(run.model, HELD_OUT_TAINTED);
+      expect(
+        taintedError / calmError,
+        'This is the whole claim: a model that has only ever seen the calm ' +
+          'family rebuilds calm readings it has never seen, and cannot ' +
+          'rebuild the extra component, so the two averages are far apart. ' +
+          'Measured on the reference solution over 120 runs, this ratio ran ' +
+          'from 32 to 133; the check asks for more than 10. A ratio near 1 ' +
+          'means the output does not depend on the input.',
+      ).toBeGreaterThan(10);
+    });
+
+    it('trained on the same rows unscreened, the same code goes nearly blind', async () => {
+      const screened = await trainScreened();
+      const unscreened = await trainUnscreened();
+      expect(screened && screened.model, SHAPE).toBeDefined();
+      expect(unscreened && unscreened.model, SHAPE).toBeDefined();
+      const blindCalm = meanErrorOn(unscreened.model, HELD_OUT_CALM);
+      const blindTainted = meanErrorOn(unscreened.model, HELD_OUT_TAINTED);
+      const sharpTainted = meanErrorOn(screened.model, HELD_OUT_TAINTED);
+      expect(
+        blindTainted / blindCalm,
+        'Same architecture, same 72 readings, same 400 epochs. The one ' +
+          'difference is that 24 tainted rows stayed in, and this detector ' +
+          'learned to rebuild them along with everything else, so its two ' +
+          'averages sit close together. Measured on the reference solution ' +
+          'over 120 runs, this ratio ran from 0.94 to 4.4 while the screened ' +
+          'run above ran from 32 to 133. The check asks for under 10, which ' +
+          'is the middle of that empty band. If it fails high, the second ' +
+          'call is not training on all 72 rows.',
+      ).toBeLessThan(10);
+      expect(
+        sharpTainted / blindTainted,
+        'The tainted readings themselves, through both detectors. The ' +
+          'screened one cannot rebuild them and the unscreened one largely ' +
+          'can, so this ratio sits above 1. Measured over 120 runs it ran ' +
+          'from 2.0 to 113; the check asks for more than 1.3.',
+      ).toBeGreaterThan(1.3);
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 14
 difficulty: intermediate
 mlContent: model
 skillAxis: model_arch

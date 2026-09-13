@@ -1,7 +1,7 @@
 slug: inference-pipeline
 lessonSlug: inference-pipeline
 title: "Build an Inference Pipeline"
-instructions: "Write a classify function that takes a model and raw signal data (amplitude, frequency, phase). Normalize each feature to [0, 1] using the provided ranges, then run model.predict() inside tf.tidy(). Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. Confidence belongs to the verdict you returned, so report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12."
+instructions: "Write a classify function that takes a model and one raw signal reading (amplitude, frequency, phase). Normalize each feature to [0, 1] using the RANGES constant, then hand the model one row of three features in the order RANGES declares them. Run model.predict() inside tf.tidy(), so the live tensor count is the same after classify returns as it was before it ran. Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. Confidence belongs to the verdict you returned, so report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -15,11 +15,10 @@ starterCode: |
   interface Result { class: 'anomaly' | 'noise'; confidence: number; }
 
   function classify(model: tf.LayersModel, signal: Signal): Result {
-    // 1. Normalize each feature to [0, 1] using RANGES
-    // 2. Use tf.tidy() to prevent memory leaks
-    // 3. Create a [1, 3] tensor and run model.predict()
-    // 4. Return the class, and confidence in that class:
-    //    p when p > 0.5, otherwise 1 - p
+    // The network learned these three features on a common scale and in the
+    // order RANGES declares them. A wrong scale or a swapped order throws
+    // nothing, it just makes the answers wrong. Nothing you allocate here may
+    // still be alive when this returns.
     return null; // your code here
   }
 solutionCode: |
@@ -60,28 +59,61 @@ testCode: |
       probe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
       probe.layers[0].setWeights([tf.tensor2d([[1], [0], [0]])]);
     });
-    it('p above 0.5 is anomaly, reported at p (1536 / 2048 = 0.75)', () => {
-      const r = classify(probe, { amplitude: 1536, frequency: 0, phase: -Math.PI });
+
+    // The starter returns null, and reading .class off null reports a
+    // property name instead of the task. Every test comes through here, so
+    // the first Run says what is missing.
+    function verdict(model, signal) {
+      const r = classify(model, signal);
+      expect(r, 'classify has to return an object with a class and a confidence. The starter returns null until you build that object inside the tidy callback.').toBeDefined();
+      return r;
+    }
+
+    it('a p above 0.5 is an anomaly, and the confidence reported is p', () => {
+      const r = verdict(probe, { amplitude: 1536, frequency: 0, phase: -Math.PI });
       expect(r.class).toBe('anomaly');
-      expect(r.confidence).toBeCloseTo(0.75, 4);
+      expect(r.confidence, 'Above the bar, the model\'s own number IS the confidence in the verdict.').toBeCloseTo(0.75, 4);
     });
-    it('p below 0.5 is noise, reported at 1 - p (512 / 2048 = 0.25 -> 0.75)', () => {
-      const r = classify(probe, { amplitude: 512, frequency: 0, phase: -Math.PI });
+    it('a p below 0.5 is noise, and the confidence reported is 1 - p', () => {
+      const r = verdict(probe, { amplitude: 512, frequency: 0, phase: -Math.PI });
       expect(r.class).toBe('noise');
-      expect(r.confidence).toBeCloseTo(0.75, 4);
+      expect(r.confidence, 'The model reports the probability of an anomaly. Below the bar the verdict is noise, so the confidence in THAT verdict is the remainder.').toBeCloseTo(0.75, 4);
     });
-    it('phase 0 normalizes to p = 0.5, the tie. 0.5 is not above 0.5, so the verdict is noise, and 1 - p is 0.5 either way', () => {
+    it('a p of exactly 0.5 is not above 0.5, so the verdict is noise and the confidence is 0.5 either way', () => {
       const phaseProbe = tf.sequential();
       phaseProbe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
       phaseProbe.layers[0].setWeights([tf.tensor2d([[0], [0], [1]])]);
-      const r = classify(phaseProbe, { amplitude: 0, frequency: 0, phase: 0 });
-      expect(r.class).toBe('noise');
+      const r = verdict(phaseProbe, { amplitude: 0, frequency: 0, phase: 0 });
+      expect(r.class, 'The rule is p ABOVE 0.5. A tie does not clear it.').toBe('noise');
       expect(r.confidence).toBeCloseTo(0.5, 4);
     });
-    it('does not leak tensors (tf.tidy is doing its job)', () => {
+    it('hands model.predict one [1, 3] tensor of normalized features, in amplitude, frequency, phase order', () => {
+      // A score computed from the inputs instead of from the network can
+      // match the probes above, because every one of them zeroes the two
+      // features it does not read. This one records what predict received.
+      let seen = null;
+      const spy = {
+        predict: (input) => {
+          seen = { shape: input.shape.slice(), values: Array.from(input.dataSync()) };
+          return probe.predict(input);
+        },
+      };
+      const r = verdict(spy, { amplitude: 512, frequency: 21, phase: Math.PI / 2 });
+      expect(seen, 'model.predict was never called, so nothing the model learned reached this answer.').not.toBe(null);
+      expect(seen.shape, 'One reading is one row of three features.').toEqual([1, 3]);
+      const order = 'The network learned these three features in the order RANGES declares them. A swap cannot be detected at runtime; it just makes the answers wrong.';
+      expect(seen.values[0], order).toBeCloseTo(0.25, 4);      // 512 / 2048
+      expect(seen.values[1], order).toBeCloseTo(0.333333, 4);  // 21 / 63
+      expect(seen.values[2], order).toBeCloseTo(0.75, 4);      // (Math.PI / 2 + Math.PI) / (2 * Math.PI)
+      // probe reads amplitude alone, so p is 0.25: noise, reported at 1 - p
+      expect(r.class).toBe('noise');
+      expect(r.confidence, 'This probe reads amplitude alone, so p is 0.25. The verdict is noise and the confidence in that verdict is 0.75; reporting 0.25 hands back the raw sigmoid instead.').toBeCloseTo(0.75, 4);
+    });
+    it('leaves no tensors behind (tf.tidy is doing its job)', () => {
       const before = tf.memory().numTensors;
-      classify(probe, { amplitude: 100, frequency: 32, phase: 0 });
-      expect(tf.memory().numTensors).toBe(before);
+      const r = verdict(probe, { amplitude: 100, frequency: 32, phase: 0 });
+      expect(tf.memory().numTensors, 'The input tensor and the prediction are both still alive after classify returned. Inside a tidy callback they would already be gone.').toBe(before);
+      expect(r.confidence, 'A pipeline that allocates nothing leaks nothing, so this check only means something once a verdict comes back.').toBeGreaterThan(0);
     });
   });
 estimatedMinutes: 15

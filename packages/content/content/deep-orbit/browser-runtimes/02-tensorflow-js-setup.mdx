@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "Backend startup is asynchronous: TF.js cannot tell you which backend it is running on until you await its initialization."
   - level: guidance
-    content: "Inside initTF, await tf.ready() first, then return an object with both graded fields: backend from tf.getBackend() and version from tf.version.tfjs (the version string lives on the tf.version object under the key tfjs). Do not hardcode either value, and do not read them before the await: the grader runs your function against a cold runtime that reports no backend name until ready() has resolved."
+    content: "The one non-routine step is that backend selection is asynchronous. TF.js gives you a promise that resolves once it has picked a backend and initialized it, and until that happens there is no backend name to read: a fresh tab has nothing to answer with. So the await comes first and both reads come after it. The setup block at the top of this lesson has all three calls in it, and neither value belongs in your code as a literal, since the backend depends on the device the page is open on."
   - level: solution
     content: "await tf.ready(); return { backend: tf.getBackend(), version: tf.version.tfjs, };"
 keywords:
@@ -72,7 +72,7 @@ console.log('Backend:', tf.getBackend());  // 'webgl', 'wasm', or 'cpu'
 console.log('TF.js version:', tf.version.tfjs);`}
 </CodeBlock>
 
-That's it: four lines to a full ML runtime in the browser. The fourth is the one Nazari told you to check.
+That's it: install, import, await, check. The check is the one Nazari told you not to skip.
 
 ## Backends: The Runtime Engine
 
@@ -103,11 +103,21 @@ setWasmPaths('/wasm/');  // point to your WASM binary files
 // Like moving from canvas hacks to a purpose-built compute API
 import '@tensorflow/tfjs-backend-webgpu';
 
-// Set preferred backend explicitly, newest first with fallback
-if (navigator.gpu) {
-  await tf.setBackend('webgpu');
-} else {
-  await tf.setBackend('webgl');
+// Newest first, WASM above the plain CPU kernels (lesson 5 ships on WASM),
+// and fall through on both ways a rung can fail. A name that was never
+// registered makes tf.setBackend throw; a registered backend that cannot
+// START (a lost GPU context, a blocked WebGPU adapter) makes it resolve
+// false instead of throwing. Ignore the boolean and the page runs
+// somewhere else while your code believes it is on webgpu.
+const ladder = navigator.gpu
+  ? ['webgpu', 'webgl', 'wasm', 'cpu']
+  : ['webgl', 'wasm', 'cpu'];
+for (const name of ladder) {
+  try {
+    if (await tf.setBackend(name)) break;
+  } catch {
+    // not registered on this page: try the next rung
+  }
 }
 await tf.ready();
 
@@ -178,7 +188,7 @@ Set up TensorFlow.js and verify the active backend.
 
 <Epilogue>
 
-Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth (the engineering panel, oldest display on the ship) comes back `wasm`: 3.1 ms per matmul instead of 0.5.
+Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth (the engineering panel, oldest display on the ship) comes back `wasm`: 3.0 ms per matmul instead of 0.5.
 
 <Dialogue speaker="Chief Nazari">
 So the engineering chair runs that matmul six times slower than the helm. Log it. If anyone ever has to watch from that station, I want to know what they are missing and by how much.

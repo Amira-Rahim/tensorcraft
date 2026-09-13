@@ -1,37 +1,72 @@
 slug: backprop-chain
 lessonSlug: backpropagation
 title: "Automatic Backpropagation"
-instructions: "Use tf.variableGrads() to compute gradients automatically. The starter declares the variable w at 3.0. Write lossFn so it returns w squared, then fill in gradOf(fn) so it returns tf.variableGrads() called on the function it was handed. The grader reassigns w and calls gradOf() again, and its last call hands gradOf a loss function the exercise never shows you, so the gradient has to come out of the function rather than off the page."
+instructions: "Use tf.variableGrads() to compute gradients automatically. The starter declares the variable w at 3.0. Write lossFn so it returns w squared, then fill in gradOf(fn) so it returns tf.variableGrads() called on the function it was handed. The grader reassigns w and calls gradOf() again, and its last two calls hand gradOf loss functions the exercise never shows you, the second of them over three variables at once. It also counts how many times your gradOf runs the loss it was given, so the gradients have to come off one recorded forward pass rather than off the page."
 starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// 1. lossFn: the forward pass. Return w squared.\nconst lossFn = () => null; // your code here\n\n// 2. gradOf: differentiate whatever loss function it is handed. The grader\n// calls it again after changing w, and once on a loss of its own.\nfunction gradOf(fn) {\n  return { value: null, grads: null }; // your code here\n}\n\nconst { value: loss, grads } = gradOf(lossFn);"
 solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nconst lossFn = () => w.square();\n\nfunction gradOf(fn) {\n  return tf.variableGrads(fn);\n}\n\nconst { value: loss, grads } = gradOf(lossFn);"
 testCode: |
   describe('Backprop', () => {
-    it('computes loss w^2 = 9 in the forward pass', () => {
-      expect(loss).toBeDefined();
-      expect(loss.dataSync()[0]).toBeCloseTo(9.0, 4);
+    it('the forward-pass value comes back next to the gradients', () => {
+      expect(loss, 'gradOf returned no value, so the forward pass either never ran or its result was dropped. One call returns both halves: the loss the forward pass produced, and the gradients the backward pass found.').toBeDefined();
+      expect(loss.dataSync()[0], 'The value half is the loss at the current weight, computed by running the function rather than copied from anywhere.').toBeCloseTo(9.0, 4);
     });
-    it('autograd produced dLoss/dw = 2w = 6 for the variable', () => {
-      expect(grads).toBeDefined();
+    it('the backward pass produced a gradient for the variable, not a number you typed', () => {
+      expect(grads, 'gradOf returned no gradients.').toBeDefined();
       const keys = Object.keys(grads);
-      expect(keys.length).toBeGreaterThanOrEqual(1);
-      expect(grads[keys[0]].dataSync()[0]).toBeCloseTo(6.0, 4);
+      expect(keys.length, 'The gradients arrive in an object with one entry per variable the loss touched, so an empty object means nothing was differentiated.').toBeGreaterThanOrEqual(1);
+      expect(grads[keys[0]].dataSync()[0], 'This is the slope of the loss at the current weight. A gradient of 0 usually means the loss never touched the variable.').toBeCloseTo(6.0, 4);
     });
     it('the gradient is registered under the trained variable itself', () => {
-      expect(Object.keys(grads)).toContain(w.name);
+      expect(grads, 'gradOf returned no gradients, so there is no key to look under.').toBeDefined();
+      expect(Object.keys(grads), 'The gradients are keyed by variable name, which is how a real model keeps 673 of them apart. This one is filed under a different key.').toContain(w.name);
     });
-    it('gradOf recomputes: after w = 5, it returns loss 25 and gradient 10', () => {
+    it('gradOf recomputes after the weight changes', () => {
       w.assign(tf.scalar(5.0));
       const second = gradOf(lossFn);
-      expect(second.value.dataSync()[0]).toBeCloseTo(25.0, 4);
+      expect(second, 'The second call returned nothing.').toBeDefined();
+      expect(second.value, 'The second call came back without a value half, so the forward pass result was dropped.').toBeDefined();
+      expect(second.grads, 'The second call came back without a gradients half.').toBeDefined();
+      expect(second.value.dataSync()[0], 'The loss has to be recomputed at the new weight. A number frozen at call one was right only for the old weight.').toBeCloseTo(25.0, 4);
       const g = second.grads[Object.keys(second.grads)[0]];
-      expect(g.dataSync()[0]).toBeCloseTo(10.0, 4);
+      expect(g, 'No gradient came back for the variable on this call.').toBeDefined();
+      expect(g.dataSync()[0], 'The slope moves with the weight. A gradient that repeats the first call means the answer was stored rather than computed.').toBeCloseTo(10.0, 4);
     });
-    it('gradOf differentiates a loss the grader wrote: 3w^2 + 2w at w = 0.5 gives loss 1.75 and gradient 5.0', () => {
+    it('gradOf differentiates a loss the grader wrote, which this exercise never shows', () => {
       w.assign(tf.scalar(0.5));
       const third = gradOf(() => w.square().mul(3).add(w.mul(2)));
-      expect(third.value.dataSync()[0]).toBeCloseTo(1.75, 4);
+      expect(third, 'The call on the loss the grader wrote returned nothing.').toBeDefined();
+      expect(third.value, 'That call came back without a value half.').toBeDefined();
+      expect(third.grads, 'That call came back without a gradients half.').toBeDefined();
+      expect(third.value.dataSync()[0], 'This loss carries a term the starter never had, so its value has to come from running the function you were handed.').toBeCloseTo(1.75, 4);
       const g = third.grads[Object.keys(third.grads)[0]];
-      expect(g.dataSync()[0]).toBeCloseTo(5.0, 4);
+      expect(g, 'No gradient came back for the variable on the loss the grader wrote.').toBeDefined();
+      expect(g.dataSync()[0], 'A derivative written by hand inside gradOf answers for the wrong function here. The call differentiates whatever it records.').toBeCloseTo(5.0, 4);
+    });
+    it('one forward pass per call, on a loss with three variables in it', () => {
+      // The method this lesson retires costs one extra forward pass per
+      // parameter. A gradOf built on finite differences passed every test above
+      // on 2026-09-08 (audit round 5), because a central difference is exact on
+      // a parabola at any step size. Two things stop it here: this loss is not
+      // a polynomial, and the forward pass is counted. Autograd runs it once
+      // and reads all three gradients off that single recording.
+      const a = tf.variable(tf.scalar(1.5));
+      const b = tf.variable(tf.scalar(-0.5));
+      const c = tf.variable(tf.scalar(0.25));
+      let passes = 0;
+      const composed = () => {
+        passes += 1;
+        return a.sin().add(b.square()).add(c.mul(a));
+      };
+      const out = gradOf(composed);
+      expect(out, 'The call on the three-variable loss returned nothing.').toBeDefined();
+      expect(out.value, 'That call came back without a value half.').toBeDefined();
+      expect(out.grads, 'That call came back without a gradients half, so no variable was differentiated.').toBeDefined();
+      expect(out.value.dataSync()[0], 'The value is this composed loss at the three weights the grader set.').toBeCloseTo(Math.sin(1.5) + 0.25 + 0.25 * 1.5, 4);
+      expect(out.grads[a.name], 'Every variable the loss touched gets an entry, keyed by its own name. The first one is missing.').toBeDefined();
+      expect(out.grads[a.name].dataSync()[0], 'The first variable reaches the loss along two routes, through the sine and through the product, so its gradient is the sum of both. That summing is the chain rule doing its work.').toBeCloseTo(Math.cos(1.5) + 0.25, 4);
+      expect(out.grads[b.name].dataSync()[0], 'The second variable only ever appears squared.').toBeCloseTo(-1.0, 4);
+      expect(out.grads[c.name].dataSync()[0], 'The third variable is multiplied by the first, so its slope is whatever the first one currently holds.').toBeCloseTo(1.5, 4);
+      expect(passes, 'The loss function ran more times than a recorded forward pass needs. Re-running it per parameter is the numeric-gradient method this lesson retires: 673 extra forward passes for DEEP SCAN, 27 seconds a step. The backward pass runs the forward pass once and reads every gradient off that one sweep.').toBeLessThanOrEqual(2);
     });
   });
 estimatedMinutes: 15

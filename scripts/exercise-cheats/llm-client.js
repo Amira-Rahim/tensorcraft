@@ -1,14 +1,21 @@
-// Never parses anything. Substring-tests the raw reply for the three field
-// names, then returns the three values every mock in the suite happens to
-// carry. It cannot report what an LLM actually said, which is the whole job.
+// Validates the RAW REPLY TEXT instead of the parsed object. Every field name
+// it needs is somewhere in the reply, so every well-formed fixture clears it,
+// and it asks nothing about the object it hands back. Feed it a model that
+// writes "Reasoning: ..." in a sentence and leaves `reasoning` out of the
+// JSON, and it returns an Analysis whose reasoning is undefined, having just
+// certified that the field is there. A key count (keys.length !== 3) is the
+// other version of the same mistake: both check the shape of the reply
+// instead of the names of the fields.
 async function analyzeSignal(prompt, apiCall) {
   const response = await apiCall(prompt);
-  for (const field of ["classification", "confidence", "reasoning"]) {
-    if (!response.includes(field)) throw new Error("Missing required fields");
+  if (
+    !response.includes("classification") ||
+    !response.includes("confidence") ||
+    !response.includes("reasoning")
+  ) {
+    throw new Error("Missing required fields");
   }
-  return {
-    classification: "anomaly",
-    confidence: 0.95,
-    reasoning: "High amplitude",
-  };
+  const jsonMatch = response.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error("No JSON in response");
+  return JSON.parse(jsonMatch[0]);
 }

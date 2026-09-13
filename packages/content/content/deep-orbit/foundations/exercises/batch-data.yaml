@@ -1,61 +1,158 @@
 slug: batch-data
 lessonSlug: data-loading
 title: "Build the Lazy Pipeline"
-instructions: "The archive exposes readSample(i): it returns { features: number[2], label: number } for reading i, and it counts how many times it's called. Build a LAZY generator that yields { xs, ys } tensors one sample at a time for all 16 samples (no pre-loading them into an array!), then build `dataset` = generator → shuffle(10) → batch(4). The buffer shuffle goes before batch, never after: batching first would freeze each batch's membership. Finally, drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`."
-starterCode: "// Provided: lazy archive access (do NOT modify)\nlet readCount = 0;\nfunction readSample(i) {\n  readCount++;\n  return { features: [i, i * 2], label: i % 2 };\n}\n\n// 1. A generator that yields one sample per iteration, lazily\nfunction* sensorGen() {\n  // your code here (16 samples, use readSample(i))\n}\n\n// 2. Pipeline: generator -> shuffle(10) -> batch(4)\nconst dataset = null;\n\n// 3. Drain it, collecting xs shapes\nconst batchShapes = [];\n// await dataset.forEachAsync(...)"
-solutionCode: "let readCount = 0;\nfunction readSample(i) {\n  readCount++;\n  return { features: [i, i * 2], label: i % 2 };\n}\n\nfunction* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    const row = readSample(i);\n    yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };\n  }\n}\n\nconst dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);\n\nconst batchShapes = [];\nawait dataset.forEachAsync((b) => {\n  batchShapes.push(b.xs.shape);\n});"
+instructions: |
+  The archive exposes readSample(i): it returns { features: number[3], label: number } for reading i, the same three features the lesson names (amplitude in counts, frequency as a zero-crossing count, phase in radians), faked from the row index here so you can tell rows apart. It also counts how many times it is called.
+
+  Build a LAZY generator called `sensorGen` that yields all 16 samples as { xs, ys } tensors: `xs` carries the reading's three features and `ys` carries its one label. The batcher stacks whatever each sample hands it, and the grader reads a column of labels off every batch, so decide what shape one label has to arrive in.
+
+  Then build `dataset` from the generator with a shuffle buffer of 10 and batches of 4. Which of those two stages runs first is the decision, and the lesson says what each one can still see.
+
+  Finally drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`, and wait for that drain to finish before your code ends, because the grader reads `batchShapes` the moment it does. Keep the generator's name: the grader also drains `sensorGen` through a pipeline of its own, no shuffle buffer and one sample per batch, and counts how many rows were read before the first batch arrived.
+starterCode: |
+  // Provided: lazy archive access (do NOT modify)
+  let readCount = 0;
+  function readSample(i) {
+    readCount++;
+    // [amplitude, frequency, phase], stand-in values keyed to i
+    return { features: [i * 100, i, i / 10], label: i % 2 };
+  }
+
+  // One reading in flight at a time, never the archive. Nothing may be
+  // collected in here before the first sample leaves.
+  function* sensorGen() {
+    // your code here
+  }
+
+  // The stages run in the order readings pass through them. Which one goes
+  // first changes what the next one can still see.
+  const dataset = null;
+
+  // Fill this from the drain. The tests read it once your code has
+  // finished, so the drain has to be finished too.
+  const batchShapes = [];
+solutionCode: |
+  let readCount = 0;
+  function readSample(i) {
+    readCount++;
+    return { features: [i * 100, i, i / 10], label: i % 2 };
+  }
+
+  function* sensorGen() {
+    for (let i = 0; i < 16; i++) {
+      const row = readSample(i);
+      yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };
+    }
+  }
+
+  const dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);
+
+  const batchShapes = [];
+  await dataset.forEachAsync((b) => {
+    batchShapes.push(b.xs.shape);
+  });
 testCode: |
   describe('Lazy Pipeline', () => {
+    const filled = (value, what) => expect(value, what).toBeDefined();
     it('produced 4 batches of 4', () => {
-      expect(batchShapes.length).toBe(4);
-      expect(batchShapes[0]).toEqual([4, 2]);
+      expect(
+        batchShapes.length,
+        'Sixteen samples at four per batch. A count of zero means the dataset was never drained.',
+      ).toBe(4);
+      expect(
+        batchShapes[0],
+        'Each batch stacks its samples into one tensor, so a batch carries an axis the samples do not.',
+      ).toEqual([4, 3]);
     });
     it('every batch has the [batch, features] shape', () => {
+      // An empty batchShapes used to clear this test for free, which handed
+      // the untouched starter a green line on its first run (measured
+      // 2026-09-08).
+      expect(
+        batchShapes.length,
+        'There are no shapes to check yet, so this test had nothing to say. Drain the dataset and push each batch xs shape into batchShapes.',
+      ).toBeGreaterThan(0);
       for (const s of batchShapes) {
-        expect(s).toEqual([4, 2]);
+        expect(
+          s,
+          'Four samples, three features each, on every batch including the last.',
+        ).toEqual([4, 3]);
       }
     });
     it('read all 16 samples through the lazy reader', () => {
-      expect(readCount).toBe(16);
+      expect(
+        readCount,
+        'readSample counts its own calls. Every sample has to come through it, and none of them twice.',
+      ).toBe(16);
     });
     it('reads lazily and re-drains: batches are not frozen blocks', async () => {
+      filled(dataset, 'The pipeline is still null. Build it from the generator, then shuffle, then batch.');
       const drain = async () => {
         const shapes = [];
         const groups = [];
-        const startCount = readCount;
-        let readsAtFirstBatch = -1;
         await dataset.forEachAsync((b) => {
-          if (readsAtFirstBatch < 0) readsAtFirstBatch = readCount - startCount;
           shapes.push({ xs: b.xs.shape, ys: b.ys.shape });
           const ids = b.xs.arraySync().map((row) => row[0]);
           groups.push(ids.slice().sort((x, y) => x - y).join(','));
         });
-        return {
-          shapes,
-          readsAtFirstBatch,
-          membership: groups.slice().sort().join(' | '),
-        };
+        return { shapes, membership: groups.slice().sort().join(' | ') };
       };
       const first = await drain();
-      expect(first.shapes.length).toBe(4);
+      expect(first.shapes.length, 'Four batches per pass over sixteen samples.').toBe(4);
       first.shapes.forEach((s) => {
-        expect(s.xs).toEqual([4, 2]);
-        expect(s.ys).toEqual([4, 1]);
+        expect(s.xs, 'Four samples, three features each.').toEqual([4, 3]);
+        expect(
+          s.ys,
+          'The labels stack into a column, one label per row of the batch, so each sample yields its label as a tensor with an axis rather than a bare number.',
+        ).toEqual([4, 1]);
       });
-      // Laziness is only visible MID-drain: a count taken after the drain
-      // reads 16 either way. On tfjs 4.22.0 a lazy generator has read 14
-      // rows when batch one arrives (shuffle(10) fills its buffer, then
-      // batch(4) pulls four more). A generator that pushes all 16 rows
-      // into an array before its first yield reads 16.
-      expect(first.readsAtFirstBatch).toBeGreaterThan(0);
-      expect(first.readsAtFirstBatch).toBeLessThan(16);
-      expect(readCount).toBe(32);
+      expect(
+        readCount,
+        'A second pass over the dataset reads the archive again. A generator that cached its rows would not.',
+      ).toBe(32);
       // Shuffle BEFORE batch: every drain reshuffles, so a second pass
       // deals different batch membership. batch().shuffle() and a bare
       // batch() both hand back the same four frozen blocks every time.
       const second = await drain();
-      expect(second.membership).not.toBe(first.membership);
-      expect(readCount).toBe(48);
+      expect(
+        second.membership,
+        'Two drains dealt the same four groups, so the membership is frozen. That is what batching before shuffling gives you: the shuffle can only reorder blocks it can no longer look inside.',
+      ).not.toBe(first.membership);
+      expect(readCount, 'Third pass, sixteen more reads.').toBe(48);
+      // Laziness is only visible mid-drain, and inside YOUR pipeline the
+      // shuffle buffer hides it. On tfjs 4.22.0 a lazy generator has read 14
+      // rows when batch one arrives out of shuffle(10) and all 16 out of
+      // shuffle(16), and 16 is also what a generator reads when it fills an
+      // array before its first yield. So a count taken through the shuffle
+      // cannot tell eager loading from a big buffer.
+      //
+      // sensorGen drained with no shuffle and ONE sample per batch is where
+      // they part company, and the batch size is the whole point of this
+      // probe. Measured 2026-09-08 on tfjs 4.22.0, reads before batch one:
+      //
+      //   pipeline      lazy   4-row chunks   2-row chunks   eager array
+      //   batch(4)         4              4              4            16
+      //   batch(1)         1              4              2            16
+      //
+      // Batching four at a time cannot see a reader that fetches four at a
+      // time, and the same held for a reader fetching two. Asking for one
+      // sample admits exactly one answer: a generator that reads a row per
+      // turn of the loop has read one row, and any reader that buys its rows
+      // in blocks has read a block.
+      const bare = tf.data.generator(sensorGen).batch(1);
+      const startCount = readCount;
+      let readsAtFirstBatch = -1;
+      let bareBatches = 0;
+      await bare.forEachAsync(() => {
+        if (readsAtFirstBatch < 0) readsAtFirstBatch = readCount - startCount;
+        bareBatches++;
+      });
+      expect(
+        readsAtFirstBatch,
+        'One sample was asked for and the generator read more than one row to answer, so it is buying rows in blocks rather than yielding them as they are read. The whole archive is never supposed to be in flight at once, and neither is a block of it.',
+      ).toBe(1);
+      expect(bareBatches, 'Sixteen samples, one per batch.').toBe(16);
+      expect(readCount - startCount, 'Every sample read once, none read twice.').toBe(16);
     });
   });
 estimatedMinutes: 12

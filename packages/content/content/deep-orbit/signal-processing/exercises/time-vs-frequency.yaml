@@ -1,31 +1,37 @@
 slug: time-vs-frequency
 lessonSlug: time-vs-frequency
-title: "Two Views, One Verdict"
-instructions: "Make the lesson's claim executable. compareViews(timeA, timeB, magsA, magsB, tolerance) receives two signals in BOTH representations: their time-domain samples and their frequency-domain magnitude arrays (precomputed for you; the transform itself is next lesson). Return { timeTwin, divergentBin }: timeTwin is true when every time-domain difference is within tolerance (the two signals are indistinguishable to the eye), and divergentBin is the index of the FIRST magnitude bin where they differ by more than tolerance, or -1 if none does. When timeTwin is true and divergentBin is not -1, you have proven the lesson: the views hide different things."
+title: "Find the Hidden Tone"
+instructions: "The lesson claims a tone too weak to see in the time view is a clear peak in the frequency view. Make that claim executable on raw samples. compareViews(baseline, suspect, tolerance, threshold) receives two captures, and nothing is precomputed for you: transform BOTH of them yourself with tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync(), which is the call the lesson prints above the challenge (lesson 2 explains what it does). Return { timeTwin, divergentBin }. timeTwin is true when every pair of samples differs by no more than tolerance. divergentBin is the index of the first bin whose two magnitudes differ by MORE than threshold, or -1 when no bin does. Three details the grader holds you to. A gap counts by size, not by direction: a bin that lost energy diverged as much as one that gained it. Every bin is eligible, bin 0 included. And tolerance and threshold are never the same number, because a magnitude grows with the number of samples you transformed while a sample difference does not."
 starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
   function compareViews(
-    timeA: number[],
-    timeB: number[],
-    magsA: number[],
-    magsB: number[],
+    baseline: number[],
+    suspect: number[],
     tolerance: number,
+    threshold: number,
   ): { timeTwin: boolean; divergentBin: number } {
-    // timeTwin: every |timeA[i] - timeB[i]| <= tolerance
-    // divergentBin: first i where |magsA[i] - magsB[i]| > tolerance, else -1
+    // Two verdicts, and they read different things: one compares the captures
+    // as they came in, the other compares what the transform returns for each.
     return null; // your code here
   }
 solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
   function compareViews(
-    timeA: number[],
-    timeB: number[],
-    magsA: number[],
-    magsB: number[],
+    baseline: number[],
+    suspect: number[],
     tolerance: number,
+    threshold: number,
   ): { timeTwin: boolean; divergentBin: number } {
-    const timeTwin = timeA.every((v, i) => Math.abs(v - timeB[i]) <= tolerance);
+    const timeTwin = baseline.every((v, i) => Math.abs(v - suspect[i]) <= tolerance);
+    const spectrumOf = (samples: number[]) =>
+      tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync() as number[]);
+    const magsA = spectrumOf(baseline);
+    const magsB = spectrumOf(suspect);
     let divergentBin = -1;
     for (let i = 0; i < magsA.length; i++) {
-      if (Math.abs(magsA[i] - magsB[i]) > tolerance) {
+      if (Math.abs(magsA[i] - magsB[i]) > threshold) {
         divergentBin = i;
         break;
       }
@@ -34,56 +40,173 @@ solutionCode: |
   }
 testCode: |
   describe('compareViews', () => {
-    it('proves the lesson: twins in time, distinct at bin 5', () => {
-      const timeA = [0.50, 0.87, 1.00, 0.87, 0.50, 0.00];
-      const timeB = [0.53, 0.84, 1.02, 0.89, 0.47, 0.02];
-      const magsA = [0, 0, 3.0, 0, 0, 0.0, 0];
-      const magsB = [0, 0, 3.0, 0, 0, 6.4, 0];
-      const r = compareViews(timeA, timeB, magsA, magsB, 0.05);
+    // The lesson's own generator. Both captures carry the four catalogued
+    // components (5, 12, 23, 47 Hz); the suspect also carries one tone the
+    // catalog has no source for.
+    const generate = (components, samples, sampleRate) => {
+      const out = [];
+      for (let i = 0; i < samples; i++) {
+        let value = 0;
+        for (const c of components) {
+          value += c.amp * Math.sin(2 * Math.PI * c.hz * i / sampleRate);
+        }
+        out.push(value);
+      }
+      return out;
+    };
+    const catalogued = [
+      { hz: 5, amp: 0.8 },
+      { hz: 12, amp: 0.6 },
+      { hz: 23, amp: 0.4 },
+      { hz: 47, amp: 0.2 },
+    ];
+    // 512 samples at the hull rate of 256 Hz: two seconds, 0.5 Hz per bin.
+    const background = (samples = 512) => generate(catalogued, samples, 256);
+    const intruder = (hz, amp, samples = 512) =>
+      generate([...catalogued, { hz, amp }], samples, 256);
+
+    // Every probe goes through this helper. The starter returns null, and
+    // reading a verdict off null reports a JavaScript error about a property
+    // name instead of saying anything about the task.
+    const views = (baseline, suspect, tolerance, threshold) => {
+      const r = compareViews(baseline, suspect, tolerance, threshold);
+      expect(
+        r,
+        'compareViews returned nothing to read. It has to hand back an object carrying both verdicts, timeTwin and divergentBin, before any check here can look at them.',
+      ).toBeDefined();
+      expect(
+        typeof r.timeTwin,
+        'timeTwin is the verdict on the time-domain pair, so it has to be a boolean.',
+      ).toBe('boolean');
+      expect(
+        typeof r.divergentBin,
+        'divergentBin is a bin index, so it has to be a number. Use the sentinel the instructions name when no bin diverges.',
+      ).toBe('number');
+      return r;
+    };
+
+    it('calls the lesson pair twins in time', () => {
+      const r = views(background(), intruder(73.4, 0.05), 0.05, 5.0);
+      expect(
+        r.timeTwin,
+        'No sample of these two captures differs by more than 0.05, which is the whole complaint about the time view.',
+      ).toBe(true);
+    });
+
+    it('names the bin the hidden tone lands in', () => {
+      const r = views(background(), intruder(73.4, 0.05), 0.05, 5.0);
+      expect(
+        r.divergentBin,
+        'Two seconds of capture at 256 Hz makes each bin 0.5 Hz wide, so the 73.4 Hz tone lands on the line at 73.5 Hz. Its gap there measures 11.96, the only gap in the spectrum above 5.0.',
+      ).toBe(147);
+    });
+
+    it('a catalogued line that went dead diverges by size, not by direction', () => {
+      // The suspect LOST the 47 Hz component. Every other probe in this
+      // suite adds energy, so a comparison that only notices energy
+      // arriving (b - a > threshold) clears them all and misses this one.
+      const dead = generate(catalogued.filter((c) => c.hz !== 47), 512, 256);
+      const r = compareViews(background(), dead, 0.05, 5.0);
+      expect(
+        r.divergentBin,
+        'The 47 Hz line is in the baseline and gone from the suspect: bin 94 (47 Hz at 0.5 Hz per bin over 512 samples) reads 51.2 on one side and 0 on the other. A gap counts by size, not by direction, so a hull channel that has gone dead diverges as much as a tone that arrived.',
+      ).toBe(94);
+    });
+    it('reports no divergence when the suspect is the same capture', () => {
+      const samples = background();
+      const r = views(samples, samples.slice(), 0.05, 5.0);
       expect(r.timeTwin).toBe(true);
-      expect(r.divergentBin).toBe(5);
+      expect(
+        r.divergentBin,
+        'These two spectra are identical bin for bin. A search that reads one spectrum on its own, and reports the first bin that is simply LOUD, answers a different question: the catalogued 5 Hz component alone sits at magnitude 204.8 here, and it is in the catalog.',
+      ).toBe(-1);
     });
 
-    it('returns -1 when the spectra agree everywhere', () => {
-      const r = compareViews([1, 2], [1, 2], [4, 4, 4], [4, 4, 4], 0.1);
-      expect(r.timeTwin).toBe(true);
-      expect(r.divergentBin).toBe(-1);
+    it('moves its answer when the tone gets quieter, at the same bar', () => {
+      const loud = views(background(), intruder(73.4, 0.05), 0.05, 5.0);
+      expect(loud.divergentBin).toBe(147);
+
+      const quiet = views(background(), intruder(73.4, 0.01), 0.05, 5.0);
+      expect(
+        quiet.divergentBin,
+        'Same tone, same bar, one fifth the amplitude. Its largest gap now measures 2.39, so nothing in this spectrum clears 5.0 and the honest answer is the sentinel.',
+      ).toBe(-1);
+      expect(quiet.timeTwin).toBe(true);
     });
 
-    it('reports non-twins in time honestly', () => {
-      const r = compareViews([0, 1], [0.5, 1], [1], [1], 0.1);
-      expect(r.timeTwin).toBe(false);
+    it('reads the threshold argument, so a looser bar catches the shoulder first', () => {
+      const r = views(background(), intruder(73.4, 0.05), 0.05, 2.0);
+      expect(
+        r.divergentBin,
+        'The tone sits between two lines, so it leaves 3.01 in bin 146 (73.0 Hz) on its way to 11.96 in bin 147. A bar of 2.0 meets the shoulder first, and a bar of 5.0 steps over it.',
+      ).toBe(146);
     });
 
-    it('finds the FIRST divergent bin, not the largest', () => {
-      const magsA = [0, 1.0, 5.0, 9.0];
-      const magsB = [0, 1.3, 5.0, 2.0];
-      const r = compareViews([0], [0], magsA, magsB, 0.2);
-      expect(r.divergentBin).toBe(1);
+    it('a tone loud enough to see in time clears the bar before its own peak', () => {
+      const r = views(background(), intruder(73.4, 0.5), 0.05, 20.0);
+      expect(
+        r.timeTwin,
+        'This tone reaches 0.5 in the raw samples, ten times the archived one. It is no longer hidden in the time view.',
+      ).toBe(false);
+      expect(
+        r.divergentBin,
+        'Its peak gap is 119.59 in bin 147, but the smear around it has grown too: bin 146 now measures 30.09 and clears a bar of 20.0 first.',
+      ).toBe(146);
     });
 
-    it('respects the tolerance in both directions', () => {
-      const within = compareViews([0], [0.04], [1.0], [1.04], 0.05);
-      expect(within.timeTwin).toBe(true);
-      expect(within.divergentBin).toBe(-1);
-
-      const beyond = compareViews([0], [0.04], [1.0], [1.2], 0.05);
-      expect(beyond.divergentBin).toBe(0);
+    it('follows the tone, not a memorized bin index', () => {
+      const r = views(background(), intruder(40, 0.05), 0.05, 5.0);
+      expect(
+        r.divergentBin,
+        '40 Hz sits exactly on a bin line here (40 x 512 / 256), so its whole gap of 12.8 lands in bin 80 while every earlier bin agrees to within 0.00001.',
+      ).toBe(80);
     });
 
-    it('reads the tolerance argument: a loose 0.5 forgives gaps of 0.4 and 0.2', () => {
-      const r = compareViews([1.0, 2.0], [1.4, 1.7], [3.0, 4.0], [3.2, 4.4], 0.5);
-      expect(r.timeTwin).toBe(true);
-      expect(r.divergentBin).toBe(-1);
+    it('follows the capture length, because the bin grid does', () => {
+      const r = views(background(256), intruder(73.4, 0.05, 256), 0.05, 2.0);
+      expect(
+        r.divergentBin,
+        'The same 73.4 Hz tone, in a capture half as long. One second at 256 Hz makes each bin 1 Hz wide, so the tone now lands in bin 73 with a gap of 4.83. A bin index is not a frequency until you know how many samples went in.',
+      ).toBe(73);
     });
 
-    it('reads the tolerance argument: a strict 0.005 catches gaps of 0.012 and 0.008', () => {
-      const r = compareViews([0.5, 0.6], [0.512, 0.6], [1.0, 1.0], [1.0, 1.008], 0.005);
-      expect(r.timeTwin).toBe(false);
-      expect(r.divergentBin).toBe(1);
+    it('compares spectra, not samples: a time-shifted copy is a spectral twin', () => {
+      const samples = background();
+      const rotated = samples.map((_, i) => samples[(i + 137) % 512]);
+      const r = views(samples, rotated, 0.05, 0.5);
+      expect(
+        r.timeTwin,
+        'Rotating the capture by 137 samples moves individual readings by as much as 2.99, so these are nothing like twins in time.',
+      ).toBe(false);
+      expect(
+        r.divergentBin,
+        'A rotation changes when each component peaks, not how much of it is present, so both spectra carry the same four magnitudes and the largest gap between them is 0.0000153. A comparison that walked the raw samples instead of the bins would report a divergence in the first few readings.',
+      ).toBe(-1);
+    });
+
+    it('reads the tolerance argument for the time verdict', () => {
+      const r = views(background(), intruder(73.4, 0.05), 0.04, 5.0);
+      expect(
+        r.timeTwin,
+        'The largest sample gap in this pair is 0.05. Under a tolerance of 0.04 the pair is not a twin, and the caller sets that number, not the body.',
+      ).toBe(false);
+    });
+
+    it('a capture sitting below its twin is not a twin, and its offset lands in bin 0', () => {
+      const samples = background();
+      const lowered = samples.map((v) => v - 0.5);
+      const r = views(samples, lowered, 0.05, 5.0);
+      expect(
+        r.timeTwin,
+        'Here the suspect sits BELOW the baseline at every sample. A difference that keeps its sign misreads that gap, decides the pair is close enough, and certifies two unlike captures twins.',
+      ).toBe(false);
+      expect(
+        r.divergentBin,
+        'A constant offset is not a tone: it puts 256.0 into bin 0 and leaves every other bin alone to within 0.00001. Bin 0 counts how far the whole capture sits from zero, and it is still a bin.',
+      ).toBe(0);
     });
   });
-estimatedMinutes: 10
-difficulty: beginner
+estimatedMinutes: 14
+difficulty: intermediate
 mlContent: data
 skillAxis: data_prep

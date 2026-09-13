@@ -18,7 +18,7 @@ concept:
     jsTitle: "README + JSDoc"
     jsCode: "/** @param input - Signal array */ function classify(input) {} // API docs"
     mlTitle: "Model Card"
-    mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Size: 85MB */ // model docs"
+    mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Weights: 3988 bytes */ // model docs"
     tier: structural
     breaks: "JSDoc comments describe deterministic functions whose behavior is verifiable from the source. A model card describes statistical performance over a held-out distribution that the production data may not match. Reading the docs tells you how the function behaves; reading the model card tells you how the model performed yesterday on a benchmark that may already be stale. Documentation discipline transfers; verifiability does not."
 consequence:
@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "A Model Card is a README for a model: render the metadata you are given into fixed sections, never hardcode the values. Two lines are computed rather than copied, the dated accuracy line and the lowest-recall limitation."
   - level: guidance
-    content: "Build an array of lines and join it with a newline. The graded strings are exact. First a '# {name} v{version}' heading. Under '## Performance': '- Accuracy: {(meta.accuracy * 100).toFixed(1)}% (measured at {meta.benchmarkedOn})', then '- Size: {sizeMB} MB' and '- Inference: {inferenceMs}ms'. Under '## Limitations': '- Lowest recall: {class} at {recall as a one-decimal percent}', then one '- ' bullet per entry of meta.limitations. Under '## Usage': '- Input:' and '- Output:'. Sort Object.entries(meta.recallByClass) by value to find the lowest-recall class."
+    content: "The strings are a contract, and the instructions write it out line by line and space by space. Read it there rather than inventing a format. What a hint can tell you is where the work sits: only two of these lines are computed instead of copied. Accuracy renders with the benchmark it came from, because a percentage with no measurement attached tells an operator nothing about whether it still holds. And the first limitation is the worst class, which means finding a minimum across recallByClass. Insertion order is not a ranking. The grader hands you objects whose worst entry sits somewhere different each time, so reading whichever key happens to come first or last is a card that files a healthy class under Limitations."
   - level: solution
     content: |
       const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
@@ -40,7 +40,7 @@ hints:
         '',
         '## Performance',
         `- Accuracy: ${pct(meta.accuracy)} (measured at ${meta.benchmarkedOn})`,
-        `- Size: ${meta.sizeMB} MB`,
+        `- Size: ${meta.weightBytes} bytes`,
         `- Inference: ${meta.inferenceMs}ms`,
         '',
         '## Limitations',
@@ -104,8 +104,10 @@ interface ModelCard {
     precision: number;
     recall: number;
     f1Score: number;
-    inferenceMs: number;
-    modelSizeMB: number;
+    inferenceMs: number;   // the classifier alone
+    pipelineMs: number;    // the whole classify() call, end to end
+    weightBytes: number;    // this model's weight file
+    bundleSizeMB: number;   // everything the dashboard downloads to run it
   };
 
   // What the model cannot do
@@ -140,15 +142,19 @@ const deepScanCard: ModelCard = {
     precision: 0.92,
     recall: 0.91,
     f1Score: 0.915,
-    inferenceMs: 5,
-    modelSizeMB: 85,   // weights.bin on disk; 42 MB gzipped over the wire
+    inferenceMs: 0.035,  // the eleven-feature classifier alone, readback inside the clock (module 10)
+    pipelineMs: 5,       // the whole classify() call on WebGPU, 15 on WebGL: feature extraction,
+                         // the classifier and the readback, which is what the monitor times
+    weightBytes: 3_988,  // measured off weights.bin, not estimated: 997 float32
+    bundleSizeMB: 85,    // the whole download, quantized: this classifier
+                         // plus the pretrained language component
   },
 
   limitations: [
     'Trained on Sector 7-G captures only; accuracy may drop in other sectors',
     'Anomaly class has lowest recall (84%); rare signals may be misclassified as noise',
     'Requires exactly 64 samples per capture (0.25 seconds of one channel at 256 Hz); the 8 FFT bins and the zero-crossing scale are defined at that length, so shorter bursts cannot be classified',
-    'WebGPU backend required for <10ms inference; falls back to 15ms on WebGL',
+    'WebGPU backend required for the 5 ms end-to-end path; the pipeline falls back to 15 ms on WebGL. The classifier itself answers in microseconds on any backend',
     'Not validated on signals below -20 dB SNR (signal-to-noise ratio; the signal is one tenth the amplitude of the noise)',
   ],
 
@@ -159,6 +165,22 @@ const deepScanCard: ModelCard = {
   },
 };`}
 </CodeBlock>
+
+Two sizes and two latencies, because each pair answers two questions. `weightBytes` is this model's own
+weight file, and it is 3,988 bytes: the 997 float32 weights of the eleven-feature, five-class network module 10 retrained. `bundleSizeMB` is everything the bridge
+dashboard downloads before it can classify anything, and almost none of that is
+the classifier. The mass is the pretrained language component behind the report
+pipeline, which is what the optimization sprint in module 10 was actually
+measuring. Write the bundle figure on the classifier's card and the next person
+who reads it optimizes the wrong network. The latencies split the same way: `inferenceMs` is the classifier alone, 0.035 ms with the readback inside the clock, the figure module 10's cache ledger was built on. `pipelineMs` is the whole `classify()` call the bridge dashboard makes, feature extraction and readback included, 5 ms on WebGPU and 15 on WebGL, which is what lesson 3's monitor times. Put the 5 on the classifier's line and someone will one day spend a week trying to make a microsecond call faster.
+
+The input contract is worth reading twice, because two different 64s run through
+this course. An archive row is a 33-second capture, 256 Hz across 64 channels:
+540,672 samples, a little over two megabytes at float32. The classifier's input is
+a 64-sample window taken from one of those channels, a quarter of a second at
+256 Hz. That window length sets the rest of the contract: 8 FFT bins 4 Hz wide,
+and a zero-crossing count that cannot exceed 63. Both numbers are real. Neither
+one is the other.
 
 ## Pipeline API Documentation
 
@@ -232,7 +254,7 @@ Write a Model Card for the DEEP SCAN classifier.
     "That number has to be derived, not chosen. Read it off a high percentile of the metric measured on known-calm data. Record the window size you measured at, because the same threshold means something different on a longer window."
   ]}
   bridge="JSDoc comments describe a TypeScript function's inputs, outputs, and exceptions; a Model Card describes a model's training data, accuracy metrics, and known failure modes. The format is the same, but the model card's accuracy numbers describe a past benchmark, not a verifiable contract."
-  youCanNow="Write a Model Card and operational runbook that document an ML model's performance characteristics, limitations, and failure recovery procedures."
+  youCanNow="Render a Model Card from a model's own metadata, with the accuracy dated to the benchmark that produced it and the weakest class found rather than assumed, and turn a runbook entry with a judgment call in it into one with a threshold and a window size."
 />
 
 <Epilogue>

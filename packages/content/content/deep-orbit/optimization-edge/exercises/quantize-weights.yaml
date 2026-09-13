@@ -1,136 +1,238 @@
 slug: quantize-weights
 lessonSlug: quantization
-title: "Quantize Weights to Uint8"
-instructions: "Implement uint8 quantization: map float32 weights to the 0-255 range using min-max scaling. Every stored value has to be a whole number, so dequantize gives you back approximations rather than the original floats. Return the quantized array, scale factor, and zero point so the values can be mapped back."
+title: "Quantize a Model and Measure What It Cost"
+instructions: "Quantize a trained model's weights to uint8 and measure what the quantized build got wrong. Write quantizeModel(model, captures). Work on the 2-D kernel tensors in model.getWeights() and leave the 1-D bias tensors at float32, the way a converter pattern that names only the kernels would. For each kernel, map its values onto the whole numbers 0 to 255 with min-max scaling: scale is (max - min) / 255, zeroPoint is Math.round(-min / scale), and each stored value is Math.round((value - min) / scale), so the smallest weight lands on 0 and the largest on 255. Then do what TensorFlow.js does at load time: restore each weight as (stored - zeroPoint) * scale and put those floats back on the model, because a model still running its trained weights cannot show you what quantizing cost. Return { kernels, maxWeightError, predictionsChanged }. kernels carries one entry per kernel, in model order, each { quantized, scale, zeroPoint, shape }, with quantized in the tensor's own flat order. maxWeightError is the largest gap between any original weight and its restored value. predictionsChanged is how many of the captures the model now files under a different class, comparing the largest output before your pass against the largest output after."
 starterCode: |
-  interface QuantizedResult {
+  interface QuantizedKernel {
     quantized: number[];
     scale: number;
     zeroPoint: number;
+    shape: number[];
   }
 
-  function quantize(weights: number[]): QuantizedResult {
-    // 1. Find min and max of weights
-    // 2. Calculate scale = (max - min) / 255
-    // 3. Calculate zeroPoint = Math.round(-min / scale)
-    // 4. Map each weight to Math.round((w - min) / scale)
-    return null; // your code here
+  interface QuantizationReport {
+    kernels: QuantizedKernel[];
+    maxWeightError: number;
+    predictionsChanged: number;
   }
 
-  function dequantize(result: QuantizedResult): number[] {
-    // Reverse: (quantized - zeroPoint) * scale
+  async function quantizeModel(
+    model: any,
+    captures: number[][]
+  ): Promise<QuantizationReport> {
+    // Once the decoded floats are on the model, the trained verdicts are
+    // gone. Work out when you need to read them.
     return null; // your code here
   }
 solutionCode: |
-  interface QuantizedResult {
+  interface QuantizedKernel {
     quantized: number[];
     scale: number;
     zeroPoint: number;
+    shape: number[];
   }
 
-  function quantize(weights: number[]): QuantizedResult {
-    const min = Math.min(...weights);
-    const max = Math.max(...weights);
-    const scale = (max - min) / 255;
-    const zeroPoint = Math.round(-min / scale);
-
-    const quantized = weights.map(w => Math.round((w - min) / scale));
-
-    return { quantized, scale, zeroPoint };
+  interface QuantizationReport {
+    kernels: QuantizedKernel[];
+    maxWeightError: number;
+    predictionsChanged: number;
   }
 
-  function dequantize(result: QuantizedResult): number[] {
-    return result.quantized.map(q => (q - result.zeroPoint) * result.scale);
+  async function quantizeModel(
+    model: any,
+    captures: number[][]
+  ): Promise<QuantizationReport> {
+    const input = tf.tensor2d(captures);
+    const before = Array.from(await model.predict(input).argMax(1).data());
+
+    const isKernel = (w: any) => w.shape.length === 2;
+    const kernels: QuantizedKernel[] = [];
+    let maxWeightError = 0;
+
+    const rebuilt = model.getWeights().map((w: any) => {
+      if (!isKernel(w)) return w;
+      const values = Array.from(w.dataSync()) as number[];
+      const min = values.reduce((a, b) => Math.min(a, b));
+      const max = values.reduce((a, b) => Math.max(a, b));
+      const scale = (max - min) / 255;
+      const zeroPoint = Math.round(-min / scale);
+      const quantized = values.map(v => Math.round((v - min) / scale));
+      const restored = quantized.map(q => (q - zeroPoint) * scale);
+      const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
+      maxWeightError = Math.max(maxWeightError, error);
+      kernels.push({ quantized, scale, zeroPoint, shape: w.shape });
+      return tf.tensor(restored, w.shape);
+    });
+
+    model.setWeights(rebuilt);
+
+    const after = Array.from(await model.predict(input).argMax(1).data());
+    const predictionsChanged = after.filter((v, i) => v !== before[i]).length;
+
+    return { kernels, maxWeightError, predictionsChanged };
   }
 testCode: |
-  describe('quantize', () => {
-    it('maps weights to 0-255 range', () => {
-      const result = quantize([0.5, -0.5, 1.0, -1.0]);
-      result.quantized.forEach(q => {
-        expect(q).toBeGreaterThanOrEqual(0);
-        expect(q).toBeLessThanOrEqual(255);
+  describe('quantizeModel', () => {
+    // The five-class classifier, freshly initialized on every call, so the
+    // scales and errors below are numbers no submission can have memorised.
+    function classifier() {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 12, activation: 'relu', inputShape: [11] }));
+      model.add(tf.layers.dense({ units: 5, activation: 'softmax' }));
+      return model;
+    }
+
+    function elevenFeatureCaptures(n: number) {
+      return Array.from({ length: n }, (_, i) =>
+        Array.from({ length: 11 }, (_, f) => Math.sin((i + 1) * (f + 1) * 0.37))
+      );
+    }
+
+    // A two-class model with one weight far out at 40. Min-max puts 255
+    // buckets across the whole span, so one bucket is 50 / 255 wide and the
+    // 0.05 weight that is the only thing voting for class 1 does not survive
+    // rounding: it files into the same bucket as the 0 beside it.
+    function stretchedGrid() {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 2, activation: 'softmax', inputShape: [2] }));
+      model.setWeights([
+        tf.tensor2d([[40, -10], [0, 0.05]]),
+        tf.tensor1d([0, -0.02])
+      ]);
+      return model;
+    }
+    const STRETCHED = [[1, 0], [0, 1], [1, 0], [0, 1], [0, 1]];
+
+    // Same shape, weights of one size. Nothing here turns on a difference
+    // finer than a bucket, so the quantized build agrees with the trained one.
+    function evenGrid() {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 2, activation: 'softmax', inputShape: [2] }));
+      model.setWeights([
+        tf.tensor2d([[2, -2], [-2, 2]]),
+        tf.tensor1d([0.1, -0.1])
+      ]);
+      return model;
+    }
+    const EVEN = [[1, 0], [0, 1], [3, 1], [1, 3]];
+
+    // Two kernels whose ranges differ by exactly 10x, to check that each one
+    // is scaled by its own spread rather than by one number for the model.
+    function twoKernels() {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 2, activation: 'relu', inputShape: [2] }));
+      model.add(tf.layers.dense({ units: 2, activation: 'softmax' }));
+      model.setWeights([
+        tf.tensor2d([[0, 1], [1, 0]]),
+        tf.tensor1d([0, 0.5]),
+        tf.tensor2d([[0, 10], [10, 0]]),
+        tf.tensor1d([0, 0.5])
+      ]);
+      return model;
+    }
+
+    // One guard, so the first Run of the starter reports the contract it has
+    // not met yet instead of a property read on null.
+    async function reportOf(model: any, captures: number[][]) {
+      const report = await quantizeModel(model, captures);
+      expect(
+        report,
+        'Nothing came back from this call, so there is nothing to read a cost off. quantizeModel returns null until you build it.'
+      ).toBeDefined();
+      return report;
+    }
+
+    it('stores one entry per kernel, as whole numbers filling 0 to 255', async () => {
+      const model = classifier();
+      const report = await reportOf(model, elevenFeatureCaptures(20));
+      expect(
+        report.kernels.length,
+        'The model holds two kernels and two biases. Only the 2-D kernels are quantized, so only they are reported.'
+      ).toBe(2);
+      expect(report.kernels.map((k: any) => k.shape)).toEqual([[11, 12], [12, 5]]);
+      for (const kernel of report.kernels) {
+        expect(kernel.quantized.length).toBe(kernel.shape[0] * kernel.shape[1]);
+        for (const q of kernel.quantized) {
+          expect(
+            Number.isInteger(q),
+            'A uint8 holds no fraction. Scaling the range without snapping to a bucket is the step that saves the bytes, and skipping it leaves a float in every slot.'
+          ).toBe(true);
+          expect(q).toBeGreaterThanOrEqual(0);
+          expect(q).toBeLessThanOrEqual(255);
+        }
+        expect(Math.min(...kernel.quantized)).toBe(0);
+        expect(
+          Math.max(...kernel.quantized),
+          'The two ends of a kernel land on the two ends of the byte range, which is what makes its buckets the finest they can be.'
+        ).toBe(255);
+      }
+    });
+
+    it('scales each kernel by its own spread', async () => {
+      const report = await reportOf(twoKernels(), [[1, 1], [2, 0]]);
+      expect(report.kernels.length).toBe(2);
+      expect(report.kernels[0].scale).toBeCloseTo(1 / 255, 9);
+      expect(
+        report.kernels[1].scale,
+        'The second kernel spans ten times the range of the first across the same 255 steps, so its buckets are ten times wider. One scale for the whole model would misprice both.'
+      ).toBeCloseTo(10 / 255, 9);
+    });
+
+    it('leaves the model holding the restored weights, with the biases untouched', async () => {
+      const model = evenGrid();
+      const report = await reportOf(model, EVEN);
+      const weights = model.getWeights().map((w: any) => Array.from(w.dataSync()));
+
+      const kernel = report.kernels[0];
+      kernel.quantized.forEach((q: number, i: number) => {
+        expect(
+          weights[0][i],
+          'The runtime decodes the stored bytes back to float32 and runs those. Quantizing a copy and leaving the trained weights on the model measures a build nobody is shipping.'
+        ).toBeCloseTo((q - kernel.zeroPoint) * kernel.scale, 6);
       });
+      expect(
+        weights[0].some((v: number) => Math.abs(Math.abs(v) - 2) > 1e-9),
+        'The trained kernel is exactly 2 and -2. If it still is, the restored floats never reached the model.'
+      ).toBe(true);
+      expect(
+        weights[1],
+        'The 1-D biases are not part of this pass, so they come out bit for bit as they went in.'
+      ).toEqual([0.10000000149011612, -0.10000000149011612]);
     });
 
-    it('maps min to 0 and max to 255', () => {
-      const result = quantize([0.5, -0.5, 1.0, -1.0]);
-      expect(Math.min(...result.quantized)).toBe(0);
-      expect(Math.max(...result.quantized)).toBe(255);
+    it('reports the largest weight error, and it is never zero', async () => {
+      const crafted = await reportOf(stretchedGrid(), STRETCHED);
+      expect(
+        crafted.maxWeightError,
+        'Here the worst-hit weight is the 0.05, which restores to 0. Reporting zero error means nothing was ever snapped to a bucket, so no precision was given up and no bytes were saved.'
+      ).toBeCloseTo(0.05, 6);
+
+      const report = await reportOf(classifier(), elevenFeatureCaptures(20));
+      const widest = Math.max(...report.kernels.map((k: any) => k.scale));
+      expect(report.maxWeightError).toBeGreaterThan(0);
+      expect(
+        report.maxWeightError,
+        'A restored weight sits on a bucket boundary of the grid its kernel was measured against, so it cannot have drifted further than one bucket.'
+      ).toBeLessThanOrEqual(widest + 1e-12);
     });
 
-    it('preserves relative ordering', () => {
-      const result = quantize([0.1, 0.5, -0.3, 0.9]);
-      expect(result.quantized[1]).toBeGreaterThan(result.quantized[0]);
-      expect(result.quantized[3]).toBeGreaterThan(result.quantized[1]);
-      expect(result.quantized[2]).toBeLessThan(result.quantized[0]);
+    it('counts the captures the quantized build files differently', async () => {
+      const report = await reportOf(stretchedGrid(), STRETCHED);
+      expect(
+        report.predictionsChanged,
+        'Three of these five captures are the [0, 1] signal, which class 1 wins by 0.05 of a weight. That weight rounds into the zero bucket, so the quantized build sends all three to class 0.'
+      ).toBe(3);
     });
 
-    it('stores whole numbers, because a uint8 holds no fraction', () => {
-      const result = quantize([0.13, -0.42, 0.77, -0.91, 0.05, 0.6]);
-      result.quantized.forEach(q => {
-        expect(Number.isInteger(q)).toBe(true);
-      });
-    });
-
-    it('puts the same weight in a different bucket when the range changes', () => {
-      // 0.37 is the same float in both sets. The bucket it lands in depends on
-      // the range around it, so one memorised answer cannot satisfy both.
-      const narrow = quantize([0, 0.37, 1]);
-      const wide = quantize([0, 0.37, 2]);
-      expect(narrow.quantized).toEqual([0, 94, 255]);
-      expect(wide.quantized).toEqual([0, 47, 255]);
-      expect(wide.scale).toBeCloseTo(2 * narrow.scale, 8);
+    it('reports nothing moved when the quantized build agrees with the trained one', async () => {
+      const report = await reportOf(evenGrid(), EVEN);
+      expect(
+        report.predictionsChanged,
+        'This model decides by margins far wider than a bucket, so rounding its weights changes no verdict. A count carried over from another model cannot be right on both.'
+      ).toBe(0);
     });
   });
-
-  describe('dequantize', () => {
-    it('approximately recovers original weights', () => {
-      const original = [0.5, -0.5, 1.0, -1.0, 0.0];
-      const quantized = quantize(original);
-      const recovered = dequantize(quantized);
-      expect(Array.isArray(recovered)).toBe(true);
-      expect(recovered).toHaveLength(original.length);
-      original.forEach((w, i) => {
-        expect(recovered[i]).toBeCloseTo(w, 1);
-      });
-    });
-
-    it('round-trips a different weight set', () => {
-      const original = [2, 4, 8];
-      const recovered = dequantize(quantize(original));
-      expect(recovered).toHaveLength(3);
-      original.forEach((w, i) => {
-        expect(recovered[i]).toBeCloseTo(w, 1);
-      });
-    });
-
-    it('lands on a bucket, not back on the original weight', () => {
-      const original = [0, 0.37, 0.61, 1];
-      const result = quantize(original);
-      const recovered = dequantize(result);
-      const errors = original.map((w, i) => Math.abs(recovered[i] - w));
-      // No value drifts by more than half a bucket.
-      errors.forEach(e => {
-        expect(e).toBeLessThanOrEqual(result.scale / 2 + 1e-12);
-      });
-      // At least one value does drift. 256 buckets cannot hold an arbitrary
-      // float, and that error is the price uint8 storage charges.
-      expect(Math.max(...errors)).toBeGreaterThan(result.scale / 100);
-    });
-
-    it('reads scale and zeroPoint off the result it is handed', () => {
-      const a = dequantize({ quantized: [0, 128, 255], scale: 0.01, zeroPoint: 128 });
-      expect(a[0]).toBeCloseTo(-1.28, 6);
-      expect(a[1]).toBeCloseTo(0, 6);
-      expect(a[2]).toBeCloseTo(1.27, 6);
-
-      const b = dequantize({ quantized: [0, 128, 255], scale: 0.02, zeroPoint: 0 });
-      expect(b[0]).toBeCloseTo(0, 6);
-      expect(b[1]).toBeCloseTo(2.56, 6);
-      expect(b[2]).toBeCloseTo(5.1, 6);
-    });
-  });
-estimatedMinutes: 10
-difficulty: intermediate
-mlContent: deployment
+estimatedMinutes: 15
+difficulty: advanced
+mlContent: model
 skillAxis: deployment

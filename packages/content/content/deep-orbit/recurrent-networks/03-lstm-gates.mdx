@@ -27,11 +27,21 @@ consequence:
   narrative: "The LSTM trains on one day of the archive and flags episodes three days past anything it saw, each inside a single window. Nothing carries between windows; the gates learned the shape once."
 hints:
   - level: nudge
-    content: "Three of the four weight rows are gates and go through sigmoid; only the candidate goes through Math.tanh. The cell update scales the old cell by the forget gate, then adds the input gate's share of the candidate."
+    content: "Three of the four weight rows are gates and go through sigmoid; only the candidate goes through Math.tanh. The cell update scales the old cell by the forget gate, then adds the input gate's share of the candidate. For the layer, count the columns before you cut: four gates share two kernels and one bias, and they are stored in a fixed order."
   - level: guidance
-    content: "In lstmStep(), start with a preact(row, j) helper returning row[0] * prevHidden[j] + row[1] * x[j] + row[2]. Map over prevCell: the forget and input gates are sigmoid(preact(...)), the candidate is Math.tanh(preact(...)), and the new value is forget * c + store * candidate. Then map over the new cell for the hidden state, taking sigmoid of the output row times Math.tanh of the cell value. One test runs 100 steps with the forget gate near 1, the input gate shut and a candidate that is not zero, and checks the cell against 2 * Math.pow(sigmoid(5), 100), so the candidate reaches the cell only through the input gate."
+    content: "All four weight groups are read the same way: one row per dimension, three numbers per row, the same arithmetic every time. Write that arithmetic once and call it four times. Three of the four groups are gates, so they saturate; the fourth is the value being proposed for storage, and it needs a range that reaches below zero. The cell update multiplies before it adds: the old value is scaled by its own gate, the proposed value is scaled by its own gate, and only then do the two meet. The hidden state is the new cell value seen through the remaining gate. Cutting the layer up is the same three numbers per gate, taken at one shared column index: one out of each kernel and one out of the bias, and the library's column order is the one this lesson prints, not the one it narrates."
   - level: solution
-    content: "const preact = (row, j) => row[0] * prevHidden[j] + row[1] * x[j] + row[2]; const newCell = prevCell.map((c, j) => { const forget = sigmoid(preact(weights.forget[j], j)); const store = sigmoid(preact(weights.input[j], j)); const candidate = Math.tanh(preact(weights.candidate[j], j)); return forget * c + store * candidate; }); const newHidden = newCell.map((c, j) => sigmoid(preact(weights.output[j], j)) * Math.tanh(c)); return { newCell, newHidden };"
+    content: |
+      const preact = (row, j) => row[0] * prevHidden[j] + row[1] * x[j] + row[2]; const newCell = prevCell.map((c, j) => { const forget = sigmoid(preact(weights.forget[j], j)); const store = sigmoid(preact(weights.input[j], j)); const candidate = Math.tanh(preact(weights.candidate[j], j)); return forget * c + store * candidate; }); const newHidden = newCell.map((c, j) => sigmoid(preact(weights.output[j], j)) * Math.tanh(c)); return { newCell, newHidden };
+      const model = tf.sequential();
+      const cell = tf.layers.lstm({ units: 1, inputShape: [timeSteps, 1], recurrentActivation: 'sigmoid', returnSequences: true });
+      model.add(cell);
+      const [kernel, recurrentKernel, biasTensor] = model.getWeights();
+      const inputColumns = Array.from(kernel.dataSync());
+      const recurrentColumns = Array.from(recurrentKernel.dataSync());
+      const biases = Array.from(biasTensor.dataSync());
+      const gateRow = (column) => [recurrentColumns[column], inputColumns[column], biases[column]];
+      return { model, weights: { input: [gateRow(0)], forget: [gateRow(1)], candidate: [gateRow(2)], output: [gateRow(3)], }, };
 keywords:
   - lstm
   - gates
@@ -44,7 +54,7 @@ skillAxes: [model_arch]
 Epoch 200 of 200, and the loss has not moved since the first hour. Demir's overnight run is still on the engineering display when Farah walks in with her tablet already open to the fix.
 
 <Dialogue speaker="Dr. Farah">
-The simple RNN forgets. Its gradients thin out by step twenty and are gone long before step seventy-three, where the pattern lives: the information from the early steps is multiplied through too many small numbers to survive. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
+The simple RNN forgets. Its gradients thin out by step twenty and are gone long before step seventy-four, where the pattern lives: the information from the early steps is multiplied through too many small numbers to survive. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -61,7 +71,7 @@ Hundreds of steps, for roughly four times the parameters of the simple RNN. And 
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Farah said switches, but the [0,1] output makes each one closer to a dimmer: a gate can pass 30% of a value, not just all of it or none.
 
-<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM network using TensorFlow.js that handles long-range dependencies", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
+<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell with tf.layers.lstm and read its four gates out of the kernels and bias the library packs them into", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
 
 ## Three Gates, One Cell
 
@@ -111,17 +121,20 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 
 // Shape drill with placeholder tensors: prove the [80, 3] pipeline runs
 // end to end. The labels are random, so watch both numbers rather than
-// one. Training loss falls, from about 0.69 to 0.63 over the 20 epochs,
-// while val_loss climbs from about 0.69 to 0.80. That is what memorizing
-// looks like: 17,473 parameters against 80 training rows, and the held-out
-// fifth getting worse as the training loss falls. The real evidence that
-// gates beat plain recurrence on this window is the previous lesson's
-// failed run and tonight's archive replay below.
+// one. Over 60 epochs the training loss falls in every run, from about
+// 0.69 to somewhere between 0.31 and 0.59, while the held-out fifth goes
+// nowhere it can trust: its accuracy stays between 0.40 and 0.70, coin-flip
+// territory, and its loss ends above where it started in eight runs of
+// ten, past 1.0 in the worst of them. That is what memorizing looks like:
+// 17,473 parameters against 80 training rows. Ten reruns measured; the
+// exact figures move with the seed, the gap does not. The real evidence
+// that gates beat plain recurrence on this window is the previous
+// lesson's failed run and tonight's archive replay below.
 const x = tf.randomNormal([100, 80, 3]);  // 100 samples, 80 time steps
 const y = tf.randomUniform([100, 1]).round();
 
 const history = await model.fit(x, y, {
-  epochs: 20,
+  epochs: 60,
   validationSplit: 0.2,
   callbacks: {
     onEpochEnd: (epoch, logs) => {
@@ -135,6 +148,10 @@ const history = await model.fit(x, y, {
 x.dispose();
 y.dispose();`}
 </CodeBlock>
+
+Two things about that layer only turn up when you go looking for its weights. `model.getWeights()` returns three tensors for it, not twelve: an input kernel of shape [features, 4 * units], a recurrent kernel of shape [units, 4 * units], and a bias of length 4 * units. All four gates share those three, packed side by side along the last axis in the order input, forget, candidate, output. That is not the order anyone narrates them in, and building the same layer with `unitForgetBias: true` is the quickest way to see it: the bias comes back with ones in the second quarter and zeros in the other three.
+
+The second thing is which curve the gates run on. TF.js 4.22 leaves `recurrentActivation` at `hardSigmoid`, the clipped straight line `max(0, min(1, 0.2 * z + 0.5))`, while the candidate and the cell output run on `tanh`. Work a step out by hand with a sigmoid, compare it against a layer left on its default, and the two answers do not match. Pass `recurrentActivation: 'sigmoid'` and they agree to about a hundred-millionth.
 
 ## GRU: The Lighter Alternative
 
@@ -175,7 +192,9 @@ gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 ## Challenge
 
-Write one step of the cell yourself: the pre-activations, the three sigmoid gates and the one tanh candidate, then the cell update and the hidden output. One of the tests runs your step a hundred times with the forget gate held near 1, so the decay above is something you check rather than something you read.
+Write one step of the cell yourself: the pre-activations, the three sigmoid gates and the one tanh candidate, then the cell update and the hidden output. One of the tests runs your step a hundred times with the forget gate held at 0.99, so the 0.37 above is something you check rather than something you read.
+
+Then build a one-unit `tf.layers.lstm` and cut its four gates out of the packed kernels. The grader drives your step across a window with the rows you cut and compares it to what the layer reports at every step. Both halves have to be right for that to line up: the gate arithmetic, and which column each gate came from.
 
 <Exercise slug="build-lstm" />
 
@@ -197,7 +216,7 @@ Write one step of the cell yourself: the pre-activations, the three sigmoid gate
     "A flatlined loss at 0.693 on a binary task is the coin-flip signature: the model is learning nothing, and on long sequences with a simple RNN, vanishing gradients are the first suspect."
   ]}
   bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context instead of a timer."
-  youCanNow="Replace `tf.layers.simpleRNN` with `tf.layers.lstm` to handle long-range temporal dependencies, and explain what each gate contributes."
+  youCanNow="Build a one-unit `tf.layers.lstm`, cut its four gates out of the kernels the library packs them into, and run the forget, input and output gates by hand closely enough to reproduce the layer's own output."
 />
 
 <Epilogue>

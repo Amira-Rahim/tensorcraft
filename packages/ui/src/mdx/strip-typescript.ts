@@ -19,7 +19,153 @@
  * This is a coarse heuristic, not a real TS parser - good enough for the
  * handful of patterns exercise authors use in their starter/solution snippets.
  */
+// ---------------------------------------------------------------------------
+// Literal protection (2026-09-12). Every regex in the pipeline below runs over
+// the WHOLE source, so until today they also ran over the INSIDE of string and
+// template literals: the `as Type` regex turned 'Reply as JSON with ...' into
+// 'Reply with ...' and "the reading as anomalous" into "the reading", and a
+// learner writing a prompt in module 9 had words silently deleted before
+// grading (verifier finding, prompt-template). Mask the contents of strings,
+// templates, regex literals and comments with placeholder tokens, run the
+// pipeline, then put the contents back. A token the pipeline deleted together
+// with its context (an import path, a string-literal union type) never comes
+// back, which is exactly the old behaviour for those constructs. `${ }` inside
+// a template is emitted as code so its expressions are still stripped.
+const MASK_SENTINEL = String.fromCharCode(1);
+const MASK_TOKEN_RE = new RegExp(MASK_SENTINEL + "(\\d+)" + MASK_SENTINEL, "g");
+
+function maskLiterals(code) {
+  const chunks = [];
+  const n = code.length;
+  let out = "";
+  let i = 0;
+  const push = (text) => {
+    chunks.push(text);
+    return MASK_SENTINEL + (chunks.length - 1) + MASK_SENTINEL;
+  };
+  const regexAllowedAt = (pos) => {
+    let j = pos - 1;
+    while (j >= 0 && /\s/.test(code[j])) j--;
+    if (j < 0) return true;
+    if (/[(,=:[!&|?{};+\-*%<>~^]/.test(code[j])) return true;
+    return /(?:^|[^\w$])(return|typeof|case|in|of|do|else|void|throw|new|delete)$/.test(
+      code.slice(Math.max(0, j - 7), j + 1),
+    );
+  };
+  const skipQuoted = (start, q) => {
+    let j = start + 1;
+    while (j < n && code[j] !== q && code[j] !== "\n") {
+      if (code[j] === "\\") j++;
+      j++;
+    }
+    return j;
+  };
+  while (i < n) {
+    const c = code[i];
+    const c2 = code[i + 1];
+    if (c === "/" && c2 === "/") {
+      const end = code.indexOf("\n", i);
+      const stop = end === -1 ? n : end;
+      out += "//" + push(code.slice(i + 2, stop));
+      i = stop;
+      continue;
+    }
+    if (c === "/" && c2 === "*") {
+      const end = code.indexOf("*/", i + 2);
+      const stop = end === -1 ? n : end;
+      out += "/*" + push(code.slice(i + 2, stop)) + (end === -1 ? "" : "*/");
+      i = end === -1 ? n : end + 2;
+      continue;
+    }
+    if (c === "'" || c === '"') {
+      const j = skipQuoted(i, c);
+      const closed = code[j] === c;
+      out += c + push(code.slice(i + 1, j)) + (closed ? c : "");
+      i = closed ? j + 1 : j;
+      continue;
+    }
+    if (c === "`") {
+      out += "`";
+      let j = i + 1;
+      let text = "";
+      while (j < n && code[j] !== "`") {
+        if (code[j] === "\\") {
+          text += code[j] + (code[j + 1] || "");
+          j += 2;
+          continue;
+        }
+        if (code[j] === "$" && code[j + 1] === "{") {
+          out += push(text);
+          text = "";
+          let depth = 1;
+          let k = j + 2;
+          while (k < n && depth > 0) {
+            const d = code[k];
+            if (d === "'" || d === '"') {
+              k = skipQuoted(k, d) + 1;
+              continue;
+            }
+            if (d === "`") {
+              let m = k + 1;
+              while (m < n && code[m] !== "`") {
+                if (code[m] === "\\") m++;
+                m++;
+              }
+              k = m + 1;
+              continue;
+            }
+            if (d === "{") depth++;
+            else if (d === "}") depth--;
+            k++;
+          }
+          out += code.slice(j, k);
+          j = k;
+          continue;
+        }
+        text += code[j];
+        j++;
+      }
+      out += push(text) + (code[j] === "`" ? "`" : "");
+      i = code[j] === "`" ? j + 1 : j;
+      continue;
+    }
+    if (c === "/" && regexAllowedAt(i)) {
+      let j = i + 1;
+      let inClass = false;
+      while (j < n && code[j] !== "\n") {
+        if (code[j] === "\\") {
+          j += 2;
+          continue;
+        }
+        if (code[j] === "[") inClass = true;
+        else if (code[j] === "]") inClass = false;
+        else if (code[j] === "/" && !inClass) break;
+        j++;
+      }
+      if (code[j] === "/") {
+        let k = j + 1;
+        while (k < n && /[a-z]/.test(code[k])) k++;
+        out += "/" + push(code.slice(i + 1, j)) + code.slice(j, k);
+        i = k;
+        continue;
+      }
+    }
+    out += c;
+    i++;
+  }
+  return { masked: out, chunks };
+}
+
+function restoreLiterals(masked, chunks) {
+  return masked.replace(MASK_TOKEN_RE, (_, k) => chunks[Number(k)]);
+}
+
 function stripTypeScript(code) {
+  const { masked, chunks } = maskLiterals(code);
+  return restoreLiterals(stripTypeScriptUnmasked(masked), chunks);
+}
+
+function stripTypeScriptUnmasked(code) {
   let s = code;
 
   // Drop ES imports (no module resolution in the VM).

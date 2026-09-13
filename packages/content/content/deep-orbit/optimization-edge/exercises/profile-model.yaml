@@ -1,38 +1,51 @@
 slug: profile-model
 lessonSlug: model-profiling
 title: "Profile a Model"
-instructions: "Write a function that profiles a model: parameter count, memory size in MB, and average inference time over N runs. For memory, assume float32 (4 bytes per param) and divide by 1e6, per the lesson's units rule; 1024*1024 would give MiB. For timing, do one untimed warmup call first, then time exactly `runs` calls, awaiting `output.data()` inside the timed region so you measure the work rather than the enqueue."
+instructions: "Write a profiler that returns `{ parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }`, four things about a model: how many parameters it holds, how many megabytes those parameters occupy as float32, how long one inference takes on average, and where the parameters sit. Five rules decide whether the report can be read. (1) Report the megabytes the way the lesson's report does, in MB rather than MiB. (2) layerBreakdown is one row per entry in model.layers, in the model's own order, each { name, params } read off that layer. The rows that own nothing belong in it too: a reshape or a flatten holds no weights and still occupies a line, which is how a reader sees that its share is zero rather than wondering where it went. (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because a model's first call pays a one-off compilation cost. (4) On a GPU backend predict() returns while the work is still queued, so a timed call is only finished once you have awaited the values out of its output. (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile."
 starterCode: |
+  interface LayerProfile {
+    name: string;
+    params: number;
+  }
+
   interface ModelProfile {
     parameterCount: number;
     memorySizeMB: number;
     avgInferenceMs: number;
+    layerBreakdown: LayerProfile[];
   }
 
   async function profileModel(
     model: {
       countParams: () => number;
+      layers: { name: string; countParams: () => number }[];
       predict: (x: any) => { data: () => Promise<unknown> };
     },
     createInput: () => any,
     runs: number
   ): Promise<ModelProfile> {
-    // 1. Get parameter count from model.countParams()
-    // 2. Calculate memory: params * 4 bytes, / 1e6 for MB (1024*1024 is MiB)
-    // 3. Warm up once, untimed, and throw the result away
-    // 4. Run inference `runs` times, awaiting output.data() inside the clock
+    // Only avgInferenceMs is a measurement. The other three come out of the
+    // model's own counts, and which calls belong in that average is the
+    // decision.
     return null; // your code here
   }
 solutionCode: |
+  interface LayerProfile {
+    name: string;
+    params: number;
+  }
+
   interface ModelProfile {
     parameterCount: number;
     memorySizeMB: number;
     avgInferenceMs: number;
+    layerBreakdown: LayerProfile[];
   }
 
   async function profileModel(
     model: {
       countParams: () => number;
+      layers: { name: string; countParams: () => number }[];
       predict: (x: any) => { data: () => Promise<unknown> };
     },
     createInput: () => any,
@@ -40,6 +53,10 @@ solutionCode: |
   ): Promise<ModelProfile> {
     const parameterCount = model.countParams();
     const memorySizeMB = (parameterCount * 4) / 1e6;
+
+    // Every layer, not only the ones holding weights: a row reading 0 is
+    // how the report shows a reshape owns nothing.
+    const layerBreakdown = model.layers.map(layer => ({ name: layer.name, params: layer.countParams() }));
 
     // The warmup call pays the one-off compilation cost. It is not timed,
     // so that cost does not land in the average below.
@@ -56,7 +73,7 @@ solutionCode: |
 
     const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
 
-    return { parameterCount, memorySizeMB, avgInferenceMs };
+    return { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown };
   }
 testCode: |
   describe('profileModel', () => {
@@ -65,17 +82,32 @@ testCode: |
     // predict() hands back a handle immediately; the cost sits in the
     // readback, exactly where it sits on a GPU backend. costMs is a
     // parameter so the suite can hand out two models of different speed:
-    // a returned constant can match one of them, never both.
-    function makeModel(parameterCount: number, costMs: number) {
-      const calls = { predict: 0 };
+    // a returned constant can match one of them, never both. firstCostMs
+    // makes the mock a compiling backend, where call one is expensive and
+    // every call after it is cheap. Pass an ARRAY for costMs and the mock
+    // serves one cost per call in order (holding the last entry once the
+    // list runs out), which is how a test hands out a run whose calls
+    // disagree with each other. calls.served records what it charged for
+    // each call, so a test can work out the truth about its own run rather
+    // than writing an expected number down.
+    function makeModel(parameterCount: number, costMs: any, firstCostMs?: number) {
+      const calls = { predict: 0, served: [] };
+      const schedule = Array.isArray(costMs) ? costMs : null;
       const model = {
         countParams: () => parameterCount,
+        layers: [{ name: 'dense_Mock1', countParams: () => parameterCount }],
         predict: (_x: any) => {
           calls.predict++;
+          const scheduled = schedule
+            ? schedule[Math.min(calls.predict - 1, schedule.length - 1)]
+            : costMs;
+          const cost =
+            calls.predict === 1 && firstCostMs !== undefined ? firstCostMs : scheduled;
+          calls.served.push(cost);
           return {
             data: () =>
               new Promise((resolve) =>
-                setTimeout(() => resolve(new Float32Array([0])), costMs)
+                setTimeout(() => resolve(new Float32Array([0])), cost)
               ),
           };
         },
@@ -83,38 +115,148 @@ testCode: |
       return { model, calls };
     }
 
+    // A real LayersModel, so the breakdown has to survive the thing the
+    // profiler will meet in production. Two of these four layers own no
+    // weights at all.
+    function realModel() {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 12, activation: 'relu', inputShape: [11] }));
+      model.add(tf.layers.reshape({ targetShape: [3, 4] }));
+      model.add(tf.layers.flatten());
+      model.add(tf.layers.dense({ units: 5, activation: 'softmax' }));
+      return model;
+    }
+
+    // A second real model of a different shape. Layer names are assigned from
+    // a process-wide counter, so the suite reads the expected names off the
+    // model rather than writing them down.
+    function otherRealModel() {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 6, activation: 'relu', inputShape: [4] }));
+      model.add(tf.layers.dense({ units: 3, activation: 'softmax' }));
+      return model;
+    }
+
+    // One guard, so the first Run of the starter reports the contract it
+    // has not met yet instead of a property read on null.
+    async function profileOf(model: any, runs: number, inputFactory = createInput) {
+      const profile = await profileModel(model, inputFactory, runs);
+      expect(
+        profile,
+        'Nothing came back from this call, so there is no profile to read a measurement off. profileModel has to hand back { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }; it returns null until you build it.',
+      ).toBeDefined();
+      return profile;
+    }
+
     it('returns correct parameter count', async () => {
-      const profile = await profileModel(makeModel(85_000_000, 6).model, createInput, 5);
+      const profile = await profileOf(makeModel(85_000_000, 6).model, 5);
       expect(profile.parameterCount).toBe(85_000_000);
     });
 
-    it('calculates memory size in true MB (params * 4 / 1e6, not MiB)', async () => {
-      const profile = await profileModel(makeModel(85_000_000, 6).model, createInput, 5);
-      expect(profile.memorySizeMB).toBeCloseTo(340.0, 1);
+    it('reports memory in true MB for whatever count it was handed (params * 4 / 1e6, not MiB)', async () => {
+      const big = await profileOf(makeModel(85_000_000, 4).model, 3);
+      const small = await profileOf(makeModel(1_500_000, 4).model, 3);
+      expect(big.memorySizeMB).toBeCloseTo(340.0, 1);
+      // 340 is the figure printed in the lesson, and a remembered 340
+      // satisfies one model and no other. Two counts, one arithmetic.
+      expect(
+        small.memorySizeMB,
+        'This figure has to come out of the parameter count you read off the model and the 4 bytes a float32 occupies. A number carried over from the lesson fits one model only. Dividing by 1024 * 1024 gives MiB, which misses by about 5 percent.',
+      ).toBeCloseTo(6.0, 1);
     });
 
     it('times the awaited readback, not the enqueue', async () => {
-      const profile = await profileModel(makeModel(100, 6).model, createInput, 5);
+      const profile = await profileOf(makeModel(100, 6).model, 5);
       expect(typeof profile.avgInferenceMs).toBe('number');
-      expect(profile.avgInferenceMs).toBeGreaterThanOrEqual(3);
+      expect(
+        profile.avgInferenceMs,
+        'predict() returns before the work is done. A clock that stops there times the enqueue, and the average collapses towards zero.',
+      ).toBeGreaterThanOrEqual(3);
     });
 
-    it('reports a slow model as slower than a fast one', async () => {
-      const fast = await profileModel(makeModel(100, 4).model, createInput, 5);
-      const slow = await profileModel(makeModel(100, 24).model, createInput, 5);
+    it('reports the slow model slower than the fast one', async () => {
+      const fast = await profileOf(makeModel(100, 4).model, 5);
+      const slow = await profileOf(makeModel(100, 24).model, 5);
       // A measured average tracks the model it was handed; the two mocks
       // are 6x apart, so anything reporting a remembered constant fails
       // here even when the constant is plausible.
       expect(slow.avgInferenceMs).toBeGreaterThan(fast.avgInferenceMs * 2);
     });
 
+    it('keeps the compilation cost out of the average', async () => {
+      // A compiling backend: the first call costs 120 ms, the rest cost 4.
+      // The average of the timed calls describes the warm model, so it
+      // lands near 4. Time the first call too and it lands near 23.
+      const profile = await profileOf(makeModel(100, 4, 120).model, 5);
+      expect(
+        profile.avgInferenceMs,
+        'The first call a model runs pays a one-off compilation cost. Averaged in with the rest it multiplies the number you report several times over, and the profile stops describing the model anyone will actually serve.',
+      ).toBeLessThan(15);
+    });
+
+    it('reports the mean of the timed calls, not the fastest of them', async () => {
+      // A run whose calls disagree: four cheap ones and a 104 ms call at the
+      // end, which is the shape latency actually has. The mean of those five
+      // sits nowhere near the fastest of them, so a profiler reporting its
+      // best call, its middle call, or its worst call lands outside the band
+      // below while a mean lands inside it. Every bound comes out of what the
+      // mock charged, not out of a number written down here.
+      const { model, calls } = makeModel(100, [4, 4, 4, 4, 4, 104]);
+      const profile = await profileOf(model, 5);
+      const timed = calls.served.slice(-5);
+      const mean = timed.reduce((a: number, b: number) => a + b, 0) / timed.length;
+      const fastest = Math.min.apply(null, timed);
+      const slowest = Math.max.apply(null, timed);
+      expect(
+        slowest - fastest,
+        'The timed window has to include the slow call this schedule ends with, which it does once a warmup has taken the first cheap one. A window of five identical calls cannot tell a mean from a fastest call either way.',
+      ).toBeGreaterThan(50);
+      expect(
+        profile.avgInferenceMs,
+        'avgInferenceMs is the mean of the timed calls. Report the fastest of them, or the middle one, and the figure describes the best moment of the run instead of the run, which is the reading that lets a slow tail through a budget review.',
+      ).toBeGreaterThan(fastest + (mean - fastest) / 2);
+      expect(
+        profile.avgInferenceMs,
+        'The mean of these calls sits well below the slowest of them, so a figure up near the slow call is not an average of this run either.',
+      ).toBeLessThan(slowest - (slowest - mean) / 2);
+    });
+
     it('warms up once, then runs the timed loop exactly `runs` times', async () => {
       const { model, calls } = makeModel(100, 6);
       await profileModel(model, createInput, 7);
-      expect(calls.predict).toBe(8);
+      expect(
+        calls.predict,
+        'The warmup is a call the model makes and the average ignores, so the count is one more than `runs`.',
+      ).toBe(8);
+    });
+
+    it('walks every layer of a real model, including the ones that own nothing', async () => {
+      const model = realModel();
+      const profile = await profileOf(model, 2, () => tf.randomNormal([1, 11]));
+      expect(
+        profile.layerBreakdown.map((row: any) => row.name),
+        'One row per entry in model.layers, in the model order. Two of these four layers hold no weights, and dropping them leaves a reader unable to see that their share is zero.',
+      ).toEqual(model.layers.map((layer: any) => layer.name));
+      expect(profile.layerBreakdown.map((row: any) => row.params)).toEqual([144, 0, 0, 65]);
+      const summed = profile.layerBreakdown.reduce((total: number, row: any) => total + row.params, 0);
+      expect(
+        summed,
+        'The rows are shares of one total, so they add up to the count the model reports. A breakdown that does not is describing some other model.',
+      ).toBe(profile.parameterCount);
+      expect(profile.memorySizeMB).toBeCloseTo(0.000836, 6);
+    });
+
+    it('reads the breakdown off whichever model it is handed', async () => {
+      const model = otherRealModel();
+      const profile = await profileOf(model, 2, () => tf.randomNormal([1, 4]));
+      expect(
+        profile.layerBreakdown.map((row: any) => row.params),
+        'This model is a different shape from the one above, so a breakdown carried over from that call, or from the lesson, is wrong here.',
+      ).toEqual([30, 21]);
+      expect(profile.parameterCount).toBe(51);
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 12
 difficulty: intermediate
 mlContent: model
 skillAxis: deployment

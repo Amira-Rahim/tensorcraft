@@ -25,14 +25,38 @@ concept:
     tier: structural
     breaks: "Server Components render server-side and ship deterministic HTML. RAG retrieves passages then conditions an LLM on them; the answer is generated, not extracted. Models routinely contradict the retrieved passages while citing them. Confidence in RAG output requires verifying the answer matches the cited chunks, not just trusting the citation exists."
 consequence:
-  narrative: "The RAG pipeline lets the crew ask natural language questions about signal data: 'Show me all anomalous signals in Band-7 from the last 72 hours.' The LLM answers with cited data."
+  narrative: "The crew asks for Band-7 anomalies from the last 72 hours, the pipeline matches those three terms against the catalogue, and the model answers from the rows it retrieved."
 hints:
   - level: nudge
-    content: "Retrieval does not make the answer true, it only makes the answer checkable. Every number in the generated text is a claim, and you are holding the rows it was supposed to come from."
+    content: "Two challenges here, and the rungs under this one follow the retrieval. For the retrieval: three reads off the question, each applied only when the question carries it, then the cap that keeps the prompt inside its token budget, then the two numbers that say what the cap cost. For the checker: every number in the answer is a claim, the retrieved readings are the only evidence you may admit, and the retrieval that came back empty is the case that settles the rule."
   - level: guidance
-    content: "Pull every number out of answerText with a regex, then for each one ask whether SOME value in the retrieved rows sits within 0.05 of it. Flatten the rows first; a claim does not care which row it came from. Keep the claims in the order they appear in the text."
+    content: "Four decisions here, and three of them are about absence. A question that names no band, no age and no anomalies still has an answer: the whole catalogue. A condition the question never raised drops out of the pipeline rather than rejecting rows. When the question names two of them, both hold, so this reads as one list narrowed in turn rather than three candidate sets merged at the end. Measure the age window against the clock reading you were handed rather than the wall clock, or the same question answered twice covers two different windows and tomorrow's run cannot reproduce today's. The fourth decision is the one the prompt cannot show. Only the capped list travels, so the number the caller needs comes off the list before the cap trims it, and the flag has to say whether the trim dropped a row, not whether the limit was reached."
   - level: solution
-    content: "const claims = (answerText.match(/-?\\d+(\\.\\d+)?/g) ?? []).map(parseFloat); const values = retrievedRows.flat(); const verified: number[] = []; const fabricated: number[] = []; for (const claim of claims) { if (values.some((v) => Math.abs(v - claim) <= 0.05)) { verified.push(claim); } else { fabricated.push(claim); } } return { verified, fabricated };"
+    content: |
+      const bandMatch = query.match(/band[- ]?(\w+)/i);
+      const hoursMatch = query.match(/(\d+)\s*hours/i);
+      const wantsAnomalies = /anomal/i.test(query);
+
+      let survivors = db;
+      if (bandMatch) {
+        survivors = survivors.filter(
+          (s) => s.band.toLowerCase() === bandMatch[1].toLowerCase(),
+        );
+      }
+      if (hoursMatch) {
+        const cutoff = now - parseInt(hoursMatch[1], 10) * 3600 * 1000;
+        survivors = survivors.filter((s) => Date.parse(s.timestamp) > cutoff);
+      }
+      if (wantsAnomalies) {
+        survivors = survivors.filter((s) => s.classification === 'anomaly');
+      }
+
+      const rows = survivors.slice(0, CONTEXT_ROWS);
+      return {
+        rows,
+        matched: survivors.length,
+        truncated: survivors.length > rows.length,
+      };
 keywords:
   - rag
   - retrieval-augmented-generation
@@ -51,7 +75,7 @@ That's Server Components! Fetch data on the server, then render with it. RAG fet
 
 Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: a component can't contradict its props. A generator can.
 
-<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a simple signal retrieval system using text and metadata matching", "Ground LLM responses in retrieved rows, then check every claim against those rows, since grounding narrows fabrication without preventing it", "Enable natural language queries over the DEEP SCAN signal database"]} />
+<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many matching rows the cap left out", "Ground LLM responses in retrieved rows, then check every claim against those rows, since grounding narrows fabrication without preventing it", "Name what this retrieval really is, keyword-and-metadata matching over structured rows, and the point where a corpus without fields forces embedding search instead"]} />
 
 ## The RAG Pipeline
 
@@ -69,35 +93,27 @@ Demir's mapping holds at the pipeline level: retrieve real records first, then g
   anomalyScore: number;
 }
 
-// Step 1: RETRIEVE: find relevant signals from the database
-async function retrieveSignals(
-  query: string,
-  db: Signal[],
-): Promise<Signal[]> {
-  // Parse query for filters
-  const bandMatch = query.match(/band[- ]?(\\w+)/i);
-  const hoursMatch = query.match(/(\\d+)\\s*hours/i);
-  const wantsAnomalies = /anomal/i.test(query);
+// Step 1: RETRIEVE: find the relevant signals, then cap them.
+//   retrieveSignals(query, db, now): Retrieval
+// Read the filters the question carries (a band, an age in hours, whether it
+// asks for anomalies), apply each one that is there, keep database order,
+// take the first CONTEXT_ROWS survivors. This is the first challenge below.
+//
+// The prompt has a token budget, so retrieval ends in a cap. Nothing is
+// ranked, so the rows past the cap are dropped for arriving late rather than
+// for being irrelevant, and \`rows\` alone cannot show that happened. The
+// other two fields are how the caller finds out.
+const CONTEXT_ROWS = 20;
 
-  let results = [...db];
-
-  if (bandMatch) {
-    results = results.filter(s => s.band.toLowerCase() === bandMatch[1].toLowerCase());
-  }
-  if (hoursMatch) {
-    const cutoff = Date.now() - parseInt(hoursMatch[1]) * 3600 * 1000;
-    results = results.filter(s => new Date(s.timestamp).getTime() > cutoff);
-  }
-  if (wantsAnomalies) {
-    results = results.filter(s => s.classification === 'anomaly');
-  }
-
-  return results.slice(0, 20);  // limit context size
+interface Retrieval {
+  rows: Signal[];      // what the prompt will carry, at most CONTEXT_ROWS
+  matched: number;     // how many rows passed the filters, before the cap
+  truncated: boolean;  // true when the cap dropped a matching row
 }
 
-// The honest label for the above: keyword-and-metadata retrieval. It
+// The honest label for that step: keyword-and-metadata retrieval. It
 // works here because the catalogue is 12,001 STRUCTURED rows with named
-// fields you can match on. Production RAG over prose replaces this
+// fields you can match on. Production RAG over prose replaces that one
 // function with embeddings: every document and every query mapped to a
 // vector, retrieval = the k nearest by cosine similarity (top-k). Different
 // machinery, identical contract: retrieve -> ground -> verify. When your
@@ -119,42 +135,73 @@ If the data doesn't contain the answer, say "insufficient data."
 \${query}
 
 ## Instructions
-- Cite specific signals by timestamp
-- Include quantitative details (counts, averages, ranges)
-- Flag any uncertainty\`;
+- Cite each signal by copying its bracketed timestamp from the rows above
+- Every number you write has to be one of the numbers in those rows. Do not add them up, average them, or count them
+- Say plainly when the rows do not answer the question\`;
 }
 
-// Step 3: GENERATE: get grounded response
-async function querySignals(query: string, db: Signal[], llm: LLMClient): Promise<string> {
-  const relevant = await retrieveSignals(query, db);
-  const prompt = buildRAGPrompt(query, relevant);
-  return llm.complete(prompt);
+// Step 3: GENERATE, then check what came back. An answer can lie twice, so it
+// gets checked twice: once for citing a row nobody retrieved, once for writing
+// a number no row holds. verifyClaims is the second challenge below.
+const CITATION = /\\[([^\\]]+)\\]/g;
+const readingsOf = (s: Signal) => [s.confidence, s.amplitude, s.frequency, s.anomalyScore];
+
+async function querySignals(query: string, db: Signal[], llm: LLMClient) {
+  const { rows, matched, truncated } = retrieveSignals(query, db, Date.now());
+  if (truncated) {
+    // The operator's log, not the prompt. A count written into the prompt is
+    // a number the model can repeat, and the checker below admits only
+    // numbers that appear in the retrieved rows.
+    console.warn(\`Context capped: \${rows.length} of \${matched} matching rows.\`);
+  }
+  const answer = await llm.complete(buildRAGPrompt(query, rows));
+
+  // Citations first, because verifyClaims compares numbers and a regex reading
+  // 2149-05-28T04:12:09Z finds six of them, none of them a reading. Check each
+  // bracket against the timestamps that were actually retrieved, then score
+  // what is left of the sentence.
+  const retrieved = new Set(rows.map((s) => s.timestamp));
+  const cited = [...answer.matchAll(CITATION)].map((m) => m[1]);
+  const unsourced = cited.filter((stamp) => !retrieved.has(stamp));
+  const { fabricated } = verifyClaims(answer.replace(CITATION, ''), rows.map(readingsOf));
+
+  return { answer, unsourced, fabricated };
 }
 
 // Usage:
-const answer = await querySignals(
+const { answer, unsourced, fabricated } = await querySignals(
   "Show me all anomalous signals in Band-7 from the last 72 hours",
   signalDatabase,
   llm,
-);`}
+);
+if (unsourced.length > 0 || fabricated.length > 0) {
+  // Nothing ships. Either the answer cited a row nobody retrieved, or it wrote
+  // a number that is in no retrieved row.
+}`}
 </CodeBlock>
+
+Two of those instructions exist to keep the answer inside what the checker can admit. The checker compares numbers, and the only numbers it admits are the readings in the retrieved rows. A sum, an average or a count is a number the model worked out rather than read, so the checker calls it fabricated unless it happens to land within the tolerance of some reading. When the report needs a count of matching rows, `matched` already holds it and JavaScript can print it exactly. Ask the model for that count instead and you have bought a number somebody now has to verify.
 
 ## Challenge
 
-The retrieval half is above. Build the other half: the checker that holds every number in a generated answer against the rows it was supposed to come from.
+Retrieval runs first. Build the step that decides which rows reach the model, and have it report how many it left behind.
+
+<Exercise slug="retrieve-signals" />
+
+Now the half that reads what comes back: the checker that holds every number in a generated answer against the rows it was supposed to come from.
 
 <Exercise slug="rag-pipeline" />
 
-<RecallPrompt question="Why does a RAG pipeline still require you to verify the generated answer against retrieved records?" answer="A generator conditions on retrieved passages but can contradict them while still citing them. The citation exists but the number or claim may not match the source. Verification means comparing every quantitative claim in the answer against the actual retrieved rows, not just confirming a citation is present." />
+<RecallPrompt question="Why does a RAG pipeline still require you to verify the generated answer against retrieved records?" answer="A generator conditions on retrieved passages but can contradict them while still citing them. The citation exists but the number or claim may not match the source. Verification is two checks: every citation has to name a row that was actually retrieved, and every quantitative claim has to appear in those rows within tolerance. Confirming that a citation is present proves neither." />
 
 <LessonRecap
   whatYouLearned={[
     "RAG follows a retrieve-then-generate contract: query your data store for relevant records, inject them into the prompt, then generate a response grounded in those records rather than the model's memory.",
-    "The filters narrow the candidate set and a hard cap of 20 rows keeps the prompt inside the token limit. Nothing is ranked, so the 21st matching row is dropped for being late rather than for being irrelevant.",
-    "Generated answers can contradict the retrieved passages they cite; always verify quantitative claims against the actual retrieved rows before trusting the output."
+    "The filters narrow the candidate set and a hard cap of 20 rows keeps the prompt inside the token limit. Nothing is ranked, so the 21st matching row is dropped for being late rather than for being irrelevant. Count the survivors before the cap, or nobody downstream can tell a complete context from a trimmed one.",
+    "Generated answers can contradict the retrieved passages they cite, so check both halves before trusting one: that each citation names a row that was actually retrieved, and that every number in the answer appears in those rows. Ask the model only for numbers it can copy out of them, since a total or an average it works out for itself traces to nothing."
   ]}
   bridge="RAG mirrors the Server Component pattern (`async function Page() { const data = await db.query(...); return <View data={data} />; }`); data access happens before rendering. The key difference: a component cannot contradict its props, but a generator can contradict its context."
-  youCanNow="Build a RAG pipeline that retrieves relevant records from a data store, injects them into a grounded prompt, and validates the generated response against the source data."
+  youCanNow="Build a retrieval step that caps what the prompt carries and reports what the cap dropped, then check every number in the generated answer against those same rows."
 />
 
 > **DISPATCH archive · field intercept #17-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "the model that confabulates is the one that retrieved nothing and didn't say so." Different domain, identical failure mode.

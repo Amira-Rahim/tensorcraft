@@ -1,7 +1,7 @@
 slug: kalman-filter
 lessonSlug: kalman-filters
 title: "Implement a Kalman Filter"
-instructions: "Implement a simple 1D Kalman filter. Given an initial estimate, process noise, and measurement noise, write an update function that takes a new measurement and returns the updated estimate using the Kalman predict-correct loop."
+instructions: "Implement a simple 1D Kalman filter. The constructor is written for you, including the starting variance of 1. Write `update(measurement)`: one predict-correct step, returning the new estimate. Two fields carry state between calls and the tests read both, `this.estimate` and `this.variance`. Predicting widens the variance by the process noise. The weight on the new measurement is that widened variance as a share of itself plus the measurement noise. Correcting moves the estimate that fraction of the way to the measurement, then multiplies the widened variance by one minus that fraction. Because the weight is rebuilt from the variance on every call it changes step to step, so an EMA with one fixed alpha fails the arithmetic tests. One test runs your filter across the falling pulse-interval log from the lesson and reads the gap between the final estimate and the final reading: a filter whose state is one number with no term for change trails a drifting signal instead of tracking it, and the test checks that it lands on the trailing side."
 starterCode: |
   class SimpleKalman {
     estimate: number;
@@ -17,11 +17,8 @@ starterCode: |
     }
 
     update(measurement: number): number {
-      // 1. Predict: predictedVariance = variance + processNoise
-      // 2. Gain: gain = predictedVariance / (predictedVariance + measureNoise)
-      // 3. Correct: estimate = estimate + gain * (measurement - estimate)
-      // 4. Update variance: variance = (1 - gain) * predictedVariance
-      // Return the new estimate
+      // Both fields change on every call: the uncertainty sets how far the
+      // estimate moves, and that move sets the next uncertainty.
       return null; // your code here
     }
   }
@@ -51,18 +48,30 @@ testCode: |
   describe('SimpleKalman', () => {
     it('returns a number', () => {
       const kf = new SimpleKalman(0, 0.1, 1);
-      expect(typeof kf.update(1)).toBe('number');
+      expect(
+        typeof kf.update(1),
+        'update() returns the corrected estimate itself, not the object and not a promise.',
+      ).toBe('number');
     });
     it('moves toward measurement', () => {
       const kf = new SimpleKalman(0, 0.1, 1);
       const est = kf.update(10);
-      expect(est).toBeGreaterThan(0);
-      expect(est).toBeLessThan(10);
+      expect(
+        est,
+        'One correction moves the estimate off its starting value toward the measurement.',
+      ).toBeGreaterThan(0);
+      expect(
+        est,
+        'A correction is partial. Landing on the measurement means the weight came out at 1, which throws the prior estimate away.',
+      ).toBeLessThan(10);
     });
     it('converges with repeated measurements', () => {
       const kf = new SimpleKalman(0, 0.01, 1);
       for (let i = 0; i < 50; i++) kf.update(5);
-      expect(kf.estimate).toBeCloseTo(5, 0);
+      expect(
+        kf.estimate,
+        'Fifty readings of the same value should pull the estimate onto it. An estimate stuck short of it means the weight stayed too small, which happens when the variance is not widened by the process noise before the weight is built, or is shrunk by more than (1 - weight) after.',
+      ).toBeCloseTo(5, 0);
     });
     it('smooths noisy data', () => {
       const kf = new SimpleKalman(10, 0.1, 1);
@@ -70,25 +79,88 @@ testCode: |
       const estimates = noisy.map(m => kf.update(m));
       const variance = estimates.reduce((s, e) => s + (e - 10.5) ** 2, 0) / estimates.length;
       const inputVariance = noisy.reduce((s, n) => s + (n - 10.5) ** 2, 0) / noisy.length;
-      expect(variance).toBeLessThan(inputVariance);
+      expect(
+        variance,
+        'The filtered series has to scatter less than the readings it came from. That is the whole point of running one.',
+      ).toBeLessThan(inputVariance);
     });
     it('follows the exact predict-correct arithmetic (a fixed-alpha EMA fails this)', () => {
       const kf = new SimpleKalman(0, 0.1, 1);
-      expect(kf.update(10)).toBeCloseTo(5.238, 3);
-      expect(kf.update(10)).toBeCloseTo(7.067, 3);
-      expect(kf.variance).toBeCloseTo(0.384, 3);
+      expect(
+        kf.update(10),
+        'This is the first correction from a starting variance of 1 and a process noise of 0.1. A weight built from the two noise parameters alone lands well short of it.',
+      ).toBeCloseTo(5.238, 3);
+      expect(
+        kf.update(10),
+        'Same measurement, second call, and the weight is smaller now because the last correction shrank the variance. A fixed alpha repeats the first step instead.',
+      ).toBeCloseTo(7.067, 3);
+      expect(
+        kf.variance,
+        'The variance after two corrections. It has to be the field the corrections wrote to, not the 1 the constructor set.',
+      ).toBeCloseTo(0.384, 3);
     });
     it('the gain responds to the noise parameters', () => {
       const kf = new SimpleKalman(0, 0.5, 0.5);
-      expect(kf.update(4)).toBeCloseTo(3, 4);
+      expect(
+        kf.update(4),
+        'Equal noise parameters and a starting variance of 1 make this first weight larger than the one above. A weight that ignores the variance cannot move between the two fixtures.',
+      ).toBeCloseTo(3, 4);
+    });
+    it('trails a drifting signal: the lag the lesson reads off this log', () => {
+      // The eight daily first-cycle readings from the lesson, falling by
+      // about a sixth of a unit per day, filtered with the lesson's noise
+      // parameters.
+      const log = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];
+      const kf = new SimpleKalman(73.1, 0.1, 1.0);
+      const estimates = log.map((m) => kf.update(m));
+      const final = estimates[estimates.length - 1];
+      expect(
+        final,
+        'This is the whole run the lesson prints: eight readings, the lesson\'s noise parameters, and the estimate they leave behind.',
+      ).toBeCloseTo(72.4429, 3);
+      expect(
+        final,
+        'The readings end at 72.0 and this estimate sits above them. That gap is the lag: the state here is one number with no term for its own change, so a steady drift is something the filter follows late rather than tracks. An estimate that lands on the newest reading means the weight came out at 1 and nothing was smoothed.',
+      ).toBeGreaterThan(72.0);
+      expect(
+        final,
+        'The same gap from the other side: the estimate has to have moved down off the first reading. One that has not is ignoring the measurements.',
+      ).toBeLessThan(73.1);
+    });
+    it('rederives gain and variance from parameters no fixture pins', () => {
+      for (let trial = 0; trial < 4; trial++) {
+        const initial = Math.random() * 20 - 10;
+        const processNoise = 0.05 + Math.random();
+        const measureNoise = 0.05 + Math.random();
+        const kf = new SimpleKalman(initial, processNoise, measureNoise);
+        let estimate = initial;
+        let variance = 1;
+        for (let step = 0; step < 4; step++) {
+          const measurement = Math.random() * 20 - 10;
+          const predicted = variance + processNoise;
+          const gain = predicted / (predicted + measureNoise);
+          estimate = estimate + gain * (measurement - estimate);
+          variance = (1 - gain) * predicted;
+          expect(
+            kf.update(measurement),
+            'The noise parameters and the measurements are drawn at run time here, so this estimate has to be computed from them rather than recognised.',
+          ).toBeCloseTo(estimate, 6);
+        }
+        expect(
+          kf.variance,
+          'The variance is graded too. Four corrections on parameters nobody published, and the stored variance has to match the loop step for step.',
+        ).toBeCloseTo(variance, 6);
+      }
     });
   });
 estimatedMinutes: 15
-# Retagged advanced -> intermediate 2026-07-25: the predict-correct loop is
-# spelled out step-by-step in the starter comments and the solution is plain
-# JS arithmetic (mlContent: arithmetic). The published taxonomy rule (blog:
-# audit-exercise-mlcontent) bans an advanced badge on arithmetic content;
-# pinned by packages/content/__tests__/mlcontent-taxonomy.test.ts.
+# Retagged advanced -> intermediate 2026-07-25: the update is four lines of
+# plain JS arithmetic over two fields, with no tensor work in it (mlContent:
+# arithmetic). The published taxonomy rule (blog: audit-exercise-mlcontent)
+# bans an advanced badge on arithmetic content; pinned by
+# packages/content/__tests__/mlcontent-taxonomy.test.ts. The starter no longer
+# spells those four lines out (de-recipe pass 2026-09-12): the instructions
+# state the arithmetic in words and the lesson derives the weight.
 difficulty: intermediate
 mlContent: arithmetic
 skillAxis: model_arch

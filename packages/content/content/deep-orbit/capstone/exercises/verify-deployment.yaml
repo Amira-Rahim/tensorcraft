@@ -1,7 +1,25 @@
 slug: verify-deployment
 lessonSlug: launch
 title: "Verify a Deployment"
-instructions: "Write a deployment verification function that runs a series of checks in order (each returning { name, passed, message }) and returns an overall result. The deployment passes only if ALL checks pass. The grader runs real TFJS inference probes through your runner: an output-range contract, an anomaly-probe gate, and a calm-probe gate against a live scoring function."
+instructions: |
+  Write the runner under the launch script. It takes an array of checks and answers with one verdict for the whole deployment.
+
+  A check is an async function returning `{ name, passed, message }`.
+
+  1. Run the checks one at a time, awaiting each before the next one starts. A later check can depend on work an earlier one finished: load the model, then probe it.
+  2. Collect every result in call order under `checks`.
+  3. A check that throws is a failed check, not a lost run. Catch it, record a check named `check N` for its 1-based position with `passed: false` and the error's message as `message`, then carry on. The commonest real failure of a deploy verifier is the probe that never answers, and an operator still has to be told which one it was.
+  4. The deployment passes only when every check passed.
+
+  Return:
+
+      {
+        passed: boolean,       // true only when every check passed
+        checks: CheckResult[], // one per check, in call order
+        summary: string,       // '2/3 checks passed'
+      }
+
+  The grader runs real TFJS inference probes through your runner: an output-range contract, an anomaly-probe gate, and a calm-probe gate against a live scoring function.
 starterCode: |
   interface CheckResult {
     name: string;
@@ -18,12 +36,13 @@ starterCode: |
   async function verifyDeployment(
     checks: (() => Promise<CheckResult>)[]
   ): Promise<DeploymentResult> {
-    // 1. Run all checks IN ORDER: await each one before starting the
-    //    next. Not Promise.all. A later check may depend on an earlier
-    //    one having finished (load the model, THEN score a probe).
-    // 2. Collect results
-    // 3. passed = all checks passed
-    // 4. summary = "{passed}/{total} checks passed"
+    // The two shapes above, since the editor shows this file with its types
+    // already stripped:
+    //   CheckResult      { name, passed, message }
+    //   DeploymentResult { passed, checks, summary }
+    //
+    // One of these checks loads the model a later one probes, so when each
+    // one runs is part of the contract, not an implementation detail.
     return null; // your code here
   }
 solutionCode: |
@@ -44,9 +63,16 @@ solutionCode: |
   ): Promise<DeploymentResult> {
     const results: CheckResult[] = [];
 
-    for (const check of checks) {
-      const result = await check();
-      results.push(result);
+    for (let i = 0; i < checks.length; i++) {
+      try {
+        results.push(await checks[i]());
+      } catch (error) {
+        results.push({
+          name: `check ${i + 1}`,
+          passed: false,
+          message: (error as Error).message,
+        });
+      }
     }
 
     const passedCount = results.filter(r => r.passed).length;
@@ -62,6 +88,17 @@ testCode: |
   // A tiny real scorer standing in for DEEP SCAN: sigmoid(w·x + 0.1)
   const w = tf.tensor1d([0.4, -0.2, 0.6]);
   const score = (x) => tf.tidy(() => tf.sigmoid(tf.dot(tf.tensor1d(x), w).add(0.1)).dataSync()[0]);
+
+  // Every test below reads fields off the verdict, so the shape is named
+  // once here. Without it the first Run against the starter throws a
+  // TypeError on null instead of saying what is missing.
+  const verdict = (result) => {
+    expect(
+      result,
+      'verifyDeployment returns { passed, checks, summary }. The starter returns null until you build it.',
+    ).toBeDefined();
+    return result;
+  };
 
   describe('verifyDeployment', () => {
     it('passes a healthy deployment: output contract + anomaly gate + calm gate', async () => {
@@ -79,7 +116,7 @@ testCode: |
           return { name: 'calm-gate', passed: p < 0.5, message: 'calm probe ' + p.toFixed(3) };
         },
       ];
-      const result = await verifyDeployment(checks);
+      const result = verdict(await verifyDeployment(checks));
       expect(result.passed).toBe(true);
       expect(result.summary).toBe('3/3 checks passed');
     });
@@ -92,7 +129,7 @@ testCode: |
           return { name: 'strict-gate', passed: p > 0.999, message: 'scored ' + p.toFixed(3) };
         },
       ];
-      const result = await verifyDeployment(checks);
+      const result = verdict(await verifyDeployment(checks));
       expect(result.passed).toBe(false);
       expect(result.summary).toBe('1/2 checks passed');
       expect(result.checks[1].passed).toBe(false);
@@ -110,10 +147,78 @@ testCode: |
         async () => { await sleep(20); order.push('latency'); return { name: 'latency', passed: true, message: '' }; },
         async () => { await sleep(10); order.push('accuracy'); return { name: 'accuracy', passed: false, message: 'below gate' }; },
       ];
-      const result = await verifyDeployment(checks);
+      const result = verdict(await verifyDeployment(checks));
       expect(order).toEqual(['shape', 'latency', 'accuracy']);
       expect(result.checks).toHaveLength(3);
       expect(result.checks[2].name).toBe('accuracy');
+      // Two of the three cleared. A runner that ships on a majority says
+      // this deployment is fine.
+      expect(
+        result.passed,
+        'The accuracy check failed, so the deployment failed. Two out of three is not a pass.',
+      ).toBe(false);
+      expect(result.summary).toBe('2/3 checks passed');
+    });
+
+    it('a failed check anywhere fails the deployment, even when the last one passes', async () => {
+      // Which of these fails is decided by the live scorer rather than by a
+      // literal in this file: the first probe scores 0.957 against a 0.999
+      // floor. The failure is first and the run ends on two passes, so a
+      // runner that reports the majority verdict, or the last one it saw,
+      // calls this deployment healthy.
+      const probes = [[3, 0, 3], [0.5, 0.8, 0.2], [0, 3, 0]];
+      const scored = probes.map(score);
+      const checks = [
+        async () => ({ name: 'strict-gate', passed: scored[0] > 0.999, message: 'anomaly probe ' + scored[0].toFixed(3) }),
+        async () => ({ name: 'output-contract', passed: scored[1] >= 0 && scored[1] <= 1, message: 'score ' + scored[1].toFixed(3) }),
+        async () => ({ name: 'calm-gate', passed: scored[2] < 0.5, message: 'calm probe ' + scored[2].toFixed(3) }),
+      ];
+      const result = verdict(await verifyDeployment(checks));
+      expect(result.checks.filter((c) => c.passed)).toHaveLength(2);
+      expect(result.checks[2].passed).toBe(true);
+      expect(
+        result.passed,
+        'One gate failed out of three. ALL of them have to pass for the deployment to pass.',
+      ).toBe(false);
+      expect(result.summary).toBe('2/3 checks passed');
+    });
+
+    it('a check that throws is recorded as a failed check, not a lost run', async () => {
+      // The probe that never answers: DNS fails, the host 503s, the fetch
+      // for model.json rejects. A runner that lets the rejection through
+      // produces no verdict at all, and nobody on the bridge learns which
+      // check died.
+      const checks = [
+        async () => {
+          throw new Error('fetch failed: getaddrinfo ENOTFOUND deep-scan.github.io');
+        },
+        async () => ({ name: 'probe', passed: true, message: 'scored 0.957' }),
+      ];
+      const settled = await verifyDeployment(checks).then(
+        (value) => ({ ok: true, value }),
+        (error) => ({ ok: false, error }),
+      );
+      expect(
+        settled.ok,
+        'The first check rejected and the rejection left the runner, so the run reported nothing. Catch it and record it as a failed check.',
+      ).toBe(true);
+      const result = verdict(settled.value);
+      expect(result.checks).toHaveLength(2);
+      expect(
+        result.checks[0].passed,
+        'A check that threw did not pass. Record the failure and run the rest.',
+      ).toBe(false);
+      expect(
+        result.checks[0].name,
+        'A check that throws has no result to read a name off, so it is filed by its position: the first one is check 1.',
+      ).toBe('check 1');
+      expect(
+        result.checks[0].message,
+        'The operator has to read which failure this was. Carry the error message onto the check.',
+      ).toContain('ENOTFOUND');
+      expect(result.checks[1].passed).toBe(true);
+      expect(result.passed).toBe(false);
+      expect(result.summary).toBe('1/2 checks passed');
     });
 
     it('a later check sees the work an earlier one finished', async () => {
@@ -131,7 +236,7 @@ testCode: |
           message: modelLoaded ? 'probe scored' : 'model not loaded yet',
         }),
       ];
-      const result = await verifyDeployment(checks);
+      const result = verdict(await verifyDeployment(checks));
       expect(result.checks[1].passed).toBe(true);
       expect(result.passed).toBe(true);
       expect(result.summary).toBe('2/2 checks passed');

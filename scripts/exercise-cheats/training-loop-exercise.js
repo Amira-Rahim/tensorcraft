@@ -1,19 +1,64 @@
-// Never calls model.fit. The model keeps its random initialization, and
-// `history` is a hand-written object whose epoch-0 entry is set absurdly high,
-// so both "the loss decreased" and "the live MSE beats the epoch-0 loss" clear
-// against a baseline the submission picked for itself.
+// Runs the loop correctly and then refuses to read what it produced. The
+// callback, the held-out split and the patience are all right, so every
+// mechanism test clears. diagnose returns a constant: a halted run is usually
+// a plateau, so guessing "plateau" is right often enough to look like an
+// answer. It cannot tell a plateau from overfitting, which is the one
+// question the lesson says the two curves exist to settle, and it never
+// looks at either curve to find out.
+const calm = tf.clipByValue(
+  tf.concat(
+    [
+      tf.randomNormal([50, 1], 0.17, 0.1, "float32", 7),
+      tf.randomNormal([50, 1], 0.81, 0.1, "float32", 8),
+      tf.randomNormal([50, 1], 0.23, 0.1, "float32", 9),
+    ],
+    1,
+  ),
+  0,
+  1,
+);
+const flagged = tf.clipByValue(
+  tf.concat(
+    [
+      tf.randomNormal([50, 1], 0.84, 0.1, "float32", 41),
+      tf.randomNormal([50, 1], 0.18, 0.1, "float32", 42),
+      tf.randomNormal([50, 1], 0.78, 0.1, "float32", 43),
+    ],
+    1,
+  ),
+  0,
+  1,
+);
+const order = [];
+for (let i = 0; i < 50; i++) {
+  order.push(i);
+  order.push(50 + i);
+}
+const trainX = tf.concat([calm, flagged]).gather(order);
+const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+const labels = cleanY.arraySync();
+for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
+const trainY = tf.tensor2d(labels);
+
 const model = tf.sequential();
-model.add(tf.layers.dense({ units: 1, inputShape: [2] }));
-model.compile({ optimizer: "sgd", loss: "meanSquaredError" });
+model.add(tf.layers.dense({ units: 32, activation: "relu", inputShape: [3] }));
+model.add(tf.layers.dense({ units: 16, activation: "relu" }));
+model.add(tf.layers.dense({ units: 1, activation: "sigmoid" }));
+model.compile({
+  optimizer: "adam",
+  loss: "binaryCrossentropy",
+  metrics: ["accuracy"],
+});
 
-const xs = tf.tensor2d([
-  [1, 2],
-  [3, 4],
-  [5, 6],
-  [7, 8],
-]);
-const ys = tf.tensor2d([[3], [7], [11], [15]]);
+const history = await model.fit(trainX, trainY, {
+  epochs: 500,
+  validationSplit: 0.2,
+  callbacks: tf.callbacks.earlyStopping({
+    monitor: "val_loss",
+    patience: 5,
+  }),
+});
 
-const history = {
-  history: { loss: [1e9, 9e8, 8e8, 7e8, 6e8, 5e8, 4e8, 3e8, 2e8, 1e8] },
-};
+function diagnose(trainLosses, valLosses) {
+  return "plateau";
+}

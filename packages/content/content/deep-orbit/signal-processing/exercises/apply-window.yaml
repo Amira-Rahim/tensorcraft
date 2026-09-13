@@ -2,17 +2,15 @@ slug: apply-window
 lessonSlug: windowing-and-overlap
 title: "Build and Apply a Hann Window"
 mlContent: data
-instructions: "Build `hannWindow(n)` returning a JS number array: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))). Plain JS (Array.from + Math.cos, like the lesson) or tensors, your choice; the grader checks the returned numbers, not how you produced them. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map). The grader runs your two functions on a tone that does not fit its window. It takes the FFT of both the raw and the windowed slice. Energy in bins away from the peak has to drop by more than 20x. Only a real taper does that: zeroing the two end samples of a rectangular window will not."
+instructions: "Build `hannWindow(n)` returning a JS number array of n weights, one per sample of the slice: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))) for i = 0 to n-1. Plain JS (Array.from + Math.cos, like the lesson) or tensors, your choice; the grader checks the returned numbers, not how you produced them. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map). The grader runs your two functions on a tone that does not fit its window. It takes the FFT of both the raw and the windowed slice. Energy in bins away from the peak has to drop by more than 20x. Only a real taper does that: zeroing the two end samples of a rectangular window will not."
 starterCode: |
   function hannWindow(n) {
-    // w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))) for i = 0..n-1
-    // Every sample tapers, not just the two ends: the grader takes an FFT
-    // and checks that leakage into far bins collapses.
-    return [];
+    // The curve is in the instructions. The open question is which samples of
+    // the slice it applies to.
+    return []; // your code here
   }
   function applyWindow(signal, window) {
-    // element-wise product, same length as signal
-    return [];
+    return []; // your code here
   }
 solutionCode: |
   function hannWindow(n) {
@@ -23,54 +21,79 @@ solutionCode: |
     return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync();
   }
 testCode: |
-  describe('hannWindow (vectorized tf cos)', () => {
+  // Two helpers stand in front of every probe. The starter returns empty
+  // arrays, and an empty window turns the checks below into JavaScript
+  // errors about undefined and NaN, which say nothing about the task.
+  const windowOf = (n) => {
+    const w = hannWindow(n);
+    expect(
+      w,
+      'hannWindow has to return one weight per sample. The starter returns an empty list, so there is no taper to inspect yet.',
+    ).toHaveLength(n);
+    return w;
+  };
+  const appliedOf = (samples, weights) => {
+    const out = applyWindow(samples, weights);
+    expect(
+      out,
+      'applyWindow has to return one number per sample, in the order the signal came in.',
+    ).toHaveLength(samples.length);
+    return out;
+  };
+  describe('hannWindow builds the taper', () => {
     it('returns correct length', () => {
-      expect(hannWindow(64).length).toBe(64);
+      expect(
+        hannWindow(64).length,
+        'One weight per sample of the slice, so the returned list is exactly n long.',
+      ).toBe(64);
     });
     it('starts at zero', () => {
-      expect(hannWindow(64)[0]).toBeCloseTo(0, 4);
+      expect(windowOf(64)[0]).toBeCloseTo(0, 4);
     });
     it('ends at zero', () => {
-      const w = hannWindow(64);
+      const w = windowOf(64);
       expect(w[63]).toBeCloseTo(0, 4);
     });
     it('peaks at center', () => {
-      const w = hannWindow(65);
+      const w = windowOf(65);
       expect(w[32]).toBeCloseTo(1, 4);
     });
     it('tapers through the interior instead of jumping to full weight', () => {
-      const w = hannWindow(9);
-      expect(w[1]).toBeCloseTo(0.14644661, 4);
+      const w = windowOf(9);
+      expect(
+        w[1],
+        'Every sample carries its own weight from the curve. A window that is flat in the middle with zeroed ends is not a taper.',
+      ).toBeCloseTo(0.14644661, 4);
       expect(w[2]).toBeCloseTo(0.5, 4);
       expect(w[3]).toBeCloseTo(0.85355339, 4);
     });
     it('scales the taper with n', () => {
       // One index, two lengths, two different correct answers. A window
       // that ignores n cannot match both.
-      expect(hannWindow(9)[2]).toBeCloseTo(0.5, 4);
-      expect(hannWindow(17)[2]).toBeCloseTo(0.14644661, 4);
+      expect(windowOf(9)[2]).toBeCloseTo(0.5, 4);
+      expect(windowOf(17)[2]).toBeCloseTo(0.14644661, 4);
     });
   });
-  describe('applyWindow (tf element-wise mul)', () => {
+  describe('applyWindow weights every sample', () => {
     it('returns same length', () => {
-      expect(applyWindow([1, 2, 3, 4], [0.5, 1, 1, 0.5]).length).toBe(4);
+      expect(appliedOf([1, 2, 3, 4], [0.5, 1, 1, 0.5]).length).toBe(4);
     });
     it('multiplies element-wise', () => {
-      const out = applyWindow([2, 4, 6, 8], [0.5, 1, 1, 0.5]);
+      const out = appliedOf([2, 4, 6, 8], [0.5, 1, 1, 0.5]);
       expect(out[0]).toBeCloseTo(1, 4);
       expect(out[1]).toBeCloseTo(4, 4);
       expect(out[3]).toBeCloseTo(4, 4);
     });
     it('uses the window it is handed', () => {
       // Same signal, a different window, a different correct answer.
-      const out = applyWindow([2, 4, 6, 8], [1, 0.25, 2, 0]);
+      const out = appliedOf([2, 4, 6, 8], [1, 0.25, 2, 0]);
       expect(out[0]).toBeCloseTo(2, 4);
       expect(out[1]).toBeCloseTo(1, 4);
       expect(out[2]).toBeCloseTo(12, 4);
       expect(out[3]).toBeCloseTo(0, 4);
     });
     it('keeps sample order with an asymmetric window', () => {
-      const out = applyWindow([1, 1, 1, 1], [0, 0.25, 0.75, 1]);
+      const out = appliedOf([1, 1, 1, 1], [0, 0.25, 0.75, 1]);
       expect(out[1]).toBeCloseTo(0.25, 4);
       expect(out[2]).toBeCloseTo(0.75, 4);
     });
@@ -87,7 +110,7 @@ testCode: |
       const spectrum = (samples) => tf.tidy(() =>
         tf.abs(tf.spectral.rfft(tf.tensor1d(Array.from(samples)))).arraySync());
       const raw = spectrum(signal);
-      const windowed = spectrum(applyWindow(signal, hannWindow(n)));
+      const windowed = spectrum(appliedOf(signal, windowOf(n)));
       const peakBin = Math.round(cycles);
       const awayFromPeak = (bins) => bins.reduce(
         (sum, mag, i) => (Math.abs(i - peakBin) > 3 ? sum + mag : sum), 0);
@@ -99,7 +122,10 @@ testCode: |
     };
     it('cuts far-bin energy by more than 20x, 10.5 cycles in 128 samples', () => {
       const l = leakage(128, 10.5);
-      expect(l.raw / l.windowed).toBeGreaterThan(20);
+      expect(
+        l.raw / l.windowed,
+        'This is what a window is for. The tone has half a cycle left over, so cutting it square scatters energy across bins that hold no tone at all.',
+      ).toBeGreaterThan(20);
     });
     it('cuts far-bin energy by more than 20x, 20.5 cycles in 64 samples', () => {
       // A second length and a second tone: the window has to be built from

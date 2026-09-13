@@ -1,92 +1,169 @@
 slug: gpu-backend
 lessonSlug: webgpu-acceleration
-title: "Select the Best GPU Backend"
-instructions: "Write a function that tries backends in order of preference (WebGPU → WebGL → WASM) and returns the name of the first one that initializes successfully. Each backend init may throw an error if unavailable."
+title: "Fall Back Through the Backend Ladder"
+instructions: "Write initBestBackend(preference, runtime) so it returns the name of a backend that is actually running, walking the caller's preference order from the top. runtime stands in for the three TensorFlow.js calls the lesson uses, and it keeps their real contract. setBackend(name) resolves true when that backend started, resolves FALSE when the backend is registered and fails to start, and throws when the name was never registered, which is what you get when its package was not imported. Both of those are failures you move past; neither is fatal. Stop at the first backend that starts, so nothing after the winner is touched. Call runtime.ready() exactly once, after the ladder has settled and before you return. If every name in the ladder fails, call ready() and return runtime.getBackend(), which is the backend the engine settled on by itself. Do not read getBackend() as a verdict on a single attempt: right after a failed start it still reports the name that failed, which is what tfjs 4.22 does."
 starterCode: |
-  type Backend = 'webgpu' | 'webgl' | 'wasm';
+  type BackendName = string;
 
-  interface BackendConfig {
-    name: Backend;
-    isAvailable: () => boolean;
-    init: () => Promise<void>;
+  interface Runtime {
+    setBackend: (name: BackendName) => Promise<boolean>;
+    ready: () => Promise<void>;
+    getBackend: () => BackendName;
   }
 
-  async function selectBestBackend(backends: BackendConfig[]): Promise<Backend> {
-    // Try each backend in order
-    // If isAvailable() and init() succeeds, return its name
-    // If init() throws, continue to next
-    // If none work, throw an Error
+  async function initBestBackend(
+    preference: BackendName[],
+    runtime: Runtime
+  ): Promise<BackendName> {
+    // Not every refusal in this interface arrives as an error, and the name
+    // the runtime reports is not proof that a backend is running.
     return null; // your code here
   }
 solutionCode: |
-  type Backend = 'webgpu' | 'webgl' | 'wasm';
+  type BackendName = string;
 
-  interface BackendConfig {
-    name: Backend;
-    isAvailable: () => boolean;
-    init: () => Promise<void>;
+  interface Runtime {
+    setBackend: (name: BackendName) => Promise<boolean>;
+    ready: () => Promise<void>;
+    getBackend: () => BackendName;
   }
 
-  async function selectBestBackend(backends: BackendConfig[]): Promise<Backend> {
-    for (const backend of backends) {
-      if (!backend.isAvailable()) continue;
+  async function initBestBackend(
+    preference: BackendName[],
+    runtime: Runtime
+  ): Promise<BackendName> {
+    for (const name of preference) {
+      let started = false;
       try {
-        await backend.init();
-        return backend.name;
+        started = await runtime.setBackend(name);
       } catch {
-        continue;
+        started = false;
+      }
+      if (started) {
+        await runtime.ready();
+        return name;
       }
     }
-    throw new Error('No backend available');
+
+    await runtime.ready();
+    return runtime.getBackend();
   }
 testCode: |
-  describe('selectBestBackend', () => {
-    it('selects WebGPU when available', async () => {
-      const backends = [
-        { name: 'webgpu' as const, isAvailable: () => true, init: async () => {} },
-        { name: 'webgl' as const, isAvailable: () => true, init: async () => {} },
-        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
-      ];
-      expect(await selectBestBackend(backends)).toBe('webgpu');
+  describe('initBestBackend', () => {
+    // A stand-in for tf.setBackend / tf.ready / tf.getBackend, built to match
+    // what tfjs 4.22 actually does. A name in `outcomes` is registered: true
+    // means it starts, false means it is registered and fails to start (the
+    // real call logs 'Initialization of backend X failed' and resolves false,
+    // it does not throw). A name that is absent was never registered, and
+    // that is the case that throws. getBackend() reports the failed name
+    // until ready() moves the engine onto something that does run.
+    function makeRuntime(outcomes: Record<string, boolean>, settled = 'cpu') {
+      const calls: string[] = [];
+      let current = 'cpu';
+      const runtime = {
+        setBackend: async (name: string) => {
+          calls.push(name);
+          if (!(name in outcomes)) {
+            throw new Error(`Backend name '${name}' not found in registry`);
+          }
+          current = name;
+          return outcomes[name];
+        },
+        ready: async () => {
+          calls.push('ready');
+          if (outcomes[current] !== true) current = settled;
+        },
+        getBackend: () => current,
+      };
+      return { runtime, calls };
+    }
+
+    const LADDER = ['webgpu', 'webgl', 'wasm'];
+
+    // One guard, so the first Run of the starter reports the contract it has
+    // not met yet instead of comparing against null three times over.
+    async function chosen(preference: string[], runtime: any) {
+      const name = await initBestBackend(preference, runtime);
+      expect(
+        name,
+        'Nothing came back from this call, so no backend was chosen. initBestBackend returns null until you walk the ladder.'
+      ).toBeDefined();
+      return name;
+    }
+
+    it('takes the first backend that starts', async () => {
+      const { runtime, calls } = makeRuntime({ webgpu: true, webgl: true, wasm: true });
+      expect(await chosen(LADDER, runtime)).toBe('webgpu');
+      expect(
+        calls,
+        'The first name started, so nothing below it is tried, and ready() runs once at the end.'
+      ).toEqual(['webgpu', 'ready']);
     });
 
-    it('falls back to WebGL when WebGPU unavailable', async () => {
-      const backends = [
-        { name: 'webgpu' as const, isAvailable: () => false, init: async () => {} },
-        { name: 'webgl' as const, isAvailable: () => true, init: async () => {} },
-        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
-      ];
-      expect(await selectBestBackend(backends)).toBe('webgl');
+    it('treats a false resolve as a backend that did not start', async () => {
+      const { runtime } = makeRuntime({ webgpu: false, webgl: true, wasm: true });
+      expect(
+        await chosen(LADDER, runtime),
+        'webgpu is registered here and fails to start, so the call resolves false and throws nothing. A ladder built out of try and catch alone never sees that, reports webgpu, and every inference afterwards runs somewhere else.'
+      ).toBe('webgl');
     });
 
-    it('falls back when init throws', async () => {
-      const backends = [
-        { name: 'webgpu' as const, isAvailable: () => true, init: async () => { throw new Error('fail'); } },
-        { name: 'webgl' as const, isAvailable: () => true, init: async () => {} },
-        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
-      ];
-      expect(await selectBestBackend(backends)).toBe('webgl');
+    it('keeps going when a name was never registered', async () => {
+      const { runtime, calls } = makeRuntime({ webgl: true, wasm: true });
+      expect(
+        await chosen(LADDER, runtime),
+        'webgpu is missing from the registry, which is the forgotten-import case, and that one does throw. A missing package is a reason to try the next name, not a reason to give up.'
+      ).toBe('webgl');
+      expect(calls).toEqual(['webgpu', 'webgl', 'ready']);
     });
 
-    it('selects WASM as last resort', async () => {
-      const backends = [
-        { name: 'webgpu' as const, isAvailable: () => false, init: async () => {} },
-        { name: 'webgl' as const, isAvailable: () => true, init: async () => { throw new Error('fail'); } },
-        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
-      ];
-      expect(await selectBestBackend(backends)).toBe('wasm');
+    it('handles both failure modes in one ladder', async () => {
+      const { runtime, calls } = makeRuntime({ webgpu: false, wasm: true });
+      expect(await chosen(LADDER, runtime)).toBe('wasm');
+      expect(calls).toEqual(['webgpu', 'webgl', 'wasm', 'ready']);
     });
 
-    it('throws when no backend works', async () => {
-      const backends = [
-        { name: 'webgpu' as const, isAvailable: () => false, init: async () => {} },
-        { name: 'webgl' as const, isAvailable: () => false, init: async () => {} },
-        { name: 'wasm' as const, isAvailable: () => false, init: async () => {} },
-      ];
-      await expect(selectBestBackend(backends)).rejects.toThrow('No backend available');
+    it('stops at the winner', async () => {
+      const { runtime, calls } = makeRuntime({ webgpu: false, webgl: true, wasm: true });
+      expect(await chosen(LADDER, runtime)).toBe('webgl');
+      expect(
+        calls,
+        'wasm would have started too. Starting it anyway costs a context the page may not get back, and it would leave the engine on the slower backend.'
+      ).toEqual(['webgpu', 'webgl', 'ready']);
+    });
+
+    it('follows the order it was given, not the one in the lesson', async () => {
+      const { runtime, calls } = makeRuntime({ webgpu: true, webgl: true, wasm: true });
+      expect(
+        await chosen(['wasm', 'webgl', 'webgpu'], runtime),
+        'A caller who asks for wasm first has a reason, usually a device where the GPU path is the one that breaks. The preference order is an argument.'
+      ).toBe('wasm');
+      expect(calls).toEqual(['wasm', 'ready']);
+    });
+
+    it('reports what the engine settled on when the whole ladder fails', async () => {
+      const { runtime, calls } = makeRuntime({ webgpu: false, webgl: false });
+      const name = await chosen(LADDER, runtime);
+      expect(
+        name,
+        'Two registered backends failed to start and one was never registered, so there is no winner to name. ready() settles the engine on a backend that does run, and that name is the honest answer. webgl was the last one tried; it is not running.'
+      ).toBe('cpu');
+      expect(calls).toEqual(['webgpu', 'webgl', 'wasm', 'ready']);
+    });
+
+    it('calls ready once, on every path', async () => {
+      const started = makeRuntime({ webgpu: true, webgl: true, wasm: true });
+      await chosen(LADDER, started.runtime);
+      const exhausted = makeRuntime({ webgpu: false, webgl: false, wasm: false });
+      await chosen(LADDER, exhausted.runtime);
+      expect(started.calls.filter(c => c === 'ready').length).toBe(1);
+      expect(
+        exhausted.calls.filter(c => c === 'ready').length,
+        'ready() is what finishes the switch. Calling it per attempt makes the engine settle in the middle of the ladder; never calling it leaves the answer ahead of the engine.'
+      ).toBe(1);
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 12
 difficulty: intermediate
 mlContent: arithmetic
 skillAxis: deployment

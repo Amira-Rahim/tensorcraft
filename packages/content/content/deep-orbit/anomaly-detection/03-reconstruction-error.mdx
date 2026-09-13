@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"
   - level: guidance
-    content: "Build a one-row 2D tensor with tf.tensor2d([input]), get the reconstruction from model.predict, then tf.losses.meanSquaredError(inputTensor, reconstructed) gives a scalar tensor; return its .dataSync()[0]. Wrapping the work in tf.tidy keeps the intermediate tensors from leaking"
+    content: "The score is a comparison, so both sides have to be real: push the reading through the model, then measure how far the rebuild landed from what you sent in. Squaring the per-feature gaps and averaging them collapses that to one number, which is what a threshold can be compared against, and also what it costs you: the score says how badly the rebuild missed, never which feature moved. The model expects a batch, so a single reading goes in as one row and comes back as one row. Every step here allocates, and the intermediates are yours to release"
   - level: solution
     content: "const inputTensor = tf.tensor2d([input]); const reconstructed = model.predict(inputTensor) as tf.Tensor; const mse = tf.losses.meanSquaredError(inputTensor, reconstructed); return mse.dataSync()[0];"
 keywords:
@@ -49,12 +49,12 @@ So the reconstruction error IS the anomaly score? It's like running git diff. If
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Then run your diff, Ensign. And when it fires, tell me which channel it says changed.
+Then run your diff, Ensign. And when it fires, tell me which feature it says changed.
 </Dialogue>
 
 The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build the score; it will turn out to answer everything except what she asked.
 
-<LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Establish a normal error distribution to set meaningful thresholds", "Interpret reconstruction error: which features contribute most to the anomaly"]} />
+<LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Rank each feature's error against that feature's own normal error to find which dimension carries the anomaly"]} />
 
 ## Measuring the Diff
 
@@ -158,19 +158,20 @@ function relativeFeatureErrors(
       .sort((a, b) => b.ratio - a.ratio);
   });
 }
-// The ratio is what the incident exercise below grades: error against that
-// feature's own baseline error, never in the raw.`}
+// The ratio is what the incident exercise below grades: the ranking it
+// returns and the features it flags both read error against that feature's
+// own baseline error, never in the raw.`}
 </CodeBlock>
 
 A raw per-feature map tells you which feature the model rebuilt worst, which is not the same as which feature carries the anomaly. Rank the ratios, not the raw errors.
 
 ## Challenge
 
-Compute reconstruction error and identify anomalous signals.
+Score one reading against the autoencoder that rebuilt it, and release what you allocate.
 
 <Exercise slug="reconstruction-error" />
 
-PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothing. The post-mortem starts where autoencoder post-mortems always start, per-feature reconstruction error. Find what the model rebuilt too well.
+PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothing. The post-mortem starts where autoencoder post-mortems always start, per-feature reconstruction error. Rank the features against their own normal errors, and find what the model rebuilt too well.
 
 <Exercise slug="incident-missed-anomaly" />
 
@@ -193,7 +194,7 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 
 <Epilogue>
 
-Demir pins the per-feature error map to the shared display: fft_5, the 73.4 Hz bin, carrying nearly the entire error on its own, everything else flat below 0.001. He is still labeling the axes when ARIA speaks up, unprompted.
+Demir pins the per-feature error map to the shared display: fft_5, the 73.4 Hz bin, carrying nearly the entire error on its own, with fft_6 and amplitude a long way behind it and the other eight flat below 0.001. He is still labeling the axes when ARIA speaks up, unprompted.
 
 <Dialogue speaker="ARIA">
 Request. When the pipeline is idle, run my last 400 decision records through the autoencoder. I have been comparing my rule outputs against the new model and the divergence is increasing. I would like to know my reconstruction error.

@@ -10,7 +10,7 @@ scene:
   epilogueLocation: "Bridge, All Displays"
   portraitAlt: "Demir's hand hovers over the deploy control on the bridge, a pulse ring counting down on the holo table as Mirza and Nazari stand by."
   epiloguePortraitAlt: "Every bridge display carries the same mirrored waveform as the whole crew stands in silhouette, watching the signal answer in their own harmonics."
-estimatedMinutes: 28
+estimatedMinutes: 70
 difficulty: advanced
 context:
   narrative: "Everything is ready. Mirza gives the final order: 'Deploy DEEP SCAN. Classify the anomalous signal. Let's find out what we've been chasing across the galaxy.' Demir deploys. The signal is classified."
@@ -28,9 +28,9 @@ consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
 hints:
   - level: nudge
-    content: "This ladder covers classify-anomaly, the finale. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote. For verify-deployment and launch-rehearsal, the recipe comments in each starter walk the whole path."
+    content: "This ladder covers classify-anomaly, the finale, and carries a note on launch-rehearsal at the end. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote. verify-deployment states its whole contract in its own instructions. For launch-rehearsal, the one number worth checking before you write anything is the update count: it belongs to the optimizer, not to your own arithmetic."
   - level: guidance
-    content: "decomposeIntervals loops to length - 1 pushing intervals[i + 1] / intervals[i]. isFibonacciTrain compares against [1, 2, 1.5, 5/3, 1.6, 1.625] aligned FROM THE TAIL (slice the expected list to the ratios' length from the end), each within 2% relative error. classifyAnomaly gets mean/variance from tf.moments inside tf.tidy, z = (actual - mean) / std with z = 0 when std is 0; statistical fires on |z| > 3, autoencoder on reconstructionError > reconThreshold, lstm on |predicted - actualForecast| > predTolerance; votes counts the fired detectors, isAnomaly needs 2 of 3, classification is 'confirmed-anomaly' only when the vote AND the Fibonacci train agree, and scoreDelta is the rounded ensembleScore - module3Score."
+    content: "The expected ratios are not a table to memorize, they are the sub-interval train divided through, and the section on the interval train works them out. Two consequences to notice there. A capture can start late and carry no 1:1 opener, so a shorter ratio list is compared against the end of the full list rather than its front. And measured seconds never divide into exact ratios, so a match means a relative band around each expected value, the width the instructions name. In the vote, the part worth getting right is where the sigma comes from: a mean and a spread are properties of the window on the console, not constants you carry from one channel to the next, and a reading that is unremarkable against one window is extreme against a tighter one. Then the majority, two of three: any one detector can be blind without silencing the alarm, and no one detector can raise one by itself. launch-rehearsal shares this rung, and three decisions carry it. The limits a reading is scaled against belong to the instrument, so they are read off the argument that carries them rather than off the batch in front of you. The candidate arrives compiled, and compiling it again throws away the training state CI handed over. And the update count in the verdict is a property of the optimizer that nothing outside it can assign, which is why it has to agree with the loss trace reported beside it."
   - level: solution
     content: |
       function decomposeIntervals(intervals) {
@@ -113,7 +113,7 @@ Then deploy DEEP SCAN. Classify the signal.
 
 Any app that compiles down to a folder of files ships the same way: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The model is a static asset like an image or a font, bundled into the build output, served from a CDN, and run entirely in the browser.
 
-<LearningObjectives objectives={["Configure a production build that includes model assets alongside web assets", "Deploy an ML-powered web app to GitHub Pages as a static site", "Verify the deployed system loads and runs inference correctly", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
+<LearningObjectives objectives={["Configure a production build that includes model assets alongside web assets", "Deploy an ML-powered web app to GitHub Pages as a static site", "Verify the deployed system loads and runs inference correctly", "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
 <BossBeat
   beatId="deep-orbit-launch-deploy-call"
@@ -171,8 +171,13 @@ const config: BuildConfig = {
   output: 'dist',
   assets: {
     models: [
-      'models/deep-scan-v1/model.json',      // 2 KB: model topology
-      'models/deep-scan-v1/weights.bin',      // 85 MB on disk: quantized + pruned
+      'models/deep-scan-v1/model.json',      // 3.4 KB: the classifier's topology
+      'models/deep-scan-v1/weights.bin',      // 3,988 bytes: its 997 float32
+                                              // weights, and nothing else
+      'models/report-lang-v1/model.json',     // the report pipeline's pretrained
+      'models/report-lang-v1/weights.bin',    // language component: 85 MB on disk
+                                              // quantized + pruned, which is
+                                              // almost the whole download
     ],
     smokeData: [
       'data/validation-sample.json',          // 100 samples for smoke test
@@ -190,11 +195,13 @@ const config: BuildConfig = {
 // ├── index.html              (~5 KB)
 // ├── app.js                  (~150 KB gzipped)
 // ├── models/
-// │   ├── model.json          (~2 KB)
-// │   └── weights.bin         (~85 MB, 42 MB gzipped on the wire)
+// │   ├── deep-scan-v1/       (3.4 KB topology + 3,988 bytes of weights)
+// │   └── report-lang-v1/     (~85 MB, 42 MB gzipped on the wire)
 // └── data/
 //     └── validation-sample.json  (~50 KB)`}
 </CodeBlock>
+
+Two model directories ship and only one of them is the classifier. `deep-scan-v1` is the eleven-feature, five-class network module 10 retrained: a topology file and 997 weights, about seven kilobytes together. `report-lang-v1` is the report pipeline's pretrained language component, and it is what the 85 MB counts. The model card in the last lesson keeps those two sizes on separate lines for the same reason this config does. A reader who sees 85 MB beside the classifier goes and optimizes the wrong network.
 
 ## Deploy and Verify
 
@@ -210,7 +217,17 @@ async function verifyDeployment(baseUrl: string): Promise<boolean> {
   // 1. Check model loads
   console.log('1. Loading model...');
   const modelUrl = \`\${baseUrl}/models/deep-scan-v1/model.json\`;
-  const response = await fetch(modelUrl);
+  let response: Response;
+  try {
+    response = await fetch(modelUrl);
+  } catch (error) {
+    // The failure that has no status to read: DNS does not resolve, the
+    // host never answers, the request is refused. Letting it through
+    // ends the run with no report at all, and the operator is left
+    // guessing which check died.
+    console.error('✗ Model fetch failed:', (error as Error).message);
+    return false;
+  }
   if (!response.ok) {
     console.error('✗ Model failed to load:', response.status);
     return false;
@@ -240,12 +257,18 @@ async function verifyDeployment(baseUrl: string): Promise<boolean> {
   }
   console.log(\`✓ Probe accuracy: \${correct}/\${probe.length}\`);
 
-  // 3. Check performance. Random input is fine here; nothing reads the
-  // labels, only the clock.
+  // 3. Check performance. Nothing reads the labels here, only the clock,
+  // but the samples still have to be raw ADC counts: the extractor takes
+  // amplitude as the largest magnitude in the window and normalizes it
+  // against 0 to 2048. Values in [-1, 1] would time the pipeline on input
+  // that looks already normalized, the same confusion the labeled probe
+  // above is there to catch.
   console.log('3. Benchmarking...');
   const times: number[] = [];
   for (let i = 0; i < 20; i++) {
-    const input = new Float32Array(64).fill(0).map(() => Math.random() * 2 - 1);
+    const input = new Float32Array(64)
+      .fill(0)
+      .map(() => Math.random() * 4096 - 2048);
     const t0 = performance.now();
     await pipeline.classify(input);
     times.push(performance.now() - t0);
@@ -317,13 +340,31 @@ DEEP SCAN v1.0: Signal Classified. Mission Continues.`}
 
 Two lines in that output settle old debts. Nazari asked when the interval hits zero back when the number was 72.4 seconds, and three curves gave three different dates. The curves have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. A third debt, the oldest, stays open on purpose. An untrained build once scored that same reading 0.998, a reinitialization on fresh random weights scored it 0.997, and since module 2 nobody aboard has been able to say why. Both landed at the same end of the scale. Random weights have no preferred sign; two fresh draws should have thrown it to opposite ends as readily as the same one, and ARIA said as much the night it happened. Only a trained model ever learned to hesitate about it, and the hesitation is what training bought. Untrained networks know nothing; that lesson stands. Which end those two draws chose goes in the ledger next to the other coincidence nobody aboard resolves.
 
+## The Interval Train, in Ratios
+
+Farah's decomposition handed the crew a sequence, not a test. The sequence is the sub-pulse gaps, 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it. What a classifier can check is the sequence divided through: each gap over the gap before it, which drops the units and leaves six numbers.
+
+<CodeBlock language="text" title="interval-ratios.txt">
+{`gaps      1     1     2     3     5     8     13
+divide          1/1   2/1   3/2   5/3   8/5   13/8
+ratios          1.0   2.0   1.5   1.667 1.6   1.625`}
+</CodeBlock>
+
+Three properties of that list are what the finale exercise grades.
+
+Dividing removes the scale. Farah's capture was in seconds and the sequence is unitless, and both decompose to the same six ratios. That is the reason the calibration overlay lined up at all.
+
+The ratios converge. They land above and below 1.618 by turns and the miss narrows each step, so the tail of the list is the part that identifies the pattern and the front is the part a capture can lose. A recording that starts mid-train has no 1:1 opener in it, which means a short ratio list is compared against the end of the full list rather than the beginning.
+
+Measured seconds do not divide exactly. Even in the archive's rounded slice, 11.7 over 7.2 comes back as 1.6249999999999998, and a live capture misses by more than that, so a match is a band around each expected ratio rather than an equality. The width of that band is a false-alarm decision like every other cutoff in module 7: too tight and the real train is rejected by rounding, too loose and a metronome starts qualifying.
+
 ## Challenge
 
-Write a deployment verification script for the complete system.
+Write the runner under that verification script: every check in order, each one awaited before the next starts, and a deployment that passes only when all of them do.
 
 <Exercise slug="verify-deployment" />
 
-Then run the rehearsal Nazari would demand before the relay slot: the whole chain in one function, and a launch gate with the authority to say no. Preprocess, batch predict, drift check, verdict. If any stage fails, the answer is hold; a single leaked tensor counts as a failure.
+Then run the rehearsal Nazari would demand before the relay slot, which starts a step earlier than the verification script does. Take the untrained deploy candidate, normalize the archive rows the way module 4 does, train it, score the canary set, and gate the result. Preprocess, fit, predict, drift check, verdict. If any stage fails the answer is hold, a single leaked tensor counts as a failure, and the update count the optimizer kept has to agree with the loss trace you report, because a rehearsal nobody can check is a rehearsal that did not happen.
 
 <Exercise slug="launch-rehearsal" />
 
@@ -337,10 +378,11 @@ And then the one the whole season was for. The console transcript above is what 
   whatYouLearned={[
     "An ML-powered web app deploys exactly like a static site (`npm run build`, model files in the dist folder as static assets, served from a CDN) because the model runs entirely in the browser.",
     "Deployment verification must confirm three things independently: the model file loads from the deployed URL, a labeled probe still scores above its floor, and latency meets the performance budget. Random input can only prove the file parses; it cannot see a mangled preprocessing path.",
-    "Model rollback restores weights but not the training distribution; drift accumulates from the training cutoff, so a rolled-back model may perform worse on current data than it did when first deployed."
+    "Model rollback restores weights but not the training distribution; drift accumulates from the training cutoff, so a rolled-back model may perform worse on current data than it did when first deployed.",
+    "A rehearsal is only evidence if its record can be checked. A loss trace is a value the submitting code returns and can be written by hand; model.optimizer.iterations belongs to the optimizer, counts one per batch, and takes no assignment. Tie them together (batches per epoch times epochs in the trace) and the training record cannot be produced without the training."
   ]}
   bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time and no deploy ever resets it."
-  youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, and run a verification script that confirms load, labeled-probe accuracy, and performance in the live environment."
+  youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, run a verification script that confirms load, labeled-probe accuracy and performance in the live environment, and rehearse the full chain end to end: preprocess with the saved ranges, train the candidate with model.fit, score a canary set, and gate the launch on accuracy and drift."
 />
 
 <Epilogue>

@@ -4,12 +4,8 @@ title: "Split First, Then Window"
 instructions: "The mirror in this lesson scored 97.4 because the stream was windowed before it was split. Build the honest version. `splitThenWindow(series, labels, windowSize, splitAt)` cuts the stream at index splitAt (the first reading that belongs to evaluation), THEN windows each side with stride 1. A window covers readings [i, i + windowSize) and takes the label of its last reading, labels[i + windowSize - 1]. Windows that straddle the boundary belong to neither side and are dropped. Return { train: { xs, ys }, eval: { xs, ys } }. The grader feeds a series whose values are their own indices, so any reading that leaks across the boundary shows up as a number on the wrong side."
 starterCode: |
   function splitThenWindow(series, labels, windowSize, splitAt) {
-    // series: readings, one feature row each; labels: one label per reading
-    // A window starting at i covers series[i .. i + windowSize) and is
-    // labelled by labels[i + windowSize - 1].
-    //   entirely before splitAt (end <= splitAt)  -> train
-    //   entirely at or after splitAt (i >= splitAt) -> eval
-    //   straddling the boundary                     -> dropped
+    // series holds one feature row per reading; labels holds one entry per
+    // reading. A span that touches both sides of the cut lies on neither.
     return null; // your code here
   }
 solutionCode: |
@@ -31,32 +27,54 @@ solutionCode: |
     return { train, eval: evalSet };
   }
 testCode: |
-  // Values ARE indices, so a leaked reading is visible as a number on the wrong side.
+  // Values ARE indices, so a leaked reading is a number visible on the wrong side.
   const series = Array.from({ length: 12 }, (_, i) => [i]);
   const labels = series.map(([i]) => (i >= 4 && i < 9 ? 1 : 0));
 
+  // One place to say what is missing when nothing comes back, so the first
+  // Run on the untouched starter names the task instead of a TypeError.
+  const split = (s, l, windowSize, splitAt) => {
+    const out = splitThenWindow(s, l, windowSize, splitAt);
+    expect(
+      out,
+      'splitThenWindow handed back nothing. Return { train: { xs, ys }, eval: { xs, ys } }, holding the windows you kept on each side of the boundary.',
+    ).toBeTruthy();
+    expect(
+      Boolean(out.train) && Array.isArray(out.train.xs) && Array.isArray(out.train.ys),
+      'The train side is missing its xs or its ys list.',
+    ).toBe(true);
+    expect(
+      Boolean(out.eval) && Array.isArray(out.eval.xs) && Array.isArray(out.eval.ys),
+      'The eval side is missing its xs or its ys list.',
+    ).toBe(true);
+    return out;
+  };
+
   describe('splitThenWindow', () => {
     it('windows each side of the boundary: 5 train windows, 1 eval window', () => {
-      const { train, eval: ev } = splitThenWindow(series, labels, 4, 8);
+      const { train, eval: ev } = split(series, labels, 4, 8);
       expect(train.xs.length).toBe(5);
       expect(train.ys.length).toBe(5);
       expect(ev.xs.length).toBe(1);
       expect(ev.ys.length).toBe(1);
     });
     it('no train window reaches past the boundary, no eval window reaches before it', () => {
-      const { train, eval: ev } = splitThenWindow(series, labels, 4, 8);
+      const { train, eval: ev } = split(series, labels, 4, 8);
       const trainMax = Math.max(...train.xs.flat(2));
       const evalMin = Math.min(...ev.xs.flat(2));
-      expect(trainMax).toBeLessThan(8);
+      expect(
+        trainMax,
+        'Every value in this series is its own index, so a training window that reads an evaluation reading shows up here at or above the boundary.',
+      ).toBeLessThan(8);
       expect(evalMin).toBeGreaterThanOrEqual(8);
     });
     it('drops the straddling windows instead of assigning them a side', () => {
-      const { train, eval: ev } = splitThenWindow(series, labels, 4, 8);
+      const { train, eval: ev } = split(series, labels, 4, 8);
       // Naive windowing yields 9 windows; windowSize - 1 = 3 of them straddle index 8.
       expect(train.xs.length + ev.xs.length).toBe(9 - 3);
     });
     it('labels each window by its LAST reading', () => {
-      const { train, eval: ev } = splitThenWindow(series, labels, 4, 8);
+      const { train, eval: ev } = split(series, labels, 4, 8);
       expect(train.xs[0]).toEqual([[0], [1], [2], [3]]);
       expect(train.ys[0]).toBe(labels[3]);
       expect(train.ys[1]).toBe(labels[4]);
@@ -65,12 +83,27 @@ testCode: |
     });
     it('follows the parameters, not memorized shapes (20 readings, window 5, split at 12)', () => {
       const s = Array.from({ length: 20 }, (_, i) => [i, i * 10]);
-      const l = s.map(([i]) => i % 2);
-      const { train, eval: ev } = splitThenWindow(s, l, 5, 12);
+      // Labels run in twos out of every five. The run length does not divide
+      // the split point, so a label read at an offset of splitAt disagrees
+      // with the honest one, and neither list is constant.
+      const l = s.map(([i]) => (i % 5 < 2 ? 1 : 0));
+      const { train, eval: ev } = split(s, l, 5, 12);
       expect(train.xs.length).toBe(8);
       expect(ev.xs.length).toBe(4);
       expect(Math.max(...train.xs.flat(2).filter((v, k) => k % 2 === 0))).toBeLessThan(12);
       expect(Math.min(...ev.xs.flat(2).filter((v, k) => k % 2 === 0))).toBeGreaterThanOrEqual(12);
+      // Both sides are labelled from the same log, at each window's own last
+      // reading. Derived from the arguments here, so no fixture to memorize.
+      const labelOf = (start) => l[start + 5 - 1];
+      const trainYs = [];
+      for (let i = 0; i + 5 <= 12; i++) trainYs.push(labelOf(i));
+      const evalYs = [];
+      for (let i = 12; i + 5 <= 20; i++) evalYs.push(labelOf(i));
+      expect(train.ys).toEqual(trainYs);
+      expect(
+        ev.ys,
+        'The evaluation labels come out of the same log the training labels do, read at each window\'s own last reading. Labels invented for that side, or read at an offset, make the eval set unscoreable while every count still looks right.',
+      ).toEqual(evalYs);
     });
   });
 estimatedMinutes: 12

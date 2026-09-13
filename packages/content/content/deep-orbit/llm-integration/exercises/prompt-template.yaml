@@ -1,7 +1,7 @@
 slug: prompt-template
 lessonSlug: prompt-engineering
 title: "Build a Prompt Template"
-instructions: "Write a function that takes signal data (amplitude, frequency, phase) and returns a multi-line prompt with the four parts on separate lines, in order. First the role, a line naming DEEP SCAN and carrying no signal values. Then the reference context: known natural frequencies 5, 12, 23, 47 Hz. Then the signal data, one line per value, each next to its label (Amplitude, Frequency, Phase) and read off the argument. Then the output request: JSON with classification, confidence, and reasoning fields. The grader checks position as well as presence, and rebuilds the prompt from a second signal."
+instructions: "Write a function that takes signal data (amplitude, frequency, phase) and returns a multi-line prompt with the four parts on separate lines, in order. First the role: one line that names DEEP SCAN and says it classifies signals, in that word. The grader reads the first line for `classif`, so classify, classifying and classifier all pass, while a line saying it labels or sorts signals does not. That line carries no signal values, no reference frequencies and no output instructions. Then the reference context, on a line of its own: 5, 12, 23, 47 Hz, stated to be the natural frequencies rather than left as four bare numbers. Nothing read off the argument belongs on that line. Then the signal data, one line per value, each next to its label (Amplitude, Frequency, Phase) and read off the argument. Then the output request: JSON with classification, confidence, and reasoning fields. The grader checks position as well as presence, and it runs the whole check again on readings it draws at grade time, so every call has to rebuild the prompt from the argument it was handed."
 starterCode: |
   interface SignalInput {
     amplitude: number;
@@ -10,12 +10,9 @@ starterCode: |
   }
 
   function buildPrompt(signal: SignalInput): string {
-    // Build a multi-line prompt with the four parts in this order:
-    // 1. Role: "You are DEEP SCAN, a signal classifier" (no values here)
-    // 2. Context: known natural frequencies 5, 12, 23, 47 Hz
-    // 3. Signal data: one line each for Amplitude, Frequency and Phase,
-    //    using the numbers on `signal` rather than a hardcoded sample
-    // 4. Output format: JSON with classification, confidence, reasoning
+    // Four parts in a fixed order, and no single line may carry two of them.
+    // What is true of every capture stays apart from what arrived in the
+    // argument. That split is the decision here.
     return null; // your code here
   }
 solutionCode: |
@@ -30,10 +27,10 @@ solutionCode: |
       'You are DEEP SCAN, a signal classifier for deep space signals.',
       '',
       'Known natural frequencies: 5, 12, 23, 47 Hz.',
-      'Normal amplitude range: 0.1 to 1.0.',
+      'Normal amplitude range: 570 to 1560 counts.',
       '',
       'Signal data:',
-      '- Amplitude: ' + signal.amplitude,
+      '- Amplitude: ' + signal.amplitude + ' counts',
       '- Frequency: ' + signal.frequency + ' Hz',
       '- Phase: ' + signal.phase + ' rad',
       '',
@@ -43,59 +40,118 @@ solutionCode: |
   }
 testCode: |
   describe('buildPrompt', () => {
-    const signal = { amplitude: 0.61, frequency: 73.4, phase: 0.23 };
+    const signal = { amplitude: 1024, frequency: 73.4, phase: 0.23 };
+    const promptFor = (input) => {
+      const prompt = buildPrompt(input);
+      expect(
+        prompt,
+        'buildPrompt has to return the finished prompt string. While it returns null there is nothing to send the model.',
+      ).toBeDefined();
+      return prompt;
+    };
     const lines = (prompt) =>
       prompt.split('\n').map((line) => line.trim()).filter((line) => line.length > 0);
+    const REFERENCE = ['5', '12', '23', '47'];
+
+    // Readings are DRAWN, never listed. A map from the graded signals to
+    // hand-written prompts cleared every fixed-literal version of this suite,
+    // including the test named for catching exactly that. The draw rejects any
+    // triple whose printed values overlap each other or the fixed text of the
+    // prompt, so "one line carries this value" stays a question about layout.
+    const FIXED = ['5, 12, 23, 47', '570 to 1560', '0.0-1.0'];
+    const drawSignal = (avoid) => {
+      const blocked = FIXED.concat(avoid || []);
+      for (;;) {
+        const amplitude = 206 + Math.floor(Math.random() * 1841);
+        const frequency = Math.round((60 + Math.random() * 59) * 10) / 10;
+        const phase = Math.round((Math.random() * 6 - 3) * 100) / 100;
+        if (!/^\d{2,3}\.\d$/.test(String(frequency))) continue;
+        if (!/^-?\d\.\d\d$/.test(String(phase))) continue;
+        const strs = [String(amplitude), String(frequency), String(phase)];
+        const overlaps = strs.some((a, i) =>
+          strs.some((b, j) => i !== j && (a.includes(b) || b.includes(a))),
+        );
+        const collides = strs.some((a) => blocked.some((b) => b.includes(a) || a.includes(b)));
+        if (!overlaps && !collides) return { amplitude, frequency, phase };
+      }
+    };
+    const printed = (input) => [String(input.amplitude), String(input.frequency), String(input.phase)];
 
     it('includes the signal data', () => {
-      const prompt = buildPrompt(signal);
-      expect(prompt).toContain('0.61');
+      const prompt = promptFor(signal);
+      expect(prompt).toContain('1024');
       expect(prompt).toContain('73.4');
     });
 
-    it('includes all four natural frequencies', () => {
-      const prompt = buildPrompt(signal);
-      expect(prompt).toContain('5');
-      expect(prompt).toContain('12');
-      expect(prompt).toContain('23');
-      expect(prompt).toContain('47');
+    it('states the reference frequencies together on one line, and says what they are', () => {
+      for (const input of [signal, drawSignal(), drawSignal()]) {
+        const parts = lines(promptFor(input));
+        const reference = parts.filter((line) => REFERENCE.every((hz) => line.includes(hz)));
+        expect(
+          reference,
+          'The frequencies this sector produces on its own belong on one line, together. That line is the only thing in the prompt the model cannot work out for itself, and version nine of the prompt beat version eight by adding exactly it.',
+        ).toHaveLength(1);
+        expect(
+          reference[0].toLowerCase(),
+          'Four bare numbers are not context. The line has to say what they are, which is the set of frequencies known to be natural here.',
+        ).toContain('natural');
+        for (const value of printed(input)) {
+          expect(
+            reference[0],
+            'The reference line carries the catalogue, not this reading. Mixing the live values into it leaves the model unable to tell which is which.',
+          ).not.toContain(value);
+        }
+      }
     });
 
     it('requests JSON output and names all three fields', () => {
-      const lower = buildPrompt(signal).toLowerCase();
+      const lower = promptFor(drawSignal()).toLowerCase();
       expect(lower).toContain('json');
-      expect(lower).toContain('classification');
+      expect(
+        lower,
+        'Output the model cannot be parsed is output you cannot use. Name every field you intend to read.',
+      ).toContain('classification');
       expect(lower).toContain('confidence');
       expect(lower).toContain('reasoning');
     });
 
-    it('opens with the role on a line of its own', () => {
-      const prompt = buildPrompt(signal);
-      expect(prompt).toContain('DEEP SCAN');
-      const first = lines(prompt)[0];
-      expect(first).toContain('DEEP SCAN');
-      expect(first).not.toContain('0.61');
-      expect(first).not.toContain('73.4');
-      expect(first.toLowerCase()).not.toContain('json');
+    it('opens with the role, and the role says what the model is doing', () => {
+      for (const input of [signal, drawSignal()]) {
+        const first = lines(promptFor(input))[0];
+        expect(first).toContain('DEEP SCAN');
+        expect(
+          first.toLowerCase(),
+          'A name on its own is an address label. The role line has to tell the model what job it is doing here.',
+        ).toContain('classif');
+        for (const value of printed(input)) expect(first).not.toContain(value);
+        for (const hz of REFERENCE) {
+          expect(
+            first,
+            'The role and the reference context are two of the four parts, so they cannot share a line. A first line carrying the natural frequencies leaves the prompt with three parts, and the model with no line it can read as the catalogue.',
+          ).not.toContain(hz);
+        }
+        expect(first.toLowerCase()).not.toContain('json');
+      }
     });
 
     it('orders the parts role, context, data, format', () => {
-      const prompt = buildPrompt(signal);
-      const role = prompt.indexOf('DEEP SCAN');
-      const context = prompt.indexOf('47');
-      const data = prompt.indexOf('73.4');
-      const format = prompt.toLowerCase().indexOf('json');
-      expect(role).toBeGreaterThan(-1);
-      expect(context).toBeGreaterThan(role);
-      expect(data).toBeGreaterThan(context);
-      expect(format).toBeGreaterThan(data);
+      for (const input of [signal, drawSignal(), drawSignal()]) {
+        const prompt = promptFor(input);
+        const role = prompt.indexOf('DEEP SCAN');
+        const context = prompt.indexOf('47');
+        const data = prompt.indexOf(String(input.frequency));
+        const format = prompt.toLowerCase().indexOf('json');
+        expect(role).toBeGreaterThan(-1);
+        expect(context).toBeGreaterThan(role);
+        expect(data).toBeGreaterThan(context);
+        expect(format).toBeGreaterThan(data);
+      }
     });
 
     it('puts each value on its own line beside its label, for any signal', () => {
       const check = (input) => {
-        const parts = lines(buildPrompt(input));
-        const carrying = (value) =>
-          parts.filter((line) => line.includes(String(value)));
+        const parts = lines(promptFor(input));
+        const carrying = (value) => parts.filter((line) => line.includes(String(value)));
         const amp = carrying(input.amplitude);
         const freq = carrying(input.frequency);
         const phase = carrying(input.phase);
@@ -114,22 +170,27 @@ testCode: |
         }
       };
       check(signal);
-      check({ amplitude: 0.94, frequency: 118.6, phase: 0.05 });
+      for (let i = 0; i < 5; i += 1) check(drawSignal());
     });
 
-    it('templates the input, not a memorized string (different signal, different prompt)', () => {
-      const other = buildPrompt({ amplitude: 0.34, frequency: 12.0, phase: 1.57 });
-      expect(other).toContain('0.34');
-      expect(other).toContain('12');
-      expect(other).toContain('1.57');
-      expect(other).not.toContain('0.61');
-      expect(other).not.toContain('73.4');
-      const third = buildPrompt({ amplitude: 0.94, frequency: 118.6, phase: 0.05 });
-      expect(third).toContain('0.94');
-      expect(third).toContain('118.6');
-      expect(third).toContain('0.05');
-      expect(third).not.toContain('0.34');
-      expect(third).not.toContain('1.57');
+    it('templates the input, not a memorized string (readings drawn at grade time)', () => {
+      for (let i = 0; i < 6; i += 1) {
+        const first = drawSignal();
+        const second = drawSignal(printed(first));
+        const one = promptFor(first);
+        const two = promptFor(second);
+        for (const value of printed(first)) {
+          expect(
+            one,
+            'These readings were drawn a moment ago, so no stored prompt can carry them. Every call rebuilds the prompt from the signal it was handed.',
+          ).toContain(value);
+          expect(two).not.toContain(value);
+        }
+        for (const value of printed(second)) {
+          expect(two).toContain(value);
+          expect(one).not.toContain(value);
+        }
+      }
     });
   });
 estimatedMinutes: 10

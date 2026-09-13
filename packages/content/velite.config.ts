@@ -204,7 +204,14 @@ const exercises = defineCollection({
       .optional()
       .default("arithmetic"),
 
-    // Skill Genome: primary axis this exercise affects (optional, for event tracking)
+    // Skill Genome: the primary axis a PASS on this exercise credits.
+    // Read by the exercise component, which puts it on the submit result as
+    // `skillAxis` so the caller can credit the axis the exercise declares.
+    // Before 2026-09-08 nothing read this field: an `exercise_pass` credited
+    // every axis in `lesson.skillAxes` instead, which double-credits a
+    // two-axis lesson for one exercise and credits the wrong axis wherever
+    // an exercise's axis is not one of its lesson's. Keep it optional: an
+    // exercise without one falls back to the lesson's axis list.
     skillAxis: s
       .enum([
         "data_prep",

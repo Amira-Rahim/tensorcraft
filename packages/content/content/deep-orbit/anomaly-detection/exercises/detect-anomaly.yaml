@@ -1,8 +1,8 @@
 slug: detect-anomaly
 lessonSlug: normal-vs-anomalous
 title: "Detect Anomalies with Z-Score"
-mlContent: data
-instructions: "Write `isAnomaly(value, mean, std)` that returns true if the absolute z-score is greater than 3. Use tf.scalar to wrap inputs, tf.abs and arithmetic ops, then read back with .dataSync()[0]."
+mlContent: arithmetic
+instructions: "Write `isAnomaly(value, mean, std)` that returns true when the reading sits more than 3 standard deviations from the mean, in either direction. The baseline is not fixed: `mean` and `std` arrive as arguments and change from one call to the next, so the allowed distance has to be computed from them on every call. Both routes are graded the same, the tensor one (`tf.scalar`, then `.dataSync()[0]` to read the number back out) and plain arithmetic."
 starterCode: |
   function isAnomaly(value, mean, std) {
     return null;
@@ -13,31 +13,80 @@ solutionCode: |
     return z.dataSync()[0] > 3;
   }
 testCode: |
-  describe('isAnomaly (real tf.scalar arithmetic)', () => {
+  // Deterministic pseudo-random baselines for the last test. A verdict is a
+  // boolean, and a boolean is reproducible by any route: a table of
+  // (mean, std) rows with a memorised allowed distance clears every fixed
+  // fixture below and still has no idea what a standard deviation is. Handing
+  // the function baselines nobody can tabulate is how the sweep grades the
+  // derivation rather than the answer.
+  let seed = 20260908;
+  function nextUnit() {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    return seed / 2147483648;
+  }
+
+  describe('isAnomaly (z-score against the spread you were handed)', () => {
     it('flags values far from mean', () => {
-      expect(isAnomaly(100, 50, 10)).toBe(true);
+      expect(
+        isAnomaly(100, 50, 10),
+        'This reading sits five spreads above the mean, which is outside any 3-sigma gate.',
+      ).toBe(true);
     });
     it('does not flag normal values', () => {
-      expect(isAnomaly(52, 50, 10)).toBe(false);
+      expect(
+        isAnomaly(52, 50, 10),
+        'This reading is a fifth of a spread from the mean. A gate that fires here fires on everything.',
+      ).toBe(false);
     });
     it('handles boundary z=3', () => {
-      expect(isAnomaly(80, 50, 10)).toBe(false);
-      expect(isAnomaly(81, 50, 10)).toBe(true);
+      expect(
+        isAnomaly(80, 50, 10),
+        'Exactly 3 sigma is still normal: the gate opens above 3, not at it.',
+      ).toBe(false);
+      expect(
+        isAnomaly(81, 50, 10),
+        'A hair past 3 sigma is anomalous. Check which comparison operator you used.',
+      ).toBe(true);
     });
     it('handles negative deviations symmetrically', () => {
-      expect(isAnomaly(10, 50, 10)).toBe(true);
+      expect(
+        isAnomaly(10, 50, 10),
+        'This reading is 4 sigma BELOW the mean. Compare the size of the z-score, not its signed value.',
+      ).toBe(true);
     });
     it('measures deviation in units of std, not absolute distance', () => {
       // mean 100, std 10: 30 sits 7 sigma below
-      expect(isAnomaly(30, 100, 10)).toBe(true);
+      expect(
+        isAnomaly(30, 100, 10),
+        'Ten times the sigma count of the wider-spread case below, at the same raw distance.',
+      ).toBe(true);
       // mean 100, std 50: 150 is only 1 sigma out on that wider spread
-      expect(isAnomaly(150, 100, 50)).toBe(false);
+      expect(
+        isAnomaly(150, 100, 50),
+        'Normal, at the same raw distance the narrow-spread case above flagged, because this spread is five times wider.',
+      ).toBe(false);
     });
     it('works on a tenth-scale baseline', () => {
-      expect(isAnomaly(0.55, 0.5, 0.1)).toBe(false);  // z = 0.5
-      expect(isAnomaly(0.9, 0.5, 0.1)).toBe(true);    // z = 4
+      expect(isAnomaly(0.55, 0.5, 0.1), 'Half a spread out on a tenth-scale baseline is normal.').toBe(false);
+      expect(isAnomaly(0.9, 0.5, 0.1), 'Four spreads out on a tenth-scale baseline is anomalous.').toBe(true);
+    });
+    it('derives the verdict from the baseline it is handed, not from a memorised one', () => {
+      for (let i = 0; i < 12; i++) {
+        const mean = nextUnit() * 200 - 100;
+        const std = 0.05 + nextUnit() * 40;
+        const why =
+          'The baselines in this sweep are generated at run time, so nothing ' +
+          'about them can be known in advance. Each reading is placed a fixed ' +
+          'number of spreads from its own mean, above and below. If the ' +
+          'earlier cases pass and this one does not, the verdict is coming ' +
+          'from the value instead of from value, mean and std together.';
+        expect(isAnomaly(mean + 3.4 * std, mean, std), why).toBe(true);
+        expect(isAnomaly(mean - 3.4 * std, mean, std), why).toBe(true);
+        expect(isAnomaly(mean + 2.6 * std, mean, std), why).toBe(false);
+        expect(isAnomaly(mean - 2.6 * std, mean, std), why).toBe(false);
+      }
     });
   });
 estimatedMinutes: 8
 difficulty: beginner
-skillAxis: model_arch
+skillAxis: evaluation

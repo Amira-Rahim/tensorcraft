@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "A Hann window tapers both ends of a chunk to zero so the FFT never mistakes your cut for a cliff in the signal."
   - level: guidance
-    content: "Two separate functions are graded. hannWindow(n) returns w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))) for i = 0..n-1; Array.from with Math.cos works, or tf.range(0, n) on the tensor route. applyWindow(signal, window) returns the element-wise product signal[i] * window[i] as a plain number array, e.g. tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync(). The grader then windows a tone that does not fit its window and compares the two FFTs, so every sample has to carry its own weight from the formula. Zeroing the first and last samples of a flat window tapers nothing and leaks about as much as no window at all."
+    content: "Two functions here, and only one is interesting. hannWindow(n) is the taper itself: one raised cosine spread over the whole slice, so a weight depends on where its index sits between the two ends, and the same index in a longer window gets a different weight. The instruction and the lesson both print the formula; the decision is that it applies to every sample, not just the edges. applyWindow pairs sample i with weight i and hands back plain numbers. Grading is on the effect: the grader transforms a tone that does not fit its window twice, raw and tapered, and measures how much energy is left far from the peak. A flat window with two zeroed end samples looks like a taper on a plot and does nothing to that number."
   - level: solution
     content: "function hannWindow(n) { return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1)))); } function applyWindow(signal, window) { return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync(); }"
 keywords:
@@ -217,7 +217,7 @@ For real-time inference: smaller hop = lower latency between input and STFT avai
 
 ## Challenge
 
-Apply a Hann window to a signal before computing the FFT.
+Build the Hann taper and apply it to a slice. The grader takes the FFT of both the raw and the tapered slice and measures what the taper did to the leakage.
 
 <Exercise slug="apply-window" />
 

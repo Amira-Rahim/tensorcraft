@@ -1,25 +1,81 @@
 slug: build-layer
 lessonSlug: layers-and-architecture
 title: "Build a 3-Layer Sequential Model"
-instructions: "Build a sequential model with three dense layers: a first hidden layer with 16 units and ReLU activation (it declares inputShape [4]), a second hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. The grader checks the units, the activations, and the parameter count, the same numbers Nazari would ask for."
-starterCode: "// Build a 3-layer sequential model\nconst model = tf.sequential();\n\n// Add layers here"
-solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] }));\nmodel.add(tf.layers.dense({ units: 8, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));"
+instructions: "Build a sequential model with three dense layers: a first hidden layer with 16 units and ReLU activation (it declares inputShape [4]), a second hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. Those are drill widths rather than the build wired to the bridge feed, so the lesson's 673 is not the answer here. Then quote the price the way Nazari asks for it: fill in predictParams(width) so it returns the number of parameters this same 16/8/1 stack holds when a reading of `width` values arrives. The grader builds that stack at widths of its own and compares, so one number cannot be the right quote at two widths. Check the formula you write against the lesson before you submit: the same arithmetic on 32 units, then 16, then 1, reading three features, comes back 673."
+starterCode: |
+  // Build a 3-layer sequential model
+  const model = tf.sequential();
+
+  // Add layers here
+
+  // Quote the count: how many parameters does the stack above hold when a
+  // reading of `width` values arrives?
+  function predictParams(width) {
+    return null; // your code here
+  }
+solutionCode: |
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] }));
+  model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+  function predictParams(width) {
+    return (width * 16 + 16) + (16 * 8 + 8) + (8 * 1 + 1);
+  }
 testCode: |
   describe('Model', () => {
+    const quoteFor = (width) => {
+      expect(
+        typeof predictParams,
+        'predictParams is not defined. The grader calls it to read your quote back, so keep the function the starter handed you.',
+      ).toBe('function');
+      const quoted = predictParams(width);
+      expect(
+        quoted,
+        'predictParams() has not been filled in yet. Count what one unit owns, which is a weight for each value that reaches it plus its own bias, then total the three stages.',
+      ).toBeDefined();
+      return quoted;
+    };
     it('has 3 layers and output shape [null, 1]', () => {
-      expect(model.layers.length).toBe(3);
+      expect(
+        model.layers.length,
+        'The model is still empty. Each stage arrives through its own model.add() call.',
+      ).toBe(3);
       expect(model.outputShape).toEqual([null, 1]);
     });
     it('has the specified units per layer', () => {
       const units = model.layers.map((l) => l.getConfig().units);
-      expect(units).toEqual([16, 8, 1]);
+      expect(
+        units,
+        'These are read back off the layers themselves, one unit count per stage, in the order they were added.',
+      ).toEqual([16, 8, 1]);
     });
     it('uses relu, relu, sigmoid activations', () => {
       const acts = model.layers.map((l) => l.getConfig().activation);
-      expect(acts).toEqual(['relu', 'relu', 'sigmoid']);
+      expect(
+        acts,
+        'Read back off the layers, in the order they were added. Both hidden stages bend with relu; the verdict stage uses sigmoid because its output is a probability.',
+      ).toEqual(['relu', 'relu', 'sigmoid']);
     });
-    it('quotes the right parameter count: 80 + 136 + 9', () => {
-      expect(model.countParams()).toBe(225);
+    it('your quote for the width the first layer declares matches the stack you built', () => {
+      const quoted = quoteFor(4);
+      expect(
+        quoted,
+        'Your quote and the model disagree. Check the first stage: the width it was told to expect is what decides how many weights every one of its units owns.',
+      ).toBe(model.countParams());
+    });
+    it('prices the first stage from the width that arrives, so the same stack costs more when the reading is wider', () => {
+      for (let trial = 0; trial < 3; trial++) {
+        const width = 2 + Math.floor(Math.random() * 30);
+        const reference = tf.sequential();
+        reference.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [width] }));
+        reference.add(tf.layers.dense({ units: 8, activation: 'relu' }));
+        reference.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+        expect(
+          quoteFor(width),
+          'One number cannot be the right quote at two different widths. Only the first stage changes price when the reading gets wider; the other two are fixed by the stage in front of them.',
+        ).toBe(reference.countParams());
+      }
     });
   });
 estimatedMinutes: 12

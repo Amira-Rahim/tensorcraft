@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "A neuron is one computation: multiply each input by its weight, sum the products, and add the bias."
   - level: guidance
-    content: "Inside neuron(inputs, weights, bias), compute the weighted sum with tf.dot(inputs, weights), then chain .add(bias) and return the result. The grader draws its own inputs, weights and bias at grade time, so compute from the arguments instead of hardcoding the example answer."
+    content: "The whole vector goes through one tensor operation rather than a loop over its values. The bias reaches the result while it is still a tensor, so nothing has to come out through dataSync(). And the body has to work on arguments it has never seen: the grader calls neuron() again with its own inputs, weights and bias, and it raises a single weight to check that only that weight's own input moves the output."
   - level: solution
     content: "return tf.dot(inputs, weights).add(bias);"
 keywords:
@@ -81,13 +81,13 @@ Those three numbers are hand-picked so the arithmetic stays followable; training
 
 Sign is direction. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency says this neuron treats higher frequency as mild evidence AGAINST. Run the flip to feel it: change `-0.2` to `+0.2` in the code above and the same reading scores 0.58 instead of 0.26, identical evidence now arguing for the other side.
 
-Magnitude is sensitivity, not importance. A weight says how much the output moves per unit of that input, so the vote an input casts is weight times input. Run the row: amplitude contributes `0.5 * 0.4 = 0.20`, frequency `0.8 * -0.2 = -0.16`, phase `0.2 * 0.6 = 0.12`. Per unit of phase, 0.6 is the loudest coefficient here, and phase still cast the smallest vote, because it read low on this sample. On a shared scale, weight sizes are comparable as per-unit sensitivities, which is what mapping all three features onto 0-1 bought. They still do not tell you which input drove a particular reading. That is the vote, and the vote depends on the sample.
+Magnitude is sensitivity, not importance. A weight says how much the output moves per unit of that input, so the vote an input casts is weight times input. Run the row: amplitude contributes `0.5 * 0.4 = 0.20`, frequency `0.8 * -0.2 = -0.16`, phase `0.2 * 0.6 = 0.12`. Per unit of phase, 0.6 is the loudest coefficient here. Phase still cast the smallest vote of the three, 0.12 against 0.20 and 0.16, because it read low on this sample. Because all three features were mapped onto the same 0-1 scale, the weights are comparable to each other as per-unit sensitivities. What they cannot tell you is which input drove one particular reading; that is the vote, and the vote changes with the sample.
 
 A weight near zero means the network learned to ignore something you thought mattered. When Nazari eventually tapes a parameter count to the engineering board, each of those parameters will be one of these numbers; sign and size are the entire vocabulary.
 
 ## Challenge
 
-Build your first neuron to classify signal readings.
+Build your first neuron: the weighted sum behind every verdict this ship will ever make.
 
 <Exercise slug="implement-neuron" />
 
@@ -100,7 +100,7 @@ Build your first neuron to classify signal readings.
   whatYouLearned={[
     "A neuron computes a weighted sum of its inputs plus a bias, producing a single number.",
     "A weight scales its own input, so what an input contributes is weight times input; bias shifts the output threshold.",
-    "Array.reduce() over inputs is the JavaScript equivalent of tf.dot(), making the operation intuitive to read and reason about."
+    "Array.reduce() over inputs is the JavaScript equivalent of tf.dot()."
   ]}
   bridge="The JS pattern `inputs.reduce((sum, x, i) => sum + x * weights[i], bias)` maps directly to the ML operation `tf.dot(inputs, weights).add(bias)`, so every neuron is just a reduce you've written before."
   youCanNow="Implement a single neuron as a weighted dot product plus bias using tf.dot() and add()."

@@ -6,17 +6,9 @@ starterCode: |
   interface Section { heading: string; content: string; validated: boolean; }
 
   function assembleReport(title: string, sections: Section[]): string {
-    // # title
-    //
-    // ## heading (validated only)
-    //
-    // content
-    //
-    // ---
-    //
-    // ## Withheld            (only when something was withheld)
-    //
-    // - heading of each withheld section
+    // Two kinds of section arrive and only one kind ships its text. The
+    // markdown layout is in the task. The decision here is what the document
+    // ends with when the validator turned something down.
     return null; // your code here
   }
 solutionCode: |
@@ -42,52 +34,110 @@ testCode: |
       { heading: 'Hypotheses', content: 'The pulse train is a reply.', validated: false },
       { heading: 'Results', content: '153 anomalous, 1 unclassified.', validated: true },
     ];
+    const reportFor = (title, sections) => {
+      const report = assembleReport(title, sections);
+      expect(
+        report,
+        'assembleReport has to return the finished markdown document. While it returns null there is nothing to put in the transmission window.',
+      ).toBeDefined();
+      return report;
+    };
+
     it('ships validated sections under the title, in order, with one separator between blocks', () => {
-      const report = assembleReport('Report', clean);
+      const report = reportFor('Report', clean);
       expect(report.startsWith('# Report')).toBe(true);
       expect(report.indexOf('## Summary')).toBeLessThan(report.indexOf('## Analysis'));
       expect(report).toContain('Brief overview.');
       expect(report).toContain('Detailed analysis.');
-      expect(report.split('---').length - 1).toBe(1);
+      expect(
+        report,
+        'The rule needs a blank line above it and below it. In markdown a "---" line sitting directly under text is a heading underline, not a rule: that last line of the section renders as a heading and no rule appears at all.',
+      ).toContain('\n\n---\n\n');
+      expect(
+        report.split('\n\n---\n\n').length - 1,
+        'A rule sits between two blocks, so two blocks take one rule. One per block leaves a trailing rule under the last section.',
+      ).toBe(1);
     });
     it('a clean report carries no Withheld section', () => {
-      expect(assembleReport('Report', clean)).not.toContain('Withheld');
+      const report = reportFor('Report', clean);
+      expect(report).toContain('Brief overview.');
+      expect(report).toContain('Detailed analysis.');
+      expect(
+        report,
+        'Nothing was held back here. A Withheld heading with nothing under it tells Earth a section is missing when none is.',
+      ).not.toContain('Withheld');
     });
-    it('a failed section is cut, its content never ships, and its heading is listed as withheld', () => {
-      const report = assembleReport('Relay Report', mixed);
-      expect(report).not.toContain('The pulse train is a reply.');
+    it('a failed section is cut, its content never ships, and its heading is listed under Withheld', () => {
+      const report = reportFor('Relay Report', mixed);
+      expect(
+        report,
+        'That section failed its own validator. Shipping the prose and flagging it elsewhere is the option the crew priced and rejected.',
+      ).not.toContain('The pulse train is a reply.');
       expect(report).toContain('## Withheld');
-      expect(report).toContain('- Hypotheses');
+      expect(
+        report,
+        'The gap is reported by name. Earth needs to know which section is missing, not just that the report is short.',
+      ).toContain('- Hypotheses');
       expect(report).toContain('153 anomalous, 1 unclassified.');
     });
     it('the withheld list is one block at the end: separators equal blocks minus one', () => {
-      const report = assembleReport('Relay Report', mixed);
+      const report = reportFor('Relay Report', mixed);
       // 2 shipped blocks + 1 Withheld block = 3 blocks, 2 separators
-      expect(report.split('---').length - 1).toBe(2);
-      expect(report.trim().endsWith('- Hypotheses')).toBe(true);
+      expect(report.split('\n\n---\n\n').length - 1).toBe(2);
+      expect(
+        report.trim().endsWith('- Hypotheses'),
+        'One block holds every withheld heading, and it goes last. One Withheld block per cut section would read as several different gaps.',
+      ).toBe(true);
     });
     it('when nothing validates, the document is the title and the withheld list alone', () => {
-      const report = assembleReport('Held', [
+      const report = reportFor('Held', [
         { heading: 'A', content: 'x', validated: false },
         { heading: 'B', content: 'y', validated: false },
       ]);
       expect(report).not.toContain('x');
       expect(report).toContain('- A');
       expect(report).toContain('- B');
-      expect(report.split('---').length - 1).toBe(0);
+      expect(
+        report.split('\n\n---\n\n').length - 1,
+        'There is one block in this document, and a rule needs a block on each side of it.',
+      ).toBe(0);
     });
     it('assembles whatever sections it is given, not a memorized document', () => {
       const other = [
-        { heading: 'Telemetry', content: 'Pulse interval now 31 seconds.', validated: true },
+        { heading: 'Telemetry', content: 'Pulse interval still falling.', validated: true },
         { heading: 'Recommendation', content: 'Hold the relay window.', validated: false },
         { heading: 'Risks', content: 'Bandwidth budget is tight.', validated: true },
       ];
-      const report = assembleReport('Relay Briefing', other);
+      const report = reportFor('Relay Briefing', other);
       expect(report).toContain('# Relay Briefing');
-      expect(report).toContain('Pulse interval now 31 seconds.');
+      expect(report).toContain('Pulse interval still falling.');
       expect(report).not.toContain('Hold the relay window.');
       expect(report).toContain('- Recommendation');
-      expect(report.split('---').length - 1).toBe(2);
+      expect(report.split('\n\n---\n\n').length - 1).toBe(2);
+    });
+    it('reads the verdict on each section, not its heading or its position, on bodies drawn at grade time', () => {
+      const draw = Math.floor(Math.random() * 1e6);
+      for (const pattern of [[true, false, true], [false, true, false], [false, false, true]]) {
+        const tag = pattern.map((validated) => (validated ? 1 : 0)).join('') + '-' + draw;
+        const sections = pattern.map((validated, i) => ({
+          heading: `Section ${i}`,
+          content: `body ${i} of ${tag}`,
+          validated,
+        }));
+        const report = reportFor(`Pattern ${tag}`, sections);
+        pattern.forEach((validated, i) => {
+          if (validated) {
+            expect(
+              report,
+              'These headings and bodies were made a moment ago, so no memorised list of which sections fail can help here. The verdict on the section is the only thing that decides.',
+            ).toContain(`body ${i} of ${tag}`);
+            expect(report).not.toContain(`- Section ${i}`);
+          } else {
+            expect(report).not.toContain(`body ${i} of ${tag}`);
+            expect(report).toContain(`- Section ${i}`);
+          }
+        });
+      }
     });
   });
 estimatedMinutes: 10

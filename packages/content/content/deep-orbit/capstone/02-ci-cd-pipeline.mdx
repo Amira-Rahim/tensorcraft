@@ -27,9 +27,9 @@ consequence:
   narrative: "The pipeline goes green twice: once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
 hints:
   - level: nudge
-    content: "For the export: model.save() never touches a disk it was not given. tf.io.withSaveHandler wraps an async function that receives the serialized artifacts; capture them, then count what the digest covers. (The gate exercise carries its own recipe in its starter comments.)"
+    content: "For the export: model.save() never touches a disk it was not given. tf.io.withSaveHandler wraps an async function that receives the serialized artifacts; capture them, then count what the digest covers. (The gate exercise states its own contract in its instructions.)"
   - level: guidance
-    content: "Pass tf.io.withSaveHandler(async (a) => { ... }) to model.save() and await the save; inside the handler stash a into artifacts and return { modelArtifactsInfo }. Then describeArtifact reads three things off the artifacts object: weightSpecs.length is the named-tensor count, each spec's shape multiplied out and summed is totalParams (a reduce over weightSpecs with an inner reduce over shape), and weightData.byteLength is the payload; float32 means it must land at exactly four bytes per parameter"
+    content: "model.save() wants an IOHandler rather than a path, and tf.io.withSaveHandler is the adapter that turns a plain async function into one. That is how a save ends in memory with nothing written anywhere: your function is the destination, save() calls it with the serialized artifacts, and it expects a report back (the instructions name the shape of that report). What arrives is the same three-part artifact a real export writes: the topology, one weight spec per tensor carrying that tensor's name, shape and dtype, and one flat buffer holding every weight end to end. Two of the manifest numbers therefore come off the specs, by counting them and by multiplying a shape out. The third is the payload itself, and it is measured rather than derived: after module 10's uint8 pass the parameter count is unchanged and the byte count is not."
   - level: solution
     content: "await model.save(tf.io.withSaveHandler(async (a) => { artifacts = a; return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } }; })); const totalParams = a.weightSpecs.reduce( (sum, spec) => sum + spec.shape.reduce((n, d) => n * d, 1), 0, ); return { tensors: a.weightSpecs.length, totalParams, weightBytes: a.weightData.byteLength, }; const manifest = describeArtifact(artifacts);"
 keywords:
@@ -95,8 +95,11 @@ jobs:
           node-version: 20
       - run: npm ci
 
-      # Model artifact: 85 MB of weights, too big for git. Restored from
-      # the CI cache; the training rig seeds it after every retrain.
+      # Model artifacts: the whole DEEP SCAN bundle, 85 MB of weights
+      # once the uint8 pass has run, too big for git. Restored from the
+      # CI cache; the training rig seeds it after every retrain. The
+      # signal classifier is a 3,988-byte shard inside it. The mass is
+      # the report pipeline's pretrained language component.
       - name: Restore model artifact
         uses: actions/cache@v4
         with:
@@ -112,16 +115,19 @@ jobs:
             --min-accuracy 0.90
 
       # ML-specific: benchmark inference speed and weight footprint.
+      # Pointed at the bundle's language component, not at the classifier:
+      # module 10 profiled 84,994,664 of the bundle's weights into that
+      # one model, and the classifier's 997 run in microseconds.
       # A hosted runner has no GPU, so this pins the wasm backend, where
       # the optimization profile put DEEP SCAN at 45 ms mean, 112 ms P95.
       # Gate the P95, not the mean: one call in twenty runs that slow and
       # the mean hides it. The operator on watch sees the slow one.
       # The footprint budget covers the float32 tensors the runtime keeps
-      # resident once the model is loaded, which is 340 MB for this graph.
+      # resident once that model is loaded, which is 340 MB for this graph.
       - name: Benchmark inference
         run: |
           node scripts/benchmark.js \\
-            --model models/deep-scan-v1/model.json \\
+            --model models/report-lang-v1/model.json \\
             --max-p95-ms 150 \\
             --max-resident-weights-mb 400
 
@@ -332,18 +338,20 @@ Before anyone answers him, scroll the log of the step that mattered:
 <CodeBlock language="text" title="ci-run-47.log · validate-model">
 {`▸ Restore model artifact
     Cache restored from key: deep-scan-model
+    models/ restored: 340 MB on disk
 ▸ Validate model accuracy
-    Loaded models/deep-scan-v1/model.json + weights.bin (340 MB)
+    Loaded classifier models/deep-scan-v1/model.json + weights.bin
     Holdout accuracy: 94.2% (min 0.90)
     Gate: PASSED ✓
 ▸ Benchmark inference
+    Loaded models/report-lang-v1/model.json (bundle language component)
     wasm backend pinned (no GPU on the runner)
     Inference: 45 ms mean, 112 ms P95 (max 150)
     Resident weights: 340 MB decoded float32 (max 400)
     Gate: PASSED ✓`}
 </CodeBlock>
 
-Read the two numbers the accuracy gate is proudest of. The artifact this merge request ships is 85 MB and scores 91.8 percent on that same holdout; those figures have been on the engineering board since the pruning review. The model the pipeline just blessed is 340 MB at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. Neither of the other two gates could have caught it. Quantization changed the file on disk, not the arithmetic a call does. It did not change the decoded tensors either, so latency and footprint read the same on both artifacts. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
+Read the restore line against the number the accuracy gate is proudest of. The build this merge request ships is 85 MB on disk and scores 91.8 percent on that same holdout; both figures have been on the engineering board since the pruning review. What the cache handed this run is 340 MB on disk at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. Neither of the other two gates could have caught it. Quantization changed the file on disk, not the arithmetic a call does, and it did not change the decoded tensors either, so the latency and the resident-weights figure read the same on both builds. The size of what came out of the cache is the only line that separates them. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
 
 <Dialogue speaker="Chief Nazari">
 Your lockfile pins code. Nothing in this file pins weights. Commit the digest the training rig prints, key the cache on that file, and rerun. That's 40 minutes, and I'm adding them to the ledger next to the three hours your 80-percent prune cost us.
@@ -351,7 +359,7 @@ Your lockfile pins code. Nothing in this file pins weights. Commit the digest th
 
 ## Challenge
 
-Write a model validation gate for CI/CD.
+Write the validation gate the merge decision reads: accuracy against a floor, and an honest answer when the batch it was handed cannot be scored.
 
 <Exercise slug="ci-cd-gate" />
 
@@ -359,7 +367,7 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
 
 <Exercise slug="export-model-artifact" />
 
-<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin cannot be a hash of the artifact itself. hashFiles() runs when the step starts, over files already checked out, and the 85 MB weight file is not there until the restore finishes. So pin something the repo carries. Have the training rig commit a small digest file next to the model reference, then key the cache on hashFiles of that file. The other route is to skip the cache and pull a versioned artifact whose version string is the pin." />
+<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin cannot be a hash of the artifact itself. hashFiles() runs when the step starts, over files already checked out, and the 85 MB bundle is not there until the restore finishes. So pin something the repo carries. Have the training rig commit a small digest file next to the model reference, then key the cache on hashFiles of that file. The other route is to skip the cache and pull a versioned artifact whose version string is the pin." />
 
 <RecallPrompt
   question="What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"
@@ -371,10 +379,10 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
     "Standard CI/CD pipelines extend naturally to ML by adding model-specific gate steps (accuracy thresholds and inference benchmarks) that block the merge the same way failing unit tests do.",
     "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately. A cache key cannot hash the artifact it is about to restore, because hashFiles() only sees files already in the workspace. Commit the digest the training run produced and key the cache on that file instead.",
     "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on. A post-deploy smoke test also has to prove which artifact it fetched, because the publish step returns before the host serves the new file.",
-    "model.save() serializes to whatever save handler it is given: tf.io.withSaveHandler captures the artifacts in memory, where modelTopology, weightSpecs, and weightData.byteLength (four bytes per float32 parameter) are exactly the bytes the committed digest is computed over."
+    "model.save() serializes to whatever save handler it is given: tf.io.withSaveHandler captures the artifacts in memory as modelTopology, weightSpecs and weightData. The committed digest covers weightData alone, four bytes per float32 parameter, because sha256sum runs over weights.bin and validate-model re-derives that hash from the weight shards. The graph is not in the pin."
   ]}
   bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed; the workflow shape is identical, but the weight bytes must be hash-pinned the way a `package-lock.json` pins dependencies, since `model.json` names the weight files without fixing their contents."
-  youCanNow="Extend a GitHub Actions workflow with ML accuracy gates and performance benchmarks that block deployment on model regression, and export the model artifact itself with model.save() into an in-memory handler."
+  youCanNow="Write the model-accuracy gate a CI workflow calls and the export that produces the artifact it grades, and review a deploy workflow for the step whose pin does not hold."
 />
 
 <Epilogue>

@@ -1,18 +1,18 @@
 slug: load-pretrained-pipeline
 lessonSlug: transformers-js
 title: "Sentiment Classifier via Transformers.js"
-instructions: "Build a function `classifyReports(reports)` that takes an array of report strings, classifies them via a (mocked) Transformers.js sentiment pipeline, and returns an array of `{ text, label, score }` objects ordered by score descending. Treat `pipeline()` as a no-arg async function that returns a callable classifier; the test harness provides a stub. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both. Sort results so the most-confident classification appears first regardless of label."
+instructions: "Build `classifyReports(reports, pipelineFactory)`. The first argument is an array of report strings. The second stands in for `pipeline()`: call it with the name of the task you want, await it once, and it resolves to a callable model for that task. There is no default task. It rejects a name the library does not ship, and a task that is not the one this job needs answers in a shape carrying neither a label nor a score. Return an array of `{ text, label, score }` ordered by score descending, most confident first, whatever the label. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both calls. The classifier answers positionally, one prediction per report in the order you sent them, so join each report to its own prediction before you reorder anything."
 starterCode: |
   async function classifyReports(reports, pipelineFactory) {
-    // 1. Load the sentiment-analysis pipeline (await pipelineFactory())
-    // 2. Run it over reports (the classifier accepts an array)
-    // 3. Pair each report with its prediction
-    // 4. Sort by score descending and return
+    // The factory stands in for a model download, so how many times you call
+    // it is part of what this grades. And a prediction knows which report it
+    // belongs to only by its position, so that link has to survive whatever
+    // you do to the order.
     return [];
   }
 solutionCode: |
   async function classifyReports(reports, pipelineFactory) {
-    const classifier = await pipelineFactory();
+    const classifier = await pipelineFactory('sentiment-analysis');
     const predictions = await classifier(reports);
     const paired = reports.map((text, i) => ({
       text,
@@ -24,13 +24,52 @@ solutionCode: |
   }
 testCode: |
   describe('classifyReports', () => {
-    function makeStubPipeline(scoresByReport) {
-      return async () => {
-        return async (reports) => reports.map((r, i) => ({
-          label: scoresByReport[i].label,
-          score: scoresByReport[i].score,
+    // The task names the library ships, as the lesson lists them.
+    // 'text-classification' is the same pipeline under its own name, so a
+    // learner who reaches for the canonical name instead of the alias is right.
+    const TASKS = [
+      'sentiment-analysis', 'text-classification', 'ner', 'question-answering',
+      'translation', 'summarization', 'text-generation', 'feature-extraction',
+      'zero-shot-classification', 'image-classification', 'image-segmentation',
+      'image-to-text', 'automatic-speech-recognition',
+    ];
+    const RANKABLE = ['sentiment-analysis', 'text-classification'];
+
+    // Stands in for pipeline(task). It behaves like the real loader in the two
+    // ways that matter here: there is no default task, and the task you name
+    // decides the shape of what comes back.
+    function makeStubPipeline(predictions) {
+      return async (task) => {
+        if (typeof task !== 'string' || task === '') {
+          throw new Error('pipeline() has no default task. It takes the name of the job you want, and the lesson lists the names this library ships.');
+        }
+        if (TASKS.indexOf(task) === -1) {
+          throw new Error('Unsupported pipeline task: ' + task + '. The lesson lists the tasks this library ships.');
+        }
+        if (RANKABLE.indexOf(task) === -1) {
+          // A real task, wrong job: a summarizer or a translator answers with
+          // text, so there is no label and no confidence to rank on.
+          return async (batch) => batch.map((r) => ({ generated_text: String(r) }));
+        }
+        return async (batch) => batch.map((r, i) => ({
+          label: predictions[i].label,
+          score: predictions[i].score,
         }));
       };
+    }
+
+    // The starter returns an empty array, and indexing out[0] then reports a
+    // property of undefined instead of the task. Every test comes through
+    // here, so the first Run says what is missing.
+    async function ranked(reports, stub) {
+      const out = await classifyReports(reports, stub);
+      expect(out, 'classifyReports has to resolve to one { text, label, score } row per report. The starter returns an empty array until you build those rows.').toHaveLength(reports.length);
+      const why = 'Every row needs a label and a numeric score. Rows without them are what comes back when the pipeline was loaded for a task whose output carries neither, and no amount of sorting turns that into a ranking.';
+      for (let i = 0; i < out.length; i++) {
+        expect(out[i], why).toHaveProperty('label');
+        expect(typeof out[i].score, why).toBe('number');
+      }
+      return out;
     }
 
     it('returns one result per report', async () => {
@@ -40,55 +79,77 @@ testCode: |
         { label: 'NEG', score: 0.8 },
         { label: 'POS', score: 0.7 },
       ]);
-      const out = await classifyReports(reports, stub);
+      const out = await ranked(reports, stub);
       expect(out).toHaveLength(3);
     });
 
-    it('sorts by score descending', async () => {
-      const reports = ['a', 'b', 'c'];
+    it('sorts by score descending, each row still carrying its own report', async () => {
+      // Sorting the predictions on their own and then laying them back over
+      // the reports in the original order produces this exact score column
+      // and mislabels every row. So each row is checked as a whole: the text
+      // and the label have to travel with the score they were paired to.
+      const reports = ['coupling nominal', 'coolant loop warning', 'watch handover clean'];
       const stub = makeStubPipeline([
         { label: 'POS', score: 0.5 },
         { label: 'NEG', score: 0.99 },
         { label: 'POS', score: 0.7 },
       ]);
-      const out = await classifyReports(reports, stub);
+      const out = await ranked(reports, stub);
       expect(out[0].score).toBe(0.99);
       expect(out[1].score).toBe(0.7);
       expect(out[2].score).toBe(0.5);
+      const why = 'The classifier answered positionally: prediction i belongs to report i. Reorder the pairs, not the predictions, or every row ends up describing a different report.';
+      expect(out[0].text, why).toBe('coolant loop warning');
+      expect(out[0].label, why).toBe('NEG');
+      expect(out[1].text, why).toBe('watch handover clean');
+      expect(out[1].label, why).toBe('POS');
+      expect(out[2].text, why).toBe('coupling nominal');
+      expect(out[2].label, why).toBe('POS');
     });
 
     it('preserves original report text alongside prediction', async () => {
       const reports = ['Diagnostic flagged the interaction.'];
       const stub = makeStubPipeline([{ label: 'POS', score: 0.95 }]);
-      const out = await classifyReports(reports, stub);
+      const out = await ranked(reports, stub);
       expect(out[0].text).toBe('Diagnostic flagged the interaction.');
       expect(out[0].label).toBe('POS');
     });
 
-    it('loads the pipeline once and classifies the whole batch in one call', async () => {
+    it('names one task, loads it once, and classifies the whole batch in one call', async () => {
       const reports = ['a', 'b', 'c'];
-      let factoryCalls = 0;
+      const inner = makeStubPipeline([
+        { label: 'POS', score: 0.9 },
+        { label: 'NEG', score: 0.8 },
+        { label: 'POS', score: 0.7 },
+      ]);
+      const tasksAsked = [];
       let classifierCalls = 0;
       let batchSize = -1;
-      const countingStub = async () => {
-        factoryCalls++;
+      const countingStub = async (task) => {
+        tasksAsked.push(task);
+        const classifier = await inner(task);
         return async (batch) => {
           classifierCalls++;
           batchSize = batch.length;
-          return batch.map((r, i) => ({ label: 'POS', score: 0.9 - i * 0.1 }));
+          return classifier(batch);
         };
       };
-      const out = await classifyReports(reports, countingStub);
+      const out = await ranked(reports, countingStub);
       expect(out).toHaveLength(3);
-      expect(factoryCalls).toBe(1);
-      expect(classifierCalls).toBe(1);
-      expect(batchSize).toBe(3);
+      expect(typeof tasksAsked[0], 'pipeline() has no default. The task name is the argument that decides which model is fetched, so it is not something the harness can supply for you.').toBe('string');
+      expect(tasksAsked.length, 'Each await of the factory is a model download in the real pipeline. One classification pass needs one.').toBe(1);
+      expect(classifierCalls, 'The classifier takes the whole array, so the batch is one call.').toBe(1);
+      expect(batchSize, 'The classifier should have received all three reports at once.').toBe(3);
     });
 
-    it('handles empty input', async () => {
-      const stub = makeStubPipeline([]);
-      const out = await classifyReports([], stub);
-      expect(out).toEqual([]);
+    it('an empty batch returns an empty list, and a one-report batch still returns its row', async () => {
+      // Paired on purpose: returning [] for everything satisfies the empty
+      // case, so the untouched starter used to score here on its first Run.
+      const empty = await classifyReports([], makeStubPipeline([]));
+      expect(empty, 'No reports, no rows.').toEqual([]);
+      const one = await ranked(['solo watch entry'], makeStubPipeline([{ label: 'NEG', score: 0.42 }]));
+      expect(one[0].text).toBe('solo watch entry');
+      expect(one[0].label).toBe('NEG');
     });
   });
 estimatedMinutes: 12

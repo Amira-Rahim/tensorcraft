@@ -27,11 +27,11 @@ consequence:
   narrative: "An hour of merged signal scrolls past Nazari's console before she stops it, and what she stops it on is not noise."
 hints:
   - level: nudge
-    content: "Averaging two passes is element-wise: add matching positions and divide by 2. No matrix multiply anywhere in this one"
+    content: "Averaging and amplifying both work position by position, and those two shapes will not always match. The channel mix is the other multiply, the one the broken line at the top of the lesson reached for."
   - level: guidance
-    content: "Chain the ops: pass1.add(pass2).div(2) is the element-wise average merged, and merged.mul(gain) amplifies it into boosted. Return both in one object { merged, boosted }"
+    content: "The first two steps stay element-wise, one op each, and every op hands back a tensor, so the next call can chain off the result instead of a new variable. Where the two passes differ in shape, the op lines them up on its own. The mix is the other multiplication, and the only place the inner-dimension rule applies: read both shapes, decide which tensor is holding its axes the wrong way round, and turn it before the multiply. The averaged pass and the amplified pass are separate values, and the caller reads both."
   - level: solution
-    content: "const merged = pass1.add(pass2).div(2); const boosted = merged.mul(gain); return { merged, boosted };"
+    content: "const merged = pass1.add(pass2).div(2); const boosted = merged.mul(gain); return { merged, boosted }; function mixChannels(block: tf.Tensor, mix: tf.Tensor): tf.Tensor { return block.matMul(mix.transpose()); }"
 keywords:
   - operations
   - add
@@ -43,7 +43,7 @@ skillAxes: [data_prep]
 Demir's first pass at the amplifier is already on the main console when the shift starts, and so is its output: `Error in matMul: inner shapes (64) and (1) of Tensors with shapes 1,64 and 1,64 and transposeA=false and transposeB=false must match.` One line of code, one error, sixty-four channels of raw signal going nowhere.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings; call it a million if you must round, I won't. Whatever that red text is, it is not keeping up with a million samples a minute.
+Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings; call it a million if you must round. I won't. Whatever that red text is, it is not keeping up with 983 thousand.
 </Dialogue>
 
 This lesson starts where you are standing: at the bug. You'll read the error, meet the two multiplication ops the broken line mixed up, and repair the pipeline.
@@ -101,7 +101,7 @@ The shapes do not have to be identical. When they differ, TensorFlow.js lines th
 
 ## When You DO Want matMul
 
-So why does `matMul` exist at all? Because "every row dot-producted with every column" (multiply matching entries, then sum) is the operation neural networks are made of, and no chain of element-wise ops can express it. It comes with the one inflexible shape rule the error message was enforcing:
+So why does `matMul` exist at all? Because "every row dot-producted with every column" (multiply matching entries, then sum) is the operation neural networks are made of, and no element-wise op reaches it on its own: it needs a reduction, a sum across an axis, which is the piece map plus zip does not have. matMul is that pair fused into one hardware kernel. It comes with the one inflexible shape rule the error message was enforcing:
 
 **`[m, n] × [n, p] → [m, p]`: the inner dimensions must match.**
 
@@ -131,7 +131,7 @@ Why care? Every dense layer you'll build is essentially `matMul(input, weights) 
 
 ## Challenge
 
-Add two tensors together to combine sensor readings.
+Repair Demir's amplifier: average the two passes, amplify the average, and let broadcasting handle the pass that arrives as a single row. Then fold the channels into a few weighted mixes, which is what matMul is for.
 
 <Exercise slug="add-tensors" />
 

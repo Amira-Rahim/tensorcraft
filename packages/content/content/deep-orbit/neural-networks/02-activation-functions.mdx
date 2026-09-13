@@ -26,7 +26,7 @@ hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
   - level: guidance
-    content: "applyRelu(preActivation) is a single call: every tensor has a .relu() method (tf.relu(preActivation) also works), which applies Math.max(0, x) elementwise. Return the activated tensor; the grader also runs it on a random tensor built at grade time, so no hardcoded values."
+    content: "One tensor operation does the whole job, value by value, at any rank and any length, so nothing here needs to read the input's shape or walk over it. Watch which operation you pick: tfjs also ships a bounded version of this activation that clamps the top as well as the bottom, and the grader feeds in a positive value near the largest a float32 can hold."
   - level: solution
     content: "return preActivation.relu();"
 keywords:
@@ -41,7 +41,7 @@ skillAxes: [model_arch]
 Your neuron scored one reading at minus 0.06 and another at 1.04. Is minus 0.06 a yes or a no, Ensign? The alert board takes yes or no, and a weighted sum has no fixed ends to set a threshold against.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "Choose the right activation for different situations"]} />
+<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, and read sigmoid and tanh off their ranges", "Choose the right activation for different situations"]} />
 
 ## Breaking the Collapse
 
@@ -104,7 +104,7 @@ Placement falls out of the ranges. ReLU stays in the hidden layers, where the ou
 
 ## When Activations Die
 
-Each choice has a failure mode with a name. A ReLU neuron whose weighted sum stays negative outputs zero forever and stops learning: the dying ReLU. A sigmoid pushed hard into either tail goes flat and stops responding: saturation. Both failures live inside a quantity called the gradient, which you will build in module 3; that is where the crew rounds up these suspects.
+Each choice has a failure mode with a name. A ReLU neuron whose weighted sum stays negative outputs zero forever and stops learning: the dying ReLU. A sigmoid pushed hard into either tail goes flat and stops responding: saturation. Both failures show up the same way, as a gradient near zero. That quantity is what module 3 builds, and it is where the crew catches both of these.
 
 ## Challenge
 
@@ -120,16 +120,16 @@ Apply ReLU activation to neuron outputs.
 <LessonRecap
   whatYouLearned={[
     "Activation functions introduce nonlinearity; without them, stacked layers reduce to a single linear transformation and cannot learn complex patterns.",
-    "ReLU (Math.max(0, x)) is the default choice for hidden layers: fast, simple, and effective.",
+    "ReLU is the default in hidden layers: its slope is exactly 1 on every positive input, so the learning signal passes through undiminished, and it is the cheapest of the three to compute.",
     "Sigmoid squashes output to (0, 1) for probabilities; tanh squashes to (-1, 1) for centered outputs."
   ]}
   bridge="The JS pattern `Math.max(0, rawValue)` is exactly ReLU: `tf.relu(rawOutput)` applies the same clamp element-wise across an entire tensor."
-  youCanNow="Choose and apply the right activation function (ReLU, sigmoid, or tanh) depending on where a layer sits in the network."
+  youCanNow="Apply ReLU to a whole tensor of pre-activation values, and pick the activation for an output slot from the range that slot needs."
 />
 
 <Epilogue>
 
-Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing running off the ends anymore. The two calibration tones come back at 0.69 and 0.53. At 0316 the neuron reaches archived reading 7741, the one the crew flagged and kept last module. All three of its features sit at 0.5, and the sigmoid answers 0.62, which lands between the two reference tones and resembles neither. Hand-picked weights, no training, and nothing in that number worth a second look. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
+Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing running off the ends anymore. The two calibration tones come back at 0.69 and 0.53. At 0316 the neuron reaches archived reading 7741, the one the crew flagged and kept last module. Its features read 0.50, 0.59 and 0.54, mid-scale on all three at once, and the sigmoid answers 0.62, which lands between the two reference tones and resembles neither. Hand-picked weights, no training, and nothing in that number worth a second look. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
 
 <Dialogue speaker="ARIA">
 I have checked reading 7741 against all 14,202 of my rules. My 4,096 parsers failed on this stream and continue to fail. Not one of the remaining 10,106 classification rules fires. The neuron returns 0.62 on this reading, which reads as a yes. I hold nominal. I am still running, and I am noting the disagreement.

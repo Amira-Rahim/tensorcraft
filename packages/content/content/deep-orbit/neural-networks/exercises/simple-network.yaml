@@ -1,28 +1,230 @@
 slug: simple-network
 lessonSlug: building-a-network
-title: "Build and Compile a Complete Network"
-instructions: "Build a complete neural network for binary classification of DEEP SCAN signals. Create a sequential model with: a dense layer (32 units, ReLU, inputShape [8]), a dense layer (16 units, ReLU), and a dense output layer (1 unit, sigmoid). Compile it with the Adam optimizer, binaryCrossentropy loss, and accuracy metric. The grader reads the compiled configuration, not just the shape."
-starterCode: "// Build and compile a complete signal classifier\nconst model = tf.sequential();\n\n// Add layers here\n\n// Compile the model here"
-solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));\nmodel.add(tf.layers.dense({ units: 16, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));\n\nmodel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });"
+title: "What a Compiled Network Knows"
+instructions: "Build and compile the classifier twice, sweep both networks before either one trains, then train one of them and sweep it again. buildClassifier() returns the stack: 32 units with ReLU on an inputShape of [8], then 16 units with ReLU, then a 1-unit sigmoid output, compiled with the Adam optimizer, binaryCrossentropy loss and the accuracy metric. That eight-feature front door is Farah's spec, 833 parameters against the 673 of the three-feature build wired to the bridge feed tonight. Leave the weight initialization at its defaults. Store each sweep as a plain array of numbers: sweepOne from the first network, sweepTwo from the second, and trainedSweep from the first one again after `await model.fit(readings, labels, { epochs: 50, batchSize: 16 })`. Leave the second network untrained. It is the control. Rows 0 to 59 of the batch are calm windows and rows 60 to 119 are flagged, and the grader reads every sweep against that split: the two untrained sweeps have to answer near 0.5 and tell the two groups apart by almost nothing, and the trained sweep has to tell them apart. The grader also re-runs predict() on both models, so each sweep has to be the output of the model it came from."
+starterCode: |
+  // Given: Farah's rehearsal batch, 120 readings of eight values each. Rows
+  // 0-59 are calm windows and rows 60-119 are flagged ones. The first three
+  // values are the real features (amplitude, frequency, phase, normalized)
+  // and they differ between the two groups. The last five are the features
+  // Farah specced that have no source in the stream yet, so both groups get
+  // the same noise there.
+  const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
+  const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
+  const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
+  const readings = tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1);
+  const labels = tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]);
+
+  // Called twice below, so the two networks are independent draws of one
+  // architecture.
+  function buildClassifier() {
+    const model = tf.sequential();
+    // Add the three layers here
+
+    // Compile here
+
+    return model;
+  }
+
+  const model = buildClassifier();
+  const second = buildClassifier();
+
+  // Sweep both networks while both are still untrained.
+  const sweepOne = null; // your code here
+  const sweepTwo = null; // your code here
+
+  // Train the first one on the rehearsal batch. Your code here.
+
+  // Sweep the trained network over the same readings.
+  const trainedSweep = null; // your code here
+solutionCode: |
+  const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
+  const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
+  const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
+  const readings = tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1);
+  const labels = tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]);
+
+  function buildClassifier() {
+    const model = tf.sequential();
+    model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));
+    model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+    model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+    model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+    return model;
+  }
+
+  const model = buildClassifier();
+  const second = buildClassifier();
+
+  const sweepOne = Array.from(model.predict(readings).dataSync());
+  const sweepTwo = Array.from(second.predict(readings).dataSync());
+
+  await model.fit(readings, labels, { epochs: 50, batchSize: 16 });
+
+  const trainedSweep = Array.from(model.predict(readings).dataSync());
 testCode: |
-  describe('Network', () => {
-    it('has 3 layers with the specified units and activations', () => {
-      expect(model.layers.map((l) => l.getConfig().units)).toEqual([32, 16, 1]);
+  describe('Compiled, then trained', () => {
+    const CALM = 60;
+    const avg = (a) => a.reduce((s, x) => s + x, 0) / a.length;
+    // Positive when the flagged rows score higher than the calm ones, which
+    // is the only thing "the network has an opinion about this archive" can
+    // mean here.
+    const groupGap = (sweep) => avg(sweep.slice(CALM)) - avg(sweep.slice(0, CALM));
+    const sweepOf = (m) => Array.from(m.predict(readings).dataSync());
+    const maxDiff = (a, b) => a.reduce((mx, v, i) => Math.max(mx, Math.abs(v - b[i])), 0);
+    const readSweep = (name, value) => {
+      expect(
+        Array.isArray(value),
+        name + ' is not an array of numbers. Read the prediction tensor out with dataSync() and copy it into a plain array, so the answers can be compared reading by reading.',
+      ).toBe(true);
+      expect(
+        value.length,
+        name + ' holds ' + value.length + ' answers. A sweep runs every row of the rehearsal batch through the network, so it comes back one answer per reading.',
+      ).toBe(readings.shape[0]);
+      return value;
+    };
+
+    it('builds the eight-feature stack, three stages deep', () => {
+      expect(
+        model.layers.map((l) => l.getConfig().units),
+        'The stack does not match the spec. Three dense layers, each with the unit count the instructions give it.',
+      ).toEqual([32, 16, 1]);
       expect(model.layers.map((l) => l.getConfig().activation)).toEqual(['relu', 'relu', 'sigmoid']);
+      expect(
+        model.outputShape,
+        'There is no output shape to read until the output layer is on the model.',
+      ).toEqual([null, 1]);
+      expect(
+        model.countParams(),
+        'The parameter total is off, so one of the widths is. The first layer is priced by the eight features Farah specced.',
+      ).toBe(833);
     });
-    it('has output shape [null, 1] and 833 parameters', () => {
-      expect(model.outputShape).toEqual([null, 1]);
-      expect(model.countParams()).toBe(833);
-    });
-    it('is compiled with binaryCrossentropy loss', () => {
-      expect(model.optimizer).toBeDefined();
-      expect(model.loss).toBe('binaryCrossentropy');
-    });
-    it('is compiled with the Adam optimizer specifically', () => {
+
+    it('compiles with Adam, binary crossentropy and the accuracy metric', () => {
+      expect(
+        model.optimizer,
+        'Nothing has been compiled yet. compile() is the call that attaches the optimizer and the loss.',
+      ).toBeDefined();
       expect(model.optimizer.getClassName()).toBe('Adam');
+      expect(model.loss).toBe('binaryCrossentropy');
+      expect(
+        model.metrics || [],
+        'Nothing is being tracked. The metrics list is the third compile setting, and it is the only one that changes what the training log reports rather than how the model learns.',
+      ).toContain('accuracy');
     });
-    it('tracks accuracy as a metric', () => {
-      expect(model.metrics || []).toContain('accuracy');
+
+    it('draws the second network separately, so there is something to compare against', () => {
+      expect(
+        second === model,
+        'The second network is the same object as the first. buildClassifier() has to be called twice: once the first one trains, a second name for it cannot show you what an untrained network does.',
+      ).toBe(false);
+      expect(
+        second.layers.length,
+        'The second network was never built out, so there are three layers on one of these and not the other.',
+      ).toBe(3);
+      expect(
+        second.optimizer,
+        'The second network was never compiled. buildClassifier() compiles what it returns, so both draws come back ready.',
+      ).toBeDefined();
+    });
+
+    it('starts the untrained network with random kernels and zero biases', () => {
+      expect(
+        second.layers.length,
+        'There are no layers on the second network yet, so there are no starting weights to look at.',
+      ).toBe(3);
+      second.layers.forEach((layer, index) => {
+        const weights = layer.getWeights();
+        const kernel = Array.from(weights[0].dataSync());
+        const spread = Math.max.apply(null, kernel) - Math.min.apply(null, kernel);
+        expect(
+          spread,
+          'Layer ' + (index + 1) + ' holds one constant across its whole kernel. Every unit in it then computes the same output, takes the same gradient and updates in lockstep, so the layer can never come to represent different features. The random draw is what stops that, and it is already the default.',
+        ).toBeGreaterThan(1e-6);
+        const biases = Array.from(weights[1].dataSync());
+        const largestBias = Math.max.apply(null, biases.map(function (b) { return Math.abs(b); }));
+        expect(
+          largestBias,
+          'The biases in layer ' + (index + 1) + ' did not start at zero. TensorFlow.js starts them there on purpose: the random kernel already makes the units differ, so there is no symmetry left for the bias to break. If this network was trained, that is why they moved: the starting weights are on the network that stays out of fit().',
+        ).toBe(0);
+      });
+    });
+
+    it('sweeps both untrained networks, and both sweeps sit near 0.5', () => {
+      const one = readSweep('sweepOne', sweepOne);
+      const two = readSweep('sweepTwo', sweepTwo);
+      [['sweepOne', one], ['sweepTwo', two]].forEach(([name, sweep]) => {
+        // The average distance from 0.5, not the furthest one: measured on
+        // tfjs 4.22.0 over 11,000 fresh draws of this stack, the average
+        // never passed 0.213 while one unlucky reading reached 0.300. Over
+        // 150 runs of the 50-epoch call it sat between 0.439 and 0.482. The
+        // bar below sits 0.137 above the widest untrained average and 0.089
+        // under the closest trained one. A bar on the furthest single answer
+        // would have had 0.05.
+        const undecided = avg(sweep.map((p) => Math.abs(p - 0.5)));
+        expect(
+          undecided,
+          name + ' answers an average of ' + undecided.toFixed(3) + ' away from 0.5. Over 11,000 untrained draws of this stack that average never passed 0.22, and after the training call it sat above 0.43. A sweep this decided was taken after fit() rather than before it.',
+        ).toBeLessThan(0.35);
+        const spread = Math.max.apply(null, sweep) - Math.min.apply(null, sweep);
+        expect(
+          spread,
+          name + ' returns the same number for all ' + sweep.length + ' readings. An untrained network is a random function rather than a constant one: different readings go through different weights and come out at least slightly apart.',
+        ).toBeGreaterThan(0);
+        expect(
+          spread,
+          name + ' spans ' + spread.toFixed(3) + ' from its lowest answer to its highest. Over those same 11,000 draws the widest untrained sweep spanned 0.19, while a trained one covers nearly the whole range.',
+        ).toBeLessThan(0.5);
+      });
+      expect(
+        maxDiff(one, two),
+        'sweepOne and sweepTwo are the same numbers to the last decimal. Two calls to buildClassifier() draw two independent sets of weights, so two sweeps of the same readings cannot agree exactly.',
+      ).toBeGreaterThan(0);
+    });
+
+    it('finds no opinion in either untrained sweep: calm and flagged score nearly alike', () => {
+      [['sweepOne', sweepOne], ['sweepTwo', sweepTwo]].forEach(([name, sweep]) => {
+        const gap = groupGap(readSweep(name, sweep));
+        expect(
+          Math.abs(gap),
+          name + ' scores the flagged rows ' + gap.toFixed(3) + ' away from the calm ones on average. Over 11,000 untrained draws that gap stayed inside 0.11 either way, because nothing in a fresh set of weights knows which rows were flagged. A gap this size means the sweep came from a trained network.',
+        ).toBeLessThan(0.2);
+      });
+    });
+
+    it('runs the training on the first network and leaves the second one alone', () => {
+      expect(
+        model.optimizer,
+        'Neither network is compiled, so neither one owns an optimizer and fit() has nothing to run with.',
+      ).toBeDefined();
+      expect(
+        second.optimizer,
+        'The second network was never compiled, so there is no way to tell whether it was left out of the training run.',
+      ).toBeDefined();
+      expect(
+        model.optimizer.iterations,
+        'The optimizer on the first network applied no updates, so fit() never ran on it. compile() attaches the optimizer; it does not use it.',
+      ).toBeGreaterThan(0);
+      expect(
+        second.optimizer.iterations,
+        'The second network was trained too, so there is no control left. It has to stay exactly as it was drawn.',
+      ).toBe(0);
+      expect(
+        maxDiff(sweepOf(second), readSweep('sweepTwo', sweepTwo)),
+        'Re-running predict() on the second network does not reproduce sweepTwo, so sweepTwo is not that network answering. An untrained model is not random per call: the weights were drawn once, and every prediction after that is the same arithmetic.',
+      ).toBeLessThan(1e-6);
+      expect(
+        maxDiff(sweepOf(model), readSweep('trainedSweep', trainedSweep)),
+        'Re-running predict() on the trained network does not reproduce trainedSweep. Whatever is in trainedSweep, the model in front of the grader did not produce it.',
+      ).toBeLessThan(1e-6);
+    });
+
+    it('finds the opinion only in the trained sweep', () => {
+      const gap = groupGap(readSweep('trainedSweep', trainedSweep));
+      expect(
+        gap,
+        'After training, the flagged rows average ' + gap.toFixed(3) + ' above the calm ones. Over 170 runs of 50 epochs on this batch that separation came out between 0.878 and 0.963, and the same network before fit() ran was inside 0.11 of no separation at all. A smaller gap here means the run was shorter than the instructions ask for, or the labels went in on the wrong side.',
+      ).toBeGreaterThan(0.6);
     });
   });
 estimatedMinutes: 15

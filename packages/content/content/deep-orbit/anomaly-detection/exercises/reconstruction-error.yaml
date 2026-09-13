@@ -1,15 +1,12 @@
 slug: reconstruction-error
 lessonSlug: reconstruction-error
 title: "Compute Reconstruction Error"
-instructions: "Write a function that takes an autoencoder model and an input array, runs the input through the model, and returns the mean squared error between the input and the reconstruction."
+instructions: "Write a function that takes an autoencoder model and an input array, runs the input through the model, and returns the mean squared error between the input and the reconstruction. The model takes a batch, so one reading goes in as a single row and comes back as a single row. Release the tensors you allocate: the last test calls your function twice and checks that the live tensor count did not grow."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function reconstructionError(model: tf.LayersModel, input: number[]): number {
-    // 1. Create tensor from input
-    // 2. Run through model to get reconstruction
-    // 3. Compute MSE between input and reconstruction
-    // 4. Clean up tensors
+    // Everything you allocate on the way to the score is yours to release.
     return null; // your code here
   }
 solutionCode: |
@@ -25,29 +22,83 @@ solutionCode: |
   }
 testCode: |
   describe('reconstructionError', () => {
-    let zeroModel, identityModel;
+    let zeroModel, identityModel, offsetModel;
+    const sample = [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4];
+    const otherSample = [0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1];
     beforeAll(() => {
       zeroModel = tf.sequential();
       zeroModel.add(tf.layers.dense({ inputShape: [8], units: 8, kernelInitializer: 'zeros', biasInitializer: 'zeros' }));
       identityModel = tf.sequential();
       identityModel.add(tf.layers.dense({ inputShape: [8], units: 8, useBias: false }));
       identityModel.layers[0].setWeights([tf.eye(8)]);
+      // Copies the input through and adds a fixed 0.1 to every feature, so its
+      // reconstruction is always off by the same amount whatever it is handed.
+      offsetModel = tf.sequential();
+      offsetModel.add(tf.layers.dense({ inputShape: [8], units: 8 }));
+      offsetModel.layers[0].setWeights([tf.eye(8), tf.fill([8], 0.1)]);
     });
-    it('zero-output model: error equals the mean of squared inputs (0.255)', () => {
-      const r = reconstructionError(zeroModel, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
-      expect(Number.isFinite(r)).toBe(true);
-      expect(r).toBeCloseTo(0.255, 4);
+    it('scores the gap between input and reconstruction, not the input itself', () => {
+      // Same model, two readings with different energy. The offset is fixed, so
+      // the error is the same both times: the score belongs to the distance
+      // between the two vectors, and any answer computed from `input` alone
+      // moves when the reading moves.
+      const a = reconstructionError(offsetModel, sample);
+      const b = reconstructionError(offsetModel, otherSample);
+      const why =
+        'This model rebuilds the reading and shifts every feature by the same ' +
+        'fixed amount, so both readings have to score the same error even ' +
+        'though one carries more energy than the other. A score derived from ' +
+        'the input rather than from the gap between input and output fails here.';
+      expect(Number.isFinite(a), why).toBe(true);
+      expect(a, why).toBeCloseTo(0.01, 5);
+      expect(b, why).toBeCloseTo(0.01, 5);
     });
-    it('error tracks the input: all-ones against zero output gives exactly 1.0', () => {
+    it('zero-output model: the error is the mean of the squared inputs', () => {
+      const r = reconstructionError(zeroModel, sample);
+      const why =
+        'This model returns all zeros, so the gap is the reading itself and ' +
+        'the mean squared error is the mean of the squared features.';
+      expect(Number.isFinite(r), why).toBe(true);
+      expect(r, why).toBeCloseTo(0.255, 4);
+    });
+    it('the error tracks the input: all-ones against a zero output', () => {
       const r = reconstructionError(zeroModel, [1, 1, 1, 1, 1, 1, 1, 1]);
-      expect(r).toBeCloseTo(1.0, 4);
+      expect(
+        r,
+        'Every feature is off by one, and squaring and averaging a row of ones leaves it unchanged.',
+      ).toBeCloseTo(1.0, 4);
     });
-    it('a perfect reconstruction gives ~zero error (identity model)', () => {
-      const r = reconstructionError(identityModel, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
-      expect(r).toBeCloseTo(0, 4);
+    it('a perfect reconstruction gives near-zero error (identity model)', () => {
+      const r = reconstructionError(identityModel, sample);
+      const why =
+        'This model copies its input through, so there is no gap left to ' +
+        'measure. A function that returns nothing also has no gap to report, ' +
+        'which is why the finite check comes first.';
+      expect(Number.isFinite(r), why).toBe(true);
+      expect(r, why).toBeCloseTo(0, 4);
+    });
+    it('releases the tensors it allocates', () => {
+      // The first call is a warm-up: a model allocates bookkeeping the first
+      // time it runs. The count is compared across the second call only.
+      const warmUp = reconstructionError(zeroModel, sample);
+      expect(
+        Number.isFinite(warmUp),
+        'There is no allocation to check until the function returns a number.',
+      ).toBe(true);
+      const before = tf.memory().numTensors;
+      reconstructionError(zeroModel, sample);
+      const after = tf.memory().numTensors;
+      expect(
+        after - before,
+        'One call left live tensors behind. The input tensor, the ' +
+          'reconstruction and the loss are all allocations, and in a detector ' +
+          'that runs on every reading they accumulate until the tab dies. ' +
+          'Either dispose each one or wrap the work in tf.tidy, which releases ' +
+          'everything except the value you return.',
+      ).toBe(0);
     });
   });
 estimatedMinutes: 10
 difficulty: intermediate
-mlContent: model
+mlContent: evaluation
 skillAxis: evaluation

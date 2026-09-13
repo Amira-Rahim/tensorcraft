@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "Stats first, verdict second. Per COLUMN: each feature gets its own mean and std. Then one dense neuron with sigmoid activation reads each normalized row."
   - level: guidance
-    content: "Inside fitStats, tf.moments(rows, 0) returns { mean, variance } computed down axis 0 (down each column), one value per feature; without the 0 you get one global mean that mixes temperature with signal strength, 11.75 for this batch. Standard deviation is variance.sqrt(), so return { mean, std: variance.sqrt() } and read the argument, never the four rows above it: the grader fits fitStats to a three-row batch and a five-row batch too. Build the neuron with tf.sequential() plus one dense layer (units 1, activation 'sigmoid', inputShape [2]), then setWeights takes kernel first and bias second: tf.tensor2d(KERNEL) is [2, 1], tf.tensor1d(BIAS) is [1]. Inside scoreReading, normalize with the SAVED mean and std, reshape to [1, 2] because predict expects a batch, and return the prediction; never recompute stats at inference time"
+    content: "Start with the axis. tf.moments takes one, and leaving it off gives a single statistic for the whole batch, 11.75 here, which averages temperature together with signal strength. There is no .std() on a tensor either, so the second statistic comes out of the variance that same call returned. Then fitStats has to read its argument rather than the rows printed above it: the grader fits it to two batches you have never seen. The neuron itself is written out in full in the lesson body, weights and all, so building it is copying rather than designing. At inference the model still wants a batch, so a lone reading needs a leading axis of one. The statistics it gets normalized with are the ones you fitted earlier, never new ones measured from the reading itself."
   - level: solution
     content: "function fitStats(rows) { const { mean, variance } = tf.moments(rows, 0); return { mean, std: variance.sqrt() }; } const { mean, std } = fitStats(batch); const normalized = batch.sub(mean).div(std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]); const scores = previewModel.predict(normalized); function scoreReading(reading) { const z = reading.sub(mean).div(std); return previewModel.predict(z.reshape([1, 2])); }"
 keywords:
@@ -56,7 +56,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
 
 <BossBeat
   beatId="deep-orbit-foundations-7741-first-flag"
-  prompt="While the normalization job runs, the archive scroll stops on sample 7741: logged in the calm period, inside every baseline, and it still looks wrong on one scale out of four. Nobody has built a model yet. What happens to the reading, operator?"
+  prompt="While the normalization job runs, the archive scroll stops on sample 7741: logged in the calm period, inside every baseline on every dial, and it still does not sit with the others. Nobody has built a model yet. What happens to the reading, operator?"
   options={[
     {
       label: "cooperate",
@@ -88,7 +88,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
 
 Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so the bar can use it. Subtract the minimum, divide by the range: that's the entire formula, and it does the same job on a sensor channel that it does on a scroll position.
 
-Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both in raw and temperature's numbers land roughly forty times larger. The louder feature dominates what the model learns; the quiet one barely registers, even when it carries the signal you actually care about.
+Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. The louder feature dominates what the model learns; the quiet one barely registers, even when it carries the signal you actually care about.
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -163,12 +163,12 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 
 <RecallPrompt
   question="Why normalize features before training?"
-  answer="On different scales, the louder feature dominates what the model learns: a temperature feature ranging 19-35 has roughly 40x the numerical pull of a signal-strength feature ranging 0.1-0.9. Normalization (z-score or min-max) brings every feature to a comparable scale so each one gets a fair hearing during gradient updates."
+  answer="On different scales, the louder feature dominates what the model learns: a typical temperature value near 25 arrives about fifty times larger than a typical signal strength near 0.5. Normalization (z-score or min-max) brings every feature to a comparable scale, so the quiet one still registers."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Unnormalized scales skew gradient updates toward whichever feature has the largest raw values. Normalization gives every feature comparable numerical influence during training.",
+    "Unnormalized scales let whichever feature has the largest raw numbers dominate what the model learns. Normalization gives every feature comparable numerical influence during training.",
     "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call.",
     "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds like pixel values. Live sensor streams have no such bounds, which is why z-score wins there.",
     "Save the training-time mean and standard deviation, computed on the training rows only. Inference data must be normalized with those same statistics; never recompute them from the new batch.",

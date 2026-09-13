@@ -1,10 +1,16 @@
 slug: model-monitor
 lessonSlug: monitoring
 title: "Build a Model Monitor"
-instructions: "Build a simple model monitor that tracks prediction confidence and detects data drift. It should compute average confidence over recent predictions and calculate a drift score by comparing the mean of recent input features against a baseline."
+instructions: |
+  Build the model monitor the dashboard reads from. Three measurements.
+
+  1. Confidence. `logPrediction(confidence)` records one verdict, and `avgConfidence` is the mean over every prediction logged so far, 0 before anything has been logged.
+  2. Latency percentiles. Record each inference time with `logLatency(ms)`, then `getLatencyPercentile(p)` reads one value off the recorded times. Order a copy of them ascending as numbers first, since the default comparison is textual and puts 400 ahead of 41. The value is the one at index `Math.floor(count * p / 100)`, clamped to the last index so p = 100 lands on the slowest call rather than past the end. With nothing recorded it returns 0.
+  3. Drift. `computeDrift(recentInputs)` collapses the recent window to its column means first, then returns the Euclidean distance from the baseline mean vector. An empty window returns 0. No traffic is not drift, and a window that never averaged anything sits at the origin, which is the loudest reading this detector can produce.
 starterCode: |
   class ModelMonitor {
     private confidences: number[] = [];
+    private latencies: number[] = [];
     private baselineMean: number[];
 
     constructor(baselineMean: number[]) {
@@ -12,25 +18,32 @@ starterCode: |
     }
 
     logPrediction(confidence: number): void {
-      // Store the confidence value
       return null; // your code here
     }
 
     get avgConfidence(): number {
-      // Return average of all logged confidences (0 if none)
+      return null; // your code here
+    }
+
+    logLatency(ms: number): void {
+      return null; // your code here
+    }
+
+    getLatencyPercentile(p: number): number {
+      // A percentile is a position in an ordered series, so what has to be
+      // settled is how the series is ordered and which position p names.
       return null; // your code here
     }
 
     computeDrift(recentInputs: number[][]): number {
-      // 1. Compute mean of each feature across recentInputs
-      // 2. Compute Euclidean distance between recentMean and baselineMean
-      // 3. Return the distance as drift score
+      // A distance needs two points. The window is not one yet.
       return null; // your code here
     }
   }
 solutionCode: |
   class ModelMonitor {
     private confidences: number[] = [];
+    private latencies: number[] = [];
     private baselineMean: number[];
 
     constructor(baselineMean: number[]) {
@@ -46,7 +59,22 @@ solutionCode: |
       return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length;
     }
 
+    logLatency(ms: number): void {
+      this.latencies.push(ms);
+    }
+
+    getLatencyPercentile(p: number): number {
+      if (this.latencies.length === 0) return 0;
+      const sorted = [...this.latencies].sort((a, b) => a - b);
+      const index = Math.min(
+        sorted.length - 1,
+        Math.floor((sorted.length * p) / 100),
+      );
+      return sorted[index];
+    }
+
     computeDrift(recentInputs: number[][]): number {
+      if (recentInputs.length === 0) return 0;
       const featureCount = this.baselineMean.length;
       const recentMean = new Array(featureCount).fill(0);
 
@@ -70,31 +98,97 @@ testCode: |
       monitor.logPrediction(0.9);
       monitor.logPrediction(0.8);
       monitor.logPrediction(0.7);
-      expect(monitor.avgConfidence).toBeCloseTo(0.8, 5);
+      expect(
+        monitor.avgConfidence,
+        'avgConfidence is the mean of every confidence logged so far. The starter returns null, which is not a measurement a dashboard can plot.',
+      ).toBeCloseTo(0.8, 5);
+    });
+
+    it('average confidence is the mean, which one weak prediction pulls down', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      monitor.logPrediction(0.9);
+      monitor.logPrediction(0.9);
+      monitor.logPrediction(0.3);
+      // The middle value here is 0.9. A monitor reporting 0.9 says the
+      // model is confident while a third of its verdicts are not, and
+      // confidence decay is exactly the shape of failure this dashboard
+      // exists to catch.
+      expect(
+        monitor.avgConfidence,
+        'Every logged prediction moves the average by its share. The middle value ignores two of the three.',
+      ).toBeCloseTo(0.7, 5);
     });
 
     it('returns 0 confidence when no predictions logged', () => {
       const monitor = new ModelMonitor([0, 0]);
-      expect(monitor.avgConfidence).toBe(0);
+      expect(
+        monitor.avgConfidence,
+        'The mean of an empty list is NaN, and a dashboard cannot plot NaN. Decide what the monitor reports before it has seen a prediction.',
+      ).toBe(0);
     });
 
     it('detects no drift when data matches baseline', () => {
       const monitor = new ModelMonitor([1.0, 2.0]);
       const drift = monitor.computeDrift([[1.0, 2.0], [1.0, 2.0]]);
+      expect(
+        typeof drift,
+        'computeDrift returns a number: the distance between the baseline mean vector and the recent one. The starter returns null.',
+      ).toBe('number');
       expect(drift).toBeCloseTo(0, 5);
+    });
+
+    it('an empty window is not drift: a quiet hour scores 0', () => {
+      // The averaging loop never runs, so a recent mean of all zeros is not
+      // a measurement, it is the absence of one. Returning the distance
+      // from the baseline to the origin makes an hour with no traffic the
+      // loudest drift the detector can report, and the alert threshold is
+      // 0.5.
+      const monitor = new ModelMonitor([0.31, 0.47, 0.52, 0.28, 0.61]);
+      expect(
+        monitor.computeDrift([]),
+        'With nothing in the window there is no recent mean to measure against. Answer 0 and let the dashboard show the gap.',
+      ).toBe(0);
+      // The same monitor still measures a window it does have.
+      expect(
+        monitor.computeDrift([[0.31, 0.47, 0.52, 0.28, 0.61]]),
+      ).toBeCloseTo(0, 6);
     });
 
     it('detects drift when data shifts', () => {
       const monitor = new ModelMonitor([0, 0]);
       const drift = monitor.computeDrift([[3, 4], [3, 4]]);
       expect(Number.isFinite(drift)).toBe(true);
-      expect(drift).toBeCloseTo(5, 5);
+      expect(
+        drift,
+        'Both rows sit at [3, 4], so the recent mean is [3, 4] and the distance from [0, 0] is the 3-4-5 triangle.',
+      ).toBeCloseTo(5, 5);
     });
 
-    it('computes drift as Euclidean distance', () => {
+    it('computes drift by straight-line distance from the baseline', () => {
       const monitor = new ModelMonitor([0, 0, 0]);
       const drift = monitor.computeDrift([[1, 0, 0]]);
       expect(drift).toBeCloseTo(1, 5);
+    });
+
+    it('drift is the distance between the means, so a window that only wobbles scores zero', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      // Two rows a unit either side of the baseline. The column means are
+      // back on the baseline, so the level has not moved and the score is
+      // zero. Measuring each row against the baseline and averaging those
+      // distances reports 1.0 instead, and a detector that fires on a
+      // window which merely wobbles pages someone every night. The
+      // lesson makes the same point from the other side: a mean vector
+      // reads a shift in level and nothing else, so two windows with the
+      // same means score 0.0 whatever their spread.
+      const drift = monitor.computeDrift([[1, 0], [-1, 0]]);
+      expect(
+        typeof drift,
+        'computeDrift returns a number. The starter returns null, which is not a drift score.',
+      ).toBe('number');
+      expect(
+        drift,
+        'Collapse the window to its column means first, then measure the distance once. Deviations that cancel in a mean cannot cancel once each row has been turned into a distance.',
+      ).toBeCloseTo(0, 6);
     });
 
     it('averages the window first: the rows differ, so the column means matter', () => {
@@ -103,6 +197,61 @@ testCode: |
       // Reading row 0 alone would score 0 and report no drift at all.
       const drift = monitor.computeDrift([[0, 0], [2, 4]]);
       expect(drift).toBeCloseTo(Math.sqrt(5), 5);
+    });
+
+    it('reports the tail, not the average: P50 is 90 here and the mean is 102.65', () => {
+      // 100 inference times off the wasm seat: 95 of them climbing from
+      // 40 ms to 134 ms, and five calls at 400. The mean is 102.65 and
+      // reports a system that is mostly fine. The P95 is 400, which is
+      // what the operator on watch actually sat through.
+      const monitor = new ModelMonitor([0, 0]);
+      for (let i = 0; i < 95; i++) monitor.logLatency(40 + i);
+      for (let i = 0; i < 5; i++) monitor.logLatency(400);
+      expect(
+        monitor.getLatencyPercentile(50),
+        'Index 50 of the 100 sorted times. A monitor reporting the mean says 102.65 here and a monitor reporting the middle says 90; only one of them is the P50.',
+      ).toBe(90);
+      expect(
+        monitor.getLatencyPercentile(95),
+        'Five calls in a hundred ran at 400 ms. That is exactly what a P95 exists to surface and what the CI benchmark gate reads.',
+      ).toBe(400);
+      expect(monitor.getLatencyPercentile(99)).toBe(400);
+      expect(monitor.getLatencyPercentile(0)).toBe(40);
+    });
+
+    it('sorts the times as numbers: a string sort puts 100 before 9', () => {
+      // Array.prototype.sort with no comparator compares strings, and
+      // ["100", "10", "9"] orders as 10, 100, 9. The middle of that is
+      // 100, which is the slowest call in the set reported as typical.
+      const monitor = new ModelMonitor([0, 0]);
+      for (const ms of [100, 9, 10]) monitor.logLatency(ms);
+      expect(
+        monitor.getLatencyPercentile(50),
+        'Three times sorted numerically are 9, 10, 100, and index 1 of that is 10. A string sort answers 100 here.',
+      ).toBe(10);
+      expect(monitor.getLatencyPercentile(0)).toBe(9);
+      expect(monitor.getLatencyPercentile(100)).toBe(100);
+    });
+
+    it('p = 100 is the slowest call recorded, not a read past the end', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      for (const ms of [12, 48, 31, 7]) monitor.logLatency(ms);
+      expect(
+        monitor.getLatencyPercentile(100),
+        'count * 100 / 100 is the count itself, which is one index past the last element. Clamp it.',
+      ).toBe(48);
+      expect(monitor.getLatencyPercentile(50)).toBe(31);
+      expect(monitor.getLatencyPercentile(25)).toBe(12);
+    });
+
+    it('answers 0 before any inference has been timed', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      expect(
+        monitor.getLatencyPercentile(95),
+        'An empty array has no element at any index, and a dashboard cannot plot undefined.',
+      ).toBe(0);
+      monitor.logLatency(9);
+      expect(monitor.getLatencyPercentile(95)).toBe(9);
     });
 
     it('one loud reading moves the mean by its share, not the whole way', () => {

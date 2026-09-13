@@ -14,6 +14,7 @@ import {
 
 import { useSandpack, type SandpackTheme } from "@codesandbox/sandpack-react";
 import { useScheme } from "../use-scheme";
+import { InstructionText } from "./instruction-text";
 
 const SandpackProvider = lazy(() =>
   import("@codesandbox/sandpack-react").then((m) => ({
@@ -39,6 +40,19 @@ export type MLContent =
   | "deployment"
   | "systems";
 
+/**
+ * Skill Genome axis. Same six values as the `skillAxis` enum in
+ * packages/content/velite.config.ts and VALID_SKILL_AXES in
+ * apps/api/src/routes/skill-events.ts.
+ */
+export type SkillAxis =
+  | "data_prep"
+  | "model_arch"
+  | "training"
+  | "evaluation"
+  | "deployment"
+  | "js_integration";
+
 export interface ExerciseData {
   slug: string;
   title: string;
@@ -55,6 +69,16 @@ export interface ExerciseData {
    * docs/audits/exercise-mlcontent-audit-2026-04-26.md.
    */
   mlContent?: MLContent;
+  /**
+   * Skill Genome axis this exercise credits on a pass. Declared in the
+   * exercise YAML and compiled by velite. Until 2026-09-08 the declaration
+   * was read by nothing: the genome credited `lesson.skillAxes` for an
+   * `exercise_pass`, so a lesson spanning two axes credited both for one
+   * exercise and an exercise whose axis differs from its lesson credited the
+   * wrong one. Surfaced on ExerciseSubmitResult below so the caller can
+   * credit what the exercise declares.
+   */
+  skillAxis?: SkillAxis;
 }
 
 export interface ExerciseSubmitResult {
@@ -71,6 +95,12 @@ export interface ExerciseSubmitResult {
    * so the most-stuck learners were the least measured.
    */
   errored?: boolean;
+  /**
+   * The passing exercise's own declared axis, when it has one. Callers
+   * emitting `exercise_pass` should prefer this over the lesson's axis list;
+   * fall back to `lesson.skillAxes` when it is absent.
+   */
+  skillAxis?: SkillAxis;
 }
 
 export interface ExerciseBridge {
@@ -295,12 +325,18 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
         # tests
       </div>
 
-      {/* Partial credit progress bar */}
+      {/* Proportion of tests passing. Only a full pass gets the success
+          colour: a run where some tests pass is not partly done, because the
+          challenge completes on ALL tests passing and nothing is banked. The
+          amber fill it used to get read as progress, which is how eight
+          exercises whose untouched starter already clears a test printed a
+          score and a part-filled bar for code that does nothing
+          (completeness critic, 2026-09-08). */}
       {total > 1 && (
         <div className="h-1 overflow-hidden mb-3 bg-border rounded-none">
           <div
             className={`h-full transition-all ${
-              allPassed ? "bg-success" : partial ? "bg-warning" : "bg-error"
+              allPassed ? "bg-success" : "bg-text-muted/50"
             }`}
             style={{ width: `${score}%` }}
           />
@@ -315,9 +351,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
         >
           {allPassed
             ? "All tests passed!"
-            : partial
-              ? `Partial credit: ${passed} of ${total} tests passed`
-              : `${passed} of ${total} tests passed`}
+            : `${passed} of ${total} tests passed`}
         </span>
         <span
           className={`text-xs font-mono px-2 py-0.5 rounded-none ${
@@ -331,6 +365,12 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
           {passed}/{total}
         </span>
       </div>
+
+      {!allPassed && (
+        <p className="text-xs font-mono text-text-muted mb-3">
+          Every test has to pass before this challenge counts as done.
+        </p>
+      )}
 
       <div className="flex flex-col gap-1.5">
         {results.map((result, i) => (
@@ -353,14 +393,20 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
               <span
                 className={
                   result.passed
-                    ? "text-text-primary/70 font-mono text-xs"
-                    : "text-text-primary/90 font-mono text-xs"
+                    ? "text-text-primary/70 font-mono text-xs break-words"
+                    : "text-text-primary/90 font-mono text-xs break-words"
                 }
               >
                 {result.name}
               </span>
+              {/* pre-wrap keeps the author's explanation on its own line
+                  above the discrepancy (expect(value, why)); break-words
+                  stops a long unbreakable token, a URL or a 200-entry array,
+                  from pushing the challenge pane sideways. The console panel
+                  below has had this guard since it shipped; this one did
+                  not (completeness critic, 2026-09-08). */}
               {result.error && (
-                <p className="text-xs mt-0.5 font-mono text-error">
+                <p className="text-xs mt-0.5 font-mono text-error whitespace-pre-wrap break-words">
                   {result.error}
                 </p>
               )}
@@ -549,6 +595,7 @@ function ExerciseControls({
           // timeouts arrive HERE with outcome.errored set, not in the
           // catch branch below (re-audit 2026-09-04).
           errored: errored || undefined,
+          skillAxis: exercise.skillAxis,
         });
       }
     } catch (err) {
@@ -573,6 +620,7 @@ function ExerciseControls({
           solutionViewed: showSolution,
           durationMs: Date.now() - openedAtRef.current,
           errored: true,
+          skillAxis: exercise.skillAxis,
         });
       }
     } finally {
@@ -827,9 +875,10 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
       <h3 className="text-lg font-semibold mb-2 text-text-primary">
         {exercise.title}
       </h3>
-      <p className="text-sm leading-relaxed mb-4 text-text-primary/65">
-        {exercise.instructions}
-      </p>
+      <InstructionText
+        text={exercise.instructions}
+        className="text-sm leading-relaxed mb-4 text-text-primary/65"
+      />
 
       {/* Sandpack Editor */}
       <Suspense fallback={<ExerciseLoadingSkeleton />}>

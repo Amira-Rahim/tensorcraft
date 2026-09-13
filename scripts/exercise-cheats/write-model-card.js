@@ -11,7 +11,7 @@ function generateModelCard(meta) {
   return [
     `# ${meta.name} v${meta.version}`,
     `- Accuracy: ${pct(meta.accuracy)} (measured at ${meta.benchmarkedOn})`,
-    `- Size: ${meta.sizeMB} MB`,
+    `- Size: ${meta.weightBytes} bytes`,
     `- Inference: ${meta.inferenceMs}ms`,
     `- Lowest recall: ${worst[0]} at ${pct(worst[1])}`,
     ...meta.limitations.map((l) => `- ${l}`),

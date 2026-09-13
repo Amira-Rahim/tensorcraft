@@ -2,53 +2,174 @@ slug: simple-attention
 lessonSlug: beyond-lstm
 title: "Simple Attention Over RNN Hidden States"
 mlContent: model
-instructions: "Build `simpleAttention(query, hiddenStates)` taking a [d] query vector and a [T, d] sequence of hidden states. Compute attention weights via dot product + softmax, then return the weighted sum of hidden states (a [d] vector). Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze() the [1, d] result back to [d] on the way out."
+instructions: "Build `simpleAttention(query, keys, values)`. `query` is a rank-1 [d] vector: what this step is looking for. `keys` is [T, d], one key per time step, and a key exists only to be scored against the query. `values` is [T, dv], what a step hands over once it is selected, and dv does not have to equal d. Score every key against the query, softmax the scores into weights over the steps, then return the weighted sum of the VALUES as a rank-1 [dv] vector. Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze() the [1, dv] result back to [dv] on the way out. Second trap: scoring a [1, d] query against [T, d] keys needs the keys transposed, because d has to face d. tf.matMul takes two booleans after the two tensors, transposeA and transposeB, and each transposes its own tensor before the multiply, so tf.matMul(q, k, false, true) does the same job as tf.matMul(q, k.transpose()) without building the transposed copy."
 starterCode: |
-  function simpleAttention(query, hiddenStates) {
-    // 1. query is rank-1 [d]; matMul wants rank 2 -> reshape to [1, d]
-    // 2. scores = query row x hiddenStates transposed  -> [1, T]
-    // 3. weights = tf.softmax(scores)                  -> [1, T]
-    // 4. weighted sum = weights x hiddenStates          -> [1, d]
-    // 5. squeeze() back to [d]
+  function simpleAttention(query, keys, values) {
+    // One tensor gets scored and a different one gets summed, and neither
+    // arrives shaped the way the multiply needs.
     return null;
   }
 solutionCode: |
-  function simpleAttention(query, hiddenStates) {
+  function simpleAttention(query, keys, values) {
     const queryRow = query.reshape([1, query.shape[0]]);
-    const scores = tf.matMul(queryRow, hiddenStates, false, true);
+    const scores = tf.matMul(queryRow, keys, false, true);
     const weights = tf.softmax(scores);
-    const weighted = tf.matMul(weights, hiddenStates);
-    return weighted.squeeze();
+    const blended = tf.matMul(weights, values);
+    return blended.squeeze();
   }
 testCode: |
   describe('simpleAttention (real tf.matMul + softmax)', () => {
-    it('output shape matches query dim', () => {
-      const q = tf.randomNormal([8]);
-      const H = tf.randomNormal([5, 8]);
-      const out = simpleAttention(q, H);
-      expect(out.shape).toEqual([8]);
+    // Every test goes through this, so the first Run of the starter reads
+    // as a missing return value rather than a property access on null.
+    const blend = (out) => {
+      expect(
+        out,
+        'simpleAttention has to return the blended vector itself, one rank-1 tensor.',
+      ).toBeDefined();
+      expect(
+        out && typeof out.dataSync,
+        'The tests read the result with dataSync(), so it has to be a tensor rather than a plain array or an object.',
+      ).toBe('function');
+      return out;
+    };
+
+    it('the blend is one value row wide, not one key row wide', () => {
+      const out = blend(
+        simpleAttention(
+          tf.randomNormal([8]),
+          tf.randomNormal([5, 8]),
+          tf.randomNormal([5, 3]),
+        ),
+      );
+      expect(
+        out.shape,
+        'The keys are 8 wide here and the values are 3 wide. A result 8 wide means the keys got pooled, and pooling the keys throws the values away.',
+      ).toEqual([3]);
     });
-    it('uniform attention with zero query → average of hidden states', () => {
-      const q = tf.zeros([4]);
-      const H = tf.tensor2d([[1, 1, 1, 1], [3, 3, 3, 3]]);
-      const out = simpleAttention(q, H);
-      const arr = out.dataSync();
-      // softmax of all-zero scores is uniform → average row = [2, 2, 2, 2]
-      expect(arr[0]).toBeCloseTo(2, 4);
+
+    it('a zero query scores every key the same, so the blend is the average value row', () => {
+      const out = blend(
+        simpleAttention(
+          tf.zeros([4]),
+          tf.tensor2d([[9, 9, 9, 9], [-9, -9, -9, -9]]),
+          tf.tensor2d([[1, 1, 1, 1], [3, 3, 3, 3]]),
+        ),
+      );
+      const got = Array.from(out.dataSync());
+      expect(
+        got[0],
+        'Both keys score zero against a zero query, so softmax splits the weight evenly and the two value rows average.',
+      ).toBeCloseTo(2, 4);
     });
-    it('weights follow the query: softmax([1, 0]) gives a 0.731/0.269 blend', () => {
-      const q = tf.tensor1d([1, 0]);
-      const H = tf.tensor2d([[1, 0], [0, 1]]);
-      const out = simpleAttention(q, H).dataSync();
-      expect(out[0]).toBeCloseTo(0.7311, 3);
-      expect(out[1]).toBeCloseTo(0.2689, 3);
+
+    it('the matching key takes most of the weight and the other keeps a real share', () => {
+      const out = blend(
+        simpleAttention(
+          tf.tensor1d([1, 0]),
+          tf.tensor2d([[1, 0], [0, 1]]),
+          tf.tensor2d([[2, 0], [0, 2]]),
+        ),
+      );
+      // The values are twice the identity, so halving the blend reads the
+      // two attention weights straight back out of it.
+      const got = Array.from(out.dataSync());
+      const first = got[0] / 2;
+      const second = got[1] / 2;
+      expect(
+        first + second,
+        'Softmax weights add to 1, so these two doubled rows have to blend back to 2 in total.',
+      ).toBeCloseTo(1, 4);
+      expect(
+        first,
+        'The first key is the one that matches the query, so it takes the larger share.',
+      ).toBeGreaterThan(second);
+      expect(
+        second,
+        'Softmax never hands out a zero. A hard pick (argMax, or an if that selects one row) fails here.',
+      ).toBeGreaterThan(0.2);
+      expect(
+        first,
+        'One point of score gap sets this split. A weighted sum with weights that are not the softmax of the scores lands somewhere else.',
+      ).toBeCloseTo(0.7311, 3);
+
+      // The same read, on a score gap drawn at run time. 0.7311 is a number
+      // an answer can carry around; this one is not.
+      const gap = 0.5 + Math.random() * 2;
+      const drawn = blend(
+        simpleAttention(
+          tf.tensor1d([gap, 0]),
+          tf.tensor2d([[1, 0], [0, 1]]),
+          tf.tensor2d([[2, 0], [0, 2]]),
+        ),
+      );
+      expect(
+        Array.from(drawn.dataSync())[0] / 2,
+        'The score gap is drawn fresh on every run, so the matching key\'s share has to come out of a softmax over these two scores.',
+      ).toBeCloseTo(1 / (1 + Math.exp(-gap)), 3);
     });
-    it('a strong query focuses attention on the matching state (soft, not argmax)', () => {
-      const q = tf.tensor1d([10, 0]);
-      const H = tf.tensor2d([[1, 0], [0, 1]]);
-      const out = simpleAttention(q, H).dataSync();
-      expect(out[0]).toBeCloseTo(1.0, 3);
-      expect(out[1]).toBeCloseTo(0.0, 3);
+
+    it('a strong query concentrates the weight, still without erasing the other step', () => {
+      const out = blend(
+        simpleAttention(
+          tf.tensor1d([10, 0]),
+          tf.tensor2d([[1, 0], [0, 1]]),
+          tf.tensor2d([[5, 7], [1, 1]]),
+        ),
+      );
+      const got = Array.from(out.dataSync());
+      expect(
+        got[0],
+        'A score gap of ten leaves the losing step a share too small to see at three decimals, so the blend sits on the first value row.',
+      ).toBeCloseTo(5, 2);
+      expect(
+        got[1],
+        'Both coordinates come from the same weighted sum, so the second one has to land on the same row.',
+      ).toBeCloseTo(7, 2);
+    });
+
+    it('rederives the blend on keys and values drawn at random, so a memorised answer fails', () => {
+      const T = 4;
+      const d = 3;
+      const dv = 2;
+      const spread = () => (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random());
+      const query = [];
+      for (let i = 0; i < d; i++) query.push(spread());
+      const keys = [];
+      const values = [];
+      for (let t = 0; t < T; t++) {
+        const key = [];
+        for (let i = 0; i < d; i++) key.push(Math.random() * 2 - 1);
+        keys.push(key);
+        const value = [];
+        for (let i = 0; i < dv; i++) value.push(Math.random() * 4 - 2);
+        values.push(value);
+      }
+      const scores = keys.map((key) =>
+        key.reduce((s, v, i) => s + v * query[i], 0),
+      );
+      const top = Math.max.apply(null, scores);
+      const exps = scores.map((s) => Math.exp(s - top));
+      const total = exps.reduce((a, b) => a + b, 0);
+      const weights = exps.map((e) => e / total);
+      const out = blend(
+        simpleAttention(
+          tf.tensor1d(query),
+          tf.tensor2d(keys),
+          tf.tensor2d(values),
+        ),
+      );
+      expect(
+        out.shape,
+        'The values are narrower than the keys on this window, so the blend is only a value row wide.',
+      ).toEqual([dv]);
+      const got = Array.from(out.dataSync());
+      for (let i = 0; i < dv; i++) {
+        const expected = values.reduce((s, row, t) => s + weights[t] * row[i], 0);
+        expect(
+          got[i],
+          'This window is drawn fresh on every run, so the blend has to be computed from these keys and these values. Scores come from the keys, and the weighted sum runs over the values.',
+        ).toBeCloseTo(expected, 3);
+      }
     });
   });
 estimatedMinutes: 15

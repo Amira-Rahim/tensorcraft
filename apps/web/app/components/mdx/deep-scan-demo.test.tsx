@@ -2,11 +2,15 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { DeepScanDemo } from "./deep-scan-demo";
 
-// Mock tfjs: model returns a fixed score per input row (last row = 0.513).
+// Mock tfjs: model returns a fixed score per input row. Sample 7741's canon
+// triple [0.5, 0.59, 0.54] scores 0.514 here: the landing demo rounds to a
+// whole percent and the story's line is "fifty-one percent", so the preview
+// asset is fine-tuned to land inside 0.505 to 0.515 (2026-09-12); the 673
+// parameter module-3 classifier is the one that prints 0.518.
 const predictMock = vi.fn((input: { arraySync: () => number[][] }) => {
   const rows = input.arraySync();
   const scores = rows.map((r) =>
-    r[0] === 0.5 && r[1] === 0.5 && r[2] === 0.5 ? 0.513 : 0.1,
+    r[0] === 0.5 && r[1] === 0.59 && r[2] === 0.54 ? 0.514 : 0.1,
   );
   return {
     data: async () => Float32Array.from(scores),

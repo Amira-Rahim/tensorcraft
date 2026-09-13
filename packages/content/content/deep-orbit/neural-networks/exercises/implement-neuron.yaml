@@ -25,16 +25,34 @@ solutionCode: |
   );
 testCode: |
   describe('Neuron', () => {
-    it('computes the starter example: 0.2 + 1.6 - 1.5 + 0.1', () => {
-      expect(output.dataSync()[0]).toBeCloseTo(0.4, 4);
+    const readScalar = (result) => {
+      expect(
+        result,
+        'neuron() handed back nothing. It has to return a tensor: pair every input with the weight at its own index, total those products, and offset the total by the bias.',
+      ).toBeDefined();
+      expect(
+        typeof (result && result.dataSync),
+        'neuron() handed back a plain number. The arithmetic can be right and the type still wrong: keep the bias on the tensor, so the result is a scalar tensor the rest of a network could go on computing with rather than a value that has already left the graph.',
+      ).toBe('function');
+      return result.dataSync()[0];
+    };
+    const callNeuron = (inputs, weights, bias) => {
+      expect(
+        typeof neuron,
+        'neuron is not defined. Keep the function the starter handed you: the grader calls it again with arguments of its own.',
+      ).toBe('function');
+      return readScalar(neuron(inputs, weights, bias));
+    };
+    it('computes the starter example from the inputs and weights the starter declares', () => {
+      expect(readScalar(output)).toBeCloseTo(0.4, 4);
     });
     it('tracks different weights, not a memorized answer', () => {
-      const out = neuron(tf.tensor([2, 1, 0]), tf.tensor([0.5, -0.5, 1.0]), tf.scalar(0.25));
-      expect(out.dataSync()[0]).toBeCloseTo(0.75, 4);
+      const out = callNeuron(tf.tensor([2, 1, 0]), tf.tensor([0.5, -0.5, 1.0]), tf.scalar(0.25));
+      expect(out).toBeCloseTo(0.75, 4);
     });
     it('handles a different input width entirely', () => {
-      const out = neuron(tf.tensor([1, 1, 1, 1]), tf.tensor([0.1, 0.2, 0.3, 0.4]), tf.scalar(-1.0));
-      expect(out.dataSync()[0]).toBeCloseTo(0.0, 4);
+      const out = callNeuron(tf.tensor([1, 1, 1, 1]), tf.tensor([0.1, 0.2, 0.3, 0.4]), tf.scalar(-1.0));
+      expect(out).toBeCloseTo(0.0, 4);
     });
     it('matches the reduce() equivalent on inputs, weights and a bias drawn at grade time', () => {
       for (let trial = 0; trial < 3; trial++) {
@@ -45,8 +63,11 @@ testCode: |
         const xs = Array.from(inputs.dataSync());
         const ws = Array.from(weights.dataSync());
         const expected = xs.reduce((sum, x, i) => sum + x * ws[i], bias);
-        const out = neuron(inputs, weights, tf.scalar(bias));
-        expect(out.dataSync()[0]).toBeCloseTo(expected, 3);
+        const out = callNeuron(inputs, weights, tf.scalar(bias));
+        expect(
+          out,
+          'These inputs and weights were drawn at grade time, so the answer cannot have been worked out in advance. Compute from the arguments the function was handed.',
+        ).toBeCloseTo(expected, 3);
       }
     });
     it('pairs each weight with its own input: raising one weight by 0.5 moves the output by half that input', () => {
@@ -56,9 +77,12 @@ testCode: |
       const index = Math.floor(Math.random() * 3);
       const raised = base.slice();
       raised[index] = raised[index] + 0.5;
-      const before = neuron(inputs, tf.tensor(base), tf.scalar(0)).dataSync()[0];
-      const after = neuron(inputs, tf.tensor(raised), tf.scalar(0)).dataSync()[0];
-      expect(after - before).toBeCloseTo(0.5 * xs[index], 3);
+      const before = callNeuron(inputs, tf.tensor(base), tf.scalar(0));
+      const after = callNeuron(inputs, tf.tensor(raised), tf.scalar(0));
+      expect(
+        after - before,
+        'Moving one weight moved the output by the wrong amount. Each weight scales the one input sitting at its own index, so what an input contributes is weight times input.',
+      ).toBeCloseTo(0.5 * xs[index], 3);
     });
   });
 estimatedMinutes: 10

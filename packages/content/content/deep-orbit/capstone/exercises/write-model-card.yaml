@@ -1,14 +1,34 @@
 slug: write-model-card
 lessonSlug: documentation
 title: "Write a Model Card"
-instructions: "Render a Model Card from structured model metadata: a title line, then Performance, Limitations, and Usage sections. Two of the lines carry what an operator has to be told. Accuracy is a past measurement, so it renders with the benchmark it came from, and the lowest-recall class renders as the first limitation."
+instructions: |
+  Render a Model Card from structured model metadata: one string whose lines the grader matches literally, in this order.
+
+      # {name} v{version}
+      ## Performance
+      - Accuracy: {accuracy as a percentage}% (measured at {benchmarkedOn})
+      - Size: {weightBytes} bytes
+      - Inference: {inferenceMs}ms
+      ## Limitations
+      - Lowest recall: {class} at {that class recall as a percentage}%
+      - {one line per entry of limitations}
+      ## Usage
+      - Input: {inputFormat}
+      - Output: {outputFormat}
+
+  Percentages carry one decimal place, and every bullet sits under its own heading. The size line carries the weight file in bytes, which is the figure that was measured, not a rounded megabyte total for the whole download.
+
+  Two lines are computed instead of copied.
+
+  1. Accuracy renders with the benchmark it was measured on, because a percentage with no measurement attached says nothing about whether it still holds.
+  2. The first limitation is the class with the lowest recall in `recallByClass`, which maps each class name to its recall as a fraction. Finding it means comparing the values. The order the classes were written in is not a ranking, and the weakest class is not always the one with a worrying name.
 starterCode: |
   interface ModelMetadata {
     name: string;
     version: string;
     accuracy: number;
     benchmarkedOn: string;
-    sizeMB: number;
+    weightBytes: number;
     inferenceMs: number;
     recallByClass: Record<string, number>;
     limitations: string[];
@@ -17,21 +37,8 @@ starterCode: |
   }
 
   function generateModelCard(meta: ModelMetadata): string {
-    // Return a formatted string with these sections, in this order:
-    // # {name} v{version}
-    // ## Performance
-    // - Accuracy: {accuracy as percentage}% (measured at {benchmarkedOn})
-    // - Size: {sizeMB} MB
-    // - Inference: {inferenceMs}ms
-    // ## Limitations
-    // - Lowest recall: {lowest-recall class} at {its recall as percentage}%
-    // - {each entry of limitations on its own line}
-    // ## Usage
-    // - Input: {inputFormat}
-    // - Output: {outputFormat}
-    //
-    // Percentages are one decimal place. Every bullet sits under its
-    // own heading.
+    // Every value on the card is rendered from meta. Two of them are worked
+    // out rather than read straight off it.
     return null; // your code here
   }
 solutionCode: |
@@ -40,7 +47,7 @@ solutionCode: |
     version: string;
     accuracy: number;
     benchmarkedOn: string;
-    sizeMB: number;
+    weightBytes: number;
     inferenceMs: number;
     recallByClass: Record<string, number>;
     limitations: string[];
@@ -59,7 +66,7 @@ solutionCode: |
       '',
       '## Performance',
       `- Accuracy: ${pct(meta.accuracy)} (measured at ${meta.benchmarkedOn})`,
-      `- Size: ${meta.sizeMB} MB`,
+      `- Size: ${meta.weightBytes} bytes`,
       `- Inference: ${meta.inferenceMs}ms`,
       '',
       '## Limitations',
@@ -79,8 +86,8 @@ testCode: |
       version: '1.0.0',
       accuracy: 0.918,
       benchmarkedOn: 'the pruning review',
-      sizeMB: 85,
-      inferenceMs: 5,
+      weightBytes: 3988,
+      inferenceMs: 0.035,
       recallByClass: {
         pulsar: 0.96,
         noise: 0.95,
@@ -95,6 +102,10 @@ testCode: |
 
     it('includes model name and version', () => {
       const card = generateModelCard(meta);
+      expect(
+        typeof card,
+        'generateModelCard returns the whole card as one string, sections and all. The starter returns null until you build it.',
+      ).toBe('string');
       expect(card).toContain('# DEEP SCAN v1.0.0');
     });
 
@@ -105,13 +116,67 @@ testCode: |
 
     it('includes size and inference speed', () => {
       const card = generateModelCard(meta);
-      expect(card).toContain('- Size: 85 MB');
-      expect(card).toContain('- Inference: 5ms');
+      expect(card).toContain('- Size: 3988 bytes');
+      expect(card).toContain('- Inference: 0.035ms');
     });
 
-    it('names the lowest-recall class as a limitation', () => {
+    it('files the lowest-recall class under Limitations', () => {
       const card = generateModelCard(meta);
-      expect(card).toContain('- Lowest recall: anomaly at 84.0%');
+      expect(
+        card,
+        'Five classes here, and anomaly is the one an operator has to be warned about.',
+      ).toContain('- Lowest recall: anomaly at 84.0%');
+    });
+
+    it('finds the lowest recall wherever it sits in the object', () => {
+      // Three orderings of the same five classes. Insertion order is not
+      // a ranking, so a card that reads whichever key happens to come
+      // first or last files a healthy class under Limitations and tells
+      // the operator the model is weakest where it is strongest.
+      const worstInTheMiddle = {
+        ...meta,
+        recallByClass: { pulsar: 0.96, noise: 0.95, anomaly: 0.84, quasar: 0.94, interference: 0.9 },
+      };
+      const worstFirst = {
+        ...meta,
+        recallByClass: { anomaly: 0.84, pulsar: 0.96, noise: 0.95, quasar: 0.94, interference: 0.9 },
+      };
+      for (const variant of [worstInTheMiddle, worstFirst]) {
+        const card = generateModelCard(variant);
+        expect(
+          card,
+          'The limitation line names the minimum recall in the object, which means comparing the values rather than trusting their order.',
+        ).toContain('- Lowest recall: anomaly at 84.0%');
+        expect(
+          card,
+          'pulsar at 96.0% is the strongest class in this card. Nothing about it belongs under Limitations.',
+        ).not.toContain('- Lowest recall: pulsar');
+        expect(card).not.toContain('- Lowest recall: interference');
+      }
+    });
+
+    it('compares the recall values: the worst class is neither named nor last', () => {
+      // Two shortcuts clear every card above without comparing anything:
+      // report the class called anomaly if the object has one, or report
+      // whichever key was written last. Here the weakest class is called
+      // drift and it was written first, so both shortcuts file a healthy
+      // class under Limitations.
+      const weather = {
+        ...meta,
+        name: 'SENTINEL',
+        version: '2.3.1',
+        recallByClass: { drift: 0.41, clear: 0.93, storm: 0.88 },
+      };
+      const card = generateModelCard(weather);
+      expect(
+        card,
+        'drift at 41.0% is the lowest recall in this object. Finding it means comparing the values, not matching a class name or reading the last key.',
+      ).toContain('- Lowest recall: drift at 41.0%');
+      expect(
+        card,
+        'storm is the last class written in this object and the second weakest of the three. A card that reports the last key names storm here.',
+      ).not.toContain('- Lowest recall: storm');
+      expect(card).not.toContain('- Lowest recall: clear');
     });
 
     it('lists all limitations', () => {
@@ -138,7 +203,7 @@ testCode: |
       const at = (s) => card.indexOf(s);
       expect(at('## Performance')).toBeGreaterThan(at('# DEEP SCAN v1.0.0'));
       expect(at('- Accuracy: 91.8% (measured at the pruning review)')).toBeGreaterThan(at('## Performance'));
-      expect(at('## Limitations')).toBeGreaterThan(at('- Size: 85 MB'));
+      expect(at('## Limitations')).toBeGreaterThan(at('- Size: 3988 bytes'));
       expect(at('- Lowest recall: anomaly at 84.0%')).toBeGreaterThan(at('## Limitations'));
       expect(at('## Usage')).toBeGreaterThan(at('- Only tested on Sector 7-G data'));
       expect(at('- Input: Float32Array(64)')).toBeGreaterThan(at('## Usage'));
@@ -150,7 +215,7 @@ testCode: |
         version: '2.3.1',
         accuracy: 0.874,
         benchmarkedOn: 'the v2.3 handover',
-        sizeMB: 7,
+        weightBytes: 9248,
         inferenceMs: 12,
         recallByClass: { clear: 0.91, storm: 0.62 },
         limitations: ['Drifts on unseen bands'],
@@ -159,8 +224,11 @@ testCode: |
       };
       const card = generateModelCard(other);
       expect(card).toContain('# SENTINEL v2.3.1');
-      expect(card).toContain('- Accuracy: 87.4% (measured at the v2.3 handover)');
-      expect(card).toContain('- Size: 7 MB');
+      expect(
+        card,
+        'Every number on the card is read off the metadata argument, so a second model renders a second card.',
+      ).toContain('- Accuracy: 87.4% (measured at the v2.3 handover)');
+      expect(card).toContain('- Size: 9248 bytes');
       expect(card).toContain('- Lowest recall: storm at 62.0%');
       expect(card).toContain('- Drifts on unseen bands');
     });

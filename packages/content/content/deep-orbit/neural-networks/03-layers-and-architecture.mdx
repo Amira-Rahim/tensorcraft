@@ -27,9 +27,9 @@ hints:
   - level: nudge
     content: "A sequential model is a stack: each dense layer you model.add() feeds the next, and only the first layer needs an inputShape."
   - level: guidance
-    content: "Three model.add(tf.layers.dense(...)) calls: units 16 with relu activation and inputShape [4] (declared on the first layer only), then units 8 with relu, then units 1 with sigmoid. The grader checks units [16, 8, 1], activations ['relu', 'relu', 'sigmoid'], and 225 total parameters, so match those numbers exactly."
+    content: "The three stages are spelled out in the instructions; the quote is the part worth working out. Count what one unit owns before you count a stage: a weight for each value that reaches it, and its own bias. Then ask which stage's price changes when the reading gets wider, and which two are fixed by the stage in front of them. That is why predictParams takes a width and cannot be a constant."
   - level: solution
-    content: "model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] })); model.add(tf.layers.dense({ units: 8, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));"
+    content: "model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] })); model.add(tf.layers.dense({ units: 8, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); function predictParams(width) { return (width * 16 + 16) + (16 * 8 + 8) + (8 * 1 + 1); }"
 keywords:
   - layers
   - dense
@@ -46,7 +46,7 @@ One neuron cleared two calibration tones; Sector 7-G is sixty-four channels and 
 
 ## Stages All the Way Down
 
-Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage reading the three features from lesson 1, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. Those three are amplitude, frequency, and phase, each mapped to 0-1 against the range its own sensor can physically produce. Module 4 quotes those ranges when the browser pipeline has to apply them. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
+Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage reading the three features from lesson 1, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. Those three are amplitude, frequency, and phase, each mapped to 0-1 against the range its own sensor can physically produce. Module 4 quotes those ranges when the browser pipeline has to apply them. Nazari's sixty-four channels do not arrive as sixty-four inputs. Extraction summarizes a capture into those three numbers before the model sees anything, off a 64-sample window, a quarter second of one channel at 256 Hz. That window is a different sixty-four from the stream's sixty-four channels. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
 
 Say exactly what a stage is, because "finds patterns" describes the result, not the mechanism. A dense layer with 32 units is 32 copies of the lesson-1 neuron, plus the activation lesson 1 left out. Every one of them reads the same 3 inputs through its own weights and bias. That gives 32 weighted sums, and the layer's relu runs on each one before the next stage sees it. The 16-unit stage is 16 more neurons, and its inputs are those 32 relu outputs. They vote on combinations of the first stage's votes, and the verdict neuron votes on combinations of theirs. Lesson 2 already told you why the activation between stages is not optional. Without it, three stages of weighted sums multiply out to one weighted sum, and the stack would know exactly as much as a single neuron.
 
@@ -89,9 +89,39 @@ Two numbers price a dense layer: how many values arrive, and how many units read
 
 Demir's first stack ran 64, then 32, then 1: 2,369 parameters, on a 64-unit first stage he picked because 64 looked like a serious number. Nazari read the quote, said nothing, and went back to her console. The 32/16/1 above is the third version he brought her.
 
+## What the Count Buys
+
+The stack costs 673 parameters. The lesson-1 neuron, three weights and a bias, costs 4. Here is the smallest case where that difference decides the answer rather than the speed. Two normalized inputs, and a label that fires when exactly one of them reads high: one weighted sum plus a threshold draws a single straight line across that plane, and no straight line puts those two cases on one side and the other two on the other.
+
+<CodeBlock language="typescript" title="one-stage-vs-two.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const xs = tf.tensor2d([[0, 0], [0, 1], [1, 0], [1, 1]]);
+const ys = tf.tensor2d([[0], [1], [1], [0]]);  // 1 when exactly one reads high
+
+// One sigmoid unit, no hidden stage: 3 parameters.
+const flat = tf.sequential();
+flat.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
+flat.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
+await flat.fit(xs, ys, { epochs: 3000 });
+console.log(Array.from(flat.predict(xs).dataSync()));
+// all four within 0.0003 of 0.5
+
+// One 8-unit relu stage in front of the same output unit: 33 parameters.
+const staged = tf.sequential();
+staged.add(tf.layers.dense({ units: 8, activation: 'relu', inputShape: [2] }));
+staged.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+staged.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
+await staged.fit(xs, ys, { epochs: 3000 });
+console.log(Array.from(staged.predict(xs).dataSync()));
+// all four within 0.0003 of 0, 1, 1, 0`}
+</CodeBlock>
+
+Ten runs of each. The one-unit version answered 0.5 on every point every time, which is as close as a single straight line gets. The staged version got all four right every time, on 30 more parameters. The three features this ship extracts do not need that yet; module 5 widens a reading to eleven features, and stages are what read combinations of them.
+
 ## Challenge
 
-Build a 3-layer network for signal classification.
+Build a three-stage stack, then quote its price at a width the grader picks.
 
 <Exercise slug="build-layer" />
 

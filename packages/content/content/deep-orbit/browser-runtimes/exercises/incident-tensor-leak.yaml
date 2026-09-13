@@ -3,24 +3,17 @@ lessonSlug: inference-pipeline
 title: "Incident: numTensors Climbing at 03:10"
 mlContent: systems
 instructions: |
-  PAGER: the dashboard's tensor count has been rising since the 01:00 deploy. Build `diagnoseLeak(snapshots, budgetTensors)`. Snapshots are `{ t, numTensors }` readings (t in hours, ascending). Using the FIRST and LAST snapshots: ratePerHour = tensor growth per hour; leaking = ratePerHour > 0; hoursToBudget = hours until the budget is hit at that rate (Infinity when not leaking). The middle readings are noisy; the endpoints are the trend.
+  PAGER: the dashboard's tensor count has been rising since the 01:00 deploy. Build `diagnoseLeak(snapshots, budgetTensors)`. Snapshots are `{ t, numTensors }` readings (t in hours, ascending). Using the FIRST and LAST snapshots: ratePerHour = tensor growth per hour; leaking = ratePerHour > 0; hoursToBudget = hours from the last reading until the budget is hit at that rate (Infinity when not leaking). The middle readings are noisy; the endpoints are the trend.
 starterCode: |
   function diagnoseLeak(
     snapshots: { t: number; numTensors: number }[],
     budgetTensors: number,
   ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
     // CONCEPT: a steadily climbing tf.memory().numTensors means tensors are
-    // being created without dispose(); the trend line tells you how long you
-    // have before the budget blows. Middle readings are noisy deploy churn,
-    // so the diagnosis uses ONLY the first and last snapshots.
-    // RECIPE:
-    //   1. first = snapshots[0], last = snapshots[snapshots.length - 1]
-    //   2. ratePerHour = (last.numTensors - first.numTensors) / (last.t - first.t)
-    //   3. leaking = ratePerHour > 0 (a flat or falling count is NOT a leak)
-    //   4. hoursToBudget = leaking
-    //        ? (budgetTensors - last.numTensors) / ratePerHour
-    //        : Infinity
-    //   5. return { leaking, ratePerHour, hoursToBudget }
+    // being created without dispose(). Two readings and the hours between
+    // them give you the slope, and the slope is what turns a count into a
+    // deadline. The pager already says which two readings to trust, and what
+    // to report when there is no deadline at all.
     return null; // your code here
   }
 solutionCode: |
@@ -39,42 +32,51 @@ solutionCode: |
   }
 testCode: |
   describe('diagnoseLeak', () => {
-    it('reads the trend from the endpoints: 480 tensors over 4 hours', () => {
-      const r = diagnoseLeak(
+    // The starter returns null, and reading .leaking off null reports a
+    // property name instead of the task. Every test comes through here, so
+    // the first Run says what is missing.
+    function diagnose(snapshots, budgetTensors) {
+      const r = diagnoseLeak(snapshots, budgetTensors);
+      expect(r, 'diagnoseLeak has to return an object with leaking, ratePerHour and hoursToBudget. The starter returns null until you build it from the first and last snapshots.').toBeDefined();
+      return r;
+    }
+
+    it('a climbing count is a leak, at the rate the endpoints imply', () => {
+      const r = diagnose(
         [{ t: 0, numTensors: 47 }, { t: 2, numTensors: 287 }, { t: 4, numTensors: 527 }],
         10000,
       );
       expect(r.leaking).toBe(true);
-      expect(r.ratePerHour).toBeCloseTo(120, 5);
+      expect(r.ratePerHour, 'A rate is tensors per HOUR, so the growth has to be divided by the hours between the two readings.').toBeCloseTo(120, 5);
     });
     it('computes hours until the budget is hit', () => {
-      const r = diagnoseLeak(
+      const r = diagnose(
         [{ t: 0, numTensors: 400 }, { t: 1, numTensors: 520 }],
         10000,
       );
-      expect(r.hoursToBudget).toBeCloseTo(79, 1);
+      expect(r.hoursToBudget, 'The headroom left is the budget minus the LAST reading, not minus the first: the earlier tensors are already allocated.').toBeCloseTo(79, 1);
     });
     it('a flat count is not a leak', () => {
-      const r = diagnoseLeak(
+      const r = diagnose(
         [{ t: 0, numTensors: 47 }, { t: 6, numTensors: 47 }],
         10000,
       );
       expect(r.leaking).toBe(false);
-      expect(r.hoursToBudget).toBe(Infinity);
+      expect(r.hoursToBudget, 'A count that is not climbing never reaches the budget, so there is no deadline to report.').toBe(Infinity);
     });
     it('ignores noisy middle readings (endpoints define the trend)', () => {
-      const r = diagnoseLeak(
+      const r = diagnose(
         [{ t: 0, numTensors: 100 }, { t: 1, numTensors: 900 }, { t: 5, numTensors: 200 }],
         1000,
       );
-      expect(r.ratePerHour).toBeCloseTo(20, 5);
+      expect(r.ratePerHour, 'The spike in the middle is deploy churn. Fitting the rate to it reports a leak an order of magnitude worse than the one that is there.').toBeCloseTo(20, 5);
     });
     it('a falling count is recovery, not a leak', () => {
-      const r = diagnoseLeak(
+      const r = diagnose(
         [{ t: 0, numTensors: 500 }, { t: 2, numTensors: 300 }],
         1000,
       );
-      expect(r.leaking).toBe(false);
+      expect(r.leaking, 'A negative rate means tensors are being freed.').toBe(false);
     });
   });
 estimatedMinutes: 12

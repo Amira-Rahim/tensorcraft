@@ -26,10 +26,12 @@ export interface TestRunOutcome {
   logs: ConsoleEntry[];
   /**
    * True when the run never produced graded results: execution timeout,
-   * runtime-load failure, or a crash before grading. The runner RESOLVES
-   * in every failure mode (never rejects), so callers that want to count
-   * crashed runs must read this flag rather than a catch branch
-   * (2026-09-04 re-audit: the analytics errored branch was dead code).
+   * runtime-load failure, a crash before grading, or a syntax error in the
+   * submitted code (which is rejected before the worker starts, see
+   * userCodeSyntaxError). The runner RESOLVES in every failure mode (never
+   * rejects), so callers that want to count ungraded runs must read this
+   * flag rather than a catch branch (2026-09-04 re-audit: the analytics
+   * errored branch was dead code).
    */
   errored?: boolean;
 }
@@ -119,188 +121,533 @@ const HARNESS = `
     }
   }
 
-  function expect(actual) {
+  /* --- shared-assertions: kept byte-identical (modulo whitespace) between
+     packages/ui/src/mdx/exercise-runner.ts, the harness a learner runs in the
+     browser, and scripts/validate-exercises.mjs, the harness CI grades with.
+     assertHarnessParity() in the validator compares every function marked
+     below, and assertAssertionParity() runs a fixture suite through both
+     harnesses and compares every resulting failure string, because a
+     divergence here lets a submission pass in one harness and fail in the
+     other.
+
+     FAILURE-TEXT RULE, which exercise authors follow when they write a
+     message of their own:
+
+     1. A failure never prints the expected side of an equality or closeness
+        check when that value is a number, or an array or object holding a
+        number. Those are graded answers. The results panel opens on the
+        first Run of the untouched starter, so printing them hands over the
+        answer for one click, and unlike the hint ladder it is not recorded
+        as a reveal.
+     2. In place of the answer the message reports three things: the value
+        the learner produced, the direction of the miss (too high, too low)
+        or the position of the first difference, and the rule the check
+        enforces (its tolerance, its required length, its required shape).
+     3. Strings, booleans, null, undefined, regexes, constructor names,
+        lengths and shapes ARE printed. They name an API choice or a
+        structure rather than a computed answer, and withholding them turns
+        a typo into a guessing game.
+     4. A threshold is a rule, not an answer, so toBeGreaterThan and its
+        siblings keep naming the bar the value has to clear.
+     5. The teaching half comes from the author: expect takes an optional
+        second argument, and whatever it says is printed above the
+        discrepancy. Write why the failure means what it means.
+            expect(loss, 'A rising loss means the step went uphill.')
+              .toBeLessThan(previous);
+  --- */
+
+  function __tcDefaultPrecision() {
+    // Deliberately tighter than the vitest default of 2, because these
+    // exercises grade numeric ML output where 2 decimals would accept a
+    // wrong answer. Authors who want a looser bar pass precision
+    // explicitly; the validator prints an advisory for every site that
+    // leaves it out.
+    return 5;
+  }
+
+  function __tcTolerance(p) {
+    // Printed, not compared: Math.pow(10, -5) / 2 is 0.0000049999999999999996
+    // in binary floating point, and that tail is noise in a failure message.
+    var limit = Math.pow(10, -p) / 2;
+    return String(Number(limit.toPrecision(2)));
+  }
+
+  function __tcMessage(why, detail) {
+    var d = detail == null ? '' : String(detail);
+    if (why === undefined || why === null || why === '') return d;
+    if (!d) return String(why);
+    return String(why) + '\\n' + d;
+  }
+
+  // Realm-safe RegExp test. Test code runs in its own realm (a vm context in
+
+  // CI, the worker body in the browser), so a regex literal written in an
+
+  // exercise is NOT an instanceof this realm's RegExp. Duck-typing via the
+
+  // toString tag is the only check that holds across both harnesses; an
+
+  // instanceof here silently degrades every regex assertion into a substring
+
+  // search for the regex's own source text.
+
+  function __tcIsRe(p) {
+
+    return Object.prototype.toString.call(p) === '[object RegExp]';
+
+  }
+
+  function __tcShow(v) {
+    // JSON.stringify turns NaN and Infinity into 'null', which would report
+    // a failed calculation as a missing value.
+    if (typeof v === 'number' && !Number.isFinite(v)) return String(v);
+    var s;
+    try {
+      s = JSON.stringify(v);
+    } catch (e) {
+      s = null;
+    }
+    if (s === undefined || s === null) s = String(v);
+    return s.length > 140 ? s.slice(0, 137) + '...' : s;
+  }
+
+  function __tcType(v) {
+    if (v === null) return 'null';
+    if (Array.isArray(v)) return 'array';
+    // v !== v is true only for NaN, and needs no global helper.
+    if (typeof v === 'number' && v !== v) return 'NaN';
+    return typeof v;
+  }
+
+  function __tcNamed(v) {
+    // 'null (null)' and 'undefined (undefined)' read as a stutter, so name
+    // the type once when the type IS the whole value.
+    var t = __tcType(v);
+    var shown = __tcShow(v);
+    return shown === t ? t : t + ' (' + shown + ')';
+  }
+
+  function __tcHasNumber(v) {
+    if (typeof v === 'number') return true;
+    if (v === null || typeof v !== 'object') return false;
+    if (Array.isArray(v)) {
+      for (var i = 0; i < v.length; i++) if (__tcHasNumber(v[i])) return true;
+      return false;
+    }
+    for (var k in v) if (__tcHasNumber(v[k])) return true;
+    return false;
+  }
+
+  function __tcListOf(v) {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === 'object' && typeof v.length === 'number') {
+      return Array.prototype.slice.call(v);
+    }
+    return null;
+  }
+
+  function __tcNumberMiss(actual, expected) {
+    if (typeof expected !== 'number') return __tcStructureMiss(actual, expected);
+    if (typeof actual !== 'number') {
+      return 'Got ' + __tcNamed(actual) + ' where a number was required.';
+    }
+    if (actual !== actual) return 'Got NaN, so the calculation produced no number.';
+    return 'Got ' + actual + ', which is too ' + (actual > expected ? 'high' : 'low') + '.';
+  }
+
+  function __tcStructureMiss(actual, expected) {
+    if (Array.isArray(expected)) {
+      var a = __tcListOf(actual);
+      if (a === null) {
+        return 'Got ' + __tcNamed(actual) + ' where a list of ' + expected.length + ' was required.';
+      }
+      if (a.length !== expected.length) {
+        return 'Your list has ' + a.length + ' entries; ' + expected.length + ' were required.';
+      }
+      var first = -1;
+      var n = 0;
+      for (var i = 0; i < expected.length; i++) {
+        if (JSON.stringify(a[i]) !== JSON.stringify(expected[i])) {
+          n++;
+          if (first < 0) first = i;
+        }
+      }
+      if (n === 0) {
+        if (!Array.isArray(actual)) {
+          return 'Your values match entry by entry, but the container is a ' + (actual && actual.constructor && actual.constructor.name ? actual.constructor.name : __tcType(actual)) + ' where a plain array was required. Array.from converts it.';
+        }
+        return 'Your list matches entry by entry but is not the same object.';
+      }
+      return 'Your list is the right length. ' + n + ' of ' + expected.length + ' entries differ, the first at index ' + first + ' (yours: ' + __tcShow(a[first]) + ').';
+    }
+    if (expected !== null && typeof expected === 'object') {
+      if (actual === null || typeof actual !== 'object') {
+        return 'Got ' + __tcNamed(actual) + ' where an object was required.';
+      }
+      var keys = Object.keys(expected);
+      var missing = [];
+      var differ = [];
+      for (var j = 0; j < keys.length; j++) {
+        var key = keys[j];
+        if (!(key in actual)) missing.push(key);
+        else if (JSON.stringify(actual[key]) !== JSON.stringify(expected[key])) differ.push(key);
+      }
+      if (missing.length) {
+        return 'Your object has no ' + missing[0] + ' key (' + missing.length + ' of the ' + keys.length + ' required keys are missing).';
+      }
+      if (differ.length) {
+        return 'Your ' + differ[0] + ' is ' + __tcShow(actual[differ[0]]) + ', which this check rejects (' + differ.length + ' of ' + keys.length + ' keys differ).';
+      }
+      return 'Your object carries the ' + keys.length + ' required keys plus extras this check rejects.';
+    }
+    return 'Got ' + __tcShow(actual) + '.';
+  }
+
+  function __tcJest() {
+    var jestStub = {
+      fn: function(impl) {
+        var calls = [];
+        var instances = [];
+        var f = function() {
+          var args = Array.prototype.slice.call(arguments);
+          calls.push(args);
+          instances.push(this);
+          return impl ? impl.apply(this, args) : undefined;
+        };
+        f.mock = { calls: calls, instances: instances, results: [] };
+        f.mockReturnValue = function(v) { impl = function() { return v; }; return f; };
+        f.mockResolvedValue = function(v) { impl = function() { return Promise.resolve(v); }; return f; };
+        f.mockImplementation = function(i) { impl = i; return f; };
+        f.mockClear = function() { calls.length = 0; instances.length = 0; };
+        return f;
+      },
+      spyOn: function(obj, method) {
+        var original = obj[method];
+        var spy = jestStub.fn(original);
+        obj[method] = spy;
+        spy.mockRestore = function() { obj[method] = original; };
+        return spy;
+      },
+      clearAllMocks: function() {},
+      resetAllMocks: function() {},
+      useFakeTimers: function() {},
+      useRealTimers: function() {},
+    };
+    return jestStub;
+  }
+
+  function __tcInstallStatics(fn) {
+    fn.closeTo = function(expected, precision) {
+      var p = precision === undefined ? 2 : precision;
+      return {
+        asymmetricMatch: function(actual) {
+          return Math.abs(actual - expected) < Math.pow(10, -p) / 2;
+        },
+      };
+    };
+    fn.any = function(ctor) {
+      return {
+        asymmetricMatch: function(a) {
+          var name = String(ctor && ctor.name).toLowerCase();
+          return a != null && (typeof a === name || a instanceof ctor);
+        },
+      };
+    };
+    fn.anything = function() {
+      return {
+        asymmetricMatch: function(a) { return a != null; },
+      };
+    };
+    fn.stringContaining = function(s) {
+      return {
+        asymmetricMatch: function(a) { return typeof a === 'string' && a.indexOf(s) !== -1; },
+      };
+    };
+    fn.stringMatching = function(re) {
+      return {
+        asymmetricMatch: function(a) {
+          return typeof a === 'string' && (__tcIsRe(re) ? re : new RegExp(re)).test(a);
+        },
+      };
+    };
+    return fn;
+  }
+
+  function __tcMatchers(actual, __why) {
+    function fail(detail) {
+      throw new Error(__tcMessage(__why, detail));
+    }
+    function contains(needle) {
+      if (typeof actual === 'string') return actual.indexOf(String(needle)) !== -1;
+      var list = __tcListOf(actual);
+      if (list === null) return null;
+      return Array.prototype.indexOf.call(list, needle) !== -1 || (needle !== needle && list.some(function(v) { return v !== v; }));
+    }
     return {
       toBe: function(expected) {
-        if (actual !== expected) throw new Error('Expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual));
+        if (actual === expected) return;
+        if (__tcHasNumber(expected)) fail(__tcNumberMiss(actual, expected));
+        fail('Expected ' + __tcShow(expected) + ' but got ' + __tcShow(actual) + '.');
       },
       toEqual: function(expected) {
-        var a = JSON.stringify(actual), b = JSON.stringify(expected);
-        if (a !== b) throw new Error('Expected ' + b + ' but got ' + a);
+        if (JSON.stringify(actual) === JSON.stringify(expected)) return;
+        if (__tcHasNumber(expected)) fail(__tcNumberMiss(actual, expected));
+        fail('Expected ' + __tcShow(expected) + ' but got ' + __tcShow(actual) + '.');
       },
       toBeDefined: function() {
-        if (actual === undefined || actual === null) throw new Error('Expected value to be defined, got ' + String(actual));
-      },
-      toBeNull: function() {
-        if (actual !== null) throw new Error('Expected null but got ' + JSON.stringify(actual));
-      },
-      toBeTruthy: function() {
-        if (!actual) throw new Error('Expected truthy value but got ' + JSON.stringify(actual));
-      },
-      toBeFalsy: function() {
-        if (actual) throw new Error('Expected falsy value but got ' + JSON.stringify(actual));
-      },
-      toBeGreaterThan: function(expected) {
-        if (!(actual > expected)) throw new Error('Expected ' + actual + ' > ' + expected);
-      },
-      toBeLessThan: function(expected) {
-        if (!(actual < expected)) throw new Error('Expected ' + actual + ' < ' + expected);
-      },
-      toBeGreaterThanOrEqual: function(expected) {
-        if (!(actual >= expected)) throw new Error('Expected ' + actual + ' >= ' + expected);
-      },
-      toBeLessThanOrEqual: function(expected) {
-        if (!(actual <= expected)) throw new Error('Expected ' + actual + ' <= ' + expected);
-      },
-      toContain: function(expected) {
-        if (Array.isArray(actual)) {
-          if (!actual.includes(expected)) throw new Error('Array does not contain ' + JSON.stringify(expected));
-        } else if (typeof actual === 'string') {
-          if (!actual.includes(expected)) throw new Error('String does not contain ' + JSON.stringify(expected));
-        } else {
-          throw new Error('toContain expects a string or array, got ' + (actual === null ? 'null' : typeof actual));
+        if (actual === undefined || actual === null) {
+          fail('Nothing came back here: the value is ' + String(actual) + '.');
         }
       },
+      toBeNull: function() {
+        if (actual !== null) fail('Expected null, got ' + __tcNamed(actual) + '.');
+      },
+      toBeTruthy: function() {
+        if (!actual) fail('Expected a truthy value, got ' + __tcShow(actual) + '.');
+      },
+      toBeFalsy: function() {
+        if (actual) fail('Expected a falsy value, got ' + __tcShow(actual) + '.');
+      },
+      toBeGreaterThan: function(expected) {
+        if (!(actual > expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires a value greater than ' + __tcShow(expected) + '.');
+        }
+      },
+      toBeLessThan: function(expected) {
+        if (!(actual < expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires a value less than ' + __tcShow(expected) + '.');
+        }
+      },
+      toBeGreaterThanOrEqual: function(expected) {
+        if (!(actual >= expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires at least ' + __tcShow(expected) + '.');
+        }
+      },
+      toBeLessThanOrEqual: function(expected) {
+        if (!(actual <= expected)) {
+          fail('Got ' + __tcShow(actual) + '; this check requires at most ' + __tcShow(expected) + '.');
+        }
+      },
+      toContain: function(expected) {
+        var inside = contains(expected);
+        if (inside === null) {
+          fail('toContain needs a string or a list, got ' + __tcType(actual) + '.');
+        }
+        if (inside) return;
+        if (typeof actual === 'string') {
+          fail('Your text does not contain ' + __tcShow(expected) + '. Yours: ' + __tcShow(actual) + '.');
+        }
+        if (__tcHasNumber(expected)) {
+          fail('Your list is missing a value this check requires. Yours: ' + __tcShow(actual) + '.');
+        }
+        fail('Your list does not contain ' + __tcShow(expected) + '. Yours: ' + __tcShow(actual) + '.');
+      },
       toHaveLength: function(expected) {
-        if (actual.length !== expected) throw new Error('Expected length ' + expected + ' but got ' + actual.length);
+        if (actual == null || typeof actual.length !== 'number') {
+          fail('Got ' + __tcNamed(actual) + ', which has no length.');
+        }
+        if (actual.length !== expected) {
+          fail('Your value has length ' + actual.length + '; ' + expected + ' was required.');
+        }
       },
       toThrow: function(expected) {
-        if (typeof actual !== 'function') throw new Error('Expected a function');
+        if (typeof actual !== 'function') {
+          fail('toThrow needs a function to call, got ' + __tcType(actual) + '.');
+        }
         var threw = false;
         var caught = null;
-        try { actual(); } catch(e) { threw = true; caught = e; }
-        if (!threw) throw new Error('Expected function to throw');
+        try { actual(); } catch (e) { threw = true; caught = e; }
+        if (!threw) fail('This call was required to throw, and it returned instead.');
         if (expected !== undefined) {
           var msg = caught && caught.message ? String(caught.message) : String(caught);
-          var ok = expected instanceof RegExp ? expected.test(msg) : msg.indexOf(String(expected)) !== -1;
-          if (!ok) throw new Error('Expected error matching ' + JSON.stringify(String(expected)) + ' but got ' + JSON.stringify(msg));
+          var ok = __tcIsRe(expected) ? expected.test(msg) : msg.indexOf(String(expected)) !== -1;
+          if (!ok) {
+            fail('It threw, but the message was ' + __tcShow(msg) + ' and this check requires ' + __tcShow(String(expected)) + '.');
+          }
         }
       },
       toBeCloseTo: function(expected, precision) {
-        precision = precision === undefined ? 5 : precision;
+        var p = precision === undefined ? __tcDefaultPrecision() : precision;
+        var limit = Math.pow(10, -p) / 2;
         var diff = Math.abs(actual - expected);
-        var limit = Math.pow(10, -precision) / 2;
-        // NaN-safe: a non-numeric actual makes diff NaN, and 'NaN >= limit'
-        // is false - the negated form fails instead of silently passing.
-        if (!(diff < limit)) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
+        // NaN-safe: a non-numeric actual makes diff NaN, and NaN < limit is
+        // false, so the negated form fails instead of silently passing.
+        if (diff < limit) return;
+        if (typeof actual !== 'number') {
+          fail('Got ' + __tcNamed(actual) + ' where a number was required.');
+        }
+        if (actual !== actual) fail('Got NaN, so the calculation produced no number.');
+        fail('Got ' + actual + ', which is too ' + (actual > expected ? 'high' : 'low') + '. This check allows a difference of at most ' + __tcTolerance(p) + ' (precision ' + p + ').');
       },
       toHaveProperty: function(key, expected) {
-        var path = key.split('.');
+        var path = String(key).split('.');
         var cur = actual;
         for (var i = 0; i < path.length; i++) {
-          if (cur == null || !(path[i] in cur)) throw new Error('Expected to have property ' + JSON.stringify(key));
+          var reachable = cur !== null && (typeof cur === 'object' || typeof cur === 'function');
+          if (!reachable || !(path[i] in cur)) {
+            fail('Expected a property named ' + __tcShow(key) + ', which is not there.');
+          }
           cur = cur[path[i]];
         }
         if (arguments.length > 1 && JSON.stringify(cur) !== JSON.stringify(expected)) {
-          throw new Error('Expected property ' + key + ' to be ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(cur));
+          if (__tcHasNumber(expected)) fail('Property ' + key + ': ' + __tcNumberMiss(cur, expected));
+          fail('Property ' + key + ' expected ' + __tcShow(expected) + ' but got ' + __tcShow(cur) + '.');
         }
       },
-      toMatch: function(re) {
+      toMatch: function(pattern) {
         var s = String(actual);
-        if (re instanceof RegExp) {
-          if (!re.test(s)) throw new Error('Expected ' + JSON.stringify(s) + ' to match ' + re);
-        } else {
-          if (s.indexOf(re) === -1) throw new Error('Expected ' + JSON.stringify(s) + ' to match ' + JSON.stringify(re));
+        var ok = __tcIsRe(pattern) ? pattern.test(s) : s.indexOf(String(pattern)) !== -1;
+        if (!ok) {
+          fail('Your text does not match ' + (__tcIsRe(pattern) ? String(pattern) : __tcShow(String(pattern))) + '. Yours: ' + __tcShow(s) + '.');
+        }
+      },
+      toMatchObject: function(expected) {
+        function match(a, e) {
+          if (e === null || typeof e !== 'object') return a === e;
+          if (Array.isArray(e)) {
+            if (!Array.isArray(a) || a.length < e.length) return false;
+            for (var i = 0; i < e.length; i++) if (!match(a[i], e[i])) return false;
+            return true;
+          }
+          for (var k in e) if (!match(a && a[k], e[k])) return false;
+          return true;
+        }
+        if (!match(actual, expected)) {
+          fail('Your object does not carry the required fields. Yours: ' + __tcShow(actual) + '.');
         }
       },
       toBeInstanceOf: function(ctor) {
-        if (!(actual instanceof ctor)) throw new Error('Expected instance of ' + (ctor && ctor.name));
+        if (!(actual instanceof ctor)) {
+          fail('Expected an instance of ' + String(ctor && ctor.name) + ', got ' + __tcType(actual) + '.');
+        }
       },
-      not: {
+      toHaveBeenCalled: function() {
+        if (!actual || !actual.mock || actual.mock.calls.length === 0) {
+          fail('This function was never called.');
+        }
+      },
+      toHaveBeenCalledTimes: function(n) {
+        if (!actual || !actual.mock) fail('Expected a mock function here.');
+        if (actual.mock.calls.length !== n) {
+          fail('This function was called ' + actual.mock.calls.length + ' time(s); ' + n + ' was required.');
+        }
+      },
+      toHaveBeenCalledWith: function() {
+        if (!actual || !actual.mock) fail('Expected a mock function here.');
+        var expectedArgs = Array.prototype.slice.call(arguments);
+        var ok = actual.mock.calls.some(function(c) {
+          return JSON.stringify(c) === JSON.stringify(expectedArgs);
+        });
+        if (!ok) {
+          fail('No call matched the required arguments. Calls seen: ' + __tcShow(actual.mock.calls) + '.');
+        }
+      },
+      resolves: {
         toBe: function(expected) {
-          if (actual === expected) throw new Error('Expected value to not be ' + JSON.stringify(expected));
+          return Promise.resolve(actual).then(function(v) {
+            return __tcMatchers(v, __why).toBe(expected);
+          });
         },
         toEqual: function(expected) {
-          if (JSON.stringify(actual) === JSON.stringify(expected)) throw new Error('Expected values to not be equal');
+          return Promise.resolve(actual).then(function(v) {
+            return __tcMatchers(v, __why).toEqual(expected);
+          });
         },
-        toBeDefined: function() {
-          if (actual !== undefined && actual !== null) throw new Error('Expected value to be undefined');
-        },
-        toBeNull: function() {
-          if (actual === null) throw new Error('Expected value to not be null');
-        },
-        toBeTruthy: function() {
-          if (actual) throw new Error('Expected falsy value');
-        },
-        toContain: function(expected) {
-          if (Array.isArray(actual)) {
-            if (actual.includes(expected)) throw new Error('Array unexpectedly contains ' + JSON.stringify(expected));
-          } else if (typeof actual === 'string') {
-            if (actual.includes(expected)) throw new Error('String unexpectedly contains ' + JSON.stringify(expected));
-          }
-        },
-        toMatch: function(re) {
-          var s = String(actual);
-          var matched = re instanceof RegExp ? re.test(s) : s.indexOf(re) !== -1;
-          if (matched) throw new Error('Expected ' + JSON.stringify(s) + ' not to match ' + re);
-        },
-        toHaveProperty: function(key) {
-          var path = key.split('.');
-          var cur = actual;
-          for (var i = 0; i < path.length; i++) {
-            if (cur == null || !(path[i] in cur)) return;
-            cur = cur[path[i]];
-          }
-          throw new Error('Expected NOT to have property ' + JSON.stringify(key));
-        },
-      }
-    };
-  }
-
-  expect.closeTo = function(expected, precision) {
-    precision = precision || 2;
-    return {
-      asymmetricMatch: function(actual) {
-        return Math.abs(actual - expected) < Math.pow(10, -precision) / 2;
-      }
-    };
-  };
-
-  // Promise-rejection chain: \`await expect(promise).rejects.toThrow(msg?)\`.
-  // Wrap the original expect to detect Promise actuals and expose a .rejects.
-  var __origExpect = expect;
-  expect = function(actual) {
-    var base = __origExpect(actual);
-    if (actual && typeof actual.then === 'function') {
-      base.rejects = {
+      },
+      rejects: {
         toThrow: function(msgOrRegex) {
+          if (!actual || typeof actual.then !== 'function') {
+            fail('Expected a promise here, got ' + __tcType(actual) + '.');
+          }
           return actual.then(
-            function() { throw new Error('Expected promise to reject, but it resolved'); },
+            function() { fail('This promise was required to reject, and it resolved instead.'); },
             function(err) {
-              if (msgOrRegex == null) return;
+              if (msgOrRegex === undefined || msgOrRegex === null) return;
               var msg = (err && err.message) || String(err);
-              if (msgOrRegex instanceof RegExp) {
-                if (!msgOrRegex.test(msg)) throw new Error('Expected rejection to match ' + msgOrRegex + ' but got: ' + msg);
-              } else if (typeof msgOrRegex === 'string') {
-                if (msg.indexOf(msgOrRegex) === -1) throw new Error('Expected rejection to contain ' + JSON.stringify(msgOrRegex) + ' but got: ' + msg);
+              var ok = __tcIsRe(msgOrRegex) ? msgOrRegex.test(msg) : msg.indexOf(String(msgOrRegex)) !== -1;
+              if (!ok) {
+                fail('It rejected, but the message was ' + __tcShow(msg) + ' and this check requires ' + __tcShow(String(msgOrRegex)) + '.');
               }
             }
           );
         },
         toEqual: function(expected) {
+          if (!actual || typeof actual.then !== 'function') {
+            fail('Expected a promise here, got ' + __tcType(actual) + '.');
+          }
           return actual.then(
-            function() { throw new Error('Expected promise to reject'); },
-            function(err) {
-              if (JSON.stringify(err) !== JSON.stringify(expected)) throw new Error('Expected rejection ' + JSON.stringify(expected) + ' got ' + JSON.stringify(err));
-            }
+            function() { fail('This promise was required to reject, and it resolved instead.'); },
+            function(err) { return __tcMatchers(err, __why).toEqual(expected); }
           );
         },
-      };
-      base.resolves = {
+      },
+      not: {
         toBe: function(expected) {
-          return actual.then(function(v) {
-            if (v !== expected) throw new Error('Expected resolved ' + JSON.stringify(expected) + ' got ' + JSON.stringify(v));
-          });
+          if (actual === expected) fail('This value must not be ' + __tcShow(expected) + ', and it is.');
         },
         toEqual: function(expected) {
-          return actual.then(function(v) {
-            if (JSON.stringify(v) !== JSON.stringify(expected)) throw new Error('Expected resolved ' + JSON.stringify(expected) + ' got ' + JSON.stringify(v));
-          });
+          if (JSON.stringify(actual) === JSON.stringify(expected)) {
+            fail('This value must not equal ' + __tcShow(expected) + ', and it does.');
+          }
         },
-      };
-    }
-    return base;
-  };
+        toBeDefined: function() {
+          if (actual !== undefined && actual !== null) {
+            fail('This value must be undefined, and it is ' + __tcShow(actual) + '.');
+          }
+        },
+        toBeNull: function() {
+          if (actual === null) fail('This value must not be null, and it is.');
+        },
+        toBeTruthy: function() {
+          if (actual) fail('This value must be falsy, and it is ' + __tcShow(actual) + '.');
+        },
+        toBeFalsy: function() {
+          if (!actual) fail('This value must be truthy, and it is ' + __tcShow(actual) + '.');
+        },
+        toContain: function(expected) {
+          if (contains(expected) === true) {
+            fail('Your value must not contain ' + __tcShow(expected) + ', and it does.');
+          }
+        },
+        toMatch: function(pattern) {
+          var s = String(actual);
+          var matched = __tcIsRe(pattern) ? pattern.test(s) : s.indexOf(String(pattern)) !== -1;
+          if (matched) {
+            fail('Your text must not match ' + (__tcIsRe(pattern) ? String(pattern) : __tcShow(String(pattern))) + ', and it does.');
+          }
+        },
+        toHaveProperty: function(key) {
+          var path = String(key).split('.');
+          var cur = actual;
+          for (var i = 0; i < path.length; i++) {
+            var reachable = cur !== null && (typeof cur === 'object' || typeof cur === 'function');
+            if (!reachable || !(path[i] in cur)) return;
+            cur = cur[path[i]];
+          }
+          fail('This value must not have a property named ' + __tcShow(key) + ', and it does.');
+        },
+        toHaveBeenCalled: function() {
+          if (actual && actual.mock && actual.mock.calls.length > 0) {
+            fail('This function must not have been called, and it was called ' + actual.mock.calls.length + ' time(s).');
+          }
+        },
+        toBeCloseTo: function(expected, precision) {
+          var p = precision === undefined ? __tcDefaultPrecision() : precision;
+          var limit = Math.pow(10, -p) / 2;
+          if (Math.abs(actual - expected) < limit) {
+            fail('This value must not sit within ' + __tcTolerance(p) + ' of that target, and it does.');
+          }
+        },
+      },
+    };
+  }
+
+  function expect(actual, why) {
+    return __tcMatchers(actual, why);
+  }
+  __tcInstallStatics(expect);
+  var jest = __tcJest();
+  /* --- end shared-assertions --- */
 `;
 
 const TF_MOCK = `
@@ -770,6 +1117,44 @@ const TF_MOCK = `
 import { stripTypeScript } from "./strip-typescript";
 export { stripTypeScript };
 
+// --- shared-user-syntax-check: kept byte-identical (modulo whitespace and
+// comments) between packages/ui/src/mdx/exercise-runner.ts and
+// scripts/validate-exercises.mjs, and compared by assertHarnessParity().
+//
+// Both harnesses concatenate the learner's code and the test code into ONE
+// function body. An unbalanced brace in the learner's function therefore
+// swallows the harness that follows it, and the run dies with a message
+// about code the learner never wrote: dropping one closing brace in
+// implement-neuron used to report "await is only valid in async functions
+// and the top level bodies of modules" under the name "Code execution",
+// while the results list vanished (completeness critic, 2026-09-08).
+// Parsing the learner's code ALONE, first, lets the failure name the real
+// cause. The wrapper matches how each harness runs the submission, so a
+// top-level await stays legal.
+function userCodeSyntaxError(cleanUserCode = "") {
+  try {
+    new Function("return (async function() {\n" + cleanUserCode + "\n});");
+    return null;
+  } catch (err) {
+    // Object() so the read type-checks in the .ts copy, where a catch
+    // binding is unknown.
+    const raised = Object(err);
+    return typeof raised.message === "string" ? raised.message : String(err);
+  }
+}
+
+function userSyntaxErrorResult(parserMessage = "") {
+  return {
+    name: "Your code has a syntax error",
+    passed: false,
+    error:
+      "JavaScript could not parse your code, so no test ran. The parser said: " +
+      parserMessage +
+      ". An unclosed or extra brace is the usual cause: check that every opening brace has a partner.",
+  };
+}
+// --- end shared-user-syntax-check ---
+
 function buildFullCode(userCode: string, testCode: string): string {
   const cleanCode = stripTypeScript(userCode);
   // testCode is authored in TS too (annotations, `as` casts) - strip it with
@@ -988,6 +1373,8 @@ const WORKER_BODY = `
         InferenceSession: {
           create: function() {
             return Promise.resolve({
+              inputNames: ['input'],
+              outputNames: ['output'],
               run: function(feeds) {
                 return Promise.resolve({
                   output: {
@@ -1127,6 +1514,17 @@ export async function parseAndRunTestsWith(
   testCode: string,
   timeoutMs = 10_000,
 ): Promise<TestRunOutcome> {
+  // Name a syntax error in the learner's code as such, before it can take
+  // the harness down with it. See shared-user-syntax-check above.
+  const syntaxError = userCodeSyntaxError(stripTypeScript(userCode));
+  if (syntaxError) {
+    return {
+      results: [userSyntaxErrorResult(syntaxError)],
+      logs: [],
+      errored: true,
+    };
+  }
+
   const code = buildFullCode(userCode, testCode);
 
   let handle: WorkerHandle;

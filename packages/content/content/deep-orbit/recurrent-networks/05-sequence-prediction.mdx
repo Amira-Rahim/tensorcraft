@@ -27,11 +27,18 @@ consequence:
   narrative: "The forecast goes up on the main display with a 47-minute countdown, and nobody on the bridge leaves their station."
 hints:
   - level: nudge
-    content: "Forecasting the next reading is regression: the output layer stays linear and the loss is squared error, not crossentropy."
+    content: "Everything past the first prediction runs on the model's own output. Each pass appends one reading to the history and hands the model the tail of it, so what you do to that reading before it goes back in is what the rest of the run reads. Before any of that, the model has to be fitted, and fitting is asynchronous: whatever the training function hands back has to be waited on first."
   - level: guidance
-    content: "buildPredictor() stacks tf.layers.lstm with units: 32 and inputShape: [10, 2], a dense hidden layer with 16 units and relu, and a dense output with 2 units and no activation (linear), then compiles with adam and meanSquaredError and returns the model. A [1, 10, 2] batch must predict to shape [1, 2]."
+    content: "The training half is four moves in a row: stack the layers, compile with a loss and a metric, wait for the fit, hand back the model together with whatever the fit resolved to. The window length is not yours to choose there; it is already sitting in the shape of the tensor you were handed. For the rolling half, two things live outside the loop: the history you keep appending to, and the bounds, which depend only on the scaler and are the same at every step. Inside the loop there are three decisions. The window handed to the model is the tail of that history, not all of it, and it goes in with a batch axis in front of the time axis. What comes back is a tensor, so read the numbers out of it before doing arithmetic on them. And the reading you append is the clamped one, the same reading you return, because the next pass treats it as though a sensor had produced it."
   - level: solution
-    content: "model.add(tf.layers.lstm({ units: 32, inputShape: [10, 2] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 2 })); model.compile({ optimizer: 'adam', loss: 'meanSquaredError' }); return model;"
+    content: |
+      const model = tf.sequential();
+      model.add(tf.layers.lstm({ units: 8, inputShape: [xs.shape[1], xs.shape[2]] }));
+      model.add(tf.layers.dense({ units: 3 }));
+      model.compile({ optimizer: tf.train.adam(0.01), loss: 'meanSquaredError', metrics: ['mae'], });
+      const history = await model.fit(xs, ys, { epochs, batchSize: 32 });
+      return { model, history };
+      const bounds = LIMITS.map((limit, j) => ({ min: (limit.min - scaler.mean[j]) / scaler.std[j], max: (limit.max - scaler.mean[j]) / scaler.std[j], })); const series = [...seed]; const forecast = []; for (let step = 0; step < steps; step++) { const predicted = tf.tidy(() => { const input = tf.tensor3d([series.slice(-windowSize)]); const output = model.predict(input); return Array.from(output.dataSync()); }); const bounded = predicted.map((value, j) => Math.min(Math.max(value, bounds[j].min), bounds[j].max)); forecast.push(bounded); series.push(bounded); } return forecast;
 keywords:
   - prediction
   - forecasting
@@ -50,7 +57,7 @@ If it can predict the timing, the signal has structure. And if it has structure.
 
 Autocomplete is everywhere in JavaScript work: search suggestions, code completion, the email composer finishing your sentence. Each predicts the next token from the sequence so far. Our LSTM does the same: given the last 80 signal readings, predict the next one.
 
-<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric", "Generate multi-step forecasts by feeding predictions back as input", "Sanity-check a forecast's horizon, units, and step size before it reaches the DEEP SCAN dashboard"]} />
+<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric", "Generate multi-step forecasts by feeding predictions back as input", "Convert the sensors' physical limits into the units the model works in, and clamp every fed-back reading against them"]} />
 
 ## Next-Value Prediction
 
@@ -104,8 +111,11 @@ MAE is mean absolute error: the average of `Math.abs(predicted - actual)` across
 
 // Physical limits of the three features, from the same sensor spec the
 // module-4 pipeline normalizes against. The hull sensors saturate at
-// 2048 counts. "Frequency" is a zero-crossing count over a 64-sample
-// window, and phase is an angle in radians.
+// 2048 counts. "Frequency" is a zero-crossing count over one extraction
+// window of 64 samples, which at 256 Hz is a quarter of a second, so 63
+// is the most crossings that window can hold. Phase is in radians. The
+// 64 channels of an archive row are a different 64: that is how many
+// sensors report, not how long a window is.
 const LIMITS = [
   { min: 0, max: 2048 },            // amplitude
   { min: 0, max: 63 },              // frequency
@@ -122,32 +132,15 @@ const bounds = LIMITS.map((lim, j) => ({
 const clamp = (reading: number[]) =>
   reading.map((v, j) => Math.min(Math.max(v, bounds[j].min), bounds[j].max));
 
-// Predict multiple steps ahead by feeding predictions back as input
-async function forecastMultiStep(
-  model: tf.LayersModel,
-  seed: number[][],
-  steps: number,
-): Promise<number[][]> {
-  const window = [...seed];
-  const predictions: number[][] = [];
-
-  for (let i = 0; i < steps; i++) {
-    const nextValue = tf.tidy(() => {
-      const input = tf.tensor3d([window.slice(-80)]);
-      const pred = model.predict(input) as tf.Tensor;
-      return Array.from(pred.dataSync());
-    });
-    // Clamp before the row goes back into the window. A fed-back forecast
-    // is the one place an out-of-range value poisons every later step.
-    // Step i + 1 reads this row as history, so an amplitude the sensors
-    // cannot produce becomes the model's own input for the rest of the run.
-    const bounded = clamp(nextValue);
-    predictions.push(bounded);
-    window.push(bounded);
-  }
-
-  return predictions;
-}
+// The rolling loop is the challenge below: predict one reading, clamp
+// it, push it onto the history, predict again. Each step builds a tensor
+// for the window and gets one back from predict, so the tensor work goes
+// inside tf.tidy.
+//
+// Clamp before the row goes back into the window. A fed-back forecast
+// is the one place an out-of-range value poisons every later step.
+// Step i + 1 reads this row as history, so an amplitude the sensors
+// cannot produce becomes the model's own input for the rest of the run.
 
 // Forecast 47 steps ahead
 const forecast = await forecastMultiStep(model, recentWindow, 47);
@@ -158,7 +151,9 @@ One unit check before anyone trusts a display. The demo above walks 47 one-secon
 
 ## Challenge
 
-Train a prediction model and forecast the next signal value.
+Two pieces, in the order you would build them. First train the forecaster: the LSTM above over the window shape you are handed, a dense head with one output per channel, MSE for the loss and MAE riding along as the metric. The grader reads the optimizer's own update counter and checks it against the number of epochs your history reports, so a training trace has to come from a run that happened rather than from an object that looks like one.
+
+Then write the rolling loop from `multi-step.ts` yourself, at a smaller scale: a stand-in model, a short window, a handful of steps. The two things it grades are the two that are easy to get wrong here. The limits are in counts and the model answers in z-scores, so the bounds have to be converted before anything is compared against them. And the clamp belongs on the reading that goes back into the history, not only on the copy you hand back. The last check runs the loop on the model you trained in the first half.
 
 <Exercise slug="predict-next" />
 
