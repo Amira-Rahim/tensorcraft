@@ -3,7 +3,7 @@
 // The interval mechanics are done properly here, on purpose: the only thing
 // this submission does not understand is where a sigma comes from. It never
 // calls tf.moments and never reads reading.window. Against the archive slice
-// the two agree to four decimals (0.6000 sigma on sample 7741, 3.2000 on a
+// the two agree to four decimals (-0.1333 sigma on sample 7741, 3.2000 on a
 // full-scale reading, -3.4667 on a dead channel), so every zero-hour fixture
 // clears. Point it at a channel with a tenth of that spread and it cannot
 // see a 4-sigma reading at all.
@@ -70,12 +70,12 @@ const zeroHourReading = {
     0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43, 0.633,
     0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
   ],
-  actual: 0.61,
-  reconstructionError: 0.062,
-  reconThreshold: 0.01,
-  predicted: 0.55,
-  actualForecast: 0.61,
-  predTolerance: 0.02,
+  actual: 0.5,
+  reconstructionError: 6.2,
+  reconThreshold: 1.0,
+  predicted: 0.541,
+  actualForecast: 0.5,
+  predTolerance: 0.01,
   intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
   ensembleScore: 0.999,
   module3Score: 0.518,

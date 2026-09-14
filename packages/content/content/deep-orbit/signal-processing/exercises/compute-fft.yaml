@@ -86,7 +86,7 @@ testCode: |
         'Counting how often this signal changes sign answers a different question: it crosses zero far more often than its strongest component repeats.',
       ).toBeCloseTo(4, 1);
     });
-    it('is a transform, not a lookup: the tone is drawn at grade time', () => {
+    it('is not a lookup: the tone is drawn at grade time', () => {
       // 256 samples at 128 Hz space the bin centers 0.5 Hz apart. Drawing the
       // BIN rather than the frequency keeps the tone exactly on a center, so
       // the answer is whatever this run's draw makes it.

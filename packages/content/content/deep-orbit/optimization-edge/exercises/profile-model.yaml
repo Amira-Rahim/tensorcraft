@@ -1,7 +1,18 @@
 slug: profile-model
 lessonSlug: model-profiling
 title: "Profile a Model"
-instructions: "Write a profiler that returns `{ parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }`, four things about a model: how many parameters it holds, how many megabytes those parameters occupy as float32, how long one inference takes on average, and where the parameters sit. Five rules decide whether the report can be read. (1) Report the megabytes the way the lesson's report does, in MB rather than MiB. (2) layerBreakdown is one row per entry in model.layers, in the model's own order, each { name, params } read off that layer. The rows that own nothing belong in it too: a reshape or a flatten holds no weights and still occupies a line, which is how a reader sees that its share is zero rather than wondering where it went. (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because a model's first call pays a one-off compilation cost. The warmup only spends that cost if its result comes back the way rule (4) brings the timed ones back: enqueue a call and drop it and the compilation is still sitting in front of your first timed call. (4) On a GPU backend predict() returns while the work is still queued, so a timed call is only finished once you have awaited the values out of its output. (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile."
+instructions: |
+  Write a profiler that returns `{ parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }`, four things about a model: how many parameters it holds, how many megabytes those parameters occupy as float32, how long one inference takes on average, and where the parameters sit. Five rules decide whether the report can be read.
+
+  (1) Report the megabytes the way the lesson's report does, in MB rather than MiB.
+
+  (2) layerBreakdown is one row per entry in model.layers, in the model's own order, each { name, params } read off that layer. The rows that own nothing belong in it too: a reshape or a flatten holds no weights and still occupies a line, which is how a reader sees that its share is zero rather than wondering where it went.
+
+  (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because a model's first call pays a one-off compilation cost. The warmup only spends that cost if its result comes back the way rule (4) brings the timed ones back: enqueue a call and drop it and the compilation is still sitting in front of your first timed call.
+
+  (4) On a GPU backend predict() returns while the work is still queued, so a timed call is only finished once you have awaited the values out of its output.
+
+  (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile.
 starterCode: |
   interface LayerProfile {
     name: string;
@@ -77,7 +88,9 @@ solutionCode: |
   }
 testCode: |
   describe('profileModel', () => {
-    const createInput = () => [1, 2, 3];
+    // A no-op dispose on the input as well, so the lesson's loop, which
+    // frees what it allocates, runs against this mock unchanged.
+    const createInput = () => Object.assign([1, 2, 3], { dispose: () => {} });
 
     // predict() hands back a handle immediately; the cost sits in the
     // readback, exactly where it sits on a GPU backend. costMs is a
@@ -106,6 +119,7 @@ testCode: |
             ? schedule[Math.min(calls.predict - 1, schedule.length - 1)]
             : costMs;
           return {
+            dispose: () => {},   // the lesson's loop disposes what it reads
             data: () => {
               calls.readbacks++;
               const cost = !warmed && firstCostMs !== undefined ? firstCostMs : scheduled;

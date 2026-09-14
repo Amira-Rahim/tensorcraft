@@ -49,7 +49,7 @@ Your decoder did not file anything overnight. The dashboard did: two anomaly rep
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper cannot: it attenuates real samples at both edges so the cut is never a cliff. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.0, and every other magnitude shrinks with it. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
+Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper cannot: it attenuates real samples at both edges so the cut is never a cliff. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2, and every other magnitude shrinks with it. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
 </Dialogue>
 
 Demir has the shape of the fix right. The FFT treats your slice as one period of an infinitely repeating signal, so a hard edge is a real discontinuity in that repeating version, and a discontinuity is frequency content that was never in the sky. Handling the boundary beats cutting through it, in a byte stream and in a capture. The price is where the two part company. A taper spends real signal to buy a clean spectrum, and the rest of this lesson is what it spends.
@@ -93,15 +93,16 @@ console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from
 <CodeBlock language="typescript" title="window-functions.ts">
 {`// A window function smoothly tapers the signal down at the edges, so the
 // slice ends near the level it started at and the cut is never a cliff.
-// Hann is the all-round default: one raised cosine spread over the slice,
-// w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))), reaching exactly zero at both
-// ends. tfjs ships it:
+// Hann is the all-round default: one raised cosine spread over the slice.
+// The challenge asks you for the symmetric form,
+// w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))), which reaches exactly zero at
+// both ends. tfjs ships the periodic variant:
 const hann = Array.from(tf.signal.hannWindow(128).dataSync());
 // One convention note. For an even n the built-in uses the periodic form,
 // 2*pi*i / n, so at n = 128 its last weight is 0.0006 rather than 0, and it
 // never differs from the n - 1 form by more than 0.019 per sample (0.038 at
 // n = 64). The n - 1 form is the one the challenge asks you to write, and
-// every number below moves by less than 0.2 between the two.
+// no number below moves by more than a quarter between the two.
 // Hamming stops at 0.08 instead of zero, and that leftover step is why its
 // far sidelobes fall off more slowly (see below).
 
@@ -160,7 +161,7 @@ console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
 
 ## Overlapping Windows
 
-Windowing tapers the signal down at the edges, which means you lose information there. Overlap the windows and the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight. The weights it picks up across the windows containing it add up to a near-constant total, so no sample stays discounted overall. Keeping that total constant is what the constant-overlap-add condition asks for. The symmetric Hann used here comes close, and the drawer below shows how close.
+Windowing tapers the signal down at the edges, which means you lose information there. Overlap the windows and the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight. The weights it picks up across the windows containing it add up to a near-constant total, so no sample stays discounted overall. Keeping that total constant is what the constant-overlap-add condition asks for. The periodic Hann used here, the one tfjs ships, satisfies it exactly, and the drawer below shows what the symmetric form costs.
 
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
@@ -210,7 +211,7 @@ console.log('Frequency bins:', spec[0].length); // 33`}
 
 **Constant-overlap-add (COLA) condition:** for perfect signal reconstruction from STFT, the shifted windows must sum to a constant: `Σ_k w[t - hop·k] = constant`. The window and hop must be chosen as a pair: the periodic Hann satisfies COLA at 50% or 75% overlap, while a Blackman window at 50% overlap does not.
 
-One form-of-the-formula subtlety: the Hann formula above is the **symmetric** form (denominator `W - 1`), which is what this lesson's code plots. Exact COLA at `hop = W/2` holds for the **periodic** form, `w[n] = 0.5 · (1 - cos(2π · n / W))`. Measured at `W = 64, hop = 32`: the periodic window's shifted copies sum to exactly 1.0, while the symmetric form's sum ripples between 0.975 and 0.999. For feature extraction the ripple is harmless; for resynthesis, use the periodic form.
+One form-of-the-formula subtlety: the Hann formula above is the **symmetric** form (denominator `W - 1`), which is what the challenge asks you to write; this lesson's code uses the periodic form tfjs ships. Exact COLA at `hop = W/2` holds for the **periodic** form, `w[n] = 0.5 · (1 - cos(2π · n / W))`. Measured at `W = 64, hop = 32`: the periodic window's shifted copies sum to exactly 1.0, while the symmetric form's sum ripples between 0.975 and 0.999. For feature extraction the ripple is harmless; for resynthesis, use the periodic form.
 
 For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
 </DerivationDrawer>
@@ -234,8 +235,8 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
 <LessonRecap
   whatYouLearned={[
     "Spectral leakage occurs when a signal slice does not fit an integer number of cycles in the window. The abrupt edge is interpreted as a discontinuity, spreading energy from real peaks into neighboring frequency bins.",
-    "Windowing functions such as Hann and Hamming taper signal edges down before the FFT, suppressing leakage. One cost is that the tone now spreads over a few more bins, its main lobe, which is a loss of frequency resolution. The other is that every magnitude shrinks by roughly the window's average value (0.4961 for a 128-point Hann), so windowed and unwindowed magnitudes are not comparable. Hann reaches zero at both ends, while Hamming stops at 0.08, so Hamming leaks more into distant bins.",
-    "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the symmetric Hann here comes close."
+    "Windowing functions such as Hann and Hamming taper signal edges down before the FFT, suppressing leakage. One cost is that the tone now spreads over a few more bins, its main lobe, which is a loss of frequency resolution. The other is that every magnitude shrinks by roughly the window's average value (0.5 for the 128-point Hann tfjs ships), so windowed and unwindowed magnitudes are not comparable. Hann reaches zero at both ends, while Hamming stops at 0.08, so Hamming leaks more into distant bins.",
+    "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the periodic Hann here, the one tfjs ships, meets it exactly at a 50% hop; the symmetric form ripples by about 2.5%."
   ]}
   bridge="Cutting a byte stream mid-character decodes to a replacement character that was never in the data, which is why `StringDecoder` holds the split bytes back. Cutting a signal mid-cycle produces frequencies that were never in the signal, and the fix is a taper: the decoder's boundary fix is lossless, the taper's is a trade."
   youCanNow="Apply a Hann window to a signal slice before computing the FFT, measure what the taper does to the leakage, and say what it costs in resolution and magnitude."

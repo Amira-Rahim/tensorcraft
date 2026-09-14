@@ -131,9 +131,11 @@ testCode: |
       // Five verdicts over one shift, confidence decaying while the input
       // window drifts. Both parts of the average move as each one lands: the
       // total and the number of predictions it is divided by. A fixed
-      // divisor, or a mean over a trailing window of the last few, reports a
-      // settled figure while the model is losing its grip. These five average
-      // 0.68, and the last three of them average 0.533.
+      // divisor drifts away from any mean once the count passes it. A
+      // trailing window over the last few would move faster than this
+      // cumulative mean (the last three here average 0.533 against 0.68 over
+      // all five); the contract asks for every prediction so far, and the
+      // lesson keeps the trailing window for latency.
       const monitor = new ModelMonitor([0, 0]);
       const scores = [0.92, 0.88, 0.61, 0.55, 0.44];
       let sum = 0;

@@ -3,6 +3,7 @@ import { PRICING } from "@tensorcraft/shared";
 import { worlds } from "@tensorcraft/worlds";
 import { getWorldLessons, getLessonTotalMinutes } from "@tensorcraft/content";
 import { buildCourseJsonLd } from "../course-jsonld";
+import { FAQ_ITEMS } from "../../../faq-data";
 
 /**
  * First coverage of the launched-world Course JSON-LD (2026-08-17), extracted
@@ -57,6 +58,17 @@ describe("buildCourseJsonLd", () => {
     expect(jsonLd.hasCourseInstance.courseWorkload).toBe(
       `PT${Math.round(totalMinutes / 60)}H`,
     );
+  });
+
+  it("the FAQ quotes the same hours as the JSON-LD", () => {
+    // The FAQ carried "about 27 hours" as a literal while the JSON-LD moved
+    // to the computed 28 (round 7b, 2026-09-14). A prospect reads both.
+    const hours = Math.round(totalMinutes / 60);
+    const faq = FAQ_ITEMS.find((f) =>
+      /How long does Deep Orbit take/.test(f.q),
+    );
+    expect(faq, "the duration FAQ exists").toBeDefined();
+    expect(faq?.a).toContain(`about ${hours} hours`);
   });
 
   it("states the audience for the 2026-08 rebrand: JavaScript developers", () => {

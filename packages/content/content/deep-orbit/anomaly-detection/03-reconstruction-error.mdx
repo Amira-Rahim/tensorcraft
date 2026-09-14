@@ -86,6 +86,8 @@ const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 // Normal signals: low reconstruction error
 const normalScores = computeAnomalyScores(autoencoder, normalTestData);
 console.log('Normal, mean error:', mean(normalScores).toFixed(6));  // ~0.10
+// (lesson 2's val_loss ended at 0.12: the same measure on its own 200
+// held-back archive rows, a different set of unseen readings)
 console.log('Normal, max error:', Math.max(...normalScores).toFixed(6));  // ~0.50
 
 // Anomalous signal: high reconstruction error
@@ -163,7 +165,7 @@ function relativeFeatureErrors(
 // own baseline error, never in the raw.`}
 </CodeBlock>
 
-A raw per-feature map tells you which feature the model rebuilt worst, which is not the same as which feature carries the anomaly. Rank the ratios, not the raw errors.
+A raw per-feature map tells you which feature the model rebuilt worst, which is not the same as which feature carries the anomaly. Sort by the ratios, not the raw errors.
 
 ## Challenge
 

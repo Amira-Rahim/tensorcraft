@@ -134,9 +134,10 @@ class ModelMonitor {
 
   // Confidence tracking, like error rate monitoring
   get avgConfidence(): number {
-    // Every prediction logged so far, not a trailing window. A mean over
-    // the last few reports a settled figure while confidence is falling,
-    // which is the shape this number exists to show.
+    // Every prediction logged so far. A cumulative mean is easy to read and
+    // slow to move: once thousands of logs are in, a bad hour barely shifts
+    // it. That is why the latency methods below keep a trailing window, and
+    // why a real dashboard plots both.
     // Before the first prediction there is nothing to average, and the
     // mean of an empty list is NaN. A dashboard cannot plot NaN.
     if (this.logs.length === 0) return 0;

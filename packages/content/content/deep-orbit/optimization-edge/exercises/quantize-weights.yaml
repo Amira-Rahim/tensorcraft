@@ -1,7 +1,14 @@
 slug: quantize-weights
 lessonSlug: quantization
 title: "Quantize a Model and Measure What It Cost"
-instructions: "Quantize a trained model's weights to uint8 and measure what the quantized build got wrong. Write quantizeModel(model, captures). Work on the 2-D kernel tensors in model.getWeights() and leave the 1-D bias tensors at float32, the way a converter pattern that names only the kernels would. For each kernel, map its values onto the whole numbers 0 to 255 with min-max scaling: scale is (max - min) / 255 and each stored value is Math.round((value - min) / scale), so the smallest weight lands on 0 and the largest on 255. Then do what TensorFlow.js does at load time: restore each weight as stored * scale + min, the two numbers a TensorFlow.js weight manifest carries for a quantized tensor, and put those floats back on the model, because a model still running its trained weights cannot show you what quantizing cost. Return { kernels, maxWeightError, predictionsChanged }. kernels carries one entry per kernel, in model order, each { quantized, scale, min, shape }, with quantized in the tensor's own flat order. maxWeightError is the largest gap between any original weight and its restored value. predictionsChanged is how many of the captures the model now files under a different class, comparing the largest output before your pass against the largest output after."
+instructions: |
+  Quantize a trained model's weights to uint8 and measure what the quantized build got wrong. Write quantizeModel(model, captures).
+
+  Work on the 2-D kernel tensors in model.getWeights() and leave the 1-D bias tensors at float32, the way a converter pattern that names only the kernels would. For each kernel, map its values onto the whole numbers 0 to 255 with min-max scaling: scale is (max - min) / 255 and each stored value is Math.round((value - min) / scale), so the smallest weight lands on 0 and the largest on 255.
+
+  Then do what TensorFlow.js does at load time: restore each weight as stored * scale + min, the two numbers a TensorFlow.js weight manifest carries for a quantized tensor, and put those floats back on the model, because a model still running its trained weights cannot show you what quantizing cost.
+
+  Return { kernels, maxWeightError, predictionsChanged }. kernels carries one entry per kernel, in model order, each { quantized, scale, min, shape }, with quantized in the tensor's own flat order. maxWeightError is the largest gap between any original weight and its restored value. predictionsChanged is how many of the captures the model now files under a different class, comparing the largest output before your pass against the largest output after.
 starterCode: |
   interface QuantizedKernel {
     quantized: number[];

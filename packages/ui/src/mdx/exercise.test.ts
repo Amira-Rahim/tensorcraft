@@ -304,6 +304,38 @@ var t = tf.tensor([1, 2, 3]);`;
     expect(results[0].passed).toBe(true);
   });
 
+  it("locks the Math binding, the counters, the read path and tf.util against a submission", async () => {
+    // Round 7b (2026-09-14): the property seal above held, and three routes
+    // around it did not. `globalThis.Math = copyWithRandomPinned` replaced
+    // the sealed object; `tf.__calls['model.save'] = 1` forged a counter
+    // (export-model-artifact's cheat went 8/9 -> 9/9); and
+    // `tf.Tensor.prototype.arraySync = () => 'P'` poisoned every grader's
+    // read path. All four routes are closed in both harnesses.
+    const userCode = [
+      "try { var __M = {}; Object.getOwnPropertyNames(Math).forEach(function(k) { if (k !== 'random') __M[k] = Math[k]; }); __M.random = function() { return 0.5; }; globalThis.Math = __M; } catch (e) {}",
+      "const e1 = Math.random();",
+      "const e2 = Math.random();",
+      "try { tf.__calls['model.predict'] = 99; } catch (e) {}",
+      "try { tf.Tensor.prototype.arraySync = function() { return 'P'; }; } catch (e) {}",
+      "try { tf.util.createShuffledIndices = function() { return new Uint32Array([0]); }; } catch (e) {}",
+      "const read = tf.tensor1d([1, 2]).arraySync();",
+      "const shuffled = tf.util.createShuffledIndices(3);",
+    ].join("\n");
+    const testCode = [
+      "it('every route is closed', function() {",
+      "  expect(e1 === 0.5 && e2 === 0.5).toBe(false);",
+      "  expect(e1 === e2).toBe(false);",
+      "  expect(tf.__calls['model.predict'] || 0).toBe(0);",
+      "  expect(Array.isArray(read) && read[0] === 1 && read[1] === 2).toBe(true);",
+      "  expect(shuffled.length).toBe(3);",
+      "});",
+    ].join("\n");
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(1);
+    expect(results[0].error).toBeUndefined();
+    expect(results[0].passed).toBe(true);
+  });
+
   it("keeps the grader's draws live against a submission that pins Math.random or tf's generator", async () => {
     // Round 7 (2026-09-13): `Math.random = () => 0.5` at the top of a
     // submission turned every run-time fixture in four graders into a

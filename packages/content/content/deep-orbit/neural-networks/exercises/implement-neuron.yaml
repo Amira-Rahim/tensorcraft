@@ -58,7 +58,7 @@ testCode: |
       const result = neuron(inputs, weights, bias);
       expect(
         readbacks() - before,
-        'neuron() read the values out of the tensors and did the arithmetic in JavaScript. The total can be right and the work still be in the wrong place: a number that has left the tensors carries no gradient, so a neuron built this way can be printed and never trained. Pair the inputs with the weights in one tensor operation and add the bias while the total is still a tensor.',
+        'neuron() pulled values out of the tensors while it ran, and the grader counts every readback, a debug print included. The total can be right and the work still be in the wrong place: a number that has left the tensors carries no gradient, so a neuron built this way can be printed and never trained. Pair the inputs with the weights in one tensor operation, add the bias while the total is still a tensor, and keep any print outside the function.',
       ).toBe(0);
       return readScalar(result);
     };

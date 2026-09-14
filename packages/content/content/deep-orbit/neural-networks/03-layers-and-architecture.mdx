@@ -116,12 +116,12 @@ staged.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 staged.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
 await staged.fit(xs, ys, { epochs: 3000 });
 console.log(Array.from((staged.predict(xs) as tf.Tensor).dataSync()));
-// all four within 0.0003 of 0, 1, 1, 0`}
+// all four within 0.0003 of 0, 1, 1, 0 on all but about one run in sixty`}
 </CodeBlock>
 
-A hundred runs of the flat model, sixty of the staged one. The one-unit version answered 0.50 on every point, every run, to within a hundredth, which is as close as a single straight line gets. The staged version got all four right every run, within 0.0003, on 62 more parameters.
+A hundred runs of the flat model, three hundred of the staged one. The one-unit version answered 0.50 on every point, every run, to within a hundredth, which is as close as a single straight line gets. The staged version got all four right, within 0.0003, on 295 of its 300 runs, on 62 more parameters; the other five answered 0.5 on two of the points, which is the failure the next paragraph is about.
 
-An 8-unit stage would be cheaper and it is not enough: in a hundred runs of it, eight came back answering 0.5 on two of the four points, which is the flat model's answer, because too many of its eight relu units died during training. Dead units on their own are not the exception. 98 of those hundred runs ended with at least one, and 92 of the hundred got all four points right anyway: a working 8-unit run carries 3 dead units at the median, and the 16-unit stage above carries 7 dead of its 16 and missed nothing in 60 runs. What decides a run is how many units die against the width of the stage.
+An 8-unit stage would be cheaper and it is not enough: in a hundred runs of it, eight came back answering 0.5 on two of the four points, which is the flat model's answer, because too many of its eight relu units died during training. Dead units on their own are not the exception. 98 of those hundred runs ended with at least one, and 92 of the hundred got all four points right anyway: a working 8-unit run carries 3 dead units at the median, and the 16-unit stage above carries 6 dead of its 16 at the median and still missed only five times in 300 runs. What decides a run is how many units die against the width of the stage.
 
 No reading this ship extracts needs a boundary that shape yet; module 5 widens a reading to eleven features, and stages are what read combinations of them.
 

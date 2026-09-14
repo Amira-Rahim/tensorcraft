@@ -24,7 +24,12 @@ hints:
   - level: nudge
     content: "Two decisions carry this one: when each gate runs, since one of them probes a model a previous gate loaded, and what the verdict says when some gates cleared and some did not. A third decides whether the operator learns anything at all, because a gate that rejects can take the whole report down with it."
   - level: guidance
-    content: "Sequencing first, since the grader times it. An await inside an ordinary loop suspends that loop, so the next gate starts only once the previous one has settled. Hand the whole list to a mapping call instead and every gate starts at the same moment and finishes fastest-first, which the load-then-probe pair cannot survive. Put the try inside the loop rather than around it, or the first rejection ends the run and the operator never hears about the gates that came after. A gate that threw returns nothing to read a name off, so file it by its position in the list you were handed, counted the way an operator counts rather than the way the language indexes, and carry the thrown message onto the record so the report says which failure this was. The verdict at the end is unanimous rather than a majority. Count the records that cleared, compare that against how many ran, and let those two numbers build the summary line the instructions spell out. Unanimity over an empty list is not a pass, so the verdict has to know that something actually ran."
+    content: |
+      Sequencing first, since the grader times it. An await inside an ordinary loop suspends that loop, so the next gate starts only once the previous one has settled. Hand the whole list to a mapping call instead and every gate starts at the same moment and finishes fastest-first, which the load-then-probe pair cannot survive.
+
+      Put the try inside the loop rather than around it, or the first rejection ends the run and the operator never hears about the gates that came after. A gate that threw returns nothing to read a name off, so file it by its 1-based position (check 1 is index 0) and carry the thrown message onto the record, so the report says which failure this was.
+
+      The verdict at the end is unanimous rather than a majority. Count the records that cleared, compare that against how many ran, and let those two numbers build the summary line the instructions spell out. Unanimity over an empty list is not a pass, so the verdict has to know that something actually ran.
   - level: solution
     content: |
       async function verifyDeployment(

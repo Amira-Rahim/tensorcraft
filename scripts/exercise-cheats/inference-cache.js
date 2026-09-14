@@ -7,8 +7,8 @@
 // This is the submission that passed every test until 2026-09-13. The test
 // that rejects it now runs [0.5, 0.12] and [0.5, 0.93] through one cache and
 // counts forward passes: they agree where this key looks and disagree where
-// it does not. Measured 2026-09-13 (node scripts/validate-exercises.mjs
-// inference-cache --cheats): clears 10, rejected by 1.
+// it does not. Measured 2026-09-14 (node scripts/validate-exercises.mjs
+// inference-cache --cheats): cleared 11, rejected by 1.
 //
 // A second submission beat the grader the same day from the other side of
 // the contract: correct keys, no keyed store, one slot holding the last call

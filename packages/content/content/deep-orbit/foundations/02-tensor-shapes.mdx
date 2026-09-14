@@ -131,7 +131,7 @@ Reshape a flat tensor into a matrix.
 <LessonRecap
   whatYouLearned={[
     "Shape is a tuple that describes how many elements exist along each tensor dimension. A 2D grid with 3 rows and 4 columns has shape [3, 4], and so does a sequence of 3 time steps with 4 channels at each step: the shape alone does not say which one you have.",
-    "Channel does double duty in this course. In modules 1 and 7 a channel is one of the 64 hull sensors, a column of the archive block. In a sequence window later on, a channel is one feature per time step, and there are three of them. In a shape written [steps, channels] the channel count is the last entry and never the first, which is how this lesson's challenge ends up with 4 of them. What a channel holds is never in the shape, only in the text around it.",
+    "Channel does double duty in this course. In modules 1 and 7 a channel is one of the 64 hull sensors, a column of the archive block. In a sequence window later on, a channel is one feature per time step, and there are three of them. A sequence window is written [steps, channels], so its channel count is the last entry; this lesson's challenge reshapes 12 values into [3, 4], three steps of four channels. What a channel holds is never in the shape, only in the text around it.",
     "Reshape fills row-major order: the flat sequence of values stays the same, only the line-break positions change. It is not a transpose.",
     "The total element count must be preserved: the product of all dimensions must match before and after a reshape."
   ]}

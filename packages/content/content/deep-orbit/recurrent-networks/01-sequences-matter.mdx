@@ -25,7 +25,7 @@ consequence:
   narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
-    content: "Most failures here sit at the edges rather than in the middle of the loop. Two of them: the final position, which may have no answer to train against, and a call so short that no position works at all. Decide what each of those hands back before you write the body."
+    content: "Most failures here sit at the edges rather than in the middle of the loop. The drop rule belongs in the loop's stop condition, not in a filter run afterwards: stop where a window would have no reading after it, and the last-position case never comes up. Decide what an empty result hands back before you write the body."
   - level: guidance
     content: "Both moving parts sit in the loop header. The window's first index advances by the stride rather than by a single reading, so consecutive windows overlap by windowSize minus stride, and stop overlapping once the stride is as wide as the window. The stop condition is where the drop rule lives: the loop has to end while the archive still holds the reading each window is paired with, which means the last window you keep is not the last one that fits. The pair of tensors is that same data with one axis made explicit: a window is a sample, and inside it time comes before features. Build them out of the two lists you just filled, and when nothing survived the drop rule there is nothing to stack."
   - level: solution
@@ -146,7 +146,7 @@ Then stack what survives. The arrays are nested lists to JavaScript and nothing 
 <Exercise slug="create-sequences" />
 
 <RecallPrompt
-  question="You feed a feedforward network three readings one at a time: [0.5, 0.3, 0.7], then [0.8, 0.2, 0.9], then [0.4, 0.6, 0.1]. You run them again in reverse order. What changes about the three scores, and what does not?"
+  question="You feed a feedforward network three readings one at a time: [0.5, 0.3, 0.7], then [0.8, 0.5, 0.9], then [0.4, 0.6, 0.1]. You run them again in reverse order. What changes about the three scores, and what does not?"
   answer="Each reading keeps the exact score it had; the list of scores just comes back in a different order. The network scores every reading in isolation, so nothing about a reading's score depends on what preceded it. Note the trap in the other direction: shuffling the three numbers INSIDE one reading does change its score, because a dense layer holds a separate weight per input position. Position within a vector matters to it. Position within a sequence does not, because it never sees the sequence at all."
 />
 

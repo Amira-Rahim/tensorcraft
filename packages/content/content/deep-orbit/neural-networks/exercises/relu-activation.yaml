@@ -86,7 +86,7 @@ testCode: |
       const out = activate(tf.tensor([-1.5, 0.25, 4.0]));
       expect(
         readbacks() - before,
-        'applyRelu() pulled the values out of the tensor and mapped them in JavaScript. Every answer can be right and the work still be in the wrong place: numbers that have left the tensor carry no gradient, so a layer built this way cannot be trained, and the walk costs a readback per call at inference. One elementwise operation covers the whole tensor at once, whatever its shape.',
+        'applyRelu() pulled values out of the tensor while it ran, and the grader counts every readback, a print() or dataSync() left in for debugging included. Every answer can be right and the work still be in the wrong place: numbers that have left the tensor carry no gradient, so a layer built this way cannot be trained, and the walk costs a readback per call at inference. One elementwise operation covers the whole tensor at once, whatever its shape; keep any print outside the function.',
       ).toBe(0);
       const vals = out.dataSync();
       expect(vals[0], NEGATIVE_WHY).toBe(0);

@@ -152,7 +152,7 @@ testCode: |
       ).toEqual([4, 2, 4, 8]);
     });
 
-    it('keeps a nonlinearity in every stage but the output (all-linear layers collapse to one projection, which is PCA, not an autoencoder)', async () => {
+    it('keeps a nonlinearity in every stage but the output (all-linear layers collapse to one projection, which is not an autoencoder)', async () => {
       const run = await trainScreened();
       expect(run && run.model, SHAPE).toBeDefined();
       const denseLayers = (m) => m.layers.flatMap((l) => (l.layers ? denseLayers(l) : [l]));

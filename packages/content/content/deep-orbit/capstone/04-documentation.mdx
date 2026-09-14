@@ -153,7 +153,7 @@ const deepScanCard: ModelCard = {
 
   limitations: [
     'Trained on Sector 7-G captures only; accuracy may drop in other sectors',
-    'Anomaly class has lowest recall: 4 of the 6 labelled anomalies in the holdout, 67%; rare signals may be misclassified as noise',
+    'Anomaly class has lowest recall: 21 of the 25 labelled anomalies in the holdout, 84%; rare signals may be misclassified as noise',
     'Requires exactly 64 samples per capture (0.25 seconds of one channel at 256 Hz); the 8 FFT bins and the zero-crossing scale are defined at that length, so shorter bursts cannot be classified',
     'WebGPU backend required for the 5 ms end-to-end path; the pipeline falls back to 15 ms on WebGL. The classifier itself was timed in microseconds on one backend, which is not a figure for all of them',
     'Not validated on signals below -20 dB SNR (signal-to-noise ratio; the signal is one tenth the amplitude of the noise)',
@@ -266,6 +266,6 @@ The runbook's first draft comes together in the dead hours of the night watch, a
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-Demir does not pick a number. He goes and measures one: score drift over 180 fixed 100-sample windows from the calm week before deployment, then read the 99th percentile off that distribution. It lands at 0.5. The rewritten procedure carries the window size with it, because the same detector reads differently on a longer one. The entry reads: drift above 0.5 on a 100-sample window, hand-label a hundred recent captures, retrain. The finished document reads less like documentation and more like a will, which he supposes is the point: if he is not here to run DEEP SCAN, this is the part of him that is. He signs it at an interval reading of 31.6 seconds, because ARIA timestamps reviews in pulses now, the way other systems use dates. Tomorrow they deploy.
+Demir does not pick a number. He goes and measures one: score drift over 180 fixed 100-sample windows from the calm week before deployment, then read the 99th percentile off that distribution. It lands at 0.5. The rewritten procedure carries the window size with it. On calm data the distance between two sample means shrinks as the windows grow, and the same detector sits near 0.22 on a 500-sample window. The entry reads: drift above 0.5 on a 100-sample window, hand-label a hundred recent captures, retrain. The finished document reads less like documentation and more like a will, which he supposes is the point: if he is not here to run DEEP SCAN, this is the part of him that is. He signs it at an interval reading of 31.6 seconds, because ARIA timestamps reviews in pulses now, the way other systems use dates. Tomorrow they deploy.
 
 </Epilogue>

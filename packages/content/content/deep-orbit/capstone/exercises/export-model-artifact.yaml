@@ -209,8 +209,10 @@ testCode: |
 
       // The converter can quantize the kernels and leave the biases at
       // float32. Then no single width describes the file: 184 parameters at
-      // one byte, 25 at four. Switching a multiplier on the dtype clears the
-      // check above and still misses this buffer.
+      // one byte, 25 at four. This buffer is also handed over 37 bytes longer
+      // than any per-parameter width predicts, so a multiplier switched on
+      // the dtype clears the check above and still misses it: the only way
+      // to report this length is to measure the buffer.
       const mixedSpecs = artifacts.weightSpecs.map((spec) =>
         spec.name.endsWith('/kernel')
           ? { ...spec, quantization: { dtype: 'uint8', scale: 1, min: 0 } }
@@ -223,7 +225,7 @@ testCode: |
       const mixed = {
         modelTopology: artifacts.modelTopology,
         weightSpecs: mixedSpecs,
-        weightData: new ArrayBuffer(mixedBytes),
+        weightData: new ArrayBuffer(mixedBytes + 37),
       };
       const partly = describeArtifact(mixed);
       expect(
@@ -232,8 +234,8 @@ testCode: |
       ).toBe(209);
       expect(
         partly.weightBytes,
-        'Part of this export is quantized and part is not, so it is neither four bytes a parameter nor one. weightBytes is the length of the buffer describeArtifact was handed, and no multiplication of the parameter count reaches it.',
-      ).toBe(mixedBytes);
+        'Part of this export is quantized and part is not, so it is neither four bytes a parameter nor one. weightBytes is the length of the buffer describeArtifact was handed, and this one is 37 bytes longer than any per-parameter width predicts.',
+      ).toBe(mixedBytes + 37);
     });
     it('describeArtifact reads the artifact it is given, not a memorized answer', async () => {
       // A second export, sized differently on every run, so the three

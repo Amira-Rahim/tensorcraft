@@ -381,10 +381,10 @@ And then the one the whole season was for. The console transcript above is what 
     "An ML-powered web app deploys exactly like a static site (`npm run build`, model files in the dist folder as static assets, served from a CDN) because the model runs entirely in the browser.",
     "Deployment verification must confirm three things independently: the model file loads from the deployed URL, a labeled probe still scores above its floor, and latency meets the performance budget. Random input can only prove the file parses; it cannot see a mangled preprocessing path.",
     "Model rollback restores weights but not the training distribution; drift accumulates from the training cutoff, so a rolled-back model may perform worse on current data than it did when first deployed.",
-    "A rehearsal is only evidence if its record can be checked. A loss trace is a value the submitting code returns and can be written by hand; model.optimizer.iterations belongs to the optimizer, counts one per batch, and takes no assignment. Tie them together (batches per epoch times epochs in the trace) and the training record cannot be produced without the training."
+    "A rehearsal is only evidence if its record can be checked. A loss trace is a value the submitting code returns and can be written by hand; model.optimizer.iterations belongs to the optimizer, counts one per batch, and takes no assignment. Tie them together, reading the counter after the fit rather than working it out (a candidate can arrive warm, and then the schedule and the counter disagree) and reporting the trace fit() handed back, and the training record cannot be produced without the training."
   ]}
   bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time and no deploy ever resets it."
-  youCanNow="Ship a model as a static asset, then prove the deployed system is the one you meant: load, labeled-probe accuracy, latency, and a rehearsal whose training record cannot be written without the training."
+  youCanNow="Ship a model as a static asset, then prove the deployed system is the one you meant: load, labeled-probe accuracy, latency, and a rehearsal whose training record cannot be written without the training, then sign the verdict with the decision layer: a 2-of-3 detector vote and an interval decomposition that survives a change of units."
 />
 
 <Epilogue>

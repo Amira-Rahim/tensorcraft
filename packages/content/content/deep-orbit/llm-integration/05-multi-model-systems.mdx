@@ -157,15 +157,18 @@ Generate a brief alert summary in 2-3 sentences. Use only the numbers above.
     \`);
     // verifyClaims is lesson 3's checker: every number in the draft has to
     // trace to one we handed it, within 0.05. Read that tolerance against
-    // this hand-off before trusting it. Lesson 3's evidence was counts and
-    // hertz, where 0.05 is tight; this hand-off is a confidence, a
-    // reconstruction error and three z-scores, numbers that live inside
-    // about -1 to 1, where 0.05 clears almost any two-decimal number a
-    // model could invent (measured: a draft with every number made up came
-    // back with nothing fabricated). What holds the line at this scale is
-    // the prompt's "only the numbers above" and the three- and four-decimal
-    // printing, not the checker; a tolerance sized to the hand-off would
-    // need lesson 3's function to take one. A label like "Band-7" still
+    // this hand-off before trusting it. One absolute tolerance serves a
+    // mixed-scale evidence set unevenly, and lesson 3's set already mixed
+    // an amplitude in counts with a confidence in 0..1. Here four of the
+    // six handed numbers sit inside -1 to 1 (the reconstruction error does
+    // not: it starts above module 7's cutoff of 1.0 and reads 6.2 on this
+    // capture). At that scale 0.05 forgives a reprint, 0.918 as 0.92 or
+    // 6.2000 as 6.20, which is what it is for, and a two-decimal number a
+    // model invents still lands inside 0.05 of one of the six by luck about
+    // one time in six (measured: a draft with six invented numbers came
+    // back six fabricated; one that only rounded the six it was handed came
+    // back clean). The prompt's "only the numbers above" and the three- and
+    // four-decimal printing carry the rest. A label like "Band-7" still
     // comes back as a claim of -7, exactly as it did in lesson 3.
     const { fabricated } = verifyClaims(draft, [handed]);
     report = validateStage(
@@ -226,9 +229,9 @@ async function resilientPipeline(
     console.warn('LSTM prediction failed; skipping');
   }
 
-  // Alert: optional (skip if LLM is unavailable). writeAlert is stage 4 of
-  // the pipeline above, factored out. Lesson 4's generateReport is a
-  // different function: the six-section report pipeline.
+  // Alert: optional (skip if LLM is unavailable). writeAlert stands in for
+  // stage 4's LLM call. Lesson 4's generateReport is a different
+  // function: the six-section report pipeline.
   let report = null;
   if (anomaly.isAnomaly) {
     try {

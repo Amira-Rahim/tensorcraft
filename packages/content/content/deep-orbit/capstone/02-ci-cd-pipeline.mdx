@@ -356,9 +356,9 @@ And the invocation the workflow's validate-model step runs. `--expect-digest` is
 }
 
 const result = await validateModel(
-  'models/deep-scan-v1/model.json',
-  'data/holdout.json',
-  0.90,
+  flag('--model') ?? 'models/deep-scan-v1/model.json',
+  flag('--test-data') ?? 'data/holdout.json',
+  Number(flag('--min-accuracy') ?? 0.90),
   flag('--expect-digest')
 );
 

@@ -60,7 +60,6 @@ console.log("-- dataset rows --");
 for (const v of [
   [0.12, 0.81, 0.2],
   [0.18, 0.77, 0.31],
-  [0.5, 0.5, 0.5],
 ]) {
   console.log(fmt(v, await score(v)));
 }
@@ -76,16 +75,16 @@ for (const a of [0, 1])
 console.log("-- landing presets (must match their labels) --");
 for (const [name, v] of [
   ["healthy", [0.1, 0.9, 0.15]],
-  ["sample 7741", [0.5, 0.5, 0.5]],
+  ["sample 7741", [0.5, 0.59, 0.54]],
   ["deep anomaly", [0.95, 0.05, 0.95]],
 ]) {
   console.log(`${name}: ${fmt(v, await score(v))}`);
 }
 
-console.log("-- sweeps from 7741 (0.5,0.5,0.5) --");
+console.log("-- sweeps from 7741 (0.5,0.59,0.54) --");
 for (let i = 0; i < 3; i++) {
   for (const val of [0, 0.25, 0.75, 1]) {
-    const v = [0.5, 0.5, 0.5];
+    const v = [0.5, 0.59, 0.54];
     v[i] = val;
     console.log(`ch-${i}=${val}: ${fmt(v, await score(v))}`);
   }

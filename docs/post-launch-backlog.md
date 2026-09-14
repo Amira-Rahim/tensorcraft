@@ -4201,6 +4201,131 @@ the 65-exercise browser parity; web 732 / 732; shared 39 / 39; tsc clean on
 content, ui and web; prettier clean on all 185 changed files; 0 em dashes.
 About 185 files uncommitted.
 
+### Round 7b (2026-09-14): the round-7 diff read blind, 13 readers, 67 regressions closed the same day
+
+The owner committed the round-7 tree (diff base 241742a) and asked for the
+day's changes to be verified before anything else. Thirteen fresh readers,
+each scoped to `git diff 241742a..HEAD` for one module (or the two harnesses
+and the app surfaces, or the whole corpus for canon leftovers), blind to
+intent on purpose, every finding backed by a measurement, run at
+concurrency 3 (`verify-r7.js`, run `wf_ddb60367-1bd`, 2h13m, 768 changed
+items checked). They graded THE BATCH, not the course.
+
+| Reader | Grade | Items checked | Regressions | High | Medium | Low |
+| --- | --- | --- | --- | --- | --- | --- |
+| foundations | B+ | 37 | 3 | 2 | 1 | 4 |
+| neural-networks | B | 61 | 8 | 1 | 4 | 3 |
+| training-loop | B+ | 52 | 5 | 0 | 5 | 3 |
+| browser-runtimes | B- | 47 | 5 | 3 | 3 | 3 |
+| signal-processing | B | 68 | 7 | 0 | 5 | 4 |
+| recurrent-networks | B+ | 61 | 6 | 1 | 3 | 4 |
+| anomaly-detection | A- | 78 | 7 | 0 | 4 | 3 |
+| advanced-time-series | B+ | 51 | 5 | 1 | 2 | 3 |
+| llm-integration | A- | 58 | 4 | 1 | 1 | 3 |
+| optimization-edge | A- | 64 | 4 | 0 | 2 | 5 |
+| capstone | B | 50 | 9 | 2 | 4 | 2 |
+| harness and app | B+ | 84 | 3 | 3 | 5 | 3 |
+| canon sweep | A- | 57 | 1 | 1 | 4 | 1 |
+
+Grade of the batch as read: B+ median (A- x4, B+ x5, B x3, B- x1). Every
+high, medium, low and regression was closed by hand the same day, each with
+the reader's probe re-run or the measurement replicated (the closures, with
+numbers, are in the session tally), and the one item left open is an owner
+call listed below.
+
+**What the round-7 pass got wrong, by class.** Sixty-seven regressions
+across 13 reports, in three shapes:
+
+- **Sibling surfaces left on the old text (about 40).** An edit to one
+  surface (a code block, a banner figure, a thesis, the shape of
+  `classify()`) left two to five siblings on the old claim: dialogue,
+  recap bullets, DerivationDrawers, RecallPrompts, bridge `breaks`, the
+  exercise brief under the same lesson, the LessonRecap bridge. Lesson 5
+  of signal-processing carried 27.0 and 27.2, 0.4961 and 0.5, and called
+  its own periodic window symmetric; training-loop's exercise brief said
+  "forty minutes of compute" under a lesson that said "ten times the
+  compute" three times; module 7 defined "capture" as the 33-second block
+  while its lesson 5 used the word ten times for the window.
+- **Sample maxima written as bounds, and absolutes written from one
+  batch (about 15).** "Never passed 0.236 over 120,000 draws" fell to a
+  24,000-draw sample; "missed nothing in 60 runs" missed three times in
+  180 and five in 300; "a rare run rides the 500-epoch bound" happened
+  zero times in 1,300 runs; "between 0.35 and 0.70" had its top above the
+  0.69 start. Rewritten as percentiles or as measured ranges with the
+  sample size stated (the standing rule now: numbers from one batch are
+  samples; say the size and the spread).
+- **Hardened graders that reject the lesson's own idiom (6).** A debug
+  print inside `neuron()` was called JavaScript arithmetic; the lesson's
+  own `tf.scalar` drill loop was called a library layer; `.clone()` on a
+  correct forward pass got a message about a hand-rolled matMul; the
+  lesson's async `classify()` failed the sync exercise beneath it 5/5;
+  profile-model's mock had no `dispose()` so the lesson's own loop crashed
+  the grader. Each closed by naming what the gate measures, or by giving
+  the mock the method the lesson uses; no gate was weakened.
+
+**Harness breaker (B+, three highs, all closed in both harnesses).** The
+round-7 seal held on the routes it was tested on and three routes walked
+around it: `globalThis.Math = copyWithRandomPinned` replaced the sealed
+object (three shipped cheats went from rejected to fully passing);
+`tf.__calls['model.save'] = 1` forged a counter (export-model-artifact's
+cheat cleared 9/9); and `tf.Tensor.prototype.arraySync = () => 'P'`
+poisoned every grader's read path. In the CI validator a fourth route
+reached the host realm through an intrinsic's constructor chain and pinned
+the host `Math.random`, which seeded every later exercise in the process
+identically. Now: the `Math` binding is non-writable in both harnesses;
+`tf.__calls` is a frozen snapshot per read; the spied `Tensor.prototype`
+methods, the read path and `LayersModel.prototype.predict` / `save` are
+locked after the spy wraps them and `tf.util` is frozen; the validator
+locks the host `Math.random` and `Math` binding once per process and seeds
+its sealed stream from crypto. `assertHarnessParity` now compares the three
+spy lists and the seeded generator between the two files (proven to bite),
+`exercise.test.ts` pins all four routes in the worker (22/22), the reader's
+battery re-run through an importable copy of the new validator reports
+every route closed, and the README says what is protected and what is a
+lock rather than a wall. Also closed: the answer-leak gate now scans every
+lesson of a module (332 cases, one reasoned exemption), the cheat loop
+reports every cheat file instead of stopping at the first failure, the
+hint-dictation parser's `\Z` (a literal Z in JavaScript) is a real
+end-anchor, the FAQ says 28 hours like the JSON-LD and is pinned to the
+corpus sum, and the boss-beat clock-out note is a live region that
+describes a default rather than silence acting.
+
+**Canon sweep (A-).** The last `0.062` / `0.61` / `0.01` in the swept scope
+was the classify-anomaly cheat, now on the shipped fixture and rejected by
+exactly the test it was written for; the landing-demo probe still called
+`[0.5, 0.5, 0.5]` sample 7741; the capstone's LSTM pair was on a 2.5x miss
+where module 7 prints 0.041 against 0.01; find-threshold swept the min-max
+family on the lesson that locks 1.0 (every value x10, F1 unchanged); and
+the two video docs directed a 3-of-3 verdict for the module-7 climax
+(`docs/video-scene-prompts-deep-orbit.md`, `docs/scene-bible.md`), the one
+leftover that would have been expensive after it was shot. All closed.
+
+**Other content closures worth knowing before recording.** browser-runtimes
+lesson 4 teaches the synchronous tidy `classify()` again, typed so the
+pipeline block compiles under strict TypeScript, with the async split as a
+labelled alternative; the latency paragraph no longer charges the extra
+millisecond to a readback lesson 5's 2.4 ms already holds. Lesson 2's
+benchmark says 220x (110 / 0.5) on both surfaces. The capstone card says
+84% anomaly recall on both surfaces (21 of 25), the monitoring comment has
+the cumulative-vs-trailing tradeoff the right way round, and the CI script
+reads the flags the workflow passes. All five optimization-edge briefs are
+paragraphed (text verbatim).
+
+**Owner call, one.** The glossary rail now lists exactly the terms the body
+underlines (the round-7 contract). That dropped terms the old source match
+took from frontmatter term lists, code identifiers and JSX attributes:
+anomaly-detection/autoencoders went from 22 rail terms to 3, because its
+prose never says "encoder" or "reconstruction error" outside code and
+component props. Either keep the contract (the rail is what a reader saw
+underlined) or union it with each lesson's own frontmatter term list.
+Nothing in the gates decides this.
+
+**Gates after everything.** content 912 / 912 (37 files; the leak gate grew
+from 66 to 332 cases); validator 65 / 65 solutions, 65 / 65 cheats (90
+CHEAT-OK lines), 65 / 65 starters; ui exercise.test 22 / 22, browser parity
+65 / 65, ui tsc clean; web 734 / 734, web tsc clean; shared 39 / 39;
+prettier clean on all 76 changed files; 0 em dashes. Uncommitted.
+
 ## Next 16 bump follow-ups (2026-09-14)
 
 Source: Dependabot PR #38 (next 15.5.24 to 16.3.4) went red on Build, E2E,

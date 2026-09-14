@@ -195,7 +195,7 @@ Score each member, score both blends (equal shares, then confidence shares), and
 
 <RecallPrompt question="Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?" answer="No. The best member scored 0.036, so the ensemble is worse than the model you already had, and the two other members are what dragged it there. Beating 0.046, the mean of the member scores, means nothing, because averaging clears that bar every time. The comparison worth making is against the best single member." />
 
-<RecallPrompt question="Module 1 normalized sensor channels before a model read them. The member errors here are fractions of each channel's range rather than raw misses in counts and radians. Which module 1 result says what a raw-unit score would have measured instead?" answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and the louder channel dominated. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the confidences computed from it, would track amplitude alone." />
+<RecallPrompt question="Why are the member errors here fractions of each channel's range instead of raw counts and radians?" answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and the louder channel dominated. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the confidences computed from it, would track amplitude alone." />
 
 <LessonRecap
   whatYouLearned={[

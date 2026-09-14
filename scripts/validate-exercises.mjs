@@ -36,6 +36,7 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { createRequire } from "node:module";
+import { randomBytes } from "node:crypto";
 
 // Resolve `@tensorflow/tfjs` from the workspace `packages/ui` package, since
 // pnpm doesn't hoist it to the repo root and the validator script lives at
@@ -194,6 +195,7 @@ const SPIED_ENTRY_POINTS = new Set([
   "dispose",
   "keep",
   "matMul",
+  "dot", // the functional twin of tensor.dot (round 7b, 2026-09-14: a gate on matMul-or-dot missed tf.dot)
   "transpose",
   "add",
   "sub",
@@ -265,6 +267,34 @@ let liveCalls = Object.create(null);
     };
     proto.__tcSpied = true;
   }
+  // The namespace proxy refuses writes to tf's own properties, but nothing
+  // hanging off it was protected: tf.Tensor.prototype.arraySync = () => 'P'
+  // poisoned every grader's read path and tf.util.createShuffledIndices was
+  // swappable (round 7b, 2026-09-14). Lock the spied methods and the read
+  // path after the spy has wrapped them, and freeze tf.util. Identical block
+  // in the runner.
+  const lockMethods = (target, names) => {
+    if (!target) return;
+    for (const name of names) {
+      const d = Object.getOwnPropertyDescriptor(target, name);
+      if (d && typeof d.value === "function" && d.configurable)
+        Object.defineProperty(target, name, {
+          ...d,
+          writable: false,
+          configurable: false,
+        });
+    }
+  };
+  lockMethods(tproto, [
+    ...TENSOR_METHODS,
+    "data",
+    "array",
+    "dataSync",
+    "arraySync",
+  ]);
+  lockMethods(proto, ["predict", "save"]);
+  if (realTf.util && typeof realTf.util === "object")
+    Object.freeze(realTf.util);
 }
 function spiedTf(base) {
   const calls = Object.create(null);
@@ -287,7 +317,12 @@ function spiedTf(base) {
     });
   return new Proxy(base, {
     get(target, prop) {
-      if (prop === "__calls") return calls;
+      // A frozen snapshot, not the live object: tf.__calls['model.save'] = 1
+      // forged a counter in both harnesses before this (round 7b,
+      // 2026-09-14). Each read is a fresh copy, so a grader that reads the
+      // counters twice sees the calls in between.
+      if (prop === "__calls")
+        return Object.freeze(Object.assign(Object.create(null), calls));
       const v = target[prop];
       if (SPIED_ENTRY_POINTS.has(prop) && typeof v === "function") {
         return function (...args) {
@@ -327,8 +362,15 @@ function spiedTf(base) {
 // fixture in four graders into a constant, because tf's own generator seeds
 // from Math.random on every call as well). Every property of the host Math is
 // copied except random, which is a per-run seeded stream sealed non-writable
-// and non-configurable. The seed comes from the HOST Math.random, which the
-// sandbox never sees. Mirrors the sealing block at the top of WORKER_BODY in
+// and non-configurable. The seed comes from crypto, not from the host
+// Math.random: the sandbox is handed host intrinsics (Object, Array, the
+// typed arrays, so tensors built in the host realm pass instanceof checks in
+// test code), and any host intrinsic reaches the host realm through its
+// constructor chain (Object.constructor('return Math')()), so a submission
+// that pinned the host generator would otherwise seed every later exercise
+// in the process identically (round 7b, 2026-09-14). The host generator and
+// the host Math binding are locked below for the same reason. Mirrors the
+// sealing block at the top of WORKER_BODY in
 // packages/ui/src/mdx/exercise-runner.ts.
 function sealedMath() {
   const m = Object.create(Object.prototype);
@@ -336,7 +378,7 @@ function sealedMath() {
     if (key === "random") continue;
     Object.defineProperty(m, key, Object.getOwnPropertyDescriptor(Math, key));
   }
-  let seed = (Math.random() * 0x100000000) >>> 0;
+  let seed = randomBytes(4).readUInt32LE(0);
   const random = () => {
     seed = (seed + 0x6d2b79f5) >>> 0;
     let t = seed;
@@ -352,6 +394,24 @@ function sealedMath() {
   });
   return Object.freeze(m);
 }
+// The host realm's own generator and Math binding, locked once per process:
+// tf (loaded in the host realm) reads Math.random on every draw, and a
+// submission that reaches the host Math through an intrinsic's constructor
+// chain would otherwise pin tf's draws for the rest of the run.
+try {
+  Object.defineProperty(Math, "random", {
+    value: Math.random,
+    writable: false,
+    configurable: false,
+  });
+} catch {}
+try {
+  Object.defineProperty(globalThis, "Math", {
+    value: Math,
+    writable: false,
+    configurable: false,
+  });
+} catch {}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -2233,6 +2293,16 @@ async function runSolutionTests(userCode, testCode) {
       },
     },
   };
+  // The sealed Math is non-writable as a binding too: `globalThis.Math =
+  // copyWithRandomPinned` replaced it for the whole run before this (round
+  // 7b, 2026-09-14).
+  if (context.Math)
+    Object.defineProperty(context, "Math", {
+      value: context.Math,
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    });
   vm.createContext(context);
 
   // The last statement of `fullCode` is an async IIFE whose return value
@@ -2442,6 +2512,75 @@ function assertHarnessParity() {
     process.exit(1);
   }
 
+  // The spy lists and the seal are the newest code in both files and nothing
+  // pinned them (round 7b, 2026-09-14): the corpus parity test only exercises
+  // a counter where a grader happens to assert on it. Parse each list out of
+  // both sources and compare them as sets, and compare the seeded generator
+  // line for line.
+  const stripComments = (t) => t.replace(/\/\/[^\n]*/g, "");
+  const namesIn = (t) =>
+    [
+      ...stripComments(t).matchAll(
+        /['"]([A-Za-z_][\w.]*)['"]|\b([A-Za-z_]\w*)\s*:\s*1\b/g,
+      ),
+    ]
+      .map((m) => m[1] ?? m[2])
+      .sort();
+  const between = (src, startRe, endStr) => {
+    const m = src.match(startRe);
+    if (!m) return null;
+    const from = m.index + m[0].length;
+    const to = src.indexOf(endStr, from);
+    return to === -1 ? null : src.slice(from, to);
+  };
+  const spyLists = [
+    [
+      "SPIED_ENTRY_POINTS",
+      between(mineSrc, /const SPIED_ENTRY_POINTS = new Set\(\[/, "]);"),
+      between(theirsSrc, /var SPIED = \{/, "};"),
+    ],
+    [
+      "TENSOR_METHODS",
+      between(mineSrc, /const TENSOR_METHODS = \[/, "];"),
+      between(theirsSrc, /var TENSOR_METHODS = \[/, "];"),
+    ],
+    [
+      "SPIED_NAMESPACES",
+      between(mineSrc, /const SPIED_NAMESPACES = new Set\(\[/, "]);"),
+      between(theirsSrc, /var NESTED = \{/, "};"),
+    ],
+  ];
+  for (const [label, mine, theirs] of spyLists) {
+    if (mine == null || theirs == null) {
+      console.error(
+        `\n  [validate-exercises] harness-parity: could not read ${label} out of both harness files.\n`,
+      );
+      process.exit(1);
+    }
+    const a = namesIn(mine);
+    const b = namesIn(theirs);
+    if (JSON.stringify(a) !== JSON.stringify(b)) {
+      console.error(
+        `\n  [validate-exercises] harness-parity: ${label} differs between this validator and the runner.\n` +
+          `  validator: ${a.join(", ")}\n  runner:    ${b.join(", ")}\n` +
+          "  A counter that exists in one harness and not the other grades the same submission two ways.\n",
+      );
+      process.exit(1);
+    }
+  }
+  const sealOf = (src) => {
+    const m = src.match(
+      /seed = \(seed \+ 0x6d2b79f5\) >>> 0;[\s\S]*?4294967296;/,
+    );
+    return m ? normalizeCode(m[0].replace(/\b(let|var)\b/g, "")) : null;
+  };
+  if (!sealOf(mineSrc) || sealOf(mineSrc) !== sealOf(theirsSrc)) {
+    console.error(
+      "\n  [validate-exercises] harness-parity: the seeded Math.random stream differs between the two harnesses.\n",
+    );
+    process.exit(1);
+  }
+
   for (const name of SHARED_STUB_FNS) {
     const mine = extractFn(mineSrc, name);
     const theirs = extractFn(theirsSrc, name);
@@ -2561,6 +2700,16 @@ async function runFixture(harnessSrc) {
     RegExp,
     Float32Array,
   };
+  // The sealed Math is non-writable as a binding too: `globalThis.Math =
+  // copyWithRandomPinned` replaced it for the whole run before this (round
+  // 7b, 2026-09-14).
+  if (context.Math)
+    Object.defineProperty(context, "Math", {
+      value: context.Math,
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    });
   vm.createContext(context);
   const script = new vm.Script(harnessSrc + "\n" + PARITY_DRIVER);
   const results = await script.runInContext(context, { timeout: TIMEOUT_MS });
@@ -2860,8 +3009,10 @@ async function main() {
             "cheat-passes",
             `scripts/exercise-cheats/${cheatFile} passes every test; the grader does not grade the lesson's point`,
           );
+          // Every cheat file gets its verdict: a `break` here let a stale
+          // <slug>.2.js (sorted first) hide the base cheat's line (round 7b).
           cheatGateFailed = true;
-          break;
+          continue;
         }
         const results = Array.isArray(cheatRun.results) ? cheatRun.results : [];
         const caught = results.filter((r) => !r.passed).map((r) => r.name);
@@ -2881,7 +3032,7 @@ async function main() {
             `scripts/exercise-cheats/${cheatFile} fails all ${results.length} test(s), so it never ran as a submission (the exercise's function names have probably changed). Rewrite the cheat against the current exercise.`,
           );
           cheatGateFailed = true;
-          break;
+          continue;
         }
         console.log(
           `  CHEAT-OK ${ex.slug}${cheatFile === `${ex.slug}.js` ? "" : ` (${cheatFile})`}: ignorant solution cleared ${cleared.length}, rejected by ${caught.length}` +

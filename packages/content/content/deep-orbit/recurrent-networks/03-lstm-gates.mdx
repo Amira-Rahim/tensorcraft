@@ -27,7 +27,7 @@ consequence:
   narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Nothing carries between windows; the gates learned the shape once."
 hints:
   - level: nudge
-    content: "Two things here are not where you would guess. The library leaves its gates on a different curve from the one you are writing by hand, and the four gates are not packed in the order anyone says them out loud. When your numbers and the layer's disagree, one of those two is usually why."
+    content: "Two things here are not where you would guess, and the instructions name both: which curve the gates run on and how the four are packed. Diagnose by the size of the miss. A curve mismatch moves every gate by hundredths, while a packing mistake swaps whole gates and misses by tenths."
   - level: guidance
     content: "All four weight groups are read the same way: one row per dimension, three numbers per row, the same arithmetic every time. Write that arithmetic once and call it four times. Three of the four groups are gates, so they saturate; the fourth is the value being proposed for storage, and it needs a range that reaches below zero. The cell update multiplies before it adds: the old value is scaled by its own gate, the proposed value is scaled by its own gate, and only then do the two meet. The hidden state is the new cell value seen through the remaining gate. Cutting the layer up is the same three numbers per gate, taken at one shared column index: one out of each kernel and one out of the bias, and the library's column order is the one this lesson prints, not the one it narrates."
   - level: solution
@@ -122,15 +122,16 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 // Shape drill with placeholder tensors: prove the [80, 3] pipeline runs
 // end to end. The labels are random, so watch both numbers rather than
 // one. Over 60 epochs the training loss falls in every run, from about
-// 0.69 to somewhere between 0.35 and 0.70, while the held-out fifth goes
-// nowhere it can trust: twenty held-out rows means one row is worth five
-// points, so its accuracy is noise, moving ten points and more inside a
-// single run and ending wherever the last epoch leaves it. Its loss ends
+// 0.69 to somewhere between 0.31 and 0.62 across twenty runs, while the
+// held-out fifth goes nowhere it can trust: twenty held-out rows means
+// one row is worth five points, so its accuracy is noise, moving ten
+// points and more inside a single run and ending wherever the last epoch
+// leaves it. Its loss ends
 // above where it started in most runs, past 1.0 in the worst of them.
 // That is what memorizing looks like: 17,473 parameters against 80
 // training rows. Ten reruns measured; the exact figures move with the
 // seed, the gap does not. Nothing on this page races the two cells
-// against each other, since both fits in this module train on random
+// against each other, since both of these fits train on random
 // labels. What the module has instead is lesson 2's flatline on this
 // same 80-step window and tonight's archive replay below. On a series
 // of your own the check is cheap: train both cells and compare.
@@ -226,7 +227,7 @@ Then build a one-unit `tf.layers.lstm` and cut its four gates out of the packed 
 
 <Epilogue>
 
-Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. The 28,800 integration rows are far too coarse for an 80-step window that has to span a 73-second pulse, so Demir uses the raw capture blocks behind them, re-integrated to the dashboard's 1 Hz stream: 950,400 samples end to end. He trains on the first day of it and replays the other ten. Seventy-two hours past the last window it trained on, the network is still catching every pulse inside a single 80-step window. No cell state carried across those three days; none had to. The gates learned the shape once, and recognition is cheaper than memory. On the bridge channel, ARIA is silent for four full seconds before she speaks.
+Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. The 28,800 capture rows are far too coarse for an 80-step window that has to span a 73-second pulse, so Demir uses the raw capture blocks behind them, re-integrated to the dashboard's 1 Hz stream: 950,400 samples end to end. He trains on the first day of it and replays the other ten. Seventy-two hours past the last window it trained on, the network is still catching every pulse inside a single 80-step window. No cell state carried across those three days; none had to. The gates learned the shape once, and recognition is cheaper than memory. On the bridge channel, ARIA is silent for four full seconds before she speaks.
 
 <Dialogue speaker="ARIA">
 Filed without directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes pulses it was never trained on, three days downstream. Nothing in my tables explains why that works.

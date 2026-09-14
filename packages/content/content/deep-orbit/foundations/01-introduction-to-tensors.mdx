@@ -57,7 +57,7 @@ You've worked with arrays your entire career: API responses, byte buffers, pixel
 
 ## What Is a Tensor?
 
-On the CPU backend a tensor's numbers sit in a `Float32Array`. On WebGL the same values live in a GPU texture instead. Neither is released when you drop the last reference to it, which is where the memory rules further down come from.
+On the CPU backend a tensor's numbers sit in a `Float32Array`. On WebGL the same values live in a GPU texture instead, which the JavaScript garbage collector cannot see, and that is where the memory rules further down come from.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -93,7 +93,7 @@ One difference to internalize early: you can iterate a `Float32Array` directly, 
 
 ## The Part Garbage Collection Won't Do For You
 
-Here's the lifecycle promise from the top of the lesson, paid in full. TensorFlow.js registers every tensor it creates and holds that tensor's data until you release it, on every backend. Drop your last reference and the JS wrapper gets collected; the numbers it pointed at stay where they are. On the CPU backend that is a `Float32Array` the engine is still holding. On WebGL it is a GPU texture, which the JavaScript garbage collector cannot see at all. Create tensors in a loop and you have written a memory leak in a language you thought couldn't leak.
+Here's the lifecycle promise from the top of the lesson, paid in full. `tf.memory()` keeps counting a tensor until you release it, whatever the backend, so a climbing `numTensors` is always a real signal. What it costs you depends on where the numbers live. On the CPU backend they sit in a `Float32Array` the collector can still reach, so dropping the last reference eventually frees them. On WebGL, the browser default, they sit in a GPU texture the JavaScript garbage collector cannot see at all, and dropping the reference frees nothing. Create tensors in a loop on that backend and you have written a memory leak in a language you thought couldn't leak.
 
 Two tools fix this:
 

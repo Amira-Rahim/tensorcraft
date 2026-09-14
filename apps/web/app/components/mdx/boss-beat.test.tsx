@@ -169,11 +169,22 @@ describe("BossBeat failure paths", () => {
       />,
     );
     await screen.findByText("Boss beat · 1s");
+    // The note's node is always mounted (a live region), so wait for its
+    // text rather than its presence.
     await waitFor(
       () => {
-        expect(screen.getByTestId("boss-beat-silence")).toBeInTheDocument();
+        expect(screen.getByTestId("boss-beat-silence").textContent).toContain(
+          "Clock out.",
+        );
       },
       { timeout: 4000 },
+    );
+    expect(screen.getByTestId("boss-beat-silence")).toHaveAttribute(
+      "role",
+      "status",
+    );
+    expect(screen.getByTestId("boss-beat-silence").textContent).toContain(
+      "defaults to",
     );
     expect(screen.getByText("Boss beat · clock out")).toBeInTheDocument();
     expect(recordBossBeatChoice).not.toHaveBeenCalled();

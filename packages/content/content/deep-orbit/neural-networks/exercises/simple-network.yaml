@@ -194,17 +194,20 @@ testCode: |
       const one = readSweep('sweepOne', sweepOne);
       const two = readSweep('sweepTwo', sweepTwo);
       [['sweepOne', one], ['sweepTwo', two]].forEach(([name, sweep]) => {
-        // The average distance from 0.5, not the furthest one: measured on
-        // tfjs 4.22.0 over 120,000 fresh draws of this stack, the average
-        // never passed 0.236 while one unlucky reading reached 0.322. Over
-        // 174 runs of the 50-epoch call it sat between 0.439 and 0.484. The
-        // bar below sits 0.11 above the widest untrained average and 0.089
-        // under the closest trained one. A bar on the furthest single answer
-        // would have had under 0.03.
+        // The average distance from 0.5, not the furthest one. A sample
+        // maximum is one sample's luck, so the bounds here are percentiles:
+        // over 120,000 fresh draws of this stack on tfjs 4.22.0 the average
+        // stayed under 0.18 on 999 draws in 1,000, and the widest seen in
+        // 400,000 draws across four samples was 0.264 (single readings: 0.24
+        // and 0.355). Over 145 runs of the 50-epoch call it stayed above
+        // 0.42. The bar below sits 0.17 above the 999-in-1,000 line, 0.086
+        // above the widest average ever seen, and 0.07 under the lowest
+        // trained one. A bar on the furthest single answer would already
+        // have failed an honest draw: 0.355 seen against a 0.35 bar.
         const undecided = avg(sweep.map((p) => Math.abs(p - 0.5)));
         expect(
           undecided,
-          name + ' answers an average of ' + undecided.toFixed(3) + ' away from 0.5. Over 120,000 untrained draws of this stack that average never passed 0.24, and after the training call it sat above 0.43. A sweep this decided was taken after fit() rather than before it.',
+          name + ' answers an average of ' + undecided.toFixed(3) + ' away from 0.5. Over 120,000 untrained draws of this stack that average stayed under 0.18 on 999 draws in 1,000, and never reached 0.27 in 400,000; after the training call it stayed above 0.42. A sweep this decided was taken after fit() rather than before it.',
         ).toBeLessThan(0.35);
         const spread = Math.max.apply(null, sweep) - Math.min.apply(null, sweep);
         expect(
@@ -213,7 +216,7 @@ testCode: |
         ).toBeGreaterThan(0);
         expect(
           spread,
-          name + ' spans ' + spread.toFixed(3) + ' from its lowest answer to its highest. Over those same 120,000 draws the widest untrained sweep spanned 0.23, while a trained one covers nearly the whole range.',
+          name + ' spans ' + spread.toFixed(3) + ' from its lowest answer to its highest. Over those same 120,000 draws an untrained sweep spanned under 0.17 on 999 draws in 1,000 and the widest spanned 0.25, while a trained one covers nearly the whole range.',
         ).toBeLessThan(0.5);
       });
       expect(
@@ -227,7 +230,7 @@ testCode: |
         const gap = groupGap(readSweep(name, sweep));
         expect(
           Math.abs(gap),
-          name + ' scores the flagged rows ' + gap.toFixed(3) + ' away from the calm ones on average. Over 120,000 untrained draws that gap stayed inside 0.11 either way, because nothing in a fresh set of weights knows which rows were flagged. A gap this size means the sweep came from a trained network.',
+          name + ' scores the flagged rows ' + gap.toFixed(3) + ' away from the calm ones on average. Over 120,000 untrained draws that gap stayed inside 0.08 either way on 999 draws in 1,000 and never reached 0.12, because nothing in a fresh set of weights knows which rows were flagged. A gap this size means the sweep came from a trained network.',
         ).toBeLessThan(0.2);
       });
     });
@@ -263,7 +266,7 @@ testCode: |
       const gap = groupGap(readSweep('trainedSweep', trainedSweep));
       expect(
         gap,
-        'After training, the flagged rows average ' + gap.toFixed(3) + ' above the calm ones. Over 194 runs of 50 epochs on this batch that separation came out between 0.878 and 0.967, and the same network before fit() ran was inside 0.11 of no separation at all. A smaller gap here means the run was shorter than the instructions ask for, or the labels went in on the wrong side.',
+        'After training, the flagged rows average ' + gap.toFixed(3) + ' above the calm ones. Over 145 runs of 50 epochs on this batch that separation stayed above 0.85 and under 0.97, and the same network before fit() ran was inside 0.12 of no separation at all. A smaller gap here means the run was shorter than the instructions ask for, or the labels went in on the wrong side.',
       ).toBeGreaterThan(0.6);
     });
   });

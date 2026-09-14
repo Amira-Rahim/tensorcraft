@@ -207,7 +207,9 @@ Compounding needs two things: a model whose output moves, and a series where a s
 {`// The same two functions on a feedback series instead of a sine: 900
 // readings of x -> 3.9 * x * (1 - x) with noise of 0.002 added at every
 // step. One channel, so LIMITS is the single row this series needs,
-// { min: 0, max: 1 }. The window is 10 rather than 80, and both functions
+// { min: 0, max: 1 }; the series is already inside it, so MEAN is 0, STD
+// is 1 and the clamp is the limit row itself. The window is 10 rather
+// than 80, and both functions
 // read that width from their arguments rather than holding one.
 // Two runs of that loop starting a hair apart end up nowhere near each
 // other, which is the property a rollout has to survive. A 32-unit LSTM,
@@ -232,7 +234,7 @@ const replay = predictOneStepAhead(model, [...past.slice(-10), ...arrived], 10);
 
 The replay column has no trend. Every prediction in it starts from readings that arrived, so what it reports at horizon 16 is still a one-step error, the same kind of number it reported at horizon 1. The rollout column starts on that same number and then grows by about half again per step, because the model is reading its own output back in and this series pulls small differences apart. It levels off near 0.3 because 0.336 is the average distance between any two unrelated readings here, which is about what a rollout scores once it has stopped tracking and is only wandering inside the same range. That is not a ceiling. A rollout that settles on a constant near the edge of the range does worse: a flat forecast at 0 scores 0.594 on this series. Nothing about the model changed between the two columns, only what it read before each prediction.
 
-That rollout column is the probability cone the bridge panel promised, measured at each horizon separately instead of assumed. The model hands you a point. The replay tells you how wide to draw around it.
+That rollout column is the probability cone the prefetch analogy at the top of this lesson promised, measured at each horizon separately instead of assumed. The model hands you a point. The rollout column tells you how wide to draw around it, horizon by horizon.
 
 ## Challenge
 

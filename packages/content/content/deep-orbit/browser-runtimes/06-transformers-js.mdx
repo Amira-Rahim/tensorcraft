@@ -47,7 +47,7 @@ We spent three modules learning to train models from scratch. But all the bridge
 No. I spent last night reading the Transformers.js docs so you don't spend three weeks not reading them. Pretrained model, same ONNX runtime we already ship. Cost of training your own: three modules, and we both lived them. Cost of this: one dependency and a download I will be auditing. Install it and call it.
 </Dialogue>
 
-The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads all of them before her watch starts. She wants the ones that need a decision from her surfaced first.
+The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads all of them before her watch starts. She wants them sorted by how sure the classifier is, whichever way it leans: the confident calls at the top and the hedged ones at the bottom, where her own read is the one that counts.
 
 <LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Use `pipeline()` to run pretrained models in the browser", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
 
@@ -135,7 +135,7 @@ Aboard the Archimedes the download comes from the ship's mirrored model archive,
 
 ## Challenge
 
-Rank the crew's status reports by classifier confidence. The harness stands in for the Transformers.js loader, so what you write is the call and the wiring around it: name the task, load it once, classify the whole batch in one call, sort by score. The names it takes, spelled the way the library spells them: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, `automatic-speech-recognition`. These reports are text, which rules out the image and audio jobs. Of the text jobs, one takes nothing but the text and answers with a label and a confidence; the others answer with generated text, spans, vectors, or scores over candidate labels you have to supply yourself.
+Sort the crew's status reports by classifier confidence. The harness stands in for the Transformers.js loader, so what you write is the call and the wiring around it: name the task, load it once, classify the whole batch in one call, sort by score. The names it takes, spelled the way the library spells them: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, `automatic-speech-recognition`. These reports are text, which rules out the image and audio jobs. Of the text jobs, one takes nothing but the text and answers with a label and a confidence; the others answer with generated text, spans, vectors, or scores over candidate labels you have to supply yourself.
 
 <Exercise slug="load-pretrained-pipeline" />
 

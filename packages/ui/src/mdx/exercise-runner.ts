@@ -1176,8 +1176,10 @@ const WORKER_BODY = `
   // submission that reassigned it turned every drawn fixture into a constant.
   // Per-run seed from the original generator, then the property is made
   // non-writable and non-configurable: a reassignment is ignored in sloppy
-  // code and throws in strict code. Mirrors sealedMath() in
-  // scripts/validate-exercises.mjs.
+  // code and throws in strict code. The Math binding itself is locked the
+  // same way, since globalThis.Math = copyWithRandomPinned walked around
+  // the property seal (round 7b, 2026-09-14). Mirrors sealedMath() and the
+  // host lock in scripts/validate-exercises.mjs.
   (function() {
     var seed = (Math.random() * 0x100000000) >>> 0;
     var random = function() {
@@ -1188,6 +1190,7 @@ const WORKER_BODY = `
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
     try { Object.defineProperty(Math, 'random', { value: random, writable: false, configurable: false }); } catch (e) {}
+    try { Object.defineProperty(globalThis, 'Math', { value: Math, writable: false, configurable: false }); } catch (e) {}
   })();
   var isNode = typeof process !== 'undefined' && process.versions && process.versions.node && typeof importScripts === 'undefined';
   var post, listen;
@@ -1284,6 +1287,26 @@ const WORKER_BODY = `
       };
       tf.LayersModel.prototype.__tcSpied = true;
     }
+    // Lock the spied methods and the read path after the spy has wrapped
+    // them, and freeze tf.util: the namespace proxy refuses writes to tf's
+    // own properties, but tf.Tensor.prototype.arraySync = () => 'P' poisoned
+    // every grader's read path before this (round 7b, 2026-09-14). Identical
+    // block in the validator.
+    (function() {
+      function lockMethods(target, names) {
+        if (!target) return;
+        names.forEach(function(name) {
+          var d = Object.getOwnPropertyDescriptor(target, name);
+          if (d && typeof d.value === 'function' && d.configurable) {
+            d.writable = false; d.configurable = false;
+            Object.defineProperty(target, name, d);
+          }
+        });
+      }
+      lockMethods(tf.Tensor && tf.Tensor.prototype, TENSOR_METHODS.concat(['data', 'array', 'dataSync', 'arraySync']));
+      lockMethods(tf.LayersModel && tf.LayersModel.prototype, ['predict', 'save']);
+      if (tf.util && typeof tf.util === 'object') { try { Object.freeze(tf.util); } catch (e) {} }
+    })();
 
     // The tf namespace is frozen, so we can't reassign tf.sequential or
     // tf.loadLayersModel. Patch the Sequential prototype + intercept via
@@ -1506,7 +1529,7 @@ const WORKER_BODY = `
         // spy, and the corpus parity test keeps them in step.
         var calls = Object.create(null);
         globalThis.__tcCalls = calls;
-        var SPIED = { variableGrads: 1, grad: 1, grads: 1, valueAndGrad: 1, valueAndGrads: 1, customGrad: 1, sequential: 1, model: 1, tidy: 1, dispose: 1, keep: 1, matMul: 1, transpose: 1, add: 1, sub: 1, mul: 1, div: 1, sum: 1, mean: 1, moments: 1 };
+        var SPIED = { variableGrads: 1, grad: 1, grads: 1, valueAndGrad: 1, valueAndGrads: 1, customGrad: 1, sequential: 1, model: 1, tidy: 1, dispose: 1, keep: 1, matMul: 1, dot: 1, transpose: 1, add: 1, sub: 1, mul: 1, div: 1, sum: 1, mean: 1, moments: 1 };
         var NESTED = { layers: 1, io: 1, train: 1, losses: 1 };
         function bump(name) { calls[name] = (calls[name] || 0) + 1; }
         function spyNamespace(ns, prefix) {
@@ -1524,7 +1547,10 @@ const WORKER_BODY = `
         var tfProxy = (typeof Proxy === 'function')
           ? new Proxy(globalThis.tf, {
               get: function(target, prop) {
-                if (prop === '__calls') return calls;
+                // A frozen snapshot, not the live object: a forged
+                // tf.__calls['model.save'] = 1 cleared a grader before this
+                // (round 7b, 2026-09-14). Same rule as the validator.
+                if (prop === '__calls') return Object.freeze(Object.assign(Object.create(null), calls));
                 if (stubs[prop]) return stubs[prop];
                 var v = target[prop];
                 if (SPIED[prop] && typeof v === 'function') {

@@ -1,7 +1,18 @@
 slug: prune-weights
 lessonSlug: pruning
 title: "Measure What Pruning Costs"
-instructions: "Prune the five-class classifier at several sparsity levels and report per-class accuracy at each one, because one accuracy for the whole eval slice cannot tell you which class paid for the pass. Write pruneAndScore(model, samples, labels, levels). Return one entry per level, in the order you were given them, each shaped { sparsity, perClass }, where perClass[c] is the fraction of the captures labelled c that the model still puts in class c, and a capture goes to whichever output is largest. perClass carries one entry per class, and the class count comes from the labels you were handed rather than from the number five, because the grader also runs a smaller probe model past this function. Four rules decide whether your numbers mean anything. (1) Pruning is global across the model: pool every weight from the 2-D kernel tensors in model.getWeights() into one ranking of absolute values, and never prune the 1-D bias tensors. (2) The cutoff is the lesson's: take the value at index floor(count * sparsity) in the sorted absolute values and zero every kernel weight strictly below it, so a level of 0 leaves the model untouched. (3) Every level is measured against the ORIGINAL trained weights, not against the level before it. (4) The model goes back to its original weights before you return, because the caller keeps using it, and model.getWeights() hands back tensors that share the model's live storage, so clone them before you put any pruned weights on the model, or your copy follows the model down the ladder. Levels are between 0 and 1."
+instructions: |
+  Prune the five-class classifier at several sparsity levels and report per-class accuracy at each one, because one accuracy for the whole eval slice cannot tell you which class paid for the pass. Write pruneAndScore(model, samples, labels, levels).
+
+  Return one entry per level, in the order you were given them, each shaped { sparsity, perClass }, where perClass[c] is the fraction of the captures labelled c that the model still puts in class c, and a capture goes to whichever output is largest. perClass carries one entry per class, and the class count comes from the labels you were handed rather than from the number five, because the grader also runs a smaller probe model past this function.
+
+  Four rules decide whether your numbers mean anything. (1) Pruning is global across the model: pool every weight from the 2-D kernel tensors in model.getWeights() into one ranking of absolute values, and never prune the 1-D bias tensors.
+
+  (2) The cutoff is the lesson's: take the value at index floor(count * sparsity) in the sorted absolute values and zero every kernel weight strictly below it, so a level of 0 leaves the model untouched.
+
+  (3) Every level is measured against the ORIGINAL trained weights, not against the level before it.
+
+  (4) The model goes back to its original weights before you return, because the caller keeps using it, and model.getWeights() hands back tensors that share the model's live storage, so clone them before you put any pruned weights on the model, or your copy follows the model down the ladder. Levels are between 0 and 1.
 starterCode: |
   interface Classifier {
     getWeights: () => any[];

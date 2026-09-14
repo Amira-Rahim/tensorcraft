@@ -109,7 +109,9 @@ testCode: |
       classification: opts.classification ?? 'anomaly',
       confidence: opts.confidence ?? 0.91,
       amplitude: opts.amplitude ?? 1024,
-      frequency: opts.frequency ?? 73.4,
+      // 73.4 Hz is the flagship tone, so only rows classified as anomalies
+      // carry it by default; noise rows sit on 23 Hz, inside the natural set.
+      frequency: opts.frequency ?? ((opts.classification ?? 'anomaly') === 'noise' ? 23 : 73.4),
       anomalyScore: opts.anomalyScore ?? 0.8,
     });
 

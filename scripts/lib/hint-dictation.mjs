@@ -302,7 +302,7 @@ export function hintAtLevel(fm, level) {
  * exercise's other top-level keys.
  */
 export function exerciseHintsBlock(raw) {
-  const m = raw.match(/^hints:\n([\s\S]*?)(?=^\w|\Z)/m);
+  const m = raw.match(/^hints:\n([\s\S]*?)(?=^\w|(?![\s\S]))/m);
   return m ? m[1] : "";
 }
 

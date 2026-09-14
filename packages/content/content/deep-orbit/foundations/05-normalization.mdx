@@ -159,8 +159,9 @@ neuron.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })
 // arrive as plain JS arrays, so each becomes a tensor on the way in.
 neuron.setWeights([tf.tensor2d([[0.9], [-1.4]]), tf.tensor1d([-0.3])]);
 
-// predict reads a batch: [n, 2] rows in, [n, 1] verdicts out. normalizedBatch
-// is the batch above with every column z-scored.
+// predict reads a batch: [n, 2] rows in, [n, 1] verdicts out. Stack the two
+// z-scored columns from above the same way the raw batch was stacked.
+const normalizedBatch = tf.stack([tempNorm, signalNorm], 1);  // [5, 2]
 const verdicts = neuron.predict(normalizedBatch);`}
 </CodeBlock>
 
@@ -186,7 +187,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 />
 
 <RecallPrompt
-  question="The z-score step subtracts a [2] tensor of column means from a [5, 2] batch of readings, and nothing throws. Which rule from lesson 3 allows that, and how does it line the two shapes up?"
+  question="The challenge's z-score step subtracts a [2] tensor of column means from its [4, 2] batch of readings, and nothing throws. Which rule from lesson 3 allows that, and how does it line the two shapes up?"
   answer="Broadcasting. TensorFlow.js lines the two tensors up from the last axis backwards and stretches any axis of size 1, or any axis the smaller tensor does not have at all, until it matches the larger one. Here that takes each column's mean down its own column."
 />
 

@@ -155,10 +155,11 @@ testCode: |
       // old 40-row inits scored 1.000), which is how the untouched starter
       // used to score a green test here. Held-out cross-entropy separates
       // them cleanly: over those 300 untrained inits it never fell below
-      // 0.60, and over 60 trained runs it stayed between 0.19 and 0.28.
+      // 0.60, and over 750 trained runs it ran from 0.18 to 0.50, median 0.20,
+      // so the bar sits at 0.55.
       const fresh = model.evaluate(testX, testY);
       expect(fresh[1].dataSync()[0], 'This number comes from the grader scoring the held-out slice itself, not from anything the submission stored. Below the bar means the run never learned the two clusters apart.').toBeGreaterThan(0.85);
-      expect(fresh[0].dataSync()[0], 'The held-out rows land on the right side of the boundary often enough, but the model is not confident about any of them, which is what an untrained net looks like on clusters this far apart. Training is what moves the predicted probabilities out to the ends.').toBeLessThan(0.45);
+      expect(fresh[0].dataSync()[0], 'The held-out rows land on the right side of the boundary often enough, but the model is not confident about any of them, which is what an untrained net looks like on clusters this far apart. Training is what moves the predicted probabilities out to the ends.').toBeLessThan(0.55);
     });
     it('evalResult is [loss, accuracy] from model.evaluate on the held-out slice', () => {
       expect(evalResult, 'evalResult is still null. model.evaluate returns its scores directly, with no await needed.').toBeDefined();

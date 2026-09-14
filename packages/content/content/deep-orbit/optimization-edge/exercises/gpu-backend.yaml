@@ -1,7 +1,14 @@
 slug: gpu-backend
 lessonSlug: webgpu-acceleration
 title: "Fall Back Through the Backend Ladder"
-instructions: "Write initBestBackend(preference, runtime) so it returns the name of a backend that is actually running, walking the caller's preference order from the top. runtime stands in for the three TensorFlow.js calls the lesson uses, and it keeps their real contract. setBackend(name) resolves true when that backend started, resolves FALSE when the backend is registered and fails to start, and throws when the name was never registered, which is what you get when its package was not imported. Both of those are failures you move past; neither is fatal. Stop at the first backend that starts, so nothing after the winner is touched. Call runtime.ready() exactly once, after the ladder has settled and before you return. If every name in the ladder fails, call ready() and return runtime.getBackend(), which is the backend the engine settled on by itself. Do not read getBackend() as a verdict on a single attempt: right after a failed start it still reports the name that failed, which is what tfjs 4.22 does."
+instructions: |
+  Write initBestBackend(preference, runtime) so it returns the name of a backend that is actually running, walking the caller's preference order from the top.
+
+  runtime stands in for the three TensorFlow.js calls the lesson uses, and it keeps their real contract. setBackend(name) resolves true when that backend started, resolves FALSE when the backend is registered and fails to start, and throws when the name was never registered, which is what you get when its package was not imported. Both of those are failures you move past; neither is fatal.
+
+  Stop at the first backend that starts, so nothing after the winner is touched. Call runtime.ready() exactly once, after the ladder has settled and before you return. If every name in the ladder fails, call ready() and return runtime.getBackend(), which is the backend the engine settled on by itself.
+
+  Do not read getBackend() as a verdict on a single attempt: right after a failed start it still reports the name that failed, which is what tfjs 4.22 does.
 starterCode: |
   type BackendName = string;
 

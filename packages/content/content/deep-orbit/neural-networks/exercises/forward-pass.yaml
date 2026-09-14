@@ -136,7 +136,7 @@ testCode: |
       ).toBe(1);
       expect(
         out === answered,
-        'forward() called the model and then handed back a different tensor. This layer is one linear stage, so input times kernel plus bias reproduces its output to the last decimal and no check on the numbers can tell a hand-rolled pass from the model\'s own answer. Hand back what predict() returned: running the stack is the work, and the arithmetic stops being reproducible by hand as soon as the stack grows.',
+        'forward() called the model and then handed back a different tensor. This layer is one linear stage, so input times kernel plus bias reproduces its output to the last decimal and no check on the numbers can tell a hand-rolled pass from the model\'s own answer. Hand back what predict() returned: running the stack is the work, and the arithmetic stops being reproducible by hand as soon as the stack grows. A clone counts as a different tensor here, so hand back the call\'s own result.',
       ).toBe(true);
     });
     it('gives one flat reading the batch axis the layer expects', () => {

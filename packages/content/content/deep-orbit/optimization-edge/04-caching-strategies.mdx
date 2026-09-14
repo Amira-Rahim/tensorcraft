@@ -75,7 +75,7 @@ Demir files the ticket with a saving on it: 213 repeats at the 45 ms this module
 That 45 milliseconds is the bundle, Ensign. The bundle's time is the language component behind the report pipeline: 85 million parameters, 80 token ids going into a table of 50,000 words. You do not run that to sort a signal. You run the classifier. Go and time the call you are actually caching, then come back and tell me what the cache is worth.
 </Dialogue>
 
-He times both, with the readback inside the clock the way module 4 insists. The language component's forward pass runs 45 ms on the wasm seat the first lesson profiled. The classifier's runs 0.035 ms at the dashboard station, timed one call at a time across 20 runs of 200. Two different machines, and at this size that cannot be what separates them: across the backends this bundle runs on, one call on it spans 5 ms to 120 ms, a factor of 24, while the gap between these two calls is over a thousand to one. The ticket overstated the saving by that factor, and the cache is the same cache either way: it still removes the same 40 percent of forward passes. What changed is the size of the prize. The playbook is worth learning regardless, because it sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss. Finding out whether this call is the expensive one is the step the ticket skipped.
+He times both, with the readback inside the clock the way module 4 insists. The language component's forward pass runs 45 ms at this station, on the wasm fallback the first lesson profiled. The classifier's runs 0.035 ms on the same console, timed one call at a time across 20 runs of 200. No backend choice covers a gap that size: across the backends this bundle runs on, one call on it spans 5 ms to 120 ms, a factor of 24, while the gap between these two calls is over a thousand to one. The ticket overstated the saving by that factor, and the cache is the same cache either way: it still removes the same 40 percent of forward passes. What changed is the size of the prize. The playbook is worth learning regardless, because it sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss. Finding out whether this call is the expensive one is the step the ticket skipped.
 
 <LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry, and invalidation when the model version changes", "Measure cache hit rate and its impact on effective inference latency"]} />
 
@@ -150,11 +150,12 @@ He times both, with the readback inside the clock the way module 4 insists. The 
   }
 }
 
-// Usage. signalKey is the key function from the Challenge. The TTL is six
-// hours, past the end of the watch, because the repeats this cache is built
-// for arrive about a hundred seconds apart: on a 30-second clock nearly
-// every entry expires before its repeat comes back, and the 40 percent
-// below comes out nearer 4.
+// Usage. signalKey rounds the way the Challenge's decimals = 2 does. The
+// TTL is six hours, past the end of the watch, because the repeats this
+// cache is built for arrive about a hundred seconds apart: on a 30-second
+// clock nearly every entry expires before its repeat comes back, and most
+// of the 40 percent below goes with it.
+const signalKey = (input: number[]) => input.map(v => Math.round(v * 100) / 100).join(',');
 const cache = new InferenceCache<string>(signalKey, 500, 6 * 60 * 60 * 1000);
 
 function cachedClassify(signal: number[]): string {
@@ -209,7 +210,7 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
   whatYouLearned={[
     "A cache-first predict hashes the input, returns a stored result on a hit, and runs the model and stores the result on a miss. Bounding the cache is a second decision on top of that: the delete + re-set trick in get() is what makes eviction true LRU instead of FIFO.",
     "Quantizing inputs before hashing means near-identical inputs land on the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
-    "TTL length is bounded from both sides. Too short and the repeats expire before they come back: a 30-second TTL on traffic whose repeats arrive about a hundred seconds apart takes a 40 percent hit rate down nearer 4 percent. Too long and stale classifications stay in service. Neither setting catches a deploy, which invalidates every entry regardless of age.",
+    "TTL length is bounded from both sides. Too short and the repeats expire before they come back: a 30-second TTL on traffic whose repeats arrive about a hundred seconds apart throws away most of a 40 percent hit rate. Too long and stale classifications stay in service. Neither setting catches a deploy, which invalidates every entry regardless of age.",
     "A cache removes calls rather than making one faster, so what it is worth is the hit rate times what that call costs. Look the cost up on the call you are wrapping, not on the bundle it ships inside: a five-class signal classifier runs 0.035 ms per call, where the 85-million-parameter language component it ships beside runs 45 ms. At a 40 percent hit rate the classifier cache takes the mean served call from 0.035 ms to 0.0215, which came to 55 milliseconds across a night of 4,110 lookups."
   ]}
   bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."

@@ -62,10 +62,9 @@ testCode: |
     });
     it('privacy and offline each flip the verdict on their own', () => {
       // Held against the case above: same relaxed budget, same 30MB model,
-      // one flag moved at a time. Without these three lines the budget and
-      // the size separate every graded case between them, and a rule that
-      // never looks at the two flags clears the whole suite.
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 30, needsOffline: false }), 'Relaxed budget, nothing to keep on the device, nothing to run without a network: the server takes it.').toBe('server');
+      // one flag moved at a time. The suite already catches a rule that
+      // ignores both flags; these two lines hold the budget and the size
+      // still, which also closes a lookup keyed on modelSizeMB === 30.
       expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 30, needsOffline: false }), 'Only the sensitivity flag moved. Data that has to stay on the device is a reason of its own, whatever the budget allows.').toBe('client');
       expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 30, needsOffline: true }), 'Only the offline flag moved. A feature that has to keep working without a network cannot depend on a round-trip.').toBe('client');
     });

@@ -254,16 +254,25 @@ export function BossBeat({
       <p className="text-base text-text-primary leading-relaxed mb-5">
         {prompt}
       </p>
-      {timedOut && (
-        <p
-          className="text-sm font-mono text-text-muted mb-4"
-          data-testid="boss-beat-silence"
-        >
-          Clock out. On silence the bridge goes with{" "}
-          {options[silenceIndex].display}. Choose, or let it stand: nothing is
-          recorded until you do.
-        </p>
-      )}
+      {/* Always mounted so the clock-out note is announced when it lands
+          (round 7b, 2026-09-14), the way recall-prompt announces a reveal.
+          The sentence is about a default, not about silence acting: on
+          three of the four beats the standing option is an affirmative
+          action, so "on silence the bridge goes with X" read as if saying
+          nothing did something. */}
+      <p
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className={
+          timedOut ? "text-sm font-mono text-text-muted mb-4" : "sr-only"
+        }
+        data-testid="boss-beat-silence"
+      >
+        {timedOut
+          ? `Clock out. Nothing is recorded. If you walk away, the bridge defaults to ${options[silenceIndex].display}. Choose, or let it stand.`
+          : ""}
+      </p>
       <ol className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {displayOrder(beatId).map((i, displayIdx) => {
           const opt = options[i];

@@ -2,7 +2,16 @@ slug: inference-cache
 lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
-instructions: "Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model. What a cache stored is its own: build a second cache over a second model and the same signal is a miss there, because the same values under different weights are a different answer. Two inputs belong to the same entry when their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them. Entries outlast the calls that follow them: a signal that comes back after other signals have gone through still hits what its first call stored, because the repeats this cache is built for arrive with other traffic between them. Store the prediction as plain numbers rather than the tensor it arrived in, because a stored handle stays resident until the tab closes and the first caller to dispose it breaks every later hit on that key. Dispose that tensor once you have read the numbers out of it: this module opened on a dashboard that ran out of memory."
+instructions: |
+  Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model.
+
+  What a cache stored is its own: build a second cache over a second model and the same signal is a miss there, because the same values under different weights are a different answer.
+
+  Two inputs belong to the same entry when their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them.
+
+  Entries outlast the calls that follow them: a signal that comes back after other signals have gone through still hits what its first call stored, because the repeats this cache is built for arrive with other traffic between them.
+
+  Store the prediction as plain numbers rather than the tensor it arrived in, because a stored handle stays resident until the tab closes and the first caller to dispose it breaks every later hit on that key. Dispose that tensor once you have read the numbers out of it: this module opened on a dashboard that ran out of memory.
 starterCode: |
   function makeInferenceCache(model, decimals = 2) {
     // A hit and a miss have to hand the caller the same kind of value, and

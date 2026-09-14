@@ -76,7 +76,7 @@ testCode: |
         0,
       );
     const matMulOps = () =>
-      ['tensor.matMul', 'tensor.dot', 'matMul'].reduce((n, k) => n + (tf.__calls[k] || 0), 0);
+      ['tensor.matMul', 'tensor.dot', 'matMul', 'dot'].reduce((n, k) => n + (tf.__calls[k] || 0), 0);
     it('merged is the element-wise average', () => {
       const opsBefore = elementWiseOps();
       const { merged } = merge(

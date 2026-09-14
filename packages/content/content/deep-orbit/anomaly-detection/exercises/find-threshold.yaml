@@ -38,7 +38,7 @@ solutionCode: |
   }
 testCode: |
   describe('findBestThreshold', () => {
-    const errors = [0.01, 0.02, 0.01, 0.08, 0.09, 0.02, 0.07];
+    const errors = [0.1, 0.2, 0.1, 0.8, 0.9, 0.2, 0.7];
     const labels = [false, false, false, true, true, false, true];
 
     // A validation slice with the class balance a real detector faces: 20
@@ -56,11 +56,11 @@ testCode: |
     // ranks by the wrong quantity lands on the wrong candidate whichever way
     // it breaks ties. This is the fixture that separates knowing WHY F1 from
     // reproducing the formula.
-    const skewedErrors = [0.025, 0.028, 0.03, 0.032, 0.04, 0.035, 0.038, 0.04, 0.042, 0.09, 0.045, 0.048, 0.05, 0.052, 0.12, 0.055, 0.058, 0.06, 0.06, 0.18, 0.07, 0.08, 0.1, 0.13, 0.22];
+    const skewedErrors = [0.25, 0.28, 0.3, 0.32, 0.4, 0.35, 0.38, 0.4, 0.42, 0.9, 0.45, 0.48, 0.5, 0.52, 1.2, 0.55, 0.58, 0.6, 0.6, 1.8, 0.7, 0.8, 1, 1.3, 2.2];
     const skewedLabels = [false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true];
 
     it('returns an object with threshold and f1', () => {
-      const result = findBestThreshold(errors, labels, [0.03, 0.05, 0.07]);
+      const result = findBestThreshold(errors, labels, [0.3, 0.5, 0.7]);
       expect(
         result,
         'findBestThreshold has to return the winning candidate and its score together: { threshold, f1 }.',
@@ -70,32 +70,32 @@ testCode: |
     });
 
     it('achieves the perfect F1 this data allows, with a separating threshold', () => {
-      const result = findBestThreshold(errors, labels, [0.01, 0.03, 0.05, 0.10]);
+      const result = findBestThreshold(errors, labels, [0.1, 0.3, 0.5, 1]);
       expect(result, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
       const why =
         'The three anomalies here all sit above every normal reading, so one ' +
         'of these candidates splits the two groups cleanly and scores the ' +
         'highest F1 the data allows.';
       expect(result.f1, why).toBeCloseTo(1.0, 5);
-      expect(result.threshold, why).toBeGreaterThan(0.02);
-      expect(result.threshold, why).toBeLessThan(0.07);
+      expect(result.threshold, why).toBeGreaterThan(0.2);
+      expect(result.threshold, why).toBeLessThan(0.7);
     });
 
     it('on overlapping data picks the candidate with the higher F1', () => {
-      const errs2 = [0.02, 0.04, 0.05, 0.07, 0.09, 0.03];
+      const errs2 = [0.2, 0.4, 0.5, 0.7, 0.9, 0.3];
       const labs2 = [false, true, false, true, true, false];
-      const r2 = findBestThreshold(errs2, labs2, [0.03, 0.06]);
+      const r2 = findBestThreshold(errs2, labs2, [0.3, 0.6]);
       expect(r2, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
       const why =
         'The classes overlap here, so no cutoff is clean and the two ' +
         'candidates score differently. Report the better of the two, and the ' +
         'F1 it actually scored rather than the one you hoped for.';
       expect(r2.f1, why).toBeCloseTo(0.857, 2);
-      expect(r2.threshold, why).toBeCloseTo(0.03, 5);
+      expect(r2.threshold, why).toBeCloseTo(0.3, 5);
     });
 
     it('ranks candidates by F1, not by accuracy or recall', () => {
-      const r = findBestThreshold(skewedErrors, skewedLabels, [0.02, 0.06, 0.15, 0.3]);
+      const r = findBestThreshold(skewedErrors, skewedLabels, [0.2, 0.6, 1.5, 3]);
       expect(r, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
       const why =
         'Five of these 25 readings are anomalies. On this slice the highest ' +
@@ -105,7 +105,7 @@ testCode: |
         'correct calls, or by how many anomalies it caught, it lands on one of ' +
         'those two instead. Rank by F1 and report the F1 of the candidate you ' +
         'return.';
-      expect(r.threshold, why).toBeCloseTo(0.06, 5);
+      expect(r.threshold, why).toBeCloseTo(0.6, 5);
       expect(r.f1, why).toBeCloseTo(0.6154, 3);
     });
 
@@ -119,19 +119,19 @@ testCode: |
     // one catches three of the four and flags nothing else. F2 scores them
     // 0.800 and 0.789, F1 scores them 0.615 and 0.857.
     it('weighs precision and recall equally, so a recall-first ranking loses', () => {
-      const recallTrapErrors = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.055, 0.30, 0.40, 0.50];
+      const recallTrapErrors = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 0.55, 3, 4, 5];
       const recallTrapLabels = recallTrapErrors.map((_, i) => i >= 10);
-      const r = findBestThreshold(recallTrapErrors, recallTrapLabels, [0.05, 0.20]);
+      const r = findBestThreshold(recallTrapErrors, recallTrapLabels, [0.5, 2]);
       expect(r, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
       const why =
         'The low cutoff here catches every anomaly and five normal readings ' +
         'with them; the high one catches three of the four and raises no ' +
         'false alarm. F1 counts a false alarm and a missed anomaly the same ' +
-        'way, so it picks the high cutoff. A sweep that comes back with 0.05 ' +
+        'way, so it picks the high cutoff. A sweep that comes back with 0.5 ' +
         'and an f1 of 0.615 ranked by something that weights recall above ' +
         'precision, which is a cost decision lesson 4 asks you to make out ' +
         'loud rather than hide under the name f1.';
-      expect(r.threshold, why).toBeCloseTo(0.2, 5);
+      expect(r.threshold, why).toBeCloseTo(2, 5);
       expect(r.f1, why).toBeCloseTo(0.857, 3);
     });
   });

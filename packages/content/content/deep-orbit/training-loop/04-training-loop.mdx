@@ -14,14 +14,14 @@ context:
   narrative: "All the pieces are in place. Ensign Demir initiates the training sequence; the network will learn from a hundred hand-picked signal examples."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Feed data, compute loss, update weights, repeat. The training loop is the engine that turns thousands of examples into learned behavior."
+  explanation: "Feed data, compute loss, update weights, repeat. The training loop is the engine that turns a hundred labeled examples into learned behavior."
   bridge:
     jsTitle: "setImmediate() loop"
     jsCode: "function loop() { processChunk(); if (!done) setImmediate(loop); }"
     mlTitle: "Training Loop"
     mlCode: "await model.fit(trainX, trainY, { epochs: 50 })"
     tier: structural
-    breaks: "One setImmediate turn costs microseconds and hands the event loop back between passes, so pending I/O still runs. fit() yields too, but not where you choose: tf.js releases the main thread on a timer, every 125 ms by default (the yieldEvery option, which ships set to 'auto'), and that release can land mid-batch and mid-epoch. The exit test differs more: your loop stops when a flag you set flips, and training stops when the validation loss stops improving, which is a judgment call rather than a boolean."
+    breaks: "One setImmediate turn costs microseconds and hands the event loop back between passes, so pending I/O still runs. fit() yields too, but not where you choose: tf.js releases the main thread on a timer, every 125 ms by default (the yieldEvery option, which ships set to 'auto'), and that release lands on whatever batch boundary the timer reaches next, so it falls anywhere inside an epoch and never inside a batch. The exit test differs more: your loop stops when a flag you set flips, and training stops when the validation loss stops improving, which is a judgment call rather than a boolean."
 consequence:
   narrative: "The loop now decides for itself when to stop, reading the validation curve instead of an epoch count Demir picked in advance."
 hints:
@@ -147,7 +147,7 @@ Two clean ends of the flag log are not a sample of the stream, and the amplitude
 **Saddle points outnumber local minima in high dimensions.** A saddle curves up in some directions and down in others; the Hessian (the matrix of second derivatives) classifies the point by the sign of its curvature along each direction: all positive for a minimum, mixed for a saddle. A true local minimum needs upward curvature in all n directions at once, and with thousands of weights that coincidence gets rarer with every added dimension. What actually stalls training is the near-zero gradient on the plateaus around saddles. Momentum-based optimizers like Adam carry enough velocity to coast across them, which is one reason `optimizer: 'adam'` is the house default.
 </DerivationDrawer>
 
-Of the three settings in the `fit()` call above, `epochs` is the judgment call: more passes mean more learning, up to a point.
+Three of the four settings in the `fit()` call above are dials. `epochs` is how many passes over the data. `batchSize` is how many rows the optimizer sees before it updates the weights, 32 here and by default, so one weight update per batch. `validationSplit` is the fraction held back so the run is checked against rows it never trained on. `epochs` is the judgment call: more passes mean more learning, up to a point.
 
 "Up to a point" is the whole problem: nothing in the loop tells you where the point is. Demir's first run was not the curve above. Reasoning from drain loops, where another pass always means less backlog, he set `epochs: 500` to be safe and went for coffee. He came back to both curves at about 0.0004, down from a validation loss near 0.17 at epoch 50. That run is the better model, and he could not have known it would be. Ten times the compute bought a gain nobody was watching for, on an epoch count picked before the first epoch ran. A drain loop can run to exhaustion because the queue length is the exit test. Training has no queue to empty, so 500 stays a guess until something reads the curve and decides.
 
@@ -191,9 +191,10 @@ await rerun.fit(trainX, tf.tensor2d(labels), {
 // block the callback usually fired between epoch 70 and epoch 160,
 // median 104, on a val_loss near 0.085, with the middle eight tenths
 // between 0.07 and 0.11. Those ends are not bounds: five of the 400 fell
-// outside that epoch window, and a rare run never settles at all and
-// rides the 500-epoch upper bound to the end. One run stopped at epoch
-// 102 on val_loss 0.081, and that is the run the epilogue records. Now
+// outside that epoch window, and the longest of a further 900 runs went
+// to epoch 202. None of the 1,300 reached the 500-epoch ceiling. One run
+// stopped at epoch 102 on val_loss 0.081, and that is the run the
+// epilogue records. Now
 // read WHAT tripped it. The validation curve here does not climb, it
 // flattens: at the halt, val_loss sat a median 0.0012 above its own
 // best, and 0.0032 above it at the 90th percentile, while the training

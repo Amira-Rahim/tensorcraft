@@ -90,7 +90,7 @@ testCode: |
       // sit at known offsets from it.
       expect(
         features[2],
-        'A 1.0 tone sitting on a bin center puts 64 / 2 = 32 into that bin, and this row reports magnitudes as the transform gives them. A value near 1.0 here is that 32 divided by the window length, which is the normalization the lesson fits across a training set after extraction, not inside this function.',
+        'A 1.0 tone sitting on a bin center puts 64 / 2 = 32 into that bin, and this row reports magnitudes as the transform gives them. A value near 1.0 here is that 32 divided by half the window length, which is the normalization the lesson fits across a training set after extraction, not inside this function.',
       ).toBeCloseTo(32, 0);
       expect(features[7]).toBeCloseTo(16, 0);
     });
@@ -109,7 +109,7 @@ testCode: |
       expect(features[2]).toBeLessThan(1);
       expect(
         features[3],
-        'The 0.5 tone on this bin center puts 0.5 * 64 / 2 = 16 into it. A value near 0.5 is that 16 divided by the window length: magnitudes go into the row unscaled, and the lesson normalizes the whole training set afterwards.',
+        'The 0.5 tone on this bin center puts 0.5 * 64 / 2 = 16 into it. A value near 0.5 is that 16 divided by half the window length: magnitudes go into the row unscaled, and the lesson normalizes the whole training set afterwards.',
       ).toBeCloseTo(16, 0);
       expect(features[4]).toBeLessThan(1);
     });
@@ -119,7 +119,7 @@ testCode: |
       expect(features).toHaveLength(5);
       expect(
         features[3],
-        'This capture is 0.75 loud on a bin center, so the bin holds 0.75 * 64 / 2 = 24. A value near 0.75 is that 24 divided by the window length, and the row carries magnitudes unscaled.',
+        'This capture is 0.75 loud on a bin center, so the bin holds 0.75 * 64 / 2 = 24. A value near 0.75 is that 24 divided by half the window length, and the row carries magnitudes unscaled.',
       ).toBeCloseTo(24, 0);
       expect(features[2]).toBeLessThan(1);
       expect(features[4]).toBeLessThan(1);

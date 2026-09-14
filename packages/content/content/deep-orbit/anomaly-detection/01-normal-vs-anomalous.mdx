@@ -20,7 +20,7 @@ concept:
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
-    breaks: "A performance baseline sits on a quantity you picked and can measure directly: a p75 LCP or a p99 latency is a distribution you read off your own logs. An anomaly threshold sits on a distribution the model invented, and 'normal' itself drifts underneath it (concept drift): yesterday's anomaly is today's baseline. Recompute it against recent known-good readings, or it slides from 'too sensitive' to 'too permissive' over weeks."
+    breaks: "A performance baseline is read off a quantity that holds still between deploys: a p75 LCP moves when you ship, not on its own. An anomaly baseline is read off what the hull did last week, and 'normal' itself drifts underneath it (concept drift): yesterday's anomaly is today's baseline. Recompute it against recent known-good readings, or it slides from 'too sensitive' to 'too permissive' over weeks, and read the gate as a probability rather than a guarantee."
 consequence:
   narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Demir begins building a model of normality."
 hints:

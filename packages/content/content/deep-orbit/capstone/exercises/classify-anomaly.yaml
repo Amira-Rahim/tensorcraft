@@ -63,9 +63,9 @@ starterCode: |
     actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
     reconstructionError: 6.2,
     reconThreshold: 1.0,      // module 7's locked cutoff
-    predicted: 0.55,
+    predicted: 0.541,         // module 7's forecast miss: 0.041 against a 0.01 gate
     actualForecast: 0.50,
-    predTolerance: 0.02,
+    predTolerance: 0.01,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
     module3Score: 0.518,
@@ -144,9 +144,9 @@ solutionCode: |
     actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
     reconstructionError: 6.2,
     reconThreshold: 1.0,      // module 7's locked cutoff
-    predicted: 0.55,
+    predicted: 0.541,         // module 7's forecast miss: 0.041 against a 0.01 gate
     actualForecast: 0.50,
-    predTolerance: 0.02,
+    predTolerance: 0.01,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
     module3Score: 0.518,
@@ -389,7 +389,7 @@ testCode: |
         reconThreshold: 1.0,
         predicted: 0.542,
         actualForecast: 0.55,
-        predTolerance: 0.02,
+        predTolerance: 0.01,
         intervals: [2, 2, 4, 6, 10, 16, 26],
         ensembleScore: 0.114,
         module3Score: 0.093,

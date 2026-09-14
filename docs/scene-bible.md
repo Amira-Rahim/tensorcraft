@@ -539,8 +539,8 @@ it is what the asset path and `scripts/art/ingest.mjs` validate against)
 #### anomaly-detection/the-anomaly
 - Location / time: Archimedes, Bridge (The alert)
 - Characters present: Commander Mirza (brass chronometer tier), Chief Nazari (multitool), Dr. Farah (stylus), Ensign Demir (glowing wrist terminal)
-- Moment: The loudest alert DEEP SCAN has ever fired: the live feed spikes at twelve times baseline reconstruction error, Nazari has already cleared the sensor calibration twice, and all three detectors agree the 73.4 Hz component matches nothing known.
-- Prompt: [ref: masters/bridge] Wide shot from the port-forward quarter looking aft, alert light state with deep shadow and agitated display scatter, the forward display towering with a jagged spike waveform over a repeating frequency comb, three small detector panes lit in agreement on the holo table; the four crew as small rim-lit silhouettes clustered at the table, Mirza down from the command tier, Nazari's multitool holstered, Farah's stylus lowered, Demir's wrist terminal glowing. + scene style token
+- Moment: The loudest alert DEEP SCAN has ever fired: the live feed spikes at twelve times the highest reconstruction error any normal signal produced, Nazari has already cleared the sensor calibration twice, and two of the three detectors agree while the amplitude gate stays quiet: the 73.4 Hz component matches nothing known.
+- Prompt: [ref: masters/bridge] Wide shot from the port-forward quarter looking aft, alert light state with deep shadow and agitated display scatter, the forward display towering with a jagged spike waveform over a repeating frequency comb, two of three small detector panes lit in agreement on the holo table, the third dark; the four crew as small rim-lit silhouettes clustered at the table, Mirza down from the command tier, Nazari's multitool holstered, Farah's stylus lowered, Demir's wrist terminal glowing. + scene style token
 - Alt: Under alert lighting four crew silhouettes cluster at the holo table as a jagged unknown signal towers on the forward display.
 - Status: pending
 
