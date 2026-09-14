@@ -4,14 +4,12 @@ import { fileURLToPath } from "url";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const velitePath = path.resolve(__dirname, "../../packages/content/.velite");
+// Not named __dirname: Next evaluates this file through the CommonJS wrapper,
+// whose parameters include __dirname. See app/next-config.test.ts.
+const configDir = path.dirname(fileURLToPath(import.meta.url));
+const velitePath = path.resolve(configDir, "../../packages/content/.velite");
 
 const nextConfig: NextConfig = {
-  eslint: {
-    // Prototype pages have intentional scaffolding vars, lint in CI, not build
-    ignoreDuringBuilds: true,
-  },
   transpilePackages: [
     "@tensorcraft/ui",
     "@tensorcraft/worlds",

@@ -4200,3 +4200,44 @@ machine passed, and the comparison predates this round); ui 408 / 408 with
 the 65-exercise browser parity; web 732 / 732; shared 39 / 39; tsc clean on
 content, ui and web; prettier clean on all 185 changed files; 0 em dashes.
 About 185 files uncommitted.
+
+## Next 16 bump follow-ups (2026-09-14)
+
+Source: Dependabot PR #38 (next 15.5.24 to 16.3.4) went red on Build, E2E,
+lighthouse, the Vercel deployment and typecheck. Main at the PR's base was
+green, so nothing was inherited. Root cause, traced 2026-09-14: Next 16
+stopped compiling `next.config.ts` to ES5 before evaluating it through
+Node's CommonJS wrapper. Next 15 turned the file's top-level `const
+__dirname` into a `var`, which may shadow a wrapper parameter; Next 16 keeps
+the `const`, the CommonJS compile throws, and Node retries the file as ESM,
+which fails on `exports` with a message that blames `"type": "module"`.
+Fixed on main, uncommitted: the binding is now `configDir`, the `eslint` key
+Next 16 removed is gone, and `apps/web/app/next-config.test.ts` rejects any
+top-level binding named after a wrapper parameter. Verified in a worktree of
+the PR head with the same two edits: web typecheck clean, `pnpm build`
+green on Next 16.3.4 with Turbopack, all 94 static pages generated. What the
+build printed and what it did not:
+
+- [ ] **B0: decide the bundler before merging #38.** Next 16 runs `next
+  dev` and `next build` on Turbopack and never reads the config's `webpack`
+  function, and it prints no warning about that. The function only marks
+  `.velite` as managed and ignores it in watch mode, so a Velite rebuild of
+  its 2 MB JSON does not crash the dev server. Production output is
+  unaffected. Either keep Turbopack and confirm `next dev` survives a
+  Velite rebuild, or add `--webpack` to the `dev` and `build` scripts to
+  keep today's behaviour. Neither path is verified yet.
+- [ ] **B9: rename `middleware.ts` to `proxy.ts`.** Next 16 prints a
+  deprecation on every build. `npx @next/codemod@canary
+  middleware-to-proxy .` does the rename; update the matcher comments and
+  the `docs/ci-cd.md` references in the same change.
+- [ ] **B9: move the three edge-runtime routes to Node.** `app/icon.tsx`,
+  `app/apple-icon.tsx` and `app/api/og/route.tsx` export `runtime =
+  "edge"`, which Next 16 deprecates and which already disables static
+  generation for those routes. Check the OG composite still renders after
+  the switch (satori needs JPEG plates).
+- [ ] **B9: import `withSentryConfig` from `@sentry/nextjs/config`.**
+  Sentry 10.74 deprecates the root import and drops it in v11. One line in
+  `next.config.ts`, independent of the Next version, and the warning
+  already prints on main.
+- [ ] (OPERATOR) **Rebase #38 once the config fix is on main.** Comment
+  `@dependabot rebase` on the PR; the PR itself needs no edits.
